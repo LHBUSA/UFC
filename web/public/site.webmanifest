@@ -1,0 +1,13 @@
+{
+  "name": "PropBetEdge UFC",
+  "short_name": "PBE UFC",
+  "description": "Fight Intelligence OS: cards, fighters, rankings, card-change intel and model pricing.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14110d",
+  "theme_color": "#14110d",
+  "icons": [
+    { "src": "https://propbetedge.ai/logo/pbe-mark-160.png", "sizes": "160x160", "type": "image/png" },
+    { "src": "https://propbetedge.ai/logo/pbe-mark-240.png", "sizes": "240x240", "type": "image/png" }
+  ]
+}
