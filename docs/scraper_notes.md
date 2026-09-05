@@ -137,7 +137,30 @@ Events are matched ESPN <-> UFC Stats by date within +-1 day (ESPN dates are
 UTC; UFC Stats prints US-local dates). Two candidate events on the same
 day is recorded as `EventMatchAmbiguous` and left for a human.
 
-## UFC Stats selector hypothesis (from the brief, unverified)
+## UFC Stats selector verification (Internet Archive captures, 2026-09-05)
+
+Verified against archived copies, not the live site (live is behind the PoW
+gate). Captures: completed list 2026-02-16, fighters?char=a 2026-02-19, event
+c337c3c85b1871e0 (UFC Fight Night: Bautista vs. Oliveira, 2026-02-07) captured
+2026-02-23, fight fb4b1754d510b0d0 captured 2026-03-13, UFC 2 (1994) event
+captured 2026-02-13 and its opener captured 2025-10-08. Fixture HTML lives in
+`scripts/backfill/fixtures/` once parsers exist.
+
+| Page | Brief said | Actually |
+|---|---|---|
+| Completed list | 3 columns: name, date, location | **2 columns**: `Name/date` (event `<a>` + date `<span>` in one cell) and `Location`. Table `.b-statistics__table-events`. First `<tbody>` row is an empty spacer; the next carries `b-statistics__table-row_type_first`. 762 events; the list starts at **UFC 2** (UFC 1 is not on UFC Stats). |
+| Fighters list | first, last, nickname, ht, wt, reach, stance, W, L, D, belt | **Matches.** Table `.b-statistics__table`, headers `First, Last, Nickname, Ht., Wt., Reach, Stance, W, L, D, Belt`. Missing = `--` or empty. 231 rows for `a` with `page=all`; first row is a spacer. Every name cell links `/fighter-details/{id}`. |
+| Event page | W/L, two fighter links, KD, STR, TD, SUB, class, method, round, time | **Matches.** `h2` title; `ul.b-list__box-list li` = `Date: February 07, 2026`, `Location: Las Vegas, Nevada, USA`. Table `.b-fight-details__table_type_event-details`, headers `W/L, Fighter, Kd, Str, Td, Sub, Weight class, Method, Round, Time`. Row `data-link` = fight-details URL (host may be `www.`). Stacked `<p>` pairs per cell, fighter A first. Method cell is two lines (`SUB` + `Rear Naked Choke`, `U-DEC` + empty). W/L cell shows one flag (`win`) for the first-listed fighter on completed cards. Card position absent, as expected. |
+| Fight page header | names/links, W/L, class line, Method/Round/Time/Time format/Referee/Details | **Matches.** `.b-fight-details__person` × 2 with `__person-status` (`W`/`L`), `h3 a` (name + link), `__person-title` (nickname in quotes). `.b-fight-details__fight-title` (`Bantamweight Bout`, `UFC 2 Tournament Title Bout`). Result items in `.b-fight-details__text-item(_first)`; `Details:` sits in a second `.b-fight-details__text` block (`Details: Rear Naked Choke`). `Time format: No Time Limit` on 1994 fights. |
+| Fight page stats | Totals + per-round, two tables each | **Matches with one quirk.** 4 tables in 6 `section.b-fight-details__section`s: Totals, Totals per round, Significant Strikes, Sig. strikes per round. Headers: `Fighter, KD, Sig. str., Sig. str. %, Total str., Td, Td %, Sub. att, Rev., Ctrl` and `Fighter, Sig. str, Sig. str. %, Head, Body, Leg, Distance, Clinch, Ground`. **Quirk: the per-round Totals table labels the Td column `Td %` (so `Td %` appears twice).** The schema assertion must accept that exact header list, not the "fixed" one. Per-round tables interleave `<thead>Round N</thead>` blocks with one `<tbody>` row each. Missing values: Ctrl `--`, Td % `---`. |
+| Old fights | may have no stats tables | UFC 2's opener **does** have stats (partial: Ctrl `--`). The no-stats case still has to be handled (empty tbody / absent tables) and counted, but it is rarer than assumed. |
+| Fighter page | record, physicals, career stats, fight history | capture pending (first two fighter ids had no archive copy) |
+| Upcoming list | same shape as completed | capture pending (`www.` host capture 2026-08-01 exists) |
+
+Enum additions found: `U-DEC`, `S-DEC`, `M-DEC` (event-page method abbreviations), `Open Weight`.
+Both were already in `shared/enums.json`.
+
+## UFC Stats selector hypothesis (from the brief, for reference)
 
 Kept here so the verification pass has something concrete to diff against.
 
