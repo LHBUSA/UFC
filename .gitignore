@@ -11,3 +11,4 @@ workers/*/dist/
 *.zip
 .DS_Store
 Thumbs.db
+docs/.proof_seed.json
