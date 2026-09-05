@@ -1,7 +1,18 @@
-# UFC Stats scraper notes
+# UFC scraper notes
 
 Living document. Every deviation from the kickoff brief that was found against
-the live site goes here, with the date it was observed.
+the live sources goes here, with the date it was observed, plus the decisions
+taken on it.
+
+## Decisions (Justin, 2026-09-05)
+
+| Topic | Decision |
+|---|---|
+| Historical backfill | From the Internet Archive, not live. `backfill_ufcstats.py --source wayback` (default). <=1 req/2s, exponential backoff on 429, resumable via the local HTML cache. ufcstats.com is never contacted. |
+| Weekly incremental (Worker) | Solve the ufcstats.com proof-of-work in the fetch layer, keep the cookie, 1 req/s. Abort + loud Discord if the challenge shape changes, the endpoint moves, or difficulty exceeds `MAX_POW_DIFFICULTY` (4). |
+| Schedule / results source | ESPN's public MMA API is primary for events, bouts, results and fighter identity. UFC Stats supplies per-round stats only. |
+| Supabase | `tkmlnhmylqnttmnsnief` (NFL instance). UFC stays off `rlfyavnhbngwbldebrid` (MLB + PropData). |
+| Aliases | `unique(fighter_id, source, normalized)`; the resolver returns every candidate, never merges on name alone. |
 
 ## 2026-09-05 — ufcstats.com is no longer static HTML
 
@@ -9,8 +20,7 @@ The brief says: "Static HTML, no JS, no auth." That was true for years. It is
 not true as of 2026-09-05.
 
 Every request to `ufcstats.com` (both `http://` and `www.`) from a plain HTTP
-client (`requests`, `curl`, any User-Agent) returns HTTP 200 with a ~3 KB
-interstitial instead of the page:
+client returns HTTP 200 with a ~3 KB interstitial instead of the page:
 
 ```
 <title>Loading…</title><meta name="robots" content="noindex">
@@ -18,62 +28,113 @@ interstitial instead of the page:
 <noscript>This site requires JavaScript.</noscript>
 ```
 
-The page carries an inline JavaScript proof-of-work: a pure-JS SHA-256
-implementation, a server-issued `nonce`, and a loop that finds an integer `n`
-such that `sha256(nonce + ':' + n)` starts with two hex zeros (difficulty 2,
-~256 hashes, sub-millisecond). It then POSTs `nonce` and `n` to `/__c` and
-reloads. The reload presumably succeeds because `/__c` sets a cookie; the
-cookie name, lifetime and scope have NOT been observed (I did not solve the
-challenge — see "Decision needed").
+The page carries an inline JavaScript proof-of-work: a pure-JS SHA-256, a
+server-issued `nonce`, and a loop that finds an integer `n` such that
+`sha256(nonce + ':' + n)` starts with two hex zeros (difficulty 2, ~256
+hashes). It then POSTs `nonce` and `n` as a form body to `/__c` and reloads.
 
-Response headers on the interstitial:
+Response headers on the interstitial: `Server: nginx/1.10.1`,
+`Cache-Control: no-store, no-cache, must-revalidate`. `/robots.txt` is 404.
+`https://` on the bare host does not connect.
 
-```
-Server: nginx/1.10.1
-Cache-Control: no-store, no-cache, must-revalidate
-```
+The Worker's fetch layer (`workers/ufc-stats-ingest/src/ufcstats.mjs`)
+implements exactly this handshake and nothing more adaptive. The exact
+script shape it accepts is pinned by three regexes; the test file
+`ufcstats.test.mjs` proves that renaming the variable, moving the endpoint,
+changing the payload, or raising difficulty past the limit all abort.
 
-`/robots.txt` returns 404. No terms-of-use page was fetched.
+Open item: the cookie name/lifetime set by `/__c` has not been observed yet
+(no live solve has been run). The first Worker run will record it in the
+run notes.
 
-`https://` on the bare host does not connect (curl exit 000); `http://` and
-`http://www.` both serve the interstitial.
+## Internet Archive (backfill source)
 
-### What this breaks
+Snapshots exist for every page family. Availability API answers observed:
 
-* The brief's "1 req/sec with a real User-Agent" plan does not work as written.
-  No selector in the brief could be verified against the live site.
-* The Cloudflare Worker cannot run the challenge script as a browser would.
-  Any fetch strategy has to be decided before `ufc-stats-ingest` can do
-  anything.
+| Page | Closest capture to 2026-09-01 |
+|---|---|
+| `/statistics/events/completed?page=all` | 20260216225116 |
+| `/statistics/events/upcoming` | 20260801022834 |
+| `/statistics/fighters?char=a&page=all` | 20260219234617 |
+| `/statistics/fighters` | 20260425053449 |
 
-### Decision needed (Justin)
+Throttling: after a burst of ~8 requests, `web.archive.org` (page fetches AND
+the CDX API) returned HTTP 429 for every request for the rest of the session
+(>1 h), including for unrelated URLs. `archive.org/wayback/available` kept
+answering 200. `wayback.py` therefore starts at 2 s spacing and backs off
+from 30 s doubling to 10 min on 429. Expect the full backfill (roughly 700
+events + 8k fights + 4.5k fighters, one fetch each) to take on the order of
+10 hours of wall clock at that pace, longer with 429 pauses.
 
-Options, in order of least to most infrastructure:
+Coverage is not guaranteed: a fight or fighter page with no capture is
+counted as `wayback_missing_*` and listed in the run notes. Those gaps are
+what the Worker's live path (or a later gap-fill run) has to close.
 
-1. **Solve the challenge in the fetch layer.** Compute the same SHA-256 PoW
-   in Python / WebCrypto, POST to `/__c`, keep the cookie in a session, reuse
-   it for every request. This is exactly what a browser does; the gate is a
-   "runs JS" check, not a CAPTCHA and not a login. Cheapest and simplest, but
-   it is knowingly working through an anti-automation gate the site operator
-   put up. That is a business/legal call, not an engineering one, so it is
-   not implemented until you say so.
-2. **Cloudflare Browser Rendering** from the Worker (a real headless Chromium
-   passes the challenge natively) plus Playwright locally for the backfill.
-   Heavier, costs money per session, same legal posture as option 1.
-3. **Change the primary source.** Sherdog / Tapology / ESPN / Wikipedia carry
-   results and cards; none carries UFC Stats' per-round striking/grappling
-   detail. The Phase 4 model would lose round-level stats.
-4. **Licensed data.** Fight data vendors exist; out of scope to evaluate here.
+## ESPN MMA API (schedule / results source)
 
-### What was verified anyway
+Verified live 2026-09-05. No auth, no challenge. `site.api.espn.com` returns
+403 to non-browser clients; the two hosts below do not.
 
-Nothing on the live site. The Internet Archive holds captures of all page
-types (completed list 2026-02-16, upcoming list 2026-08-01, fighter list
-2026-02-19). Wayback rate-limited (HTTP 429) every fetch attempt during this
-session, so structure verification is pending. The archived copies are the
-right thing to verify parsers against first; they cost UFC Stats nothing.
+### Endpoints
 
-## Selector hypothesis (from the brief, unverified)
+| Purpose | URL |
+|---|---|
+| Event list for a year | `https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events?dates=2025&limit=200` -> `items[].$ref` (52 events for 2025) |
+| Event with inline competitions | `.../leagues/ufc/events/{eventId}?lang=en&region=us` |
+| Competition status (result lives here) | `.../events/{eventId}/competitions/{compId}/status` |
+| Officials (referee) | `.../events/{eventId}/competitions/{compId}/officials` |
+| Plays (round-by-round play log; not used) | `.../competitions/{compId}/plays` |
+| Athlete | `https://sports.core.api.espn.com/v2/sports/mma/athletes/{athleteId}` (also under `/leagues/ufc/athletes/{id}`) |
+| Athlete records | `.../athletes/{athleteId}/records` -> `items[]` with `name: "overall"`, `summary: "16-2-0"` |
+| Whole-card scoreboard (one call, no result method) | `https://site.web.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=YYYYMMDD` |
+
+### Fields used
+
+Event: `id`, `name` ("UFC Fight Night: Hooker vs. Parnasse"), `shortName`,
+`date` (UTC, e.g. `2026-09-05T16:00Z`), `status.type.{name,state,completed}`,
+`venues[0].$ref` -> `{fullName, address.{city,state,country}}`,
+`competitions[]`.
+
+Competition: `id`, `matchNumber` (1 = first fight, main event highest ->
+`bout_order`), `description` ("3 Rnd (5-5-5)" -> `time_format`),
+`format.regulation.periods` (scheduled rounds), `type.text` (weight class,
+long form: "Women's Strawweight"; the scoreboard's `type.abbreviation` is
+"W Strawweight"), `cardSegment.description` ("Main Card" | "Prelims" |
+"Early Prelims" -> `card_position`), `competitors[2]` with `id`
+(= athlete id), `order`, `winner`, `athlete.$ref`, `record.$ref`,
+`status.$ref`, `officials.$ref`.
+
+Status: `type.name` (`STATUS_SCHEDULED`, `STATUS_FINAL`, ...), `period`
+(= final round), `displayClock` ("4:27" = time of stoppage; "5:00" for
+decisions), `result.displayName` (method), `result.description` (finish
+detail: "Punches", "Armbar", "Elbows"), `result.target.description`
+("Head").
+
+`result.displayName` values seen across 6 events (74 bouts): `Decision -
+Unanimous`, `Decision - Split`, `KO/TKO`, `Submission`, `Draw`, `TKO -
+Doctor's Stoppage`. All mapped in `shared/enums.json`; anything else is a
+schema assertion.
+
+Athlete: `id`, `fullName`, `displayName`, `firstName`, `lastName`,
+`dateOfBirth` ("2001-08-04T07:00Z"), `height` (inches, float), `reach`
+(inches), `weight` (lbs), `stance.text` ("Orthodox"), `weightClass.text`,
+`active`, `citizenship`, `association.name` (gym). `nickname` is not
+present on the athletes sampled; treated as optional.
+
+### Identity linking
+
+ESPN athlete ids and UFC Stats ids are unrelated. The Worker links them
+with `shared/alias_resolver` using name + DOB (both sources publish DOB) or
+name + record. An ESPN athlete that resolves to nothing becomes a new
+espn-first `ufc_fighters` row; one that is ambiguous ALSO becomes a new row
+and lands in `ufc_alias_review_queue`. A duplicate row is recoverable by a
+manual merge; a wrong merge is not.
+
+Events are matched ESPN <-> UFC Stats by date within +-1 day (ESPN dates are
+UTC; UFC Stats prints US-local dates). Two candidate events on the same
+day is recorded as `EventMatchAmbiguous` and left for a human.
+
+## UFC Stats selector hypothesis (from the brief, unverified)
 
 Kept here so the verification pass has something concrete to diff against.
 
