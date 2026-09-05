@@ -104,9 +104,13 @@ export class Espn {
           winner_espn_athlete_id: fighters.find((f) => f.winner)?.espn_athlete_id || null,
         };
       }
+      /* ESPN matchNumber 1 = main event and lists competitions last-fight-first
+       * (verified 2026-09-05 on event 600056266: matchNumber 1 = Kape vs
+       * Royval). Our bout_order is main event = highest, so invert. */
       out.push({
         espn_competition_id: String(c.id),
-        bout_order: Number(c.matchNumber),
+        espn_match_number: Number(c.matchNumber),
+        bout_order: raw.competitions.length + 1 - Number(c.matchNumber),
         weight_class_raw: c.type?.text || c.type?.abbreviation || '',
         time_format: c.description || null,
         scheduled_rounds: Number.isInteger(c.format?.regulation?.periods) ? c.format.regulation.periods : null,

@@ -95,8 +95,10 @@ Event: `id`, `name` ("UFC Fight Night: Hooker vs. Parnasse"), `shortName`,
 `venues[0].$ref` -> `{fullName, address.{city,state,country}}`,
 `competitions[]`.
 
-Competition: `id`, `matchNumber` (1 = first fight, main event highest ->
-`bout_order`), `description` ("3 Rnd (5-5-5)" -> `time_format`),
+Competition: `id`, `matchNumber` (1 = MAIN EVENT, counting down the card;
+competitions are listed last-fight-first. Verified on event 600056266:
+matchNumber 1 = Kape vs Royval. `bout_order` = n + 1 - matchNumber so the
+main event stays highest), `description` ("3 Rnd (5-5-5)" -> `time_format`),
 `format.regulation.periods` (scheduled rounds), `type.text` (weight class,
 long form: "Women's Strawweight"; the scoreboard's `type.abbreviation` is
 "W Strawweight"), `cardSegment.description` ("Main Card" | "Prelims" |
