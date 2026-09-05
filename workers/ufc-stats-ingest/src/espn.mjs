@@ -153,9 +153,11 @@ export class Espn {
       display_name: a.displayName || a.fullName,
       nickname: a.nickname || null,
       dob: a.dateOfBirth ? String(a.dateOfBirth).slice(0, 10) : null,
-      height_in: typeof a.height === 'number' ? a.height : null,
-      reach_in: typeof a.reach === 'number' ? a.reach : null,
-      weight_lbs: typeof a.weight === 'number' ? a.weight : null,
+      /* ESPN publishes 0 for an unknown reach/height/weight (seen: reach 0.0
+       * on athlete 5210642). Zero is never a real value here; store null. */
+      height_in: typeof a.height === 'number' && a.height > 0 ? a.height : null,
+      reach_in: typeof a.reach === 'number' && a.reach > 0 ? a.reach : null,
+      weight_lbs: typeof a.weight === 'number' && a.weight > 0 ? a.weight : null,
       stance_raw: a.stance?.text || null,
       weight_class_raw: a.weightClass?.text || null,
       active: a.active === true,

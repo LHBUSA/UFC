@@ -255,9 +255,12 @@ async function ensureEspnFighter(env, espn, ctx, run, f, weightClass) {
   if (rec) Object.assign(physical, { record_w: +rec[1], record_l: +rec[2], record_d: +rec[3] });
   let row;
   if (res.status === 'matched') {
+    /* PATCH, not upsert: a PostgREST upsert on `id` attempts the INSERT
+     * first, so NOT NULL columns absent from the body (source_url) fail
+     * before the conflict merge runs. */
     const existing = ctx.fightersById.get(res.fighter_id);
-    [row] = await upsert(env, 'ufc_fighters', { id: existing.id, ufcstats_id: existing.ufcstats_id, espn_athlete_id: a.espn_athlete_id, name: existing.name,
-      ...physical, source_url: existing.ufcstats_id ? undefined : a.source_url }, 'id', { returning: 'representation' });
+    await patch(env, 'ufc_fighters', `id=eq.${existing.id}`, { espn_athlete_id: a.espn_athlete_id, ...physical });
+    row = { ...existing, espn_athlete_id: a.espn_athlete_id, ...physical };
   } else {
     [row] = await upsert(env, 'ufc_fighters', { espn_athlete_id: a.espn_athlete_id, name: a.name, nickname: a.nickname, ...physical,
       source_url: a.source_url, captured_at: nowIso() }, 'espn_athlete_id', { returning: 'representation' });
@@ -404,14 +407,16 @@ async function linkUfcstatsFighter(env, fetcher, ctx, run, ufcstatsId, name, fro
     return null;
   }
   const row = ctx.fightersById.get(res.fighter_id);
-  const [saved] = await upsert(env, 'ufc_fighters', {
-    id: row.id, ufcstats_id: ufcstatsId, espn_athlete_id: row.espn_athlete_id, name: row.name,
+  const changes = {
+    ufcstats_id: ufcstatsId,
     nickname: row.nickname || p.nickname || null, dob: row.dob || p.dob || null,
     height_in: row.height_in ?? p.height_in ?? null, reach_in: row.reach_in ?? p.reach_in ?? null,
     career_slpm: p.career_slpm, career_str_acc: p.career_str_acc, career_sapm: p.career_sapm, career_str_def: p.career_str_def,
     career_td_avg: p.career_td_avg, career_td_acc: p.career_td_acc, career_td_def: p.career_td_def, career_sub_avg: p.career_sub_avg,
     fight_history_count: p.fight_history_count, updated_at: nowIso(),
-  }, 'id', { returning: 'representation' });
+  };
+  await patch(env, 'ufc_fighters', `id=eq.${row.id}`, changes);   // PATCH: see ensureEspnFighter
+  const saved = { ...row, ...changes };
   registerFighter(ctx, saved);
   await upsert(env, 'ufc_fighter_aliases', aliasRowsForFighter(saved.id, p.name, p.nickname), 'fighter_id,source,normalized');
   run.fighters_touched += 1;

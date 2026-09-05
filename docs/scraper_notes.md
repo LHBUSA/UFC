@@ -80,6 +80,7 @@ Verified live 2026-09-05. No auth, no challenge. `site.api.espn.com` returns
 | Purpose | URL |
 |---|---|
 | Event list for a year | `https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events?dates=2025&limit=200` -> `items[].$ref` (52 events for 2025) |
+| Event list for a day/range | `...events?dates=20251213` or `dates=20251213-20251215`. The day filter is US-Eastern local, not UTC: the 2025-12-14T00:00Z card is listed under `20251213` and NOT under `20251214`. Always query a range or a whole year. |
 | Event with inline competitions | `.../leagues/ufc/events/{eventId}?lang=en&region=us` |
 | Competition status (result lives here) | `.../events/{eventId}/competitions/{compId}/status` |
 | Officials (referee) | `.../events/{eventId}/competitions/{compId}/officials` |
