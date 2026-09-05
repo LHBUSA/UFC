@@ -102,7 +102,14 @@ async function runIngest(env) {
 
     const ctx = await loadContext(env);
     await espnPass(env, espn, ctx, run);
-    await ufcstatsPass(env, fetcher, ctx, run);
+    /* UFCSTATS_ENABLED="false" runs the ESPN-first path alone (schedule,
+     * results, fighters). Used for the production proof run and while the
+     * UFC Stats parsers are pending. */
+    if (String(env.UFCSTATS_ENABLED ?? 'true') !== 'false') {
+      await ufcstatsPass(env, fetcher, ctx, run);
+    } else {
+      run.notes.ufcstats_pass = 'skipped (UFCSTATS_ENABLED=false)';
+    }
 
     run.notes.espn_subrequests = espn.subrequests;
     run.notes.ufcstats_subrequests = fetcher.subrequests;
@@ -199,8 +206,10 @@ async function queueReview(env, ctx, res, rawName, source, extra) {
 /* ------------------------------------------------------------------------ */
 async function espnPass(env, espn, ctx, run) {
   const year = new Date().getUTCFullYear();
-  const dates = new Date().getUTCMonth() === 0 ? [year - 1, year] : [year];
-  const refs = (await Promise.all(dates.map((d) => espn.eventRefs(String(d))))).flat();
+  /* ESPN_DATES overrides the window: "2025", "20251214", "20251201-20251231".
+   * Default: this year, plus last year during January. */
+  const dates = env.ESPN_DATES ? String(env.ESPN_DATES).split(',') : (new Date().getUTCMonth() === 0 ? [year - 1, year] : [year]);
+  const refs = (await Promise.all(dates.map((d) => espn.eventRefs(String(d).trim())))).flat();
   run.notes.espn_events_listed = refs.length;
   const maxEvents = Number(env.MAX_EVENTS_PER_RUN || 3);
   const cutoff = new Date(Date.now() - 14 * 86400e3).toISOString().slice(0, 10);

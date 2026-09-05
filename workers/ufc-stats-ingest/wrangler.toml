@@ -11,6 +11,11 @@ UFCSTATS_BASE = "http://ufcstats.com"
 # the next run. Keeps a single run well inside the subrequest limit
 # (~1 list + 1 event + ~13 fight pages + ~26 fighter pages + writes per event).
 MAX_EVENTS_PER_RUN = "3"
+# "false" = ESPN-first path only (no ufcstats.com contact). Flip to "true"
+# once the UFC Stats parsers are verified.
+UFCSTATS_ENABLED = "false"
+# Optional window override for ESPN, e.g. "20251214" or "20251201-20251231".
+# ESPN_DATES = ""
 
 # Daily 06:00 UTC. Sunday-after-card is the run that matters.
 [triggers]

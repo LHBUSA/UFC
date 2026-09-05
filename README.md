@@ -44,3 +44,18 @@ python backfill_ufcstats.py --phase all --raw-to-r2
 Resumable: anything whose `ufcstats_id` is already in Supabase is skipped
 unless `--force`. Every schema assertion failure stops the run, prints the
 URL, and posts to Discord if `DISCORD_WEBHOOK_URL` is set.
+
+## Worker, run locally (production code path, no mocks)
+
+```
+node scripts/run_worker_local.mjs --dates 20251214 --max-events 1     # ESPN-only, one event
+node scripts/run_worker_local.mjs --ufcstats                          # + UFC Stats round stats (needs parsers)
+python scripts/inspect_event.py --espn-event-id 600056266             # eyeball what was written
+```
+
+## Migration verification (PostgREST only, no DB password)
+
+```
+python scripts/verify_migration.py --before <pre-migration OpenAPI snapshot>
+```
+
