@@ -1,33 +1,47 @@
-/* ufc-stats-ingest — nightly incremental UFC Stats -> Supabase.
+/* ufc-stats-ingest — nightly incremental ingest.
  *
- * Steps (kickoff brief):
- *   1. completed list -> events not in ufc_events (cap MAX_EVENTS_PER_RUN)
- *   2. per new event: event page -> bouts -> fight pages -> results + round
- *      stats -> refresh both fighter pages
- *   3. upcoming list every run: seed announced events/bouts; an announced
- *      bout that vanished is noted in ufc_ingest_runs.assertion_failures
- *      (Phase 2 card watcher does real change tracking)
- *   4. card_status='complete' once every bout on the event has a result
- *   5. one ufc_ingest_runs row per run; Discord one-liner on success, loud
- *      message on assertion failure
+ * Sources (decision 2026-09-05):
+ *   ESPN core API  -> events, bouts, results, fighter identity + physicals.
+ *   ufcstats.com   -> per-round stats only (fight pages), behind the PoW gate.
  *
- * Fails loudly: any SchemaAssertionError or AccessGateError aborts the run,
- * marks it failed, and nothing partial is silently left behind — writes are
- * per-event and the event is only marked complete after all its fights
- * landed, so a re-run resumes cleanly.
+ * Run shape:
+ *   1. ESPN: events for this year (and last year in January). Upsert every
+ *      event; upsert bouts + results for events that are new, not yet
+ *      complete, or dated within the last 14 days. Cap: MAX_EVENTS_PER_RUN
+ *      completed events get their full bout/result pass per run.
+ *   2. Fighters: every ESPN athlete on those bouts is resolved against
+ *      ufc_fighters with the alias resolver (name + DOB/record). Matched ->
+ *      espn_athlete_id set. Unmatched -> new espn-first row. Ambiguous ->
+ *      new espn-first row AND a ufc_alias_review_queue entry (never merge on
+ *      name alone; a duplicate row is recoverable, a wrong merge is not).
+ *   3. UFC Stats: completed list -> events whose date matches an ESPN event
+ *      dated within +-1 day that has no ufcstats_id yet -> event page ->
+ *      fight pages -> fighter pages -> resolver links ufcstats_id onto the
+ *      ESPN fighters -> bout matched by fighter pair -> round stats written.
+ *      Fighter/bout that cannot be linked: counted, queued, skipped. Never
+ *      fatal, never guessed.
+ *   4. card_status='complete' once every bout on the event has a result.
+ *   5. One ufc_ingest_runs row per run; Discord one-liner on success, loud on
+ *      SchemaAssertionError / AccessGateError (which abort the run).
+ *
+ * Announced bouts that vanish from ESPN's card are recorded in
+ * assertion_failures as AnnouncedBoutVanished (Phase 2 card watcher takes
+ * over real change tracking).
  */
 
-import { select, selectAll, insert, upsert, patch } from './supabase.mjs';
+import { selectAll, insert, upsert, patch } from './supabase.mjs';
 import { discord } from './discord.mjs';
 import { Fetcher, SchemaAssertionError, AccessGateError } from './ufcstats.mjs';
+import { Espn } from './espn.mjs';
 import * as P from './parsers.mjs';
-import { normWeightClass } from './normalizers.mjs';
-import { aliasRowsForFighter } from './shared/alias_resolver.mjs';
+import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec } from './normalizers.mjs';
+import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_resolver.mjs';
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.1.0';
+const VERSION = 'v0.2.0';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
+const nowIso = () => new Date().toISOString();
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body, null, 2), { status, headers: { 'content-type': 'application/json' } });
@@ -71,49 +85,30 @@ export default {
   },
 };
 
-const nowIso = () => new Date().toISOString();
-
+/* ------------------------------------------------------------------------ */
+/* Run driver                                                                */
+/* ------------------------------------------------------------------------ */
 async function runIngest(env) {
   health.last_cron_run = nowIso();
   console.log(`[${SERVICE}] START ${health.last_cron_run}`);
   const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, assertion_failures: [], notes: {} };
   let runId = null;
   let status = 'success';
+  const fetcher = new Fetcher(env);
+  const espn = new Espn();
   try {
     const created = await insert(env, 'ufc_ingest_runs', { worker: SERVICE, status: 'running' });
     runId = created?.[0]?.id || null;
 
     const ctx = await loadContext(env);
-    const fetcher = new Fetcher(env);
-    const maxEvents = Number(env.MAX_EVENTS_PER_RUN || 3);
+    await espnPass(env, espn, ctx, run);
+    await ufcstatsPass(env, fetcher, ctx, run);
 
-    /* 1. completed list */
-    const completedUrl = `${fetcher.base}/statistics/events/completed?page=all`;
-    const { html: completedHtml } = await fetcher.get('lists', 'completed', completedUrl, { refresh: true });
-    const completed = P.parseEventList(completedHtml, completedUrl);
-    const newEvents = completed.filter((e) => !ctx.events.has(e.ufcstats_id));
-    run.notes.completed_listed = completed.length;
-    run.notes.completed_new = newEvents.length;
-    const todo = newEvents.slice(0, maxEvents);
-    if (newEvents.length > maxEvents) run.notes.deferred_events = newEvents.length - maxEvents;
-
-    /* 2. per new event */
-    for (const e of todo) {
-      await ingestEvent(env, fetcher, ctx, e, run);
-    }
-
-    /* 2b. previously announced events whose date has passed: promote if UFC Stats now has results */
-    for (const ev of ctx.pendingAnnounced.slice(0, Math.max(0, maxEvents - todo.length))) {
-      if (completed.some((c) => c.ufcstats_id === ev.ufcstats_id)) {
-        await ingestEvent(env, fetcher, ctx, completed.find((c) => c.ufcstats_id === ev.ufcstats_id), run);
-      }
-    }
-
-    /* 3. upcoming list */
-    await ingestUpcoming(env, fetcher, ctx, run);
-
-    run.notes.fetched = fetcher.fetched;
-    run.notes.subrequests = fetcher.subrequests;
+    run.notes.espn_subrequests = espn.subrequests;
+    run.notes.ufcstats_subrequests = fetcher.subrequests;
+    run.notes.ufcstats_fetched = fetcher.fetched;
+    run.notes.challenges_solved = fetcher.challengesSolved;
+    run.notes.review_queued = ctx.reviewQueued;
   } catch (e) {
     status = 'failed';
     const cls = e?.name || 'Error';
@@ -121,11 +116,8 @@ async function runIngest(env) {
     const detail = String(e?.message || e).slice(0, 400);
     run.assertion_failures.push({ class: cls, url: e?.url || null, detail, at: nowIso() });
     console.error(`[${SERVICE}] ${cls}: ${detail}`);
-    if (e instanceof SchemaAssertionError || e instanceof AccessGateError) {
-      await discord(env, `**${SERVICE} STOPPED** ${cls}\n\`${detail}\`\n${e.url || ''}`, { loud: true });
-    } else {
-      await discord(env, `**${SERVICE} CRASHED** ${cls}: ${detail}`, { loud: true });
-    }
+    const loud = e instanceof SchemaAssertionError || e instanceof AccessGateError;
+    await discord(env, `**${SERVICE} ${loud ? 'STOPPED' : 'CRASHED'}** ${cls}\n\`${detail}\`\n${e?.url || ''}`, { loud: true });
   } finally {
     if (runId) {
       try {
@@ -140,7 +132,7 @@ async function runIngest(env) {
     if (status === 'success') {
       const n = run.notes;
       await discord(env, `${SERVICE} ok: events_new=${run.events_new} bouts_new=${run.bouts_new} fighters=${run.fighters_touched}`
-        + `${n.deferred_events ? ` deferred=${n.deferred_events}` : ''}`
+        + ` rounds=${n.round_rows || 0}${n.review_queued ? ` review=${n.review_queued}` : ''}`
         + `${run.assertion_failures.length ? ` notes=${run.assertion_failures.length}` : ''}`);
     }
     console.log(`[${SERVICE}] END status=${status} events_new=${run.events_new} bouts_new=${run.bouts_new}`);
@@ -148,158 +140,271 @@ async function runIngest(env) {
   return { status, ...run };
 }
 
-/* ufcstats_id -> uuid maps. Fighters can be ~4.5k rows; paginated. */
+/* ------------------------------------------------------------------------ */
+/* Context: id maps + resolver over every known fighter                      */
+/* ------------------------------------------------------------------------ */
 async function loadContext(env) {
-  const fighters = new Map();
-  const detailed = new Set();
-  for (const r of await selectAll(env, 'ufc_fighters', 'select=id,ufcstats_id,dob')) {
-    fighters.set(r.ufcstats_id, r.id);
-    if (r.dob) detailed.add(r.ufcstats_id);
+  const fighters = await selectAll(env, 'ufc_fighters', 'select=id,ufcstats_id,espn_athlete_id,name,nickname,dob,record_w,record_l,record_d');
+  const aliases = await selectAll(env, 'ufc_fighter_aliases', 'select=fighter_id,alias,source');
+  const aliasByFighter = new Map();
+  for (const a of aliases) {
+    if (!aliasByFighter.has(a.fighter_id)) aliasByFighter.set(a.fighter_id, []);
+    aliasByFighter.get(a.fighter_id).push(a.alias);
   }
-  const events = new Map();
-  const pendingAnnounced = [];
-  for (const r of await selectAll(env, 'ufc_events', 'select=id,ufcstats_id,card_status,event_date')) {
-    events.set(r.ufcstats_id, r);
-    if (r.card_status !== 'complete' && r.event_date && r.event_date < nowIso().slice(0, 10)) pendingAnnounced.push(r);
+  const boutRows = await selectAll(env, 'ufc_bouts', 'select=id,ufcstats_id,espn_competition_id,event_id,fighter_a_id,fighter_b_id,status,weight_class');
+  const wcByFighter = new Map();
+  for (const b of boutRows) {
+    for (const f of [b.fighter_a_id, b.fighter_b_id]) {
+      if (!wcByFighter.has(f)) wcByFighter.set(f, new Set());
+      if (b.weight_class) wcByFighter.get(f).add(b.weight_class);
+    }
   }
-  const bouts = new Map();
-  for (const r of await selectAll(env, 'ufc_bouts', 'select=id,ufcstats_id,event_id,status&ufcstats_id=not.is.null')) {
-    bouts.set(r.ufcstats_id, r);
-  }
-  return { fighters, detailed, events, bouts, pendingAnnounced };
-}
-
-function eventRow(e, base) {
-  const parts = String(e.location_raw || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const resolver = new AliasResolver(fighters.map((f) => ({
+    id: f.id, ufcstats_id: f.ufcstats_id, name: f.name, nickname: f.nickname, dob: f.dob,
+    record: f.record_w == null ? null : `${f.record_w}-${f.record_l}-${f.record_d}`,
+    weight_classes: [...(wcByFighter.get(f.id) || [])],
+    aliases: aliasByFighter.get(f.id) || [],
+  })));
+  const byEspnAthlete = new Map(fighters.filter((f) => f.espn_athlete_id).map((f) => [f.espn_athlete_id, f]));
+  const byUfcstatsFighter = new Map(fighters.filter((f) => f.ufcstats_id).map((f) => [f.ufcstats_id, f]));
+  const events = await selectAll(env, 'ufc_events', 'select=id,ufcstats_id,espn_event_id,name,event_date,card_status');
+  const results = await selectAll(env, 'ufc_bout_results', 'select=bout_id,has_stats');
   return {
-    ufcstats_id: e.ufcstats_id, name: e.name, event_date: e.event_date,
-    city: parts[0] || null, region: parts.length >= 3 ? parts[1] : null, country: parts.length >= 2 ? parts[parts.length - 1] : null,
-    location_raw: e.location_raw || null,
-    source_url: `${base}/event-details/${e.ufcstats_id}`, captured_at: nowIso(), updated_at: nowIso(),
+    resolver, byEspnAthlete, byUfcstatsFighter,
+    fightersById: new Map(fighters.map((f) => [f.id, f])),
+    events, eventsByEspn: new Map(events.filter((e) => e.espn_event_id).map((e) => [e.espn_event_id, e])),
+    bouts: boutRows, boutsByEspn: new Map(boutRows.filter((b) => b.espn_competition_id).map((b) => [b.espn_competition_id, b])),
+    resultsByBout: new Map(results.map((r) => [r.bout_id, r])),
+    reviewQueued: 0,
   };
 }
 
-async function ensureFighters(env, ctx, bouts, sourceUrl, run) {
-  const missing = [];
-  for (const b of bouts) {
-    for (const side of ['a', 'b']) {
-      const id = b[`fighter_${side}_ufcstats_id`];
-      if (!ctx.fighters.has(id) && !missing.some((m) => m.ufcstats_id === id)) {
-        missing.push({ ufcstats_id: id, name: b[`fighter_${side}_name`], source_url: sourceUrl, captured_at: nowIso(), updated_at: nowIso() });
-      }
-    }
-  }
-  if (!missing.length) return;
-  const rows = await upsert(env, 'ufc_fighters', missing, 'ufcstats_id', { returning: 'representation' });
-  for (const r of rows) ctx.fighters.set(r.ufcstats_id, r.id);
-  run.fighters_touched += rows.length;
+function registerFighter(ctx, row) {
+  ctx.fightersById.set(row.id, row);
+  if (row.espn_athlete_id) ctx.byEspnAthlete.set(row.espn_athlete_id, row);
+  if (row.ufcstats_id) ctx.byUfcstatsFighter.set(row.ufcstats_id, row);
+  ctx.resolver.add({ id: row.id, ufcstats_id: row.ufcstats_id, name: row.name, nickname: row.nickname, dob: row.dob,
+    record: row.record_w == null ? null : `${row.record_w}-${row.record_l}-${row.record_d}`, weight_classes: [], aliases: [] });
 }
 
-async function ingestEvent(env, fetcher, ctx, listed, run) {
-  const url = fetcher.url('events', listed.ufcstats_id);
-  const { html } = await fetcher.get('events', listed.ufcstats_id, url, { refresh: true });
-  const page = P.parseEventPage(html, url);
+async function queueReview(env, ctx, res, rawName, source, extra) {
+  const row = res.review_row || { raw_name: rawName, source, candidate_fighter_ids: [], context: {} };
+  row.context = { ...row.context, ...extra };
+  await insert(env, 'ufc_alias_review_queue', row, { returning: 'minimal' });
+  ctx.reviewQueued += 1;
+}
 
-  const [evRow] = await upsert(env, 'ufc_events', { ...eventRow({ ...listed, ...page }, fetcher.base), card_status: 'locked' }, 'ufcstats_id', { returning: 'representation' });
-  if (!ctx.events.has(listed.ufcstats_id)) run.events_new += 1;
-  ctx.events.set(listed.ufcstats_id, evRow);
-
-  await ensureFighters(env, ctx, page.bouts, url, run);
-  const boutRows = page.bouts.map((b) => {
-    const wc = normWeightClass(b.weight_class_raw, url);
-    return {
-      ufcstats_id: b.ufcstats_id || null, event_id: evRow.id,
-      fighter_a_id: ctx.fighters.get(b.fighter_a_ufcstats_id), fighter_b_id: ctx.fighters.get(b.fighter_b_ufcstats_id),
-      weight_class: wc.weight_class, weight_class_raw: b.weight_class_raw, is_womens: wc.is_womens, is_title: wc.is_title,
-      bout_order: b.bout_order, status: 'complete', source_url: url, captured_at: nowIso(), updated_at: nowIso(),
+/* ------------------------------------------------------------------------ */
+/* ESPN pass                                                                 */
+/* ------------------------------------------------------------------------ */
+async function espnPass(env, espn, ctx, run) {
+  const year = new Date().getUTCFullYear();
+  const dates = new Date().getUTCMonth() === 0 ? [year - 1, year] : [year];
+  const refs = (await Promise.all(dates.map((d) => espn.eventRefs(String(d))))).flat();
+  run.notes.espn_events_listed = refs.length;
+  const maxEvents = Number(env.MAX_EVENTS_PER_RUN || 3);
+  const cutoff = new Date(Date.now() - 14 * 86400e3).toISOString().slice(0, 10);
+  let fullPasses = 0;
+  for (const ref of refs) {
+    const ev = await espn.event(ref);
+    const espnId = String(ev.raw.id);
+    const eventDate = String(ev.raw.date).slice(0, 10);
+    const existing = ctx.eventsByEspn.get(espnId);
+    const isComplete = ev.raw.status?.type?.completed === true && ev.raw.status?.type?.state === 'post';
+    const evRow = {
+      espn_event_id: espnId, name: ev.raw.name, event_date: eventDate,
+      venue: ev.venue?.name || null, city: ev.venue?.city || null, region: ev.venue?.region || null, country: ev.venue?.country || null,
+      card_status: existing?.card_status === 'complete' ? 'complete' : (isComplete ? 'locked' : 'announced'),
+      source_url: ev.url, captured_at: nowIso(), updated_at: nowIso(),
     };
-  });
-  const before = boutRows.filter((r) => r.ufcstats_id && !ctx.bouts.has(r.ufcstats_id)).length;
-  const written = await upsert(env, 'ufc_bouts', boutRows, 'ufcstats_id', { returning: 'representation' });
-  for (const r of written) if (r.ufcstats_id) ctx.bouts.set(r.ufcstats_id, r);
-  run.bouts_new += before;
+    if (existing?.ufcstats_id) evRow.ufcstats_id = existing.ufcstats_id;
+    const [saved] = await upsert(env, 'ufc_events', evRow, 'espn_event_id', { returning: 'representation' });
+    if (!existing) { run.events_new += 1; ctx.events.push(saved); }
+    ctx.eventsByEspn.set(espnId, saved);
 
-  let allResults = true;
-  for (const b of page.bouts) {
-    if (!b.ufcstats_id) { allResults = false; continue; }
-    await ingestFight(env, fetcher, ctx, b.ufcstats_id, run);
+    const needsPass = !existing || existing.card_status !== 'complete' || eventDate >= cutoff;
+    if (!needsPass) continue;
+    if (isComplete && existing?.card_status !== 'complete') {
+      if (fullPasses >= maxEvents) { run.notes.deferred_events = (run.notes.deferred_events || 0) + 1; continue; }
+      fullPasses += 1;
+    }
+    await espnBouts(env, espn, ctx, run, saved, ev);
   }
-  if (allResults) {
-    await patch(env, 'ufc_events', `id=eq.${evRow.id}`, { card_status: 'complete', updated_at: nowIso() });
-    ctx.events.get(listed.ufcstats_id).card_status = 'complete';
-  }
-  console.log(`[${SERVICE}] event ${listed.ufcstats_id} bouts=${page.bouts.length} complete=${allResults}`);
 }
 
-async function ingestFight(env, fetcher, ctx, fightId, run) {
-  const url = fetcher.url('fights', fightId);
-  const { html } = await fetcher.get('fights', fightId, url, { refresh: true });
-  const f = P.parseFightPage(html, url);
-  const bout = ctx.bouts.get(fightId);
-  if (!bout) throw new SchemaAssertionError(url, 'fight page for a bout that is not in ufc_bouts');
-  const winner = f.fighters.find((x) => x.flag === 'WIN');
-  const sc = f.scorecards || [];
-  await upsert(env, 'ufc_bout_results', {
-    bout_id: bout.id, winner_id: winner ? ctx.fighters.get(winner.ufcstats_id) : null,
-    method: f.method, method_raw: f.method_raw, round: f.round, time_sec: f.time_sec, time_format: f.time_format,
-    referee: f.referee, judge_1: sc[0]?.judge || null, judge_2: sc[1]?.judge || null, judge_3: sc[2]?.judge || null,
-    scorecards: f.scorecards, finish_detail: f.finish_detail, has_stats: f.has_stats, source_url: url, captured_at: nowIso(),
-  }, 'bout_id');
-  await patch(env, 'ufc_bouts', `id=eq.${bout.id}`, { scheduled_rounds: f.scheduled_rounds, is_title: f.is_title, status: 'complete', updated_at: nowIso() });
-  if (f.rounds.length) {
-    await upsert(env, 'ufc_bout_round_stats', f.rounds.map(({ fighter_ufcstats_id, ...r }) => ({
-      ...r, bout_id: bout.id, fighter_id: ctx.fighters.get(fighter_ufcstats_id), source_url: url, captured_at: nowIso(),
-    })), 'bout_id,fighter_id,round');
+async function ensureEspnFighter(env, espn, ctx, run, f, weightClass) {
+  const known = ctx.byEspnAthlete.get(f.espn_athlete_id);
+  if (known) return known;
+  const a = await espn.athlete(f.athlete_ref);
+  const res = ctx.resolver.resolve(a.name, 'espn', { weight_class: weightClass, dob: a.dob, record: a.record });
+  const physical = {
+    dob: a.dob, height_in: a.height_in, reach_in: a.reach_in, weight_lbs: a.weight_lbs,
+    stance: a.stance_raw ? normStance(a.stance_raw, a.source_url) : null,
+    is_active: a.active, updated_at: nowIso(),
+  };
+  const rec = a.record ? a.record.match(/(\d+)-(\d+)-(\d+)/) : null;
+  if (rec) Object.assign(physical, { record_w: +rec[1], record_l: +rec[2], record_d: +rec[3] });
+  let row;
+  if (res.status === 'matched') {
+    const existing = ctx.fightersById.get(res.fighter_id);
+    [row] = await upsert(env, 'ufc_fighters', { id: existing.id, ufcstats_id: existing.ufcstats_id, espn_athlete_id: a.espn_athlete_id, name: existing.name,
+      ...physical, source_url: existing.ufcstats_id ? undefined : a.source_url }, 'id', { returning: 'representation' });
+  } else {
+    [row] = await upsert(env, 'ufc_fighters', { espn_athlete_id: a.espn_athlete_id, name: a.name, nickname: a.nickname, ...physical,
+      source_url: a.source_url, captured_at: nowIso() }, 'espn_athlete_id', { returning: 'representation' });
+    if (res.status === 'review') await queueReview(env, ctx, res, a.name, 'espn', { espn_athlete_id: a.espn_athlete_id, created_fighter_id: row.id, url: a.source_url });
   }
-  for (const x of f.fighters) await refreshFighter(env, fetcher, ctx, x.ufcstats_id, run);
-}
-
-async function refreshFighter(env, fetcher, ctx, fighterId, run) {
-  const url = fetcher.url('fighters', fighterId);
-  const { html } = await fetcher.get('fighters', fighterId, url, { refresh: true });
-  const p = P.parseFighterPage(html, url);
-  const [row] = await upsert(env, 'ufc_fighters', { ...p, source_url: url, captured_at: nowIso(), updated_at: nowIso() }, 'ufcstats_id', { returning: 'representation' });
-  ctx.fighters.set(fighterId, row.id);
-  ctx.detailed.add(fighterId);
+  registerFighter(ctx, row);
+  await upsert(env, 'ufc_fighter_aliases', [
+    ...aliasRowsForFighter(row.id, a.name, a.nickname).map((r) => ({ ...r, source: r.source === 'ufcstats' ? 'espn' : 'espn_nickname' })),
+    ...(a.display_name && normalize(a.display_name) !== normalize(a.name) ? [{ fighter_id: row.id, alias: a.display_name, source: 'espn', normalized: normalize(a.display_name) }] : []),
+  ], 'fighter_id,source,normalized');
   run.fighters_touched += 1;
-  await upsert(env, 'ufc_fighter_aliases', aliasRowsForFighter(row.id, p.name, p.nickname), 'fighter_id,source,normalized');
+  return row;
 }
 
-async function ingestUpcoming(env, fetcher, ctx, run) {
-  const url = `${fetcher.base}/statistics/events/upcoming`;
-  const { html } = await fetcher.get('lists', 'upcoming', url, { refresh: true });
-  const upcoming = P.parseEventList(html, url);
-  run.notes.upcoming_listed = upcoming.length;
-  const seenBoutIds = new Set();
-  for (const e of upcoming) {
-    const existing = ctx.events.get(e.ufcstats_id);
-    if (existing?.card_status === 'complete') continue;
-    const evUrl = fetcher.url('events', e.ufcstats_id);
-    const { html: evHtml } = await fetcher.get('events', e.ufcstats_id, evUrl, { refresh: true });
+async function espnBouts(env, espn, ctx, run, evRow, ev) {
+  const bouts = await espn.bouts(ev);
+  const seen = new Set();
+  let allResults = bouts.length > 0;
+  for (const b of bouts) {
+    const wc = normWeightClass(b.weight_class_raw, b.source_url);
+    const fa = await ensureEspnFighter(env, espn, ctx, run, b.fighters[0], wc.weight_class);
+    const fb = await ensureEspnFighter(env, espn, ctx, run, b.fighters[1], wc.weight_class);
+    const existing = ctx.boutsByEspn.get(b.espn_competition_id);
+    const cancelled = /CANCEL|POSTPONED/i.test(b.status_name);
+    const boutRow = {
+      espn_competition_id: b.espn_competition_id, event_id: evRow.id,
+      fighter_a_id: fa.id, fighter_b_id: fb.id,
+      weight_class: wc.weight_class, weight_class_raw: b.weight_class_raw, is_womens: wc.is_womens, is_title: wc.is_title,
+      scheduled_rounds: b.scheduled_rounds ?? (b.time_format ? scheduledRounds(b.time_format, b.source_url) : null),
+      card_position: b.card_position, bout_order: b.bout_order,
+      status: b.completed ? 'complete' : (cancelled ? 'cancelled' : 'announced'),
+      source_url: b.source_url, captured_at: nowIso(), updated_at: nowIso(),
+    };
+    if (existing?.ufcstats_id) boutRow.ufcstats_id = existing.ufcstats_id;
+    const [saved] = await upsert(env, 'ufc_bouts', boutRow, 'espn_competition_id', { returning: 'representation' });
+    if (!existing) { run.bouts_new += 1; ctx.bouts.push(saved); }
+    ctx.boutsByEspn.set(b.espn_competition_id, saved);
+    seen.add(b.espn_competition_id);
+
+    if (b.completed && b.result) {
+      const method = normMethod(b.result.method_raw, b.source_url);
+      const winnerRow = b.result.winner_espn_athlete_id ? ctx.byEspnAthlete.get(b.result.winner_espn_athlete_id) : null;
+      if (!winnerRow && !['DRAW', 'NC'].includes(method)) throw new SchemaAssertionError(b.source_url, `completed ${method} bout without a winner`);
+      const prior = ctx.resultsByBout.get(saved.id);
+      const referee = await espn.referee(b.officials_ref);
+      await upsert(env, 'ufc_bout_results', {
+        bout_id: saved.id, winner_id: winnerRow?.id || null, method, method_raw: b.result.method_raw,
+        round: b.result.round, time_sec: b.result.time ? mmssToSec(b.result.time, b.source_url) : null,
+        time_format: b.time_format, referee, finish_detail: b.result.finish_detail,
+        has_stats: prior?.has_stats || false, result_source: prior?.has_stats ? 'ufcstats' : 'espn',
+        source_url: b.source_url, captured_at: nowIso(),
+      }, 'bout_id');
+      ctx.resultsByBout.set(saved.id, { bout_id: saved.id, has_stats: prior?.has_stats || false });
+    } else if (!cancelled) {
+      allResults = false;
+    }
+  }
+  for (const b of ctx.bouts) {
+    if (b.event_id === evRow.id && b.espn_competition_id && !seen.has(b.espn_competition_id) && b.status === 'announced') {
+      run.assertion_failures.push({ class: 'AnnouncedBoutVanished', url: ev.url, detail: `competition ${b.espn_competition_id} no longer on ESPN card`, at: nowIso() });
+    }
+  }
+  if (allResults && evRow.card_status !== 'complete') {
+    await patch(env, 'ufc_events', `id=eq.${evRow.id}`, { card_status: 'complete', updated_at: nowIso() });
+    evRow.card_status = 'complete';
+  }
+}
+
+/* ------------------------------------------------------------------------ */
+/* UFC Stats pass — round stats only                                         */
+/* ------------------------------------------------------------------------ */
+function dayDiff(a, b) { return Math.abs((Date.parse(a) - Date.parse(b)) / 86400e3); }
+
+async function ufcstatsPass(env, fetcher, ctx, run) {
+  const url = `${fetcher.base}/statistics/events/completed?page=all`;
+  const { html } = await fetcher.get('lists', 'completed', url, { refresh: true });
+  const completed = P.parseEventList(html, url);
+  run.notes.ufcstats_completed_listed = completed.length;
+  const maxEvents = Number(env.MAX_EVENTS_PER_RUN || 3);
+  const targets = [];
+  for (const e of completed) {
+    if (ctx.events.some((x) => x.ufcstats_id === e.ufcstats_id)) continue;
+    const cands = ctx.events.filter((x) => !x.ufcstats_id && x.event_date && dayDiff(x.event_date, e.event_date) <= 1);
+    if (cands.length === 1) targets.push({ listed: e, event: cands[0] });
+    else if (cands.length > 1) run.assertion_failures.push({ class: 'EventMatchAmbiguous', url, detail: `${e.name} ${e.event_date} matches ${cands.length} ESPN events`, at: nowIso() });
+    if (targets.length >= maxEvents) break;
+  }
+  run.notes.ufcstats_events_targeted = targets.length;
+  let roundRows = 0;
+  for (const { listed, event } of targets) {
+    const evUrl = fetcher.url('events', listed.ufcstats_id);
+    const { html: evHtml } = await fetcher.get('events', listed.ufcstats_id, evUrl, { refresh: true });
     const page = P.parseEventPage(evHtml, evUrl);
-    const [evRow] = await upsert(env, 'ufc_events', { ...eventRow({ ...e, ...page }, fetcher.base), card_status: 'announced' }, 'ufcstats_id', { returning: 'representation' });
-    if (!existing) run.events_new += 1;
-    ctx.events.set(e.ufcstats_id, evRow);
-    await ensureFighters(env, ctx, page.bouts, evUrl, run);
-    const rows = page.bouts.map((b) => {
-      const wc = normWeightClass(b.weight_class_raw, evUrl);
-      if (b.ufcstats_id) seenBoutIds.add(b.ufcstats_id);
-      return {
-        ufcstats_id: b.ufcstats_id || null, event_id: evRow.id,
-        fighter_a_id: ctx.fighters.get(b.fighter_a_ufcstats_id), fighter_b_id: ctx.fighters.get(b.fighter_b_ufcstats_id),
-        weight_class: wc.weight_class, weight_class_raw: b.weight_class_raw, is_womens: wc.is_womens, is_title: wc.is_title,
-        bout_order: b.bout_order, status: 'announced', source_url: evUrl, captured_at: nowIso(), updated_at: nowIso(),
-      };
-    });
-    const before = rows.filter((r) => r.ufcstats_id && !ctx.bouts.has(r.ufcstats_id)).length;
-    const written = await upsert(env, 'ufc_bouts', rows.filter((r) => r.ufcstats_id), 'ufcstats_id', { returning: 'representation' });
-    for (const r of written) ctx.bouts.set(r.ufcstats_id, r);
-    run.bouts_new += before;
-    /* announced bouts on this event that are no longer listed */
-    for (const [id, b] of ctx.bouts) {
-      if (b.event_id === evRow.id && b.status === 'announced' && !seenBoutIds.has(id)) {
-        run.assertion_failures.push({ class: 'AnnouncedBoutVanished', url: evUrl, detail: `bout ${id} no longer on upcoming card`, at: nowIso() });
+    await patch(env, 'ufc_events', `id=eq.${event.id}`, { ufcstats_id: listed.ufcstats_id, location_raw: page.location_raw || null, updated_at: nowIso() });
+    event.ufcstats_id = listed.ufcstats_id;
+    const eventBouts = ctx.bouts.filter((b) => b.event_id === event.id);
+    for (const b of page.bouts) {
+      if (!b.ufcstats_id) continue;
+      const fa = await linkUfcstatsFighter(env, fetcher, ctx, run, b.fighter_a_ufcstats_id, b.fighter_a_name, evUrl);
+      const fb = await linkUfcstatsFighter(env, fetcher, ctx, run, b.fighter_b_ufcstats_id, b.fighter_b_name, evUrl);
+      if (!fa || !fb) { run.notes.bouts_unlinked = (run.notes.bouts_unlinked || 0) + 1; continue; }
+      const bout = eventBouts.find((x) => (x.fighter_a_id === fa.id && x.fighter_b_id === fb.id) || (x.fighter_a_id === fb.id && x.fighter_b_id === fa.id));
+      if (!bout) { run.assertion_failures.push({ class: 'BoutNotOnEspnCard', url: evUrl, detail: `ufcstats fight ${b.ufcstats_id} (${b.fighter_a_name} v ${b.fighter_b_name}) has no ESPN bout`, at: nowIso() }); continue; }
+      const fUrl = fetcher.url('fights', b.ufcstats_id);
+      const { html: fHtml } = await fetcher.get('fights', b.ufcstats_id, fUrl, { refresh: true });
+      const f = P.parseFightPage(fHtml, fUrl);
+      await patch(env, 'ufc_bouts', `id=eq.${bout.id}`, { ufcstats_id: b.ufcstats_id, scheduled_rounds: f.scheduled_rounds ?? undefined, updated_at: nowIso() });
+      bout.ufcstats_id = b.ufcstats_id;
+      const idFor = (usid) => (usid === fa.ufcstats_id ? fa.id : fb.id);
+      if (f.rounds.length) {
+        await upsert(env, 'ufc_bout_round_stats', f.rounds.map(({ fighter_ufcstats_id, ...r }) => ({
+          ...r, bout_id: bout.id, fighter_id: idFor(fighter_ufcstats_id), source_url: fUrl, captured_at: nowIso(),
+        })), 'bout_id,fighter_id,round');
+        roundRows += f.rounds.length;
+      }
+      const prior = ctx.resultsByBout.get(bout.id);
+      if (prior) {
+        await patch(env, 'ufc_bout_results', `bout_id=eq.${bout.id}`, {
+          has_stats: f.has_stats, scorecards: f.scorecards ?? undefined,
+          judge_1: f.scorecards?.[0]?.judge, judge_2: f.scorecards?.[1]?.judge, judge_3: f.scorecards?.[2]?.judge,
+          referee: f.referee ?? undefined,
+        });
+      } else {
+        run.assertion_failures.push({ class: 'StatsBeforeResult', url: fUrl, detail: `round stats arrived before an ESPN result for bout ${bout.id}`, at: nowIso() });
       }
     }
   }
+  run.notes.round_rows = roundRows;
+}
+
+/* Resolve a UFC Stats fighter id to our fighter row, fetching the fighter
+ * page for DOB/record when the id is not yet linked. Returns null (and
+ * queues review) when it cannot be linked safely. */
+async function linkUfcstatsFighter(env, fetcher, ctx, run, ufcstatsId, name, fromUrl) {
+  const known = ctx.byUfcstatsFighter.get(ufcstatsId);
+  if (known) return known;
+  const url = fetcher.url('fighters', ufcstatsId);
+  const { html } = await fetcher.get('fighters', ufcstatsId, url, { refresh: true });
+  const p = P.parseFighterPage(html, url);
+  const record = p.record_w == null ? null : `${p.record_w}-${p.record_l}-${p.record_d}`;
+  const res = ctx.resolver.resolve(p.name, 'ufcstats', { dob: p.dob, record });
+  if (res.status !== 'matched') {
+    await queueReview(env, ctx, res, p.name, 'ufcstats', { ufcstats_id: ufcstatsId, url, from: fromUrl, dob: p.dob, record });
+    return null;
+  }
+  const row = ctx.fightersById.get(res.fighter_id);
+  const [saved] = await upsert(env, 'ufc_fighters', {
+    id: row.id, ufcstats_id: ufcstatsId, espn_athlete_id: row.espn_athlete_id, name: row.name,
+    nickname: row.nickname || p.nickname || null, dob: row.dob || p.dob || null,
+    height_in: row.height_in ?? p.height_in ?? null, reach_in: row.reach_in ?? p.reach_in ?? null,
+    career_slpm: p.career_slpm, career_str_acc: p.career_str_acc, career_sapm: p.career_sapm, career_str_def: p.career_str_def,
+    career_td_avg: p.career_td_avg, career_td_acc: p.career_td_acc, career_td_def: p.career_td_def, career_sub_avg: p.career_sub_avg,
+    fight_history_count: p.fight_history_count, updated_at: nowIso(),
+  }, 'id', { returning: 'representation' });
+  registerFighter(ctx, saved);
+  await upsert(env, 'ufc_fighter_aliases', aliasRowsForFighter(saved.id, p.name, p.nickname), 'fighter_id,source,normalized');
+  run.fighters_touched += 1;
+  return saved;
 }

@@ -3,8 +3,13 @@
 UFC Stats -> Supabase backfill. Resumable, batched, fails loudly.
 
   python backfill_ufcstats.py --phase {events|fighters|fights|all}
-                              [--since YYYY-MM-DD] [--limit N] [--raw-to-r2]
-                              [--force] [--dry-run] [--offline]
+                              [--source wayback|live] [--since YYYY-MM-DD] [--limit N]
+                              [--raw-to-r2] [--force] [--dry-run] [--offline]
+
+Source defaults to wayback (Internet Archive captures, <=1 req/2s, backoff on
+429, resumable via the local cache). ufcstats.com is not contacted in that
+mode. Pages with no archived capture are counted (wayback_missing_*) and
+skipped; the verification report lists them as coverage gaps.
 
 Order (brief): fighters list -> events list -> per event: bouts -> per bout:
 fight page -> touch both fighter pages if not yet fetched.
@@ -28,6 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "shared"))
 
 from common import (AccessGateError, Config, Fetcher, RunLog, SchemaAssertionError,  # noqa: E402
                     Supabase, discord, now_iso)
+from wayback import WaybackMissing  # noqa: E402
 import parsers  # noqa: E402
 from alias_resolver import alias_rows_for_fighter  # noqa: E402
 
@@ -39,7 +45,8 @@ class Backfill:
         self.args = args
         self.cfg = Config()
         self.log = RunLog(WORKER)
-        self.fetch = Fetcher(self.cfg, self.log, raw_to_r2=args.raw_to_r2, offline=args.offline)
+        self.fetch = Fetcher(self.cfg, self.log, raw_to_r2=args.raw_to_r2, offline=args.offline, source=args.source)
+        self.missing: list[dict] = []   # wayback coverage gaps
         self.db = Supabase(self.cfg, self.log, dry_run=args.dry_run)
         # ufcstats_id -> uuid maps, loaded once, extended as we write
         self.fighter_ids: dict[str, str] = {}
@@ -66,8 +73,9 @@ class Backfill:
             "events_new": c.get("events_new", 0), "bouts_new": c.get("bouts_new", 0),
             "fighters_touched": c.get("fighters_touched", 0),
             "assertion_failures": self.log.assertion_failures,
-            "notes": {"phase": self.args.phase, "since": self.args.since, "limit": self.args.limit,
-                      "counters": c, "log": str(self.log.path)},
+            "notes": {"phase": self.args.phase, "source": self.args.source, "since": self.args.since,
+                      "limit": self.args.limit, "counters": c, "log": str(self.log.path),
+                      "wayback_missing": self.missing[:2000]},
         })
 
     def load_existing(self):
@@ -165,10 +173,19 @@ class Backfill:
         for ev in events:
             self._ingest_event(ev)
 
+    def _missing(self, kind: str, key: str, url: str):
+        self.missing.append({"kind": kind, "id": key, "url": url})
+        self.log.bump(f"wayback_missing_{kind}")
+        self.log.event("wayback_missing", kind=kind, id=key, url=url)
+
     def _ingest_event(self, ev: dict):
         url = f"{self.cfg.base}/event-details/{ev['ufcstats_id']}"
-        html, cached = self.fetch.get("events", ev["ufcstats_id"], url,
-                                      refresh=self.args.force or ev["card_status"] != "complete")
+        try:
+            html, cached = self.fetch.get("events", ev["ufcstats_id"], url,
+                                          refresh=self.args.force or ev["card_status"] != "complete")
+        except WaybackMissing:
+            self._missing("events", ev["ufcstats_id"], url)
+            return
         page = parsers.parse_event_page(html, url)
         bouts = page["bouts"]
         if all(b.get("ufcstats_id") in self.bout_ids for b in bouts) and not self.args.force:
@@ -214,7 +231,11 @@ class Backfill:
 
     def _ingest_fight(self, fight_id: str):
         url = f"{self.cfg.base}/fight-details/{fight_id}"
-        html, _ = self.fetch.get("fights", fight_id, url, refresh=self.args.force)
+        try:
+            html, _ = self.fetch.get("fights", fight_id, url, refresh=self.args.force)
+        except WaybackMissing:
+            self._missing("fights", fight_id, url)
+            return
         f = parsers.parse_fight_page(html, url)
         bout_id = self.bout_ids.get(fight_id)
         if not bout_id and not self.args.dry_run:
@@ -245,7 +266,11 @@ class Backfill:
 
     def _ingest_fighter(self, fighter_id: str):
         url = f"{self.cfg.base}/fighter-details/{fighter_id}"
-        html, _ = self.fetch.get("fighters", fighter_id, url, refresh=self.args.force)
+        try:
+            html, _ = self.fetch.get("fighters", fighter_id, url, refresh=self.args.force)
+        except WaybackMissing:
+            self._missing("fighters", fighter_id, url)
+            return
         p = parsers.parse_fighter_page(html, url)
         row = {**p, "source_url": url, "captured_at": now_iso(), "updated_at": now_iso()}
         self.db.upsert("ufc_fighters", [row], on_conflict="ufcstats_id")
@@ -258,7 +283,7 @@ class Backfill:
 
     # -- main ---------------------------------------------------------------
     def run(self) -> int:
-        self.log.event("start", phase=self.args.phase, since=self.args.since, limit=self.args.limit,
+        self.log.event("start", phase=self.args.phase, source=self.args.source, since=self.args.since, limit=self.args.limit,
                        dry_run=self.args.dry_run, offline=self.args.offline, r2=self.args.raw_to_r2)
         status, code = "success", 0
         try:
@@ -299,6 +324,8 @@ class Backfill:
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["events", "fighters", "fights", "all"], required=True)
+    ap.add_argument("--source", choices=["wayback", "live"], default="wayback",
+                    help="wayback (default): Internet Archive captures; live: ufcstats.com (aborts on JS challenge)")
     ap.add_argument("--since", help="YYYY-MM-DD; only events on/after this date")
     ap.add_argument("--limit", type=int, help="max events to process")
     ap.add_argument("--raw-to-r2", action="store_true", help="also store raw HTML to R2 ufc-raw/{kind}/{id}.html")

@@ -1,8 +1,17 @@
 {
   "_comment": "Single source of truth for normalization enums. Read by scripts/backfill (Python) and workers/* (JS). Any raw string not covered by a map is a schema-assertion failure: the parser must raise, never guess.",
-
   "method": {
-    "values": ["KO_TKO", "SUB", "DEC_U", "DEC_S", "DEC_M", "DQ", "NC", "DRAW", "OTHER"],
+    "values": [
+      "KO_TKO",
+      "SUB",
+      "DEC_U",
+      "DEC_S",
+      "DEC_M",
+      "DQ",
+      "NC",
+      "DRAW",
+      "OTHER"
+    ],
     "map": {
       "KO/TKO": "KO_TKO",
       "TKO": "KO_TKO",
@@ -20,13 +29,35 @@
       "Could Not Continue": "NC",
       "No Contest": "NC",
       "CNC": "NC",
-      "Other": "OTHER"
+      "Other": "OTHER",
+      "TKO - Doctor's Stoppage": "KO_TKO",
+      "Technical Decision - Unanimous": "DEC_U",
+      "Technical Decision - Split": "DEC_S",
+      "Technical Decision - Majority": "DEC_M",
+      "Draw": "DRAW",
+      "Majority Draw": "DRAW",
+      "Split Draw": "DRAW",
+      "Unanimous Draw": "DRAW",
+      "Disqualification": "DQ"
     },
-    "_note": "UFC Stats prints the method as a two-line cell on event pages (e.g. 'KO/TKO' + 'Punches') and as 'Method: KO/TKO' on fight pages. Only the first token is mapped; the second line goes to finish_detail. Draw/NC are flagged by the W/L column ('draw' / 'nc'), not by the method string, so the parser must consult both."
+    "_note": "UFC Stats prints the method as a two-line cell on event pages (e.g. 'KO/TKO' + 'Punches') and as 'Method: KO/TKO' on fight pages. Only the first token is mapped; the second line goes to finish_detail. Draw/NC are flagged by the W/L column ('draw' / 'nc'), not by the method string, so the parser must consult both.",
+    "_espn_note": "ESPN core status.result.displayName values seen 2026-09-05 across 6 events: 'Decision - Unanimous', 'Decision - Split', 'KO/TKO', 'Submission', 'Draw', \"TKO - Doctor's Stoppage\". result.description carries the finish detail ('Punches', 'Armbar', 'Elbows'). Unknown displayName -> assertion failure, by design."
   },
-
   "weight_class": {
-    "values": ["STRAWWEIGHT", "FLYWEIGHT", "BANTAMWEIGHT", "FEATHERWEIGHT", "LIGHTWEIGHT", "WELTERWEIGHT", "MIDDLEWEIGHT", "LIGHT_HEAVYWEIGHT", "HEAVYWEIGHT", "SUPER_HEAVYWEIGHT", "CATCHWEIGHT", "OPEN"],
+    "values": [
+      "STRAWWEIGHT",
+      "FLYWEIGHT",
+      "BANTAMWEIGHT",
+      "FEATHERWEIGHT",
+      "LIGHTWEIGHT",
+      "WELTERWEIGHT",
+      "MIDDLEWEIGHT",
+      "LIGHT_HEAVYWEIGHT",
+      "HEAVYWEIGHT",
+      "SUPER_HEAVYWEIGHT",
+      "CATCHWEIGHT",
+      "OPEN"
+    ],
     "map": {
       "Strawweight": "STRAWWEIGHT",
       "Flyweight": "FLYWEIGHT",
@@ -44,13 +75,30 @@
       "Openweight": "OPEN"
     },
     "womens_marker": "Women's",
-    "title_markers": ["Title Bout", "Title"],
-    "strip_tokens": ["UFC", "Interim", "Title", "Tournament", "Bout", "Ultimate Fighter", "Superfight", "Championship"],
+    "title_markers": [
+      "Title Bout",
+      "Title"
+    ],
+    "strip_tokens": [
+      "UFC",
+      "Interim",
+      "Title",
+      "Tournament",
+      "Bout",
+      "Ultimate Fighter",
+      "Superfight",
+      "Championship"
+    ],
     "_note": "Raw strings look like 'Women's Strawweight Bout', 'UFC Lightweight Title Bout', 'UFC Interim Heavyweight Title Bout', 'Catch Weight Bout', 'Open Weight Bout', 'Ultimate Fighter 1 Middleweight Tournament Title Bout', 'Ultimate Fighter Latin America Featherweight Tournament Title Bout'. Normalise by: detect Women's -> is_womens; detect Title -> is_title; strip strip_tokens, digits, and region words; the remainder must be a key in map."
   },
-
   "stance": {
-    "values": ["ORTHODOX", "SOUTHPAW", "SWITCH", "OPEN_STANCE", "SIDEWAYS"],
+    "values": [
+      "ORTHODOX",
+      "SOUTHPAW",
+      "SWITCH",
+      "OPEN_STANCE",
+      "SIDEWAYS"
+    ],
     "map": {
       "Orthodox": "ORTHODOX",
       "Southpaw": "SOUTHPAW",
@@ -58,30 +106,87 @@
       "Open Stance": "OPEN_STANCE",
       "Sideways": "SIDEWAYS"
     },
-    "null_values": ["", "--"]
+    "null_values": [
+      "",
+      "--"
+    ]
   },
-
   "scheduled_rounds": {
     "_note": "From the fight page 'Time format' line. '3 Rnd (5-5-5)' -> 3; '5 Rnd (5-5-5-5-5)' -> 5; '1 Rnd + OT (12-3)' -> 1; '2 Rnd + 2OT (5-5-3-3)' -> 2; 'No Time Limit' -> null; 'Unlimited Rnd (10-10-...)' -> null. Regex: ^(\\d+)\\s*Rnd. Anything that neither matches the regex nor is in null_values is an assertion failure.",
-    "null_values": ["No Time Limit", "Unlimited Rnd", "--", ""]
+    "null_values": [
+      "No Time Limit",
+      "Unlimited Rnd",
+      "--",
+      ""
+    ]
   },
-
   "result_flags": {
     "_note": "The W/L column on event and fight pages.",
-    "map": { "win": "WIN", "loss": "LOSS", "draw": "DRAW", "nc": "NC", "next": "UPCOMING" }
+    "map": {
+      "win": "WIN",
+      "loss": "LOSS",
+      "draw": "DRAW",
+      "nc": "NC",
+      "next": "UPCOMING"
+    }
   },
-
-  "bout_status": ["announced", "confirmed", "cancelled", "replaced", "complete"],
-  "card_status": ["announced", "locked", "complete"],
-
+  "bout_status": [
+    "announced",
+    "confirmed",
+    "cancelled",
+    "replaced",
+    "complete"
+  ],
+  "card_status": [
+    "announced",
+    "locked",
+    "complete"
+  ],
   "news_taxonomy": {
-    "values": ["withdrawal", "replacement", "weight_miss", "bout_moved", "injury", "suspension", "rankings", "contract", "result", "other"],
-    "needs_human": ["injury", "withdrawal"]
+    "values": [
+      "withdrawal",
+      "replacement",
+      "weight_miss",
+      "bout_moved",
+      "injury",
+      "suspension",
+      "rankings",
+      "contract",
+      "result",
+      "other"
+    ],
+    "needs_human": [
+      "injury",
+      "withdrawal"
+    ]
   },
-  "story_types": ["card_change", "rankings", "fight_preview", "weigh_in", "results", "line_move", "external"],
-
+  "story_types": [
+    "card_change",
+    "rankings",
+    "fight_preview",
+    "weigh_in",
+    "results",
+    "line_move",
+    "external"
+  ],
   "alias_resolver": {
     "fuzzy_threshold": 90,
-    "sources": ["ufcstats", "ufcstats_nickname", "espn", "ufc_com", "tapology", "manual"]
+    "sources": [
+      "ufcstats",
+      "ufcstats_nickname",
+      "espn",
+      "ufc_com",
+      "tapology",
+      "manual"
+    ]
+  },
+  "espn": {
+    "league_id": "3321",
+    "weight_class_text_map_note": "core competition.type.text is the long form ('Women’s Strawweight'); scoreboard type.abbreviation is short ('W Strawweight'). Use core type.text through weight_class.map after stripping Women's.",
+    "card_segment_map": {
+      "Main Card": "main",
+      "Prelims": "prelim",
+      "Early Prelims": "early"
+    }
   }
 }

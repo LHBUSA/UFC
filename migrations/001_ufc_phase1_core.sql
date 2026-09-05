@@ -24,6 +24,10 @@
 --     as a method-less result; the brief's enum had no slot for it.
 --     OTHER is never written by a parser (unknown method = assertion
 --     failure); it exists only so a manual correction has a value to use.
+--   * ESPN is the schedule/results source in the Worker (decision 2026-09-05);
+--     UFC Stats supplies round stats. Hence espn_event_id / espn_competition_id
+--     / espn_athlete_id alongside the ufcstats ids, and ufc_events.ufcstats_id
+--     is nullable. A row keyed by both ids is the normal end state.
 --   * Every ufc_* table has RLS enabled with NO policies. Workers and the
 --     backfill script write with the service role, which bypasses RLS. Public
 --     read access for the Track B web routes is a separate, later migration
@@ -36,7 +40,8 @@ begin;
 -- ---------------------------------------------------------------------------
 create table if not exists public.ufc_fighters (
   id uuid primary key default gen_random_uuid(),
-  ufcstats_id text not null unique,
+  ufcstats_id text unique,           -- null for an ESPN-first fighter until the resolver links a UFC Stats page
+  espn_athlete_id text unique,       -- ESPN core API athlete id; set by the alias resolver, never by name alone
   name text not null,
   nickname text,
   dob date,
@@ -65,7 +70,8 @@ create table if not exists public.ufc_fighters (
   fight_history_count int,          -- row count of the fighter page's history table; completeness cross-check
   source_url text not null,
   captured_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  check (ufcstats_id is not null or espn_athlete_id is not null)
 );
 comment on column public.ufc_fighters.career_slpm is 'Career-to-date snapshot at capture. NOT a model feature (leakage).';
 comment on column public.ufc_fighters.career_str_acc is 'Career-to-date snapshot at capture. NOT a model feature (leakage).';
@@ -114,7 +120,8 @@ create index if not exists ufc_alias_review_queue_status_idx
 -- ---------------------------------------------------------------------------
 create table if not exists public.ufc_events (
   id uuid primary key default gen_random_uuid(),
-  ufcstats_id text not null unique,
+  ufcstats_id text unique,           -- null until UFC Stats publishes the event (ESPN is the schedule source)
+  espn_event_id text unique,
   name text not null,
   event_date date,
   venue text,                        -- not on UFC Stats; later source
@@ -128,7 +135,8 @@ create table if not exists public.ufc_events (
     check (card_status in ('announced','locked','complete')),
   source_url text not null,
   captured_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  check (ufcstats_id is not null or espn_event_id is not null)
 );
 create index if not exists ufc_events_date_idx on public.ufc_events (event_date desc);
 create index if not exists ufc_events_status_idx on public.ufc_events (card_status);
@@ -138,7 +146,8 @@ create index if not exists ufc_events_status_idx on public.ufc_events (card_stat
 -- ---------------------------------------------------------------------------
 create table if not exists public.ufc_bouts (
   id uuid primary key default gen_random_uuid(),
-  ufcstats_id text unique,           -- null only for announced bouts with no fight-details link
+  ufcstats_id text unique,           -- null until the UFC Stats fight page is matched (round stats source)
+  espn_competition_id text unique,   -- ESPN competition id; the schedule/results key
   event_id uuid not null references public.ufc_events(id) on delete cascade,
   fighter_a_id uuid not null references public.ufc_fighters(id),
   fighter_b_id uuid not null references public.ufc_fighters(id),
@@ -148,8 +157,8 @@ create table if not exists public.ufc_bouts (
   is_womens boolean not null default false,
   is_title boolean not null default false,
   scheduled_rounds int,
-  card_position text,                -- main|prelim|early; NOT on UFC Stats, nullable
-  bout_order int not null,           -- main event = highest; descends down the card
+  card_position text,                -- main|prelim|early from ESPN cardSegment; null for UFC Stats-only rows
+  bout_order int not null,           -- main event = highest; descends down the card (ESPN matchNumber)
   status text not null default 'announced'
     check (status in ('announced','confirmed','cancelled','replaced','complete')),
   replaced_bout_id uuid references public.ufc_bouts(id),
@@ -165,7 +174,8 @@ create index if not exists ufc_bouts_fighter_b_idx on public.ufc_bouts (fighter_
 create index if not exists ufc_bouts_status_idx on public.ufc_bouts (status);
 create unique index if not exists ufc_bouts_announced_pair_uniq
   on public.ufc_bouts (event_id, fighter_a_id, fighter_b_id)
-  where ufcstats_id is null;
+  where ufcstats_id is null and espn_competition_id is null;
+create index if not exists ufc_events_espn_idx on public.ufc_events (espn_event_id);
 
 -- ---------------------------------------------------------------------------
 -- 5. Results. One row per completed bout.
@@ -183,7 +193,8 @@ create table if not exists public.ufc_bout_results (
   judge_2 text,
   judge_3 text,
   scorecards jsonb,                  -- [{"judge":"Sal D''Amato","score":"29-28"}, ...]
-  finish_detail text,                -- verbatim Details line for finishes
+  finish_detail text,                -- verbatim Details line for finishes (ESPN result.description when ESPN-sourced)
+  result_source text not null default 'ufcstats' check (result_source in ('ufcstats','espn')),
   has_stats boolean not null default false,
   source_url text not null,
   captured_at timestamptz not null default now()

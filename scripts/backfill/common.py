@@ -56,6 +56,7 @@ class Config:
     user_agent: str = os.getenv("UFCSTATS_USER_AGENT", "Mozilla/5.0")
     min_interval: float = float(os.getenv("UFCSTATS_MIN_INTERVAL_SEC", "1.0"))
     cache_dir: Path = Path(os.getenv("HTML_CACHE_DIR", "./cache"))
+    wayback_min_interval: float = float(os.getenv("WAYBACK_MIN_INTERVAL_SEC", "2.0"))
     r2_account: str = os.getenv("R2_ACCOUNT_ID", "")
     r2_key: str = os.getenv("R2_ACCESS_KEY_ID", "")
     r2_secret: str = os.getenv("R2_SECRET_ACCESS_KEY", "")
@@ -139,14 +140,25 @@ class Fetcher:
     id (or a slug for list pages). On first fetch the raw HTML goes to
     cache_dir/{kind}/{key}.html and, if enabled, to R2 at ufc-raw/{kind}/{key}.html.
 
-    The access strategy is a single method (`_http_get`) on purpose: when the
-    challenge decision in docs/scraper_notes.md is made, it changes here and
-    nowhere else.
+    source = "wayback" (default; decision 2026-09-05): every page comes from
+    the Internet Archive via scripts/backfill/wayback.py. ufcstats.com is never
+    contacted. A page with no usable capture raises WaybackMissing, which the
+    pipeline counts and skips (a coverage gap, not a schema failure).
+
+    source = "live": plain HTTP to ufcstats.com. Aborts on the JS challenge
+    interstitial; the backfill does not solve it (only the Worker does).
     """
 
-    def __init__(self, cfg: Config, log: RunLog, raw_to_r2: bool = False, offline: bool = False):
+    def __init__(self, cfg: Config, log: RunLog, raw_to_r2: bool = False, offline: bool = False, source: str = "wayback"):
         self.cfg, self.log = cfg, log
         self.offline = offline
+        self.source = source
+        self.wayback = None
+        if source == "wayback":
+            from wayback import WaybackClient
+            self.wayback = WaybackClient(cfg.cache_dir, log, min_interval=cfg.wayback_min_interval,
+                                         user_agent="ufc-propbetedge-backfill/0.1 (+https://github.com/LHBUSA/UFC)")
+        self.capture_ts: dict[str, str] = {}   # cache key -> wayback timestamp used
         self._last = 0.0
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": cfg.user_agent, "Accept": "text/html,*/*;q=0.8",
@@ -203,7 +215,13 @@ class Fetcher:
             return path.read_text(encoding="utf-8"), True
         if self.offline:
             raise AccessGateError(f"offline mode and {path} not cached ({url})")
-        html = self._http_get(url)
+        if self.wayback is not None:
+            html, ts = self.wayback.fetch(kind, key, url, is_interstitial)
+            self.capture_ts[f"{kind}/{key}"] = ts
+            path.with_suffix(".meta.json").write_text(
+                json.dumps({"source": "wayback", "timestamp": ts, "url": url, "captured_at": now_iso()}), encoding="utf-8")
+        else:
+            html = self._http_get(url)
         path.write_text(html, encoding="utf-8")
         if self.r2 is not None:
             self.r2.put_object(Bucket=self.cfg.r2_bucket, Key=f"ufc-raw/{kind}/{key}.html",
