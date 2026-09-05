@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+node_modules/
+__pycache__/
+*.pyc
+scripts/backfill/cache/
+scripts/backfill/logs/
+workers/*/.wrangler/
+workers/*/dist/
+*.zip
+.DS_Store
+Thumbs.db

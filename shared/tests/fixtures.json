@@ -1,0 +1,56 @@
+{
+  "_comment": "Shared fixtures run by both test_alias_resolver.py and test_alias_resolver.mjs. Expected values are asserted identically on both sides.",
+  "normalize": [
+    ["José \"Scarface\" Aldo Jr.", "jose scarface aldo jr"],
+    ["  Khabib   Nurmagomedov ", "khabib nurmagomedov"],
+    ["Cláudia Gadelha", "claudia gadelha"],
+    ["Ilia Topuria", "ilia topuria"],
+    ["Zhang Weili", "zhang weili"],
+    ["O'Malley, Sean", "omalley sean"],
+    ["Georges St. Pierre", "georges st pierre"],
+    ["Georges St-Pierre", "georges st pierre"],
+    ["", ""],
+    [null, ""]
+  ],
+  "token_sort_ratio": [
+    ["Weili Zhang", "Zhang Weili", 100],
+    ["Sean O'Malley", "Sean OMalley", 100],
+    ["Jon Jones", "Jonathan Jones", 78.26086956521739],
+    ["Jon Jones", "Jon Jonez", 88.88888888888889],
+    ["Sean O'Malley", "Sean O'Maley", 95.65217391304348],
+    ["Bruno Silva", "Bruno Silva", 100],
+    ["Bruno Silva", "Bruno Blindado Silva", 70.96774193548387]
+  ],
+  "fighters": [
+    { "id": "f-bs1", "ufcstats_id": "aaaaaaaaaaaaaaa1", "name": "Bruno Silva", "nickname": "Blindado", "dob": "1989-09-26", "record": "23-11-0", "weight_classes": ["MIDDLEWEIGHT"] },
+    { "id": "f-bs2", "ufcstats_id": "aaaaaaaaaaaaaaa2", "name": "Bruno Silva", "nickname": "Bulldog", "dob": "1989-08-22", "record": "13-6-2", "weight_classes": ["FLYWEIGHT", "BANTAMWEIGHT"] },
+    { "id": "f-bs3", "ufcstats_id": "aaaaaaaaaaaaaaa3", "name": "Bruno Silva", "nickname": null, "dob": null, "record": "9-4-0", "weight_classes": ["LIGHT_HEAVYWEIGHT"] },
+    { "id": "f-ja", "ufcstats_id": "aaaaaaaaaaaaaaa4", "name": "Jose Aldo", "nickname": "Junior", "dob": "1986-09-09", "record": "32-9-0", "weight_classes": ["FEATHERWEIGHT", "BANTAMWEIGHT"] },
+    { "id": "f-zw", "ufcstats_id": "aaaaaaaaaaaaaaa5", "name": "Weili Zhang", "nickname": "Magnum", "dob": "1990-08-13", "record": "26-3-0", "weight_classes": ["STRAWWEIGHT"] },
+    { "id": "f-so", "ufcstats_id": "aaaaaaaaaaaaaaa6", "name": "Sean O'Malley", "nickname": "Sugar", "dob": "1994-10-24", "record": "18-2-0", "weight_classes": ["BANTAMWEIGHT"] },
+    { "id": "f-jj", "ufcstats_id": "aaaaaaaaaaaaaaa7", "name": "Jon Jones", "nickname": "Bones", "dob": "1987-07-19", "record": "28-1-0", "weight_classes": ["LIGHT_HEAVYWEIGHT", "HEAVYWEIGHT"] },
+    { "id": "f-dup1", "ufcstats_id": "aaaaaaaaaaaaaaa8", "name": "Johnny Walker", "nickname": null, "dob": "1992-03-30", "record": "21-9-0", "weight_classes": ["LIGHT_HEAVYWEIGHT"] },
+    { "id": "f-dup2", "ufcstats_id": "aaaaaaaaaaaaaaa9", "name": "Jonny Walker", "nickname": null, "dob": "1992-03-30", "record": "21-9-0", "weight_classes": ["LIGHT_HEAVYWEIGHT"] }
+  ],
+  "resolve": [
+    { "name": "ufcstats id wins regardless of name", "args": ["Totally Wrong Name", "espn", { "ufcstats_id": "aaaaaaaaaaaaaaa5" }], "expect": { "status": "matched", "fighter_id": "f-zw", "method": "ufcstats_id" } },
+    { "name": "exact + weight class disambiguates Bruno Silva", "args": ["Bruno Silva", "espn", { "weight_class": "FLYWEIGHT" }], "expect": { "status": "matched", "fighter_id": "f-bs2", "method": "exact_normalized" } },
+    { "name": "exact + dob disambiguates Bruno Silva", "args": ["Bruno Silva", "espn", { "dob": "1989-09-26" }], "expect": { "status": "matched", "fighter_id": "f-bs1", "method": "exact_normalized" } },
+    { "name": "exact name alone with duplicates -> review, three candidates", "args": ["Bruno Silva", "espn", {}], "expect": { "status": "review", "n_candidates": 3, "reason": "ambiguous" } },
+    { "name": "exact unique name but no second key -> review (never name alone)", "args": ["Jose Aldo", "espn", {}], "expect": { "status": "review", "n_candidates": 1, "reason": "no_second_key" } },
+    { "name": "accented exact + record", "args": ["José Aldo", "ufc_com", { "record": "32-9-0 (0 NC)" }], "expect": { "status": "matched", "fighter_id": "f-ja", "method": "exact_normalized" } },
+    { "name": "exact + wrong dob -> review, not matched", "args": ["Jose Aldo", "espn", { "dob": "1980-01-01" }], "expect": { "status": "review" } },
+    { "name": "token order flip is exact after token sort? no: exact requires same normalized; fuzzy 100 + dob matches", "args": ["Zhang Weili", "ufc_com", { "dob": "1990-08-13" }], "expect": { "status": "matched", "fighter_id": "f-zw", "method": "fuzzy_second_key" } },
+    { "name": "apostrophe-less spelling is exact after normalize + record", "args": ["Sean OMalley", "espn", { "record": "18-2-0" }], "expect": { "status": "matched", "fighter_id": "f-so", "method": "exact_normalized" } },
+    { "name": "fuzzy 96 + record", "args": ["Sean O'Maley", "espn", { "record": "18-2-0" }], "expect": { "status": "matched", "fighter_id": "f-so", "method": "fuzzy_second_key" } },
+    { "name": "fuzzy 96 without second key -> review", "args": ["Sean O'Maley", "espn", {}], "expect": { "status": "review", "n_candidates": 1, "reason": "no_second_key" } },
+    { "name": "fuzzy 88.9 (below 90) even with dob -> review", "args": ["Jon Jonez", "espn", { "dob": "1987-07-19" }], "expect": { "status": "review", "n_candidates": 1 } },
+    { "name": "fuzzy below review floor -> unmatched", "args": ["Jonathan Jones", "espn", { "dob": "1987-07-19" }], "expect": { "status": "unmatched" } },
+    { "name": "nothing close -> unmatched", "args": ["Xyzzy Plugh", "espn", {}], "expect": { "status": "unmatched" } },
+    { "name": "empty -> unmatched", "args": ["", "espn", {}], "expect": { "status": "unmatched" } }
+  ],
+  "internal_duplicates": {
+    "expect_kinds": { "same_name": 1, "near_duplicate": 1 },
+    "expect_near_pair": ["f-dup1", "f-dup2"]
+  }
+}

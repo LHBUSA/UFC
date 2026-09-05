@@ -1,0 +1,33 @@
+name = "ufc-stats-ingest"
+main = "src/index.js"
+compatibility_date = "2026-08-29"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+UFCSTATS_BASE = "http://ufcstats.com"
+# How many NEW completed events one invocation may process. The rest wait for
+# the next run. Keeps a single run well inside the subrequest limit
+# (~1 list + 1 event + ~13 fight pages + ~26 fighter pages + writes per event).
+MAX_EVENTS_PER_RUN = "3"
+
+# Daily 06:00 UTC. Sunday-after-card is the run that matters.
+[triggers]
+crons = ["0 6 * * *"]
+
+# Raw HTML archive: ufc-raw/{events|fights|fighters}/{id}.html on first fetch.
+# Create the bucket first: wrangler r2 bucket create ufc-raw
+[[r2_buckets]]
+binding = "RAW"
+bucket_name = "ufc-raw"
+
+# Secrets (wrangler secret put):
+#   SUPABASE_SERVICE_ROLE_KEY  - database access
+#   DISCORD_WEBHOOK_URL        - alerts (optional; skipped if unset)
+#   ADMIN_TRIGGER_TOKEN        - unlocks POST /admin/run (optional; 404 if unset)
+
+# Retained logs. Without this there is no record that a cron ever fired.
+[observability]
+enabled = true
+head_sampling_rate = 1

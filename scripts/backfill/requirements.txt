@@ -1,0 +1,6 @@
+requests>=2.32
+beautifulsoup4>=4.12
+lxml>=5
+python-dotenv>=1.0
+# optional, only for --raw-to-r2
+boto3>=1.34

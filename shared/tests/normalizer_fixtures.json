@@ -1,0 +1,36 @@
+{
+  "_comment": "Shared by scripts/backfill/normalizers.py and workers/ufc-stats-ingest/src/normalizers.mjs. 'raise' means the normalizer must raise a schema assertion.",
+  "method": [
+    ["KO/TKO", "KO_TKO"], ["KO/TKO\nPunches", "KO_TKO"], ["Submission", "SUB"], ["Decision - Unanimous", "DEC_U"],
+    ["Decision - Split", "DEC_S"], ["Decision - Majority", "DEC_M"], ["DQ", "DQ"], ["Overturned", "NC"],
+    ["Could Not Continue", "NC"], ["Other", "OTHER"], ["Submission by Armbar", "raise"], ["", "raise"]
+  ],
+  "weight_class": [
+    ["Lightweight Bout", {"weight_class": "LIGHTWEIGHT", "is_womens": false, "is_title": false}],
+    ["Women's Strawweight Bout", {"weight_class": "STRAWWEIGHT", "is_womens": true, "is_title": false}],
+    ["UFC Women's Bantamweight Title Bout", {"weight_class": "BANTAMWEIGHT", "is_womens": true, "is_title": true}],
+    ["UFC Interim Heavyweight Title Bout", {"weight_class": "HEAVYWEIGHT", "is_womens": false, "is_title": true}],
+    ["Light Heavyweight Bout", {"weight_class": "LIGHT_HEAVYWEIGHT", "is_womens": false, "is_title": false}],
+    ["Catch Weight Bout", {"weight_class": "CATCHWEIGHT", "is_womens": false, "is_title": false}],
+    ["Open Weight Bout", {"weight_class": "OPEN", "is_womens": false, "is_title": false}],
+    ["Ultimate Fighter 1 Middleweight Tournament Title Bout", {"weight_class": "MIDDLEWEIGHT", "is_womens": false, "is_title": true}],
+    ["Ultimate Fighter Latin America Featherweight Tournament Title Bout", {"weight_class": "FEATHERWEIGHT", "is_womens": false, "is_title": true}],
+    ["UFC Superfight Championship Bout", "raise"],
+    ["", {"weight_class": null, "is_womens": false, "is_title": false}],
+    ["Cruiserweight Bout", "raise"]
+  ],
+  "stance": [["Orthodox", "ORTHODOX"], ["Southpaw", "SOUTHPAW"], ["Switch", "SWITCH"], ["Open Stance", "OPEN_STANCE"], ["--", null], ["", null], ["Karate", "raise"]],
+  "scheduled_rounds": [["3 Rnd (5-5-5)", 3], ["5 Rnd (5-5-5-5-5)", 5], ["1 Rnd + OT (12-3)", 1], ["2 Rnd + 2OT (5-5-3-3)", 2], ["No Time Limit", null], ["Unlimited Rnd (10-10-10)", null], ["", null], ["Three rounds", "raise"]],
+  "mmss": [["4:13", 253], ["0:00", 0], ["15:00", 900], ["--", null], ["4-13", "raise"]],
+  "x_of_y": [["45 of 90", [45, 90]], ["0 of 0", [0, 0]], ["--", [null, null]], ["45/90", "raise"]],
+  "height": [["5' 11\"", 71], ["6' 0\"", 72], ["--", null], ["180 cm", "raise"]],
+  "reach": [["74\"", 74], ["--", null]],
+  "weight": [["155 lbs.", 155], ["265 lbs.", 265], ["--", null]],
+  "record": [["Record: 20-3-0 (1 NC)", {"record_w": 20, "record_l": 3, "record_d": 0, "record_nc": 1}], ["Record: 28-1-0", {"record_w": 28, "record_l": 1, "record_d": 0, "record_nc": 0}], ["20-3", "raise"]],
+  "event_date": [["February 15, 2026", "2026-02-15"], ["Nov 12, 1993", "1993-11-12"], ["15/02/2026", "raise"]],
+  "scorecards": [
+    ["Sal D'Amato 29-28. Derek Cleary 29-28. Chris Lee 28-29.", [{"judge": "Sal D'Amato", "score": "29-28"}, {"judge": "Derek Cleary", "score": "29-28"}, {"judge": "Chris Lee", "score": "28-29"}]],
+    ["Punches to Head At Distance", null],
+    ["", null]
+  ]
+}
