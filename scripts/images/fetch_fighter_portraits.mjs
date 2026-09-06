@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 // Licensed fighter-portrait pipeline for ufc.propbetedge.ai.
 //
-//   ufc_fighters -> Wikidata (entity by name + DOB) -> P18 -> Wikimedia Commons
-//   imageinfo (license allowlist) -> sharp (portrait/card/thumb) -> Supabase
+//   ufc_fighters -> verified Wikidata identity ->
+//     (P18 image OR exact Wikidata-linked Commons category fallback) ->
+//   Commons imageinfo (license allowlist) -> sharp derivatives -> Supabase
 //   Storage bucket ufc-media -> one ufc_images row per fighter.
 //
 // Only free Wikimedia Commons licenses are accepted (CC0, Public domain,
 // CC BY x.x, CC BY-SA x.x). Nothing else is ever downloaded or stored.
-// Fighters without an acceptable image get no row; the site falls back to a
-// branded card. See docs/images.md.
+// Fighters without an identity-safe, acceptable image get no row; the site
+// falls back to a branded card. See docs/images.md.
 //
 // Usage: node scripts/images/fetch_fighter_portraits.mjs
 //          [--limit N] [--force] [--dry-run] [--fighter <uuid>] [--no-priority]
@@ -24,13 +25,15 @@ const require = createRequire(import.meta.url);
 const sharp = require(path.join(ROOT, 'web', 'node_modules', 'sharp'));
 
 // ---------------------------------------------------------------- config
-const USER_AGENT = 'PropBetEdgeUFC/1.0 (https://ufc.propbetedge.ai; sales@localhomebuyersusa.com)';
+const USER_AGENT = 'PropBetEdgeUFC/1.1 (https://ufc.propbetedge.ai; sales@localhomebuyersusa.com)';
 const BUCKET = 'ufc-media';
 const CACHE_DIR = path.join(__dirname, 'cache');
 const CACHE_FILE = path.join(CACHE_DIR, 'lookups.json');
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const WIKI_MIN_INTERVAL_MS = 500; // ~2 req/s to Wikimedia
 const MMA_DESC = /mixed martial art|\bMMA\b|fighter/i;
+const CATEGORY_CANDIDATE_LIMIT = 12;
+const MIN_SOURCE_EDGE = 420;
 // Allowlist. Anything that does not match is rejected (fair use, NC, ND, GFDL-only, ...).
 const LICENSE_OK = /^(CC0(\s*1\.0)?|Public domain|CC BY \d(\.\d)?|CC BY-SA \d(\.\d)?)$/i;
 
@@ -81,6 +84,22 @@ function stripHtml(s) {
     .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"').replace(/&#0*39;|&apos;/g, "'")
     .replace(/\s+/g, ' ').trim();
+}
+
+function norm(s) {
+  return stripHtml(s)
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function nameSignal(fighterName, text) {
+  const parts = norm(fighterName).split(/\s+/).filter(Boolean);
+  const hay = ` ${norm(text)} `;
+  if (!parts.length) return false;
+  if (parts.length === 1) return hay.includes(` ${parts[0]} `);
+  // Exact first + last token is conservative enough when the source category
+  // itself is already linked from the fighter's verified Wikidata entity.
+  return hay.includes(` ${parts[0]} `) && hay.includes(` ${parts[parts.length - 1]} `);
 }
 
 async function sbSelectAll(table, query) {
@@ -134,6 +153,18 @@ function p569Date(entity) {
   return m ? `${m[1]}-${m[2]}-${m[3]}` : null;
 }
 
+function p373Category(entity) {
+  return entity?.claims?.P373?.[0]?.mainsnak?.datavalue?.value || null;
+}
+
+function commonsCategory(entity) {
+  const p373 = p373Category(entity);
+  if (p373) return String(p373).replace(/^Category:/i, '').trim();
+  const sitelink = entity?.sitelinks?.commonswiki?.title;
+  if (sitelink && /^Category:/i.test(sitelink)) return sitelink.replace(/^Category:/i, '').trim();
+  return null;
+}
+
 async function getEntity(qid) {
   const j = await wikiFetch(`https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`);
   return j.entities?.[qid];
@@ -169,15 +200,19 @@ async function resolveEntity(fighter) {
 
 // ---------------------------------------------------------------- commons
 async function commonsImageInfo(filename) {
-  const title = encodeURIComponent(`File:${filename}`);
+  const clean = String(filename).replace(/^File:/i, '');
+  const title = encodeURIComponent(`File:${clean}`);
   const j = await wikiFetch(`https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=url|extmetadata|size|mime&iiurlwidth=1200&titles=${title}`);
   const page = Object.values(j.query?.pages ?? {})[0];
   const ii = page?.imageinfo?.[0];
   if (!ii) return null;
   const md = ii.extmetadata ?? {};
   return {
+    filename: clean,
     license: stripHtml(md.LicenseShortName?.value ?? ''),
     author: stripHtml(md.Artist?.value ?? '') || null,
+    description: stripHtml(md.ImageDescription?.value ?? '') || null,
+    categories: stripHtml(md.Categories?.value ?? '') || null,
     url: ii.url,
     thumburl: ii.thumburl,
     descriptionurl: ii.descriptionurl,
@@ -185,11 +220,60 @@ async function commonsImageInfo(filename) {
   };
 }
 
+async function commonsCategoryFiles(category) {
+  const title = encodeURIComponent(`Category:${category}`);
+  const j = await wikiFetch(`https://commons.wikimedia.org/w/api.php?action=query&format=json&list=categorymembers&cmtitle=${title}&cmnamespace=6&cmtype=file&cmlimit=${CATEGORY_CANDIDATE_LIMIT}`);
+  return (j.query?.categorymembers ?? []).map((x) => String(x.title || '').replace(/^File:/i, '')).filter(Boolean);
+}
+
+function imageCandidateScore(fighter, info) {
+  if (!info?.url || !LICENSE_OK.test(info.license || '')) return -Infinity;
+  if (!/^image\//i.test(info.mime || '')) return -Infinity;
+  if ((info.width || 0) < MIN_SOURCE_EDGE || (info.height || 0) < MIN_SOURCE_EDGE) return -Infinity;
+
+  const evidence = `${info.filename || ''} ${info.description || ''} ${info.categories || ''}`;
+  if (!nameSignal(fighter.name, evidence)) return -Infinity;
+
+  const aspect = info.width / Math.max(1, info.height);
+  // Reject panoramic/banner-like files; we are selecting a person portrait.
+  if (aspect < 0.38 || aspect > 1.35) return -Infinity;
+
+  let score = 0;
+  if (nameSignal(fighter.name, info.filename || '')) score += 40;
+  if (nameSignal(fighter.name, info.description || '')) score += 20;
+  if (aspect >= 0.55 && aspect <= 1.0) score += 20;
+  else if (aspect <= 1.18) score += 10;
+  score += Math.min(12, Math.log2(Math.max(info.width, info.height) / MIN_SOURCE_EDGE + 1) * 4);
+
+  const fileKey = norm(info.filename || '');
+  if (/portrait|headshot|weigh in|media day/.test(fileKey)) score += 4;
+  if (/with | and | vs |group|team|crowd|press conference/.test(fileKey)) score -= 18;
+  return score;
+}
+
+async function findCommonsCategoryFallback(fighter, entity) {
+  const category = commonsCategory(entity);
+  if (!category) return null;
+  const files = await commonsCategoryFiles(category);
+  const candidates = [];
+  for (const filename of files) {
+    const info = await commonsImageInfo(filename);
+    const score = imageCandidateScore(fighter, info);
+    if (Number.isFinite(score)) candidates.push({ info, score, category });
+  }
+  candidates.sort((a, b) => b.score - a.score || String(a.info.filename).localeCompare(String(b.info.filename)));
+  return candidates[0] || null;
+}
+
 // ---------------------------------------------------------------- images
-const JPEG = { quality: 82, mozjpeg: true };
+const JPEG = { quality: 84, mozjpeg: true };
 async function deriveAndUpload(fighterId, srcBuf) {
   const base = sharp(srcBuf, { failOn: 'none' }).rotate();
+  // portrait: preserve the original composition; it is the lossless visual
+  // source used for article heroes and any future focal-point reprocessing.
   const portrait = await base.clone().resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true }).jpeg(JPEG).toBuffer();
+  // card/thumb: Sharp attention keeps the salient subject but does not replace
+  // frontend art direction. The UI must not hard-pin these crops to y=0.
   const card = await base.clone().resize(800, 1000, { fit: 'cover', position: sharp.strategy.attention }).jpeg(JPEG).toBuffer();
   const thumb = await base.clone().resize(320, 400, { fit: 'cover', position: sharp.strategy.attention }).jpeg(JPEG).toBuffer();
   const prefix = `fighters/${fighterId}`;
@@ -205,23 +289,41 @@ async function processFighter(f) {
   if (ent.status !== 'ok') return { status: ent.status, note: ent.note };
 
   const p18 = ent.entity?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;
-  if (!p18) return { status: 'no_image', qid: ent.qid, note: `${ent.qid} has no P18` };
+  let info = p18 ? await commonsImageInfo(p18) : null;
+  let source = p18 ? `P18:${p18}` : null;
+  let rejectedP18 = null;
 
-  const info = await commonsImageInfo(p18);
-  if (!info || !info.url) return { status: 'no_image', qid: ent.qid, note: `Commons has no imageinfo for ${p18}` };
-  if (!LICENSE_OK.test(info.license)) {
-    return { status: 'license_rejected', qid: ent.qid, note: `${info.license || '(no license)'} - ${info.descriptionurl}` };
+  if (info && !LICENSE_OK.test(info.license || '')) {
+    rejectedP18 = `${info.license || '(no license)'} - ${info.descriptionurl}`;
+    info = null;
+  }
+
+  // A missing or non-redistributable P18 is not the end of the search. If the
+  // verified Wikidata entity links an exact Commons category, inspect a small
+  // bounded set of portrait-like files from THAT category only. This expands
+  // coverage without doing dangerous free-text image search across Commons.
+  if (!info) {
+    const fallback = await findCommonsCategoryFallback(f, ent.entity);
+    if (fallback) {
+      info = fallback.info;
+      source = `Category:${fallback.category}/${fallback.info.filename}`;
+    }
+  }
+
+  if (!info || !info.url) {
+    if (rejectedP18) return { status: 'license_rejected', qid: ent.qid, note: `P18 rejected (${rejectedP18}); no safe category fallback` };
+    return { status: 'no_image', qid: ent.qid, note: `${ent.qid} has no safe P18/category portrait` };
   }
 
   const r2_key = `fighters/${f.id}/portrait.jpg`;
   const row = { kind: 'wikimedia', r2_key, license: info.license, author: info.author, source_url: info.descriptionurl, fighter_id: f.id };
-  if (DRY) return { status: 'ok', qid: ent.qid, note: `DRY ${info.license} by ${info.author ?? '?'} <- ${p18}`, row };
+  if (DRY) return { status: 'ok', qid: ent.qid, note: `DRY ${info.license} by ${info.author ?? '?'} <- ${source}`, row };
 
   const srcUrl = info.thumburl && info.width > 1200 ? info.thumburl : info.url;
   const buf = await wikiFetch(srcUrl, false);
   const sizes = await deriveAndUpload(f.id, buf);
   await sbUpsertImage(row);
-  return { status: 'ok', qid: ent.qid, note: `${info.license} by ${info.author ?? '?'} (${sizes}) <- ${p18}`, row };
+  return { status: 'ok', qid: ent.qid, note: `${info.license} by ${info.author ?? '?'} (${sizes}) <- ${source}`, row };
 }
 
 // ---------------------------------------------------------------- main
