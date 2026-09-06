@@ -4,7 +4,6 @@
  * DOM mark, the static favicon/brand SVGs, the generated app icons and every
  * server-rendered share card, so the identity is one drawing everywhere. */
 import Link from "next/link";
-import { SITE } from "@/lib/site";
 
 export const OCTAGON = "55.1,22.4 55.1,41.6 41.6,55.1 22.4,55.1 8.9,41.6 8.9,22.4 22.4,8.9 41.6,8.9";
 export const OCTAGON_INNER = "50.5,24.3 50.5,39.7 39.7,50.5 24.3,50.5 13.5,39.7 13.5,24.3 24.3,13.5 39.7,13.5";
@@ -69,16 +68,15 @@ export function Mark({ size = 28, className, title = "PropBetEdge UFC" }: { size
   );
 }
 
-/* Canonical PropBetEdge network mark (the chrome PBE lettering shared with
- * propbetedge.ai and nfl.propbetedge.ai) + wordmark + UFC product tag. The
- * octagon/fighter Mark is the UFC-specific icon. */
+/* The fighter/octagon is the canonical UFC product icon. The broader network
+ * raster mark remains available to intentionally network-branded surfaces
+ * such as the footer, but it does not compete with the UFC identity here. */
 export function Logo({ compact = false, href = "/" }: { compact?: boolean; href?: string }) {
   return (
     <Link href={href} className="brand" aria-label="PropBetEdge UFC home">
-      <img className="brand-mark" src={SITE.logo.mark160} alt="PropBetEdge" width={72} height={28} decoding="async" fetchPriority="high" />
+      <Mark size={compact ? 25 : 30} className="brand-mark oct" />
       <span className="brand-word">PropBet<em>Edge</em></span>
       <strong className="brand-tag">UFC</strong>
-      {!compact && <Mark size={22} className="oct" />}
     </Link>
   );
 }
