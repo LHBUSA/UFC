@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getNewsItems, getFightersByIds } from "@/lib/db";
-import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, StoryCard, JsonLd, Avatar, Octagon } from "@/components/ui";
+import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
+import { NewsStoryCard } from "@/components/NewsStoryCard";
+import { Mark } from "@/components/Brand";
 import { eventSlug, fighterSlug } from "@/lib/slug";
 import { fmtDate, daysUntil, locationLine, eventBrand, eventHeadline, fmtRecord, weightClassLabel, relTime } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -38,7 +40,7 @@ export default async function Home() {
         <Octagon className="hero-oct" />
         <div className="wrap hero-in">
           <div>
-            <div className="hero-net"><img src={SITE.logo.mark80} alt="" width={57} height={22} decoding="async" /><span className="eyebrow">PropBetEdge Sports Network · Fight Intelligence</span></div>
+            <div className="hero-net"><Mark size={32} /><span className="eyebrow">PropBetEdge Sports Network · Fight Intelligence</span></div>
             <h1 aria-label="Every card. Every fighter. Every round.">Every card. Every f{"\u200C"}ighter. <em>Every round.</em></h1>
             <p className="lede">
               Live UFC fight cards from main event to early prelims, fighter profiles with complete fight history and round-by-round stats,
@@ -139,11 +141,11 @@ export default async function Home() {
 
       <section className="sec">
         <div className="wrap">
-          <SectionHead eyebrow="Newsroom" title="Latest from the desk" href="/news" cta="All stories" />
+          <SectionHead eyebrow="Newsroom · timestamped" title="Latest from the desk" href="/news" cta="All stories" />
           {articles.length ? (
             <div className="news">
-              {articles.slice(0, 1).map((a) => <StoryCard key={a.id} a={a} feature hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}
-              {articles.slice(1, 7).map((a) => <StoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}
+              {articles.slice(0, 1).map((a) => <NewsStoryCard key={a.id} a={a} feature hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}
+              {articles.slice(1, 7).map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}
             </div>
           ) : (
             <Empty title="The newsroom publishes when the data does">Fight previews, results with round stats and card changes are written from our own tables. The first stories land with the next card.</Empty>
@@ -154,11 +156,12 @@ export default async function Home() {
       <section className="sec">
         <div className="wrap grid-side">
           <div>
-            <SectionHead eyebrow="Schedule" title="Coming up" href="/events" cta="Full schedule" />
+            <SectionHead eyebrow="Schedule" title="Coming up" href="/events" cta="Full UFC schedule" />
+            <div className="mb-4"><Link href="/contender-series" className="gold sm" style={{ fontWeight: 700 }}>Dana White's Contender Series · every season &amp; week →</Link></div>
             {upcoming.length ? (
               <div className="grid-2">{upcoming.slice(0, 4).map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div>
             ) : (
-              <Empty title="Schedule loading">Upcoming events are pulled from the public schedule and refreshed nightly.</Empty>
+              <Empty title="Schedule loading">Upcoming UFC events are refreshed from the production ingest and appear here as the source tables change.</Empty>
             )}
           </div>
           <div>
@@ -223,7 +226,7 @@ export default async function Home() {
         ...(next ? { mainEntity: { "@type": "SportsEvent", name: next.name, startDate: next.event_date, url: `${SITE.url}/events/${eventSlug(next)}`, sport: "Mixed Martial Arts" } } : {}),
       }} />
       {articles.length > 0 && (
-        <JsonLd data={{ "@context": "https://schema.org", "@type": "ItemList", name: "Latest UFC stories", itemListElement: articles.map((a, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE.url}/news/${a.slug}`, name: a.headline })) }} />
+        <JsonLd data={{ "@context": "https://schema.org", "@type": "ItemList", name: "Latest UFC stories", itemListElement: articles.map((a, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "NewsArticle", url: `${SITE.url}/news/${a.slug}`, headline: a.headline, datePublished: a.published_at || undefined, dateModified: a.updated_at } })) }} />
       )}
     </>
   );
