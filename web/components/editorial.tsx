@@ -34,20 +34,20 @@ const pct = (v: number | null | undefined) => (v == null ? "—" : `${Math.round
 export function BettorsEdge({ angle }: { angle: BettorAngle }) {
   const score = Math.max(0, Math.min(5, Math.round(angle.impact_score || 0)));
   return (
-    <aside className="edge" aria-label="Bettor's Edge analysis">
-      <div className="edge-head">
-        <div className="edge-label"><Mark size={22} /><span>Bettor's Edge</span><small>Analysis · from the verified fact block</small></div>
-        <div className="edge-impact" title="Editorial impact score, 1–5. Analysis, not a price.">
+    <aside className="bedge" aria-label="Bettor's Edge analysis">
+      <div className="bedge-head">
+        <div className="bedge-label"><Mark size={22} /><span>Bettor's Edge</span><small>Analysis · from the verified fact block</small></div>
+        <div className="bedge-impact" title="Editorial impact score, 1–5. Analysis, not a price.">
           <span className="k">Impact</span>
           <span className="pips" aria-label={`Impact ${score} of 5`}>{[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= score ? "on" : ""} />)}</span>
           <b>{score}/5</b>
         </div>
       </div>
-      {angle.summary && <p className="edge-summary">{angle.summary}</p>}
+      {angle.summary && <p className="bedge-summary">{angle.summary}</p>}
       {angle.markets && angle.markets.length > 0 && (
-        <div className="edge-row"><span className="k">Markets affected</span><div className="chips">{angle.markets.map((m) => <span key={m} className="tag gold">{marketLabel(m)}</span>)}</div></div>
+        <div className="bedge-row"><span className="k">Markets affected</span><div className="chips">{angle.markets.map((m) => <span key={m} className="tag gold">{marketLabel(m)}</span>)}</div></div>
       )}
-      <div className="edge-cols">
+      <div className="bedge-cols">
         {angle.supporting_facts && angle.supporting_facts.length > 0 && (
           <div><div className="k">Why</div><ul>{angle.supporting_facts.map((s, i) => <li key={i}>{s}</li>)}</ul></div>
         )}
@@ -58,7 +58,7 @@ export function BettorsEdge({ angle }: { angle: BettorAngle }) {
           <div><div className="k">Watch before betting</div><ul>{angle.watch_items.map((s, i) => <li key={i}>{s}</li>)}</ul></div>
         )}
       </div>
-      <div className="edge-foot">
+      <div className="bedge-foot">
         <span className={`tag${angle.odds_status && angle.odds_status !== "unavailable" ? " pos" : ""}`}>Odds · {angle.odds_status === "live" ? "live" : angle.odds_status === "snapshot" ? "snapshot" : "not connected"}</span>
         <span className={`tag${angle.model_status === "priced" ? " model" : ""}`}>Model · {angle.model_status === "priced" ? "priced" : "not yet produced"}</span>
         <span className="faint label">No pick, price or probability is shown unless it exists in verified data.</span>

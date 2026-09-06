@@ -638,26 +638,26 @@ body::after {
 /* =====================================================================
    EDITORIAL MODULES — Bettor's Edge, inline matchup, market watch.
    ===================================================================== */
-.edge { position: relative; margin: var(--s-5) 0; padding: var(--s-5); border: 1px solid rgba(212,175,55,.4); border-left: 4px solid var(--pbe-gold); border-radius: var(--r-lg); background: linear-gradient(135deg, rgba(212,175,55,.12), rgba(29,25,20,.85) 45%), rgba(20,17,13,.9); box-shadow: var(--sh-2); }
-.edge-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4); flex-wrap: wrap; }
-.edge-label { display: flex; align-items: center; gap: 10px; font: 800 var(--fs-sm)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); }
-.edge-label small { font: 500 var(--fs-micro)/1.3 var(--pbe-font-data); letter-spacing: .08em; color: var(--pbe-faint); }
-.edge-impact { display: flex; align-items: center; gap: 10px; font: 600 var(--fs-label)/1 var(--pbe-font-data); }
-.edge-impact .k { letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-faint); }
-.edge-impact b { color: var(--pbe-paper); font-size: var(--fs-sm); }
+.bedge { position: relative; margin: var(--s-5) 0; padding: var(--s-5); border: 1px solid rgba(212,175,55,.4); border-left: 4px solid var(--pbe-gold); border-radius: var(--r-lg); background: linear-gradient(135deg, rgba(212,175,55,.12), rgba(29,25,20,.85) 45%), rgba(20,17,13,.9); box-shadow: var(--sh-2); }
+.bedge-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4); flex-wrap: wrap; }
+.bedge-label { display: flex; align-items: center; gap: 10px; font: 800 var(--fs-sm)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); }
+.bedge-label small { font: 500 var(--fs-micro)/1.3 var(--pbe-font-data); letter-spacing: .08em; color: var(--pbe-faint); }
+.bedge-impact { display: flex; align-items: center; gap: 10px; font: 600 var(--fs-label)/1 var(--pbe-font-data); }
+.bedge-impact .k { letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-faint); }
+.bedge-impact b { color: var(--pbe-paper); font-size: var(--fs-sm); }
 .pips { display: inline-flex; gap: 4px; }
 .pips i { width: 14px; height: 8px; border-radius: 2px; background: var(--pbe-line-strong); }
 .pips i.on { background: var(--pbe-gold); box-shadow: 0 0 8px rgba(212,175,55,.5); }
-.edge-summary { font: 500 17px/1.6 var(--pbe-font-ui); color: var(--pbe-paper); margin-top: var(--s-4); max-width: 80ch; }
-.edge-row { display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap; margin-top: var(--s-4); }
-.edge .k { font: 700 var(--fs-micro)/1.4 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-gold); }
-.edge .k.risk { color: var(--pbe-crimson-bright); }
-.edge-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin-top: var(--s-4); padding-top: var(--s-4); border-top: 1px solid rgba(255,245,220,.12); }
-.edge-cols ul { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
-.edge-cols li { position: relative; padding-left: 14px; font-size: var(--fs-sm); color: var(--pbe-paper-2); line-height: 1.5; }
-.edge-cols li::before { content: "\2014"; position: absolute; left: 0; color: var(--pbe-gold); }
-.edge-foot { display: flex; gap: var(--s-2); align-items: center; flex-wrap: wrap; margin-top: var(--s-4); }
-@media (max-width: 800px) { .edge-cols { grid-template-columns: minmax(0, 1fr); } }
+.bedge-summary { font: 500 17px/1.6 var(--pbe-font-ui); color: var(--pbe-paper); margin-top: var(--s-4); max-width: 80ch; }
+.bedge-row { display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap; margin-top: var(--s-4); }
+.bedge .k { font: 700 var(--fs-micro)/1.4 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-gold); }
+.bedge .k.risk { color: var(--pbe-crimson-bright); }
+.bedge-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin-top: var(--s-4); padding-top: var(--s-4); border-top: 1px solid rgba(255,245,220,.12); }
+.bedge-cols ul { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.bedge-cols li { position: relative; padding-left: 14px; font-size: var(--fs-sm); color: var(--pbe-paper-2); line-height: 1.5; }
+.bedge-cols li::before { content: "\2014"; position: absolute; left: 0; color: var(--pbe-gold); }
+.bedge-foot { display: flex; gap: var(--s-2); align-items: center; flex-wrap: wrap; margin-top: var(--s-4); }
+@media (max-width: 800px) { .bedge-cols { grid-template-columns: minmax(0, 1fr); } }
 .impact { color: var(--pbe-paper-2); }
 
 .mm { margin: var(--s-5) 0; padding: var(--s-5); border: 1px solid rgba(255,245,220,.14); border-radius: var(--r-lg); background: linear-gradient(180deg, rgba(29,25,20,.86), rgba(13,11,8,.92)), url("/media/ufc-fence-1400.webp") center / cover no-repeat; box-shadow: var(--sh-2); }
@@ -685,3 +685,9 @@ body::after {
 .method { margin-top: var(--s-6); padding: var(--s-4) var(--s-5); border-left: 2px solid var(--pbe-gold); background: rgba(13,11,8,.55); max-width: 72ch; }
 .method p { font-size: var(--fs-sm); color: var(--pbe-dim); margin-top: 6px; line-height: 1.6; }
 .method a { color: var(--pbe-gold); }
+
+/* Mobile brand row: keep the canonical mark and the UFC tag, drop the extras. */
+@media (max-width: 900px) { .brand .oct { display: none; } .brand { gap: 8px; } .hdr-in { gap: var(--s-3); } }
+@media (max-width: 430px) { .brand-mark { display: none; } .brand-word { font-size: 15px; } }
+.byline { align-items: flex-start; flex-wrap: nowrap; }
+.byline > span { flex: 1; min-width: 0; }
