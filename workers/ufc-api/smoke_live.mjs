@@ -220,6 +220,58 @@ const fighterArticles = await get(`/v1/ufc/fighters/0d8011111be000b2/articles`);
 assert(fighterArticles.data.fighter?.id === strickland.data.id && Array.isArray(fighterArticles.data.articles), "fighter articles: malformed");
 assert(fighterArticles.data.articles.every((a) => a.fighter_ids.includes(strickland.data.id)), "fighter articles: wrong fighter");
 
+/* ---- live wire (addendum section 2) ----------------------------------- */
+
+const normalizeTitle = (t) => String(t || "").normalize("NFKD").toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim().slice(0, 60);
+const wireRes = await fetch(`${BASE}/v1/ufc/wire?limit=20`, { headers: { Accept: "application/json" } });
+assert(wireRes.status === 200, `wire: expected HTTP 200, got ${wireRes.status}`);
+assert(wireRes.headers.get("cache-control") === "public, max-age=15, s-maxage=30, stale-while-revalidate=120", `wire: unexpected cache policy ${wireRes.headers.get("cache-control")}`);
+assert(wireRes.headers.get("access-control-allow-origin") === "*", "wire: CORS must stay *");
+const wire = await wireRes.json();
+assert(wire?.ok === true && Array.isArray(wire.data) && wire.data.length > 0, "wire: expected attributed rows");
+assert(wire.data.length <= 20, "wire: limit not honoured");
+for (const item of wire.data) {
+  for (const k of ["id", "title", "published_at", "summary", "taxonomy", "taxonomy_detail", "source", "source_url", "fighter_ids", "event_id", "bout_id", "internal_url"]) {
+    assert(k in item, `wire: item ${item.id} missing ${k}`);
+  }
+  assert(item.title && item.source?.name && /^https?:\/\//.test(item.source_url || ""), `wire: attribution missing on ${item.id}`);
+  assert(item.internal_url === null || /^\/(news|fights|events|fighters)\//.test(item.internal_url), `wire: bad internal_url ${item.internal_url}`);
+  assert(item.taxonomy === null || typeof item.taxonomy === "string", "wire: taxonomy must be the first label string or null");
+}
+const wireStamps = wire.data.map((i) => i.published_at).filter(Boolean);
+assert(wireStamps.join("|") === [...wireStamps].sort().reverse().join("|"), "wire: items must be newest first");
+const wireKeys = wire.data.map((i) => normalizeTitle(i.title));
+assert(new Set(wireKeys).size === wireKeys.length, "wire: duplicate normalized titles returned");
+assert(!Number.isNaN(Date.parse(wire.meta?.generated_at)), "wire: meta.generated_at must parse");
+assert(Math.abs(Date.now() - Date.parse(wire.meta.generated_at)) < 10 * 60 * 1000, "wire: generated_at is not recent");
+for (const k of ["newest_published_at", "count", "freshness_minutes", "fight_week", "live"]) assert(k in wire.meta, `wire: meta missing ${k}`);
+assert(wire.meta.count === wire.data.length, "wire: meta.count mismatch");
+assert(wire.meta.newest_published_at === (wireStamps[0] || null), "wire: newest_published_at mismatch");
+assert(typeof wire.meta.live === "boolean" && typeof wire.meta.fight_week === "boolean", "wire: live/fight_week must be booleans");
+assert(wire.meta.live === (wire.meta.freshness_minutes !== null && wire.meta.freshness_minutes <= 120), "wire: live must follow the 120-minute freshness rule");
+const wireSmall = await get("/v1/ufc/wire?limit=3");
+assert(wireSmall.data.length <= 3 && wireSmall.meta.limit === 3, "wire: limit=3 not honoured");
+const wireClamp = await get("/v1/ufc/wire?limit=999");
+assert(wireClamp.meta.limit === 50, "wire: limit must clamp to 50");
+const wireLinked = wire.data.filter((i) => i.internal_url);
+for (const item of wireLinked.slice(0, 3)) {
+  // internal_url must point at an entity we actually have
+  if (item.internal_url.startsWith("/events/")) {
+    const ev = await get(`/v1/ufc/events/${encodeURIComponent(item.event_id)}`);
+    assert(ev.data.id === item.event_id, `wire: event link ${item.internal_url} not resolvable`);
+  } else if (item.internal_url.startsWith("/news/")) {
+    const art = await get(`/v1/ufc/articles/${encodeURIComponent(item.internal_url.replace("/news/", ""))}`);
+    assert(art.data.slug, `wire: article link ${item.internal_url} not resolvable`);
+  } else if (item.internal_url.startsWith("/fights/")) {
+    const bt = await get(`/v1/ufc/bouts/${encodeURIComponent(item.bout_id)}`);
+    assert(bt.data.id === item.bout_id, `wire: fight link ${item.internal_url} not resolvable`);
+  } else if (item.internal_url.startsWith("/fighters/")) {
+    const fid = item.internal_url.match(/-([0-9a-z]{6,20})$/)?.[1];
+    const f = await get(`/v1/ufc/fighters/${encodeURIComponent(fid)}`);
+    assert(f.data.id === item.fighter_ids[0], `wire: fighter link ${item.internal_url} not resolvable`);
+  }
+}
+
 /* ---- explicit unavailable states keep the null-data envelope ----------- */
 
 const missing = await get("/v1/ufc/fighters/00000000-0000-4000-8000-000000000000", 404);
@@ -234,5 +286,6 @@ console.log(JSON.stringify({
   media: { with: strickland.data.name, without: noMedia.name, list_with_media: list.meta.with_media },
   rankings: { store: rankings.meta.store, snapshot_date: rankings.data.snapshot_date, divisions: rankings.data.divisions.length },
   articles: { hero: heroArticle?.slug || null, plain: plainArticle?.slug || null },
+  wire: { count: wire.meta.count, linked: wireLinked.length, live: wire.meta.live, freshness_minutes: wire.meta.freshness_minutes, fight_week: wire.meta.fight_week, newest_published_at: wire.meta.newest_published_at },
   sample: { event_id: eventId, bout_id: boutId, fighter_id: fighterId, fighter_name: fighterName, upcoming_event_id: upcomingId },
 }, null, 2));

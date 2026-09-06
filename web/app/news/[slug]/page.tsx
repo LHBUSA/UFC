@@ -9,6 +9,7 @@ import { fmtDateTime, fmtDate, eventStatusLabel, locationLine, relTime } from "@
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
 import { storyMedia } from "@/lib/faces";
 import { Mark } from "@/components/Brand";
+import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } from "@/components/editorial";
 
 export const revalidate = 300;
 
@@ -38,6 +39,10 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
   const moreMedia = await storyMedia(more);
   const faces = bout ? [bout.fighter_a, bout.fighter_b] : fighters.slice(0, 2);
   const label = STORY_TYPE_LABEL[a.story_type] || a.story_type;
+  const fb = (a.fact_block || {}) as FactBlock;
+  const angle = fb.bettor_angle && (fb.bettor_angle.summary || fb.bettor_angle.markets?.length) ? fb.bettor_angle : null;
+  const mm = fb.matchup?.a && fb.matchup?.b ? fb.matchup : null;
+  const mmImgs = mm ? await getImagesForFighters([mm.a.fighter_id, mm.b.fighter_id]) : new Map();
 
   return (
     <article className="wrap page article">
@@ -68,11 +73,17 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
         <div className="credit mb-5">Photo: {hero.source_url ? <a href={hero.source_url} rel="noopener nofollow" target="_blank">{hero.author || a.hero_credit?.author || "Wikimedia Commons"}</a> : hero.author}{hero.license ? ` · ${hero.license}` : ""} · via Wikimedia Commons</div>
       )}
 
+      {angle && <BettorsEdge angle={angle} />}
+      {mm && <MatchupModule a={mm.a} b={mm.b} imgs={mmImgs} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
+
       <div className="grid-side">
         <div>
           <div className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }} />
-          {a.story_type === "fight_preview" && <div style={{ maxWidth: "72ch" }}><ProLock /></div>}
-          <p className="faint label mt-6">Written by the {SITE.desk} from PropBetEdge's own fight tables and a stored fact block. Read the <Link href="/about" className="dim">editorial policy</Link>.</p>
+          {fb.market_watch && <MarketWatch mw={fb.market_watch} />}
+          {a.story_type === "fight_preview" && !angle && <div style={{ maxWidth: "72ch" }}><ProLock /></div>}
+          {fb.version ? <Methodology fb={fb} updated={a.updated_at} /> : (
+            <p className="faint label mt-6">Written by the {SITE.desk} from PropBetEdge's own fight tables and a stored fact block. Read the <Link href="/about" className="dim">editorial policy</Link>.</p>
+          )}
         </div>
         <aside className="stack" style={{ gap: 24 }}>
           {bout && event && (

@@ -180,7 +180,14 @@ function matchFilter(row, key, raw) {
   if (raw === "not.is.null") return value !== null && value !== undefined;
   if (raw === "is.null") return value === null || value === undefined;
   if (raw.startsWith("gte.")) return String(value) >= raw.slice(4);
+  if (raw.startsWith("lte.")) return String(value) <= raw.slice(4);
   if (raw.startsWith("lt.")) return String(value) < raw.slice(3);
+  if (raw.startsWith("cs.[")) {
+    const needles = JSON.parse(raw.slice(3));
+    const hay = Array.isArray(value) ? value : [];
+    const subset = (n, h) => n && typeof n === "object" && h && typeof h === "object" && Object.entries(n).every(([k, v]) => h[k] === v);
+    return needles.every((n) => hay.some((h) => subset(n, h)));
+  }
   throw new Error(`mock: unsupported filter ${key}=${raw}`);
 }
 
@@ -610,4 +617,148 @@ test("health reports media configuration and the index advertises the new routes
   const i = await call("/v1/ufc");
   assert.equal(i.body.data.media_base_url, MEDIA_BASE);
   for (const k of ["fighters_media", "event_articles", "fighter_articles", "rankings"]) assert.ok(i.body.data.endpoints[k], `index missing ${k}`);
+});
+
+/* ---- live wire -------------------------------------------------------- */
+
+const NOW = new Date("2026-09-06T15:00:00Z");
+const minutesAgo = (m) => new Date(NOW.getTime() - m * 60000).toISOString();
+const SRC_ESPN = { name: "ESPN MMA", url: "https://www.espn.com/espn/rss/mma/news" };
+const SRC_MMAF = { name: "MMA Fighting", url: "https://www.mmafighting.com/rss/index.xml" };
+const B_THIRD = "7a8b9c0d-7777-4888-8999-aaaabbbbcccd";
+const boutThird = { id: B_THIRD, ufcstats_id: null, espn_competition_id: "401000003", event_id: E_PAST, fighter_a_id: F_OPP, fighter_b_id: F_NOMEDIA, weight_class: "WELTERWEIGHT", weight_class_raw: null, is_womens: false, is_title: false, scheduled_rounds: 3, card_position: "prelim", bout_order: 2, status: "complete", replaced_bout_id: null, short_notice_days: null,
+  fighter_a: brief(fighterOpp), fighter_b: brief(fighterNoMedia), result: [], event: eventPast };
+const eventFightWeek = { ...eventPast, id: "8b9c0d1e-8888-4999-8aaa-bbbbccccddde", espn_event_id: "600060700", name: "UFC Fight Night: Hooker vs. Parnasse", event_date: "2026-09-05", card_status: "complete" };
+const eventDwcs = { ...eventPast, id: "9c0d1e2f-9999-4aaa-8bbb-ccccddddeeef", espn_event_id: "600060701", name: "Dana White's Contender Series: Season 10, Week 5", event_date: "2026-09-08", card_status: "announced" };
+
+const wireItem = (id, title, mins, extra = {}) => ({
+  id: `${id}-0000-4000-8000-000000000000`,
+  url: `https://example.com/${id}`, title, published_at: minutesAgo(mins), summary: `Summary for ${id}`,
+  taxonomy: { labels: ["result"], scores: { result: 0.4 }, matched: ["result:win"], confidence: 0.4 },
+  fighter_ids: [], event_id: null, bout_id: null, source: SRC_ESPN, ...extra,
+});
+const W_ARTICLE_BOUT = wireItem("a0000001", "Strickland outpoints Opponent Person at UFC 300", 30, { bout_id: B_PAST, event_id: E_PAST, fighter_ids: [F_MEDIA, F_OPP] });
+const W_BOUT = wireItem("a0000002", "Opponent Person edges Aaron Nomedia on the prelims", 45, { bout_id: B_THIRD, event_id: null, fighter_ids: [F_OPP, F_NOMEDIA] });
+const W_EVENT = wireItem("a0000003", "UFC 300 weigh-in results: everyone makes weight", 60, { event_id: E_PAST, fighter_ids: [] });
+const W_EVENT_FIGHTER_ARTICLE = wireItem("a0000004", "Aaron Nomedia talks UFC 300 camp", 70, { event_id: E_PAST, fighter_ids: [F_NOMEDIA] });
+const W_FIGHTER = wireItem("a0000005", "Sean Strickland calls for a title shot", 80, { fighter_ids: [F_MEDIA] });
+const W_NONE = wireItem("a0000006", "Regional MMA roundup from Brazil", 90, { fighter_ids: [], taxonomy: { labels: [], scores: {}, matched: [], confidence: 0 } });
+const W_TWO_FIGHTERS_NO_EVENT = wireItem("a0000007", "Two veterans in talks for a rematch", 95, { fighter_ids: [F_MEDIA, F_OPP] });
+const W_SOURCE_REF = wireItem("a0000008", "Contract news picked up by our newsroom", 100, { fighter_ids: [] });
+const W_DUP_FIRST = wireItem("a0000009", "Parnasse wins in UFC debut, tops Hooker in Paris", 120, { source: SRC_ESPN });
+const W_DUP_LATER = wireItem("a000000a", "Parnasse Wins In UFC Debut, Tops Hooker In Paris!", 110, { source: SRC_MMAF, url: "https://mmafighting.example/dup" });
+const articleBoutPast = { ...articleNoHero, id: "b1b2c3d4-aaaa-4bbb-8ccc-ddddeeeeff00", slug: "strickland-vs-opponent-recap", event_id: E_PAST, bout_id: B_PAST, fighter_ids: [F_MEDIA, F_OPP], published_at: "2025-04-14T12:00:00Z" };
+const articleSourceRef = { ...articleNoHero, id: "a1b2c3d4-aaaa-4bbb-8ccc-ddddeeeeffff", slug: "contract-news-story", event_id: null, bout_id: null, fighter_ids: [], sources: [{ kind: "news_item", id: W_SOURCE_REF.id }], published_at: "2026-09-06T12:00:00Z" };
+
+const wireTables = {
+  ...fullTables,
+  ufc_bouts: [boutPast, boutNext, boutThird],
+  ufc_events: [eventPast, eventNext, eventFightWeek, eventDwcs],
+  ufc_articles: [articleHero, articleNoHero, articleBoutPast, articleSourceRef],
+  ufc_news_items: [W_ARTICLE_BOUT, W_BOUT, W_EVENT, W_EVENT_FIGHTER_ARTICLE, W_FIGHTER, W_NONE, W_TWO_FIGHTERS_NO_EVENT, W_SOURCE_REF, W_DUP_FIRST, W_DUP_LATER],
+};
+
+test("wire slug helpers match web/lib/slug.ts", () => {
+  assert.equal(__test.slugify("Michael ‘Venom’ Page's Fight!"), "michael-venom-pages-fight");
+  assert.equal(__test.slugify("Noche UFC: Silva vs. Delgado"), "noche-ufc-silva-vs-delgado");
+  assert.equal(__test.fighterSlug({ name: "Sean Strickland", espn_athlete_id: "3093653", ufcstats_id: "0d8011111be000b2" }), "sean-strickland-3093653");
+  assert.equal(__test.fighterSlug({ name: "Nobody", espn_athlete_id: null, ufcstats_id: null }), null);
+  assert.equal(__test.eventSlug({ name: "UFC 300", event_date: "2025-04-13" }), "ufc-300-2025-04-13");
+  assert.equal(__test.eventSlug({ name: "UFC 999", event_date: null }), "ufc-999-tbd");
+  assert.equal(__test.matchupSlug({ name: "Jean Silva" }, { name: "Jose Miguel Delgado" }, { name: "Noche UFC: Silva vs. Delgado", event_date: "2026-09-12" }), "jean-silva-vs-jose-miguel-delgado-noche-ufc-silva-vs-delgado-2026-09-12");
+});
+
+test("normalizeTitle strips punctuation/stopwords; dedupe keeps the earliest copy, newest first", () => {
+  assert.equal(__test.normalizeTitle("Parnasse Wins In UFC Debut, Tops Hooker In Paris!"), __test.normalizeTitle("Parnasse wins in UFC debut, tops Hooker in Paris"));
+  assert.notEqual(__test.normalizeTitle("Strickland wins"), __test.normalizeTitle("Strickland loses"));
+  const out = __test.dedupeWireItems([W_DUP_LATER, W_FIGHTER, W_DUP_FIRST]);
+  assert.deepEqual(out.map((i) => i.id), [W_FIGHTER.id, W_DUP_FIRST.id]);
+  assert.equal(__test.wireTaxonomy({ labels: ["card_change", "injury"] }), "card_change");
+  assert.equal(__test.wireTaxonomy({ labels: [] }), null);
+  assert.equal(__test.wireTaxonomy(null), null);
+});
+
+test("wire maps internal_url: article (bout / event+fighter / sources ref), bout, event, fighter, none", async () => {
+  installMock({ tables: wireTables });
+  const out = await __test.wire(env, new URL("https://x/v1/ufc/wire?limit=20"), NOW);
+  const by = Object.fromEntries(out.data.map((i) => [i.id, i]));
+  assert.equal(by[W_ARTICLE_BOUT.id].internal_url, "/news/strickland-vs-opponent-recap", "bout-linked article wins over the fight page");
+  assert.equal(by[W_BOUT.id].internal_url, "/fights/opponent-person-vs-aaron-nomedia-ufc-300-2025-04-13");
+  assert.equal(by[W_EVENT.id].internal_url, "/events/ufc-300-2025-04-13");
+  assert.equal(by[W_EVENT_FIGHTER_ARTICLE.id].internal_url, "/news/nomedia-preview");
+  assert.equal(by[W_FIGHTER.id].internal_url, "/fighters/sean-strickland-3093653");
+  assert.equal(by[W_NONE.id].internal_url, null);
+  assert.equal(by[W_TWO_FIGHTERS_NO_EVENT.id].internal_url, null);
+  assert.equal(by[W_SOURCE_REF.id].internal_url, "/news/contract-news-story");
+  const it = by[W_ARTICLE_BOUT.id];
+  assert.deepEqual(Object.keys(it), ["id", "title", "published_at", "summary", "taxonomy", "taxonomy_detail", "source", "source_url", "fighter_ids", "event_id", "bout_id", "internal_url"]);
+  assert.equal(it.taxonomy, "result");
+  assert.deepEqual(it.taxonomy_detail.labels, ["result"]);
+  assert.deepEqual(it.source, SRC_ESPN);
+  assert.equal(it.source_url, W_ARTICLE_BOUT.url);
+  assert.equal(it.summary, "Summary for a0000001");
+  assert.equal(it.title, W_ARTICLE_BOUT.title);
+  assert.equal(by[W_NONE.id].taxonomy, null);
+});
+
+test("wire dedupes near-identical headlines keeping the earliest copy and orders newest first", async () => {
+  installMock({ tables: wireTables });
+  const out = await __test.wire(env, new URL("https://x/v1/ufc/wire?limit=20"), NOW);
+  const ids = out.data.map((i) => i.id);
+  assert.ok(ids.includes(W_DUP_FIRST.id) && !ids.includes(W_DUP_LATER.id), "earliest-published duplicate must survive");
+  assert.equal(out.data.find((i) => i.id === W_DUP_FIRST.id).source.name, "ESPN MMA");
+  assert.equal(out.meta.count, 9);
+  assert.equal(out.meta.fetched, 10);
+  assert.equal(out.meta.deduped, 1);
+  const stamps = out.data.map((i) => i.published_at);
+  assert.deepEqual(stamps, [...stamps].sort().reverse(), "newest first");
+  const keys = new Set(out.data.map((i) => __test.normalizeTitle(i.title)));
+  assert.equal(keys.size, out.data.length, "no duplicate normalized titles");
+  const limited = await __test.wire(env, new URL("https://x/v1/ufc/wire?limit=2"), NOW);
+  assert.equal(limited.data.length, 2);
+  assert.equal(limited.meta.limit, 2);
+  const clamped = await __test.wire(env, new URL("https://x/v1/ufc/wire?limit=500"), NOW);
+  assert.equal(clamped.meta.limit, 50);
+});
+
+test("wire meta: live within 120 minutes, stale otherwise; fight_week ignores Contender Series", async () => {
+  installMock({ tables: wireTables });
+  const live = await __test.wire(env, new URL("https://x/v1/ufc/wire"), NOW);
+  assert.equal(live.meta.generated_at, NOW.toISOString());
+  assert.equal(live.meta.newest_published_at, W_ARTICLE_BOUT.published_at);
+  assert.equal(live.meta.freshness_minutes, 30);
+  assert.equal(live.meta.live, true);
+  assert.equal(live.meta.fight_week, true, "UFC Fight Night one day ago counts");
+  assert.deepEqual(live.meta.fight_week_events.map((e) => e.name), ["UFC Fight Night: Hooker vs. Parnasse"]);
+  assert.equal(live.meta.linked, 6);
+
+  const later = new Date(NOW.getTime() + 3 * 60 * 60000); // three hours on: newest item is 210 min old
+  installMock({ tables: { ...wireTables, ufc_events: [eventPast, eventNext, eventDwcs] } });
+  const stale = await __test.wire(env, new URL("https://x/v1/ufc/wire"), later);
+  assert.equal(stale.meta.freshness_minutes, 210);
+  assert.equal(stale.meta.live, false);
+  assert.equal(stale.meta.fight_week, false, "Contender Series alone is not fight week");
+
+  installMock({ tables: { ...wireTables, ufc_news_items: [] } });
+  const empty = await __test.wire(env, new URL("https://x/v1/ufc/wire"), NOW);
+  assert.deepEqual(empty.data, []);
+  assert.equal(empty.meta.newest_published_at, null);
+  assert.equal(empty.meta.freshness_minutes, null);
+  assert.equal(empty.meta.live, false);
+});
+
+test("GET /v1/ufc/wire uses the short cache policy, keeps CORS *, and the standard envelope", async () => {
+  installMock({ tables: wireTables });
+  const res = await worker.fetch(new Request("https://ufc-api.test/v1/ufc/wire?limit=5"), env);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get("Cache-Control"), "public, max-age=15, s-maxage=30, stale-while-revalidate=120");
+  assert.equal(res.headers.get("Access-Control-Allow-Origin"), "*");
+  const body = await res.json();
+  assert.equal(body.ok, true);
+  assert.equal(body.data.length, 5);
+  assert.equal(body.meta.api, "PropSports UFC");
+  assert.ok(!Number.isNaN(Date.parse(body.meta.generated_at)));
+  for (const k of ["newest_published_at", "count", "freshness_minutes", "fight_week", "live"]) assert.ok(k in body.meta, `wire meta missing ${k}`);
+  const i = await call("/v1/ufc");
+  assert.equal(i.body.data.endpoints.wire, "/v1/ufc/wire?limit=20");
 });

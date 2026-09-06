@@ -185,6 +185,41 @@ paths:
         '200': { $ref: '#/components/responses/Success' }
         '404': { $ref: '#/components/responses/Error' }
         '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/wire:
+    get:
+      summary: Global live wire — attributed newsroom headlines, deduped, newest first, mapped to internal pages
+      description: >-
+        Source of truth is `ufc_news_items` joined to `ufc_news_sources`. Items are
+        newest first; near-identical headlines from several feeds are collapsed
+        (normalized title: lowercase, punctuation and stopwords stripped, first 60
+        chars) keeping the earliest-published copy. `taxonomy` is the first label
+        string (or null); the full taxonomy object is under `taxonomy_detail`.
+        `internal_url` is `/news/<slug>` when a published PropBetEdge article shares
+        the bout, shares the event plus a fighter, or cites the item in `sources`;
+        else `/fights/<a>-vs-<b>-<event-slug>` for a linked bout; else
+        `/events/<event-slug>`; else `/fighters/<name>-<slug_id>` when exactly one
+        fighter is linked; else null (link the attributed `source_url` instead).
+        Titles and summaries are never fabricated. Responses carry
+        `Cache-Control: public, max-age=15, s-maxage=30, stale-while-revalidate=120`
+        and CORS `*` so the rail can poll from the browser.
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+      responses:
+        '200':
+          description: Wire items with freshness meta
+          headers:
+            Cache-Control: { schema: { type: string, const: 'public, max-age=15, s-maxage=30, stale-while-revalidate=120' } }
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/WireItem' }
+                      meta: { $ref: '#/components/schemas/WireMeta' }
   /v1/ufc/news:
     get:
       summary: List published PropBetEdge UFC articles with resolved hero media
@@ -437,6 +472,43 @@ components:
               fight_time_basis: { type: string, enum: [result, rounds_x_5min, unknown] }
               totals: { $ref: '#/components/schemas/RoundStatTotals' }
               rounds_detail: { type: array, items: { type: object } }
+    WireItem:
+      type: object
+      required: [id, title, published_at, summary, taxonomy, taxonomy_detail, source, source_url, fighter_ids, event_id, bout_id, internal_url]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string, description: Verbatim source headline. }
+        published_at: { type: [string, 'null'], format: date-time }
+        summary: { type: [string, 'null'], description: Verbatim source summary; never generated. }
+        taxonomy: { type: [string, 'null'], description: First taxonomy label (e.g. card_change, result, injury) or null. }
+        taxonomy_detail: { type: [object, 'null'], description: 'Full stored taxonomy: {labels[], scores{}, matched[], confidence}.' }
+        source:
+          type: object
+          required: [name, url]
+          properties:
+            name: { type: [string, 'null'] }
+            url: { type: [string, 'null'], format: uri, description: Feed URL of the attributed source. }
+        source_url: { type: [string, 'null'], format: uri, description: The item's own URL at the source. }
+        fighter_ids: { type: array, items: { type: string, format: uuid } }
+        event_id: { type: [string, 'null'], format: uuid }
+        bout_id: { type: [string, 'null'], format: uuid }
+        internal_url: { type: [string, 'null'], description: Site-relative canonical destination (/news/…, /fights/…, /events/…, /fighters/…) or null. }
+    WireMeta:
+      type: object
+      required: [generated_at, newest_published_at, count, freshness_minutes, live, fight_week]
+      properties:
+        generated_at: { type: string, format: date-time, description: When the API built this response. }
+        newest_published_at: { type: [string, 'null'], format: date-time }
+        count: { type: integer }
+        limit: { type: integer }
+        fetched: { type: integer, description: Rows read before dedupe. }
+        deduped: { type: integer, description: Rows collapsed as near-duplicate headlines. }
+        freshness_minutes: { type: [integer, 'null'], description: Age of the newest item in minutes; null when there are no items. }
+        live: { type: boolean, description: True only when freshness_minutes <= 120. Do not label the rail LIVE otherwise. }
+        live_threshold_minutes: { type: integer, const: 120 }
+        fight_week: { type: boolean, description: True when a non-Contender-Series UFC event is within the next 6 days or the last 1 day. }
+        fight_week_events: { type: array, items: { type: object, properties: { id: { type: string }, name: { type: string }, event_date: { type: [string, 'null'] } } } }
+        linked: { type: integer, description: Items with a non-null internal_url. }
     SuccessEnvelope:
       type: object
       required: [ok, data, meta]

@@ -142,7 +142,7 @@ function baseHeaders(env, requestId, cacheSeconds = 60) {
   };
 }
 
-function ok(env, requestId, data, meta = {}, cacheSeconds = 60, status = 200) {
+function ok(env, requestId, data, meta = {}, cacheSeconds = 60, status = 200, headerOverrides = null) {
   return new Response(JSON.stringify({
     ok: true,
     data,
@@ -152,7 +152,7 @@ function ok(env, requestId, data, meta = {}, cacheSeconds = 60, status = 200) {
       request_id: requestId,
       ...meta,
     },
-  }), { status, headers: baseHeaders(env, requestId, cacheSeconds) });
+  }), { status, headers: { ...baseHeaders(env, requestId, cacheSeconds), ...(headerOverrides || {}) } });
 }
 
 function fail(env, requestId, status, code, message, detail = null) {
@@ -1067,6 +1067,198 @@ async function searchAll(env, url) {
   };
 }
 
+/* ---- live wire (ufc_news_items) --------------------------------------- */
+
+const WIRE_LIVE_MINUTES = 120;
+const WIRE_FIGHT_WEEK_AHEAD_DAYS = 6;
+const WIRE_FIGHT_WEEK_BEHIND_DAYS = 1;
+const WIRE_CACHE_HEADERS = {
+  "Cache-Control": "public, max-age=15, s-maxage=30, stale-while-revalidate=120",
+  "CDN-Cache-Control": "public, s-maxage=30, stale-while-revalidate=120",
+};
+const WIRE_STOPWORDS = new Set([
+  "a", "an", "the", "and", "or", "of", "to", "in", "on", "at", "for", "with", "vs", "vs.", "v", "as", "by", "from", "is", "are",
+  "his", "her", "their", "its", "this", "that", "after", "before", "over", "into", "out", "up", "off", "ufc", "mma",
+]);
+const WIRE_ITEM_COLS = "id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name,url)";
+const WIRE_BOUT_SELECT = "id,event_id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name,espn_athlete_id,ufcstats_id),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name,espn_athlete_id,ufcstats_id),event:ufc_events(id,name,event_date)";
+const CONTENDER_SERIES_RE = /contender series|road to ufc/i;
+
+/* Same public slug rules as web/lib/slug.ts. */
+function slugify(s) {
+  return String(s || "")
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/['’.]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function fighterSlug(f) {
+  const id = slugId(f);
+  return f?.name && id ? `${slugify(f.name)}-${id}` : null;
+}
+
+function eventSlug(e) {
+  return e?.name ? `${slugify(e.name)}-${e.event_date || "tbd"}` : null;
+}
+
+function matchupSlug(a, b, e) {
+  const ev = eventSlug(e);
+  return a?.name && b?.name && ev ? `${slugify(a.name)}-vs-${slugify(b.name)}-${ev}` : null;
+}
+
+/* Dedupe key: lowercase, strip punctuation and stopwords, first 60 chars. */
+function normalizeTitle(title) {
+  return String(title || "")
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w && !WIRE_STOPWORDS.has(w))
+    .join(" ")
+    .slice(0, 60)
+    .trim();
+}
+
+/* Collapse near-identical headlines from multiple feeds, keeping the copy
+ * published first. Output is newest-first by the kept copy's timestamp. */
+function dedupeWireItems(items) {
+  const byKey = new Map();
+  for (const item of items) {
+    const key = normalizeTitle(item.title) || `id:${item.id}`;
+    const prev = byKey.get(key);
+    if (!prev) { byKey.set(key, item); continue; }
+    const a = String(item.published_at || "9999");
+    const b = String(prev.published_at || "9999");
+    if (a < b) byKey.set(key, item);
+  }
+  return [...byKey.values()].sort((x, y) => String(y.published_at || "").localeCompare(String(x.published_at || "")));
+}
+
+function articleMatchesItem(article, item) {
+  if (item.bout_id && article.bout_id && article.bout_id === item.bout_id) return true;
+  if (item.event_id && article.event_id && article.event_id === item.event_id) {
+    const fids = new Set(Array.isArray(item.fighter_ids) ? item.fighter_ids : []);
+    if ((Array.isArray(article.fighter_ids) ? article.fighter_ids : []).some((id) => fids.has(id))) return true;
+  }
+  const sources = Array.isArray(article.sources) ? article.sources : [];
+  return sources.some((s) => s && typeof s === "object" && s.kind === "news_item" && ((s.id && s.id === item.id) || (s.url && item.url && s.url === item.url)));
+}
+
+function wireInternalUrl(item, { articles, boutsById, eventsById, fightersById }) {
+  const article = articles.find((a) => articleMatchesItem(a, item));
+  if (article?.slug) return `/news/${article.slug}`;
+  const bout = item.bout_id ? boutsById.get(item.bout_id) : null;
+  if (bout) {
+    const slug = matchupSlug(bout.fighter_a, bout.fighter_b, bout.event || eventsById.get(bout.event_id));
+    if (slug) return `/fights/${slug}`;
+  }
+  const event = item.event_id ? eventsById.get(item.event_id) : null;
+  if (event) {
+    const slug = eventSlug(event);
+    if (slug) return `/events/${slug}`;
+  }
+  const fids = Array.isArray(item.fighter_ids) ? item.fighter_ids.filter(Boolean) : [];
+  if (fids.length === 1) {
+    const slug = fighterSlug(fightersById.get(fids[0]));
+    if (slug) return `/fighters/${slug}`;
+  }
+  return null;
+}
+
+function wireTaxonomy(taxonomy) {
+  const labels = taxonomy && typeof taxonomy === "object" && Array.isArray(taxonomy.labels) ? taxonomy.labels.filter((l) => typeof l === "string" && l) : [];
+  return labels[0] || null;
+}
+
+function addDays(dateStr, days) {
+  const d = new Date(`${dateStr}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+async function fightWeek(env, now = new Date()) {
+  const t = now.toISOString().slice(0, 10);
+  const p = new URLSearchParams({
+    select: "id,name,event_date",
+    event_date: `gte.${addDays(t, -WIRE_FIGHT_WEEK_BEHIND_DAYS)}`,
+    order: "event_date.asc",
+    limit: "20",
+  });
+  p.append("event_date", `lte.${addDays(t, WIRE_FIGHT_WEEK_AHEAD_DAYS)}`);
+  const rows = (await sb(env, "ufc_events", p)).data;
+  const hits = rows.filter((e) => e.name && !CONTENDER_SERIES_RE.test(e.name));
+  return { fight_week: hits.length > 0, events: hits.map((e) => ({ id: e.id, name: e.name, event_date: e.event_date })) };
+}
+
+async function wire(env, url, now = new Date()) {
+  const limit = clampInt(url.searchParams.get("limit"), 20, 1, 50);
+  const ip = new URLSearchParams({ select: WIRE_ITEM_COLS, order: "published_at.desc.nullslast", limit: String(Math.min(limit * 3, 150)) });
+  const [rawItems, week] = await Promise.all([sb(env, "ufc_news_items", ip).then((r) => r.data), fightWeek(env, now)]);
+  const fetched = rawItems.length;
+  const items = dedupeWireItems(rawItems).slice(0, limit);
+
+  const boutIds = [...new Set(items.map((i) => i.bout_id).filter(Boolean))];
+  const eventIds = [...new Set(items.map((i) => i.event_id).filter(Boolean))];
+  const soloFighterIds = [...new Set(items.filter((i) => Array.isArray(i.fighter_ids) && i.fighter_ids.filter(Boolean).length === 1).map((i) => i.fighter_ids[0]))];
+  const articleSelect = "id,slug,bout_id,event_id,fighter_ids,sources,published_at";
+  const [boutRows, eventRows, fighterRows, byBout, byEvent, byNewsItem] = await Promise.all([
+    boutIds.length ? sb(env, "ufc_bouts", new URLSearchParams({ select: WIRE_BOUT_SELECT, id: `in.(${boutIds.join(",")})`, limit: String(boutIds.length) })).then((r) => r.data) : [],
+    eventIds.length ? sb(env, "ufc_events", new URLSearchParams({ select: "id,name,event_date", id: `in.(${eventIds.join(",")})`, limit: String(eventIds.length) })).then((r) => r.data) : [],
+    soloFighterIds.length ? sb(env, "ufc_fighters", new URLSearchParams({ select: FIGHTER_IDENTITY_COLS, id: `in.(${soloFighterIds.join(",")})`, limit: String(soloFighterIds.length) })).then((r) => r.data) : [],
+    boutIds.length ? sb(env, "ufc_articles", new URLSearchParams({ select: articleSelect, status: "eq.published", bout_id: `in.(${boutIds.join(",")})`, order: "published_at.desc", limit: "200" })).then((r) => r.data) : [],
+    eventIds.length ? sb(env, "ufc_articles", new URLSearchParams({ select: articleSelect, status: "eq.published", event_id: `in.(${eventIds.join(",")})`, order: "published_at.desc", limit: "200" })).then((r) => r.data) : [],
+    sb(env, "ufc_articles", new URLSearchParams({ select: articleSelect, status: "eq.published", sources: 'cs.[{"kind":"news_item"}]', order: "published_at.desc", limit: "200" })).then((r) => r.data),
+  ]);
+  const seen = new Set();
+  const articles = [...byBout, ...byEvent, ...byNewsItem]
+    .filter((a) => a?.slug && !seen.has(a.id) && seen.add(a.id))
+    .sort((a, b) => String(b.published_at || "").localeCompare(String(a.published_at || "")));
+  const ctx = {
+    articles,
+    boutsById: new Map(boutRows.map((b) => [b.id, b])),
+    eventsById: new Map(eventRows.map((e) => [e.id, e])),
+    fightersById: new Map(fighterRows.map((f) => [f.id, f])),
+  };
+
+  const data = items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    published_at: item.published_at ?? null,
+    summary: item.summary ?? null,
+    taxonomy: wireTaxonomy(item.taxonomy),
+    taxonomy_detail: item.taxonomy && typeof item.taxonomy === "object" ? item.taxonomy : null,
+    source: { name: item.source?.name ?? null, url: item.source?.url ?? null },
+    source_url: item.url ?? null,
+    fighter_ids: Array.isArray(item.fighter_ids) ? item.fighter_ids : [],
+    event_id: item.event_id ?? null,
+    bout_id: item.bout_id ?? null,
+    internal_url: wireInternalUrl(item, ctx),
+  }));
+
+  const newest = data.map((i) => i.published_at).filter(Boolean).sort().reverse()[0] || null;
+  const newestMs = newest ? Date.parse(newest) : NaN;
+  const freshness = Number.isFinite(newestMs) ? Math.max(0, Math.round((now.getTime() - newestMs) / 60000)) : null;
+  const meta = {
+    generated_at: now.toISOString(),
+    newest_published_at: newest,
+    count: data.length,
+    limit,
+    fetched,
+    deduped: fetched - dedupeWireItems(rawItems).length,
+    freshness_minutes: freshness,
+    live: freshness !== null && freshness <= WIRE_LIVE_MINUTES,
+    live_threshold_minutes: WIRE_LIVE_MINUTES,
+    fight_week: week.fight_week,
+    fight_week_events: week.events,
+    linked: data.filter((i) => i.internal_url).length,
+  };
+  return { data, meta };
+}
+
 function apiIndex(env) {
   return {
     name: "PropSports UFC API",
@@ -1095,6 +1287,7 @@ function apiIndex(env) {
       results: "/v1/ufc/results",
       rankings: "/v1/ufc/rankings?division=MIDDLEWEIGHT",
       news: "/v1/ufc/news",
+      wire: "/v1/ufc/wire?limit=20",
       article: "/v1/ufc/articles/{slug}",
       search: "/v1/ufc/search?q=volkanovski",
       counts: "/v1/ufc/counts",
@@ -1195,6 +1388,11 @@ async function route(request, env, url, access) {
     return ok(env, requestId, out.data, { ...out.meta, ...tier }, 120);
   }
 
+  if (path === "/v1/ufc/wire") {
+    const out = await wire(env, url);
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 30, 200, WIRE_CACHE_HEADERS);
+  }
+
   m = path.match(/^\/v1\/ufc\/articles\/([^/]+)$/);
   if (m) {
     const article = await articleDetail(env, decodeURIComponent(m[1]));
@@ -1219,6 +1417,7 @@ export const __test = {
   rankingsFromSnapshot, rankingsFromTable, loadRankings, rankingsResponse, rankingPositionsForFighter, divisionLabel,
   sumMetrics, totalsByFighter, boutElapsedSeconds, computeFighterStats, boutOutcome, nextScheduledBout, historyRow,
   compactFighter, slugId, bulkFighterMedia, rankingsState,
+  slugify, fighterSlug, eventSlug, matchupSlug, normalizeTitle, dedupeWireItems, articleMatchesItem, wireInternalUrl, wireTaxonomy, wire,
 };
 
 export default {

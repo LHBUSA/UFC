@@ -333,7 +333,7 @@ export function StoryCard({ a, hero, feature, faces, kicker }: { a: Article; her
         )}
       </div>
       <div className="body">
-        <span className="eyebrow">{STORY_TYPE_LABEL[a.story_type] || a.story_type}</span>
+        <span className="eyebrow">{STORY_TYPE_LABEL[a.story_type] || a.story_type}{impactOf(a) ? <span className="impact" title="Bettor's Edge impact score (analysis)"> · Edge {impactOf(a)}/5</span> : null}</span>
         <h3>{a.headline}</h3>
         {a.dek && <p>{a.dek}</p>}
         <div className="foot">
@@ -343,6 +343,11 @@ export function StoryCard({ a, hero, feature, faces, kicker }: { a: Article; her
       </div>
     </Link>
   );
+}
+
+function impactOf(a: Article): number | null {
+  const v = (a.fact_block as { bettor_angle?: { impact_score?: number } } | null | undefined)?.bettor_angle?.impact_score;
+  return typeof v === "number" && v > 0 ? Math.min(5, Math.round(v)) : null;
 }
 
 export function ProPlans() {

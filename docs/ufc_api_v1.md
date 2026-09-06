@@ -44,6 +44,7 @@ This keeps the website, future PropSports customers, MCP, mobile apps, and inter
 - `GET /v1/ufc/results?limit=N`
 - `GET /v1/ufc/rankings?division=&womens=` — verified ufc.com snapshot; `503 rankings_not_available` when no store exists.
 - `GET /v1/ufc/news?story_type=&limit=N&offset=N` — rows carry `hero_image_url` + `hero_image`.
+- `GET /v1/ufc/wire?limit=20` — global live wire: attributed `ufc_news_items`, deduped, newest first, mapped to internal pages; 15/30 s cache.
 - `GET /v1/ufc/articles/{slug}`
 - `GET /v1/ufc/search?q=&limit=N` — fighters (with `primary_image`, `slug_id`), events, articles (with hero media).
 - `GET /v1/ufc/counts` — adds `images`, `fighters_with_media`, `rounds` (alias of `round_stat_rows`).
@@ -116,6 +117,43 @@ Per-fighter ranking state is available on fighter detail via `include=ranking` (
 - `hero_image` — `{id, image_url, card_url, thumb_url, author, license, source_url, kind, fighter_id, ref}` or `null`. The article's `hero_credit` wins over the image row's credit.
 
 A `hero_image_ref` that resolves to nothing yields `null` for both; nothing is fabricated. `hero_image_ref` and `hero_credit` remain as before.
+
+## Live wire contract (addendum §2)
+
+`GET /v1/ufc/wire?limit=20` (limit 1–50) feeds the global headline rail. Source of truth is `ufc_news_items` joined to
+`ufc_news_sources`; the browser never reaches Supabase. Read-only, CORS `*`, and a deliberately short cache:
+`Cache-Control: public, max-age=15, s-maxage=30, stale-while-revalidate=120`.
+
+Item:
+
+```json
+{
+  "id": "uuid", "title": "verbatim headline", "published_at": "ISO-8601", "summary": "verbatim source summary or null",
+  "taxonomy": "result",                       // first taxonomy label, or null
+  "taxonomy_detail": { "labels": ["result"], "scores": {…}, "matched": […], "confidence": 0.4 },
+  "source": { "name": "MMA Fighting", "url": "https://www.mmafighting.com/rss/index.xml" },
+  "source_url": "https://www.mmafighting.com/ufc/…",   // the item's own URL
+  "fighter_ids": ["…"], "event_id": null, "bout_id": null,
+  "internal_url": "/news/<slug> | /fights/<a>-vs-<b>-<event-slug> | /events/<event-slug> | /fighters/<name>-<slug_id> | null"
+}
+```
+
+Rules:
+
+- Newest first. Up to `3 × limit` rows are read, then near-identical headlines from several feeds are collapsed on a
+  normalized title (lowercase, punctuation and stopwords stripped, first 60 chars), keeping the earliest-published copy.
+  The table's own `url` / `fingerprint` uniqueness still applies upstream.
+- `internal_url` precedence: (1) a published `ufc_articles` row that shares the item's `bout_id`, or shares `event_id`
+  and at least one fighter id, or cites the item in `sources` (`{kind:"news_item", id|url}`) → `/news/<slug>` (newest
+  article wins); (2) `bout_id` resolvable → `/fights/<slugify(a)>-vs-<slugify(b)>-<slugify(event)>-<event_date>`;
+  (3) `event_id` → `/events/<slugify(event)>-<event_date>`; (4) exactly one fighter id with a `slug_id` →
+  `/fighters/<slugify(name)>-<slug_id>`; else `null` — the rail then links the attributed `source_url`. Slug rules are
+  identical to `web/lib/slug.ts`.
+- Titles and summaries are verbatim from the source; nothing is generated.
+- `meta`: `generated_at` (ISO now), `newest_published_at`, `count`, `limit`, `fetched`, `deduped`, `freshness_minutes`
+  (age of the newest item), `live` (true only when `freshness_minutes <= 120`), `live_threshold_minutes`, `fight_week`
+  (a non-Contender-Series / Road-to-UFC event within the next 6 days or the last 1 day), `fight_week_events`, `linked`.
+  The UI must not say LIVE unless `meta.live` is true.
 
 ## Composite contracts (B4)
 

@@ -77,6 +77,7 @@ export type Article = {
   id: string; slug: string; headline: string; dek: string | null; body_md: string; story_type: string; status: string;
   hero_image_ref: string | null; hero_credit: { author?: string; license?: string; source_url?: string } | null;
   event_id: string | null; bout_id: string | null; fighter_ids: string[]; published_at: string | null; updated_at: string; created_at?: string;
+  fact_block?: Record<string, unknown> | null;
 };
 export type NewsItem = {
   id: string; url: string | null; title: string; published_at: string | null; summary: string | null;
@@ -248,7 +249,7 @@ export async function getRankings(): Promise<RankingsSnapshot | null> {
 }
 
 /* ---- news ------------------------------------------------------------- */
-const ARTICLE_COLS = "id,slug,headline,dek,body_md,story_type,status,hero_image_ref,hero_credit,event_id,bout_id,fighter_ids,published_at,updated_at,created_at";
+const ARTICLE_COLS = "id,slug,headline,dek,body_md,story_type,status,hero_image_ref,hero_credit,event_id,bout_id,fighter_ids,published_at,updated_at,created_at,fact_block";
 export async function getArticles(limit = 20, storyType?: string, offset = 0): Promise<{ rows: Article[]; count: number | null }> {
   const t = storyType ? `&story_type=eq.${storyType}` : "";
   const r = await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published${t}&order=published_at.desc&limit=${limit}&offset=${offset}`, [], { count: true });
