@@ -6,10 +6,10 @@ same parsers, identity resolver, result reconciliation, round-stat writer and
 run ledger are used for repairs.
 
 Examples:
-  python scripts/backfill/backfill_missing_events.py --source live \
+  python scripts/backfill/backfill_missing_events.py --source wayback \
     --event-id 026b4f7049085842 --event-id 5a558ba1ff5e9121
 
-  python scripts/backfill/backfill_missing_events.py --source live \
+  python scripts/backfill/backfill_missing_events.py --source wayback \
     --missing-limit 2
 
 The automatic mode only selects completed, UFCStats-linked events that have
@@ -39,6 +39,16 @@ class MissingEventsBackfill(Backfill):
         self.missing_limit = missing_limit
         self.verify_fighter = verify_fighter
         self.expected_bouts = expected_bouts
+
+        # A bounded explicit repair should never spend minutes building the
+        # full event/fight/fighter CDX family indexes. An empty in-memory index
+        # tells WaybackClient to fall straight through to exact-URL CDX lookup
+        # for each requested page, preserving the normal capture validation and
+        # fallback behavior while making canaries fast and deterministic.
+        if self.target_event_ids and getattr(self.fetch, "wayback", None):
+            for kind in ("events", "fights", "fighters"):
+                self.fetch.wayback._index[kind] = {}
+            self.log.event("wayback_lookup_mode", mode="exact_url", reason="explicit_event_targets")
 
     def phase_fights(self):
         if self.target_event_ids:
@@ -92,7 +102,7 @@ class MissingEventsBackfill(Backfill):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--source", choices=["wayback", "live"], default="live")
+    ap.add_argument("--source", choices=["wayback", "live"], default="wayback")
     ap.add_argument("--event-id", action="append", default=[], help="UFCStats event id; repeatable")
     ap.add_argument("--missing-limit", type=int, help="when no --event-id is supplied, process this many zero-bout completed events")
     ap.add_argument("--since", help="YYYY-MM-DD lower bound for automatic zero-bout selection")
