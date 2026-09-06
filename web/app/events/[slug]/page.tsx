@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { resolveEvent } from "@/lib/resolve";
-import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, StoryCard, Avatar, EventRow } from "@/components/ui";
+import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
+import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
-import { daysUntil, fmtDate, locationLine, eventBrand, eventHeadline, eventStatusLabel, fmtRecord, weightClassLabel, winnerOf, METHOD_LABEL, fmtTime, plural } from "@/lib/format";
+import { daysUntil, fmtDate, locationLine, eventBrand, eventStatusLabel, fmtRecord, weightClassLabel, winnerOf, METHOD_LABEL, fmtTime, plural } from "@/lib/format";
 import { SITE } from "@/lib/site";
 
 export const revalidate = 300;
@@ -106,7 +107,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       {articles.length > 0 && (
         <section className="segment">
           <h3>From the desk <small>{plural(articles.length, "story", "stories")}</small></h3>
-          <div className="news">{articles.map((a) => <StoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} kicker={eventBrand(e.name)} />)}</div>
+          <div className="news">{articles.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} kicker={eventBrand(e.name)} />)}</div>
         </section>
       )}
 
@@ -120,7 +121,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       <JsonLd data={{
         "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: e.event_date, endDate: e.event_date,
         sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`,
-        eventStatus: e.card_status === "complete" ? "https://schema.org/EventScheduled" : "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+        eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
         image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`,
         location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined,
         organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: "https://www.ufc.com" },
