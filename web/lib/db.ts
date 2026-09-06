@@ -50,6 +50,7 @@ export type Fighter = {
   record_w: number | null; record_l: number | null; record_d: number | null; record_nc: number | null; is_active: boolean | null;
   career_slpm: number | null; career_str_acc: number | null; career_sapm: number | null; career_str_def: number | null;
   career_td_avg: number | null; career_td_acc: number | null; career_td_def: number | null; career_sub_avg: number | null;
+  images?: ImageRef[];
 };
 export type Event = {
   id: string; ufcstats_id: string | null; espn_event_id: string | null; name: string; event_date: string | null;
@@ -83,6 +84,8 @@ export type NewsItem = {
   source: { name: string } | null;
 };
 export type FighterImage = { id: string; kind: string; r2_key: string; license: string | null; author: string | null; source_url: string | null; fighter_id: string | null };
+/* Shape used by the ufc-api contract (workers/ufc-api) and lib/media.ts. */
+export type ImageRef = FighterImage & { image_url: string | null; created_at?: string };
 export type RankingEntry = { rank: number; name: string; ufc_slug: string | null; fighter_id: string | null; change: number | null; is_new: boolean };
 export type RankingDivision = { key: string; label: string; is_womens: boolean; is_p4p: boolean; champion: { name: string; ufc_slug: string | null; fighter_id: string | null } | null; entries: RankingEntry[] };
 export type RankingsSnapshot = { captured_at: string; source_url: string; snapshot_date: string; divisions: RankingDivision[] };
