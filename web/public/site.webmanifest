@@ -1,14 +1,16 @@
 {
-  "name": "PropBetEdge UFC",
+  "name": "PropBetEdge UFC — Fight Intelligence",
   "short_name": "PBE UFC",
-  "description": "UFC fight cards, fighter profiles, official rankings, tale of the tape and a newsroom written from the data.",
+  "description": "UFC fight cards, fighter profiles, Fight DNA, round-level stats, rankings, results and bettor-focused newsroom intelligence.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#14110d",
-  "theme_color": "#14110d",
+  "background_color": "#0d0b08",
+  "theme_color": "#0d0b08",
   "icons": [
-    { "src": "/brand/mark.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/pwa-icon-192", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/pwa-icon-512", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
     { "src": "/apple-icon", "sizes": "180x180", "type": "image/png", "purpose": "any" }
   ]
 }
