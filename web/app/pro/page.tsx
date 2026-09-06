@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProPlans, PageHead, JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
+import { getCurrentAccount, hasProAccess } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "UFC Pro — Fight DNA & Fight-Week Intelligence",
@@ -9,17 +10,39 @@ export const metadata: Metadata = {
   alternates: { canonical: "/pro" },
 };
 
-export default function ProPage() {
+export default async function ProPage() {
+  const account = await getCurrentAccount();
+  const active = hasProAccess(account);
+  const owner = Boolean(account?.unlimited || account?.role === "owner" || account?.plan === "owner");
+
   return (
     <div className="wrap page">
       <PageHead
         crumbs={[{ name: "Pro" }]}
         eyebrow="UFC Pro"
         title="Fight intelligence first. Model claims only when earned."
-        lede="UFC Pro founding access is open through secure Stripe checkout. Fight DNA, bettor-grade analysis and fight-week intelligence are the foundation; model prices, picks and probabilities remain locked until PropBetEdge has a graded out-of-time track record to support them."
+        lede="UFC Pro founding access is built around Fight DNA, bettor-grade analysis and fight-week intelligence. Model prices, picks and probabilities remain unavailable until PropBetEdge has a graded out-of-time track record to support them."
       />
 
-      <ProPlans />
+      {active ? (
+        <section className="card hi pro-access-active">
+          <div className="between" style={{ gap: 18, alignItems: "flex-start" }}>
+            <div>
+              <div className="eyebrow">{owner ? "Owner access" : "UFC Pro"}</div>
+              <h2 className="serif" style={{ margin: "7px 0 8px" }}>{owner ? "Unlimited UFC access is active." : "Your UFC Pro access is active."}</h2>
+              <p className="dim sm" style={{ maxWidth: 720 }}>
+                {owner ? "No usage cap. No expiry. No checkout required." : "Your server-side entitlement is active for this account."} Fight DNA and every released Pro surface are available to your account; features that do not yet have verified source/model output remain truthfully unavailable rather than being fabricated.
+              </p>
+            </div>
+            <span className="account-plan owner">{owner ? "OWNER · UNLIMITED" : "UFC PRO · ACTIVE"}</span>
+          </div>
+          <div className="row mt-4">
+            <Link href="/account" className="btn gold">Account &amp; access</Link>
+            <Link href="/events" className="btn">Open fight cards</Link>
+            <Link href="/fighters" className="btn">Explore Fight DNA</Link>
+          </div>
+        </section>
+      ) : <ProPlans />}
 
       <div className="grid-3 mt-6">
         {[
@@ -36,11 +59,11 @@ export default function ProPage() {
 
       <div className="card hi mt-6 between">
         <div>
-          <div className="eyebrow">Billing status</div>
-          <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>Stripe checkout is live.</div>
-          <div className="faint sm">Monthly UFC Pro is $14.99. A one-card pass is $5.99. Account entitlement and passwordless member access are the next billing-layer gate; model-only surfaces stay locked until validated.</div>
+          <div className="eyebrow">Access status</div>
+          <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>{active ? (owner ? "Owner entitlement: unlimited." : "UFC Pro entitlement: active.") : "Stripe checkout is live."}</div>
+          <div className="faint sm">{active ? "Access is controlled server-side by your UFC account entitlement." : "Monthly UFC Pro is $14.99. A one-card pass is $5.99."} Model-only surfaces still require actual validated model output regardless of plan.</div>
         </div>
-        <Link href="/login" className="btn">Account status</Link>
+        <Link href={account ? "/account" : "/login?next=/pro"} className="btn">{account ? "Account status" : "Sign in"}</Link>
       </div>
 
       <JsonLd data={{
