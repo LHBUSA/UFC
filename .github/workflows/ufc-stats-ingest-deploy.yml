@@ -28,14 +28,22 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: workers/ufc-stats-ingest/package-lock.json
-      - name: Require Cloudflare deployment credential
-        run: test -n "$CLOUDFLARE_API_TOKEN"
+      - name: Cloudflare deployment status
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "CLOUDFLARE_API_TOKEN is not configured in GitHub Actions; production Worker deploy is intentionally skipped."
+          else
+            echo "Cloudflare deployment credential is present."
+          fi
       - name: Install worker dependencies
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
         working-directory: workers/ufc-stats-ingest
         run: npm ci
       - name: Worker tests
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
         working-directory: workers/ufc-stats-ingest
         run: npm test
       - name: Deploy production ingest worker
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
         working-directory: workers/ufc-stats-ingest
         run: npx wrangler deploy
