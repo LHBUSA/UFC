@@ -63,17 +63,19 @@ export function Footer() {
           <div className="col">
             <h4>UFC</h4>
             <Link href="/events">Events &amp; cards</Link>
+            <Link href="/contender-series">Contender Series</Link>
             <Link href="/fighters">Fighters</Link>
             <Link href="/rankings">Rankings</Link>
             <Link href="/news">News</Link>
             <a href="/feed.xml">RSS feed</a>
           </div>
           <div className="col">
-            <h4>Company</h4>
+            <h4>Editorial</h4>
+            <Link href="/#notable-voices">Notable voices</Link>
+            <Link href="/about">Editorial policy</Link>
             <Link href="/pro">UFC Pro</Link>
             <Link href="/login">Sign in</Link>
             <Link href="/account">Account</Link>
-            <Link href="/about">About &amp; editorial policy</Link>
             <a href={`mailto:${SITE.contact}`}>Contact the desk</a>
           </div>
           <div className="col">
