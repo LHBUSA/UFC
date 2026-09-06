@@ -13,3 +13,5 @@ workers/*/dist/
 Thumbs.db
 docs/.proof_seed.json
 scripts/images/cache/
+supabase/.temp/
+supabase/.branches/
