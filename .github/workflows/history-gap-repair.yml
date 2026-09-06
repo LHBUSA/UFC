@@ -11,9 +11,9 @@ on:
       source:
         description: "UFC Stats source"
         required: true
-        default: "live"
+        default: "wayback"
         type: choice
-        options: [live, wayback]
+        options: [wayback, live]
 
 concurrency:
   group: ufc-history-gap-repair
@@ -38,14 +38,14 @@ jobs:
           cache-dependency-path: scripts/backfill/requirements.txt
       - name: Install backfill dependencies
         run: pip install -r scripts/backfill/requirements.txt
-      - name: Require production database credentials
+      - name: Require database credentials
         run: |
           test -n "$SUPABASE_URL"
           test -n "$SUPABASE_SERVICE_ROLE_KEY"
       - name: Repair Tom Aspinall UFC history canary
         run: |
           SOURCE="${{ github.event.inputs.source }}"
-          if [ -z "$SOURCE" ]; then SOURCE="live"; fi
+          if [ -z "$SOURCE" ]; then SOURCE="wayback"; fi
           python scripts/backfill/backfill_missing_events.py \
             --source "$SOURCE" \
             --event-id 026b4f7049085842 \
@@ -59,7 +59,7 @@ jobs:
             --event-id dde70a112e053a6c \
             --verify-fighter 399afbabc02376b5 \
             --expected-bouts 10
-      - name: Production verification
+      - name: Verify Aspinall archive coverage
         env:
           VERIFY_FIGHTER: 399afbabc02376b5
         run: |
@@ -69,8 +69,12 @@ jobs:
           key = os.environ['SUPABASE_SERVICE_ROLE_KEY']
           h = {'apikey': key, 'Authorization': f'Bearer {key}'}
           f = requests.get(f"{base}/ufc_fighters", headers=h, params={'select':'id,fight_history_count','ufcstats_id':f"eq.{os.environ['VERIFY_FIGHTER']}"}, timeout=30).json()[0]
-          q = f"or=(fighter_a_id.eq.{f['id']},fighter_b_id.eq.{f['id']})"
-          r = requests.get(f"{base}/ufc_bouts?select=id,ufcstats_id,status&{q}", headers={**h, 'Prefer':'count=exact'}, timeout=30)
+          r = requests.get(
+              f"{base}/ufc_bouts",
+              headers={**h, 'Prefer':'count=exact'},
+              params={'select':'id,ufcstats_id,status','or':f"(fighter_a_id.eq.{f['id']},fighter_b_id.eq.{f['id']})"},
+              timeout=30,
+          )
           r.raise_for_status()
           rows = r.json()
           print({'canonical_history_count': f.get('fight_history_count'), 'archive_bouts': len(rows), 'linked_bouts': sum(bool(x.get('ufcstats_id')) for x in rows)})
