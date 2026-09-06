@@ -366,16 +366,20 @@ export function ProPlans() {
         <Link href="/events" className="btn">Browse the cards</Link>
       </div>
       <div className="plan pro">
-        <div className="eyebrow">UFC Pro</div>
+        <div className="eyebrow">UFC Pro · Founding access</div>
         <div className="price">{SITE.pricing.monthly} <small>or {SITE.pricing.cardPass} pass</small></div>
         <ul>
-          <li className="locked">Model picks and edges: winner, method, rounds, distance</li>
-          <li className="locked">Card-change and injury alerts the moment a bout moves</li>
-          <li className="locked">Judge and referee intelligence</li>
-          <li className="locked">Friday weigh-in report with weight-miss history</li>
-          <li className="locked">Verified track record graded on CLV and calibration</li>
+          <li>Fight DNA and bettor-grade UFC intelligence as Pro surfaces ship</li>
+          <li>Fight-week card-change, weigh-in and market intelligence as available</li>
+          <li className="locked">Model picks and fair pricing stay locked until validated</li>
+          <li className="locked">Judge/referee intelligence unlocks only from verified source data</li>
+          <li>No fabricated odds, picks, probabilities or unavailable features</li>
         </ul>
-        <Link href="/pro" className="btn gold">See what ships with Pro</Link>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <a href={SITE.checkout.monthly} className="btn gold">Start UFC Pro · {SITE.pricing.monthly}</a>
+          <a href={SITE.checkout.cardPass} className="btn">Single card · {SITE.pricing.cardPass}</a>
+        </div>
+        <div className="faint label mt-3">Secure checkout by Stripe. The validated model layer remains locked until its track record is ready.</div>
       </div>
     </div>
   );
