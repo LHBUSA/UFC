@@ -84,7 +84,11 @@ export type NewsItem = {
   taxonomy: { labels?: string[]; confidence?: number } | null; fighter_ids: string[]; event_id: string | null; bout_id: string | null;
   source: { name: string } | null;
 };
-export type FighterImage = { id: string; kind: string; r2_key: string; license: string | null; author: string | null; source_url: string | null; fighter_id: string | null };
+export type FighterImage = {
+  id: string; kind: string; r2_key: string; license: string | null; author: string | null; source_url: string | null; fighter_id: string | null;
+  source_family?: string | null; attribution_text?: string | null; rights_label?: string | null; rights_expires_at?: string | null;
+  provider_asset_id?: string | null; stored_first_party?: boolean | null; created_at?: string;
+};
 /* Shape used by the ufc-api contract (workers/ufc-api) and lib/media.ts. */
 export type ImageRef = FighterImage & { image_url: string | null; created_at?: string };
 export type RankingEntry = { rank: number; name: string; ufc_slug: string | null; fighter_id: string | null; change: number | null; is_new: boolean };
@@ -207,31 +211,81 @@ export async function getBookedFighterIds(): Promise<string[]> {
   return [...new Set(rows.flatMap((r) => [r.fighter_a_id, r.fighter_b_id]))];
 }
 
-/* ---- images (Supabase Storage, licensed Wikimedia portraits) ---------- */
+/* ---- images: one canonical fighter asset, available everywhere -------- */
 export function mediaUrl(key: string): string {
   return `${URL_}/storage/v1/object/public/${MEDIA_BUCKET}/${key}`;
 }
-export type PortraitSet = { portrait: string; card: string; thumb: string; license: string | null; author: string | null; source_url: string | null; id: string };
+export type PortraitSet = {
+  portrait: string; card: string; thumb: string; license: string | null; author: string | null; source_url: string | null; id: string;
+  kind: string; source_family?: string | null; rights_label?: string | null; attribution_text?: string | null; stored_first_party?: boolean | null;
+};
+
+const IMAGE_KIND_PRIORITY: Record<string, number> = {
+  licensed_editorial: 500,
+  official_press: 450,
+  public_domain: 400,
+  wikimedia: 350,
+  statcard: 100,
+};
+
+function imagePriority(img: FighterImage): number {
+  let p = IMAGE_KIND_PRIORITY[img.kind] || 0;
+  if (img.stored_first_party === false) p -= 25;
+  if (img.rights_expires_at && Date.parse(img.rights_expires_at) <= Date.now()) p -= 10000;
+  return p;
+}
+
 export function portraitSet(img: FighterImage): PortraitSet {
   const dir = img.r2_key.replace(/\/[^/]+$/, "");
-  return { id: img.id, portrait: mediaUrl(img.r2_key), card: mediaUrl(`${dir}/card.jpg`), thumb: mediaUrl(`${dir}/thumb.jpg`), license: img.license, author: img.author, source_url: img.source_url };
+  const firstParty = img.stored_first_party !== false;
+  /* Current locally stored fighter media writes portrait/card/thumb siblings.
+   * Display-only provider references may use a directly renderable r2_key/URL
+   * contract later; until then they are never guessed into fake derivatives. */
+  return {
+    id: img.id,
+    portrait: mediaUrl(img.r2_key),
+    card: firstParty ? mediaUrl(`${dir}/card.jpg`) : mediaUrl(img.r2_key),
+    thumb: firstParty ? mediaUrl(`${dir}/thumb.jpg`) : mediaUrl(img.r2_key),
+    license: img.license,
+    author: img.author,
+    source_url: img.source_url,
+    kind: img.kind,
+    source_family: img.source_family,
+    rights_label: img.rights_label,
+    attribution_text: img.attribution_text,
+    stored_first_party: img.stored_first_party,
+  };
 }
+
 export async function getImagesForFighters(ids: string[]): Promise<Map<string, PortraitSet>> {
   const m = new Map<string, PortraitSet>();
+  const chosen = new Map<string, FighterImage>();
   const uniq = [...new Set(ids.filter(Boolean))];
+  const select = "id,kind,r2_key,license,author,source_url,fighter_id,source_family,attribution_text,rights_label,rights_expires_at,provider_asset_id,stored_first_party,created_at";
   for (let i = 0; i < uniq.length; i += 150) {
     const chunk = uniq.slice(i, i + 150);
-    const rows = (await rest<FighterImage[]>(`ufc_images?select=id,kind,r2_key,license,author,source_url,fighter_id&kind=eq.wikimedia&fighter_id=in.(${chunk.join(",")})`, [], { revalidate: 3600 })).data;
-    for (const r of rows) if (r.fighter_id && !m.has(r.fighter_id)) m.set(r.fighter_id, portraitSet(r));
+    const rows = (await rest<FighterImage[]>(`ufc_images?select=${select}&fighter_id=in.(${chunk.join(",")})&order=created_at.desc`, [], { revalidate: 300 })).data;
+    for (const r of rows) {
+      if (!r.fighter_id) continue;
+      if (r.rights_expires_at && Date.parse(r.rights_expires_at) <= Date.now()) continue;
+      const prev = chosen.get(r.fighter_id);
+      if (!prev || imagePriority(r) > imagePriority(prev)) chosen.set(r.fighter_id, r);
+    }
   }
+  for (const [fighterId, img] of chosen) m.set(fighterId, portraitSet(img));
   return m;
 }
+
 export async function getImageById(id: string): Promise<PortraitSet | null> {
-  const rows = (await rest<FighterImage[]>(`ufc_images?select=id,kind,r2_key,license,author,source_url,fighter_id&id=eq.${id}&limit=1`, [], { revalidate: 3600 })).data;
-  return rows[0] ? portraitSet(rows[0]) : null;
+  const select = "id,kind,r2_key,license,author,source_url,fighter_id,source_family,attribution_text,rights_label,rights_expires_at,provider_asset_id,stored_first_party,created_at";
+  const rows = (await rest<FighterImage[]>(`ufc_images?select=${select}&id=eq.${id}&limit=1`, [], { revalidate: 300 })).data;
+  const row = rows[0];
+  if (!row || (row.rights_expires_at && Date.parse(row.rights_expires_at) <= Date.now())) return null;
+  return portraitSet(row);
 }
+
 export async function getImageCount(): Promise<number | null> {
-  return (await rest<unknown[]>("ufc_images?select=id&kind=eq.wikimedia&limit=1", [], { count: true, revalidate: 3600 })).count;
+  return (await rest<unknown[]>("ufc_images?select=id&fighter_id=not.is.null&limit=1", [], { count: true, revalidate: 900 })).count;
 }
 
 /* ---- rankings (snapshot JSON written by scripts/rankings) ------------- */
