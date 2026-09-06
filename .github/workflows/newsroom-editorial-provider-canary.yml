@@ -36,4 +36,5 @@ jobs:
       - name: Syntax gate
         run: node --check scripts/news/polish_world_class.mjs
       - name: Full editorial dry-run against one stored article
+        # Exercises the real branch script through provider + parser + fail-closed fact validation.
         run: timeout 240s node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 1 --force --dry-run
