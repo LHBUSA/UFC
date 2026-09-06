@@ -19,7 +19,7 @@ const H_TOTALS = ['Fighter', 'KD', 'Sig. str.', 'Sig. str. %', 'Total str.', 'Td
 const H_TOTALS_RND = ['Fighter', 'KD', 'Sig. str.', 'Sig. str. %', 'Total str.', 'Td %', 'Td %', 'Sub. att', 'Rev.', 'Ctrl'];
 const H_SIG = ['Fighter', 'Sig. str', 'Sig. str. %', 'Head', 'Body', 'Leg', 'Distance', 'Clinch', 'Ground'];
 const H_FIGHTER_HISTORY = ['W/L', 'Fighter', 'Kd', 'Str', 'Td', 'Sub', 'Event', 'Method', 'Round', 'Time'];
-const RESULT_FLAG = { win: 'WIN', loss: 'LOSS', draw: 'DRAW', nc: 'NC' };
+const RESULT_FLAG = { win: 'WIN', loss: 'LOSS', draw: 'DRAW', nc: 'NC', next: null };   /* next = upcoming bout */
 const PERSON_STATUS = { W: 'WIN', L: 'LOSS', D: 'DRAW', NC: 'NC' };
 const CAREER = { SLpM: 'career_slpm', 'Str. Acc.': 'career_str_acc', SApM: 'career_sapm', 'Str. Def': 'career_str_def',
   'TD Avg.': 'career_td_avg', 'TD Acc.': 'career_td_acc', 'TD Def.': 'career_td_def', 'Sub. Avg.': 'career_sub_avg' };
@@ -234,9 +234,13 @@ export function parseFighterPage(html, url) {
   if (!table.length) throw new SchemaAssertionError(url, 'fighter history table missing');
   assertHeaders($, table, H_FIGHTER_HISTORY, url, 'fighter history');
   const history = [];
+  let upcoming = 0;
   table.find('tbody tr').each((_, tr) => {
-    if (!$(tr).find('td').length) return;
+    const tds = $(tr).find('td');
+    if (!tds.length) return;
     const link = $(tr).attr('data-link');
+    const flag = (ps($, tds[0])[0] || '').trim().toLowerCase();
+    if (flag === 'next') { upcoming += 1; return; }   /* upcoming bout row: no fight-details link yet */
     if (link) history.push(id(link, url));
     else if (t($, tr)) throw new SchemaAssertionError(url, `history row without data-link: ${t($, tr).slice(0, 60)}`);
   });
@@ -244,6 +248,6 @@ export function parseFighterPage(html, url) {
     ufcstats_id: id(url, url), name, nickname: t($, $('p.b-content__Nickname').first()) || null, ...N.record(rec, url),
     height_in: N.heightIn(items.Height, url), weight_lbs: N.weightLbs(items.Weight, url), reach_in: N.reachIn(items.Reach, url),
     stance: N.normStance(items.STANCE, url), dob: N.dob(items.DOB, url), ...career,
-    fight_history_count: history.length, history_fight_ids: history,
+    fight_history_count: history.length, history_fight_ids: history, upcoming_rows: upcoming,
   };
 }

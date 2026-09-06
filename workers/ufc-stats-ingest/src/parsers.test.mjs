@@ -49,6 +49,9 @@ check(vo.name === 'Vinicius Oliveira' && vo.nickname === 'LokDog' && vo.record_w
 const ta = P.parseFighterPage(load('fighter_93fe7332d16c6ad9.html'), 'http://ufcstats.com/fighter-details/93fe7332d16c6ad9');
 check(ta.name === 'Tom Aaron' && ta.nickname === null && ta.height_in === null && ta.stance === null && ta.dob === '1978-07-13' && ta.fight_history_count === 2, `Aaron ${JSON.stringify(ta)}`);
 
+const ss = P.parseFighterPage(load('fighter_0d8011111be000b2_next_row.html'), 'http://ufcstats.com/fighter-details/0d8011111be000b2');
+check(ss.upcoming_rows === 1 && ss.fight_history_count >= 10, `next-row fighter ${ss.name} hist=${ss.fight_history_count} upcoming=${ss.upcoming_rows}`);
+
 try { P.parseFightPage(load('fight_fb4b1754d510b0d0.html').replace('Sub. att', 'Submission attempts'), 'test://mutated'); check(false, 'mutated header did not throw'); } catch (e2) { check(e2 instanceof SchemaAssertionError, `wrong error ${e2}`); }
 
 console.log('parsers.mjs:', failures === 0 ? 'OK' : `${failures} FAILURES`);

@@ -32,7 +32,7 @@ H_TOTALS = ["Fighter", "KD", "Sig. str.", "Sig. str. %", "Total str.", "Td", "Td
 H_TOTALS_RND = ["Fighter", "KD", "Sig. str.", "Sig. str. %", "Total str.", "Td %", "Td %", "Sub. att", "Rev.", "Ctrl"]  # site quirk
 H_SIG = ["Fighter", "Sig. str", "Sig. str. %", "Head", "Body", "Leg", "Distance", "Clinch", "Ground"]
 H_SIG_RND = H_SIG
-RESULT_FLAG = {"win": "WIN", "loss": "LOSS", "draw": "DRAW", "nc": "NC", "": None}
+RESULT_FLAG = {"win": "WIN", "loss": "LOSS", "draw": "DRAW", "nc": "NC", "next": None, "": None}   # "next" = upcoming bout
 PERSON_STATUS = {"W": "WIN", "L": "LOSS", "D": "DRAW", "NC": "NC"}
 
 
@@ -346,11 +346,16 @@ def parse_fighter_page(html: str, source_url: str) -> dict:
     if table is None:
         raise SchemaAssertionError(source_url, "fighter history table missing")
     _assert_headers(table, H_FIGHTER_HISTORY, source_url, "fighter history")
-    history_ids = []
+    history_ids, upcoming = [], 0
     for tr in table.select("tbody tr"):
-        if not tr.select("td"):
+        tds = tr.select("td")
+        if not tds:
             continue
         link = tr.get("data-link")
+        flag = (_ps(tds[0])[0] or "").strip().lower()
+        if flag == "next":          # upcoming bout row: no fight-details link yet ("next ... Matchup Preview UFC 328")
+            upcoming += 1
+            continue
         if link:
             history_ids.append(_id(link, source_url))
         elif _t(tr):
@@ -361,7 +366,7 @@ def parse_fighter_page(html: str, source_url: str) -> dict:
         "height_in": N.height_in(items["Height"], source_url), "weight_lbs": N.weight_lbs(items["Weight"], source_url),
         "reach_in": N.reach_in(items["Reach"], source_url), "stance": N.norm_stance(items["STANCE"], source_url),
         "dob": N.dob(items["DOB"], source_url), **career,
-        "fight_history_count": len(history_ids), "history_fight_ids": history_ids,
+        "fight_history_count": len(history_ids), "history_fight_ids": history_ids, "upcoming_rows": upcoming,
     }
 
 

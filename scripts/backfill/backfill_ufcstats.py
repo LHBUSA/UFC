@@ -211,7 +211,8 @@ class Backfill:
             return known
         p = parsers.parse_fighter_page(html, url)
         history_ids = p.pop("history_fight_ids")
-        self.log.event("fighter_page", id=fighter_id, name=p["name"], history_rows=len(history_ids))
+        upcoming_rows = p.pop("upcoming_rows", 0)
+        self.log.event("fighter_page", id=fighter_id, name=p["name"], history_rows=len(history_ids), upcoming_rows=upcoming_rows)
         fields = {k: v for k, v in p.items() if k != "ufcstats_id"}
         fields["updated_at"] = now_iso()
         target = known

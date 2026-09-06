@@ -90,6 +90,9 @@ ta = P.parse_fighter_page(load("fighter_93fe7332d16c6ad9.html"), "http://ufcstat
 check(ta["name"] == "Tom Aaron" and ta["nickname"] is None and ta["height_in"] is None and ta["reach_in"] is None and ta["stance"] is None
       and ta["dob"] == "1978-07-13" and ta["career_slpm"] == 0 and ta["fight_history_count"] == 2, f"Aaron {ta}")
 
+ss = P.parse_fighter_page(load("fighter_0d8011111be000b2_next_row.html"), "http://ufcstats.com/fighter-details/0d8011111be000b2")
+check(ss["upcoming_rows"] == 1 and ss["fight_history_count"] >= 10 and all(len(h) == 16 for h in ss["history_fight_ids"]), f"next-row fighter {ss['name']} hist={ss['fight_history_count']} upcoming={ss['upcoming_rows']}")
+
 # assertion behaviour: a mutated header must raise
 bad = load("fight_fb4b1754d510b0d0.html").replace("Sub. att", "Submission attempts", 1)
 try:
