@@ -45,6 +45,14 @@ Resumable: anything whose `ufcstats_id` is already in Supabase is skipped
 unless `--force`. Every schema assertion failure stops the run, prints the
 URL, and posts to Discord if `DISCORD_WEBHOOK_URL` is set.
 
+Source defaults to the Internet Archive (`--source wayback`); ufcstats.com is
+never contacted by the backfill. ESPN-first rows are LINKED, not duplicated:
+events by date (+-1 day), bouts by fighter pair, fighters through the alias
+resolver with DOB. Pages with no archive capture are counted as
+`wayback_missing_*` gaps. Long runs should be started detached (see
+docs/scraper_notes.md); the verification report is
+`python scripts/verify_phase1.py` -> docs/phase1_verification.md.
+
 ## Worker, run locally (production code path, no mocks)
 
 ```
