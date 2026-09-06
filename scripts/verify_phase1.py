@@ -79,7 +79,7 @@ def main():
     listed = []
     cl = CACHE / "lists" / "completed.html"
     if cl.exists():
-        listed = parsers.parse_event_list(cl.read_text(encoding="utf-8"), "cache://completed")
+        listed = parsers.parse_event_list(cl.read_text(encoding="utf-8"), "http://ufcstats.com/statistics/events/completed?page=all")
         missing = [e for e in listed if e["ufcstats_id"] not in by_us]
         L += ["## 2. Completed list vs ufc_events", "", f"Cached completed list: {len(listed)} events. In ufc_events with a ufcstats_id: {len(by_us)}. "
               f"Missing: {len(missing)} ({'100% coverage' if not missing else 'NOT 100%'}).", ""]
@@ -96,7 +96,7 @@ def main():
         ev = by_us.get(p.stem)
         if not ev:
             continue
-        page = parsers.parse_event_page(p.read_text(encoding="utf-8"), f"cache://event/{p.stem}")
+        page = parsers.parse_event_page(p.read_text(encoding="utf-8"), f"http://ufcstats.com/event-details/{p.stem}")
         checked += 1
         if bouts_by_event.get(ev["id"], 0) != len(page["bouts"]):
             mism.append(f"{ev['name']} ({ev['event_date']}): page {len(page['bouts'])} vs db {bouts_by_event.get(ev['id'], 0)}")
@@ -128,7 +128,7 @@ def main():
         f = f_by_us.get(p.stem)
         if not f:
             continue
-        page = parsers.parse_fighter_page(p.read_text(encoding="utf-8"), f"cache://fighter/{p.stem}")
+        page = parsers.parse_fighter_page(p.read_text(encoding="utf-8"), f"http://ufcstats.com/fighter-details/{p.stem}")
         hist_checked += 1
         ufc_hist = [h for h in page["history_fight_ids"] if h in bout_ids]
         if len(ufc_hist) != bouts_of.get(f["id"], 0):
