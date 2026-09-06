@@ -17,7 +17,7 @@ on:
 
 concurrency:
   group: ufc-history-gap-repair
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   aspinall-canary:
@@ -36,6 +36,9 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: scripts/backfill/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - name: Install backfill dependencies
         run: pip install -r scripts/backfill/requirements.txt
       - name: Require database credentials
@@ -81,3 +84,7 @@ jobs:
           if len(rows) < 10:
               raise SystemExit(f"Aspinall archive still incomplete: {len(rows)}/10 bouts")
           PY
+      - name: Rebuild Tom Aspinall Fight DNA
+        run: |
+          node --check scripts/dna/build_fight_dna.mjs
+          node scripts/dna/build_fight_dna.mjs --fighter 37851d60-2afd-426c-970e-e32abe06e09d
