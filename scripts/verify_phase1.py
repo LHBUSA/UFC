@@ -24,6 +24,7 @@ Sections (kickoff brief, "Verification / acceptance criteria"):
 from __future__ import annotations
 
 import datetime as dt
+import json
 import os
 import sys
 from collections import Counter
@@ -81,8 +82,13 @@ def main():
     if cl.exists():
         listed = parsers.parse_event_list(cl.read_text(encoding="utf-8"), "http://ufcstats.com/statistics/events/completed?page=all")
         missing = [e for e in listed if e["ufcstats_id"] not in by_us]
-        L += ["## 2. Completed list vs ufc_events", "", f"Cached completed list: {len(listed)} events. In ufc_events with a ufcstats_id: {len(by_us)}. "
-              f"Missing: {len(missing)} ({'100% coverage' if not missing else 'NOT 100%'}).", ""]
+        meta = CACHE / "lists" / "completed.meta.json"
+        ts = json.loads(meta.read_text(encoding="utf-8")).get("timestamp", "unknown") if meta.exists() else "unknown"
+        L += ["## 2. Archived completed-list capture vs ufc_events", "",
+              f"This measures coverage of ONE archived UFC Stats completed-list capture (Wayback timestamp {ts}; newest event on it: "
+              f"{listed[0]['name']} {listed[0]['event_date']}), not of the live site. Events after that cutoff enter through ESPN.",
+              f"Capture lists {len(listed)} events; {len(listed) - len(missing)} are in ufc_events with that ufcstats_id; missing {len(missing)}"
+              f" ({'100% of the capture' if not missing else 'NOT complete'}).", ""]
         L += [f"- missing: {m['name']} ({m['event_date']}) {m['ufcstats_id']}" for m in missing[:50]] + ([""] if missing else [])
     else:
         L += ["## 2. Completed list vs ufc_events", "", "No cached completed list (scripts/backfill/cache/lists/completed.html).", ""]

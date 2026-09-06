@@ -80,7 +80,8 @@ class RunLog:
         self.counters: dict[str, int] = {}
         self.assertion_failures: list[dict] = []
 
-    def event(self, kind: str, **fields):
+    def event(self, kind: str, /, **fields):
+        """`kind` is positional-only so a caller passing kind=... as a field can never collide with it."""
         rec = {"ts": dt.datetime.now(dt.timezone.utc).isoformat(), "kind": kind, **fields}
         self._fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
         self._fh.flush()
@@ -266,6 +267,17 @@ class Supabase:
                 raise RuntimeError(f"supabase {method} {path.split('?')[0]} -> {r.status_code}: {r.text[:300]}")
             return r
         raise RuntimeError(f"supabase {method} {path.split('?')[0]}: gave up")
+
+    def has_column(self, table: str, column: str) -> bool:
+        """True if PostgREST exposes table.column (OpenAPI). False when unreachable or in dry-run without a key."""
+        if not self.cfg.supabase_key:
+            return False
+        try:
+            r = self._request("GET", "", headers=self._headers())
+            props = r.json().get("definitions", {}).get(table, {}).get("properties", {})
+            return column in props
+        except Exception:
+            return False
 
     def select_all(self, table: str, columns: str = "*", filters: str = "", page: int = 1000) -> list[dict]:
         out, start = [], 0
