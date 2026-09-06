@@ -33,10 +33,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+          cache: npm
+          cache-dependency-path: workers/ufc-stats-ingest/package-lock.json
       - name: Require production database credentials
         run: |
           test -n "$SUPABASE_URL"
           test -n "$SUPABASE_SERVICE_ROLE_KEY"
+      - name: Install ingest dependencies
+        working-directory: workers/ufc-stats-ingest
+        run: npm ci --omit=dev
       - name: Syntax gate
         run: node --check scripts/backfill/run_dwcs_espn_backfill.mjs
       - name: Backfill DWCS season year
