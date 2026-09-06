@@ -1,0 +1,63 @@
+/* Fighter/editorial media art direction.
+ *
+ * The base design historically used `object-position: top center` across
+ * portraits, event cards and editorial surfaces. That makes a 4:5 fighter
+ * portrait get cropped into forehead/eyes when reused inside 16:9 and 21:9
+ * containers. These overrides keep the face in the upper-middle third while
+ * preserving shoulders/torso whenever the source allows it.
+ *
+ * The source pipeline already creates 4:5 card/thumb derivatives with Sharp's
+ * attention crop. These rules prevent a second destructive top-crop in CSS.
+ */
+
+:root {
+  --pbe-face-focus-y: 34%;
+  --pbe-face-focus-tight-y: 30%;
+  --pbe-editorial-focus-y: 36%;
+}
+
+/* Small circular avatars: bias slightly upward, but never hard-pin to top. */
+.avatar img {
+  object-fit: cover;
+  object-position: center var(--pbe-face-focus-tight-y) !important;
+}
+
+/* 4:5 fighter portraits and profile/fighter cards. */
+.portrait img,
+.fcard .portrait img,
+.division .champ .portrait img {
+  object-fit: cover;
+  object-position: center var(--pbe-face-focus-y) !important;
+}
+
+/* Event/home fight-poster faces. The image derivative is already portrait
+ * shaped; these wide/short frames should keep face + shoulders rather than
+ * taking the top strip of the portrait. */
+.ecard .faces .face img,
+.poster-faces .face img,
+.poster .face img,
+.faceoff .portrait img {
+  object-fit: cover;
+  object-position: center var(--pbe-face-focus-y) !important;
+}
+
+/* News cards are the most destructive reuse: a 4:5 editorial/fighter card is
+ * rendered in a 16:9 slot. Center the subject in the upper-middle rather than
+ * cropping from y=0. */
+.story .img img {
+  object-fit: cover;
+  object-position: center var(--pbe-editorial-focus-y) !important;
+}
+
+/* Article hero is 21:9 desktop / 16:10 mobile. It must never use the old
+ * forehead crop. A slightly lower focal point retains the full face and more
+ * shoulder/torso context on portrait-oriented source media. */
+.article-hero > img {
+  object-fit: cover;
+  object-position: center 38% !important;
+}
+
+@media (max-width: 680px) {
+  .story .img img { object-position: center 34% !important; }
+  .article-hero > img { object-position: center 34% !important; }
+}
