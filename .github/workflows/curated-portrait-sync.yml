@@ -5,15 +5,22 @@ on:
     branches:
       - ufc-fight-dna-v1
     paths:
+      - 'scripts/images/commons_overrides.json'
+      - 'scripts/images/fetch_fighter_portraits.mjs'
       - '.github/workflows/curated-portrait-sync.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ufc-curated-portrait-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 18
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -28,38 +35,73 @@ jobs:
 
       - run: npm ci --prefix web --ignore-scripts=false
 
-      - name: Syntax check
-        run: node --check scripts/images/fetch_fighter_portraits.mjs
+      - name: Syntax and curated-map validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/images/fetch_fighter_portraits.mjs
+          node -e 'const x=require("./scripts/images/commons_overrides.json"); if(!x || Array.isArray(x) || !Object.keys(x).length) process.exit(2); for(const [id,v] of Object.entries(x)){if(!/^[0-9a-f-]{36}$/i.test(id)||!v.name||!v.file) throw new Error(`bad override ${id}`)} console.log(`validated ${Object.keys(x).length} curated override(s)`)'
 
-      - name: Dry-run vetted fighters
+      - name: Build vetted fighter list
+        id: fighters
+        shell: bash
+        run: |
+          node - <<'NODE' > curated-ids.txt
+          const x=require('./scripts/images/commons_overrides.json');
+          for(const id of Object.keys(x).sort()) console.log(id);
+          NODE
+          echo "count=$(wc -l < curated-ids.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+          cat curated-ids.txt
+
+      - name: Dry-run every vetted fighter
         shell: bash
         run: |
           set -euo pipefail
           : > curated-dry-run.log
-          for id in \
-            eed368a5-484b-412f-9d2c-a4fd6d24d019 \
-            456a7363-571c-42d0-887c-e36746063358 \
-            51fbc8ad-d3cf-4c14-9f58-df8ac1838323
-          do
-            node scripts/images/fetch_fighter_portraits.mjs --dry-run --force --fighter "$id" | tee -a curated-dry-run.log
-            if ! tail -n 12 curated-dry-run.log | grep -Eq "[[:space:]]${id}[[:space:]].*[[:space:]]ok[[:space:]]"; then
+          while IFS= read -r id; do
+            [ -n "$id" ] || continue
+            tmp="$(mktemp)"
+            node scripts/images/fetch_fighter_portraits.mjs --dry-run --force --fighter "$id" | tee "$tmp" | tee -a curated-dry-run.log
+            if ! grep -Eq "[[:space:]]${id}[[:space:]].*[[:space:]]ok[[:space:]]" "$tmp"; then
               echo "Dry-run did not resolve ${id} to an accepted portrait" >&2
+              rm -f "$tmp"
               exit 1
             fi
-          done
+            rm -f "$tmp"
+          done < curated-ids.txt
 
-      - name: Upload vetted portraits
+      - name: Upload every vetted portrait
         shell: bash
         run: |
           set -euo pipefail
           : > curated-sync.log
-          for id in \
-            eed368a5-484b-412f-9d2c-a4fd6d24d019 \
-            456a7363-571c-42d0-887c-e36746063358 \
-            51fbc8ad-d3cf-4c14-9f58-df8ac1838323
-          do
+          while IFS= read -r id; do
+            [ -n "$id" ] || continue
             node scripts/images/fetch_fighter_portraits.mjs --force --fighter "$id" | tee -a curated-sync.log
-          done
+          done < curated-ids.txt
+
+      - name: Coverage proof
+        shell: bash
+        run: |
+          node - <<'NODE' | tee curated-coverage.log
+          const base=(process.env.SUPABASE_URL||'').replace(/\/$/,'');
+          const key=process.env.SUPABASE_SERVICE_ROLE_KEY;
+          const h={apikey:key,Authorization:`Bearer ${key}`};
+          const get=async p=>{const r=await fetch(`${base}/rest/v1/${p}`,{headers:h});if(!r.ok)throw new Error(`${r.status} ${await r.text()}`);return r.json()};
+          const today=new Date().toISOString().slice(0,10);
+          const [bouts,images]=await Promise.all([
+            get(`ufc_bouts?select=fighter_a_id,fighter_b_id,ufc_events!inner(event_date)&ufc_events.event_date=gte.${today}&status=neq.cancelled&limit=5000`),
+            get('ufc_images?select=fighter_id&fighter_id=not.is.null&limit=5000'),
+          ]);
+          const booked=new Set(bouts.flatMap(b=>[b.fighter_a_id,b.fighter_b_id]));
+          const pictured=new Set(images.map(i=>i.fighter_id));
+          const covered=[...booked].filter(id=>pictured.has(id)).length;
+          console.log(`total_images=${images.length}`);
+          console.log(`upcoming_unique=${booked.size}`);
+          console.log(`upcoming_with_image=${covered}`);
+          console.log(`upcoming_missing=${booked.size-covered}`);
+          console.log(`coverage_pct=${booked.size?(100*covered/booked.size).toFixed(1):'0.0'}`);
+          NODE
 
       - name: Upload audit logs
         if: always()
@@ -67,7 +109,9 @@ jobs:
         with:
           name: ufc-curated-portrait-sync-${{ github.run_id }}
           path: |
+            curated-ids.txt
             curated-dry-run.log
             curated-sync.log
+            curated-coverage.log
           if-no-files-found: warn
           retention-days: 14
