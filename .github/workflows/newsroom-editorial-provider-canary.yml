@@ -10,10 +10,14 @@ permissions:
   contents: read
   copilot-requests: write
 
+concurrency:
+  group: newsroom-editorial-provider-canary
+  cancel-in-progress: true
+
 jobs:
   copilot-cli-canary:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     env:
       GITHUB_TOKEN: ${{ github.token }}
     steps:
@@ -27,6 +31,15 @@ jobs:
         run: npm install -g @github/copilot
       - name: Copilot CLI inference probe
         run: |
-          copilot -p 'Return exactly this JSON object and nothing else: {"provider":"copilot","ok":true}' -s --model gpt-5.5 --no-ask-user --no-custom-instructions > copilot.out
+          timeout 90s copilot \
+            -p 'Return exactly this JSON object and nothing else: {"provider":"copilot","ok":true}' \
+            -s \
+            --model auto \
+            --stream=off \
+            --no-color \
+            --no-ask-user \
+            --no-custom-instructions \
+            --no-remote \
+            > copilot.out
           cat copilot.out
           grep -q '"ok"[[:space:]]*:[[:space:]]*true' copilot.out
