@@ -116,6 +116,7 @@ main { flex: 1; }
 #mnav-toggle:checked ~ .hdr-in .menu-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 #mnav-toggle:checked ~ .hdr-in .menu-btn span:nth-child(2) { opacity: 0; }
 #mnav-toggle:checked ~ .hdr-in .menu-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+@media (min-width: 1360px) { .hdr-next { max-width: 460px; } }
 @media (max-width: 1040px) { .hdr-next span { max-width: 150px; } }
 @media (max-width: 900px) {
   .nav, .hdr-next, .hide-m { display: none !important; }

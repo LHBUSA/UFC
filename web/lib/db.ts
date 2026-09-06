@@ -257,6 +257,24 @@ export function portraitSet(img: FighterImage): PortraitSet {
   };
 }
 
+/* ESPN headshots are display-only fallbacks and not every athlete id has one.
+ * Probe the CDN once per id (cached in-process and by the fetch data cache) so a
+ * missing headshot never renders as broken media: the fighter simply stays on
+ * the branded initials fallback. Transient network failures keep the image. */
+const ESPN_PROBE_TTL_MS = 6 * 60 * 60 * 1000;
+const espnProbe = new Map<string, { ok: boolean; at: number }>();
+async function espnHeadshotAvailable(url: string): Promise<boolean> {
+  const hit = espnProbe.get(url);
+  if (hit && Date.now() - hit.at < ESPN_PROBE_TTL_MS) return hit.ok;
+  let ok = true;
+  try {
+    const res = await fetch(url, { method: "HEAD", next: { revalidate: 21600 }, signal: AbortSignal.timeout(4000) });
+    if (res.status === 404 || res.status === 410) ok = false;
+  } catch { ok = true; }
+  espnProbe.set(url, { ok, at: Date.now() });
+  return ok;
+}
+
 function espnDisplayPortrait(fighter: Pick<Fighter, "id" | "espn_athlete_id">): PortraitSet | null {
   const athleteId = String(fighter.espn_athlete_id || "").trim();
   if (!/^\d+$/.test(athleteId)) return null;
@@ -305,10 +323,9 @@ export async function getImagesForFighters(ids: string[]): Promise<Map<string, P
     const fighters = (await rest<Array<Pick<Fighter, "id" | "espn_athlete_id">>>(
       `ufc_fighters?select=id,espn_athlete_id&id=in.(${chunk.join(",")})`, [], { revalidate: 300 },
     )).data;
-    for (const fighter of fighters) {
-      const fallback = espnDisplayPortrait(fighter);
-      if (fallback) m.set(fighter.id, fallback);
-    }
+    const fallbacks = fighters.map((fighter) => ({ fighter, fallback: espnDisplayPortrait(fighter) })).filter((x) => x.fallback);
+    const available = await Promise.all(fallbacks.map((x) => espnHeadshotAvailable((x.fallback as PortraitSet).card)));
+    fallbacks.forEach((x, idx) => { if (available[idx]) m.set(x.fighter.id, x.fallback as PortraitSet); });
   }
   return m;
 }

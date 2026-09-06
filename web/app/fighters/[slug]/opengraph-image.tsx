@@ -26,7 +26,7 @@ export default async function OG({ params }: { params: Promise<{ slug: string }>
         <div style={{ display: "flex", alignItems: "center", gap: 48 }}>
           <OgFace src={img?.card} name={f?.name || "?"} size={300} />
           <div style={{ display: "flex", flexDirection: "column", gap: 14, flex: 1 }}>
-            {f?.nickname && <div style={{ fontSize: 26, fontStyle: "italic", color: GOLD }}>“{f.nickname}”</div>}
+            {f?.nickname && <div style={{ fontSize: 26, fontStyle: "italic", color: GOLD }}>{`“${f.nickname}”`}</div>}
             <div style={{ fontSize: f && f.name.length > 18 ? 56 : 72, fontWeight: 800, letterSpacing: -2, lineHeight: 1, color: PAPER }}>{f?.name || "Fighter"}</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 28, marginTop: 10 }}>
               {stats.map(([k, v]) => (

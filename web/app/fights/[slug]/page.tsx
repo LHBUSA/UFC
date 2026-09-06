@@ -33,7 +33,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   if (!hit) notFound();
   const { e, b, bouts } = hit;
   const [imgs, rounds, articles, histA, histB] = await Promise.all([
-    getImagesForFighters([b.fighter_a.id, b.fighter_b.id]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
+    getImagesForFighters([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
   ]);
   const [media, dna] = await Promise.all([storyMedia(articles), getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null)]);
   const r = b.result;
