@@ -108,11 +108,13 @@ function RoundBars({ s }: { s: DnaSnapshot }) {
 }
 
 function Distribution({ m, label }: { m?: MetricObject | null; label: string }) {
-  const direct = m as (MetricObject & { buckets?: Record<string, number>; total?: number; value?: number | { buckets?: Record<string, number>; total?: number } | null }) | null | undefined;
-  const nested = direct?.value && typeof direct.value === "object" ? direct.value : null;
-  const b = direct?.buckets || nested?.buckets || {};
+  const rawValue = (m as unknown as { value?: unknown } | null | undefined)?.value;
+  const nested = rawValue && typeof rawValue === "object"
+    ? rawValue as { buckets?: Record<string, number>; total?: number }
+    : null;
+  const b = m?.buckets || nested?.buckets || {};
   const keys = Object.keys(b).sort();
-  const total = direct?.total || nested?.total || keys.reduce((n, k) => n + (b[k] || 0), 0);
+  const total = m?.total || nested?.total || keys.reduce((n, k) => n + (b[k] || 0), 0);
   if (!keys.length || !total) return null;
   return (
     <div className="dna-tile">
