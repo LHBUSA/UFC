@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  full-editorial-canary:
+  production-write-canary:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
@@ -35,6 +35,6 @@ jobs:
         run: npm install -g @github/copilot
       - name: Syntax gate
         run: node --check scripts/news/polish_world_class.mjs
-      - name: Full editorial dry-run against one stored article
-        # The branch script must pass provider, structured-output, depth and fact-validation gates.
-        run: timeout 240s node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 1 --force --dry-run
+      - name: Premium editorial production canary
+        # One validator-gated published article. The script writes only after every fact/depth/link gate passes.
+        run: timeout 240s node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 1 --force
