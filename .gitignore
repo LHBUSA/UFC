@@ -12,3 +12,4 @@ workers/*/dist/
 .DS_Store
 Thumbs.db
 docs/.proof_seed.json
+scripts/images/cache/

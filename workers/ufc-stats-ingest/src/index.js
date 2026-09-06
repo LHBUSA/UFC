@@ -218,7 +218,10 @@ async function espnPass(env, espn, ctx, run) {
     const ev = await espn.event(ref);
     const espnId = String(ev.raw.id);
     const eventDate = String(ev.raw.date).slice(0, 10);
-    const existing = ctx.eventsByEspn.get(espnId);
+    /* Link to a UFC Stats-keyed row for the same card before creating a new
+     * row: same date (+-1 day) AND the same "UFC <n>" number or overlapping
+     * headline tokens. Never on date alone (2026-09-06: 45 duplicate cards). */
+    const existing = ctx.eventsByEspn.get(espnId) || linkUfcstatsEvent(ctx, ev.raw.name, eventDate);
     const isComplete = ev.raw.status?.type?.completed === true && ev.raw.status?.type?.state === 'post';
     const evRow = {
       espn_event_id: espnId, name: ev.raw.name, event_date: eventDate,
@@ -227,7 +230,17 @@ async function espnPass(env, espn, ctx, run) {
       source_url: ev.url, captured_at: nowIso(), updated_at: nowIso(),
     };
     if (existing?.ufcstats_id) evRow.ufcstats_id = existing.ufcstats_id;
-    const [saved] = await upsert(env, 'ufc_events', evRow, 'espn_event_id', { returning: 'representation' });
+    let saved;
+    if (existing && !existing.espn_event_id) {
+      /* PATCH the UFC Stats row (see ensureEspnFighter for why not upsert). */
+      const { source_url: _src, captured_at: _cap, ...fill } = evRow;
+      const patched = await patch(env, 'ufc_events', `id=eq.${existing.id}`, { ...fill, venue: fill.venue ?? undefined, city: fill.city ?? undefined, region: fill.region ?? undefined, country: fill.country ?? undefined });
+      saved = Array.isArray(patched) && patched[0] ? patched[0] : { ...existing, ...fill };
+      Object.assign(existing, saved);
+      run.notes.events_linked = (run.notes.events_linked || 0) + 1;
+    } else {
+      [saved] = await upsert(env, 'ufc_events', evRow, 'espn_event_id', { returning: 'representation' });
+    }
     if (!existing) { run.events_new += 1; ctx.events.push(saved); }
     ctx.eventsByEspn.set(espnId, saved);
 
@@ -239,6 +252,23 @@ async function espnPass(env, espn, ctx, run) {
     }
     await espnBouts(env, espn, ctx, run, saved, ev);
   }
+}
+
+const EVENT_STOP = new Set(['vs', 'v', 'ufc', 'fight', 'night', 'on', 'the', 'noche', 'espn', 'abc', 'fox', 'fx', 'jr', 'de', 'da', 'dos']);
+function eventTokens(name) {
+  return new Set(String(name || '').split(':').slice(-1)[0].normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter((t) => t && !EVENT_STOP.has(t)));
+}
+function sameCard(a, b) {
+  const na = /ufc\s*(\d+)/i.exec(a), nb = /ufc\s*(\d+)/i.exec(b);
+  if (na && nb) return na[1] === nb[1];
+  if (Boolean(na) !== Boolean(nb)) return false;
+  const ta = eventTokens(a), tb = eventTokens(b);
+  const shared = [...ta].filter((t) => tb.has(t)).length;
+  return shared >= 2 || (shared >= 1 && (ta.size <= 2 || tb.size <= 2));
+}
+function linkUfcstatsEvent(ctx, name, eventDate) {
+  const cands = ctx.events.filter((x) => x.ufcstats_id && !x.espn_event_id && x.event_date && dayDiff(x.event_date, eventDate) <= 1 && sameCard(x.name, name));
+  return cands.length === 1 ? cands[0] : undefined;
 }
 
 async function ensureEspnFighter(env, espn, ctx, run, f, weightClass) {
@@ -277,6 +307,7 @@ async function ensureEspnFighter(env, espn, ctx, run, f, weightClass) {
 
 async function espnBouts(env, espn, ctx, run, evRow, ev) {
   const bouts = await espn.bouts(ev);
+  if (ev.skipped?.length) run.notes.placeholder_competitions = (run.notes.placeholder_competitions || 0) + ev.skipped.length;
   const seen = new Set();
   let allResults = bouts.length > 0;
   for (const b of bouts) {

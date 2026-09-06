@@ -1,8 +1,9 @@
 # ufc.propbetedge.ai
 
-Third PropBetEdge product line. Phase 1 = a complete, verified, backfilled
-UFC Stats dataset in Supabase plus the incremental ingest Worker and alias
-resolution. Track B = the news outlet on top of it. Everything else is later.
+Third PropBetEdge product line: the UFC data layer in Supabase (ESPN
+schedule/results + UFC Stats round stats), the nightly ingest Worker, the
+newsroom / rankings / portrait pipelines, and the Next.js site in `/web`
+(docs/frontend.md).
 
 Read `docs/UFC_PROPBETEDGE_CLAUDE_CODE_BRIEF.md` first, then
 `docs/scraper_notes.md` for every place the live site disagrees with it.
@@ -10,11 +11,17 @@ Read `docs/UFC_PROPBETEDGE_CLAUDE_CODE_BRIEF.md` first, then
 ## Layout
 
 ```
-migrations/               SQL migrations, numbered. Applied by hand in the Supabase SQL editor.
+migrations/               SQL migrations, numbered. Applied by hand in the Supabase SQL editor (003 = rankings table, pending).
 scripts/backfill/         backfill_ufcstats.py + parsers. Local Python 3.12+.
-workers/ufc-stats-ingest/ nightly incremental Worker (wrangler, deploy from C:\Workers\).
+scripts/news/             seed_sources / ingest_news / write_articles (docs/news_pipeline.md)
+scripts/rankings/         ingest_rankings.mjs -> Storage snapshot (docs/rankings.md)
+scripts/images/           fetch_fighter_portraits.mjs -> licensed Wikimedia portraits (docs/images.md)
+scripts/merge_events.py   one-off: fold ESPN duplicate event rows into UFC Stats rows
+workers/ufc-stats-ingest/ nightly incremental Worker (deployed; cron 06:00 UTC)
+web/                      Next.js site, ufc.propbetedge.ai (docs/frontend.md)
+.github/workflows/        newsroom.yml: news every 2 h, rankings Tue/Wed, portraits daily
 shared/                   enums.json, alias_resolver.{py,mjs}, tests. Both languages read enums.json.
-docs/                     brief, scraper notes, verification reports.
+docs/                     brief, scraper notes, verification reports, runbooks.
 ```
 
 ## Supabase

@@ -73,7 +73,16 @@ export class Espn {
   async bouts(evPayload) {
     const { url, raw } = evPayload;
     const out = [];
+    evPayload.skipped = [];
     for (const c of raw.competitions) {
+      /* ESPN publishes placeholder competitions on announced cards (seen on
+       * Contender Series weeks: no type, no second competitor). A placeholder
+       * is not a bout; skip it with a note instead of aborting the run. A
+       * COMPLETED competition missing these fields is still an assertion. */
+      const completedFlag = c?.status?.type?.completed === true;
+      const placeholder = c?.type === undefined || !Array.isArray(c?.competitors) || c.competitors.length !== 2
+        || c.competitors.some((x) => !x?.athlete?.$ref);
+      if (placeholder && !completedFlag) { evPayload.skipped.push(String(c?.id || '?')); continue; }
       for (const k of ['id', 'competitors', 'type', 'matchNumber', 'status']) {
         if (c?.[k] === undefined) throw new SchemaAssertionError(url, `competition.${k} missing (competition ${c?.id})`);
       }

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" width="600" height="160" role="img" aria-label="PropBetEdge UFC — Fight Intelligence">
+  <rect width="600" height="160" fill="#14110d"/>
+  <g transform="translate(36,32) scale(1.5)">
+    <polygon points="55.1,22.4 55.1,41.6 41.6,55.1 22.4,55.1 8.9,41.6 8.9,22.4 22.4,8.9 41.6,8.9" fill="none" stroke="#d4af37" stroke-width="3.2" stroke-linejoin="round"/>
+    <polygon points="37,13 22,35.5 31,35.5 27,51 42,28.5 33,28.5" fill="#d4af37"/>
+  </g>
+  <text x="150" y="82" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="46" font-weight="700" letter-spacing="-1" fill="#f5f1eb">PropBet<tspan fill="#d4af37">Edge</tspan></text>
+  <rect x="464" y="46" width="84" height="42" rx="6" fill="#d4af37"/>
+  <text x="506" y="75" text-anchor="middle" font-family="JetBrains Mono, Menlo, Consolas, monospace" font-size="22" font-weight="700" letter-spacing="3" fill="#14110d">UFC</text>
+  <text x="152" y="118" font-family="JetBrains Mono, Menlo, Consolas, monospace" font-size="15" font-weight="600" letter-spacing="4" fill="#b8b3a8">FIGHT INTELLIGENCE · UFC.PROPBETEDGE.AI</text>
+</svg>
