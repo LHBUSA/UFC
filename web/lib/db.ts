@@ -8,7 +8,7 @@
  */
 import "server-only";
 
-const API_BASE = (process.env.UFC_API_BASE_URL || "").replace(/\/$/, "");
+const API_BASE = (process.env.UFC_API_BASE_URL || "https://ufc-api.propbetedge.ai").replace(/\/$/, "");
 const API_KEY = process.env.UFC_API_KEY || "";
 
 export const REVALIDATE = 300;
