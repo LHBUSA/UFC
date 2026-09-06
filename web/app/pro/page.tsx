@@ -3,33 +3,58 @@ import Link from "next/link";
 import { ProPlans, PageHead, JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = { title: "UFC Pro — Picks, Edges & Card-Change Alerts", description: "PropBetEdge UFC Pro: model picks for winner, method and rounds, card-change alerts, judge and referee intel, weigh-in reports and a track record graded on closing-line value.", alternates: { canonical: "/pro" } };
+export const metadata: Metadata = {
+  title: "UFC Pro — Fight DNA & Fight-Week Intelligence",
+  description: "PropBetEdge UFC Pro founding access: Fight DNA, bettor-grade UFC analysis and fight-week intelligence, with model pricing and picks held back until validated.",
+  alternates: { canonical: "/pro" },
+};
 
 export default function ProPage() {
   return (
     <div className="wrap page">
-      <PageHead crumbs={[{ name: "Pro" }]} eyebrow="UFC Pro" title="The card, priced. The changes, first."
-        lede="Pro is the paid layer on top of the free archive. It ships when the model has a graded, out-of-time track record to show you, not before. Until then every Pro surface on this site renders as a locked placeholder, and no pick, edge or probability is displayed that the model did not produce." />
+      <PageHead
+        crumbs={[{ name: "Pro" }]}
+        eyebrow="UFC Pro"
+        title="Fight intelligence first. Model claims only when earned."
+        lede="UFC Pro founding access is open through secure Stripe checkout. Fight DNA, bettor-grade analysis and fight-week intelligence are the foundation; model prices, picks and probabilities remain locked until PropBetEdge has a graded out-of-time track record to support them."
+      />
+
       <ProPlans />
+
       <div className="grid-3 mt-6">
         {[
-          ["Calibration over hit rate", "A 55% hit rate on favourites means nothing. Pro publishes calibration and closing-line value on every pick, the two numbers that predict whether an edge is real."],
-          ["Card changes are the edge", "Late replacements, weight misses and medical suspensions move lines and are announced nowhere officially. Pro members get the alert with the replacement's stats attached."],
-          ["Round stats, not narratives", "Every fight in the archive carries round-by-round striking and grappling. The model is built from that, with as-of features that cannot leak the future."],
+          ["Fight DNA over surface stats", "Opponent stance, pace, attack distribution, grappling context and as-of historical features are being built as a versioned intelligence layer rather than a stat dump."],
+          ["Fight week is part of the product", "Card changes, official weigh-ins, news state and future market snapshots belong in the same bout timeline so the context present when a decision was made is never lost."],
+          ["No manufactured edge", "If PropBetEdge does not have a verified line, model output or enough sample to support a claim, the product says so. Locked means locked until the evidence exists."],
         ].map(([h, p]) => (
-          <div key={h} className="card"><h3 className="serif" style={{ marginBottom: 8, fontSize: 20 }}>{h}</h3><p className="dim sm">{p}</p></div>
+          <div key={h} className="card">
+            <h3 className="serif" style={{ marginBottom: 8, fontSize: 20 }}>{h}</h3>
+            <p className="dim sm">{p}</p>
+          </div>
         ))}
       </div>
+
       <div className="card hi mt-6 between">
         <div>
-          <div className="eyebrow">Launch</div>
-          <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>Accounts and billing open with the Pro launch.</div>
-          <div className="faint sm">Passwordless sign-in and Stripe billing, the same account layer as PropBetEdge NFL.</div>
+          <div className="eyebrow">Billing status</div>
+          <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>Stripe checkout is live.</div>
+          <div className="faint sm">Monthly UFC Pro is $14.99. A one-card pass is $5.99. Account entitlement and passwordless member access are the next billing-layer gate; model-only surfaces stay locked until validated.</div>
         </div>
-        <Link href="/login" className="btn gold">Sign-in status</Link>
+        <Link href="/login" className="btn">Account status</Link>
       </div>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "Product", name: "PropBetEdge UFC Pro", description: "Model picks, card-change alerts, judge and referee intelligence and weigh-in reports for UFC cards.", brand: { "@type": "Brand", name: "PropBetEdge" }, url: `${SITE.url}/pro`,
-        offers: [{ "@type": "Offer", price: "14.99", priceCurrency: "USD", availability: "https://schema.org/PreOrder", url: `${SITE.url}/pro`, description: "Monthly" }, { "@type": "Offer", price: "5.99", priceCurrency: "USD", availability: "https://schema.org/PreOrder", url: `${SITE.url}/pro`, description: "Single card pass" }] }} />
+
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: "PropBetEdge UFC Pro",
+        description: "Fight DNA, bettor-grade analysis and fight-week intelligence for UFC, with model-derived claims displayed only when validated.",
+        brand: { "@type": "Brand", name: "PropBetEdge" },
+        url: `${SITE.url}/pro`,
+        offers: [
+          { "@type": "Offer", price: "14.99", priceCurrency: "USD", availability: "https://schema.org/InStock", url: SITE.checkout.monthly, description: "Monthly UFC Pro founding access" },
+          { "@type": "Offer", price: "5.99", priceCurrency: "USD", availability: "https://schema.org/InStock", url: SITE.checkout.cardPass, description: "Single card pass" },
+        ],
+      }} />
     </div>
   );
 }
