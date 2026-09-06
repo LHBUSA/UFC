@@ -12,7 +12,8 @@
 // falls back to a branded card. See docs/images.md.
 //
 // Usage: node scripts/images/fetch_fighter_portraits.mjs
-//          [--limit N] [--force] [--dry-run] [--fighter <uuid>] [--no-priority]
+//          [--limit N] [--force] [--dry-run] [--fighter <uuid>]
+//          [--missing-only] [--no-priority]
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -45,6 +46,7 @@ const LIMIT = opt('--limit') ? Number(opt('--limit')) : Infinity;
 const FORCE = flag('--force');
 const DRY = flag('--dry-run');
 const ONLY_FIGHTER = opt('--fighter');
+const MISSING_ONLY = flag('--missing-only');
 const PRIORITY = !flag('--no-priority'); // --priority is the default
 
 // ---------------------------------------------------------------- env
@@ -329,10 +331,16 @@ async function processFighter(f) {
 // ---------------------------------------------------------------- main
 async function main() {
   const today = new Date().toISOString().slice(0, 10);
-  const fighters = ONLY_FIGHTER
+  let fighters = ONLY_FIGHTER
     ? await sbSelectAll('ufc_fighters', `select=id,name,nickname,dob&id=eq.${ONLY_FIGHTER}`)
     : await sbSelectAll('ufc_fighters', 'select=id,name,nickname,dob&order=name.asc');
   if (ONLY_FIGHTER && fighters.length === 0) { console.error(`fighter ${ONLY_FIGHTER} not found`); process.exit(1); }
+
+  if (MISSING_ONLY && !ONLY_FIGHTER) {
+    const existing = await sbSelectAll('ufc_images', 'select=fighter_id&kind=eq.wikimedia&fighter_id=not.is.null');
+    const pictured = new Set(existing.map((r) => r.fighter_id).filter(Boolean));
+    fighters = fighters.filter((f) => !pictured.has(f.id));
+  }
 
   const prioritySet = new Set();
   if (PRIORITY && !ONLY_FIGHTER) {
@@ -343,7 +351,7 @@ async function main() {
 
   const cache = loadCache();
   const counts = { ok: 0, no_entity: 0, no_image: 0, license_rejected: 0, ambiguous: 0, error: 0, skipped: 0 };
-  console.log(`${fighters.length} fighters in ufc_fighters, ${prioritySet.size} on upcoming cards${DRY ? ' [DRY RUN]' : ''}${FORCE ? ' [FORCE]' : ''}`);
+  console.log(`${fighters.length} fighters selected${MISSING_ONLY ? ' without stored media' : ' from ufc_fighters'}, ${prioritySet.size} on upcoming cards${DRY ? ' [DRY RUN]' : ''}${FORCE ? ' [FORCE]' : ''}`);
 
   let processed = 0;
   for (const f of fighters) {
