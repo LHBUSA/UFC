@@ -161,9 +161,6 @@ function escapeRawControlsInsideJsonStrings(text) {
 function parseModelJson(text) {
   const clean = String(text || '').trim().replace(/^```json\s*/i, '').replace(/```$/, '').trim();
   try { return JSON.parse(clean); } catch (strictError) {
-    // Some model responses can contain literal newline/tab characters inside
-    // otherwise-valid JSON strings. Repair ONLY JSON-forbidden controls; do
-    // not guess at missing quotes, braces, commas or model content.
     const repaired = escapeRawControlsInsideJsonStrings(clean);
     try { return JSON.parse(repaired); }
     catch (repairError) {
@@ -182,13 +179,16 @@ function parseCopilotJsonl(stdout) {
     if (event?.type !== 'assistant.message') continue;
     if (typeof event?.data?.content !== 'string') continue;
     if (event.data.phase && event.data.phase !== 'final_answer') continue;
-    finalMessage = {
-      content: event.data.content,
-      model: event.data.model || COPILOT_MODEL,
-    };
+    finalMessage = { content: event.data.content, model: event.data.model || COPILOT_MODEL };
   }
   if (!finalMessage) throw new Error('copilot-cli JSONL contained no final assistant.message');
   return finalMessage;
+}
+
+function acceptanceInstructions(article) {
+  const minimum = storyMinimum(article);
+  const requiresSections = article.story_type === 'fight_preview' || article.story_type === 'results';
+  return `OUTPUT ACCEPTANCE FOR THIS STORY:\n- body_md must be at least ${minimum} words and no more than 2100 words.\n${requiresSections ? '- body_md must contain at least 4 meaningful Markdown H2 sections.\n' : ''}- Meet the depth requirement by explaining only evidence already in the SOURCE PACKET; never pad with new facts or generic filler.\n- Preserve all existing Markdown links exactly.`;
 }
 
 async function polishAnthropic(apiKey, article, source) {
@@ -200,7 +200,7 @@ async function polishAnthropic(apiKey, article, source) {
       max_tokens: 18000,
       thinking: { type: 'adaptive' },
       system: SYSTEM,
-      messages: [{ role: 'user', content: `SOURCE PACKET:\n${source}` }],
+      messages: [{ role: 'user', content: `${acceptanceInstructions(article)}\n\nSOURCE PACKET:\n${source}` }],
     }),
   });
   const json = await res.json();
@@ -216,7 +216,7 @@ async function polishAnthropic(apiKey, article, source) {
 
 function polishCopilot(article, source) {
   const workdir = mkdtempSync(`${tmpdir()}/pbe-ufc-editorial-`);
-  const prompt = `${SYSTEM}\n\nSOURCE PACKET:\n${source}`;
+  const prompt = `${SYSTEM}\n\n${acceptanceInstructions(article)}\n\nSOURCE PACKET:\n${source}`;
   let child;
   try {
     child = spawnSync('copilot', [
