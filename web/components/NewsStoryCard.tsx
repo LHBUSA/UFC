@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Article, Fighter, PortraitSet } from "@/lib/db";
 import { fmtDateTime } from "@/lib/format";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
-import { Avatar, Octagon } from "@/components/ui";
+import { Avatar, Octagon } from "./ui";
 
 function impactOf(a: Article): number | null {
   const v = (a.fact_block as { bettor_angle?: { impact_score?: number } } | null | undefined)?.bettor_angle?.impact_score;
