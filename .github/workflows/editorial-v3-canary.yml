@@ -1,0 +1,38 @@
+name: Editorial v3 canary
+
+on:
+  push:
+    branches: [ufc-fight-dna-v1]
+    paths:
+      - ".github/workflows/editorial-v3-canary.yml"
+      - "scripts/news/polish_world_class.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  copilot-requests: write
+
+concurrency:
+  group: editorial-v3-canary
+  cancel-in-progress: true
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+      UFC_EDITORIAL_COPILOT_MODEL: auto
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax gate
+        run: node --check scripts/news/polish_world_class.mjs
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Real stored-article editorial canary
+        run: node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 1 --force --dry-run
