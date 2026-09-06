@@ -47,6 +47,10 @@ class WaybackMissing(Exception):
     """No usable capture exists for this URL. Counted, not fatal."""
 
 
+class WaybackBadCapture(Exception):
+    """One specific capture could not be read (content decoding / chunk errors). Try the next timestamp."""
+
+
 class WaybackUnavailable(Exception):
     """Wayback/CDX is not answering. Fatal for the run; the reason is persisted."""
     def __init__(self, url: str, http_status: Optional[int], retries: int, detail: str = ""):
@@ -77,8 +81,10 @@ class WaybackClient:
             time.sleep(wait)
         self._last = time.monotonic()
 
-    def _get(self, url: str, params: Optional[dict] = None) -> requests.Response:
-        """GET with backoff. Raises WaybackUnavailable after max_tries of 429/5xx/transport errors."""
+    def _get(self, url: str, params: Optional[dict] = None, capture: bool = False) -> requests.Response:
+        """GET with backoff. Raises WaybackUnavailable after max_tries of 429/5xx/transport errors.
+        For capture fetches (capture=True) a body that cannot be decoded is WaybackBadCapture
+        immediately: the archive has a broken copy of that one page; retrying will not fix it."""
         delay = 30.0
         status = None
         for attempt in range(self.max_tries):
@@ -86,6 +92,15 @@ class WaybackClient:
             self.requests_made += 1
             try:
                 r = self.session.get(url, params=params, timeout=120, allow_redirects=True)
+                r.content  # force the body so decoding errors surface here
+            except (requests.exceptions.ContentDecodingError, requests.exceptions.ChunkedEncodingError) as e:
+                self.last_status, self.last_response_class = None, type(e).__name__
+                if capture:
+                    raise WaybackBadCapture(f"{type(e).__name__}: {url}")
+                self.retries += 1
+                self.log.event("wayback_retry", url=url, attempt=attempt, error=str(e)[:160], sleep=int(min(delay, 600)))
+                time.sleep(min(delay, 600)); delay *= 2
+                continue
             except requests.RequestException as e:
                 status = None
                 self.last_status, self.last_response_class = None, type(e).__name__
@@ -188,7 +203,11 @@ class WaybackClient:
         if not timestamps:
             raise WaybackMissing(original_url)
         for ts in timestamps[:4]:
-            r = self._get(f"http://web.archive.org/web/{ts}id_/{original_url}")
+            try:
+                r = self._get(f"http://web.archive.org/web/{ts}id_/{original_url}", capture=True)
+            except WaybackBadCapture as e:
+                self.log.event("wayback_bad_capture", url=original_url, ts=ts, reason=str(e)[:80])
+                continue
             if r.status_code != 200:
                 self.log.event("wayback_capture_http", url=original_url, ts=ts, status=r.status_code)
                 continue
