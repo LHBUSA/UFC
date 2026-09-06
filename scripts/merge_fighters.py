@@ -76,6 +76,9 @@ def main():
         patch(f"ufc_bout_round_stats?bout_id=eq.{r['bout_id']}&fighter_id=eq.{a.drop}&round=eq.{r['round']}", {"fighter_id": a.keep})
     patch(f"ufc_images?fighter_id=eq.{a.drop}", {"fighter_id": a.keep})
     if fill:
+        release = {c: None for c in ("ufcstats_id", "espn_athlete_id") if c in fill}
+        if release:
+            patch(f"ufc_fighters?id=eq.{a.drop}", release)   # unique ids: free them on the dropped row first
         patch(f"ufc_fighters?id=eq.{a.keep}", fill)
     have = {(x["source"], x["normalized"]) for x in get(f"ufc_fighter_aliases?select=source,normalized&fighter_id=eq.{a.keep}")}
     for al in refs["aliases"]:
