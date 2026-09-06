@@ -1,0 +1,73 @@
+name: UFC curated portrait sync
+
+on:
+  push:
+    branches:
+      - ufc-fight-dna-v1
+    paths:
+      - '.github/workflows/curated-portrait-sync.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci --prefix web --ignore-scripts=false
+
+      - name: Syntax check
+        run: node --check scripts/images/fetch_fighter_portraits.mjs
+
+      - name: Dry-run vetted fighters
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > curated-dry-run.log
+          for id in \
+            eed368a5-484b-412f-9d2c-a4fd6d24d019 \
+            456a7363-571c-42d0-887c-e36746063358 \
+            51fbc8ad-d3cf-4c14-9f58-df8ac1838323
+          do
+            node scripts/images/fetch_fighter_portraits.mjs --dry-run --force --fighter "$id" | tee -a curated-dry-run.log
+            if ! tail -n 12 curated-dry-run.log | grep -Eq "[[:space:]]${id}[[:space:]].*[[:space:]]ok[[:space:]]"; then
+              echo "Dry-run did not resolve ${id} to an accepted portrait" >&2
+              exit 1
+            fi
+          done
+
+      - name: Upload vetted portraits
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > curated-sync.log
+          for id in \
+            eed368a5-484b-412f-9d2c-a4fd6d24d019 \
+            456a7363-571c-42d0-887c-e36746063358 \
+            51fbc8ad-d3cf-4c14-9f58-df8ac1838323
+          do
+            node scripts/images/fetch_fighter_portraits.mjs --force --fighter "$id" | tee -a curated-sync.log
+          done
+
+      - name: Upload audit logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ufc-curated-portrait-sync-${{ github.run_id }}
+          path: |
+            curated-dry-run.log
+            curated-sync.log
+          if-no-files-found: warn
+          retention-days: 14
