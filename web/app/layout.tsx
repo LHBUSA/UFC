@@ -5,6 +5,7 @@ import "./media-fixes.css";
 import "./product-polish.css";
 import { Header, Footer } from "@/components/Shell";
 import { LiveWire } from "@/components/LiveWire";
+import { ShareRail } from "@/components/ShareRail";
 import { JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
 
@@ -97,6 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={ORG} />
         <Header />
         <LiveWire />
+        <ShareRail />
         <main id="main">{children}</main>
         <Footer />
       </body>
