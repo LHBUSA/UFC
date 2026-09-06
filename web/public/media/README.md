@@ -7,6 +7,8 @@ Zuffa, TKO, ESPN or sportsbook marks are legible at the opacities used.
 |---|---|---|---|---|
 | `ufc-cage-bg-1600.webp`, `ufc-cage-bg-960.webp` | global viewport-locked cage/arena atmosphere (`body::before`) | https://commons.wikimedia.org/wiki/File:BRAVE_Darius-7.jpg | Haribhagirath (2024) | CC0 1.0 (public domain dedication) |
 | `ufc-fence-1400.webp` | fence texture behind fighter / event hero stages | https://commons.wikimedia.org/wiki/File:Mixed-martial_arts_fights_heat_up_Combat_Center_140620-M-ZM882-066.jpg | Lance Cpl. Paul S. Martinez, U.S. Marine Corps | Public domain (U.S. federal government work) |
+| `voices/joe-rogan-660.webp` | Notable Voices homepage card (Joe Rogan) | https://commons.wikimedia.org/wiki/File:2026_Joe_Rogan_with_Donald_Trump_at_the_White_House_(cropped).jpg | The White House (2026) | Public domain (U.S. federal government work); derivative cropped to Joe Rogan alone |
+| `voices/daniel-cormier-660.webp` | Notable Voices homepage card (Daniel Cormier) | https://commons.wikimedia.org/wiki/File:Daniel_Cormier_promoting_EA_UFC_5.jpg | Esfand (2023) | CC BY 3.0 — attribution printed on the card |
 
 Derivatives were produced with sharp (`scripts/qa` has no build step for them;
 regenerate from the originals if the crop changes): saturation reduced to

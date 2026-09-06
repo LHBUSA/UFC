@@ -30,7 +30,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/", types: { "application/rss+xml": [{ url: `${SITE.url}/feed.xml`, title: `${SITE.name} — News` }] } },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon1.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon2.png", sizes: "64x64", type: "image/png" },
+    ],
     apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
     shortcut: ["/icon.svg"],
   },

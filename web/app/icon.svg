@@ -10,14 +10,16 @@
       <stop offset=".55" stop-color="#14110d"/>
       <stop offset="1" stop-color="#090806"/>
     </radialGradient>
-    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="1.4" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
   </defs>
   <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#bg)" stroke="#3b3327" stroke-width="1"/>
-  <path d="M22.6 8.8h18.8l13.3 13.3v19L41.4 54.4H22.6L9.3 41.1v-19L22.6 8.8Z" fill="#0e0c09" stroke="url(#g)" stroke-width="3.8" stroke-linejoin="round" filter="url(#glow)"/>
-  <path d="M24.8 14.4h14.4l10.2 10.2v14.8L39.2 49.6H24.8L14.6 39.4V24.6l10.2-10.2Z" fill="none" stroke="#d4af37" stroke-opacity=".30" stroke-width="1.2" stroke-linejoin="round"/>
-  <path d="M38.2 13.5 21.8 36h9.7l-4.8 15.2 16.7-23.4h-9.8l4.6-14.3Z" fill="url(#g)" stroke="#f5df83" stroke-opacity=".35" stroke-width=".7" stroke-linejoin="round"/>
-  <circle cx="50.2" cy="14.2" r="3.2" fill="#c1273d" stroke="#f5f1eb" stroke-width="1.1"/>
+  <polygon points="55.1,22.4 55.1,41.6 41.6,55.1 22.4,55.1 8.9,41.6 8.9,22.4 22.4,8.9 41.6,8.9" fill="#0e0c09" stroke="url(#g)" stroke-width="3.6" stroke-linejoin="round"/>
+  <polygon points="50.5,24.3 50.5,39.7 39.7,50.5 24.3,50.5 13.5,39.7 13.5,24.3 24.3,13.5 39.7,13.5" fill="none" stroke="#d4af37" stroke-opacity=".28" stroke-width="1.2" stroke-linejoin="round"/>
+  <g fill="url(#g)" stroke="url(#g)" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="34.5" cy="17.5" r="4.2" stroke="none"/>
+    <path d="M29 24 L40.5 24 L39.5 36 L31 36 Z" stroke-width="1.2"/>
+    <path d="M30.5 25.5 L25 29 L30 22.5" fill="none" stroke-width="4.8"/>
+    <path d="M40 25.5 L46.5 28.5 L43.5 21" fill="none" stroke-width="4.8"/>
+    <path d="M32 35.5 L27 41.5 L24 49" fill="none" stroke-width="5.2"/>
+    <path d="M38.5 35.5 L43.5 41 L46 49" fill="none" stroke-width="5.2"/>
+  </g>
 </svg>

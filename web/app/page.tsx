@@ -5,6 +5,7 @@ import { eventSlug, fighterSlug } from "@/lib/slug";
 import { fmtDate, daysUntil, locationLine, eventBrand, eventHeadline, fmtRecord, weightClassLabel, relTime } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { storyMedia } from "@/lib/faces";
+import { Voices } from "@/components/Voices";
 
 export const revalidate = 300;
 
@@ -133,6 +134,8 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      <Voices />
 
       <section className="sec">
         <div className="wrap">
