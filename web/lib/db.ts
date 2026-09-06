@@ -257,6 +257,26 @@ export function portraitSet(img: FighterImage): PortraitSet {
   };
 }
 
+function espnDisplayPortrait(fighter: Pick<Fighter, "id" | "espn_athlete_id">): PortraitSet | null {
+  const athleteId = String(fighter.espn_athlete_id || "").trim();
+  if (!/^\d+$/.test(athleteId)) return null;
+  const url = `https://a.espncdn.com/i/headshots/mma/players/full/${athleteId}.png`;
+  return {
+    id: `espn:${athleteId}`,
+    portrait: url,
+    card: url,
+    thumb: url,
+    license: null,
+    author: "ESPN",
+    source_url: `https://www.espn.com/mma/fighter/_/id/${athleteId}`,
+    kind: "display_fallback",
+    source_family: "espn",
+    rights_label: "display_only",
+    attribution_text: "ESPN · display fallback",
+    stored_first_party: false,
+  };
+}
+
 export async function getImagesForFighters(ids: string[]): Promise<Map<string, PortraitSet>> {
   const m = new Map<string, PortraitSet>();
   const chosen = new Map<string, FighterImage>();
@@ -273,6 +293,23 @@ export async function getImagesForFighters(ids: string[]): Promise<Map<string, P
     }
   }
   for (const [fighterId, img] of chosen) m.set(fighterId, portraitSet(img));
+
+  /* Every visible fighter surface uses this function. When a rights-cleared
+   * PBE asset is not available, fill only the presentation gap with that
+   * fighter's ESPN MMA athlete headshot. These synthetic PortraitSets are
+   * never written to ufc_images and are marked display_only, so they cannot
+   * leak into the commercial / API-redistributable media catalog. */
+  const missing = uniq.filter((id) => !m.has(id));
+  for (let i = 0; i < missing.length; i += 150) {
+    const chunk = missing.slice(i, i + 150);
+    const fighters = (await rest<Array<Pick<Fighter, "id" | "espn_athlete_id">>>(
+      `ufc_fighters?select=id,espn_athlete_id&id=in.(${chunk.join(",")})`, [], { revalidate: 300 },
+    )).data;
+    for (const fighter of fighters) {
+      const fallback = espnDisplayPortrait(fighter);
+      if (fallback) m.set(fighter.id, fallback);
+    }
+  }
   return m;
 }
 
