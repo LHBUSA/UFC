@@ -43,6 +43,7 @@ export const SITE = {
 export const NAV = [
   { href: "/", label: "Home" },
   { href: "/events", label: "Events" },
+  { href: "/contender-series", label: "DWCS" },
   { href: "/fighters", label: "Fighters" },
   { href: "/rankings", label: "Rankings" },
   { href: "/news", label: "News" },
