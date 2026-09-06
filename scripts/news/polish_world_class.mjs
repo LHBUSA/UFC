@@ -49,13 +49,7 @@ Hard fact rules:
 4. Preserve the meaning of every record/sample/confidence caveat. Do not turn small samples into certainty.
 5. Preserve every existing Markdown link somewhere in body_md. Do not create new URLs.
 6. A headline must be evidence-led and truthful. Do not claim an “edge” unless the packet explicitly supports that wording.
-7. Output valid JSON only, exactly: {"headline":"...","dek":"...","body_md":"..."}. No code fence or commentary.
-
-Preferred article architecture when the source supports it:
-Fight preview: Fight thesis → Matchup evidence → Recent form → Bettor's Edge → Market watch → Counter-case / what changes the read → Final read.
-Results: What happened → What the fight changed → Data / round evidence → Bettor's post-mortem → What carries into the next market.
-Card change: What changed → Why the matchup changed → Markets affected → What still needs confirmation.
-External/source brief: lead with the attributed news, then explain only what PropBetEdge's own tables add.`;
+7. Output valid compact JSON only, exactly: {"headline":"...","dek":"...","body_md":"..."}. No code fence or commentary. JSON strings MUST escape line breaks as \\n; never put literal line breaks inside a quoted JSON string.`;
 
 function numTokens(text) {
   return new Set((String(text || '').match(/(?<![A-Za-z])[-+]?\d+(?:\.\d+)?%?(?![A-Za-z])/g) || []).map((v) => v.replace(/^\+/, '')));
@@ -131,9 +125,49 @@ function sourcePacket(article) {
   return { packet, source: JSON.stringify(packet, null, 2) };
 }
 
+function escapeRawControlsInsideJsonStrings(text) {
+  let out = '';
+  let inString = false;
+  let escaped = false;
+  for (const ch of text) {
+    if (!inString) {
+      out += ch;
+      if (ch === '"') inString = true;
+      continue;
+    }
+    if (escaped) {
+      out += ch;
+      escaped = false;
+      continue;
+    }
+    if (ch === '\\') {
+      out += ch;
+      escaped = true;
+      continue;
+    }
+    if (ch === '"') {
+      out += ch;
+      inString = false;
+      continue;
+    }
+    if (ch === '\n') { out += '\\n'; continue; }
+    if (ch === '\r') { out += '\\r'; continue; }
+    if (ch === '\t') { out += '\\t'; continue; }
+    out += ch;
+  }
+  return out;
+}
+
 function parseModelJson(text) {
   const clean = String(text || '').trim().replace(/^```json\s*/i, '').replace(/```$/, '').trim();
-  try { return JSON.parse(clean); } catch { throw new Error(`invalid JSON: ${clean.slice(0, 180)}`); }
+  try { return JSON.parse(clean); } catch (strictError) {
+    // Copilot CLI can occasionally render literal newline/tab characters inside
+    // otherwise-valid JSON strings. Repair ONLY JSON-forbidden control chars;
+    // do not guess at missing quotes, braces, commas or model content.
+    const repaired = escapeRawControlsInsideJsonStrings(clean);
+    try { return JSON.parse(repaired); }
+    catch { throw new Error(`invalid JSON: ${clean.slice(0, 180)} (${strictError.message})`); }
+  }
 }
 
 async function polishAnthropic(apiKey, article, source) {
