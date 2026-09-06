@@ -51,6 +51,7 @@ jobs:
           if [ -z "$SOURCE" ]; then SOURCE="wayback"; fi
           python scripts/backfill/backfill_missing_events.py \
             --source "$SOURCE" \
+            --target-fighter 399afbabc02376b5 \
             --event-id 026b4f7049085842 \
             --event-id 5a558ba1ff5e9121 \
             --event-id 1174782eacde9b0c \
