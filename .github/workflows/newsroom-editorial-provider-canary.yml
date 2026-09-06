@@ -1,0 +1,33 @@
+name: newsroom editorial provider canary
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/newsroom-editorial-provider-canary.yml"
+
+permissions:
+  contents: read
+  models: read
+
+jobs:
+  github-models-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+      UFC_EDITORIAL_GITHUB_MODEL: openai/gpt-4.1
+      ANTHROPIC_API_KEY: ""
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ufc-fight-dna-v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax gate
+        run: node --check scripts/news/polish_world_class.mjs
+      - name: GitHub Models editorial dry-run
+        run: node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 1 --force --dry-run
