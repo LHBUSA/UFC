@@ -58,8 +58,13 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
         <span><b>{SITE.desk}</b> · {a.published_at ? fmtDateTime(a.published_at) : ""}{a.updated_at && a.published_at && a.updated_at.slice(0, 16) !== a.published_at.slice(0, 16) ? ` · updated ${fmtDate(a.updated_at.slice(0, 10))}` : ""} · {readingMinutes(a.body_md)} min read</span>
       </div>
 
-      <div className="article-hero">
-        {hero ? <img src={hero.portrait} alt={faces[0]?.name || a.headline} width={1200} height={1500} fetchPriority="high" decoding="async" /> : (
+      <div className={`article-hero${hero ? " has-media" : ""}`}>
+        {hero ? (
+          <>
+            <img className="article-hero-bg" src={hero.card} alt="" aria-hidden="true" width={800} height={1000} decoding="async" />
+            <img className="article-hero-subject" src={hero.portrait} alt={faces[0]?.name || a.headline} width={1200} height={1500} fetchPriority="high" decoding="async" />
+          </>
+        ) : (
           <div className="gen">
             <Octagon className="oc" />
             {faces.length > 0 && (
