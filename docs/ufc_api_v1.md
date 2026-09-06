@@ -43,7 +43,7 @@ This keeps the website, future PropSports customers, MCP, mobile apps, and inter
 - `GET /v1/ufc/bouts/{id}/stats` — rounds + per-fighter `totals` + `fight_time_sec` + provenance.
 - `GET /v1/ufc/results?limit=N`
 - `GET /v1/ufc/rankings?division=&womens=` — verified ufc.com snapshot; `503 rankings_not_available` when no store exists.
-- `GET /v1/ufc/news?story_type=&limit=N&offset=N` — rows carry `hero_image_url` + `hero_image`.
+- `GET /v1/ufc/news?story_type=&story_class=&limit=N&offset=N` — rows carry `hero_image_url` + `hero_image` + `analysis_summary`.
 - `GET /v1/ufc/wire?limit=20` — global live wire: attributed `ufc_news_items`, deduped, newest first, mapped to internal pages; 15/30 s cache.
 - `GET /v1/ufc/articles/{slug}`
 - `GET /v1/ufc/search?q=&limit=N` — fighters (with `primary_image`, `slug_id`), events, articles (with hero media).
@@ -117,6 +117,34 @@ Per-fighter ranking state is available on fighter detail via `include=ranking` (
 - `hero_image` — `{id, image_url, card_url, thumb_url, author, license, source_url, kind, fighter_id, ref}` or `null`. The article's `hero_credit` wins over the image row's credit.
 
 A `hero_image_ref` that resolves to nothing yields `null` for both; nothing is fabricated. `hero_image_ref` and `hero_credit` remain as before.
+
+## Editorial analysis contract (editorial addendum §7 / §13, `docs/editorial_contract.md`)
+
+The bettor-angle analysis lives in `ufc_articles.fact_block` (jsonb, `version: 2`). The API exposes it additively:
+
+- `GET /v1/ufc/articles/{slug}` adds
+  - `analysis` — `{version, story_class, generated_at, sources, bettor_angle, market_watch, matchup}` copied field-for-field
+    from `fact_block` when `fact_block.version >= 2`; `null` for legacy blocks or no block. Never synthesized from prose.
+  - `analysis_summary` — see below.
+  - `word_count` (prose words in `body_md`, markdown syntax/links/code stripped) and `reading_minutes` (220 wpm, min 1; 0 for an empty body).
+  - the raw `fact_block` stays on detail for provenance.
+- `GET /v1/ufc/news`, `/events/{id}/articles`, `/fighters/{id}/articles` and search article hits add
+  `analysis_summary` = `{impact_score, markets, odds_status, model_status, story_class}` or `null`. List rows never carry
+  `fact_block`, `analysis` or `body_md` (the list query reads only `fact_block->>version`, `->>story_class`, `->bettor_angle`).
+- `GET /v1/ufc/news?story_class=` filters on `fact_block->>story_class` (v2 blocks only); combinable with `story_type`.
+  `meta.story_class` echoes it; `meta.with_analysis` counts rows with a summary.
+
+`bettor_angle` = `{impact_score 1–5, markets[], summary, supporting_facts[] (≥1), risks[] (≥1), watch_items[], odds_status, model_status}`;
+`market_watch` = `{status, markets[], note}`; `matchup` = `{a: FighterFacts, b: FighterFacts, edges[]}` (schemas `BettorAngle`,
+`MarketWatch`, `MatchupFacts`, `FighterFacts`, `ArticleAnalysis`, `AnalysisSummary` in the OpenAPI file).
+
+Rules that consumers must respect:
+
+- `odds_status` (`unavailable | snapshot | live`) and `model_status` (`unavailable | priced`) are **`unavailable` until verified
+  structured odds/model data exists** in PropBetEdge. No line, fair price, implied or model probability, edge or pick is
+  ever returned or implied while they are `unavailable`; the future fields from addendum §13 stay hidden until then.
+- `impact_score` is **editorial analysis of betting relevance, not a price, probability or pick**. Render it as analysis.
+- Every number in `supporting_facts` traces to `matchup` / archive fields; the API copies, it does not compute or invent.
 
 ## Live wire contract (addendum §2)
 

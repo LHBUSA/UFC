@@ -190,6 +190,36 @@ if (plainArticle) {
   assert(detail.data.hero_image_url === null && detail.data.hero_image === null, "article detail: hero must be null without a ref");
 }
 
+/* ---- editorial analysis (editorial_contract.md) ----------------------- */
+
+const ODDS_STATUS = ["unavailable", "snapshot", "live"];
+const MODEL_STATUS = ["unavailable", "priced"];
+assert(news.data.every((a) => "analysis_summary" in a && !("fact_block" in a) && !("analysis" in a) && !("body_md" in a)), "news: analysis_summary must be on every list row and fact_block/analysis/body off the list");
+assert(news.data.every((a) => a.analysis_summary === null || (Number.isInteger(a.analysis_summary.impact_score) && Array.isArray(a.analysis_summary.markets) && ODDS_STATUS.includes(a.analysis_summary.odds_status) && MODEL_STATUS.includes(a.analysis_summary.model_status) && "story_class" in a.analysis_summary)), "news: analysis_summary shape broken");
+assert(Number.isInteger(news.meta.with_analysis) && news.meta.with_analysis === news.data.filter((a) => a.analysis_summary).length, "news: meta.with_analysis mismatch");
+const analysed = news.data.find((a) => a.analysis_summary) || null;
+const analysisProbe = await get(`/v1/ufc/articles/${encodeURIComponent((analysed || news.data[0]).slug)}`);
+assert("analysis" in analysisProbe.data && "analysis_summary" in analysisProbe.data, "article detail: analysis fields missing");
+assert(Number.isInteger(analysisProbe.data.word_count) && analysisProbe.data.word_count > 0 && Number.isInteger(analysisProbe.data.reading_minutes) && analysisProbe.data.reading_minutes >= 1, "article detail: word_count/reading_minutes missing");
+if (analysisProbe.data.analysis) {
+  const an = analysisProbe.data.analysis;
+  for (const k of ["version", "story_class", "generated_at", "sources", "bettor_angle", "market_watch", "matchup"]) assert(k in an, `analysis: missing ${k}`);
+  assert(Number(an.version) >= 2 && an.story_class, "analysis: version/story_class invalid");
+  const ba = an.bettor_angle;
+  assert(ba && Array.isArray(ba.supporting_facts) && ba.supporting_facts.length >= 1, "analysis: bettor_angle needs >= 1 supporting fact");
+  assert(Array.isArray(ba.risks) && ba.risks.length >= 1, "analysis: bettor_angle needs >= 1 risk");
+  assert(ODDS_STATUS.includes(ba.odds_status), `analysis: odds_status ${ba.odds_status} invalid`);
+  assert(MODEL_STATUS.includes(ba.model_status), `analysis: model_status ${ba.model_status} invalid`);
+  assert(Number.isInteger(ba.impact_score) && ba.impact_score >= 1 && ba.impact_score <= 5, "analysis: impact_score must be 1..5");
+  assert(analysisProbe.data.analysis_summary?.story_class === an.story_class && analysisProbe.data.analysis_summary.impact_score === ba.impact_score, "analysis: summary disagrees with block");
+  const byClass = await get(`/v1/ufc/news?story_class=${encodeURIComponent(an.story_class)}&limit=5`);
+  assert(byClass.data.length >= 1 && byClass.data.every((a) => a.analysis_summary?.story_class === an.story_class), "news: story_class filter broken");
+} else {
+  assert(analysisProbe.data.analysis === null && analysisProbe.data.analysis_summary === null, "article detail: legacy fact block must yield null analysis + null analysis_summary");
+}
+const noClass = await get("/v1/ufc/news?story_class=nope_class&limit=5");
+assert(Array.isArray(noClass.data) && noClass.data.length === 0 && noClass.meta.story_class === "nope_class", "news: unknown story_class must return an empty list");
+
 /* ---- B4 composite contracts ------------------------------------------- */
 
 const profile = await get(`/v1/ufc/fighters/0d8011111be000b2?include=media,ranking,next,history,stats`);
@@ -286,6 +316,7 @@ console.log(JSON.stringify({
   media: { with: strickland.data.name, without: noMedia.name, list_with_media: list.meta.with_media },
   rankings: { store: rankings.meta.store, snapshot_date: rankings.data.snapshot_date, divisions: rankings.data.divisions.length },
   articles: { hero: heroArticle?.slug || null, plain: plainArticle?.slug || null },
+  analysis: { list_with_analysis: news.meta.with_analysis, probe: analysisProbe.data.slug, has_analysis: analysisProbe.data.analysis !== null, story_class: analysisProbe.data.analysis?.story_class || null, word_count: analysisProbe.data.word_count, reading_minutes: analysisProbe.data.reading_minutes },
   wire: { count: wire.meta.count, linked: wireLinked.length, live: wire.meta.live, freshness_minutes: wire.meta.freshness_minutes, fight_week: wire.meta.fight_week, newest_published_at: wire.meta.newest_published_at },
   sample: { event_id: eventId, bout_id: boutId, fighter_id: fighterId, fighter_name: fighterName, upcoming_event_id: upcomingId },
 }, null, 2));

@@ -222,16 +222,31 @@ paths:
                       meta: { $ref: '#/components/schemas/WireMeta' }
   /v1/ufc/news:
     get:
-      summary: List published PropBetEdge UFC articles with resolved hero media
+      summary: List published PropBetEdge UFC articles with resolved hero media and a compact analysis_summary
+      description: >-
+        Every row carries `analysis_summary` (`AnalysisSummary` or null). The raw
+        `fact_block`, the full `analysis` block and `body_md` are never on list
+        rows. `story_class` filters on the editorial fact block's `story_class`
+        (v2 blocks only); `story_type` remains the column filter. `meta.with_analysis`
+        counts rows with a summary.
       parameters:
-        - { name: story_type, in: query, schema: { type: string } }
+        - { name: story_type, in: query, schema: { type: string, enum: [card_change, rankings, fight_preview, weigh_in, results, line_move, external] } }
+        - { name: story_class, in: query, schema: { type: string, enum: [main_event_preview, main_card_preview, prelim_preview, event_preview, results, card_change, rankings, external] } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
         - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
       responses:
         '200': { $ref: '#/components/responses/Success' }
   /v1/ufc/articles/{slug}:
     get:
-      summary: Get a published UFC article with resolved hero media
+      summary: Get a published UFC article with resolved hero media and the bettor-angle analysis
+      description: >-
+        Adds `analysis` (`ArticleAnalysis`) copied field-for-field from
+        `fact_block` when `fact_block.version >= 2`, else null — never synthesized
+        from prose; `analysis_summary` (`AnalysisSummary` or null); `word_count`
+        and `reading_minutes` (220 wpm, minimum 1) computed from `body_md`. The raw
+        `fact_block` stays on detail for provenance. Odds and model fields inside
+        the analysis are `unavailable` until verified structured data exists;
+        `impact_score` is editorial analysis, not a price or probability.
       parameters:
         - name: slug
           in: path
@@ -315,6 +330,109 @@ components:
           properties:
             fighter_id: { type: [string, 'null'], format: uuid }
             ref: { type: string, description: The article's hero_image_ref (ufc_images.id or storage key). }
+    BettorAngle:
+      type: object
+      description: >-
+        Editorial bettor-angle analysis from docs/editorial_contract.md. Analysis,
+        labelled as such: impact_score is not a price, probability or pick.
+        odds_status / model_status stay `unavailable` until verified data exists.
+      required: [impact_score, markets, summary, supporting_facts, risks, watch_items, odds_status, model_status]
+      properties:
+        impact_score: { type: integer, minimum: 1, maximum: 5, description: Editorial betting relevance (1 low, 5 high). Analysis, not a price. }
+        markets:
+          type: array
+          items: { type: string, enum: [moneyline, fight_goes_distance, total_rounds, method_of_victory, round_betting, significant_strikes, takedowns] }
+        summary: { type: string, description: 2–5 sentences of analysis. }
+        supporting_facts: { type: array, minItems: 1, items: { type: string }, description: Each fact is traceable to matchup/archive fields. }
+        risks: { type: array, minItems: 1, items: { type: string }, description: At least one counter-case. }
+        watch_items: { type: array, items: { type: string } }
+        odds_status: { type: string, enum: [unavailable, snapshot, live], description: '`unavailable` until verified odds exist in PropBetEdge data.' }
+        model_status: { type: string, enum: [unavailable, priced], description: '`unavailable` until a real model output exists.' }
+    MarketWatch:
+      type: object
+      required: [status, markets, note]
+      properties:
+        status: { type: string, enum: [unavailable, snapshot, live] }
+        markets: { type: array, items: { type: string } }
+        note: { type: string }
+    FighterFacts:
+      type: object
+      description: Fighter facts as printed in the fact block (percentages as printed, e.g. 42 = 42%); null fields when absent.
+      properties:
+        fighter_id: { type: string, format: uuid }
+        name: { type: string }
+        nickname: { type: [string, 'null'] }
+        slug: { type: string, description: web fighter slug (slugified name + slug_id). }
+        record: { type: object, properties: { w: { type: integer }, l: { type: integer }, d: { type: integer }, nc: { type: integer } } }
+        age: { type: [integer, 'null'] }
+        height_in: { type: [number, 'null'] }
+        reach_in: { type: [number, 'null'] }
+        stance: { type: [string, 'null'] }
+        weight_lbs: { type: [number, 'null'] }
+        career: { type: [object, 'null'], properties: { slpm: { type: [number, 'null'] }, str_acc: { type: [number, 'null'] }, sapm: { type: [number, 'null'] }, str_def: { type: [number, 'null'] }, td_avg: { type: [number, 'null'] }, td_acc: { type: [number, 'null'] }, td_def: { type: [number, 'null'] }, sub_avg: { type: [number, 'null'] } } }
+        archive:
+          type: [object, 'null']
+          properties:
+            fights: { type: integer }
+            w: { type: integer }
+            l: { type: integer }
+            d: { type: integer }
+            nc: { type: integer }
+            ko: { type: integer }
+            sub: { type: integer }
+            dec: { type: integer }
+            finish_rate: { type: [number, 'null'] }
+            rounds_with_stats: { type: integer }
+            totals: { type: object, properties: { sig_l: { type: integer }, sig_a: { type: integer }, td_l: { type: integer }, td_a: { type: integer }, kd: { type: integer }, ctrl_sec: { type: integer } } }
+            last: { type: array, items: { type: object, properties: { date: { type: string }, opponent: { type: string }, opponent_slug: { type: [string, 'null'] }, result: { type: string }, method: { type: [string, 'null'] }, round: { type: [integer, 'null'] }, event: { type: string } } } }
+            days_since_last: { type: [integer, 'null'] }
+    MatchupFacts:
+      type: object
+      required: [a, b, edges]
+      properties:
+        a: { $ref: '#/components/schemas/FighterFacts' }
+        b: { $ref: '#/components/schemas/FighterFacts' }
+        edges:
+          type: array
+          items:
+            type: object
+            properties:
+              key: { type: string }
+              favors: { type: string, enum: [a, b] }
+              delta: { type: [number, 'null'] }
+              unit: { type: [string, 'null'] }
+              note: { type: [string, 'null'] }
+    ArticleAnalysis:
+      type: object
+      description: Present on article detail only when fact_block.version >= 2; copied from the stored block, never synthesized.
+      required: [version, story_class, generated_at, sources, bettor_angle, market_watch, matchup]
+      properties:
+        version: { type: integer, minimum: 2 }
+        story_class: { type: [string, 'null'], enum: [main_event_preview, main_card_preview, prelim_preview, event_preview, results, card_change, rankings, external, null] }
+        generated_at: { type: [string, 'null'], format: date-time }
+        sources: { type: [object, 'null'], properties: { families: { type: array, items: { type: string } }, news_item_ids: { type: array, items: { type: string, format: uuid } } } }
+        bettor_angle:
+          oneOf:
+            - $ref: '#/components/schemas/BettorAngle'
+            - type: 'null'
+        market_watch:
+          oneOf:
+            - $ref: '#/components/schemas/MarketWatch'
+            - type: 'null'
+        matchup:
+          oneOf:
+            - $ref: '#/components/schemas/MatchupFacts'
+            - type: 'null'
+    AnalysisSummary:
+      type: object
+      description: Compact bettor-angle summary on list rows and search hits; null for legacy (< v2) fact blocks.
+      required: [impact_score, markets, odds_status, model_status, story_class]
+      properties:
+        impact_score: { type: [integer, 'null'], minimum: 1, maximum: 5, description: Analysis, not a price. }
+        markets: { type: array, items: { type: string } }
+        odds_status: { type: string, enum: [unavailable, snapshot, live] }
+        model_status: { type: string, enum: [unavailable, priced] }
+        story_class: { type: [string, 'null'] }
     RankedFighter:
       type: object
       description: Linked fighter identity; slug_id = espn_athlete_id || ufcstats_id, the id used by /fighters/<slugified-name>-<slug_id> on the web.

@@ -45,6 +45,11 @@ const ARTICLE_LIST_COLS = [
   "hero_credit", "fighter_ids", "bout_id", "event_id", "published_at", "updated_at"
 ].join(",");
 const ARTICLE_DETAIL_COLS = `${ARTICLE_LIST_COLS},body_md,sources,fact_block,model_version,needs_human`;
+// List rows read only the compact analysis fields out of fact_block (PostgREST JSON path aliases); the raw block stays on detail.
+const ARTICLE_ANALYSIS_COLS = "analysis_version:fact_block->>version,analysis_story_class:fact_block->>story_class,analysis_bettor_angle:fact_block->bettor_angle";
+const ARTICLE_LIST_SELECT = `${ARTICLE_LIST_COLS},${ARTICLE_ANALYSIS_COLS}`;
+const ANALYSIS_MIN_VERSION = 2;
+const READING_WPM = 220;
 
 const IMAGE_COLS = "id,kind,r2_key,license,author,source_url,fighter_id,created_at";
 
@@ -411,10 +416,77 @@ function attachHero(article, heroMap) {
   };
 }
 
+/* ---- article analysis (docs/editorial_contract.md) -------------------- */
+
+function analysisVersion(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+/* Compact bettor-angle summary for list rows. Null unless the fact block is a
+ * v2+ editorial block with a bettor_angle; never synthesized from prose. */
+function analysisSummaryFrom(version, storyClass, bettorAngle) {
+  if (analysisVersion(version) < ANALYSIS_MIN_VERSION) return null;
+  if (!bettorAngle || typeof bettorAngle !== "object") return null;
+  return {
+    impact_score: Number.isFinite(Number(bettorAngle.impact_score)) ? Number(bettorAngle.impact_score) : null,
+    markets: Array.isArray(bettorAngle.markets) ? bettorAngle.markets.filter((m) => typeof m === "string") : [],
+    odds_status: typeof bettorAngle.odds_status === "string" ? bettorAngle.odds_status : "unavailable",
+    model_status: typeof bettorAngle.model_status === "string" ? bettorAngle.model_status : "unavailable",
+    story_class: typeof storyClass === "string" ? storyClass : null,
+  };
+}
+
+/* Full analysis block for article detail: copied field-for-field from a v2+
+ * fact block; null for legacy blocks. */
+function articleAnalysis(factBlock) {
+  if (!factBlock || typeof factBlock !== "object" || analysisVersion(factBlock.version) < ANALYSIS_MIN_VERSION) return null;
+  return {
+    version: factBlock.version,
+    story_class: factBlock.story_class ?? null,
+    generated_at: factBlock.generated_at ?? null,
+    sources: factBlock.sources ?? null,
+    bettor_angle: factBlock.bettor_angle ?? null,
+    market_watch: factBlock.market_watch ?? null,
+    matchup: factBlock.matchup ?? null,
+  };
+}
+
+function wordCount(markdown) {
+  const text = String(markdown || "")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[#>*_`~|-]+/g, " ");
+  const words = text.match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu);
+  return words ? words.length : 0;
+}
+
+function withAnalysis(article) {
+  if (!article) return article;
+  const { analysis_version, analysis_story_class, analysis_bettor_angle, ...rest } = article;
+  const hasBlock = Object.prototype.hasOwnProperty.call(rest, "fact_block");
+  const fb = hasBlock && rest.fact_block && typeof rest.fact_block === "object" ? rest.fact_block : null;
+  const out = {
+    ...rest,
+    analysis_summary: hasBlock
+      ? analysisSummaryFrom(fb?.version, fb?.story_class, fb?.bettor_angle)
+      : analysisSummaryFrom(analysis_version, analysis_story_class, analysis_bettor_angle),
+  };
+  if (hasBlock) {
+    out.analysis = articleAnalysis(fb);
+    const wc = wordCount(rest.body_md);
+    out.word_count = wc;
+    out.reading_minutes = wc ? Math.max(1, Math.ceil(wc / READING_WPM)) : 0;
+  }
+  return out;
+}
+
 async function withHeroMedia(env, articles) {
   const list = Array.isArray(articles) ? articles : [];
   const heroMap = await heroImagesForArticles(env, list);
-  return list.map((a) => attachHero(a, heroMap));
+  return list.map((a) => withAnalysis(attachHero(a, heroMap)));
 }
 
 /* ---- rankings --------------------------------------------------------- */
@@ -980,24 +1052,32 @@ async function listArticles(env, url) {
   const limit = clampInt(url.searchParams.get("limit"), 20, 1, 100);
   const offset = clampInt(url.searchParams.get("offset"), 0, 0, 100000);
   const storyType = sanitizeLike(url.searchParams.get("story_type"));
+  const storyClass = sanitizeLike(url.searchParams.get("story_class"));
   const p = new URLSearchParams({
-    select: ARTICLE_LIST_COLS,
+    select: ARTICLE_LIST_SELECT,
     status: "eq.published",
     order: "published_at.desc",
     limit: String(limit),
   });
   if (offset) p.set("offset", String(offset));
   if (storyType) p.set("story_type", `eq.${storyType}`);
+  if (storyClass) p.set("fact_block->>story_class", `eq.${storyClass}`);
   const { data, count } = await sb(env, "ufc_articles", p, { count: true });
   const rows = await withHeroMedia(env, data);
-  return { data: rows, meta: { count: rows.length, total: count, offset, story_type: storyType || null, with_hero: rows.filter((a) => a.hero_image_url).length } };
+  return {
+    data: rows,
+    meta: {
+      count: rows.length, total: count, offset, story_type: storyType || null, story_class: storyClass || null,
+      with_hero: rows.filter((a) => a.hero_image_url).length, with_analysis: rows.filter((a) => a.analysis_summary).length,
+    },
+  };
 }
 
 async function articlesForEvent(env, eventId, url) {
   const event = await resolveEvent(env, eventId);
   if (!event) throw new ApiError(404, "event_not_found", "UFC event not found.");
   const limit = clampInt(url.searchParams.get("limit"), 12, 1, 100);
-  const p = new URLSearchParams({ select: ARTICLE_LIST_COLS, status: "eq.published", event_id: `eq.${event.id}`, order: "published_at.desc", limit: String(limit) });
+  const p = new URLSearchParams({ select: ARTICLE_LIST_SELECT, status: "eq.published", event_id: `eq.${event.id}`, order: "published_at.desc", limit: String(limit) });
   const rows = await withHeroMedia(env, (await sb(env, "ufc_articles", p)).data);
   return { data: { event: compactEvent(event), articles: rows }, meta: { count: rows.length } };
 }
@@ -1006,7 +1086,7 @@ async function articlesForFighter(env, fighterId, url) {
   const fighter = await resolveFighter(env, fighterId);
   if (!fighter) throw new ApiError(404, "fighter_not_found", "UFC fighter not found.");
   const limit = clampInt(url.searchParams.get("limit"), 8, 1, 100);
-  const p = new URLSearchParams({ select: ARTICLE_LIST_COLS, status: "eq.published", fighter_ids: `cs.{${fighter.id}}`, order: "published_at.desc", limit: String(limit) });
+  const p = new URLSearchParams({ select: ARTICLE_LIST_SELECT, status: "eq.published", fighter_ids: `cs.{${fighter.id}}`, order: "published_at.desc", limit: String(limit) });
   const rows = await withHeroMedia(env, (await sb(env, "ufc_articles", p)).data);
   return { data: { fighter: compactFighter(fighter, null), articles: rows }, meta: { count: rows.length } };
 }
@@ -1051,7 +1131,7 @@ async function searchAll(env, url) {
   const limit = clampInt(url.searchParams.get("limit"), 10, 1, 25);
   const fp = new URLSearchParams({ select: FIGHTER_BRIEF_COLS, name: `ilike.*${q}*`, order: "name.asc", limit: String(limit) });
   const ep = new URLSearchParams({ select: EVENT_COLS, name: `ilike.*${q}*`, order: "event_date.desc.nullslast", limit: String(limit) });
-  const ap = new URLSearchParams({ select: ARTICLE_LIST_COLS, status: "eq.published", headline: `ilike.*${q}*`, order: "published_at.desc", limit: String(limit) });
+  const ap = new URLSearchParams({ select: ARTICLE_LIST_SELECT, status: "eq.published", headline: `ilike.*${q}*`, order: "published_at.desc", limit: String(limit) });
   const [fighters, events, articles] = await Promise.all([
     sb(env, "ufc_fighters", fp), sb(env, "ufc_events", ep), sb(env, "ufc_articles", ap),
   ]);
@@ -1418,6 +1498,7 @@ export const __test = {
   sumMetrics, totalsByFighter, boutElapsedSeconds, computeFighterStats, boutOutcome, nextScheduledBout, historyRow,
   compactFighter, slugId, bulkFighterMedia, rankingsState,
   slugify, fighterSlug, eventSlug, matchupSlug, normalizeTitle, dedupeWireItems, articleMatchesItem, wireInternalUrl, wireTaxonomy, wire,
+  wordCount, analysisSummaryFrom, articleAnalysis, withAnalysis,
 };
 
 export default {

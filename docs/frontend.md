@@ -27,6 +27,27 @@ and `components/og.tsx` (OG card frame).
 - Fighter pages show UFC Stats career tiles (SLpM, Str Acc, SApM, Str Def,
   TD Avg, TD Acc, TD Def, Sub Avg) labelled as a capture-time snapshot.
 
+## Global live wire (V3 addendum)
+
+`components/LiveWire.tsx` (server) renders the rail beneath the header on every
+route from `GET https://ufc-api.propbetedge.ai/v1/ufc/wire?limit=20` (30 s
+revalidate; server-side fallback to the attributed news reader if the API is
+down). `components/LiveWireClient.tsx` polls the same public endpoint every
+45 s, skips polls while the tab is hidden, keeps the current items on any
+failure, pauses on hover/focus, and goes static + scrollable under
+`prefers-reduced-motion`. The badge reads "UFC Live Wire" only when the newest
+item is within 120 minutes, otherwise "Latest UFC"; a crimson dot needs a
+card-change/result-class item within 30 minutes. Acceptance script:
+`node scripts/qa/wire-check.mjs http://localhost:3311 /` (11 checks).
+
+## Editorial modules (V3 editorial addendum)
+
+`components/editorial.tsx` renders from `ufc_articles.fact_block` v2
+(`docs/editorial_contract.md`): Bettor's Edge callout (impact 1–5, markets,
+why / risk / watch, odds + model availability), inline A-vs-B matchup module
+with recent-form strips, market-watch box (never a fabricated price), and the
+source & methodology panel. Story cards show "Edge n/5" when an angle exists.
+
 ## Routes
 
 | Route | Source | Empty state |

@@ -150,7 +150,33 @@ const roundRows = [1, 2, 3].flatMap((round) => [
 const articleHero = { id: A_HERO, slug: "strickland-preview", headline: "Sean Strickland preview", dek: null, story_type: "fight_preview", status: "published", hero_image_ref: IMG_MEDIA,
   hero_credit: { author: "MMAnytt", license: "CC BY-SA 4.0", source_url: "https://commons.wikimedia.org/wiki/File:Sean_Strickland_at_UFN_200.png" },
   fighter_ids: [F_MEDIA, F_NOMEDIA], bout_id: B_NEXT, event_id: E_NEXT, published_at: "2026-09-06T10:00:00Z", updated_at: "2026-09-06T10:00:00Z", body_md: "# Body", sources: [], fact_block: null, model_version: null, needs_human: false };
-const articleNoHero = { ...articleHero, id: A_NOHERO, slug: "nomedia-preview", headline: "Aaron Nomedia preview", hero_image_ref: null, hero_credit: null, fighter_ids: [F_NOMEDIA], bout_id: null, event_id: E_PAST, published_at: "2026-09-05T10:00:00Z" };
+const legacyFactBlock = { type: "preview", event: { id: E_PAST }, bout: { id: null }, fighters: [], derived: {}, generated_from: ["ufc_bouts"] };
+const articleNoHero = { ...articleHero, id: A_NOHERO, slug: "nomedia-preview", headline: "Aaron Nomedia preview", hero_image_ref: null, hero_credit: null, fighter_ids: [F_NOMEDIA], bout_id: null, event_id: E_PAST, published_at: "2026-09-05T10:00:00Z", fact_block: legacyFactBlock };
+
+const A_V2 = "91a2b3c4-9999-4bbb-8ccc-ddddeeee0002";
+const factBlockV2 = {
+  version: 2, story_class: "main_event_preview", generated_at: "2026-09-06T09:00:00Z",
+  sources: { families: ["espn", "ufcstats"], news_item_ids: [] },
+  event: { id: E_PAST, name: "UFC 300", event_date: "2025-04-13", venue: null, city: "Las Vegas", region: "NV", country: "USA" },
+  bout: { id: B_PAST, weight_class: "MIDDLEWEIGHT", is_womens: false, is_title: false, scheduled_rounds: 3, card_position: "main", bout_order: 5 },
+  matchup: {
+    a: { fighter_id: F_MEDIA, name: "Sean Strickland", nickname: "Tarzan", slug: "sean-strickland-3093653", record: { w: 29, l: 7, d: 0, nc: 0 }, age: 35, height_in: 73, reach_in: 76, stance: "ORTHODOX", weight_lbs: 185, career: { slpm: 5.9, str_acc: 41, sapm: 4.2, str_def: 62, td_avg: 0.6, td_acc: 30, td_def: 80, sub_avg: 0.1 }, archive: { fights: 1, w: 1, l: 0, d: 0, nc: 0, ko: 0, sub: 0, dec: 1, finish_rate: 0, rounds_with_stats: 3, totals: { sig_l: 96, sig_a: 180, td_l: 0, td_a: 3, kd: 0, ctrl_sec: 30 }, last: [], days_since_last: 511 } },
+    b: { fighter_id: F_OPP, name: "Opponent Person", nickname: null, slug: "opponent-person-2222222", record: { w: 29, l: 7, d: 0, nc: 0 }, age: 35, height_in: 73, reach_in: 74, stance: "ORTHODOX", weight_lbs: 185, career: null, archive: null },
+    edges: [{ key: "reach", favors: "a", delta: 2, unit: "in", note: "Strickland holds a two-inch reach edge." }],
+  },
+  bettor_angle: {
+    impact_score: 4, markets: ["moneyline", "fight_goes_distance", "significant_strikes"],
+    summary: "Analysis: the volume edge points to a decision-heavy profile.",
+    supporting_facts: ["Strickland lands 5.9 significant strikes per minute.", "Strickland holds a two-inch reach edge."],
+    risks: ["Opponent Person's power is untested in the archive."],
+    watch_items: ["Weigh-in status", "Line movement once priced"],
+    odds_status: "unavailable", model_status: "unavailable",
+  },
+  market_watch: { status: "unavailable", markets: ["fight_goes_distance", "significant_strikes"], note: "Current market price not yet available in PropBetEdge data." },
+};
+const articleV2 = { ...articleHero, id: A_V2, slug: "main-event-preview-champion-meets-opponent", headline: "Main event preview: the champion meets Opponent Person", hero_image_ref: null, hero_credit: null,
+  fighter_ids: [F_MEDIA, F_OPP], bout_id: B_PAST, event_id: E_PAST, published_at: "2026-09-06T11:00:00Z", story_type: "fight_preview",
+  body_md: "## The setup\n\nSean Strickland meets Opponent Person on Saturday night.", fact_block: factBlockV2 };
 
 const snapshot = {
   captured_at: "2026-09-06T14:05:11.339Z", source_url: "https://www.ufc.com/rankings", snapshot_date: "2026-09-06",
@@ -164,8 +190,22 @@ const snapshot = {
 
 /* ---- minimal PostgREST + Storage mock --------------------------------- */
 
+/* PostgREST JSON path: "fact_block->>version" / "fact_block->bettor_angle". */
+function jsonPath(row, expr) {
+  const parts = expr.split(/(->>|->)/);
+  let v = row[parts[0]];
+  let lastOp = null;
+  for (let i = 1; i < parts.length; i += 2) {
+    lastOp = parts[i];
+    v = v && typeof v === "object" ? v[parts[i + 1]] : undefined;
+  }
+  if (v === undefined) v = null;
+  if (lastOp === "->>" && v !== null && typeof v !== "string") return typeof v === "object" ? JSON.stringify(v) : String(v);
+  return v;
+}
+
 function matchFilter(row, key, raw) {
-  const value = row[key];
+  const value = key.includes("->") ? jsonPath(row, key) : row[key];
   if (raw.startsWith("eq.")) return String(value) === raw.slice(3);
   if (raw.startsWith("neq.")) return String(value) !== raw.slice(4);
   if (raw.startsWith("in.(")) {
@@ -200,11 +240,19 @@ function projectSelect(row, select) {
   for (const ch of `${select},`) {
     if (ch === "(") depth += 1;
     if (ch === ")") depth -= 1;
-    if (ch === "," && depth === 0) { keys.push(token.split(":")[0].split("(")[0].split("!")[0].trim()); token = ""; continue; }
+    if (ch === "," && depth === 0) { keys.push(token.trim()); token = ""; continue; }
     token += ch;
   }
   const out = {};
-  for (const k of keys) if (k in row) out[k] = row[k];
+  for (const token of keys) {
+    if (token.includes("->")) {
+      const [alias, expr] = token.includes(":") ? token.split(":") : [token.split(/->>?/).pop(), token];
+      out[alias] = jsonPath(row, expr);
+      continue;
+    }
+    const k = token.split(":")[0].split("(")[0].split("!")[0].trim();
+    if (k in row) out[k] = row[k];
+  }
   return out;
 }
 
@@ -617,6 +665,93 @@ test("health reports media configuration and the index advertises the new routes
   const i = await call("/v1/ufc");
   assert.equal(i.body.data.media_base_url, MEDIA_BASE);
   for (const k of ["fighters_media", "event_articles", "fighter_articles", "rankings"]) assert.ok(i.body.data.endpoints[k], `index missing ${k}`);
+});
+
+/* ---- editorial analysis (docs/editorial_contract.md) ------------------ */
+
+const analysisTables = { ...fullTables, ufc_articles: [articleHero, articleNoHero, articleV2] };
+
+test("wordCount ignores markdown syntax and links, counts prose", () => {
+  assert.equal(__test.wordCount("## The setup\n\nSean Strickland meets Opponent Person on Saturday night."), 10);
+  assert.equal(__test.wordCount("See [the card](https://x/y) and `code` ```js\nignored()\n``` **bold** done."), 7);
+  assert.equal(__test.wordCount(""), 0);
+  assert.equal(__test.wordCount(null), 0);
+  assert.equal(__test.analysisSummaryFrom("1", "results", { impact_score: 3 }), null, "legacy version yields null");
+  assert.equal(__test.analysisSummaryFrom(2, "results", null), null, "no bettor_angle yields null");
+  assert.deepEqual(__test.analysisSummaryFrom("2", "results", { impact_score: 3, markets: ["moneyline"] }), { impact_score: 3, markets: ["moneyline"], odds_status: "unavailable", model_status: "unavailable", story_class: "results" });
+  assert.equal(__test.articleAnalysis(legacyFactBlock), null);
+  assert.equal(__test.articleAnalysis(null), null);
+});
+
+test("article detail exposes analysis copied from a v2 fact block plus word_count/reading_minutes", async () => {
+  installMock({ tables: analysisTables });
+  const { status, body } = await call(`/v1/ufc/articles/${articleV2.slug}`);
+  assert.equal(status, 200);
+  const d = body.data;
+  assert.deepEqual(Object.keys(d.analysis), ["version", "story_class", "generated_at", "sources", "bettor_angle", "market_watch", "matchup"]);
+  assert.equal(d.analysis.version, 2);
+  assert.equal(d.analysis.story_class, "main_event_preview");
+  assert.equal(d.analysis.generated_at, "2026-09-06T09:00:00Z");
+  assert.deepEqual(d.analysis.sources, factBlockV2.sources);
+  assert.deepEqual(d.analysis.bettor_angle, factBlockV2.bettor_angle);
+  assert.deepEqual(d.analysis.market_watch, factBlockV2.market_watch);
+  assert.deepEqual(d.analysis.matchup, factBlockV2.matchup);
+  assert.ok(d.analysis.bettor_angle.supporting_facts.length >= 1 && d.analysis.bettor_angle.risks.length >= 1);
+  assert.equal(d.analysis.bettor_angle.odds_status, "unavailable");
+  assert.deepEqual(d.analysis_summary, { impact_score: 4, markets: ["moneyline", "fight_goes_distance", "significant_strikes"], odds_status: "unavailable", model_status: "unavailable", story_class: "main_event_preview" });
+  assert.deepEqual(d.fact_block, factBlockV2, "raw fact_block stays on detail");
+  assert.equal(d.word_count, 10);
+  assert.equal(d.reading_minutes, 1);
+  assert.equal(d.body_md, articleV2.body_md);
+  assert.equal(d.hero_image, null);
+});
+
+test("article detail with a legacy fact block yields analysis null and analysis_summary null", async () => {
+  installMock({ tables: analysisTables });
+  const { body } = await call("/v1/ufc/articles/nomedia-preview");
+  assert.equal(body.data.analysis, null);
+  assert.equal(body.data.analysis_summary, null);
+  assert.deepEqual(body.data.fact_block, legacyFactBlock);
+  assert.equal(body.data.word_count, 1);
+  assert.equal(body.data.reading_minutes, 1);
+  const noBlock = await call("/v1/ufc/articles/strickland-preview");
+  assert.equal(noBlock.body.data.analysis, null);
+  assert.equal(noBlock.body.data.analysis_summary, null);
+});
+
+test("list rows carry analysis_summary (or null) without the raw fact_block; story_class filters", async () => {
+  installMock({ tables: analysisTables });
+  const { body } = await call("/v1/ufc/news?limit=10");
+  assert.equal(body.data.length, 3);
+  const v2 = body.data.find((a) => a.slug === articleV2.slug);
+  const legacy = body.data.find((a) => a.slug === "nomedia-preview");
+  assert.deepEqual(v2.analysis_summary, { impact_score: 4, markets: ["moneyline", "fight_goes_distance", "significant_strikes"], odds_status: "unavailable", model_status: "unavailable", story_class: "main_event_preview" });
+  assert.equal(legacy.analysis_summary, null);
+  for (const row of body.data) {
+    for (const k of ["fact_block", "analysis", "analysis_version", "analysis_story_class", "analysis_bettor_angle", "word_count", "body_md"]) {
+      assert.equal(k in row, false, `list row must not carry ${k}`);
+    }
+    assert.ok("analysis_summary" in row);
+  }
+  assert.equal(body.meta.with_analysis, 1);
+  assert.equal(body.meta.story_class, null);
+
+  const filtered = await call("/v1/ufc/news?story_class=main_event_preview");
+  assert.deepEqual(filtered.body.data.map((a) => a.slug), [articleV2.slug]);
+  assert.equal(filtered.body.meta.story_class, "main_event_preview");
+  assert.equal(filtered.body.meta.total, 1);
+  const none = await call("/v1/ufc/news?story_class=results");
+  assert.deepEqual(none.body.data, []);
+  const both = await call("/v1/ufc/news?story_type=fight_preview&story_class=main_event_preview");
+  assert.equal(both.body.data.length, 1);
+
+  const ev = await call(`/v1/ufc/events/${E_PAST}/articles`);
+  assert.deepEqual(ev.body.data.articles.map((a) => [a.slug, a.analysis_summary?.impact_score ?? null]).sort(), [[articleV2.slug, 4], ["nomedia-preview", null]].sort());
+  const fi = await call(`/v1/ufc/fighters/${F_OPP}/articles`);
+  assert.equal(fi.body.data.articles[0].analysis_summary.story_class, "main_event_preview");
+  const search = await call("/v1/ufc/search?q=preview");
+  assert.equal(search.body.data.articles.length, 3);
+  assert.ok(search.body.data.articles.every((a) => "analysis_summary" in a && !("fact_block" in a)));
 });
 
 /* ---- live wire -------------------------------------------------------- */
