@@ -1,22 +1,23 @@
 # ufc.propbetedge.ai — newsroom, rankings and portrait pipelines.
+# This schedule must live on the default branch to execute. Until the active
+# UFC production branch is merged, jobs explicitly checkout ufc-fight-dna-v1
+# so scheduled automation runs the same code currently under release QA.
 #
-# Freshness contract (docs/UFC_PRODUCTION_V3_LIVE_WIRE_ADDENDUM.md §4):
+# Freshness contract:
 #   * source ingest every 30 minutes year-round;
-#   * article generation is gated: it runs when ingest inserted new items or on
-#     the two-hour baseline slot; the writer itself is idempotent;
+#   * deterministic article writer runs when new items land or on a two-hour baseline;
 #   * every writer pass is followed by the fail-closed premium editorial desk;
-#   * Anthropic is preferred when configured; GitHub Models is the automatic
-#     Actions-native fallback so polishing never depends on a manually managed key;
-#   * a guaranteed daily quality sweep catches recent stories that somehow
-#     missed the editorial-desk pass, without rewriting already-polished copy;
-#   * the web/API wire rail refreshes every 30–60 s against the stored feed.
+#   * Anthropic is preferred when configured; Copilot CLI is the automatic
+#     Actions-native fallback using the short-lived GITHUB_TOKEN;
+#   * a daily quality sweep catches any recent story that missed the editorial desk;
+#   * the writer remains fact-block-first and idempotent.
 name: newsroom
 on:
   schedule:
-    - cron: "*/30 * * * *"     # news ingest every 30 min; writer gated below
+    - cron: "*/30 * * * *"
     - cron: "17 10 * * *"      # guaranteed daily world-class editorial sweep
-    - cron: "41 11 * * 2,3"    # rankings (UFC.com updates Tue/Wed after cards)
-    - cron: "5 9 * * *"        # portraits for newly ingested fighters
+    - cron: "41 11 * * 2,3"
+    - cron: "5 9 * * *"
   workflow_dispatch:
     inputs:
       job:
@@ -28,7 +29,7 @@ on:
 
 permissions:
   contents: read
-  models: read
+  copilot-requests: write
 
 concurrency: newsroom
 env:
@@ -36,17 +37,19 @@ env:
   SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
   GITHUB_TOKEN: ${{ github.token }}
-  UFC_EDITORIAL_GITHUB_MODEL: openai/gpt-4.1
+  UFC_EDITORIAL_COPILOT_MODEL: auto
 jobs:
   news:
     if: github.event.schedule == '*/30 * * * *' || github.event_name == 'workflow_dispatch' && (inputs.job == 'news' || inputs.job == 'all')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\nGITHUB_TOKEN=%s\nUFC_EDITORIAL_GITHUB_MODEL=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" "$GITHUB_TOKEN" "$UFC_EDITORIAL_GITHUB_MODEL" > .env
+      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" > .env
       - run: node scripts/news/seed_sources.mjs
       - name: Ingest sources (every run)
         id: ingest
@@ -65,6 +68,9 @@ jobs:
       - name: Write deterministic fact-block articles (gated)
         if: steps.gate.outputs.write == 'true'
         run: node scripts/news/write_articles.mjs ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
+      - name: Install Copilot CLI for editorial fallback
+        if: steps.gate.outputs.write == 'true'
+        run: npm install -g @github/copilot
       - name: World-class editorial desk (fail closed)
         if: steps.gate.outputs.write == 'true'
         run: node scripts/news/polish_world_class.mjs --recent-hours 720 --limit 30
@@ -74,17 +80,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\nGITHUB_TOKEN=%s\nUFC_EDITORIAL_GITHUB_MODEL=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" "$GITHUB_TOKEN" "$UFC_EDITORIAL_GITHUB_MODEL" > .env
+      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" > .env
+      - name: Install Copilot CLI editorial fallback
+        run: npm install -g @github/copilot
       - name: Verify editorial provider is available
         run: |
           if [ -z "$ANTHROPIC_API_KEY" ] && [ -z "$GITHUB_TOKEN" ]; then
             echo "No editorial model provider is configured" >&2
             exit 1
           fi
-          if [ -n "$ANTHROPIC_API_KEY" ]; then echo "editorial provider: Anthropic (+ GitHub Models fallback)"; else echo "editorial provider: GitHub Models"; fi
+          if [ -n "$ANTHROPIC_API_KEY" ]; then echo "editorial provider: Anthropic (+ Copilot CLI fallback)"; else echo "editorial provider: Copilot CLI"; fi
       - name: Daily world-class editorial sweep (fail closed)
         run: node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 60
 
@@ -93,6 +103,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -103,6 +115,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
