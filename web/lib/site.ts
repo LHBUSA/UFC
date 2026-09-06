@@ -8,7 +8,7 @@ export const SITE = {
     "PropBetEdge UFC: every card, every fighter, every round. Live fight cards with main card and prelims, fighter profiles with fight history and round stats, official rankings by division, A-vs-B tale of the tape, and a newsroom written from the data.",
   parent: "https://propbetedge.ai",
   network: {
-    mlb: "https://propbetedge.ai",
+    mlb: "https://mlb.propbetedge.ai",
     nfl: "https://nfl.propbetedge.ai",
     api: "https://propsports.proptechusa.ai",
   },
