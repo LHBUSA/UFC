@@ -10,7 +10,7 @@ import { OCTAGON } from "@/components/Brand";
  * internal PropBetEdge profile so discovery never implies endorsement. */
 export function Voices() {
   return (
-    <section className="sec voices-sec" aria-labelledby="voices-title">
+    <section id="notable-voices" className="sec voices-sec" aria-labelledby="voices-title">
       <div className="wrap">
         <div className="sec-head voices-head">
           <div>
