@@ -3,6 +3,7 @@ import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import "./media-fixes.css";
 import "./product-polish.css";
+import "./editorial-discovery.css";
 import { Header, Footer } from "@/components/Shell";
 import { LiveWire } from "@/components/LiveWire";
 import { ShareRail } from "@/components/ShareRail";
