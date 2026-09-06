@@ -1,5 +1,23 @@
 /* Premium editorial discovery + Contender Series surfaces. Additive only. */
 
+/* Restore the real cage atmosphere on the good branch without overpowering
+ * the existing dark/gold hero treatment. This intentionally overrides the
+ * gradient-only base pseudo-element in globals.css. */
+.hero::before {
+  background:
+    linear-gradient(90deg, rgba(13,11,8,.90) 0%, rgba(13,11,8,.72) 43%, rgba(13,11,8,.48) 72%, rgba(13,11,8,.68) 100%),
+    linear-gradient(180deg, rgba(13,11,8,.22), rgba(13,11,8,.70)),
+    radial-gradient(900px 420px at 12% -10%, rgba(212,175,55,.18), transparent 60%),
+    url("/media/ufc-cage-hero-1800.webp") center 38% / cover no-repeat;
+  opacity: .88;
+}
+.hero-net svg { flex: none; filter: drop-shadow(0 4px 12px rgba(0,0,0,.45)); }
+
+.story-freshness { align-items: flex-end; line-height: 1.55 !important; }
+.story-time-label { color: var(--pbe-gold); font-size: .86em; text-transform: uppercase; letter-spacing: .06em; }
+.story-freshness time, .article-freshness time { color: var(--pbe-paper-2); font-variant-numeric: tabular-nums; }
+.article-freshness { flex-wrap: wrap; line-height: 1.6; }
+
 .voice-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
 .voice-cta-muted { color: var(--pbe-dim) !important; border-bottom-color: transparent !important; }
 .voice-cta-muted:hover { color: var(--pbe-gold) !important; }
@@ -75,4 +93,5 @@
   .dwcs-hero { padding: 30px 22px; }
   .dwcs-week { grid-template-columns: 1fr; gap: 8px; }
   .dwcs-week-status { text-align: left; }
+  .story-freshness { align-items: flex-start; }
 }
