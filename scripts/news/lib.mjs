@@ -170,8 +170,40 @@ export function canonicalJson(v) {
   }
   return JSON.stringify(v === undefined ? null : v);
 }
-export function factHash(block) {
-  return sha256(canonicalJson(block));
+/* `salt` versions the hash: bumping it makes every stored article regenerate
+ * once (v2 = the bettor-angle fact block). `omit` drops volatile keys such as
+ * generated_at so a block that carries the same facts hashes the same. */
+export function factHash(block, { salt = '', omit = ['generated_at'] } = {}) {
+  return sha256(`${canonicalJson(omitKeys(block, omit))}${salt ? `|${salt}` : ''}`);
+}
+export function omitKeys(obj, keys) {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return obj;
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) if (!keys.includes(k)) out[k] = v;
+  return out;
+}
+
+/* UFC Stats percentages are stored as printed (42 = 42%); older rows hold the
+ * ratio (0.42). Return the printed form, or null. */
+export function pctPrinted(v) {
+  if (v == null || v === '') return null;
+  const n = Number(v);
+  if (!Number.isFinite(n)) return null;
+  return Math.round(n > 0 && n <= 1 ? n * 100 : n);
+}
+export function numOrNull(v, digits = 2) {
+  if (v == null || v === '') return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.round(n * 10 ** digits) / 10 ** digits : null;
+}
+
+/* Whole days from `from` to `to` (YYYY-MM-DD); null when either is missing. */
+export function daysBetween(from, to) {
+  if (!from || !to) return null;
+  const a = new Date(`${String(from).slice(0, 10)}T00:00:00Z`).getTime();
+  const b = new Date(`${String(to).slice(0, 10)}T00:00:00Z`).getTime();
+  if (Number.isNaN(a) || Number.isNaN(b)) return null;
+  return Math.round((b - a) / 86400e3);
 }
 
 /* Deterministic picker: the same slug always draws the same variant. */
