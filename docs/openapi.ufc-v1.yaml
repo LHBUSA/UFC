@@ -6,10 +6,7 @@ info:
     Read-only normalized UFC event, fighter, bout, result, round-stat, image,
     and editorial data used by ufc.propbetedge.ai and future PropSports clients.
 servers:
-  - url: https://{host}
-    variables:
-      host:
-        default: propbetedge-ufc-api.sales-fd3.workers.dev
+  - url: https://ufc-api.propbetedge.ai
 security:
   - ApiKeyAuth: []
   - {}
