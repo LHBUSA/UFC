@@ -22,6 +22,14 @@ function commonsRedirect(sourceUrl: string, width: number): string | null {
   }
 }
 
+function espnMmaHeadshot(fighter: Fighter | null | undefined): string | null {
+  const id = String(fighter?.espn_athlete_id || "").trim();
+  if (!/^\d+$/.test(id)) return null;
+  // Display-only fallback. Never insert this URL into ufc_images: ESPN media
+  // must not enter the PropBetEdge redistributable media catalog by accident.
+  return `https://a.espncdn.com/i/headshots/mma/players/full/${id}.png`;
+}
+
 export function primaryFighterImage(fighter: Fighter | null | undefined): ImageRef | null {
   const images = fighter?.images || [];
   return images.find((image) => Boolean(image.image_url))
@@ -32,17 +40,19 @@ export function primaryFighterImage(fighter: Fighter | null | undefined): ImageR
 
 export function fighterImageUrl(fighter: Fighter | null | undefined, width = 720): string | null {
   const image = primaryFighterImage(fighter);
-  if (!image) return null;
-  if (image.image_url) return image.image_url;
-  if (image.kind === "wikimedia" && image.source_url) return commonsRedirect(image.source_url, width);
-  return null;
+  if (image?.image_url) return image.image_url;
+  if (image?.kind === "wikimedia" && image.source_url) return commonsRedirect(image.source_url, width);
+  return espnMmaHeadshot(fighter);
 }
 
 export function fighterImageCredit(fighter: Fighter | null | undefined): string | null {
   const image = primaryFighterImage(fighter);
-  if (!image) return null;
-  const parts = [image.author, image.license].filter(Boolean);
-  return parts.length ? parts.join(" · ") : image.kind === "wikimedia" ? "Wikimedia Commons" : null;
+  if (image) {
+    const parts = [image.author, image.license].filter(Boolean);
+    if (parts.length) return parts.join(" · ");
+    if (image.kind === "wikimedia") return "Wikimedia Commons";
+  }
+  return espnMmaHeadshot(fighter) ? "ESPN · display fallback" : null;
 }
 
 export function fighterMedia(fighter: Fighter | null | undefined, width = 720): FighterMedia {
