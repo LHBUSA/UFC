@@ -5,9 +5,10 @@
 #
 # Freshness contract:
 #   * source ingest every 30 minutes year-round;
-#   * article writer runs when new items land or on a two-hour baseline;
-#   * LLM polish is used when ANTHROPIC_API_KEY is configured;
-#   * writer remains fact-block-first and idempotent.
+#   * deterministic article writer runs when new items land or on a two-hour baseline;
+#   * when Anthropic is configured, a second fail-closed editorial desk pass
+#     upgrades headline/dek/body without allowing new facts/numbers/links;
+#   * the writer remains fact-block-first and idempotent.
 name: newsroom
 on:
   schedule:
@@ -54,9 +55,12 @@ jobs:
           baseline=false; if [ $((10#$hour % 2)) -eq 0 ] && [ "$minute" -lt 30 ]; then baseline=true; fi
           if [ "${{ steps.ingest.outputs.inserted }}" != "0" ] || [ "$baseline" = "true" ] || [ "${{ inputs.force_write }}" = "true" ]; then echo "write=true" >> "$GITHUB_OUTPUT"; else echo "write=false" >> "$GITHUB_OUTPUT"; fi
           echo "inserted=${{ steps.ingest.outputs.inserted }} baseline=$baseline"
-      - name: Write articles (gated)
+      - name: Write deterministic fact-block articles (gated)
         if: steps.gate.outputs.write == 'true'
         run: node scripts/news/write_articles.mjs ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
+      - name: World-class editorial desk (fail closed)
+        if: steps.gate.outputs.write == 'true' && env.ANTHROPIC_API_KEY != ''
+        run: node scripts/news/polish_world_class.mjs --recent-hours 720 --limit 30
   rankings:
     if: github.event.schedule == '41 11 * * 2,3' || github.event_name == 'workflow_dispatch' && (inputs.job == 'rankings' || inputs.job == 'all')
     runs-on: ubuntu-latest
