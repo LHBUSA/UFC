@@ -18,11 +18,28 @@ export const revalidate = 300;
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const a = await getArticleBySlug((await params).slug);
   if (!a) return { title: "Story not found", robots: { index: false } };
-  const hero = a.hero_image_ref ? await getImageById(a.hero_image_ref) : null;
+  const ogImage = `${SITE.url}/news/${a.slug}/opengraph-image`;
   return {
-    title: a.headline, description: a.dek || excerpt(a.body_md), alternates: { canonical: `/news/${a.slug}` },
-    openGraph: { type: "article", title: a.headline, description: a.dek || excerpt(a.body_md), publishedTime: a.published_at || undefined, modifiedTime: a.updated_at, authors: [SITE.desk], section: STORY_TYPE_LABEL[a.story_type] || a.story_type, url: `${SITE.url}/news/${a.slug}`, ...(hero ? { images: [{ url: hero.card, width: 800, height: 1000 }] } : {}) },
-    twitter: { card: "summary_large_image", title: a.headline, description: a.dek || undefined },
+    title: a.headline,
+    description: a.dek || excerpt(a.body_md),
+    alternates: { canonical: `/news/${a.slug}` },
+    openGraph: {
+      type: "article",
+      title: a.headline,
+      description: a.dek || excerpt(a.body_md),
+      publishedTime: a.published_at || undefined,
+      modifiedTime: a.updated_at,
+      authors: [SITE.desk],
+      section: STORY_TYPE_LABEL[a.story_type] || a.story_type,
+      url: `${SITE.url}/news/${a.slug}`,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: a.headline }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: a.headline,
+      description: a.dek || undefined,
+      images: [ogImage],
+    },
   };
 }
 
