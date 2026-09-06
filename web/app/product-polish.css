@@ -1,0 +1,81 @@
+/* Product-level polish that stays additive to the core UFC design system. */
+
+/* Header: the next-card pill is information, not a 150px tooltip. Give the
+ * product chrome enough width on desktop and only collapse at the mobile nav. */
+.hdr-wrap { max-width: 1500px; padding-left: clamp(18px, 2.3vw, 34px); padding-right: clamp(18px, 2.3vw, 34px); }
+.hdr-in { gap: clamp(12px, 1.5vw, 24px); }
+.hdr-in .nav { margin-left: clamp(0px, .5vw, 10px); }
+.hdr-in .nav a { padding-left: clamp(8px, .75vw, 12px); padding-right: clamp(8px, .75vw, 12px); }
+.hdr-cta { min-width: 0; }
+.hdr-next { min-width: 250px; width: clamp(250px, 25vw, 430px); max-width: 430px; padding-right: 14px; }
+.hdr-next-copy { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 7px; min-width: 0; width: 100%; overflow: visible !important; }
+.hdr-next-copy > * { min-width: 0; }
+.hdr-next-event { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--pbe-dim); }
+.hdr-next-event::before, .hdr-next-date::before { content: "·"; color: var(--pbe-subtle); margin-right: 7px; }
+.hdr-next-date { white-space: nowrap; color: var(--pbe-faint); }
+.account-btn { padding-left: 13px; padding-right: 13px; }
+@media (max-width: 1220px) {
+  .hdr-wrap .brand-word, .hdr-wrap .oct { display: none; }
+  .hdr-next { min-width: 220px; width: clamp(220px, 25vw, 320px); }
+}
+@media (max-width: 1040px) {
+  .hdr-next span { max-width: none; }
+  .hdr-next { min-width: 205px; width: 25vw; }
+  .hdr-next-date { display: none; }
+  .hdr-next-copy { grid-template-columns: auto minmax(0, 1fr); }
+  .hdr-in .nav a { font-size: 12px; padding-left: 7px; padding-right: 7px; }
+}
+@media (max-width: 900px) {
+  .account-btn { display: none; }
+}
+
+/* Auth */
+.login-page { max-width: 1180px; }
+.login-shell { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(360px, .98fr); border: 1px solid var(--pbe-line-strong); border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--sh-3); background: rgba(13,11,8,.8); }
+.login-brand-panel { position: relative; min-height: 570px; padding: clamp(36px, 5vw, 72px); display: flex; flex-direction: column; justify-content: center; overflow: hidden; background: radial-gradient(600px 360px at 20% 10%, rgba(212,175,55,.16), transparent 65%), linear-gradient(145deg, rgba(29,25,20,.96), rgba(13,11,8,.96)); }
+.login-brand-panel::after { content: ""; position: absolute; width: 480px; height: 480px; border: 1px solid rgba(212,175,55,.12); transform: rotate(22.5deg); right: -210px; bottom: -250px; box-shadow: 0 0 0 35px rgba(212,175,55,.018), 0 0 0 70px rgba(212,175,55,.012); }
+.login-brand-panel h1 { max-width: 10ch; font-size: clamp(42px, 5vw, 70px); line-height: .98; margin: 12px 0 18px; }
+.login-brand-panel > p { max-width: 52ch; font-size: 16px; }
+.login-mark { width: 80px; height: 80px; display: grid; place-items: center; border-radius: 20px; background: rgba(212,175,55,.08); border: 1px solid rgba(212,175,55,.25); margin-bottom: 28px; }
+.login-points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 40px; position: relative; z-index: 1; }
+.login-points span { padding: 14px; border: 1px solid var(--pbe-line); background: rgba(255,255,255,.018); border-radius: 10px; }
+.login-points b, .login-points small { display: block; }
+.login-points b { color: var(--pbe-paper); font-size: 12px; }
+.login-points small { color: var(--pbe-faint); font-size: 10px; margin-top: 4px; line-height: 1.35; }
+.login-card { border: 0 !important; border-left: 1px solid var(--pbe-line-strong) !important; border-radius: 0 !important; display: flex; flex-direction: column; justify-content: center; padding: clamp(34px, 4vw, 58px) !important; }
+.login-card h2 { font-size: clamp(28px, 3vw, 42px); margin: 8px 0 10px; }
+.login-form { margin-top: 28px; }
+.login-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; margin: 7px 0 8px; }
+.login-row input { width: 100%; min-width: 0; background: var(--pbe-ink-4); color: var(--pbe-paper); border: 1px solid var(--pbe-line-strong); border-radius: var(--r-sm); padding: 12px 14px; font: 500 14px/1.2 var(--pbe-font-data); }
+.login-row input::placeholder { color: var(--pbe-subtle); }
+.login-status { margin-top: 12px; border: 1px solid var(--pbe-line); border-radius: 8px; padding: 11px 13px; font-size: 12px; }
+.login-status.sent { border-color: rgba(78,163,115,.45); background: rgba(78,163,115,.08); color: #a9d8bd; }
+.login-status.error { border-color: rgba(193,39,61,.5); background: rgba(193,39,61,.08); color: #f0a1aa; }
+.login-divider { display: flex; align-items: center; gap: 12px; color: var(--pbe-faint); font: 600 10px/1 var(--pbe-font-data); letter-spacing: .12em; text-transform: uppercase; margin: 30px 0 15px; }
+.login-divider::before, .login-divider::after { content: ""; height: 1px; flex: 1; background: var(--pbe-line); }
+.login-network { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.login-network a { text-align: center; border: 1px solid var(--pbe-line); border-radius: 7px; padding: 9px; font-size: 12px; color: var(--pbe-dim); }
+.login-network a:hover { border-color: var(--pbe-gold); color: var(--pbe-gold); }
+.login-foot { display: flex; justify-content: center; gap: 10px; color: var(--pbe-faint); font-size: 12px; margin-top: 18px; }
+.login-foot a:hover { color: var(--pbe-gold); }
+
+/* Account */
+.account-page { max-width: 1000px; }
+.account-hero { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; padding: 28px !important; }
+.account-mark { width: 64px; height: 64px; display: grid; place-items: center; border: 1px solid rgba(212,175,55,.28); border-radius: 16px; background: var(--pbe-gold-wash); }
+.account-hero h1 { font-size: clamp(28px, 4vw, 44px); margin: 4px 0; }
+.account-plan { border: 1px solid var(--pbe-line-strong); border-radius: var(--r-pill); padding: 8px 12px; font: 800 10px/1 var(--pbe-font-data); letter-spacing: .11em; color: var(--pbe-dim); }
+.account-plan.pro, .account-plan.owner { color: var(--pbe-ink); background: var(--pbe-gold); border-color: var(--pbe-gold); }
+.account-value { color: var(--pbe-paper); font: 800 24px/1.1 var(--pbe-font-display); margin: 7px 0; }
+
+@media (max-width: 760px) {
+  .login-shell { grid-template-columns: 1fr; }
+  .login-brand-panel { min-height: auto; padding: 34px 24px; }
+  .login-brand-panel h1 { font-size: 42px; }
+  .login-points { grid-template-columns: 1fr; margin-top: 28px; }
+  .login-card { border-left: 0 !important; border-top: 1px solid var(--pbe-line-strong) !important; padding: 32px 24px !important; }
+  .login-row { grid-template-columns: 1fr; }
+  .login-row .btn { min-height: 44px; }
+  .account-hero { grid-template-columns: auto 1fr; }
+  .account-plan { grid-column: 1 / -1; width: fit-content; }
+}
