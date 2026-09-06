@@ -17,9 +17,11 @@ UFCSTATS_ENABLED = "false"
 # Optional window override for ESPN, e.g. "20251214" or "20251201-20251231".
 # ESPN_DATES = ""
 
-# Daily 06:00 UTC. Sunday-after-card is the run that matters.
+# Fight-week/source-of-truth cadence. Upcoming ESPN cards are re-read on every
+# invocation, so card additions, removals, bout changes and completed results
+# can flow into the canonical tables within one 15-minute window.
 [triggers]
-crons = ["0 6 * * *"]
+crons = ["*/15 * * * *"]
 
 # Raw HTML archive: ufc-raw/{events|fights|fighters}/{id}.html on first fetch.
 # Create the bucket first: wrangler r2 bucket create ufc-raw
