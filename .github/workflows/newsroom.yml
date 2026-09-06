@@ -1,25 +1,25 @@
 # ufc.propbetedge.ai — newsroom, rankings and portrait pipelines.
 #
 # Freshness contract (docs/UFC_PRODUCTION_V3_LIVE_WIRE_ADDENDUM.md §4):
-#   * source ingest at least every 30 minutes in fight week and no worse than
-#     every 2 hours off-week — the ingest is cheap (3 RSS feeds, fingerprint
-#     dedupe) so it simply runs every 30 minutes year-round;
-#   * article generation is gated: it runs only when the ingest inserted new
-#     items or on the two-hour baseline slot, so the expensive writer never
-#     spins on an unchanged feed. The writer itself is idempotent.
+#   * source ingest every 30 minutes year-round;
+#   * article generation is gated: it runs when ingest inserted new items or on
+#     the two-hour baseline slot; the writer itself is idempotent;
 #   * when Anthropic is configured, a second fail-closed editorial desk pass
-#     upgrades headline/dek/body without allowing new facts/numbers/links.
+#     upgrades headline/dek/body without allowing new facts/numbers/links;
+#   * a guaranteed daily quality sweep catches recent stories that somehow
+#     missed the editorial-desk pass, without rewriting already-polished copy;
 #   * the web/API wire rail refreshes every 30–60 s against the stored feed.
 name: newsroom
 on:
   schedule:
     - cron: "*/30 * * * *"     # news ingest every 30 min; writer gated below
+    - cron: "17 10 * * *"      # guaranteed daily world-class editorial sweep
     - cron: "41 11 * * 2,3"    # rankings (UFC.com updates Tue/Wed after cards)
     - cron: "5 9 * * *"        # portraits for newly ingested fighters
   workflow_dispatch:
     inputs:
       job:
-        description: "news | rankings | portraits | all"
+        description: "news | editorial | rankings | portraits | all"
         default: "all"
       force_write:
         description: "run the article writer even if nothing new was ingested"
@@ -60,6 +60,25 @@ jobs:
       - name: World-class editorial desk (fail closed)
         if: steps.gate.outputs.write == 'true' && env.ANTHROPIC_API_KEY != ''
         run: node scripts/news/polish_world_class.mjs --recent-hours 720 --limit 30
+
+  editorial:
+    if: github.event.schedule == '17 10 * * *' || github.event_name == 'workflow_dispatch' && (inputs.job == 'editorial' || inputs.job == 'all')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" > .env
+      - name: Require editorial model for the daily quality gate
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "ANTHROPIC_API_KEY is not configured; daily world-class editorial sweep cannot run" >&2
+            exit 1
+          fi
+      - name: Daily world-class editorial sweep (fail closed)
+        run: node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 60
+
   rankings:
     if: github.event.schedule == '41 11 * * 2,3' || github.event_name == 'workflow_dispatch' && (inputs.job == 'rankings' || inputs.job == 'all')
     runs-on: ubuntu-latest
