@@ -1,0 +1,199 @@
+openapi: 3.1.0
+info:
+  title: PropSports UFC API
+  version: 2026-09-06
+  description: >-
+    Read-only normalized UFC event, fighter, bout, result, round-stat, image,
+    and editorial data used by ufc.propbetedge.ai and future PropSports clients.
+servers:
+  - url: https://{host}
+    variables:
+      host:
+        default: propbetedge-ufc-api.sales-fd3.workers.dev
+security:
+  - ApiKeyAuth: []
+  - {}
+paths:
+  /v1/ufc:
+    get:
+      summary: API index
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /v1/ufc/events:
+    get:
+      summary: List UFC events
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [all, upcoming, recent], default: all } }
+        - { name: date, in: query, schema: { type: string, format: date } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 1000, default: 25 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /v1/ufc/events/{id}:
+    get:
+      summary: Get an event by UUID, UFCStats ID, or ESPN event ID
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/events/{id}/card:
+    get:
+      summary: Get an event and its complete ordered card
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters:
+    get:
+      summary: Search/list fighters
+      parameters:
+        - { name: q, in: query, schema: { type: string, maxLength: 100 } }
+        - { name: active, in: query, schema: { type: boolean } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 250, default: 60 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /v1/ufc/fighters/{id}:
+    get:
+      summary: Get fighter profile and licensed image references
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/history:
+    get:
+      summary: Get fighter bout history with event context
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 250, default: 100 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/stats:
+    get:
+      summary: Get display-only career snapshot statistics
+      description: Career snapshots are explicitly not valid as historical as-of model features.
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/bouts/{id}:
+    get:
+      summary: Get bout, fighters, result, and event context
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/bouts/{id}/stats:
+    get:
+      summary: Get bout and round-level fighter statistics
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/results:
+    get:
+      summary: List completed bout results with bout/event context
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 50 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /v1/ufc/rankings:
+    get:
+      summary: Verified rankings
+      description: Returns 501 until verified rankings history is populated. The API never synthesizes rankings.
+      responses:
+        '501': { $ref: '#/components/responses/Error' }
+  /v1/ufc/news:
+    get:
+      summary: List published PropBetEdge UFC articles
+      parameters:
+        - { name: story_type, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /v1/ufc/articles/{slug}:
+    get:
+      summary: Get a published UFC article
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/search:
+    get:
+      summary: Search fighters, events, and articles
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string, minLength: 2, maxLength: 100 }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 25, default: 10 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+  /v1/ufc/counts:
+    get:
+      summary: Return high-level UFC dataset counts
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  parameters:
+    EntityId:
+      name: id
+      in: path
+      required: true
+      description: Internal UUID, 16-character UFCStats ID, or ESPN source ID.
+      schema: { type: string }
+  schemas:
+    SuccessEnvelope:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, const: true }
+        data: {}
+        meta:
+          type: object
+          properties:
+            api: { type: string, const: PropSports UFC }
+            version: { type: string }
+            request_id: { type: string }
+    ErrorEnvelope:
+      type: object
+      required: [ok, error, meta]
+      properties:
+        ok: { type: boolean, const: false }
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string }
+            message: { type: string }
+            detail: {}
+        meta: { type: object }
+  responses:
+    Success:
+      description: Successful normalized UFC API response
+      headers:
+        X-Request-Id: { schema: { type: string } }
+        X-API-Version: { schema: { type: string } }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+    Error:
+      description: Explicit API failure or unavailable data surface
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
