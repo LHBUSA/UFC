@@ -14,8 +14,13 @@
 export type Voice = {
   key: string;
   name: string;
+  role: string;
   label: string;
   descriptor: string;
+  seoDescription: string;
+  bio: string[];
+  highlights: string[];
+  topics: string[];
   cta: string;
   href: string;
   destination: string;
@@ -39,8 +44,22 @@ export const VOICES: Voice[] = [
   {
     key: "joe-rogan",
     name: "Joe Rogan",
+    role: "UFC color commentator · podcaster",
     label: "Podcast · MMA conversations",
     descriptor: "Long-form conversations with fighters, coaches and personalities shaping combat sports.",
+    seoDescription: "Joe Rogan profile from PropBetEdge UFC: his place in MMA commentary, long-form fighter conversations, combat-sports background and official Joe Rogan Experience destination.",
+    bio: [
+      "Joe Rogan is a longtime UFC color commentator, comedian and host of The Joe Rogan Experience. His connection to mixed martial arts spans decades, combining a martial-arts background with cageside commentary and long-form conversations across the fight world.",
+      "For fight fans, the value is context. Extended interviews with fighters, coaches and combat-sports personalities can reveal how people inside the sport talk about preparation, technique, competition and the culture around MMA beyond what a result line or stat table can show.",
+      "PropBetEdge features Rogan as an editorial recommendation only. He is not a PropBetEdge contributor, partner or endorser.",
+    ],
+    highlights: [
+      "Longtime UFC color commentator",
+      "Host of The Joe Rogan Experience",
+      "Long-form conversations with fighters and coaches",
+      "Deep personal background in martial arts and combat sports",
+    ],
+    topics: ["UFC commentary", "fighter interviews", "martial arts", "fight culture", "long-form podcasting"],
     cta: "Listen to Joe Rogan",
     href: "https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk",
     destination: "The Joe Rogan Experience on Spotify",
@@ -61,8 +80,22 @@ export const VOICES: Voice[] = [
   {
     key: "daniel-cormier",
     name: "Daniel Cormier",
+    role: "Former two-division UFC champion · analyst",
     label: "Analysis · Fight breakdowns",
     descriptor: "Champion-level analysis, fight breakdowns and perspective from one of MMA's most accomplished competitors.",
+    seoDescription: "Daniel Cormier profile from PropBetEdge UFC: two-division championship experience, elite wrestling perspective, MMA analysis and his official video destination.",
+    bio: [
+      "Daniel Cormier is a former UFC heavyweight and light heavyweight champion, an Olympic-level freestyle wrestler and a prominent MMA commentator and analyst. His perspective combines championship experience with an elite wrestling background and years of studying fights from the broadcast desk.",
+      "Cormier's breakdowns are especially useful when a matchup turns on positioning, wrestling exchanges, clinch work, pace or the difference between what a statistic says and how that action actually develops inside the cage.",
+      "PropBetEdge features Cormier as an editorial recommendation only. He is not a PropBetEdge contributor, partner or endorser.",
+    ],
+    highlights: [
+      "Former UFC heavyweight champion",
+      "Former UFC light heavyweight champion",
+      "Olympic-level freestyle wrestling background",
+      "UFC commentator and fight analyst",
+    ],
+    topics: ["fight breakdowns", "wrestling", "championship experience", "UFC analysis", "matchup tactics"],
     cta: "Watch Daniel Cormier",
     href: "https://www.youtube.com/@dc_mma",
     destination: "Daniel Cormier on YouTube",
@@ -81,5 +114,9 @@ export const VOICES: Voice[] = [
     },
   },
 ];
+
+export function getVoice(key: string): Voice | null {
+  return VOICES.find((voice) => voice.key === key) || null;
+}
 
 export const VOICES_DISCLAIMER = "Editorial recommendations. PropBetEdge is not affiliated with or endorsed by the featured personalities.";
