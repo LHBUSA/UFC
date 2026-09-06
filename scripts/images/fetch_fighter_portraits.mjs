@@ -6,6 +6,11 @@
 //   Commons imageinfo (license allowlist) -> sharp derivatives -> Supabase
 //   Storage bucket ufc-media -> one ufc_images row per fighter.
 //
+// A small reviewed `commons_overrides.json` may identify a specific Commons
+// file for a fighter when Wikidata lacks a usable identity/image link. Those
+// overrides are still license-checked at runtime and name-locked to the stored
+// fighter row; they do not bypass the Commons license gate.
+//
 // Only free Wikimedia Commons licenses are accepted (CC0, Public domain,
 // CC BY x.x, CC BY-SA x.x). Nothing else is ever downloaded or stored.
 // Fighters without an identity-safe, acceptable image get no row; the site
@@ -30,6 +35,7 @@ const USER_AGENT = 'PropBetEdgeUFC/1.1 (https://ufc.propbetedge.ai; sales@localh
 const BUCKET = 'ufc-media';
 const CACHE_DIR = path.join(__dirname, 'cache');
 const CACHE_FILE = path.join(CACHE_DIR, 'lookups.json');
+const OVERRIDES_FILE = path.join(__dirname, 'commons_overrides.json');
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const WIKI_MIN_INTERVAL_MS = 500; // ~2 req/s to Wikimedia
 const MMA_DESC = /mixed martial art|\bMMA\b|fighter/i;
@@ -103,6 +109,17 @@ function nameSignal(fighterName, text) {
   // itself is already linked from the fighter's verified Wikidata entity.
   return hay.includes(` ${parts[0]} `) && hay.includes(` ${parts[parts.length - 1]} `);
 }
+
+function loadOverrides() {
+  try {
+    const raw = JSON.parse(fs.readFileSync(OVERRIDES_FILE, 'utf8'));
+    return raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+  } catch (e) {
+    if (e?.code === 'ENOENT') return {};
+    throw new Error(`invalid ${path.basename(OVERRIDES_FILE)}: ${e.message}`);
+  }
+}
+const COMMONS_OVERRIDES = loadOverrides();
 
 async function sbSelectAll(table, query) {
   const out = [];
@@ -285,8 +302,40 @@ async function deriveAndUpload(fighterId, srcBuf) {
   return [portrait.length, card.length, thumb.length].map((n) => `${Math.round(n / 1024)}k`).join('/');
 }
 
+async function finalizeImage(f, info, { qid = null, source }) {
+  if (!info || !info.url) return { status: 'no_image', qid, note: `Commons has no imageinfo for ${source}` };
+  if (!LICENSE_OK.test(info.license || '')) {
+    return { status: 'license_rejected', qid, note: `${info.license || '(no license)'} - ${info.descriptionurl || source}` };
+  }
+  if (!/^image\//i.test(info.mime || '')) return { status: 'no_image', qid, note: `not an image MIME: ${info.mime || '?'} <- ${source}` };
+
+  const r2_key = `fighters/${f.id}/portrait.jpg`;
+  const row = { kind: 'wikimedia', r2_key, license: info.license, author: info.author, source_url: info.descriptionurl, fighter_id: f.id };
+  if (DRY) return { status: 'ok', qid, note: `DRY ${info.license} by ${info.author ?? '?'} <- ${source}`, row };
+
+  const srcUrl = info.thumburl && info.width > 1200 ? info.thumburl : info.url;
+  const buf = await wikiFetch(srcUrl, false);
+  const sizes = await deriveAndUpload(f.id, buf);
+  await sbUpsertImage(row);
+  return { status: 'ok', qid, note: `${info.license} by ${info.author ?? '?'} (${sizes}) <- ${source}`, row };
+}
+
 // ---------------------------------------------------------------- per fighter
 async function processFighter(f) {
+  const manual = COMMONS_OVERRIDES[f.id];
+  if (manual) {
+    if (!manual.name || norm(manual.name) !== norm(f.name)) {
+      return { status: 'error', note: `curated override name mismatch: ${manual.name || '(missing)'} != ${f.name}` };
+    }
+    if (!manual.file) return { status: 'error', note: 'curated override missing file' };
+    const info = await commonsImageInfo(manual.file);
+    const evidence = `${info?.filename || ''} ${info?.description || ''} ${info?.categories || ''}`;
+    if (!info || !nameSignal(f.name, evidence)) {
+      return { status: 'error', note: `curated Commons file no longer carries identity evidence for ${f.name}: ${manual.file}` };
+    }
+    return finalizeImage(f, info, { source: `CURATED:${manual.file}` });
+  }
+
   const ent = await resolveEntity(f);
   if (ent.status !== 'ok') return { status: ent.status, note: ent.note };
 
@@ -317,15 +366,7 @@ async function processFighter(f) {
     return { status: 'no_image', qid: ent.qid, note: `${ent.qid} has no safe P18/category portrait` };
   }
 
-  const r2_key = `fighters/${f.id}/portrait.jpg`;
-  const row = { kind: 'wikimedia', r2_key, license: info.license, author: info.author, source_url: info.descriptionurl, fighter_id: f.id };
-  if (DRY) return { status: 'ok', qid: ent.qid, note: `DRY ${info.license} by ${info.author ?? '?'} <- ${source}`, row };
-
-  const srcUrl = info.thumburl && info.width > 1200 ? info.thumburl : info.url;
-  const buf = await wikiFetch(srcUrl, false);
-  const sizes = await deriveAndUpload(f.id, buf);
-  await sbUpsertImage(row);
-  return { status: 'ok', qid: ent.qid, note: `${info.license} by ${info.author ?? '?'} (${sizes}) <- ${source}`, row };
+  return finalizeImage(f, info, { qid: ent.qid, source });
 }
 
 // ---------------------------------------------------------------- main
@@ -351,7 +392,7 @@ async function main() {
 
   const cache = loadCache();
   const counts = { ok: 0, no_entity: 0, no_image: 0, license_rejected: 0, ambiguous: 0, error: 0, skipped: 0 };
-  console.log(`${fighters.length} fighters selected${MISSING_ONLY ? ' without stored media' : ' from ufc_fighters'}, ${prioritySet.size} on upcoming cards${DRY ? ' [DRY RUN]' : ''}${FORCE ? ' [FORCE]' : ''}`);
+  console.log(`${fighters.length} fighters selected${MISSING_ONLY ? ' without stored media' : ' from ufc_fighters'}, ${prioritySet.size} on upcoming cards, ${Object.keys(COMMONS_OVERRIDES).length} curated override(s)${DRY ? ' [DRY RUN]' : ''}${FORCE ? ' [FORCE]' : ''}`);
 
   let processed = 0;
   for (const f of fighters) {
