@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { getArticleBySlug, getImageById, getFightersByIds, getImagesForFighters, getBoutById } from "@/lib/db";
 import { ogFonts, OG_SIZE } from "@/lib/og";
 import { OgFrame, OgFace } from "@/components/og";
-import { fmtDate } from "@/lib/format";
+import { fmtDateTime } from "@/lib/format";
 import { STORY_TYPE_LABEL, GOLD, DIM, PAPER } from "@/lib/site";
 
 export const runtime = "edge";
@@ -20,7 +20,7 @@ export default async function OG({ params }: { params: Promise<{ slug: string }>
   const long = (a?.headline.length || 0) > 70;
   return new ImageResponse(
     (
-      <OgFrame kicker={`${label}${a?.published_at ? ` · ${fmtDate(a.published_at.slice(0, 10))}` : ""}`} footer="FROM THE PROPBETEDGE UFC DESK">
+      <OgFrame kicker={`${label}${a?.published_at ? ` · ${fmtDateTime(a.published_at)}` : ""}`} footer="FROM THE PROPBETEDGE UFC DESK">
         <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
           {hero ? <OgFace src={hero.card} name={fighters[0]?.name || "?"} size={280} /> : fighters.length ? (
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
