@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ key: stri
   const voice = getVoice((await params).key);
   if (!voice) return { title: "Profile not found", robots: { index: false } };
   const url = `${SITE.url}/voices/${voice.key}`;
-  const image = voice.image ? `${SITE.url}${voice.image.src}` : `${SITE.url}/opengraph-image`;
+  const shareImage = `${url}/opengraph-image`;
   return {
     title: `${voice.name} — MMA profile, analysis & official media`,
     description: voice.seoDescription,
@@ -28,9 +28,9 @@ export async function generateMetadata({ params }: { params: Promise<{ key: stri
       url,
       title: `${voice.name} — Inside the Fight Game`,
       description: voice.seoDescription,
-      images: [{ url: image, width: voice.image?.width || 1200, height: voice.image?.height || 630, alt: voice.name }],
+      images: [{ url: shareImage, width: 1200, height: 630, alt: `${voice.name} — PropBetEdge UFC` }],
     },
-    twitter: { card: "summary_large_image", title: `${voice.name} — Inside the Fight Game`, description: voice.seoDescription, images: [image] },
+    twitter: { card: "summary_large_image", title: `${voice.name} — Inside the Fight Game`, description: voice.seoDescription, images: [shareImage] },
   };
 }
 
