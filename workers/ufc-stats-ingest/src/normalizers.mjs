@@ -28,6 +28,7 @@ export function normWeightClass(raw, url) {
   core = core.replace(/\b\d+\b/g, ' ');
   core = core.replace(/\b(Latin America|Brazil|China|Nations|Australia vs\.? UK|Team [A-Za-z]+)\b/ig, ' ');
   core = core.replace(/\s+/g, ' ').trim();
+  if (!core) return { weight_class: null, is_womens, is_title };   /* "UFC 2 Tournament Title Bout" */
   for (const [k, v] of Object.entries(wc.map)) {
     if (core.toLowerCase() === k.toLowerCase()) return { weight_class: v, is_womens, is_title };
   }

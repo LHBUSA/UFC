@@ -45,6 +45,8 @@ def norm_weight_class(raw: str, url: str) -> dict:
     core = re.sub(r"\b\d+\b", " ", core)                      # "Ultimate Fighter 1 ..."
     core = re.sub(r"\b(Latin America|Brazil|China|Nations|Australia vs\.? UK|Team [A-Za-z]+)\b", " ", core, flags=re.I)
     core = re.sub(r"\s+", " ", core).strip()
+    if not core:   # e.g. "UFC 2 Tournament Title Bout": early tournaments carried no weight class
+        return {"weight_class": None, "is_womens": is_womens, "is_title": is_title}
     for k, v in wc["map"].items():
         if core.lower() == k.lower():
             return {"weight_class": v, "is_womens": is_womens, "is_title": is_title}
