@@ -8,18 +8,14 @@ on:
 
 permissions:
   contents: read
-  models: read
+  copilot-requests: write
 
 jobs:
-  github-models-canary:
+  copilot-cli-canary:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       GITHUB_TOKEN: ${{ github.token }}
-      UFC_EDITORIAL_GITHUB_MODEL: openai/gpt-4.1
-      ANTHROPIC_API_KEY: ""
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,7 +23,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Syntax gate
-        run: node --check scripts/news/polish_world_class.mjs
-      - name: GitHub Models editorial dry-run
-        run: node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 1 --force --dry-run
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Copilot CLI inference probe
+        run: |
+          copilot -p 'Return exactly this JSON object and nothing else: {"provider":"copilot","ok":true}' -s --model gpt-5.5 --no-ask-user --no-custom-instructions > copilot.out
+          cat copilot.out
+          grep -q '"ok"[[:space:]]*:[[:space:]]*true' copilot.out
