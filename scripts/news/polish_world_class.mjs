@@ -8,11 +8,17 @@
  *
  * Provider order:
  *   1. Anthropic when ANTHROPIC_API_KEY is configured.
- *   2. GitHub Models using the ephemeral Actions GITHUB_TOKEN.
+ *   2. GitHub Copilot CLI using the short-lived Actions token.
+ *
+ * GitHub Models is intentionally not used: GitHub retired that inference
+ * service on 2026-07-30. Copilot CLI is the supported Actions-native path.
  *
  * Usage:
  *   node scripts/news/polish_world_class.mjs [--limit 20] [--recent-hours 720] [--force] [--dry-run]
  */
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { Supabase, loadEnv, wordCount } from './lib.mjs';
 
 const args = process.argv.slice(2);
@@ -23,7 +29,7 @@ const HOURS = Math.min(24 * 60, Math.max(1, Number(opt('--recent-hours', '720'))
 const FORCE = flag('--force');
 const DRY = flag('--dry-run');
 const ANTHROPIC_MODEL = process.env.UFC_EDITORIAL_MODEL || 'claude-sonnet-5';
-const GITHUB_MODEL = process.env.UFC_EDITORIAL_GITHUB_MODEL || 'openai/gpt-4.1';
+const COPILOT_MODEL = process.env.UFC_EDITORIAL_COPILOT_MODEL || 'auto';
 const DESK_VERSION = 'editorial-desk-v2';
 
 const SYSTEM = `You are the senior editor of PropBetEdge UFC, a premium bettor-facing combat-sports intelligence newsroom. You receive one complete SOURCE PACKET containing a deterministic draft and its machine-readable fact block. Your job is to turn it into publication-grade sports journalism without adding a single unsupported fact.
@@ -153,63 +159,81 @@ async function polishAnthropic(apiKey, article, source) {
   return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'anthropic', model: ANTHROPIC_MODEL };
 }
 
-async function polishGitHub(token, article, source) {
-  const res = await fetch('https://models.github.ai/inference/chat/completions', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
-    body: JSON.stringify({
-      model: GITHUB_MODEL,
-      temperature: 0.2,
-      max_tokens: 8000,
-      messages: [
-        { role: 'system', content: SYSTEM },
-        { role: 'user', content: `SOURCE PACKET:\n${source}` },
-      ],
-    }),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(`github-models ${res.status}: ${JSON.stringify(json).slice(0, 320)}`);
-  const choice = json.choices?.[0];
-  if (!choice) throw new Error('github-models returned no choices');
-  if (choice.finish_reason === 'length') throw new Error('github-models output truncated');
-  const out = parseModelJson(choice.message?.content);
+function polishCopilot(article, source) {
+  const workdir = mkdtempSync(`${tmpdir()}/pbe-ufc-editorial-`);
+  const prompt = `${SYSTEM}\n\nSOURCE PACKET:\n${source}`;
+  let child;
+  try {
+    child = spawnSync('copilot', [
+      '-p', prompt,
+      '-s',
+      '--model', COPILOT_MODEL,
+      '--stream=off',
+      '--no-color',
+      '--no-ask-user',
+      '--no-custom-instructions',
+      '--no-remote',
+    ], {
+      cwd: workdir,
+      encoding: 'utf8',
+      timeout: 180000,
+      maxBuffer: 12 * 1024 * 1024,
+      env: {
+        ...process.env,
+        COPILOT_HOME: `${workdir}/copilot-home`,
+        GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS: 'false',
+        GITHUB_COPILOT_PROMPT_MODE_REPO_HOOKS: 'false',
+        GITHUB_COPILOT_PROMPT_MODE_WORKSPACE_MCP: 'false',
+      },
+    });
+  } finally {
+    rmSync(workdir, { recursive: true, force: true });
+  }
+
+  if (child.error) throw new Error(`copilot-cli: ${child.error.message}`);
+  if (child.signal) throw new Error(`copilot-cli terminated by ${child.signal}`);
+  if (child.status !== 0) {
+    const detail = String(child.stderr || child.stdout || '').trim().replace(/\s+/g, ' ').slice(0, 500);
+    throw new Error(`copilot-cli exit ${child.status}: ${detail}`);
+  }
+  const out = parseModelJson(child.stdout);
   const problem = validate(source, out, article);
   if (problem) throw new Error(`validation: ${problem}`);
-  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'github-models', model: GITHUB_MODEL };
+  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'copilot-cli', model: COPILOT_MODEL };
 }
 
 async function polish(env, article) {
   const { source } = sourcePacket(article);
-  const githubToken = env.GITHUB_MODELS_TOKEN || env.GITHUB_TOKEN || '';
+  const copilotToken = env.COPILOT_GITHUB_TOKEN || env.GITHUB_TOKEN || '';
   const errors = [];
 
   if (env.ANTHROPIC_API_KEY) {
     try { return await polishAnthropic(env.ANTHROPIC_API_KEY, article, source); }
     catch (error) {
       errors.push(`anthropic: ${String(error?.message || error)}`);
-      if (!githubToken) throw error;
-      console.log(`  FALLBACK ${article.slug}: Anthropic unavailable/held; trying GitHub Models`);
+      if (!copilotToken) throw error;
+      console.log(`  FALLBACK ${article.slug}: Anthropic unavailable/held; trying Copilot CLI`);
     }
   }
 
-  if (githubToken) {
-    try { return await polishGitHub(githubToken, article, source); }
-    catch (error) {
-      errors.push(`github-models: ${String(error?.message || error)}`);
-    }
+  if (copilotToken) {
+    try { return polishCopilot(article, source); }
+    catch (error) { errors.push(`copilot-cli: ${String(error?.message || error)}`); }
   }
 
-  if (!env.ANTHROPIC_API_KEY && !githubToken) throw new Error('no editorial model provider configured');
-  throw new Error(errors.join(' | ').slice(0, 700));
+  if (!env.ANTHROPIC_API_KEY && !copilotToken) throw new Error('no editorial model provider configured');
+  throw new Error(errors.join(' | ').slice(0, 900));
 }
 
 async function main() {
   const env = loadEnv();
-  const githubToken = env.GITHUB_MODELS_TOKEN || env.GITHUB_TOKEN || '';
-  if (!env.ANTHROPIC_API_KEY && !githubToken) {
-    throw new Error('world-class desk: neither ANTHROPIC_API_KEY nor GitHub Models token is configured');
+  const copilotToken = env.COPILOT_GITHUB_TOKEN || env.GITHUB_TOKEN || '';
+  if (!env.ANTHROPIC_API_KEY && !copilotToken) {
+    throw new Error('world-class desk: neither ANTHROPIC_API_KEY nor Copilot token is configured');
   }
-  const provider = env.ANTHROPIC_API_KEY ? `anthropic:${ANTHROPIC_MODEL}${githubToken ? ' (+ github fallback)' : ''}` : `github-models:${GITHUB_MODEL}`;
+  const provider = env.ANTHROPIC_API_KEY
+    ? `anthropic:${ANTHROPIC_MODEL}${copilotToken ? ' (+ copilot-cli fallback)' : ''}`
+    : `copilot-cli:${COPILOT_MODEL}`;
   console.log(`world-class desk: provider=${provider}`);
 
   const sb = new Supabase(env);
@@ -235,7 +259,7 @@ async function main() {
       }
     } catch (error) {
       rejected++;
-      console.log(`  HOLD ${article.slug}: ${String(error?.message || error).slice(0, 700)}`);
+      console.log(`  HOLD ${article.slug}: ${String(error?.message || error).slice(0, 900)}`);
     }
   }
   console.log(`world-class desk: passed=${passed} skipped=${skipped} held=${rejected}`);
