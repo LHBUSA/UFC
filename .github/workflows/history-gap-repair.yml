@@ -1,0 +1,79 @@
+name: UFC history gap repair
+
+on:
+  push:
+    branches: [ufc-fight-dna-v1]
+    paths:
+      - ".github/workflows/history-gap-repair.yml"
+      - "scripts/backfill/backfill_missing_events.py"
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "UFC Stats source"
+        required: true
+        default: "live"
+        type: choice
+        options: [live, wayback]
+
+concurrency:
+  group: ufc-history-gap-repair
+  cancel-in-progress: false
+
+jobs:
+  aspinall-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      UFCSTATS_BASE: http://ufcstats.com
+      UFCSTATS_USER_AGENT: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/128 Safari/537.36
+      UFCSTATS_MIN_INTERVAL_SEC: "1.0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/backfill/requirements.txt
+      - name: Install backfill dependencies
+        run: pip install -r scripts/backfill/requirements.txt
+      - name: Require production database credentials
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+      - name: Repair Tom Aspinall UFC history canary
+        run: |
+          SOURCE="${{ github.event.inputs.source }}"
+          if [ -z "$SOURCE" ]; then SOURCE="live"; fi
+          python scripts/backfill/backfill_missing_events.py \
+            --source "$SOURCE" \
+            --event-id 026b4f7049085842 \
+            --event-id 5a558ba1ff5e9121 \
+            --event-id 1174782eacde9b0c \
+            --event-id 319c15b8aac5bfde \
+            --event-id 1d00756835ca67c9 \
+            --event-id b9532d815060de7f \
+            --event-id bfe95ec546692b13 \
+            --event-id fd4578cac86d75ca \
+            --event-id dde70a112e053a6c \
+            --verify-fighter 399afbabc02376b5 \
+            --expected-bouts 10
+      - name: Production verification
+        env:
+          VERIFY_FIGHTER: 399afbabc02376b5
+        run: |
+          python - <<'PY'
+          import os, requests
+          base = os.environ['SUPABASE_URL'].rstrip('/') + '/rest/v1'
+          key = os.environ['SUPABASE_SERVICE_ROLE_KEY']
+          h = {'apikey': key, 'Authorization': f'Bearer {key}'}
+          f = requests.get(f"{base}/ufc_fighters", headers=h, params={'select':'id,fight_history_count','ufcstats_id':f"eq.{os.environ['VERIFY_FIGHTER']}"}, timeout=30).json()[0]
+          q = f"or=(fighter_a_id.eq.{f['id']},fighter_b_id.eq.{f['id']})"
+          r = requests.get(f"{base}/ufc_bouts?select=id,ufcstats_id,status&{q}", headers={**h, 'Prefer':'count=exact'}, timeout=30)
+          r.raise_for_status()
+          rows = r.json()
+          print({'canonical_history_count': f.get('fight_history_count'), 'archive_bouts': len(rows), 'linked_bouts': sum(bool(x.get('ufcstats_id')) for x in rows)})
+          if len(rows) < 10:
+              raise SystemExit(f"Aspinall archive still incomplete: {len(rows)}/10 bouts")
+          PY
