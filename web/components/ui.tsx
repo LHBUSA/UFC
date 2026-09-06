@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Bout, Event, Fighter, Article } from "@/lib/db";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, daysUntil, fmtDate, fmtHeight, fmtRecord, fmtTime, METHOD_LABEL, weightClassLabel, age, stanceLabel } from "@/lib/format";
+import { fighterImageUrl, fighterInitials } from "@/lib/media";
 import { SITE } from "@/lib/site";
 
 export function JsonLd({ data }: { data: object }) {
@@ -25,6 +26,63 @@ export function SectionHead({ title, eyebrow, href, cta }: { title: string; eyeb
         <h2>{title}</h2>
       </div>
       {href && <Link href={href}>{cta || "View all"} →</Link>}
+    </div>
+  );
+}
+
+export function FighterPortrait({ fighter, width = 720, priority = false }: { fighter: Fighter; width?: number; priority?: boolean }) {
+  const src = fighterImageUrl(fighter, width);
+  return (
+    <div className="fighter-portrait" aria-label={`${fighter.name} portrait`}>
+      {src ? (
+        <img src={src} alt={fighter.name} loading={priority ? "eager" : "lazy"} decoding="async" />
+      ) : (
+        <>
+          <div className="fighter-initials" aria-hidden="true">{fighterInitials(fighter.name)}</div>
+          <div className="fighter-watermark" aria-hidden="true">PBE</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export function FightPoster({ e, bouts }: { e: Event; bouts: Bout[] }) {
+  const headliner = bouts[0] || null;
+  if (!headliner) {
+    return (
+      <div className="fight-poster">
+        <div className="poster-top"><span className="eyebrow">Next card</span><span className="tag gold">Live schedule</span></div>
+        <div className="poster-empty">
+          <div><strong>{e.name}</strong><span>{fmtDate(e.event_date, { weekday: "long", month: "long", day: "numeric" })}</span></div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="fight-poster">
+      <div className="poster-fighters" aria-hidden="true">
+        <div className="poster-fighter"><FighterPortrait fighter={headliner.fighter_a} width={900} priority /></div>
+        <div className="poster-fighter"><FighterPortrait fighter={headliner.fighter_b} width={900} priority /></div>
+      </div>
+      <div className="poster-top">
+        <span className="eyebrow">{e.is_ppv ? "Pay-per-view" : "Next card"}</span>
+        <span className="tag gold">{headliner.is_title ? "Title bout" : cardPositionLabel(headliner.card_position)}</span>
+      </div>
+      <div className="poster-vs" aria-hidden="true">VS</div>
+      <div className="poster-bottom">
+        <div>
+          <div className="poster-name">{headliner.fighter_a.name}</div>
+          <div className="poster-record">{fmtRecord(headliner.fighter_a)}</div>
+        </div>
+        <div className="poster-meta">
+          <strong>{weightClassLabel(headliner.weight_class, headliner.is_womens)}</strong>
+          <span>{fmtDate(e.event_date, { month: "short", day: "numeric" })} · {bouts.length} bouts</span>
+        </div>
+        <div>
+          <div className="poster-name right">{headliner.fighter_b.name}</div>
+          <div className="poster-record right">{fmtRecord(headliner.fighter_b)}</div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -108,27 +166,32 @@ export function TaleOfTheTape({ a, b }: { a: Fighter; b: Fighter }) {
 
 export function MatchupCard({ b, e }: { b: Bout; e: Event }) {
   return (
-    <div className="matchup">
+    <div className="matchup visual">
       <div className="top">
         <span className="eyebrow">{weightClassLabel(b.weight_class, b.is_womens)}{b.is_title ? " · Title bout" : ""}</span>
         <span className="tag">{cardPositionLabel(b.card_position)}</span>
       </div>
-      <div className="tape">
-        <Link href={`/fighters/${fighterSlug(b.fighter_a)}`} className="side">
-          <div className="name">{b.fighter_a.name}</div>
-          {b.fighter_a.nickname && <div className="nick">“{b.fighter_a.nickname}”</div>}
-          <div className="rec">{fmtRecord(b.fighter_a)}</div>
+      <div className="matchup-visuals">
+        <Link href={`/fighters/${fighterSlug(b.fighter_a)}`} className="matchup-fighter">
+          <FighterPortrait fighter={b.fighter_a} width={620} />
+          <div className="matchup-nameplate">
+            <div className="name">{b.fighter_a.name}</div>
+            {b.fighter_a.nickname && <div className="nick">“{b.fighter_a.nickname}”</div>}
+            <div className="rec">{fmtRecord(b.fighter_a)}</div>
+          </div>
         </Link>
-        <div className="vs">vs</div>
-        <Link href={`/fighters/${fighterSlug(b.fighter_b)}`} className="side">
-          <div className="name">{b.fighter_b.name}</div>
-          {b.fighter_b.nickname && <div className="nick">“{b.fighter_b.nickname}”</div>}
-          <div className="rec">{fmtRecord(b.fighter_b)}</div>
+        <Link href={`/fighters/${fighterSlug(b.fighter_b)}`} className="matchup-fighter">
+          <FighterPortrait fighter={b.fighter_b} width={620} />
+          <div className="matchup-nameplate">
+            <div className="name">{b.fighter_b.name}</div>
+            {b.fighter_b.nickname && <div className="nick">“{b.fighter_b.nickname}”</div>}
+            <div className="rec">{fmtRecord(b.fighter_b)}</div>
+          </div>
         </Link>
       </div>
       <TaleOfTheTape a={b.fighter_a} b={b.fighter_b} />
       <ProLock />
-      <div style={{ marginTop: 12, textAlign: "right" }}>
+      <div className="matchup-link">
         <Link href={`/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`} style={{ color: "var(--pbe-gold)", fontWeight: 600, fontSize: "var(--fs-sm)" }}>Full matchup →</Link>
       </div>
     </div>
@@ -151,9 +214,13 @@ export function ProLock() {
 
 export function FighterCard({ f }: { f: Fighter }) {
   return (
-    <Link href={`/fighters/${fighterSlug(f)}`} className="fcard">
-      <div className="n">{f.name}{f.nickname ? <span className="faint" style={{ fontWeight: 400 }}> “{f.nickname}”</span> : null}</div>
-      <div className="m">{fmtRecord(f)} · {fmtHeight(f.height_in)} · {f.reach_in != null ? `${f.reach_in}" reach` : "reach —"}</div>
+    <Link href={`/fighters/${fighterSlug(f)}`} className="fcard visual">
+      <FighterPortrait fighter={f} width={620} />
+      <div className="fcard-copy">
+        <div className="n">{f.name}</div>
+        {f.nickname ? <div className="nickname">“{f.nickname}”</div> : null}
+        <div className="m">{fmtRecord(f)} · {fmtHeight(f.height_in)} · {f.reach_in != null ? `${f.reach_in}" reach` : "reach —"}</div>
+      </div>
     </Link>
   );
 }

@@ -1,17 +1,26 @@
 import Link from "next/link";
-import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts } from "@/lib/db";
-import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, StoryCard, JsonLd } from "@/components/ui";
+import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getFighterBySourceId, type Fighter } from "@/lib/db";
+import { CardSegments, Empty, EventCard, FightPoster, FighterCard, MatchupCard, ProPlans, SectionHead, StoryCard, JsonLd } from "@/components/ui";
 import { eventSlug } from "@/lib/slug";
-import { fmtDate, daysUntil } from "@/lib/format";
+import { fmtDate } from "@/lib/format";
 import { SITE } from "@/lib/site";
 
 export const revalidate = 300;
 
+const SPOTLIGHT_IDS = ["2554705", "3152929", "4332765"] as const;
+
 export default async function Home() {
-  const [next, upcoming, recent, articles, counts] = await Promise.all([getNextEvent(), getUpcomingEvents(4), getRecentEvents(3), getArticles(3), getCounts()]);
+  const [next, upcoming, recent, articles, counts, ...spotlightRows] = await Promise.all([
+    getNextEvent(),
+    getUpcomingEvents(4),
+    getRecentEvents(3),
+    getArticles(3),
+    getCounts(),
+    ...SPOTLIGHT_IDS.map((id) => getFighterBySourceId(id)),
+  ]);
   const bouts = next ? await getEventBouts(next.id) : [];
   const main = bouts.slice(0, 3);
-  const d = next ? daysUntil(next.event_date) : null;
+  const spotlight = spotlightRows.filter(Boolean) as Fighter[];
 
   return (
     <>
@@ -25,7 +34,7 @@ export default async function Home() {
               tracks the card, archives every fighter and round, and grades its model on calibration and closing-line value, never hit rate.
             </p>
             <div className="hero-actions">
-              <Link href={next ? `/events/${eventSlug(next)}` : "/events"} className="btn gold lg">{next ? "Next card" : "Browse events"}</Link>
+              <Link href={next ? `/events/${eventSlug(next)}` : "/events"} className="btn gold lg">{next ? "Open next card" : "Browse events"}</Link>
               <Link href="/pro" className="btn lg">What ships with Pro</Link>
             </div>
             <div className="hero-stats">
@@ -36,12 +45,8 @@ export default async function Home() {
           </div>
           <div>
             {next ? (
-              <Link href={`/events/${eventSlug(next)}`} className="card hi" style={{ display: "block" }}>
-                <div className="eyebrow">{d != null && d >= 0 ? (d === 0 ? "Fight night" : `In ${d} day${d === 1 ? "" : "s"}`) : "Next event"}</div>
-                <h2 style={{ fontFamily: "var(--pbe-font-display)", fontSize: 26, margin: "10px 0" }}>{next.name}</h2>
-                <div className="mono dim">{fmtDate(next.event_date, { weekday: "long", month: "long", day: "numeric" })}</div>
-                <div className="faint" style={{ marginTop: 4 }}>{[next.venue, next.city, next.region || next.country].filter(Boolean).join(" · ") || "Venue TBA"}</div>
-                <div className="mono faint" style={{ marginTop: 14, fontSize: "var(--fs-label)" }}>{bouts.length ? `${bouts.length} BOUTS ANNOUNCED` : "CARD ANNOUNCEMENT PENDING"}</div>
+              <Link href={`/events/${eventSlug(next)}`} style={{ display: "block" }} aria-label={`Open ${next.name}`}>
+                <FightPoster e={next} bouts={bouts} />
               </Link>
             ) : (
               <Empty title="Next card loading">
@@ -70,6 +75,15 @@ export default async function Home() {
             <div className="grid-3">
               {main.map((b) => <MatchupCard key={b.id} b={b} e={next!} />)}
             </div>
+          </div>
+        </section>
+      )}
+
+      {spotlight.length > 0 && (
+        <section className="sec">
+          <div className="wrap">
+            <SectionHead eyebrow="Fighter archive" title="The people behind the numbers." href="/fighters" cta="Browse fighters" />
+            <div className="grid-3">{spotlight.map((f) => <FighterCard key={f.id} f={f} />)}</div>
           </div>
         </section>
       )}

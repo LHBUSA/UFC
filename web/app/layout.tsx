@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import "./visual-v2.css";
 import { Header, Footer } from "@/components/Shell";
 import { JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
