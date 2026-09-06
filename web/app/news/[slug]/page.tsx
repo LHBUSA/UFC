@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticleBySlug, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor } from "@/lib/db";
-import { JsonLd, ProLock, Breadcrumbs, Avatar, Octagon, StoryCard, FighterRow } from "@/components/ui";
+import { JsonLd, ProLock, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/ui";
+import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { renderMarkdown, excerpt, readingMinutes } from "@/lib/markdown";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
 import { fmtDateTime, fmtDate, eventStatusLabel, locationLine, relTime } from "@/lib/format";
@@ -15,29 +16,42 @@ import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } 
 
 export const revalidate = 300;
 
+function materiallyUpdated(published: string | null, updated: string): boolean {
+  if (!published || !updated) return false;
+  const p = Date.parse(published), u = Date.parse(updated);
+  return Number.isFinite(p) && Number.isFinite(u) && u - p >= 5 * 60 * 1000;
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const a = await getArticleBySlug((await params).slug);
   if (!a) return { title: "Story not found", robots: { index: false } };
+  const description = a.dek || excerpt(a.body_md);
+  const label = STORY_TYPE_LABEL[a.story_type] || a.story_type;
   const ogImage = `${SITE.url}/news/${a.slug}/opengraph-image`;
   return {
     title: a.headline,
-    description: a.dek || excerpt(a.body_md),
+    description,
+    category: "sports",
+    authors: [{ name: SITE.desk, url: `${SITE.url}/about` }],
+    keywords: ["UFC", "MMA", label, "UFC fight intelligence", "UFC analysis", "PropBetEdge UFC"],
     alternates: { canonical: `/news/${a.slug}` },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
     openGraph: {
       type: "article",
       title: a.headline,
-      description: a.dek || excerpt(a.body_md),
+      description,
       publishedTime: a.published_at || undefined,
       modifiedTime: a.updated_at,
       authors: [SITE.desk],
-      section: STORY_TYPE_LABEL[a.story_type] || a.story_type,
+      section: label,
+      tags: ["UFC", "MMA", label, "Fight Intelligence"],
       url: `${SITE.url}/news/${a.slug}`,
       images: [{ url: ogImage, width: 1200, height: 630, alt: a.headline }],
     },
     twitter: {
       card: "summary_large_image",
       title: a.headline,
-      description: a.dek || undefined,
+      description,
       images: [ogImage],
     },
   };
@@ -63,6 +77,9 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
   const mm = fb.matchup?.a && fb.matchup?.b ? fb.matchup : null;
   const mmImgs = mm ? await getImagesForFighters([mm.a.fighter_id, mm.b.fighter_id]) : new Map();
   const dna = bout && a.story_type === "fight_preview" ? await getMatchupDna(bout.fighter_a.id, bout.fighter_b.id) : null;
+  const updated = materiallyUpdated(a.published_at, a.updated_at);
+  const articleUrl = `${SITE.url}/news/${a.slug}`;
+  const keywords = [...new Set(["UFC", "MMA", label, event?.name, ...fighters.map((f) => f.name), "PropBetEdge UFC", "Fight Intelligence"].filter(Boolean))];
 
   return (
     <article className="wrap page article">
@@ -70,9 +87,14 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
       <div className="eyebrow">{label}{event ? <> · <Link href={`/events/${eventSlug(event)}`}>{event.name}</Link></> : null}</div>
       <h1>{a.headline}</h1>
       {a.dek && <p className="dek">{a.dek}</p>}
-      <div className="byline">
+      <div className="byline article-freshness">
         <Mark size={28} />
-        <span><b>{SITE.desk}</b> · {a.published_at ? fmtDateTime(a.published_at) : ""}{a.updated_at && a.published_at && a.updated_at.slice(0, 16) !== a.published_at.slice(0, 16) ? ` · updated ${fmtDate(a.updated_at.slice(0, 10))}` : ""} · {readingMinutes(a.body_md)} min read</span>
+        <span>
+          <b>{SITE.desk}</b>
+          {a.published_at ? <> · Published <time dateTime={a.published_at}>{fmtDateTime(a.published_at)}</time></> : null}
+          {updated ? <> · Updated <time dateTime={a.updated_at}>{fmtDateTime(a.updated_at)}</time></> : null}
+          {` · ${readingMinutes(a.body_md)} min read`}
+        </span>
       </div>
 
       <div className={`article-hero${hero ? " has-media" : ""}`}>
@@ -156,22 +178,44 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
       {more.length > 0 && (
         <section className="segment">
           <h3>More from the desk</h3>
-          <div className="news">{more.map((x) => <StoryCard key={x.id} a={x} hero={x.hero_image_ref ? moreMedia.heroes.get(x.hero_image_ref) : null} faces={moreMedia.faces.get(x.id)} />)}</div>
+          <div className="news">{more.map((x) => <NewsStoryCard key={x.id} a={x} hero={x.hero_image_ref ? moreMedia.heroes.get(x.hero_image_ref) : null} faces={moreMedia.faces.get(x.id)} />)}</div>
         </section>
       )}
 
       <JsonLd data={{
-        "@context": "https://schema.org", "@type": "NewsArticle", "@id": `${SITE.url}/news/${a.slug}#article`, headline: a.headline, description: a.dek || excerpt(a.body_md),
-        image: hero ? [hero.portrait, hero.card] : [`${SITE.url}/news/${a.slug}/opengraph-image`],
-        datePublished: a.published_at || undefined, dateModified: a.updated_at, url: `${SITE.url}/news/${a.slug}`, articleSection: label, inLanguage: "en-US",
-        author: { "@type": "Organization", "@id": `${SITE.url}/#desk`, name: SITE.desk, url: SITE.url },
-        publisher: { "@type": "Organization", "@id": `${SITE.parent}/#org`, name: "PropBetEdge", logo: { "@type": "ImageObject", url: SITE.logo.full600 } },
-        mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE.url}/news/${a.slug}` }, isAccessibleForFree: true,
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "@id": `${articleUrl}#article`,
+        url: articleUrl,
+        headline: a.headline,
+        description: a.dek || excerpt(a.body_md),
+        image: hero ? [hero.portrait, hero.card, `${articleUrl}/opengraph-image`] : [`${articleUrl}/opengraph-image`],
+        thumbnailUrl: `${articleUrl}/opengraph-image`,
+        datePublished: a.published_at || undefined,
+        dateModified: a.updated_at,
+        articleSection: label,
+        articleBody: undefined,
+        inLanguage: "en-US",
+        genre: ["Sports journalism", "Fight analysis"],
+        keywords,
+        wordCount: a.body_md.trim().split(/\s+/).length,
+        isAccessibleForFree: true,
+        author: { "@type": "NewsMediaOrganization", "@id": `${SITE.url}/#desk`, name: SITE.desk, url: SITE.url },
+        publisher: {
+          "@type": "NewsMediaOrganization",
+          "@id": `${SITE.url}/#desk`,
+          name: SITE.desk,
+          url: SITE.url,
+          logo: { "@type": "ImageObject", url: `${SITE.url}${SITE.brand.logoWide}`, width: 600, height: 160 },
+        },
+        mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+        isPartOf: { "@id": `${SITE.url}/#site` },
         about: [
-          ...(event ? [{ "@type": "SportsEvent", name: event.name, startDate: event.event_date, url: `${SITE.url}/events/${eventSlug(event)}` }] : []),
+          ...(event ? [{ "@type": "SportsEvent", name: event.name, startDate: event.event_date, url: `${SITE.url}/events/${eventSlug(event)}`, sport: "Mixed Martial Arts" }] : []),
           ...fighters.map((f) => ({ "@type": "Person", name: f.name, url: `${SITE.url}/fighters/${fighterSlug(f)}` })),
         ],
-        wordCount: a.body_md.split(/\s+/).length,
+        mentions: fighters.map((f) => ({ "@type": "Person", name: f.name, url: `${SITE.url}/fighters/${fighterSlug(f)}` })),
+        speakable: { "@type": "SpeakableSpecification", cssSelector: [".article h1", ".article .dek"] },
       }} />
     </article>
   );
