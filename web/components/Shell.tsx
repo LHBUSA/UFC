@@ -3,26 +3,33 @@ import { NavLinks } from "./NavLinks";
 import { Logo, Mark } from "./Brand";
 import { SITE } from "@/lib/site";
 import { getNextEvent } from "@/lib/db";
+import { getCurrentAccount } from "@/lib/auth";
 import { eventSlug } from "@/lib/slug";
 import { daysUntil, eventShortName, fmtDate } from "@/lib/format";
 
 export async function Header() {
-  const next = await getNextEvent();
+  const [next, account] = await Promise.all([getNextEvent(), getCurrentAccount()]);
   const d = next ? daysUntil(next.event_date) : null;
   const live = d != null && d <= 0 && d >= -1;
+  const nextLabel = live ? "Fight night" : d === 1 ? "Tomorrow" : d != null && d <= 6 ? "Fight week" : "Next card";
   return (
     <header className="hdr">
       <input id="mnav-toggle" type="checkbox" aria-hidden="true" />
-      <div className="wrap hdr-in">
+      <div className="wrap hdr-in hdr-wrap">
         <Logo />
         <NavLinks className="nav" />
         <div className="hdr-cta">
           {next && (
-            <Link href={`/events/${eventSlug(next)}`} className="hdr-next" title={next.name}>
+            <Link href={`/events/${eventSlug(next)}`} className="hdr-next" title={`${nextLabel}: ${next.name} — ${fmtDate(next.event_date)}`}>
               <i className={`dot${live ? " live" : ""}`} aria-hidden="true" />
-              <span><b>{live ? "Fight night" : d === 1 ? "Tomorrow" : d != null && d <= 6 ? "Fight week" : "Next"}</b> · {eventShortName(next.name)} · {fmtDate(next.event_date, { month: "short", day: "numeric" })}</span>
+              <span className="hdr-next-copy">
+                <b>{nextLabel}</b>
+                <span className="hdr-next-event">{eventShortName(next.name)}</span>
+                <span className="hdr-next-date">{fmtDate(next.event_date, { month: "short", day: "numeric" })}</span>
+              </span>
             </Link>
           )}
+          {account ? <Link href="/account" className="btn account-btn">{account.unlimited ? "Owner" : account.plan === "pro" ? "Pro" : "Account"}</Link> : <Link href="/login" className="btn account-btn">Sign in</Link>}
           <Link href="/pro" className="btn gold">Go Pro</Link>
           <label htmlFor="mnav-toggle" className="menu-btn" aria-label="Open menu"><span /><span /><span /></label>
         </div>
@@ -30,8 +37,8 @@ export async function Header() {
       <div className="mnav">
         <NavLinks className="" />
         <div className="mnav-foot">
-          {next && <Link href={`/events/${eventSlug(next)}`} className="btn">Next card</Link>}
-          <Link href="/login" className="btn">Sign in</Link>
+          {next && <Link href={`/events/${eventSlug(next)}`} className="btn">{nextLabel}</Link>}
+          <Link href={account ? "/account" : "/login"} className="btn">{account ? "Account" : "Sign in"}</Link>
         </div>
       </div>
     </header>
@@ -65,6 +72,7 @@ export function Footer() {
             <h4>Company</h4>
             <Link href="/pro">UFC Pro</Link>
             <Link href="/login">Sign in</Link>
+            <Link href="/account">Account</Link>
             <Link href="/about">About &amp; editorial policy</Link>
             <a href={`mailto:${SITE.contact}`}>Contact the desk</a>
           </div>
@@ -83,8 +91,8 @@ export function Footer() {
         </div>
         <p className="disclaimer">
           PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, or any sportsbook.
-          Fighter portraits are Creative Commons images from Wikimedia Commons, credited on every page they appear. Nothing on this site is betting advice.
-          Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.
+          Rights-cleared fighter media carries source/license provenance; selected upstream athlete images may be used as display-only fallbacks and are not part of the redistributable PropBetEdge media catalog.
+          Nothing on this site is betting advice. Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.
         </p>
         <div className="ftr-rail">
           <div><strong style={{ color: "var(--pbe-paper)" }}>PropBetEdge</strong> · Independent sports intelligence built from the data layer up.</div>
