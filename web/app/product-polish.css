@@ -1,5 +1,23 @@
 /* Product-level polish that stays additive to the core UFC design system. */
 
+/* Display type: Playfair's discretionary/common ligature shaping plus the
+ * existing tight tracking can visually collapse `fi` at large sizes (most
+ * visibly in "fighter"). Disable ligatures on display copy and give the hero
+ * one hair more breathing room. This keeps the premium serif without fused
+ * letterforms. */
+.hero h1,
+.page-head h1,
+.article h1,
+.serif,
+.login-brand-panel h1,
+.login-card h2,
+.account-value {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0;
+  text-rendering: geometricPrecision;
+}
+.hero h1 { letter-spacing: -.018em !important; }
+
 /* Header: the next-card pill is information, not a 150px tooltip. Give the
  * product chrome enough width on desktop and only collapse at the mobile nav. */
 .hdr-wrap { max-width: 1500px; padding-left: clamp(18px, 2.3vw, 34px); padding-right: clamp(18px, 2.3vw, 34px); }
@@ -14,6 +32,9 @@
 .hdr-next-event::before, .hdr-next-date::before { content: "·"; color: var(--pbe-subtle); margin-right: 7px; }
 .hdr-next-date { white-space: nowrap; color: var(--pbe-faint); }
 .account-btn { padding-left: 13px; padding-right: 13px; }
+@media (min-width: 1360px) {
+  .hdr-next { width: clamp(300px, 28vw, 460px); max-width: 460px; }
+}
 @media (max-width: 1220px) {
   .hdr-wrap .brand-word, .hdr-wrap .oct { display: none; }
   .hdr-next { min-width: 220px; width: clamp(220px, 25vw, 320px); }
