@@ -1,0 +1,99 @@
+name: UFC deep fighter media
+
+on:
+  push:
+    branches:
+      - ufc-fight-dna-v1
+    paths:
+      - 'scripts/images/deep_fighter_media.mjs'
+      - '.github/workflows/deep-fighter-media.yml'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Maximum missing fighters to inspect'
+        default: '120'
+      publish:
+        description: 'Publish auto-approved Commons candidates'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ufc-deep-fighter-media
+  cancel-in-progress: false
+
+jobs:
+  discover-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install Sharp dependency
+        run: npm ci --prefix web --ignore-scripts=false
+
+      - name: Syntax check
+        run: |
+          node --check scripts/images/deep_fighter_media.mjs
+          node --check scripts/images/fetch_fighter_portraits.mjs
+
+      - name: Verify database credentials
+        shell: bash
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+
+      - name: Deep discover and publish safe upcoming-fighter media
+        shell: bash
+        run: |
+          set -o pipefail
+          limit="${{ inputs.limit }}"
+          if [ -z "$limit" ]; then limit=120; fi
+          publish="--publish"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.publish }}" != "true" ]; then publish=""; fi
+          node scripts/images/deep_fighter_media.mjs --limit "$limit" $publish | tee deep-media.log
+
+      - name: Coverage after run
+        if: always()
+        shell: bash
+        run: |
+          node - <<'NODE' | tee coverage.log
+          const url = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
+          const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+          const h = { apikey:key, Authorization:`Bearer ${key}` };
+          const get = async (p) => { const r=await fetch(`${url}/rest/v1/${p}`,{headers:h}); if(!r.ok) throw new Error(`${r.status} ${await r.text()}`); return r.json(); };
+          const today = new Date().toISOString().slice(0,10);
+          const [bouts, images] = await Promise.all([
+            get(`ufc_bouts?select=fighter_a_id,fighter_b_id,ufc_events!inner(event_date)&ufc_events.event_date=gte.${today}&status=neq.cancelled&limit=5000`),
+            get('ufc_images?select=fighter_id&fighter_id=not.is.null&limit=5000'),
+          ]);
+          const booked = new Set(bouts.flatMap(b=>[b.fighter_a_id,b.fighter_b_id]));
+          const pictured = new Set(images.map(i=>i.fighter_id));
+          const covered = [...booked].filter(id=>pictured.has(id)).length;
+          console.log(`upcoming_unique=${booked.size}`);
+          console.log(`upcoming_with_image=${covered}`);
+          console.log(`upcoming_missing=${booked.size-covered}`);
+          console.log(`coverage_pct=${booked.size ? (100*covered/booked.size).toFixed(1) : '0.0'}`);
+          NODE
+
+      - name: Upload acquisition report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ufc-deep-fighter-media-${{ github.run_id }}
+          path: |
+            deep-media.log
+            coverage.log
+          if-no-files-found: warn
+          retention-days: 14
