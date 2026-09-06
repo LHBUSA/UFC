@@ -1,16 +1,26 @@
 import Link from "next/link";
-import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts } from "@/lib/db";
-import { CardSegments, Empty, EventCard, FightPoster, MatchupCard, ProPlans, SectionHead, StoryCard, JsonLd } from "@/components/ui";
+import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getFighterBySourceId, type Fighter } from "@/lib/db";
+import { CardSegments, Empty, EventCard, FightPoster, FighterCard, MatchupCard, ProPlans, SectionHead, StoryCard, JsonLd } from "@/components/ui";
 import { eventSlug } from "@/lib/slug";
 import { fmtDate } from "@/lib/format";
 import { SITE } from "@/lib/site";
 
 export const revalidate = 300;
 
+const SPOTLIGHT_IDS = ["2554705", "3152929", "4332765"] as const;
+
 export default async function Home() {
-  const [next, upcoming, recent, articles, counts] = await Promise.all([getNextEvent(), getUpcomingEvents(4), getRecentEvents(3), getArticles(3), getCounts()]);
+  const [next, upcoming, recent, articles, counts, ...spotlightRows] = await Promise.all([
+    getNextEvent(),
+    getUpcomingEvents(4),
+    getRecentEvents(3),
+    getArticles(3),
+    getCounts(),
+    ...SPOTLIGHT_IDS.map((id) => getFighterBySourceId(id)),
+  ]);
   const bouts = next ? await getEventBouts(next.id) : [];
   const main = bouts.slice(0, 3);
+  const spotlight = spotlightRows.filter(Boolean) as Fighter[];
 
   return (
     <>
@@ -65,6 +75,15 @@ export default async function Home() {
             <div className="grid-3">
               {main.map((b) => <MatchupCard key={b.id} b={b} e={next!} />)}
             </div>
+          </div>
+        </section>
+      )}
+
+      {spotlight.length > 0 && (
+        <section className="sec">
+          <div className="wrap">
+            <SectionHead eyebrow="Fighter archive" title="The people behind the numbers." href="/fighters" cta="Browse fighters" />
+            <div className="grid-3">{spotlight.map((f) => <FighterCard key={f.id} f={f} />)}</div>
           </div>
         </section>
       )}
