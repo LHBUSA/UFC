@@ -4,7 +4,7 @@ Set-StrictMode -Version Latest
 $WorkerDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = (Resolve-Path (Join-Path $WorkerDir "..\..")).Path
 $EnvFile = Join-Path $RepoRoot ".env"
-$WorkerUrl = "https://propbetedge-ufc-api.sales-fd3.workers.dev"
+$WorkerUrl = "https://ufc-api.propbetedge.ai"
 
 function Get-DotEnvValue {
     param(
@@ -24,6 +24,29 @@ function Get-DotEnvValue {
         }
     }
     return $null
+}
+
+function Invoke-ProofWithRetry {
+    param(
+        [Parameter(Mandatory = $true)][string]$Uri,
+        [int]$Attempts = 12,
+        [int]$DelaySeconds = 5
+    )
+
+    $LastError = $null
+    for ($i = 1; $i -le $Attempts; $i++) {
+        try {
+            return Invoke-RestMethod -Method Get -Uri $Uri -Headers @{ Accept = "application/json" }
+        }
+        catch {
+            $LastError = $_
+            if ($i -lt $Attempts) {
+                Write-Host ("Proof attempt {0}/{1} not ready yet; retrying in {2}s..." -f $i, $Attempts, $DelaySeconds) -ForegroundColor Yellow
+                Start-Sleep -Seconds $DelaySeconds
+            }
+        }
+    }
+    throw $LastError
 }
 
 $ServiceKey = $env:SUPABASE_SERVICE_ROLE_KEY
@@ -52,17 +75,19 @@ try {
     $ServiceKey | npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
     if ($LASTEXITCODE -ne 0) { throw "wrangler secret put failed" }
 
-    Write-Host "===== UFC API: DEPLOY =====" -ForegroundColor Cyan
+    Write-Host "===== UFC API: DEPLOY CUSTOM DOMAIN =====" -ForegroundColor Cyan
     npx wrangler deploy
     if ($LASTEXITCODE -ne 0) { throw "wrangler deploy failed" }
 
     Write-Host "===== UFC API: LIVE PROOF =====" -ForegroundColor Cyan
-    $Health = Invoke-RestMethod -Method Get -Uri "$WorkerUrl/health"
+    Write-Host "Production API origin: $WorkerUrl" -ForegroundColor DarkGray
+
+    $Health = Invoke-ProofWithRetry -Uri "$WorkerUrl/health"
     if (-not $Health.ok -or $Health.data.status -ne "ok" -or -not $Health.data.database_configured) {
         throw "Health proof failed: API or database is not healthy."
     }
 
-    $Counts = Invoke-RestMethod -Method Get -Uri "$WorkerUrl/v1/ufc/counts"
+    $Counts = Invoke-ProofWithRetry -Uri "$WorkerUrl/v1/ufc/counts"
     if (-not $Counts.ok) { throw "Counts proof failed." }
     if ([int]$Counts.data.events -lt 1 -or [int]$Counts.data.fighters -lt 1) {
         throw "Counts proof returned an unexpectedly empty UFC dataset."
