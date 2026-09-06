@@ -691,3 +691,64 @@ body::after {
 @media (max-width: 430px) { .brand-mark { display: none; } .brand-word { font-size: 15px; } }
 .byline { align-items: flex-start; flex-wrap: nowrap; }
 .byline > span { flex: 1; min-width: 0; }
+
+
+/* =====================================================================
+   FIGHT DNA — derived-feature cards with sample + origin on every number.
+   ===================================================================== */
+.origin { display: inline-flex; align-items: center; gap: 5px; font: 700 9px/1 var(--pbe-font-data); letter-spacing: .12em; text-transform: uppercase; padding: 4px 6px 3px; border-radius: 3px; border: 1px solid var(--pbe-gold); color: var(--pbe-gold); }
+.origin::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.origin.source { border-color: var(--pbe-dim); color: var(--pbe-dim); }
+.origin.licensed { border-color: var(--pbe-model); color: var(--pbe-model); }
+.origin.model { border-color: var(--pbe-model); color: var(--pbe-model); border-style: dashed; }
+.conf { font: 700 9px/1 var(--pbe-font-data); letter-spacing: .1em; text-transform: uppercase; padding: 3px 5px 2px; border-radius: 3px; border: 1px solid var(--pbe-line-strong); color: var(--pbe-faint); }
+.conf.low { color: var(--pbe-dim); border-color: var(--pbe-dim); }
+.conf.medium { color: var(--pbe-paper); border-color: var(--pbe-paper-2); }
+.conf.high { color: var(--pbe-gold); border-color: var(--pbe-gold); }
+.conf.insufficient { color: var(--pbe-subtle); border-style: dashed; }
+.segment.dna > h3 { gap: var(--s-2); }
+.segment.dna > h3 .origin { margin-left: auto; }
+.dna-cov { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; margin-bottom: var(--s-4); }
+.dna-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+.dna-card { background: rgba(29,25,20,.8); border: 1px solid rgba(255,245,220,.12); border-radius: var(--r-lg); padding: var(--s-4); box-shadow: var(--sh-1); min-width: 0; }
+.dna-card.wide { grid-column: 1 / -1; }
+.dna-card.warn { border-color: rgba(193,39,61,.35); }
+.dna-card-head { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); margin-bottom: var(--s-3); flex-wrap: wrap; }
+.dna-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--s-2); }
+.dna-tile { background: rgba(13,11,8,.66); border: 1px solid var(--pbe-line); border-radius: var(--r-md); padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dna-tile b { font: 700 20px/1.1 var(--pbe-font-data); color: var(--pbe-paper); font-variant-numeric: tabular-nums; }
+.dna-tile.insuf b { color: var(--pbe-subtle); }
+.dna-tile .k { font: 600 var(--fs-micro)/1.4 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-faint); }
+.dna-tile .s { font: 500 var(--fs-micro)/1.5 var(--pbe-font-data); color: var(--pbe-faint); display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.dna-tbl td, .dna-tbl th { padding: 8px 6px; }
+.rbars { display: flex; flex-direction: column; gap: 8px; }
+.rb { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 4px 10px; align-items: center; }
+.rb .k { font: 700 var(--fs-sm)/1 var(--pbe-font-data); color: var(--pbe-gold); grid-row: span 2; }
+.rb .bar { height: 8px; border-radius: 4px; background: var(--pbe-line); position: relative; overflow: hidden; }
+.rb .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--pbe-gold); }
+.rb .v { font: 600 var(--fs-sm)/1.3 var(--pbe-font-data); color: var(--pbe-paper); }
+.rb .v small { color: var(--pbe-faint); font-weight: 500; font-size: var(--fs-micro); }
+.rb .s { font: 500 var(--fs-micro)/1.4 var(--pbe-font-data); color: var(--pbe-faint); grid-column: 2; display: flex; gap: 4px; align-items: center; }
+.dist { display: flex; align-items: flex-end; gap: 6px; height: 56px; }
+.dist span { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 2px; }
+.dist span i { width: 100%; background: var(--pbe-gold); border-radius: 2px 2px 0 0; display: block; }
+.dist span em { font: 600 9px/1 var(--pbe-font-data); color: var(--pbe-faint); font-style: normal; }
+.dist span b { font-size: 11px; }
+.ctx { display: flex; flex-direction: column; gap: 6px; }
+.ctx-row { display: grid; grid-template-columns: 110px auto minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--pbe-line-faint); }
+.ctx-row .k { font: 600 var(--fs-micro)/1.4 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-faint); }
+.ctx-row .v { font: 700 var(--fs-sm)/1 var(--pbe-font-data); color: var(--pbe-paper); }
+.ctx-row .s { font: 500 var(--fs-micro)/1.4 var(--pbe-font-data); color: var(--pbe-faint); display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.insights { display: flex; flex-direction: column; gap: 10px; }
+.insights li { padding: 10px 12px; border-left: 3px solid var(--pbe-gold); background: rgba(13,11,8,.6); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.insights li b { color: var(--pbe-paper); font-size: var(--fs-sm); }
+.insights li p { font-size: var(--fs-sm); color: var(--pbe-paper-2); margin-top: 4px; line-height: 1.5; }
+.warns { display: flex; flex-direction: column; gap: 6px; }
+.warns li { position: relative; padding-left: 14px; font-size: var(--fs-sm); color: var(--pbe-dim); line-height: 1.5; }
+.warns li::before { content: "\2014"; position: absolute; left: 0; color: var(--pbe-crimson-bright); }
+.compare .cr .cs { margin: 0 6px; }
+.dna-evidence { margin: var(--s-4) 0; padding: var(--s-4) var(--s-5); border: 1px solid rgba(212,175,55,.3); border-radius: var(--r-md); background: rgba(13,11,8,.7); }
+.dna-evidence ul { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.dna-evidence li { font-size: var(--fs-sm); color: var(--pbe-paper-2); }
+.dna-evidence li p { color: var(--pbe-dim); margin-top: 2px; }
+@media (max-width: 800px) { .dna-grid { grid-template-columns: minmax(0, 1fr); } .ctx-row { grid-template-columns: 90px auto; } .ctx-row .s { grid-column: 1 / -1; } }

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getFighterBouts, getImagesForFighters, getArticlesForFighter, getFighterRoundStats, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
+import { getFighterDna } from "@/lib/dna";
+import { FightDnaSection, FightDnaEmpty } from "@/components/dna";
 import { resolveFighter } from "@/lib/resolve";
 import { Empty, JsonLd, ProLock, Breadcrumbs, Portrait, Credit, Avatar, StoryCard, TaleOfTheTape } from "@/components/ui";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
@@ -27,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function FighterPage({ params }: { params: Promise<{ slug: string }> }) {
   const f = await resolveFighter((await params).slug);
   if (!f) notFound();
-  const [bouts, articles, rounds, rankings] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings()]);
+  const [bouts, articles, rounds, rankings, dna] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id)]);
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
   const history = bouts.filter((b) => !upcoming.includes(b) && b.event?.event_date && b.event.event_date < today);
@@ -131,6 +133,8 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
           )}
         </section>
       )}
+
+      {dna.status === "ok" ? <FightDnaSection dna={dna.data} fighterName={f.name} /> : dna.status === "unavailable" ? <FightDnaEmpty reason={dna.reason} /> : null}
 
       {(f.career_slpm != null || f.career_td_avg != null || f.career_str_acc != null) && (
         <section className="segment">

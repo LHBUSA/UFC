@@ -8,6 +8,8 @@ import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
 import { fmtDateTime, fmtDate, eventStatusLabel, locationLine, relTime } from "@/lib/format";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
 import { storyMedia } from "@/lib/faces";
+import { getMatchupDna } from "@/lib/dna";
+import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
 import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } from "@/components/editorial";
 
@@ -43,6 +45,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
   const angle = fb.bettor_angle && (fb.bettor_angle.summary || fb.bettor_angle.markets?.length) ? fb.bettor_angle : null;
   const mm = fb.matchup?.a && fb.matchup?.b ? fb.matchup : null;
   const mmImgs = mm ? await getImagesForFighters([mm.a.fighter_id, mm.b.fighter_id]) : new Map();
+  const dna = bout && a.story_type === "fight_preview" ? await getMatchupDna(bout.fighter_a.id, bout.fighter_b.id) : null;
 
   return (
     <article className="wrap page article">
@@ -74,6 +77,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
       )}
 
       {angle && <BettorsEdge angle={angle} />}
+      {dna && dna.status === "ok" && <DnaEvidence dna={dna.data} />}
       {mm && <MatchupModule a={mm.a} b={mm.b} imgs={mmImgs} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
 
       <div className="grid-side">

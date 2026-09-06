@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getImagesForFighters, getRoundStats, getArticlesForBout, getFighterBouts } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
+import { getMatchupDna } from "@/lib/dna";
+import { DnaMatchup } from "@/components/dna";
 import { resolveFight } from "@/lib/resolve";
 import { JsonLd, ProLock, TaleOfTheTape, Breadcrumbs, Portrait, Credit, StoryCard, BoutRow } from "@/components/ui";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
@@ -33,7 +35,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   const [imgs, rounds, articles, histA, histB] = await Promise.all([
     getImagesForFighters([b.fighter_a.id, b.fighter_b.id]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
   ]);
-  const media = await storyMedia(articles);
+  const [media, dna] = await Promise.all([storyMedia(articles), getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null)]);
   const r = b.result;
   const w = winnerOf(b), l = loserOf(b);
   const d = daysUntil(e.event_date);
@@ -203,6 +205,8 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
           {!r && <ProLock />}
         </div>
       </section>
+
+      {dna.status === "ok" && <DnaMatchup dna={dna.data} />}
 
       {articles.length > 0 && (
         <section className="segment">
