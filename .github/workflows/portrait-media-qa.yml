@@ -1,0 +1,65 @@
+name: UFC portrait media QA
+
+on:
+  push:
+    branches:
+      - ufc-fight-dna-v1
+    paths:
+      - 'scripts/images/**'
+      - 'web/app/media-fixes.css'
+      - 'web/app/news/**'
+      - 'web/components/og.tsx'
+      - '.github/workflows/portrait-media-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ufc-portrait-media-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  media-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install web dependencies for Sharp
+        run: npm ci --prefix web --ignore-scripts=false
+
+      - name: Syntax check portrait resolver
+        run: node --check scripts/images/fetch_fighter_portraits.mjs
+
+      - name: Verify required read credentials are present
+        shell: bash
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+
+      - name: Dry-run missing fighter portrait discovery
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/images/fetch_fighter_portraits.mjs --dry-run --force --missing-only --limit 40 | tee portrait-dry-run.log
+
+      - name: Upload discovery report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ufc-portrait-discovery-${{ github.run_id }}
+          path: portrait-dry-run.log
+          if-no-files-found: warn
+          retention-days: 7
