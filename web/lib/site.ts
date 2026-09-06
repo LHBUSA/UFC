@@ -5,14 +5,13 @@ export const SITE = {
   url: "https://ufc.propbetedge.ai",
   api: "https://ufc-api.propbetedge.ai",
   description:
-    "PropBetEdge UFC: every card, every fighter, every round. Live fight cards with main card and prelims, fighter profiles with fight history and round stats, official rankings by division, A-vs-B tale of the tape, and a newsroom written from the data.",
+    "PropBetEdge UFC: live fight-week intelligence, complete card context, fighter dossiers, Fight DNA, official rankings, results, history and a source-disciplined MMA newsroom.",
   parent: "https://propbetedge.ai",
   network: {
     mlb: "https://mlb.propbetedge.ai",
     nfl: "https://nfl.propbetedge.ai",
     api: "https://propsports.proptechusa.ai",
   },
-  /* Local vector brand system (public/brand) plus the parent raster marks. */
   brand: {
     mark: "/brand/mark.svg",
     logo: "/brand/logo.svg",
@@ -42,10 +41,10 @@ export const SITE = {
 
 export const NAV = [
   { href: "/", label: "Home" },
-  { href: "/events", label: "Events" },
-  { href: "/contender-series", label: "DWCS" },
+  { href: "/events", label: "Schedule" },
   { href: "/fighters", label: "Fighters" },
   { href: "/rankings", label: "Rankings" },
+  { href: "/history", label: "History" },
   { href: "/news", label: "News" },
   { href: "/pro", label: "Pro" },
 ] as const;
@@ -60,7 +59,6 @@ export const STORY_TYPE_LABEL: Record<string, string> = {
   external: "Around MMA",
 };
 
-/* Brand colours used by server-rendered images (OG cards, icons). */
 export const INK = "#14110d";
 export const INK2 = "#1d1914";
 export const INK3 = "#2a241c";
