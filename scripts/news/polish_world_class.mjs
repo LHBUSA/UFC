@@ -10,6 +10,11 @@
  *   1. Anthropic when ANTHROPIC_API_KEY is configured.
  *   2. GitHub Copilot CLI using the short-lived Actions token.
  *
+ * Each provider gets one bounded corrective rewrite when the deterministic
+ * fact/depth validator rejects its first draft. The correction includes only
+ * the rejection reason and the same locked source packet; validation is never
+ * weakened and the second failure is held.
+ *
  * GitHub Models is intentionally not used: GitHub retired that inference
  * service on 2026-07-30. Copilot CLI is the supported Actions-native path.
  *
@@ -30,7 +35,7 @@ const FORCE = flag('--force');
 const DRY = flag('--dry-run');
 const ANTHROPIC_MODEL = process.env.UFC_EDITORIAL_MODEL || 'claude-sonnet-5';
 const COPILOT_MODEL = process.env.UFC_EDITORIAL_COPILOT_MODEL || 'auto';
-const DESK_VERSION = 'editorial-desk-v2';
+const DESK_VERSION = 'editorial-desk-v3';
 
 const SYSTEM = `You are the senior editor of PropBetEdge UFC, a premium bettor-facing combat-sports intelligence newsroom. You receive one complete SOURCE PACKET containing a deterministic draft and its machine-readable fact block. Your job is to turn it into publication-grade sports journalism without adding a single unsupported fact.
 
@@ -41,6 +46,14 @@ Editorial standard:
 - Use short, varied paragraphs. Avoid repeated boilerplate such as “the question this preview works through is simple,” “the tape's headline number,” “this is a profile update,” and generic “markets to reassess” filler.
 - When data is missing, mention the limitation once in the most relevant section and keep moving. Do not build entire sections out of missing-data disclaimers.
 - Never pad a thin source packet. A concise, sharp article beats invented depth.
+
+Search/editorial discoverability standard:
+- Write for humans first, but make the story easy for search engines and answer engines to understand.
+- Put the central fighter names, matchup/event and actual story type into the headline/dek when the SOURCE PACKET supports them.
+- Establish the core entities and why the story matters in the opening 120 words; do not bury the subject behind a generic lead.
+- Use descriptive H2s that say what the section is about. Prefer entity/evidence-led headings over vague labels such as “The big question” or “What it means.”
+- Preserve useful internal Markdown links naturally. Never create a new URL or manufacture an entity relationship.
+- Do not keyword-stuff, repeat fighter names unnaturally, write for a crawler, or make clickbait claims.
 
 Hard fact rules:
 1. Use ONLY facts, names, dates, numbers, methods, records, locations, quotes, market categories and relationships contained in the SOURCE PACKET. No outside knowledge.
@@ -188,35 +201,56 @@ function parseCopilotJsonl(stdout) {
 function acceptanceInstructions(article) {
   const minimum = storyMinimum(article);
   const requiresSections = article.story_type === 'fight_preview' || article.story_type === 'results';
-  return `OUTPUT ACCEPTANCE FOR THIS STORY:\n- body_md must be at least ${minimum} words and no more than 2100 words.\n${requiresSections ? '- body_md must contain at least 4 meaningful Markdown H2 sections.\n' : ''}- Meet the depth requirement by explaining only evidence already in the SOURCE PACKET; never pad with new facts or generic filler.\n- Preserve all existing Markdown links exactly.`;
+  return `OUTPUT ACCEPTANCE FOR THIS STORY:\n- body_md must be at least ${minimum} words and no more than 2100 words.\n${requiresSections ? '- body_md must contain at least 4 meaningful Markdown H2 sections.\n' : ''}- Meet the depth requirement by explaining only evidence already in the SOURCE PACKET; never pad with new facts or generic filler.\n- Preserve all existing Markdown links exactly.\n- Use descriptive, search-legible headings and a direct entity-led opening without keyword stuffing.`;
+}
+
+function correctionInstructions(problem) {
+  return `CORRECTIVE REWRITE REQUIRED:\nThe previous draft was rejected by the deterministic publication gate for exactly this reason: ${problem}.\nRewrite the entire JSON response from the SAME SOURCE PACKET. Fix that failure without adding any fact, number, URL, relationship, odds, prediction or outside knowledge. The publication gate will run again unchanged.`;
+}
+
+function parseAndValidate(text, source, article) {
+  const out = parseModelJson(text);
+  const problem = validate(source, out, article);
+  return { out, problem };
 }
 
 async function polishAnthropic(apiKey, article, source) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: ANTHROPIC_MODEL,
-      max_tokens: 18000,
-      thinking: { type: 'adaptive' },
-      system: SYSTEM,
-      messages: [{ role: 'user', content: `${acceptanceInstructions(article)}\n\nSOURCE PACKET:\n${source}` }],
-    }),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(`anthropic ${res.status}: ${JSON.stringify(json).slice(0, 320)}`);
-  if (json.stop_reason === 'refusal') throw new Error('anthropic refusal');
-  if (json.stop_reason === 'max_tokens') throw new Error('anthropic output truncated');
-  const text = (json.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
-  const out = parseModelJson(text);
-  const problem = validate(source, out, article);
-  if (problem) throw new Error(`validation: ${problem}`);
-  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'anthropic', model: ANTHROPIC_MODEL };
+  let correction = '';
+  let lastProblem = '';
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: 18000,
+        thinking: { type: 'adaptive' },
+        system: SYSTEM,
+        messages: [{ role: 'user', content: `${acceptanceInstructions(article)}${correction ? `\n\n${correction}` : ''}\n\nSOURCE PACKET:\n${source}` }],
+      }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(`anthropic ${res.status}: ${JSON.stringify(json).slice(0, 320)}`);
+    if (json.stop_reason === 'refusal') throw new Error('anthropic refusal');
+    if (json.stop_reason === 'max_tokens') throw new Error('anthropic output truncated');
+    const text = (json.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
+    try {
+      const { out, problem } = parseAndValidate(text, source, article);
+      if (!problem) return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'anthropic', model: ANTHROPIC_MODEL, attempts: attempt };
+      lastProblem = problem;
+    } catch (error) {
+      lastProblem = `invalid output serialization: ${String(error?.message || error).slice(0, 260)}`;
+    }
+    if (attempt === 1) {
+      console.log(`  RETRY ${article.slug}: Anthropic held — ${lastProblem}`);
+      correction = correctionInstructions(lastProblem);
+    }
+  }
+  throw new Error(`validation after corrective retry: ${lastProblem}`);
 }
 
-function polishCopilot(article, source) {
+function runCopilot(prompt) {
   const workdir = mkdtempSync(`${tmpdir()}/pbe-ufc-editorial-`);
-  const prompt = `${SYSTEM}\n\n${acceptanceInstructions(article)}\n\nSOURCE PACKET:\n${source}`;
   let child;
   try {
     child = spawnSync('copilot', [
@@ -244,18 +278,36 @@ function polishCopilot(article, source) {
   } finally {
     rmSync(workdir, { recursive: true, force: true });
   }
-
   if (child.error) throw new Error(`copilot-cli: ${child.error.message}`);
   if (child.signal) throw new Error(`copilot-cli terminated by ${child.signal}`);
   if (child.status !== 0) {
     const detail = String(child.stderr || child.stdout || '').trim().replace(/\s+/g, ' ').slice(0, 500);
     throw new Error(`copilot-cli exit ${child.status}: ${detail}`);
   }
-  const envelope = parseCopilotJsonl(child.stdout);
-  const out = parseModelJson(envelope.content);
-  const problem = validate(source, out, article);
-  if (problem) throw new Error(`validation: ${problem}`);
-  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'copilot-cli', model: envelope.model };
+  return parseCopilotJsonl(child.stdout);
+}
+
+function polishCopilot(article, source) {
+  let correction = '';
+  let lastProblem = '';
+  let lastModel = COPILOT_MODEL;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const prompt = `${SYSTEM}\n\n${acceptanceInstructions(article)}${correction ? `\n\n${correction}` : ''}\n\nSOURCE PACKET:\n${source}`;
+    const envelope = runCopilot(prompt);
+    lastModel = envelope.model;
+    try {
+      const { out, problem } = parseAndValidate(envelope.content, source, article);
+      if (!problem) return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'copilot-cli', model: envelope.model, attempts: attempt };
+      lastProblem = problem;
+    } catch (error) {
+      lastProblem = `invalid output serialization: ${String(error?.message || error).slice(0, 260)}`;
+    }
+    if (attempt === 1) {
+      console.log(`  RETRY ${article.slug}: Copilot held — ${lastProblem}`);
+      correction = correctionInstructions(lastProblem);
+    }
+  }
+  throw new Error(`validation after corrective retry via ${lastModel}: ${lastProblem}`);
 }
 
 async function polish(env, article) {
@@ -298,11 +350,11 @@ async function main() {
   let passed = 0, skipped = 0, rejected = 0;
   console.log(`world-class desk: candidates=${rows.length} limit=${LIMIT} hours=${HOURS} force=${FORCE} dry=${DRY}`);
   for (const article of rows) {
-    if (!FORCE && /\/editorial-desk-v(?:1|2)(?:$|\b)/.test(String(article.model_version || ''))) { skipped++; continue; }
+    if (!FORCE && /\/editorial-desk-v\d+(?:$|\b)/.test(String(article.model_version || ''))) { skipped++; continue; }
     if (!article.fact_block || !article.body_md) { skipped++; continue; }
     try {
       const out = await polish(env, article);
-      console.log(`  PASS ${article.story_type.padEnd(13)} ${wordCount(article.body_md)}w -> ${wordCount(out.body_md)}w  ${article.slug} via ${out.provider}:${out.model}`);
+      console.log(`  PASS ${article.story_type.padEnd(13)} ${wordCount(article.body_md)}w -> ${wordCount(out.body_md)}w  ${article.slug} via ${out.provider}:${out.model} attempts=${out.attempts || 1}`);
       passed++;
       if (!DRY) {
         await sb.patch('ufc_articles', `id=eq.${article.id}`, {
