@@ -2,6 +2,7 @@ import Link from "next/link";
 import { NavLinks } from "./NavLinks";
 import { Logo, Mark } from "./Brand";
 import { SITE } from "@/lib/site";
+import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getNextEvent } from "@/lib/db";
 import { getCurrentAccount } from "@/lib/auth";
 import { eventSlug } from "@/lib/slug";
@@ -56,45 +57,45 @@ export function Footer() {
             <div className="ftr-kicker">The PropBetEdge Sports Network</div>
             <div className="brand" style={{ fontSize: 16 }}><Mark size={22} /><span className="brand-word">PropBet<em>Edge</em></span> <strong className="brand-tag">UFC</strong></div>
             <p className="brand-blurb" style={{ marginTop: 0 }}>
-              <em>From raw signal to decision infrastructure.</em> Fight intelligence built from the data layer up: every card,
-              every fighter, every round, and a newsroom that only writes what the tables can prove.
+              <em>From raw signal to decision infrastructure.</em> Fight intelligence built from the data layer up: current cards, fighter identity, results, round evidence, history and a newsroom that only writes what its source packet can prove.
             </p>
           </div>
           <div className="col">
-            <h4>UFC</h4>
-            <Link href="/events">Events &amp; cards</Link>
+            <h4>Fight Intelligence</h4>
+            <Link href="/events">Schedule &amp; results</Link>
             <Link href="/contender-series">Contender Series</Link>
             <Link href="/fighters">Fighters</Link>
             <Link href="/rankings">Rankings</Link>
-            <Link href="/news">News</Link>
-            <a href="/feed.xml">RSS feed</a>
+            <Link href="/history">History</Link>
+            <Link href="/hall-of-fame">Hall of Fame tribute</Link>
           </div>
           <div className="col">
             <h4>Editorial</h4>
+            <Link href="/news">Newsroom</Link>
             <Link href="/#notable-voices">Notable voices</Link>
             <Link href="/about">Editorial policy</Link>
+            <a href="/feed.xml">RSS feed</a>
             <Link href="/pro">UFC Pro</Link>
-            <Link href="/login">Sign in</Link>
-            <Link href="/account">Account</Link>
             <a href={`mailto:${SITE.contact}`}>Contact the desk</a>
           </div>
           <div className="col">
-            <h4>Network</h4>
-            <a href={SITE.parent}>PropBetEdge</a>
-            <a href={SITE.network.mlb}>MLB Intelligence</a>
-            <a href={SITE.network.nfl}>NFL Intelligence</a>
-            <a href={SITE.network.api}>PropSports API</a>
+            <h4>Official UFC</h4>
+            <a href={UFC_OFFICIAL.home} target="_blank" rel="noopener">UFC.com ↗</a>
+            <a href={UFC_OFFICIAL.athletes} target="_blank" rel="noopener">Official athletes ↗</a>
+            <a href={UFC_OFFICIAL.rankings} target="_blank" rel="noopener">Official rankings ↗</a>
+            <a href={UFC_OFFICIAL.hallOfFame} target="_blank" rel="noopener">UFC Hall of Fame ↗</a>
+            <a href={UFC_OFFICIAL.fightPass} target="_blank" rel="noopener">UFC Fight Pass ↗</a>
+            <a href={UFC_OFFICIAL.store} target="_blank" rel="noopener">Official UFC Store ↗</a>
           </div>
         </div>
         <div className="net">
           <a href={SITE.network.mlb}><b>MLB</b><span>Baseball Intelligence</span><small>Live markets, model research, archives</small></a>
           <a href={SITE.network.nfl}><b>NFL</b><span>Football Intelligence</span><small>Prop board, Model Lab, Player DNA</small></a>
-          <Link href="/" className="here"><b>UFC</b><span>Fight Intelligence</span><small>Cards, fighters, rankings, newsroom</small></Link>
+          <Link href="/" className="here"><b>UFC</b><span>Fight Intelligence</span><small>Cards, fighters, rankings, history, newsroom</small></Link>
         </div>
         <p className="disclaimer">
-          PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, or any sportsbook.
-          Rights-cleared fighter media carries source/license provenance; selected upstream athlete images may be used as display-only fallbacks and are not part of the redistributable PropBetEdge media catalog.
-          Nothing on this site is betting advice. Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.
+          PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook. Links labeled Official UFC go directly to UFC-owned destinations so readers can verify the official record, watch licensed programming and shop official merchandise.
+          Rights-cleared fighter media carries source/license provenance. Nothing on this site is betting advice. Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.
         </p>
         <div className="ftr-rail">
           <div><strong style={{ color: "var(--pbe-paper)" }}>PropBetEdge</strong> · Independent sports intelligence built from the data layer up.</div>
