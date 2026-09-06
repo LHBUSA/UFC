@@ -1,0 +1,27 @@
+# PBE Fight State Ledger — hourly check for due fight-week checkpoints.
+# Append-only: each (bout, checkpoint) is captured once, inside its window.
+name: fight-state-ledger
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      checkpoint:
+        description: "auto | ad_hoc"
+        default: "auto"
+concurrency: fight-state-ledger
+env:
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" > .env
+      - name: Capture due checkpoints
+        run: |
+          if [ "${{ inputs.checkpoint }}" = "ad_hoc" ]; then node scripts/ledger/capture_fight_state.mjs --checkpoint ad_hoc; else node scripts/ledger/capture_fight_state.mjs --auto; fi
