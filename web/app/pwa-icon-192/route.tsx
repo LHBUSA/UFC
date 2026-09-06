@@ -2,7 +2,6 @@ import { ImageResponse } from "next/og";
 import { OCTAGON, BOLT } from "@/components/Brand";
 
 export const runtime = "edge";
-export const dynamic = "force-static";
 
 export function GET() {
   return new ImageResponse(
