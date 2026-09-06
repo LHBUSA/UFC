@@ -75,11 +75,6 @@ def main():
     for r in refs["ufc_bout_round_stats"]:
         patch(f"ufc_bout_round_stats?bout_id=eq.{r['bout_id']}&fighter_id=eq.{a.drop}&round=eq.{r['round']}", {"fighter_id": a.keep})
     patch(f"ufc_images?fighter_id=eq.{a.drop}", {"fighter_id": a.keep})
-    if fill:
-        release = {c: None for c in ("ufcstats_id", "espn_athlete_id") if c in fill}
-        if release:
-            patch(f"ufc_fighters?id=eq.{a.drop}", release)   # unique ids: free them on the dropped row first
-        patch(f"ufc_fighters?id=eq.{a.keep}", fill)
     have = {(x["source"], x["normalized"]) for x in get(f"ufc_fighter_aliases?select=source,normalized&fighter_id=eq.{a.keep}")}
     for al in refs["aliases"]:
         if (al["source"], al["normalized"]) in have:
@@ -88,8 +83,12 @@ def main():
             patch(f"ufc_fighter_aliases?id=eq.{al['id']}", {"fighter_id": a.keep})
     for qrow in refs["queue"]:
         patch(f"ufc_alias_review_queue?id=eq.{qrow['id']}", {"status": "resolved", "resolved_fighter_id": a.keep, "resolved_at": "now()"})
+    # delete the dropped row BEFORE copying its unique source ids onto the kept row
+    # (unique constraint; and the at-least-one-source-id check forbids nulling them in place)
     delete(f"ufc_fighters?id=eq.{a.drop}")
-    print("merged", a.drop, "->", a.keep)
+    if fill:
+        patch(f"ufc_fighters?id=eq.{a.keep}", fill)
+    print("merged", a.drop, "->", a.keep, "filled", list(fill))
 
 
 if __name__ == "__main__":
