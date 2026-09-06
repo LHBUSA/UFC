@@ -180,7 +180,7 @@ class Backfill:
     def _missing(self, kind: str, key: str, url: str):
         self.missing.append({"kind": kind, "id": key, "url": url})
         self.log.bump(f"wayback_missing_{kind}")
-        self.log.event("wayback_missing", kind=kind, id=key, url=url)
+        self.log.event("wayback_missing", page_kind=kind, id=key, url=url)
 
     def _ingest_event(self, ev: dict):
         url = f"{self.cfg.base}/event-details/{ev['ufcstats_id']}"
