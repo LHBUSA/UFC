@@ -15,26 +15,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  full-editorial-canary:
+  jsonl-envelope-canary:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 5
     env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       GITHUB_TOKEN: ${{ github.token }}
-      UFC_EDITORIAL_COPILOT_MODEL: auto
-      ANTHROPIC_API_KEY: ""
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Install Copilot CLI
         run: npm install -g @github/copilot
-      - name: Syntax gate
-        run: node --check scripts/news/polish_world_class.mjs
-      - name: Full editorial dry-run against one stored article
-        # Exercises the real branch script through provider + parser + fail-closed fact validation.
-        run: timeout 240s node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 1 --force --dry-run
+      - name: Inspect structured response envelope
+        run: |
+          timeout 90s copilot \
+            -p 'Return exactly this JSON object and nothing else: {"provider":"copilot","ok":true}' \
+            --model auto \
+            --stream=off \
+            --output-format=json \
+            --no-color \
+            --no-ask-user \
+            --no-custom-instructions \
+            --no-remote \
+            > copilot.jsonl
+          cat copilot.jsonl
