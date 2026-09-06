@@ -9,6 +9,24 @@ avatars, story cards), `components/Shell.tsx` (header with the live
 next-card pill, footer), `components/Brand.tsx` (vector octagon mark + logo)
 and `components/og.tsx` (OG card frame).
 
+## Atmosphere and branding (V3)
+
+- Global cage environment: `body::before` is a viewport-locked
+  `public/media/ufc-cage-bg-1600.webp` (960 variant under 720px) at ~.19
+  opacity with a grayscale/brightness filter; `body::after` adds the ink
+  gradient plus PBE gold/crimson radial lighting. Fixed pseudo-elements, not
+  `background-attachment: fixed`, so phones never repaint the image on scroll.
+  Surfaces (`.card`, `.bout`, `.story`, `.division`, …) are translucent ink
+  so the cage breathes through; the header is a blurred dark rail.
+- Stage surfaces (next-card poster, fighter hero, story tiles) use the fence
+  texture `ufc-fence-1400.webp`; fighter sides get gold (left) / crimson
+  (right) rim light. Asset sources and licences: `web/public/media/README.md`.
+- Branding: header = canonical PBE chrome mark (`propbetedge.ai/logo/pbe-mark-160.png`)
+  + wordmark + UFC tag + octagon/bolt sub-brand icon; footer = PBE full logo
+  and "The PropBetEdge Sports Network" with MLB / NFL / UFC siblings.
+- Fighter pages show UFC Stats career tiles (SLpM, Str Acc, SApM, Str Def,
+  TD Avg, TD Acc, TD Def, Sub Avg) labelled as a capture-time snapshot.
+
 ## Routes
 
 | Route | Source | Empty state |

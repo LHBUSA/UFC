@@ -10,8 +10,12 @@ custom_domain = true
 
 [vars]
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
-API_VERSION = "2026-09-06"
+API_VERSION = "2026-09-06.2"
 REQUIRE_API_KEY = "false"
+# Durable first-party media origin: public Supabase Storage bucket `ufc-media`.
+# ufc_images.r2_key ("fighters/<id>/portrait.jpg") resolves to {base}/{r2_key};
+# card.jpg / thumb.jpg derivatives sit beside it; rankings/latest.json lives here too.
+UFC_IMAGE_BASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media"
 
 # Required secret before deploy:
 #   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY

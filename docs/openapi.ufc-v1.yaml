@@ -1,10 +1,14 @@
 openapi: 3.1.0
 info:
   title: PropSports UFC API
-  version: 2026-09-06
+  version: 2026-09-06.2
   description: >-
     Read-only normalized UFC event, fighter, bout, result, round-stat, image,
-    and editorial data used by ufc.propbetedge.ai and future PropSports clients.
+    rankings and editorial data used by ufc.propbetedge.ai and future PropSports
+    clients. Every change since 2026-09-06 is additive: no field was removed or
+    renamed. Media URLs are first-party durable Storage URLs derived from
+    `ufc_images.r2_key`; rankings come only from the verified ufc.com snapshot
+    store; nothing is synthesized.
 servers:
   - url: https://ufc-api.propbetedge.ai
 security:
@@ -13,7 +17,7 @@ security:
 paths:
   /v1/ufc:
     get:
-      summary: API index
+      summary: API index (advertises every route and the media base URL)
       responses:
         '200': { $ref: '#/components/responses/Success' }
   /v1/ufc/events:
@@ -35,32 +39,83 @@ paths:
         '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/events/{id}/card:
     get:
-      summary: Get an event and its complete ordered card
+      summary: Event plus its complete ordered card (composite event-page contract)
+      description: >-
+        `data.event` plus `data.bouts[]` ordered main event first. Each bout carries
+        `fighter_a` / `fighter_b` with `images[]` and `primary_image`, and `result`
+        (null when unfought). `include=stats` adds `round_stats[]` (both fighters,
+        every round) and `stat_totals` keyed by fighter id to each bout, in one
+        request. `media` and `results` are accepted for symmetry and are always on.
       parameters:
         - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/CardInclude'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/events/{id}/articles:
+    get:
+      summary: Published articles attached to an event, with resolved hero media
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 12 } }
       responses:
         '200': { $ref: '#/components/responses/Success' }
         '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/fighters:
     get:
-      summary: Search/list fighters
+      summary: Search/list fighters (each row carries a compact primary_image)
+      description: >-
+        Rows are `Fighter` plus `primary_image` (`PrimaryImage` or null). The full
+        `images[]` array is only on fighter detail so archive grids stay small.
+        `meta.with_media` counts rows with a resolved portrait.
       parameters:
         - { name: q, in: query, schema: { type: string, maxLength: 100 } }
         - { name: active, in: query, schema: { type: boolean } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 250, default: 60 } }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
       responses:
         '200': { $ref: '#/components/responses/Success' }
+  /v1/ufc/fighters/media:
+    get:
+      summary: Bulk primary_image lookup for archive grids (max 150 ids)
+      description: >-
+        `data.media` is an object keyed by every requested fighter UUID whose value
+        is `PrimaryImage` or null. `meta.requested` / `meta.found` summarize coverage.
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          description: Comma-separated fighter UUIDs (1..150).
+          schema: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
   /v1/ufc/fighters/{id}:
     get:
-      summary: Get fighter profile and licensed image references
+      summary: Fighter profile (composite fighter-page contract via include)
+      description: >-
+        Default response is the fighter row plus `slug_id`, `images[]` (full
+        licensed media with `image_url`, `card_url`, `thumb_url`) and
+        `primary_image`. Includes are additive and never change the base fields:
+        `ranking` adds `ranking` (verified positions or null when no snapshot),
+        `next` adds `next_bout` (next scheduled bout with event + opponent, or null),
+        `history` adds `history[]` (bout + event + opponent + result + outcome,
+        newest first, `history_limit` 1..250), `stats` adds `stats`
+        (`career_snapshot` display-only fields with the leakage warning, plus
+        `computed` per-bout totals and career aggregates from UFC Stats round rows,
+        with provenance). `media` is accepted and always on.
       parameters:
         - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/FighterInclude'
+        - { name: history_limit, in: query, schema: { type: integer, minimum: 1, maximum: 250, default: 100 } }
       responses:
         '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
         '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/fighters/{id}/history:
     get:
-      summary: Get fighter bout history with event context
+      summary: Fighter bout history with event context, opponent and outcome
       parameters:
         - $ref: '#/components/parameters/EntityId'
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 250, default: 100 } }
@@ -69,10 +124,23 @@ paths:
         '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/fighters/{id}/stats:
     get:
-      summary: Get display-only career snapshot statistics
-      description: Career snapshots are explicitly not valid as historical as-of model features.
+      summary: Career snapshot plus round-stat rows and computed aggregates
+      description: >-
+        `career_snapshot` fields are display-only and explicitly not valid as
+        historical as-of model features. `round_stats[]` is every UFC Stats round
+        row for the fighter; `computed` sums them per bout and across the career
+        with labelled provenance (`fight_time_basis`).
       parameters:
         - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/articles:
+    get:
+      summary: Published articles tagged with a fighter, with resolved hero media
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 8 } }
       responses:
         '200': { $ref: '#/components/responses/Success' }
         '404': { $ref: '#/components/responses/Error' }
@@ -86,7 +154,7 @@ paths:
         '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/bouts/{id}/stats:
     get:
-      summary: Get bout and round-level fighter statistics
+      summary: Bout, every round-level row, per-fighter totals and provenance
       parameters:
         - $ref: '#/components/parameters/EntityId'
       responses:
@@ -101,21 +169,34 @@ paths:
         '200': { $ref: '#/components/responses/Success' }
   /v1/ufc/rankings:
     get:
-      summary: Verified rankings
-      description: Returns 501 until verified rankings history is populated. The API never synthesizes rankings.
+      summary: Verified official UFC rankings (ufc.com snapshot)
+      description: >-
+        Served from the `ufc_rankings` table when migration 003 is applied and
+        populated, otherwise from the Storage snapshot written by the same ingest
+        (`meta.store` says which). Divisions are in official page order; entries are
+        ordered by rank (competition ranking, ties are real). `fighter` is the
+        linked `{id, name, slug_id}` identity or null when the alias resolver could
+        not link unambiguously. Returns `503 rankings_not_available` with
+        `data: null` when no store exists. Never synthesized.
+      parameters:
+        - { name: division, in: query, description: Division key filter (e.g. MIDDLEWEIGHT, P4P, light-heavyweight), schema: { type: string } }
+        - { name: womens, in: query, schema: { type: boolean } }
       responses:
-        '501': { $ref: '#/components/responses/Error' }
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
   /v1/ufc/news:
     get:
-      summary: List published PropBetEdge UFC articles
+      summary: List published PropBetEdge UFC articles with resolved hero media
       parameters:
         - { name: story_type, in: query, schema: { type: string } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
       responses:
         '200': { $ref: '#/components/responses/Success' }
   /v1/ufc/articles/{slug}:
     get:
-      summary: Get a published UFC article
+      summary: Get a published UFC article with resolved hero media
       parameters:
         - name: slug
           in: path
@@ -126,7 +207,7 @@ paths:
         '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/search:
     get:
-      summary: Search fighters, events, and articles
+      summary: Search fighters (with primary_image + slug_id), events, and articles (with hero media)
       parameters:
         - name: q
           in: query
@@ -138,7 +219,7 @@ paths:
         '400': { $ref: '#/components/responses/Error' }
   /v1/ufc/counts:
     get:
-      summary: Return high-level UFC dataset counts
+      summary: Dataset counts (fighters, events, bouts, results, round_stat_rows/rounds, articles, images, fighters_with_media)
       responses:
         '200': { $ref: '#/components/responses/Success' }
 components:
@@ -154,7 +235,208 @@ components:
       required: true
       description: Internal UUID, 16-character UFCStats ID, or ESPN source ID.
       schema: { type: string }
+    FighterInclude:
+      name: include
+      in: query
+      required: false
+      description: Comma-separated additive blocks. Unknown values return 400 invalid_include.
+      schema:
+        type: string
+        example: media,ranking,next,history,stats
+    CardInclude:
+      name: include
+      in: query
+      required: false
+      description: Comma-separated additive blocks. Unknown values return 400 invalid_include.
+      schema:
+        type: string
+        example: media,results,stats
   schemas:
+    PrimaryImage:
+      type: object
+      description: Compact licensed media reference. Null wherever no approved image exists; never fabricated.
+      required: [image_url, card_url, thumb_url, author, license, source_url, kind]
+      properties:
+        id: { type: [string, 'null'], format: uuid }
+        image_url: { type: string, format: uri, description: 'Durable first-party URL: {UFC_IMAGE_BASE_URL}/{r2_key} (portrait, <=1200px long edge).' }
+        card_url: { type: [string, 'null'], format: uri, description: 800x1000 attention crop beside the portrait; null for non-portrait keys. }
+        thumb_url: { type: [string, 'null'], format: uri, description: 320x400 cover crop beside the portrait; null for non-portrait keys. }
+        author: { type: [string, 'null'] }
+        license: { type: [string, 'null'] }
+        source_url: { type: [string, 'null'], format: uri, description: Wikimedia Commons file page; render as the credit link. }
+        kind: { type: [string, 'null'], enum: [wikimedia, statcard, null] }
+    ImageRef:
+      allOf:
+        - $ref: '#/components/schemas/PrimaryImage'
+        - type: object
+          properties:
+            r2_key: { type: string }
+            fighter_id: { type: [string, 'null'], format: uuid }
+            created_at: { type: [string, 'null'], format: date-time }
+    HeroImage:
+      allOf:
+        - $ref: '#/components/schemas/PrimaryImage'
+        - type: object
+          properties:
+            fighter_id: { type: [string, 'null'], format: uuid }
+            ref: { type: string, description: The article's hero_image_ref (ufc_images.id or storage key). }
+    RankedFighter:
+      type: object
+      description: Linked fighter identity; slug_id = espn_athlete_id || ufcstats_id, the id used by /fighters/<slugified-name>-<slug_id> on the web.
+      required: [id, name, slug_id]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        slug_id: { type: [string, 'null'] }
+    RankingEntry:
+      type: object
+      required: [rank, name, ufc_slug, fighter_id, change, is_new, fighter]
+      properties:
+        rank: { type: integer, minimum: 1 }
+        name: { type: string, description: Verbatim ufc.com name. }
+        ufc_slug: { type: [string, 'null'] }
+        fighter_id: { type: [string, 'null'], format: uuid }
+        change: { type: [integer, 'null'], description: Signed movement; positive = moved up; null = unknown. }
+        is_new: { type: boolean }
+        fighter:
+          oneOf:
+            - $ref: '#/components/schemas/RankedFighter'
+            - type: 'null'
+    RankingDivision:
+      type: object
+      required: [key, label, is_womens, is_p4p, champion, entries]
+      properties:
+        key: { type: string, enum: [P4P, STRAWWEIGHT, FLYWEIGHT, BANTAMWEIGHT, FEATHERWEIGHT, LIGHTWEIGHT, WELTERWEIGHT, MIDDLEWEIGHT, LIGHT_HEAVYWEIGHT, HEAVYWEIGHT] }
+        label: { type: string }
+        is_womens: { type: boolean }
+        is_p4p: { type: boolean }
+        champion:
+          oneOf:
+            - type: object
+              required: [name, ufc_slug, fighter_id, fighter]
+              properties:
+                name: { type: string }
+                ufc_slug: { type: [string, 'null'] }
+                fighter_id: { type: [string, 'null'], format: uuid }
+                fighter:
+                  oneOf:
+                    - $ref: '#/components/schemas/RankedFighter'
+                    - type: 'null'
+            - type: 'null'
+        entries:
+          type: array
+          items: { $ref: '#/components/schemas/RankingEntry' }
+    Rankings:
+      type: object
+      required: [source, source_url, snapshot_date, captured_at, divisions]
+      properties:
+        source: { type: string, const: ufc.com official rankings }
+        source_url: { type: string, format: uri }
+        snapshot_date: { type: string, format: date }
+        captured_at: { type: string, format: date-time }
+        divisions:
+          type: array
+          items: { $ref: '#/components/schemas/RankingDivision' }
+    FighterRanking:
+      type: object
+      description: Per-fighter verified ranking state (fighter detail include=ranking). Null when no snapshot exists; positions empty when unranked.
+      required: [source, source_url, snapshot_date, captured_at, positions]
+      properties:
+        source: { type: string }
+        source_url: { type: string, format: uri }
+        snapshot_date: { type: string, format: date }
+        captured_at: { type: string, format: date-time }
+        positions:
+          type: array
+          items:
+            type: object
+            required: [division, label, is_womens, is_p4p, rank, is_champion, change, is_new]
+            properties:
+              division: { type: string }
+              label: { type: string }
+              is_womens: { type: boolean }
+              is_p4p: { type: boolean }
+              rank: { type: integer, minimum: 0, description: 0 = champion. }
+              is_champion: { type: boolean }
+              change: { type: [integer, 'null'] }
+              is_new: { type: boolean }
+    RoundStatTotals:
+      type: object
+      description: Sum of the round rows for one fighter; a metric is null only when every round is null.
+      properties:
+        rounds: { type: integer }
+        kd: { type: [integer, 'null'] }
+        sig_str_landed: { type: [integer, 'null'] }
+        sig_str_att: { type: [integer, 'null'] }
+        total_str_landed: { type: [integer, 'null'] }
+        total_str_att: { type: [integer, 'null'] }
+        td_landed: { type: [integer, 'null'] }
+        td_att: { type: [integer, 'null'] }
+        sub_att: { type: [integer, 'null'] }
+        rev: { type: [integer, 'null'] }
+        ctrl_sec: { type: [integer, 'null'] }
+        head_landed: { type: [integer, 'null'] }
+        head_att: { type: [integer, 'null'] }
+        body_landed: { type: [integer, 'null'] }
+        body_att: { type: [integer, 'null'] }
+        leg_landed: { type: [integer, 'null'] }
+        leg_att: { type: [integer, 'null'] }
+        distance_landed: { type: [integer, 'null'] }
+        distance_att: { type: [integer, 'null'] }
+        clinch_landed: { type: [integer, 'null'] }
+        clinch_att: { type: [integer, 'null'] }
+        ground_landed: { type: [integer, 'null'] }
+        ground_att: { type: [integer, 'null'] }
+    ComputedFighterStats:
+      type: object
+      description: Aggregates computed from UFC Stats round rows for this fighter only, with provenance. Not as-of model features.
+      required: [provenance, career_totals, career_rates, bouts]
+      properties:
+        provenance:
+          type: object
+          properties:
+            source: { type: string, const: ufcstats_round_stats }
+            method: { type: string }
+            bouts_with_stats: { type: integer }
+            rounds: { type: integer }
+            fight_time_sec: { type: [integer, 'null'] }
+            fight_time_basis: { type: object, properties: { result: { type: integer }, rounds_x_5min: { type: integer } } }
+            coverage_note: { type: string }
+        career_totals: { $ref: '#/components/schemas/RoundStatTotals' }
+        career_rates:
+          type: object
+          description: Null when the denominator is unknown.
+          properties:
+            sig_str_landed_per_min: { type: [number, 'null'] }
+            sig_str_accuracy: { type: [number, 'null'] }
+            total_str_accuracy: { type: [number, 'null'] }
+            td_per_15min: { type: [number, 'null'] }
+            td_accuracy: { type: [number, 'null'] }
+            sub_att_per_15min: { type: [number, 'null'] }
+            kd_per_15min: { type: [number, 'null'] }
+            ctrl_share: { type: [number, 'null'] }
+            head_share: { type: [number, 'null'] }
+            body_share: { type: [number, 'null'] }
+            leg_share: { type: [number, 'null'] }
+            distance_share: { type: [number, 'null'] }
+            clinch_share: { type: [number, 'null'] }
+            ground_share: { type: [number, 'null'] }
+        bouts:
+          type: array
+          description: Newest first. One entry per bout with round rows.
+          items:
+            type: object
+            properties:
+              bout_id: { type: string, format: uuid }
+              event: { type: [object, 'null'] }
+              opponent: { type: [object, 'null'], description: Compact fighter with primary_image. }
+              result: { type: [object, 'null'] }
+              outcome: { type: [string, 'null'], enum: [W, L, D, NC, null] }
+              rounds: { type: integer }
+              fight_time_sec: { type: [integer, 'null'] }
+              fight_time_basis: { type: string, enum: [result, rounds_x_5min, unknown] }
+              totals: { $ref: '#/components/schemas/RoundStatTotals' }
+              rounds_detail: { type: array, items: { type: object } }
     SuccessEnvelope:
       type: object
       required: [ok, data, meta]
@@ -169,9 +451,10 @@ components:
             request_id: { type: string }
     ErrorEnvelope:
       type: object
-      required: [ok, error, meta]
+      required: [ok, data, error, meta]
       properties:
         ok: { type: boolean, const: false }
+        data: { type: 'null' }
         error:
           type: object
           required: [code, message]
@@ -190,7 +473,7 @@ components:
         application/json:
           schema: { $ref: '#/components/schemas/SuccessEnvelope' }
     Error:
-      description: Explicit API failure or unavailable data surface
+      description: Explicit API failure or unavailable data surface (data is always null)
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorEnvelope' }

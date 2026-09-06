@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - ufc-api-v1
+      - ufc-production-v3
+    paths:
+      - 'workers/ufc-api/**'
+      - '.github/workflows/ufc-api-live-smoke.yml'
+  workflow_dispatch:
   pull_request:
     branches:
       - main
