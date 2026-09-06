@@ -41,23 +41,58 @@
   object-position: center var(--pbe-face-focus-y) !important;
 }
 
-/* News cards are the most destructive reuse: a 4:5 editorial/fighter card is
- * rendered in a 16:9 slot. Center the subject in the upper-middle rather than
- * cropping from y=0. */
+/* News cards are a destructive reuse of 4:5 media inside a 16:9 slot. Keep
+ * the subject in the upper-middle third rather than taking the top strip. */
 .story .img img {
   object-fit: cover;
   object-position: center var(--pbe-editorial-focus-y) !important;
 }
 
-/* Article hero is 21:9 desktop / 16:10 mobile. It must never use the old
- * forehead crop. A slightly lower focal point retains the full face and more
- * shoulder/torso context on portrait-oriented source media. */
-.article-hero > img {
+/* A portrait cannot be made reliably safe in a 21:9 hero with `cover`.
+ * Compose the hero instead: a blurred/dimmed atmospheric copy fills the wide
+ * frame and the uncropped source portrait sits in front. This guarantees the
+ * full face survives and usually preserves shoulders/torso as well. */
+.article-hero.has-media {
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  background: var(--pbe-ink-4);
+}
+.article-hero.has-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(13,11,8,.72), rgba(13,11,8,.08) 34%, rgba(13,11,8,.08) 66%, rgba(13,11,8,.72)),
+    linear-gradient(180deg, rgba(20,17,13,.06) 48%, rgba(20,17,13,.52));
+}
+.article-hero .article-hero-bg {
+  position: absolute;
+  inset: -28px;
+  width: calc(100% + 56px);
+  height: calc(100% + 56px);
+  max-width: none;
   object-fit: cover;
-  object-position: center 38% !important;
+  object-position: center var(--pbe-editorial-focus-y) !important;
+  filter: blur(22px) brightness(.48) saturate(.78);
+  transform: scale(1.06);
+  opacity: .88;
+}
+.article-hero .article-hero-subject {
+  position: relative;
+  z-index: 2;
+  width: auto;
+  height: 100%;
+  max-width: min(54%, 520px);
+  object-fit: contain;
+  object-position: center center !important;
+  filter: drop-shadow(0 20px 34px rgba(0,0,0,.48));
 }
 
 @media (max-width: 680px) {
   .story .img img { object-position: center 34% !important; }
-  .article-hero > img { object-position: center 34% !important; }
+  .article-hero .article-hero-bg { object-position: center 34% !important; }
+  .article-hero .article-hero-subject { max-width: 72%; }
 }
