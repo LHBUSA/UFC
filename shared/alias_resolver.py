@@ -129,6 +129,21 @@ def _norm_dob(dob: Optional[str]) -> Optional[str]:
     return s if re.fullmatch(r"\d{4}-\d{2}-\d{2}", s) else None
 
 
+def _keys_agree(reasons: list, allow_weight_class: bool = True) -> bool:
+    """Second-key verdict. DOB is stable and decisive: agree -> True, disagree -> False.
+    Only when DOB could not be compared do record / weight class decide, and a
+    disagreement there vetoes. Records drift between sources (a fight later than
+    one source's snapshot), so a record disagreement never overrides a DOB match."""
+    if "dob" in reasons:
+        return True
+    if "!dob" in reasons:
+        return False
+    keys = ("record", "weight_class") if allow_weight_class else ("record",)
+    if any(f"!{k}" in reasons for k in keys):
+        return False
+    return any(k in reasons for k in keys)
+
+
 # ---------------------------------------------------------------------------
 # Resolver
 # ---------------------------------------------------------------------------
@@ -193,8 +208,7 @@ class AliasResolver:
         for fid in exact_ids:
             agree, disagree = self._second_key_agreement(self.by_id[fid], weight_class, dob, record)
             candidates.append(Candidate(fid, 100.0, ["exact_normalized", *agree, *[f"!{d}" for d in disagree]]))
-        agreeing = [c for c in candidates if any(r in ("weight_class", "dob", "record") for r in c.reasons)
-                    and not any(r.startswith("!") for r in c.reasons)]
+        agreeing = [c for c in candidates if _keys_agree(c.reasons)]
         if len(agreeing) == 1:
             c = agreeing[0]
             return ResolveResult("matched", c.fighter_id, "exact_normalized", 100.0, candidates)
@@ -204,9 +218,7 @@ class AliasResolver:
         for fid, score in fuzzy:
             agree, disagree = self._second_key_agreement(self.by_id[fid], None, dob, record)
             candidates.append(Candidate(fid, score, ["fuzzy", *agree, *[f"!{d}" for d in disagree]]))
-        strong = [c for c in candidates if "fuzzy" in c.reasons and c.score >= self.threshold
-                  and any(r in ("dob", "record") for r in c.reasons)
-                  and not any(r.startswith("!") for r in c.reasons)]
+        strong = [c for c in candidates if "fuzzy" in c.reasons and c.score >= self.threshold and _keys_agree(c.reasons, allow_weight_class=False)]
         if len(strong) == 1 and not agreeing:
             c = strong[0]
             return ResolveResult("matched", c.fighter_id, "fuzzy_second_key", c.score, candidates)

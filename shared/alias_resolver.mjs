@@ -65,6 +65,17 @@ function normDob(dob) {
   return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
 }
 
+/* DOB is stable and decisive; record / weight class decide only when DOB could not be
+ * compared. A record disagreement never overrides a DOB match (records drift between
+ * sources). Mirrors _keys_agree in alias_resolver.py. */
+function keysAgree(reasons, allowWeightClass) {
+  if (reasons.includes('dob')) return true;
+  if (reasons.includes('!dob')) return false;
+  const keys = allowWeightClass ? ['record', 'weight_class'] : ['record'];
+  if (keys.some((k) => reasons.includes(`!${k}`))) return false;
+  return keys.some((k) => reasons.includes(k));
+}
+
 /* fighters: [{ id, ufcstats_id, name, nickname, dob, record, weight_classes:[], aliases:[] }] */
 export class AliasResolver {
   constructor(fighters = [], threshold = FUZZY_THRESHOLD) {
@@ -132,9 +143,7 @@ export class AliasResolver {
       const { agree, disagree } = this.secondKeyAgreement(this.byId.get(fid), weight_class, dob, record);
       candidates.push({ fighter_id: fid, score: 100, reasons: ['exact_normalized', ...agree, ...disagree.map((d) => `!${d}`)] });
     }
-    const isKey = (r) => r === 'weight_class' || r === 'dob' || r === 'record';
-    const clean = (c) => !c.reasons.some((r) => r.startsWith('!'));
-    const agreeing = candidates.filter((c) => c.reasons.some(isKey) && clean(c));
+    const agreeing = candidates.filter((c) => keysAgree(c.reasons, true));
     if (agreeing.length === 1) {
       return { status: 'matched', fighter_id: agreeing[0].fighter_id, method: 'exact_normalized', score: 100, candidates };
     }
@@ -144,8 +153,7 @@ export class AliasResolver {
       const { agree, disagree } = this.secondKeyAgreement(this.byId.get(fid), null, dob, record);
       candidates.push({ fighter_id: fid, score, reasons: ['fuzzy', ...agree, ...disagree.map((d) => `!${d}`)] });
     }
-    const strong = candidates.filter((c) => c.reasons.includes('fuzzy') && c.score >= this.threshold
-      && c.reasons.some((r) => r === 'dob' || r === 'record') && clean(c));
+    const strong = candidates.filter((c) => c.reasons.includes('fuzzy') && c.score >= this.threshold && keysAgree(c.reasons, false));
     if (strong.length === 1 && agreeing.length === 0) {
       return { status: 'matched', fighter_id: strong[0].fighter_id, method: 'fuzzy_second_key', score: strong[0].score, candidates };
     }

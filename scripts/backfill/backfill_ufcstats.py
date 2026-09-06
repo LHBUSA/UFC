@@ -252,6 +252,27 @@ class Backfill:
         self.log.bump("fighters_touched")
         return row
 
+    def _stub_fighter(self, fighter_id: str, name: str, from_url: str) -> dict:
+        """The fighter page has no archived capture. Create a ufcstats-keyed row from the
+        event page (name only) so the bout can exist. NEVER merged by name: a same-name
+        row without a ufcstats_id goes to the review queue instead, and the stub stays
+        separate until a human (or a later page capture with DOB) resolves it."""
+        res = self.resolver.resolve(name, "ufcstats")
+        if res.status == "review" and res.review_row:
+            res.review_row["context"].update({"ufcstats_id": fighter_id, "url": from_url, "reason": "stub_without_page"})
+            self.db.insert("ufc_alias_review_queue", [res.review_row])
+            self.log.bump("review_queued")
+        row = {"ufcstats_id": fighter_id, "name": name, "source_url": from_url, "captured_at": now_iso(), "updated_at": now_iso()}
+        if self.args.dry_run:
+            row = {**row, "id": f"dry-{fighter_id}"}
+        else:
+            r = self.db._request("POST", "ufc_fighters", headers=self.db._headers({"Prefer": "return=representation"}), data=json.dumps(row))
+            row = r.json()[0]
+        self._register_fighter(row)
+        self.log.bump("fighters_stubbed")
+        self.log.event("fighter_stub", ufcstats_id=fighter_id, name=name, review=res.status == "review")
+        return row
+
     # -- events -------------------------------------------------------------
     def phase_events(self):
         for status, path, slug in (("complete", "/statistics/events/completed?page=all", "completed"),
@@ -337,11 +358,8 @@ class Backfill:
         for b in bouts:
             if b.get("ufcstats_id") in self.bout_by_ufcstats and not self.args.force:
                 continue
-            fa = self._ingest_fighter(b["fighter_a_ufcstats_id"])
-            fb = self._ingest_fighter(b["fighter_b_ufcstats_id"])
-            if not fa or not fb:
-                self.log.bump("bouts_unlinked_missing_fighter_page")
-                continue
+            fa = self._ingest_fighter(b["fighter_a_ufcstats_id"]) or self._stub_fighter(b["fighter_a_ufcstats_id"], b["fighter_a_name"], url)
+            fb = self._ingest_fighter(b["fighter_b_ufcstats_id"]) or self._stub_fighter(b["fighter_b_ufcstats_id"], b["fighter_b_name"], url)
             wc = parsers.normalize_weight_class(b["weight_class_raw"], url)
             existing = next((x for x in event_bouts if not x.get("ufcstats_id") and {x["fighter_a_id"], x["fighter_b_id"]} == {fa["id"], fb["id"]}), None)
             if existing:
