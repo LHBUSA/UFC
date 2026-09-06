@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import "./media-fixes.css";
+import "./product-polish.css";
 import { Header, Footer } from "@/components/Shell";
 import { LiveWire } from "@/components/LiveWire";
 import { JsonLd } from "@/components/ui";
@@ -11,16 +12,18 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 const playfair = Playfair_Display({ subsets: ["latin"], weight: ["700", "800", "900"], style: ["normal", "italic"], variable: "--font-playfair", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-mono", display: "swap" });
 
-const TITLE = `${SITE.name} — UFC Cards, Fighters, Rankings & News`;
+const TITLE = "PropBetEdge UFC — Fight DNA, Cards, Fighters & Betting Intelligence";
+const DESCRIPTION = "UFC fight intelligence from PropBetEdge: upcoming cards, fighter profiles, Fight DNA, round-level striking and grappling data, official rankings, results and bettor-focused newsroom analysis.";
+const OG = `${SITE.url}/opengraph-image`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: { default: TITLE, template: `%s — ${SITE.name}` },
-  description: SITE.description,
+  description: DESCRIPTION,
   applicationName: SITE.name,
-  keywords: ["UFC", "MMA", "UFC fight card", "UFC results", "UFC rankings", "UFC fighters", "tale of the tape", "UFC news", "PropBetEdge"],
-  authors: [{ name: SITE.publisher, url: SITE.parent }],
-  creator: SITE.publisher,
+  keywords: ["UFC", "MMA", "UFC Fight DNA", "UFC analytics", "UFC fight card", "UFC results", "UFC rankings", "UFC fighters", "tale of the tape", "UFC betting analysis", "PropBetEdge"],
+  authors: [{ name: SITE.desk, url: `${SITE.url}/about` }],
+  creator: "PropBetEdge",
   publisher: SITE.publisher,
   category: "sports",
   alternates: { canonical: "/", types: { "application/rss+xml": [{ url: `${SITE.url}/feed.xml`, title: `${SITE.name} — News` }] } },
@@ -33,28 +36,54 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   appleWebApp: { capable: true, title: SITE.shortName, statusBarStyle: "black-translucent" },
   formatDetection: { telephone: false },
-  openGraph: { type: "website", siteName: SITE.name, url: SITE.url, locale: "en_US", title: TITLE, description: SITE.description },
-  twitter: { card: "summary_large_image", site: SITE.twitter, creator: SITE.twitter, title: TITLE, description: SITE.description },
+  openGraph: {
+    type: "website",
+    siteName: SITE.name,
+    url: SITE.url,
+    locale: "en_US",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: OG, width: 1200, height: 630, alt: "PropBetEdge UFC — Fight Intelligence" }],
+  },
+  twitter: { card: "summary_large_image", site: SITE.twitter, creator: SITE.twitter, title: TITLE, description: DESCRIPTION, images: [OG] },
 };
 
-export const viewport: Viewport = { themeColor: "#14110d", colorScheme: "dark", width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = { themeColor: "#0d0b08", colorScheme: "dark", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 const ORG = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization", "@id": `${SITE.parent}/#org`, name: "PropBetEdge", legalName: SITE.publisher, url: SITE.parent,
+      "@type": "Organization",
+      "@id": `${SITE.parent}/#org`,
+      name: "PropBetEdge",
+      legalName: SITE.publisher,
+      url: SITE.parent,
       logo: { "@type": "ImageObject", url: SITE.logo.full600, width: 1075, height: 600 },
-      sameAs: ["https://x.com/propbetedge", SITE.network.nfl, SITE.url],
-      contactPoint: { "@type": "ContactPoint", contactType: "editorial", email: SITE.contact },
+      sameAs: ["https://x.com/propbetedge"],
+      contactPoint: { "@type": "ContactPoint", contactType: "editorial and customer support", email: SITE.contact },
     },
     {
-      "@type": "NewsMediaOrganization", "@id": `${SITE.url}/#desk`, name: SITE.desk, url: SITE.url, parentOrganization: { "@id": `${SITE.parent}/#org` },
+      "@type": "NewsMediaOrganization",
+      "@id": `${SITE.url}/#desk`,
+      name: SITE.desk,
+      url: SITE.url,
+      parentOrganization: { "@id": `${SITE.parent}/#org` },
       logo: { "@type": "ImageObject", url: `${SITE.url}${SITE.brand.logoWide}`, width: 600, height: 160 },
-      ethicsPolicy: `${SITE.url}/about`, correctionsPolicy: `${SITE.url}/about#corrections`,
+      ethicsPolicy: `${SITE.url}/about`,
+      correctionsPolicy: `${SITE.url}/about#corrections`,
     },
     {
-      "@type": "WebSite", "@id": `${SITE.url}/#site`, url: SITE.url, name: SITE.name, description: SITE.description, publisher: { "@id": `${SITE.parent}/#org` }, inLanguage: "en-US",
+      "@type": "WebSite",
+      "@id": `${SITE.url}/#site`,
+      url: SITE.url,
+      name: SITE.name,
+      alternateName: "PropBetEdge UFC Fight Intelligence",
+      description: DESCRIPTION,
+      publisher: { "@id": `${SITE.parent}/#org` },
+      creator: { "@id": `${SITE.url}/#desk` },
+      inLanguage: "en-US",
+      isPartOf: { "@type": "WebSite", "@id": `${SITE.parent}/#site`, name: "PropBetEdge", url: SITE.parent },
       potentialAction: { "@type": "SearchAction", target: { "@type": "EntryPoint", urlTemplate: `${SITE.url}/fighters?q={search_term_string}` }, "query-input": "required name=search_term_string" },
     },
   ],
