@@ -41,11 +41,28 @@
   object-position: center var(--pbe-face-focus-y) !important;
 }
 
-/* News cards are a destructive reuse of 4:5 media inside a 16:9 slot. Keep
- * the subject in the upper-middle third rather than taking the top strip. */
-.story .img img {
-  object-fit: cover;
-  object-position: center var(--pbe-editorial-focus-y) !important;
+/* News cards are the most destructive reuse: a licensed 4:5 fighter portrait
+ * is rendered inside a 16:9 editorial frame. Do not crop it again. The full
+ * portrait is presented over the UFC fence/arena treatment so the unused
+ * width feels art-directed instead of letterboxed. */
+.story .img {
+  background:
+    radial-gradient(ellipse 46% 80% at 50% 48%, rgba(212,175,55,.10), transparent 70%),
+    linear-gradient(90deg, rgba(13,11,8,.70), rgba(29,25,20,.22) 36%, rgba(29,25,20,.22) 64%, rgba(13,11,8,.70)),
+    url("/media/ufc-fence-1400.webp") center / cover no-repeat,
+    var(--pbe-ink-3);
+}
+.story .img > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center center !important;
+  filter: drop-shadow(0 14px 28px rgba(0,0,0,.55));
+}
+/* Feature cards get a slightly larger subject without sacrificing face/torso. */
+.story.feature .img > img {
+  object-fit: contain !important;
+  object-position: center center !important;
 }
 
 /* A portrait cannot be made reliably safe in a 21:9 hero with `cover`.
@@ -92,7 +109,6 @@
 }
 
 @media (max-width: 680px) {
-  .story .img img { object-position: center 34% !important; }
   .article-hero .article-hero-bg { object-position: center 34% !important; }
   .article-hero .article-hero-subject { max-width: 72%; }
 }
