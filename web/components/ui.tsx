@@ -153,7 +153,7 @@ export function BoutRow({ b, e, imgs, isMain }: { b: Bout; e: Event; imgs?: Port
   const wB = r?.winner_id === b.fighter_b.id;
   const off = b.status === "cancelled";
   return (
-    <Link href={`/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`} className={`bout${isMain ? " main" : ""}${off ? " off" : ""}`}>
+    <Link href={`/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`} className={`bout${isMain ? " main" : ""}${off ? " off" : ""}${b.is_title ? " title" : ""}${r ? " done" : ""}`}>
       <div className="f a">
         <Avatar f={b.fighter_a} img={imgs?.get(b.fighter_a.id)} />
         <div className="t">

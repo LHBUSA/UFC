@@ -10,7 +10,7 @@ export const revalidate = 300;
 
 export default async function Home() {
   const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire] = await Promise.all([
-    getNextEvent(), getUpcomingEvents(7, { includeContenderSeries: true }), getRecentEvents(3), getArticles(7), getCounts(), getRankings(), getNewsItems(8),
+    getNextEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(7), getCounts(), getRankings(), getNewsItems(8),
   ]);
   const articles = articlesRes.rows;
   const upcoming = upcomingRaw.filter((e) => e.id !== next?.id).slice(0, 6);
@@ -37,7 +37,7 @@ export default async function Home() {
         <Octagon className="hero-oct" />
         <div className="wrap hero-in">
           <div>
-            <div className="eyebrow">PropBetEdge · Fight Intelligence</div>
+            <div className="hero-net"><img src={SITE.logo.mark80} alt="" width={57} height={22} decoding="async" /><span className="eyebrow">PropBetEdge Sports Network · Fight Intelligence</span></div>
             <h1>Every card. Every fighter. <em>Every round.</em></h1>
             <p className="lede">
               Live UFC fight cards from main event to early prelims, fighter profiles with complete fight history and round-by-round stats,

@@ -19,7 +19,9 @@ export const SITE = {
     og: "/opengraph-image",
   },
   logo: {
+    mark80: "https://propbetedge.ai/logo/pbe-mark-80.png",
     mark160: "https://propbetedge.ai/logo/pbe-mark-160.png",
+    full400: "https://propbetedge.ai/logo/pbe-full-400.png",
     mark240: "https://propbetedge.ai/logo/pbe-mark-240.png",
     full600: "https://propbetedge.ai/logo/pbe-full-600.png",
   },

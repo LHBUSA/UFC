@@ -129,9 +129,26 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
           )}
-          {(f.career_slpm != null || f.career_td_avg != null) && (
-            <p className="faint label mt-3">UFC Stats career snapshot at capture: {f.career_slpm != null ? `${f.career_slpm} SLpM` : ""}{f.career_str_acc != null ? ` · ${pctOf(f.career_str_acc)} accuracy` : ""}{f.career_sapm != null ? ` · ${f.career_sapm} SApM` : ""}{f.career_str_def != null ? ` · ${pctOf(f.career_str_def)} defence` : ""}{f.career_td_avg != null ? ` · ${f.career_td_avg} TD/15` : ""}{f.career_td_acc != null ? ` · ${pctOf(f.career_td_acc)} TD acc` : ""}{f.career_sub_avg != null ? ` · ${f.career_sub_avg} sub/15` : ""}.</p>
-          )}
+        </section>
+      )}
+
+      {(f.career_slpm != null || f.career_td_avg != null || f.career_str_acc != null) && (
+        <section className="segment">
+          <h3>UFC Stats career <small>snapshot at capture · not an as-of model feature</small></h3>
+          <div className="career">
+            {([
+              ["SLpM", f.career_slpm != null ? f.career_slpm.toFixed(2) : null, "Sig. strikes landed / min"],
+              ["Str. acc.", f.career_str_acc != null ? pctOf(f.career_str_acc) : null, "Striking accuracy"],
+              ["SApM", f.career_sapm != null ? f.career_sapm.toFixed(2) : null, "Sig. strikes absorbed / min"],
+              ["Str. def.", f.career_str_def != null ? pctOf(f.career_str_def) : null, "Striking defence"],
+              ["TD avg", f.career_td_avg != null ? f.career_td_avg.toFixed(2) : null, "Takedowns / 15 min"],
+              ["TD acc.", f.career_td_acc != null ? pctOf(f.career_td_acc) : null, "Takedown accuracy"],
+              ["TD def.", f.career_td_def != null ? pctOf(f.career_td_def) : null, "Takedown defence"],
+              ["Sub avg", f.career_sub_avg != null ? f.career_sub_avg.toFixed(1) : null, "Submission attempts / 15 min"],
+            ] as Array<[string, string | null, string]>).map(([k, v, d]) => (
+              <div className="tile" key={k} title={d}><b>{v ?? "—"}</b><span>{k}</span></div>
+            ))}
+          </div>
         </section>
       )}
 

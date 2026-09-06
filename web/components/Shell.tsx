@@ -44,9 +44,11 @@ export function Footer() {
     <footer className="ftr" aria-label="PropBetEdge network">
       <div className="wrap">
         <div className="ftr-grid">
-          <div>
-            <div className="brand"><Mark size={30} /><span className="brand-word">PropBet<em>Edge</em></span> <strong className="brand-tag">UFC</strong></div>
-            <p className="brand-blurb">
+          <div className="ftr-brand">
+            <a href={SITE.parent} aria-label="PropBetEdge"><img src={SITE.logo.full400} alt="PropBetEdge" width={150} height={84} loading="lazy" decoding="async" /></a>
+            <div className="ftr-kicker">The PropBetEdge Sports Network</div>
+            <div className="brand" style={{ fontSize: 16 }}><Mark size={22} /><span className="brand-word">PropBet<em>Edge</em></span> <strong className="brand-tag">UFC</strong></div>
+            <p className="brand-blurb" style={{ marginTop: 0 }}>
               <em>From raw signal to decision infrastructure.</em> Fight intelligence built from the data layer up: every card,
               every fighter, every round, and a newsroom that only writes what the tables can prove.
             </p>
