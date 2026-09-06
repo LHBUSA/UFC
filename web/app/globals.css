@@ -502,6 +502,8 @@ main { flex: 1; }
 .net a span { color: var(--pbe-paper); font-weight: 600; font-size: var(--fs-sm); }
 .net a small { color: var(--pbe-faint); font-size: var(--fs-label); }
 .net a.here { border-color: var(--pbe-gold-soft); }
+/* one network-level NEW mark for the launch window, on the product itself */
+.net a .net-new { display: inline-block; margin-left: 6px; padding: 2px 5px; border-radius: 999px; border: 1px solid var(--pbe-gold-soft); background: var(--pbe-gold-wash); color: var(--pbe-gold); font: 800 9.5px/1 var(--pbe-font-data); letter-spacing: .12em; text-transform: uppercase; font-style: normal; vertical-align: middle; }
 .disclaimer { font-size: var(--fs-label); color: var(--pbe-faint); max-width: 96ch; margin-top: var(--s-5); line-height: 1.6; }
 
 /* ---- reduced motion ---- */

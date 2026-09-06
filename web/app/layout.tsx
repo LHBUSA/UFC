@@ -45,7 +45,7 @@ const ORG = {
     {
       "@type": "Organization", "@id": `${SITE.parent}/#org`, name: "PropBetEdge", legalName: SITE.publisher, url: SITE.parent,
       logo: { "@type": "ImageObject", url: SITE.logo.full600, width: 1075, height: 600 },
-      sameAs: ["https://x.com/propbetedge", SITE.network.nfl, SITE.url],
+      sameAs: ["https://x.com/propbetedge", SITE.network.nfl, SITE.network.mlb, SITE.url],
       contactPoint: { "@type": "ContactPoint", contactType: "editorial", email: SITE.contact },
     },
     {

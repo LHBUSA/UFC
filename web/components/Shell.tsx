@@ -71,15 +71,16 @@ export function Footer() {
           <div className="col">
             <h4>Network</h4>
             <a href={SITE.parent}>PropBetEdge</a>
-            <a href={SITE.network.mlb}>MLB Intelligence</a>
             <a href={SITE.network.nfl}>NFL Intelligence</a>
+            <a href={SITE.network.mlb}>MLB Intelligence</a>
+            <Link href="/">UFC Fight Intelligence</Link>
             <a href={SITE.network.api}>PropSports API</a>
           </div>
         </div>
         <div className="net">
           <a href={SITE.network.mlb}><b>MLB</b><span>Baseball Intelligence</span><small>Live markets, model research, archives</small></a>
           <a href={SITE.network.nfl}><b>NFL</b><span>Football Intelligence</span><small>Prop board, Model Lab, Player DNA</small></a>
-          <Link href="/" className="here"><b>UFC</b><span>Fight Intelligence</span><small>Cards, fighters, rankings, newsroom</small></Link>
+          <Link href="/" className="here"><b>UFC</b><span>Fight Intelligence <i className="net-new">New</i></span><small>Cards, fighters, rankings, newsroom</small></Link>
         </div>
         <p className="disclaimer">
           PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, or any sportsbook.
