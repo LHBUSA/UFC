@@ -6,10 +6,10 @@
 # Freshness contract:
 #   * source ingest every 30 minutes year-round;
 #   * deterministic article writer runs when new items land or on a two-hour baseline;
-#   * when Anthropic is configured, a second fail-closed editorial desk pass
-#     upgrades headline/dek/body without allowing new facts/numbers/links;
-#   * a daily quality sweep catches any recent story that missed the editorial desk
-#     without pointlessly rewriting already-polished articles;
+#   * every writer pass is followed by the fail-closed premium editorial desk;
+#   * Anthropic is preferred when configured; GitHub Models is the automatic
+#     Actions-native fallback so polishing never depends on a manually managed key;
+#   * a daily quality sweep catches any recent story that missed the editorial desk;
 #   * the writer remains fact-block-first and idempotent.
 name: newsroom
 on:
@@ -26,11 +26,20 @@ on:
       force_write:
         description: "run the article writer even if nothing new was ingested"
         default: "false"
+
+# GitHub documents `models: read` as the minimum permission for Actions-native
+# GitHub Models inference. Keep all other permissions read-only/minimal.
+permissions:
+  contents: read
+  models: read
+
 concurrency: newsroom
 env:
   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
   SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  GITHUB_TOKEN: ${{ github.token }}
+  UFC_EDITORIAL_GITHUB_MODEL: openai/gpt-4.1
 jobs:
   news:
     if: github.event.schedule == '*/30 * * * *' || github.event_name == 'workflow_dispatch' && (inputs.job == 'news' || inputs.job == 'all')
@@ -42,7 +51,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" > .env
+      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\nGITHUB_TOKEN=%s\nUFC_EDITORIAL_GITHUB_MODEL=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" "$GITHUB_TOKEN" "$UFC_EDITORIAL_GITHUB_MODEL" > .env
       - run: node scripts/news/seed_sources.mjs
       - name: Ingest sources (every run)
         id: ingest
@@ -62,7 +71,7 @@ jobs:
         if: steps.gate.outputs.write == 'true'
         run: node scripts/news/write_articles.mjs ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
       - name: World-class editorial desk (fail closed)
-        if: steps.gate.outputs.write == 'true' && env.ANTHROPIC_API_KEY != ''
+        if: steps.gate.outputs.write == 'true'
         run: node scripts/news/polish_world_class.mjs --recent-hours 720 --limit 30
 
   editorial:
@@ -75,13 +84,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" > .env
-      - name: Require editorial model for the daily quality gate
+      - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\nGITHUB_TOKEN=%s\nUFC_EDITORIAL_GITHUB_MODEL=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" "$GITHUB_TOKEN" "$UFC_EDITORIAL_GITHUB_MODEL" > .env
+      - name: Verify editorial provider is available
         run: |
-          if [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "ANTHROPIC_API_KEY is not configured; daily world-class editorial sweep cannot run" >&2
+          if [ -z "$ANTHROPIC_API_KEY" ] && [ -z "$GITHUB_TOKEN" ]; then
+            echo "No editorial model provider is configured" >&2
             exit 1
           fi
+          if [ -n "$ANTHROPIC_API_KEY" ]; then echo "editorial provider: Anthropic (+ GitHub Models fallback)"; else echo "editorial provider: GitHub Models"; fi
       - name: Daily world-class editorial sweep (fail closed)
         run: node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 60
 
