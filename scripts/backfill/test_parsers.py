@@ -78,6 +78,18 @@ check(o["has_stats"] and len(o["rounds"]) == 2 and o["rounds"][0]["ctrl_sec"] is
 oe = P.parse_event_page(load("event_a6a9ab5a824e8f66_ufc2.html"), "http://ufcstats.com/event-details/a6a9ab5a824e8f66")
 check(oe["name"] == "UFC 2: No Way Out" and oe["event_date"] == "1994-03-11" and len(oe["bouts"]) == 15 and oe["bouts"][0]["weight_class_raw"] == "Open Weight", f"ufc2 event {oe['name']} {len(oe['bouts'])}")
 
+# fighter pages
+vo = P.parse_fighter_page(load("fighter_18d01f7f8338ae72.html"), "http://ufcstats.com/fighter-details/18d01f7f8338ae72")
+check(vo["ufcstats_id"] == "18d01f7f8338ae72" and vo["name"] == "Vinicius Oliveira" and vo["nickname"] == "LokDog"
+      and (vo["record_w"], vo["record_l"], vo["record_d"], vo["record_nc"]) == (23, 4, 0, 0) and vo["height_in"] == 69 and vo["weight_lbs"] == 135
+      and vo["reach_in"] == 70 and vo["stance"] == "SWITCH" and vo["dob"] == "1995-11-30", f"Oliveira {vo}")
+check((vo["career_slpm"], vo["career_str_acc"], vo["career_sapm"], vo["career_str_def"], vo["career_td_avg"], vo["career_td_acc"], vo["career_td_def"], vo["career_sub_avg"])
+      == (4.73, 43, 2.70, 57, 1.45, 46, 70, 0.2), f"Oliveira career {vo}")
+check(vo["fight_history_count"] == 6 and vo["history_fight_ids"][0] == "fb4b1754d510b0d0", f"Oliveira history {vo['fight_history_count']} {vo['history_fight_ids'][:2]}")
+ta = P.parse_fighter_page(load("fighter_93fe7332d16c6ad9.html"), "http://ufcstats.com/fighter-details/93fe7332d16c6ad9")
+check(ta["name"] == "Tom Aaron" and ta["nickname"] is None and ta["height_in"] is None and ta["reach_in"] is None and ta["stance"] is None
+      and ta["dob"] == "1978-07-13" and ta["career_slpm"] == 0 and ta["fight_history_count"] == 2, f"Aaron {ta}")
+
 # assertion behaviour: a mutated header must raise
 bad = load("fight_fb4b1754d510b0d0.html").replace("Sub. att", "Submission attempts", 1)
 try:

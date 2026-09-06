@@ -134,7 +134,11 @@ class Backfill:
         for status, path, slug in (("complete", "/statistics/events/completed?page=all", "completed"),
                                    ("announced", "/statistics/events/upcoming", "upcoming")):
             url = f"{self.cfg.base}{path}"
-            html, _ = self.fetch.get("lists", slug, url, refresh=True)   # list pages are always re-fetched
+            try:
+                html, _ = self.fetch.get("lists", slug, url, refresh=self.args.source == "live")   # live: always re-fetch; wayback: cache is fine
+            except WaybackMissing:
+                self._missing("lists", slug, url)   # the upcoming list has no usable archive capture (post-challenge captures are the interstitial)
+                continue
             events = parsers.parse_event_list(html, url)
             if self.args.since:
                 events = [e for e in events if e["event_date"] and e["event_date"] >= self.args.since]
@@ -272,6 +276,8 @@ class Backfill:
             self._missing("fighters", fighter_id, url)
             return
         p = parsers.parse_fighter_page(html, url)
+        history_ids = p.pop("history_fight_ids")          # not a column; the verification report intersects it with ufc_bouts
+        self.log.event("fighter_history", id=fighter_id, rows=len(history_ids))
         row = {**p, "source_url": url, "captured_at": now_iso(), "updated_at": now_iso()}
         self.db.upsert("ufc_fighters", [row], on_conflict="ufcstats_id")
         self.fighters_detailed.add(fighter_id)

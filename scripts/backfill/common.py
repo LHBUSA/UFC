@@ -214,7 +214,8 @@ class Fetcher:
         if path.exists() and not refresh:
             return path.read_text(encoding="utf-8"), True
         if self.offline:
-            raise AccessGateError(f"offline mode and {path} not cached ({url})")
+            from wayback import WaybackMissing   # offline: an uncached page is a coverage gap, never fatal
+            raise WaybackMissing(url)
         if self.wayback is not None:
             html, ts = self.wayback.fetch(kind, key, url, is_interstitial)
             self.capture_ts[f"{kind}/{key}"] = ts

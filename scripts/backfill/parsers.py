@@ -311,10 +311,58 @@ def parse_fight_page(html: str, source_url: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Fighter page — capture pending (docs/scraper_notes.md)
+# Fighter page
 # ---------------------------------------------------------------------------
+H_FIGHTER_HISTORY = ["W/L", "Fighter", "Kd", "Str", "Td", "Sub", "Event", "Method", "Round", "Time"]
+CAREER_KEYS = {"SLpM": "career_slpm", "Str. Acc.": "career_str_acc", "SApM": "career_sapm", "Str. Def": "career_str_def",
+               "TD Avg.": "career_td_avg", "TD Acc.": "career_td_acc", "TD Def.": "career_td_def", "Sub. Avg.": "career_sub_avg"}
+
+
 def parse_fighter_page(html: str, source_url: str) -> dict:
-    raise NotImplementedError("fighter page parser pending an archived capture — see docs/scraper_notes.md")
+    """-> ufc_fighters columns (no uuid) + history_fight_ids for the completeness cross-check.
+    NOTE: the history table lists the fighter's whole career, including non-UFC
+    promotions, so fight_history_count is NOT the UFC bout count. Compare
+    history_fight_ids against ufc_bouts.ufcstats_id instead."""
+    s = _soup(html)
+    name = _t(s.select_one("h2 .b-content__title-highlight"))
+    rec = _t(s.select_one("h2 .b-content__title-record"))
+    if not name or not rec.startswith("Record:"):
+        raise SchemaAssertionError(source_url, f"fighter title/record missing ({name!r}, {rec!r})")
+    items: dict[str, str] = {}
+    for li in s.select("ul.b-list__box-list li"):
+        t = _t(li)
+        if ":" in t:
+            k, v = t.split(":", 1)
+            items[k.strip()] = v.strip()
+    for k in ("Height", "Weight", "Reach", "STANCE", "DOB"):
+        if k not in items:
+            raise SchemaAssertionError(source_url, f"fighter detail {k!r} missing: {list(items)}")
+    career = {}
+    for label, col in CAREER_KEYS.items():
+        if label not in items:
+            raise SchemaAssertionError(source_url, f"career stat {label!r} missing: {list(items)}")
+        career[col] = N.pct_or_none(items[label], source_url) if items[label].endswith("%") else N.num_or_none(items[label], source_url)
+    table = s.select_one("table.b-fight-details__table_type_event-details")
+    if table is None:
+        raise SchemaAssertionError(source_url, "fighter history table missing")
+    _assert_headers(table, H_FIGHTER_HISTORY, source_url, "fighter history")
+    history_ids = []
+    for tr in table.select("tbody tr"):
+        if not tr.select("td"):
+            continue
+        link = tr.get("data-link")
+        if link:
+            history_ids.append(_id(link, source_url))
+        elif _t(tr):
+            raise SchemaAssertionError(source_url, f"history row without data-link: {_t(tr)[:60]!r}")
+    return {
+        "ufcstats_id": _id(source_url, source_url), "name": name, "nickname": _t(s.select_one("p.b-content__Nickname")) or None,
+        **N.record(rec, source_url),
+        "height_in": N.height_in(items["Height"], source_url), "weight_lbs": N.weight_lbs(items["Weight"], source_url),
+        "reach_in": N.reach_in(items["Reach"], source_url), "stance": N.norm_stance(items["STANCE"], source_url),
+        "dob": N.dob(items["DOB"], source_url), **career,
+        "fight_history_count": len(history_ids), "history_fight_ids": history_ids,
+    }
 
 
 def normalize_weight_class(raw: str, url: str) -> dict:
