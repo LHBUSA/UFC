@@ -1,0 +1,24 @@
+name = "propbetedge-ufc-api"
+main = "src/index.js"
+compatibility_date = "2026-09-05"
+workers_dev = false
+preview_urls = false
+
+[[routes]]
+pattern = "ufc-api.propbetedge.ai"
+custom_domain = true
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+API_VERSION = "2026-09-06"
+REQUIRE_API_KEY = "false"
+
+# Required secret before deploy:
+#   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+# Optional when REQUIRE_API_KEY=true:
+#   npx wrangler secret put INTERNAL_API_KEY
+#
+# Optional KV binding for customer API keys. Store records at key:<sha256(api-key)>.
+# [[kv_namespaces]]
+# binding = "API_KEYS"
+# id = "<namespace-id>"
