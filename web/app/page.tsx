@@ -3,9 +3,12 @@ import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArt
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { Mark } from "@/components/Brand";
-import { eventSlug, fighterSlug } from "@/lib/slug";
+import { PregameDesk } from "@/components/PregameDesk";
+import { ChampionsShowcase } from "@/components/ChampionsShowcase";
+import { eventSlug } from "@/lib/slug";
 import { fmtDate, daysUntil, locationLine, eventBrand, eventHeadline, fmtRecord, weightClassLabel, relTime } from "@/lib/format";
 import { SITE } from "@/lib/site";
+import { UFC_OFFICIAL } from "@/lib/heritage";
 import { storyMedia } from "@/lib/faces";
 import { Voices } from "@/components/Voices";
 
@@ -43,18 +46,18 @@ export default async function Home() {
             <div className="hero-net"><Mark size={32} /><span className="eyebrow">PropBetEdge Sports Network · Fight Intelligence</span></div>
             <h1 aria-label="Every card. Every fighter. Every round.">Every card. Every f{"\u200C"}ighter. <em>Every round.</em></h1>
             <p className="lede">
-              Live UFC fight cards from main event to early prelims, fighter profiles with complete fight history and round-by-round stats,
-              official rankings by division, and a newsroom that writes only what the data can prove.
+              Live UFC fight-week intelligence from first announcement to final result: full cards, fighter dossiers, Fight DNA,
+              official rankings, championship context, history, source-linked media and a newsroom that only writes what its evidence can support.
             </p>
             <div className="hero-actions">
-              <Link href={next ? `/events/${eventSlug(next)}` : "/events"} className="btn gold lg">{next ? "Next card" : "Browse events"}</Link>
-              <Link href="/fighters" className="btn lg">Fighter archive</Link>
-              <Link href="/rankings" className="btn lg hide-m">Rankings</Link>
+              <Link href={next ? `/events/${eventSlug(next)}` : "/events"} className="btn gold lg">{next ? "Enter fight week" : "UFC schedule"}</Link>
+              <Link href="/events" className="btn lg">Schedule & results</Link>
+              <Link href="/history" className="btn lg hide-m">History</Link>
             </div>
             <div className="hero-stats">
-              <div className="stat"><b>{counts.events?.toLocaleString() ?? "—"}</b><span>Events</span></div>
+              <div className="stat"><b>{counts.events?.toLocaleString() ?? "—"}</b><span>Events indexed</span></div>
               <div className="stat"><b>{counts.fighters?.toLocaleString() ?? "—"}</b><span>Fighters</span></div>
-              <div className="stat"><b>{counts.results?.toLocaleString() ?? "—"}</b><span>Results</span></div>
+              <div className="stat"><b>{counts.results?.toLocaleString() ?? "—"}</b><span>Results loaded</span></div>
               <div className="stat"><b>{counts.rounds?.toLocaleString() ?? "—"}</b><span>Rounds of stats</span></div>
             </div>
           </div>
@@ -86,12 +89,7 @@ export default async function Home() {
                     </div>
                   </>
                 ) : (
-                  <div className="poster-faces" style={{ display: "grid", placeItems: "center" }}>
-                    <div className="stack" style={{ alignItems: "center", textAlign: "center", padding: 24 }}>
-                      <Octagon className="" />
-                      <div className="faint sm">Card announcement pending. Bouts appear the moment they are published.</div>
-                    </div>
-                  </div>
+                  <div className="poster-faces" style={{ display: "grid", placeItems: "center" }}><div className="stack" style={{ alignItems: "center", textAlign: "center", padding: 24 }}><Octagon className="" /><div className="faint sm">Card announcement pending. Bouts appear the moment they are published.</div></div></div>
                 )}
                 <div className="poster-foot">
                   <div>
@@ -103,13 +101,7 @@ export default async function Home() {
                 </div>
               </Link>
             ) : (
-              <div className="poster empty-poster">
-                <div>
-                  <Octagon className="" />
-                  <h2 className="serif" style={{ fontSize: 24, margin: "12px 0 8px" }}>Next card loading</h2>
-                  <p className="dim sm">The schedule refreshes from the ingest worker. When the next UFC event is published it appears here, main card to early prelims.</p>
-                </div>
-              </div>
+              <div className="poster empty-poster"><div><Octagon className="" /><h2 className="serif" style={{ fontSize: 24, margin: "12px 0 8px" }}>Next card loading</h2><p className="dim sm">The schedule refreshes from the production ingest. When the next UFC event is published it appears here, main card to early prelims.</p></div></div>
             )}
           </div>
         </div>
@@ -118,116 +110,57 @@ export default async function Home() {
       <section className="sec">
         <div className="wrap">
           <SectionHead eyebrow={next ? `${fmtDate(next.event_date)} · ${locationLine(next) || "Venue TBA"}` : "Upcoming"} title={next ? next.name : "Upcoming card"} href={next ? `/events/${eventSlug(next)}` : "/events"} cta="Full card & matchups" />
-          {bouts.length ? (
-            <CardSegments bouts={bouts} e={next!} imgs={imgs} />
-          ) : (
-            <Empty title="No bouts announced yet" cta={{ href: "/events", label: "See the schedule" }}>Bouts appear here the moment the card is published. Nothing is shown that has not been announced.</Empty>
-          )}
+          {bouts.length ? <CardSegments bouts={bouts} e={next!} imgs={imgs} /> : <Empty title="No bouts announced yet" cta={{ href: "/events", label: "See the schedule" }}>Bouts appear here the moment the card is published. Nothing is shown that has not been announced.</Empty>}
+          {next && <PregameDesk event={next} bouts={live} />}
         </div>
       </section>
 
       {headline.length > 0 && (
         <section className="sec">
-          <div className="wrap">
-            <SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" />
-            <div className="grid-3">
-              {headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} />)}
-            </div>
-          </div>
+          <div className="wrap"><SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" /><div className="grid-3">{headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} />)}</div></div>
         </section>
       )}
 
-      <Voices />
+      {rankings && champs.length > 0 && (
+        <section className="sec"><div className="wrap"><ChampionsShowcase rankings={rankings} fighters={champById} imgs={imgs} /></div></section>
+      )}
 
       <section className="sec">
         <div className="wrap">
           <SectionHead eyebrow="Newsroom · timestamped" title="Latest from the desk" href="/news" cta="All stories" />
-          {articles.length ? (
-            <div className="news">
-              {articles.slice(0, 1).map((a) => <NewsStoryCard key={a.id} a={a} feature hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}
-              {articles.slice(1, 7).map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}
-            </div>
-          ) : (
-            <Empty title="The newsroom publishes when the data does">Fight previews, results with round stats and card changes are written from our own tables. The first stories land with the next card.</Empty>
-          )}
+          {articles.length ? <div className="news">{articles.slice(0, 1).map((a) => <NewsStoryCard key={a.id} a={a} feature hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}{articles.slice(1, 7).map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}</div> : <Empty title="The newsroom publishes when the data does">Fight previews, results with round stats and card changes are written from our own tables. The first stories land with the next card.</Empty>}
         </div>
       </section>
+
+      <Voices />
 
       <section className="sec">
         <div className="wrap grid-side">
           <div>
-            <SectionHead eyebrow="Schedule" title="Coming up" href="/events" cta="Full UFC schedule" />
+            <SectionHead eyebrow="UFC schedule" title="Coming up" href="/events" cta="Full schedule" />
             <div className="mb-4"><Link href="/contender-series" className="gold sm" style={{ fontWeight: 700 }}>Dana White's Contender Series · every season &amp; week →</Link></div>
-            {upcoming.length ? (
-              <div className="grid-2">{upcoming.slice(0, 4).map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div>
-            ) : (
-              <Empty title="Schedule loading">Upcoming UFC events are refreshed from the production ingest and appear here as the source tables change.</Empty>
-            )}
+            {upcoming.length ? <div className="grid-2">{upcoming.slice(0, 4).map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div> : <Empty title="Schedule loading">Upcoming UFC events are refreshed from the production ingest and appear here as the source tables change.</Empty>}
           </div>
           <div>
             <SectionHead eyebrow="Around MMA" title="The wire" href="/news?type=external" cta="More" />
-            {wire.length ? (
-              <ul className="wire">
-                {wire.map((n) => (
-                  <li key={n.id}>
-                    <a href={n.url || "#"} rel="noopener nofollow" target="_blank">{n.title}{n.taxonomy?.labels?.[0] && n.taxonomy.labels[0] !== "other" ? <span className="lab">{n.taxonomy.labels[0].replace("_", " ")}</span> : null}</a>
-                    <span className="src">{n.source?.name || "Source"} · {relTime(n.published_at)}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <Empty title="Wire is quiet">External headlines are ingested on the card-week cadence and attributed to their source.</Empty>
-            )}
+            {wire.length ? <ul className="wire">{wire.map((n) => <li key={n.id}><a href={n.url || "#"} rel="noopener nofollow" target="_blank">{n.title}{n.taxonomy?.labels?.[0] && n.taxonomy.labels[0] !== "other" ? <span className="lab">{n.taxonomy.labels[0].replace("_", " ")}</span> : null}</a><span className="src">{n.source?.name || "Source"} · {relTime(n.published_at)}</span></li>)}</ul> : <Empty title="Wire is quiet">External headlines are ingested on the card-week cadence and attributed to their source.</Empty>}
           </div>
         </div>
       </section>
-
-      {champs.length > 0 && rankings && (
-        <section className="sec">
-          <div className="wrap">
-            <SectionHead eyebrow={`Official rankings · updated ${fmtDate(rankings.snapshot_date)}`} title="Champions" href="/rankings" cta="Full rankings" />
-            <div className="champs">
-              {rankings.divisions.filter((x) => !x.is_p4p && x.champion).map((x) => {
-                const f = x.champion!.fighter_id ? champById.get(x.champion!.fighter_id) : null;
-                const inner = (
-                  <>
-                    <Avatar f={{ name: x.champion!.name }} img={f ? imgs.get(f.id) : null} size={56} />
-                    <div className="d">{x.label}</div>
-                    <div className="n">{x.champion!.name}</div>
-                    {f && <div className="faint mono label">{fmtRecord(f)}</div>}
-                  </>
-                );
-                return f ? <Link key={x.key + x.is_womens} href={`/fighters/${fighterSlug(f)}`} className="champ-card">{inner}</Link> : <div key={x.key + x.is_womens} className="champ-card">{inner}</div>;
-              })}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {recent.length > 0 && (
-        <section className="sec">
-          <div className="wrap">
-            <SectionHead eyebrow="Results" title="Recent cards" href="/events" cta="Archive" />
-            <div className="grid-3">{recent.map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div>
-          </div>
-        </section>
-      )}
 
       <section className="sec">
-        <div className="wrap">
-          <SectionHead eyebrow="Free vs Pro" title="Everything public is free. The edge is Pro." />
-          <ProPlans />
+        <div className="wrap heritage-close">
+          <div><div className="eyebrow">From UFC 1 to today</div><h2>Know the fight game you are analyzing.</h2><p>The evolution from style-vs-style tournaments to modern championship MMA is part of the data story. Explore the rules, pioneers, Hall of Fame and the historical results repair that is rebuilding the canonical fight graph back toward UFC 1.</p></div>
+          <div className="heritage-close-actions"><Link href="/history" className="btn gold">Explore UFC history →</Link><Link href="/hall-of-fame" className="btn">Hall of Fame tribute</Link><a href={UFC_OFFICIAL.home} className="btn" target="_blank" rel="noopener">UFC.com ↗</a></div>
         </div>
       </section>
 
-      <JsonLd data={{
-        "@context": "https://schema.org", "@type": "WebPage", "@id": `${SITE.url}/#home`, url: SITE.url, name: `${SITE.name} — UFC Cards, Fighters, Rankings & News`,
-        description: SITE.description, isPartOf: { "@id": `${SITE.url}/#site` }, primaryImageOfPage: `${SITE.url}/opengraph-image`,
-        ...(next ? { mainEntity: { "@type": "SportsEvent", name: next.name, startDate: next.event_date, url: `${SITE.url}/events/${eventSlug(next)}`, sport: "Mixed Martial Arts" } } : {}),
-      }} />
-      {articles.length > 0 && (
-        <JsonLd data={{ "@context": "https://schema.org", "@type": "ItemList", name: "Latest UFC stories", itemListElement: articles.map((a, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "NewsArticle", url: `${SITE.url}/news/${a.slug}`, headline: a.headline, datePublished: a.published_at || undefined, dateModified: a.updated_at } })) }} />
-      )}
+      {recent.length > 0 && <section className="sec"><div className="wrap"><SectionHead eyebrow="Results" title="Recent cards" href="/events" cta="Results archive" /><div className="grid-3">{recent.map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div></div></section>}
+
+      <section className="sec"><div className="wrap"><SectionHead eyebrow="Free vs Pro" title="Everything public is free. The edge is Pro." /><ProPlans /></div></section>
+
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", "@id": `${SITE.url}/#home`, url: SITE.url, name: `${SITE.name} — Live UFC Fight Intelligence`, description: SITE.description, isPartOf: { "@id": `${SITE.url}/#site` }, primaryImageOfPage: `${SITE.url}/opengraph-image`, ...(next ? { mainEntity: { "@type": "SportsEvent", name: next.name, startDate: next.event_date, url: `${SITE.url}/events/${eventSlug(next)}`, sport: "Mixed Martial Arts" } } : {}) }} />
+      {articles.length > 0 && <JsonLd data={{ "@context": "https://schema.org", "@type": "ItemList", name: "Latest UFC stories", itemListElement: articles.map((a, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "NewsArticle", url: `${SITE.url}/news/${a.slug}`, headline: a.headline, datePublished: a.published_at || undefined, dateModified: a.updated_at } })) }} />}
     </>
   );
 }
