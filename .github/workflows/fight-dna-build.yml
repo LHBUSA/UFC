@@ -1,0 +1,89 @@
+name: UFC Fight DNA build
+
+on:
+  push:
+    branches:
+      - ufc-fight-dna-v1
+    paths:
+      - 'scripts/dna/**'
+      - '.github/workflows/fight-dna-build.yml'
+  schedule:
+    - cron: '17 7 * * *' # after the 06:00 UTC UFC ingest on main
+  workflow_dispatch:
+    inputs:
+      as_of:
+        description: 'Optional YYYY-MM-DD as-of date (blank = today UTC)'
+        required: false
+        default: ''
+      fighter_id:
+        description: 'Optional fighter UUID for a targeted rebuild'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ufc-fight-dna-build
+  cancel-in-progress: false
+
+jobs:
+  build-dna:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Syntax check deterministic builder
+        run: node --check scripts/dna/build_fight_dna.mjs
+
+      - name: Verify data credentials
+        shell: bash
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+
+      - name: Build current Fight DNA snapshots
+        shell: bash
+        run: |
+          set -o pipefail
+          args=()
+          if [ -n "${{ inputs.as_of }}" ]; then args+=(--as-of "${{ inputs.as_of }}"); fi
+          if [ -n "${{ inputs.fighter_id }}" ]; then args+=(--fighter "${{ inputs.fighter_id }}"); fi
+          node scripts/dna/build_fight_dna.mjs "${args[@]}" | tee fight-dna-build.log
+
+      - name: Acceptance proof
+        shell: bash
+        run: |
+          node - <<'NODE' | tee fight-dna-acceptance.log
+          const base=(process.env.SUPABASE_URL||'').replace(/\/$/,'');
+          const key=process.env.SUPABASE_SERVICE_ROLE_KEY;
+          const h={apikey:key,Authorization:`Bearer ${key}`};
+          const get=async p=>{const r=await fetch(`${base}/rest/v1/${p}`,{headers:h});if(!r.ok)throw new Error(`${r.status} ${await r.text()}`);return r.json()};
+          const today=new Date().toISOString().slice(0,10);
+          const rows=await get(`ufc_fighter_dna_snapshots?select=fighter_id,as_of_date,sample_completed_bouts,sample_stat_bouts,sample_rounds,sample_seconds,coverage_status,metrics,ufc_fighters!inner(name)&as_of_date=eq.${today}&ufc_fighters.name=in.(Jean%20Silva,Jose%20Miguel%20Delgado)`);
+          for(const r of rows){
+            const name=r.ufc_fighters?.name||'?';
+            console.log(`${name}: completed=${r.sample_completed_bouts} stat_bouts=${r.sample_stat_bouts} rounds=${r.sample_rounds} seconds=${r.sample_seconds} coverage=${r.coverage_status}`);
+            console.log(`  finish_rate=${r.metrics?.finish_rate?.value ?? 'null'} sig_landed_per_min=${r.metrics?.sig_landed_per_min?.value ?? 'null'} td_landed_per_15=${r.metrics?.td_landed_per_15?.value ?? 'null'}`);
+          }
+          if(!rows.length) throw new Error('No Silva/Delgado Fight DNA snapshots returned after build');
+          NODE
+
+      - name: Upload build proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ufc-fight-dna-build-${{ github.run_id }}
+          path: |
+            fight-dna-build.log
+            fight-dna-acceptance.log
+          if-no-files-found: warn
+          retention-days: 14
