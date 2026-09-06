@@ -38,7 +38,7 @@ export default async function Home() {
         <div className="wrap hero-in">
           <div>
             <div className="hero-net"><img src={SITE.logo.mark80} alt="" width={57} height={22} decoding="async" /><span className="eyebrow">PropBetEdge Sports Network · Fight Intelligence</span></div>
-            <h1>Every card. Every fighter. <em>Every round.</em></h1>
+            <h1 aria-label="Every card. Every fighter. Every round.">Every card. Every f{"\u200C"}ighter. <em>Every round.</em></h1>
             <p className="lede">
               Live UFC fight cards from main event to early prelims, fighter profiles with complete fight history and round-by-round stats,
               official rankings by division, and a newsroom that writes only what the data can prove.
