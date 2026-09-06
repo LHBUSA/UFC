@@ -6,6 +6,10 @@
  * It fails closed if the model introduces a number/link that the source packet
  * did not contain, claims unavailable odds/model output, or produces thin copy.
  *
+ * Provider order:
+ *   1. Anthropic when ANTHROPIC_API_KEY is configured.
+ *   2. GitHub Models using the ephemeral Actions GITHUB_TOKEN.
+ *
  * Usage:
  *   node scripts/news/polish_world_class.mjs [--limit 20] [--recent-hours 720] [--force] [--dry-run]
  */
@@ -18,8 +22,9 @@ const LIMIT = Math.min(60, Math.max(1, Number(opt('--limit', '30')) || 30));
 const HOURS = Math.min(24 * 60, Math.max(1, Number(opt('--recent-hours', '720')) || 720));
 const FORCE = flag('--force');
 const DRY = flag('--dry-run');
-const MODEL = process.env.UFC_EDITORIAL_MODEL || 'claude-sonnet-5';
-const VERSION = `${MODEL}/editorial-desk-v1`;
+const ANTHROPIC_MODEL = process.env.UFC_EDITORIAL_MODEL || 'claude-sonnet-5';
+const GITHUB_MODEL = process.env.UFC_EDITORIAL_GITHUB_MODEL || 'openai/gpt-4.1';
+const DESK_VERSION = 'editorial-desk-v2';
 
 const SYSTEM = `You are the senior editor of PropBetEdge UFC, a premium bettor-facing combat-sports intelligence newsroom. You receive one complete SOURCE PACKET containing a deterministic draft and its machine-readable fact block. Your job is to turn it into publication-grade sports journalism without adding a single unsupported fact.
 
@@ -111,18 +116,26 @@ function validate(source, out, article) {
   return null;
 }
 
-async function polish(apiKey, article) {
-  const sourcePacket = {
+function sourcePacket(article) {
+  const packet = {
     article: { slug: article.slug, story_type: article.story_type, current_headline: article.headline, current_dek: article.dek, current_body_md: article.body_md },
     fact_block: article.fact_block,
     sources: article.sources,
   };
-  const source = JSON.stringify(sourcePacket, null, 2);
+  return { packet, source: JSON.stringify(packet, null, 2) };
+}
+
+function parseModelJson(text) {
+  const clean = String(text || '').trim().replace(/^```json\s*/i, '').replace(/```$/, '').trim();
+  try { return JSON.parse(clean); } catch { throw new Error(`invalid JSON: ${clean.slice(0, 180)}`); }
+}
+
+async function polishAnthropic(apiKey, article, source) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({
-      model: MODEL,
+      model: ANTHROPIC_MODEL,
       max_tokens: 18000,
       thinking: { type: 'adaptive' },
       system: SYSTEM,
@@ -133,39 +146,102 @@ async function polish(apiKey, article) {
   if (!res.ok) throw new Error(`anthropic ${res.status}: ${JSON.stringify(json).slice(0, 320)}`);
   if (json.stop_reason === 'refusal') throw new Error('anthropic refusal');
   if (json.stop_reason === 'max_tokens') throw new Error('anthropic output truncated');
-  const text = (json.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('').trim().replace(/^```json\s*/i, '').replace(/```$/, '').trim();
-  let out;
-  try { out = JSON.parse(text); } catch { throw new Error(`invalid JSON: ${text.slice(0, 180)}`); }
+  const text = (json.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
+  const out = parseModelJson(text);
   const problem = validate(source, out, article);
   if (problem) throw new Error(`validation: ${problem}`);
-  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim() };
+  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'anthropic', model: ANTHROPIC_MODEL };
+}
+
+async function polishGitHub(token, article, source) {
+  const res = await fetch('https://models.github.ai/inference/chat/completions', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
+    body: JSON.stringify({
+      model: GITHUB_MODEL,
+      temperature: 0.2,
+      max_tokens: 8000,
+      messages: [
+        { role: 'system', content: SYSTEM },
+        { role: 'user', content: `SOURCE PACKET:\n${source}` },
+      ],
+    }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(`github-models ${res.status}: ${JSON.stringify(json).slice(0, 320)}`);
+  const choice = json.choices?.[0];
+  if (!choice) throw new Error('github-models returned no choices');
+  if (choice.finish_reason === 'length') throw new Error('github-models output truncated');
+  const out = parseModelJson(choice.message?.content);
+  const problem = validate(source, out, article);
+  if (problem) throw new Error(`validation: ${problem}`);
+  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'github-models', model: GITHUB_MODEL };
+}
+
+async function polish(env, article) {
+  const { source } = sourcePacket(article);
+  const githubToken = env.GITHUB_MODELS_TOKEN || env.GITHUB_TOKEN || '';
+  const errors = [];
+
+  if (env.ANTHROPIC_API_KEY) {
+    try { return await polishAnthropic(env.ANTHROPIC_API_KEY, article, source); }
+    catch (error) {
+      errors.push(`anthropic: ${String(error?.message || error)}`);
+      if (!githubToken) throw error;
+      console.log(`  FALLBACK ${article.slug}: Anthropic unavailable/held; trying GitHub Models`);
+    }
+  }
+
+  if (githubToken) {
+    try { return await polishGitHub(githubToken, article, source); }
+    catch (error) {
+      errors.push(`github-models: ${String(error?.message || error)}`);
+    }
+  }
+
+  if (!env.ANTHROPIC_API_KEY && !githubToken) throw new Error('no editorial model provider configured');
+  throw new Error(errors.join(' | ').slice(0, 700));
 }
 
 async function main() {
   const env = loadEnv();
-  if (!env.ANTHROPIC_API_KEY) {
-    console.log('world-class desk: ANTHROPIC_API_KEY not configured; deterministic articles left unchanged');
-    return;
+  const githubToken = env.GITHUB_MODELS_TOKEN || env.GITHUB_TOKEN || '';
+  if (!env.ANTHROPIC_API_KEY && !githubToken) {
+    throw new Error('world-class desk: neither ANTHROPIC_API_KEY nor GitHub Models token is configured');
   }
+  const provider = env.ANTHROPIC_API_KEY ? `anthropic:${ANTHROPIC_MODEL}${githubToken ? ' (+ github fallback)' : ''}` : `github-models:${GITHUB_MODEL}`;
+  console.log(`world-class desk: provider=${provider}`);
+
   const sb = new Supabase(env);
   const since = new Date(Date.now() - HOURS * 3600 * 1000).toISOString();
   const rows = await sb.select('ufc_articles', `select=id,slug,headline,dek,body_md,story_type,status,fact_block,sources,model_version,updated_at&status=eq.published&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.desc&limit=${LIMIT}`);
   let passed = 0, skipped = 0, rejected = 0;
   console.log(`world-class desk: candidates=${rows.length} limit=${LIMIT} hours=${HOURS} force=${FORCE} dry=${DRY}`);
   for (const article of rows) {
-    if (!FORCE && String(article.model_version || '').includes('/editorial-desk-v1')) { skipped++; continue; }
+    if (!FORCE && /\/editorial-desk-v(?:1|2)(?:$|\b)/.test(String(article.model_version || ''))) { skipped++; continue; }
     if (!article.fact_block || !article.body_md) { skipped++; continue; }
     try {
-      const out = await polish(env.ANTHROPIC_API_KEY, article);
-      console.log(`  PASS ${article.story_type.padEnd(13)} ${wordCount(article.body_md)}w -> ${wordCount(out.body_md)}w  ${article.slug}`);
+      const out = await polish(env, article);
+      console.log(`  PASS ${article.story_type.padEnd(13)} ${wordCount(article.body_md)}w -> ${wordCount(out.body_md)}w  ${article.slug} via ${out.provider}:${out.model}`);
       passed++;
-      if (!DRY) await sb.patch('ufc_articles', `id=eq.${article.id}`, { ...out, model_version: VERSION, updated_at: new Date().toISOString() });
+      if (!DRY) {
+        await sb.patch('ufc_articles', `id=eq.${article.id}`, {
+          headline: out.headline,
+          dek: out.dek,
+          body_md: out.body_md,
+          model_version: `${out.provider}:${out.model}/${DESK_VERSION}`,
+          updated_at: new Date().toISOString(),
+        });
+      }
     } catch (error) {
       rejected++;
-      console.log(`  HOLD ${article.slug}: ${String(error?.message || error).slice(0, 260)}`);
+      console.log(`  HOLD ${article.slug}: ${String(error?.message || error).slice(0, 700)}`);
     }
   }
   console.log(`world-class desk: passed=${passed} skipped=${skipped} held=${rejected}`);
+  if (rows.length > 0 && passed === 0 && skipped === 0 && rejected > 0) {
+    throw new Error(`world-class desk: every candidate was held (${rejected}/${rows.length}); failing closed`);
+  }
 }
 
 main().catch((error) => { console.error(error); process.exit(1); });
