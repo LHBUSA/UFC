@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header, Footer } from "@/components/Shell";
+import { LiveWire } from "@/components/LiveWire";
 import { JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
 
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip" href="#main">Skip to content</a>
         <JsonLd data={ORG} />
         <Header />
+        <LiveWire />
         <main id="main">{children}</main>
         <Footer />
       </body>

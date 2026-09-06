@@ -277,6 +277,16 @@ export async function getNewsItems(limit = 12): Promise<NewsItem[]> {
   return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 600 })).data;
 }
 
+/* Attributed wire items linked to an event or any of the given fighters
+ * (article-page "From the live wire" context). */
+export async function getWireFor(eventId: string | null, fighterIds: string[], limit = 6): Promise<NewsItem[]> {
+  const ors: string[] = [];
+  if (eventId) ors.push(`event_id.eq.${eventId}`);
+  for (const id of fighterIds.slice(0, 6)) ors.push(`fighter_ids.cs.{${id}}`);
+  if (!ors.length) return [];
+  return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)&or=(${ors.join(",")})&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 300 })).data;
+}
+
 /* ---- counts for the home strip --------------------------------------- */
 export async function getCounts(): Promise<{ fighters: number | null; events: number | null; bouts: number | null; results: number | null; rounds: number | null; articles: number | null }> {
   const [f, e, b, r, rs, a] = await Promise.all([

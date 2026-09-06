@@ -590,3 +590,46 @@ body::after {
 .career { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); }
 @media (max-width: 680px) { .career { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fighter-head { padding: var(--s-4); } }
 @media (max-width: 900px) { .brand-mark { height: 24px; } .brand-word { font-size: 16px; } }
+
+
+/* =====================================================================
+   GLOBAL UFC LIVE WIRE — broadcast/data-terminal rail beneath the shell.
+   Transform-based belt (two copies of the list, translateX -50%), paused
+   on hover/focus, static + scrollable under prefers-reduced-motion.
+   ===================================================================== */
+.wire-rail { position: sticky; top: var(--hdr-h); z-index: 40; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: stretch; height: 38px; background: rgba(13,11,8,.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,245,220,.12); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+.wire-badge { display: flex; align-items: center; gap: 8px; padding: 0 14px 0 var(--s-5); font: 700 var(--fs-micro)/1 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-gold); border-right: 1px solid rgba(255,245,220,.12); white-space: nowrap; background: linear-gradient(90deg, rgba(212,175,55,.08), transparent); }
+.wire-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pbe-subtle); flex: none; }
+.wire-dot.on { background: var(--pbe-gold); box-shadow: 0 0 0 3px var(--pbe-gold-soft); }
+.wire-dot.hot { background: var(--pbe-live); box-shadow: 0 0 0 3px rgba(230,57,70,.25); animation: pulse 1.6s infinite; }
+.wire-view { position: relative; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 32px, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(90deg, transparent, #000 32px, #000 calc(100% - 32px), transparent); }
+.wire-belt { display: flex; width: max-content; height: 100%; }
+.wire-track { display: flex; align-items: center; height: 100%; padding-right: 0; animation: wire-scroll linear infinite; animation-duration: 120s; }
+.wire-track li { display: flex; align-items: center; height: 100%; }
+.wire-track li::after { content: ""; width: 1px; height: 14px; margin: 0 18px; background: rgba(212,175,55,.35); }
+.wire-track a, .wire-track span.wire-item { display: inline-flex; align-items: center; gap: 10px; height: 100%; white-space: nowrap; color: var(--pbe-paper-2); }
+.wire-track a:hover .wire-title, .wire-track a:focus-visible .wire-title { color: var(--pbe-gold-bright); }
+.wire-track a:focus-visible { outline: 2px solid var(--pbe-gold); outline-offset: -2px; border-radius: 4px; }
+.wire-tag { font: 700 9px/1 var(--pbe-font-data); letter-spacing: .12em; text-transform: uppercase; color: var(--pbe-gold); border: 1px solid rgba(212,175,55,.35); border-radius: 3px; padding: 4px 5px 3px; }
+.wire-tag.hot { color: var(--pbe-crimson-bright); border-color: rgba(230,57,70,.45); }
+.wire-title { font: 500 var(--fs-sm)/1 var(--pbe-font-ui); color: var(--pbe-paper-2); }
+.wire-meta { font: 500 var(--fs-micro)/1 var(--pbe-font-data); letter-spacing: .06em; text-transform: uppercase; color: var(--pbe-faint); }
+.wire-more { display: flex; align-items: center; padding: 0 var(--s-5) 0 14px; font: 600 var(--fs-label)/1 var(--pbe-font-ui); color: var(--pbe-gold); border-left: 1px solid rgba(255,245,220,.12); white-space: nowrap; }
+.wire-more:hover { color: var(--pbe-gold-bright); background: rgba(212,175,55,.06); }
+.wire-rail.paused .wire-track { animation-play-state: paused; }
+@keyframes wire-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@media (max-width: 720px) {
+  .wire-rail { top: var(--hdr-h); height: 34px; grid-template-columns: auto minmax(0, 1fr) auto; }
+  .wire-badge { padding: 0 10px 0 var(--s-4); }
+  .wire-badge span { display: none; }
+  .wire-more { padding: 0 var(--s-4) 0 10px; font-size: var(--fs-micro); }
+  .wire-title { font-size: var(--fs-label); }
+  .wire-meta { display: none; }
+  .wire-track li::after { margin: 0 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wire-track { animation: none !important; }
+  .wire-belt { width: auto; }
+  .wire-view { overflow-x: auto; -webkit-mask-image: none; mask-image: none; scrollbar-width: none; }
+  .wire-track[aria-hidden="true"] { display: none; }
+}

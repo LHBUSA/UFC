@@ -1,11 +1,17 @@
 # ufc.propbetedge.ai — newsroom, rankings and portrait pipelines.
-# Cadence follows docs/news_pipeline.md: fight week (Mon–Sat) every 30 min,
-# off weeks every 2 h. The schedule below is the off-week baseline; the
-# writer refuses to pad volume, so extra runs cost nothing when idle.
+#
+# Freshness contract (docs/UFC_PRODUCTION_V3_LIVE_WIRE_ADDENDUM.md §4):
+#   * source ingest at least every 30 minutes in fight week and no worse than
+#     every 2 hours off-week — the ingest is cheap (3 RSS feeds, fingerprint
+#     dedupe) so it simply runs every 30 minutes year-round;
+#   * article generation is gated: it runs only when the ingest inserted new
+#     items or on the two-hour baseline slot, so the expensive writer never
+#     spins on an unchanged feed. The writer itself is idempotent.
+#   * the web/API wire rail refreshes every 30–60 s against the stored feed.
 name: newsroom
 on:
   schedule:
-    - cron: "17 */2 * * *"     # ingest + write, every 2 h
+    - cron: "*/30 * * * *"     # news ingest every 30 min; writer gated below
     - cron: "41 11 * * 2,3"    # rankings (UFC.com updates Tue/Wed after cards)
     - cron: "5 9 * * *"        # portraits for newly ingested fighters
   workflow_dispatch:
@@ -13,6 +19,9 @@ on:
       job:
         description: "news | rankings | portraits | all"
         default: "all"
+      force_write:
+        description: "run the article writer even if nothing new was ingested"
+        default: "false"
 concurrency: newsroom
 env:
   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -20,7 +29,7 @@ env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 jobs:
   news:
-    if: github.event.schedule == '17 */2 * * *' || github.event_name == 'workflow_dispatch' && (inputs.job == 'news' || inputs.job == 'all')
+    if: github.event.schedule == '*/30 * * * *' || github.event_name == 'workflow_dispatch' && (inputs.job == 'news' || inputs.job == 'all')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,8 +37,23 @@ jobs:
         with: { node-version: 22 }
       - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" > .env
       - run: node scripts/news/seed_sources.mjs
-      - run: node scripts/news/ingest_news.mjs
-      - run: node scripts/news/write_articles.mjs ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
+      - name: Ingest sources (every run)
+        id: ingest
+        run: |
+          set -o pipefail
+          node scripts/news/ingest_news.mjs | tee ingest.log
+          inserted=$(grep -oE 'inserted=[0-9]+' ingest.log | tail -1 | cut -d= -f2)
+          echo "inserted=${inserted:-0}" >> "$GITHUB_OUTPUT"
+      - name: Decide whether the writer runs
+        id: gate
+        run: |
+          hour=$(date -u +%H); minute=$(date -u +%M)
+          baseline=false; if [ $((10#$hour % 2)) -eq 0 ] && [ "$minute" -lt 30 ]; then baseline=true; fi
+          if [ "${{ steps.ingest.outputs.inserted }}" != "0" ] || [ "$baseline" = "true" ] || [ "${{ inputs.force_write }}" = "true" ]; then echo "write=true" >> "$GITHUB_OUTPUT"; else echo "write=false" >> "$GITHUB_OUTPUT"; fi
+          echo "inserted=${{ steps.ingest.outputs.inserted }} baseline=$baseline"
+      - name: Write articles (gated)
+        if: steps.gate.outputs.write == 'true'
+        run: node scripts/news/write_articles.mjs ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
   rankings:
     if: github.event.schedule == '41 11 * * 2,3' || github.event_name == 'workflow_dispatch' && (inputs.job == 'rankings' || inputs.job == 'all')
     runs-on: ubuntu-latest

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getArticleBySlug, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById } from "@/lib/db";
+import { getArticleBySlug, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor } from "@/lib/db";
 import { JsonLd, ProLock, Breadcrumbs, Avatar, Octagon, StoryCard, FighterRow } from "@/components/ui";
 import { renderMarkdown, excerpt, readingMinutes } from "@/lib/markdown";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
-import { fmtDateTime, fmtDate, eventStatusLabel, locationLine } from "@/lib/format";
+import { fmtDateTime, fmtDate, eventStatusLabel, locationLine, relTime } from "@/lib/format";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
 import { storyMedia } from "@/lib/faces";
 import { Mark } from "@/components/Brand";
@@ -33,7 +33,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
     a.bout_id ? getBoutById(a.bout_id) : null,
     getArticles(4),
   ]);
-  const imgs = await getImagesForFighters(fighters.map((f) => f.id));
+  const [imgs, wire] = await Promise.all([getImagesForFighters(fighters.map((f) => f.id)), getWireFor(a.event_id, a.fighter_ids || [])]);
   const more = moreRes.rows.filter((x) => x.id !== a.id).slice(0, 3);
   const moreMedia = await storyMedia(more);
   const faces = bout ? [bout.fighter_a, bout.fighter_b] : fighters.slice(0, 2);
@@ -89,6 +89,20 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
             <div className="card">
               <div className="eyebrow mb-3">Fighters in this story</div>
               <div className="stack" style={{ gap: 6 }}>{fighters.slice(0, 6).map((f) => <FighterRow key={f.id} f={f} img={imgs.get(f.id)} />)}</div>
+            </div>
+          )}
+          {wire.length > 0 && (
+            <div className="card">
+              <div className="eyebrow mb-3">From the live wire</div>
+              <ul className="wire">
+                {wire.map((n) => (
+                  <li key={n.id}>
+                    <a href={n.url || "#"} rel="noopener nofollow" target="_blank">{n.title}</a>
+                    <span className="src">{n.source?.name || "Source"} · {relTime(n.published_at)}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="faint label mt-3">Attributed headlines linked to this story's fighters or event. We reproduce at most a phrase.</p>
             </div>
           )}
           {event && (
