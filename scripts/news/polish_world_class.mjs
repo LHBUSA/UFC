@@ -161,13 +161,34 @@ function escapeRawControlsInsideJsonStrings(text) {
 function parseModelJson(text) {
   const clean = String(text || '').trim().replace(/^```json\s*/i, '').replace(/```$/, '').trim();
   try { return JSON.parse(clean); } catch (strictError) {
-    // Copilot CLI can occasionally render literal newline/tab characters inside
-    // otherwise-valid JSON strings. Repair ONLY JSON-forbidden control chars;
-    // do not guess at missing quotes, braces, commas or model content.
+    // Some model responses can contain literal newline/tab characters inside
+    // otherwise-valid JSON strings. Repair ONLY JSON-forbidden controls; do
+    // not guess at missing quotes, braces, commas or model content.
     const repaired = escapeRawControlsInsideJsonStrings(clean);
     try { return JSON.parse(repaired); }
-    catch { throw new Error(`invalid JSON: ${clean.slice(0, 180)} (${strictError.message})`); }
+    catch (repairError) {
+      throw new Error(`invalid JSON: ${clean.slice(0, 180)} (strict=${strictError.message}; repaired=${repairError.message})`);
+    }
   }
+}
+
+function parseCopilotJsonl(stdout) {
+  let finalMessage = null;
+  for (const raw of String(stdout || '').split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line) continue;
+    let event;
+    try { event = JSON.parse(line); } catch { continue; }
+    if (event?.type !== 'assistant.message') continue;
+    if (typeof event?.data?.content !== 'string') continue;
+    if (event.data.phase && event.data.phase !== 'final_answer') continue;
+    finalMessage = {
+      content: event.data.content,
+      model: event.data.model || COPILOT_MODEL,
+    };
+  }
+  if (!finalMessage) throw new Error('copilot-cli JSONL contained no final assistant.message');
+  return finalMessage;
 }
 
 async function polishAnthropic(apiKey, article, source) {
@@ -200,9 +221,9 @@ function polishCopilot(article, source) {
   try {
     child = spawnSync('copilot', [
       '-p', prompt,
-      '-s',
       '--model', COPILOT_MODEL,
       '--stream=off',
+      '--output-format=json',
       '--no-color',
       '--no-ask-user',
       '--no-custom-instructions',
@@ -230,10 +251,11 @@ function polishCopilot(article, source) {
     const detail = String(child.stderr || child.stdout || '').trim().replace(/\s+/g, ' ').slice(0, 500);
     throw new Error(`copilot-cli exit ${child.status}: ${detail}`);
   }
-  const out = parseModelJson(child.stdout);
+  const envelope = parseCopilotJsonl(child.stdout);
+  const out = parseModelJson(envelope.content);
   const problem = validate(source, out, article);
   if (problem) throw new Error(`validation: ${problem}`);
-  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'copilot-cli', model: COPILOT_MODEL };
+  return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'copilot-cli', model: envelope.model };
 }
 
 async function polish(env, article) {
