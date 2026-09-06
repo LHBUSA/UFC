@@ -34,7 +34,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22 }
+        with:
+          node-version: 22
       - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nANTHROPIC_API_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$ANTHROPIC_API_KEY" > .env
       - run: node scripts/news/seed_sources.mjs
       - name: Ingest sources (every run)
@@ -60,7 +61,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22 }
+        with:
+          node-version: 22
       - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" > .env
       - run: node scripts/rankings/ingest_rankings.mjs
   portraits:
@@ -69,9 +71,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm, cache-dependency-path: web/package-lock.json }
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
       - run: npm ci --prefix web --ignore-scripts=false
       - run: printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" > .env
       - uses: actions/cache@v4
-        with: { path: scripts/images/cache, key: portraits-cache-${{ github.run_id }}, restore-keys: portraits-cache- }
+        with:
+          path: scripts/images/cache
+          key: portraits-cache-${{ github.run_id }}
+          restore-keys: portraits-cache-
       - run: node scripts/images/fetch_fighter_portraits.mjs
