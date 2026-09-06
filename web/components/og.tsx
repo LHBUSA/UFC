@@ -29,7 +29,7 @@ export function OgFace({ src, name, size = 260, align = "left" }: { src?: string
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: align === "left" ? "flex-start" : "flex-end", gap: 14, width: size + 40 }}>
       <div style={{ width: size, height: size, borderRadius: 24, overflow: "hidden", border: `2px solid ${GOLD}`, background: "#2a241c", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-        {src ? <img src={src} width={size} height={size} style={{ objectFit: "cover", objectPosition: "top center", width: size, height: size }} alt="" /> : (
+        {src ? <img src={src} width={size} height={size} style={{ objectFit: "cover", objectPosition: "center 32%", width: size, height: size }} alt="" /> : (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%", position: "relative" }}>
             <svg width={size * 0.8} height={size * 0.8} viewBox="0 0 64 64" style={{ position: "absolute", opacity: 0.5 }}><polygon points={OCTAGON} fill="none" stroke={GOLD} strokeWidth="1.8" /></svg>
             <div style={{ fontSize: size * 0.32, color: GOLD, fontWeight: 800 }}>{initials}</div>
