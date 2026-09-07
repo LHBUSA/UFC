@@ -52,6 +52,12 @@ const LIMIT = opt('--limit') ? Number(opt('--limit')) : Infinity;
 const FORCE = flag('--force');
 const DRY = flag('--dry-run');
 const ONLY_FIGHTER = opt('--fighter');
+// A reviewed list of names to work through, so a surface that needs pictures
+// — the TUF archive, the Contender Series roster — can be filled without
+// walking all 2,500 fighters. Names are resolved against ufc_fighters and
+// anything that does not resolve is reported rather than guessed at; the
+// license gate and the identity lock below are unchanged.
+const NAMES_FILE = opt('--names');
 const MISSING_ONLY = flag('--missing-only');
 const PRIORITY = !flag('--no-priority'); // --priority is the default
 
@@ -376,6 +382,35 @@ async function main() {
     ? await sbSelectAll('ufc_fighters', `select=id,name,nickname,dob&id=eq.${ONLY_FIGHTER}`)
     : await sbSelectAll('ufc_fighters', 'select=id,name,nickname,dob&order=name.asc');
   if (ONLY_FIGHTER && fighters.length === 0) { console.error(`fighter ${ONLY_FIGHTER} not found`); process.exit(1); }
+  /* The full roster, captured before any filtering, so a name-list report can
+   * tell "not in ufc_fighters at all" from "filtered out for another reason". */
+  const allNames = new Set(fighters.map((f) => String(f.name)));
+
+  if (NAMES_FILE) {
+    const wanted = JSON.parse(fs.readFileSync(NAMES_FILE, 'utf8'));
+    /* Accent-folded, because the archive spells names as its sources do
+     * ("Alejandro Pérez", "Antônio Rodrigo Nogueira") and ufc_fighters
+     * generally does not. Folding is only for MATCHING; the stored row keeps
+     * whatever the database already has, and no name is rewritten. */
+    const fold = (n) => String(n).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+    const want = new Set(wanted.map(fold));
+    const before = fighters.length;
+    fighters = fighters.filter((f) => want.has(fold(f.name)));
+    /* Preserve the caller's ordering: the list is written most-important
+     * first (coaches and champions before contestants) and that is the order
+     * a limited run should work through. */
+    const rank = new Map(wanted.map((n, i) => [fold(n), i]));
+    fighters.sort((a, b) => (rank.get(fold(a.name)) ?? 1e9) - (rank.get(fold(b.name)) ?? 1e9));
+    const got = new Set(fighters.map((f) => fold(f.name)));
+    /* Two very different reasons a name is not in the work list, and calling
+     * both "unresolved" reads as a data gap when half of them are successes. */
+    const known = new Set([...allNames].map(fold));
+    const absent = wanted.filter((n) => !known.has(fold(n)));
+    const pictured = wanted.filter((n) => known.has(fold(n)) && !got.has(fold(n)));
+    console.log(`name list: ${fighters.length} of ${wanted.length} queued (from ${before} candidate fighters)`);
+    if (pictured.length) console.log(`  already have stored media, skipped: ${pictured.length}`);
+    if (absent.length) console.log(`  no fighter row, left alone: ${absent.length} — ${absent.slice(0, 10).join(', ')}${absent.length > 10 ? ` … +${absent.length - 10}` : ''}`);
+  }
 
   if (MISSING_ONLY && !ONLY_FIGHTER) {
     const existing = await sbSelectAll('ufc_images', 'select=fighter_id&kind=eq.wikimedia&fighter_id=not.is.null');
@@ -384,7 +419,7 @@ async function main() {
   }
 
   const prioritySet = new Set();
-  if (PRIORITY && !ONLY_FIGHTER) {
+  if (PRIORITY && !ONLY_FIGHTER && !NAMES_FILE) {
     const bouts = await sbSelectAll('ufc_bouts', `select=fighter_a_id,fighter_b_id,ufc_events!inner(event_date)&ufc_events.event_date=gte.${today}`);
     for (const b of bouts) { prioritySet.add(b.fighter_a_id); prioritySet.add(b.fighter_b_id); }
     fighters.sort((a, b) => (prioritySet.has(b.id) - prioritySet.has(a.id)) || a.name.localeCompare(b.name));
