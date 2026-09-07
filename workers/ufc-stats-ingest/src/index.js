@@ -105,10 +105,19 @@ async function runIngest(env) {
     /* UFCSTATS_ENABLED="false" runs the ESPN-first path alone (schedule,
      * results, fighters). Used for the production proof run and while the
      * UFC Stats parsers are pending. */
-    if (String(env.UFCSTATS_ENABLED ?? 'true') !== 'false') {
+    /* The round-stat pass being off is a silent, months-long outage: ESPN
+     * keeps writing events and results, so every dashboard looks healthy
+     * while no round data lands at all. The flag state is therefore recorded
+     * on every run, enabled or not, and the disabled case is stated in words
+     * a human reading the run row will notice. */
+    const ufcstatsEnabled = String(env.UFCSTATS_ENABLED ?? 'true') !== 'false';
+    run.notes.ufcstats_enabled = ufcstatsEnabled;
+    if (ufcstatsEnabled) {
       await ufcstatsPass(env, fetcher, ctx, run);
     } else {
       run.notes.ufcstats_pass = 'skipped (UFCSTATS_ENABLED=false)';
+      run.notes.round_rows = 0;
+      run.notes.health_warning = 'ROUND STATS DISABLED: UFCSTATS_ENABLED=false, so no round-level data is being ingested. Newly completed events will accumulate round-stat gaps until this is turned on.';
     }
 
     run.notes.espn_subrequests = espn.subrequests;
@@ -371,15 +380,26 @@ async function ufcstatsPass(env, fetcher, ctx, run) {
   const completed = P.parseEventList(html, url);
   run.notes.ufcstats_completed_listed = completed.length;
   const maxEvents = Number(env.MAX_EVENTS_PER_RUN || 3);
+  /* Forward maintenance only. Without a recency bound this loop walks the
+   * entire completed list and will happily start reconstructing 1990s cards
+   * three at a time, competing with the detached Wayback backfill over the
+   * same rows. The scheduled worker's job is narrower: stop newly completed
+   * events from creating new gaps. History stays with the backfill queue. */
+  const forwardDays = Number(env.UFCSTATS_FORWARD_DAYS || 45);
+  const cutoff = new Date(Date.now() - forwardDays * 86400000).toISOString().slice(0, 10);
+  run.notes.ufcstats_forward_cutoff = cutoff;
+  let skippedHistorical = 0;
   const targets = [];
   for (const e of completed) {
     if (ctx.events.some((x) => x.ufcstats_id === e.ufcstats_id)) continue;
+    if (!e.event_date || e.event_date < cutoff) { skippedHistorical += 1; continue; }
     const cands = ctx.events.filter((x) => !x.ufcstats_id && x.event_date && dayDiff(x.event_date, e.event_date) <= 1);
     if (cands.length === 1) targets.push({ listed: e, event: cands[0] });
     else if (cands.length > 1) run.assertion_failures.push({ class: 'EventMatchAmbiguous', url, detail: `${e.name} ${e.event_date} matches ${cands.length} ESPN events`, at: nowIso() });
     if (targets.length >= maxEvents) break;
   }
   run.notes.ufcstats_events_targeted = targets.length;
+  run.notes.ufcstats_skipped_historical = skippedHistorical;
   let roundRows = 0;
   for (const { listed, event } of targets) {
     const evUrl = fetcher.url('events', listed.ufcstats_id);
@@ -397,6 +417,14 @@ async function ufcstatsPass(env, fetcher, ctx, run) {
       if (!bout) { run.assertion_failures.push({ class: 'BoutNotOnEspnCard', url: evUrl, detail: `ufcstats fight ${b.ufcstats_id} (${b.fighter_a_name} v ${b.fighter_b_name}) has no ESPN bout`, at: nowIso() }); continue; }
       const fUrl = fetcher.url('fights', b.ufcstats_id);
       const { html: fHtml } = await fetcher.get('fights', b.ufcstats_id, fUrl, { refresh: true });
+      /* An event can appear on the completed list while a bout on it still
+       * serves the pre-fight matchup preview. That page states no winner,
+       * method or rounds, so it is a coverage gap to retry next run, not a
+       * schema violation that should abort the pass. */
+      if (P.isPreResultFightPage(fHtml)) {
+        run.notes.fight_preview_pages = (run.notes.fight_preview_pages || 0) + 1;
+        continue;
+      }
       const f = P.parseFightPage(fHtml, fUrl);
       await patch(env, 'ufc_bouts', `id=eq.${bout.id}`, { ufcstats_id: b.ufcstats_id, scheduled_rounds: f.scheduled_rounds ?? undefined, updated_at: nowIso() });
       bout.ufcstats_id = b.ufcstats_id;

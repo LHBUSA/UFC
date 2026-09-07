@@ -146,6 +146,32 @@ function pair($, td, url) {
   return p;
 }
 
+/* True when a fight page was captured or fetched before the bout happened.
+ *
+ * UFC Stats serves the same /fight-details/ URL as a "tale of the tape"
+ * matchup preview until a result exists: both corner status flags render
+ * empty and no Method item is present. Nothing may be inferred from it - no
+ * winner, no method, no round stats - so the caller must treat it as a
+ * coverage gap and move on rather than let parseFightPage raise a schema
+ * assertion, which would abort the whole run over a known, diagnosable case.
+ *
+ * Kept identical to scripts/backfill/parsers.py so the scheduled worker and
+ * the historical backfill classify the same page the same way. */
+export function isPreResultFightPage(html) {
+  const $ = cheerio.load(html);
+  const persons = $('.b-fight-details__person').toArray();
+  if (!persons.length) return false;
+  for (const p of persons) {
+    if (t($, $(p).find('.b-fight-details__person-status').first()) in PERSON_STATUS) return false;
+  }
+  let hasMethod = false;
+  $('.b-fight-details__text-item, .b-fight-details__text-item_first').each((_, it) => {
+    const s = t($, it);
+    if (s.includes(':') && s.split(':', 1)[0].trim() === 'Method') hasMethod = true;
+  });
+  return !hasMethod;
+}
+
 export function parseFightPage(html, url) {
   const $ = cheerio.load(html);
   const persons = $('.b-fight-details__person').toArray().map((p) => {

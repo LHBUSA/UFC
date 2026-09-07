@@ -23,7 +23,16 @@ export function normWeightClass(raw, url) {
   const lower = s.toLowerCase();
   const is_womens = lower.includes(wc.womens_marker.toLowerCase());
   const is_title = wc.title_markers.some((t) => lower.includes(t.toLowerCase()));
-  let core = s.replace(new RegExp(esc(wc.womens_marker), 'ig'), ' ');
+  /* Feeder-series prefix. "Road to UFC 3 Bantamweight Tournament Title Bout"
+   * is an ordinary Bantamweight title bout staged inside a regional series,
+   * and the series name is not part of the division. It has to go before the
+   * generic token pass, which would otherwise remove "UFC" and the season
+   * number and leave the unmatchable remainder "Road to Bantamweight".
+   * Kept identical to scripts/backfill/normalizers.py: the scheduled worker
+   * and the historical backfill must agree, or the same card parses one way
+   * live and another way on replay. */
+  let core = s.replace(/^\s*Road to UFC\b\s*\d*/i, ' ');
+  core = core.replace(new RegExp(esc(wc.womens_marker), 'ig'), ' ');
   for (const tok of wc.strip_tokens) core = core.replace(new RegExp(`\\b${esc(tok)}\\b`, 'ig'), ' ');
   core = core.replace(/\b\d+\b/g, ' ');
   core = core.replace(/\b(Latin America|Brazil|China|Nations|Australia vs\.? UK|Team [A-Za-z]+)\b/ig, ' ');

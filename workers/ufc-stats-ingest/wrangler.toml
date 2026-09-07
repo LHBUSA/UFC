@@ -11,9 +11,20 @@ UFCSTATS_BASE = "http://ufcstats.com"
 # the next run. Keeps a single run well inside the subrequest limit
 # (~1 list + 1 event + ~13 fight pages + ~26 fighter pages + writes per event).
 MAX_EVENTS_PER_RUN = "3"
-# "false" = ESPN-first path only (no ufcstats.com contact). Flip to "true"
-# once the UFC Stats parsers are verified.
-UFCSTATS_ENABLED = "false"
+# "false" = ESPN-first path only (no ufcstats.com contact).
+# Enabled after the parsers were exercised across a full historical backfill
+# and verified by src/canary.mjs against real completed-event pages: event,
+# bout and fighter identity, results, referee, round rows, idempotency,
+# preview-page rejection, interstitial rejection and fail-closed behaviour on
+# a mutated page. Leaving this off is a silent outage - ESPN keeps writing
+# events and results while no round data lands - so scripts/backfill/
+# ingest_health.mjs now reports the flag state and fails when it is false.
+UFCSTATS_ENABLED = "true"
+# Forward maintenance only. Without this the completed-events walk marches
+# backwards through the archive three events at a time and competes with the
+# detached Wayback backfill over the same rows. History belongs to that queue;
+# this worker only stops newly completed events from creating new gaps.
+UFCSTATS_FORWARD_DAYS = "45"
 # Optional window override for ESPN, e.g. "20251214" or "20251201-20251231".
 # ESPN_DATES = ""
 
