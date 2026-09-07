@@ -44,7 +44,7 @@ import {
   selectVariants,
   type CatalogProduct,
 } from "@/lib/store/printful";
-import { PRODUCTS } from "@/lib/store/catalog";
+import { PRODUCTS, activeForms } from "@/lib/store/catalog";
 import { verifySignedRequest } from "@/lib/store/signing";
 
 export const runtime = "nodejs";
@@ -196,7 +196,15 @@ export async function GET(req: Request) {
       step("inspect", "pass", `${rows.length} product(s) inspected`);
     }
     const bases: Record<string, { id?: number; title?: string; error?: string; candidates?: CatalogProduct[] }> = {};
+    /* Only the blanks an offered product needs. The cap is set aside until
+     * one of four equally-matching dad hats is chosen, and a blank nothing is
+     * selling must not fail the run. */
+    const needed = activeForms();
     for (const key of Object.keys(BASE_PRODUCTS)) {
+      if (!needed.includes(key)) {
+        step(`base:${key}`, "skip", "set aside; no offered product uses this blank");
+        continue;
+      }
       const r = resolveBaseProduct(key, catalog);
       if (r.ok) {
         bases[key] = { id: r.product.id, title: r.product.title };

@@ -74,6 +74,7 @@ export const PRODUCTS: readonly ProductDef[] = [
     art: "cap-mark-gold",
     sites: BOTH,
     sort_order: 30,
+    blocked: "cap blank unresolved: four Otto Cap dad hats match equally",
   },
   {
     slug: "propbetedge-mug",
@@ -206,6 +207,7 @@ export const PRODUCTS: readonly ProductDef[] = [
     art: "cap-fight-week-gold",
     sites: UFC_ONLY,
     sort_order: 140,
+    blocked: "cap blank unresolved: four Otto Cap dad hats match equally",
   },
 ] as const;
 
@@ -214,9 +216,20 @@ export const COLLECTIONS: readonly { key: "propbetedge" | "ufc"; name: string; b
   { key: "propbetedge", name: "PropBetEdge", blurb: "The house marks, shared across the network." },
 ];
 
-/** Products this storefront features, in order. */
+/** Products this storefront features, in order.
+ *
+ * Blocked products are held back rather than deleted. Showing a piece whose
+ * blank nobody has chosen would promise something that cannot be made, and
+ * deleting the slug would lose the identity it needs if the blank is picked
+ * later. */
 export function productsFor(site: "ufc" | "news"): ProductDef[] {
-  return PRODUCTS.filter((p) => p.sites.includes(site)).slice().sort((a, b) => a.sort_order - b.sort_order);
+  return PRODUCTS.filter((p) => p.sites.includes(site) && !p.blocked).slice().sort((a, b) => a.sort_order - b.sort_order);
+}
+
+/** Forms an offered product actually needs. A blank nothing offers does not
+ * need resolving, and must not fail a run. */
+export function activeForms(): string[] {
+  return [...new Set(PRODUCTS.filter((p) => !p.blocked).map((p) => p.form))];
 }
 
 export function bySlug(slug: string): ProductDef | null {

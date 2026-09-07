@@ -47,6 +47,10 @@ export type ProductDef = {
   /** Which storefronts feature it. Shared pieces list both. */
   sites: readonly Site[];
   sort_order: number;
+  /** Set aside: the blank could not be resolved, so this is not offered and
+   * is not provisioned. The slug stays so it keeps its identity if the blank
+   * is chosen later. */
+  blocked?: string;
 };
 
 export type ProvisionState = "unclaimed" | "in_flight" | "created" | "failed" | "uncertain";
