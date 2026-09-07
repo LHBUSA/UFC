@@ -33,6 +33,7 @@ import {
   BASE_PRODUCTS,
   findByExternalId,
   getPrintAreas,
+  getProductDetail,
   getVariants,
   isConfigured,
   listCatalog,
@@ -166,26 +167,33 @@ export async function GET(req: Request) {
       step("probe", "pass", `${hits.length} catalog products mention ${terms.join(", ")}`);
     }
     if (inspect) {
-      const id = Number(inspect);
-      const variants = await getVariants(id);
-      let areas: unknown = null;
-      let areaError: string | null = null;
-      try {
-        areas = await getPrintAreas(id, ctx.selected.id);
-      } catch (e) {
-        areaError = e instanceof ProviderError ? `HTTP ${e.status}: ${String(e.detail).slice(0, 120)}` : String((e as Error).message).slice(0, 120);
+      const ids = inspect.split(",").map((x) => Number(x.trim())).filter((n) => Number.isFinite(n)).slice(0, 20);
+      const rows = [];
+      for (const id of ids) {
+        const [detail, variants] = await Promise.all([getProductDetail(id), getVariants(id)]);
+        let areas: unknown = null;
+        let areaError: string | null = null;
+        try {
+          areas = await getPrintAreas(id, ctx.selected.id);
+        } catch (e) {
+          areaError = e instanceof ProviderError ? `HTTP ${e.status}` : String((e as Error).message).slice(0, 80);
+        }
+        rows.push({
+          catalog_product_id: id,
+          name: detail.title,
+          model: catalog.find((p) => p.id === id)?.model ?? null,
+          category: catalog.find((p) => p.id === id)?.type ?? null,
+          type_name: detail.typeName,
+          variant_count: variants.length,
+          colors: [...new Set(variants.map((v) => v.color).filter(Boolean))],
+          sizes: [...new Set(variants.map((v) => v.size).filter(Boolean))],
+          print_areas: areas,
+          print_areas_error: areaError,
+          description: detail.description.slice(0, 200),
+        });
       }
-      out.inspect = {
-        catalog_product_id: id,
-        title: catalog.find((p) => p.id === id)?.title ?? null,
-        type: catalog.find((p) => p.id === id)?.type ?? null,
-        variant_count: variants.length,
-        colors: [...new Set(variants.map((v) => v.color).filter(Boolean))],
-        sizes: [...new Set(variants.map((v) => v.size).filter(Boolean))],
-        print_areas: areas,
-        print_areas_error: areaError,
-      };
-      step("inspect", areas ? "pass" : "fail", `product ${id}: ${variants.length} variants`);
+      out.inspect = rows;
+      step("inspect", "pass", `${rows.length} product(s) inspected`);
     }
     const bases: Record<string, { id?: number; title?: string; error?: string; candidates?: CatalogProduct[] }> = {};
     for (const key of Object.keys(BASE_PRODUCTS)) {

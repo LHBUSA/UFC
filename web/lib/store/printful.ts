@@ -174,6 +174,22 @@ export type Variant = {
   inStock: boolean;
 };
 
+/** The catalog list only carries brand and model. The detail endpoint has the
+ * name a human would recognise, which is what distinguishes fourteen Otto Cap
+ * model numbers from one another. */
+export type ProductDetail = { id: number; title: string; description: string; typeName: string | null };
+
+export async function getProductDetail(catalogProductId: number): Promise<ProductDetail> {
+  const r = await get<{ result?: { product?: Record<string, unknown> } }>(`/products/${catalogProductId}`);
+  const p = r?.result?.product ?? {};
+  return {
+    id: Number(p.id ?? catalogProductId),
+    title: String(p.title ?? ""),
+    description: String(p.description ?? "").replace(/\s+/g, " ").trim(),
+    typeName: (p.type_name as string) ?? null,
+  };
+}
+
 export async function getVariants(catalogProductId: number): Promise<Variant[]> {
   const r = await get<{ result?: { variants?: Array<Record<string, unknown>> } }>(`/products/${catalogProductId}`);
   return (r?.result?.variants || []).map((v) => ({
