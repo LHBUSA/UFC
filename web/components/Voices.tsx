@@ -4,10 +4,11 @@ import { VoiceImage } from "@/components/VoiceImage";
 import { OCTAGON } from "@/components/Brand";
 
 /* Notable Voices — a premium editorial discovery module. Recommended
- * listening/viewing from recognisable people around MMA; framed strictly as
- * editorial recommendations with the non-affiliation note printed in the
- * module itself. Official outbound destinations remain separate from the
- * internal PropBetEdge profile so discovery never implies endorsement. */
+ * listening/viewing from recognisable people around MMA plus the promoter
+ * whose decisions shaped the modern UFC; framed strictly as editorial
+ * profiles with the non-affiliation note printed in the module itself.
+ * Official outbound destinations remain separate from the internal
+ * PropBetEdge profile so discovery never implies endorsement. */
 export function Voices() {
   return (
     <section id="notable-voices" className="sec voices-sec" aria-labelledby="voices-title">
@@ -16,10 +17,10 @@ export function Voices() {
           <div>
             <div className="eyebrow">Notable voices</div>
             <h2 id="voices-title">From Inside the Fight Game</h2>
-            <p className="voices-lede">Conversations, analysis and perspective from some of the most recognizable voices around mixed martial arts.</p>
+            <p className="voices-lede">Conversations, analysis and perspective from some of the most recognizable voices around mixed martial arts, and the promoter whose decisions shaped the modern UFC.</p>
           </div>
         </div>
-        <div className="voices">
+        <div className="voices voices-3">
           {VOICES.map((v) => (
             <article className="voice" key={v.key}>
               <svg className="voice-cage" viewBox="0 0 64 64" aria-hidden="true"><polygon points={OCTAGON} fill="none" stroke="#d4af37" strokeWidth="1" strokeLinejoin="round" /></svg>

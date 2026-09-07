@@ -1,10 +1,16 @@
 import Link from "next/link";
-import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getNewsItems, getFightersByIds } from "@/lib/db";
+import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getNewsItems, getFightersByIds, getBoutCounts, getVideosForEvent, isContenderSeries } from "@/lib/db";
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { Mark } from "@/components/Brand";
 import { PregameDesk } from "@/components/PregameDesk";
 import { ChampionsShowcase } from "@/components/ChampionsShowcase";
+import { ContenderStrip } from "@/components/ContenderStrip";
+import { VideoRail } from "@/components/VideoRail";
+import { OfficialDestinations } from "@/components/OfficialDestinations";
+import { buildDeskBriefs } from "@/lib/pregame";
+import { getIngestFreshness } from "@/lib/archive";
+import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { eventSlug } from "@/lib/slug";
 import { fmtDate, daysUntil, locationLine, eventBrand, eventHeadline, fmtRecord, weightClassLabel, relTime } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -15,27 +21,39 @@ import { Voices } from "@/components/Voices";
 export const revalidate = 300;
 
 export default async function Home() {
-  const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire] = await Promise.all([
+  const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire, allUpcoming, recentAll] = await Promise.all([
     getNextEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(7), getCounts(), getRankings(), getNewsItems(8),
+    getUpcomingEvents(30, { includeContenderSeries: true }), getRecentEvents(20),
   ]);
   const articles = articlesRes.rows;
-  const upcoming = upcomingRaw.filter((e) => e.id !== next?.id).slice(0, 6);
+  const upcoming = upcomingRaw.filter((e) => e.id !== next?.id && !isContenderSeries(e.name)).slice(0, 6);
   const bouts = next ? await getEventBouts(next.id) : [];
   const live = bouts.filter((b) => b.status !== "cancelled");
   const mainEvent = live[0] || null;
   const headline = live.slice(0, 3);
   const d = next ? daysUntil(next.event_date) : null;
+  const dwcsNext = allUpcoming.find((e) => isDanaWhiteContenderSeries(e.name)) || null;
+  const dwcsLast = recentAll.find((e) => isDanaWhiteContenderSeries(e.name)) || null;
 
-  const mains = await getMainEvents([...upcoming, ...recent].map((e) => e.id));
+  const contenderIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion).flatMap((x) => x.entries.slice(0, 3).map((e) => e.fighter_id)).filter(Boolean) as string[];
+  const mains = await getMainEvents([...upcoming, ...recent, ...[dwcsNext, dwcsLast].filter(Boolean).map((e) => e!)].map((e) => e.id));
   const champIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion?.fighter_id).map((x) => x.champion!.fighter_id!);
-  const imgs = await getImagesForFighters([
-    ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
-    ...[...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
-    ...champIds,
+  const [imgs, briefs, media, champs, contenders, dwcsCounts, freshness, videos] = await Promise.all([
+    getImagesForFighters([
+      ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
+      ...[...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
+      ...champIds, ...contenderIds,
+    ]),
+    next && live.length ? buildDeskBriefs(next, live, 3).catch(() => []) : Promise.resolve([]),
+    storyMedia(articles),
+    getFightersByIds(champIds),
+    getFightersByIds(contenderIds),
+    getBoutCounts([dwcsNext?.id, dwcsLast?.id].filter(Boolean) as string[]),
+    getIngestFreshness().catch(() => null),
+    next ? getVideosForEvent(next.id, 3).catch(() => []) : Promise.resolve([]),
   ]);
-  const media = await storyMedia(articles);
-  const champs = await getFightersByIds(champIds);
   const champById = new Map(champs.map((f) => [f.id, f]));
+  const contenderById = new Map(contenders.map((f) => [f.id, f]));
 
   return (
     <>
@@ -44,10 +62,10 @@ export default async function Home() {
         <div className="wrap hero-in">
           <div>
             <div className="hero-net"><Mark size={32} /><span className="eyebrow">PropBetEdge Sports Network · Fight Intelligence</span></div>
-            <h1 aria-label="Every card. Every fighter. Every round.">Every card. Every f{"\u200C"}ighter. <em>Every round.</em></h1>
+            <h1 aria-label="Every card. Every fighter. Every round.">Every card. Every f{"‌"}ighter. <em>Every round.</em></h1>
             <p className="lede">
-              Live UFC fight-week intelligence from first announcement to final result: full cards, fighter dossiers, Fight DNA,
-              official rankings, championship context, history, source-linked media and a newsroom that only writes what its evidence can support.
+              Live UFC fight-week intelligence from first announcement to final result: full cards, the Pregame Desk, fighter dossiers, Fight DNA,
+              official rankings, championship context, seven eras of history, source-linked media and a newsroom that only writes what its evidence can support.
             </p>
             <div className="hero-actions">
               <Link href={next ? `/events/${eventSlug(next)}` : "/events"} className="btn gold lg">{next ? "Enter fight week" : "UFC schedule"}</Link>
@@ -107,11 +125,17 @@ export default async function Home() {
         </div>
       </section>
 
+      {next && briefs.length > 0 && (
+        <section className="sec">
+          <div className="wrap"><PregameDesk event={next} briefs={briefs} imgs={imgs} /></div>
+        </section>
+      )}
+
       <section className="sec">
         <div className="wrap">
           <SectionHead eyebrow={next ? `${fmtDate(next.event_date)} · ${locationLine(next) || "Venue TBA"}` : "Upcoming"} title={next ? next.name : "Upcoming card"} href={next ? `/events/${eventSlug(next)}` : "/events"} cta="Full card & matchups" />
           {bouts.length ? <CardSegments bouts={bouts} e={next!} imgs={imgs} /> : <Empty title="No bouts announced yet" cta={{ href: "/events", label: "See the schedule" }}>Bouts appear here the moment the card is published. Nothing is shown that has not been announced.</Empty>}
-          {next && <PregameDesk event={next} bouts={live} />}
+          <VideoRail videos={videos} title="Official fight-week video" eyebrow="Official UFC channel" feature={videos.length === 1} />
         </div>
       </section>
 
@@ -122,7 +146,7 @@ export default async function Home() {
       )}
 
       {rankings && champs.length > 0 && (
-        <section className="sec"><div className="wrap"><ChampionsShowcase rankings={rankings} fighters={champById} imgs={imgs} /></div></section>
+        <section className="sec"><div className="wrap"><ChampionsShowcase rankings={rankings} fighters={champById} contenderFighters={contenderById} imgs={imgs} /></div></section>
       )}
 
       <section className="sec">
@@ -138,7 +162,6 @@ export default async function Home() {
         <div className="wrap grid-side">
           <div>
             <SectionHead eyebrow="UFC schedule" title="Coming up" href="/events" cta="Full schedule" />
-            <div className="mb-4"><Link href="/contender-series" className="gold sm" style={{ fontWeight: 700 }}>Dana White's Contender Series · every season &amp; week →</Link></div>
             {upcoming.length ? <div className="grid-2">{upcoming.slice(0, 4).map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div> : <Empty title="Schedule loading">Upcoming UFC events are refreshed from the production ingest and appear here as the source tables change.</Empty>}
           </div>
           <div>
@@ -146,16 +169,19 @@ export default async function Home() {
             {wire.length ? <ul className="wire">{wire.map((n) => <li key={n.id}><a href={n.url || "#"} rel="noopener nofollow" target="_blank">{n.title}{n.taxonomy?.labels?.[0] && n.taxonomy.labels[0] !== "other" ? <span className="lab">{n.taxonomy.labels[0].replace("_", " ")}</span> : null}</a><span className="src">{n.source?.name || "Source"} · {relTime(n.published_at)}</span></li>)}</ul> : <Empty title="Wire is quiet">External headlines are ingested on the card-week cadence and attributed to their source.</Empty>}
           </div>
         </div>
+        <div className="wrap"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={dwcsCounts} freshness={freshness?.finished_at || freshness?.started_at || null} /></div>
       </section>
 
       <section className="sec">
         <div className="wrap heritage-close">
-          <div><div className="eyebrow">From UFC 1 to today</div><h2>Know the fight game you are analyzing.</h2><p>The evolution from style-vs-style tournaments to modern championship MMA is part of the data story. Explore the rules, pioneers, Hall of Fame and the historical results repair that is rebuilding the canonical fight graph back toward UFC 1.</p></div>
+          <div><div className="eyebrow">From UFC 1 to today · seven eras</div><h2>Know the fight game you are analyzing.</h2><p>The evolution from style-vs-style tournaments to modern championship MMA is part of the data story. Explore the seven eras, the Hall of Fame tribute and the historical results archive that is being rebuilt back toward UFC 1 with its coverage shown honestly.</p></div>
           <div className="heritage-close-actions"><Link href="/history" className="btn gold">Explore UFC history →</Link><Link href="/hall-of-fame" className="btn">Hall of Fame tribute</Link><a href={UFC_OFFICIAL.home} className="btn" target="_blank" rel="noopener">UFC.com ↗</a></div>
         </div>
       </section>
 
       {recent.length > 0 && <section className="sec"><div className="wrap"><SectionHead eyebrow="Results" title="Recent cards" href="/events" cta="Results archive" /><div className="grid-3">{recent.map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div></div></section>}
+
+      <section className="sec"><div className="wrap"><OfficialDestinations title="Official UFC destinations" intro="UFC-owned pages for the official record, athletes, rankings, Hall of Fame, Fight Pass and merchandise. Clearly separate from PropBetEdge content." /></div></section>
 
       <section className="sec"><div className="wrap"><SectionHead eyebrow="Free vs Pro" title="Everything public is free. The edge is Pro." /><ProPlans /></div></section>
 

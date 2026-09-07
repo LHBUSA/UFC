@@ -8,7 +8,7 @@
     linear-gradient(90deg, rgba(13,11,8,.90) 0%, rgba(13,11,8,.72) 43%, rgba(13,11,8,.48) 72%, rgba(13,11,8,.68) 100%),
     linear-gradient(180deg, rgba(13,11,8,.22), rgba(13,11,8,.70)),
     radial-gradient(900px 420px at 12% -10%, rgba(212,175,55,.18), transparent 60%),
-    url("/media/ufc-cage-hero-1800.webp") center 38% / cover no-repeat;
+    url("/media/ufc-cage-bg-1600.webp") center 38% / cover no-repeat;
   opacity: .88;
 }
 .hero-net svg { flex: none; filter: drop-shadow(0 4px 12px rgba(0,0,0,.45)); }
@@ -51,7 +51,7 @@
 .voice-profile-credit a { color: var(--pbe-dim); text-decoration: underline; text-underline-offset: 2px; }
 
 /* Contender Series lives beside the UFC archive instead of impersonating a UFC card. */
-.dwcs-hero { position: relative; overflow: hidden; border: 1px solid var(--pbe-line-strong); border-radius: var(--r-xl); background: linear-gradient(90deg, rgba(13,11,8,.94), rgba(13,11,8,.74)), url("/media/ufc-cage-hero-1800.webp") center 42% / cover no-repeat; padding: clamp(34px,5vw,70px); box-shadow: var(--sh-3); }
+.dwcs-hero { position: relative; overflow: hidden; border: 1px solid var(--pbe-line-strong); border-radius: var(--r-xl); background: linear-gradient(90deg, rgba(13,11,8,.94), rgba(13,11,8,.74)), url("/media/ufc-cage-bg-1600.webp") center 42% / cover no-repeat; padding: clamp(34px,5vw,70px); box-shadow: var(--sh-3); }
 .dwcs-hero::after { content: ""; position: absolute; inset: 0; background: radial-gradient(640px 300px at 82% 20%, rgba(212,175,55,.13), transparent 65%); pointer-events: none; }
 .dwcs-hero > * { position: relative; z-index: 1; }
 .dwcs-hero h1 { font: 900 clamp(40px,6vw,70px)/1 var(--pbe-font-display); max-width: 12ch; margin: 10px 0 16px; font-variant-ligatures: none; }

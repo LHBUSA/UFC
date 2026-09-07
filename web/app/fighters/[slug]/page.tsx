@@ -6,7 +6,8 @@ import { storyMedia } from "@/lib/faces";
 import { getFighterDna } from "@/lib/dna";
 import { FightDnaSection, FightDnaEmpty } from "@/components/dna";
 import { resolveFighter } from "@/lib/resolve";
-import { Empty, JsonLd, ProLock, Breadcrumbs, Portrait, Credit, Avatar, StoryCard, TaleOfTheTape } from "@/components/ui";
+import { Empty, JsonLd, ProLock, Breadcrumbs, Portrait, Credit, Avatar, TaleOfTheTape } from "@/components/ui";
+import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
 import { age, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, METHOD_LABEL, stanceLabel, weightClassLabel, archiveSummary, totals, pct, plural, daysUntil } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -188,7 +189,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
       {articles.length > 0 && (
         <section className="segment">
           <h3>Stories <small>{plural(articles.length, "story", "stories")}</small></h3>
-          <div className="news">{articles.map((a) => <StoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}</div>
+          <div className="news">{articles.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}</div>
         </section>
       )}
 

@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents } from "@/lib/db";
+import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { resolveEvent } from "@/lib/resolve";
 import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { PregameDesk } from "@/components/PregameDesk";
+import { VideoRail, videoJsonLd } from "@/components/VideoRail";
+import { OfficialDestinations } from "@/components/OfficialDestinations";
+import { buildDeskBriefs } from "@/lib/pregame";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { daysUntil, fmtDate, locationLine, eventBrand, eventStatusLabel, fmtRecord, weightClassLabel, winnerOf, METHOD_LABEL, fmtTime, plural } from "@/lib/format";
+import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 
@@ -19,20 +23,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!e) return { title: "Event not found", robots: { index: false } };
   const where = [e.venue, e.city, e.country].filter(Boolean).join(", ");
   const done = e.card_status === "complete";
-  const title = done ? `${e.name} — Results, Full Card & Stats` : `${e.name} — Fight Card, Pregame & Matchups`;
+  const title = done ? `${e.name} — Results, Full Card & Stats` : `${e.name} — Fight Card, Pregame Desk & Matchups`;
+  const og = `${SITE.url}/events/${eventSlug(e)}/opengraph-image`;
   return {
     title,
-    description: `${e.name} on ${fmtDate(e.event_date)}${where ? ` at ${where}` : ""}. ${done ? "Loaded results with method, round, time and round-level stats where available." : "Full announced fight card, Pregame Desk, fighter records, tale of the tape and matchup intelligence."}`,
+    description: `${e.name} on ${fmtDate(e.event_date)}${where ? ` at ${where}` : ""}. ${done ? "Loaded results with method, round, time and round-level stats where available." : "Full announced fight card, Pregame Desk fight-week intelligence, fighter records, tale of the tape and matchup pages."}`,
     alternates: { canonical: `/events/${eventSlug(e)}` },
-    openGraph: { title: e.name, description: `${fmtDate(e.event_date)}${where ? ` · ${where}` : ""}`, type: "website", url: `${SITE.url}/events/${eventSlug(e)}` },
-    twitter: { card: "summary_large_image", title: e.name },
+    openGraph: { title: e.name, description: `${fmtDate(e.event_date)}${where ? ` · ${where}` : ""}`, type: "website", url: `${SITE.url}/events/${eventSlug(e)}`, images: [{ url: og, width: 1200, height: 630, alt: e.name }] },
+    twitter: { card: "summary_large_image", title: e.name, images: [og] },
   };
 }
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const e = await resolveEvent((await params).slug);
   if (!e) notFound();
-  const [bouts, articles] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id)]);
+  const [bouts, articles, videos] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id).catch(() => [])]);
   const imgs = await getImagesForFighters(bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
   const media = await storyMedia(articles);
   const d = daysUntil(e.event_date);
@@ -40,19 +45,22 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const main = live[0] || null;
   const headline = live.slice(0, 2);
   const done = e.card_status === "complete" || (bouts.length > 0 && live.every((b) => b.result));
+  const historical = !done && bouts.length === 0 && d != null && d < 0;
   const finishes = live.filter((b) => b.result && (b.result.method === "KO_TKO" || b.result.method === "SUB")).length;
   const decisions = live.filter((b) => b.result && b.result.method.startsWith("DEC")).length;
   const titleBouts = live.filter((b) => b.is_title).length;
-  const nearby = done ? await getRecentEvents(4) : await getUpcomingEvents(4);
+  const briefs = !done && live.length > 0 ? await buildDeskBriefs(e, live, 3).catch(() => []) : [];
+  const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
   const others = nearby.filter((x) => x.id !== e.id).slice(0, 3);
+  const dwcs = isDanaWhiteContenderSeries(e.name);
 
   return (
     <div className="wrap page">
-      <Breadcrumbs items={[{ name: "Schedule", href: "/events" }, { name: e.name }]} />
+      <Breadcrumbs items={[{ name: dwcs ? "Contender Series" : "Schedule", href: dwcs ? "/contender-series" : "/events" }, { name: e.name }]} />
       <div className="poster" style={{ minHeight: 0 }}>
         <div className="poster-top">
           <span className="eyebrow">{eventBrand(e.name)}{e.is_ppv ? " · Pay-per-view" : ""}</span>
-          <span className={`tag${!done && d != null && d >= 0 && d <= 6 ? " gold" : done ? " pos" : ""}`}>{eventStatusLabel(e)}</span>
+          <span className={`tag${!done && d != null && d >= 0 && d <= 6 ? " gold" : done ? " pos" : ""}`}>{historical ? "Historical · card not yet loaded" : eventStatusLabel(e)}</span>
         </div>
         {main ? (
           <>
@@ -72,32 +80,35 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <div className="poster-foot">
           <div>
             <h1 className="t" style={{ fontSize: "clamp(26px, 3.4vw, 44px)" }}>{e.name}</h1>
-            <div className="m">{fmtDate(e.event_date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })} · {locationLine(e) || "Venue TBA"}</div>
-            <div className="m">{main ? `${weightClassLabel(main.weight_class, main.is_womens)}${main.is_title ? " title" : ""} main event` : "Main event TBA"}{live.length ? ` · ${plural(live.length, "bout")}` : ""}{titleBouts ? ` · ${plural(titleBouts, "title fight")}` : ""}{done && main?.result ? ` · ${METHOD_LABEL[main.result.method]}${main.result.round ? ` R${main.result.round}` : ""}${main.result.time_sec != null ? ` ${fmtTime(main.result.time_sec)}` : ""}` : ""}</div>
+            <div className="m"><time dateTime={e.event_date || undefined}>{fmtDate(e.event_date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</time> · {locationLine(e) || "Venue TBA"}</div>
+            <div className="m">{main ? `${weightClassLabel(main.weight_class, main.is_womens)}${main.is_title ? " title" : ""} main event` : historical ? "Bout rows not yet loaded for this historical event" : "Main event TBA"}{live.length ? ` · ${plural(live.length, "bout")}` : ""}{titleBouts ? ` · ${plural(titleBouts, "title fight")}` : ""}{done && main?.result ? ` · ${METHOD_LABEL[main.result.method]}${main.result.round ? ` R${main.result.round}` : ""}${main.result.time_sec != null ? ` ${fmtTime(main.result.time_sec)}` : ""}` : ""}</div>
           </div>
           {!done && d != null && d >= 0 ? <div className="count"><b>{d}</b><span>{d === 1 ? "day out" : "days out"}</span></div> : done && live.length ? <div className="count"><b>{finishes}</b><span>finishes · {decisions} dec</span></div> : null}
         </div>
       </div>
 
-      <div className="rank-official-bar mt-4">
-        <p><b style={{ color: "var(--pbe-paper)" }}>Independent intelligence, official destinations beside it.</b> PropBetEdge supplies the matchup layer; UFC.com and Fight Pass remain the official promotion and viewing destinations.</p>
-        <div className="actions"><a href="https://www.ufc.com/events" className="btn" target="_blank" rel="noopener">UFC events ↗</a><a href={UFC_OFFICIAL.fightPass} className="btn" target="_blank" rel="noopener">Fight Pass ↗</a><a href={UFC_OFFICIAL.store} className="btn gold" target="_blank" rel="noopener">UFC Store ↗</a></div>
-      </div>
+      <div className="mt-4"><OfficialDestinations compact keys={["home", "fightpass", "store"]} /></div>
 
-      {!done && live.length > 0 && <PregameDesk event={e} bouts={live} />}
+      {briefs.length > 0 && <div className="mt-6"><PregameDesk event={e} briefs={briefs} imgs={imgs} /></div>}
 
       {bouts.length ? (
         <>
           <CardSegments bouts={bouts} e={e} imgs={imgs} />
           {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} />)}</div></section>}
         </>
-      ) : <div className="mt-6"><Empty title="Card not published yet" cta={{ href: "/events", label: "Other cards" }}>This event is on the schedule but no bouts have been announced. The card appears as soon as it is published, with fighter records and matchup pages.</Empty></div>}
+      ) : historical ? (
+        <div className="mt-6"><Empty title="Historical card not yet loaded" cta={{ href: "/history#archive", label: "Archive coverage" }}>This event exists in the canonical schedule, but its bouts and results have not been backfilled yet. PropBetEdge fills the archive year by year from archived UFC Stats captures and shows this state instead of inventing a card. The official record is at <a href={UFC_OFFICIAL.events} target="_blank" rel="noopener">UFC.com events</a>.</Empty></div>
+      ) : (
+        <div className="mt-6"><Empty title="Card not published yet" cta={{ href: "/events", label: "Other cards" }}>This event is on the schedule but no bouts have been announced. The card appears as soon as it is published, with fighter records and matchup pages.</Empty></div>
+      )}
 
-      {articles.length > 0 && <section className="segment"><h3>{done ? "Post-fight desk" : "Pregame reading"} <small>{plural(articles.length, "story", "stories")}</small></h3><div className="news">{articles.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} kicker={eventBrand(e.name)} />)}</div></section>}
+      <VideoRail videos={videos} title={done ? "Official video from this card" : "Official fight-week video"} eyebrow="Official UFC channel" note="Free, publisher-hosted video embedded from the official YouTube channel · not hosted by PropBetEdge" />
 
-      {others.length > 0 && <section className="segment"><h3>{done ? "More recent cards" : "Also coming up"}</h3><div className="elist">{others.map((x) => <EventRow key={x.id} e={x} />)}</div></section>}
+      {articles.length > 0 && <section className="segment"><h3>{done ? "Post-fight desk" : "Pregame reading"} <small>{plural(articles.length, "story", "stories")} · timestamped</small></h3><div className="news">{articles.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} kicker={eventBrand(e.name)} />)}</div></section>}
 
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: e.event_date, endDate: e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: done ? "https://schema.org/EventCompleted" : "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
+      {others.length > 0 && <section className="segment"><h3>{done || historical ? "More recent cards" : "Also coming up"}</h3><div className="elist">{others.map((x) => <EventRow key={x.id} e={x} />)}</div></section>}
+
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: e.event_date, endDate: e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: done ? "https://schema.org/EventCompleted" : "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, video: videos.length ? videoJsonLd(videos) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
     </div>
   );
 }

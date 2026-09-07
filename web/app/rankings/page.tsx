@@ -3,17 +3,19 @@ import Link from "next/link";
 import { getRankings, getFightersByIds, getImagesForFighters } from "@/lib/db";
 import { Empty, PageHead, JsonLd, Portrait, Avatar, Change, Octagon } from "@/components/ui";
 import { ChampionshipBelt } from "@/components/ChampionshipBelt";
+import { OfficialDestinations } from "@/components/OfficialDestinations";
 import { fighterSlug } from "@/lib/slug";
-import { fmtDate, fmtRecord, WEIGHT_LABEL } from "@/lib/format";
+import { fmtDate, fmtDateTime, fmtRecord, relTime, WEIGHT_LABEL } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 
 export const revalidate = 1800;
 export const metadata: Metadata = {
   title: "UFC Rankings — Champions & Full Top 15 by Division",
-  description: "Readable UFC rankings by division: every current champion, full top 15, pound-for-pound tables and weekly movement from a dated official UFC rankings snapshot.",
+  description: "Readable UFC rankings by division: every current champion elevated, the full top 15 in two clean columns, pound-for-pound tables and weekly movement from a dated official UFC rankings snapshot.",
   alternates: { canonical: "/rankings" },
-  openGraph: { title: "UFC Rankings — Champions & Full Top 15", description: "Every champion, every ranked contender and every division in one readable view.", url: `${SITE.url}/rankings` },
+  openGraph: { title: "UFC Rankings — Champions & Full Top 15", description: "Every champion, every ranked contender and every division in one readable view.", url: `${SITE.url}/rankings`, images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630 }] },
+  twitter: { card: "summary_large_image", title: "UFC Rankings — Champions & Full Top 15", images: [`${SITE.url}/opengraph-image`] },
 };
 
 const MEN = ["FLYWEIGHT", "BANTAMWEIGHT", "FEATHERWEIGHT", "LIGHTWEIGHT", "WELTERWEIGHT", "MIDDLEWEIGHT", "LIGHT_HEAVYWEIGHT", "HEAVYWEIGHT"];
@@ -33,12 +35,14 @@ export default async function RankingsPage() {
   return (
     <div className="wrap page">
       <PageHead crumbs={[{ name: "Rankings" }]} eyebrow={snap ? `Official UFC rankings · snapshot ${fmtDate(snap.snapshot_date)}` : "Official UFC rankings"} title="Champions & ranked contenders"
-        lede="No collapsed tables and no mystery ordering. Every current titleholder and the full top 15 in each division, preserved as a dated snapshot and linked into PropBetEdge fighter intelligence wherever identity is resolved." />
+        lede="No collapsed tables and no mystery ordering. Every current titleholder elevated above the division, the full top 15 in two readable columns, preserved as a dated snapshot and linked into PropBetEdge fighter intelligence wherever identity is resolved." />
 
       {!snap ? (
         <Empty title="Rankings snapshot not loaded yet" cta={{ href: "/fighters", label: "Browse fighters" }}>No ranking is displayed until it comes from the tracked source with a date attached. Nothing here is estimated.</Empty>
       ) : (
         <>
+          <div className="rank-fresh"><i />Snapshot dated <time dateTime={snap.snapshot_date}>{fmtDate(snap.snapshot_date)}</time> · captured <time dateTime={snap.captured_at}>{fmtDateTime(snap.captured_at)}</time> ({relTime(snap.captured_at)}) · <a href={snap.source_url} target="_blank" rel="noopener" style={{ color: "var(--pbe-gold)" }}>captured source ↗</a></div>
+
           <div className="rank-official-bar">
             <p><b style={{ color: "var(--pbe-paper)" }}>Official source first.</b> PropBetEdge captures the UFC-published ranking state, adds fighter links and movement context, and keeps the original destination beside it.</p>
             <div className="actions">
@@ -47,9 +51,10 @@ export default async function RankingsPage() {
             </div>
           </div>
 
-          <nav className="years mb-5" aria-label="Jump to division">
+          <nav className="rank-nav" aria-label="Jump to division">
             {MEN.map((d) => <a key={d} href={`#${d.toLowerCase()}`}>{WEIGHT_LABEL[d]}</a>)}
-            {WOMEN.map((d) => <a key={`w${d}`} href={`#w-${d.toLowerCase()}`}>W {WEIGHT_LABEL[d]}</a>)}
+            {WOMEN.map((d) => <a key={`w${d}`} href={`#w-${d.toLowerCase()}`}>W · {WEIGHT_LABEL[d]}</a>)}
+            {p4p.length > 0 && <a href="#p4p">Pound for pound</a>}
           </nav>
 
           {movers.length > 0 && (
@@ -69,15 +74,15 @@ export default async function RankingsPage() {
             {weight.map((d) => {
               const champ = d.champion?.fighter_id ? byId.get(d.champion.fighter_id) : null;
               return (
-                <section className="division" key={`${d.key}-${d.is_womens}`} id={`${d.is_womens ? "w-" : ""}${d.key.toLowerCase()}`}>
-                  <div className="champ" style={{ gridTemplateColumns: "96px 120px minmax(0,1fr)", alignItems: "center" }}>
-                    {d.champion ? <Portrait f={{ name: d.champion.name }} img={champ ? imgs.get(champ.id) : null} sizes="96px" /> : <div className="portrait"><div className="fallback"><Octagon /><small>Vacant</small></div></div>}
-                    <div className="rank-champ-belt"><ChampionshipBelt size="mini" label={`${d.label} champion`} /></div>
+                <section className="division" key={`${d.key}-${d.is_womens}`} id={`${d.is_womens ? "w-" : ""}${d.key.toLowerCase()}`} aria-label={`${d.label} rankings`}>
+                  <div className="champ champ-elevated">
+                    {d.champion ? <Portrait f={{ name: d.champion.name }} img={champ ? imgs.get(champ.id) : null} sizes="118px" /> : <div className="portrait"><div className="fallback"><Octagon /><small>Vacant</small></div></div>}
                     <div className="who">
-                      <div className="belt">{d.label} champion</div>
+                      <div className="belt">{d.label}{d.is_womens ? " · women's" : ""} champion</div>
                       {d.champion ? (champ ? <Link href={`/fighters/${fighterSlug(champ)}`} className="n">{d.champion.name}</Link> : <div className="n">{d.champion.name}</div>) : <div className="n">Vacant</div>}
                       <div className="m">{champ ? `${fmtRecord(champ)}${champ.nickname ? ` · “${champ.nickname}”` : ""}` : d.champion ? "Profile resolution pending" : "Title vacant"}</div>
                     </div>
+                    <div className="rank-champ-belt"><ChampionshipBelt size="mini" label={`${d.label} champion`} /></div>
                   </div>
                   <ol>
                     {d.entries.map((e) => <Rank key={`${e.rank}-${e.name}`} e={e} f={e.fighter_id ? byId.get(e.fighter_id) : null} img={e.fighter_id ? imgs.get(e.fighter_id) : null} />)}
@@ -88,9 +93,9 @@ export default async function RankingsPage() {
           </div>
 
           {p4p.length > 0 && (
-            <div className="mt-7">
+            <div className="mt-7" id="p4p">
               <div className="sec-head"><div><div className="eyebrow">Pound for pound</div><h2>Best across divisions</h2><p className="dim sm mt-2">Published UFC pound-for-pound ordering, displayed in full rather than hidden behind a disclosure.</p></div></div>
-              <div className="grid-2">
+              <div className="rank-grid">
                 {p4p.map((d) => (
                   <section className="division" key={`${d.key}-${d.is_womens}`}>
                     <div className="champ" style={{ gridTemplateColumns: "1fr" }}><div className="who"><div className="belt">{d.label}</div><div className="m">Full published list</div></div></div>
@@ -101,7 +106,9 @@ export default async function RankingsPage() {
             </div>
           )}
 
-          <p className="faint label mt-6">Source: <a href={snap.source_url} rel="noopener" target="_blank" className="dim">UFC.com official rankings</a>, captured {fmtDate(snap.captured_at.slice(0, 10))}. Rankings are published by UFC; PropBetEdge preserves the snapshot date, movement state and fighter-resolution layer. The championship belt graphic on this page is original PropBetEdge artwork.</p>
+          <p className="faint label mt-6">Source: <a href={snap.source_url} rel="noopener" target="_blank" className="dim">UFC.com official rankings</a>, captured {fmtDate(snap.captured_at.slice(0, 10))}. Rankings are published by UFC; PropBetEdge preserves the snapshot date, movement state and fighter-resolution layer. The championship belt emblem on this page is original PropBetEdge artwork.</p>
+
+          <OfficialDestinations keys={["rankings", "athletes", "fightpass", "store"]} title="Official UFC rankings, athletes and store" />
 
           <JsonLd data={{
             "@context": "https://schema.org", "@type": "ItemList", name: "UFC rankings by division", url: `${SITE.url}/rankings`, dateModified: snap.captured_at,
@@ -119,8 +126,10 @@ function Rank({ e, f, img }: { e: { rank: number; name: string; change: number |
       <span className="rk">{e.rank}</span>
       <span className="row" style={{ gap: 8, minWidth: 0 }}>
         <Avatar f={{ name: e.name }} img={img as never} size={30} />
-        {f ? <Link href={`/fighters/${fighterSlug(f)}`} className="n truncate">{e.name}</Link> : <span className="n unl truncate">{e.name}</span>}
-        {f && f.record_w != null && <span className="faint mono label hide-m">{fmtRecord(f)}</span>}
+        <span style={{ minWidth: 0 }}>
+          {f ? <Link href={`/fighters/${fighterSlug(f)}`} className="n truncate">{e.name}</Link> : <span className="n unl truncate">{e.name}</span>}
+          {f && f.record_w != null && <span className="faint mono label" style={{ display: "block" }}>{fmtRecord(f)}</span>}
+        </span>
       </span>
       <Change change={e.change} isNew={e.is_new} />
     </li>

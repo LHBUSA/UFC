@@ -408,3 +408,28 @@ export async function getCounts(): Promise<{ fighters: number | null; events: nu
   ]);
   return { fighters: f.count, events: e.count, bouts: b.count, results: r.count, rounds: rs.count, articles: a.count };
 }
+/* ---- official video layer (publisher-hosted, allowlisted) --------------- */
+export type OfficialVideoRow = {
+  id: string; provider: string; provider_video_id: string; channel_id: string; channel_name: string | null; channel_verified_source: boolean;
+  url: string; title: string; description: string | null; published_at: string | null; duration_sec: number | null; thumbnail_url: string | null;
+  embeddable: boolean | null; video_type: string; fighter_ids: string[]; event_id: string | null; bout_id: string | null; article_id: string | null;
+};
+const VIDEO_SELECT = "id,provider,provider_video_id,channel_id,channel_name,channel_verified_source,url,title,description,published_at,duration_sec,thumbnail_url,embeddable,video_type,fighter_ids,event_id,bout_id,article_id";
+const VIDEO_BASE = `ufc_videos?select=${VIDEO_SELECT}&link_status=eq.published&provider=eq.youtube&embeddable=not.is.false&order=published_at.desc.nullslast`;
+export async function getVideosForEvent(eventId: string, limit = 6): Promise<OfficialVideoRow[]> {
+  return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&event_id=eq.${eventId}&limit=${limit}`, [], { revalidate: 300 })).data;
+}
+export async function getVideosForBout(boutId: string, limit = 4): Promise<OfficialVideoRow[]> {
+  return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&bout_id=eq.${boutId}&limit=${limit}`, [], { revalidate: 300 })).data;
+}
+export async function getVideosForArticle(articleId: string, limit = 3): Promise<OfficialVideoRow[]> {
+  return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&article_id=eq.${articleId}&limit=${limit}`, [], { revalidate: 300 })).data;
+}
+export async function getVideosForFighters(ids: string[], limit = 6): Promise<OfficialVideoRow[]> {
+  const uniq = [...new Set(ids.filter(Boolean))];
+  if (!uniq.length) return [];
+  return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&fighter_ids=ov.{${uniq.join(",")}}&limit=${limit}`, [], { revalidate: 300 })).data;
+}
+export async function getLatestVideos(limit = 6, videoType?: string): Promise<OfficialVideoRow[]> {
+  return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}${videoType ? `&video_type=eq.${videoType}` : ""}&limit=${limit}`, [], { revalidate: 600 })).data;
+}

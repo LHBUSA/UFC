@@ -62,7 +62,7 @@
 
 /* Heritage / history */
 .heritage-page,.hof-page { max-width:1240px; }
-.heritage-hero,.hof-hero { position:relative; overflow:hidden; display:grid; grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr); gap:32px; min-height:540px; align-items:center; padding:clamp(34px,5vw,72px); border:1px solid var(--pbe-line-strong); border-radius:var(--r-xl); background:linear-gradient(90deg,rgba(13,11,8,.96),rgba(13,11,8,.72)),url('/media/ufc-cage-hero-1800.webp') center/cover no-repeat; box-shadow:var(--sh-3); }
+.heritage-hero,.hof-hero { position:relative; overflow:hidden; display:grid; grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr); gap:32px; min-height:540px; align-items:center; padding:clamp(34px,5vw,72px); border:1px solid var(--pbe-line-strong); border-radius:var(--r-xl); background:linear-gradient(90deg,rgba(13,11,8,.96),rgba(13,11,8,.72)),url('/media/ufc-cage-bg-1600.webp') center/cover no-repeat; box-shadow:var(--sh-3); }
 .heritage-hero::after,.hof-hero::after { content:""; position:absolute; inset:0; background:radial-gradient(600px 300px at 82% 23%,rgba(212,175,55,.16),transparent 63%); pointer-events:none; }
 .heritage-hero > *,.hof-hero > * { position:relative; z-index:1; }
 .heritage-hero h1,.hof-hero h1 { font:900 clamp(44px,6vw,78px)/.94 var(--pbe-font-display); letter-spacing:-.035em; margin:12px 0 18px; font-variant-ligatures:none; }

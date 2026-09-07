@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getArticleBySlug, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor } from "@/lib/db";
+import { getArticleBySlug, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor, getVideosForArticle, getVideosForBout, getVideosForEvent } from "@/lib/db";
+import { VideoRail, videoJsonLd } from "@/components/VideoRail";
 import { JsonLd, ProLock, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { renderMarkdown, excerpt, readingMinutes } from "@/lib/markdown";
@@ -67,7 +68,9 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
     a.bout_id ? getBoutById(a.bout_id) : null,
     getArticles(4),
   ]);
-  const [imgs, wire] = await Promise.all([getImagesForFighters(fighters.map((f) => f.id)), getWireFor(a.event_id, a.fighter_ids || [])]);
+  const [imgs, wire, vidArticle, vidBout, vidEvent] = await Promise.all([getImagesForFighters(fighters.map((f) => f.id)), getWireFor(a.event_id, a.fighter_ids || []), getVideosForArticle(a.id).catch(() => []), a.bout_id ? getVideosForBout(a.bout_id).catch(() => []) : Promise.resolve([]), a.event_id ? getVideosForEvent(a.event_id, 3).catch(() => []) : Promise.resolve([])]);
+  const seen = new Set<string>();
+  const videos = [...vidArticle, ...vidBout, ...vidEvent].filter((v) => (seen.has(v.id) ? false : (seen.add(v.id), true))).slice(0, 4);
   const more = moreRes.rows.filter((x) => x.id !== a.id).slice(0, 3);
   const moreMedia = await storyMedia(more);
   const faces = bout ? [bout.fighter_a, bout.fighter_b] : fighters.slice(0, 2);
@@ -123,6 +126,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
       {angle && <BettorsEdge angle={angle} />}
       {dna && dna.status === "ok" && <DnaEvidence dna={dna.data} />}
       {mm && <MatchupModule a={mm.a} b={mm.b} imgs={mmImgs} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
+      <VideoRail videos={videos} title="Official video for this story" eyebrow="Official UFC channel" feature={videos.length === 1} note="Publisher-hosted video from the official channel linked to this fight, card or story · not hosted by PropBetEdge" />
 
       <div className="grid-side">
         <div>
@@ -216,6 +220,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
         ],
         mentions: fighters.map((f) => ({ "@type": "Person", name: f.name, url: `${SITE.url}/fighters/${fighterSlug(f)}` })),
         speakable: { "@type": "SpeakableSpecification", cssSelector: [".article h1", ".article .dek"] },
+        video: videos.length ? videoJsonLd(videos) : undefined,
       }} />
     </article>
   );

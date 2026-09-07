@@ -56,3 +56,36 @@ export async function getArchiveCoverage(): Promise<ArchiveCoverage> {
   const ufc1Bouts = ufc1Event ? await count(`ufc_bouts?select=id&event_id=eq.${ufc1Event.id}`) : 0;
   return { events, bouts, results, roundRows, earliestEvent: earliest[0] || null, ufc1Event, ufc1Bouts, lastChecked: new Date().toISOString() };
 }
+
+/* ---- Year-by-year coverage --------------------------------------------- */
+export type YearCoverage = { year: number; events: number; withBouts: number; bouts: number; results: number };
+
+/* One request: every non-DWCS event with its bout count and result count,
+ * aggregated per year. Lets the schedule/archive UI say "1997: 5 events
+ * indexed, 0 cards loaded" instead of implying completeness. */
+export async function getArchiveYearCoverage(): Promise<YearCoverage[]> {
+  const notDwcs = "name=not.ilike.*Contender%20Series*&name=not.ilike.*Road%20to%20UFC*";
+  const list = await rows<{ id: string; event_date: string | null; ufc_bouts: Array<{ count: number }> }>(
+    `ufc_events?select=id,event_date,ufc_bouts(count)&${notDwcs}&event_date=not.is.null&order=event_date.asc&limit=5000`,
+  );
+  const byYear = new Map<number, YearCoverage>();
+  for (const e of list) {
+    const year = Number((e.event_date || "").slice(0, 4));
+    if (!Number.isFinite(year) || year < 1993) continue;
+    const bouts = Number(e.ufc_bouts?.[0]?.count || 0);
+    const row = byYear.get(year) || { year, events: 0, withBouts: 0, bouts: 0, results: 0 };
+    row.events += 1;
+    if (bouts > 0) row.withBouts += 1;
+    row.bouts += bouts;
+    byYear.set(year, row);
+  }
+  return [...byYear.values()].sort((a, b) => b.year - a.year);
+}
+
+export type IngestFreshness = { worker: string; started_at: string | null; finished_at: string | null; status: string | null } | null;
+
+/* Latest run of the production schedule/results ingest, for freshness stamps. */
+export async function getIngestFreshness(worker = "ufc-stats-ingest"): Promise<IngestFreshness> {
+  const list = await rows<NonNullable<IngestFreshness>>(`ufc_ingest_runs?select=worker,started_at,finished_at,status&worker=eq.${encodeURIComponent(worker)}&order=started_at.desc&limit=1`);
+  return list[0] || null;
+}

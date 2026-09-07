@@ -1,41 +1,42 @@
-import { Mark } from "@/components/Brand";
+import { OCTAGON, fighterNodes } from "@/components/Brand";
 
 /* Original PropBetEdge championship hardware.
- * This deliberately does NOT reproduce the UFC championship belt artwork.
- * It borrows only the universal visual language of a black strap + gold
- * championship plate, with the PropBetEdge octagon/fighter identity centered.
- */
+ *
+ * Deliberately NOT a reproduction of UFC championship-belt artwork. It uses
+ * only the universal language of a dark strap with a gold center plate, and
+ * the plate carries the PropBetEdge octagon/fighter identity. Geometry is
+ * symmetric and simple so it stays crisp from 118px to 300px wide. */
 export function ChampionshipBelt({ size = "card", label = "Champion" }: { size?: "mini" | "card" | "hero"; label?: string }) {
-  const width = size === "hero" ? 300 : size === "mini" ? 118 : 190;
-  const height = Math.round(width * .43);
+  const width = size === "hero" ? 320 : size === "mini" ? 118 : 200;
+  const height = Math.round(width * 0.375);
+  const id = `belt-${size}`;
   return (
-    <div className={`pbe-belt pbe-belt-${size}`} role="img" aria-label={`${label} championship belt`}>
-      <svg viewBox="0 0 320 138" width={width} height={height} aria-hidden="true">
+    <div className={`pbe-belt pbe-belt-${size}`} role="img" aria-label={`${label} — PropBetEdge championship mark`}>
+      <svg viewBox="0 0 320 120" width={width} height={height} aria-hidden="true">
         <defs>
-          <linearGradient id="belt-gold" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#f3d77a" />
-            <stop offset=".38" stopColor="#d4af37" />
-            <stop offset=".7" stopColor="#9d7416" />
-            <stop offset="1" stopColor="#e7c45a" />
-          </linearGradient>
-          <linearGradient id="belt-strap" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#211d18" />
-            <stop offset="1" stopColor="#090806" />
-          </linearGradient>
-          <filter id="belt-shadow" x="-20%" y="-30%" width="140%" height="170%">
-            <feDropShadow dx="0" dy="7" stdDeviation="6" floodOpacity=".55" />
-          </filter>
+          <linearGradient id={`${id}-gold`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f6df8a" /><stop offset=".45" stopColor="#d4af37" /><stop offset="1" stopColor="#8f6a14" /></linearGradient>
+          <linearGradient id={`${id}-gold2`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#e9c75a" /><stop offset="1" stopColor="#a47c1c" /></linearGradient>
+          <linearGradient id={`${id}-strap`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2a241c" /><stop offset=".5" stopColor="#15120e" /><stop offset="1" stopColor="#0a0907" /></linearGradient>
+          <radialGradient id={`${id}-plate`} cx=".5" cy=".35" r=".7"><stop offset="0" stopColor="#1d1914" /><stop offset="1" stopColor="#0a0907" /></radialGradient>
         </defs>
-        <path d="M5 48C42 43 69 38 96 30h128c28 8 55 13 91 18l-9 46c-37-3-62-1-88 7H102c-27-8-52-10-89-7L5 48Z" fill="url(#belt-strap)" stroke="#3e3528" strokeWidth="3" filter="url(#belt-shadow)" />
-        <path d="M13 59c31-2 55-5 82-13v39c-24-5-48-7-77-5l-5-21Zm294 0c-31-2-55-5-82-13v39c24-5 48-7 77-5l5-21Z" fill="#15120f" stroke="#69551f" strokeWidth="1.5" />
-        <path d="M104 23h112l25 24-9 45-24 23h-96L88 92l-9-45 25-24Z" fill="url(#belt-gold)" stroke="#f3d77a" strokeWidth="2.5" />
-        <path d="M112 33h96l19 18-7 34-18 18h-84l-18-18-7-34 19-18Z" fill="#17130d" stroke="#6f5519" strokeWidth="2" />
-        <path d="M132 40h56l18 17-5 27-16 13h-50l-16-13-5-27 18-17Z" fill="#0c0a07" stroke="#d4af37" strokeWidth="2" />
-        <path d="M35 56h42l10 9-8 15H37l-8-10 6-14Zm208 0h42l6 14-8 10h-42l-8-15 10-9Z" fill="#d4af37" opacity=".82" />
-        <path d="M45 62h25l6 5-4 7H45l-5-5 5-7Zm205 0h25l5 7-5 5h-27l-4-7 6-5Z" fill="#12100d" />
-        <text x="160" y="116" textAnchor="middle" fill="#5f4712" fontSize="8" fontWeight="900" letterSpacing="2">PROPBETEDGE</text>
+        <rect x="6" y="38" width="308" height="44" rx="6" fill={`url(#${id}-strap)`} stroke="#3a3124" strokeWidth="1.5" />
+        <rect x="6" y="41" width="308" height="1.5" fill="rgba(255,245,220,.10)" />
+        <rect x="6" y="77" width="308" height="1.5" fill="rgba(0,0,0,.5)" />
+        <rect x="14" y="46" width="292" height="28" rx="4" fill="none" stroke="#d4af37" strokeOpacity=".28" strokeWidth="1" strokeDasharray="3 3" />
+        <path d="M44 44h38l8 8v16l-8 8H44l-8-8V52z" fill={`url(#${id}-gold2)`} stroke="#f3d77a" strokeWidth="1.2" />
+        <path d="M50 50h26l5 5v10l-5 5H50l-5-5V55z" fill={`url(#${id}-plate)`} stroke="#6a5118" strokeWidth="1" />
+        <path d="M238 44h38l8 8v16l-8 8h-38l-8-8V52z" fill={`url(#${id}-gold2)`} stroke="#f3d77a" strokeWidth="1.2" />
+        <path d="M244 50h26l5 5v10l-5 5h-26l-5-5V55z" fill={`url(#${id}-plate)`} stroke="#6a5118" strokeWidth="1" />
+        <g transform="translate(160 60)">
+          <polygon points="-52,-22 -22,-52 22,-52 52,-22 52,22 22,52 -22,52 -52,22" fill={`url(#${id}-gold)`} stroke="#f6df8a" strokeWidth="2" />
+          <polygon points="-45,-19 -19,-45 19,-45 45,-19 45,19 19,45 -19,45 -45,19" fill={`url(#${id}-plate)`} stroke="#7a5c18" strokeWidth="1.2" />
+          <polygon points="-38,-16 -16,-38 16,-38 38,-16 38,16 16,38 -16,38 -38,16" fill="none" stroke="#d4af37" strokeOpacity=".35" strokeWidth="1" />
+          <g transform="translate(-32 -32)">
+            <polygon points={OCTAGON} fill="none" stroke="#d4af37" strokeWidth="3" strokeLinejoin="round" />
+            {fighterNodes()}
+          </g>
+        </g>
       </svg>
-      <span className="pbe-belt-mark"><Mark size={size === "hero" ? 56 : size === "mini" ? 26 : 38} title="PropBetEdge championship mark" /></span>
     </div>
   );
 }
