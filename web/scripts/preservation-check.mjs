@@ -7,7 +7,7 @@
  *
  *   node scripts/preservation-check.mjs                 # static check vs baseline (runs as `prebuild`)
  *   node scripts/preservation-check.mjs --write-baseline # refresh scripts/preservation-baseline.json (deliberate, reviewed)
- *   BASE=https://host node scripts/preservation-check.mjs --http   # additionally assert routes return 200 and nav has DWCS
+ *   BASE=https://host node scripts/preservation-check.mjs --http   # additionally assert required routes return 200 and nav has DWCS
  */
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -19,13 +19,13 @@ const BASELINE = join(ROOT, "scripts", "preservation-baseline.json");
 const args = new Set(process.argv.slice(2));
 
 /* Routes that must always exist (page.tsx under app/). */
-export const REQUIRED_ROUTES = ["/", "/events", "/events/[slug]", "/contender-series", "/fighters", "/fighters/[slug]", "/fights/[slug]", "/rankings", "/history", "/hall-of-fame", "/news", "/news/[slug]", "/voices/[key]", "/pro"];
+export const REQUIRED_ROUTES = ["/", "/events", "/events/[slug]", "/contender-series", "/fighters", "/fighters/[slug]", "/fights/[slug]", "/rankings", "/referees", "/referees/[slug]", "/history", "/hall-of-fame", "/news", "/news/[slug]", "/voices/[key]", "/pro"];
 /* NAV must contain these hrefs (label may vary). */
 export const REQUIRED_NAV = ["/", "/events", "/contender-series", "/fighters", "/rankings", "/history", "/news", "/pro"];
 /* Homepage modules that must stay mounted in app/page.tsx. */
 export const REQUIRED_HOME_MODULES = ["PregameDesk", "ContenderStrip", "ChampionsShowcase", "NewsStoryCard", "Voices", "VideoRail", "CardSegments", "MatchupCard", "EventCard", "OfficialDestinations"];
 /* Feature libraries and components that must exist. */
-export const REQUIRED_FEATURES = ["lib/dna.ts", "lib/contender.ts", "lib/archive.ts", "lib/pregame.ts", "lib/voices.ts", "lib/heritage.ts", "lib/faces.ts", "lib/wire.ts", "components/dna.tsx", "components/OfficialVideo.tsx", "components/VideoRail.tsx", "components/ChampionshipBelt.tsx", "components/Brand.tsx", "components/LiveWire.tsx", "components/NewsStoryCard.tsx", "components/VoiceImage.tsx", "app/icon.svg", "app/apple-icon.tsx", "app/opengraph-image.tsx", "public/site.webmanifest"];
+export const REQUIRED_FEATURES = ["lib/dna.ts", "lib/contender.ts", "lib/archive.ts", "lib/pregame.ts", "lib/referees.ts", "lib/voices.ts", "lib/heritage.ts", "lib/faces.ts", "lib/wire.ts", "components/dna.tsx", "components/PregameDesk.tsx", "components/PregameDesk.module.css", "components/OfficialVideo.tsx", "components/VideoRail.tsx", "components/ChampionshipBelt.tsx", "components/Brand.tsx", "components/LiveWire.tsx", "components/NewsStoryCard.tsx", "components/VoiceImage.tsx", "app/icon.svg", "app/apple-icon.tsx", "app/opengraph-image.tsx", "public/site.webmanifest"];
 /* Public visual assets that must not vanish (backgrounds, brand, voices). */
 export const REQUIRED_ASSETS = ["public/media/ufc-cage-bg-1600.webp", "public/media/ufc-cage-bg-960.webp", "public/media/ufc-fence-1400.webp", "public/brand/mark.svg", "public/brand/logo.svg", "public/brand/logo-wide.svg", "public/media/voices/joe-rogan-660.webp", "public/media/voices/daniel-cormier-660.webp", "public/media/voices/dana-white-660.webp", "public/media/voices/dana-white-900.webp"];
 
@@ -79,12 +79,13 @@ if (problems.length) fail(problems);
 if (args.has("--http")) {
   const base = (process.env.BASE || "http://localhost:3000").replace(/\/$/, "");
   const http = [];
-  for (const r of ["/", "/events", "/contender-series", "/fighters", "/rankings", "/history", "/hall-of-fame", "/news", "/pro"]) {
+  const httpRoutes = ["/", "/events", "/contender-series", "/fighters", "/rankings", "/referees", "/history", "/hall-of-fame", "/news", "/pro"];
+  for (const r of httpRoutes) {
     const res = await fetch(base + r, { redirect: "manual" }).catch(() => null);
     if (!res || res.status !== 200) http.push(`${r} -> ${res ? res.status : "unreachable"}`);
     if (r === "/" && res && res.status === 200) { const html = await res.text(); if (!/href="\/contender-series"/.test(html)) http.push("homepage HTML: primary nav has no Contender Series / DWCS link"); }
   }
   if (http.length) fail(http.map((h) => `http: ${h}`));
-  console.log(`✔ http: 9 required routes return 200 on ${base}; nav contains Contender Series / DWCS`);
+  console.log(`✔ http: ${httpRoutes.length} required routes return 200 on ${base}; nav contains Contender Series / DWCS`);
 }
 console.log(`✔ preservation check passed (${inv.routes.length} routes, nav: ${inv.nav.map((n) => n.label).join(" · ")}, home modules: ${inv.homeModules.length}, assets: ${Object.keys(inv.assets).length})`);
