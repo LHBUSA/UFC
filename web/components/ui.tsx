@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { MarketInline } from "@/components/Market";
+import type { BoutMarket, MarketState } from "@/lib/market";
+import { marketStateFor } from "@/lib/market";
 import type { Article, Bout, Event, Fighter, PortraitSet } from "@/lib/db";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, daysUntil, eventBrand, eventHeadline, eventStatusLabel, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, initials, locationLine, METHOD_LABEL, METHOD_SHORT, weightClassLabel, age, stanceLabel, cityLine, winnerOf } from "@/lib/format";
@@ -147,7 +150,7 @@ export function EventRow({ e, main, bouts }: { e: Event; main?: Bout | null; bou
 }
 
 /* ---- bouts ------------------------------------------------------------- */
-export function BoutRow({ b, e, imgs, isMain, roundCoverage }: { b: Bout; e: Event; imgs?: Portraits; isMain?: boolean; roundCoverage?: { rounds: number; bothCorners: boolean } | null }) {
+export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState }: { b: Bout; e: Event; imgs?: Portraits; isMain?: boolean; roundCoverage?: { rounds: number; bothCorners: boolean } | null; market?: BoutMarket; marketState?: MarketState }) {
   const r = b.result;
   const wA = r?.winner_id === b.fighter_a.id;
   const wB = r?.winner_id === b.fighter_b.id;
@@ -169,6 +172,9 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage }: { b: Bout; e: Eve
         {/* The row is already a link to the fight, so this is a marker rather
             than a second anchor. It appears only when round observations
             exist; there is no disabled state advertising data we lack. */}
+        {marketState && marketState !== "not_configured" ? (
+          <MarketInline market={market} state={marketState} nameA={b.fighter_a.name} nameB={b.fighter_b.name} />
+        ) : null}
         {roundCoverage && roundCoverage.rounds > 0 ? (
           <div className="bout-rba" data-rba-source="event_page">Round-by-Round · {roundCoverage.rounds} round{roundCoverage.rounds === 1 ? "" : "s"}</div>
         ) : null}
@@ -183,7 +189,7 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage }: { b: Bout; e: Eve
     </Link>
   );
 }
-export function CardSegments({ bouts, e, imgs, roundCoverage }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }> }) {
+export function CardSegments({ bouts, e, imgs, roundCoverage, markets }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }>; markets?: Map<string, BoutMarket> }) {
   const order = ["main", "prelim", "early", null] as const;
   const groups = order.map((p) => ({ p, rows: bouts.filter((b) => (b.card_position || null) === p) })).filter((g) => g.rows.length);
   const mainId = bouts[0]?.id;
@@ -193,7 +199,7 @@ export function CardSegments({ bouts, e, imgs, roundCoverage }: { bouts: Bout[];
         <section className="segment" key={String(g.p)}>
           <h3>{g.p ? cardPositionLabel(g.p) : e.card_status === "complete" ? "Results" : "Announced bouts"} <small>{g.rows.length} bouts</small></h3>
           <div className="bouts">
-            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} />)}
+            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} market={markets?.get(b.id)} marketState={markets ? marketStateFor(markets.get(b.id), { eventDate: e.event_date, hasResult: Boolean(b.result) }) : undefined} />)}
           </div>
         </section>
       ))}

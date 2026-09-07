@@ -17,6 +17,7 @@ import { daysUntil, fmtDate, locationLine, eventBrand, eventStatusLabel, fmtReco
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { SITE } from "@/lib/site";
 import { getRoundCoverageFor } from "@/lib/roundIndex";
+import { getMarketsFor, marketProviderLive } from "@/lib/market";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 
 export const revalidate = 300;
@@ -57,6 +58,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   /* Round coverage for exactly the bouts on this card, using the same
    * eligibility rule as /round-by-round. */
   const roundCoverage = await getRoundCoverageFor(bouts.map((b) => b.id));
+  /* Market only matters for a card that has not happened. A finished bout has
+   * no live price and showing one would be meaningless. */
+  const providerLive = await marketProviderLive();
+  const marketMap = done || !providerLive
+    ? new Map()
+    : await getMarketsFor(bouts.map((b) => b.id), new Map(bouts.map((b) => [b.id, { a: b.fighter_a.id, b: b.fighter_b.id }])));
   const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
   const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
   const isCurrent = !done && nearby[0]?.id === e.id;
@@ -102,7 +109,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       {bouts.length ? (
         <>
-          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} />
+          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={providerLive && !done ? marketMap : undefined} />
           {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} />)}</div></section>}
         </>
       ) : historical ? (
