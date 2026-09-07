@@ -1,0 +1,41 @@
+name: newsroom editorial provider canary
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/newsroom-editorial-provider-canary.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  copilot-requests: write
+
+concurrency:
+  group: newsroom-editorial-provider-canary
+  cancel-in-progress: true
+
+jobs:
+  production-write-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+      UFC_EDITORIAL_COPILOT_MODEL: auto
+      ANTHROPIC_API_KEY: ""
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ufc-fight-dna-v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Syntax gate
+        run: node --check scripts/news/polish_world_class.mjs
+      - name: Premium editorial production canary
+        # One validator-gated published article. The script writes only after every fact/depth/link gate passes.
+        run: timeout 240s node scripts/news/polish_world_class.mjs --recent-hours 1440 --limit 1 --force
