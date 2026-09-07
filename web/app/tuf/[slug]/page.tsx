@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!s) return { title: { absolute: "Not found | PropBetEdge UFC" } };
   const champs = s.winners.map((w) => w.fighter).join(", ");
   const title = `${s.name} | PropBetEdge UFC`;
-  const description = s.ongoing
+  const description = s.season_state === "ongoing"
     ? `${s.name}: coaches ${s.coaches.join(" and ")}, ${s.weight_classes.join(" and ")}. Season in progress.`
     : `${s.name}: coaches ${s.coaches.join(" and ") || "rotating"}, ${s.weight_classes.join(" and ")}${champs ? `, won by ${champs}` : ""}.`;
   return {
@@ -123,7 +123,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
             eyebrow={`Season ${season.number} · ${season.year}`}
             title={season.name}
             lede={
-              season.ongoing
+              season.season_state === "ongoing"
                 ? "This season is still airing. No tournament winner exists yet, and none is shown."
                 : season.coaches.length
                   ? `${season.coaches.join(" against ")}, ${season.weight_classes.join(" and ").toLowerCase()}.`
@@ -153,7 +153,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
         </div>
         <div className="tuf-hero-side">
           <h2>Champions</h2>
-          {season.ongoing ? (
+          {season.season_state === "ongoing" ? (
             <p className="tuf-none">The season has not finished. A winner will appear when one exists.</p>
           ) : season.champions?.length ? (
             <ul className="tuf-people">
@@ -282,6 +282,26 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                   ) : (
                     <p className="tuf-none">Not recorded. Nothing is reconstructed for this round.</p>
                   )}
+                  {st.disputed?.length ? (
+                    <div className="tuf-disputed">
+                      <h5>Listed by a source but not reconciled</h5>
+                      <ul className="tuf-bouts">
+                        {st.disputed.map((b, i) => (
+                          <li key={`d-${i}`} className="tuf-bout is-disputed">
+                            <span className="tuf-bout-names">
+                              <Name name={b.a} linked={linked} />
+                              <em>vs</em>
+                              <Name name={b.b} linked={linked} />
+                            </span>
+                            <span className="tuf-bout-meta">
+                              <span className="tuf-class tuf-class-unverified">Not counted</span>
+                            </span>
+                            <span className="tuf-bout-note">{b.dispute}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>

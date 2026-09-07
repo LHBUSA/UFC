@@ -50,10 +50,16 @@ export type SeasonRow = {
   ongoing?: boolean;
   finale_event: string | null;
   finale_date: string | null;
-  /** OUR coverage, not the season's: complete | partial | missing. */
-  status: "complete" | "partial" | "missing";
+  /** OUR coverage of the tournament. Three mutually exclusive buckets, so
+   * every season is in exactly one and they sum to the season count. A finale
+   * card we happen to hold is NOT coverage and is tracked separately. */
+  coverage: Coverage;
+  /** A fact about the season, not about us. */
+  season_state: "completed" | "ongoing";
   detail?: string;
 };
+
+export type Coverage = "bracket_full" | "bracket_partial" | "metadata_only";
 
 export type TufBout = {
   a: string;
@@ -68,18 +74,24 @@ export type TufBout = {
   episode: number | null;
   fight_date?: string | null;
   classification: Classification;
-  classification_basis?: string;
+  /** What established the classification. Required for anything other than
+   * 'unverified': a classification with no source behind it is a guess, and a
+   * guess must not be allowed to look like a finding. */
+  classification_source?: string | null;
   replacement?: string;
   on_finale_card?: boolean;
   tournament_deciding?: boolean;
 };
 
 export type Stage = {
-  stage: "elimination" | "quarter_final" | "semi_final" | "final";
+  stage: "elimination" | "round_of_16" | "quarter_final" | "semi_final" | "final";
   label: string;
   status?: "unverified";
   note?: string;
   bouts: TufBout[];
+  /** Bouts a source lists that we cannot reconcile — kept visible so the gap
+   * is legible, and never counted as results. */
+  disputed?: Array<TufBout & { dispute: string }>;
 };
 
 export type SeasonDetail = SeasonRow & {
@@ -96,6 +108,10 @@ export type SeasonDetail = SeasonRow & {
     won_tournament: boolean;
     received_contract: boolean;
     contract_note?: string;
+    /** What the winning bout was checked against — a real result row, not a
+     * season summary. Absent means sourced but unchecked, and the archive
+     * says which. */
+    verified_against?: string;
     winning_bout?: { a: string; b: string; event: string; date: string };
   }>;
 };
@@ -136,32 +152,38 @@ export function seasonBySlug(slug: string): SeasonDetail | null {
 
 /* ---- coverage ----------------------------------------------------------- */
 
-export type Coverage = {
+export type CoverageReport = {
   seasons: number;
-  complete: number;
-  partial: number;
-  missing: number;
+  /* Mutually exclusive; these three sum to `seasons`. */
+  bracket_full: number;
+  bracket_partial: number;
+  metadata_only: number;
+  /* Separate axes. Neither is coverage. */
+  completed: number;
   ongoing: number;
-  byEdition: Array<{ edition: Edition; total: number; complete: number; partial: number; missing: number }>;
+  finales_named: number;
+  byEdition: Array<{ edition: Edition; total: number; bracket_full: number; bracket_partial: number; metadata_only: number }>;
 };
 
-export function coverage(): Coverage {
+export function coverage(): CoverageReport {
   const all = seasons();
-  const count = (rows: SeasonRow[], s: SeasonRow["status"]) => rows.filter((r) => r.status === s).length;
+  const n = (rows: SeasonRow[], c: Coverage) => rows.filter((r) => r.coverage === c).length;
   return {
     seasons: all.length,
-    complete: count(all, "complete"),
-    partial: count(all, "partial"),
-    missing: count(all, "missing"),
-    ongoing: all.filter((r) => r.ongoing).length,
+    bracket_full: n(all, "bracket_full"),
+    bracket_partial: n(all, "bracket_partial"),
+    metadata_only: n(all, "metadata_only"),
+    completed: all.filter((r) => r.season_state === "completed").length,
+    ongoing: all.filter((r) => r.season_state === "ongoing").length,
+    finales_named: all.filter((r) => r.finale_event).length,
     byEdition: INV.editions.map((edition) => {
       const rows = all.filter((r) => r.edition === edition.key);
       return {
         edition,
         total: rows.length,
-        complete: count(rows, "complete"),
-        partial: count(rows, "partial"),
-        missing: count(rows, "missing"),
+        bracket_full: n(rows, "bracket_full"),
+        bracket_partial: n(rows, "bracket_partial"),
+        metadata_only: n(rows, "metadata_only"),
       };
     }),
   };
@@ -177,8 +199,12 @@ export function coverage(): Coverage {
  * reason to count it, and a record that quietly absorbs unproven bouts is
  * worse than one that is short.
  */
-export function countsTowardsRecord(b: Pick<TufBout, "classification">): boolean {
-  return b.classification === "professional";
+export function countsTowardsRecord(b: Pick<TufBout, "classification" | "classification_source">): boolean {
+  /* Professional AND sourced. A bout labelled professional with nothing
+   * behind the label is exactly the thing that should not silently enter a
+   * record, so the source is part of the test rather than documentation of
+   * it. */
+  return b.classification === "professional" && Boolean(b.classification_source);
 }
 
 /** Every bout of a season, flattened, in bracket order. */
@@ -186,6 +212,8 @@ export function allBouts(season: SeasonDetail): Array<TufBout & { stage: Stage["
   const out: Array<TufBout & { stage: Stage["stage"]; weight_class: string }> = [];
   for (const wc of season.bracket ?? []) {
     for (const st of wc.stages) {
+      /* Disputed entries are deliberately excluded: they are shown on the
+       * page so the gap is visible, and counted nowhere. */
       for (const b of st.bouts) out.push({ ...b, stage: st.stage, weight_class: wc.weight_class });
     }
   }
@@ -269,5 +297,32 @@ export async function linkFighters(names: string[]): Promise<Map<string, LinkedF
     [],
   );
   for (const r of rows) out.set(r.name, r);
+  return out;
+}
+
+/**
+ * Every season a person appears in, as coach, contestant or tournament winner.
+ *
+ * Name matching only, against committed season data. A person who is not in
+ * the archive gets nothing rather than an empty section, so profiles that have
+ * no TUF history are untouched.
+ */
+export function tufSeasonsFor(name: string): Array<{
+  season: SeasonRow;
+  role: "coach" | "contestant" | "champion";
+  team?: string;
+  weight_class?: string;
+}> {
+  const out: Array<{ season: SeasonRow; role: "coach" | "contestant" | "champion"; team?: string; weight_class?: string }> = [];
+  for (const row of INV.seasons) {
+    const d = seasonBySlug(row.slug);
+    const won = row.winners.find((w) => w.fighter === name);
+    if (won) out.push({ season: row, role: "champion", weight_class: won.weight_class });
+    if (row.coaches.includes(name) || d?.coaches_full?.some((c) => c.name === name)) {
+      out.push({ season: row, role: "coach", team: d?.coaches_full?.find((c) => c.name === name)?.team });
+    }
+    const team = d?.teams?.find((t) => t.roster.some((r) => r.name === name));
+    if (team && !won) out.push({ season: row, role: "contestant", team: team.name });
+  }
   return out;
 }

@@ -8,20 +8,20 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter:_Team_McGregor_vs._Team_Faber",
     "retrieved": "2026-09-07",
-    "note": "The finale bout is reconciled against our own ufc_events / ufc_bouts records and is NOT imported: we already hold that card. Everything inside the house exists only here."
+    "note": "The finale bout is reconciled against our own ufc_bouts / ufc_bout_results records and is NOT imported: we already hold that card. Everything inside the house exists only here."
   },
   "_conflicts": [
     {
-      "field": "elimination_round",
-      "detail": "The source's preliminary-round table is internally inconsistent — it lists Ryan Hall vs Frantz Slioa as both an elimination bout and a quarter-final, and pairs cast members against each other in a round that is supposed to be cast members against outsiders. The entry round is therefore recorded as UNVERIFIED and no elimination bouts are asserted. The bracket from the announced quarter-finals onward is internally consistent and is recorded.",
+      "field": "round_of_16",
+      "detail": "The source's second-round table lists nine bouts where a round of sixteen should produce eight, and one of them — Ryan Hall def. Frantz Slioa — repeats a bout already listed in the elimination round. Frantz Slioa cannot both lose that bout and win his own entry bout against Martin Delaney in the same round. The eight internally consistent bouts are recorded; the repeated Hall v Slioa entry is recorded separately as disputed and is NOT counted as a result.",
+      "retrieved": "2026-09-07"
+    },
+    {
+      "field": "classification",
+      "detail": "No source consulted states whether the in-house bouts of this season were sanctioned. They are recorded as exhibitions on the strength of the tournament being filmed at the TUF Gym outside a commission-sanctioned card, and that reasoning is carried on every bout rather than applied as a blanket rule. Any bout whose status cannot be established that way is 'unverified'.",
       "retrieved": "2026-09-07"
     }
   ],
-  "classification_policy": {
-    "in_house": "exhibition",
-    "finale": "professional",
-    "rationale": "Bouts filmed in the TUF house are unsanctioned exhibitions and do not appear on a fighter's professional record. The finale is a sanctioned bout on a UFC card and does. Each bout below carries its own classification explicitly — none is inferred from the TUF label, and anything we cannot establish is 'unverified' rather than assumed either way."
-  },
   "coaches": [
     { "team": "Team McGregor", "name": "Conor McGregor", "role": "head", "region": "Europe" },
     { "team": "Team McGregor", "name": "Owen Roddy", "role": "assistant" },
@@ -46,8 +46,8 @@
         { "name": "Martin Svensson", "country": "Sweden", "note": "Withdrew from the tournament with a broken elbow." },
         { "name": "Mehdi Baghdad", "country": "France" },
         { "name": "Sascha Sharma", "country": "Germany" },
-        { "name": "Saul Rogers", "country": "England", "note": "Reached the final but was pulled from the card over a visa application." },
-        { "name": "Artem Lobov", "country": "Ireland", "note": "Returned to the tournament after an earlier elimination." }
+        { "name": "Saul Rogers", "country": "England", "note": "Reached the final and was then pulled from the card over his visa application." },
+        { "name": "Artem Lobov", "country": "Ireland", "note": "Lost his entry bout to Mehdi Baghdad and was brought back into the tournament." }
       ]
     },
     {
@@ -62,7 +62,7 @@
         { "name": "Ryan Hall", "note": "Lost in the quarter-finals, then replaced Saul Rogers in the final and won the tournament." },
         { "name": "Thanh Le" },
         { "name": "Tom Gallicchio" },
-        { "name": "Johnny Nuñez", "note": "Returned to the tournament after an earlier elimination." }
+        { "name": "Johnny Nuñez", "note": "Brought back into the tournament after an earlier elimination." }
       ]
     }
   ],
@@ -72,28 +72,62 @@
       "stages": [
         {
           "stage": "elimination",
-          "label": "Entry round",
-          "status": "unverified",
-          "note": "Not asserted: the source's account of this round contradicts itself. See _conflicts.",
-          "bouts": []
+          "label": "Elimination round",
+          "note": "Sixteen bouts decided the sixteen fighters who entered the house. Source section heading: \"Elimination round\". Times are not stated by the source and are left null rather than filled in.",
+          "bouts": [
+            { "a": "Ryan Hall", "b": "Frantz Slioa", "winner": "Ryan Hall", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "David Teymur", "b": "Thibault Gouti", "winner": "David Teymur", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Thanh Le", "b": "Andres Quintana", "winner": "Thanh Le", "method": "KO", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Mehdi Baghdad", "b": "Artem Lobov", "winner": "Mehdi Baghdad", "method": "Decision (majority)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Julian Erosa", "b": "Jason Soares", "winner": "Julian Erosa", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Saul Rogers", "b": "Paulo Boer", "winner": "Saul Rogers", "method": "Submission", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Billy Quarantillo", "b": "Brandon Ricetti", "winner": "Billy Quarantillo", "method": "TKO", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Frantz Slioa", "b": "Martin Delaney", "winner": "Frantz Slioa", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Jason Gonzaléz", "b": "Tim Welch", "winner": "Jason Gonzaléz", "method": "TKO", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Abner Lloveras", "b": "Vlado Sikic", "winner": "Abner Lloveras", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Tom Gallicchio", "b": "Mike Flach", "winner": "Tom Gallicchio", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Martin Svensson", "b": "Mohamed Grabinski", "winner": "Martin Svensson", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Marcin Wrzosek", "b": "Djamil Chan", "winner": "Marcin Wrzosek", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Sascha Sharma", "b": "Sean Carter", "winner": "Sascha Sharma", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Chris Gruetzemacher", "b": "Austin Springer", "winner": "Chris Gruetzemacher", "method": "TKO", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "James Jenkins", "b": "Brennan Sevin", "winner": "James Jenkins", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+          ]
+        },
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "note": "Eight bouts took the sixteen entrants to eight. Chris Gruetzemacher is described by the source as a winning fighter initially not advanced.",
+          "bouts": [
+            { "a": "Chris Gruetzemacher", "b": "Sascha Sharma", "winner": "Chris Gruetzemacher", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": 3, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Tom Gallicchio", "b": "Marcin Wrzosek", "winner": "Marcin Wrzosek", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": 4, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Saul Rogers", "b": "Billy Quarantillo", "winner": "Saul Rogers", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": 5, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Julian Erosa", "b": "Mehdi Baghdad", "winner": "Julian Erosa", "method": "Decision (majority)", "round": 2, "time": null, "episode": 6, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Thanh Le", "b": "Martin Svensson", "winner": "Martin Svensson", "method": "Submission", "round": 2, "time": null, "episode": 7, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "James Jenkins", "b": "Artem Lobov", "winner": "Artem Lobov", "method": "TKO", "round": 1, "time": null, "episode": 8, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Johnny Nuñez", "b": "David Teymur", "winner": "David Teymur", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": 8, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Jason Gonzaléz", "b": "Abner Lloveras", "winner": "Abner Lloveras", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": 9, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+          ],
+          "disputed": [
+            { "a": "Ryan Hall", "b": "Frantz Slioa", "winner": "Ryan Hall", "method": "Submission", "round": 1, "time": null, "episode": 2, "classification": "unverified", "classification_source": null, "dispute": "The source lists this bout in both the elimination round and this round. Recorded once, in the elimination round; this duplicate is kept visible and is not counted as a second result." }
+          ]
         },
         {
           "stage": "quarter_final",
           "label": "Quarter-finals",
-          "note": "Announced in episode 9 as Lobov v Svensson, Rogers v Hall, Wrzosek v Teymur, Lloveras v Erosa. Svensson withdrew with a broken elbow and Chris Gruetzemacher took his place.",
+          "note": "Announced in episode 9 as Lobov v Svensson, Rogers v Hall, Wrzosek v Teymur, Lloveras v Erosa. Martin Svensson withdrew with a broken elbow and Chris Gruetzemacher took his place.",
           "bouts": [
-            { "a": "Artem Lobov", "b": "Chris Gruetzemacher", "winner": "Artem Lobov", "method": "KO", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned", "replacement": "Chris Gruetzemacher replaced Martin Svensson" },
-            { "a": "Saul Rogers", "b": "Ryan Hall", "winner": "Saul Rogers", "method": "Decision (majority)", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" },
-            { "a": "Marcin Wrzosek", "b": "David Teymur", "winner": "Marcin Wrzosek", "method": "Decision (majority)", "round": 2, "time": null, "episode": 11, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" },
-            { "a": "Julian Erosa", "b": "Abner Lloveras", "winner": "Julian Erosa", "method": "Decision (split)", "round": 3, "time": null, "episode": 11, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" }
+            { "a": "Artem Lobov", "b": "Chris Gruetzemacher", "winner": "Artem Lobov", "method": "KO", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "replacement": "Chris Gruetzemacher replaced Martin Svensson, who withdrew with a broken elbow" },
+            { "a": "Saul Rogers", "b": "Ryan Hall", "winner": "Saul Rogers", "method": "Decision (majority)", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Marcin Wrzosek", "b": "David Teymur", "winner": "Marcin Wrzosek", "method": "Decision (majority)", "round": 2, "time": null, "episode": 11, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Julian Erosa", "b": "Abner Lloveras", "winner": "Julian Erosa", "method": "Decision (split)", "round": 3, "time": null, "episode": 11, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
           ]
         },
         {
           "stage": "semi_final",
           "label": "Semi-finals",
           "bouts": [
-            { "a": "Saul Rogers", "b": "Marcin Wrzosek", "winner": "Saul Rogers", "method": "Submission", "round": 2, "time": null, "episode": 12, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" },
-            { "a": "Artem Lobov", "b": "Julian Erosa", "winner": "Artem Lobov", "method": "KO", "round": 1, "time": null, "episode": 12, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" }
+            { "a": "Saul Rogers", "b": "Marcin Wrzosek", "winner": "Saul Rogers", "method": "Submission", "round": 2, "time": null, "episode": 12, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Artem Lobov", "b": "Julian Erosa", "winner": "Artem Lobov", "method": "KO", "round": 1, "time": null, "episode": 12, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
           ]
         },
         {
@@ -110,7 +144,7 @@
               "time": "5:00",
               "episode": null,
               "classification": "professional",
-              "classification_basis": "sanctioned bout on a UFC card",
+              "classification_source": "contested on a sanctioned UFC card; verified against our own ufc_bout_results row (ufcstats: DEC_U, round 3, 300s, Lightweight)",
               "on_finale_card": true,
               "tournament_deciding": true,
               "replacement": "Ryan Hall replaced Saul Rogers"
@@ -124,7 +158,7 @@
     "event_name": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale",
     "event_date": "2015-12-11",
     "venue": "The Chelsea at The Cosmopolitan, Las Vegas, Nevada",
-    "link_policy": "Resolved against our own ufc_events row by name and date. The card's bouts already exist in ufc_bouts and are NOT re-imported; the season page reads them from the database so there is exactly one copy of every professional result."
+    "link_policy": "Resolved against our own ufc_events row by name and date. The card's bouts already exist in ufc_bouts and are NOT re-imported."
   },
   "champions": [
     {
@@ -133,6 +167,7 @@
       "won_tournament": true,
       "received_contract": true,
       "contract_note": "Winning the tournament and being awarded a UFC contract are recorded separately, because they are not the same thing and have not always gone together.",
+      "verified_against": "ufc_bout_results — Ryan Hall def. Artem Lobov, Decision - Unanimous, round 3, 300s, source ufcstats",
       "winning_bout": { "a": "Ryan Hall", "b": "Artem Lobov", "event": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale", "date": "2015-12-11" }
     }
   ]

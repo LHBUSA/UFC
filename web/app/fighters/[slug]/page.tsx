@@ -12,6 +12,7 @@ import { VideoRail } from "@/components/VideoRail";
 import { getVideosForFighters } from "@/lib/db";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
 import { age, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, METHOD_LABEL, stanceLabel, weightClassLabel, archiveSummary, totals, pct, plural, daysUntil } from "@/lib/format";
+import { TufOnFighter } from "@/components/TufOnFighter";
 import { SITE } from "@/lib/site";
 import { getRoundCoverageFor, isEligible } from "@/lib/roundIndex";
 
@@ -194,6 +195,10 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
           </div>
         ) : <Empty title="History backfilling">This fighter's bouts land here as the archive loads. Round-level striking and grappling stats follow.</Empty>}
       </section>
+
+      {/* Kept below the professional history and visually apart from it:
+          house bouts are not part of the record above. */}
+      <TufOnFighter name={f.name} />
 
       <VideoRail videos={videos} title={`${f.name} · official video`} eyebrow="Official channels · attached by fighter identity" note="Only videos the resolver linked to this fighter with medium or high confidence · embedded from YouTube, not hosted by PropBetEdge" max={4} />
 

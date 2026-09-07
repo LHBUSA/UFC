@@ -268,3 +268,72 @@
   .tuf-bout-meta { margin-left: 0; width: 100%; }
   .tuf-cov-cell b { font-size: 22px; }
 }
+
+/* A bout a source lists that we could not reconcile. Shown, so the gap is
+ * legible, and visually distinct from a result so it cannot be mistaken for
+ * one. */
+.tuf-disputed { margin-top: var(--s-3); }
+.tuf-disputed h5 {
+  margin: 0 0 var(--s-2);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-micro);
+  text-transform: uppercase;
+  color: var(--pbe-crimson-bright);
+}
+.tuf-bout.is-disputed {
+  border-style: dashed;
+  border-left-color: var(--pbe-crimson);
+  background: transparent;
+  opacity: .85;
+}
+.tuf-cov-cell.is-total { border-color: var(--pbe-gold-soft); background: var(--pbe-gold-wash); }
+
+/* ---- champions table ---------------------------------------------------- */
+
+.tuf-champ-table { display: flex; flex-direction: column; border: 1px solid var(--pbe-line); border-radius: var(--r-lg); overflow: hidden; }
+.tuf-champ-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 1.4fr 1.2fr;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--pbe-line-faint);
+  background: var(--pbe-ink-2);
+  font-size: var(--fs-sm);
+}
+.tuf-champ-row:last-child { border-bottom: 0; }
+.tuf-champ-row.is-head {
+  background: var(--pbe-ink-4);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-micro);
+  text-transform: uppercase;
+  color: var(--pbe-faint);
+}
+.tuf-champ-row a { color: var(--pbe-dim); text-decoration: none; }
+.tuf-champ-row a:hover { color: var(--pbe-gold); }
+.tuf-champ-row b { color: var(--pbe-gold); font-family: var(--pbe-font-data); }
+.tuf-champ-row small { color: var(--pbe-subtle); font-size: var(--fs-micro); margin-left: var(--s-2); }
+.tuf-champ-row small.tuf-verified { color: var(--pbe-pos); letter-spacing: .06em; text-transform: uppercase; }
+
+@media (max-width: 720px) {
+  .tuf-champ-row { grid-template-columns: 1fr 1fr; row-gap: var(--s-1); }
+  .tuf-champ-row.is-head { display: none; }
+}
+
+/* ---- TUF on a fighter profile ------------------------------------------- */
+
+.tuf-fighter { margin-top: var(--s-6); }
+.tuf-fighter-note {
+  margin: 0 0 var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--pbe-line);
+  border-left: 3px solid var(--pbe-crimson);
+  border-radius: var(--r-md);
+  background: var(--pbe-ink-2);
+  color: var(--pbe-dim);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+.tuf-fighter-note b { color: var(--pbe-paper); }

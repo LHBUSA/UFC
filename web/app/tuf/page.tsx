@@ -33,11 +33,19 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
-function StatusPill({ s }: { s: SeasonRow }) {
-  if (s.ongoing) return <span className="tuf-pill tuf-pill-live">Ongoing</span>;
-  if (s.status === "complete") return <span className="tuf-pill tuf-pill-ok">Bracket loaded</span>;
-  if (s.status === "partial") return <span className="tuf-pill">Season &amp; finale</span>;
-  return <span className="tuf-pill tuf-pill-thin">Season only</span>;
+/* Two independent facts, two pills. Conflating "the season is still running"
+ * with "we have not loaded it" is how an archive ends up describing its own
+ * gaps as the sport's. */
+function StatePill({ s }: { s: SeasonRow }) {
+  if (s.season_state === "ongoing") return <span className="tuf-pill tuf-pill-live">Season ongoing</span>;
+  if (s.completion_unverified) return <span className="tuf-pill tuf-pill-thin">Result unverified</span>;
+  return null;
+}
+
+function CoveragePill({ s }: { s: SeasonRow }) {
+  if (s.coverage === "bracket_full") return <span className="tuf-pill tuf-pill-ok">Bracket complete</span>;
+  if (s.coverage === "bracket_partial") return <span className="tuf-pill tuf-pill-ok">Bracket partial</span>;
+  return <span className="tuf-pill tuf-pill-thin">Not loaded</span>;
 }
 
 function Card({ s }: { s: SeasonRow }) {
@@ -47,7 +55,8 @@ function Card({ s }: { s: SeasonRow }) {
       <span className="tuf-card-top">
         <span className="tuf-num">{s.number}</span>
         <span className="tuf-year">{s.year}</span>
-        <StatusPill s={s} />
+        <StatePill s={s} />
+        <CoveragePill s={s} />
       </span>
       <span className="tuf-card-name">{s.name.replace(/^The Ultimate Fighter( Brazil| Latin America| China| Nations)?[: ]*/i, "") || s.name}</span>
       <span className="tuf-coaches">
@@ -55,7 +64,7 @@ function Card({ s }: { s: SeasonRow }) {
       </span>
       <span className="tuf-wc">{s.weight_classes.join(" · ")}</span>
       <span className="tuf-champs">
-        {s.ongoing ? (
+        {s.season_state === "ongoing" ? (
           /* No winner exists yet. Not "TBD" in a slot shaped like a result —
            * an empty result slot reads as a result nobody has typed in. */
           <em className="tuf-none">Season in progress — no tournament winner yet</em>
@@ -98,14 +107,17 @@ export default function TufHub() {
 
       <section className="wrap tuf-cov">
         <div className="tuf-cov-grid">
-          <div className="tuf-cov-cell"><b>{cov.seasons}</b><span>seasons catalogued</span></div>
-          <div className="tuf-cov-cell"><b>{cov.complete}</b><span>with a loaded bracket</span></div>
-          <div className="tuf-cov-cell"><b>{cov.partial}</b><span>season &amp; finale only</span></div>
-          <div className="tuf-cov-cell"><b>{cov.missing}</b><span>season metadata only</span></div>
+          <div className="tuf-cov-cell"><b>{cov.bracket_full}</b><span>bracket complete</span></div>
+          <div className="tuf-cov-cell"><b>{cov.bracket_partial}</b><span>bracket partial</span></div>
+          <div className="tuf-cov-cell"><b>{cov.metadata_only}</b><span>not loaded</span></div>
+          <div className="tuf-cov-cell is-total"><b>{cov.seasons}</b><span>seasons catalogued</span></div>
         </div>
         <p className="tuf-note">
-          These counts describe <strong>our coverage</strong>, not the show&rsquo;s. A season marked &ldquo;season only&rdquo; is
-          fully documented elsewhere; we simply have not loaded its card or its bracket yet.
+          The first three describe <strong>our coverage of the tournaments</strong> and are mutually exclusive: every season
+          is in exactly one, and they sum to {cov.seasons}. Separately, {cov.completed} season{cov.completed === 1 ? " has" : "s have"} finished
+          and {cov.ongoing} {cov.ongoing === 1 ? "is" : "are"} still running — a fact about the show, not about us. We hold or can name{" "}
+          {cov.finales_named} finale cards, which is <em>not</em> tournament coverage: a finale is a UFC event we happen to
+          have, and says nothing about whether the bracket that led to it is in the archive.
         </p>
       </section>
 
