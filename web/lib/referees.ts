@@ -113,7 +113,7 @@ export function refereeArchiveBio(r: RefereeProfile): string {
   const since = r.first_event_date ? new Date(`${r.first_event_date}T00:00:00Z`).getUTCFullYear() : null;
   const through = r.last_event_date ? new Date(`${r.last_event_date}T00:00:00Z`).getUTCFullYear() : null;
   const span = since && through ? (since === through ? `${since}` : `${since}–${through}`) : "the loaded archive";
-  return `${r.display_name} appears as the assigned referee in ${r.bouts.toLocaleString()} completed UFC bouts currently loaded by PropBetEdge across ${span}. This profile treats officiating as context, not destiny: the rates below describe what happened in that historical sample and do not prove that the referee caused a finish, decision, pace change or judging outcome.`;
+  return `${r.display_name} appears as the assigned referee in ${r.bouts.toLocaleString()} archived UFC bouts currently loaded by PropBetEdge (historical coverage is still being backfilled, so this is not a career total) across ${span}. This profile treats officiating as context, not destiny: the rates below describe what happened in that historical sample and do not prove that the referee caused a finish, decision, pace change or judging outcome.`;
 }
 
 export function refereeImpactRead(r: RefereeProfile): { headline: string; body: string; tone: "finish" | "decision" | "neutral" } {

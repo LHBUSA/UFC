@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const r = await getRefereeBySlug((await params).slug);
   if (!r) return { title: "Referee not found", robots: { index: false } };
   const title = `${r.display_name} — UFC Referee Profile, Assignments & Fight Impact`;
-  const description = `${r.display_name} referee profile: ${r.bouts} loaded UFC assignments${r.title_bouts ? `, ${r.title_bouts} title fights` : ""}, ${pct(r.stoppage_rate)} stoppage rate, ${pct(r.decision_rate)} decision rate, tenure, recent and notable bouts.`;
+  const description = `${r.display_name} referee profile: ${r.bouts} archived UFC assignments${r.title_bouts ? `, ${r.title_bouts} title fights` : ""}, ${pct(r.stoppage_rate)} stoppage rate, ${pct(r.decision_rate)} decision rate, tenure, recent and notable bouts.`;
   return { title, description, alternates: { canonical: `/referees/${r.slug}` }, openGraph: { title, description, url: `${SITE.url}/referees/${r.slug}` }, twitter: { card: "summary_large_image", title, description } };
 }
 
@@ -74,11 +74,11 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
         <div>
           <div className="eyebrow">Referee intelligence · archive profile</div>
           <h1>{r.display_name}</h1>
-          <p className="ref-line">UFC referee{r.country ? ` · ${r.country}` : ""}{tenure ? ` · active in the loaded archive ${tenure}` : ""}. <em>{r.bouts} assignments</em>{r.title_bouts ? <>, <em>{r.title_bouts} title fight{r.title_bouts === 1 ? "" : "s"}</em></> : null}.</p>
+          <p className="ref-line">UFC referee{r.country ? ` · ${r.country}` : ""}{tenure ? ` · active in the loaded archive ${tenure}` : ""}. <em>{r.bouts} archived assignments</em>{r.title_bouts ? <>, <em>{r.title_bouts} title fight{r.title_bouts === 1 ? "" : "s"}</em></> : null}.</p>
           {r.bio && r.bio_source_url && <p className="faint sm mt-2">Background verified · <a className={styles.source} href={r.bio_source_url} target="_blank" rel="noopener">{r.bio_source_name || "source"} ↗</a></p>}
         </div>
         <div className="ref-keystats" aria-label="Key stats">
-          <div><b>{r.bouts}</b><span>Loaded bouts</span></div>
+          <div><b>{r.bouts}</b><span>Archived assignments</span></div>
           <div><b>{r.title_bouts || "—"}</b><span>Title fights{r.title_bouts ? "" : " recorded"}</span></div>
           <div><b>{r.five_round_bouts}</b><span>Five-round</span></div>
           <div><b>{pct(r.stoppage_rate)}</b><span>Stoppage rate</span></div>
@@ -162,7 +162,7 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
           {(f("status") as string) && <div><dt>Status</dt><dd>{f("status") as string}</dd></div>}
           {tenure && <div><dt>Archive tenure</dt><dd>{tenure}{r.first_event_date ? ` · first loaded bout ${fmtDate(r.first_event_date, { month: "short", day: "numeric", year: "numeric" })}` : ""}</dd></div>}
           {r.last_event_date && <div><dt>Most recent bout</dt><dd>{fmtDate(r.last_event_date, { month: "short", day: "numeric", year: "numeric" })}</dd></div>}
-          <div><dt>UFC bouts officiated</dt><dd>{r.bouts} <span className="faint">(loaded archive)</span></dd></div>
+          <div><dt>Archived assignments</dt><dd>{r.bouts} <span className="faint">in the loaded archive — not a career total; historical coverage is still being backfilled</span></dd></div>
           <div><dt>Title fights</dt><dd>{r.title_bouts || <span className="faint">Not recorded — championship status is unpopulated for most archived bouts</span>}</dd></div>
           <div><dt>Outcomes</dt><dd>{r.ko_tko} KO/TKO · {r.submissions} submissions · {r.decisions} decisions ({r.split_decisions} split) · {r.nc_draws} NC/draws</dd></div>
           <div><dt>Average stoppage</dt><dd>{duration(r.avg_stoppage_seconds)}</dd></div>

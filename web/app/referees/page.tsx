@@ -29,17 +29,17 @@ export default async function RefereesPage() {
         <div>
           <div className="eyebrow">Officials · the third fighter in the cage</div>
           <h1>Referee Intelligence</h1>
-          <p>Every named referee currently present in the loaded UFC result archive, with tenure, assignments and outcome patterns computed from the same canonical bout history that powers PropBetEdge fight pages. These are historical tendencies, not claims that a referee causes a finish, a decision or a betting outcome.</p>
+          <p>Every named referee currently present in the loaded UFC result archive, with tenure, assignments and outcome patterns computed from the same canonical bout history that powers PropBetEdge fight pages. These are historical tendencies, not claims that a referee causes a finish, a decision or a betting outcome. Counts are <strong>archived assignments</strong>, not career totals: historical referee coverage is still being backfilled, so a low number reflects how much of that official’s history we have loaded rather than how much they have worked.</p>
           <nav className="ref-filters" aria-label="Jump to">
-            <a href="#by-assignments">By loaded assignments</a>
+            <a href="#by-assignments">By archived assignments</a>
             <a href="#title-referees">Title-fight referees · {titleRefs}</a>
             <a href="#methodology">Methodology</a>
           </nav>
         </div>
         <aside className={styles.heroAside}>
           <b>{refs.length.toLocaleString()}</b><span>referees indexed</span>
-          <b style={{ marginTop: 18 }}>{totalBouts.toLocaleString()}</b><span>referee-tagged bout assignments</span>
-          {top && <><b style={{ marginTop: 18 }}>{top.display_name}</b><span>largest loaded sample · {top.bouts} bouts</span></>}
+          <b style={{ marginTop: 18 }}>{totalBouts.toLocaleString()}</b><span>archived assignments</span>
+          {top && <><b style={{ marginTop: 18 }}>{top.display_name}</b><span>largest archived sample · {top.bouts} assignments</span></>}
         </aside>
       </section>
 
@@ -54,9 +54,9 @@ export default async function RefereesPage() {
                   <RefereePhoto r={r} />
                   <span>
                     <h2>{r.display_name}</h2>
-                    <span className="ref-role"><em>#{i + 1}</em> by loaded assignments{tenure ? ` · active ${tenure}` : ""}{r.country ? ` · ${r.country}` : ""}</span>
+                    <span className="ref-role"><em>#{i + 1}</em> by archived assignments{tenure ? ` · active ${tenure}` : ""}{r.country ? ` · ${r.country}` : ""}</span>
                     <span className="ref-stats">
-                      <span><b>{r.bouts}</b><span>Bouts</span></span>
+                      <span><b>{r.bouts}</b><span>Archived</span></span>
                       <span><b>{r.title_bouts || "—"}</b><span>Title fights</span></span>
                       <span><b>{pct(r.stoppage_rate)}</b><span>Stoppage</span></span>
                       <span><b>{pct(r.decision_rate)}</b><span>Decision</span></span>
