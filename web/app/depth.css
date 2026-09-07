@@ -163,3 +163,60 @@ html.mnav-open .menu-btn { border-color: var(--pbe-gold); }
 .hof-fw-foot a { color: var(--pbe-gold); font: 700 12px/1 var(--pbe-font-ui); white-space: nowrap; }
 .hof-fw-foot small { color: var(--pbe-faint); font: 500 11px/1.45 var(--pbe-font-ui); }
 @media (max-width: 900px) { .hof-fw-grid { grid-template-columns: 1fr; } }
+
+/* ── Mobile drawer: full-height, internally scrollable ────────────────────
+ *
+ * The drawer was a plain `display: block` element sitting in the sticky
+ * header's flow, with no height limit and no scrolling of its own. Once the
+ * nav grew past the viewport - which it does on a short phone as soon as the
+ * grouped items and the account row are present - the bottom simply ran off
+ * the screen with no way to reach it. The page behind could not help either,
+ * because scrolling the page does not move a drawer anchored to a sticky
+ * header.
+ *
+ * So the drawer becomes its own scroll container, pinned under the header.
+ * dvh is what makes this correct on mobile: vh is the tallest the viewport
+ * ever gets, so on a browser showing its address bar a vh-sized panel is
+ * already taller than the space available and the last item is cut off.
+ * The vh line is kept first as the fallback for browsers without dvh. */
+@media (max-width: 900px) {
+  /* The header uses backdrop-filter, and a filtered element becomes the
+   * containing block for its position:fixed descendants. That silently sized
+   * the drawer against a 64px header instead of the viewport, so it rendered
+   * as a stub with the page showing through beneath it. Dropping the blur
+   * only while the drawer is open restores viewport-relative positioning, and
+   * costs nothing visually because the drawer covers what the blur was
+   * softening. */
+  html.mnav-open .hdr { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+  #mnav-toggle:checked ~ .mnav {
+    position: fixed;
+    inset: var(--hdr-h) 0 0 0;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--hdr-h));
+    height: calc(100dvh - var(--hdr-h));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Keep a flick at the end of the list from scrolling the page behind. */
+    overscroll-behavior: contain;
+    /* The last item must clear the home indicator, not sit under it. */
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--s-5));
+    z-index: 49;               /* below the header, above the page */
+  }
+
+  /* The page must not scroll behind an open drawer. overflow:hidden is used
+   * rather than position:fixed on the body because it preserves the scroll
+   * offset on its own; the fixed-body technique needs the offset saved and
+   * restored by hand and jumps to the top whenever that goes wrong. */
+  html.mnav-open, html.mnav-open body { overflow: hidden; }
+
+  /* Comfortable targets. Stated explicitly so a future density change cannot
+   * quietly take them below the threshold. */
+  .mnav a { min-height: 44px; }
+  .mnav-group a { min-height: 44px; }
+  /* Three buttons in a row do not fit at 320px; they wrap instead of
+   * overflowing the drawer horizontally. */
+  .mnav-foot { margin-top: auto; padding-top: var(--s-5); flex-wrap: wrap; }
+  .mnav-foot .btn { flex: 1 1 8rem; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+}
