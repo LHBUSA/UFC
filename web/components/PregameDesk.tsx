@@ -33,9 +33,6 @@ function readFight(b: Bout): Array<{ label: string; text: string }> {
   if ((b.is_title || b.scheduled_rounds === 5) && reads.length < 3) {
     reads.push({ label: "Five-round tax", text: `This is scheduled for five rounds. Pace management, recoverability and the ability to make adjustments after the first ten minutes matter more here than in a standard three-round assignment.` });
   }
-  if (b.short_notice_days != null && b.short_notice_days <= 14 && reads.length < 3) {
-    reads.push({ label: "Short notice", text: `A short-notice window of ${b.short_notice_days} days is recorded for this matchup. Treat preparation time as a real uncertainty rather than pretending the normal camp assumptions apply.` });
-  }
   if (!reads.length) reads.push({ label: "Read the tape", text: `The stored physical and record data do not create an obvious pre-fight contrast. That is useful too: the matchup should be read through the full Fight DNA and recent-fight evidence instead of forcing a superficial angle.` });
   return reads;
 }
