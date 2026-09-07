@@ -111,3 +111,52 @@
   .rba-dna-d { grid-column: 3; }
   .rba-head { flex-direction: column; }
 }
+
+/* ---- /round-by-round index ------------------------------------------- */
+.rbi-stats { display: flex; flex-wrap: wrap; gap: var(--s-5); padding: var(--s-5) var(--s-6);
+  border: 1px solid var(--pbe-line-faint); border-radius: var(--r-md); background: color-mix(in srgb, var(--pbe-ink) 70%, transparent); }
+.rbi-stat { display: flex; flex-direction: column; gap: 4px; min-width: 8rem; }
+.rbi-stat b { font-family: var(--pbe-font-display); font-size: clamp(1.3rem, 3.4vw, 1.9rem); color: var(--pbe-gold); }
+.rbi-stat span { color: var(--pbe-dim); font-size: var(--fs-xs); }
+
+.rbi-head h2 { font-family: var(--pbe-font-display); font-size: clamp(1.2rem, 3.2vw, 1.6rem); }
+.rbi-head p { color: var(--pbe-dim); font-size: var(--fs-sm); margin-top: var(--s-2); max-width: 68ch; }
+
+.rbi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: var(--s-4); margin-top: var(--s-4); }
+.rbi-card { display: flex; flex-direction: column; gap: var(--s-3); padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--pbe-line-faint); border-radius: var(--r-md); background: color-mix(in srgb, var(--pbe-ink) 62%, transparent);
+  transition: border-color .15s ease, transform .15s ease; min-width: 0; }
+.rbi-card:hover { border-color: var(--pbe-line-strong); transform: translateY(-1px); }
+.rbi-card-top { display: flex; justify-content: space-between; gap: var(--s-3); align-items: baseline; }
+.rbi-event { color: var(--pbe-dim); font-size: var(--fs-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.rbi-date { color: var(--pbe-faint); font: 500 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); white-space: nowrap; }
+.rbi-names { display: flex; flex-direction: column; gap: 2px; }
+.rbi-names em { color: var(--pbe-faint); font: 500 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); font-style: normal; }
+.rbi-n { color: var(--pbe-paper); font-weight: 600; font-size: var(--fs-md); overflow-wrap: anywhere; }
+.rbi-n.w { color: var(--pbe-gold); }
+.rbi-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.rbi-tag { border: 1px solid var(--pbe-line-faint); border-radius: 999px; padding: 3px 9px;
+  color: var(--pbe-dim); font: 500 var(--fs-label)/1.4 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; }
+.rbi-tag.gold { color: var(--pbe-gold); border-color: color-mix(in srgb, var(--pbe-gold) 40%, transparent); }
+.rbi-cover { color: var(--pbe-dim); font-size: var(--fs-xs); }
+.rbi-cover b { color: var(--pbe-paper); }
+.rbi-cover i { font-style: normal; }
+.rbi-cover .ok { color: var(--pbe-faint); }
+.rbi-cover .part { color: color-mix(in srgb, var(--pbe-gold) 70%, var(--pbe-dim)); }
+.rbi-cta { color: var(--pbe-gold); font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; margin-top: auto; }
+
+.rbi-empty { text-align: center; padding: var(--s-7) var(--s-5); }
+.rbi-empty-k { font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); }
+.rbi-empty p { color: var(--pbe-dim); font-size: var(--fs-sm); margin-top: var(--s-3); }
+.rbi-note { padding: var(--s-5) var(--s-6); }
+.rbi-note-h { font-family: var(--pbe-font-display); font-size: var(--fs-lg); }
+.rbi-note p { color: var(--pbe-dim); font-size: var(--fs-sm); margin-top: var(--s-3); max-width: 76ch; line-height: 1.6; }
+
+/* Entry point from a fight page into the analysis section below it. */
+.rba-jump { display: inline-flex; align-items: center; gap: 8px; margin-top: var(--s-3);
+  color: var(--pbe-gold); font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; }
+
+@media (max-width: 560px) {
+  .rbi-grid { grid-template-columns: minmax(0, 1fr); }
+  .rbi-stats { gap: var(--s-4); padding: var(--s-4); }
+}
