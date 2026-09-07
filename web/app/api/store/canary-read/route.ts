@@ -101,6 +101,10 @@ export async function GET(req: Request) {
   }
   if (!byBearer && !bySignature) return json({ error: "unauthorized" }, 401);
 
+  const url0 = new URL(req.url);
+  const probe = url0.searchParams.get("probe");
+  const inspect = url0.searchParams.get("inspect");
+
   const steps: Step[] = [];
   const step = (name: Step["name"], status: Step["status"], detail: string) => steps.push({ name, status, detail });
 
@@ -147,6 +151,42 @@ export async function GET(req: Request) {
     /* 2. live catalog resolution ------------------------------------------ */
     const catalog = await listCatalog();
     out.catalog_size = catalog.length;
+
+    /* Read-only catalog search, for resolving a blank we have not identified
+     * yet without guessing at a product id. ?probe=cap,hat lists every
+     * catalog product whose title, model or type mentions any of the terms;
+     * ?inspect=<id> returns that product's variants and print areas. Neither
+     * writes anything — this module cannot. */
+    if (probe) {
+      const terms = probe.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+      const hits = catalog.filter((p) =>
+        terms.some((t) => `${p.title} ${p.model ?? ""} ${p.type ?? ""}`.toLowerCase().includes(t)),
+      );
+      out.probe = { terms, count: hits.length, products: hits.slice(0, 60) };
+      step("probe", "pass", `${hits.length} catalog products mention ${terms.join(", ")}`);
+    }
+    if (inspect) {
+      const id = Number(inspect);
+      const variants = await getVariants(id);
+      let areas: unknown = null;
+      let areaError: string | null = null;
+      try {
+        areas = await getPrintAreas(id, ctx.selected.id);
+      } catch (e) {
+        areaError = e instanceof ProviderError ? `HTTP ${e.status}: ${String(e.detail).slice(0, 120)}` : String((e as Error).message).slice(0, 120);
+      }
+      out.inspect = {
+        catalog_product_id: id,
+        title: catalog.find((p) => p.id === id)?.title ?? null,
+        type: catalog.find((p) => p.id === id)?.type ?? null,
+        variant_count: variants.length,
+        colors: [...new Set(variants.map((v) => v.color).filter(Boolean))],
+        sizes: [...new Set(variants.map((v) => v.size).filter(Boolean))],
+        print_areas: areas,
+        print_areas_error: areaError,
+      };
+      step("inspect", areas ? "pass" : "fail", `product ${id}: ${variants.length} variants`);
+    }
     const bases: Record<string, { id?: number; title?: string; error?: string; candidates?: CatalogProduct[] }> = {};
     for (const key of Object.keys(BASE_PRODUCTS)) {
       const r = resolveBaseProduct(key, catalog);
