@@ -202,6 +202,32 @@ GitHub fires `schedule` only from the default branch. While this file lives on
 file exists on `main` (as `newsroom.yml` already does, checking out the
 release branch), the 30-minute cadence is live with no further change.
 
+## Content language (V1 strategy)
+
+Every row carries `source_metadata.language` (`en` · `es` · `pt` · `unknown`, with
+`language_method` = channel | title | none) written by the ingest from the channel
+(UFC Brasil → pt, UFC Espanol → es, UFC / ESPN MMA / other official English
+channels → en) with a title check for the rare Spanish/Portuguese-titled clip on an
+English channel. When the Data API key is present, `source_metadata.region_restriction`
+records YouTube's `contentDetails.regionRestriction` (allowed / blocked country lists).
+
+The web (`web/lib/videoPolicy.ts`) derives the same language when metadata is missing,
+labels every card (ENGLISH · SPANISH · PORTUGUESE), and ranks surfaced videos by:
+language (English-first by default) → embeddable → viewable (not region-blocked for US
+where recorded) → official tier (UFC, ESPN MMA → Fight Pass / other official English →
+regional non-English) → freshness → relevance. Freshness never outranks usability.
+
+Rails carry an All · English · Spanish · Portuguese filter (default English when at
+least two English clips exist, otherwise All, always labelled). The filter can be
+preset from the URL: `?lang=en|es|pt|all`. This is content-language filtering only —
+no locale-routed page tree, no application translation. A later language-aware
+surfacing layer can read the same `lang` state.
+
+Embed fallback: the player is created with `enablejsapi=1`; if YouTube reports error
+100/101/150 (removed, embedding disabled, region-restricted) the card keeps its poster,
+shows "Not available for embedded playback in your region." and a Watch on YouTube CTA.
+Rows with a recorded US block never start as a player.
+
 ## Surfaces
 
 The web layer reads only `link_status='published'` rows from verified channels

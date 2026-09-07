@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T12:43:13.872Z",
+  "generated_at": "2026-09-07T13:43:45.454Z",
   "routes": [
     "/",
     "/about",
@@ -12,6 +12,7 @@
     "/fighters/[slug]",
     "/fights/[slug]",
     "/hall-of-fame",
+    "/hall-of-fame/[slug]",
     "/history",
     "/learn/fight-dna",
     "/login",
@@ -112,6 +113,7 @@
   },
   "features": [
     "app/apple-icon.tsx",
+    "app/depth.css",
     "app/fightdna.css",
     "app/fightweek.css",
     "app/icon.svg",
@@ -124,11 +126,14 @@
     "components/FightDnaShowcase.tsx",
     "components/FightWeek.tsx",
     "components/LiveWire.tsx",
+    "components/Menu.tsx",
+    "components/MobileNav.tsx",
     "components/NewsStoryCard.tsx",
     "components/OfficialVideo.tsx",
     "components/PregameDesk.module.css",
     "components/PregameDesk.tsx",
     "components/VideoRail.tsx",
+    "components/VideoRailClient.tsx",
     "components/VoiceImage.tsx",
     "components/dna.tsx",
     "lib/archive.ts",
@@ -138,8 +143,10 @@
     "lib/faces.ts",
     "lib/fightweek.ts",
     "lib/heritage.ts",
+    "lib/hof.ts",
     "lib/pregame.ts",
     "lib/referees.ts",
+    "lib/videoPolicy.ts",
     "lib/voices.ts",
     "lib/wire.ts",
     "public/site.webmanifest"

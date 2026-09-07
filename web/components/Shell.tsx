@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NavLinks } from "./NavLinks";
+import { MobileNav } from "./MobileNav";
 import { Logo, Mark } from "./Brand";
 import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
@@ -38,14 +39,14 @@ export async function Header() {
           <label htmlFor="mnav-toggle" className="menu-btn" aria-label="Open menu"><span /><span /><span /></label>
         </div>
       </div>
-      <div className="mnav">
+      <MobileNav>
         <NavLinks className="" variant="mobile" />
         <div className="mnav-foot">
           {next && <Link href={nextHref} className="btn">{nextLabel} · {fmtDate(next.event_date, { month: "short", day: "numeric" })}</Link>}
           <Link href={account ? "/account" : "/login"} className="btn">{account ? "Account" : "Sign in"}</Link>
           <Link href="/pro" className="btn gold">Go Pro</Link>
         </div>
-      </div>
+      </MobileNav>
     </header>
   );
 }

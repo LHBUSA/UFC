@@ -1,3 +1,4 @@
+import { rankVideos, videoLanguage } from "@/lib/videoPolicy";
 /* Server-only data access. PostgREST over fetch with the service-role key
  * (RLS has no anon policies by design). Every reader is wrapped so that a
  * missing env var, a table that does not exist yet, or a network failure
@@ -431,8 +432,10 @@ export type OfficialVideoRow = {
   id: string; provider: string; provider_video_id: string; channel_id: string; channel_name: string | null; channel_verified_source: boolean;
   url: string; title: string; description: string | null; published_at: string | null; duration_sec: number | null; thumbnail_url: string | null;
   embeddable: boolean | null; video_type: string; fighter_ids: string[]; event_id: string | null; bout_id: string | null; article_id: string | null;
+  /* ingest metadata: language, region_restriction, discovery, linking (docs/videos.md) */
+  source_metadata?: Record<string, unknown> | null;
 };
-const VIDEO_SELECT = "id,provider,provider_video_id,channel_id,channel_name,channel_verified_source,url,title,description,published_at,duration_sec,thumbnail_url,embeddable,video_type,fighter_ids,event_id,bout_id,article_id";
+const VIDEO_SELECT = "id,provider,provider_video_id,channel_id,channel_name,channel_verified_source,url,title,description,published_at,duration_sec,thumbnail_url,embeddable,video_type,fighter_ids,event_id,bout_id,article_id,source_metadata";
 const VIDEO_BASE = `ufc_videos?select=${VIDEO_SELECT}&link_status=eq.published&provider=eq.youtube&channel_verified_source=eq.true&embeddable=not.is.false&order=published_at.desc.nullslast`;
 /* Fight-week timeline order and homepage priority (docs/videos.md §8). */
 export const VIDEO_TIMELINE_ORDER = ["fight_preview", "countdown", "embedded_episode", "media_day", "press_conference", "weigh_in", "faceoff", "full_fight", "highlights", "interview", "analysis", "post_fight", "other"];
@@ -454,14 +457,21 @@ export async function getVideosForFighters(ids: string[], limit = 6, minConfiden
   const conf = minConfidence === "high" ? "high" : minConfidence === "medium" ? "high,medium" : "high,medium,low";
   return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&fighter_ids=ov.{${uniq.join(",")}}&resolver_confidence=in.(${conf})&limit=${limit}`, [], { revalidate: 300 })).data;
 }
-/* Homepage video desk: this fight week first, then the freshest official uploads. */
+/* Homepage video desk: this fight week first, then the freshest official
+ * uploads — both passed through the selection policy (English-first,
+ * embeddable, viewable, official, fresh, relevant; lib/videoPolicy.ts) so a
+ * fresh clip that cannot play never outranks an older one that can. */
 export async function getFightWeekVideos(eventId: string | null, limit = 5): Promise<OfficialVideoRow[]> {
   const pool = eventId ? await getVideosForEvent(eventId, 30) : [];
-  const ranked = rankVideosForHome(pool);
-  if (ranked.length >= limit) return ranked.slice(0, limit);
-  const latest = await getLatestVideos(limit * 2);
+  const ranked = rankVideos(pool, "en");
+  const english = (v: OfficialVideoRow) => videoLanguage(v) === "en";
+  /* Top up with the freshest official English uploads when this card has fewer English clips than the desk shows, so the default desk stays English-first. */
+  /* Keep a few non-English official clips behind the language filter so Spanish / Portuguese stay reachable without dominating the default desk. */
+  const withAlternates = (list: OfficialVideoRow[]) => { const top = list.slice(0, limit); const ids = new Set(top.map((v) => v.id)); const alt = list.filter((v) => !ids.has(v.id) && !english(v)).slice(0, 3); return [...top, ...alt]; };
+  if (ranked.filter(english).length >= limit) return withAlternates(ranked);
+  const latest = rankVideos(await getLatestVideos(limit * 4), "en");
   const seen = new Set(ranked.map((v) => v.id));
-  return [...ranked, ...latest.filter((v) => !seen.has(v.id))].slice(0, limit);
+  return withAlternates(rankVideos([...ranked, ...latest.filter((v) => !seen.has(v.id))], "en"));
 }
 /* Voice profiles: official-channel uploads whose title names the person. */
 export async function getVideosMentioning(phrase: string, limit = 3): Promise<OfficialVideoRow[]> {

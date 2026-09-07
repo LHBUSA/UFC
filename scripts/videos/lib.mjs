@@ -145,6 +145,8 @@ export async function discoverViaDataApi(channelId, { key, since }) {
         description: sn.description || '',
         duration_sec: isoDurationToSec(it.contentDetails?.duration),
         embeddable: it.status?.embeddable == null ? null : Boolean(it.status.embeddable),
+        /* contentDetails.regionRestriction: { allowed: [...] } or { blocked: [...] } when YouTube limits playback by country. */
+        region_restriction: it.contentDetails?.regionRestriction ? { allowed: it.contentDetails.regionRestriction.allowed || null, blocked: it.contentDetails.regionRestriction.blocked || null } : null,
         privacy_status: it.status?.privacyStatus || null,
         live_broadcast_state: live,
       });
@@ -196,6 +198,27 @@ export function classifyVideo(title, description) {
     }
   }
   return { video_type: type || 'other', evidence };
+}
+
+/* ------------------------------------------------ content language (V1) */
+
+/* Channel → default language; the UFC/ESPN feeds are English unless a title is
+ * unmistakably Spanish/Portuguese. Stored in source_metadata.language so the
+ * web can label cards and filter without a schema change. */
+const CHANNEL_LANG = [[/brasil|portugu/i, 'pt'], [/espa[nñ]ol|latino/i, 'es'], [/^ufc$|fight pass|espn|europe|\buk\b|australia|asia|japan|eurasia|quebec/i, 'en']];
+const ES_HINT = /\b(el|la|los|las|del|con|contra|pelea|peleador|entrevista|conferencia|resumen|noche|hoy|semana|previa|mejores|momentos|así|más|será|todo|nuevo)\b|ñ|¿|¡/i;
+const PT_HINT = /\b(luta|lutador|lutadora|entrevista|coletiva|melhores|momentos|noite|semana|prévia|contra|não|você|também|história|campeão|pesagem)\b|ção|ções/i;
+export function detectLanguage(channelName, title, description) {
+  const ch = String(channelName || '');
+  const byChannel = (CHANNEL_LANG.find(([re]) => re.test(ch)) || [])[1] || 'unknown';
+  if (byChannel === 'es' || byChannel === 'pt') return { language: byChannel, method: 'channel' };
+  const text = String(title || '');
+  const es = (text.match(ES_HINT) || []).length, pt = (text.match(PT_HINT) || []).length;
+  if (pt >= 2 && /ção|não|você/i.test(text)) return { language: 'pt', method: 'title' };
+  if (es >= 2 && /ñ|¿|¡/i.test(text)) return { language: 'es', method: 'title' };
+  if (byChannel === 'en') return { language: 'en', method: 'channel' };
+  void description;
+  return { language: 'unknown', method: 'none' };
 }
 
 /* ---------------------------------------------------- text preparation */

@@ -22,7 +22,7 @@
  * touching the network (use it after a fighter/event load lands).
  */
 import { canonicalJson } from '../news/lib.mjs';
-import {
+import { detectLanguage,
   Supabase, loadEnv, loadFighterIndex, fetchText,
   PROVIDER, WINDOW_DAYS, feedUrl, watchUrl, parseYoutubeFeed, checkEmbeddable, discoverViaDataApi,
   classifyVideo, loadEventContext, linkVideo, sleep,
@@ -93,9 +93,13 @@ function applyLinks(row, entry, index, ctx, existing) {
 
 function toDbRow(row, entry, existing) {
   const prev = existing?.source_metadata || {};
+  const lang = detectLanguage(row.channel_name, entry.title, entry.description);
   const source_metadata = {
     ...prev,
     discovery: row.discovery,
+    language: lang.language,
+    language_method: lang.method,
+    region_restriction: entry.region_restriction === undefined ? (prev.region_restriction ?? null) : entry.region_restriction,
     feed_link: entry.link || prev.feed_link || null,
     is_short: entry.is_short ?? prev.is_short ?? null,
     feed_updated: entry.updated || prev.feed_updated || null,
@@ -122,6 +126,8 @@ function changed(dbRow, existing) {
   if (JSON.stringify([...(dbRow.fighter_ids || [])].sort()) !== JSON.stringify([...(existing.fighter_ids || [])].sort())) return true;
   const sm = existing.source_metadata || {};
   if (sm.discovery !== dbRow.source_metadata.discovery) return true;
+  if (sm.language !== dbRow.source_metadata.language) return true;
+  if (JSON.stringify(sm.region_restriction || null) !== JSON.stringify(dbRow.source_metadata.region_restriction || null)) return true;
   if ((sm.review_reason || null) !== (dbRow.source_metadata.review_reason || null)) return true;
   /* jsonb reorders object keys, so compare canonical (sorted-key) forms. */
   if (canonicalJson(sm.classification?.evidence || null) !== canonicalJson(dbRow.source_metadata.classification?.evidence || null)) return true;

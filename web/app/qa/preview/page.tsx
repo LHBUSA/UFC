@@ -46,6 +46,8 @@ export default async function QaPreview() {
     vid("NJPZ53NvBNM", "Joshua Van vs Tatsuro Taira | FULL FIGHT | Crypto.com UFC 331", "full_fight", 40),
     vid("lyCaScONJNs", "Salahdine Parnasse Octagon Interview | UFC Paris", "interview", 30),
     vid("OraJxNt3BdM", "Greatest Mexican Fighters Of All Time | Noche UFC", "highlights", 50),
+    /* Fixture for the embed fallback: the ingest recorded a US region block, so the card renders poster + message + Watch on YouTube instead of a player. */
+    { ...vid("cs-T1Qgb-sk", "Noche UFC: Silva vs Delgado | Region-restricted fixture", "fight_preview", 5), id: "v-blocked", source_metadata: { language: "en", region_restriction: { blocked: ["US"] } } },
   ];
   const champs = [a, b, c, dd].map((f, i) => ({ ...f, id: `c-${i}`, name: ["Alpha Silva", "Bravo Kane", "Charlie Ortega", "Delta Moreno"][i] }));
   const rankings: RankingsSnapshot = {

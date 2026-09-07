@@ -4,6 +4,7 @@ import { getReferees } from "@/lib/referees";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
 import { VOICES } from "@/lib/voices";
+import { HOF_INDUCTEES } from "@/lib/hof";
 
 export const revalidate = 3600;
 
@@ -17,7 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getRecentEvents(12),
   ]);
   const now = new Date();
-  const fixedPaths = ["/", "/fight-week", "/learn/fight-dna", "/events", "/fighters", "/rankings", "/referees", "/news", "/contender-series", "/pro", "/about"];
+  const fixedPaths = ["/", "/fight-week", "/learn/fight-dna", "/hall-of-fame", "/history", "/events", "/fighters", "/rankings", "/referees", "/news", "/contender-series", "/pro", "/about"];
   const fixed: MetadataRoute.Sitemap = fixedPaths.map((p) => ({
     url: `${SITE.url}${p}`,
     lastModified: now,
@@ -45,9 +46,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
   /* Permanent Pregame Desk pages: upcoming UFC cards plus the recent archive. */
   const pregame: MetadataRoute.Sitemap = [...upcoming.filter((e) => !isContenderSeries(e.name)), ...recent].map((e) => ({ url: `${SITE.url}/pregame/${eventSlug(e)}`, lastModified: now, changeFrequency: (e.event_date && e.event_date >= today ? "daily" : "monthly") as "daily" | "monthly", priority: e.event_date && e.event_date >= today ? 0.85 : 0.5 }));
+  const hof: MetadataRoute.Sitemap = HOF_INDUCTEES.map((h) => ({ url: `${SITE.url}/hall-of-fame/${h.slug}`, lastModified: now, changeFrequency: "yearly" as const, priority: 0.55 }));
   return [
     ...fixed,
     ...pregame,
+    ...hof,
     ...voicePages,
     ...refereePages,
     ...events.map((e) => ({ url: `${SITE.url}/events/${eventSlug(e)}`, lastModified: now, changeFrequency: (e.event_date && e.event_date >= today ? "daily" : "monthly") as "daily" | "monthly", priority: e.event_date && e.event_date >= today ? 0.9 : 0.6 })),
