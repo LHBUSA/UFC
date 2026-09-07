@@ -146,3 +146,35 @@ Nothing is lost by waiting. The watchdog does not mark a non-zero window
 complete, so once the normalizer is fixed a single resume pass re-runs exactly
 the affected windows, and every event already finished is skipped without a
 fetch.
+
+## Source canary: measuring publication latency
+
+Everything the product may claim about freshness depends on when UFC Stats
+actually publishes round data during a card. That is measurable, so it gets
+measured rather than assumed.
+
+`scripts/backfill/live_canary.mjs` records, for every request it makes, the
+timestamp, URL and HTTP status, and derives when the event first appeared,
+when each bout appeared, when a result appeared, and when each round's stats
+first appeared. It writes one JSON object per line, so a run can be read while
+it is still going and nothing is lost if it is interrupted.
+
+Run it against a live card:
+
+    node scripts/backfill/live_canary.mjs --discover --dry-run     # resolve only
+    node scripts/backfill/live_canary.mjs --event <16-hex id> --minutes 360
+
+It is gentle by construction: one request at a time, 1.5s minimum spacing,
+exponential backoff on 429, 403 and 5xx, and it exits immediately if served a
+challenge interstitial. It only opens a fight page once the event row shows a
+method, because polling every fight page every pass is exactly the hammering
+that gets an IP blocked.
+
+The measurements that decide the product's wording are whether round stats
+appear while a fight is still in progress, whether a partially complete round
+is ever visible, and the delay between a fight ending and its data appearing.
+
+Until that run exists, Round-by-Round Analysis stays post-fight. It has states
+for prefight, pending, unavailable and final, and no "live" state at all. If
+the canary shows rounds appear promptly, a live state is added to
+`web/lib/roundAnalysis.ts` and the surrounding feature does not change.
