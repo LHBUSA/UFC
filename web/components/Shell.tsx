@@ -66,6 +66,7 @@ export function Footer() {
             <Link href="/contender-series">Contender Series</Link>
             <Link href="/fighters">Fighters</Link>
             <Link href="/rankings">Rankings</Link>
+            <Link href="/referees">Referees</Link>
             <Link href="/history">History</Link>
             <Link href="/hall-of-fame">Hall of Fame tribute</Link>
           </div>
