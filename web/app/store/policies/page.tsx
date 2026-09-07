@@ -25,12 +25,18 @@ export const metadata: Metadata = {
 export default function StorePolicies() {
   return (
     <>
-      <PageHead
+      {/* .page is a padding shorthand declared after .wrap, so the two
+          cannot share an element without losing the gutter. */}
+      <div className="wrap">
+        <div className="page">
+        <PageHead
         eyebrow="Store"
         title="Policies"
         lede="How a print-on-demand order works, and where it differs from a shop that holds stock."
-        crumbs={[{ name: "Home", href: "/" }, { name: "Store", href: "/store" }, { name: "Policies" }]}
-      />
+        crumbs={[{ name: "Store", href: "/store" }, { name: "Policies" }]}
+        />
+        </div>
+      </div>
 
       <section className="wrap st-prose">
         <h2>Nothing is made until you order it</h2>

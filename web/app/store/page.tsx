@@ -61,12 +61,18 @@ export default async function StorePage() {
 
   return (
     <>
-      <PageHead
+      {/* .page is a padding shorthand declared after .wrap, so the two
+          cannot share an element without losing the gutter. */}
+      <div className="wrap">
+        <div className="page">
+        <PageHead
         eyebrow="Store"
         title="Wear the method"
         lede="Fight intelligence, printed on demand. No warehouse, no overstock, nothing made until somebody asks for it."
-        crumbs={[{ name: "Home", href: "/" }, { name: "Store" }]}
-      />
+        crumbs={[{ name: "Store" }]}
+        />
+        </div>
+      </div>
 
       {!open && (
         <div className="wrap">

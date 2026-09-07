@@ -50,12 +50,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <>
-      <PageHead
+      {/* .page is a padding shorthand declared after .wrap, so the two
+          cannot share an element without losing the gutter. */}
+      <div className="wrap">
+        <div className="page">
+        <PageHead
         eyebrow="Store"
         title={p.name}
         lede={p.blurb}
-        crumbs={[{ name: "Home", href: "/" }, { name: "Store", href: "/store" }, { name: p.name }]}
-      />
+        crumbs={[{ name: "Store", href: "/store" }, { name: p.name }]}
+        />
+        </div>
+      </div>
 
       <section className="wrap st-detail">
         <div className="st-detail-art">
