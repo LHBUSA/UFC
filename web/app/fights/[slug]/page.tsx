@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getImagesForFighters, getRoundStats, getArticlesForBout, getFighterBouts } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
-import { getMatchupDna } from "@/lib/dna";
+import { getFighterDna, getMatchupDna } from "@/lib/dna";
+import { RoundAnalysis } from "@/components/RoundAnalysis";
+import { analysisState, buildRounds, compareToDna, roundEdges, roundOverRound } from "@/lib/roundAnalysis";
 import { DnaMatchup } from "@/components/dna";
 import { resolveFight } from "@/lib/resolve";
 import { JsonLd, ProLock, TaleOfTheTape, Breadcrumbs, Portrait, Credit, BoutRow } from "@/components/ui";
@@ -36,13 +38,47 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   const [imgs, rounds, articles, histA, histB] = await Promise.all([
     getImagesForFighters([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
   ]);
-  const [media, dna] = await Promise.all([storyMedia(articles), getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null)]);
+  const [media, dna, dnaFighterA, dnaFighterB] = await Promise.all([
+    storyMedia(articles),
+    getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null),
+    /* Baselines are read as of the event date so the comparison is against the
+     * fighter as they were BEFORE this fight, never a snapshot that already
+     * contains it. Comparing a performance to itself would flatter every
+     * number toward zero deviation. */
+    getFighterDna(b.fighter_a.id, e.event_date),
+    getFighterDna(b.fighter_b.id, e.event_date),
+  ]);
   const r = b.result;
   const w = winnerOf(b), l = loserOf(b);
   const d = daysUntil(e.event_date);
   const ra = rounds.filter((x) => x.fighter_id === b.fighter_a.id), rb = rounds.filter((x) => x.fighter_id === b.fighter_b.id);
   const ta = totals(ra), tb = totals(rb);
   const roundsN = Math.max(...rounds.map((x) => x.round), 0);
+
+  /* Round-by-Round Analysis. Everything is derived server-side and passed to
+   * the client component, which only owns which round is selected. */
+  const rbaRounds = buildRounds(rounds, b.fighter_a.id, b.fighter_b.id, r?.round ?? null, r?.time_sec ?? null);
+  const rbaState = analysisState({
+    hasResult: Boolean(r), hasRounds: rbaRounds.length > 0,
+    eventDate: e.event_date, cancelled: b.status === "cancelled",
+  });
+  const rbaSignals: Record<number, ReturnType<typeof roundOverRound>> = {};
+  const rbaEdges: Record<number, ReturnType<typeof roundEdges>> = {};
+  for (let i = 0; i < rbaRounds.length; i += 1) {
+    const cur = rbaRounds[i];
+    rbaEdges[cur.round] = roundEdges(cur, b.fighter_a.name, b.fighter_b.name);
+    if (i > 0) {
+      rbaSignals[cur.round] = [
+        ...roundOverRound(cur, rbaRounds[i - 1], "a", b.fighter_a.name),
+        ...roundOverRound(cur, rbaRounds[i - 1], "b", b.fighter_b.name),
+      ];
+    }
+  }
+  const snapA = dnaFighterA.status === "ok" ? dnaFighterA.data.snapshot : null;
+  const snapB = dnaFighterB.status === "ok" ? dnaFighterB.data.snapshot : null;
+  const rbaFinalLine = r
+    ? `${METHOD_LABEL[r.method] || r.method}${r.round ? ` · R${r.round}` : ""}${r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}`
+    : null;
   const before = (h: Awaited<ReturnType<typeof getFighterBouts>>) => h.filter((x) => x.id !== b.id && x.result && x.event?.event_date && x.event.event_date < (e.event_date || "9999")).slice(0, 5);
   const formA = before(histA), formB = before(histB);
   const sumA = archiveSummary(b.fighter_a.id, histA.filter((x) => x.id !== b.id)), sumB = archiveSummary(b.fighter_b.id, histB.filter((x) => x.id !== b.id));
@@ -107,6 +143,19 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
           </div>
         </section>
       )}
+
+      <RoundAnalysis
+        state={rbaState}
+        rounds={rbaRounds}
+        nameA={b.fighter_a.name}
+        nameB={b.fighter_b.name}
+        dnaA={compareToDna(rbaRounds, "a", snapA)}
+        dnaB={compareToDna(rbaRounds, "b", snapB)}
+        signals={rbaSignals}
+        edges={rbaEdges}
+        finalLine={rbaFinalLine}
+        updatedAt={null}
+      />
 
       {rounds.length > 0 && (
         <section className="segment">
