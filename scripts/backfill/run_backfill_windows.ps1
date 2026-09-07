@@ -19,6 +19,13 @@ Set-Location $PSScriptRoot
 New-Item -ItemType Directory -Force -Path logs | Out-Null
 $status = 'logs\queue_status.txt'
 
+# Normalise the labels before matching. Invoked as "powershell -File this.ps1
+# -Labels A,B,C" every argument arrives as a literal string, so the list lands
+# as the single element "A,B,C" rather than three elements, and every match
+# then fails silently. Splitting here makes the script behave the same however
+# it is called.
+$Labels = @($Labels | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+
 $all = (Get-Content windows.json -Raw | ConvertFrom-Json).windows
 $run = @($all | Where-Object { $Labels -contains $_.label })
 if ($run.Count -eq 0) { "[resume_noop] $(Get-Date -Format o) no matching windows" | Add-Content $status; exit 0 }
