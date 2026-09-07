@@ -11,6 +11,7 @@ import "./fightdna.css";
 import "./depth.css";
 import "./roundanalysis.css";
 import "./market.css";
+import "./store.css";
 import { Header, Footer } from "@/components/Shell";
 import { LiveWire } from "@/components/LiveWire";
 import { ShareRail } from "@/components/ShareRail";

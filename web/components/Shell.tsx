@@ -82,6 +82,7 @@ export function Footer() {
             <Link href="/about">Editorial policy</Link>
             <a href="/feed.xml">RSS feed</a>
             <Link href="/pro">UFC Pro</Link>
+            <Link href="/store">PropBetEdge Store</Link>
             <a href={`mailto:${SITE.contact}`}>Contact the desk</a>
           </div>
           <div className="col">
