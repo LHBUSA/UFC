@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RoundLink } from "@/components/RoundLink";
 import type { Bout, Event, PortraitSet } from "@/lib/db";
 import type { DeskBrief } from "@/lib/pregame";
 import { pickVariant, type Framing } from "@/lib/variants";
@@ -180,7 +181,7 @@ function Identity({ bout, brief, imgs }: { bout: Bout; brief?: DeskBrief | null;
   );
 }
 
-export function MatchupIntel({ bout, brief, event, imgs }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits }) {
+export function MatchupIntel({ bout, brief, event, imgs, roundCoverage }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits; roundCoverage?: { rounds: number; bothCorners: boolean } | null }) {
   const watch = !brief || brief.tier === "watch";
   const read = brief ? compactRead(brief) : null;
   const signals = brief && read ? compactSignals(brief, read.used, 2) : [];
@@ -209,13 +210,16 @@ export function MatchupIntel({ bout, brief, event, imgs }: { bout: Bout; brief?:
           ))}
         </div>
       )}
-      <div className="fw-card-cta"><Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`}>View matchup intelligence →</Link></div>
+      <div className="fw-card-cta">
+        <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`}>View matchup intelligence →</Link>
+        <RoundLink href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`} coverage={roundCoverage} source="fight_week" />
+      </div>
     </article>
   );
 }
 
 /* ---- compact prelim row with expand ----------------------------------- */
-export function PrelimRow({ bout, brief, event, imgs }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits }) {
+export function PrelimRow({ bout, brief, event, imgs, roundCoverage }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits; roundCoverage?: { rounds: number; bothCorners: boolean } | null }) {
   const top = brief ? thingsThatMatter(brief, 1)[0] : null;
   const line = top ? `${top.label}: ${top.hook}` : brief ? (brief.tier === "watch" ? "Limited packet" : "Full packet") : "Card only";
   return (
@@ -234,6 +238,7 @@ export function PrelimRow({ bout, brief, event, imgs }: { bout: Bout; brief?: De
         {brief && <Facts brief={brief} max={2} />}
         <div className="fw-card-cta">
           <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`}>Matchup intelligence →</Link>
+          <RoundLink href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`} coverage={roundCoverage} source="fight_week" />
           <small>{brief ? (brief.tier === "watch" ? "Limited packet" : "Full packet") : "Card only"}</small>
         </div>
       </div>
@@ -269,7 +274,7 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
   const countdown = done ? "Final" : days == null ? "Date TBA" : days === 0 ? "Fight night" : days === 1 ? "Tomorrow" : days < 0 ? "Awaiting results" : `${days} days out`;
   const crumbs = archive ? [{ name: "Fight Week", href: "/fight-week" }, { name: event.name }] : [{ name: "Fight Week" }];
   const url = archive ? `${SITE.url}/pregame/${slug}` : `${SITE.url}/fight-week`;
-  const grid = (list: Bout[]) => <div className="fw-grid">{list.map((b) => <MatchupIntel key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} />)}</div>;
+  const grid = (list: Bout[]) => <div className="fw-grid">{list.map((b) => <MatchupIntel key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} roundCoverage={packet.roundCoverage?.get(b.id) || null} />)}</div>;
 
   return (
     <div className="wrap fw-page">
@@ -320,7 +325,7 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
       {prelims.length > 0 && (
         <section id="prelims" className="fw-sec">
           <div className="fw-sec-head"><div><div className="eyebrow">Compact</div><h2>Prelims</h2></div><small>{plural(prelims.length, "bout")} · expand for the read</small></div>
-          <div className="fw-prelims">{prelims.map((b) => <PrelimRow key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} />)}</div>
+          <div className="fw-prelims">{prelims.map((b) => <PrelimRow key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} roundCoverage={packet.roundCoverage?.get(b.id) || null} />)}</div>
         </section>
       )}
 

@@ -13,6 +13,7 @@ import { getVideosForFighters } from "@/lib/db";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
 import { age, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, METHOD_LABEL, stanceLabel, weightClassLabel, archiveSummary, totals, pct, plural, daysUntil } from "@/lib/format";
 import { SITE } from "@/lib/site";
+import { getRoundCoverageFor, isEligible } from "@/lib/roundIndex";
 
 export const revalidate = 300;
 
@@ -35,6 +36,8 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
   const [bouts, articles, rounds, rankings, dna, videos] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => [])]);
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
+  /* Coverage for this fighter's completed bouts, same rule as the index. */
+  const roundCoverage = await getRoundCoverageFor(bouts.map((b) => b.id));
   const history = bouts.filter((b) => !upcoming.includes(b) && b.event?.event_date && b.event.event_date < today);
   const opponents = bouts.map((b) => (b.fighter_a.id === f.id ? b.fighter_b : b.fighter_a));
   const imgs = await getImagesForFighters([f.id, ...opponents.map((o) => o.id)]);
@@ -164,7 +167,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
         {history.length ? (
           <div className="tbl-wrap">
             <table className="tbl">
-              <thead><tr><th>Date</th><th>Event</th><th>Opponent</th><th className="c">Res</th><th>Method</th><th className="c">Rd</th><th className="c">Time</th></tr></thead>
+              <thead><tr><th>Date</th><th>Event</th><th>Opponent</th><th className="c">Res</th><th>Method</th><th className="c">Rd</th><th className="c">Time</th><th className="c">Rounds</th></tr></thead>
               <tbody>
                 {history.map((b) => {
                   const opp = b.fighter_a.id === f.id ? b.fighter_b : b.fighter_a;
@@ -179,6 +182,10 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
                       <td>{b.status === "cancelled" ? <span className="faint">Cancelled</span> : r ? METHOD_LABEL[r.method] || r.method : <span className="faint">Result pending</span>}{r?.finish_detail ? <span className="faint"> · {r.finish_detail}</span> : null}</td>
                       <td className="c">{r?.round ?? "—"}</td>
                       <td className="c">{r?.time_sec != null ? fmtTime(r.time_sec) : "—"}</td>
+                      {/* Same eligibility rule as the index; nothing is shown
+                          for a bout with no stored rounds. Tournament bouts on
+                          one night each keep their own row and destination. */}
+                      <td className="c">{isEligible(roundCoverage.get(b.id)) ? <Link href={`/fights/${matchupSlug(b.fighter_a, b.fighter_b, b.event)}#round-by-round`} className="rl-cell" data-rba-source="fighter_history">Round analysis →</Link> : <span className="faint">—</span>}</td>
                     </tr>
                   );
                 })}

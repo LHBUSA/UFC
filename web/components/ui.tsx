@@ -147,7 +147,7 @@ export function EventRow({ e, main, bouts }: { e: Event; main?: Bout | null; bou
 }
 
 /* ---- bouts ------------------------------------------------------------- */
-export function BoutRow({ b, e, imgs, isMain }: { b: Bout; e: Event; imgs?: Portraits; isMain?: boolean }) {
+export function BoutRow({ b, e, imgs, isMain, roundCoverage }: { b: Bout; e: Event; imgs?: Portraits; isMain?: boolean; roundCoverage?: { rounds: number; bothCorners: boolean } | null }) {
   const r = b.result;
   const wA = r?.winner_id === b.fighter_a.id;
   const wB = r?.winner_id === b.fighter_b.id;
@@ -166,6 +166,12 @@ export function BoutRow({ b, e, imgs, isMain }: { b: Bout; e: Event; imgs?: Port
         {off ? <div className="res" style={{ color: "var(--pbe-crimson-bright)" }}>Cancelled</div>
           : r ? <><div className="res">{METHOD_LABEL[r.method] || r.method}</div><div className="sub">{r.round ? `Round ${r.round}` : ""}{r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}{!r.winner_id && r.method !== "DRAW" && r.method !== "NC" ? "" : ""}</div></>
           : <div className="vs">vs</div>}
+        {/* The row is already a link to the fight, so this is a marker rather
+            than a second anchor. It appears only when round observations
+            exist; there is no disabled state advertising data we lack. */}
+        {roundCoverage && roundCoverage.rounds > 0 ? (
+          <div className="bout-rba" data-rba-source="event_page">Round-by-Round · {roundCoverage.rounds} round{roundCoverage.rounds === 1 ? "" : "s"}</div>
+        ) : null}
       </div>
       <div className="f b">
         <Avatar f={b.fighter_b} img={imgs?.get(b.fighter_b.id)} />
@@ -177,7 +183,7 @@ export function BoutRow({ b, e, imgs, isMain }: { b: Bout; e: Event; imgs?: Port
     </Link>
   );
 }
-export function CardSegments({ bouts, e, imgs }: { bouts: Bout[]; e: Event; imgs?: Portraits }) {
+export function CardSegments({ bouts, e, imgs, roundCoverage }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }> }) {
   const order = ["main", "prelim", "early", null] as const;
   const groups = order.map((p) => ({ p, rows: bouts.filter((b) => (b.card_position || null) === p) })).filter((g) => g.rows.length);
   const mainId = bouts[0]?.id;
@@ -187,7 +193,7 @@ export function CardSegments({ bouts, e, imgs }: { bouts: Bout[]; e: Event; imgs
         <section className="segment" key={String(g.p)}>
           <h3>{g.p ? cardPositionLabel(g.p) : e.card_status === "complete" ? "Results" : "Announced bouts"} <small>{g.rows.length} bouts</small></h3>
           <div className="bouts">
-            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} />)}
+            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} />)}
           </div>
         </section>
       ))}

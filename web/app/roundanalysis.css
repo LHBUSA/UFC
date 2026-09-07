@@ -160,3 +160,21 @@
   .rbi-grid { grid-template-columns: minmax(0, 1fr); }
   .rbi-stats { gap: var(--s-4); padding: var(--s-4); }
 }
+
+/* ---- discovery entry points ------------------------------------------ */
+/* Inside a bout row, which is already a link to the fight. A marker, not a
+   second anchor. */
+.bout-rba { grid-column: 1 / -1; margin-top: 6px; color: var(--pbe-gold);
+  font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; opacity: .85; }
+.bout:hover .bout-rba { opacity: 1; }
+
+.rl-link { display: inline-flex; align-items: center; gap: 6px; color: var(--pbe-gold);
+  font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; }
+.rl-link:hover { color: var(--pbe-gold-bright, var(--pbe-gold)); }
+
+.rl-badge { display: inline-flex; flex-direction: column; gap: 2px; padding: 6px 10px;
+  border: 1px solid color-mix(in srgb, var(--pbe-gold) 32%, transparent); border-radius: var(--r-sm); }
+.rl-badge b { color: var(--pbe-gold); font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; }
+.rl-badge span { color: var(--pbe-faint); font-size: var(--fs-xs); }
+
+.rl-cell { color: var(--pbe-gold); font: 500 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); white-space: nowrap; }

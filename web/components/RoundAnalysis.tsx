@@ -91,7 +91,7 @@ export function RoundAnalysis({
   if (state !== "final" || !rounds.length) {
     const copy = STATE_COPY[state];
     return (
-      <section className="segment rba" aria-label="Round-by-round analysis">
+      <section id="round-by-round" className="segment rba" aria-label="Round-by-round analysis">
         <h3>Round-by-Round Analysis</h3>
         <div className="card rba-empty">
           <div className="rba-state">{copy.label}</div>
@@ -114,7 +114,7 @@ export function RoundAnalysis({
   const roundEdges = edges[view.round] || [];
 
   return (
-    <section className="segment rba" aria-label="Round-by-round analysis">
+    <section id="round-by-round" className="segment rba" aria-label="Round-by-round analysis">
       <div className="rba-head">
         <div>
           <h3>Round-by-Round Analysis</h3>

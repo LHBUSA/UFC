@@ -73,6 +73,48 @@ async function all<T>(path: string, pageSize = 1000): Promise<T[]> {
   return out;
 }
 
+/* ---- the single eligibility definition ---------------------------------
+ * Every surface that offers a round-by-round link asks this, and only this.
+ * A second definition living next to a card component is how a link starts
+ * appearing on fights that cannot open, so there is deliberately one rule and
+ * one place to change it. */
+export type RoundCoverage = { rounds: number; bothCorners: boolean };
+
+export const ELIGIBLE_MIN_ROUNDS = 1;
+
+export function isEligible(c: RoundCoverage | null | undefined): boolean {
+  return Boolean(c && c.rounds >= ELIGIBLE_MIN_ROUNDS);
+}
+
+/* Coverage for a specific set of bouts. The index page needs the whole table;
+ * a fight card needs twelve rows, so this asks only for what is on screen
+ * rather than making every event page pay for the full archive. */
+export async function getRoundCoverageFor(boutIds: string[]): Promise<Map<string, RoundCoverage>> {
+  const out = new Map<string, RoundCoverage>();
+  const ids = [...new Set(boutIds.filter(Boolean))];
+  if (!ids.length || !URL_ || !KEY) return out;
+
+  const cover = new Map<string, Map<number, Set<string>>>();
+  /* PostgREST puts the filter in the URL, so long id lists are chunked to stay
+   * well inside any request-line limit. */
+  const CHUNK = 60;
+  for (let i = 0; i < ids.length; i += CHUNK) {
+    const slice = ids.slice(i, i + CHUNK);
+    const rows = await all<StatRow>(`ufc_bout_round_stats?select=bout_id,fighter_id,round&bout_id=in.(${slice.join(",")})`);
+    for (const r of rows) {
+      let byRound = cover.get(r.bout_id);
+      if (!byRound) { byRound = new Map(); cover.set(r.bout_id, byRound); }
+      let corners = byRound.get(r.round);
+      if (!corners) { corners = new Set(); byRound.set(r.round, corners); }
+      corners.add(r.fighter_id);
+    }
+  }
+  for (const [boutId, byRound] of cover) {
+    out.set(boutId, { rounds: byRound.size, bothCorners: [...byRound.values()].every((c) => c.size >= 2) });
+  }
+  return out;
+}
+
 export type RoundIndex = {
   bouts: RoundIndexBout[];
   totals: { eligible: number; byRounds: Record<number, number>; bothCorners: number };
@@ -104,7 +146,10 @@ export async function getRoundIndex(): Promise<RoundIndex> {
   const out: RoundIndexBout[] = [];
   for (const b of bouts) {
     const byRound = cover.get(b.id);
-    if (!byRound || byRound.size === 0) continue;      // nothing to open
+    const coverage: RoundCoverage | null = byRound
+      ? { rounds: byRound.size, bothCorners: [...byRound.values()].every((c) => c.size >= 2) }
+      : null;
+    if (!isEligible(coverage)) continue;                // nothing to open
     const e = evById.get(b.event_id);
     const a = fById.get(b.fighter_a_id);
     const z = fById.get(b.fighter_b_id);
@@ -124,8 +169,8 @@ export async function getRoundIndex(): Promise<RoundIndex> {
       method: r?.method || null,
       finishRound: r?.round ?? null,
       winnerId: r?.winner_id || null,
-      roundsCovered: byRound.size,
-      bothCorners: [...byRound.values()].every((c) => c.size >= 2),
+      roundsCovered: coverage!.rounds,
+      bothCorners: coverage!.bothCorners,
       scheduledRounds: b.scheduled_rounds,
     });
   }

@@ -1,4 +1,5 @@
 import "server-only";
+import { getRoundCoverageFor } from "@/lib/roundIndex";
 import { getEventBouts, getImagesForFighters, getImageFraming, getVideosForEvent, getRankings, getNextEvent, sortVideosTimeline, type Bout, type Event, type FramingRow, type OfficialVideoRow, type PortraitSet, type RankingsSnapshot } from "@/lib/db";
 import { buildDeskBriefs, type DeskBrief, type DeskSide } from "@/lib/pregame";
 import { getIngestFreshness, type IngestFreshness } from "@/lib/archive";
@@ -28,6 +29,9 @@ export type FightWeekPacket = {
   done: boolean;
   days: number | null;
   updated: string | null;
+  /* Round coverage per bout, using the shared eligibility rule. Empty until a
+   * card has completed bouts with stored observations. */
+  roundCoverage: Map<string, { rounds: number; bothCorners: boolean }>;
   rankingsDate: string | null;
   sources: string[];
 };
@@ -90,7 +94,11 @@ export async function loadFightWeek(event: Event, opts: { archive?: boolean } = 
   ]);
   const framing = await getImageFraming(live.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]).catch(() => new Map<string, FramingRow>());
   const videos = sortVideosTimeline(videosRaw);
-  return assemblePacket({ event, bouts, live, briefs, imgs, framing, videos, done, updated: intelligenceUpdated(ingest, rankings, videos), rankingsDate: rankings?.snapshot_date || null, sources: packetSources(briefs, rankings, ingest) });
+  /* Only a completed card can have round observations, so the lookup is
+   * skipped entirely for an upcoming one rather than issuing a request that
+   * can only come back empty. */
+  const roundCoverage = done ? await getRoundCoverageFor(bouts.map((b) => b.id)) : new Map();
+  return assemblePacket({ event, bouts, live, briefs, imgs, framing, videos, done, roundCoverage, updated: intelligenceUpdated(ingest, rankings, videos), rankingsDate: rankings?.snapshot_date || null, sources: packetSources(briefs, rankings, ingest) });
 }
 
 /* Pure assembler, shared with the /qa/preview fixtures. */

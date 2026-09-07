@@ -16,6 +16,7 @@ import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { daysUntil, fmtDate, locationLine, eventBrand, eventStatusLabel, fmtRecord, weightClassLabel, winnerOf, METHOD_LABEL, fmtTime, plural } from "@/lib/format";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { SITE } from "@/lib/site";
+import { getRoundCoverageFor } from "@/lib/roundIndex";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 
 export const revalidate = 300;
@@ -53,6 +54,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const finishes = live.filter((b) => b.result && (b.result.method === "KO_TKO" || b.result.method === "SUB")).length;
   const decisions = live.filter((b) => b.result && b.result.method.startsWith("DEC")).length;
   const titleBouts = live.filter((b) => b.is_title).length;
+  /* Round coverage for exactly the bouts on this card, using the same
+   * eligibility rule as /round-by-round. */
+  const roundCoverage = await getRoundCoverageFor(bouts.map((b) => b.id));
   const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
   const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
   const isCurrent = !done && nearby[0]?.id === e.id;
@@ -98,7 +102,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       {bouts.length ? (
         <>
-          <CardSegments bouts={bouts} e={e} imgs={imgs} />
+          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} />
           {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} />)}</div></section>}
         </>
       ) : historical ? (
