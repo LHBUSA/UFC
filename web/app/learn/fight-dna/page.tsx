@@ -5,6 +5,7 @@ import { DnaPipeline } from "@/components/DnaPipeline";
 import { Origin, ConfKey } from "@/components/dna";
 import { CONFIDENCE_EXPLAINER, FAMILY, GLOSSARY, PBE_DERIVED_EXPLAINER, SOURCE_VS_DERIVED, type DnaFamily } from "@/lib/dnaGlossary";
 import { SITE } from "@/lib/site";
+import { ApiCta } from "@/components/ApiCta";
 
 /* /learn/fight-dna — how to read Fight DNA, and why it is proprietary.
  * Two jobs: teach a casual fan to read every metric in under a minute, and
@@ -245,6 +246,10 @@ export default function LearnFightDna() {
         <div><div className="eyebrow">Put it to work</div><h2>Read a real profile with the explainers on.</h2></div>
         <div className="btns"><Link href="/fighters" className="btn gold">Explore a fighter →</Link><Link href="/fight-week" className="btn">See Fight Week →</Link><Link href="/pro" className="btn">Go Pro →</Link></div>
       </div>
+      <ApiCta
+        eyebrow="Build with Fight DNA"
+        heading="Access the same UFC intelligence layer through the PropTechUSA UFC Intelligence API."
+      />
       <p className="learn-disclaimer">PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN or any sportsbook. Fight DNA is not an official UFC statistic. Nothing on this page is betting advice or a prediction of fight outcomes.</p>
 
       <JsonLd data={{ "@context": "https://schema.org", "@type": "TechArticle", "@id": `${SITE.url}/learn/fight-dna#article`, headline: "How to Read Fight DNA", name: TITLE, description: DESCRIPTION, url: `${SITE.url}/learn/fight-dna`, author: { "@type": "Organization", name: "PropBetEdge", url: SITE.parent }, publisher: { "@type": "Organization", name: SITE.publisher, url: SITE.parent }, about: { "@type": "Thing", name: "PropBetEdge Fight DNA", description: "Proprietary UFC fighter intelligence derived from normalized fight records." }, isPartOf: { "@id": `${SITE.url}/#site` } }} />

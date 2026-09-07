@@ -512,7 +512,8 @@ main { flex: 1; }
 
 /* ---- footer ---- */
 .ftr { border-top: 1px solid var(--pbe-line); background: var(--pbe-ink-4); margin-top: var(--s-8); padding: var(--s-7) 0 var(--s-5); }
-.ftr-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)); gap: var(--s-6); }
+.ftr-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr)); gap: var(--s-6); }
+.ftr .ftr-note { color: var(--pbe-faint); font-size: var(--fs-xs); line-height: 1.5; margin-top: var(--s-2); max-width: 24ch; }
 @media (max-width: 900px) { .ftr-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 @media (max-width: 560px) { .ftr-grid { grid-template-columns: minmax(0, 1fr); } }
 .ftr h4 { font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); margin-bottom: var(--s-3); }
@@ -830,3 +831,17 @@ body::after {
 /* Five primary items + More: modest tightening only, never microscopic type. */
 @media (max-width: 1280px) { .nav a, .nav .dd-btn { padding-left: 10px; padding-right: 10px; } }
 @media (max-width: 1180px) { .nav { margin-left: 4px; } .nav a, .nav .dd-btn { padding-left: 8px; padding-right: 8px; } .hdr-in { gap: var(--s-4); } }
+
+/* Developer cross-link to the UFC Intelligence API. Restrained on purpose:
+ * it sits below fan-facing content and must never outrank fight-week
+ * navigation, so it reads as a footer-weight aside rather than a promo. */
+.api-cta { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); flex-wrap: wrap;
+  border: 1px solid var(--pbe-line-faint); border-radius: var(--r-md); padding: var(--s-5) var(--s-6);
+  background: color-mix(in srgb, var(--pbe-ink) 70%, transparent); }
+.api-cta-body { min-width: 0; flex: 1 1 24rem; }
+.api-cta-body p { color: var(--pbe-paper); font-size: var(--fs-md); line-height: 1.5; margin-top: var(--s-2); max-width: 62ch; }
+.api-cta .api-cta-note { color: var(--pbe-faint); font-size: var(--fs-sm); margin-top: var(--s-2); }
+.api-cta-actions { display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap; }
+.api-cta-docs { color: var(--pbe-dim); font: 500 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; }
+.api-cta-docs:hover { color: var(--pbe-gold); }
+@media (max-width: 640px) { .api-cta { padding: var(--s-4); } .api-cta-actions { width: 100%; } .api-cta-actions .btn { flex: 1 1 auto; text-align: center; } }

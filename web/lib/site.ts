@@ -3,7 +3,15 @@ export const SITE = {
   shortName: "PBE UFC",
   tagline: "Fight Intelligence",
   url: "https://ufc.propbetedge.ai",
+  /* Data plane. This is fetched at runtime by lib/dna.ts, lib/wire.ts and the
+   * live wire rail, so it is not a link and must never be repointed to a
+   * marketing site. The developer product lives in `ufcApi` below. */
   api: "https://ufc-api.propbetedge.ai",
+  /* The commercial UFC Intelligence API: a destination for readers, not an
+   * endpoint. Kept separate from `api` above and from `network.api`, which is
+   * the cross-sport PropSports entry point and still belongs where it is. */
+  ufcApi: "https://ufc.proptechusa.ai",
+  ufcApiDocs: "https://ufc.proptechusa.ai/docs",
   description:
     "PropBetEdge UFC: live fight-week intelligence, complete card context, fighter dossiers, Fight DNA, official rankings, results, history and a source-disciplined MMA newsroom.",
   parent: "https://propbetedge.ai",

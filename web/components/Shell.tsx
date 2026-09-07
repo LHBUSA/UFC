@@ -85,6 +85,12 @@ export function Footer() {
             <a href={`mailto:${SITE.contact}`}>Contact the desk</a>
           </div>
           <div className="col">
+            <h4>Developers</h4>
+            <a href={SITE.ufcApi} target="_blank" rel="noopener">UFC Intelligence API ↗</a>
+            <a href={SITE.ufcApiDocs} target="_blank" rel="noopener">API Docs ↗</a>
+            <p className="ftr-note">Build with events, fighters, round stats, Fight DNA and Matchup DNA.</p>
+          </div>
+          <div className="col">
             <h4>Official UFC</h4>
             <a href={UFC_OFFICIAL.home} target="_blank" rel="noopener">UFC.com ↗</a>
             <a href={UFC_OFFICIAL.athletes} target="_blank" rel="noopener">Official athletes ↗</a>

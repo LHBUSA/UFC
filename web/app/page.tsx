@@ -19,6 +19,7 @@ import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { storyMedia } from "@/lib/faces";
 import { Voices } from "@/components/Voices";
+import { ApiCta } from "@/components/ApiCta";
 
 export const revalidate = 300;
 
@@ -192,6 +193,8 @@ export default async function Home() {
       {recent.length > 0 && <section className="sec"><div className="wrap"><SectionHead eyebrow="Results" title="Recent cards" href="/events" cta="Results archive" /><div className="grid-3">{recent.map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div></div></section>}
 
       <section className="sec"><div className="wrap"><OfficialDestinations title="Official UFC destinations" intro="UFC-owned pages for the official record, athletes, rankings, Hall of Fame, Fight Pass and merchandise. Clearly separate from PropBetEdge content." /></div></section>
+
+      <section className="sec"><div className="wrap"><ApiCta /></div></section>
 
       <section className="sec"><div className="wrap"><SectionHead eyebrow="Free vs Pro" title="Everything public is free. The edge is Pro." /><ProPlans /></div></section>
 
