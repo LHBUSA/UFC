@@ -302,3 +302,37 @@ test("a season claiming full bracket coverage has no unverified round and no dis
     }
   }
 });
+
+test("a champion who lost the matched bout is never recorded as verified", () => {
+  /* TUF 24: the only bout we hold for Tim Elliott on that card is the
+   * flyweight title fight he LOST to Demetrious Johnson, not his tournament
+   * final. Being on the finale card is not the same as winning the tournament
+   * there — the same mistake the Nations and China links made. */
+  const t24 = seasons.find((s) => s.slug === "tuf-24")!;
+  const blocked = (t24 as Record<string, unknown>).champion_verification_blocked as
+    | { actual_winner: string; fighter: string; why: string }
+    | undefined;
+  assert.ok(blocked, "tuf-24 must record why its champion could not be verified");
+  assert.notEqual(blocked!.actual_winner, blocked!.fighter);
+  assert.ok(!(t24 as Record<string, unknown>).final_bouts, "and must carry no verified final");
+});
+
+test("every verified final records the champion as the winner", () => {
+  for (const s of seasons) {
+    const finals = (s as Record<string, unknown>).final_bouts as
+      | Array<{ a: string; b: string; winner?: string; verified_against?: string }>
+      | undefined;
+    if (!finals) continue;
+    for (const f of finals) {
+      if (!f.winner) continue;
+      assert.ok(
+        f.winner === f.a || f.winner === f.b,
+        `${s.slug}: the recorded winner must be one of the two fighters`,
+      );
+      assert.ok(
+        s.winners.some((w) => w.fighter === f.winner),
+        `${s.slug}: a verified final must be won by a recorded champion, not merely contested by one`,
+      );
+    }
+  }
+});

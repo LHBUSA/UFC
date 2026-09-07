@@ -225,7 +225,20 @@
       "finale_event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
       "finale_date": "2007-12-08",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Welterweight",
+          "a": "Mac Danzig",
+          "b": "Tommy Speer",
+          "winner": "Mac Danzig",
+          "method": "Submission",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
+          "date": "2007-12-08",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-7",
@@ -249,7 +262,20 @@
       "finale_event": "The Ultimate Fighter: Team Rampage vs Team Forrest Finale",
       "finale_date": "2008-06-21",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Middleweight",
+          "a": "Amir Sadollah",
+          "b": "CB Dollaway",
+          "winner": "Amir Sadollah",
+          "method": "Submission",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Rampage vs Team Forrest Finale",
+          "date": "2008-06-21",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-8",
@@ -278,7 +304,20 @@
       "finale_event": "The Ultimate Fighter: Team Nogueira vs. Team Mir Finale",
       "finale_date": "2008-12-13",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Light Heavyweight",
+          "a": "Ryan Bader",
+          "b": "Vinny Magalhaes",
+          "winner": "Ryan Bader",
+          "method": "KO/TKO",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Nogueira vs. Team Mir Finale",
+          "date": "2008-12-13",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-9",
@@ -307,7 +346,31 @@
       "finale_event": "The Ultimate Fighter: United States vs. United Kingdom Finale",
       "finale_date": "2009-06-20",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Ross Pearson",
+          "b": "Andre Winner",
+          "winner": "Ross Pearson",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "The Ultimate Fighter: United States vs. United Kingdom Finale",
+          "date": "2009-06-20",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        },
+        {
+          "weight_class": "Welterweight",
+          "a": "James Wilks",
+          "b": "DaMarques Johnson",
+          "winner": "James Wilks",
+          "method": "Submission",
+          "round": 1,
+          "event": "The Ultimate Fighter: United States vs. United Kingdom Finale",
+          "date": "2009-06-20",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-10",
@@ -331,7 +394,20 @@
       "finale_event": "The Ultimate Fighter: Heavyweights Finale",
       "finale_date": "2009-12-05",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Heavyweight",
+          "a": "Roy Nelson",
+          "b": "Brendan Schaub",
+          "winner": "Roy Nelson",
+          "method": "KO/TKO",
+          "round": 1,
+          "event": "The Ultimate Fighter: Heavyweights Finale",
+          "date": "2009-12-05",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-11",
@@ -356,7 +432,20 @@
       "finale_event": "The Ultimate Fighter: Team Liddell vs Team Ortiz Finale",
       "finale_date": "2010-06-19",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Middleweight",
+          "a": "Court McGee",
+          "b": "Kris McCray",
+          "winner": "Court McGee",
+          "method": "Submission",
+          "round": 2,
+          "event": "The Ultimate Fighter: Team Liddell vs Team Ortiz Finale",
+          "date": "2010-06-19",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-12",
@@ -380,7 +469,20 @@
       "finale_event": "The Ultimate Fighter: Team GSP vs Team Koscheck Finale",
       "finale_date": "2010-12-04",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Jonathan Brookins",
+          "b": "Michael Johnson",
+          "winner": "Jonathan Brookins",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "The Ultimate Fighter: Team GSP vs Team Koscheck Finale",
+          "date": "2010-12-04",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-13",
@@ -404,7 +506,20 @@
       "finale_event": "The Ultimate Fighter: Team Lesnar vs Team dos Santos Finale",
       "finale_date": "2011-06-04",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Welterweight",
+          "a": "Tony Ferguson",
+          "b": "Ramsey Nijem",
+          "winner": "Tony Ferguson",
+          "method": "KO/TKO",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Lesnar vs Team dos Santos Finale",
+          "date": "2011-06-04",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-14",
@@ -433,7 +548,20 @@
       "finale_event": "The Ultimate Fighter: Team Bisping vs Team Miller Finale",
       "finale_date": "2011-12-03",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Bantamweight",
+          "a": "John Dodson",
+          "b": "TJ Dillashaw",
+          "winner": "John Dodson",
+          "method": "KO/TKO",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Bisping vs Team Miller Finale",
+          "date": "2011-12-03",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-15",
@@ -457,7 +585,20 @@
       "finale_event": "The Ultimate Fighter: Live Finale",
       "finale_date": "2012-06-01",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Michael Chiesa",
+          "b": "Al Iaquinta",
+          "winner": "Michael Chiesa",
+          "method": "Submission",
+          "round": 1,
+          "event": "The Ultimate Fighter: Live Finale",
+          "date": "2012-06-01",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-16",
@@ -481,7 +622,20 @@
       "finale_event": "The Ultimate Fighter: Team Carwin vs. Team Nelson Finale",
       "finale_date": "2012-12-15",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Welterweight",
+          "a": "Colton Smith",
+          "b": "Mike Ricci",
+          "winner": "Colton Smith",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "The Ultimate Fighter: Team Carwin vs. Team Nelson Finale",
+          "date": "2012-12-15",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-17",
@@ -505,7 +659,20 @@
       "finale_event": "The Ultimate Fighter: Team Jones vs. Team Sonnen Finale",
       "finale_date": "2013-04-13",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Middleweight",
+          "a": "Kelvin Gastelum",
+          "b": "Uriah Hall",
+          "winner": "Kelvin Gastelum",
+          "method": "Decision - Split",
+          "round": 3,
+          "event": "The Ultimate Fighter: Team Jones vs. Team Sonnen Finale",
+          "date": "2013-04-13",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-18",
@@ -534,7 +701,20 @@
       "finale_event": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
       "finale_date": "2013-11-30",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Bantamweight",
+          "a": "Chris Holdsworth",
+          "b": "Davey Grant",
+          "winner": "Chris Holdsworth",
+          "method": "Submission",
+          "round": 2,
+          "event": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
+          "date": "2013-11-30",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-19",
@@ -563,7 +743,31 @@
       "finale_event": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
       "finale_date": "2014-07-06",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Light Heavyweight",
+          "a": "Corey Anderson",
+          "b": "Matt Van Buren",
+          "winner": "Corey Anderson",
+          "method": "KO/TKO",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
+          "date": "2014-07-06",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        },
+        {
+          "weight_class": "Middleweight",
+          "a": "Eddie Gordon",
+          "b": "Dhiego Lima",
+          "winner": "Eddie Gordon",
+          "method": "KO/TKO",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
+          "date": "2014-07-06",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-20",
@@ -589,7 +793,20 @@
       "finale_date": "2014-12-12",
       "coverage": "bracket_full",
       "season_state": "completed",
-      "detail": "tuf-20"
+      "detail": "tuf-20",
+      "final_bouts": [
+        {
+          "weight_class": "Women's Strawweight",
+          "a": "Carla Esparza",
+          "b": "Rose Namajunas",
+          "winner": "Carla Esparza",
+          "method": "Submission",
+          "round": 3,
+          "event": "The Ultimate Fighter: A Champion Will Be Crowned Finale",
+          "date": "2014-12-12",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-21",
@@ -614,7 +831,20 @@
       "finale_event": "The Ultimate Fighter: American Top Team vs. Blackzilians Finale",
       "finale_date": "2015-07-12",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Welterweight",
+          "a": "Kamaru Usman",
+          "b": "Hayder Hassan",
+          "winner": "Kamaru Usman",
+          "method": "Submission",
+          "round": 2,
+          "event": "The Ultimate Fighter: American Top Team vs. Blackzilians Finale",
+          "date": "2015-07-12",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-22",
@@ -639,7 +869,20 @@
       "finale_date": "2015-12-11",
       "detail": "tuf-22",
       "coverage": "bracket_partial",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Ryan Hall",
+          "b": "Artem Lobov",
+          "winner": "Ryan Hall",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale",
+          "date": "2015-12-11",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-23",
@@ -668,7 +911,31 @@
       "finale_event": "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale",
       "finale_date": "2016-07-08",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Light Heavyweight",
+          "a": "Andrew Sanchez",
+          "b": "Khalil Rountree Jr.",
+          "winner": "Andrew Sanchez",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "The Ultimate Fighter: Team Joanna vs. Team Cl�udia Finale",
+          "date": "2016-07-08",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        },
+        {
+          "weight_class": "Women's Strawweight",
+          "a": "Tatiana Suarez",
+          "b": "Amanda Cooper",
+          "winner": "Tatiana Suarez",
+          "method": "Submission",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Joanna vs. Team Cl�udia Finale",
+          "date": "2016-07-08",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-24",
@@ -693,7 +960,15 @@
       "finale_event": "The Ultimate Fighter: Tournament of Champions Finale",
       "finale_date": "2016-12-03",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "champion_verification_blocked": {
+        "fighter": "Tim Elliott",
+        "matched_bout": "Tim Elliott vs Demetrious Johnson",
+        "actual_winner": "Demetrious Johnson",
+        "why": "The only bout we hold for this champion on the finale card is one he lost — the flyweight title fight, not his tournament final. The tournament final is not in our records, so the championship claim stays sourced rather than verified.",
+        "event": "The Ultimate Fighter: Tournament of Champions Finale",
+        "date": "2016-12-03"
+      }
     },
     {
       "slug": "tuf-25",
@@ -718,7 +993,20 @@
       "finale_event": "The Ultimate Fighter: Redemption Finale",
       "finale_date": "2017-07-07",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Welterweight",
+          "a": "Jesse Taylor",
+          "b": "Dhiego Lima",
+          "winner": "Jesse Taylor",
+          "method": "Submission",
+          "round": 2,
+          "event": "The Ultimate Fighter: Redemption Finale",
+          "date": "2017-07-07",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-26",
@@ -772,7 +1060,31 @@
       "finale_event": "The Ultimate Fighter: Undefeated Finale",
       "finale_date": "2018-07-06",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Michael Trizano",
+          "b": "Joe Giannetti",
+          "winner": "Michael Trizano",
+          "method": "Decision - Split",
+          "round": 3,
+          "event": "The Ultimate Fighter: Undefeated Finale",
+          "date": "2018-07-06",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        },
+        {
+          "weight_class": "Featherweight",
+          "a": "Brad Katona",
+          "b": "Jay Cucciniello",
+          "winner": "Brad Katona",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "The Ultimate Fighter: Undefeated Finale",
+          "date": "2018-07-06",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-28",
@@ -801,7 +1113,31 @@
       "finale_event": "The Ultimate Fighter: Heavy Hitters Finale",
       "finale_date": "2018-11-30",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Heavyweight",
+          "a": "Juan Espino",
+          "b": "Justin Frazier",
+          "winner": "Juan Espino",
+          "method": "Submission",
+          "round": 1,
+          "event": "The Ultimate Fighter: Heavy Hitters Finale",
+          "date": "2018-11-30",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        },
+        {
+          "weight_class": "Women's Featherweight",
+          "a": "Macy Chiasson",
+          "b": "Pannie Kianzad",
+          "winner": "Macy Chiasson",
+          "method": "Submission",
+          "round": 2,
+          "event": "The Ultimate Fighter: Heavy Hitters Finale",
+          "date": "2018-11-30",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-29",
