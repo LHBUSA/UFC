@@ -89,8 +89,9 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
       "finale_date": "2005-04-09",
-      "coverage": "metadata_only",
-      "season_state": "completed"
+      "coverage": "bracket_partial",
+      "season_state": "completed",
+      "detail": "tuf-1"
     },
     {
       "slug": "tuf-2",

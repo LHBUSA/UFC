@@ -1,0 +1,158 @@
+{
+  "slug": "tuf-1",
+  "name": "The Ultimate Fighter 1",
+  "edition": "us",
+  "number": 1,
+  "year": 2005,
+  "weight_classes": ["Middleweight", "Light Heavyweight"],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+    "retrieved": "2026-09-07",
+    "note": "The finale card exists in ufc_events but holds zero bouts — it is one of the twenty pre-2015 shells the historical backfill has not reached. The two finals are therefore SOURCED but not verified against our own records, and are marked as such. Nothing is imported."
+  },
+  "_conflicts": [
+    {
+      "field": "light_heavyweight_quarter_finals",
+      "detail": "The source lists Bobby Southworth as both a quarter-final winner (over Lodune Sincaid) and a quarter-final loser (to Stephan Bonnar) in the same round, and asserts Sam Hoger reached the semi-finals without naming a bout. The three stated bouts are recorded; the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-07"
+    },
+    {
+      "field": "middleweight_quarter_finals",
+      "detail": "Diego Sanchez is listed twice in the quarter-finals, against Alex Karalexis and against Josh Rafferty, and Kenny Florian is placed in the semi-finals without a stated bout. Recorded as given, marked partial.",
+      "retrieved": "2026-09-07"
+    },
+    {
+      "field": "assistant_coaches",
+      "detail": "Marc Laimon, Ganyao Fairtex and Peter Welch are listed as assistant coaches for the season without being assigned to a team. Recorded without a team rather than guessed onto one.",
+      "retrieved": "2026-09-07"
+    }
+  ],
+  "coaches": [
+    { "team": "Team Liddell", "name": "Chuck Liddell", "role": "head" },
+    { "team": "Team Couture", "name": "Randy Couture", "role": "head" },
+    { "team": "", "name": "Marc Laimon", "role": "assistant", "discipline": "grappling" },
+    { "team": "", "name": "Ganyao Fairtex", "role": "assistant", "discipline": "Muay Thai" },
+    { "team": "", "name": "Peter Welch", "role": "assistant", "discipline": "boxing" }
+  ],
+  "coaching_changes": [
+    { "episode": 4, "change": "Alex Schoenauer traded to Team Couture" },
+    { "episode": 8, "change": "Josh Rafferty traded to Team Couture" },
+    { "episode": 9, "change": "Kenny Florian traded to Team Couture" }
+  ],
+  "teams": [
+    {
+      "name": "Team Liddell",
+      "roster": [
+        { "name": "Bobby Southworth", "weight_class": "Light Heavyweight" },
+        { "name": "Sam Hoger", "weight_class": "Light Heavyweight" },
+        { "name": "Forrest Griffin", "weight_class": "Light Heavyweight" },
+        { "name": "Alex Schoenauer", "weight_class": "Light Heavyweight", "note": "Traded to Team Couture in episode 4." },
+        { "name": "Josh Koscheck", "weight_class": "Middleweight" },
+        { "name": "Diego Sanchez", "weight_class": "Middleweight" },
+        { "name": "Kenny Florian", "weight_class": "Middleweight", "note": "Traded to Team Couture in episode 9." },
+        { "name": "Josh Rafferty", "weight_class": "Middleweight", "note": "Traded to Team Couture in episode 8." }
+      ]
+    },
+    {
+      "name": "Team Couture",
+      "roster": [
+        { "name": "Stephan Bonnar", "weight_class": "Light Heavyweight" },
+        { "name": "Mike Swick", "weight_class": "Light Heavyweight" },
+        { "name": "Lodune Sincaid", "weight_class": "Light Heavyweight" },
+        { "name": "Jason Thacker", "weight_class": "Light Heavyweight", "note": "Eliminated in episode 2." },
+        { "name": "Nathan Quarry", "weight_class": "Middleweight", "note": "Withdrew in episode 8 with an ankle injury." },
+        { "name": "Chris Leben", "weight_class": "Middleweight", "note": "Brought back into the tournament to replace Nathan Quarry." },
+        { "name": "Alex Karalexis", "weight_class": "Middleweight" },
+        { "name": "Chris Sanford", "weight_class": "Middleweight", "note": "Eliminated in episode 2." }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Light Heavyweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "status": "unverified",
+          "note": "Partial. Sam Hoger is described as reaching the semi-finals without a stated bout, and Bobby Southworth appears as both a winner and a loser in this round. See conflicts.",
+          "bouts": [
+            { "a": "Bobby Southworth", "b": "Lodune Sincaid", "winner": "Bobby Southworth", "method": "KO (strikes)", "round": 2, "time": "0:12", "episode": 3, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Forrest Griffin", "b": "Alex Schoenauer", "winner": "Forrest Griffin", "method": "Submission (strikes)", "round": 1, "time": "1:20", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Stephan Bonnar", "b": "Bobby Southworth", "winner": "Stephan Bonnar", "method": "Decision (split)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            { "a": "Forrest Griffin", "b": "Sam Hoger", "winner": "Forrest Griffin", "method": "TKO (strikes)", "round": 2, "time": "1:05", "episode": 12, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Stephan Bonnar", "b": "Mike Swick", "winner": "Stephan Bonnar", "method": "Submission (triangle armbar)", "round": 1, "time": "4:58", "episode": 12, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "note": "The bout credited with changing the sport's commercial trajectory. Contested on the sanctioned finale card, so it counts as a professional bout.",
+          "bouts": [
+            { "a": "Forrest Griffin", "b": "Stephan Bonnar", "winner": "Forrest Griffin", "method": "Decision (unanimous)", "round": 3, "time": "5:00", "episode": null, "classification": "professional", "classification_source": "contested on a sanctioned UFC card (The Ultimate Fighter: Team Couture vs. Team Liddell Finale); NOT yet verified against our own records — that card holds zero bouts until the historical backfill reaches 2005", "on_finale_card": true, "tournament_deciding": true, "scorecards": "29-28, 29-28, 29-28" }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Middleweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "status": "unverified",
+          "note": "Partial. Diego Sanchez is listed twice in this round and Kenny Florian is placed in the semi-finals without a stated bout. See conflicts.",
+          "bouts": [
+            { "a": "Diego Sanchez", "b": "Alex Karalexis", "winner": "Diego Sanchez", "method": "Submission (rear naked choke)", "round": 1, "time": "1:47", "episode": 4, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Josh Koscheck", "b": "Chris Leben", "winner": "Josh Koscheck", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
+            { "a": "Diego Sanchez", "b": "Josh Rafferty", "winner": "Diego Sanchez", "method": "Submission (rear naked choke)", "round": 1, "time": "1:48", "episode": 8, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "note": "Chris Leben returned to the tournament here after Nathan Quarry withdrew with an ankle injury.",
+          "bouts": [
+            { "a": "Kenny Florian", "b": "Chris Leben", "winner": "Kenny Florian", "method": "TKO (doctor stoppage)", "round": 2, "time": "3:11", "episode": 10, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "replacement": "Chris Leben replaced Nathan Quarry, who withdrew with an ankle injury" },
+            { "a": "Diego Sanchez", "b": "Josh Koscheck", "winner": "Diego Sanchez", "method": "Decision (split)", "round": 3, "time": null, "episode": 11, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            { "a": "Diego Sanchez", "b": "Kenny Florian", "winner": "Diego Sanchez", "method": "TKO (punches)", "round": 1, "time": "2:49", "episode": null, "classification": "professional", "classification_source": "contested on a sanctioned UFC card (The Ultimate Fighter: Team Couture vs. Team Liddell Finale); NOT yet verified against our own records — that card holds zero bouts until the historical backfill reaches 2005", "on_finale_card": true, "tournament_deciding": true }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
+    "event_date": "2005-04-09",
+    "venue": "Cox Pavilion, Las Vegas, Nevada",
+    "link_policy": "The event exists in ufc_events and is linked. Its bouts do not exist yet, so the finals above are sourced rather than verified, and the page says which."
+  },
+  "champions": [
+    {
+      "weight_class": "Light Heavyweight",
+      "fighter": "Forrest Griffin",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": { "a": "Forrest Griffin", "b": "Stephan Bonnar", "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale", "date": "2005-04-09" }
+    },
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Diego Sanchez",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": { "a": "Diego Sanchez", "b": "Kenny Florian", "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale", "date": "2005-04-09" }
+    }
+  ]
+}
