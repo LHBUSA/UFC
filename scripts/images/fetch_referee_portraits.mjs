@@ -158,6 +158,53 @@ async function entityImage(qid, name) {
   return { file: files[0], why: null, via: `Category:${cat}` };
 }
 
+/**
+ * Direct Commons search, used when Wikidata has nothing.
+ *
+ * A P18 claim and a linked category are the two identity-safe routes, and
+ * most officials have neither — which says the METADATA is thin, not that no
+ * photograph exists. So the file namespace is searched directly.
+ *
+ * The catch is that a name search is not an identity check: "Mark Smith"
+ * matches a great many photographs of a great many people. Every candidate
+ * therefore has to survive a filename gate before it is even considered — the
+ * name must appear, and something in the file must tie it to this sport. A
+ * file that merely contains the name is discarded, because a wrong face on an
+ * official's profile is worse than no face at all.
+ */
+async function commonsSearchFiles(name, aliases = []) {
+  /* The bare name first. Appending "referee" to the query looked like it
+   * would sharpen the search and instead suppressed it: Commons indexes
+   * filenames and descriptions, and "Herb Dean referee" matches far less than
+   * "Herb Dean" does. The sport check belongs in the identity gate below,
+   * where it can look at the actual filename, not in the query. */
+  const terms = [name, ...aliases];
+  const out = [];
+  for (const t of terms) {
+    const j = await wikiFetch(
+      `https://commons.wikimedia.org/w/api.php?action=query&format=json&list=search&srnamespace=6&srlimit=20&srsearch=${encodeURIComponent(t)}`,
+    );
+    for (const hit of j?.query?.search || []) {
+      const file = String(hit.title).replace(/^File:/, '');
+      if (!/\.(jpe?g|png|webp)$/i.test(file)) continue;
+      out.push({ file, matchedTerm: t });
+    }
+  }
+  return out;
+}
+
+/** Does this filename plausibly depict THIS person in THIS sport? */
+function filenameIdentityGate(file, name, aliases = []) {
+  const f = file.toLowerCase().replace(/[_-]+/g, ' ');
+  const names = [name, ...aliases].map((n) => n.toLowerCase());
+  const surname = String(name).split(/\s+/).pop().toLowerCase();
+  const hasName = names.some((n) => f.includes(n)) || (surname.length > 4 && f.includes(surname));
+  if (!hasName) return { ok: false, why: 'filename does not carry the name' };
+  const sportish = /(mma|ufc|referee|cage|octagon|fight|bellator|weigh)/.test(f);
+  if (!sportish) return { ok: false, why: 'filename carries the name but nothing tying it to the sport' };
+  return { ok: true };
+}
+
 async function commonsCategoryFiles(category) {
   const j = await wikiFetch(
     `https://commons.wikimedia.org/w/api.php?action=query&format=json&list=categorymembers&cmtitle=${encodeURIComponent(`Category:${category}`)}&cmnamespace=6&cmtype=file&cmlimit=12`,
@@ -216,15 +263,42 @@ const main = async () => {
         if (entity) break;
         ({ entity, why: ew } = await findEntity(alias));
       }
-      if (!entity) { counts.no_entity += 1; console.log(`  ${label}  no_entity     ${ew}`); continue; }
 
-      const { file, why: iw } = await entityImage(entity, r.name);
-      if (!file) { counts.no_image += 1; console.log(`  ${label}  no_image      ${iw}`); continue; }
+      /* No Wikidata entity is not the end of the search. It means nobody has
+       * written a structured record for this official — which says nothing
+       * about whether a freely licensed photograph of them exists on Commons.
+       * Treating a failed entity lookup as proof of absence is how a
+       * perfectly available picture goes unused. */
+      let file = null;
+      let iw = ew;
+      let route = null;
+      if (entity) {
+        ({ file, why: iw } = await entityImage(entity, r.name));
+        if (file) route = 'wikidata';
+      }
+      if (!file) {
+        /* Wikidata had nothing. Search Commons directly and gate every
+         * candidate on the filename before accepting one. */
+        const candidates = await commonsSearchFiles(r.name, NAME_ALIASES[r.name] || []);
+        const gated = [];
+        for (const c of candidates) {
+          const g = filenameIdentityGate(c.file, r.name, NAME_ALIASES[r.name] || []);
+          if (g.ok) gated.push(c.file);
+        }
+        if (gated.length) { file = gated[0]; route = `commons-search (${candidates.length} candidate(s), ${gated.length} passed the identity gate)`; }
+        else if (candidates.length) iw = `${iw}; commons search returned ${candidates.length} file(s), none passed the identity gate`;
+        else iw = `${iw}; commons search returned nothing`;
+      }
+      if (!file) {
+        counts[entity ? 'no_image' : 'no_entity'] += 1;
+        console.log(`  ${label}  ${entity ? 'no_image ' : 'no_entity'}     ${iw}`);
+        continue;
+      }
 
       const info = await commonsInfo(file);
       if (!info.ok) { counts.rejected += 1; console.log(`  ${label}  rejected      ${info.why}`); continue; }
 
-      if (DRY) { counts.ok += 1; console.log(`  ${label}  ok            DRY ${info.license} by ${info.author || '?'} <- ${file}`); continue; }
+      if (DRY) { counts.ok += 1; console.log(`  ${label}  ok            DRY ${info.license} by ${info.author || '?'} <- ${file} [${route}]`); continue; }
 
       const src = Buffer.from(await (await fetch(info.url, { headers: { 'User-Agent': USER_AGENT } })).arrayBuffer());
       /* A portrait crop anchored on the upper body, never a blind centre crop
