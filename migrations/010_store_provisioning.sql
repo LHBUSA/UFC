@@ -1,5 +1,14 @@
 -- Store provisioning state.
 --
+-- STATUS: this file has NOT been applied to any environment, and the
+-- enforcement it describes is therefore UNVERIFIED. The JavaScript tests in
+-- scripts/store/reconcile_rules.test.mjs exercise a mirror of these rules,
+-- not these rules: they show the client asks for the right transition, and
+-- say nothing about whether Postgres actually refuses the wrong one.
+-- migrations/tests/010_store_provisioning.test.sql is the file that would
+-- establish that, against a throwaway database. It has not been run, because
+-- the only Postgres this platform has is production.
+--
 -- Why this table exists at all.
 --
 -- Product creation at the print provider is the one irreversible thing this

@@ -1,6 +1,13 @@
 /**
  * The recovery rules, as pure functions.
  *
+ * A caution that belongs at the top of the file. Nothing here establishes
+ * that the provider did not create a product. Absence in a listing is not
+ * absence in the system: the strongest thing a wait plus repeated lookups
+ * gives is a reason to look again. Every rule below therefore treats positive
+ * evidence as conclusive and negative evidence as never conclusive, and no
+ * automatic path recreates a product whose outcome was never observed.
+ *
  * The database enforces these — store_claim_slug, store_expire_stale_claims,
  * store_record_absent and store_settle_absent all refuse work that breaks
  * them, so a buggy client is rejected rather than believed. This module
@@ -96,7 +103,20 @@ export function decideReconcile(row, hits, now = Date.now(), o = DEFAULTS) {
   const enoughChecks = checks >= o.minAbsentChecks;
 
   if (quarantineElapsed && enoughChecks) {
-    return { action: "settle-absent", checks, waitedMs: now - uncertainSince };
+    /* Eligible, and deliberately NOT automatic.
+     *
+     * Waiting fifteen minutes and looking three times is a retry policy. It is
+     * not proof that the provider never created the product: it is evidence
+     * that the product is not visible in a listing, which is a weaker claim,
+     * and no amount of waiting converts one into the other. Indexing can lag
+     * further than we guessed, a listing can be filtered, a page can be
+     * missed. The only conclusive evidence is positive — seeing the product —
+     * and absence does not have an equivalent.
+     *
+     * So this returns "settle-eligible", which no automatic path acts on. A
+     * person decides, with the observations in front of them, and the run
+     * reports the slug rather than quietly freeing it for recreation. */
+    return { action: "settle-eligible", checks, waitedMs: now - uncertainSince };
   }
 
   /* Record another observation, but only if enough time has passed since the

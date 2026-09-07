@@ -71,7 +71,7 @@ test("two products under one external_id escalate rather than resolve", () => {
 test("zero matches immediately after an uncertain outcome does NOT permit a retry", () => {
   const row = { state: "uncertain", uncertain_since: iso(T - 1000), absent_checks: 0, last_absent_check_at: null };
   const d = decideReconcile(row, [], T);
-  assert.notEqual(d.action, "settle-absent");
+  assert.notEqual(d.action, "settle-eligible");
   assert.equal(d.action, "record-absent");
   assert.ok(d.stillNeeds.ms > 0, "quarantine must still have time left");
   assert.ok(d.stillNeeds.checks > 0, "more independent checks must still be required");
@@ -94,7 +94,7 @@ test("absence needs BOTH the quarantine window and enough independent checks", (
   /* Both. */
   assert.equal(
     decideReconcile({ state: "uncertain", uncertain_since: enoughTime, absent_checks: 3, last_absent_check_at: iso(T - min(5)) }, [], T).action,
-    "settle-absent",
+    "settle-eligible",
   );
 });
 
@@ -111,10 +111,16 @@ test("hammering the provider cannot manufacture evidence that time has passed", 
   assert.match(d.reason, /independent/);
 });
 
-test("settling absence lands in failed, which is the only retryable state", () => {
-  const row = { state: "uncertain", uncertain_since: iso(T - min(20)), absent_checks: 3, last_absent_check_at: iso(T - min(5)) };
-  assert.equal(decideReconcile(row, [], T).action, "settle-absent");
-  assert.equal(isClaimable("failed"), true);
+test("even a fully quarantined absence is only ELIGIBLE, never automatic", () => {
+  /* The strongest negative evidence available still does not free the slug.
+   * Waiting and looking is a retry policy, not proof the provider created
+   * nothing, so a person decides. */
+  const row = { state: "uncertain", uncertain_since: iso(T - min(600)), absent_checks: 99, last_absent_check_at: iso(T - min(5)) };
+  const d = decideReconcile(row, [], T);
+  assert.equal(d.action, "settle-eligible");
+  assert.notEqual(d.action, "settle-absent");
+  /* And the row it is still sitting in cannot be claimed for a create. */
+  assert.equal(isClaimable("uncertain"), false);
 });
 
 /* ---- outcome classification --------------------------------------------- */

@@ -74,6 +74,14 @@ export async function GET(req: Request) {
      * is available" from "we could not find out what is available". */
     provisioning_source: !configured ? "unconfigured" : degraded ? "unreachable" : "ok",
     any_purchasable: products.some((p) => p.purchasable),
+    /* Every image currently returned is a design preview: vector artwork
+     * showing a shape and a placement. It is not a photograph, it does not
+     * establish garment appearance, and it is not evidence that the printer
+     * has accepted the file. Consumers must not present it as a product
+     * photo. */
+    image_kind: "design_preview",
+    image_note:
+      "Design previews only. Not photographs, not evidence of provider acceptance. Replaced by stored provider mockups once product creation is authorised.",
     count: products.length,
     products,
   });

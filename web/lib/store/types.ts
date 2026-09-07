@@ -89,7 +89,7 @@ export type StorefrontProduct = {
   art: string;
   /** Permanent, versioned image URLs. Never a provider mockup link: those
    * expire, and a URL handed to another storefront must not. */
-  images: { url: string; width: number; height: number; alt: string }[];
+  images: { url: string; width: number; height: number; alt: string; kind: "design_preview" | "provider_mockup" }[];
   /** True only when the provider has confirmed this exact product exists. */
   purchasable: boolean;
   /** Why it is not purchasable, in words a reader can act on. Null when it is. */
@@ -147,6 +147,15 @@ export function toStorefront(def: ProductDef, rec: ProvisionRecord | null, origi
         width: IMAGE_W,
         height: IMAGE_H,
         alt: `${def.name} — design preview, not a photograph`,
+        /* Stated in the data, not only in the page copy, so a consumer cannot
+         * present it as a photograph by accident. A design preview shows a
+         * shape and a placement. It does not establish how a printed garment
+         * looks, and it is not evidence that the printer accepted the
+         * artwork. Real provider mockups replace these, as kind
+         * "provider_mockup", once product creation is authorised — and they
+         * must be copied into our own storage at that point, because the
+         * provider's mockup URLs expire. */
+        kind: "design_preview",
       },
     ],
     purchasable: confirmed,

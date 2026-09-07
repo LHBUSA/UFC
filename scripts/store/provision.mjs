@@ -222,15 +222,18 @@ async function reconcile(rows, syncProducts) {
         body: { p_slug: row.slug, p_product_id: d.productId, p_note: `adopted product ${d.productId} observed at the provider` },
       });
       report.push({ slug: row.slug, to: "created", note: `adopted ${d.productId}` });
-    } else if (d.action === "settle-absent") {
-      const settled = await sb("rpc/store_settle_absent", { method: "POST", body: { p_slug: row.slug } });
-      /* Null back means the database disagreed that the conditions were met.
-       * That is the backstop working, and it is reported rather than retried. */
-      report.push(
-        settled
-          ? { slug: row.slug, to: "failed", note: `absent across ${d.checks} checks over ${Math.round(d.waitedMs / 60000)}m; retryable` }
-          : { slug: row.slug, to: "uncertain", note: "database refused to settle absence; conditions not met" },
-      );
+    } else if (d.action === "settle-eligible") {
+      /* Reported, not acted on. The quarantine and the repeated lookups are a
+       * retry policy; they are not proof the provider created nothing, and
+       * only a person should decide to free a slug for recreation on evidence
+       * that can only ever be negative. store_settle_absent exists for that
+       * decision and is not called from any automatic path. */
+      report.push({
+        slug: row.slug,
+        to: "uncertain",
+        note: `ELIGIBLE FOR REVIEW: absent across ${d.checks} checks over ${Math.round(d.waitedMs / 60000)}m. `
+          + `Still blocked from recreation. A person must confirm at the provider and settle it deliberately.`,
+      });
     } else if (d.action === "record-absent") {
       const rec = await sb("rpc/store_record_absent", { method: "POST", body: { p_slug: row.slug } });
       report.push({
