@@ -63,12 +63,16 @@ async function count(q) {
 const num = (s, re) => { const m = s.match(re); return m ? Number(m[1]) : 0; };
 const occurrences = (s, needle) => s.split(needle).length - 1;
 
+/* A window that failed and is being retried appears twice in the log. Taking
+ * the last [window_done] alone would report the previous run's exit code for
+ * a window that is currently running, which reads as a fresh failure. The
+ * completion only belongs to this attempt if it came after the latest start. */
 function windowTimes(label) {
   const lines = readMaybeUtf16(path.join(LOGS, 'queue_status.txt')).split(/\r?\n/);
   let start = null, done = null, exit = null;
   for (const l of lines) {
     let m = l.match(/^\s*\[window_start\]\s+(\S+)\s+(\S+)/);
-    if (m && m[2] === label) start = m[1];
+    if (m && m[2] === label) { start = m[1]; done = null; exit = null; }
     m = l.match(/^\s*\[window_done\]\s+(\S+)\s+(\S+)\s+exit=(\S+)/);
     if (m && m[2] === label) { done = m[1]; exit = m[3]; }
   }
@@ -102,6 +106,20 @@ async function summarise(label) {
 
   const refs = await count(`ufc_referee_bouts?event_date=gte.${year}-01-01&event_date=lte.${year}-12-31`);
 
+  /* The worker only prints its counters in the [end] line, so a window still
+   * running would report 0 for everything it has actually written. A zero
+   * that means "not summarised yet" is exactly the kind of number this
+   * codebase refuses to show, so mid-flight totals are summed from the upsert
+   * log instead and the completed run uses the authoritative counters. */
+  const running = exit === null;
+  const sumUpserts = (table) => {
+    let n = 0;
+    for (const m of t.matchAll(new RegExp(`\\[upsert\\] table=${table} rows=(\\d+)`, 'g'))) n += Number(m[1]);
+    return n;
+  };
+  const liveRounds = running ? sumUpserts('ufc_bout_round_stats') : null;
+  const liveResults = running ? sumUpserts('ufc_bout_results') : null;
+
   return {
     window: label,
     lane: label.startsWith('A') ? 'A round-stat depth' : 'B structural breadth',
@@ -115,8 +133,8 @@ async function summarise(label) {
     fighters_linked: num(t, /fighters_linked=(\d+)/),
     fighters_stubbed: num(t, /fighters_stubbed=(\d+)/),
     referee_assignments_year: refs,
-    round_rows: num(t, /round_rows=(\d+)/),
-    results_written: num(t, /results_written=(\d+)/),
+    round_rows: liveRounds ?? num(t, /round_rows=(\d+)/),
+    results_written: liveResults ?? num(t, /results_written=(\d+)/),
     results_enriched: num(t, /results_enriched=(\d+)/),
     gaps_archive_missing: gapsMissing,
     gaps_prefight_capture: gapsPreview,
@@ -149,9 +167,9 @@ const main = async () => {
     console.log(`  events        attempted ${r.events_attempted}  enriched ${r.events_enriched}  skipped ${r.events_skipped}`);
     console.log(`  bouts         created ${r.bouts_created}  linked ${r.bouts_linked}`);
     console.log(`  fighters      created ${r.fighters_created}  linked ${r.fighters_linked}  stubbed ${r.fighters_stubbed}`);
-    console.log(`  results       written ${r.results_written}  enriched ${r.results_enriched}`);
+    console.log(`  results       ${r.status === 'running' ? `${r.results_written} written so far` : `written ${r.results_written}  enriched ${r.results_enriched}`}`);
     console.log(`  referees      ${r.referee_assignments_year === null ? 'n/a' : `${r.referee_assignments_year} assignments loaded for ${r.window.slice(2)}`}`);
-    console.log(`  round rows    ${r.round_rows}`);
+    console.log(`  round rows    ${r.round_rows}${r.status === 'running' ? ' so far' : ''}`);
     console.log(`  gaps          archive missing ${r.gaps_archive_missing}  pre-fight capture ${r.gaps_prefight_capture}  pre-event dropped ${r.pre_event_captures_dropped}`);
     console.log(`  integrity     retries ${r.retries}  assertions ${r.assertions}  result mismatches ${r.result_mismatches}  identity review ${r.identity_review_queued}`);
   }
