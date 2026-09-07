@@ -39,6 +39,14 @@ def norm_weight_class(raw: str, url: str) -> dict:
     is_womens = wc["womens_marker"].lower() in s.lower()
     is_title = any(t.lower() in s.lower() for t in wc["title_markers"])
     core = s
+    # Feeder-series prefix. "Road to UFC 3 Bantamweight Tournament Title Bout"
+    # is an ordinary Bantamweight title bout staged inside a regional series,
+    # and the series name is not part of the division. It has to go before the
+    # generic token pass, which would otherwise remove "UFC" and the season
+    # number and leave the unmatchable remainder "Road to Bantamweight".
+    # The raw label is still stored verbatim in weight_class_raw, so the
+    # tournament context is preserved rather than discarded.
+    core = re.sub(r"^\s*Road to UFC\b\s*\d*", " ", core, flags=re.I)
     core = re.sub(re.escape(wc["womens_marker"]), " ", core, flags=re.I)
     for tok in wc["strip_tokens"]:
         core = re.sub(r"\b" + re.escape(tok) + r"\b", " ", core, flags=re.I)

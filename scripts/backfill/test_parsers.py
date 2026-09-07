@@ -93,6 +93,41 @@ check(ta["name"] == "Tom Aaron" and ta["nickname"] is None and ta["height_in"] i
 ss = P.parse_fighter_page(load("fighter_0d8011111be000b2_next_row.html"), "http://ufcstats.com/fighter-details/0d8011111be000b2")
 check(ss["upcoming_rows"] == 1 and ss["fight_history_count"] >= 10 and all(len(h) == 16 for h in ss["history_fight_ids"]), f"next-row fighter {ss['name']} hist={ss['fight_history_count']} upcoming={ss['upcoming_rows']}")
 
+# weight class normalization, including feeder-series tournament labels.
+# A Road to UFC bout is staged on an ordinary card, so its label reaches the
+# normalizer even though the series is kept separate elsewhere. The series
+# name must not be mistaken for part of the division, and the title flag must
+# survive the strip.
+import normalizers as N  # noqa: E402
+
+WC_CASES = [
+    ("Road to UFC 3 Bantamweight Tournament Title Bout", "BANTAMWEIGHT", False, True),
+    ("Road to UFC Flyweight Tournament Title Bout", "FLYWEIGHT", False, True),
+    ("Bantamweight Bout", "BANTAMWEIGHT", False, False),
+    ("Bantamweight Title Bout", "BANTAMWEIGHT", False, True),
+    ("Women's Bantamweight Title Bout", "BANTAMWEIGHT", True, True),
+]
+for raw, want_wc, want_w, want_t in WC_CASES:
+    got = N.norm_weight_class(raw, "test://wc")
+    check(got["weight_class"] == want_wc, f"weight class {raw!r} -> {got['weight_class']!r}, want {want_wc!r}")
+    check(got["is_womens"] == want_w, f"is_womens {raw!r} -> {got['is_womens']}, want {want_w}")
+    check(got["is_title"] == want_t, f"is_title {raw!r} -> {got['is_title']}, want {want_t}")
+
+# Fail-closed is unchanged: an unrecognised division still raises rather than
+# being guessed at. Stripping a known series prefix must not become a licence
+# to accept anything.
+for bad in ("Road to UFC 3 Nonsenseweight Tournament Title Bout", "Quantumweight Bout"):
+    try:
+        N.norm_weight_class(bad, "test://wc")
+        check(False, f"unknown weight class {bad!r} did not raise")
+    except SchemaAssertionError:
+        pass
+
+# An empty label is still a known, non-fatal case (very old bouts).
+check(N.norm_weight_class("", "test://wc")["weight_class"] is None, "empty weight class")
+# Early tournaments carried no division at all.
+check(N.norm_weight_class("UFC 2 Tournament Title Bout", "test://wc")["weight_class"] is None, "UFC 2 tournament title bout")
+
 # assertion behaviour: a mutated header must raise
 bad = load("fight_fb4b1754d510b0d0.html").replace("Sub. att", "Submission attempts", 1)
 try:
