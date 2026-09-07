@@ -395,6 +395,44 @@
 }
 .dwcs-portrait figcaption a { color: var(--pbe-faint); }
 
-/* Below the hero's two-column comfort point the portrait would crowd the
- * proof numbers, so it steps out rather than shrinking into a thumbnail. */
-@media (max-width: 900px) { .dwcs-portrait { display: none; } }
+/* Narrow screens keep the portrait; it just stops competing for the same
+ * space. Below 900px the hero stacks and the picture becomes a compact,
+ * circular bust sitting on the eyebrow row — small enough not to push the
+ * proof numbers down the page, large enough to still be a photograph of a
+ * person rather than a favicon. Hiding it was the easy answer and the wrong
+ * one: the series is named after him. */
+@media (max-width: 900px) {
+  .dwcs-hero { padding-top: clamp(26px, 6vw, 44px); }
+  .dwcs-portrait {
+    position: static;
+    float: right;
+    width: clamp(84px, 24vw, 132px);
+    margin: 0 0 var(--s-3) var(--s-4);
+    shape-outside: circle(50%);
+  }
+  .dwcs-portrait img {
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: 1px solid var(--pbe-line-strong);
+    /* The circular crop needs the head centred in it, so the recorded focal
+     * point is applied here too rather than defaulting to the middle of a
+     * standing photograph. */
+    object-fit: cover;
+    -webkit-mask-image: none;
+    mask-image: none;
+    opacity: 1;
+  }
+  .dwcs-portrait figcaption {
+    position: static;
+    margin-top: var(--s-1);
+    text-align: center;
+    max-width: 100%;
+    line-height: 1.4;
+  }
+}
+
+/* Very narrow: the float would leave the headline two words wide, so the
+ * portrait sits above it instead. */
+@media (max-width: 430px) {
+  .dwcs-portrait { float: none; margin: 0 0 var(--s-3) 0; width: 96px; }
+}

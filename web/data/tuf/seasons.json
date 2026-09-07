@@ -199,8 +199,9 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale",
       "finale_date": "2007-06-23",
-      "coverage": "metadata_only",
-      "season_state": "completed"
+      "coverage": "bracket_partial",
+      "season_state": "completed",
+      "detail": "tuf-5"
     },
     {
       "slug": "tuf-6",

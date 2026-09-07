@@ -22,13 +22,14 @@ import "server-only";
 import { getImagesForFighters, type PortraitSet } from "@/lib/db";
 import inventory from "@/data/tuf/seasons.json";
 import tuf1 from "@/data/tuf/seasons/tuf-1.json";
+import tuf5 from "@/data/tuf/seasons/tuf-5.json";
 import tuf20 from "@/data/tuf/seasons/tuf-20.json";
 import tuf22 from "@/data/tuf/seasons/tuf-22.json";
 
 /* Detail files are imported rather than read from disk so they are bundled
  * with the deployment. A season with no detail file yet renders from its
  * inventory row alone, which is the honest state for most of the archive. */
-const DETAILS: Record<string, unknown> = { "tuf-1": tuf1, "tuf-20": tuf20, "tuf-22": tuf22 };
+const DETAILS: Record<string, unknown> = { "tuf-1": tuf1, "tuf-5": tuf5, "tuf-20": tuf20, "tuf-22": tuf22 };
 
 export type Classification = "professional" | "exhibition" | "unverified";
 

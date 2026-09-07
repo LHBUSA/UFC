@@ -20,6 +20,7 @@ import inventoryJson from "../data/tuf/seasons.json" with { type: "json" };
 import tuf22Json from "../data/tuf/seasons/tuf-22.json" with { type: "json" };
 import tuf1Json from "../data/tuf/seasons/tuf-1.json" with { type: "json" };
 import tuf20Json from "../data/tuf/seasons/tuf-20.json" with { type: "json" };
+import tuf5Json from "../data/tuf/seasons/tuf-5.json" with { type: "json" };
 
 type Bout = {
   a: string; b: string; winner: string | null; method: string | null;
@@ -50,6 +51,7 @@ const tuf22 = tuf22Json as unknown as {
 const seasons = inventory.seasons;
 const DETAIL_BY_SLUG: Record<string, { bracket: Array<{ weight_class: string; stages: Stage[] }> }> = {
   "tuf-1": tuf1Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
+  "tuf-5": tuf5Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
   "tuf-20": tuf20Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
   "tuf-22": tuf22Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
 };
