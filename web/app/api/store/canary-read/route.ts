@@ -44,6 +44,7 @@ import {
   type CatalogProduct,
 } from "@/lib/store/printful";
 import { PRODUCTS } from "@/lib/store/catalog";
+import { verifySignedRequest } from "@/lib/store/signing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -67,21 +68,38 @@ function bearerMatches(presented: string, expected: string): boolean {
 type Step = { name: string; status: "pass" | "fail" | "partial" | "skip"; detail: string };
 
 export async function GET(req: Request) {
+  /* Two accepted credentials, neither weaker than the other, because a
+   * variable marked sensitive in Vercel can never be read back — not even by
+   * the operator who set it — and an endpoint only an unreadable secret can
+   * open is an endpoint nobody can run.
+   *
+   *   - a bearer equal to STORE_CANARY_TOKEN, compared in constant time; or
+   *   - the same HMAC signature the shared catalog already requires, over
+   *     timestamp.method.path with a five-minute window.
+   *
+   * Both are secrets that exist only in the deployment's environment. Still
+   * disabled unless at least one is configured: a missing secret closes the
+   * endpoint rather than opening it. */
   const gate = process.env.STORE_CANARY_TOKEN;
-  if (!gate) {
+  const signingSecret = process.env.CATALOG_SHARED_SECRET;
+  if (!gate && !signingSecret) {
     return json(
       {
         error: "CANARY_NOT_ENABLED",
-        message: "Set STORE_CANARY_TOKEN to enable this endpoint, and unset it once provisioning is proven.",
+        message: "Set STORE_CANARY_TOKEN (or CATALOG_SHARED_SECRET) to enable this endpoint, and unset it once provisioning is proven.",
       },
       503,
     );
   }
 
   const presented = String(req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
-  if (!presented || !bearerMatches(presented, gate)) {
-    return json({ error: "unauthorized" }, 401);
+  const byBearer = Boolean(gate) && Boolean(presented) && bearerMatches(presented, gate as string);
+  let bySignature = false;
+  if (!byBearer && signingSecret) {
+    const u = new URL(req.url);
+    bySignature = (await verifySignedRequest(req, `${u.pathname}${u.search}`, signingSecret)).ok;
   }
+  if (!byBearer && !bySignature) return json({ error: "unauthorized" }, 401);
 
   const steps: Step[] = [];
   const step = (name: Step["name"], status: Step["status"], detail: string) => steps.push({ name, status, detail });
@@ -99,6 +117,7 @@ export async function GET(req: Request) {
       PRINTFUL_STORE_ID: process.env.PRINTFUL_STORE_ID ? "present (account-level token)" : "absent (store-scoped token)",
       SUPABASE_URL: process.env.SUPABASE_URL ? "present" : "MISSING",
     },
+    authenticated_by: byBearer ? "bearer" : "signature",
     steps,
   };
 
