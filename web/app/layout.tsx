@@ -7,6 +7,7 @@ import "./editorial-discovery.css";
 import "./heritage.css";
 import "./expansion.css";
 import "./fightweek.css";
+import "./fightdna.css";
 import { Header, Footer } from "@/components/Shell";
 import { LiveWire } from "@/components/LiveWire";
 import { ShareRail } from "@/components/ShareRail";

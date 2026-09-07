@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProPlans, PageHead, JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
+import { Origin } from "@/components/dna";
 import { getCurrentAccount, hasProAccess } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "UFC Pro — Fight DNA & Fight-Week Intelligence",
-  description: "PropBetEdge UFC Pro founding access: Fight DNA, bettor-grade UFC analysis and fight-week intelligence, with model pricing and picks held back until validated.",
+  title: "UFC Pro — Fight DNA Intelligence Layer & Fight Week Access",
+  description: "PropBetEdge UFC Pro founding access: the proprietary Fight DNA intelligence layer (matchup DNA, stance splits, striking geography, grappling efficiency, finish patterns, round progression, context splits), Fight Week intelligence and deeper evidence packets. Model pricing and picks stay held back until validated.",
   alternates: { canonical: "/pro" },
 };
 
@@ -44,6 +45,26 @@ export default async function ProPage() {
         </section>
       ) : <ProPlans />}
 
+      <section className="pro-dna" aria-labelledby="pro-dna-title">
+        <div className="pro-dna-grid">
+          <div>
+            <div className="eyebrow">Proprietary intelligence · PropBetEdge Fight DNA</div>
+            <h2 id="pro-dna-title">Go beyond the fight record.</h2>
+            <p>UFC Pro is founding access to the Fight DNA intelligence layer as it deepens, not simply more stats. Pro surfaces ship against the same evidence-backed system:</p>
+            <ul>
+              <li>Matchup-specific DNA</li><li>Stance splits</li><li>Striking geography</li><li>Grappling efficiency</li><li>Finish patterns</li><li>Round progression</li><li>Context splits</li><li>Fight Week intelligence</li><li>Deeper evidence packets</li>
+            </ul>
+            <div className="pro-dna-actions"><Link href="/learn/fight-dna" className="btn">See how Fight DNA works →</Link><Link href="/fight-week" className="btn">Open Fight Week</Link></div>
+          </div>
+          <div className="pro-dna-why">
+            <div className="eyebrow">Why this is different</div>
+            <h3>Most fight pages display source statistics.</h3>
+            <p>Fight DNA reconstructs the underlying fight record into a versioned analytical feature system with explicit sample size, confidence and provenance. <span className="dna-derived-line" style={{ display: "inline-flex", marginTop: 0 }}><Origin explain /></span></p>
+            <p className="fine">Raw data tells you what happened. Fight DNA describes the fighter the data reveals. No promise of profitable betting, no claim of predictive certainty: Pro sells intelligence, not guaranteed outcomes.</p>
+          </div>
+        </div>
+      </section>
+
       <div className="grid-3 mt-6">
         {[
           ["Fight DNA over surface stats", "Opponent stance, pace, attack distribution, grappling context and as-of historical features are being built as a versioned intelligence layer rather than a stat dump."],
@@ -70,7 +91,7 @@ export default async function ProPage() {
         "@context": "https://schema.org",
         "@type": "Product",
         name: "PropBetEdge UFC Pro",
-        description: "Fight DNA, bettor-grade analysis and fight-week intelligence for UFC, with model-derived claims displayed only when validated.",
+        description: "Founding access to the PropBetEdge Fight DNA intelligence layer, Fight Week intelligence and deeper evidence packets for UFC, with model-derived claims displayed only when validated.",
         brand: { "@type": "Brand", name: "PropBetEdge" },
         url: `${SITE.url}/pro`,
         offers: [

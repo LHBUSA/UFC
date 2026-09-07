@@ -8,11 +8,12 @@ import { ChampionsShowcase } from "@/components/ChampionsShowcase";
 import { ContenderStrip } from "@/components/ContenderStrip";
 import { VideoRail } from "@/components/VideoRail";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
+import { FightDnaShowcase } from "@/components/FightDnaShowcase";
 import { buildDeskBriefs } from "@/lib/pregame";
 import { intelligenceUpdated } from "@/lib/fightweek";
 import { getIngestFreshness } from "@/lib/archive";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
-import { eventSlug } from "@/lib/slug";
+import { eventSlug, fighterSlug } from "@/lib/slug";
 import { fmtDate, daysUntil, locationLine, eventBrand, eventHeadline, fmtRecord, weightClassLabel, relTime } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
@@ -149,6 +150,10 @@ export default async function Home() {
           <div className="wrap"><SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" /><div className="grid-3">{headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} />)}</div></div>
         </section>
       )}
+
+      <section className="sec" id="fight-dna-product">
+        <div className="wrap"><FightDnaShowcase exploreHref={mainEvent ? `/fighters/${fighterSlug(mainEvent.fighter_a)}#fight-dna` : "/fighters"} exploreLabel={mainEvent ? `Explore ${mainEvent.fighter_a.name.split(" ").slice(-1)[0]}’s Fight DNA →` : "Explore Fight DNA →"} /></div>
+      </section>
 
       {rankings && champs.length > 0 && (
         <section className="sec"><div className="wrap"><ChampionsShowcase rankings={rankings} fighters={champById} contenderFighters={contenderById} imgs={imgs} /></div></section>

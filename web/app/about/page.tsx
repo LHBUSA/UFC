@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHead, JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
 
@@ -15,6 +16,8 @@ export default function AboutPage() {
         <p>Schedules, results and fighter identity come from ESPN's public MMA data. Round-by-round striking and grappling statistics come from UFC Stats. Official rankings are captured from UFC.com as dated snapshots. Every stored row carries its source URL and capture time. Where two sources disagree, we show the disagreement rather than pick a side silently.</p>
         <h2 id="stories">How stories are written</h2>
         <p>Stories are generated from our own tables and a fact block that is stored alongside each article. A story may not state a fact that is not in its fact block or its cited source. External reporting is summarised in a phrase at most, attributed, and linked. Stories that name a fighter in connection with an injury or withdrawal are held for human review before publication. We do not pad volume: empty days are fine.</p>
+        <h2 id="fight-dna">Fight DNA</h2>
+        <p><strong>PropBetEdge Fight DNA</strong> is our proprietary fighter intelligence layer: metrics calculated by PropBetEdge from normalized event, bout and round-level records using versioned definitions, each shown with its sample, confidence, as-of date and definition version. It is not an official UFC statistic and it is not a prediction. <Link href="/learn/fight-dna">How to read Fight DNA</Link>.</p>
         <h2 id="labels">Labels</h2>
         <p><strong>LIVE</strong> is genuine current provider data. <strong>MODEL</strong> is PropBetEdge model output. <strong>UNAVAILABLE</strong> means a required input is missing. We never relabel one as another, and we never display a pick, edge or probability the model did not produce. Until the UFC model has a graded, out-of-time track record, every model slot on this site renders locked.</p>
         <h2 id="images">Images</h2>

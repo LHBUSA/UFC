@@ -219,7 +219,7 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
             <span><b>{plural(live.length, "bout")}</b>{main ? ` · ${weightClassLabel(main.weight_class, main.is_womens)}${main.is_title ? " title" : ""} main event` : ""}</span>
             <span><b>{countdown}</b></span>
           </div>
-          <div className="fw-stamp">Intelligence updated <span>{fmtStamp(updated)}</span></div>
+          <div className="fw-stamp">Intelligence updated <span>{fmtStamp(updated)}</span> · Built from <Link href="/learn/fight-dna">Fight DNA</Link> + verified fight record</div>
           {done && <div className="fw-archive-note">This is the pregame read as it stood before the card, kept as a permanent record. Fighter records are shown as currently stored; archived form is limited to results before the event date. Results and round stats live on the event page.</div>}
         </div>
         <div className="fw-actions">

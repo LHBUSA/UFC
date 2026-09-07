@@ -18,7 +18,7 @@ export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const e = await resolveEvent((await params).slug);
-  if (!e) return { title: "Pregame desk not found", robots: { index: false } };
+  if (!e) return { title: "Pregame Desk not found", robots: { index: false } };
   const title = `${e.name} — Pregame Intelligence & Matchup Preview`;
   const where = [e.venue, e.city, e.country].filter(Boolean).join(", ");
   const description = `${e.name} on ${fmtDate(e.event_date)}${where ? ` at ${where}` : ""}: Pregame Desk fight reads, key comparisons, three things that matter, how each fighter wins and fight-phase intelligence for every bout, built from records, UFC Stats, archived results, rankings and Fight DNA.`;

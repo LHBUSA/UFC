@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getRecentEvents(12),
   ]);
   const now = new Date();
-  const fixedPaths = ["/", "/fight-week", "/events", "/fighters", "/rankings", "/referees", "/news", "/contender-series", "/pro", "/about"];
+  const fixedPaths = ["/", "/fight-week", "/learn/fight-dna", "/events", "/fighters", "/rankings", "/referees", "/news", "/contender-series", "/pro", "/about"];
   const fixed: MetadataRoute.Sitemap = fixedPaths.map((p) => ({
     url: `${SITE.url}${p}`,
     lastModified: now,
