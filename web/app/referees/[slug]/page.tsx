@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const r = await getRefereeBySlug((await params).slug);
   if (!r) return { title: "Referee not found", robots: { index: false } };
   const title = `${r.display_name} — UFC Referee Stats & Fight Impact`;
-  const description = `${r.display_name} referee profile: ${r.bouts} loaded UFC assignments, ${pct(r.stoppage_rate)} stoppage rate, ${pct(r.decision_rate)} decision rate, title-fight history and recent bouts.`;
+  const description = `${r.display_name} referee profile: ${r.bouts} loaded UFC assignments, ${pct(r.stoppage_rate)} stoppage rate, ${pct(r.decision_rate)} decision rate, five-round exposure and recent bouts.`;
   return {
     title,
     description,
@@ -81,7 +81,7 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
         <div className={styles.stat}><b>{r.bouts}</b><span>Loaded bouts</span></div>
         <div className={styles.stat}><b>{r.stoppages}</b><span>Stoppages</span></div>
         <div className={styles.stat}><b>{r.decisions}</b><span>Decisions</span></div>
-        <div className={styles.stat}><b>{r.title_bouts}</b><span>Title bouts</span></div>
+        <div className={styles.stat}><b>{r.ko_tko}</b><span>KO/TKO results</span></div>
         <div className={styles.stat}><b>{r.five_round_bouts}</b><span>5-round assignments</span></div>
         <div className={styles.stat}><b>{duration(r.avg_stoppage_seconds)}</b><span>Avg stoppage time</span></div>
       </section>
@@ -135,7 +135,7 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
         </div>
       </section>
 
-      <div className={styles.note}>Important: “fight impact” here means historical context, not causation. A referee does not choose the matchup, fighter styles, skill gap or scheduled length, so finish/decision rates must be interpreted with sample size and those confounders in mind. PropBetEdge will only elevate referee tendencies into Pregame Desk when a specific assignment is verified and the sample clears the minimum-data gate.</div>
+      <div className={styles.note}>Important: “fight impact” here means historical context, not causation. A referee does not choose the matchup, fighter styles, skill gap or scheduled length, so finish/decision rates must be interpreted with sample size and those confounders in mind. Historical title-fight flags are still being normalized, so PropBetEdge does not publish a referee title-assignment total yet. Referee tendencies will only appear in Pregame Desk when a specific assignment is verified and the sample clears the minimum-data gate.</div>
     </div>
   );
 }
