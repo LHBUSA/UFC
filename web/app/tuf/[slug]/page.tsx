@@ -212,6 +212,12 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
               professional result and it lives on the event page.
             </small>
           </p>
+        ) : season.unresolved_finale ? (
+          <p className="tuf-none">
+            <b>Finale not linked.</b> {season.unresolved_finale.why_wrong ? `${season.unresolved_finale.why_wrong} ` : ""}
+            {season.unresolved_finale.blocker}
+            {season.unresolved_finale.candidate_card ? ` Candidate card: ${season.unresolved_finale.candidate_card}.` : ""}
+          </p>
         ) : season.finale_event ? (
           <p className="tuf-none">
             <b>{season.finale_event}</b>
@@ -222,6 +228,36 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
           <p className="tuf-none">No finale card recorded for this season.</p>
         )}
       </section>
+
+      {season.final_bouts?.length ? (
+        <section className="wrap tuf-section">
+          <div className="tuf-section-head">
+            <h2>Tournament finals</h2>
+            <p>Each verified by the exact finalist-versus-finalist bout in our own records — not by a champion appearing
+              somewhere on a card, which is not evidence and once linked two seasons to the wrong night.</p>
+          </div>
+          <ul className="tuf-bouts">
+            {season.final_bouts.map((f, i) => (
+              <li className="tuf-bout is-pro" key={`f-${i}`}>
+                <span className="tuf-bout-names">
+                  <Name name={f.a} linked={linked} />
+                  <em>vs</em>
+                  <Name name={f.b} linked={linked} />
+                </span>
+                <span className="tuf-bout-meta">
+                  <span className="tuf-res">
+                    {f.winner ? <b>{f.winner}</b> : null}
+                    {f.method ? ` · ${f.method}` : ""}
+                    {f.round ? ` · R${f.round}` : ""}
+                  </span>
+                  <span className="tuf-class tuf-class-professional">{f.weight_class}</span>
+                  <span className="tuf-ep">{f.event} · {f.date}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {/* ---- teams ---- */}
       {season.teams?.length ? (

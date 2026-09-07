@@ -50,6 +50,17 @@ export type SeasonRow = {
   ongoing?: boolean;
   finale_event: string | null;
   finale_date: string | null;
+  finale_link_basis?: string;
+  /** One entry per weight class. A list, not a single card, because a
+   * season's divisions have been decided on different nights. */
+  final_bouts?: Array<{
+    weight_class: string; a: string; b: string; winner?: string;
+    method?: string | null; round?: number | null;
+    event: string; date: string; verified_against?: string;
+  }>;
+  /** A link we withdrew or could not establish, with what blocks it. Kept so
+   * the gap is actionable rather than invisible. */
+  unresolved_finale?: { withdrawn_match?: string; why_wrong?: string; candidate_card?: string; blocker: string };
   /** OUR coverage of the tournament. Three mutually exclusive buckets, so
    * every season is in exactly one and they sum to the season count. A finale
    * card we happen to hold is NOT coverage and is tracked separately. */

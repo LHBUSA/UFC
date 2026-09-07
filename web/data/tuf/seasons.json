@@ -4,7 +4,7 @@
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter",
     "retrieved": "2026-09-07",
     "note": "Finale event names and dates are reconciled against our own ufc_events table where we hold the card. Where the encyclopedia and our database disagree, the database wins for the event and the disagreement is recorded in conflicts[].",
-    "finale_resolution": "Finales are matched to our own events by participants and date, not by the string \"Finale\". Modern and international seasons put their tournament finals on regular UFC cards, so name matching alone reports them as missing when we already hold them."
+    "finale_resolution": "A finale is linked only when the exact final matchup — finalist versus finalist — is found in our own ufc_bouts with a result. An earlier pass matched on a champion appearing somewhere on a card and produced two false positives, both recorded in the seasons they affected. Finals contested on different cards are supported: final_bouts is a list and each entry carries its own event and date."
   },
   "_conflicts": [
     {
@@ -828,7 +828,31 @@
       "finale_date": "2021-08-28",
       "coverage": "metadata_only",
       "season_state": "completed",
-      "finale_link_basis": "Resolved by participant and date against our own ufc_events, not by name: this season's tournament finals were contested on an ordinary UFC card. Corroborated by Ricky Turcios and Bryan Battle appearing on that card within the season's window."
+      "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Ricky Turcios def. Brady Hiestand (Decision - Split, R3); Bryan Battle def. Gilbert Urbina (Submission, R2) on UFC Fight Night: Barboza vs. Chikadze, 2021-08-28.",
+      "final_bouts": [
+        {
+          "weight_class": "Bantamweight",
+          "a": "Ricky Turcios",
+          "b": "Brady Hiestand",
+          "winner": "Ricky Turcios",
+          "method": "Decision - Split",
+          "round": 3,
+          "event": "UFC Fight Night: Barboza vs. Chikadze",
+          "date": "2021-08-28",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        },
+        {
+          "weight_class": "Middleweight",
+          "a": "Bryan Battle",
+          "b": "Gilbert Urbina",
+          "winner": "Bryan Battle",
+          "method": "Submission",
+          "round": 2,
+          "event": "UFC Fight Night: Barboza vs. Chikadze",
+          "date": "2021-08-28",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        }
+      ]
     },
     {
       "slug": "tuf-30",
@@ -858,7 +882,31 @@
       "finale_date": "2022-08-06",
       "coverage": "metadata_only",
       "season_state": "completed",
-      "finale_link_basis": "Resolved by participant and date against our own ufc_events, not by name: this season's tournament finals were contested on an ordinary UFC card. Corroborated by Mohammed Usman and Juliana Miller appearing on that card within the season's window."
+      "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Mohammed Usman def. Zac Pauga (KO/TKO, R2); Juliana Miller def. Brogan Walker (KO/TKO, R3) on UFC Fight Night: Santos vs. Hill, 2022-08-06.",
+      "final_bouts": [
+        {
+          "weight_class": "Heavyweight",
+          "a": "Mohammed Usman",
+          "b": "Zac Pauga",
+          "winner": "Mohammed Usman",
+          "method": "KO/TKO",
+          "round": 2,
+          "event": "UFC Fight Night: Santos vs. Hill",
+          "date": "2022-08-06",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        },
+        {
+          "weight_class": "Women's Flyweight",
+          "a": "Juliana Miller",
+          "b": "Brogan Walker",
+          "winner": "Juliana Miller",
+          "method": "KO/TKO",
+          "round": 3,
+          "event": "UFC Fight Night: Santos vs. Hill",
+          "date": "2022-08-06",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        }
+      ]
     },
     {
       "slug": "tuf-31",
@@ -889,7 +937,31 @@
       "finale_date": "2023-08-19",
       "coverage": "metadata_only",
       "season_state": "completed",
-      "finale_link_basis": "Resolved by participant and date against our own ufc_events, not by name: this season's tournament finals were contested on an ordinary UFC card. Corroborated by Brad Katona and Kurt Holobaugh appearing on that card within the season's window."
+      "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Brad Katona def. Cody Gibson (Decision - Unanimous, R3); Kurt Holobaugh def. Austin Hubbard (Submission, R2) on UFC 292: Sterling vs. O'Malley, 2023-08-19.",
+      "final_bouts": [
+        {
+          "weight_class": "Bantamweight",
+          "a": "Brad Katona",
+          "b": "Cody Gibson",
+          "winner": "Brad Katona",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC 292: Sterling vs. O'Malley",
+          "date": "2023-08-19",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        },
+        {
+          "weight_class": "Lightweight",
+          "a": "Kurt Holobaugh",
+          "b": "Austin Hubbard",
+          "winner": "Kurt Holobaugh",
+          "method": "Submission",
+          "round": 2,
+          "event": "UFC 292: Sterling vs. O'Malley",
+          "date": "2023-08-19",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        }
+      ]
     },
     {
       "slug": "tuf-32",
@@ -919,7 +991,31 @@
       "finale_date": "2024-08-24",
       "coverage": "metadata_only",
       "season_state": "completed",
-      "finale_link_basis": "Resolved by participant and date against our own ufc_events, not by name: this season's tournament finals were contested on an ordinary UFC card. Corroborated by Mairon Santos and Ryan Loder appearing on that card within the season's window."
+      "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Mairon Santos def. Kaan Ofli (KO/TKO, R2); Ryan Loder def. Robert Valentin (KO/TKO, R2) on UFC Fight Night: Cannonier vs. Borralho, 2024-08-24.",
+      "final_bouts": [
+        {
+          "weight_class": "Featherweight",
+          "a": "Mairon Santos",
+          "b": "Kaan Ofli",
+          "winner": "Mairon Santos",
+          "method": "KO/TKO",
+          "round": 2,
+          "event": "UFC Fight Night: Cannonier vs. Borralho",
+          "date": "2024-08-24",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        },
+        {
+          "weight_class": "Middleweight",
+          "a": "Ryan Loder",
+          "b": "Robert Valentin",
+          "winner": "Ryan Loder",
+          "method": "KO/TKO",
+          "round": 2,
+          "event": "UFC Fight Night: Cannonier vs. Borralho",
+          "date": "2024-08-24",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        }
+      ]
     },
     {
       "slug": "tuf-33",
@@ -1119,7 +1215,31 @@
       "finale_date": "2014-11-15",
       "coverage": "metadata_only",
       "season_state": "completed",
-      "finale_link_basis": "Resolved by participant and date against our own ufc_events, not by name: this season's tournament finals were contested on an ordinary UFC card. Corroborated by Alejandro Pérez and Yair Rodríguez appearing on that card within the season's window."
+      "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Alejandro Pérez def. Jose Quinonez (Decision - Unanimous, R3); Yair Rodríguez def. Leonardo Morales (Decision - Unanimous, R3) on UFC 180: Werdum vs Hunt, 2014-11-15.",
+      "final_bouts": [
+        {
+          "weight_class": "Bantamweight",
+          "a": "Alejandro Pérez",
+          "b": "Jose Quinonez",
+          "winner": "Alejandro Pérez",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC 180: Werdum vs Hunt",
+          "date": "2014-11-15",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        },
+        {
+          "weight_class": "Featherweight",
+          "a": "Yair Rodríguez",
+          "b": "Leonardo Morales",
+          "winner": "Yair Rodríguez",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC 180: Werdum vs Hunt",
+          "date": "2014-11-15",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+        }
+      ]
     },
     {
       "slug": "tuf-latam-2",
@@ -1202,11 +1322,16 @@
           "fighter": "Zhang Lipeng"
         }
       ],
-      "finale_event": "UFC Fight Night: Bisping vs Le",
-      "finale_date": "2014-08-23",
+      "finale_event": null,
+      "finale_date": null,
       "coverage": "metadata_only",
       "season_state": "completed",
-      "finale_link_basis": "Resolved by participant and date against our own ufc_events, not by name: this season's tournament finals were contested on an ordinary UFC card. Corroborated by Zhang Lipeng appearing on that card within the season's window."
+      "unresolved_finale": {
+        "withdrawn_match": "UFC Fight Night: Bisping vs Le (2014-08-23)",
+        "why_wrong": "Matched because Zhang Lipeng appeared on that card. He fought Brendan O'Reilly there, not his tournament final.",
+        "candidate_card": "UFC Fight Night: Kim vs Hathaway (2014-03-01)",
+        "blocker": "The card exists in our events, but the final bout Zhang Lipeng vs Wang Sai is not in ufc_bouts and Wang Sai has no fighter row at all. Left unresolved."
+      }
     },
     {
       "slug": "tuf-nations-1",
@@ -1232,11 +1357,16 @@
           "fighter": "Elias Theodorou"
         }
       ],
-      "finale_event": "UFC Fight Night: MacDonald vs Saffiedine",
-      "finale_date": "2014-10-04",
+      "finale_event": null,
+      "finale_date": null,
       "coverage": "metadata_only",
       "season_state": "completed",
-      "finale_link_basis": "Resolved by participant and date against our own ufc_events, not by name: this season's tournament finals were contested on an ordinary UFC card. Corroborated by Chad Laprise appearing on that card within the season's window."
+      "unresolved_finale": {
+        "withdrawn_match": "UFC Fight Night: MacDonald vs Saffiedine (2014-10-04)",
+        "why_wrong": "Matched because Chad Laprise appeared on that card. He fought Yosdenis Cedeno there, not his tournament final. Champion-on-card is not evidence of a final.",
+        "candidate_card": "UFC Fight Night: Bisping vs Kennedy (2014-04-16)",
+        "blocker": "The card exists in our events, but the final bout Chad Laprise vs Olivier Aubin-Mercier is not in ufc_bouts — the 2014 cards are still ahead of the historical backfill. Left unresolved rather than linked to the wrong card."
+      }
     },
     {
       "slug": "tuf-smashes-1",

@@ -109,12 +109,18 @@ test("every bout is classified individually, with a source behind the claim", ()
   }
 });
 
-test("there is no blanket rule: classification varies within the same season", () => {
-  /* If every bout in a season carried the same classification, that would be
-   * indistinguishable from applying a rule to the TUF label. It does not. */
-  const kinds = new Set(bouts.map((b) => b.classification));
-  assert.ok(kinds.size > 1, "a season's bouts must not all share one classification by default");
-  assert.ok(kinds.has("professional") && kinds.has("exhibition"));
+test("classification follows evidence, and is never applied by label", () => {
+  /* Deliberately NOT a rule that classifications must vary — a season whose
+   * every bout was contested the same way legitimately has one value
+   * throughout. What must hold is that each bout was decided on its own
+   * evidence, which is what the source field records. */
+  for (const b of bouts) {
+    if (b.classification === "unverified") continue;
+    assert.ok(
+      b.classification_source && b.classification_source.length > 8,
+      `${b.a} vs ${b.b}: classification must cite the evidence behind it, not the TUF label`,
+    );
+  }
 });
 
 test("the exception is decided by where a bout was contested, not by its stage", () => {
@@ -207,22 +213,53 @@ test("every season has a unique slug in a declared edition, and the internationa
   assert.ok((byEdition.get("us") ?? 0) >= 34);
 });
 
-test("a finale is matched by participant and date, not by the word Finale", () => {
-  /* Modern and international seasons put their tournament finals on ordinary
-   * UFC cards. Requiring "Finale" in the name reported seven seasons as
-   * missing whose cards we already held, so any season whose finale does not
-   * carry the word must say how it was resolved instead. */
-  let offName = 0;
+/* ---- finale matching: regressions for two real false positives ---------- */
+
+test("a champion merely appearing on a card is not a finale match", () => {
+  /* Both of these were linked by an earlier pass that matched on a champion
+   * being somewhere on a card. Chad Laprise fought Yosdenis Cedeno that night,
+   * not his tournament final; Zhang Lipeng fought Brendan O'Reilly, not Wang
+   * Sai. Named explicitly so neither can come back. */
+  const rejected: Array<[string, string]> = [
+    ["tuf-nations-1", "UFC Fight Night: MacDonald vs Saffiedine"],
+    ["tuf-china-1", "UFC Fight Night: Bisping vs Le"],
+  ];
+  for (const [slug, wrongCard] of rejected) {
+    const s = seasons.find((x) => x.slug === slug)!;
+    assert.notEqual(s.finale_event, wrongCard, `${slug} must not be linked to ${wrongCard}`);
+    assert.equal(s.finale_event, null, `${slug}: an unverified finale link stays empty`);
+    assert.equal(s.finale_date, null);
+    assert.ok(
+      (s as Record<string, unknown>).unresolved_finale,
+      `${slug}: a withdrawn match must record what was wrong and what blocks it`,
+    );
+  }
+});
+
+test("every off-name finale link is backed by an exact finalist-versus-finalist bout", () => {
   for (const s of seasons) {
     if (!s.finale_event) continue;
     assert.match(String(s.finale_date), /^\d{4}-\d{2}-\d{2}$/, `${s.slug}: finale date must be ISO`);
-    if (!/Finale$/.test(s.finale_event)) {
-      offName += 1;
-      assert.ok(
-        (s as Record<string, unknown>).finale_link_basis,
-        `${s.slug}: a finale not named "Finale" must record how it was matched`,
-      );
+    if (/Finale$/.test(s.finale_event)) continue;
+    const finals = (s as Record<string, unknown>).final_bouts as
+      | Array<{ a: string; b: string; event: string; date: string; verified_against?: string }>
+      | undefined;
+    assert.ok(finals?.length, `${s.slug}: a card not named "Finale" needs the matchup that proves it`);
+    for (const f of finals!) {
+      assert.ok(f.a && f.b && f.a !== f.b, `${s.slug}: a final needs two distinct finalists`);
+      assert.match(String(f.verified_against), /ufc_bouts/, `${s.slug}: verified against our own records`);
+      assert.match(String(f.date), /^\d{4}-\d{2}-\d{2}$/);
     }
   }
-  assert.ok(offName > 0, "the archive should contain finales resolved by participant rather than by name");
+});
+
+test("finals contested on separate cards are supported", () => {
+  /* final_bouts is a list and each entry carries its own event and date, so a
+   * season whose divisions were decided on different nights is representable
+   * rather than forced onto one card. */
+  for (const s of seasons) {
+    const finals = (s as Record<string, unknown>).final_bouts as Array<{ event: string; date: string }> | undefined;
+    if (!finals) continue;
+    for (const f of finals) assert.ok(f.event && f.date, `${s.slug}: each final carries its own event and date`);
+  }
 });
