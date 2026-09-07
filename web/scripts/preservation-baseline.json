@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T00:54:12.342Z",
+  "generated_at": "2026-09-07T02:05:00.000Z",
   "routes": [
     "/",
     "/about",
@@ -18,6 +18,8 @@
     "/pro",
     "/qa/preview",
     "/rankings",
+    "/referees",
+    "/referees/[slug]",
     "/voices/[key]"
   ],
   "nav": [
@@ -92,6 +94,8 @@
     "components/LiveWire.tsx",
     "components/NewsStoryCard.tsx",
     "components/OfficialVideo.tsx",
+    "components/PregameDesk.module.css",
+    "components/PregameDesk.tsx",
     "components/VideoRail.tsx",
     "components/VoiceImage.tsx",
     "components/dna.tsx",
@@ -101,6 +105,7 @@
     "lib/faces.ts",
     "lib/heritage.ts",
     "lib/pregame.ts",
+    "lib/referees.ts",
     "lib/voices.ts",
     "lib/wire.ts",
     "public/site.webmanifest"
