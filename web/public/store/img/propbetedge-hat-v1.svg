@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300" role="img" aria-label="PropBetEdge Cap — design preview, not a photograph">
+  <title>PropBetEdge Cap — design preview, not a photograph</title>
+  <defs><linearGradient id="g-cap-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#221d17"/><stop offset="100%" stop-color="#171310"/></linearGradient></defs>
+  <rect width="240" height="300" fill="#14110d"/>
+  <path d="M56 176 Q56 106 120 106 Q184 106 184 176 L196 176 Q206 176 206 186 L206 194 Q206 202 196 202 L56 202 Q46 202 46 194 L46 186 Q46 176 56 176 Z" fill="url(#g-cap-gold)" stroke="rgba(255,245,220,.16)" stroke-width="1.5" stroke-linejoin="round"/>
+  <g transform="translate(120,158)">
+    <polygon points="15.71,6.51 6.51,15.71 -6.51,15.71 -15.71,6.51 -15.71,-6.51 -6.51,-15.71 6.51,-15.71 15.71,-6.51" fill="none" stroke="#d4af37" stroke-width="1.6" opacity=".9"/>
+    <circle cx="0" cy="0" r="3.40" fill="#d4af37"/>
+  </g>
+</svg>

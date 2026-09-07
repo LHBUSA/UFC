@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHead, JsonLd } from "@/components/ui";
-import { StoreArt } from "@/components/StoreArt";
 import { bySlug, productsFor } from "@/lib/store/catalog";
 import { getProvisioning } from "@/lib/store/provisioning";
 import { formatPrice, toStorefront } from "@/lib/store/types";
@@ -60,7 +59,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
       <section className="wrap st-detail">
         <div className="st-detail-art">
-          <StoreArt form={p.form} label={p.name} tone={p.art.endsWith("-ink") ? "paper" : "gold"} />
+          <img className="st-art" src={p.images[0].url} alt={p.images[0].alt} width={p.images[0].width} height={p.images[0].height} />
           <p className="st-fine">Design preview, not a photograph.</p>
         </div>
 
@@ -112,6 +111,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           description: p.description,
           url: `${SITE.url}/store/${p.slug}`,
           brand: { "@type": "Brand", name: "PropBetEdge" },
+          image: p.images.map((i) => `${SITE.url}${i.url}`),
           offers: {
             "@type": "Offer",
             price: (p.price_cents / 100).toFixed(2),

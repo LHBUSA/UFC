@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHead, JsonLd } from "@/components/ui";
-import { StoreArt } from "@/components/StoreArt";
 import { COLLECTIONS, productsFor } from "@/lib/store/catalog";
 import { getProvisioning, anyPurchasable } from "@/lib/store/provisioning";
 import { formatPrice, toStorefront, type StorefrontProduct } from "@/lib/store/types";
@@ -40,7 +39,9 @@ export const metadata: Metadata = {
 function Card({ p }: { p: StorefrontProduct }) {
   return (
     <Link href={`/store/${p.slug}`} className="st-card">
-      <StoreArt form={p.form} label={p.name} tone={p.art.endsWith("-ink") ? "paper" : "gold"} />
+      {/* The same file the shared catalog API hands the other storefront, so
+          both shops show one image rather than each drawing their own. */}
+      <img className="st-art" src={p.images[0].url} alt={p.images[0].alt} width={p.images[0].width} height={p.images[0].height} loading="lazy" decoding="async" />
       <span className="st-card-body">
         <span className="st-card-name">{p.name}</span>
         <span className="st-card-blurb">{p.blurb}</span>

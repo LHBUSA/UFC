@@ -64,6 +64,7 @@
 import { randomUUID } from "node:crypto";
 import os from "node:os";
 import process from "node:process";
+import { decideReconcile, decideStaleClaim, DEFAULTS } from "./reconcile_rules.mjs";
 
 const argv = new Set(process.argv.slice(2));
 const PLAN = argv.has("--plan");
@@ -198,52 +199,55 @@ const release = (slug, attemptId, patch) =>
 
 /**
  * Settle rows whose outcome was never observed, using the provider as the
- * only source of truth.
+ * only source of truth and the shared rules to decide what that means.
  *
- * Three findings, three moves:
- *   exactly one match  -> 'created', recording the id we found
- *   no match           -> 'failed', which makes the slug claimable again
- *   more than one      -> left 'uncertain' and reported, because a duplicate
- *                         at the provider is a human decision, not a state
- *                         transition. Deleting the wrong one is not something
- *                         a script should choose.
+ * Every transition goes through a SQL function that re-checks the same
+ * conditions, so a bug here is refused rather than believed. The interesting
+ * case is zero matches: it is NOT treated as absence, because the provider's
+ * listing is not guaranteed to be read-your-writes and a create that
+ * succeeded may not appear yet. Absence is established over a quarantine
+ * window and several independent observations, or not at all.
  */
 async function reconcile(rows, syncProducts) {
   const report = [];
+  const now = Date.now();
+
   for (const row of rows) {
     const hits = matchesExternalId(syncProducts, row.slug);
-    if (hits.length === 1) {
-      await sb(`store_provisioning?slug=eq.${encodeURIComponent(row.slug)}`, {
-        method: "PATCH",
-        body: {
-          state: "created",
-          provider_product_id: hits[0].id,
-          attempt_id: null,
-          reconciled_at: new Date().toISOString(),
-          reconcile_note: `adopted existing sync product ${hits[0].id} found by external_id`,
-          updated_at: new Date().toISOString(),
-        },
+    const d = decideReconcile(row, hits, now);
+
+    if (d.action === "adopt") {
+      await sb("rpc/store_adopt_existing", {
+        method: "POST",
+        body: { p_slug: row.slug, p_product_id: d.productId, p_note: `adopted product ${d.productId} observed at the provider` },
       });
-      report.push({ slug: row.slug, from: row.state, to: "created", note: `adopted ${hits[0].id}` });
-    } else if (hits.length === 0) {
-      await sb(`store_provisioning?slug=eq.${encodeURIComponent(row.slug)}`, {
-        method: "PATCH",
-        body: {
-          state: "failed",
-          attempt_id: null,
-          reconciled_at: new Date().toISOString(),
-          reconcile_note: "no sync product carries this external_id; safe to retry",
-          updated_at: new Date().toISOString(),
-        },
-      });
-      report.push({ slug: row.slug, from: row.state, to: "failed", note: "nothing exists; retryable" });
-    } else {
+      report.push({ slug: row.slug, to: "created", note: `adopted ${d.productId}` });
+    } else if (d.action === "settle-absent") {
+      const settled = await sb("rpc/store_settle_absent", { method: "POST", body: { p_slug: row.slug } });
+      /* Null back means the database disagreed that the conditions were met.
+       * That is the backstop working, and it is reported rather than retried. */
+      report.push(
+        settled
+          ? { slug: row.slug, to: "failed", note: `absent across ${d.checks} checks over ${Math.round(d.waitedMs / 60000)}m; retryable` }
+          : { slug: row.slug, to: "uncertain", note: "database refused to settle absence; conditions not met" },
+      );
+    } else if (d.action === "record-absent") {
+      const rec = await sb("rpc/store_record_absent", { method: "POST", body: { p_slug: row.slug } });
       report.push({
         slug: row.slug,
-        from: row.state,
-        to: row.state,
-        note: `AMBIGUOUS: ${hits.length} sync products carry this external_id (${hits.map((h) => h.id).join(", ")}) — resolve by hand`,
+        to: "uncertain",
+        note: rec
+          ? `absent observation ${d.willBe} recorded; needs ${d.stillNeeds.checks} more and ${Math.ceil(d.stillNeeds.ms / 60000)}m more`
+          : "observation too close to the previous one to count",
       });
+    } else if (d.action === "escalate") {
+      report.push({
+        slug: row.slug,
+        to: row.state,
+        note: `AMBIGUOUS: ${d.ids.length} products carry this external_id (${d.ids.join(", ")}) — resolve by hand`,
+      });
+    } else {
+      report.push({ slug: row.slug, to: row.state, note: d.reason || d.action });
     }
   }
   return report;
@@ -279,7 +283,20 @@ const main = async () => {
   log(`provisioning rows: ${rows?.length ?? 0}${Object.keys(counts).length ? ` (${Object.entries(counts).map(([k, v]) => `${k}:${v}`).join(", ")})` : ""}`);
   for (const p of PRODUCTS) if (!byslug.has(p.slug)) log(`  unclaimed (no row): ${p.slug}`);
 
-  const uncertain = (rows || []).filter((r) => r.state === "uncertain" || (r.state === "in_flight" && Date.parse(r.claimed_at || 0) < Date.now() - 10 * 60_000));
+  /* Crash recovery, first. Any claim whose holder never reported back is an
+   * outcome nobody observed, so it is expired into uncertainty rather than
+   * being handed back for another attempt. Age does not turn an unknown
+   * outcome into a known one. */
+  const stale = (rows || []).filter((r) => decideStaleClaim(r, Date.now()).action === "expire-to-uncertain");
+  if (stale.length) {
+    const expired = await sb("rpc/store_expire_stale_claims", { method: "POST", body: {} });
+    log(`
+expired ${expired?.length ?? 0} abandoned claim(s) to uncertain (crash recovery)`);
+    for (const r of expired || []) log(`  ${r.slug.padEnd(34)} claimed by ${r.claimed_by ?? "?"} — quarantined`);
+  }
+
+  const fresh = await sb("store_provisioning?select=*");
+  const uncertain = (fresh || []).filter((r) => r.state === "uncertain");
 
   if (RECONCILE || uncertain.length) {
     if (!uncertain.length) {

@@ -22,6 +22,8 @@
  * silent publication.
  */
 
+import { IMAGE_H, IMAGE_W, imagePath } from "./art.ts";
+
 export type Collection = "propbetedge" | "ufc";
 export type Form = "tee" | "hoodie" | "cap" | "mug";
 export type Site = "ufc" | "news";
@@ -85,6 +87,9 @@ export type StorefrontProduct = {
   sizes: string[];
   colors: string[];
   art: string;
+  /** Permanent, versioned image URLs. Never a provider mockup link: those
+   * expire, and a URL handed to another storefront must not. */
+  images: { url: string; width: number; height: number; alt: string }[];
   /** True only when the provider has confirmed this exact product exists. */
   purchasable: boolean;
   /** Why it is not purchasable, in words a reader can act on. Null when it is. */
@@ -119,7 +124,7 @@ export const FORBIDDEN_PUBLIC_KEYS = [
  * uncertain row means we do not know whether the product exists, and offering
  * to sell something we cannot confirm is worse than saying it is not ready.
  */
-export function toStorefront(def: ProductDef, rec: ProvisionRecord | null): StorefrontProduct {
+export function toStorefront(def: ProductDef, rec: ProvisionRecord | null, origin = ""): StorefrontProduct {
   const confirmed =
     rec?.state === "created" &&
     typeof rec.provider_product_id === "number" &&
@@ -136,6 +141,14 @@ export function toStorefront(def: ProductDef, rec: ProvisionRecord | null): Stor
     sizes: [...def.sizes],
     colors: [...def.colors],
     art: def.art,
+    images: [
+      {
+        url: `${origin}${imagePath(def.slug)}`,
+        width: IMAGE_W,
+        height: IMAGE_H,
+        alt: `${def.name} — design preview, not a photograph`,
+      },
+    ],
     purchasable: confirmed,
     unavailable_reason: confirmed ? null : unavailableReason(rec),
   };

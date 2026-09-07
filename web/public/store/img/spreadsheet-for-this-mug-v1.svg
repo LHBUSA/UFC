@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300" role="img" aria-label="I Have a Spreadsheet for This Mug — design preview, not a photograph">
+  <title>I Have a Spreadsheet for This Mug — design preview, not a photograph</title>
+  <defs><linearGradient id="g-mug-paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#221d17"/><stop offset="100%" stop-color="#171310"/></linearGradient></defs>
+  <rect width="240" height="300" fill="#14110d"/>
+  <path d="M62 108 L172 108 L166 244 Q165 254 154 254 L80 254 Q69 254 68 244 Z M172 138 Q212 138 212 172 Q212 206 172 206" fill="url(#g-mug-paper)" stroke="rgba(255,245,220,.16)" stroke-width="1.5" stroke-linejoin="round"/>
+  <g transform="translate(117,178)">
+    <polygon points="20.33,8.42 8.42,20.33 -8.42,20.33 -20.33,8.42 -20.33,-8.42 -8.42,-20.33 8.42,-20.33 20.33,-8.42" fill="none" stroke="#f5f1eb" stroke-width="1.6" opacity=".9"/>
+    <circle cx="0" cy="0" r="4.40" fill="#f5f1eb"/>
+  </g>
+</svg>

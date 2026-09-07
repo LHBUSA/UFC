@@ -13,6 +13,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { FORBIDDEN_PUBLIC_KEYS, formatPrice, toStorefront, variantKey, type ProvisionRecord } from "./types.ts";
 import { PRODUCTS, bySlug, productsFor } from "./catalog.ts";
+import { IMAGE_VERSION } from "./art.ts";
+import { MAX_SKEW_MS, SIGNATURE_HEADER, TIMESTAMP_HEADER, sign, signedPayload, verifySignedRequest } from "./signing.ts";
+
+const NOW = Date.parse("2026-09-07T12:00:00Z");
 
 const created = (over: Partial<ProvisionRecord> = {}): ProvisionRecord => ({
   slug: "propbetedge-logo-tee",
@@ -132,4 +136,65 @@ test("price formatting drops a trailing .00 and keeps real cents", () => {
   assert.equal(formatPrice(3200), "$32");
   assert.equal(formatPrice(1950), "$19.50");
   assert.equal(variantKey("M", "Black"), "M / Black");
+});
+
+/* ---- shared-catalog signing --------------------------------------------- */
+
+test("a correctly signed request verifies, and a tampered one does not", async () => {
+  const secret = "test-secret-not-a-real-one";
+  const ts = String(NOW);
+  const path = "/api/catalog/products?site=news";
+  const sig = await sign(secret, signedPayload(ts, "GET", path));
+
+  const req = (over: Record<string, string> = {}, p = path) =>
+    new Request(`https://ufc.propbetedge.ai${p}`, {
+      headers: { [TIMESTAMP_HEADER]: ts, [SIGNATURE_HEADER]: `sha256=${sig}`, ...over },
+    });
+
+  assert.deepEqual(await verifySignedRequest(req(), path, secret, NOW), { ok: true });
+
+  /* A signature captured for one path must not work on another, or one
+   * endpoint's signature becomes every endpoint's. */
+  const other = await verifySignedRequest(req({}, "/api/catalog/other"), "/api/catalog/other", secret, NOW);
+  assert.equal(other.ok, false);
+
+  /* Wrong secret, flipped digest, and a missing header all refuse. */
+  assert.equal((await verifySignedRequest(req(), path, "different-secret", NOW)).ok, false);
+  assert.equal((await verifySignedRequest(req({ [SIGNATURE_HEADER]: `sha256=${"0".repeat(64)}` }), path, secret, NOW)).ok, false);
+  assert.equal((await verifySignedRequest(new Request(`https://x${path}`), path, secret, NOW)).ok, false);
+});
+
+test("an old signature stops working, in both directions", async () => {
+  const secret = "test-secret-not-a-real-one";
+  const path = "/api/catalog/products";
+  for (const offset of [MAX_SKEW_MS + 1000, -(MAX_SKEW_MS + 1000)]) {
+    const ts = String(NOW + offset);
+    const sig = await sign(secret, signedPayload(ts, "GET", path));
+    const req = new Request(`https://ufc.propbetedge.ai${path}`, {
+      headers: { [TIMESTAMP_HEADER]: ts, [SIGNATURE_HEADER]: sig },
+    });
+    const r = await verifySignedRequest(req, path, secret, NOW);
+    assert.equal(r.ok, false, `offset ${offset} should be outside the window`);
+    assert.match(r.ok === false ? r.reason : "", /window/);
+  }
+});
+
+test("a missing secret refuses as misconfiguration, not as a bad caller", async () => {
+  /* 401 would send whoever is debugging after the wrong problem. */
+  const r = await verifySignedRequest(new Request("https://x/api/catalog/products"), "/api/catalog/products", undefined, NOW);
+  assert.equal(r.ok, false);
+  assert.equal(r.ok === false && r.status, 503);
+});
+
+test("image URLs are versioned, so a URL handed to another site stays valid", () => {
+  const def = bySlug("propbetedge-logo-tee");
+  assert.ok(def);
+  const p = toStorefront(def, null, "https://ufc.propbetedge.ai");
+  assert.equal(p.images.length, 1);
+  assert.equal(p.images[0].url, `https://ufc.propbetedge.ai/store/img/propbetedge-logo-tee-${IMAGE_VERSION}.svg`);
+  assert.match(p.images[0].url, /-v\d+\.svg$/);
+  assert.ok(p.images[0].width > 0 && p.images[0].height > 0, "dimensions must be declared to avoid layout shift");
+  /* Never a provider mockup link: those expire, and a permanent contract
+   * cannot be built on a URL with a lifetime. */
+  assert.ok(!/printful|cdn\.printful/i.test(p.images[0].url));
 });
