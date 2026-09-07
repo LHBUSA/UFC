@@ -329,6 +329,8 @@ class Backfill:
         events.sort(key=lambda e: e.get("event_date") or "", reverse=True)
         if self.args.since:
             events = [e for e in events if e["event_date"] and e["event_date"] >= self.args.since]
+        if getattr(self.args, "until", None):
+            events = [e for e in events if e["event_date"] and e["event_date"] <= self.args.until]
         if self.args.limit:
             events = events[: self.args.limit]
         self.log.event("fights_phase", events=len(events))
@@ -508,6 +510,7 @@ def main():
     ap.add_argument("--source", choices=["wayback", "live"], default="wayback",
                     help="wayback (default): Internet Archive captures; live: ufcstats.com (aborts on JS challenge)")
     ap.add_argument("--since", help="YYYY-MM-DD; only events on/after this date")
+    ap.add_argument("--until", help="YYYY-MM-DD; only events on/before this date. Events are walked newest-first, so a closed window is the only way to target a specific historical year without paying for newer, often un-archived pages first.")
     ap.add_argument("--limit", type=int, help="max events to process")
     ap.add_argument("--raw-to-r2", action="store_true", help="also store raw HTML to R2 ufc-raw/{kind}/{id}.html")
     ap.add_argument("--force", action="store_true", help="re-fetch and re-write rows that already exist")
