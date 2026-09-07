@@ -39,22 +39,48 @@ export type ArchiveCoverage = {
   earliestEvent: { id: string; name: string; event_date: string | null } | null;
   ufc1Event: { id: string; name: string; event_date: string | null } | null;
   ufc1Bouts: number;
+  /* When this aggregation ran. */
   lastChecked: string;
+  /* When canonical data was last written. Different concept: during a
+   * historical repair this moves constantly while coverage is recomputed
+   * only on revalidation. */
+  lastDataWrite: string | null;
 };
 
 export async function getArchiveCoverage(): Promise<ArchiveCoverage> {
   const notDwcs = "name=not.ilike.*Contender%20Series*&name=not.ilike.*Road%20to%20UFC*";
-  const [events, bouts, results, roundRows, earliest, ufc1] = await Promise.all([
+  /* Every number on this panel must describe the same set of events.
+   * Previously only the event count excluded the Contender Series and Road to
+   * UFC, while bouts, results and round rows counted everything, so the panel
+   * read "798 UFC event records" beside a bout total that included hundreds of
+   * bouts belonging to the 100 events it had just excluded. Two scopes in one
+   * sentence is worse than either scope on its own. The inner join applies the
+   * same filter all the way down. */
+  /* PostgREST needs the filter keyed by the full embed path, so a one-level
+   * embed and a two-level embed spell the same condition differently. */
+  const onEvents = "ufc_events.name=not.ilike.*Contender%20Series*&ufc_events.name=not.ilike.*Road%20to%20UFC*";
+  const onBoutEvents = "ufc_bouts.ufc_events.name=not.ilike.*Contender%20Series*&ufc_bouts.ufc_events.name=not.ilike.*Road%20to%20UFC*";
+  const [events, bouts, results, roundRows, earliest, ufc1, lastWrite] = await Promise.all([
     count(`ufc_events?select=id&${notDwcs}`),
-    count("ufc_bouts?select=id"),
-    count("ufc_bout_results?select=bout_id"),
-    count("ufc_bout_round_stats?select=bout_id"),
+    count(`ufc_bouts?select=id,ufc_events!inner(name)&${onEvents}`),
+    count(`ufc_bout_results?select=bout_id,ufc_bouts!inner(ufc_events!inner(name))&${onBoutEvents}`),
+    count(`ufc_bout_round_stats?select=bout_id,ufc_bouts!inner(ufc_events!inner(name))&${onBoutEvents}`),
     rows<{ id: string; name: string; event_date: string | null }>(`ufc_events?select=id,name,event_date&${notDwcs}&order=event_date.asc.nullslast&limit=1`),
     rows<{ id: string; name: string; event_date: string | null }>("ufc_events?select=id,name,event_date&name=ilike.UFC%201%25&order=event_date.asc&limit=1"),
+    /* When canonical data was last written, which is a different fact from
+     * when coverage was last aggregated. During a historical repair the two
+     * drift apart and conflating them hides an active backfill. */
+    rows<{ captured_at: string }>("ufc_bout_round_stats?select=captured_at&order=captured_at.desc&limit=1"),
   ]);
   const ufc1Event = ufc1[0] || null;
   const ufc1Bouts = ufc1Event ? await count(`ufc_bouts?select=id&event_id=eq.${ufc1Event.id}`) : 0;
-  return { events, bouts, results, roundRows, earliestEvent: earliest[0] || null, ufc1Event, ufc1Bouts, lastChecked: new Date().toISOString() };
+  return {
+    events, bouts, results, roundRows,
+    earliestEvent: earliest[0] || null,
+    ufc1Event, ufc1Bouts,
+    lastChecked: new Date().toISOString(),
+    lastDataWrite: lastWrite[0]?.captured_at || null,
+  };
 }
 
 /* ---- Year-by-year coverage --------------------------------------------- */

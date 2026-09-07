@@ -64,7 +64,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
     <div className="wrap page">
       <PageHead crumbs={[{ name: "Schedule" }]} eyebrow="Live UFC calendar · results archive" title="UFC schedule & results" lede="Every announced UFC card month by month with date, location, status and the featured fight; Contender Series on its own track; and a year-by-year results archive that measures its own historical coverage instead of pretending old cards are complete." />
 
-      <div className="sched-fresh"><i />{syncAt ? <>Schedule &amp; results ingest last ran <time dateTime={syncAt}>{fmtDateTime(syncAt)}</time>{freshness?.status ? ` · ${freshness.status}` : ""}</> : <>Live database · ingest timestamp unavailable</>} · coverage checked <time dateTime={coverage.lastChecked}>{fmtDateTime(coverage.lastChecked)}</time></div>
+      <div className="sched-fresh"><i />{syncAt ? <>Schedule &amp; results ingest last ran <time dateTime={syncAt}>{fmtDateTime(syncAt)}</time>{freshness?.status ? ` · ${freshness.status}` : ""}</> : <>Live database · ingest timestamp unavailable</>} · {coverage.lastDataWrite ? <>data last written <time dateTime={coverage.lastDataWrite}>{fmtDateTime(coverage.lastDataWrite)}</time> · </> : null}coverage checked <time dateTime={coverage.lastChecked}>{fmtDateTime(coverage.lastChecked)}</time></div>
 
       <div className="rank-official-bar">
         <p><b style={{ color: "var(--pbe-paper)" }}>PropBetEdge + official source.</b> Use our linked matchup intelligence here, then jump to UFC's own event calendar whenever you want the promotion's official destination.</p>
@@ -104,10 +104,10 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
           <span className={`archive-state ${ufc1Ready ? "ready" : "repair"}`}>{ufc1Ready ? "UFC 1 loaded" : "Backfill active"}</span>
         </div>
         <div className="archive-proof-grid">
-          <div><b>{coverage.events.toLocaleString()}</b><span>UFC event records</span></div>
+          <div><b>{coverage.events.toLocaleString()}</b><span>UFC archive events<small className="cov-scope">excludes Contender Series &amp; Road to UFC</small></span></div>
           <div><b>{eventsWithCards.toLocaleString()}</b><span>events with bouts loaded</span></div>
           <div><b>{coverage.bouts.toLocaleString()}</b><span>bouts loaded</span></div>
-          <div><b>{coverage.results.toLocaleString()}</b><span>results · {coverage.roundRows.toLocaleString()} round-stat rows</span></div>
+          <div><b>{coverage.results.toLocaleString()}</b><span>results · {coverage.roundRows.toLocaleString()} round-stat rows<small className="cov-scope">one row per fighter per round</small></span></div>
         </div>
         <p>{ufc1Ready ? `UFC 1 currently has ${coverage.ufc1Bouts} bout rows in the canonical archive.` : "The historical event shell reaches back to the mid-1990s, but bout-level coverage is still being repaired backward year by year from archived UFC Stats captures. Missing cards are labeled as missing instead of synthesized."} Coverage checked {fmtDateTime(coverage.lastChecked)}. <Link href="/history#archive" style={{ color: "var(--pbe-gold)" }}>See the historical methodology →</Link></p>
         {yearCoverage.length > 0 && (

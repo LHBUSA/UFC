@@ -845,3 +845,7 @@ body::after {
 .api-cta-docs { color: var(--pbe-dim); font: 500 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; }
 .api-cta-docs:hover { color: var(--pbe-gold); }
 @media (max-width: 640px) { .api-cta { padding: var(--s-4); } .api-cta-actions { width: 100%; } .api-cta-actions .btn { flex: 1 1 auto; text-align: center; } }
+
+/* Coverage panel scope notes. A number without its scope invites the reader to
+ * compare it with a differently-scoped number elsewhere on the page. */
+.cov-scope { display: block; margin-top: 3px; color: var(--pbe-faint); font-size: var(--fs-xs); font-weight: 400; text-transform: none; letter-spacing: 0; }

@@ -83,10 +83,10 @@ export default async function HistoryPage() {
           <span className={`archive-state ${ufc1Ready ? "ready" : "repair"}`}>{ufc1Ready ? "UFC 1 loaded" : "Historical repair active"}</span>
         </div>
         <div className="archive-proof-grid">
-          <div><b>{coverage.events.toLocaleString()}</b><span>UFC event records</span></div>
+          <div><b>{coverage.events.toLocaleString()}</b><span>UFC archive events<small className="cov-scope">excludes Contender Series &amp; Road to UFC</small></span></div>
           <div><b>{eventsWithCards.toLocaleString()}</b><span>events with bouts loaded</span></div>
           <div><b>{coverage.bouts.toLocaleString()}</b><span>bout rows loaded</span></div>
-          <div><b>{coverage.results.toLocaleString()}</b><span>results · {coverage.roundRows.toLocaleString()} round-stat rows</span></div>
+          <div><b>{coverage.results.toLocaleString()}</b><span>results · {coverage.roundRows.toLocaleString()} round-stat rows<small className="cov-scope">one row per fighter per round</small></span></div>
         </div>
         <p>
           {ufc1Ready ? `The canonical database contains ${coverage.ufc1Bouts} UFC 1 bout rows.` : `UFC 1 is not yet complete in the canonical PropBetEdge database. We show that gap instead of inventing an "every fight" claim; the historical repair pipeline fills old cards year by year from archived UFC Stats captures.`}

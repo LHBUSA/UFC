@@ -398,13 +398,17 @@ export async function getWireFor(eventId: string | null, fighterIds: string[], l
 }
 
 /* ---- counts for the home strip --------------------------------------- */
+/* Cached for five minutes, matching the archive coverage panel. At the old
+ * one-hour TTL these counters sat visibly behind the archive panel on the same
+ * screen during a backfill, which reads as one of them being broken. Two live
+ * readings of one number must not disagree because of cache policy alone. */
 export async function getCounts(): Promise<{ fighters: number | null; events: number | null; bouts: number | null; results: number | null; rounds: number | null; articles: number | null }> {
   const [f, e, b, r, rs, a] = await Promise.all([
-    rest<unknown[]>("ufc_fighters?select=id&limit=1", [], { count: true, revalidate: 3600 }),
-    rest<unknown[]>("ufc_events?select=id&limit=1", [], { count: true, revalidate: 3600 }),
-    rest<unknown[]>("ufc_bouts?select=id&limit=1", [], { count: true, revalidate: 3600 }),
-    rest<unknown[]>("ufc_bout_results?select=bout_id&limit=1", [], { count: true, revalidate: 3600 }),
-    rest<unknown[]>("ufc_bout_round_stats?select=bout_id&limit=1", [], { count: true, revalidate: 3600 }),
+    rest<unknown[]>("ufc_fighters?select=id&limit=1", [], { count: true, revalidate: 300 }),
+    rest<unknown[]>("ufc_events?select=id&limit=1", [], { count: true, revalidate: 300 }),
+    rest<unknown[]>("ufc_bouts?select=id&limit=1", [], { count: true, revalidate: 300 }),
+    rest<unknown[]>("ufc_bout_results?select=bout_id&limit=1", [], { count: true, revalidate: 300 }),
+    rest<unknown[]>("ufc_bout_round_stats?select=bout_id&limit=1", [], { count: true, revalidate: 300 }),
     rest<unknown[]>("ufc_articles?select=id&status=eq.published&limit=1", [], { count: true, revalidate: 600 }),
   ]);
   return { fighters: f.count, events: e.count, bouts: b.count, results: r.count, rounds: rs.count, articles: a.count };

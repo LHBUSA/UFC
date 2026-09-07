@@ -77,10 +77,10 @@ export default async function Home() {
               <Link href="/history" className="btn lg hide-m">History</Link>
             </div>
             <div className="hero-stats">
-              <div className="stat"><b>{counts.events?.toLocaleString() ?? "—"}</b><span>Events indexed</span></div>
+              <div className="stat"><b>{counts.events?.toLocaleString() ?? "—"}</b><span>All indexed events</span></div>
               <div className="stat"><b>{counts.fighters?.toLocaleString() ?? "—"}</b><span>Fighters</span></div>
               <div className="stat"><b>{counts.results?.toLocaleString() ?? "—"}</b><span>Results loaded</span></div>
-              <div className="stat"><b>{counts.rounds?.toLocaleString() ?? "—"}</b><span>Rounds of stats</span></div>
+              <div className="stat"><b>{counts.rounds?.toLocaleString() ?? "—"}</b><span>Round-stat rows</span></div>
             </div>
           </div>
           <div>
