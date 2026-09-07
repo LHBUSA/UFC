@@ -170,7 +170,7 @@ export async function GET(req: Request) {
       let areas: unknown = null;
       let areaError: string | null = null;
       try {
-        areas = await getPrintAreas(base.id);
+        areas = await getPrintAreas(base.id, ctx.selected.id);
       } catch (e) {
         areaError = e instanceof ProviderError ? `HTTP ${e.status}` : String((e as Error).message).slice(0, 120);
       }

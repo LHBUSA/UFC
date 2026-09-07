@@ -31,7 +31,7 @@ export const CATALOG_VERSION = "2026-09-07.1";
 const TEE = { form: "tee", sizes: ["S", "M", "L", "XL", "2XL"], colors: ["Black", "Vintage White"], retail_price: 3200 } as const;
 const HOODIE = { form: "hoodie", sizes: ["S", "M", "L", "XL", "2XL"], colors: ["Black", "Charcoal"], retail_price: 6500 } as const;
 const CAP = { form: "cap", sizes: ["One size"], colors: ["Black"], retail_price: 3800 } as const;
-const MUG = { form: "mug", sizes: ["11oz"], colors: ["White"], retail_price: 1900 } as const;
+const MUG = { form: "mug", sizes: ["11 oz"], colors: ["White"], retail_price: 1900 } as const;
 
 const BOTH = ["ufc", "news"] as const;
 const UFC_ONLY = ["ufc"] as const;

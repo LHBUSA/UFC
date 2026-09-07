@@ -49,9 +49,15 @@ function headers(): Record<string, string> {
   return h;
 }
 
-async function get<T>(path: string): Promise<T> {
+async function get<T>(path: string, storeId?: number): Promise<T> {
+  /* Some endpoints demand store_id even from a store-scoped token, which is
+   * a surprise given the token is already bound to one store. The mockup
+   * generator is one: it answers 400 "This endpoint requires `store_id`!"
+   * without it. So callers that know the resolved store pass it. */
+  const h = headers();
+  if (storeId) h["x-pf-store-id"] = String(storeId);
   const res = await fetch(`${API}${path}`, {
-    headers: headers(),
+    headers: h,
     cache: "no-store",
     signal: AbortSignal.timeout(25_000),
   });
@@ -114,11 +120,18 @@ export type CatalogProduct = { id: number; type: string | null; brand: string | 
 /** The blanks V1 uses, described by what they are rather than by id. `match`
  * must identify exactly one product; `prefer` breaks a tie only when several
  * genuinely describe the same blank. */
-export const BASE_PRODUCTS: Record<string, { label: string; match: RegExp; prefer: RegExp }> = {
-  tee: { label: "Unisex premium tee", match: /bella\s*\+?\s*canvas\s*3001|unisex staple t-shirt/i, prefer: /3001/ },
-  hoodie: { label: "Unisex heavy blend hoodie", match: /gildan\s*18500|unisex heavy blend hooded/i, prefer: /18500/ },
-  cap: { label: "Embroidered cap", match: /embroidered .*(dad|cap)|classic dad hat/i, prefer: /dad/i },
-  mug: { label: "White glossy mug 11oz", match: /white glossy mug/i, prefer: /11/ },
+export const BASE_PRODUCTS: Record<string, { label: string; match: RegExp; model?: string }> = {
+  /* `model` is an EXACT tiebreak, and it has to be exact.
+   *
+   * A substring preference looked reasonable and resolved nothing: the live
+   * catalog carries 3001, 3001B, 3001T, 3001Y and 3001ECO — youth, tall,
+   * different fits — and /3001/ matches all five, so the blank stayed
+   * ambiguous and the canary refused rather than guessing. Which is the
+   * correct behaviour, and also why the tiebreak must be equality. */
+  tee: { label: "Unisex premium tee", match: /bella\s*\+?\s*canvas\s*3001|unisex staple t-shirt/i, model: "3001" },
+  hoodie: { label: "Unisex heavy blend hoodie", match: /gildan\s*18500|unisex heavy blend hooded/i, model: "18500" },
+  cap: { label: "Embroidered cap", match: /dad hat|embroidered.*(cap|hat)|trucker cap|snapback/i },
+  mug: { label: "White glossy mug", match: /white glossy mug/i },
 };
 
 export async function listCatalog(): Promise<CatalogProduct[]> {
@@ -142,8 +155,10 @@ export function resolveBaseProduct(key: string, catalog: CatalogProduct[]): Reso
   const hits = catalog.filter((p) => spec.match.test(p.title) || spec.match.test(p.model || ""));
   if (!hits.length) return { ok: false, reason: "none", candidates: [] };
   if (hits.length === 1) return { ok: true, product: hits[0] };
-  const preferred = hits.filter((p) => spec.prefer.test(p.title) || spec.prefer.test(p.model || ""));
-  if (preferred.length === 1) return { ok: true, product: preferred[0] };
+  if (spec.model) {
+    const exact = hits.filter((p) => String(p.model || "").toLowerCase() === spec.model!.toLowerCase());
+    if (exact.length === 1) return { ok: true, product: exact[0] };
+  }
   /* Several blanks match and none is clearly the one. Guessing here silently
    * chooses a different garment, so it fails and lists the options. */
   return { ok: false, reason: "ambiguous", candidates: hits.slice(0, 8) };
@@ -210,10 +225,10 @@ export type PrintArea = { placement: string; width: number; height: number; dpi:
  * because it is Printful's common DTG area is how a mug ends up rendered at
  * cap dimensions: plausible, wrong, and invisible until it is printed.
  */
-export async function getPrintAreas(catalogProductId: number): Promise<PrintArea[]> {
+export async function getPrintAreas(catalogProductId: number, storeId?: number): Promise<PrintArea[]> {
   const r = await get<{
     result?: { available_placements?: Record<string, string>; printfiles?: Array<Record<string, unknown>>; variant_printfiles?: Array<Record<string, unknown>> };
-  }>(`/mockup-generator/printfiles/${catalogProductId}`);
+  }>(`/mockup-generator/printfiles/${catalogProductId}`, storeId);
 
   const files = r?.result?.printfiles || [];
   const byId = new Map<number, { width: number; height: number; dpi: number | null }>();
