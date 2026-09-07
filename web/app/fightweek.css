@@ -111,9 +111,41 @@
 
 /* ---- main-card matchup cards ------------------------------------------- */
 .fw-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.fw-card { display: flex; flex-direction: column; gap: 14px; padding: 20px; border: 1px solid var(--pbe-line); border-radius: var(--r-lg); background: rgba(8,7,5,.6); scroll-margin-top: calc(var(--hdr-h) + 64px); }
+.fw-card { display: flex; flex-direction: column; gap: 0; padding: 18px 20px 16px; border: 1px solid var(--pbe-line); border-radius: var(--r-lg); background: rgba(8,7,5,.6); scroll-margin-top: calc(var(--hdr-h) + 64px); }
 .fw-card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--pbe-gold); font: 700 11px/1.3 var(--pbe-font-data); letter-spacing: .12em; text-transform: uppercase; }
-.fw-card-top small { color: var(--pbe-faint); letter-spacing: .06em; font-size: 11px; }
+.fw-card-top small { display: inline-flex; align-items: center; gap: 6px; color: var(--pbe-dim); letter-spacing: .06em; font-size: 11px; }
+.fw-card-top .pk { width: 6px; height: 6px; border-radius: 50%; background: var(--pbe-gold); box-shadow: 0 0 0 2px rgba(212,175,55,.15); }
+.fw-card-top .pk.lim { background: var(--pbe-dim); box-shadow: none; }
+/* mirrored fighter identity */
+.fw-card-id { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 10px; padding: 14px 0 16px; }
+.fw-card-id-wrap { display: contents; }
+.fw-card-id .side { display: flex; align-items: center; gap: 10px; min-width: 0; color: inherit; }
+.fw-card-id .side.b { flex-direction: row-reverse; text-align: right; }
+.fw-card-id .side .avatar { flex: none; }
+.fw-card-id .id { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fw-card-id .nm { color: var(--pbe-paper); font: 800 17px/1.15 var(--pbe-font-display); letter-spacing: -.01em; overflow-wrap: anywhere; }
+.fw-card-id .side:hover .nm { color: var(--pbe-gold); }
+.fw-card-id .rr { display: flex; align-items: center; gap: 6px; color: var(--pbe-dim); font: 600 12px/1 var(--pbe-font-data); }
+.fw-card-id .side.b .rr { justify-content: flex-end; }
+.fw-card-id .rr b { color: var(--pbe-paper-2); font-weight: 700; }
+.fw-card-id .rr em { font-style: normal; padding: 3px 6px; border-radius: 4px; background: var(--pbe-gold); color: #0a0806; font: 750 10px/1 var(--pbe-font-data); }
+.fw-card-id .vs { color: var(--pbe-faint); font: 700 11px/1 var(--pbe-font-data); letter-spacing: .1em; padding: 0 4px; }
+/* read + signals separated by thin dividers, no nested boxes */
+.fw-card .fw-card-read { padding: 14px 0 14px; border-top: 1px solid var(--pbe-line); }
+.fw-card .fw-card-read p { margin-top: 8px; color: var(--pbe-paper); font: 500 15px/1.5 var(--pbe-font-ui); max-width: 56ch; }
+.fw-signals { padding: 12px 0 4px; border-top: 1px solid var(--pbe-line); }
+.fw-signal { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 2px 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--pbe-line-faint); }
+.fw-signal:last-child { border-bottom: 0; }
+.fw-signal .lab { grid-row: span 3; align-self: start; padding-top: 4px; color: var(--pbe-gold); font: 750 11px/1.3 var(--pbe-font-data); letter-spacing: .14em; text-transform: uppercase; }
+.fw-signal .vals { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0 12px; }
+.fw-signal .v { display: flex; flex-direction: column; gap: 4px; }
+.fw-signal .v.b { align-items: flex-end; text-align: right; }
+.fw-signal .vals b { color: var(--pbe-paper); font: 800 19px/1 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.fw-signal .vals small { color: var(--pbe-dim); font: 650 11px/1 var(--pbe-font-data); letter-spacing: .08em; text-transform: uppercase; }
+.fw-signal .vals i { display: block; height: 1px; background: var(--pbe-line-strong); }
+.fw-signal .unit { color: var(--pbe-dim); font: 600 11px/1.3 var(--pbe-font-data); letter-spacing: .08em; text-transform: uppercase; }
+.fw-signal .delta { color: var(--pbe-gold-bright); font: 600 12.5px/1.4 var(--pbe-font-ui); }
+.fw-card .fw-card-cta { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--pbe-line); justify-content: flex-start; }
 .fw-card-faces { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; }
 .fw-card-faces .avatars { display: flex; }
 .fw-card-faces .avatars .avatar + .avatar { margin-left: -14px; border-color: rgba(212,175,55,.5); }
@@ -256,6 +288,14 @@
   .fw-teaser-art { padding: 12px; }
   .fw-prelim summary { grid-template-columns: auto minmax(0, 1fr); }
   .fw-prelim summary .open { grid-column: 2; justify-self: start; }
+  .fw-card-top { flex-direction: column; align-items: flex-start; gap: 6px; }
+  /* main-card identity stacks: Fighter A / VS / Fighter B, each record beside its own name */
+  .fw-card-id { grid-template-columns: 1fr; gap: 6px; }
+  .fw-card-id .side.b { flex-direction: row; text-align: left; }
+  .fw-card-id .side.b .rr { justify-content: flex-start; }
+  .fw-card-id .vs { padding: 2px 0 2px 58px; }
+  .fw-signal { grid-template-columns: 1fr; }
+  .fw-signal .lab { grid-row: auto; padding-top: 0; }
   .fw-foot { flex-direction: column; align-items: flex-start; }
   .fw-foot .btn { width: 100%; }
 }

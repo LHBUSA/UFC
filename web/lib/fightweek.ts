@@ -271,3 +271,99 @@ export function fightPhases(b: DeskBrief): { early: string; middle: string; late
 }
 
 export type { DeskBrief };
+
+/* ---- compact main-card selector ------------------------------------------
+ * A scan-first card gets ONE matchup read and up to two KEY SIGNALS. The read
+ * is built from the strongest factor(s) as qualitative analyst phrasing (no
+ * numbers, no template intro); the signals are drawn only from factors the
+ * read did not use, so no numerical comparison appears twice on a card. With
+ * three or more factors the read pairs the top factor with the first factor
+ * that leans the other way (FACT → CONTRAST); with two it states one and
+ * leaves the other for a signal; with one it states that and shows nothing
+ * else. No factor, no filler. */
+export type Signal = { key: Factor["key"]; label: string; a: string; b: string; unit: string; delta: string | null; note: string | null };
+
+function clauseFor(f: Factor, b: DeskBrief): string {
+  const A = b.a, B = b.b;
+  const who = (lean: "a" | "b" | null) => (lean === "a" ? last(A) : lean === "b" ? last(B) : null);
+  const other = (lean: "a" | "b" | null) => (lean === "a" ? last(B) : lean === "b" ? last(A) : null);
+  switch (f.key) {
+    case "pace": return f.lean ? `${who(f.lean)} carries the higher measured striking pace` : "the two post similar measured striking pace";
+    case "distance": return `${who(f.lean)} holds the reach edge${/opposite stances/.test(f.line) ? " and the open-stance angles" : ""}`;
+    case "grappling": {
+      const ta = num(A.fighter.career_td_avg), tb = num(B.fighter.career_td_avg);
+      const wrestler = ta != null && (tb == null || ta >= tb) ? last(A) : last(B);
+      if (/submission/.test(f.hook)) return `${who(f.lean)} carries the submission threat`;
+      return who(f.lean) !== wrestler ? `${who(f.lean)} has stopped most takedowns on record` : `${wrestler} brings the takedown pressure`;
+    }
+    case "danger": return `${who(f.lean)} owns the stronger archived finishing profile`;
+    case "durability": return f.lean ? `${other(f.lean)} has been stopped before in the archive` : "neither has been finished on record";
+    case "experience": return /five-round/.test(f.hook) ? `${who(f.lean)} has the deeper five-round experience` : `${who(f.lean)} has the deeper book of archived tape`;
+  }
+}
+
+export function compactRead(b: DeskBrief): { read: string; used: Factor["key"][]; watch: boolean } {
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  if (b.tier === "watch") return { read: whatToWatch(b)[1] || whatToWatch(b)[0] || "", used: [], watch: true };
+  const factors = thingsThatMatter(b, 6);
+  if (!factors.length) return { read: b.mainTake[1] || "", used: [], watch: false };
+  const primary = factors[0];
+  if (factors.length >= 3) {
+    const secondary = factors.slice(1).find((f) => f.lean && f.lean !== primary.lean) || factors[1];
+    return { read: `${cap(clauseFor(primary, b))}; ${clauseFor(secondary, b)}.`, used: [primary.key, secondary.key], watch: false };
+  }
+  return { read: `${cap(clauseFor(primary, b))} in the available sample.`, used: [primary.key], watch: false };
+}
+
+export function compactSignals(b: DeskBrief, used: Factor["key"][], max = 2): Signal[] {
+  const A = b.a, B = b.b, a = A.fighter, f = B.fighter;
+  const val = (v: number | null | undefined, unit = "") => (v == null ? "—" : `${n1(v)}${unit}`);
+  const out: Signal[] = [];
+  for (const fac of thingsThatMatter(b, 6)) {
+    if (used.includes(fac.key)) continue;
+    let s: Signal | null = null;
+    switch (fac.key) {
+      case "pace": {
+        const sa = num(a.career_slpm), sb = num(f.career_slpm);
+        s = { key: fac.key, label: "Pace", a: val(sa), b: val(sb), unit: "Sig. strikes landed / min", delta: fac.lean && sa != null && sb != null ? `${fac.lean === "a" ? last(A) : last(B)} +${n1(Math.abs(sa - sb))}/min` : sa != null && sb != null ? "Similar output" : null, note: null };
+        break;
+      }
+      case "distance": {
+        const ra = num(a.reach_in), rb = num(f.reach_in);
+        s = { key: fac.key, label: "Reach", a: ra == null ? "—" : `${n1(ra)}"`, b: rb == null ? "—" : `${n1(rb)}"`, unit: "Listed reach", delta: ra != null && rb != null ? `${ra > rb ? last(A) : last(B)} +${Math.round(Math.abs(ra - rb))}" reach` : null, note: a.stance && f.stance && a.stance !== f.stance ? "Opposite stances" : null };
+        break;
+      }
+      case "grappling": {
+        if (/submission/.test(fac.hook)) s = { key: fac.key, label: "Submissions", a: val(num(a.career_sub_avg)), b: val(num(f.career_sub_avg)), unit: "Submission attempts / 15", delta: null, note: null };
+        else {
+          const ta = num(a.career_td_avg), tb = num(f.career_td_avg);
+          const wrestlerIsA = ta != null && (tb == null || ta >= tb);
+          const def = num(wrestlerIsA ? f.career_td_def : a.career_td_def);
+          s = { key: fac.key, label: "Takedowns", a: val(ta), b: val(tb), unit: "Takedowns landed / 15", delta: def != null ? `${wrestlerIsA ? last(B) : last(A)} stops ${pctOf(def)} on record` : null, note: null };
+        }
+        break;
+      }
+      case "danger": {
+        const rate = (s: DeskSide) => (s.archive.w >= 3 ? `${Math.round(((s.archive.ko + s.archive.sub) / s.archive.w) * 100)}%` : "—");
+        const r1 = (s: DeskSide) => s.lastResults.filter((r) => r.won && r.method && /R1/.test(r.method)).length;
+        const lean = fac.lean === "a" ? A : B;
+        s = { key: fac.key, label: "Finishes", a: rate(A), b: rate(B), unit: "Finish rate · archived wins", delta: r1(lean) >= 2 ? `${last(lean)} ${r1(lean)} R1 finishes in last ${lean.lastResults.length}` : null, note: null };
+        break;
+      }
+      case "durability": {
+        const t = (s: DeskSide) => (s.archive.fights >= 3 ? String(s.archive.finishedBy) : "—");
+        s = { key: fac.key, label: "Durability", a: t(A), b: t(B), unit: "Times finished · archive", delta: null, note: null };
+        break;
+      }
+      case "experience": {
+        const five = /five-round/.test(fac.hook);
+        s = { key: fac.key, label: "Experience", a: String(five ? A.fiveRoundBouts : A.archive.fights), b: String(five ? B.fiveRoundBouts : B.archive.fights), unit: five ? "Five-round fights · archive" : "Archived bouts", delta: null, note: null };
+        break;
+      }
+    }
+    /* A signal must carry a comparison: skip when both sides are unpublished, or when a durability count is identical on both sides (no contrast to scan). */
+    if (s && !(s.a === "—" && s.b === "—") && !(s.key === "durability" && s.a === s.b)) out.push(s);
+    if (out.length >= max) break;
+  }
+  return out;
+}

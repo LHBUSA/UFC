@@ -6,7 +6,7 @@ import { DeskArt, ageAt, height, inches, stance } from "@/components/DeskArt";
 import { Avatar, Breadcrumbs, EventRow, JsonLd } from "@/components/ui";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
 import { Dropdown } from "@/components/Menu";
-import { cardSections, fightRead, fightReadParts, whatToWatch, thingsThatMatter, fightPhases, phaseHeadlines, fmtStamp, type FightWeekPacket, type Factor } from "@/lib/fightweek";
+import { cardSections, fightRead, fightReadParts, whatToWatch, thingsThatMatter, fightPhases, phaseHeadlines, fmtStamp, compactRead, compactSignals, type FightWeekPacket, type Factor } from "@/lib/fightweek";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, fmtDate, fmtRecord, locationLine, plural, weightClassLabel } from "@/lib/format";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
@@ -53,15 +53,6 @@ function Facts({ brief, max = 2 }: { brief: DeskBrief; max?: number }) {
   const facts = thingsThatMatter(brief, max);
   if (!facts.length) return null;
   return <ul className="fw-facts">{facts.map((f) => <li key={f.key}><b>{f.label}</b><span><strong>{f.hook}</strong> {f.line}</span></li>)}</ul>;
-}
-
-function Names({ bout, brief }: { bout: Bout; brief?: DeskBrief | null }) {
-  return (
-    <>
-      <h3><Link href={`/fighters/${fighterSlug(bout.fighter_a)}`}>{bout.fighter_a.name}</Link><i>vs</i><Link href={`/fighters/${fighterSlug(bout.fighter_b)}`}>{bout.fighter_b.name}</Link></h3>
-      <div className="recs"><b>{fmtRecord(bout.fighter_a)}</b>{brief?.a.rank && <span className="rk"> · {brief.a.rank}</span>} · <b>{fmtRecord(bout.fighter_b)}</b>{brief?.b.rank && <span className="rk"> · {brief.b.rank}</span>}</div>
-    </>
-  );
 }
 
 /* Mirrored key comparison: Age · Height · Reach · Stance · Rank, with the
@@ -166,25 +157,59 @@ export function MainEventDesk({ packet, brief }: { packet: FightWeekPacket; brie
   );
 }
 
-/* ---- scan-first matchup card ------------------------------------------ */
+/* ---- scan-first matchup card ------------------------------------------
+ * Division / rounds / position · mirrored fighter identity · one MATCHUP
+ * READ · up to two KEY SIGNALS that never repeat the read's evidence · one
+ * text CTA. Packet status sits with the position metadata, not the CTA. */
+const rankShort = (rank: string | null) => (rank ? (/champion/i.test(rank) ? "C" : rank.replace(/\s.*$/, "")) : null);
+
+function Identity({ bout, brief, imgs }: { bout: Bout; brief?: DeskBrief | null; imgs: Portraits }) {
+  const sides = [{ f: bout.fighter_a, rank: brief?.a.rank ?? null, k: "a" }, { f: bout.fighter_b, rank: brief?.b.rank ?? null, k: "b" }];
+  return (
+    <div className="fw-card-id">
+      {sides.map(({ f, rank, k }, i) => (
+        <span key={f.id} className="fw-card-id-wrap">
+          {i === 1 && <span className="vs" aria-hidden="true">VS</span>}
+          <Link href={`/fighters/${fighterSlug(f)}`} className={`side ${k}`} aria-label={`${f.name}, ${fmtRecord(f)}${rank ? `, ${rank}` : ""}`}>
+            <Avatar f={f} img={imgs.get(f.id)} size={48} />
+            <span className="id"><span className="nm">{f.name}</span><span className="rr"><b>{fmtRecord(f)}</b>{rank && <em title={rank}>{rankShort(rank)}</em>}</span></span>
+          </Link>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function MatchupIntel({ bout, brief, event, imgs }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits }) {
   const watch = !brief || brief.tier === "watch";
+  const read = brief ? compactRead(brief) : null;
+  const signals = brief && read ? compactSignals(brief, read.used, 2) : [];
+  const la = lastName(bout.fighter_a), lb = lastName(bout.fighter_b);
   return (
     <article id={`bout-${bout.id}`} className={`fw-card${watch ? " watch" : ""}`}>
       <div className="fw-card-top">
         <span>{weightClassLabel(bout.weight_class, bout.is_womens)}{bout.is_title ? " · Title" : ""}{bout.scheduled_rounds ? ` · ${bout.scheduled_rounds} rounds` : ""}</span>
-        <small>{cardPositionLabel(bout.card_position)}</small>
+        <small>{cardPositionLabel(bout.card_position)} · <i className={`pk${watch ? " lim" : ""}`} aria-hidden="true" />{brief ? (watch ? "Limited packet" : "Full packet") : "Card only"}</small>
       </div>
-      <div className="fw-card-faces">
-        <div className="avatars"><Avatar f={bout.fighter_a} img={imgs.get(bout.fighter_a.id)} size={56} /><Avatar f={bout.fighter_b} img={imgs.get(bout.fighter_b.id)} size={56} /></div>
-        <div><Names bout={bout} brief={brief} /></div>
+      <Identity bout={bout} brief={brief} imgs={imgs} />
+      <div className="fw-card-read">
+        <div className="fw-h">{read ? (read.watch ? "What to watch" : "Matchup read") : "Packet"}</div>
+        <p>{read?.read || "Intelligence packet not available for this pairing yet. Records and the matchup page are live."}</p>
       </div>
-      {brief ? <Read brief={brief} compact /> : <div className="fw-card-read"><div className="fw-h">Packet</div><span>Intelligence packet not available for this pairing yet. Records and the matchup page are live.</span></div>}
-      {brief && <><div className="fw-h fw-h-inline">Key data</div><Facts brief={brief} max={2} /></>}
-      <div className="fw-card-cta">
-        <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`}>Matchup intelligence →</Link>
-        <small>{brief ? (watch ? "Limited packet" : "Full packet") : "Card only"}</small>
-      </div>
+      {signals.length > 0 && (
+        <div className="fw-signals">
+          <div className="fw-h">Key signals</div>
+          {signals.map((s) => (
+            <div className="fw-signal" key={s.key}>
+              <span className="lab">{s.label}</span>
+              <span className="vals"><span className="v a"><b>{s.a}</b><small>{la}</small></span><i aria-hidden="true" /><span className="v b"><b>{s.b}</b><small>{lb}</small></span></span>
+              <span className="unit">{s.unit}</span>
+              {(s.delta || s.note) && <span className="delta">{[s.delta, s.note].filter(Boolean).join(" · ")}</span>}
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="fw-card-cta"><Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`}>View matchup intelligence →</Link></div>
     </article>
   );
 }
@@ -280,7 +305,7 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
 
       {mainCard.length > 0 && (
         <section id="main-card" className="fw-sec">
-          <div className="fw-sec-head"><div><div className="eyebrow">Scan first</div><h2>Main card</h2></div><small>{plural(mainCard.length, "matchup")} · one read, two facts each</small></div>
+          <div className="fw-sec-head"><div><div className="eyebrow">{plural(mainCard.length, "matchup")} · scan the card</div><h2>Main card</h2></div><small>One matchup read. The signals that matter.</small></div>
           {grid(mainCard)}
         </section>
       )}
