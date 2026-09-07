@@ -337,3 +337,21 @@
   line-height: 1.6;
 }
 .tuf-fighter-note b { color: var(--pbe-paper); }
+
+/* A face beside a name. The Avatar component supplies the fallback — initials
+ * on the brand ground — so an unresolved portrait degrades to something
+ * deliberate rather than to a broken image or, worse, somebody else's face. */
+.tuf-person { display: inline-flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.tuf-face { flex: 0 0 auto; border-radius: var(--r-pill); overflow: hidden; }
+.tuf-people li { flex-direction: row; align-items: center; gap: var(--s-3); }
+.tuf-people li > .tuf-person { flex: 0 0 auto; }
+.tuf-people li small { margin-left: auto; text-align: right; }
+.tuf-team li { flex-direction: row; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+.tuf-team li small { margin-left: auto; }
+.tuf-team li em { flex-basis: 100%; margin-left: 0; }
+.tuf-bout-names .tuf-person { gap: var(--s-1); }
+
+@media (max-width: 620px) {
+  .tuf-people li { flex-wrap: wrap; }
+  .tuf-people li small { margin-left: 0; flex-basis: 100%; text-align: left; }
+}

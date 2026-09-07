@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PageHead, JsonLd } from "@/components/ui";
+import { PageHead, JsonLd, Avatar } from "@/components/ui";
 import { eventSlug, fighterSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
+import type { PortraitSet } from "@/lib/db";
 import {
   allBouts,
   countsTowardsRecord,
   linkFighters,
   linkedFinale,
+  portraitsFor,
   seasonBySlug,
   seasons,
   type LinkedFighter,
@@ -53,24 +55,46 @@ const CLASS_LABEL: Record<TufBout["classification"], string> = {
   unverified: "Unverified",
 };
 
-function Name({ name, linked }: { name: string; linked: Map<string, LinkedFighter> }) {
+/* A name, with its canonical portrait when one exists. The fallback is the
+ * shared Avatar's initials treatment rather than a grey box or a stand-in
+ * face — a wrong face is worse than no face. */
+function Name({
+  name,
+  linked,
+  faces,
+  size = 0,
+}: {
+  name: string;
+  linked: Map<string, LinkedFighter>;
+  faces?: Map<string, PortraitSet>;
+  size?: number;
+}) {
   const f = linked.get(name);
-  if (!f) return <span className="tuf-name">{name}</span>;
-  return (
+  const img = faces?.get(name) ?? null;
+  const label = f ? (
     <Link className="tuf-name is-linked" href={`/fighters/${fighterSlug(f)}`}>
       {name}
     </Link>
+  ) : (
+    <span className="tuf-name">{name}</span>
+  );
+  if (!size) return label;
+  return (
+    <span className="tuf-person">
+      <Avatar f={{ name }} img={img} size={size} className="tuf-face" />
+      {label}
+    </span>
   );
 }
 
-function BoutRow({ b, linked }: { b: TufBout; linked: Map<string, LinkedFighter> }) {
+function BoutRow({ b, linked, faces }: { b: TufBout; linked: Map<string, LinkedFighter>; faces?: Map<string, PortraitSet> }) {
   const pro = countsTowardsRecord(b);
   return (
     <li className={`tuf-bout${pro ? " is-pro" : ""}`}>
       <span className="tuf-bout-names">
-        <Name name={b.a} linked={linked} />
+        <Name name={b.a} linked={linked} faces={faces} size={28} />
         <em>vs</em>
-        <Name name={b.b} linked={linked} />
+        <Name name={b.b} linked={linked} faces={faces} size={28} />
       </span>
       <span className="tuf-bout-meta">
         {b.winner ? (
@@ -111,6 +135,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
     ...season.winners.map((w) => w.fighter),
   ];
   const [linked, finale] = await Promise.all([linkFighters(names), linkedFinale(season.finale_event, season.finale_date)]);
+  const faces = await portraitsFor(linked);
 
   const proCount = bouts.filter(countsTowardsRecord).length;
   const exCount = bouts.length - proCount;
@@ -142,7 +167,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
             <ul className="tuf-people">
               {(season.coaches_full ?? season.coaches.map((name) => ({ name, team: "", role: "head" }))).map((c, i) => (
                 <li key={`${c.name}-${i}`} className={c.role === "head" ? "is-head" : ""}>
-                  <Name name={c.name} linked={linked} />
+                  <Name name={c.name} linked={linked} faces={faces} size={c.role === "head" ? 56 : 34} />
                   {c.team ? <small>{c.team}{c.role !== "head" ? " · assistant" : ""}</small> : null}
                 </li>
               ))}
@@ -159,7 +184,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
             <ul className="tuf-people">
               {season.champions.map((c) => (
                 <li key={c.weight_class} className="is-head">
-                  <Name name={c.fighter} linked={linked} />
+                  <Name name={c.fighter} linked={linked} faces={faces} size={56} />
                   <small>
                     {c.weight_class}
                     {c.won_tournament ? " · won the tournament" : ""}
@@ -172,7 +197,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
             <ul className="tuf-people">
               {season.winners.map((w) => (
                 <li key={w.weight_class} className="is-head">
-                  <Name name={w.fighter} linked={linked} />
+                  <Name name={w.fighter} linked={linked} faces={faces} size={56} />
                   <small>{w.weight_class}</small>
                 </li>
               ))}
@@ -277,7 +302,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                 <ul>
                   {t.roster.map((r) => (
                     <li key={r.name}>
-                      <Name name={r.name} linked={linked} />
+                      <Name name={r.name} linked={linked} faces={faces} size={34} />
                       {r.country ? <small>{r.country}</small> : null}
                       {r.note ? <em>{r.note}</em> : null}
                     </li>
@@ -312,7 +337,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                   {st.bouts.length ? (
                     <ul className="tuf-bouts">
                       {st.bouts.map((b, i) => (
-                        <BoutRow key={`${b.a}-${b.b}-${i}`} b={b} linked={linked} />
+                        <BoutRow key={`${b.a}-${b.b}-${i}`} b={b} linked={linked} faces={faces} />
                       ))}
                     </ul>
                   ) : (

@@ -19,6 +19,7 @@
  * licence to count something.
  */
 import "server-only";
+import { getImagesForFighters, type PortraitSet } from "@/lib/db";
 import inventory from "@/data/tuf/seasons.json";
 import tuf1 from "@/data/tuf/seasons/tuf-1.json";
 import tuf20 from "@/data/tuf/seasons/tuf-20.json";
@@ -296,6 +297,29 @@ export async function linkedFinale(name: string | null, date: string | null): Pr
 }
 
 export type LinkedFighter = { id: string; name: string; espn_athlete_id: string | null; ufcstats_id: string | null };
+
+/**
+ * Portraits for people named in the archive.
+ *
+ * Deliberately a re-read of the canonical fighter images rather than anything
+ * TUF-specific: the same row, the same derivatives, the same rights trail that
+ * a fighter profile uses. The archive owns no imagery of its own, so a
+ * portrait can never drift between a season page and the profile it links to,
+ * and there is exactly one place where a licence is recorded.
+ */
+export async function portraitsFor(linked: Map<string, LinkedFighter>) {
+  const ids = [...linked.values()].map((f) => f.id);
+  if (!ids.length) return new Map<string, PortraitSet>();
+  const byId = await getImagesForFighters(ids);
+  /* Keyed by the name the archive uses, so a page does not have to carry the
+   * id around just to draw a face. */
+  const byName = new Map<string, PortraitSet>();
+  for (const [name, f] of linked) {
+    const img = byId.get(f.id);
+    if (img) byName.set(name, img);
+  }
+  return byName;
+}
 
 /**
  * Resolve contestant and coach names to canonical fighter rows.
