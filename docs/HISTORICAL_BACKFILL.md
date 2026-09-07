@@ -92,3 +92,57 @@ newest events, which for upcoming cards are not archived at all.
 A missing stat is NULL. A source that reported zero is 0. Nothing is inferred
 from a page that does not state it, and a bout that cannot be sourced stays
 absent rather than becoming a guess.
+
+## Watchdog
+
+The queue tolerates a worker dying: each window is its own process and every
+window is re-runnable, because an event whose bouts are all present and
+enriched is skipped without a fetch. The one failure it cannot survive is the
+outer PowerShell process going away, since nothing then advances the sequence.
+
+`scripts/backfill/watchdog.ps1` repairs exactly that and nothing else. Every
+few minutes it records queue PID, active window, last completed window and
+last progress time to `logs/queue_state.json`. If the queue is alive it does
+nothing further.
+
+If the outer process is gone it first checks for a live worker, because
+starting anything while one is still draining would double the request rate
+against the Internet Archive. Only when no worker remains does it resume, from
+the first incomplete window in `windows.json`, never from zero. A window
+counts as complete only when its worker exited zero, so a failed window is
+retried rather than skipped.
+
+A lock file admits one watchdog. A second refuses to start and says which PID
+holds it. The watchdog never touches a process it did not launch.
+
+When the sequence finishes it runs `finalize.ps1` once, guarded by a marker
+file: referee profile sync, Hall of Fame resolver, preservation guard, both
+audits, per-window summaries and the closing report.
+
+`window_summary.mjs` turns one window log into the numbers worth reading:
+events attempted, enriched and skipped; bouts created and linked; fighters
+created, linked and stubbed; referee assignments; round rows; archive gaps;
+retries; assertions; identity reviews queued; elapsed.
+
+## Known blocker: feeder-series weight classes
+
+The 2024 window aborted on a real defect, not an archive problem:
+
+    unknown weight class 'Road to UFC 3 Bantamweight Tournament Title Bout'
+
+Road to UFC tournament bouts are staged on ordinary UFC cards, so the label
+reaches the normalizer even though only one event carries the series name. The
+normalizer strips the series prefix down to "Road to Bantamweight" and then
+correctly refuses to guess, which is the right instinct - a mis-mapped weight
+class is worse than a stopped run - but a whole year stops with it. The 2024
+window completed only 3 events before halting.
+
+The fix belongs in `normalizers.py`, teaching it that a feeder-series prefix is
+noise around a real division. It was deliberately not applied while the queue
+was progressing, on instruction, since changing parser semantics under a
+running job risks far more than it saves.
+
+Nothing is lost by waiting. The watchdog does not mark a non-zero window
+complete, so once the normalizer is fixed a single resume pass re-runs exactly
+the affected windows, and every event already finished is skipped without a
+fetch.
