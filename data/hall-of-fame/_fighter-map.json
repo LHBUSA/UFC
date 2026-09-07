@@ -1,0 +1,207 @@
+{
+  "generated_at": "2026-09-07T14:11:01.510Z",
+  "note": "Explicit Hall of Fame to canonical fighter mapping. Linked entries reference an existing ufc_fighters row; missing entries are backfill candidates and never create rows.",
+  "linked": {
+    "jose-aldo": {
+      "fighter_id": "e7f02130-6df6-49c1-a1fb-099e6a776a60",
+      "fighter_name": "José Aldo",
+      "espn_athlete_id": "2447641",
+      "ufcstats_id": null,
+      "method": "exact_name",
+      "matched_on": "José Aldo",
+      "verified_at": "2026-09-07T14:10:54.475Z"
+    }
+  },
+  "backfill_candidates": [
+    {
+      "slug": "amanda-nunes",
+      "name": "Amanda Nunes",
+      "wing": "modern"
+    },
+    {
+      "slug": "anderson-silva",
+      "name": "Anderson Silva",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "bas-rutten",
+      "name": "Bas Rutten",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "bj-penn",
+      "name": "BJ Penn",
+      "wing": "modern"
+    },
+    {
+      "slug": "chuck-liddell",
+      "name": "Chuck Liddell",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "dan-severn",
+      "name": "Dan Severn",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "daniel-cormier",
+      "name": "Daniel Cormier",
+      "wing": "modern"
+    },
+    {
+      "slug": "don-frye",
+      "name": "Don Frye",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "donald-cerrone",
+      "name": "Donald Cerrone",
+      "wing": "modern"
+    },
+    {
+      "slug": "forrest-griffin",
+      "name": "Forrest Griffin",
+      "wing": "modern"
+    },
+    {
+      "slug": "frankie-edgar",
+      "name": "Frankie Edgar",
+      "wing": "modern"
+    },
+    {
+      "slug": "georges-st-pierre",
+      "name": "Georges St-Pierre",
+      "wing": "modern"
+    },
+    {
+      "slug": "jens-pulver",
+      "name": "Jens Pulver",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "joanna-jedrzejczyk",
+      "name": "Joanna Jędrzejczyk",
+      "wing": "modern"
+    },
+    {
+      "slug": "kazushi-sakuraba",
+      "name": "Kazushi Sakuraba",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "ken-shamrock",
+      "name": "Ken Shamrock",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "kevin-randleman",
+      "name": "Kevin Randleman",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "khabib-nurmagomedov",
+      "name": "Khabib Nurmagomedov",
+      "wing": "modern"
+    },
+    {
+      "slug": "mark-coleman",
+      "name": "Mark Coleman",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "mark-kerr",
+      "name": "Mark Kerr",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "matt-hughes",
+      "name": "Matt Hughes",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "matt-serra",
+      "name": "Matt Serra",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "maurice-smith",
+      "name": "Maurice Smith",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "michael-bisping",
+      "name": "Michael Bisping",
+      "wing": "modern"
+    },
+    {
+      "slug": "minotauro-nogueira",
+      "name": "Minotauro Nogueira",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "pat-miletich",
+      "name": "Pat Miletich",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "randy-couture",
+      "name": "Randy Couture",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "rashad-evans",
+      "name": "Rashad Evans",
+      "wing": "modern"
+    },
+    {
+      "slug": "rich-franklin",
+      "name": "Rich Franklin",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "robbie-lawler",
+      "name": "Robbie Lawler",
+      "wing": "modern"
+    },
+    {
+      "slug": "ronda-rousey",
+      "name": "Ronda Rousey",
+      "wing": "modern"
+    },
+    {
+      "slug": "royce-gracie",
+      "name": "Royce Gracie",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "shogun-rua",
+      "name": "Shogun Rua",
+      "wing": "modern"
+    },
+    {
+      "slug": "stephan-bonnar",
+      "name": "Stephan Bonnar",
+      "wing": "modern"
+    },
+    {
+      "slug": "tito-ortiz",
+      "name": "Tito Ortiz",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "urijah-faber",
+      "name": "Urijah Faber",
+      "wing": "modern"
+    },
+    {
+      "slug": "vitor-belfort",
+      "name": "Vitor Belfort",
+      "wing": "pioneer"
+    },
+    {
+      "slug": "wanderlei-silva",
+      "name": "Wanderlei Silva",
+      "wing": "pioneer"
+    }
+  ]
+}

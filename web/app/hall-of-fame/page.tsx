@@ -5,7 +5,9 @@ import { ChampionshipBelt } from "@/components/ChampionshipBelt";
 import { JsonLd } from "@/components/ui";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
-import { getFighters, getImagesForFighters, getLatestVideos, type Fighter, type PortraitSet } from "@/lib/db";
+import { getFighters, getFightersByIds, getImagesForFighters, getLatestVideos, type Fighter, type PortraitSet } from "@/lib/db";
+import { FightWingCard, HofFace } from "@/components/HofBits";
+import { fightWing } from "@/lib/enrichment";
 import { HOF_FIGHTS, LEGACY_LENSES, UFC_OFFICIAL } from "@/lib/heritage";
 import { HOF_INDUCTEES, HOF_WING_META, HOF_WING_ORDER, initialsOf, inducteesIn, type HofInductee } from "@/lib/hof";
 import { fighterSlug } from "@/lib/slug";
@@ -44,7 +46,7 @@ async function archiveMatches(): Promise<Map<string, { f: Fighter; img: Portrait
 function Card({ h, m }: { h: HofInductee; m?: { f: Fighter; img: PortraitSet | null } }) {
   return (
     <Link href={`/hall-of-fame/${h.slug}`} className="hof-card">
-      <span className="hof-face">{m?.img ? <img src={m.img.thumb} alt="" width={200} height={200} loading="lazy" decoding="async" /> : <b aria-hidden="true">{initialsOf(h.name)}</b>}</span>
+      <HofFace slug={h.slug} name={h.name} slot="avatar" archive={m} />
       <span>
         <span className="hof-kicker">{h.inducted ? `Class of ${h.inducted}` : HOF_WING_META[h.wing].short}{h.role ? ` · ${h.role}` : ""}</span>
         <h3>{h.name}</h3>
@@ -57,6 +59,11 @@ function Card({ h, m }: { h: HofInductee; m?: { f: Fighter; img: PortraitSet | n
 
 export default async function HallOfFamePage() {
   const [videos, matches] = await Promise.all([getLatestVideos(3).catch(() => []), archiveMatches()]);
+  /* Fight Wing: bout-shaped records with both fighters linked where the
+   * archive holds them. Falls back to the curated list when not yet generated. */
+  const fights = fightWing();
+  const fwFighterIds = [...new Set(fights.flatMap((f) => f.fighters.map((x) => x.fighter_id).filter(Boolean)))] as string[];
+  const fwFighters = new Map((fwFighterIds.length ? await getFightersByIds(fwFighterIds).catch(() => []) : []).map((f) => [f.id, f]));
   const counts = { modern: inducteesIn("modern").length, pioneer: inducteesIn("pioneer").length, contributor: inducteesIn("contributor").length, fight: HOF_FIGHTS.length };
   return (
     <div className="wrap page hof-page">
@@ -95,14 +102,18 @@ export default async function HallOfFamePage() {
           <div><div className="eyebrow">Fight Wing</div><h2>Some nights become part of the language of MMA.</h2><p>{HOF_WING_META.fight.blurb} Listed with the event and year so you can find them in the archive.</p></div>
           <a href={UFC_OFFICIAL.hallOfFame} target="_blank" rel="noopener">Official Hall of Fame ↗</a>
         </div>
-        <div className="hof-fight-grid">
-          {HOF_FIGHTS.map((f, i) => (
-            <div className="hof-fight" key={f.fight}>
-              <span>{String(i + 1).padStart(2, "0")}</span>
-              <div><b>{f.fight}</b><span className="hof-fight-meta">{f.event} · {f.year}</span><span className="hof-fight-note">{f.note}</span></div>
-            </div>
-          ))}
-        </div>
+        {fights.length ? (
+          <div className="hof-fw-grid">{fights.map((f) => <FightWingCard key={f.slug} f={f} fighters={fwFighters} />)}</div>
+        ) : (
+          <div className="hof-fight-grid">
+            {HOF_FIGHTS.map((f, i) => (
+              <div className="hof-fight" key={f.fight}>
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                <div><b>{f.fight}</b><span className="hof-fight-meta">{f.event} · {f.year}</span><span className="hof-fight-note">{f.note}</span></div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="legacy-section">

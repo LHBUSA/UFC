@@ -1,0 +1,186 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "mark-coleman",
+  "name": "Mark Coleman",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:34.351Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Mark_Coleman",
+    "wikidata": "Q367878",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Mark Coleman",
+      "source": "https://en.wikipedia.org/wiki/Mark_Coleman",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "induction_year": {
+      "value": 2008,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q367878",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "date_of_birth": {
+      "value": "1964-12-20",
+      "source": "https://www.wikidata.org/wiki/Q367878",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "description": {
+      "value": "American wrestler and mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q367878",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "amateur wrestler",
+        "professional wrestler"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q367878",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "legacy_summary": {
+      "value": "The first UFC Heavyweight Champion and the wrestler credited with turning ground-and-pound into a game plan.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "championships": {
+      "value": [
+        "First UFC Heavyweight Champion",
+        "UFC 10 and UFC 11 tournament winner",
+        "PRIDE 2000 Open-Weight Grand Prix winner"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Dan Severn (UFC 12, 1997)",
+        "vs Pete Williams (UFC 17, 1998)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:34.351Z"
+    }
+  },
+  "bio": {
+    "text": "Mark Coleman is an American retired mixed martial artist, professional wrestler and amateur wrestler. Coleman was the UFC 10 and UFC 11 tournament champion, the first UFC Heavyweight Champion, and the Pride Fighting Championships 2000 Open Weight Grand Prix champion. At UFC 82 Coleman was inducted into the UFC Hall of Fame.",
+    "source_url": "https://en.wikipedia.org/wiki/Mark_Coleman",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:34.351Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:56.058Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:53.079Z",
+    "wikidata": "Q367878",
+    "rejected": [
+      {
+        "file": "File:Mark Coleman pic.jpg",
+        "reason": "too small: 121x188"
+      },
+      {
+        "file": "File:Mark Coleman pic.jpg",
+        "reason": "too small: 121x188"
+      },
+      {
+        "file": "File:Mark Coleman.jpg",
+        "reason": "too small: 97x139"
+      },
+      {
+        "file": "File:Fedor vs Coleman.JPG",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Mark Coleman At TIFF 2025 03.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Mark Coleman At TIFF 2025 01.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Mark Coleman At TIFF 2025 02.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Far East Floor Hockey Team Battles to Third Place in 2014 (13212235545).jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Life History and Status of the Endangered CUI-UI of Pyramid Lake, Nevada... Fish and Wildlife Research 1... United States Department of the Interior... 1986 (IA doi-report i-49991).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:A letter from William Penn, proprietary and governour of Pennsylvania in America, to the committee of the Free Society of Traders of that province, residing in London. Conta (IA letterfromwillia00penn).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Murray's illustrated Bible dictionary (IA murraysillustrat00pierrich).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Zwanzig Monate in Kriegs-Gefangenschaft (IA zwanzigmonateink00doms).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Genealogy of the Lyman family in Great Britain & America - the ancestors and descendants of Richard Lyman, from High Ongar in England, 1631 (IA genealogyoflyman00cole).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:SHARP- Sexual harrassment,assault response and prevention - USACE-p16021coll11-1672.pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Select ayres and dialogues for one, two, and three voyces - to the theorbo-lute or basse-viol (IA selectayresdialo0000wils).pdf",
+        "reason": "mime: application/pdf"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Mark_Coleman",
+    "https://www.wikidata.org/wiki/Q367878"
+  ]
+}

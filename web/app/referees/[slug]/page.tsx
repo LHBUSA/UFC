@@ -6,7 +6,8 @@ import { eventSlug, matchupSlug } from "@/lib/slug";
 import { fmtDate, fmtTime, METHOD_LABEL, weightClassLabel } from "@/lib/format";
 import { getRefereeBouts, getRefereeBySlug, refereeArchiveBio, refereeImpactRead, type RefereeBout } from "@/lib/referees";
 import { SITE } from "@/lib/site";
-import { RefereePhoto, tenureLine } from "@/components/RefereeBits";
+import { RefereePhoto, refereeImage, tenureLine } from "@/components/RefereeBits";
+import { refereePacket, val, type Claim } from "@/lib/enrichment";
 import styles from "../referees.module.css";
 
 /* /referees/[slug] — premium intelligence profile: photo (or monogram),
@@ -36,7 +37,19 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
   const recent = bouts.slice(0, 6);
   const notable = bouts.filter((b) => b.is_title || b.scheduled_rounds === 5 || b.card_position === "main").slice(0, 6);
   const events = [...new Map(bouts.filter((b) => b.event_date).map((b) => [b.event_id, b])).values()].slice(0, 8);
-  const bio = r.bio || refereeArchiveBio(r);
+  /* Enrichment packet: sourced biography, verified identity facts and the
+   * PBE-derived distributions. Everything here is optional — a referee with no
+   * packet falls back to the archive biography generated from our own rows. */
+  const pk = refereePacket(slug);
+  const photo = refereeImage(r, "profile");
+  const sourcedBio = pk?.bio?.text || null;
+  const f = (k: string) => val(pk?.facts?.[k] as Claim<unknown> | null) as string | number | string[] | null;
+  const bio = sourcedBio || r.bio || refereeArchiveBio(r);
+  const bioSourceUrl = sourcedBio ? pk?.bio?.source_url : r.bio_source_url;
+  const bioSourceName = sourcedBio ? `${pk?.bio?.source_name}${pk?.bio?.license ? ` · ${pk.bio.license}` : ""}` : r.bio_source_name;
+  const m = pk?.metrics || null;
+  const methodRows = m ? Object.entries(m.method_distribution).sort((a, b) => b[1] - a[1]).slice(0, 6) : [];
+  const roundRows = m ? Object.entries(m.round_distribution).sort((a, b) => Number(a[0]) - Number(b[0])) : [];
   const tendencies: string[] = [];
   if (r.bouts >= 20) {
     if (r.stoppage_rate != null) tendencies.push(`${pct(r.stoppage_rate)} of loaded assignments ended by stoppage (${r.ko_tko} KO/TKO, ${r.submissions} submissions) against a ${pct(r.archive_stoppage_rate)} archive baseline.`);
@@ -44,6 +57,7 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
     if (r.avg_stoppage_seconds != null) tendencies.push(`Average elapsed time to a stoppage in this sample: ${duration(r.avg_stoppage_seconds)} of fight time.`);
   }
   if (r.title_bouts > 0) tendencies.push(`${r.title_bouts} championship assignment${r.title_bouts === 1 ? "" : "s"} and ${r.five_round_bouts} five-round bout${r.five_round_bouts === 1 ? "" : "s"} in the loaded archive.`);
+  else if (r.five_round_bouts > 0) tendencies.push(`${r.five_round_bouts} five-round assignment${r.five_round_bouts === 1 ? "" : "s"} in the loaded archive. Championship status is not yet populated across most archived bouts, so a zero title count reflects archive coverage rather than this official’s record.`);
   const schema = {
     "@context": "https://schema.org", "@type": "ProfilePage", name: `${r.display_name} UFC referee profile`, url: `${SITE.url}/referees/${r.slug}`, dateModified: r.bio_verified_at || r.last_event_date || undefined,
     mainEntity: { "@type": "Person", name: r.display_name, jobTitle: "Mixed martial arts referee", nationality: r.country || undefined, description: bio, image: r.image_url || undefined, sameAs: r.bio_source_url ? [r.bio_source_url] : undefined },
@@ -65,7 +79,7 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
         </div>
         <div className="ref-keystats" aria-label="Key stats">
           <div><b>{r.bouts}</b><span>Loaded bouts</span></div>
-          <div><b>{r.title_bouts}</b><span>Title fights</span></div>
+          <div><b>{r.title_bouts || "—"}</b><span>Title fights{r.title_bouts ? "" : " recorded"}</span></div>
           <div><b>{r.five_round_bouts}</b><span>Five-round</span></div>
           <div><b>{pct(r.stoppage_rate)}</b><span>Stoppage rate</span></div>
           <div><b>{pct(r.decision_rate)}</b><span>Decision rate</span></div>
@@ -82,12 +96,43 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
           <p className="faint sm">Descriptive history from the loaded archive. A referee does not choose the matchup, styles or scheduled length, so finish and decision rates are context, not a causal signal.</p>
         </div>
         <div>
-          <div className="eyebrow">{r.bio ? "Verified background" : "Archive biography"}</div>
+          <div className="eyebrow">{sourcedBio || r.bio ? "Verified background" : "Archive biography"}</div>
           <h2>{r.display_name}</h2>
           <p>{bio}</p>
-          {r.bio_source_url && <p><a className={styles.source} href={r.bio_source_url} target="_blank" rel="noopener">Source · {r.bio_source_name || "Verified biography"} ↗</a></p>}
+          {bioSourceUrl && <p><a className={styles.source} href={bioSourceUrl} target="_blank" rel="noopener">Source · {bioSourceName || "Verified biography"} ↗</a></p>}
+          {!sourcedBio && !r.bio && <p className="faint sm">No externally sourced biography passed the identity check for this official, so the summary above is generated from our own archive rows only.</p>}
         </div>
       </section>
+
+      {m && (
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <h2>Assignment distribution <span className="origin">PBE derived</span></h2>
+            <p>Historical distribution across {m.sample_bouts} loaded assignments. Descriptive record only: a referee does not choose the matchup, the styles or the scheduled length, so these are not a characterisation of officiating style.</p>
+          </div>
+          <div className="ref-dist">
+            <div>
+              <h3>How the fights ended</h3>
+              <ul>{methodRows.map(([method, n]) => <li key={method}><span>{METHOD_LABEL[method] || method}</span><b>{n}</b><i style={{ width: `${Math.round((n / m.sample_bouts) * 100)}%` }} /><small>{Math.round((n / m.sample_bouts) * 100)}%</small></li>)}</ul>
+            </div>
+            <div>
+              <h3>Ending round</h3>
+              <ul>{roundRows.map(([rd, n]) => <li key={rd}><span>Round {rd}</span><b>{n}</b><i style={{ width: `${Math.round((n / m.sample_bouts) * 100)}%` }} /><small>{Math.round((n / m.sample_bouts) * 100)}%</small></li>)}</ul>
+            </div>
+            <div>
+              <h3>Timing</h3>
+              <dl className="ref-timing">
+                <div><dt>Average fight duration</dt><dd>{m.avg_fight_seconds != null ? fmtTime(m.avg_fight_seconds) : "—"} <small className="faint">({m.timed_sample} timed bouts)</small></dd></div>
+                {m.stoppage_time_seconds && <>
+                  <div><dt>Stoppage time · median</dt><dd>{fmtTime(m.stoppage_time_seconds.median)}</dd></div>
+                  <div><dt>Stoppage time · middle 50%</dt><dd>{fmtTime(m.stoppage_time_seconds.p25)} – {fmtTime(m.stoppage_time_seconds.p75)} <small className="faint">({m.stoppage_time_seconds.sample} stoppages)</small></dd></div>
+                </>}
+                <div><dt>Main events</dt><dd>{m.main_event_assignments}</dd></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+      )}
 
       {notable.length > 0 && (
         <section className={styles.section}>
@@ -108,16 +153,23 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
       <section className={styles.section}>
         <div className={styles.sectionHead}><h2>Profile details</h2><p>Structured facts from the loaded archive and, where attached, a verified source. Unavailable facts are omitted rather than guessed.</p></div>
         <dl className="ref-details">
-          <div><dt>Full name</dt><dd>{r.display_name}</dd></div>
-          {r.country && <div><dt>Country</dt><dd>{r.country}</dd></div>}
+          <div><dt>Full name</dt><dd>{(f("full_name") as string) || r.display_name}</dd></div>
+          {(f("role") as string) && <div><dt>Role</dt><dd>{f("role") as string}</dd></div>}
+          {((f("nationality") as string) || r.country) && <div><dt>Nationality</dt><dd>{(f("nationality") as string) || r.country}</dd></div>}
+          {(f("date_of_birth") as string) && <div><dt>Born</dt><dd>{fmtDate(f("date_of_birth") as string, { month: "long", day: "numeric", year: "numeric" })}</dd></div>}
+          {Array.isArray(f("occupations")) && (f("occupations") as string[]).length > 0 && <div><dt>Also listed as</dt><dd>{(f("occupations") as string[]).join(" · ")}</dd></div>}
+          {(f("tenure_label") as string) && <div><dt>Documented tenure</dt><dd>{f("tenure_label") as string}</dd></div>}
+          {(f("status") as string) && <div><dt>Status</dt><dd>{f("status") as string}</dd></div>}
           {tenure && <div><dt>Archive tenure</dt><dd>{tenure}{r.first_event_date ? ` · first loaded bout ${fmtDate(r.first_event_date, { month: "short", day: "numeric", year: "numeric" })}` : ""}</dd></div>}
           {r.last_event_date && <div><dt>Most recent bout</dt><dd>{fmtDate(r.last_event_date, { month: "short", day: "numeric", year: "numeric" })}</dd></div>}
           <div><dt>UFC bouts officiated</dt><dd>{r.bouts} <span className="faint">(loaded archive)</span></dd></div>
-          <div><dt>Title fights</dt><dd>{r.title_bouts}</dd></div>
+          <div><dt>Title fights</dt><dd>{r.title_bouts || <span className="faint">Not recorded — championship status is unpopulated for most archived bouts</span>}</dd></div>
           <div><dt>Outcomes</dt><dd>{r.ko_tko} KO/TKO · {r.submissions} submissions · {r.decisions} decisions ({r.split_decisions} split) · {r.nc_draws} NC/draws</dd></div>
           <div><dt>Average stoppage</dt><dd>{duration(r.avg_stoppage_seconds)}</dd></div>
           {r.bio_source_url && <div><dt>Background source</dt><dd><a href={r.bio_source_url} target="_blank" rel="noopener">{r.bio_source_name || r.bio_source_url} ↗</a>{r.bio_verified_at ? ` · verified ${fmtDate(r.bio_verified_at.slice(0, 10), { month: "short", day: "numeric", year: "numeric" })}` : ""}</dd></div>}
-          {r.image_url && <div><dt>Photo</dt><dd>{r.image_credit || "Rights-cleared image"}{r.image_license ? ` · ${r.image_license}` : ""}{r.image_source_url ? <> · <a href={r.image_source_url} target="_blank" rel="noopener">source ↗</a></> : null}</dd></div>}
+          {photo && <div><dt>Photo</dt><dd>{photo.attribution}{photo.sourcePage ? <> · <a href={photo.sourcePage} target="_blank" rel="noopener">file page ↗</a></> : null}</dd></div>}
+          {!photo && pk?.media_search && <div><dt>Photo</dt><dd className="faint">No freely licensed portrait found in approved sources ({pk.media_search.rejected.length} candidate{pk.media_search.rejected.length === 1 ? "" : "s"} rejected on license or identity).</dd></div>}
+          {pk?.identity?.wikipedia && <div><dt>Reference</dt><dd><a href={pk.identity.wikipedia} target="_blank" rel="noopener">English Wikipedia ↗</a>{pk.identity.wikidata ? <> · <a href={`https://www.wikidata.org/wiki/${pk.identity.wikidata}`} target="_blank" rel="noopener">Wikidata ↗</a></> : null}</dd></div>}
         </dl>
       </section>
 

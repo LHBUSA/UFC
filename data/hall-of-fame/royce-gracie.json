@@ -1,0 +1,159 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "royce-gracie",
+  "name": "Royce Gracie",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:28.195Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Royce_Gracie",
+    "wikidata": "Q553469",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Royce Gracie",
+      "source": "https://en.wikipedia.org/wiki/Royce_Gracie",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "induction_year": {
+      "value": 2003,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "nationality": {
+      "value": "Brazil",
+      "source": "https://www.wikidata.org/wiki/Q553469",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "date_of_birth": {
+      "value": "1966-12-12",
+      "source": "https://www.wikidata.org/wiki/Q553469",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "description": {
+      "value": "Brazilian mixed martial arts (MMA) fighter",
+      "source": "https://www.wikidata.org/wiki/Q553469",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "occupations": {
+      "value": [
+        "Brazilian jiu-jitsu practitioner",
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q553469",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "legacy_summary": {
+      "value": "Won the UFC 1, 2 and 4 tournaments and made Brazilian jiu-jitsu the first language every future champion had to learn.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Open weight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "championships": {
+      "value": [
+        "UFC 1, UFC 2 and UFC 4 tournament winner"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Inaugural Hall of Fame class (2003)",
+        "Submitted larger opponents in the earliest open-weight tournaments"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Ken Shamrock (UFC 1, 1993)",
+        "vs Dan Severn (UFC 4, 1994)",
+        "vs Kazushi Sakuraba (PRIDE 2000)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:28.195Z"
+    }
+  },
+  "bio": {
+    "text": "Royce Gracie is a Brazilian former professional mixed martial artist. Gracie gained fame for his success in the Ultimate Fighting Championship (UFC). He is a member of the Gracie jiu-jitsu family, a UFC Hall of Famer, and is considered to be one of the most influential figures in the history of mixed martial arts (MMA). He also competed in PRIDE Fighting Championships, K-1's MMA events, and Bellator.",
+    "source_url": "https://en.wikipedia.org/wiki/Royce_Gracie",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:28.195Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:59.531Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "royce-gracie",
+    "subject_name": "Royce Gracie",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/23/RoyceGracie.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:RoyceGracie.png",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 3.0",
+    "license_text": "Transferred from en.wikipedia",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Original uploader was East718 at en.wikipedia",
+    "attribution": "Original uploader was East718 at en.wikipedia · CC BY-SA 3.0 · via Wikimedia Commons",
+    "source_width": 1491,
+    "source_height": 1641,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:31.203Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/royce-gracie-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/royce-gracie-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/royce-gracie-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:29.805Z",
+    "wikidata": "Q553469",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Royce_Gracie",
+    "https://www.wikidata.org/wiki/Q553469"
+  ]
+}

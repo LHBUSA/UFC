@@ -1,0 +1,154 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "dan-severn",
+  "name": "Dan Severn",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:31.894Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Dan_Severn",
+    "wikidata": "Q2268766",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Dan Severn",
+      "source": "https://en.wikipedia.org/wiki/Dan_Severn",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "induction_year": {
+      "value": 2005,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q2268766",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "date_of_birth": {
+      "value": "1958-06-08",
+      "source": "https://www.wikidata.org/wiki/Q2268766",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "description": {
+      "value": "American mixed martial artist and professional wrestler",
+      "source": "https://www.wikidata.org/wiki/Q2268766",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "occupations": {
+      "value": [
+        "professional wrestler",
+        "judoka",
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q2268766",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "legacy_summary": {
+      "value": "A decorated amateur wrestler who brought Greco-Roman control to the tournament era and won the UFC 5 tournament and Ultimate Ultimate 1995.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Open weight",
+        "Heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "championships": {
+      "value": [
+        "UFC 5 tournament winner",
+        "Ultimate Ultimate 1995 winner",
+        "UFC Superfight Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Royce Gracie (UFC 4)",
+        "vs Ken Shamrock (UFC 6 and UFC 9)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:31.894Z"
+    }
+  },
+  "bio": {
+    "text": "Daniel DeWayne Severn, nicknamed \"the Beast\", is an American retired professional wrestler, mixed martial artist and amateur wrestler. A UFC Hall of Fame member, Severn is considered one of the leading pioneers of mixed martial arts and the first true world-class wrestler to compete in the Ultimate Fighting Championship (UFC). He is best known for his success in the early years of the UFC where he became the first UFC Triple Crown champion in history by winning the UFC 5 tournament, Ultimate Ultimate 1995, and UFC Superfight Championship. Severn has also competed in the International Vale Tudo Championship (IVC), Pride Fighting Championships, Fighting Network Rings, World Extreme Cagefighting (WEC), King of the Cage, Maximum Fighting Championship (MFC) and Cage Rage, and holds a professional MMA record of 101–19–7.",
+    "source_url": "https://en.wikipedia.org/wiki/Dan_Severn",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:31.894Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:51.496Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "dan-severn",
+    "subject_name": "Dan Severn",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Dan_%22The_Beast%22_Severn_2016.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Dan_%22The_Beast%22_Severn_2016.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 2.0",
+    "license_text": "https://www.flickr.com/photos/10542402@N06/27592108674/",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Mike Kalasnik",
+    "attribution": "Mike Kalasnik · CC BY-SA 2.0 · via Wikimedia Commons",
+    "source_width": 1920,
+    "source_height": 1280,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:08.402Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/dan-severn-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/dan-severn-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/dan-severn-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:07.041Z",
+    "wikidata": "Q2268766",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Dan_Severn",
+    "https://www.wikidata.org/wiki/Q2268766"
+  ]
+}

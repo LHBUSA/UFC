@@ -1,0 +1,165 @@
+{
+  "subject_type": "referee",
+  "slug": "jason-herzog",
+  "name": "Jason Herzog",
+  "identity": {
+    "checked_at": "2026-09-07T14:03:00.586Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Jason_Herzog",
+    "wikidata": "Q52018758",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Jason Herzog",
+      "source": "https://en.wikipedia.org/wiki/Jason_Herzog",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "role": {
+      "value": "American mixed martial arts referee",
+      "source": "https://en.wikipedia.org/wiki/Jason_Herzog",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "date_of_birth": null,
+    "occupations": {
+      "value": [
+        "mixed martial arts referee"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q52018758",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "documented_since": {
+      "value": 2017,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2017–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "ufc_bout_count": {
+      "value": 195,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "five_round_count": {
+      "value": 13,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    },
+    "main_event_count": {
+      "value": 146,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:00.586Z"
+    }
+  },
+  "bio": {
+    "text": "Jason Herzog is an American mixed martial arts (MMA) referee. He has officiated for major promotions including the Ultimate Fighting Championship (UFC) and Bellator MMA.",
+    "source_url": "https://en.wikipedia.org/wiki/Jason_Herzog",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:03:00.587Z"
+  },
+  "metrics": {
+    "sample_bouts": 195,
+    "main_event_assignments": 146,
+    "method_distribution": {
+      "KO_TKO": 68,
+      "DEC_U": 66,
+      "SUB": 42,
+      "DEC_S": 13,
+      "DRAW": 3,
+      "NC": 2,
+      "DEC_M": 1
+    },
+    "round_distribution": {
+      "1": 55,
+      "2": 38,
+      "3": 96,
+      "4": 2,
+      "5": 4
+    },
+    "avg_fight_seconds": 615,
+    "timed_sample": 195,
+    "stoppage_time_seconds": {
+      "p25": 185,
+      "median": 368,
+      "p75": 535,
+      "sample": 110
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:03:00.587Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:55.385Z",
+    "wikidata": "Q52018758",
+    "rejected": [
+      {
+        "file": "File:Herzog Christoph von Würtemberg - ein Lebensbild aus der Reformation (IA bub gb QI5JAAAAYAAJ).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Westphalen, der Secretär des Herzogs Ferdinand von Braunschweig-Lüneburg; biographische Skizze (IA bub gb ge8TAAAAYAAJ).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Reise Sr. Hoheit des Herzogs Bernhard zu Sachsen-Weimar-Eisenach durch Nord-Amerika in den Jahren 1825 und 1826 (microform) (IA cihm 18718).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Wallenstein - ein dramatisches gedicht (IA wallensteineindr00schi 1).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Beschluss der Anmerkungen uber die Abhandlung des Delaveau (microform) (IA 4630609).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Die deutschen Volksbücher; gesammelt und in ihrer ursprünglichen Echtheit wiederhergestellt (IA diedeutschenvolk10simruoft).pdf",
+        "reason": "mime: application/pdf"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://en.wikipedia.org/wiki/Jason_Herzog",
+    "https://www.wikidata.org/wiki/Q52018758",
+    "https://camomma.org/Users/jherzog"
+  ]
+}

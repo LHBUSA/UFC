@@ -1,0 +1,161 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "khabib-nurmagomedov",
+  "name": "Khabib Nurmagomedov",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:09.343Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Khabib_Nurmagomedov",
+    "wikidata": "Q3526023",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Khabib Nurmagomedov",
+      "source": "https://en.wikipedia.org/wiki/Khabib_Nurmagomedov",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "induction_year": {
+      "value": 2022,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "nationality": {
+      "value": "Soviet Union / Russia",
+      "source": "https://www.wikidata.org/wiki/Q3526023",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "date_of_birth": {
+      "value": "1988-09-20",
+      "source": "https://www.wikidata.org/wiki/Q3526023",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "description": {
+      "value": "Russian professional mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q3526023",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "amateur wrestler",
+        "judoka",
+        "sambo fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q3526023",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "legacy_summary": {
+      "value": "Retired undefeated as lightweight champion with smothering pressure grappling that opponents never solved.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Lightweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Lightweight Champion (2018–2020)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Retired 29-0",
+        "Three title defenses, all finishes"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Conor McGregor (UFC 229, 2018)",
+        "vs Dustin Poirier (UFC 242, 2019)",
+        "vs Justin Gaethje (UFC 254, 2020)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:09.343Z"
+    }
+  },
+  "bio": {
+    "text": "Khabib Abdulmanapovich Nurmagomedov is a Russian former professional mixed martial artist who competed in the Lightweight division of the Ultimate Fighting Championship (UFC). He was the longest-reigning UFC Lightweight Champion ever, having held the title from April 2018 to March 2021. With 29 wins and no losses, he retired with an undefeated record. Nurmagomedov is widely considered to be among the greatest mixed martial artists of all time, and was inducted into the UFC Hall of Fame on June 30, 2022.",
+    "source_url": "https://en.wikipedia.org/wiki/Khabib_Nurmagomedov",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:09.343Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:55.819Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "khabib-nurmagomedov",
+    "subject_name": "Khabib Nurmagomedov",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/34/Khabib_nurmagomedov.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Khabib_nurmagomedov.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 4.0",
+    "license_text": "Own work",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Airotcivss",
+    "attribution": "Airotcivss · CC BY-SA 4.0 · via Wikimedia Commons",
+    "source_width": 1080,
+    "source_height": 1699,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:42.716Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/khabib-nurmagomedov-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/khabib-nurmagomedov-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/khabib-nurmagomedov-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:41.562Z",
+    "wikidata": "Q3526023",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Khabib_Nurmagomedov",
+    "https://www.wikidata.org/wiki/Q3526023"
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "vitor-belfort",
+  "name": "Vitor Belfort",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:57.198Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Vitor_Belfort",
+    "wikidata": "Q458716",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Vitor Belfort",
+      "source": "https://en.wikipedia.org/wiki/Vitor_Belfort",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "Brazil",
+      "source": "https://www.wikidata.org/wiki/Q458716",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "date_of_birth": {
+      "value": "1977-04-01",
+      "source": "https://www.wikidata.org/wiki/Q458716",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "description": {
+      "value": "Brazilian mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q458716",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "occupations": {
+      "value": [
+        "boxer",
+        "judoka",
+        "mixed martial arts fighter",
+        "karateka"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q458716",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "legacy_summary": {
+      "value": "Won the UFC 12 heavyweight tournament at 19 and remained a title challenger across three divisions for two decades.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Heavyweight",
+        "Light heavyweight",
+        "Middleweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "championships": {
+      "value": [
+        "UFC 12 tournament winner (1997)",
+        "UFC Light Heavyweight Champion (2004)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Randy Couture (UFC 46, 2004)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:57.198Z"
+    }
+  },
+  "bio": {
+    "text": "Vítor Vieira Belfort is a Brazilian-American professional boxer and retired mixed martial artist who competed for the Ultimate Fighting Championship (UFC), where he fought in the Heavyweight, Light Heavyweight, and Middleweight divisions. He is the UFC 12 Heavyweight Tournament Champion, as well as a former UFC Light Heavyweight Champion and Cage Rage World Light Heavyweight Champion. Known for his explosive knockout power, Belfort is tied for ninth for the most finishes in UFC history with 14. Belfort also competed for MMA promotions Pride FC, Strikeforce, and Affliction.",
+    "source_url": "https://en.wikipedia.org/wiki/Vitor_Belfort",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:57.198Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:11:01.202Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "vitor-belfort",
+    "subject_name": "Vitor Belfort",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Vitor_belfort_cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Vitor_belfort_cropped.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 2.0",
+    "license_text": "https://www.flickr.com/photos/tiagoluiz/2540225749/ Cropped from en:File:Vitor_belfort.jpg",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "https://www.flickr.com/photos/tiagoluiz/",
+    "attribution": "https://www.flickr.com/photos/tiagoluiz/ · CC BY 2.0 · via Wikimedia Commons",
+    "source_width": 421,
+    "source_height": 331,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:37.886Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/vitor-belfort-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/vitor-belfort-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/vitor-belfort-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:37.149Z",
+    "wikidata": "Q458716",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Vitor_Belfort",
+    "https://www.wikidata.org/wiki/Q458716"
+  ]
+}

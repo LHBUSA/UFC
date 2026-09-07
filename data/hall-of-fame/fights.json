@@ -1,0 +1,436 @@
+{
+  "generated_at": "2026-09-07T14:26:20.056Z",
+  "note": "UFC Hall of Fame Fight Wing. Fighter links resolve to canonical archive rows; results appear only where the bout exists in the loaded archive.",
+  "fights": [
+    {
+      "slug": "forrest-griffin-vs-stephan-bonnar",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Forrest Griffin vs Stephan Bonnar 1",
+      "fighters": [
+        {
+          "name": "Forrest Griffin",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        },
+        {
+          "name": "Stephan Bonnar",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": 1,
+      "event": {
+        "name": "The Ultimate Fighter Finale",
+        "year": "2005",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "The fight credited with proving the sport to a television audience.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:17.419Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "mark-coleman-vs-pete-williams",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Mark Coleman vs Pete Williams",
+      "fighters": [
+        {
+          "name": "Mark Coleman",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        },
+        {
+          "name": "Pete Williams",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": null,
+      "event": {
+        "name": "UFC 17",
+        "year": "1998",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "Williams' head-kick knockout of the dominant wrestler — one of the first great upsets of the rules era.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:17.767Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "matt-hughes-vs-frank-trigg",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Matt Hughes vs Frank Trigg 2",
+      "fighters": [
+        {
+          "name": "Matt Hughes",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        },
+        {
+          "name": "Frank Trigg",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": 2,
+      "event": {
+        "name": "UFC 52",
+        "year": "2005",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "Hughes survives a low blow and a near-finish, then carries Trigg across the cage and submits him.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:18.005Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "diego-sanchez-vs-clay-guida",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Diego Sanchez vs Clay Guida",
+      "fighters": [
+        {
+          "name": "Diego Sanchez",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        },
+        {
+          "name": "Clay Guida",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": null,
+      "event": {
+        "name": "The Ultimate Fighter 9 Finale",
+        "year": "2009",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "Three rounds of relentless pace that became the reference point for a lightweight war.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:18.256Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "anderson-silva-vs-chael-sonnen",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Anderson Silva vs Chael Sonnen 1",
+      "fighters": [
+        {
+          "name": "Anderson Silva",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        },
+        {
+          "name": "Chael Sonnen",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": 1,
+      "event": {
+        "name": "UFC 117",
+        "year": "2010",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "Four and a half rounds of domination undone by a fifth-round triangle.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:18.538Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "shogun-rua-vs-dan-henderson",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Shogun Rua vs Dan Henderson 1",
+      "fighters": [
+        {
+          "name": "Shogun Rua",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        },
+        {
+          "name": "Dan Henderson",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": 1,
+      "event": {
+        "name": "UFC 139",
+        "year": "2011",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "A five-round fight in which both men were nearly finished and neither stopped coming forward.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:18.833Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "jon-jones-vs-alexander-gustafsson",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Jon Jones vs Alexander Gustafsson 1",
+      "fighters": [
+        {
+          "name": "Jon Jones",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        },
+        {
+          "name": "Alexander Gustafsson",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": 1,
+      "event": {
+        "name": "UFC 165",
+        "year": "2013",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "The closest anyone came to Jones' light heavyweight title in his first reign.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:19.067Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "robbie-lawler-vs-rory-macdonald",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Robbie Lawler vs Rory MacDonald 2",
+      "fighters": [
+        {
+          "name": "Robbie Lawler",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        },
+        {
+          "name": "Rory MacDonald",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": 2,
+      "event": {
+        "name": "UFC 189",
+        "year": "2015",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "A welterweight title fight remembered for the stare-down between rounds four and five.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:19.310Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "cub-swanson-vs-doo-ho-choi",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Cub Swanson vs Doo Ho Choi",
+      "fighters": [
+        {
+          "name": "Cub Swanson",
+          "fighter_id": "4eb1d106-b44c-48f0-bb8b-6bc215f11749",
+          "archive_status": "linked",
+          "espn_athlete_id": "2354087"
+        },
+        {
+          "name": "Doo Ho Choi",
+          "fighter_id": null,
+          "archive_status": "missing",
+          "espn_athlete_id": null
+        }
+      ],
+      "meeting": null,
+      "event": {
+        "name": "UFC 206",
+        "year": "2016",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "A three-round featherweight exchange with both fighters hurt and both refusing to slow down.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:19.590Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    },
+    {
+      "slug": "israel-adesanya-vs-kelvin-gastelum",
+      "subject_type": "hof_fight",
+      "wing": "fight",
+      "title": "Israel Adesanya vs Kelvin Gastelum",
+      "fighters": [
+        {
+          "name": "Israel Adesanya",
+          "fighter_id": "b24ade25-45e1-4393-9a53-c59094236403",
+          "archive_status": "linked",
+          "espn_athlete_id": "4285679"
+        },
+        {
+          "name": "Kelvin Gastelum",
+          "fighter_id": "498b0036-6dc0-491a-8e36-f4ec466a6c35",
+          "archive_status": "linked",
+          "espn_athlete_id": "3026011"
+        }
+      ],
+      "meeting": null,
+      "event": {
+        "name": "UFC 236",
+        "year": "2019",
+        "event_id": null,
+        "event_date": null
+      },
+      "result": null,
+      "result_note": "Result not published here: this bout predates the loaded PropBetEdge result archive. Method and round are deliberately omitted rather than guessed.",
+      "significance": {
+        "value": "An interim middleweight title fight decided in a fifth round both men needed to win.",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "method": "curated_reviewed",
+        "verified_at": "2026-09-07T14:26:20.056Z"
+      },
+      "induction": {
+        "wing": "Fight Wing",
+        "source": "https://www.ufc.com/ufc-hall-of-fame",
+        "note": "Induction class per the official UFC Hall of Fame; the year is intentionally omitted where not confidently sourced."
+      },
+      "sources": [
+        "https://www.ufc.com/ufc-hall-of-fame"
+      ]
+    }
+  ]
+}

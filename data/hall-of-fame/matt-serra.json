@@ -1,0 +1,162 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "matt-serra",
+  "name": "Matt Serra",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:45.636Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Matt_Serra",
+    "wikidata": "Q968201",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Matt Serra",
+      "source": "https://en.wikipedia.org/wiki/Matt_Serra",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "induction_year": {
+      "value": 2018,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q968201",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "date_of_birth": {
+      "value": "1974-06-02",
+      "source": "https://www.wikidata.org/wiki/Q968201",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "description": {
+      "value": "American mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q968201",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q968201",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "legacy_summary": {
+      "value": "The Ultimate Fighter 4 winner who knocked out Georges St-Pierre for the welterweight title in one of the sport's biggest upsets.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Welterweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Welterweight Champion (2007)",
+        "The Ultimate Fighter 4 winner"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Georges St-Pierre (UFC 69, 2007)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:45.636Z"
+    }
+  },
+  "bio": {
+    "text": "Matt Serra is an American former professional mixed martial artist and Brazilian Jiu-Jitsu practitioner. He is a former UFC Welterweight Champion. He is the co-star of Dana White: Lookin' for a Fight and co-host of the official podcast of the UFC, UFC Unfiltered, alongside Jim Norton.",
+    "source_url": "https://en.wikipedia.org/wiki/Matt_Serra",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:45.636Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:56.864Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:04.086Z",
+    "wikidata": "Q968201",
+    "rejected": [
+      {
+        "file": "File:Matt Serra 2007.png",
+        "reason": "too small: 308x557"
+      },
+      {
+        "file": "File:Matt Serra 2007.png",
+        "reason": "too small: 308x557"
+      },
+      {
+        "file": "File:Matt Serra 2024.png",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:The people's right defended.. (IA peoplesrightdefe00winc).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Matt Serra 2007.png",
+        "reason": "too small: 308x557"
+      },
+      {
+        "file": "File:Matt Serra 2024.png",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Legado Massapeense Osmundo Pontes e Osvaldo Aguiar.pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Jonathan Goulet.jpg",
+        "reason": "too small: 312x450"
+      },
+      {
+        "file": "File:Patrick Côté (fighter).jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Logbook of the Amazon (Ship) of Fairhaven, Sophia And Eliza (Bark) of Duxbury, Montezuma (Ship) of New London, and Marcus (Ship) of Fairhaven, mastered by Robert G. Smith, Edward R. Coffin (IA KWM-398).pdf",
+        "reason": "mime: application/pdf"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Matt_Serra",
+    "https://www.wikidata.org/wiki/Q968201"
+  ]
+}

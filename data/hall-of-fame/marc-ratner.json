@@ -1,0 +1,127 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "marc-ratner",
+  "name": "Marc Ratner",
+  "wing": "contributor",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:25.000Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Marc_Ratner",
+    "wikidata": "Q6755812",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Marc Ratner",
+      "source": "https://en.wikipedia.org/wiki/Marc_Ratner",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "wing": {
+      "value": "contributor",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "induction_year": {
+      "value": 2021,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q6755812",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "date_of_birth": {
+      "value": "1944-07-25",
+      "source": "https://www.wikidata.org/wiki/Q6755812",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "description": {
+      "value": "Mixed Martial arts executive",
+      "source": "https://www.wikidata.org/wiki/Q6755812",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "occupations": {
+      "value": [
+        "sports executive"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q6755812",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "legacy_summary": {
+      "value": "Nevada athletic commission executive who later led UFC regulatory affairs and drove the sport's legalization state by state.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "role": {
+      "value": "Regulatory affairs",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:25.000Z"
+    },
+    "contributions": null
+  },
+  "bio": {
+    "text": "Marc Ratner is an American entrepreneur who is the current Vice President of Regulatory Affairs with the Ultimate Fighting Championship. Formerly, he was the executive director of the Nevada State Athletic Commission.",
+    "source_url": "https://en.wikipedia.org/wiki/Marc_Ratner",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:25.000Z"
+  },
+  "archive": null,
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:46.446Z",
+    "wikidata": "Q6755812",
+    "rejected": [
+      {
+        "file": "File:A REVIEW OF THE PROFESSIONAL BOXING INDUSTRY (IA gov.gpo.fdsys.CHRG-107shrg89033).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:CONTINUING TO REFORM PROFESSIONAL BOXING (IA gov.gpo.fdsys.CHRG-108shrg96083).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:A REVIEW OF THE PROFESSIONAL BOXING INDUSTRY (IA gov.gpo.fdsys.CHRG-107shrg89033).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:CONTINUING TO REFORM PROFESSIONAL BOXING (IA gov.gpo.fdsys.CHRG-108shrg96083).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Duke University Libraries (IA jacobbehmenstheo00bhme).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Directions and instigations to the duty of prayer, ... 1679 (IA bim early-english-books-1641-1700 directions-and-instigati gray-andrew 1679).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:The adequacy of officer fitness reports. (IA adequacyofoffice00fole).pdf",
+        "reason": "mime: application/pdf"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Marc_Ratner",
+    "https://www.wikidata.org/wiki/Q6755812"
+  ]
+}

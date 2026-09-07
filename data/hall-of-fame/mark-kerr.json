@@ -1,0 +1,137 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "mark-kerr",
+  "name": "Mark Kerr",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:58.636Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Mark_Kerr_(fighter)",
+    "wikidata": "Q1369125",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Mark Kerr",
+      "source": "https://en.wikipedia.org/wiki/Mark_Kerr_(fighter)",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q1369125",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "date_of_birth": {
+      "value": "1968-12-21",
+      "source": "https://www.wikidata.org/wiki/Q1369125",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "description": {
+      "value": "American mixed martial arts fighter",
+      "source": "https://www.wikidata.org/wiki/Q1369125",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "occupations": {
+      "value": [
+        "amateur wrestler",
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q1369125",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "legacy_summary": {
+      "value": "Two-time UFC tournament winner in 1997 and a PRIDE star whose career became the subject of the documentary The Smashing Machine.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "championships": {
+      "value": [
+        "UFC 14 and UFC 15 heavyweight tournament winner"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:58.636Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": null
+  },
+  "bio": {
+    "text": "Mark Kerr is an American former wrestler and mixed martial artist. During his MMA career, he was a two-time UFC Heavyweight Tournament Champion, World Vale Tudo Championship tournament winner, and a PRIDE FC competitor. In collegiate wrestling, Kerr was an NCAA Division I champion. In freestyle wrestling, he won gold and silver medals at the World Cup and silver at the Pan American Games. In submission wrestling, Kerr is a four-time ADCC World Champion, winning his weightclass twice along with the absolute division and the Superfight Championship.",
+    "source_url": "https://en.wikipedia.org/wiki/Mark_Kerr_(fighter)",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:58.636Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:56.323Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "mark-kerr",
+    "subject_name": "Mark Kerr",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Mark_Kerr_at_TIFF_2025_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Mark_Kerr_at_TIFF_2025_02.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 4.0",
+    "license_text": "Own work",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Gabriel Hutchinson",
+    "attribution": "Gabriel Hutchinson · CC BY-SA 4.0 · via Wikimedia Commons",
+    "source_width": 1920,
+    "source_height": 2688,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:55.286Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/mark-kerr-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/mark-kerr-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/mark-kerr-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:53.606Z",
+    "wikidata": "Q1369125",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Mark_Kerr_(fighter)",
+    "https://www.wikidata.org/wiki/Q1369125"
+  ]
+}

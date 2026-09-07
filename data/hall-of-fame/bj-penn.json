@@ -1,0 +1,154 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "bj-penn",
+  "name": "BJ Penn",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:01.212Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/B.J._Penn",
+    "wikidata": "Q402779",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "B.J. Penn",
+      "source": "https://en.wikipedia.org/wiki/B.J._Penn",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "induction_year": {
+      "value": 2015,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q402779",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "date_of_birth": {
+      "value": "1978-12-13",
+      "source": "https://www.wikidata.org/wiki/Q402779",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "description": {
+      "value": "American mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q402779",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "writer",
+        "Brazilian jiu-jitsu practitioner"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q402779",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "legacy_summary": {
+      "value": "Two-division champion whose jiu-jitsu and boxing made him the lightweight benchmark of the late 2000s.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Lightweight",
+        "Welterweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Lightweight Champion",
+        "UFC Welterweight Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Matt Hughes (UFC 46, 2004)",
+        "vs Sean Sherk (UFC 84, 2008)",
+        "vs Diego Sanchez (UFC 107, 2009)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:01.212Z"
+    }
+  },
+  "bio": {
+    "text": "Jay Dee \"B.J.\" Penn III is an American former professional mixed martial artist and 5th degree black belt Brazilian jiu-jitsu (BJJ) practitioner. A former UFC Lightweight Champion and UFC Welterweight Champion, he is the second of eleven fighters in UFC history to win titles in multiple weight classes. Prior to his MMA career, Penn was known as the first non-Brazilian to win the World Jiu-Jitsu Championship at black belt level. In mixed martial arts, Penn has competed in the Ultimate Fighting Championship (UFC) and in K-1 in the Featherweight, Lightweight, Welterweight, Middleweight, and Heavyweight/Openweight divisions. Penn fought to a draw against Caol Uno in the UFC 41 Lightweight Tournament. Through his tenures as champion, Penn unofficially unified the UFC Lightweight Championship and broke the all-time lightweight title defense record. In 2015, Penn was made the inaugural inductee into the Modern-era wing of the UFC Hall of Fame.",
+    "source_url": "https://en.wikipedia.org/wiki/B.J._Penn",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:01.212Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:50.723Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "bj-penn",
+    "subject_name": "BJ Penn",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/US_Army_51883_Ultimate_Fighting_Champion_motivates_wounded_warriors_cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:US_Army_51883_Ultimate_Fighting_Champion_motivates_wounded_warriors_cropped.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "Public domain",
+    "license_text": "http://commons.wikimedia.org",
+    "license_url": null,
+    "author": "Vanessa M. Forloine, Hickam Air Force Base Public Affairs",
+    "attribution": "Vanessa M. Forloine, Hickam Air Force Base Public Affairs · Public domain · via Wikimedia Commons",
+    "source_width": 402,
+    "source_height": 655,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:23:57.680Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/bj-penn-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/bj-penn-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/bj-penn-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:23:56.726Z",
+    "wikidata": "Q402779",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/B.J._Penn",
+    "https://www.wikidata.org/wiki/Q402779"
+  ]
+}

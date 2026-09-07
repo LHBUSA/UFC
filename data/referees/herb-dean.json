@@ -1,0 +1,174 @@
+{
+  "subject_type": "referee",
+  "slug": "herb-dean",
+  "name": "Herb Dean",
+  "identity": {
+    "checked_at": "2026-09-07T14:02:59.867Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Herb_Dean",
+    "wikidata": "Q5732922",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Herb Dean",
+      "source": "https://en.wikipedia.org/wiki/Herb_Dean",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "role": {
+      "value": "mixed martial arts referee",
+      "source": "https://en.wikipedia.org/wiki/Herb_Dean",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q5732922",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "date_of_birth": {
+      "value": "1970-09-30",
+      "source": "https://www.wikidata.org/wiki/Q5732922",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "occupations": {
+      "value": [
+        "referee",
+        "mixed martial arts fighter",
+        "mixed martial arts referee"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q5732922",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "documented_since": {
+      "value": 2017,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2017–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "ufc_bout_count": {
+      "value": 203,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "five_round_count": {
+      "value": 29,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    },
+    "main_event_count": {
+      "value": 153,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:02:59.868Z"
+    }
+  },
+  "bio": {
+    "text": "Herb Dean is an American professional mixed martial arts referee and former mixed martial artist. Dean has worked events put on by the Ultimate Fighting Championship and ONE Championship promotions, among others. He is frequently called the gold standard for referees in MMA.",
+    "source_url": "https://en.wikipedia.org/wiki/Herb_Dean",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:02:59.868Z"
+  },
+  "metrics": {
+    "sample_bouts": 203,
+    "main_event_assignments": 153,
+    "method_distribution": {
+      "KO_TKO": 88,
+      "DEC_U": 65,
+      "SUB": 36,
+      "DEC_S": 12,
+      "DRAW": 1,
+      "NC": 1
+    },
+    "round_distribution": {
+      "1": 68,
+      "2": 32,
+      "3": 90,
+      "4": 2,
+      "5": 11
+    },
+    "avg_fight_seconds": 599,
+    "timed_sample": 203,
+    "stoppage_time_seconds": {
+      "p25": 145,
+      "median": 269,
+      "p75": 583,
+      "sample": 124
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:02:59.868Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": {
+    "subject_type": "referee",
+    "subject_id": "herb-dean",
+    "subject_name": "Herb Dean",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Herb_Dean_interview_with_MMAnytt.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Herb_Dean_interview_with_MMAnytt.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 3.0",
+    "license_text": "YouTube: https://www.youtube.com/watch?v=0am4-JOD3z4 – View/save archived versions on archive.org at 1:37 cropped",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "author": "MMAnytt",
+    "attribution": "MMAnytt · CC BY 3.0 · via Wikimedia Commons",
+    "source_width": 652,
+    "source_height": 948,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:52.426Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/referees/herb-dean-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/referees/herb-dean-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/referees/herb-dean-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:51.060Z",
+    "wikidata": "Q5732922",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://en.wikipedia.org/wiki/Herb_Dean",
+    "https://www.wikidata.org/wiki/Q5732922",
+    "https://www.ufc.com/news/qa-herb-dean"
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "urijah-faber",
+  "name": "Urijah Faber",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:02.219Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Urijah_Faber",
+    "wikidata": "Q2704462",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Urijah Faber",
+      "source": "https://en.wikipedia.org/wiki/Urijah_Faber",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "induction_year": {
+      "value": 2017,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q2704462",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "date_of_birth": {
+      "value": "1979-05-14",
+      "source": "https://www.wikidata.org/wiki/Q2704462",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "description": {
+      "value": "American mixed martial artist (born 1979)",
+      "source": "https://www.wikidata.org/wiki/Q2704462",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "amateur wrestler",
+        "Brazilian jiu-jitsu practitioner"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q2704462",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "legacy_summary": {
+      "value": "WEC featherweight champion who carried the lighter weight classes into the UFC and remained a bantamweight title contender for years.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Featherweight",
+        "Bantamweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "championships": {
+      "value": [
+        "WEC Featherweight Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "First inductee of the Modern Wing"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:02.219Z"
+    },
+    "signature_fights": null
+  },
+  "bio": {
+    "text": "Urijah Christopher Faber is an American former mixed martial artist and actor. He competed in the bantamweight and featherweight divisions of the Ultimate Fighting Championship (UFC), having competed for the UFC Bantamweight Championship on three occasions, and the featherweight division of the World Extreme Cagefighting (WEC), where he is a former WEC featherweight champion. He is the founder of Team Alpha Male.",
+    "source_url": "https://en.wikipedia.org/wiki/Urijah_Faber",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:02.219Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:11:00.851Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "urijah-faber",
+    "subject_name": "Urijah Faber",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Urijah_Faber_24_July_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Urijah_Faber_24_July_2009.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 2.0",
+    "license_text": "Flickr: Urijah Faber",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "Kelly Bailey",
+    "attribution": "Kelly Bailey · CC BY 2.0 · via Wikimedia Commons",
+    "source_width": 640,
+    "source_height": 800,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:36.555Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/urijah-faber-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/urijah-faber-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/urijah-faber-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:35.721Z",
+    "wikidata": "Q2704462",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Urijah_Faber",
+    "https://www.wikidata.org/wiki/Q2704462"
+  ]
+}

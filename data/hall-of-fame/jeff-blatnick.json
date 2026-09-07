@@ -1,0 +1,108 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "jeff-blatnick",
+  "name": "Jeff Blatnick",
+  "wing": "contributor",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:23.930Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Jeff_Blatnick",
+    "wikidata": "Q1361472",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Jeff Blatnick",
+      "source": "https://en.wikipedia.org/wiki/Jeff_Blatnick",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "wing": {
+      "value": "contributor",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "induction_year": {
+      "value": 2015,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q1361472",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "date_of_birth": {
+      "value": "1957-07-26",
+      "source": "https://www.wikidata.org/wiki/Q1361472",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "description": {
+      "value": "Olympic wrestler (1957-2012)",
+      "source": "https://www.wikidata.org/wiki/Q1361472",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "occupations": {
+      "value": [
+        "motivational speaker",
+        "amateur wrestler"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q1361472",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "legacy_summary": {
+      "value": "Olympic wrestling gold medalist, longtime UFC commentator and the commissioner who helped write and champion the Unified Rules.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "role": {
+      "value": "Commentator and commissioner",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:23.930Z"
+    },
+    "contributions": null
+  },
+  "bio": {
+    "text": "Jeffrey Carl Blatnick was an American super heavyweight Greco-Roman wrestler and sports commentator. He won NCAA Division II heavyweight wrestling championships in 1978 and 1979 and won the Olympic gold medal in Greco-Roman wrestling in 1984 after battling back from cancer. During his wrestling days, he and Dan Severn were on the same U.S. National Wrestling Team.",
+    "source_url": "https://en.wikipedia.org/wiki/Jeff_Blatnick",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:23.930Z"
+  },
+  "archive": null,
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:29.408Z",
+    "wikidata": "Q1361472",
+    "rejected": [
+      {
+        "file": "File:Jeff Blatnick Park in Niskayuna, New York.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Niskayuna, New York transfer center.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Jeff_Blatnick",
+    "https://www.wikidata.org/wiki/Q1361472"
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "jens-pulver",
+  "name": "Jens Pulver",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:54.941Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Jens_Pulver",
+    "wikidata": "Q2526857",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Jens Pulver",
+      "source": "https://en.wikipedia.org/wiki/Jens_Pulver",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "induction_year": {
+      "value": 2021,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q2526857",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "date_of_birth": {
+      "value": "1974-12-06",
+      "source": "https://www.wikidata.org/wiki/Q2526857",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "description": {
+      "value": "American mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q2526857",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "occupations": {
+      "value": [
+        "boxer",
+        "mixed martial arts fighter",
+        "kickboxer"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q2526857",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "legacy_summary": {
+      "value": "The first UFC Lightweight Champion and the face of the division in its first years.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Lightweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "championships": {
+      "value": [
+        "First UFC Lightweight Champion (2001)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs BJ Penn (UFC 35, 2002)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:54.941Z"
+    }
+  },
+  "bio": {
+    "text": "Jens Johnnie Pulver is an American retired professional mixed martial artist and undefeated boxer and kickboxer. In 2023, Pulver was inducted into the UFC hall of fame. Pulver was the inaugural UFC Lightweight Champion in addition to serving as the head coach on The Ultimate Fighter 5 reality show against long-time rival B.J. Penn. In mixed martial arts, Pulver competed at the Lightweight, Featherweight, Bantamweight and Flyweight divisions in addition to competing at the Middleweight, Light Middleweight, and Welterweight divisions as a professional boxer. While perhaps best known for competing in the UFC, Pulver has also competed in Pride Fighting Championships, for the PRIDE 2005 Lightweight Grand Prix. He is to-date the youngest UFC Lightweight Champion in the UFC history, eventually relinquishing his title, after two defenses, due to a contract dispute. Pulver officially retired from combat sports in 2014.",
+    "source_url": "https://en.wikipedia.org/wiki/Jens_Pulver",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:54.941Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:53.966Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "jens-pulver",
+    "subject_name": "Jens Pulver",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/13/Jens_Pulver_at_UFC_-_Neer_vs_Diaz_2013-12-03_22-51.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Jens_Pulver_at_UFC_-_Neer_vs_Diaz_2013-12-03_22-51.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 3.0",
+    "license_text": "This file was derived from: Chris Kelly with Jens at UFC - Neer vs Diaz 2013-12-03 22-51.jpg",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Kwallsk1",
+    "attribution": "Kwallsk1 · CC BY-SA 3.0 · via Wikimedia Commons",
+    "source_width": 368,
+    "source_height": 492,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:31.015Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/jens-pulver-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/jens-pulver-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/jens-pulver-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:29.974Z",
+    "wikidata": "Q2526857",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Jens_Pulver",
+    "https://www.wikidata.org/wiki/Q2526857"
+  ]
+}

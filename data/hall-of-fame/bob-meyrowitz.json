@@ -1,0 +1,88 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "bob-meyrowitz",
+  "name": "Bob Meyrowitz",
+  "wing": "contributor",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:22.847Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Bob_Meyrowitz",
+    "wikidata": "Q4933404",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Bob Meyrowitz",
+      "source": "https://en.wikipedia.org/wiki/Bob_Meyrowitz",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:22.847Z"
+    },
+    "wing": {
+      "value": "contributor",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:22.847Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "United States",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:22.847Z"
+    },
+    "date_of_birth": null,
+    "description": {
+      "value": "co-creator of the Ultimate Fighting Championship",
+      "source": "https://www.wikidata.org/wiki/Q4933404",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:22.847Z"
+    },
+    "occupations": {
+      "value": [
+        "businessperson"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q4933404",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:22.847Z"
+    },
+    "legacy_summary": {
+      "value": "SEG chief who produced and owned the UFC through its first eight years before the Zuffa sale.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:22.847Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:22.847Z"
+    },
+    "role": {
+      "value": "Producer and owner, SEG era",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:22.847Z"
+    },
+    "contributions": null
+  },
+  "bio": {
+    "text": "Robert \"Bob\" Meyrowitz is an American entrepreneur. He was the co-creator of the Ultimate Fighting Championship (UFC), the largest MMA promotion in world.",
+    "source_url": "https://en.wikipedia.org/wiki/Bob_Meyrowitz",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:22.847Z"
+  },
+  "archive": null,
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:23:58.616Z",
+    "wikidata": "Q4933404",
+    "rejected": [],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Bob_Meyrowitz",
+    "https://www.wikidata.org/wiki/Q4933404"
+  ]
+}

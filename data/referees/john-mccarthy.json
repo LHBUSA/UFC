@@ -1,0 +1,171 @@
+{
+  "subject_type": "referee",
+  "slug": "john-mccarthy",
+  "name": "John McCarthy",
+  "identity": {
+    "checked_at": "2026-09-07T14:04:37.397Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/John_McCarthy_(referee)",
+    "wikidata": "Q6698100",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "John McCarthy",
+      "source": "https://en.wikipedia.org/wiki/John_McCarthy_(referee)",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "role": {
+      "value": "American mixed martial arts referee",
+      "source": "https://en.wikipedia.org/wiki/John_McCarthy_(referee)",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q6698100",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "date_of_birth": {
+      "value": "1962-10-12",
+      "source": "https://www.wikidata.org/wiki/Q6698100",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "occupations": {
+      "value": [
+        "boxing referee",
+        "boxing judge",
+        "mixed martial arts referee",
+        "podcaster"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q6698100",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "documented_since": {
+      "value": 2017,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "documented_through": {
+      "value": 2017,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments in 2017",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "status": {
+      "value": "No loaded assignment since 2017",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "ufc_bout_count": {
+      "value": 9,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "five_round_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    },
+    "main_event_count": {
+      "value": 9,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:37.397Z"
+    }
+  },
+  "bio": {
+    "text": "John Michael McCarthy is a retired American mixed martial arts (MMA) referee best known for officiating numerous bouts promoted by the Ultimate Fighting Championship (UFC), dating back to UFC 2. He is credited as being one of the greatest and most recognizable referees in combat sports history and an important figure in the mixed martial arts world, helping create the Unified Rules of MMA after initially creating the original rule book of the UFC. He currently is a commentator for the Professional Fighters League (PFL) and co-hosts the combat sports-based podcast \"Weighing In\" with former fighter Josh Thomson.",
+    "source_url": "https://en.wikipedia.org/wiki/John_McCarthy_(referee)",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:04:37.397Z"
+  },
+  "metrics": {
+    "sample_bouts": 9,
+    "main_event_assignments": 9,
+    "method_distribution": {
+      "KO_TKO": 4,
+      "DEC_U": 1,
+      "DEC_S": 1,
+      "SUB": 2,
+      "NC": 1
+    },
+    "round_distribution": {
+      "1": 4,
+      "2": 3,
+      "3": 2
+    },
+    "avg_fight_seconds": 443,
+    "timed_sample": 9,
+    "stoppage_time_seconds": {
+      "p25": 190,
+      "median": 395,
+      "p75": 467,
+      "sample": 6
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:04:37.397Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": {
+    "subject_type": "referee",
+    "subject_id": "john-mccarthy",
+    "subject_name": "John McCarthy",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/John_McCarthy_MMA_ref.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:John_McCarthy_MMA_ref.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 2.0",
+    "license_text": "Flickr: John McCarthy",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "Piotr Drabik",
+    "attribution": "Piotr Drabik · CC BY 2.0 · via Wikimedia Commons",
+    "source_width": 768,
+    "source_height": 1024,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:58.582Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/referees/john-mccarthy-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/referees/john-mccarthy-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/referees/john-mccarthy-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:57.191Z",
+    "wikidata": "Q6698100",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://en.wikipedia.org/wiki/John_McCarthy_(referee)",
+    "https://www.wikidata.org/wiki/Q6698100"
+  ]
+}

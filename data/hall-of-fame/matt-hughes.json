@@ -1,0 +1,182 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "matt-hughes",
+  "name": "Matt Hughes",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:37.457Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Matt_Hughes_(fighter)",
+    "wikidata": "Q455763",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Matt Hughes",
+      "source": "https://en.wikipedia.org/wiki/Matt_Hughes_(fighter)",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "induction_year": {
+      "value": 2010,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q455763",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "date_of_birth": {
+      "value": "1973-10-13",
+      "source": "https://www.wikidata.org/wiki/Q455763",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "description": {
+      "value": "American mixed martial arts fighter",
+      "source": "https://www.wikidata.org/wiki/Q455763",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q455763",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "legacy_summary": {
+      "value": "Two-reign welterweight champion whose farm-strong wrestling set the standard for the division through the mid-2000s.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Welterweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Welterweight Champion (two reigns)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Nine successful welterweight title defenses across two reigns"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Frank Trigg 2 (UFC 52, 2005 · Fight Wing)",
+        "vs Georges St-Pierre (UFC 50, 2004)",
+        "vs Royce Gracie (UFC 60, 2006)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.457Z"
+    }
+  },
+  "bio": {
+    "text": "Matthew Allen Hughes is an American retired mixed martial artist with a background in wrestling. Widely considered among the greatest fighters in the history of MMA, he is a former two-time UFC Welterweight Champion, UFC Hall of Fame inductee, and NJCAA Hall of Fame inductee. During his ventures in the Ultimate Fighting Championship, Hughes put together two six-fight winning streaks defeating all of the available opposition in the welterweight division. In May 2010, Hughes became the eighth inductee into the UFC Hall of Fame.",
+    "source_url": "https://en.wikipedia.org/wiki/Matt_Hughes_(fighter)",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:37.457Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:56.623Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "matt-hughes",
+    "subject_name": "Matt Hughes",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9e/USMC-090221-M-3273C-001_Cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:USMC-090221-M-3273C-001_Cropped.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "Public domain",
+    "license_text": "This image has been extracted from another file",
+    "license_url": null,
+    "author": "United States Marine Corps",
+    "attribution": "United States Marine Corps · Public domain · via Wikimedia Commons",
+    "source_width": 801,
+    "source_height": 935,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "medium",
+    "verified_at": "2026-09-07T14:24:59.693Z",
+    "kind": "portrait",
+    "method": "commons_search",
+    "commercial_display_status": "review_required",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/matt-hughes-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/matt-hughes-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/matt-hughes-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:58.386Z",
+    "wikidata": "Q455763",
+    "rejected": [
+      {
+        "file": "File:Matt Hughes (cropped).png",
+        "reason": "too small: 302x438"
+      },
+      {
+        "file": "File:Matt Hughes (cropped).png",
+        "reason": "too small: 302x438"
+      },
+      {
+        "file": "File:LL-Q36236 (mal)-BhagyaMohan-ചന്ദ്രമുഖി.wav",
+        "reason": "mime: audio/wav"
+      },
+      {
+        "file": "File:Matt Hughes.png",
+        "reason": "too small: 302x651"
+      },
+      {
+        "file": "File:USMC-090221-M-3273C-001.jpg",
+        "reason": "landscape source 1980x1528 — likely an action/crowd frame, not a portrait"
+      },
+      {
+        "file": "File:USMC-080916-M-3355L-014.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      }
+    ],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Matt_Hughes_(fighter)",
+    "https://www.wikidata.org/wiki/Q455763"
+  ]
+}

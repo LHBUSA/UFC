@@ -1,0 +1,143 @@
+{
+  "subject_type": "referee",
+  "slug": "marc-goddard",
+  "name": "Marc Goddard",
+  "identity": {
+    "checked_at": "2026-09-07T14:03:17.734Z",
+    "wikipedia": null,
+    "wikidata": null,
+    "resolved": false,
+    "note": "No English Wikipedia article passed the combat-sports context check."
+  },
+  "facts": {
+    "full_name": {
+      "value": "Marc Goddard",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "role": {
+      "value": "Mixed martial arts referee",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "nationality": {
+      "value": "United Kingdom",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "date_of_birth": null,
+    "occupations": null,
+    "documented_since": {
+      "value": 2020,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2020–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "ufc_bout_count": {
+      "value": 113,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "title_fight_count": {
+      "value": 1,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "five_round_count": {
+      "value": 30,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    },
+    "main_event_count": {
+      "value": 64,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:17.734Z"
+    }
+  },
+  "bio": {
+    "text": null,
+    "source_url": null,
+    "source_name": null,
+    "license": null,
+    "verified_at": null
+  },
+  "metrics": {
+    "sample_bouts": 113,
+    "main_event_assignments": 64,
+    "method_distribution": {
+      "KO_TKO": 39,
+      "DEC_U": 51,
+      "DEC_S": 5,
+      "SUB": 15,
+      "DEC_M": 2,
+      "DRAW": 1
+    },
+    "round_distribution": {
+      "1": 35,
+      "2": 13,
+      "3": 48,
+      "4": 1,
+      "5": 16
+    },
+    "avg_fight_seconds": 702,
+    "timed_sample": 113,
+    "stoppage_time_seconds": {
+      "p25": 144,
+      "median": 238,
+      "p75": 408,
+      "sample": 54
+    },
+    "notable": [
+      {
+        "fight": "Tom Aspinall vs Curtis Blaydes",
+        "event": "UFC 304: Edwards vs. Muhammad 2",
+        "date": "2024-07-27",
+        "method": "KO_TKO",
+        "round": 1
+      }
+    ],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:03:17.734Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:58.593Z",
+    "wikidata": null,
+    "rejected": [
+      {
+        "file": "(search not attempted)",
+        "reason": "no resolved Wikidata identity — a name-only Commons match is not identity proof"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.goddardmma.com/about"
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "subject_type": "referee",
+  "slug": "lukasz-bosacki",
+  "name": "Lukasz Bosacki",
+  "identity": {
+    "checked_at": "2026-09-07T14:03:46.647Z",
+    "wikipedia": null,
+    "wikidata": null,
+    "resolved": false,
+    "note": "No English Wikipedia article passed the combat-sports context check."
+  },
+  "facts": {
+    "full_name": {
+      "value": "Lukasz Bosacki",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "role": {
+      "value": "Mixed martial arts referee",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "nationality": null,
+    "date_of_birth": null,
+    "occupations": null,
+    "documented_since": {
+      "value": 2020,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2020–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "ufc_bout_count": {
+      "value": 25,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "five_round_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    },
+    "main_event_count": {
+      "value": 7,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:46.647Z"
+    }
+  },
+  "bio": {
+    "text": null,
+    "source_url": null,
+    "source_name": null,
+    "license": null,
+    "verified_at": null
+  },
+  "metrics": {
+    "sample_bouts": 25,
+    "main_event_assignments": 7,
+    "method_distribution": {
+      "KO_TKO": 9,
+      "DEC_U": 8,
+      "DEC_S": 3,
+      "SUB": 5
+    },
+    "round_distribution": {
+      "1": 9,
+      "2": 4,
+      "3": 12
+    },
+    "avg_fight_seconds": 547,
+    "timed_sample": 25,
+    "stoppage_time_seconds": {
+      "p25": 95,
+      "median": 220,
+      "p75": 418,
+      "sample": 14
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:03:46.647Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:58.591Z",
+    "wikidata": null,
+    "rejected": [
+      {
+        "file": "(search not attempted)",
+        "reason": "no resolved Wikidata identity — a name-only Commons match is not identity proof"
+      }
+    ],
+    "found": false
+  },
+  "sources": []
+}

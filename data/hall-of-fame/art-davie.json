@@ -1,0 +1,126 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "art-davie",
+  "name": "Art Davie",
+  "wing": "contributor",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:22.152Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Art_Davie",
+    "wikidata": "Q4796766",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Art Davie",
+      "source": "https://en.wikipedia.org/wiki/Art_Davie",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "wing": {
+      "value": "contributor",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "induction_year": {
+      "value": 2018,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q4796766",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "date_of_birth": {
+      "value": "1947-04-05",
+      "source": "https://www.wikidata.org/wiki/Q4796766",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "description": {
+      "value": "American mixed martial art executive",
+      "source": "https://www.wikidata.org/wiki/Q4796766",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "occupations": {
+      "value": [
+        "businessperson"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q4796766",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "legacy_summary": {
+      "value": "Co-creator of the original Ultimate Fighting Championship concept and UFC 1.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "role": {
+      "value": "Co-founder, UFC 1",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:22.152Z"
+    },
+    "contributions": null
+  },
+  "bio": {
+    "text": "Art Davie is a business executive and entrepreneur formerly active in Southern California advertising circles. In 1993, he created and co-produced the tournament which became the televised Ultimate Fighting Championship. In 1998, Davie, as vice-president of K-1 USA, brought the successful K-1 kickboxing franchise from Japan to Las Vegas and North American pay-per-view television. In 2003, Davie was an executive producer with Mandalay Sports Entertainment. In 2006, he became vice-president of television at Paradigm Entertainment Group. In 2014, Ascend Books published Davie's autobiography and memoir entitled, Is This Legal?: The Inside Story of the First UFC from the Man Who Created It named after a rejected offer from martial artist Chuck Norris, who asked if the UFC would be deemed legal. Sean Wheelock assisted in the book's research and writing.",
+    "source_url": "https://en.wikipedia.org/wiki/Art_Davie",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:22.152Z"
+  },
+  "archive": null,
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "art-davie",
+    "subject_name": "Art Davie",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Art_Davie_-_photo_credit_Art_Davie.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Art_Davie_-_photo_credit_Art_Davie.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 4.0",
+    "license_text": "Own work",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Ufccreator1",
+    "attribution": "Ufccreator1 · CC BY-SA 4.0 · via Wikimedia Commons",
+    "source_width": 994,
+    "source_height": 1007,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:23:52.501Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/art-davie-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/art-davie-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/art-davie-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:23:51.115Z",
+    "wikidata": "Q4796766",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Art_Davie",
+    "https://www.wikidata.org/wiki/Q4796766"
+  ]
+}

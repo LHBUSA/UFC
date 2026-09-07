@@ -1,0 +1,130 @@
+{
+  "subject_type": "referee",
+  "slug": "dan-miragliotta",
+  "name": "Dan Miragliotta",
+  "identity": {
+    "checked_at": "2026-09-07T14:03:28.325Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Dan_Miragliotta",
+    "wikidata": "Q52018787",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Dan Miragliotta",
+      "source": "https://en.wikipedia.org/wiki/Dan_Miragliotta",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "role": {
+      "value": "American mixed martial arts referee",
+      "source": "https://en.wikipedia.org/wiki/Dan_Miragliotta",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "nationality": null,
+    "date_of_birth": null,
+    "occupations": {
+      "value": [
+        "mixed martial arts referee"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q52018787",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "documented_since": {
+      "value": 2023,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2023–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "ufc_bout_count": {
+      "value": 30,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "five_round_count": {
+      "value": 3,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    },
+    "main_event_count": {
+      "value": 15,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:28.325Z"
+    }
+  },
+  "bio": {
+    "text": "Dan Miragliotta is a professional mixed martial arts referee and judge from the United States, best known for officiating numerous bouts promoted by the Ultimate Fighting Championship (UFC), dating back to UFC 78. He was credited as one the best referees in MMA, as well as one of the most recognizable and active referees on the promotion in both 2022 and 2023. As of August 2026, Miragliotta has officiated 1,668 MMA fights.",
+    "source_url": "https://en.wikipedia.org/wiki/Dan_Miragliotta",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:03:28.325Z"
+  },
+  "metrics": {
+    "sample_bouts": 30,
+    "main_event_assignments": 15,
+    "method_distribution": {
+      "DEC_U": 16,
+      "DEC_S": 2,
+      "KO_TKO": 8,
+      "SUB": 4
+    },
+    "round_distribution": {
+      "1": 7,
+      "2": 3,
+      "3": 19,
+      "5": 1
+    },
+    "avg_fight_seconds": 686,
+    "timed_sample": 30,
+    "stoppage_time_seconds": {
+      "p25": 85,
+      "median": 282,
+      "p75": 548,
+      "sample": 12
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:03:28.325Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:41.095Z",
+    "wikidata": "Q52018787",
+    "rejected": [],
+    "found": false
+  },
+  "sources": [
+    "https://en.wikipedia.org/wiki/Dan_Miragliotta",
+    "https://www.wikidata.org/wiki/Q52018787"
+  ]
+}

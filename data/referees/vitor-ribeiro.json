@@ -1,0 +1,125 @@
+{
+  "subject_type": "referee",
+  "slug": "vitor-ribeiro",
+  "name": "Vitor Ribeiro",
+  "identity": {
+    "checked_at": "2026-09-07T14:04:35.271Z",
+    "wikipedia": null,
+    "wikidata": null,
+    "resolved": false,
+    "note": "No English Wikipedia article passed the combat-sports context check."
+  },
+  "facts": {
+    "full_name": {
+      "value": "Vitor Ribeiro",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "role": {
+      "value": "Mixed martial arts referee",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "nationality": null,
+    "date_of_birth": null,
+    "occupations": null,
+    "documented_since": {
+      "value": 2025,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2025–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "ufc_bout_count": {
+      "value": 11,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "five_round_count": {
+      "value": 2,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    },
+    "main_event_count": {
+      "value": 5,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:35.271Z"
+    }
+  },
+  "bio": {
+    "text": null,
+    "source_url": null,
+    "source_name": null,
+    "license": null,
+    "verified_at": null
+  },
+  "metrics": {
+    "sample_bouts": 11,
+    "main_event_assignments": 5,
+    "method_distribution": {
+      "KO_TKO": 5,
+      "DEC_S": 1,
+      "SUB": 3,
+      "DEC_U": 2
+    },
+    "round_distribution": {
+      "1": 2,
+      "2": 4,
+      "3": 4,
+      "5": 1
+    },
+    "avg_fight_seconds": 634,
+    "timed_sample": 11,
+    "stoppage_time_seconds": {
+      "p25": 334,
+      "median": 448,
+      "p75": 841,
+      "sample": 8
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:04:35.271Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:26:01.983Z",
+    "wikidata": null,
+    "rejected": [
+      {
+        "file": "(search not attempted)",
+        "reason": "no resolved Wikidata identity — a name-only Commons match is not identity proof"
+      }
+    ],
+    "found": false
+  },
+  "sources": []
+}

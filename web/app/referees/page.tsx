@@ -57,7 +57,7 @@ export default async function RefereesPage() {
                     <span className="ref-role"><em>#{i + 1}</em> by loaded assignments{tenure ? ` · active ${tenure}` : ""}{r.country ? ` · ${r.country}` : ""}</span>
                     <span className="ref-stats">
                       <span><b>{r.bouts}</b><span>Bouts</span></span>
-                      <span><b>{r.title_bouts}</b><span>Title fights</span></span>
+                      <span><b>{r.title_bouts || "—"}</b><span>Title fights</span></span>
                       <span><b>{pct(r.stoppage_rate)}</b><span>Stoppage</span></span>
                       <span><b>{pct(r.decision_rate)}</b><span>Decision</span></span>
                     </span>
@@ -69,7 +69,7 @@ export default async function RefereesPage() {
             })}
           </section>
           <section id="title-referees" className={styles.section}>
-            <div className={styles.sectionHead}><h2>Title-fight referees</h2><p>Referees with at least one championship bout in the loaded archive, ordered by title-fight assignments.</p></div>
+            <div className={styles.sectionHead}><h2>Title-fight referees</h2><p>Referees with at least one championship bout in the loaded archive. Championship status is only populated on a small share of archived bouts so far, so this list undercounts real title assignments.</p></div>
             <div className="ref-assign">
               {refs.filter((r) => r.title_bouts > 0).sort((a, b) => b.title_bouts - a.title_bouts).slice(0, 9).map((r) => (
                 <Link href={`/referees/${r.slug}`} key={r.slug}><em>{r.title_bouts} title bout{r.title_bouts === 1 ? "" : "s"}</em><b>{r.display_name}</b><span>{r.five_round_bouts} five-round assignments · {r.bouts} bouts loaded</span></Link>

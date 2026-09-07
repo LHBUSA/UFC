@@ -1,0 +1,163 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "georges-st-pierre",
+  "name": "Georges St-Pierre",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:06.535Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Georges_St-Pierre",
+    "wikidata": "Q356271",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Georges St-Pierre",
+      "source": "https://en.wikipedia.org/wiki/Georges_St-Pierre",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "induction_year": {
+      "value": 2020,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "nationality": {
+      "value": "Canada",
+      "source": "https://www.wikidata.org/wiki/Q356271",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "date_of_birth": {
+      "value": "1981-05-19",
+      "source": "https://www.wikidata.org/wiki/Q356271",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "description": {
+      "value": "Canadian mixed martial arts (MMA) fighter",
+      "source": "https://www.wikidata.org/wiki/Q356271",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "Brazilian jiu-jitsu practitioner",
+        "amateur wrestler",
+        "actor"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q356271",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "legacy_summary": {
+      "value": "Welterweight champion across two reigns and a middleweight title winner; the model of complete, adaptable mixed martial arts.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Welterweight",
+        "Middleweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Welterweight Champion (two reigns)",
+        "UFC Middleweight Champion (2017)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Nine consecutive welterweight title defenses",
+        "Champion in two divisions"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Matt Hughes (UFC 65, 2006)",
+        "vs BJ Penn 2 (UFC 94, 2009)",
+        "vs Michael Bisping (UFC 217, 2017)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:06.535Z"
+    }
+  },
+  "bio": {
+    "text": "Georges St-Pierre, also known by his initials GSP, is a Canadian former professional mixed martial artist. He is widely regarded as one of the greatest fighters in mixed martial arts (MMA) history. St-Pierre was a two-division champion in the Ultimate Fighting Championship (UFC), winning titles in the welterweight and middleweight divisions.",
+    "source_url": "https://en.wikipedia.org/wiki/Georges_St-Pierre",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:06.535Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:53.729Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "georges-st-pierre",
+    "subject_name": "Georges St-Pierre",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Georges_St-Pierre_crop.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Georges_St-Pierre_crop.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 3.0",
+    "license_text": "Own work",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Bad intentionz",
+    "attribution": "Bad intentionz · CC BY-SA 3.0 · via Wikimedia Commons",
+    "source_width": 384,
+    "source_height": 480,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:27.213Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/georges-st-pierre-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/georges-st-pierre-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/georges-st-pierre-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:26.481Z",
+    "wikidata": "Q356271",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Georges_St-Pierre",
+    "https://www.wikidata.org/wiki/Q356271"
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "ronda-rousey",
+  "name": "Ronda Rousey",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:03.059Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Ronda_Rousey",
+    "wikidata": "Q242201",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Ronda Rousey",
+      "source": "https://en.wikipedia.org/wiki/Ronda_Rousey",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "induction_year": {
+      "value": 2018,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q242201",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "date_of_birth": {
+      "value": "1987-02-01",
+      "source": "https://www.wikidata.org/wiki/Q242201",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "description": {
+      "value": "American former mixed martial arts (MMA) fighter, professional wrestler, and judoka",
+      "source": "https://www.wikidata.org/wiki/Q242201",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "judoka",
+        "professional wrestler",
+        "martial artist"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q242201",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "legacy_summary": {
+      "value": "First women's champion in UFC history and the fighter who made women's MMA a main-event attraction.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Women's bantamweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "championships": {
+      "value": [
+        "Inaugural UFC Women's Bantamweight Champion (2012–2015)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Six consecutive title defenses",
+        "First woman inducted into the Hall of Fame"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Liz Carmouche (UFC 157, 2013)",
+        "vs Miesha Tate (UFC 168, 2013)",
+        "vs Cat Zingano (UFC 184, 2015)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:03.059Z"
+    }
+  },
+  "bio": {
+    "text": "Ronda Jean Rousey is an American actress, retired professional wrestler, former judoka, and former mixed martial artist. She is best known for her tenures in the Ultimate Fighting Championship (UFC) and WWE.",
+    "source_url": "https://en.wikipedia.org/wiki/Ronda_Rousey",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:03.059Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:59.296Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "ronda-rousey",
+    "subject_name": "Ronda Rousey",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Rousey_HOF_2018_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Rousey_HOF_2018_(cropped).jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 2.0",
+    "license_text": "2018-04-06_18-45-28_ILCE-6500_DSC09942",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "author": "Shared Account",
+    "attribution": "Shared Account · CC BY-SA 2.0 · via Wikimedia Commons",
+    "source_width": 1133,
+    "source_height": 1737,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:29.351Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/ronda-rousey-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/ronda-rousey-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/ronda-rousey-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:28.226Z",
+    "wikidata": "Q242201",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Ronda_Rousey",
+    "https://www.wikidata.org/wiki/Q242201"
+  ]
+}

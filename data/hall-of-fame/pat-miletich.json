@@ -1,0 +1,168 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "pat-miletich",
+  "name": "Pat Miletich",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:39.399Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Pat_Miletich",
+    "wikidata": "Q2703880",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Pat Miletich",
+      "source": "https://en.wikipedia.org/wiki/Pat_Miletich",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "induction_year": {
+      "value": 2014,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q2703880",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "date_of_birth": {
+      "value": "1966-03-09",
+      "source": "https://www.wikidata.org/wiki/Q2703880",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "description": {
+      "value": "American mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q2703880",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "boxer",
+        "karateka",
+        "Thai boxer"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q2703880",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "legacy_summary": {
+      "value": "The first UFC Welterweight Champion and the coach behind Miletich Fighting Systems, one of the sport's first great camps.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Welterweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "championships": {
+      "value": [
+        "First UFC Welterweight (then lightweight) Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Coached Matt Hughes, Jens Pulver, Robbie Lawler and Tim Sylvia"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:39.399Z"
+    },
+    "signature_fights": null
+  },
+  "bio": {
+    "text": "Patrick Jay Miletich is a retired American mixed martial artist and former sports commentator. He is known for his fights in the Ultimate Fighting Championship, where he became the first UFC Welterweight Champion and UFC 16 Welterweight Tournament Winner. Miletich is also known as a highly successful trainer and coach, having founded Miletich Fighting Systems. This camp is considered one of the most successful in MMA history and has produced several world champions. On July 6, 2014, he was inducted into the UFC Hall of Fame.",
+    "source_url": "https://en.wikipedia.org/wiki/Pat_Miletich",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:39.399Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:58.117Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:18.948Z",
+    "wikidata": "Q2703880",
+    "rejected": [
+      {
+        "file": "File:PatMiletich.png",
+        "reason": "too small: 285x390"
+      },
+      {
+        "file": "File:PatMiletich.png",
+        "reason": "too small: 285x390"
+      },
+      {
+        "file": "File:Pat Miletich by Gage Skidmore Cropped.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Pat Miletich by Gage Skidmore.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Pat Miletich (22013150459).jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Pat Miletich (22012291508).jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Pat Miletich (21579018453).jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Jorge Patino Macaco - BetCombat Campeão Thunder Fight 43 aos 49 anos com apoio do Charles do Bronx.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Jorge Patino Macaco - BetCombat Campeão Thunder Fight 43 aos 49 anos com apoio do Charles do Bronx.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Adam und Eva; oder Die Geschichte des Sündenfalls; (IA adamundevaoderdi01bagg).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Chirurgische Bibliothek. Volume 1, Issue 3, 1771 (IA s1id13294260).pdf",
+        "reason": "mime: application/pdf"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Pat_Miletich",
+    "https://www.wikidata.org/wiki/Q2703880"
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "amanda-nunes",
+  "name": "Amanda Nunes",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:20.446Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Amanda_Nunes",
+    "wikidata": "Q4739716",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Amanda Nunes",
+      "source": "https://en.wikipedia.org/wiki/Amanda_Nunes",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "induction_year": {
+      "value": 2025,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "nationality": {
+      "value": "Brazil",
+      "source": "https://www.wikidata.org/wiki/Q4739716",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "date_of_birth": {
+      "value": "1988-05-30",
+      "source": "https://www.wikidata.org/wiki/Q4739716",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "description": {
+      "value": "Brazilian mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q4739716",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "judoka"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q4739716",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "legacy_summary": {
+      "value": "Two-division women's champion who beat every champion the bantamweight and featherweight divisions had produced.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Women's bantamweight",
+        "Women's featherweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Women's Bantamweight Champion (two reigns)",
+        "UFC Women's Featherweight Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "First woman to hold two UFC titles at once"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Ronda Rousey (UFC 207, 2016)",
+        "vs Cris Cyborg (UFC 232, 2018)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:20.446Z"
+    }
+  },
+  "bio": {
+    "text": "Amanda Lourenço Nunes is a Brazilian-American professional mixed martial artist. She currently competes in the women’s Bantamweight division of the Ultimate Fighting Championship (UFC), where she is the former UFC Women's Featherweight Champion and two-time UFC Women's Bantamweight Champion. She was ranked #1 in the UFC women's pound-for-pound rankings in 2022.",
+    "source_url": "https://en.wikipedia.org/wiki/Amanda_Nunes",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:20.446Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:49.385Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "amanda-nunes",
+    "subject_name": "Amanda Nunes",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8d/Ceremonial_weigh_ins_-_Amanda_Nunes_vs_Julianna_Pe%C3%B1a_UFC_269_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Ceremonial_weigh_ins_-_Amanda_Nunes_vs_Julianna_Pe%C3%B1a_UFC_269_(cropped).jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 3.0",
+    "license_text": "YouTube: https://www.youtube.com/watch?v=5S2-wD3aXdg – View/save archived versions on archive.org at 1:14",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "author": "MMAnytt",
+    "attribution": "MMAnytt · CC BY 3.0 · via Wikimedia Commons",
+    "source_width": 1246,
+    "source_height": 1058,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:23:42.215Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/amanda-nunes-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/amanda-nunes-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/amanda-nunes-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:23:40.725Z",
+    "wikidata": "Q4739716",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Amanda_Nunes",
+    "https://www.wikidata.org/wiki/Q4739716"
+  ]
+}

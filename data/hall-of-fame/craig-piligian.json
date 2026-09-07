@@ -1,0 +1,94 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "craig-piligian",
+  "name": "Craig Piligian",
+  "wing": "contributor",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:48.624Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Craig_Piligian",
+    "wikidata": "Q16734534",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Craig Piligian",
+      "source": "https://en.wikipedia.org/wiki/Craig_Piligian",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "wing": {
+      "value": "contributor",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "United States",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "date_of_birth": {
+      "value": "1957-08-25",
+      "source": "https://www.wikidata.org/wiki/Q16734534",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "description": {
+      "value": "Armenian American television producer",
+      "source": "https://www.wikidata.org/wiki/Q16734534",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "occupations": {
+      "value": [
+        "businessperson",
+        "television producer"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q16734534",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "legacy_summary": {
+      "value": "Producer of The Ultimate Fighter, the reality series that introduced the sport to a mainstream television audience.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "role": {
+      "value": "The Ultimate Fighter producer",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:48.624Z"
+    },
+    "contributions": null
+  },
+  "bio": {
+    "text": "Craig Piligian is an American television producer, and the president and CEO of Pilgrim Films & Television. As an Executive Producer, he is best known for creating The Ultimate Fighter, American Chopper, and Dirty Jobs series for Discovery Channel. In 2001, he won an Emmy Award as co-executive producer of Survivor.",
+    "source_url": "https://en.wikipedia.org/wiki/Craig_Piligian",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:48.624Z"
+  },
+  "archive": null,
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:06.360Z",
+    "wikidata": "Q16734534",
+    "rejected": [],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Craig_Piligian",
+    "https://www.wikidata.org/wiki/Q16734534"
+  ]
+}

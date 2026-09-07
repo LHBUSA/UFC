@@ -1,0 +1,162 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "ken-shamrock",
+  "name": "Ken Shamrock",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:30.777Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Ken_Shamrock",
+    "wikidata": "Q380834",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Ken Shamrock",
+      "source": "https://en.wikipedia.org/wiki/Ken_Shamrock",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "induction_year": {
+      "value": 2003,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q380834",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "date_of_birth": {
+      "value": "1964-02-11",
+      "source": "https://www.wikidata.org/wiki/Q380834",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "description": {
+      "value": "American mixed martial artist, professional wrestler and actor",
+      "source": "https://www.wikidata.org/wiki/Q380834",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "occupations": {
+      "value": [
+        "actor",
+        "American football player",
+        "professional wrestler",
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q380834",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "legacy_summary": {
+      "value": "The original superfight rival and first UFC Superfight Champion; one of the sport's first crossover stars.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Open weight",
+        "Light heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "championships": {
+      "value": [
+        "First UFC Superfight Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Inaugural Hall of Fame class (2003)",
+        "Coached opposite Tito Ortiz on The Ultimate Fighter 3"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Royce Gracie (UFC 1 and UFC 5)",
+        "vs Dan Severn (UFC 6 and UFC 9)",
+        "vs Tito Ortiz trilogy"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:30.777Z"
+    }
+  },
+  "bio": {
+    "text": "Kenneth Wayne Shamrock is an American retired professional wrestler and mixed martial artist. He is best known for his time in Ultimate Fighting Championship (UFC), WWE and other combat sports. An inaugural inductee into the UFC Hall of Fame, Shamrock is widely regarded as an icon and pioneer of the sport. He has headlined over 15 main events and co-main events in the UFC and Pride FC and set numerous MMA pay-per-view records. In the early part of his UFC career, Shamrock was named \"The World's Most Dangerous Man\" by ABC News in a special called \"The World's Most Dangerous Things\". The moniker has stuck as his nickname.",
+    "source_url": "https://en.wikipedia.org/wiki/Ken_Shamrock",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:30.777Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:55.184Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "ken-shamrock",
+    "subject_name": "Ken Shamrock",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Ken_Shamrock_marines_2005_crop.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Ken_Shamrock_marines_2005_crop.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "Public domain",
+    "license_text": "http://www.usmc.mil/marinelink/image1.nsf/Lookup/200582611351",
+    "license_url": null,
+    "author": "Cpl. J. Agg, Photo ID: 200582611351, Submitting Unit: MCB Quantico",
+    "attribution": "Cpl. J. Agg, Photo ID: 200582611351, Submitting Unit: MCB Quantico · Public domain · via Wikimedia Commons",
+    "source_width": 730,
+    "source_height": 715,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:38.158Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/ken-shamrock-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/ken-shamrock-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/ken-shamrock-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:37.168Z",
+    "wikidata": "Q380834",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Ken_Shamrock",
+    "https://www.wikidata.org/wiki/Q380834"
+  ]
+}

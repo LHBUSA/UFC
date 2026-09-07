@@ -1,0 +1,183 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "maurice-smith",
+  "name": "Maurice Smith",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:43.775Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Maurice_Smith_(fighter)",
+    "wikidata": "Q2698144",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Maurice Smith",
+      "source": "https://en.wikipedia.org/wiki/Maurice_Smith_(fighter)",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "induction_year": {
+      "value": 2017,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q2698144",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "date_of_birth": {
+      "value": "1961-12-13",
+      "source": "https://www.wikidata.org/wiki/Q2698144",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "description": {
+      "value": "American kickboxer and mixed martial arts fighter",
+      "source": "https://www.wikidata.org/wiki/Q2698144",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "occupations": {
+      "value": [
+        "boxer",
+        "kickboxer",
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q2698144",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "legacy_summary": {
+      "value": "Kickboxer who took the UFC Heavyweight Championship from Mark Coleman in 1997 and proved a striker could beat the wrestlers.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Heavyweight Champion (1997)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Mark Coleman (UFC 14, 1997)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:43.775Z"
+    }
+  },
+  "bio": {
+    "text": "Maurice Smith is a retired American kickboxer and mixed martial artist. In kickboxing, he held the WKC world light heavyweight championship, the WKA world heavyweight championship, and the ISKA world heavyweight championship. In mixed martial arts, he held the Heavyweight championship in Battlecade Extreme Fighting and the UFC, and became a member of the UFC Hall of Fame in 2017. Smith has also competed in shoot-style professional wrestling in Japan for the Universal Wrestling Federation and Pro Wrestling Fujiwara Gumi, where he was pitted against prominent pro wrestlers in interstyle \"pro wrestling vs. kickboxing\" matches.",
+    "source_url": "https://en.wikipedia.org/wiki/Maurice_Smith_(fighter)",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:43.775Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:57.073Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:11.331Z",
+    "wikidata": "Q2698144",
+    "rejected": [
+      {
+        "file": "File:Maurice Smith 1999.jpg",
+        "reason": "too small: 100x142"
+      },
+      {
+        "file": "File:Osaka07 D8A Decathlon Maurice Smith.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Maurice Smith 1999.jpg",
+        "reason": "too small: 100x142"
+      },
+      {
+        "file": "File:Maurice Smith at TNT - Fortuna Meeting in Kladno 15June2010 046.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Maurice Smith at TNT - Fortuna Meeting in Kladno 15June2010 102.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:100mM heat1 at TNT - Fortuna Meeting in Kladno 15June2010 010.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Victory ceremony M at TNT - Fortuna Meeting in Kladno 16June2010 202.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Osaka07 D8A Decathlon VC.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Mopicts.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Daniel Teymur at UFC Fight Night 153 in Stockholm, Sweden.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Volkan Oezdemir at UFC Fight Night 153 in Stockholm, Sweden.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Devonte Smith post fight interview at UFC 234.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:MRF-E 19 2- UFC fighters visit (5727059).jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:MRF-E 19 2- UFC fighters visit (5727064).jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:MRF-E 19 2- UFC fighters visit (5727076).jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Maurice_Smith_(fighter)",
+    "https://www.wikidata.org/wiki/Q2698144"
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "subject_type": "referee",
+  "slug": "frank-trigg",
+  "name": "Frank Trigg",
+  "identity": {
+    "checked_at": "2026-09-07T14:04:39.067Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Frank_Trigg",
+    "wikidata": "Q5490013",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Frank Trigg",
+      "source": "https://en.wikipedia.org/wiki/Frank_Trigg",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "role": {
+      "value": "American professional wrestler, mixed martial artist",
+      "source": "https://en.wikipedia.org/wiki/Frank_Trigg",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q5490013",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "date_of_birth": {
+      "value": "1972-05-07",
+      "source": "https://www.wikidata.org/wiki/Q5490013",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "occupations": {
+      "value": [
+        "judoka",
+        "mixed martial arts fighter",
+        "professional wrestler",
+        "mixed martial arts referee"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q5490013",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "documented_since": {
+      "value": 2025,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2025–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "ufc_bout_count": {
+      "value": 7,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "five_round_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    },
+    "main_event_count": {
+      "value": 4,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:39.067Z"
+    }
+  },
+  "bio": {
+    "text": "Frank Trigg is an American retired mixed martial artist, color commentator, pro wrestler, MMA referee and TV host. Trigg is a veteran of the UFC, Pride Fighting Championships, BAMMA, and the World Fighting Alliance, where he was the promotion's only Welterweight champion. He has professional wrestling appearances in Total Nonstop Action Wrestling.",
+    "source_url": "https://en.wikipedia.org/wiki/Frank_Trigg",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:04:39.067Z"
+  },
+  "metrics": {
+    "sample_bouts": 7,
+    "main_event_assignments": 4,
+    "method_distribution": {
+      "SUB": 2,
+      "KO_TKO": 3,
+      "DEC_U": 2
+    },
+    "round_distribution": {
+      "1": 4,
+      "3": 3
+    },
+    "avg_fight_seconds": 486,
+    "timed_sample": 7,
+    "stoppage_time_seconds": {
+      "p25": 152,
+      "median": 211,
+      "p75": 241,
+      "sample": 5
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:04:39.067Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:49.998Z",
+    "wikidata": "Q5490013",
+    "rejected": [
+      {
+        "file": "File:FrankTrigg.jpg",
+        "reason": "too small: 266x422"
+      },
+      {
+        "file": "File:FrankTrigg.jpg",
+        "reason": "too small: 266x422"
+      },
+      {
+        "file": "File:Frank Trigg.png",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:The Afro-American press and its editors (IA afroamericanpres00penn 0).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Proceedings of the nineteenth annual convention of the Association of American Agricultural Colleges and Experiment Stations held at Washington, D.C., November 14-16, 1905 (IA proceedingsofnin164asso).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Outlines of school management, containing lectures on school necessaries, school organization, study .. (IA outlinesofschool00will).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Frank Trigg, President.png",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:The Crisis, Volume 8, Issue 2.pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:The Crisis, Volume 12, Issue 4.pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Dr. Trigg's secrets, ... 1665 (IA bim early-english-books-1641-1700 dr-triggs-secrets- trigg-dr 1665).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:A pocket almanack, for the year ... - calculated for the use of the state of Massachusetts-Bay (IA pocketalmanackfo1799amer).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:The chinook (IA chinook1971univ).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Magna Britannia et Hibernia, antiqua et nova. Or, a new survey of Great Britain (IA b30523874 0002).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:John Adams Library (IA reportsofcasesad00grea).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:The pearl, a middle English poem; (IA pearlmiddleengli00osgo).pdf",
+        "reason": "mime: application/pdf"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://en.wikipedia.org/wiki/Frank_Trigg",
+    "https://www.wikidata.org/wiki/Q5490013"
+  ]
+}

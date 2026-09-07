@@ -1,0 +1,158 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "tito-ortiz",
+  "name": "Tito Ortiz",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:37.938Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Tito_Ortiz",
+    "wikidata": "Q459809",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Tito Ortiz",
+      "source": "https://en.wikipedia.org/wiki/Tito_Ortiz",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "induction_year": {
+      "value": 2012,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q459809",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "date_of_birth": {
+      "value": "1975-01-23",
+      "source": "https://www.wikidata.org/wiki/Q459809",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "description": {
+      "value": "American mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q459809",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "occupations": {
+      "value": [
+        "professional wrestler",
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q459809",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "legacy_summary": {
+      "value": "Light heavyweight champion and one of the biggest draws of the early Zuffa era.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Light heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Light Heavyweight Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Five consecutive light heavyweight title defenses"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Ken Shamrock trilogy",
+        "vs Chuck Liddell (UFC 47 and UFC 66)",
+        "vs Forrest Griffin (UFC 59, 2006)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:37.938Z"
+    }
+  },
+  "bio": {
+    "text": "Jacob Christopher \"Tito\" Ortiz is an American former mixed martial artist, politician, and professional boxer, of Mexican descent. He is best known for his career with the Ultimate Fighting Championship (UFC), where he is a former UFC Light Heavyweight Champion, having held the title from April 2000 to September 2003. Along with fighters like Randy Couture and Chuck Liddell, he was one of the sport's early stars. Ortiz ultimately became the biggest pay-per-view draw of 2006 for his fights with Liddell, Forrest Griffin, and Ken Shamrock. On July 7, 2012, Ortiz became the ninth inductee into the UFC Hall of Fame.",
+    "source_url": "https://en.wikipedia.org/wiki/Tito_Ortiz",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:37.938Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:11:00.652Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "tito-ortiz",
+    "subject_name": "Tito Ortiz",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/16/Tito_Ortiz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Tito_Ortiz.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "Public domain",
+    "license_text": "Transferred from en.wikipedia to Commons. (cropped); transfer was stated to be made by User:Superspade.",
+    "license_url": null,
+    "author": null,
+    "attribution": "Unknown author · Public domain · via Wikimedia Commons",
+    "source_width": 504,
+    "source_height": 630,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:35.131Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/tito-ortiz-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/tito-ortiz-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/tito-ortiz-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:34.275Z",
+    "wikidata": "Q459809",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Tito_Ortiz",
+    "https://www.wikidata.org/wiki/Q459809"
+  ]
+}

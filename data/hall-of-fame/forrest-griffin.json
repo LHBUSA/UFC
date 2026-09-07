@@ -1,0 +1,184 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "forrest-griffin",
+  "name": "Forrest Griffin",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:59.862Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Forrest_Griffin",
+    "wikidata": "Q204147",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Forrest Griffin",
+      "source": "https://en.wikipedia.org/wiki/Forrest_Griffin",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "induction_year": {
+      "value": 2013,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q204147",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "date_of_birth": {
+      "value": "1979-07-01",
+      "source": "https://www.wikidata.org/wiki/Q204147",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "description": {
+      "value": "American mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q204147",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "writer"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q204147",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "legacy_summary": {
+      "value": "The Ultimate Fighter 1 winner whose finale with Stephan Bonnar is credited with proving the sport to a television audience; later light heavyweight champion.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Light heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Light Heavyweight Champion (2008)",
+        "The Ultimate Fighter 1 winner"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Stephan Bonnar 1 (TUF 1 Finale, 2005 · Fight Wing)",
+        "vs Quinton Jackson (UFC 86, 2008)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:59.862Z"
+    }
+  },
+  "bio": {
+    "text": "Forrest Griffin is an American retired mixed martial artist. He is a former UFC Light Heavyweight Champion and was inducted into the UFC Hall of Fame in 2013. He is now the Vice President of Athlete Development at the UFC Performance Institute. A former Georgia police officer, Griffin first rose to prominence after winning the first season of The Ultimate Fighter. In the tournament finals, he defeated Stephan Bonnar in a fight which is widely credited as sparking the success of the UFC.",
+    "source_url": "https://en.wikipedia.org/wiki/Forrest_Griffin",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:59.862Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:52.757Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:23.001Z",
+    "wikidata": "Q204147",
+    "rejected": [
+      {
+        "file": "File:USMC-100809-M-6457M-001 CROPPED.jpg",
+        "reason": "too small: 238x324"
+      },
+      {
+        "file": "File:USMC-100809-M-6457M-001 CROPPED.jpg",
+        "reason": "too small: 238x324"
+      },
+      {
+        "file": "File:Forrest Griffin - UFC 100 Fan Expo - Mandalay Bay Casino, Las Vegas.jpg",
+        "reason": "landscape source 480x360 — likely an action/crowd frame, not a portrait"
+      },
+      {
+        "file": "File:USMC-100809-M-6457M-001.jpg",
+        "reason": "landscape source 4752x3168 — likely an action/crowd frame, not a portrait"
+      },
+      {
+        "file": "File:Forrest Griffin with fans - UFC 100 Fan Expo - Mandalay Bay Casino, Las Vegas.jpg",
+        "reason": "too small: 381x316"
+      },
+      {
+        "file": "File:Reports of cases civil and criminal - in the United States Circuit Court of the District of Columbia, from 1801 to 1841 (IA cu31924087626317).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Blue Angels' VIP Rider Max Holloway (1) (cropped.2).jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Blue Angels' VIP Rider Max Holloway (1).jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Service announcements (IA serviceannouncem03unit).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Forrest Griffin - UFC 100 Fan Expo - Mandalay Bay Casino, Las Vegas.jpg",
+        "reason": "landscape source 480x360 — likely an action/crowd frame, not a portrait"
+      },
+      {
+        "file": "File:Forrest Griffin with fans - UFC 100 Fan Expo - Mandalay Bay Casino, Las Vegas.jpg",
+        "reason": "too small: 381x316"
+      },
+      {
+        "file": "File:Rochambeau. A commemoration by the Congress of the United States of America of the services of the French auxiliary forces in the war of independence (IA rochambeaucommem00unitrich).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:USMC-100809-M-6457M-001 CROPPED.jpg",
+        "reason": "too small: 238x324"
+      },
+      {
+        "file": "File:USMC-100809-M-6457M-001.jpg",
+        "reason": "landscape source 4752x3168 — likely an action/crowd frame, not a portrait"
+      },
+      {
+        "file": "File:Blue Angels' VIP Rider Max Holloway (1) (cropped.2).jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Forrest_Griffin",
+    "https://www.wikidata.org/wiki/Q204147"
+  ]
+}

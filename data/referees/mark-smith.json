@@ -1,0 +1,132 @@
+{
+  "subject_type": "referee",
+  "slug": "mark-smith",
+  "name": "Mark Smith",
+  "identity": {
+    "checked_at": "2026-09-07T14:03:07.566Z",
+    "wikipedia": null,
+    "wikidata": null,
+    "resolved": false,
+    "note": "No English Wikipedia article passed the combat-sports context check."
+  },
+  "facts": {
+    "full_name": {
+      "value": "Mark Smith",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "role": {
+      "value": "Mixed martial arts referee",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "date_of_birth": null,
+    "occupations": null,
+    "documented_since": {
+      "value": 2017,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2017–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "ufc_bout_count": {
+      "value": 150,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "five_round_count": {
+      "value": 3,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    },
+    "main_event_count": {
+      "value": 123,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:07.566Z"
+    }
+  },
+  "bio": {
+    "text": null,
+    "source_url": null,
+    "source_name": null,
+    "license": null,
+    "verified_at": null
+  },
+  "metrics": {
+    "sample_bouts": 150,
+    "main_event_assignments": 123,
+    "method_distribution": {
+      "DEC_U": 50,
+      "KO_TKO": 66,
+      "DEC_S": 8,
+      "SUB": 24,
+      "NC": 2
+    },
+    "round_distribution": {
+      "1": 50,
+      "2": 30,
+      "3": 70
+    },
+    "avg_fight_seconds": 562,
+    "timed_sample": 150,
+    "stoppage_time_seconds": {
+      "p25": 150,
+      "median": 296,
+      "p75": 512,
+      "sample": 90
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:03:07.566Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:58.595Z",
+    "wikidata": null,
+    "rejected": [
+      {
+        "file": "(search not attempted)",
+        "reason": "no resolved Wikidata identity — a name-only Commons match is not identity proof"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://camomma.org/Users-view%26id%3D12342"
+  ]
+}

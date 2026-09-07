@@ -1,0 +1,146 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "wanderlei-silva",
+  "name": "Wanderlei Silva",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:56.568Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Wanderlei_Silva",
+    "wikidata": "Q458749",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Wanderlei Silva",
+      "source": "https://en.wikipedia.org/wiki/Wanderlei_Silva",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "Brazil",
+      "source": "https://www.wikidata.org/wiki/Q458749",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "date_of_birth": {
+      "value": "1976-07-03",
+      "source": "https://www.wikidata.org/wiki/Q458749",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "description": {
+      "value": "Brazilian mixed martial arts (MMA) fighter",
+      "source": "https://www.wikidata.org/wiki/Q458749",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "judoka",
+        "Thai boxer"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q458749",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "legacy_summary": {
+      "value": "PRIDE middleweight champion whose pressure and knockouts made him one of the most feared fighters of his era before his UFC run.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Middleweight",
+        "Light heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "championships": {
+      "value": [
+        "PRIDE Middleweight Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Chuck Liddell (UFC 79, 2007)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:56.568Z"
+    }
+  },
+  "bio": {
+    "text": "Wanderlei César da Silva is a Brazilian former mixed martial artist who competed in Japan's Pride Fighting Championships and the Ultimate Fighting Championship (UFC). He holds the record for the most wins, knockouts, title defenses and longest winning streak in PRIDE history. He is the former PRIDE Middleweight Champion and the 2003 PRIDE Middleweight Grand Prix Tournament Champion. He most recently competed for Bellator MMA in the light heavyweight and heavyweight divisions. In February 2024, Silva was announced as the next inductee in the \"pioneer wing\" of the UFC Hall of Fame.",
+    "source_url": "https://en.wikipedia.org/wiki/Wanderlei_Silva",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:56.568Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:11:01.509Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "wanderlei-silva",
+    "subject_name": "Wanderlei Silva",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Wanderlei_Cesar_Silva_%282006%29_retusche.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Wanderlei_Cesar_Silva_(2006)_retusche.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 2.0",
+    "license_text": "Flickr",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "LeeBrimelow, derivative work Lämpel",
+    "attribution": "LeeBrimelow, derivative work Lämpel · CC BY 2.0 · via Wikimedia Commons",
+    "source_width": 1311,
+    "source_height": 1553,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:39.538Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/wanderlei-silva-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/wanderlei-silva-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/wanderlei-silva-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:38.371Z",
+    "wikidata": "Q458749",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Wanderlei_Silva",
+    "https://www.wikidata.org/wiki/Q458749"
+  ]
+}

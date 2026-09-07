@@ -1,0 +1,152 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "bas-rutten",
+  "name": "Bas Rutten",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:40.560Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Bas_Rutten",
+    "wikidata": "Q704832",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Bas Rutten",
+      "source": "https://en.wikipedia.org/wiki/Bas_Rutten",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "induction_year": {
+      "value": 2015,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "nationality": {
+      "value": "Kingdom of the Netherlands / United States",
+      "source": "https://www.wikidata.org/wiki/Q704832",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "date_of_birth": {
+      "value": "1965-02-24",
+      "source": "https://www.wikidata.org/wiki/Q704832",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "description": {
+      "value": "Dutch-American mixed martial arts (MMA) fighter, professional wrestler and kickboxer",
+      "source": "https://www.wikidata.org/wiki/Q704832",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "occupations": {
+      "value": [
+        "actor",
+        "judoka",
+        "professional wrestler",
+        "kickboxer"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q704832",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "legacy_summary": {
+      "value": "Pancrase legend who won the UFC Heavyweight Championship in 1999 and became one of the sport's most recognizable voices.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Heavyweight Champion (1999)",
+        "King of Pancrase"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Kevin Randleman (UFC 20, 1999)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:40.560Z"
+    }
+  },
+  "bio": {
+    "text": "Sebastiaan Rutten is a Dutch and American actor, former mixed martial artist, kickboxer and professional wrestler. As a kickboxer, he fought 16 times, winning the first 14 matches by knockout, 13 in the first round, and losing his final two fights, one of them against Frank Lobman for the European Muay Thai title in 1991, with Rutten losing by knockout in the first round. In MMA, he was a UFC Heavyweight Champion and a three-time King of Pancrase world champion. After his submission loss to Ken Shamrock in 1995, he finished his MMA career on a 22 fight unbeaten streak.",
+    "source_url": "https://en.wikipedia.org/wiki/Bas_Rutten",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:40.560Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:50.180Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "bas-rutten",
+    "subject_name": "Bas Rutten",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Bas_Rutten_Strikeforce_weign_in%2C_better_resolution%2C_25_December_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Bas_Rutten_Strikeforce_weign_in,_better_resolution,_25_December_2009.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 2.0",
+    "license_text": "https://www.flickr.com/photos/acidhelm/4213898977/",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "Michael Dunn",
+    "attribution": "Michael Dunn · CC BY 2.0 · via Wikimedia Commons",
+    "source_width": 800,
+    "source_height": 533,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:23:55.474Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/bas-rutten-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/bas-rutten-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/bas-rutten-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:23:54.382Z",
+    "wikidata": "Q704832",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Bas_Rutten",
+    "https://www.wikidata.org/wiki/Q704832"
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "kazushi-sakuraba",
+  "name": "Kazushi Sakuraba",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:45.116Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Kazushi_Sakuraba",
+    "wikidata": "Q1154771",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Kazushi Sakuraba",
+      "source": "https://en.wikipedia.org/wiki/Kazushi_Sakuraba",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "induction_year": {
+      "value": 2017,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "nationality": {
+      "value": "Japan",
+      "source": "https://www.wikidata.org/wiki/Q1154771",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "date_of_birth": {
+      "value": "1969-07-14",
+      "source": "https://www.wikidata.org/wiki/Q1154771",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "description": {
+      "value": "Japanese mixed martial artist and professional wrestler",
+      "source": "https://www.wikidata.org/wiki/Q1154771",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "professional wrestler"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q1154771",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "legacy_summary": {
+      "value": "Won the UFC Japan heavyweight tournament in 1997 and became the Gracie Hunter of the PRIDE era.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Middleweight",
+        "Open weight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Ultimate Japan tournament winner (1997)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Royce Gracie (PRIDE 2000, 90 minutes)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:45.116Z"
+    }
+  },
+  "bio": {
+    "text": "Kazushi Sakuraba  is a Japanese professional wrestler, submission wrestler and former mixed martial artist. He is performing as a freelancer, primarily appearing for Pro Wrestling Noah, where he was formerly one-half of the former GHC Tag Team Champions with Takashi Sugiura. He has also competed in traditional puroresu for New Japan Pro-Wrestling (NJPW) and shoot-style competition for UWFi and Kingdom Pro Wrestling (KPW). He has fought in MMA competition in the Ultimate Fighting Championship, Pride Fighting Championships, Hero's, Dream and most recently Rizin Fighting Federation. He is known as the Gracie Hunter or the Gracie Killer due to his wins over four members of the famed Gracie family: Royler Gracie, Renzo Gracie, Ryan Gracie, and Royce Gracie. Sakuraba is famous for beating 15 champions of different top MMA organizations; opponents who were often many weight-classes above him.",
+    "source_url": "https://en.wikipedia.org/wiki/Kazushi_Sakuraba",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:45.116Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:54.932Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "kazushi-sakuraba",
+    "subject_name": "Kazushi Sakuraba",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Kazushi_Sakuraba_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Kazushi_Sakuraba_2015.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 4.0",
+    "license_text": "Own work",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "ゾーヒョー",
+    "attribution": "ゾーヒョー · CC BY-SA 4.0 · via Wikimedia Commons",
+    "source_width": 450,
+    "source_height": 640,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:36.332Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/kazushi-sakuraba-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/kazushi-sakuraba-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/kazushi-sakuraba-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:35.435Z",
+    "wikidata": "Q1154771",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Kazushi_Sakuraba",
+    "https://www.wikidata.org/wiki/Q1154771"
+  ]
+}

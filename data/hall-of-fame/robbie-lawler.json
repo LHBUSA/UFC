@@ -1,0 +1,146 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "robbie-lawler",
+  "name": "Robbie Lawler",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:21.012Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Robbie_Lawler",
+    "wikidata": "Q4900149",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Robbie Lawler",
+      "source": "https://en.wikipedia.org/wiki/Robbie_Lawler",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q4900149",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "date_of_birth": {
+      "value": "1982-03-20",
+      "source": "https://www.wikidata.org/wiki/Q4900149",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "description": {
+      "value": "retired American mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q4900149",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "karateka",
+        "professional wrestler"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q4900149",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "legacy_summary": {
+      "value": "Welterweight champion whose second career produced some of the division's most violent title fights.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Welterweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Welterweight Champion (2014–2016)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Rory MacDonald 2 (UFC 189, 2015 · Fight Wing)",
+        "vs Carlos Condit (UFC 195, 2016)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:21.012Z"
+    }
+  },
+  "bio": {
+    "text": "Robert Glenn Lawler is an American former professional mixed martial artist. A professional fighter from 2001 to 2023, he most notably competed in the Welterweight and Middleweight divisions of the Ultimate Fighting Championship (UFC), where he was the former UFC Welterweight Champion. He formerly competed in the Middleweight division of EliteXC, where he was the longest-reigning EliteXC Middleweight Champion. He also competed in PRIDE FC, Strikeforce, the International Fight League (IFL), KOTC, SuperBrawl, and ICON Sport, where he was their Middleweight Champion.",
+    "source_url": "https://en.wikipedia.org/wiki/Robbie_Lawler",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:21.012Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:59.073Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "robbie-lawler",
+    "subject_name": "Robbie Lawler",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Robbie_Lawler.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Robbie_Lawler.png",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 3.0",
+    "license_text": "YouTube: https://www.youtube.com/watch?v=zdv2_4XE0VU – View/save archived versions on archive.org",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "author": "Atlanta Falcons",
+    "attribution": "Atlanta Falcons · CC BY 3.0 · via Wikimedia Commons",
+    "source_width": 435,
+    "source_height": 510,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:27.418Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/robbie-lawler-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/robbie-lawler-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/robbie-lawler-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:26.476Z",
+    "wikidata": "Q4900149",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Robbie_Lawler",
+    "https://www.wikidata.org/wiki/Q4900149"
+  ]
+}

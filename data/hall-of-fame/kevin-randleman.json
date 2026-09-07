@@ -1,0 +1,146 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "kevin-randleman",
+  "name": "Kevin Randleman",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:41.886Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Kevin_Randleman",
+    "wikidata": "Q1336425",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Kevin Randleman",
+      "source": "https://en.wikipedia.org/wiki/Kevin_Randleman",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q1336425",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "date_of_birth": {
+      "value": "1971-08-10",
+      "source": "https://www.wikidata.org/wiki/Q1336425",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "description": {
+      "value": "American mixed martial artist (1971–2016)",
+      "source": "https://www.wikidata.org/wiki/Q1336425",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "occupations": {
+      "value": [
+        "actor",
+        "mixed martial arts fighter",
+        "professional wrestler",
+        "amateur wrestler"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q1336425",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "legacy_summary": {
+      "value": "Explosive NCAA champion wrestler who won the UFC Heavyweight Championship in 1999 and later shocked PRIDE with an upset of Mirko Cro Cop.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Heavyweight Champion (1999–2000)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Mirko Cro Cop (PRIDE 2004)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:41.886Z"
+    }
+  },
+  "bio": {
+    "text": "Kevin Christopher Randleman was an American mixed martial artist, amateur and professional wrestler, and former UFC Heavyweight Champion. Randleman's background was in collegiate wrestling, in which he became a two-time NCAA Division I and a three-time Big Ten wrestling champion out of Ohio State University. Randleman competed in the heavyweight and light heavyweight classes in MMA. In addition to competing in the UFC, Randleman also fought for other organizations such as PRIDE, WVR, and Strikeforce. He was previously associated with Mark Coleman's Team Hammer House, before training at Randy Couture's gym in Las Vegas, Nevada. On May 16, 2020, the UFC announced that Randleman would be inducted into the pioneer wing of the UFC Hall of Fame. Randleman is the first fighter to be posthumously inducted into the UFC Hall of Fame.",
+    "source_url": "https://en.wikipedia.org/wiki/Kevin_Randleman",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:41.886Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:55.425Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "kevin-randleman",
+    "subject_name": "Kevin Randleman",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Kevin_Randleman.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Kevin_Randleman.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 3.0",
+    "license_text": "originally posted to Picasa Web Albums as Pride_WorkOut_101906 (tweaked)",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "Larry Burton on Picasa Web Albums",
+    "attribution": "Larry Burton on Picasa Web Albums · CC BY-SA 3.0 · via Wikimedia Commons",
+    "source_width": 1067,
+    "source_height": 1600,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:39.957Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/kevin-randleman-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/kevin-randleman-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/kevin-randleman-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:38.598Z",
+    "wikidata": "Q1336425",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Kevin_Randleman",
+    "https://www.wikidata.org/wiki/Q1336425"
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "chuck-liddell",
+  "name": "Chuck Liddell",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:35.828Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Chuck_Liddell",
+    "wikidata": "Q380050",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Chuck Liddell",
+      "source": "https://en.wikipedia.org/wiki/Chuck_Liddell",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "induction_year": {
+      "value": 2009,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q380050",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "date_of_birth": {
+      "value": "1969-12-17",
+      "source": "https://www.wikidata.org/wiki/Q380050",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "description": {
+      "value": "American mixed martial arts fighter",
+      "source": "https://www.wikidata.org/wiki/Q380050",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "kickboxer",
+        "karateka",
+        "amateur wrestler"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q380050",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "legacy_summary": {
+      "value": "The knockout artist whose light heavyweight reign carried the UFC into the mainstream television era.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Light heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Light Heavyweight Champion"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Four consecutive title defenses",
+        "Headlined the first UFC pay-per-view to break one million buys (UFC 66)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Randy Couture trilogy",
+        "vs Tito Ortiz (UFC 47 and UFC 66)",
+        "vs Wanderlei Silva (UFC 79, 2007)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:35.827Z"
+    }
+  },
+  "bio": {
+    "text": "Charles David Liddell is an American former professional mixed martial artist. A professional competitor from 1998 to 2018, Liddell is a former UFC Light Heavyweight Champion and is widely credited, along with fellow UFC fighter Randy Couture, with helping bring MMA into the mainstream of American sports and entertainment. Known as \"The Iceman\", Liddell achieved a 16–7 MMA record in the UFC, and an overall MMA record of 21–9, with 13 of his wins coming by way of knockout. He also achieved a 20–2 record in kickboxing, with 16 of his wins coming by way of knockout, and won two national amateur championships. He retired in late 2010, then came out of retirement for one bout in 2018, in a loss to rival Tito Ortiz. On July 10, 2009, Liddell was inducted into the UFC Hall of Fame.",
+    "source_url": "https://en.wikipedia.org/wiki/Chuck_Liddell",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:35.828Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:51.237Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "chuck-liddell",
+    "subject_name": "Chuck Liddell",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/4/48/Chuck_Liddell_in_Santa_Monica-California_2005_photo_by_Ithaka_Darin_Pappas.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Chuck_Liddell_in_Santa_Monica-California_2005_photo_by_Ithaka_Darin_Pappas.jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 4.0",
+    "license_text": "Own work",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "IthakaDarinPappas",
+    "attribution": "IthakaDarinPappas · CC BY-SA 4.0 · via Wikimedia Commons",
+    "source_width": 1345,
+    "source_height": 1736,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:05.102Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/chuck-liddell-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/chuck-liddell-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/chuck-liddell-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:03.510Z",
+    "wikidata": "Q380050",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Chuck_Liddell",
+    "https://www.wikidata.org/wiki/Q380050"
+  ]
+}

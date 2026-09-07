@@ -1,0 +1,152 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "joanna-jedrzejczyk",
+  "name": "Joanna Jędrzejczyk",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:13.009Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Joanna_J%C4%99drzejczyk",
+    "wikidata": "Q14436702",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Joanna Jędrzejczyk",
+      "source": "https://en.wikipedia.org/wiki/Joanna_J%C4%99drzejczyk",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "Poland",
+      "source": "https://www.wikidata.org/wiki/Q14436702",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "date_of_birth": {
+      "value": "1987-08-18",
+      "source": "https://www.wikidata.org/wiki/Q14436702",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "description": {
+      "value": "Polish mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q14436702",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "occupations": {
+      "value": [
+        "kickboxer",
+        "Thai boxer",
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q14436702",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "legacy_summary": {
+      "value": "Strawweight champion whose volume striking set the division's standard and produced a five-round war with Zhang Weili.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Women's strawweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Women's Strawweight Champion (2015–2017)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Five consecutive strawweight title defenses"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Zhang Weili 1 (UFC 248, 2020)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:13.009Z"
+    }
+  },
+  "bio": {
+    "text": "Joanna Jędrzejczyk is a Polish former professional mixed martial artist, Muay Thai fighter and kickboxer. Jędrzejczyk competed in the Ultimate Fighting Championship (UFC), where she holds several records and is a former UFC Women's Strawweight Champion, including most successful strawweight title defenses (5), most consecutive wins at strawweight (8), and is the first Polish champion and first female European champion.\nShe has been called the greatest female strawweight mixed martial artist of all time, including by Daniel Cormier, who credited her with putting the weight class \"on the map\".",
+    "source_url": "https://en.wikipedia.org/wiki/Joanna_J%C4%99drzejczyk",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:13.009Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:54.368Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "joanna-jedrzejczyk",
+    "subject_name": "Joanna Jędrzejczyk",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Joanna_J%C4%99drzejczyk.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Joanna_J%C4%99drzejczyk.png",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 3.0",
+    "license_text": "YouTube: https://www.youtube.com/watch?v=g03Re9wd9UA – View/save archived versions on archive.org",
+    "license_url": "https://creativecommons.org/licenses/by/3.0",
+    "author": "KRK.TV",
+    "attribution": "KRK.TV · CC BY 3.0 · via Wikimedia Commons",
+    "source_width": 712,
+    "source_height": 656,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:32.830Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/joanna-jedrzejczyk-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/joanna-jedrzejczyk-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/joanna-jedrzejczyk-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:31.815Z",
+    "wikidata": "Q14436702",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Joanna_J%C4%99drzejczyk",
+    "https://www.wikidata.org/wiki/Q14436702"
+  ]
+}

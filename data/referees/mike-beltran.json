@@ -1,0 +1,168 @@
+{
+  "subject_type": "referee",
+  "slug": "mike-beltran",
+  "name": "Mike Beltran",
+  "identity": {
+    "checked_at": "2026-09-07T14:03:18.780Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Mike_Beltran_(referee)",
+    "wikidata": "Q136786161",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Mike Beltran",
+      "source": "https://en.wikipedia.org/wiki/Mike_Beltran_(referee)",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "role": {
+      "value": "American mixed martial arts referee",
+      "source": "https://en.wikipedia.org/wiki/Mike_Beltran_(referee)",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "date_of_birth": null,
+    "occupations": null,
+    "documented_since": {
+      "value": 2021,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2021–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "ufc_bout_count": {
+      "value": 112,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "title_fight_count": {
+      "value": 1,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "five_round_count": {
+      "value": 7,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    },
+    "main_event_count": {
+      "value": 76,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:03:18.780Z"
+    }
+  },
+  "bio": {
+    "text": "Mike Beltran is an American mixed martial arts (MMA) referee known for officiating bouts in the Ultimate Fighting Championship (UFC), Bellator, and other major promotions.",
+    "source_url": "https://en.wikipedia.org/wiki/Mike_Beltran_(referee)",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:03:18.780Z"
+  },
+  "metrics": {
+    "sample_bouts": 112,
+    "main_event_assignments": 76,
+    "method_distribution": {
+      "DEC_U": 43,
+      "KO_TKO": 41,
+      "DEC_S": 9,
+      "SUB": 16,
+      "DEC_M": 1,
+      "NC": 2
+    },
+    "round_distribution": {
+      "1": 38,
+      "2": 10,
+      "3": 61,
+      "5": 3
+    },
+    "avg_fight_seconds": 612,
+    "timed_sample": 112,
+    "stoppage_time_seconds": {
+      "p25": 110,
+      "median": 246,
+      "p75": 486,
+      "sample": 57
+    },
+    "notable": [
+      {
+        "fight": "Belal Muhammad vs Leon Edwards",
+        "event": "UFC 304: Edwards vs. Muhammad 2",
+        "date": "2024-07-27",
+        "method": "DEC_U",
+        "round": 5
+      }
+    ],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:03:18.780Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:26:01.956Z",
+    "wikidata": "Q136786161",
+    "rejected": [
+      {
+        "file": "File:Mike Beltran.jpg",
+        "reason": "too small: 150x200"
+      },
+      {
+        "file": "File:Captura de pantalla 2017-01-22 a la(s) 22.42.28.png",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Museo - Blanes.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Sede del Correo.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Castillo - Soneira.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Archivo hispalense; revista histórica, literaria y artística (IA archivohispalens02seviuoft).pdf",
+        "reason": "mime: application/pdf"
+      },
+      {
+        "file": "File:Escalafon de antigüedad de los catedráticos de las universidades del Reino - segun el lugar que corresponde a cada uno de ellos en el dia de la fecha (IA A11303506).pdf",
+        "reason": "mime: application/pdf"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://en.wikipedia.org/wiki/Mike_Beltran_(referee)",
+    "https://www.wikidata.org/wiki/Q136786161",
+    "https://www.mmareferee.com/instructors"
+  ]
+}

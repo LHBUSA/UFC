@@ -1,0 +1,195 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "anderson-silva",
+  "name": "Anderson Silva",
+  "wing": "pioneer",
+  "identity": {
+    "checked_at": "2026-09-07T14:09:55.777Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Anderson_Silva",
+    "wikidata": "Q356871",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Anderson Silva",
+      "source": "https://en.wikipedia.org/wiki/Anderson_Silva",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "wing": {
+      "value": "pioneer",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "induction_year": {
+      "value": 2023,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "nationality": {
+      "value": "Brazil / United States",
+      "source": "https://www.wikidata.org/wiki/Q356871",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "date_of_birth": {
+      "value": "1975-04-14",
+      "source": "https://www.wikidata.org/wiki/Q356871",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "description": {
+      "value": "Brazilian mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q356871",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "occupations": {
+      "value": [
+        "boxer",
+        "judoka",
+        "mixed martial arts fighter",
+        "taekwondo athlete"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q356871",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "legacy_summary": {
+      "value": "Middleweight champion for nearly seven years, with the longest title reign and win streak in UFC history at the time.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Middleweight",
+        "Light heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Middleweight Champion (2006–2013)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Ten consecutive title defenses",
+        "Sixteen-fight UFC win streak"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Chael Sonnen 1 (UFC 117, 2010 · Fight Wing)",
+        "vs Vitor Belfort (UFC 126, 2011)",
+        "vs Forrest Griffin (UFC 101, 2009)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:09:55.777Z"
+    }
+  },
+  "bio": {
+    "text": "Anderson da Silva is a Brazilian mixed martial artist and professional boxer. He is a former UFC Middleweight Champion who unified the UFC Middleweight and Pride World Welterweight Championship, and holds the record for the longest title reign in UFC history at 2,457 days. This started in 2006 and ended in 2013 and included a previously held UFC record of 16 consecutive victories in that span. Silva left the UFC in November 2020 and returned to boxing. He is widely regarded as one of the greatest mixed martial artists of all time. Silva was inducted into the UFC Hall of Fame in July 2023.",
+    "source_url": "https://en.wikipedia.org/wiki/Anderson_Silva",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:09:55.777Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:49.900Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:23:50.035Z",
+    "wikidata": "Q356871",
+    "rejected": [
+      {
+        "file": "File:Anderson Silva.jpg",
+        "reason": "too small: 200x200"
+      },
+      {
+        "file": "File:Anderson Silva.jpg",
+        "reason": "too small: 200x200"
+      },
+      {
+        "file": "File:Anderson Silva.png",
+        "reason": "too small: 300x351"
+      },
+      {
+        "file": "File:Ufc97montrealbustourtickets39 (3887137509).jpg",
+        "reason": "landscape source 648x463 — likely an action/crowd frame, not a portrait"
+      },
+      {
+        "file": "File:Anderson Silva vs Thales Leites UFC 97.jpg",
+        "reason": "ambiguous group/event image"
+      },
+      {
+        "file": "File:Dilma Rousseff with Anderson Silva.jpg",
+        "reason": "name matched but no combat-sports context — cannot confirm this is the same person"
+      },
+      {
+        "file": "File:Anderson Silva 01.jpg",
+        "reason": "too small: 231x231"
+      },
+      {
+        "file": "File:Chris Weidman knock out Anderson Silva at UFC 162..jpg",
+        "reason": "landscape source 1278x718 — likely an action/crowd frame, not a portrait"
+      },
+      {
+        "file": "File:LL-Q13955 (ara)-Zinou2go-أندرسون سيلفا.wav",
+        "reason": "mime: audio/wav"
+      },
+      {
+        "file": "File:Wanderlei Silva - UFC 100 Fan Expo - Mandalay Bay Casino, Las Vegas.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Wanderlei Silva - UFC 100 Fan Expo - July 10, 2009 in Las Vegas.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Wanderlei Silva - UFC 100 Fan Expo - July 10, 2009 in Las Vegas crop.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Bruno Silva ufc Brazil.jpg",
+        "reason": "subject name only appears in free-text description, not the file title or categories"
+      },
+      {
+        "file": "File:Anderson Silva vs Thales Leites UFC 97.jpg",
+        "reason": "ambiguous group/event image"
+      },
+      {
+        "file": "File:Chris Weidman knock out Anderson Silva at UFC 162..jpg",
+        "reason": "landscape source 1278x718 — likely an action/crowd frame, not a portrait"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Anderson_Silva",
+    "https://www.wikidata.org/wiki/Q356871"
+  ]
+}

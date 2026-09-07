@@ -1,0 +1,103 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "shogun-rua",
+  "name": "Shogun Rua",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:19.522Z",
+    "wikipedia": null,
+    "wikidata": null,
+    "resolved": false,
+    "note": "No English Wikipedia article passed the name lock and context check."
+  },
+  "facts": {
+    "full_name": {
+      "value": "Shogun Rua",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:19.522Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:19.522Z"
+    },
+    "induction_year": null,
+    "nationality": {
+      "value": "Brazil",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:19.522Z"
+    },
+    "date_of_birth": null,
+    "description": null,
+    "occupations": null,
+    "legacy_summary": {
+      "value": "PRIDE 2005 Grand Prix winner who won the UFC Light Heavyweight Championship in 2010 and fought one of the Fight Wing's great wars.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:19.522Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:19.522Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Light heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:19.522Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Light Heavyweight Champion (2010–2011)",
+        "PRIDE 2005 Middleweight Grand Prix winner"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:19.522Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Dan Henderson 1 (UFC 139, 2011 · Fight Wing)",
+        "vs Lyoto Machida (UFC 104 and UFC 113)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:19.522Z"
+    }
+  },
+  "bio": {
+    "text": null,
+    "source_url": null,
+    "source_name": null,
+    "license": null,
+    "verified_at": null
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:11:00.154Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:31.205Z",
+    "wikidata": null,
+    "rejected": [
+      {
+        "file": "(search not attempted)",
+        "reason": "no resolved Wikidata identity — a name-only Commons match is not identity proof"
+      }
+    ],
+    "found": false
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame"
+  ]
+}

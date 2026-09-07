@@ -1,0 +1,160 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "daniel-cormier",
+  "name": "Daniel Cormier",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:07.369Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Daniel_Cormier",
+    "wikidata": "Q644831",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Daniel Cormier",
+      "source": "https://en.wikipedia.org/wiki/Daniel_Cormier",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "induction_year": {
+      "value": 2022,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "nationality": {
+      "value": "United States",
+      "source": "https://www.wikidata.org/wiki/Q644831",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "date_of_birth": {
+      "value": "1979-03-20",
+      "source": "https://www.wikidata.org/wiki/Q644831",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "description": {
+      "value": "American sport wrestler and mixed martial artist",
+      "source": "https://www.wikidata.org/wiki/Q644831",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "occupations": {
+      "value": [
+        "amateur wrestler",
+        "mixed martial arts fighter",
+        "sports analyst"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q644831",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "legacy_summary": {
+      "value": "Simultaneous heavyweight and light heavyweight champion; elite wrestling applied to the five-round problem.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Heavyweight",
+        "Light heavyweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Light Heavyweight Champion (2015–2018)",
+        "UFC Heavyweight Champion (2018–2019)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "notable_achievements": {
+      "value": [
+        "Held two UFC titles at the same time"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    },
+    "signature_fights": {
+      "value": [
+        "vs Stipe Miocic trilogy",
+        "vs Alexander Gustafsson (UFC 192, 2015)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:07.369Z"
+    }
+  },
+  "bio": {
+    "text": "Daniel Ryan Cormier is an American former professional mixed martial artist, freestyle wrestler, and current color commentator for the Ultimate Fighting Championship (UFC). As a former UFC Light Heavyweight and Heavyweight Champion, Cormier is the second fighter in UFC history to hold titles in two weight classes simultaneously and is the first fighter to have title defenses in two divisions. He is widely regarded as one of the greatest mixed martial artists of all time.",
+    "source_url": "https://en.wikipedia.org/wiki/Daniel_Cormier",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:07.369Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:51.794Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "daniel-cormier",
+    "subject_name": "Daniel Cormier",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Daniel_Cormier_taking_a_picture_with_a_fan..jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:Daniel_Cormier_taking_a_picture_with_a_fan..jpg",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY-SA 4.0",
+    "license_text": "Own work",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "X2o",
+    "attribution": "X2o · CC BY-SA 4.0 · via Wikimedia Commons",
+    "source_width": 955,
+    "source_height": 1234,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:24:10.782Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/daniel-cormier-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/daniel-cormier-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/daniel-cormier-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:24:09.242Z",
+    "wikidata": "Q644831",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Daniel_Cormier",
+    "https://www.wikidata.org/wiki/Q644831"
+  ]
+}

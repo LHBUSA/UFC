@@ -1,0 +1,153 @@
+{
+  "subject_type": "hof_inductee",
+  "slug": "michael-bisping",
+  "name": "Michael Bisping",
+  "wing": "modern",
+  "identity": {
+    "checked_at": "2026-09-07T14:10:04.445Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Michael_Bisping",
+    "wikidata": "Q973762",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Michael Bisping",
+      "source": "https://en.wikipedia.org/wiki/Michael_Bisping",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "wing": {
+      "value": "modern",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_wing",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "induction_year": {
+      "value": 2019,
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official_hof_class",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "nationality": {
+      "value": "United Kingdom",
+      "source": "https://www.wikidata.org/wiki/Q973762",
+      "method": "wikidata_P27",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "date_of_birth": {
+      "value": "1979-02-28",
+      "source": "https://www.wikidata.org/wiki/Q973762",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "description": {
+      "value": "English mixed martial arts fighter and actor",
+      "source": "https://www.wikidata.org/wiki/Q973762",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts fighter",
+        "kickboxer",
+        "Thai boxer",
+        "actor"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q973762",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "legacy_summary": {
+      "value": "The Ultimate Fighter 3 winner who became the first British UFC champion by knocking out Luke Rockhold in 2016.",
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "official_hof_url": {
+      "value": "https://www.ufc.com/ufc-hall-of-fame",
+      "source": "https://www.ufc.com/ufc-hall-of-fame",
+      "method": "official",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "weight_classes": {
+      "value": [
+        "Middleweight"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "championships": {
+      "value": [
+        "UFC Middleweight Champion (2016–2017)",
+        "The Ultimate Fighter 3 winner"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    },
+    "notable_achievements": null,
+    "signature_fights": {
+      "value": [
+        "vs Luke Rockhold (UFC 199, 2016)",
+        "vs Dan Henderson (UFC 204, 2016)"
+      ],
+      "source": "PropBetEdge curated Hall of Fame seed (official UFC Hall of Fame wings)",
+      "method": "curated",
+      "verified_at": "2026-09-07T14:10:04.445Z"
+    }
+  },
+  "bio": {
+    "text": "Michael Gavin Joseph Bisping is an English sports commentator, analyst, actor, and former mixed martial artist. He competed in the middleweight and light heavyweight divisions of the Ultimate Fighting Championship (UFC). A professional competitor from 2004 to 2017, he held the UFC middleweight title, the Cage Rage light heavyweight title, and won the light heavyweight tournament of The Ultimate Fighter 3.",
+    "source_url": "https://en.wikipedia.org/wiki/Michael_Bisping",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:10:04.445Z"
+  },
+  "archive": {
+    "archive_status": "missing",
+    "searched_at": "2026-09-07T14:10:57.304Z",
+    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+  },
+  "media": {
+    "subject_type": "hof_inductee",
+    "subject_id": "michael-bisping",
+    "subject_name": "Michael Bisping",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/MichaelBisping.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:MichaelBisping.png",
+    "source_name": "Wikimedia Commons",
+    "license_type": "CC BY 2.0",
+    "license_text": "Transferred from en.wikipedia to Commons.",
+    "license_url": "https://creativecommons.org/licenses/by/2.0",
+    "author": "The original uploader was East718 at English Wikipedia.",
+    "attribution": "The original uploader was East718 at English Wikipedia. · CC BY 2.0 · via Wikimedia Commons",
+    "source_width": 1062,
+    "source_height": 1941,
+    "focal_x": 0.5,
+    "focal_y": 0.32,
+    "crop_hint": "attention",
+    "preferred_aspect": "4:5",
+    "confidence": "high",
+    "verified_at": "2026-09-07T14:25:14.051Z",
+    "kind": "portrait",
+    "method": "wikidata_p18",
+    "commercial_display_status": "approved",
+    "derivatives": {
+      "avatar": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/michael-bisping-avatar.webp",
+      "card": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/michael-bisping-card.webp",
+      "profile": "https://tkmlnhmylqnttmnsnief.supabase.co/storage/v1/object/public/ufc-media/hall-of-fame/michael-bisping-profile.webp"
+    }
+  },
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:12.442Z",
+    "wikidata": "Q973762",
+    "rejected": [],
+    "found": true
+  },
+  "sources": [
+    "https://www.ufc.com/ufc-hall-of-fame",
+    "https://en.wikipedia.org/wiki/Michael_Bisping",
+    "https://www.wikidata.org/wiki/Q973762"
+  ]
+}

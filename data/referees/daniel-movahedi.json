@@ -1,0 +1,135 @@
+{
+  "subject_type": "referee",
+  "slug": "daniel-movahedi",
+  "name": "Daniel Movahedi",
+  "identity": {
+    "checked_at": "2026-09-07T14:04:03.112Z",
+    "wikipedia": "https://en.wikipedia.org/wiki/Daniel_Movahedi",
+    "wikidata": "Q97680574",
+    "resolved": true,
+    "note": null
+  },
+  "facts": {
+    "full_name": {
+      "value": "Daniel Movahedi",
+      "source": "https://en.wikipedia.org/wiki/Daniel_Movahedi",
+      "method": "wikipedia_title",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "role": {
+      "value": "English mixed martial arts referee",
+      "source": "https://en.wikipedia.org/wiki/Daniel_Movahedi",
+      "method": "wikidata_description",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "nationality": null,
+    "date_of_birth": {
+      "value": "1985-05-26",
+      "source": "https://www.wikidata.org/wiki/Q97680574",
+      "method": "wikidata_P569",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "occupations": {
+      "value": [
+        "mixed martial arts referee",
+        "mixed martial arts fighter"
+      ],
+      "source": "https://www.wikidata.org/wiki/Q97680574",
+      "method": "wikidata_P106",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "documented_since": {
+      "value": 2020,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_first_assignment",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "documented_through": {
+      "value": 2026,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_last_assignment",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "tenure_label": {
+      "value": "Documented UFC assignments 2020–2026",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "status": {
+      "value": "Active in the loaded archive",
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_derived",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "ufc_bout_count": {
+      "value": 19,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "title_fight_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "five_round_count": {
+      "value": 0,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    },
+    "main_event_count": {
+      "value": 6,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-07T14:04:03.112Z"
+    }
+  },
+  "bio": {
+    "text": "Daniel Movahedi is an English professional mixed martial arts referee and former fighter.",
+    "source_url": "https://en.wikipedia.org/wiki/Daniel_Movahedi",
+    "source_name": "English Wikipedia",
+    "license": "CC BY-SA 4.0",
+    "verified_at": "2026-09-07T14:04:03.112Z"
+  },
+  "metrics": {
+    "sample_bouts": 19,
+    "main_event_assignments": 6,
+    "method_distribution": {
+      "DEC_U": 9,
+      "SUB": 3,
+      "KO_TKO": 6,
+      "DEC_S": 1
+    },
+    "round_distribution": {
+      "1": 6,
+      "2": 2,
+      "3": 11
+    },
+    "avg_fight_seconds": 596,
+    "timed_sample": 19,
+    "stoppage_time_seconds": {
+      "p25": 86,
+      "median": 166,
+      "p75": 524,
+      "sample": 9
+    },
+    "notable": [],
+    "origin": "pbe_derived",
+    "computed_at": "2026-09-07T14:04:03.112Z",
+    "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
+  },
+  "media": null,
+  "media_search": {
+    "searched_at": "2026-09-07T14:25:42.534Z",
+    "wikidata": "Q97680574",
+    "rejected": [],
+    "found": false
+  },
+  "sources": [
+    "https://en.wikipedia.org/wiki/Daniel_Movahedi",
+    "https://www.wikidata.org/wiki/Q97680574"
+  ]
+}
