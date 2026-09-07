@@ -4,11 +4,13 @@
   "edition": "us",
   "number": 5,
   "year": 2007,
-  "weight_classes": ["Lightweight"],
+  "weight_classes": [
+    "Lightweight"
+  ],
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
     "retrieved": "2026-09-07",
-    "note": "The finale card exists in ufc_events but holds zero bouts — the historical backfill is descending through 2009 and has not reached 2007. Both finale bouts are therefore SOURCED, not verified against our own records, and are labelled that way."
+    "note": "The finale card now holds nine bouts — backfill window B-2007 loaded them — so the tournament final is VERIFIED against our own ufc_bout_results row rather than merely sourced. The coaches' bout on the same card is still sourced only: B.J. Penn has no fighter row yet, so there is nothing to verify it against. Nothing is imported; the card's bouts live on the event page and are linked, not restated."
   },
   "_conflicts": [
     {
@@ -20,50 +22,149 @@
       "field": "early_rounds",
       "detail": "The source labels the opening bouts as an elimination round plus 'Round 2', 'Round 3' and 'Round 4' across episodes 1-7, which does not map cleanly onto a sixteen-fighter bracket. They are recorded together as the opening rounds in the order given, without being renamed into stages the source does not claim.",
       "retrieved": "2026-09-07"
+    },
+    {
+      "field": "final_method_and_opponent_name",
+      "detail": "Our own records and the season source describe the same bout differently. Both agree on round 2 at twenty seconds and on Nate Diaz winning. The source calls it a TKO from a shoulder injury; UFC Stats records it as a submission. And the opponent is 'Manny Gamburyan' in the source and 'Manvel Gamburyan' in ufc_fighters — the same man under two spellings. Both readings are kept; neither is corrected into the other.",
+      "retrieved": "2026-09-07"
     }
   ],
   "coaches": [
-    { "team": "Team Penn", "name": "B.J. Penn", "role": "head" },
-    { "team": "Team Penn", "name": "Rudolph Valentino", "role": "assistant", "discipline": "kickboxing" },
-    { "team": "Team Penn", "name": "Tony DeSouza", "role": "assistant", "discipline": "wrestling" },
-    { "team": "Team Penn", "name": "Reagan Penn", "role": "assistant", "discipline": "jiu-jitsu" },
-    { "team": "Team Penn", "name": "Randy Couture", "role": "guest" },
-    { "team": "Team Pulver", "name": "Jens Pulver", "role": "head" },
-    { "team": "Team Pulver", "name": "Matt Pena", "role": "assistant", "discipline": "boxing" },
-    { "team": "Team Pulver", "name": "Taisei Kikuchi", "role": "assistant", "discipline": "submissions" },
-    { "team": "Team Pulver", "name": "Kirk White", "role": "assistant", "discipline": "wrestling" },
-    { "team": "Team Pulver", "name": "Matt Hughes", "role": "guest" },
-    { "team": "Team Pulver", "name": "Jeremy Horn", "role": "guest" }
+    {
+      "team": "Team Penn",
+      "name": "B.J. Penn",
+      "role": "head"
+    },
+    {
+      "team": "Team Penn",
+      "name": "Rudolph Valentino",
+      "role": "assistant",
+      "discipline": "kickboxing"
+    },
+    {
+      "team": "Team Penn",
+      "name": "Tony DeSouza",
+      "role": "assistant",
+      "discipline": "wrestling"
+    },
+    {
+      "team": "Team Penn",
+      "name": "Reagan Penn",
+      "role": "assistant",
+      "discipline": "jiu-jitsu"
+    },
+    {
+      "team": "Team Penn",
+      "name": "Randy Couture",
+      "role": "guest"
+    },
+    {
+      "team": "Team Pulver",
+      "name": "Jens Pulver",
+      "role": "head"
+    },
+    {
+      "team": "Team Pulver",
+      "name": "Matt Pena",
+      "role": "assistant",
+      "discipline": "boxing"
+    },
+    {
+      "team": "Team Pulver",
+      "name": "Taisei Kikuchi",
+      "role": "assistant",
+      "discipline": "submissions"
+    },
+    {
+      "team": "Team Pulver",
+      "name": "Kirk White",
+      "role": "assistant",
+      "discipline": "wrestling"
+    },
+    {
+      "team": "Team Pulver",
+      "name": "Matt Hughes",
+      "role": "guest"
+    },
+    {
+      "team": "Team Pulver",
+      "name": "Jeremy Horn",
+      "role": "guest"
+    }
   ],
   "coaching_changes": [
-    { "episode": 7, "change": "Andy Wang transferred from Team Penn to Team Pulver" },
-    { "episode": null, "change": "Nate Diaz trained with Team Penn before the semi-finals while remaining a Team Pulver fighter" }
+    {
+      "episode": 7,
+      "change": "Andy Wang transferred from Team Penn to Team Pulver"
+    },
+    {
+      "episode": null,
+      "change": "Nate Diaz trained with Team Penn before the semi-finals while remaining a Team Pulver fighter"
+    }
   ],
   "teams": [
     {
       "name": "Team Penn",
       "roster": [
-        { "name": "Gray Maynard" },
-        { "name": "Matt Wiman" },
-        { "name": "Gabe Ruediger", "note": "Expelled in episode 5 for missing weight." },
-        { "name": "Joe Lauzon" },
-        { "name": "Rob Emerson", "note": "Reinstated to replace Gabe Ruediger." },
-        { "name": "Andy Wang", "note": "Transferred to Team Pulver in episode 7." },
-        { "name": "Allen Berube", "note": "Expelled for instigating a backyard fight." },
-        { "name": "Noah Thomas", "note": "Expelled after a backyard fight." }
+        {
+          "name": "Gray Maynard"
+        },
+        {
+          "name": "Matt Wiman"
+        },
+        {
+          "name": "Gabe Ruediger",
+          "note": "Expelled in episode 5 for missing weight."
+        },
+        {
+          "name": "Joe Lauzon"
+        },
+        {
+          "name": "Rob Emerson",
+          "note": "Reinstated to replace Gabe Ruediger."
+        },
+        {
+          "name": "Andy Wang",
+          "note": "Transferred to Team Pulver in episode 7."
+        },
+        {
+          "name": "Allen Berube",
+          "note": "Expelled for instigating a backyard fight."
+        },
+        {
+          "name": "Noah Thomas",
+          "note": "Expelled after a backyard fight."
+        }
       ]
     },
     {
       "name": "Team Pulver",
       "roster": [
-        { "name": "Corey Hill" },
-        { "name": "Nate Diaz" },
-        { "name": "Brandon Melendez" },
-        { "name": "Marlon Sims", "note": "Expelled after a backyard fight." },
-        { "name": "Manny Gamburyan" },
-        { "name": "Cole Miller" },
-        { "name": "Brian Geraghty" },
-        { "name": "Wayne Weems" }
+        {
+          "name": "Corey Hill"
+        },
+        {
+          "name": "Nate Diaz"
+        },
+        {
+          "name": "Brandon Melendez"
+        },
+        {
+          "name": "Marlon Sims",
+          "note": "Expelled after a backyard fight."
+        },
+        {
+          "name": "Manny Gamburyan"
+        },
+        {
+          "name": "Cole Miller"
+        },
+        {
+          "name": "Brian Geraghty"
+        },
+        {
+          "name": "Wayne Weems"
+        }
       ]
     }
   ],
@@ -77,14 +178,95 @@
           "status": "unverified",
           "note": "The source numbers these rounds in a way that does not map onto a standard bracket; they are listed here in the order given. Gabe Ruediger was expelled for missing weight and Rob Emerson reinstated in his place; Marlon Sims, Noah Thomas and Allen Berube were expelled after a backyard fight.",
           "bouts": [
-            { "a": "Cole Miller", "b": "Allen Berube", "winner": "Cole Miller", "method": "Submission (triangle choke)", "round": 1, "time": "2:33", "episode": 1, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Manny Gamburyan", "b": "Noah Thomas", "winner": "Manny Gamburyan", "method": "Submission (kimura)", "round": 1, "time": "2:09", "episode": 2, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Nate Diaz", "b": "Rob Emerson", "winner": "Nate Diaz", "method": "Submission (rear naked choke)", "round": 2, "time": "4:45", "episode": 3, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Brandon Melendez", "b": "Andy Wang", "winner": "Brandon Melendez", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": 4, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Joe Lauzon", "b": "Brian Geraghty", "winner": "Joe Lauzon", "method": "Submission (rear naked choke)", "round": 1, "time": "1:13", "episode": 6, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Corey Hill", "b": "Rob Emerson", "winner": "Corey Hill", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": 6, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "replacement": "Rob Emerson was reinstated after Gabe Ruediger was expelled for missing weight" },
-            { "a": "Gray Maynard", "b": "Wayne Weems", "winner": "Gray Maynard", "method": "TKO (punches)", "round": 1, "time": "2:47", "episode": 7, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Matt Wiman", "b": "Marlon Sims", "winner": "Matt Wiman", "method": "Technical submission (rear naked choke)", "round": 1, "time": "0:52", "episode": 7, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+            {
+              "a": "Cole Miller",
+              "b": "Allen Berube",
+              "winner": "Cole Miller",
+              "method": "Submission (triangle choke)",
+              "round": 1,
+              "time": "2:33",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Manny Gamburyan",
+              "b": "Noah Thomas",
+              "winner": "Manny Gamburyan",
+              "method": "Submission (kimura)",
+              "round": 1,
+              "time": "2:09",
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Nate Diaz",
+              "b": "Rob Emerson",
+              "winner": "Nate Diaz",
+              "method": "Submission (rear naked choke)",
+              "round": 2,
+              "time": "4:45",
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Brandon Melendez",
+              "b": "Andy Wang",
+              "winner": "Brandon Melendez",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Joe Lauzon",
+              "b": "Brian Geraghty",
+              "winner": "Joe Lauzon",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "1:13",
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Corey Hill",
+              "b": "Rob Emerson",
+              "winner": "Corey Hill",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card",
+              "replacement": "Rob Emerson was reinstated after Gabe Ruediger was expelled for missing weight"
+            },
+            {
+              "a": "Gray Maynard",
+              "b": "Wayne Weems",
+              "winner": "Gray Maynard",
+              "method": "TKO (punches)",
+              "round": 1,
+              "time": "2:47",
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Matt Wiman",
+              "b": "Marlon Sims",
+              "winner": "Matt Wiman",
+              "method": "Technical submission (rear naked choke)",
+              "round": 1,
+              "time": "0:52",
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            }
           ]
         },
         {
@@ -93,25 +275,102 @@
           "status": "unverified",
           "note": "Recorded as the source gives them. See conflicts: Gray Maynard is listed as losing here and also as fighting in the semi-finals.",
           "bouts": [
-            { "a": "Joe Lauzon", "b": "Cole Miller", "winner": "Joe Lauzon", "method": "TKO (strikes)", "round": 2, "time": "3:58", "episode": 8, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Brandon Melendez", "b": "Gray Maynard", "winner": "Brandon Melendez", "method": "Submission (guillotine choke)", "round": 2, "time": "4:07", "episode": 9, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Nate Diaz", "b": "Corey Hill", "winner": "Nate Diaz", "method": "Submission (triangle choke)", "round": 1, "time": "3:02", "episode": 10, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Manny Gamburyan", "b": "Matt Wiman", "winner": "Manny Gamburyan", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+            {
+              "a": "Joe Lauzon",
+              "b": "Cole Miller",
+              "winner": "Joe Lauzon",
+              "method": "TKO (strikes)",
+              "round": 2,
+              "time": "3:58",
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Brandon Melendez",
+              "b": "Gray Maynard",
+              "winner": "Brandon Melendez",
+              "method": "Submission (guillotine choke)",
+              "round": 2,
+              "time": "4:07",
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Nate Diaz",
+              "b": "Corey Hill",
+              "winner": "Nate Diaz",
+              "method": "Submission (triangle choke)",
+              "round": 1,
+              "time": "3:02",
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Manny Gamburyan",
+              "b": "Matt Wiman",
+              "winner": "Manny Gamburyan",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            }
           ]
         },
         {
           "stage": "semi_final",
           "label": "Semi-finals",
           "bouts": [
-            { "a": "Manny Gamburyan", "b": "Joe Lauzon", "winner": "Manny Gamburyan", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": 11, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Nate Diaz", "b": "Gray Maynard", "winner": "Nate Diaz", "method": "Submission (guillotine choke)", "round": 2, "time": "1:17", "episode": 12, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+            {
+              "a": "Manny Gamburyan",
+              "b": "Joe Lauzon",
+              "winner": "Manny Gamburyan",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            },
+            {
+              "a": "Nate Diaz",
+              "b": "Gray Maynard",
+              "winner": "Nate Diaz",
+              "method": "Submission (guillotine choke)",
+              "round": 2,
+              "time": "1:17",
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed outside a sanctioned card"
+            }
           ]
         },
         {
           "stage": "final",
           "label": "Tournament final",
           "bouts": [
-            { "a": "Nate Diaz", "b": "Manny Gamburyan", "winner": "Nate Diaz", "method": "TKO (shoulder injury)", "round": 2, "time": "0:20", "episode": null, "classification": "professional", "classification_source": "contested on a sanctioned UFC card (The Ultimate Fighter: Team Pulver vs. Team Penn Finale); NOT yet verified against our own records — that card holds zero bouts until the backfill reaches 2007", "on_finale_card": true, "tournament_deciding": true }
+            {
+              "a": "Nate Diaz",
+              "b": "Manny Gamburyan",
+              "winner": "Nate Diaz",
+              "method": "TKO (shoulder injury)",
+              "round": 2,
+              "time": "0:20",
+              "episode": null,
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; VERIFIED against our own ufc_bout_results row (ufcstats: Submission, round 2, 20s) — note the method differs from the season source, see conflicts",
+              "on_finale_card": true,
+              "tournament_deciding": true,
+              "also_recorded_as": {
+                "source": "season record",
+                "method": "TKO (shoulder injury)",
+                "opponent": "Manny Gamburyan"
+              }
+            }
           ]
         }
       ]
@@ -134,7 +393,7 @@
     "event_name": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale",
     "event_date": "2007-06-23",
     "venue": "Palms Casino Resort, Las Vegas, Nevada",
-    "link_policy": "Linked to our own event row. Its bouts are not loaded yet, so the finals above are sourced rather than verified."
+    "link_policy": "Linked to our own event row, which now holds the card's bouts. The tournament final is verified against them; the coaches' bout is not, and says so."
   },
   "champions": [
     {
@@ -142,7 +401,13 @@
       "fighter": "Nate Diaz",
       "won_tournament": true,
       "received_contract": true,
-      "winning_bout": { "a": "Nate Diaz", "b": "Manny Gamburyan", "event": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale", "date": "2007-06-23" }
+      "winning_bout": {
+        "a": "Nate Diaz",
+        "b": "Manny Gamburyan",
+        "event": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale",
+        "date": "2007-06-23"
+      },
+      "verified_against": "ufc_bout_results — Nate Diaz def. Manvel Gamburyan, Submission, round 2, 20s, at The Ultimate Fighter: Team Pulver vs. Team Penn Finale, 2007-06-23"
     }
   ]
 }

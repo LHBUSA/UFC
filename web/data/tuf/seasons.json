@@ -201,7 +201,20 @@
       "finale_date": "2007-06-23",
       "coverage": "bracket_partial",
       "season_state": "completed",
-      "detail": "tuf-5"
+      "detail": "tuf-5",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Nate Diaz",
+          "b": "Manvel Gamburyan",
+          "winner": "Nate Diaz",
+          "method": "Submission",
+          "round": 2,
+          "event": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale",
+          "date": "2007-06-23",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-6",
