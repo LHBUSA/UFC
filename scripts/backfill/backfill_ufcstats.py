@@ -149,10 +149,10 @@ class Backfill:
         self.log.bump(f"wayback_missing_{kind}")
         self.log.event("wayback_missing", page_kind=kind, id=key, url=url)
 
-    def _get(self, kind: str, key: str, url: str, refresh: bool = False):
+    def _get(self, kind: str, key: str, url: str, refresh: bool = False, bad_capture=None, min_ts: str | None = None):
         """HTML or None (coverage gap). WaybackUnavailable propagates: an outage stops the run."""
         try:
-            return self.fetch.get(kind, key, url, refresh=refresh)[0]
+            return self.fetch.get(kind, key, url, refresh=refresh, bad_capture=bad_capture, min_ts=min_ts)[0]
         except WaybackMissing:
             self._missing(kind, key, url)
             return None
@@ -392,10 +392,10 @@ class Backfill:
             return
         for b in bouts:
             if b.get("ufcstats_id"):
-                self._ingest_fight(b["ufcstats_id"])
+                self._ingest_fight(b["ufcstats_id"], event_date=ev.get("event_date"))
         self.log.event("event_done", id=ev["ufcstats_id"], bouts=len(bouts), new=len(new_rows), linked=linked)
 
-    def _ingest_fight(self, fight_id: str):
+    def _ingest_fight(self, fight_id: str, event_date: str | None = None):
         bout = self.bout_by_ufcstats.get(fight_id)
         if bout is None:
             self.log.bump("fights_without_bout_row")
@@ -405,8 +405,17 @@ class Backfill:
             self.log.bump("fights_skipped_enriched")
             return
         url = f"{self.cfg.base}/fight-details/{fight_id}"
-        html = self._get("fights", fight_id, url, refresh=self.args.force)
+        # A capture older than the event is a matchup preview, never a result.
+        min_ts = event_date.replace("-", "") if event_date else None
+        html = self._get("fights", fight_id, url, refresh=self.args.force,
+                         bad_capture=parsers.is_pre_result_fight_page, min_ts=min_ts)
         if html is None:
+            return
+        if parsers.is_pre_result_fight_page(html):
+            # Cached under the earlier rule, before previews were rejected.
+            self.fetch.drop_cached("fights", fight_id)
+            self.log.event("fight_preview_capture", id=fight_id, url=url)
+            self._missing("fights", fight_id, url)
             return
         f = parsers.parse_fight_page(html, url)
         winner_row = self.fighter_by_ufcstats.get(f["winner_ufcstats_id"]) if f["winner_ufcstats_id"] else None

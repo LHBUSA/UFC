@@ -213,6 +213,32 @@ def _pair(td, url: str) -> tuple[str, str]:
     return ps[0], ps[1]
 
 
+def is_pre_result_fight_page(html: str) -> bool:
+    """True when a fight page was captured before the bout happened.
+
+    UFC Stats serves the same /fight-details/ URL as a "tale of the tape"
+    matchup preview until a result exists: both corner status flags render
+    empty (b-fight-details__person-status_style_none) and no Method item is
+    present. Wayback happily has such captures for events whose result pages
+    were archived late or not at all.
+
+    This is a coverage gap, not a schema violation. Nothing may be inferred
+    from a preview - no winner, no method, no round stats - so the fetcher
+    rejects the capture and the run records a missing page and continues.
+    """
+    s = _soup(html)
+    persons = s.select(".b-fight-details__person")
+    if not persons:
+        return False
+    if any(_t(p.select_one(".b-fight-details__person-status")) in PERSON_STATUS for p in persons):
+        return False
+    for it in s.select(".b-fight-details__text-item, .b-fight-details__text-item_first"):
+        t = _t(it)
+        if ":" in t and t.split(":", 1)[0].strip() == "Method":
+            return False
+    return True
+
+
 def parse_fight_page(html: str, source_url: str) -> dict:
     s = _soup(html)
     persons = []

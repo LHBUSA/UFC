@@ -187,8 +187,13 @@ class WaybackClient:
         return [snap["timestamp"]] if snap and snap.get("available") else []
 
     # -- content ------------------------------------------------------------
-    def fetch(self, kind: str, key: str, original_url: str, is_bad_capture: Callable[[str], bool]) -> tuple[str, str]:
-        """Returns (html, timestamp). Raises WaybackMissing (gap) or WaybackUnavailable (outage)."""
+    def fetch(self, kind: str, key: str, original_url: str, is_bad_capture: Callable[[str], bool],
+              min_ts: Optional[str] = None) -> tuple[str, str]:
+        """Returns (html, timestamp). Raises WaybackMissing (gap) or WaybackUnavailable (outage).
+
+        min_ts is a YYYYMMDD floor. A fight page captured before its event took
+        place cannot contain a result, so filtering by date avoids spending
+        requests on captures that is_bad_capture would reject anyway."""
         timestamps: Optional[list[str]] = None
         if kind in FAMILY:
             idx = self.index(kind)
@@ -200,6 +205,12 @@ class WaybackClient:
                 timestamps = self._available(original_url)
             if timestamps is None:
                 raise WaybackUnavailable(original_url, self.last_status, self.max_tries, "cdx and availability lookups both unavailable")
+        if min_ts:
+            eligible = [t for t in timestamps if t[:8] >= min_ts]
+            if len(eligible) != len(timestamps):
+                self.log.event("wayback_pre_event_captures", url=original_url,
+                               dropped=len(timestamps) - len(eligible), min_ts=min_ts)
+            timestamps = eligible
         if not timestamps:
             raise WaybackMissing(original_url)
         for ts in timestamps[:4]:

@@ -209,8 +209,23 @@ class Fetcher:
             return html
         raise SchemaAssertionError(url, "gave up after 5 attempts")
 
-    def get(self, kind: str, key: str, url: str, refresh: bool = False) -> tuple[str, bool]:
-        """Returns (html, from_cache)."""
+    def drop_cached(self, kind: str, key: str) -> bool:
+        """Evict a cached page that a later validity rule rejects, so the next
+        run re-fetches instead of re-reading a snapshot known to be useless."""
+        path = self._cache_path(kind, key)
+        gone = path.exists()
+        for f in (path, path.with_suffix(".meta.json")):
+            if f.exists():
+                f.unlink()
+        return gone
+
+    def get(self, kind: str, key: str, url: str, refresh: bool = False,
+            bad_capture=None, min_ts: Optional[str] = None) -> tuple[str, bool]:
+        """Returns (html, from_cache).
+
+        bad_capture adds a page-kind-specific reason to reject an archived
+        capture on top of the JS interstitial check, so a useless snapshot is
+        never written to the cache and poisoning every later run."""
         path = self._cache_path(kind, key)
         if path.exists() and not refresh:
             return path.read_text(encoding="utf-8"), True
@@ -218,7 +233,8 @@ class Fetcher:
             from wayback import WaybackMissing   # offline: an uncached page is a coverage gap, never fatal
             raise WaybackMissing(url)
         if self.wayback is not None:
-            html, ts = self.wayback.fetch(kind, key, url, is_interstitial)
+            reject = is_interstitial if bad_capture is None else (lambda h: is_interstitial(h) or bad_capture(h))
+            html, ts = self.wayback.fetch(kind, key, url, reject, min_ts=min_ts)
             self.capture_ts[f"{kind}/{key}"] = ts
             path.with_suffix(".meta.json").write_text(
                 json.dumps({"source": "wayback", "timestamp": ts, "url": url, "captured_at": now_iso()}), encoding="utf-8")
