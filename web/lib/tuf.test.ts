@@ -18,6 +18,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import inventoryJson from "../data/tuf/seasons.json" with { type: "json" };
 import tuf22Json from "../data/tuf/seasons/tuf-22.json" with { type: "json" };
+import tuf1Json from "../data/tuf/seasons/tuf-1.json" with { type: "json" };
+import tuf20Json from "../data/tuf/seasons/tuf-20.json" with { type: "json" };
 
 type Bout = {
   a: string; b: string; winner: string | null; method: string | null;
@@ -46,6 +48,11 @@ const tuf22 = tuf22Json as unknown as {
 };
 
 const seasons = inventory.seasons;
+const DETAIL_BY_SLUG: Record<string, { bracket: Array<{ weight_class: string; stages: Stage[] }> }> = {
+  "tuf-1": tuf1Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
+  "tuf-20": tuf20Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
+  "tuf-22": tuf22Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
+};
 const stages = tuf22.bracket.flatMap((wc) => wc.stages);
 const bouts = stages.flatMap((st) => st.bouts);
 
@@ -261,5 +268,35 @@ test("finals contested on separate cards are supported", () => {
     const finals = (s as Record<string, unknown>).final_bouts as Array<{ event: string; date: string }> | undefined;
     if (!finals) continue;
     for (const f of finals) assert.ok(f.event && f.date, `${s.slug}: each final carries its own event and date`);
+  }
+});
+
+test("a champion who won a title rather than a contract records both facts distinctly", () => {
+  /* TUF 20's winner received the inaugural strawweight championship, not a
+   * contract. Collapsing the two would misdescribe every season that did it
+   * one way or the other. */
+  const t20 = tuf20Json as unknown as {
+    champions: Array<{ won_tournament: boolean; received_contract: boolean; received_title?: string; verified_against?: string }>;
+  };
+  const c = t20.champions[0];
+  assert.equal(c.won_tournament, true);
+  assert.equal(c.received_contract, false, "she did not receive a contract");
+  assert.ok(c.received_title, "she received a championship, and it is recorded as such");
+  assert.match(String(c.verified_against), /ufc_bout_results/);
+});
+
+test("a season claiming full bracket coverage has no unverified round and no dispute", () => {
+  const full = seasons.filter((s) => s.coverage === "bracket_full");
+  assert.ok(full.length > 0, "at least one season should be fully loaded by now");
+  for (const s of full) {
+    const detail = DETAIL_BY_SLUG[s.slug];
+    assert.ok(detail, `${s.slug}: claims full coverage but has no detail file`);
+    for (const wc of detail.bracket) {
+      for (const st of wc.stages) {
+        assert.notEqual(st.status, "unverified", `${s.slug}/${st.stage}: full coverage cannot contain an unverified round`);
+        assert.ok(!st.disputed?.length, `${s.slug}/${st.stage}: full coverage cannot contain a disputed bout`);
+        assert.ok(st.bouts.length > 0, `${s.slug}/${st.stage}: a stage in a full bracket must have bouts`);
+      }
+    }
   }
 });

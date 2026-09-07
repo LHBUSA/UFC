@@ -586,8 +586,9 @@
       "winner_note": "The winner received the inaugural UFC Women's Strawweight Championship rather than only a contract.",
       "finale_event": "The Ultimate Fighter: A Champion Will Be Crowned Finale",
       "finale_date": "2014-12-12",
-      "coverage": "metadata_only",
-      "season_state": "completed"
+      "coverage": "bracket_full",
+      "season_state": "completed",
+      "detail": "tuf-20"
     },
     {
       "slug": "tuf-21",

@@ -163,7 +163,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                   <small>
                     {c.weight_class}
                     {c.won_tournament ? " · won the tournament" : ""}
-                    {c.received_contract ? " · awarded a UFC contract" : " · contract not recorded"}
+                    {c.received_title ? ` · ${c.received_title}` : c.received_contract ? " · awarded a UFC contract" : " · contract not recorded"}
                   </small>
                 </li>
               ))}

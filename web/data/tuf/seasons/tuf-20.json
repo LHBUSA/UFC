@@ -1,0 +1,148 @@
+{
+  "slug": "tuf-20",
+  "name": "The Ultimate Fighter 20: A Champion Will Be Crowned",
+  "edition": "us",
+  "number": 20,
+  "year": 2014,
+  "weight_classes": ["Women's Strawweight"],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter:_A_Champion_Will_Be_Crowned",
+    "retrieved": "2026-09-07",
+    "note": "The final is verified against our own ufc_bouts / ufc_bout_results row. That card loaded during backfill window B-2014 before the window failed, so eleven of its bouts exist; nothing here is imported."
+  },
+  "_conflicts": [
+    {
+      "field": "team_rosters",
+      "detail": "Tecia Torres is listed on both team rosters by the source. She lost in the first round, was given a second chance, and moved to Team Pettis — so both listings are describing different points in the season rather than contradicting each other. Recorded once per team with the move noted, rather than silently deduplicated.",
+      "retrieved": "2026-09-07"
+    },
+    {
+      "field": "replacement_contestant",
+      "detail": "The source names Seohee Ham as a replacement fighter and explicitly does not state her seeding or which bouts she contested. Recorded as a roster entry with no bracket placement rather than inserted into a round.",
+      "retrieved": "2026-09-07"
+    }
+  ],
+  "coaches": [
+    { "team": "Team Pettis", "name": "Anthony Pettis", "role": "head" },
+    { "team": "Team Pettis", "name": "Duke Roufus", "role": "assistant" },
+    { "team": "Team Pettis", "name": "Daniel Wanderley", "role": "assistant" },
+    { "team": "Team Pettis", "name": "Sergio Pettis", "role": "assistant" },
+    { "team": "Team Pettis", "name": "Scott Cushman", "role": "assistant" },
+    { "team": "Team Melendez", "name": "Gilbert Melendez", "role": "head" },
+    { "team": "Team Melendez", "name": "Jake Shields", "role": "assistant" },
+    { "team": "Team Melendez", "name": "Anucha Chayaisen", "role": "assistant" },
+    { "team": "Team Melendez", "name": "Nate Diaz", "role": "assistant" },
+    { "team": "Team Melendez", "name": "Josh Berkovic", "role": "assistant" }
+  ],
+  "coaching_changes": [
+    { "episode": null, "change": "Tecia Torres moved to Team Pettis after being given a second chance following her first-round loss" }
+  ],
+  "teams": [
+    {
+      "name": "Team Pettis",
+      "roster": [
+        { "name": "Carla Esparza", "seed": 1 },
+        { "name": "Joanne Calderwood", "seed": 2 },
+        { "name": "Jessica Penne", "seed": 4 },
+        { "name": "Aisling Daly", "seed": 5 },
+        { "name": "Felice Herrig", "seed": 6 },
+        { "name": "Justine Kish", "seed": 9, "note": "Withdrew with a torn ACL." },
+        { "name": "Alex Chambers", "seed": 10 },
+        { "name": "Randa Markos", "seed": 14 },
+        { "name": "Tecia Torres", "seed": 3, "note": "Moved here from Team Melendez after a second chance." }
+      ]
+    },
+    {
+      "name": "Team Melendez",
+      "roster": [
+        { "name": "Rose Namajunas", "seed": 7 },
+        { "name": "Bec Rawlings", "seed": 8 },
+        { "name": "Heather Jo Clark", "seed": 11 },
+        { "name": "Angela Magaña", "seed": 12 },
+        { "name": "Lisa Ellis", "seed": 13 },
+        { "name": "Emily Kagan", "seed": 15 },
+        { "name": "Angela Hill", "seed": 16 },
+        { "name": "Seohee Ham", "note": "Named by the source as a replacement; seeding and bouts not stated, so she holds no bracket placement here." }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Women's Strawweight",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "note": "A seeded sixteen-woman bracket, unusual for the show. Seeds are given by the source and recorded.",
+          "bouts": [
+            { "a": "Tecia Torres", "b": "Randa Markos", "winner": "Randa Markos", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "3 vs 14" },
+            { "a": "Joanne Calderwood", "b": "Emily Kagan", "winner": "Joanne Calderwood", "method": "Decision (majority)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "2 vs 15" },
+            { "a": "Jessica Penne", "b": "Lisa Ellis", "winner": "Jessica Penne", "method": "Submission (rear naked choke)", "round": 1, "time": "1:14", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "4 vs 13" },
+            { "a": "Carla Esparza", "b": "Angela Hill", "winner": "Carla Esparza", "method": "Submission (rear naked choke)", "round": 1, "time": "1:18", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "1 vs 16" },
+            { "a": "Felice Herrig", "b": "Heather Jo Clark", "winner": "Felice Herrig", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "6 vs 11" },
+            { "a": "Aisling Daly", "b": "Angela Magaña", "winner": "Aisling Daly", "method": "TKO (punches)", "round": 3, "time": "2:34", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "5 vs 12" },
+            { "a": "Tecia Torres", "b": "Bec Rawlings", "winner": "Tecia Torres", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "3 vs 8", "replacement": "Torres returned after her first-round loss, taking the place of Justine Kish, who withdrew with a torn ACL" },
+            { "a": "Rose Namajunas", "b": "Alex Chambers", "winner": "Rose Namajunas", "method": "Submission (rear naked choke)", "round": 1, "time": "0:22", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "7 vs 10" }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            { "a": "Felice Herrig", "b": "Randa Markos", "winner": "Randa Markos", "method": "Submission (armbar)", "round": 1, "time": "2:46", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "6 vs 14" },
+            { "a": "Aisling Daly", "b": "Jessica Penne", "winner": "Jessica Penne", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "5 vs 4" },
+            { "a": "Carla Esparza", "b": "Tecia Torres", "winner": "Carla Esparza", "method": "Decision (majority)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "1 vs 3" },
+            { "a": "Rose Namajunas", "b": "Joanne Calderwood", "winner": "Rose Namajunas", "method": "Submission (kimura)", "round": 2, "time": "2:55", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "7 vs 2" }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            { "a": "Carla Esparza", "b": "Jessica Penne", "winner": "Carla Esparza", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "1 vs 4" },
+            { "a": "Rose Namajunas", "b": "Randa Markos", "winner": "Rose Namajunas", "method": "Submission (kimura)", "round": 1, "time": "2:16", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "7 vs 14" }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "note": "Contested for the inaugural UFC Women's Strawweight Championship rather than for a contract — the only kind of TUF final that ends with a belt.",
+          "bouts": [
+            {
+              "a": "Carla Esparza",
+              "b": "Rose Namajunas",
+              "winner": "Carla Esparza",
+              "method": "Submission (rear naked choke)",
+              "round": 3,
+              "time": "1:26",
+              "episode": null,
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against our own ufc_bout_results row (ufcstats: Submission, round 3, 86s, Women's Strawweight)",
+              "on_finale_card": true,
+              "tournament_deciding": true,
+              "seeds": "1 vs 7"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: A Champion Will Be Crowned Finale",
+    "event_date": "2014-12-12",
+    "venue": "Palms Casino Resort, Las Vegas, Nevada",
+    "link_policy": "Linked to our own event row. That card holds eleven bouts, loaded by backfill window B-2014 before it failed, so the final is verified rather than merely sourced."
+  },
+  "champions": [
+    {
+      "weight_class": "Women's Strawweight",
+      "fighter": "Carla Esparza",
+      "won_tournament": true,
+      "received_contract": false,
+      "received_title": "UFC Women's Strawweight Championship (inaugural)",
+      "contract_note": "The prize was the inaugural championship, not a contract — which is exactly why the two are recorded separately. The source also lists a motorcycle and a $50,000 bonus.",
+      "verified_against": "ufc_bout_results — Carla Esparza def. Rose Namajunas, Submission, round 3, 86s, at The Ultimate Fighter: A Champion Will Be Crowned Finale, 2014-12-12",
+      "winning_bout": { "a": "Carla Esparza", "b": "Rose Namajunas", "event": "The Ultimate Fighter: A Champion Will Be Crowned Finale", "date": "2014-12-12" }
+    }
+  ]
+}
