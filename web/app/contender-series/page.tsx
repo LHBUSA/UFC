@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/ui";
+import { getVoice } from "@/lib/voices";
 import { Mark } from "@/components/Brand";
 import { getContenderSeries, getContenderEventContext, getContenderFreshness, expectedContenderSeasons } from "@/lib/contender";
 import { eventSlug } from "@/lib/slug";
@@ -24,6 +25,10 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Dana White's Contender Series — Source of Truth", description: "DWCS seasons, weeks, schedule and results from PropBetEdge UFC.", images: [`${SITE.url}/opengraph-image`] },
 };
+
+/* The Voices desk already sourced and rights-cleared this portrait; the hub
+ * reads that record rather than holding a second copy of the asset. */
+const DANA = getVoice("dana-white");
 
 export default async function ContenderSeriesPage({ searchParams }: { searchParams: Promise<{ season?: string }> }) {
   const sp = await searchParams;
@@ -55,6 +60,30 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
           <div><b>{completed}</b><span>completed · {upcoming} upcoming</span></div>
         </div>
         <div className="dwcs-fresh"><i />{latestSync ? <>Data sync: <time dateTime={latestSync}>{fmtDateTime(latestSync)}</time></> : <>Live database · freshness timestamp unavailable</>}</div>
+        {DANA?.image && (
+          /* The series carries his name, so the hero shows him. Reusing the
+             portrait the Voices desk already cleared rather than sourcing a
+             second copy: same file, same rights record, one place to audit.
+             focal keeps the head in frame at every width — a centred crop of
+             this photograph takes the chest. */
+          <figure className="dwcs-portrait">
+            <img
+              src={DANA.image.hero || DANA.image.src}
+              alt={DANA.image.alt}
+              width={DANA.image.width}
+              height={DANA.image.height}
+              style={{ objectPosition: DANA.image.focal }}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>
+              {DANA.image.author} · {DANA.image.license}
+              {DANA.image.source_url ? (
+                <> · <a href={DANA.image.source_url} rel="nofollow noopener" target="_blank">source</a></>
+              ) : null}
+            </figcaption>
+          </figure>
+        )}
       </section>
 
       <nav className="dwcs-season-nav" aria-label="Contender Series seasons">
