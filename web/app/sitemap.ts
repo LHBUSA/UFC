@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllEvents, getFighters, getArticles, getUpcomingEvents, getEventBouts } from "@/lib/db";
+import { getReferees } from "@/lib/referees";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
 import { VOICES } from "@/lib/voices";
@@ -7,9 +8,15 @@ import { VOICES } from "@/lib/voices";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [events, fighters, articles, upcoming] = await Promise.all([getAllEvents(), getFighters("", 1000), getArticles(500), getUpcomingEvents(6, { includeContenderSeries: true })]);
+  const [events, fighters, articles, upcoming, referees] = await Promise.all([
+    getAllEvents(),
+    getFighters("", 1000),
+    getArticles(500),
+    getUpcomingEvents(6, { includeContenderSeries: true }),
+    getReferees(250),
+  ]);
   const now = new Date();
-  const fixedPaths = ["/", "/events", "/fighters", "/rankings", "/news", "/contender-series", "/pro", "/about"];
+  const fixedPaths = ["/", "/events", "/fighters", "/rankings", "/referees", "/news", "/contender-series", "/pro", "/about"];
   const fixed: MetadataRoute.Sitemap = fixedPaths.map((p) => ({
     url: `${SITE.url}${p}`,
     lastModified: now,
@@ -22,6 +29,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly",
     priority: 0.65,
   }));
+  const refereePages: MetadataRoute.Sitemap = referees.map((referee) => ({
+    url: `${SITE.url}/referees/${referee.slug}`,
+    lastModified: referee.bio_verified_at || referee.last_event_date ? new Date(referee.bio_verified_at || `${referee.last_event_date}T00:00:00Z`) : now,
+    changeFrequency: "weekly",
+    priority: referee.bouts >= 50 ? 0.7 : 0.55,
+  }));
   const today = now.toISOString().slice(0, 10);
   /* Matchup pages for the announced cards: the primary SEO surface. */
   const fights: MetadataRoute.Sitemap = [];
@@ -32,6 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...fixed,
     ...voicePages,
+    ...refereePages,
     ...events.map((e) => ({ url: `${SITE.url}/events/${eventSlug(e)}`, lastModified: now, changeFrequency: (e.event_date && e.event_date >= today ? "daily" : "monthly") as "daily" | "monthly", priority: e.event_date && e.event_date >= today ? 0.9 : 0.6 })),
     ...fights,
     ...fighters.rows.map((f) => ({ url: `${SITE.url}/fighters/${fighterSlug(f)}`, lastModified: now, changeFrequency: "weekly" as const, priority: f.is_active ? 0.7 : 0.5 })),
