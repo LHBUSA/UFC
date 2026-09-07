@@ -796,3 +796,8 @@ body::after {
   .voice-body { padding: var(--s-4) var(--s-5) var(--s-5); margin-top: -28px; }
   .voice-body p { max-width: none; }
 }
+
+/* Header: with DWCS in the primary nav the next-event pill adapts instead of clipping the event name.
+   Wide: label + name + date. <=1519px: drop the "Fight week" label (the dot + title keep the state). <=1300px: drop the date. */
+@media (max-width: 1519px) { .hdr-next-copy b { display: none; } }
+@media (max-width: 1300px) { .hdr-next-date { display: none; } }

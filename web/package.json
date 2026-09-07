@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preserve:check": "node scripts/preservation-check.mjs",
+    "preserve:diff": "node scripts/preservation-diff.mjs",
+    "preserve:baseline": "node scripts/preservation-check.mjs --write-baseline",
+    "prebuild": "node scripts/preservation-check.mjs"
   },
   "dependencies": {
     "next": "^15.5.25",

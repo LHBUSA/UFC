@@ -1,0 +1,108 @@
+{
+  "generated_at": "2026-09-07T00:54:12.342Z",
+  "routes": [
+    "/",
+    "/about",
+    "/account",
+    "/contender-series",
+    "/events",
+    "/events/[slug]",
+    "/fighters",
+    "/fighters/[slug]",
+    "/fights/[slug]",
+    "/hall-of-fame",
+    "/history",
+    "/login",
+    "/news",
+    "/news/[slug]",
+    "/pro",
+    "/qa/preview",
+    "/rankings",
+    "/voices/[key]"
+  ],
+  "nav": [
+    {
+      "href": "/",
+      "label": "Home"
+    },
+    {
+      "href": "/events",
+      "label": "Schedule"
+    },
+    {
+      "href": "/contender-series",
+      "label": "DWCS"
+    },
+    {
+      "href": "/fighters",
+      "label": "Fighters"
+    },
+    {
+      "href": "/rankings",
+      "label": "Rankings"
+    },
+    {
+      "href": "/history",
+      "label": "History"
+    },
+    {
+      "href": "/news",
+      "label": "News"
+    },
+    {
+      "href": "/pro",
+      "label": "Pro"
+    }
+  ],
+  "homeModules": [
+    "CardSegments",
+    "ChampionsShowcase",
+    "ContenderStrip",
+    "EventCard",
+    "JsonLd",
+    "MatchupCard",
+    "NewsStoryCard",
+    "Octagon",
+    "OfficialDestinations",
+    "PregameDesk",
+    "ProPlans",
+    "SectionHead",
+    "VideoRail",
+    "Voices"
+  ],
+  "assets": {
+    "public/brand/logo-wide.svg": "96411277969f",
+    "public/brand/logo.svg": "9f1eca1c66b8",
+    "public/brand/mark.svg": "a2cab735bff9",
+    "public/media/ufc-cage-bg-1600.webp": "9f41dfb021f0",
+    "public/media/ufc-cage-bg-960.webp": "54ae22994dca",
+    "public/media/ufc-fence-1400.webp": "c3169bc13db0",
+    "public/media/voices/dana-white-660.webp": "06ba175c59d0",
+    "public/media/voices/dana-white-900.webp": "cff5f1bb1d9c",
+    "public/media/voices/daniel-cormier-660.webp": "855ecd77825b",
+    "public/media/voices/joe-rogan-660.webp": "3346d1a7dd99",
+    "public/site.webmanifest": "1c92d8133ba5"
+  },
+  "features": [
+    "app/apple-icon.tsx",
+    "app/icon.svg",
+    "app/opengraph-image.tsx",
+    "components/Brand.tsx",
+    "components/ChampionshipBelt.tsx",
+    "components/LiveWire.tsx",
+    "components/NewsStoryCard.tsx",
+    "components/OfficialVideo.tsx",
+    "components/VideoRail.tsx",
+    "components/VoiceImage.tsx",
+    "components/dna.tsx",
+    "lib/archive.ts",
+    "lib/contender.ts",
+    "lib/dna.ts",
+    "lib/faces.ts",
+    "lib/heritage.ts",
+    "lib/pregame.ts",
+    "lib/voices.ts",
+    "lib/wire.ts",
+    "public/site.webmanifest"
+  ]
+}
