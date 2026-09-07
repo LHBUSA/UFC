@@ -126,7 +126,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
       {angle && <BettorsEdge angle={angle} />}
       {dna && dna.status === "ok" && <DnaEvidence dna={dna.data} />}
       {mm && <MatchupModule a={mm.a} b={mm.b} imgs={mmImgs} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
-      <VideoRail videos={videos} title="Official video for this story" eyebrow="Official UFC channel" feature={videos.length === 1} note="Publisher-hosted video from the official channel linked to this fight, card or story · not hosted by PropBetEdge" />
+      <VideoRail videos={videos} title="Watch · official video for this story" eyebrow="Official channels · matched to this bout, card or story" feature={videos.length === 1} max={3} note="Publisher-hosted video from the official channel linked to this fight, card or story · not hosted by PropBetEdge" />
 
       <div className="grid-side">
         <div>

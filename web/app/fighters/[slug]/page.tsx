@@ -8,6 +8,8 @@ import { FightDnaSection, FightDnaEmpty } from "@/components/dna";
 import { resolveFighter } from "@/lib/resolve";
 import { Empty, JsonLd, ProLock, Breadcrumbs, Portrait, Credit, Avatar, TaleOfTheTape } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
+import { VideoRail } from "@/components/VideoRail";
+import { getVideosForFighters } from "@/lib/db";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
 import { age, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, METHOD_LABEL, stanceLabel, weightClassLabel, archiveSummary, totals, pct, plural, daysUntil } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function FighterPage({ params }: { params: Promise<{ slug: string }> }) {
   const f = await resolveFighter((await params).slug);
   if (!f) notFound();
-  const [bouts, articles, rounds, rankings, dna] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id)]);
+  const [bouts, articles, rounds, rankings, dna, videos] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => [])]);
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
   const history = bouts.filter((b) => !upcoming.includes(b) && b.event?.event_date && b.event.event_date < today);
@@ -185,6 +187,8 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
           </div>
         ) : <Empty title="History backfilling">This fighter's bouts land here as the archive loads. Round-level striking and grappling stats follow.</Empty>}
       </section>
+
+      <VideoRail videos={videos} title={`${f.name} · official video`} eyebrow="Official channels · attached by fighter identity" note="Only videos the resolver linked to this fighter with medium or high confidence · embedded from YouTube, not hosted by PropBetEdge" max={4} />
 
       {articles.length > 0 && (
         <section className="segment">

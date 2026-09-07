@@ -408,6 +408,24 @@ export async function getCounts(): Promise<{ fighters: number | null; events: nu
   ]);
   return { fighters: f.count, events: e.count, bouts: b.count, results: r.count, rounds: rs.count, articles: a.count };
 }
+/* ---- art-direction framing (best effort) --------------------------------
+ * The framing columns (focal_x/focal_y/face_box/derivatives, migration 007
+ * art direction) may not exist on every database. This reader asks for them
+ * in a separate request; a 400 from PostgREST simply yields an empty map and
+ * the variant system falls back to slot defaults. */
+export type FramingRow = { id: string; focal_x: number | null; focal_y: number | null; face_box: { x: number; y: number; w: number; h: number } | null; framing_status: string | null; framing_confidence: number | null; framing_at: string | null; derivatives: Record<string, { key?: string; w?: number; h?: number; mode?: string; focal?: { x: number; y: number }; face?: { x: number; y: number; w: number; h: number } | null }> | null };
+export async function getImageFraming(imageIds: string[]): Promise<Map<string, FramingRow>> {
+  const ids = [...new Set(imageIds.filter((id) => id && !id.startsWith("espn:")))];
+  const m = new Map<string, FramingRow>();
+  if (!ids.length || !dbConfigured()) return m;
+  try {
+    const res = await fetch(`${URL_}/rest/v1/ufc_images?select=id,focal_x,focal_y,face_box,framing_status,framing_confidence,framing_at,derivatives&id=in.(${ids.join(",")})`, { headers: headers(), next: { revalidate: 900 } });
+    if (!res.ok) return m;
+    for (const r of (await res.json()) as FramingRow[]) m.set(r.id, r);
+  } catch { /* framing is optional */ }
+  return m;
+}
+
 /* ---- official video layer (publisher-hosted, allowlisted) --------------- */
 export type OfficialVideoRow = {
   id: string; provider: string; provider_video_id: string; channel_id: string; channel_name: string | null; channel_verified_source: boolean;
@@ -415,7 +433,12 @@ export type OfficialVideoRow = {
   embeddable: boolean | null; video_type: string; fighter_ids: string[]; event_id: string | null; bout_id: string | null; article_id: string | null;
 };
 const VIDEO_SELECT = "id,provider,provider_video_id,channel_id,channel_name,channel_verified_source,url,title,description,published_at,duration_sec,thumbnail_url,embeddable,video_type,fighter_ids,event_id,bout_id,article_id";
-const VIDEO_BASE = `ufc_videos?select=${VIDEO_SELECT}&link_status=eq.published&provider=eq.youtube&embeddable=not.is.false&order=published_at.desc.nullslast`;
+const VIDEO_BASE = `ufc_videos?select=${VIDEO_SELECT}&link_status=eq.published&provider=eq.youtube&channel_verified_source=eq.true&embeddable=not.is.false&order=published_at.desc.nullslast`;
+/* Fight-week timeline order and homepage priority (docs/videos.md §8). */
+export const VIDEO_TIMELINE_ORDER = ["fight_preview", "countdown", "embedded_episode", "media_day", "press_conference", "weigh_in", "faceoff", "full_fight", "highlights", "interview", "analysis", "post_fight", "other"];
+const VIDEO_HOME_PRIORITY = ["embedded_episode", "countdown", "press_conference", "weigh_in", "faceoff", "media_day", "fight_preview", "interview", "highlights", "analysis", "post_fight", "full_fight", "other"];
+export function sortVideosTimeline(v: OfficialVideoRow[]): OfficialVideoRow[] { return [...v].sort((a, b) => VIDEO_TIMELINE_ORDER.indexOf(a.video_type) - VIDEO_TIMELINE_ORDER.indexOf(b.video_type) || String(a.published_at).localeCompare(String(b.published_at))); }
+export function rankVideosForHome(v: OfficialVideoRow[]): OfficialVideoRow[] { return [...v].sort((a, b) => VIDEO_HOME_PRIORITY.indexOf(a.video_type) - VIDEO_HOME_PRIORITY.indexOf(b.video_type) || String(b.published_at).localeCompare(String(a.published_at))); }
 export async function getVideosForEvent(eventId: string, limit = 6): Promise<OfficialVideoRow[]> {
   return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&event_id=eq.${eventId}&limit=${limit}`, [], { revalidate: 300 })).data;
 }
@@ -425,10 +448,24 @@ export async function getVideosForBout(boutId: string, limit = 4): Promise<Offic
 export async function getVideosForArticle(articleId: string, limit = 3): Promise<OfficialVideoRow[]> {
   return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&article_id=eq.${articleId}&limit=${limit}`, [], { revalidate: 300 })).data;
 }
-export async function getVideosForFighters(ids: string[], limit = 6): Promise<OfficialVideoRow[]> {
+export async function getVideosForFighters(ids: string[], limit = 6, minConfidence: "high" | "medium" | "low" = "medium"): Promise<OfficialVideoRow[]> {
   const uniq = [...new Set(ids.filter(Boolean))];
   if (!uniq.length) return [];
-  return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&fighter_ids=ov.{${uniq.join(",")}}&limit=${limit}`, [], { revalidate: 300 })).data;
+  const conf = minConfidence === "high" ? "high" : minConfidence === "medium" ? "high,medium" : "high,medium,low";
+  return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&fighter_ids=ov.{${uniq.join(",")}}&resolver_confidence=in.(${conf})&limit=${limit}`, [], { revalidate: 300 })).data;
+}
+/* Homepage video desk: this fight week first, then the freshest official uploads. */
+export async function getFightWeekVideos(eventId: string | null, limit = 5): Promise<OfficialVideoRow[]> {
+  const pool = eventId ? await getVideosForEvent(eventId, 30) : [];
+  const ranked = rankVideosForHome(pool);
+  if (ranked.length >= limit) return ranked.slice(0, limit);
+  const latest = await getLatestVideos(limit * 2);
+  const seen = new Set(ranked.map((v) => v.id));
+  return [...ranked, ...latest.filter((v) => !seen.has(v.id))].slice(0, limit);
+}
+/* Voice profiles: official-channel uploads whose title names the person. */
+export async function getVideosMentioning(phrase: string, limit = 3): Promise<OfficialVideoRow[]> {
+  return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&title=ilike.*${encodeURIComponent(phrase)}*&limit=${limit}`, [], { revalidate: 900 })).data;
 }
 export async function getLatestVideos(limit = 6, videoType?: string): Promise<OfficialVideoRow[]> {
   return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}${videoType ? `&video_type=eq.${videoType}` : ""}&limit=${limit}`, [], { revalidate: 600 })).data;

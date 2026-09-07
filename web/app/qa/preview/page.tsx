@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import type { Bout, Event, Fighter, RankingsSnapshot } from "@/lib/db";
+import type { Bout, Event, Fighter, RankingsSnapshot, PortraitSet, OfficialVideoRow } from "@/lib/db";
+import { VideoRail } from "@/components/VideoRail";
 import { buildDeskBriefs } from "@/lib/pregame";
 import { PregameDesk } from "@/components/PregameDesk";
 import { ChampionsShowcase } from "@/components/ChampionsShowcase";
@@ -30,6 +31,19 @@ export default async function QaPreview() {
   const bout = (id: string, x: Fighter, y: Fighter, order: number, extra: Partial<Bout> = {}): Bout => ({ id, ufcstats_id: null, espn_competition_id: null, event_id: event.id, weight_class: "LIGHTWEIGHT", is_womens: false, is_title: false, scheduled_rounds: 3, card_position: "MAIN", bout_order: order, status: "scheduled", fighter_a: x, fighter_b: y, result: null, ...extra });
   const bouts = [bout("b-1", a, b, 1, { is_title: true, scheduled_rounds: 5 }), bout("b-2", c, dd, 2, { weight_class: "WELTERWEIGHT" }), bout("b-3", e1, f1, 3, { weight_class: "FEATHERWEIGHT" })];
   const briefs = await buildDeskBriefs(event, bouts, 3);
+  /* Fixture portraits: the self-hosted voice photos stand in for fighter art so the desk crop system can be inspected locally. */
+  const ps = (id: string, src: string): PortraitSet => ({ id, portrait: src, card: src, thumb: src, license: "Public domain", author: "fixture", source_url: null, kind: "public_domain", stored_first_party: true });
+  const fixtureImgs = new Map<string, PortraitSet>([[a.id, ps("img-a", "/media/voices/joe-rogan-660.webp")], [b.id, ps("img-b", "/media/voices/dana-white-900.webp")], [c.id, ps("img-c", "/media/voices/daniel-cormier-660.webp")]]);
+  const espnStyle = new Map<string, PortraitSet>([[a.id, ps("img-a", "/media/voices/joe-rogan-660.webp")], [b.id, { ...ps("espn:1", "/brand/mark.svg"), kind: "display_fallback", stored_first_party: false }]]);
+  /* Fixture videos: real public uploads from the official UFC channel (ids only, embedded on click). */
+  const vid = (id: string, title: string, type: string, hoursAgo: number, event_id: string | null = event.id): OfficialVideoRow => ({ id: `v-${id}`, provider: "youtube", provider_video_id: id, channel_id: "UCvgfXK4nTYKudb0rFR6noLA", channel_name: "UFC", channel_verified_source: true, url: `https://www.youtube.com/watch?v=${id}`, title, description: null, published_at: new Date(Date.now() - hoursAgo * 3600e3).toISOString(), duration_sec: null, thumbnail_url: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`, embeddable: true, video_type: type, fighter_ids: [], event_id, bout_id: null, article_id: null });
+  const videos = [
+    vid("cs-T1Qgb-sk", "Noche UFC: Silva vs Delgado - September 12th | Fight Promo", "fight_preview", 3),
+    vid("XCNaLgqYJ8E", "UFC Paris: Post-Fight Press Conference", "post_fight", 26),
+    vid("NJPZ53NvBNM", "Joshua Van vs Tatsuro Taira | FULL FIGHT | Crypto.com UFC 331", "full_fight", 40),
+    vid("lyCaScONJNs", "Salahdine Parnasse Octagon Interview | UFC Paris", "interview", 30),
+    vid("OraJxNt3BdM", "Greatest Mexican Fighters Of All Time | Noche UFC", "highlights", 50),
+  ];
   const champs = [a, b, c, dd].map((f, i) => ({ ...f, id: `c-${i}`, name: ["Alpha Silva", "Bravo Kane", "Charlie Ortega", "Delta Moreno"][i] }));
   const rankings: RankingsSnapshot = {
     captured_at: new Date().toISOString(), snapshot_date: new Date().toISOString().slice(0, 10), source_url: "https://www.ufc.com/rankings",
@@ -45,7 +59,12 @@ export default async function QaPreview() {
   return (
     <div className="wrap page">
       <div className="eyebrow mb-4">QA fixtures · synthetic names · development only</div>
-      <section id="qa-pregame" className="mb-7"><PregameDesk event={event} briefs={briefs} /></section>
+      <section id="qa-pregame" className="mb-7"><PregameDesk event={event} briefs={briefs} imgs={fixtureImgs} /></section>
+      <section id="qa-pregame-single" className="mb-7"><PregameDesk event={event} briefs={briefs.slice(0, 1)} imgs={espnStyle} compact /></section>
+      <section id="qa-pregame-fallback" className="mb-7"><PregameDesk event={event} briefs={briefs.slice(0, 1)} compact /></section>
+      <section id="qa-video-desk" className="mb-7"><VideoRail variant="desk" videos={videos} title="Inside fight week" eyebrow="Video desk · latest official video" /></section>
+      <section id="qa-video-timeline" className="mb-7"><VideoRail variant="timeline" videos={videos} title="Fight-week video" eyebrow="Official channels · event relevance first" /></section>
+      <section id="qa-video-rail" className="mb-7"><VideoRail videos={videos.slice(0, 3)} title="Alpha Silva · official video" eyebrow="Official channels · attached by fighter identity" max={3} /></section>
       <section id="qa-champions" className="mb-7"><ChampionsShowcase rankings={rankings} fighters={new Map(champs.map((f) => [f.id, f]))} imgs={new Map()} /></section>
       <section id="qa-dwcs" className="mb-7"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={new Map([["dw-1", 5], ["dw-0", 5]])} freshness={new Date().toISOString()} /></section>
       <section id="qa-belts" className="mb-7" style={{ display: "flex", gap: 40, alignItems: "end", flexWrap: "wrap" }}><ChampionshipBelt size="hero" label="Hero" /><ChampionshipBelt size="card" label="Card" /><ChampionshipBelt size="mini" label="Mini" /></section>

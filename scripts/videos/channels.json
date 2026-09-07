@@ -1,0 +1,115 @@
+{
+  "_policy": "Exact YouTube channel IDs only. A channel is seeded as verified+enabled only when seed_channels.mjs re-proves the evidence below live: the public Atom feed title equals feed_title AND (verified_badge on the channel page OR the channel is listed in the featured-channels grid of the verified UFC channel page). Anything that fails stays verified=false, enabled=false. See docs/videos.md.",
+  "_rejected": [
+    { "handle": "@UFCBrasil", "channel_id": "UCTF9obqKJn_4D4rvn_stHkg", "reason": "Handle collision: this is Universidade Federal do Ceara (a Brazilian university), not the UFC. Feed title 'UFCBrasil', uploads are 'UFC TV' campus programmes from 2008.", "checked_at": "2026-09-06" },
+    { "handle": "@UFCEurope", "channel_id": "UCM3KcXDfSqzLOFZwNc8NG8Q", "reason": "Feed has 0 entries, no description, no verified badge, not featured on the UFC channel page. Unverifiable.", "checked_at": "2026-09-06" },
+    { "handle": "@UFCAsia", "channel_id": "UCxM2w6lbVk1RyXBp9FBlyxQ", "reason": "Feed has 0 entries, no description, no verified badge, not featured on the UFC channel page. Unverifiable.", "checked_at": "2026-09-06" },
+    { "handle": "@UFCAUNZ / @ufcaustralia", "channel_id": null, "reason": "No such handle (HTTP 404); no UFC Australia & New Zealand channel is featured on the UFC channel page. Not found.", "checked_at": "2026-09-06" }
+  ],
+  "channels": [
+    {
+      "provider": "youtube",
+      "channel_id": "UCvgfXK4nTYKudb0rFR6noLA",
+      "name": "UFC",
+      "handle": "@ufc",
+      "channel_class": "ufc_official",
+      "feed_title": "UFC",
+      "enabled": true,
+      "verification": {
+        "expect": ["feed_title", "verified_badge"],
+        "evidence_2026-09-06": "Atom feed title 'UFC'; channel page canonical https://www.youtube.com/channel/UCvgfXK4nTYKudb0rFR6noLA carries BADGE_STYLE_TYPE_VERIFIED; description links ufc.com; this is the page whose featured grid anchors the regional channels below."
+      }
+    },
+    {
+      "provider": "youtube",
+      "channel_id": "UCk8XGxi7fsTqQQRVq9LSraw",
+      "name": "UFC Brasil",
+      "handle": "@UFCBR",
+      "channel_class": "ufc_regional",
+      "feed_title": "UFC Brasil",
+      "enabled": true,
+      "verification": {
+        "expect": ["feed_title", "featured_on_ufc_channel"],
+        "evidence_2026-09-06": "Listed in the gridChannelRenderer featured-channels grid of the verified UFC channel page as 'UFC Brasil' (/@UFCBR); Atom feed title 'UFC Brasil'; description 'UFC e o lider global em artes marciais mistas' with ufc.ac Paramount+ link. NOT the @UFCBrasil handle (see _rejected)."
+      }
+    },
+    {
+      "provider": "youtube",
+      "channel_id": "UCYXJFtx4SUkrb2p_8mhLPzQ",
+      "name": "UFC Espanol",
+      "handle": "@ufcespanol",
+      "channel_class": "ufc_regional",
+      "feed_title": "ufcespanol",
+      "enabled": true,
+      "verification": {
+        "expect": ["feed_title", "featured_on_ufc_channel"],
+        "evidence_2026-09-06": "Listed in the featured-channels grid of the verified UFC channel page as 'ufcespanol' (/@ufcespanol); Atom feed title 'ufcespanol'; description 'Ultimate Fighting Championship es la organizacion lider de artes marciales mixtas en el mundo' with ufc.ac Paramount+ link; current uploads are #NocheUFC / #UFCParis official content."
+      }
+    },
+    {
+      "provider": "youtube",
+      "channel_id": "UCO4AcsPKEkIqDmbeiZLfd1A",
+      "name": "ESPN MMA",
+      "handle": "@espnmma",
+      "channel_class": "broadcast_partner",
+      "feed_title": "ESPN MMA",
+      "enabled": true,
+      "verification": {
+        "expect": ["feed_title", "verified_badge"],
+        "evidence_2026-09-06": "Channel page canonical https://www.youtube.com/channel/UCO4AcsPKEkIqDmbeiZLfd1A carries BADGE_STYLE_TYPE_VERIFIED; Atom feed title 'ESPN MMA'. Broadcast partner: many uploads are social reposts ('via ...'); per-video embeddability is checked with oEmbed and nothing is rehosted."
+      }
+    },
+    {
+      "provider": "youtube",
+      "channel_id": "UCPQDDlGe7lbgmEJ0ge7a_JA",
+      "name": "UFC FIGHT PASS",
+      "handle": "@UFCFightPass",
+      "channel_class": "ufc_official",
+      "feed_title": "UFC FIGHT PASS",
+      "enabled": false,
+      "verification": {
+        "expect": ["feed_title", "featured_on_ufc_channel"],
+        "evidence_2026-09-06": "Featured on the verified UFC channel page as 'UFC FIGHT PASS'; Atom feed title 'UFC FIGHT PASS'. Verified but not in the addendum's initial candidate list; seeded disabled so it can be switched on without re-verification."
+      }
+    },
+    {
+      "provider": "youtube",
+      "channel_id": "UCU8bQExxd38i-mnn-GLOtfA",
+      "name": "UFC Eurasia",
+      "handle": "@UFCEurasia",
+      "channel_class": "ufc_regional",
+      "feed_title": "UFC Eurasia",
+      "enabled": false,
+      "verification": {
+        "expect": ["feed_title", "featured_on_ufc_channel"],
+        "evidence_2026-09-06": "Featured on the verified UFC channel page as 'UFC Eurasia'; Atom feed title 'UFC Eurasia'. Verified regional channel outside the initial candidate list; seeded disabled."
+      }
+    },
+    {
+      "provider": "youtube",
+      "channel_id": "UCpeLGvz0uICdk9ILfHKiJOg",
+      "name": "UFC Japan",
+      "handle": "@UFCJapan",
+      "channel_class": "ufc_regional",
+      "feed_title": "UFC Japan",
+      "enabled": false,
+      "verification": {
+        "expect": ["feed_title", "featured_on_ufc_channel"],
+        "evidence_2026-09-06": "Featured on the verified UFC channel page as 'UFC Japan'; Atom feed title 'UFC Japan'; description identifies it as the official UFC Japan channel. Seeded disabled (outside the initial candidate list)."
+      }
+    },
+    {
+      "provider": "youtube",
+      "channel_id": "UC0ixKP9chs-kEl9lSa26uPg",
+      "name": "UFC Quebec",
+      "handle": "@UFCQuebec",
+      "channel_class": "ufc_regional",
+      "feed_title": "UFC Québec",
+      "enabled": false,
+      "verification": {
+        "expect": ["feed_title", "featured_on_ufc_channel"],
+        "evidence_2026-09-06": "Featured on the verified UFC channel page as 'UFC Québec'; Atom feed title 'UFC Québec'. Seeded disabled (outside the initial candidate list)."
+      }
+    }
+  ]
+}

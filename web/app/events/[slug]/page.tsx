@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent } from "@/lib/db";
+import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent, getImageFraming, sortVideosTimeline } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { resolveEvent } from "@/lib/resolve";
 import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
@@ -37,8 +37,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const e = await resolveEvent((await params).slug);
   if (!e) notFound();
-  const [bouts, articles, videos] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id).catch(() => [])]);
+  const [bouts, articles, videosRaw] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, 24).catch(() => [])]);
+  const videos = sortVideosTimeline(videosRaw);
   const imgs = await getImagesForFighters(bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
+  const framing = await getImageFraming(bouts.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]);
   const media = await storyMedia(articles);
   const d = daysUntil(e.event_date);
   const live = bouts.filter((b) => b.status !== "cancelled");
@@ -89,7 +91,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       <div className="mt-4"><OfficialDestinations compact keys={["home", "fightpass", "store"]} /></div>
 
-      {briefs.length > 0 && <div className="mt-6"><PregameDesk event={e} briefs={briefs} imgs={imgs} /></div>}
+      {briefs.length > 0 && <div className="mt-6"><PregameDesk event={e} briefs={briefs} imgs={imgs} framing={framing} /></div>}
 
       {bouts.length ? (
         <>
@@ -102,7 +104,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <div className="mt-6"><Empty title="Card not published yet" cta={{ href: "/events", label: "Other cards" }}>This event is on the schedule but no bouts have been announced. The card appears as soon as it is published, with fighter records and matchup pages.</Empty></div>
       )}
 
-      <VideoRail videos={videos} title={done ? "Official video from this card" : "Official fight-week video"} eyebrow="Official UFC channel" note="Free, publisher-hosted video embedded from the official YouTube channel · not hosted by PropBetEdge" />
+      <VideoRail variant="timeline" videos={videos} title={done ? "Official video from this card" : "Fight-week video"} eyebrow="Official channels · event relevance first" note="Videos are attached to this event by the resolver only when the title or description names it · embedded from YouTube, not hosted by PropBetEdge" />
 
       {articles.length > 0 && <section className="segment"><h3>{done ? "Post-fight desk" : "Pregame reading"} <small>{plural(articles.length, "story", "stories")} · timestamped</small></h3><div className="news">{articles.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} kicker={eventBrand(e.name)} />)}</div></section>}
 

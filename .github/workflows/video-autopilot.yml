@@ -1,0 +1,59 @@
+# ufc.propbetedge.ai — official video layer on autopilot (docs/videos.md).
+#
+# Every 30 minutes: re-verify the channel allowlist, pull the newest uploads from
+# every enabled+verified channel (Atom feed + oEmbed embeddability, or the Data
+# API when YOUTUBE_API_KEY is configured), classify each video, resolve it to an
+# event / bout / fighters / article with confidence gating, and upsert into the
+# normalized ufc_videos table on (provider, provider_video_id). Nothing is
+# downloaded or rehosted; the site embeds YouTube's own privacy-enhanced player.
+#
+# Deployment note: GitHub only fires `schedule` from the default branch. Until
+# this file exists on `main` the cadence is branch-ready but not live; use
+# `gh workflow run video-autopilot.yml --ref ufc-fight-dna-v1` to run it now.
+name: video autopilot
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+    inputs:
+      since_days:
+        description: "Only keep uploads newer than N days"
+        default: "30"
+      relink:
+        description: "Recompute classification + links for stored rows (after an event/fighter load)"
+        default: "false"
+      dry_run:
+        description: "Print the plan, write nothing"
+        default: "false"
+concurrency: video-autopilot
+env:
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+  YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+jobs:
+  videos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ufc-fight-dna-v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Require database credentials
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+          printf 'SUPABASE_URL=%s\nSUPABASE_SERVICE_ROLE_KEY=%s\nYOUTUBE_API_KEY=%s\n' "$SUPABASE_URL" "$SUPABASE_SERVICE_ROLE_KEY" "$YOUTUBE_API_KEY" > .env
+      - name: Unit tests (classifier + resolver)
+        run: node --test scripts/videos/lib.test.mjs
+      - name: Re-verify the channel allowlist
+        run: node scripts/videos/seed_channels.mjs ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      - name: Ingest, classify, resolve, upsert
+        run: |
+          set -o pipefail
+          node scripts/videos/ingest_youtube.mjs --since-days "${{ github.event.inputs.since_days || '30' }}" ${{ github.event.inputs.relink == 'true' && '--relink' || '' }} ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} | tee ingest.log
+      - name: Summary
+        run: |
+          { echo "### Video autopilot"; echo; echo '```'; tail -n 40 ingest.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

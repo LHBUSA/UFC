@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getNewsItems, getFightersByIds, getBoutCounts, getVideosForEvent, isContenderSeries } from "@/lib/db";
+import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getNewsItems, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries } from "@/lib/db";
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { Mark } from "@/components/Brand";
@@ -50,8 +50,9 @@ export default async function Home() {
     getFightersByIds(contenderIds),
     getBoutCounts([dwcsNext?.id, dwcsLast?.id].filter(Boolean) as string[]),
     getIngestFreshness().catch(() => null),
-    next ? getVideosForEvent(next.id, 3).catch(() => []) : Promise.resolve([]),
+    getFightWeekVideos(next?.id || null, 5).catch(() => []),
   ]);
+  const framing = await getImageFraming(live.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]);
   const champById = new Map(champs.map((f) => [f.id, f]));
   const contenderById = new Map(contenders.map((f) => [f.id, f]));
 
@@ -127,7 +128,7 @@ export default async function Home() {
 
       {next && briefs.length > 0 && (
         <section className="sec">
-          <div className="wrap"><PregameDesk event={next} briefs={briefs} imgs={imgs} /></div>
+          <div className="wrap"><PregameDesk event={next} briefs={briefs} imgs={imgs} framing={framing} /></div>
         </section>
       )}
 
@@ -135,9 +136,12 @@ export default async function Home() {
         <div className="wrap">
           <SectionHead eyebrow={next ? `${fmtDate(next.event_date)} · ${locationLine(next) || "Venue TBA"}` : "Upcoming"} title={next ? next.name : "Upcoming card"} href={next ? `/events/${eventSlug(next)}` : "/events"} cta="Full card & matchups" />
           {bouts.length ? <CardSegments bouts={bouts} e={next!} imgs={imgs} /> : <Empty title="No bouts announced yet" cta={{ href: "/events", label: "See the schedule" }}>Bouts appear here the moment the card is published. Nothing is shown that has not been announced.</Empty>}
-          <VideoRail videos={videos} title="Official fight-week video" eyebrow="Official UFC channel" feature={videos.length === 1} />
         </div>
       </section>
+
+      {videos.length > 0 && (
+        <section className="sec"><div className="wrap"><VideoRail variant="desk" videos={videos} title="Inside fight week" eyebrow="Video desk · latest official video" note="Official, allowlisted channels only · embedded from YouTube, not hosted by PropBetEdge · no endorsement implied" /></div></section>
+      )}
 
       {headline.length > 0 && (
         <section className="sec">

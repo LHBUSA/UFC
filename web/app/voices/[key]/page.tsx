@@ -6,7 +6,7 @@ import { VoiceImage } from "@/components/VoiceImage";
 import { Mark } from "@/components/Brand";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
-import { getLatestVideos } from "@/lib/db";
+import { getVideosMentioning } from "@/lib/db";
 import { getVoice, VOICES, VOICES_DISCLAIMER } from "@/lib/voices";
 import { SITE } from "@/lib/site";
 
@@ -36,7 +36,7 @@ export default async function VoiceProfilePage({ params }: { params: Promise<{ k
   if (!voice) notFound();
   const url = `${SITE.url}/voices/${voice.key}`;
   const others = VOICES.filter((v) => v.key !== voice.key);
-  const videos = voice.key === "dana-white" ? await getLatestVideos(3).catch(() => []) : [];
+  const videos = voice.key === "dana-white" ? await getVideosMentioning("Dana White", 3).catch(() => []) : [];
 
   return (
     <article className="wrap page voice-profile">
@@ -106,7 +106,7 @@ export default async function VoiceProfilePage({ params }: { params: Promise<{ k
         </aside>
       </div>
 
-      {videos.length > 0 && <VideoRail videos={videos} title="From UFC's official channel" eyebrow="Official video" feature={false} note="Publisher-hosted video from UFC's official YouTube channel · not hosted by PropBetEdge · not an endorsement" />}
+      {videos.length > 0 && <VideoRail videos={videos} title="Dana White on UFC's official channel" eyebrow="Official video · title names him" feature={false} max={3} note="Publisher-hosted video from UFC's official YouTube channel · not hosted by PropBetEdge · not an endorsement" />}
 
       <section className="voice-more">
         <div className="sec-head"><div><div className="eyebrow">More voices</div><h2>Inside the Fight Game</h2></div><Link href="/#notable-voices" className="more">All notable voices →</Link></div>
