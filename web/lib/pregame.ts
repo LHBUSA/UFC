@@ -193,9 +193,10 @@ function mainTake(A: DeskSide, B: DeskSide, bout: Bout): string[] {
   return [lead, second];
 }
 
-async function side(f: Fighter, snap: RankingsSnapshot | null, bout: Bout): Promise<DeskSide> {
+async function side(f: Fighter, snap: RankingsSnapshot | null, bout: Bout, asOf: string | null = null): Promise<DeskSide> {
   const bouts = await getFighterBouts(f.id).catch(() => [] as Awaited<ReturnType<typeof getFighterBouts>>);
-  const done = bouts.filter((x) => x.result && x.id !== bout.id);
+  /* asOf: for an archived pregame page, form is limited to results before the event date. */
+  const done = bouts.filter((x) => x.result && x.id !== bout.id && (!asOf || (x.event?.event_date && x.event.event_date < asOf)));
   const archive = archiveSummary(f.id, done);
   const lastResults = done.slice(0, 5).map((x) => {
     const r = x.result!;
@@ -216,12 +217,14 @@ async function side(f: Fighter, snap: RankingsSnapshot | null, bout: Bout): Prom
   return s;
 }
 
-export async function buildDeskBriefs(event: Event, bouts: Bout[], limit = 3): Promise<DeskBrief[]> {
-  const live = bouts.filter((b) => b.status !== "cancelled" && !b.result).slice(0, limit);
+export type DeskBriefOptions = { includeCompleted?: boolean; asOf?: string | null };
+
+export async function buildDeskBriefs(event: Event, bouts: Bout[], limit = 3, opts: DeskBriefOptions = {}): Promise<DeskBrief[]> {
+  const live = bouts.filter((b) => b.status !== "cancelled" && (opts.includeCompleted || !b.result)).slice(0, limit);
   if (!live.length) return [];
   const snap = await getRankings().catch(() => null);
   return Promise.all(live.map(async (bout, index) => {
-    const [A, B, dnaRes] = await Promise.all([side(bout.fighter_a, snap, bout), side(bout.fighter_b, snap, bout), index === 0 ? getMatchupDna(bout.fighter_a.id, bout.fighter_b.id).catch(() => null) : Promise.resolve(null)]);
+    const [A, B, dnaRes] = await Promise.all([side(bout.fighter_a, snap, bout, opts.asOf || null), side(bout.fighter_b, snap, bout, opts.asOf || null), index === 0 ? getMatchupDna(bout.fighter_a.id, bout.fighter_b.id, opts.asOf || null).catch(() => null) : Promise.resolve(null)]);
     const dna = dnaRes && dnaRes.status === "ok" ? dnaRes.data : null;
     A.keys = keysFor(A, B); B.keys = keysFor(B, A);
     const thin = (!hasCareer(bout.fighter_a) && A.archive.fights < 2) || (!hasCareer(bout.fighter_b) && B.archive.fights < 2);

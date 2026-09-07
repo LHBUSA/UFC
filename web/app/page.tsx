@@ -9,6 +9,7 @@ import { ContenderStrip } from "@/components/ContenderStrip";
 import { VideoRail } from "@/components/VideoRail";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
 import { buildDeskBriefs } from "@/lib/pregame";
+import { intelligenceUpdated } from "@/lib/fightweek";
 import { getIngestFreshness } from "@/lib/archive";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { eventSlug } from "@/lib/slug";
@@ -44,7 +45,7 @@ export default async function Home() {
       ...[...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
       ...champIds, ...contenderIds,
     ]),
-    next && live.length ? buildDeskBriefs(next, live, 3).catch(() => []) : Promise.resolve([]),
+    next && live.length ? buildDeskBriefs(next, live, 1).catch(() => []) : Promise.resolve([]),
     storyMedia(articles),
     getFightersByIds(champIds),
     getFightersByIds(contenderIds),
@@ -127,8 +128,8 @@ export default async function Home() {
       </section>
 
       {next && briefs.length > 0 && (
-        <section className="sec">
-          <div className="wrap"><PregameDesk event={next} briefs={briefs} imgs={imgs} framing={framing} /></div>
+        <section className="sec" id="fight-week">
+          <div className="wrap"><PregameDesk event={next} briefs={briefs} imgs={imgs} framing={framing} mode="teaser" meta={{ fights: live.length, updated: intelligenceUpdated(freshness, rankings, videos) }} /></div>
         </section>
       )}
 

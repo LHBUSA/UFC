@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllEvents, getFighters, getArticles, getUpcomingEvents, getEventBouts } from "@/lib/db";
+import { getAllEvents, getFighters, getArticles, getUpcomingEvents, getEventBouts, getRecentEvents, isContenderSeries } from "@/lib/db";
 import { getReferees } from "@/lib/referees";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
@@ -8,20 +8,21 @@ import { VOICES } from "@/lib/voices";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [events, fighters, articles, upcoming, referees] = await Promise.all([
+  const [events, fighters, articles, upcoming, referees, recent] = await Promise.all([
     getAllEvents(),
     getFighters("", 1000),
     getArticles(500),
     getUpcomingEvents(6, { includeContenderSeries: true }),
     getReferees(250),
+    getRecentEvents(12),
   ]);
   const now = new Date();
-  const fixedPaths = ["/", "/events", "/fighters", "/rankings", "/referees", "/news", "/contender-series", "/pro", "/about"];
+  const fixedPaths = ["/", "/fight-week", "/events", "/fighters", "/rankings", "/referees", "/news", "/contender-series", "/pro", "/about"];
   const fixed: MetadataRoute.Sitemap = fixedPaths.map((p) => ({
     url: `${SITE.url}${p}`,
     lastModified: now,
-    changeFrequency: p === "/" || p === "/news" || p === "/contender-series" ? "hourly" : "daily",
-    priority: p === "/" ? 1 : p === "/news" || p === "/events" || p === "/contender-series" ? 0.9 : 0.8,
+    changeFrequency: p === "/" || p === "/news" || p === "/contender-series" || p === "/fight-week" ? "hourly" : "daily",
+    priority: p === "/" ? 1 : p === "/news" || p === "/events" || p === "/contender-series" || p === "/fight-week" ? 0.9 : 0.8,
   }));
   const voicePages: MetadataRoute.Sitemap = VOICES.map((voice) => ({
     url: `${SITE.url}/voices/${voice.key}`,
@@ -42,8 +43,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const bouts = await getEventBouts(e.id);
     for (const b of bouts) fights.push({ url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, lastModified: now, changeFrequency: "daily", priority: 0.8 });
   }
+  /* Permanent Pregame Desk pages: upcoming UFC cards plus the recent archive. */
+  const pregame: MetadataRoute.Sitemap = [...upcoming.filter((e) => !isContenderSeries(e.name)), ...recent].map((e) => ({ url: `${SITE.url}/pregame/${eventSlug(e)}`, lastModified: now, changeFrequency: (e.event_date && e.event_date >= today ? "daily" : "monthly") as "daily" | "monthly", priority: e.event_date && e.event_date >= today ? 0.85 : 0.5 }));
   return [
     ...fixed,
+    ...pregame,
     ...voicePages,
     ...refereePages,
     ...events.map((e) => ({ url: `${SITE.url}/events/${eventSlug(e)}`, lastModified: now, changeFrequency: (e.event_date && e.event_date >= today ? "daily" : "monthly") as "daily" | "monthly", priority: e.event_date && e.event_date >= today ? 0.9 : 0.6 })),

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent, getImageFraming, sortVideosTimeline } from "@/lib/db";
+import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent, getImageFraming, sortVideosTimeline, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { resolveEvent } from "@/lib/resolve";
 import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
@@ -10,6 +10,8 @@ import { PregameDesk } from "@/components/PregameDesk";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
 import { buildDeskBriefs } from "@/lib/pregame";
+import { intelligenceUpdated } from "@/lib/fightweek";
+import { getIngestFreshness } from "@/lib/archive";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { daysUntil, fmtDate, locationLine, eventBrand, eventStatusLabel, fmtRecord, weightClassLabel, winnerOf, METHOD_LABEL, fmtTime, plural } from "@/lib/format";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
@@ -51,8 +53,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const finishes = live.filter((b) => b.result && (b.result.method === "KO_TKO" || b.result.method === "SUB")).length;
   const decisions = live.filter((b) => b.result && b.result.method.startsWith("DEC")).length;
   const titleBouts = live.filter((b) => b.is_title).length;
-  const briefs = !done && live.length > 0 ? await buildDeskBriefs(e, live, 3).catch(() => []) : [];
+  const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
   const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
+  const isCurrent = !done && nearby[0]?.id === e.id;
   const others = nearby.filter((x) => x.id !== e.id).slice(0, 3);
   const dwcs = isDanaWhiteContenderSeries(e.name);
 
@@ -91,7 +94,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       <div className="mt-4"><OfficialDestinations compact keys={["home", "fightpass", "store"]} /></div>
 
-      {briefs.length > 0 && <div className="mt-6"><PregameDesk event={e} briefs={briefs} imgs={imgs} framing={framing} /></div>}
+      {live.length > 0 && !historical && <div className="mt-6"><PregameDesk event={e} briefs={briefs} imgs={imgs} framing={framing} mode="cta" meta={{ fights: live.length, updated: intelligenceUpdated(ingest, rankings, videos), href: `/pregame/${eventSlug(e)}`, done, hub: isCurrent }} /></div>}
 
       {bouts.length ? (
         <>

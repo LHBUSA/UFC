@@ -41,6 +41,7 @@ export const SITE = {
 
 export const NAV = [
   { href: "/", label: "Home" },
+  { href: "/fight-week", label: "Fight Week" },
   { href: "/events", label: "Schedule" },
   { href: "/contender-series", label: "DWCS" },
   { href: "/fighters", label: "Fighters" },

@@ -6,6 +6,9 @@ import { PregameDesk } from "@/components/PregameDesk";
 import { ChampionsShowcase } from "@/components/ChampionsShowcase";
 import { ContenderStrip } from "@/components/ContenderStrip";
 import { ChampionshipBelt } from "@/components/ChampionshipBelt";
+import { FightWeekPage } from "@/components/FightWeek";
+import { assemblePacket } from "@/lib/fightweek";
+import { eventSlug } from "@/lib/slug";
 
 /* Development-only visual QA fixtures for data-driven modules. This route
  * returns 404 on production and on any Vercel deployment; it exists so the
@@ -29,7 +32,7 @@ export default async function QaPreview() {
   const e1 = fighter("f-e", "Echo Vance", { career_slpm: null, career_td_avg: null, career_str_acc: null, record_w: 6, record_l: 0 });
   const f1 = fighter("f-f", "Foxtrot Reyes", { career_slpm: 3.9, career_td_avg: 2.2 });
   const bout = (id: string, x: Fighter, y: Fighter, order: number, extra: Partial<Bout> = {}): Bout => ({ id, ufcstats_id: null, espn_competition_id: null, event_id: event.id, weight_class: "LIGHTWEIGHT", is_womens: false, is_title: false, scheduled_rounds: 3, card_position: "MAIN", bout_order: order, status: "scheduled", fighter_a: x, fighter_b: y, result: null, ...extra });
-  const bouts = [bout("b-1", a, b, 1, { is_title: true, scheduled_rounds: 5 }), bout("b-2", c, dd, 2, { weight_class: "WELTERWEIGHT" }), bout("b-3", e1, f1, 3, { weight_class: "FEATHERWEIGHT" })];
+  const bouts = [bout("b-1", a, b, 1, { is_title: true, scheduled_rounds: 5, card_position: "main" }), bout("b-2", c, dd, 2, { weight_class: "WELTERWEIGHT", card_position: "main" }), bout("b-3", e1, f1, 3, { weight_class: "FEATHERWEIGHT", card_position: "prelim" })];
   const briefs = await buildDeskBriefs(event, bouts, 3);
   /* Fixture portraits: the self-hosted voice photos stand in for fighter art so the desk crop system can be inspected locally. */
   const ps = (id: string, src: string): PortraitSet => ({ id, portrait: src, card: src, thumb: src, license: "Public domain", author: "fixture", source_url: null, kind: "public_domain", stored_first_party: true });
@@ -56,9 +59,13 @@ export default async function QaPreview() {
   const dwcsNext: Event = { ...event, id: "dw-1", name: "Dana White's Contender Series Season 10 Week 6", event_date: "2026-09-15", is_ppv: false, venue: "UFC Apex", city: "Las Vegas" };
   const dwcsLast: Event = { ...dwcsNext, id: "dw-0", name: "Dana White's Contender Series Season 10 Week 5", event_date: "2026-09-08", card_status: "complete" };
   const mains = new Map<string, Bout>([["dw-1", bout("db-1", e1, f1, 1, { event_id: "dw-1" })], ["dw-0", bout("db-0", c, dd, 1, { event_id: "dw-0", result: { bout_id: "db-0", winner_id: c.id, method: "KO_TKO", method_raw: "KO", round: 2, time_sec: 143, time_format: null, referee: null, finish_detail: null, result_source: "espn", has_stats: false, scorecards: null, judge_1: null, judge_2: null, judge_3: null } })]]);
+  const packet = assemblePacket({ event, bouts, live: bouts, briefs, imgs: fixtureImgs, framing: new Map(), videos, done: false, updated: new Date().toISOString(), rankingsDate: rankings.snapshot_date, sources: ["UFC Stats career averages (fixture)", `Official rankings snapshot ${rankings.snapshot_date} (fixture)`, "Fight DNA not available for the fixture pairing", "Archived results (fixture)", "Event card as published (fixture)"] });
   return (
     <div className="wrap page">
       <div className="eyebrow mb-4">QA fixtures · synthetic names · development only</div>
+      <section id="qa-fight-week" className="mb-7"><FightWeekPage packet={packet} archive={false} /></section>
+      <section id="qa-fw-teaser" className="mb-7"><PregameDesk event={event} briefs={briefs} imgs={fixtureImgs} mode="teaser" meta={{ fights: bouts.length, updated: new Date().toISOString() }} /></section>
+      <section id="qa-fw-cta" className="mb-7"><PregameDesk event={event} briefs={briefs} imgs={fixtureImgs} mode="cta" meta={{ fights: bouts.length, updated: new Date().toISOString(), href: `/pregame/${eventSlug(event)}`, hub: true }} /></section>
       <section id="qa-pregame" className="mb-7"><PregameDesk event={event} briefs={briefs} imgs={fixtureImgs} /></section>
       <section id="qa-pregame-single" className="mb-7"><PregameDesk event={event} briefs={briefs.slice(0, 1)} imgs={espnStyle} compact /></section>
       <section id="qa-pregame-fallback" className="mb-7"><PregameDesk event={event} briefs={briefs.slice(0, 1)} compact /></section>

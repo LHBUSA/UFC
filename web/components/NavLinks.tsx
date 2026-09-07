@@ -8,7 +8,7 @@ export function NavLinks({ className, onNavigate }: { className: string; onNavig
   return (
     <nav className={className} aria-label="Primary">
       {NAV.map((n) => {
-        const active = n.href === "/" ? path === "/" : path.startsWith(n.href);
+        const active = n.href === "/" ? path === "/" : path.startsWith(n.href) || (n.href === "/fight-week" && path.startsWith("/pregame"));
         return (
           <Link key={n.href} href={n.href} aria-current={active ? "page" : undefined} onClick={onNavigate}>
             {n.label}

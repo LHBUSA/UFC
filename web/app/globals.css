@@ -800,4 +800,8 @@ body::after {
 /* Header: with DWCS in the primary nav the next-event pill adapts instead of clipping the event name.
    Wide: label + name + date. <=1519px: drop the "Fight week" label (the dot + title keep the state). <=1300px: drop the date. */
 @media (max-width: 1519px) { .hdr-next-copy b { display: none; } }
+/* Nine primary items (Fight Week added): tighten nav padding before the pill collapses. */
+@media (max-width: 1400px) { .nav a { padding-left: 9px; padding-right: 9px; } }
+@media (max-width: 1180px) { .nav a { padding-left: 7px; padding-right: 7px; font-size: 12px; } .hdr-next { max-width: 240px; } }
+@media (max-width: 1040px) { .nav { margin-left: 0; } .nav a { padding-left: 6px; padding-right: 6px; } }
 @media (max-width: 1300px) { .hdr-next-date { display: none; } }

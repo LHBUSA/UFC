@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T02:05:00.000Z",
+  "generated_at": "2026-09-07T11:59:50.262Z",
   "routes": [
     "/",
     "/about",
@@ -7,6 +7,7 @@
     "/contender-series",
     "/events",
     "/events/[slug]",
+    "/fight-week",
     "/fighters",
     "/fighters/[slug]",
     "/fights/[slug]",
@@ -15,6 +16,7 @@
     "/login",
     "/news",
     "/news/[slug]",
+    "/pregame/[slug]",
     "/pro",
     "/qa/preview",
     "/rankings",
@@ -26,6 +28,10 @@
     {
       "href": "/",
       "label": "Home"
+    },
+    {
+      "href": "/fight-week",
+      "label": "Fight Week"
     },
     {
       "href": "/events",
@@ -87,10 +93,13 @@
   },
   "features": [
     "app/apple-icon.tsx",
+    "app/fightweek.css",
     "app/icon.svg",
     "app/opengraph-image.tsx",
     "components/Brand.tsx",
     "components/ChampionshipBelt.tsx",
+    "components/DeskArt.tsx",
+    "components/FightWeek.tsx",
     "components/LiveWire.tsx",
     "components/NewsStoryCard.tsx",
     "components/OfficialVideo.tsx",
@@ -103,6 +112,7 @@
     "lib/contender.ts",
     "lib/dna.ts",
     "lib/faces.ts",
+    "lib/fightweek.ts",
     "lib/heritage.ts",
     "lib/pregame.ts",
     "lib/referees.ts",
