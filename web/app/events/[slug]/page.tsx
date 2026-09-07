@@ -6,9 +6,11 @@ import { storyMedia } from "@/lib/faces";
 import { resolveEvent } from "@/lib/resolve";
 import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
+import { PregameDesk } from "@/components/PregameDesk";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { daysUntil, fmtDate, locationLine, eventBrand, eventStatusLabel, fmtRecord, weightClassLabel, winnerOf, METHOD_LABEL, fmtTime, plural } from "@/lib/format";
 import { SITE } from "@/lib/site";
+import { UFC_OFFICIAL } from "@/lib/heritage";
 
 export const revalidate = 300;
 
@@ -17,10 +19,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!e) return { title: "Event not found", robots: { index: false } };
   const where = [e.venue, e.city, e.country].filter(Boolean).join(", ");
   const done = e.card_status === "complete";
-  const title = done ? `${e.name} — Results, Full Card & Stats` : `${e.name} — Fight Card, Start Time & Matchups`;
+  const title = done ? `${e.name} — Results, Full Card & Stats` : `${e.name} — Fight Card, Pregame & Matchups`;
   return {
     title,
-    description: `${e.name} on ${fmtDate(e.event_date)}${where ? ` at ${where}` : ""}. ${done ? "Complete results for every bout with method, round, time and round-by-round stats." : "Full fight card with main card and prelims, fighter records, tale of the tape and matchup pages."}`,
+    description: `${e.name} on ${fmtDate(e.event_date)}${where ? ` at ${where}` : ""}. ${done ? "Loaded results with method, round, time and round-level stats where available." : "Full announced fight card, Pregame Desk, fighter records, tale of the tape and matchup intelligence."}`,
     alternates: { canonical: `/events/${eventSlug(e)}` },
     openGraph: { title: e.name, description: `${fmtDate(e.event_date)}${where ? ` · ${where}` : ""}`, type: "website", url: `${SITE.url}/events/${eventSlug(e)}` },
     twitter: { card: "summary_large_image", title: e.name },
@@ -46,7 +48,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   return (
     <div className="wrap page">
-      <Breadcrumbs items={[{ name: "Events", href: "/events" }, { name: e.name }]} />
+      <Breadcrumbs items={[{ name: "Schedule", href: "/events" }, { name: e.name }]} />
       <div className="poster" style={{ minHeight: 0 }}>
         <div className="poster-top">
           <span className="eyebrow">{eventBrand(e.name)}{e.is_ppv ? " · Pay-per-view" : ""}</span>
@@ -57,13 +59,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <div className="poster-faces">
               {[main.fighter_a, main.fighter_b].map((f, i) => {
                 const img = imgs.get(f.id);
-                return (
-                  <div className={`face ${i ? "b" : "a"}`} key={f.id}>
-                    {img ? <img src={img.card} alt={f.name} width={800} height={1000} fetchPriority="high" decoding="async" /> : (
-                      <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}><Avatar f={f} size={120} /></div>
-                    )}
-                  </div>
-                );
+                return <div className={`face ${i ? "b" : "a"}`} key={f.id}>{img ? <img src={img.card} alt={f.name} width={800} height={1000} fetchPriority="high" decoding="async" /> : <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}><Avatar f={f} size={120} /></div>}</div>;
               })}
               <div className="vs" style={{ gridColumn: 2, gridRow: 1 }}>{done ? "FINAL" : "VS"}</div>
             </div>
@@ -77,60 +73,31 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <div>
             <h1 className="t" style={{ fontSize: "clamp(26px, 3.4vw, 44px)" }}>{e.name}</h1>
             <div className="m">{fmtDate(e.event_date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })} · {locationLine(e) || "Venue TBA"}</div>
-            <div className="m">
-              {main ? `${weightClassLabel(main.weight_class, main.is_womens)}${main.is_title ? " title" : ""} main event` : "Main event TBA"}
-              {live.length ? ` · ${plural(live.length, "bout")}` : ""}{titleBouts ? ` · ${plural(titleBouts, "title fight")}` : ""}
-              {done && main?.result ? ` · ${METHOD_LABEL[main.result.method]}${main.result.round ? ` R${main.result.round}` : ""}${main.result.time_sec != null ? ` ${fmtTime(main.result.time_sec)}` : ""}` : ""}
-            </div>
+            <div className="m">{main ? `${weightClassLabel(main.weight_class, main.is_womens)}${main.is_title ? " title" : ""} main event` : "Main event TBA"}{live.length ? ` · ${plural(live.length, "bout")}` : ""}{titleBouts ? ` · ${plural(titleBouts, "title fight")}` : ""}{done && main?.result ? ` · ${METHOD_LABEL[main.result.method]}${main.result.round ? ` R${main.result.round}` : ""}${main.result.time_sec != null ? ` ${fmtTime(main.result.time_sec)}` : ""}` : ""}</div>
           </div>
-          {!done && d != null && d >= 0 ? <div className="count"><b>{d}</b><span>{d === 1 ? "day out" : "days out"}</span></div>
-            : done && live.length ? <div className="count"><b>{finishes}</b><span>finishes · {decisions} dec</span></div> : null}
+          {!done && d != null && d >= 0 ? <div className="count"><b>{d}</b><span>{d === 1 ? "day out" : "days out"}</span></div> : done && live.length ? <div className="count"><b>{finishes}</b><span>finishes · {decisions} dec</span></div> : null}
         </div>
       </div>
+
+      <div className="rank-official-bar mt-4">
+        <p><b style={{ color: "var(--pbe-paper)" }}>Independent intelligence, official destinations beside it.</b> PropBetEdge supplies the matchup layer; UFC.com and Fight Pass remain the official promotion and viewing destinations.</p>
+        <div className="actions"><a href="https://www.ufc.com/events" className="btn" target="_blank" rel="noopener">UFC events ↗</a><a href={UFC_OFFICIAL.fightPass} className="btn" target="_blank" rel="noopener">Fight Pass ↗</a><a href={UFC_OFFICIAL.store} className="btn gold" target="_blank" rel="noopener">UFC Store ↗</a></div>
+      </div>
+
+      {!done && live.length > 0 && <PregameDesk event={e} bouts={live} />}
 
       {bouts.length ? (
         <>
           <CardSegments bouts={bouts} e={e} imgs={imgs} />
-          {headline.length > 0 && (
-            <section className="segment">
-              <h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3>
-              <div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} />)}</div>
-            </section>
-          )}
+          {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} />)}</div></section>}
         </>
-      ) : (
-        <div className="mt-6">
-          <Empty title="Card not published yet" cta={{ href: "/events", label: "Other cards" }}>This event is on the schedule but no bouts have been announced. The card appears as soon as it is published, with fighter records and matchup pages.</Empty>
-        </div>
-      )}
+      ) : <div className="mt-6"><Empty title="Card not published yet" cta={{ href: "/events", label: "Other cards" }}>This event is on the schedule but no bouts have been announced. The card appears as soon as it is published, with fighter records and matchup pages.</Empty></div>}
 
-      {articles.length > 0 && (
-        <section className="segment">
-          <h3>From the desk <small>{plural(articles.length, "story", "stories")}</small></h3>
-          <div className="news">{articles.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} kicker={eventBrand(e.name)} />)}</div>
-        </section>
-      )}
+      {articles.length > 0 && <section className="segment"><h3>{done ? "Post-fight desk" : "Pregame reading"} <small>{plural(articles.length, "story", "stories")}</small></h3><div className="news">{articles.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} kicker={eventBrand(e.name)} />)}</div></section>}
 
-      {others.length > 0 && (
-        <section className="segment">
-          <h3>{done ? "More recent cards" : "Also coming up"}</h3>
-          <div className="elist">{others.map((x) => <EventRow key={x.id} e={x} />)}</div>
-        </section>
-      )}
+      {others.length > 0 && <section className="segment"><h3>{done ? "More recent cards" : "Also coming up"}</h3><div className="elist">{others.map((x) => <EventRow key={x.id} e={x} />)}</div></section>}
 
-      <JsonLd data={{
-        "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: e.event_date, endDate: e.event_date,
-        sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`,
-        eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-        image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`,
-        location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined,
-        organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: "https://www.ufc.com" },
-        url: `${SITE.url}/events/${eventSlug(e)}`,
-        subEvent: live.map((b) => ({
-          "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts",
-          competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }],
-        })),
-      }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: e.event_date, endDate: e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: done ? "https://schema.org/EventCompleted" : "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
     </div>
   );
 }
