@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { Wire, WireItem } from "@/lib/wire";
 
 const LIVE_MIN = 120;
@@ -29,6 +30,10 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
   const [now, setNow] = useState<number>(() => new Date(initial.meta.generated_at).getTime() || Date.now());
   const [paused, setPaused] = useState(false);
   const failures = useRef(0);
+  /* Fight Week / Pregame own their local navigator; the wire stays in flow
+   * there so the page never carries three stacked sticky bars. */
+  const pathname = usePathname() || "/";
+  const quiet = /^\/(fight-week|pregame)(\/|$)/.test(pathname);
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval> | null = null;
@@ -57,6 +62,12 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
   const label = f.live ? "UFC Live Wire" : "Latest UFC";
   const duration = Math.max(60, items.length * 9);
 
+  /* Marquee duplication is intentional (CASE A): the belt renders the same
+   * 20 items twice so the loop is seamless. Row "a" is the single semantic
+   * copy; row "b" is a visual clone with aria-hidden and tabIndex -1, so
+   * assistive tech and the tab order see each story once. Items are fetched
+   * once (server render + one client poll), never twice per render, and no
+   * element ids are used inside the belt, so no duplicate ids exist. */
   const row = (keyPrefix: string, ariaHidden = false) => (
     <ul className="wire-track" aria-hidden={ariaHidden || undefined} style={{ animationDuration: `${duration}s` }}>
       {items.map((it) => {
@@ -80,7 +91,7 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
   );
 
   return (
-    <div className={`wire-rail${paused ? " paused" : ""}${f.live ? " live" : ""}`} role="region" aria-label={label}
+    <div className={`wire-rail${paused ? " paused" : ""}${f.live ? " live" : ""}${quiet ? " static" : ""}`} role="region" aria-label={label}
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
       <div className="wire-badge">
         <i className={`wire-dot${f.live ? (f.urgent ? " hot" : " on") : ""}`} aria-hidden="true" />

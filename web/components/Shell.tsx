@@ -12,7 +12,11 @@ export async function Header() {
   const [next, account] = await Promise.all([getNextEvent(), getCurrentAccount()]);
   const d = next ? daysUntil(next.event_date) : null;
   const live = d != null && d <= 0 && d >= -1;
-  const nextLabel = live ? "Fight night" : d === 1 ? "Tomorrow" : d != null && d <= 6 ? "Fight week" : "Next card";
+  /* Inside fight week the chip is a second door to /fight-week (the page that
+   * owns the event title); outside it, a compact pointer to the next card. */
+  const inWeek = d != null && d <= 6 && d >= -1;
+  const nextLabel = live ? "Fight night" : inWeek ? "Fight week" : "Next card";
+  const nextHref = next ? (inWeek ? "/fight-week" : `/events/${eventSlug(next)}`) : "/events";
   return (
     <header className="hdr">
       <input id="mnav-toggle" type="checkbox" aria-hidden="true" />
@@ -21,11 +25,10 @@ export async function Header() {
         <NavLinks className="nav" />
         <div className="hdr-cta">
           {next && (
-            <Link href={`/events/${eventSlug(next)}`} className="hdr-next" title={`${nextLabel}: ${next.name} — ${fmtDate(next.event_date)}`}>
+            <Link href={nextHref} className="hdr-next" title={`${nextLabel}: ${eventShortName(next.name)} — ${fmtDate(next.event_date)}`} aria-label={`${nextLabel}: ${eventShortName(next.name)}, ${fmtDate(next.event_date)}`}>
               <i className={`dot${live ? " live" : ""}`} aria-hidden="true" />
               <span className="hdr-next-copy">
                 <b>{nextLabel}</b>
-                <span className="hdr-next-event">{eventShortName(next.name)}</span>
                 <span className="hdr-next-date">{fmtDate(next.event_date, { month: "short", day: "numeric" })}</span>
               </span>
             </Link>
@@ -36,10 +39,11 @@ export async function Header() {
         </div>
       </div>
       <div className="mnav">
-        <NavLinks className="" />
+        <NavLinks className="" variant="mobile" />
         <div className="mnav-foot">
-          {next && <Link href={`/events/${eventSlug(next)}`} className="btn">{nextLabel}</Link>}
+          {next && <Link href={nextHref} className="btn">{nextLabel} · {fmtDate(next.event_date, { month: "short", day: "numeric" })}</Link>}
           <Link href={account ? "/account" : "/login"} className="btn">{account ? "Account" : "Sign in"}</Link>
+          <Link href="/pro" className="btn gold">Go Pro</Link>
         </div>
       </div>
     </header>

@@ -2,24 +2,26 @@ import Link from "next/link";
 import type { Bout, Event, PortraitSet } from "@/lib/db";
 import type { DeskBrief } from "@/lib/pregame";
 import { pickVariant, type Framing } from "@/lib/variants";
-import { DeskArt, Tale } from "@/components/DeskArt";
+import { DeskArt, ageAt, height, inches, stance } from "@/components/DeskArt";
 import { Avatar, Breadcrumbs, EventRow, JsonLd } from "@/components/ui";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
-import { cardSections, fightRead, whatToWatch, thingsThatMatter, fightPhases, fmtStamp, type FightWeekPacket, type Factor } from "@/lib/fightweek";
+import { Dropdown } from "@/components/Menu";
+import { cardSections, fightRead, fightReadParts, whatToWatch, thingsThatMatter, fightPhases, phaseHeadlines, fmtStamp, type FightWeekPacket, type Factor } from "@/lib/fightweek";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, fmtDate, fmtRecord, locationLine, plural, weightClassLabel } from "@/lib/format";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { SITE } from "@/lib/site";
 
-/* Fight Week — Pregame Desk as a product surface.
+/* Fight Week — Pregame Desk as a product surface, presented as a premium
+ * editorial intelligence brief.
  *
- * Structure (desktop and mobile share the same order):
- *   PREGAME DESK · FIGHT WEEK header → sticky fight navigator → main event
- *   desk (faceoff art · FIGHT READ · KEY COMPARISON · 3 THINGS THAT MATTER ·
- *   HOW THEY WIN · FIGHT PHASE → full matchup intelligence) → main card as
- *   scan-first cards → prelims as compact expandable rows → official video
- *   (secondary, poster-first) → sources and freshness.
+ * Order (desktop and mobile): masthead → local navigator (MAIN EVENT · MAIN
+ * CARD · PRELIMS + Jump to fight ▾) → main event surface (faceoff · Fight
+ * Read · Key comparison · 3 things that matter · How they win · Fight phase ·
+ * Full matchup intelligence, separated by dividers rather than nested boxes)
+ * → main card as scan-first cards → compact expandable prelims → secondary
+ * official video → sources and freshness.
  *
  * Every line is evidence-led commentary from the stored packet, never a pick.
  * Nothing here is called "The Edge". */
@@ -27,19 +29,22 @@ import { SITE } from "@/lib/site";
 type Portraits = Map<string, PortraitSet>;
 const lastName = (f: { name: string }) => f.name.split(" ").slice(-1)[0] || f.name;
 
-function leanLabel(f: Factor, brief: DeskBrief): string {
-  if (!f.lean) return "Even";
+function leanLabel(f: Factor, brief: DeskBrief): string | null {
+  if (!f.lean) return null;
   return `Favors ${lastName(f.lean === "a" ? brief.a.fighter : brief.b.fighter)}`;
 }
 
+/* Fight Read: one strong lead, optional supporting sentence, short evidence. */
 function Read({ brief, compact = false }: { brief: DeskBrief; compact?: boolean }) {
-  const read = fightRead(brief);
-  const lines = read.length ? read : whatToWatch(brief);
-  if (!lines.length) return null;
+  const parts = fightReadParts(brief);
+  if (!parts) return null;
+  if (compact) return <div className="fw-card-read"><div className="fw-h">{parts.watch ? "What to watch" : "Fight read"}</div><span>{parts.lead}</span></div>;
   return (
-    <div className={compact ? "fw-card-read" : "fw-block fw-read"}>
-      <div className="fw-h">{read.length ? "Fight read" : "What to watch"}</div>
-      {compact ? <span>{lines[0]}</span> : lines.map((l) => <p key={l}>{l}</p>)}
+    <div className="fw-sec-block fw-read">
+      <div className="fw-h">{parts.watch ? "What to watch" : "Fight read"}</div>
+      <p className="lead">{parts.lead}</p>
+      {parts.supporting && <p className="support">{parts.supporting}</p>}
+      {parts.evidence && <p className="evidence"><span>Supporting evidence</span>{parts.evidence}</p>}
     </div>
   );
 }
@@ -47,7 +52,7 @@ function Read({ brief, compact = false }: { brief: DeskBrief; compact?: boolean 
 function Facts({ brief, max = 2 }: { brief: DeskBrief; max?: number }) {
   const facts = thingsThatMatter(brief, max);
   if (!facts.length) return null;
-  return <ul className="fw-facts">{facts.map((f) => <li key={f.key}><b>{f.label}</b><span>{f.line}</span></li>)}</ul>;
+  return <ul className="fw-facts">{facts.map((f) => <li key={f.key}><b>{f.label}</b><span><strong>{f.hook}</strong> {f.line}</span></li>)}</ul>;
 }
 
 function Names({ bout, brief }: { bout: Bout; brief?: DeskBrief | null }) {
@@ -59,19 +64,48 @@ function Names({ bout, brief }: { bout: Bout; brief?: DeskBrief | null }) {
   );
 }
 
-/* ---- main event desk ------------------------------------------------- */
+/* Mirrored key comparison: Age · Height · Reach · Stance · Rank, with the
+ * fighter names as column headers. Meaningful factual differences are
+ * highlighted on both cells; nothing is declared a winner. */
+function KeyComparison({ brief, event }: { brief: DeskBrief; event: Event }) {
+  const { a, b } = brief;
+  const A = a.fighter, B = b.fighter;
+  const ageA = ageAt(A.dob, event.event_date), ageB = ageAt(B.dob, event.event_date);
+  const num = (v: number | null) => (v == null ? null : Number(v));
+  const diff = (x: number | null, y: number | null, min: number) => x != null && y != null && Math.abs(x - y) >= min;
+  const rows: Array<[string, string, string, boolean]> = [
+    ["Age", ageA == null ? "Not published" : String(ageA), ageB == null ? "Not published" : String(ageB), diff(ageA, ageB, 5)],
+    ["Height", height(A.height_in), height(B.height_in), diff(num(A.height_in), num(B.height_in), 2)],
+    ["Reach", inches(A.reach_in), inches(B.reach_in), diff(num(A.reach_in), num(B.reach_in), 2)],
+    ["Stance", stance(A.stance), stance(B.stance), Boolean(A.stance && B.stance && A.stance !== B.stance)],
+    ["Rank", a.rank || "Unranked", b.rank || "Unranked", Boolean(a.rank) !== Boolean(b.rank)],
+  ];
+  return (
+    <div className="fw-sec-block">
+      <div className="fw-h">Key comparison</div>
+      <table className="fw-kc">
+        <thead><tr><th scope="col"><span className="sr">Attribute</span></th><th scope="col">{lastName(A)}</th><th scope="col">{lastName(B)}</th></tr></thead>
+        <tbody>{rows.map(([k, va, vb, hl]) => <tr key={k} className={hl ? "hl" : ""}><th scope="row">{k}</th><td>{va}</td><td>{vb}</td></tr>)}</tbody>
+      </table>
+      <p className="fw-fine">Highlighted rows mark a meaningful factual difference, not an advantage. Unpublished values stay unpublished.</p>
+    </div>
+  );
+}
+
+/* ---- main event surface ------------------------------------------------ */
 export function MainEventDesk({ packet, brief }: { packet: FightWeekPacket; brief: DeskBrief }) {
   const { event, imgs, framing } = packet;
   const { bout, a, b } = brief;
   const factors = thingsThatMatter(brief, 3);
   const phases = fightPhases(brief);
+  const heads = phases ? phaseHeadlines(brief, phases) : null;
   const full = brief.tier !== "watch";
   return (
     <section id="main-event" className="fw-main" aria-labelledby="fw-main-title">
       <div className="fw-main-top">
         <div>
           <div className="fw-kicker">{bout.is_title ? "Title fight" : "Main event"} · {full ? "Verified packet" : "Limited packet"}</div>
-          <h2 id="fw-main-title">{event.name}</h2>
+          <h2 id="fw-main-title">{bout.fighter_a.name} vs {bout.fighter_b.name}</h2>
         </div>
         <div className="fw-stakes">{brief.stakes.slice(0, 4).map((s) => <span key={s}>{s}</span>)}</div>
       </div>
@@ -80,45 +114,47 @@ export function MainEventDesk({ packet, brief }: { packet: FightWeekPacket; brie
 
       <Read brief={brief} />
 
-      <div className="fw-block" style={{ paddingTop: 14 }}>
-        <div className="fw-h">Key comparison</div>
-        <Tale brief={brief} event={event} />
-      </div>
+      <KeyComparison brief={brief} event={event} />
 
       {factors.length > 0 && (
-        <div className="fw-block">
+        <div className="fw-sec-block">
           <div className="fw-h">{factors.length === 3 ? "3 things that matter" : "What matters"}</div>
           <div className="fw-factors">
-            {factors.map((f) => (
-              <div className={`fw-factor lean-${f.lean || "none"}`} key={f.key}>
-                <span>{f.label}<em>{leanLabel(f, brief)}</em></span>
-                <p>{f.line}</p>
-              </div>
-            ))}
+            {factors.map((f) => {
+              const lean = leanLabel(f, brief);
+              return (
+                <div className="fw-factor" key={f.key}>
+                  <span className="lab">{f.label}</span>
+                  <strong className="hook">{f.hook}</strong>
+                  <p>{f.line}</p>
+                  {lean && <small className="lean">{lean}</small>}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
 
-      <div className="fw-block">
+      <div className="fw-sec-block">
         <div className="fw-h">How they win</div>
         <div className="fw-win">
           {[a, b].map((side) => (
             <div className="fw-win-side" key={side.fighter.id}>
-              <header><div><span>How {lastName(side.fighter)} wins</span><strong>{side.fighter.name}</strong></div><b>{fmtRecord(side.fighter)}</b></header>
+              <header><span>How {lastName(side.fighter)} wins</span><strong>{side.fighter.name}</strong><b>{fmtRecord(side.fighter)}</b></header>
               <ul>{side.keys.slice(0, 3).map((k) => <li key={k}>{k}</li>)}</ul>
             </div>
           ))}
         </div>
       </div>
 
-      {phases && (
-        <div className="fw-block">
+      {phases && heads && (
+        <div className="fw-sec-block">
           <div className="fw-h">Fight phase</div>
-          <div className="fw-phase">
-            <div><span>Early</span><p>{phases.early}</p></div>
-            <div><span>Middle</span><p>{phases.middle}</p></div>
-            <div><span>Late</span><p>{phases.late}</p></div>
-          </div>
+          <ol className="fw-phase">
+            <li><span className="ph">Early</span><strong>{heads.early}</strong><p>{phases.early}</p></li>
+            <li><span className="ph">Middle</span><strong>{heads.middle}</strong><p>{phases.middle}</p></li>
+            <li><span className="ph">Late</span><strong>{heads.late}</strong><p>{phases.late}</p></li>
+          </ol>
         </div>
       )}
 
@@ -136,15 +172,15 @@ export function MatchupIntel({ bout, brief, event, imgs }: { bout: Bout; brief?:
   return (
     <article id={`bout-${bout.id}`} className={`fw-card${watch ? " watch" : ""}`}>
       <div className="fw-card-top">
-        <span>{weightClassLabel(bout.weight_class, bout.is_womens)}{bout.is_title ? " · Title" : ""}{bout.scheduled_rounds ? ` · ${bout.scheduled_rounds}R` : ""}</span>
+        <span>{weightClassLabel(bout.weight_class, bout.is_womens)}{bout.is_title ? " · Title" : ""}{bout.scheduled_rounds ? ` · ${bout.scheduled_rounds} rounds` : ""}</span>
         <small>{cardPositionLabel(bout.card_position)}</small>
       </div>
       <div className="fw-card-faces">
-        <div className="avatars"><Avatar f={bout.fighter_a} img={imgs.get(bout.fighter_a.id)} size={52} /><Avatar f={bout.fighter_b} img={imgs.get(bout.fighter_b.id)} size={52} /></div>
+        <div className="avatars"><Avatar f={bout.fighter_a} img={imgs.get(bout.fighter_a.id)} size={56} /><Avatar f={bout.fighter_b} img={imgs.get(bout.fighter_b.id)} size={56} /></div>
         <div><Names bout={bout} brief={brief} /></div>
       </div>
       {brief ? <Read brief={brief} compact /> : <div className="fw-card-read"><div className="fw-h">Packet</div><span>Intelligence packet not available for this pairing yet. Records and the matchup page are live.</span></div>}
-      {brief && <Facts brief={brief} max={2} />}
+      {brief && <><div className="fw-h fw-h-inline">Key data</div><Facts brief={brief} max={2} /></>}
       <div className="fw-card-cta">
         <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`}>Matchup intelligence →</Link>
         <small>{brief ? (watch ? "Limited packet" : "Full packet") : "Card only"}</small>
@@ -155,13 +191,16 @@ export function MatchupIntel({ bout, brief, event, imgs }: { bout: Bout; brief?:
 
 /* ---- compact prelim row with expand ----------------------------------- */
 export function PrelimRow({ bout, brief, event, imgs }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits }) {
+  const top = brief ? thingsThatMatter(brief, 1)[0] : null;
+  const line = top ? `${top.label}: ${top.hook}` : brief ? (brief.tier === "watch" ? "Limited packet" : "Full packet") : "Card only";
   return (
     <details id={`bout-${bout.id}`} className="fw-prelim">
       <summary>
-        <span className="avatars"><Avatar f={bout.fighter_a} img={imgs.get(bout.fighter_a.id)} size={36} /><Avatar f={bout.fighter_b} img={imgs.get(bout.fighter_b.id)} size={36} /></span>
+        <span className="avatars"><Avatar f={bout.fighter_a} img={imgs.get(bout.fighter_a.id)} size={40} /><Avatar f={bout.fighter_b} img={imgs.get(bout.fighter_b.id)} size={40} /></span>
         <span className="names">
           <b>{bout.fighter_a.name}<i>vs</i>{bout.fighter_b.name}</b>
           <span>{weightClassLabel(bout.weight_class, bout.is_womens)}{bout.is_title ? " · Title" : ""} · {fmtRecord(bout.fighter_a)}{brief?.a.rank ? <em> ({brief.a.rank})</em> : null} · {fmtRecord(bout.fighter_b)}{brief?.b.rank ? <em> ({brief.b.rank})</em> : null}</span>
+          <span className="line">{line}</span>
         </span>
         <span className="open"><span className="closed-l">Read</span><span className="open-l">Close</span></span>
       </summary>
@@ -177,18 +216,19 @@ export function PrelimRow({ bout, brief, event, imgs }: { bout: Bout; brief?: De
   );
 }
 
-/* ---- sticky fight navigator ------------------------------------------- */
+/* ---- local navigator: three groups + Jump to fight ▾ ------------------- */
 export function FightNavigator({ live }: { live: Bout[] }) {
   const { main, mainCard, prelims, unpositioned } = cardSections(live);
+  const items = live.map((b, i) => ({ href: i === 0 ? "#main-event" : `#bout-${b.id}`, label: `${lastName(b.fighter_a)} vs ${lastName(b.fighter_b)}`, note: `${weightClassLabel(b.weight_class, b.is_womens)}${b.is_title ? " · Title" : ""}` }));
   return (
     <nav className="fw-nav" aria-label="Fight navigator">
       <div className="fw-nav-in">
-        {main && <a href="#main-event" className="group">Main event</a>}
-        {mainCard.length > 0 && <a href="#main-card" className="group">Main card <small>{mainCard.length + 1}</small></a>}
-        {prelims.length > 0 && <a href="#prelims" className="group">Prelims <small>{prelims.length}</small></a>}
-        {unpositioned.length > 0 && <a href="#announced" className="group">Announced <small>{unpositioned.length}</small></a>}
-        <span className="sep" aria-hidden="true" />
-        {live.map((b, i) => <a href={i === 0 ? "#main-event" : `#bout-${b.id}`} className="bout" key={b.id}>{lastName(b.fighter_a)} vs {lastName(b.fighter_b)}{b.is_title && <small>Title</small>}</a>)}
+        {main && <a href="#main-event">Main event</a>}
+        {mainCard.length > 0 && <a href="#main-card">Main card <small>{mainCard.length + 1}</small></a>}
+        {prelims.length > 0 && <a href="#prelims">Prelims <small>{prelims.length}</small></a>}
+        {unpositioned.length > 0 && <a href="#announced">Announced <small>{unpositioned.length}</small></a>}
+        <span className="grow" aria-hidden="true" />
+        {items.length > 1 && <Dropdown id="fw-jump" label="Jump to fight" align="right" className="fw-jump" panelClassName="fw-jump-panel" groups={[{ heading: "Jump to fight", items }]} />}
       </div>
     </nav>
   );
@@ -202,7 +242,7 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
   const dwcs = isDanaWhiteContenderSeries(event.name);
   const liveNight = days != null && days <= 0 && days >= -1 && !done;
   const countdown = done ? "Final" : days == null ? "Date TBA" : days === 0 ? "Fight night" : days === 1 ? "Tomorrow" : days < 0 ? "Awaiting results" : `${days} days out`;
-  const crumbs = archive ? [{ name: "Fight Week", href: "/fight-week" }, { name: event.name }] : [{ name: "Home", href: "/" }, { name: "Fight Week" }];
+  const crumbs = archive ? [{ name: "Fight Week", href: "/fight-week" }, { name: event.name }] : [{ name: "Fight Week" }];
   const url = archive ? `${SITE.url}/pregame/${slug}` : `${SITE.url}/fight-week`;
   const grid = (list: Bout[]) => <div className="fw-grid">{list.map((b) => <MatchupIntel key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} />)}</div>;
 
@@ -210,23 +250,26 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
     <div className="wrap fw-page">
       <Breadcrumbs items={crumbs} />
       <header className="fw-head">
-        <div>
-          <div className="fw-kicker"><i className={liveNight ? "live" : ""} />Pregame Desk · {done ? "Pregame archive" : "Fight week"}{dwcs ? " · Contender Series" : ""}</div>
+        <div className="fw-head-main">
+          <div className="fw-kicker"><i className={liveNight ? "live" : ""} />Pregame Desk</div>
+          <div className="fw-kicker-2">{done ? "Pregame archive" : "Fight week"}{dwcs ? " · Contender Series" : ""}</div>
           <h1>{event.name}</h1>
           <div className="fw-meta">
-            <span><time dateTime={event.event_date || undefined}>{fmtDate(event.event_date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</time></span>
+            <span><time dateTime={event.event_date || undefined}>{fmtDate(event.event_date, { weekday: "long", month: "long", day: "numeric" })}</time></span>
             <span>{locationLine(event) || "Venue TBA"}</span>
-            <span><b>{plural(live.length, "bout")}</b>{main ? ` · ${weightClassLabel(main.weight_class, main.is_womens)}${main.is_title ? " title" : ""} main event` : ""}</span>
-            <span><b>{countdown}</b></span>
+            <span>{plural(live.length, "announced bout")}{main ? ` · ${weightClassLabel(main.weight_class, main.is_womens)}${main.is_title ? " title" : ""} main event` : ""}</span>
           </div>
-          <div className="fw-stamp">Intelligence updated <span>{fmtStamp(updated)}</span> · Built from <Link href="/learn/fight-dna">Fight DNA</Link> + verified fight record</div>
           {done && <div className="fw-archive-note">This is the pregame read as it stood before the card, kept as a permanent record. Fighter records are shown as currently stored; archived form is limited to results before the event date. Results and round stats live on the event page.</div>}
         </div>
-        <div className="fw-actions">
-          <Link href={`/events/${eventSlug(event)}`} className="btn gold">{done ? "Results & full card" : "Full card"}</Link>
-          <a href={dwcs ? UFC_OFFICIAL.contenderSeries : UFC_OFFICIAL.events} className="btn" target="_blank" rel="noopener">Official UFC event ↗</a>
-          {videos.length ? <a href="#fw-video" className="btn">Watch official video</a> : <a href={UFC_OFFICIAL.youtube} className="btn" target="_blank" rel="noopener">Official UFC video ↗</a>}
-        </div>
+        <aside className="fw-head-side">
+          <div className="fw-updated"><span>Intelligence updated</span><b>{fmtStamp(updated)}</b><small>Built from <Link href="/learn/fight-dna">Fight DNA</Link> + verified fight record</small></div>
+          <div className="fw-countdown"><b>{countdown}</b></div>
+          <div className="fw-actions">
+            <Link href={`/events/${eventSlug(event)}`} className="btn gold">{done ? "Results & full card" : "Full card"}</Link>
+            <a href={dwcs ? UFC_OFFICIAL.contenderSeries : UFC_OFFICIAL.events} className="btn" target="_blank" rel="noopener">Official UFC ↗</a>
+            {videos.length ? <a href="#fw-video" className="btn">Official video</a> : <a href={UFC_OFFICIAL.youtube} className="btn" target="_blank" rel="noopener">Official video ↗</a>}
+          </div>
+        </aside>
       </header>
 
       <FightNavigator live={live} />
@@ -237,7 +280,7 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
 
       {mainCard.length > 0 && (
         <section id="main-card" className="fw-sec">
-          <div className="fw-sec-head"><div><div className="eyebrow">Main card · scan first</div><h2>Rest of the main card</h2></div><small>{plural(mainCard.length, "matchup")} · one read, two facts each</small></div>
+          <div className="fw-sec-head"><div><div className="eyebrow">Scan first</div><h2>Main card</h2></div><small>{plural(mainCard.length, "matchup")} · one read, two facts each</small></div>
           {grid(mainCard)}
         </section>
       )}
@@ -251,7 +294,7 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
 
       {prelims.length > 0 && (
         <section id="prelims" className="fw-sec">
-          <div className="fw-sec-head"><div><div className="eyebrow">Prelims · compact</div><h2>Preliminary card</h2></div><small>{plural(prelims.length, "bout")} · expand for the read</small></div>
+          <div className="fw-sec-head"><div><div className="eyebrow">Compact</div><h2>Prelims</h2></div><small>{plural(prelims.length, "bout")} · expand for the read</small></div>
           <div className="fw-prelims">{prelims.map((b) => <PrelimRow key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} />)}</div>
         </section>
       )}
@@ -284,7 +327,7 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
 export function FightWeekEmpty({ next, upcoming }: { next: Event | null; upcoming: Event[] }) {
   return (
     <div className="wrap fw-page">
-      <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Fight Week" }]} />
+      <Breadcrumbs items={[{ name: "Fight Week" }]} />
       <section className="fw-empty" aria-labelledby="fw-empty-title">
         <div className="fw-kicker"><i />Next fight week</div>
         <h1 id="fw-empty-title">{next ? next.name : "Next fight week"}</h1>
@@ -344,7 +387,7 @@ export function FightWeekTeaser({ event, brief, imgs, framing, fights, updated }
         <h2 id="fw-teaser-title">{event.name}</h2>
         <div className="fw-meta"><span>{fmtDate(event.event_date, { weekday: "short", month: "short", day: "numeric" })}</span><span>{locationLine(event) || "Venue TBA"}</span>{days != null && days >= 0 && <span><b>{days === 0 ? "Fight night" : days === 1 ? "Tomorrow" : `${days} days out`}</b></span>}</div>
         {read && <div className="fw-teaser-read"><div className="fw-h">{fightRead(brief).length ? "Fight read" : "What to watch"}</div>{read}</div>}
-        {facts.length > 0 && <ul className="fw-facts">{facts.map((f) => <li key={f.key}><b>{f.label}</b><span>{f.line}</span></li>)}</ul>}
+        {facts.length > 0 && <ul className="fw-facts">{facts.map((f) => <li key={f.key}><b>{f.label}</b><span><strong>{f.hook}</strong> {f.line}</span></li>)}</ul>}
         <div className="fw-teaser-actions"><Link href="/fight-week" className="btn gold">Open Pregame Desk →</Link><Link href={`/events/${eventSlug(event)}`} className="btn">Full card</Link></div>
         <div className="fw-teaser-proof"><span><b>{fights}</b> {fights === 1 ? "fight" : "fights"} analyzed</span>{dna && <span>Fight DNA</span>}{brief.tier !== "watch" && <span>Verified archive packet</span>}{updated && <span>Updated {fmtStamp(updated)}</span>}</div>
       </div>

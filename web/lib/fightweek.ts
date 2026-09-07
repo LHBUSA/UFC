@@ -32,7 +32,9 @@ export type FightWeekPacket = {
   sources: string[];
 };
 
-export type Factor = { key: "pace" | "distance" | "grappling" | "danger" | "durability" | "experience"; label: string; line: string; lean: "a" | "b" | null; weight: number };
+/* `hook` is the evidence in a few words (e.g. "6.1 vs 4.8 landed / min") so a
+ * reader finds the fact before the explanation. */
+export type Factor = { key: "pace" | "distance" | "grappling" | "danger" | "durability" | "experience"; label: string; hook: string; line: string; lean: "a" | "b" | null; weight: number };
 
 const n1 = (v: number | null | undefined) => (v == null ? null : Number(v).toFixed(1).replace(/\.0$/, ""));
 const pctOf = (v: number | null | undefined) => (v == null ? null : `${Math.round(Number(v) * (Number(v) <= 1 ? 100 : 1))}%`);
@@ -119,6 +121,30 @@ export function fightRead(b: DeskBrief): string[] {
   if (clash) out.push(clash);
   return out.slice(0, 2);
 }
+/* One strong lead statement, an optional supporting sentence only when it adds
+ * a second dimension, and the top factor as a short evidence line. */
+export function fightReadParts(b: DeskBrief): { lead: string; supporting: string | null; evidence: string | null; watch: boolean } | null {
+  const read = fightRead(b);
+  const watch = !read.length;
+  const lines = watch ? whatToWatch(b) : read;
+  if (!lines.length) return null;
+  const lead = lines[0];
+  const second = lines[1] || null;
+  const sameDimension = (x: string, y: string) => [/volume|per minute|strikes/i, /wrestl|takedown|grappl/i, /reach|distance|range/i, /finish|stopped|KO/i].some((re) => re.test(x) && re.test(y));
+  const supporting = second && !sameDimension(lead, second) ? second : null;
+  const top = thingsThatMatter(b, 1)[0];
+  return { lead, supporting, evidence: top ? `${top.label}: ${top.hook}` : null, watch };
+}
+
+/* Evidence-led phase headlines derived from the phase text itself. */
+export function phaseHeadlines(b: DeskBrief, phases: { early: string; middle: string; late: string }): { early: string; middle: string; late: string } {
+  const five = b.bout.is_title || b.bout.scheduled_rounds === 5;
+  const early = /first-round finish/i.test(phases.early) ? "Opening danger" : /takedown/i.test(phases.early) ? "The first takedown test" : /reach|range/i.test(phases.early) ? "Range discovery" : /title/i.test(phases.early) ? "Who is willing to lead" : "Who leads, who counters";
+  const middle = /takedowns keep landing/i.test(phases.middle) ? "Do the takedowns keep landing?" : /pace/i.test(phases.middle) ? "Pace and distance settle" : "Adjustments decide";
+  const late = five ? "Five-round questions" : /Decision share|cards/i.test(phases.late) ? "Round three and the cards" : /title|belt/i.test(phases.late) ? "What the result changes" : "The final round";
+  return { early, middle, late };
+}
+
 export function whatToWatch(b: DeskBrief): string[] {
   return [b.mainTake[0], b.earlyRead[0]].filter(Boolean).slice(0, 2);
 }
@@ -138,6 +164,7 @@ export function thingsThatMatter(b: DeskBrief, max = 3): Factor[] {
     const hi = sa >= sb ? A : B, lo = sa >= sb ? B : A;
     out.push({
       key: "pace", label: "Pace", weight: 0.6 + diff, lean: diff >= 1.2 ? side(hi) : null,
+      hook: `${n1(hi.fighter.career_slpm)} vs ${n1(lo.fighter.career_slpm)} landed / min`,
       line: diff >= 1.2
         ? `${last(hi)} lands ${n1(hi.fighter.career_slpm)} significant strikes per minute to ${poss(lo)} ${n1(lo.fighter.career_slpm)}: a real volume gap.`
         : `${n1(sa)} and ${n1(sb)} significant strikes per minute: similar output, so accuracy${a.career_str_acc != null && f.career_str_acc != null ? ` (${pctOf(a.career_str_acc)} vs ${pctOf(f.career_str_acc)})` : ""} decides the exchanges.`,
@@ -151,6 +178,7 @@ export function thingsThatMatter(b: DeskBrief, max = 3): Factor[] {
     const stances = Boolean(a.stance && f.stance && a.stance !== f.stance);
     out.push({
       key: "distance", label: "Distance", weight: 0.5 + diff / 2 + (stances ? 0.3 : 0), lean: side(longer),
+      hook: `${diff}-inch reach difference`,
       line: `${last(longer)} holds a ${diff}-inch reach edge (${fmtReach(longer.fighter.reach_in)} to ${fmtReach(shorter.fighter.reach_in)}); ${last(shorter)} has to cross distance to land${stances ? ", and opposite stances open the lead-side lane" : ""}.`,
     });
   }
@@ -163,11 +191,12 @@ export function thingsThatMatter(b: DeskBrief, max = 3): Factor[] {
     if (w >= 1.5) {
       out.push({
         key: "grappling", label: "Grappling", weight: 0.4 + w / 1.5 + (def != null && def <= 0.6 ? 0.6 : 0), lean: def != null && def >= 0.75 ? side(other) : side(wrestler),
+        hook: `${n1(w)} takedowns / 15${def != null ? ` vs ${pctOf(def)} defense` : ""}`,
         line: `${last(wrestler)} averages ${n1(w)} takedowns per 15 minutes${def != null ? `; ${last(other)} has stopped ${pctOf(def)} of attempts on record` : ""}.`,
       });
     } else if ((subs != null && subs >= 1) || (subb != null && subb >= 1)) {
       const s = subs != null && subs >= (subb || 0) ? A : B;
-      out.push({ key: "grappling", label: "Grappling", weight: 0.9, lean: side(s), line: `Neither fighter shoots often, but ${last(s)} attempts ${n1(s.fighter.career_sub_avg)} submissions per 15 minutes once a scramble starts.` });
+      out.push({ key: "grappling", label: "Grappling", weight: 0.9, lean: side(s), hook: `${n1(s.fighter.career_sub_avg)} submission attempts / 15`, line: `Neither fighter shoots often, but ${last(s)} attempts ${n1(s.fighter.career_sub_avg)} submissions per 15 minutes once a scramble starts.` });
     }
   }
 
@@ -179,6 +208,7 @@ export function thingsThatMatter(b: DeskBrief, max = 3): Factor[] {
     if (rate >= 0.5) {
       out.push({
         key: "danger", label: "Danger zone", weight: 0.3 + rate * 1.5 + (early >= 2 ? 0.5 : 0), lean: side(s),
+        hook: early >= 2 ? `${early} recent R1 finishes` : `${Math.round(rate * 100)}% finish rate`,
         line: `${last(s)} has finished ${Math.round(rate * 100)}% of archived wins (${s.archive.ko} KO/TKO, ${s.archive.sub} submission)${early >= 2 ? `, ${early} of them inside round one in the last ${s.lastResults.length}` : ""}.`,
       });
     }
@@ -192,10 +222,11 @@ export function thingsThatMatter(b: DeskBrief, max = 3): Factor[] {
       const sd = num(hit.fighter.career_str_def);
       out.push({
         key: "durability", label: "Durability", weight: 0.4 + hit.archive.finishedBy * 0.7 + (sd != null && sd <= 0.5 ? 0.4 : 0), lean: hit === A ? "b" : "a",
+        hook: `${last(hit)} finished ${hit.archive.finishedBy}× on record`,
         line: `${last(hit)} has been finished ${hit.archive.finishedBy} time${hit.archive.finishedBy === 1 ? "" : "s"} in the archive${num(hit.fighter.career_sapm) != null ? ` and absorbs ${n1(hit.fighter.career_sapm)} strikes per minute` : ""}${clean ? `; ${last(clean)} has never been stopped in the stored record` : ""}.`,
       });
     } else if (dur.length === 2) {
-      out.push({ key: "durability", label: "Durability", weight: 0.5, lean: null, line: `Neither fighter has been finished in the stored record (${A.archive.fights} and ${B.archive.fights} archived bouts), so a stoppage would be a first.` });
+      out.push({ key: "durability", label: "Durability", weight: 0.5, lean: null, hook: "Neither has been finished", line: `Neither fighter has been finished in the stored record (${A.archive.fights} and ${B.archive.fights} archived bouts), so a stoppage would be a first.` });
     }
   }
 
@@ -206,6 +237,7 @@ export function thingsThatMatter(b: DeskBrief, max = 3): Factor[] {
     const lessS = more === A ? B : A;
     out.push({
       key: "experience", label: "Experience", weight: 0.3 + (five ? fd * 0.7 : 0) + ad / 8, lean: side(more),
+      hook: five && fd >= 1 ? `${more.fiveRoundBouts} vs ${lessS.fiveRoundBouts} five-round fights` : `${more.archive.fights} vs ${lessS.archive.fights} archived bouts`,
       line: five && fd >= 1
         ? `${last(more)} has ${more.fiveRoundBouts} archived five-round fight${more.fiveRoundBouts === 1 ? "" : "s"} to ${poss(lessS)} ${lessS.fiveRoundBouts}; championship rounds are familiar territory for one side.`
         : `${last(more)} has ${more.archive.fights} archived bouts to ${poss(lessS)} ${lessS.archive.fights}: the deeper book of tape belongs to ${last(more)}.`,

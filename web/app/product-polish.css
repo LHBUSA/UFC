@@ -25,25 +25,13 @@
 .hdr-in .nav { margin-left: clamp(0px, .5vw, 10px); }
 .hdr-in .nav a { padding-left: clamp(8px, .75vw, 12px); padding-right: clamp(8px, .75vw, 12px); }
 .hdr-cta { min-width: 0; }
-.hdr-next { min-width: 250px; width: clamp(250px, 25vw, 430px); max-width: 430px; padding-right: 14px; }
-.hdr-next-copy { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 7px; min-width: 0; width: 100%; overflow: visible !important; }
-.hdr-next-copy > * { min-width: 0; }
-.hdr-next-event { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--pbe-dim); }
-.hdr-next-event::before, .hdr-next-date::before { content: "·"; color: var(--pbe-subtle); margin-right: 7px; }
-.hdr-next-date { white-space: nowrap; color: var(--pbe-faint); }
+/* Compact current-card chip (FIGHT WEEK / SEP 12): the old wide event-name pill is retired; the Fight Week page owns the event title. */
+.hdr-next { width: auto; min-width: 0; max-width: 150px; }
 .account-btn { padding-left: 13px; padding-right: 13px; }
-@media (min-width: 1360px) {
-  .hdr-next { width: clamp(300px, 28vw, 460px); max-width: 460px; }
-}
 @media (max-width: 1220px) {
   .hdr-wrap .brand-word, .hdr-wrap .oct { display: none; }
-  .hdr-next { min-width: 220px; width: clamp(220px, 25vw, 320px); }
 }
 @media (max-width: 1040px) {
-  .hdr-next span { max-width: none; }
-  .hdr-next { min-width: 205px; width: 25vw; }
-  .hdr-next-date { display: none; }
-  .hdr-next-copy { grid-template-columns: auto minmax(0, 1fr); }
   .hdr-in .nav a { font-size: 12px; padding-left: 7px; padding-right: 7px; }
 }
 @media (max-width: 900px) {

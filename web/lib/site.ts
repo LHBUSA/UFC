@@ -39,16 +39,28 @@ export const SITE = {
   contact: "sales@localhomebuyersusa.com",
 } as const;
 
-export const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/fight-week", label: "Fight Week" },
-  { href: "/events", label: "Schedule" },
-  { href: "/contender-series", label: "DWCS" },
-  { href: "/fighters", label: "Fighters" },
-  { href: "/rankings", label: "Rankings" },
-  { href: "/history", label: "History" },
-  { href: "/news", label: "News" },
-  { href: "/pro", label: "Pro" },
+/* Primary navigation registry. Every route below stays live; `place` decides
+ * where the link renders:
+ *   primary  the desktop bar and the top of the mobile menu
+ *   more     the accessible "More ▾" menu (grouped) and the mobile "More" group
+ *   logo     the wordmark already links here (no duplicate text link on desktop)
+ *   cta      rendered as the Go Pro button, not as a text link
+ * Removing a link from the bar never removes a route. */
+export type NavPlace = "primary" | "more" | "logo" | "cta";
+export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace; group?: string }> = [
+  { href: "/", label: "Home", place: "logo" },
+  { href: "/fight-week", label: "Fight Week", place: "primary" },
+  { href: "/events", label: "Schedule", place: "primary" },
+  { href: "/fighters", label: "Fighters", place: "primary" },
+  { href: "/rankings", label: "Rankings", place: "primary" },
+  { href: "/news", label: "News", place: "primary" },
+  { href: "/contender-series", label: "DWCS", place: "more", group: "Contender Series" },
+  { href: "/history", label: "History", place: "more", group: "Archive" },
+  { href: "/hall-of-fame", label: "Hall of Fame", place: "more", group: "Archive" },
+  { href: "/referees", label: "Referees", place: "more", group: "Intelligence" },
+  { href: "/#notable-voices", label: "Notable Voices", place: "more", group: "Intelligence" },
+  { href: "/learn/fight-dna", label: "How Fight DNA works", place: "more", group: "Intelligence" },
+  { href: "/pro", label: "Pro", place: "cta" },
 ] as const;
 
 export const STORY_TYPE_LABEL: Record<string, string> = {

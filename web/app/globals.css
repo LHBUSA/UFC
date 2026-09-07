@@ -87,7 +87,12 @@ main { flex: 1; }
 .nav a:hover { color: var(--pbe-paper); }
 .nav a[aria-current="page"] { color: var(--pbe-paper); border-bottom-color: var(--pbe-gold); }
 .hdr-cta { display: flex; gap: var(--s-2); align-items: center; margin-left: auto; }
-.hdr-next { display: inline-flex; align-items: center; gap: 10px; padding: 7px 12px 7px 9px; border: 1px solid var(--pbe-line); border-radius: var(--r-pill); font: 600 var(--fs-label)/1 var(--pbe-font-data); color: var(--pbe-dim); letter-spacing: .04em; max-width: 320px; }
+/* Current-card chip: two short lines (FIGHT WEEK / SEP 12), ~120-150px. The
+ * Fight Week page owns the event title; the header never repeats it. */
+.hdr-next { display: inline-flex; align-items: center; gap: 9px; padding: 6px 12px 6px 10px; border: 1px solid var(--pbe-line); border-radius: var(--r-pill); font: 600 var(--fs-label)/1 var(--pbe-font-data); color: var(--pbe-dim); letter-spacing: .04em; max-width: 150px; flex: none; }
+.hdr-next-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.hdr-next-copy b { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; line-height: 1; }
+.hdr-next-date { font-size: 11px; line-height: 1; color: var(--pbe-dim); }
 .hdr-next:hover { border-color: var(--pbe-gold); color: var(--pbe-paper); }
 .hdr-next .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pbe-gold); box-shadow: 0 0 0 3px var(--pbe-gold-soft); flex: none; }
 .hdr-next .dot.live { background: var(--pbe-live); box-shadow: 0 0 0 3px rgba(230,57,70,.25); animation: pulse 1.6s infinite; }
@@ -109,16 +114,38 @@ main { flex: 1; }
 .mnav nav { display: flex; flex-direction: column; }
 .mnav a { display: flex; align-items: center; justify-content: space-between; padding: 15px var(--s-5); border-bottom: 1px solid var(--pbe-line-faint); font-weight: 600; color: var(--pbe-paper-2); font-size: 16px; }
 .mnav a[aria-current="page"] { color: var(--pbe-gold); }
-.mnav a::after { content: "→"; color: var(--pbe-subtle); }
+.mnav a::after { content: "→"; color: var(--pbe-faint); }
+.mnav a small { margin-left: auto; margin-right: 12px; color: var(--pbe-faint); font: 600 11px/1 var(--pbe-font-data); letter-spacing: .06em; text-transform: uppercase; }
+.mnav-group { border-top: 1px solid var(--pbe-line); }
+.mnav-heading { padding: 14px var(--s-5) 6px; color: var(--pbe-gold); font: 700 11px/1 var(--pbe-font-data); letter-spacing: .14em; text-transform: uppercase; }
+.mnav-group a { padding: 13px var(--s-5); font-size: 15px; }
+/* ---- More ▾ / Jump to fight ▾ dropdown ---- */
+.dd { position: relative; display: inline-flex; }
+.dd-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 0; cursor: pointer; color: var(--pbe-dim); font: 600 var(--fs-sm)/1 var(--pbe-font-ui); letter-spacing: .02em; padding: 22px 12px 20px; border-bottom: 2px solid transparent; }
+.dd-btn:hover, .dd.open .dd-btn { color: var(--pbe-paper); }
+.dd.active .dd-btn { color: var(--pbe-paper); border-bottom-color: var(--pbe-gold); }
+.dd-btn:focus-visible { outline: 2px solid var(--pbe-gold-bright); outline-offset: -2px; }
+.dd-caret { width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s; }
+.dd.open .dd-caret { transform: translateY(1px) rotate(225deg); }
+.dd-panel { position: absolute; top: calc(100% + 2px); left: 0; z-index: 70; min-width: 250px; padding: 8px; border: 1px solid rgba(212,175,55,.35); border-radius: 12px; background: #15110d; box-shadow: 0 24px 60px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.6); }
+.dd-panel.right { left: auto; right: 0; }
+.dd-panel[hidden] { display: none; }
+.dd-group + .dd-group { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--pbe-line-faint); }
+.dd-heading { padding: 6px 10px 4px; color: var(--pbe-gold); font: 700 10px/1 var(--pbe-font-data); letter-spacing: .14em; text-transform: uppercase; }
+.dd-panel a { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px; border-radius: 7px; color: var(--pbe-paper-2); font: 600 14px/1.2 var(--pbe-font-ui); }
+.dd-panel a:hover, .dd-panel a:focus-visible { background: rgba(212,175,55,.1); color: var(--pbe-paper); outline: none; }
+.dd-panel a[aria-current="page"] { color: var(--pbe-gold); }
+.dd-panel a small { color: var(--pbe-faint); font: 600 10.5px/1 var(--pbe-font-data); letter-spacing: .04em; }
+.wire-rail.static { position: static; }
 .mnav-foot { display: flex; gap: var(--s-2); padding: var(--s-4) var(--s-5); }
 .mnav-foot .btn { flex: 1; }
 #mnav-toggle:checked ~ .mnav { display: block; }
 #mnav-toggle:checked ~ .hdr-in .menu-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 #mnav-toggle:checked ~ .hdr-in .menu-btn span:nth-child(2) { opacity: 0; }
 #mnav-toggle:checked ~ .hdr-in .menu-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-@media (min-width: 1360px) { .hdr-next { max-width: 460px; } }
-@media (max-width: 1040px) { .hdr-next span { max-width: 150px; } }
-@media (max-width: 900px) {
+/* Compact / mobile navigation begins before the bar gets tight: below 1080px
+ * the text links move into the menu with large tap targets. */
+@media (max-width: 1080px) {
   .nav, .hdr-next, .hide-m { display: none !important; }
   .menu-btn { display: flex; }
 }
@@ -503,7 +530,8 @@ main { flex: 1; }
 .net a span { color: var(--pbe-paper); font-weight: 600; font-size: var(--fs-sm); }
 .net a small { color: var(--pbe-faint); font-size: var(--fs-label); }
 .net a.here { border-color: var(--pbe-gold-soft); }
-.disclaimer { font-size: var(--fs-label); color: var(--pbe-faint); max-width: 96ch; margin-top: var(--s-5); line-height: 1.6; }
+.disclaimer { font-size: 12px; color: #a29d93; max-width: 96ch; margin-top: var(--s-5); line-height: 1.65; }
+.ftr-rail, .ftr-rail a, .net a small { color: #a29d93; }
 
 /* ---- reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
@@ -799,9 +827,6 @@ body::after {
 
 /* Header: with DWCS in the primary nav the next-event pill adapts instead of clipping the event name.
    Wide: label + name + date. <=1519px: drop the "Fight week" label (the dot + title keep the state). <=1300px: drop the date. */
-@media (max-width: 1519px) { .hdr-next-copy b { display: none; } }
-/* Nine primary items (Fight Week added): tighten nav padding before the pill collapses. */
-@media (max-width: 1400px) { .nav a { padding-left: 9px; padding-right: 9px; } }
-@media (max-width: 1180px) { .nav a { padding-left: 7px; padding-right: 7px; font-size: 12px; } .hdr-next { max-width: 240px; } }
-@media (max-width: 1040px) { .nav { margin-left: 0; } .nav a { padding-left: 6px; padding-right: 6px; } }
-@media (max-width: 1300px) { .hdr-next-date { display: none; } }
+/* Five primary items + More: modest tightening only, never microscopic type. */
+@media (max-width: 1280px) { .nav a, .nav .dd-btn { padding-left: 10px; padding-right: 10px; } }
+@media (max-width: 1180px) { .nav { margin-left: 4px; } .nav a, .nav .dd-btn { padding-left: 8px; padding-right: 8px; } .hdr-in { gap: var(--s-4); } }

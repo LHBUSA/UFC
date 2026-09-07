@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T12:15:13.409Z",
+  "generated_at": "2026-09-07T12:32:53.025Z",
   "routes": [
     "/",
     "/about",
@@ -39,10 +39,6 @@
       "label": "Schedule"
     },
     {
-      "href": "/contender-series",
-      "label": "DWCS"
-    },
-    {
       "href": "/fighters",
       "label": "Fighters"
     },
@@ -51,12 +47,32 @@
       "label": "Rankings"
     },
     {
+      "href": "/news",
+      "label": "News"
+    },
+    {
+      "href": "/contender-series",
+      "label": "DWCS"
+    },
+    {
       "href": "/history",
       "label": "History"
     },
     {
-      "href": "/news",
-      "label": "News"
+      "href": "/hall-of-fame",
+      "label": "Hall of Fame"
+    },
+    {
+      "href": "/referees",
+      "label": "Referees"
+    },
+    {
+      "href": "/#notable-voices",
+      "label": "Notable Voices"
+    },
+    {
+      "href": "/learn/fight-dna",
+      "label": "How Fight DNA works"
     },
     {
       "href": "/pro",
