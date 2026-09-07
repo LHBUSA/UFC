@@ -36,6 +36,19 @@ const get = async (q) => {
   const r = await fetch(`${URL_}/rest/v1/${q}`, { headers: H });
   return r.ok ? r.json() : null;
 };
+async function all(q, pageSize = 1000) {
+  const out = [];
+  for (let from = 0; ; from += pageSize) {
+    const r = await fetch(`${URL_}/rest/v1/${q}`, { headers: { ...H, Range: `${from}-${from + pageSize - 1}` } });
+    if (!r.ok) return out;
+    const rows = await r.json();
+    if (!Array.isArray(rows)) return out;
+    out.push(...rows);
+    if (rows.length < pageSize) break;
+  }
+  return out;
+}
+const normName = (v) => String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z ]/g, '').trim().replace(/\s+/g, ' ');
 const count = async (q) => {
   const r = await fetch(`${URL_}/rest/v1/${q}${q.includes('?') ? '&' : '?'}select=*&limit=1`, { headers: { ...H, Prefer: 'count=exact' } });
   return r.ok ? Number((r.headers.get('content-range') || '/0').split('/')[1]) || 0 : null;
@@ -52,12 +65,34 @@ const ago = (iso) => {
 const main = async () => {
   const dayAgo = new Date(Date.now() - 86400000).toISOString();
 
-  const [runs, lastRound, roundsToday, totalRounds] = await Promise.all([
+  const [runs, lastRound, roundsToday, totalRounds, reviewCount, fighters] = await Promise.all([
     get('ufc_ingest_runs?select=id,worker,status,started_at,finished_at,notes,assertion_failures&order=started_at.desc&limit=25'),
     get('ufc_bout_round_stats?select=captured_at&order=captured_at.desc&limit=1'),
     count(`ufc_bout_round_stats?captured_at=gte.${dayAgo}`),
     count('ufc_bout_round_stats'),
+    count('ufc_alias_review_queue'),
+    all('ufc_fighters?select=id,name,espn_athlete_id,ufcstats_id,dob'),
   ]);
+
+  /* Duplicate identity check. The resolver refuses to merge two same-name
+   * fighters whose second key disagrees, which is right - a wrong merge
+   * cannot be undone from the data - but it still has to create a row so the
+   * bout can exist. The result is a real duplicate sitting in the archive
+   * until a human resolves it, and until now nothing surfaced that.
+   *
+   * Two rows that each carry BOTH source ids are two different people who
+   * share a name, which the UFC has plenty of. A pair split across sources,
+   * one row per source, is one person recorded twice. */
+  const byName = new Map();
+  for (const f of fighters) {
+    const k = normName(f.name);
+    if (!k) continue;
+    if (!byName.has(k)) byName.set(k, []);
+    byName.get(k).push(f);
+  }
+  const dupGroups = [...byName.values()].filter((v) => v.length > 1);
+  const likelySame = dupGroups.filter((v) =>
+    v.some((f) => f.espn_athlete_id && !f.ufcstats_id) && v.some((f) => f.ufcstats_id && !f.espn_athlete_id));
 
   const ingestRuns = (runs || []).filter((r) => r.worker && r.worker !== 'backfill_ufcstats');
   const lastIngest = ingestRuns[0] || null;
@@ -83,6 +118,7 @@ const main = async () => {
   else if (Date.now() - new Date(lastRound[0].captured_at) > 14 * 86400000) problems.push('No round-stat row written in over 14 days.');
   if (lastIngest && lastIngest.status === 'failed') problems.push('The most recent ingest run failed.');
   if (!lastIngest) problems.push('No scheduled ingest run found at all.');
+  if (likelySame.length) problems.push(`${likelySame.length} fighter(s) exist as split rows, one per source, awaiting identity review.`);
 
   const line = (l, v) => console.log(`  ${l.padEnd(34)} ${v}`);
   console.log('\n=== UFC STATS INGEST HEALTH ===');
@@ -97,6 +133,19 @@ const main = async () => {
   line('round rows total', totalRounds == null ? 'n/a' : totalRounds.toLocaleString());
   line('last source error', lastError ? `${ago(lastError.started_at)} · ${String(lastError.notes?.last_error?.error || lastError.notes?.error || 'see run row').slice(0, 60)}` : 'none in last 25 runs');
   line('last schema assertion', lastAssert ? `${ago(lastAssert.started_at)} · ${String(lastAssert.assertion_failures[0]?.detail || '').slice(0, 60)}` : 'none in last 25 runs');
+
+  line('identity review queue', reviewCount == null ? 'n/a' : reviewCount);
+  line('duplicate-name fighter groups', dupGroups.length);
+  line('likely same person, split rows', likelySame.length);
+  if (likelySame.length) {
+    console.log('\n  split identities awaiting review (same name, one row per source):');
+    for (const g of likelySame.slice(0, 12)) {
+      console.log(`    ${g[0].name}`);
+      for (const f of g) console.log(`      ${f.id.slice(0, 8)}  espn=${f.espn_athlete_id || '-'}  ufcstats=${f.ufcstats_id || '-'}  dob=${f.dob || '-'}`);
+    }
+    console.log('    Not merged automatically: the two sources disagree on date of birth,');
+    console.log('    and a wrong merge cannot be undone from the data.');
+  }
 
   console.log(problems.length ? '\nPROBLEMS' : '\nNo problems detected.');
   for (const p of problems) console.log(`  ! ${p}`);
