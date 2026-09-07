@@ -58,7 +58,9 @@ export const PRODUCTS: readonly ProductDef[] = [
       "A heavy blend hood with the mark at the left chest. Built for a cold arena concourse and an argument about scoring afterwards.",
     collection: "propbetedge",
     ...HOODIE,
-    art: "propbetedge-wordmark-gold",
+    /* Its own file: the hoodie front is 2100x2100 square, verified live, so it
+     * cannot share the tee's 1800x2400 portrait print file. */
+    art: "propbetedge-wordmark-gold-hoodie",
     sites: BOTH,
     sort_order: 20,
   },
