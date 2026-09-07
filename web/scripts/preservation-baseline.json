@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T12:32:53.025Z",
+  "generated_at": "2026-09-07T12:43:13.872Z",
   "routes": [
     "/",
     "/about",
@@ -100,6 +100,7 @@
     "public/brand/logo-wide.svg": "96411277969f",
     "public/brand/logo.svg": "9f1eca1c66b8",
     "public/brand/mark.svg": "a2cab735bff9",
+    "public/media/rankings-champion-bg.svg": "de8aa659cf0d",
     "public/media/ufc-cage-bg-1600.webp": "9f41dfb021f0",
     "public/media/ufc-cage-bg-960.webp": "54ae22994dca",
     "public/media/ufc-fence-1400.webp": "c3169bc13db0",

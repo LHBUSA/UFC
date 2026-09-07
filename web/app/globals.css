@@ -581,7 +581,7 @@ body::after {
 .sec { border-bottom-color: rgba(255,245,220,.07); }
 .ftr { background: rgba(13,11,8,.86); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .net a { background: rgba(29,25,20,.7); }
-.division .champ { background: linear-gradient(135deg, rgba(212,175,55,.16), transparent 60%), rgba(42,36,28,.8); }
+.division .champ { background: linear-gradient(135deg, rgba(212,175,55,.16), transparent 60%), #2a241c; }
 .story .img .gen, .article-hero .gen { background: radial-gradient(400px 200px at 80% 0%, rgba(212,175,55,.2), transparent 60%), linear-gradient(180deg, rgba(42,36,28,.9), rgba(13,11,8,.95)), url("/media/ufc-fence-1400.webp") center / cover; }
 
 /* Stage surfaces: fence texture, rim lighting per fighter side. */

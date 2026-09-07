@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 520" preserveAspectRatio="xMidYMid slice" role="img" aria-label="">
+  <!-- PropBetEdge original: championship presentation surface for rankings division headers.
+       Matte ink base, faint chain-link and octagon geometry, thin gold championship lines,
+       restrained glow behind the belt mark. No photography, no fighter. -->
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1510"/>
+      <stop offset="0.55" stop-color="#110e0a"/>
+      <stop offset="1" stop-color="#0b0907"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.5" r="0.55">
+      <stop offset="0" stop-color="#d4af37" stop-opacity="0.22"/>
+      <stop offset="0.45" stop-color="#d4af37" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.12" cy="0.1" r="0.6">
+      <stop offset="0" stop-color="#d4af37" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fadeR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.35" stop-color="#fff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="linkMask"><rect width="1400" height="520" fill="url(#fadeR)"/></mask>
+    <pattern id="links" width="44" height="44" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M22 0 V44 M0 22 H44" stroke="#d4af37" stroke-opacity="0.16" stroke-width="1" fill="none"/>
+    </pattern>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d4af37" stop-opacity="0"/>
+      <stop offset="0.2" stop-color="#d4af37" stop-opacity="0.55"/>
+      <stop offset="0.8" stop-color="#d4af37" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="520" fill="url(#base)"/>
+  <rect width="1400" height="520" fill="url(#glow2)"/>
+  <rect width="1400" height="520" fill="url(#links)" mask="url(#linkMask)"/>
+  <rect width="1400" height="520" fill="url(#glow)"/>
+  <!-- faint octagon geometry behind the belt side -->
+  <g fill="none" stroke="#d4af37" transform="translate(1150 260)">
+    <polygon points="0,-200 141,-141 200,0 141,141 0,200 -141,141 -200,0 -141,-141" stroke-opacity="0.16" stroke-width="1.2"/>
+    <polygon points="0,-150 106,-106 150,0 106,106 0,150 -106,106 -150,0 -106,-106" stroke-opacity="0.10" stroke-width="1"/>
+    <polygon points="0,-104 74,-74 104,0 74,74 0,104 -74,74 -104,0 -74,-74" stroke-opacity="0.07" stroke-width="1"/>
+  </g>
+  <!-- championship plate lines -->
+  <rect x="0" y="34" width="1400" height="1" fill="url(#line)"/>
+  <rect x="0" y="40" width="1400" height="1" fill="url(#line)" opacity="0.45"/>
+  <rect x="0" y="479" width="1400" height="1" fill="url(#line)" opacity="0.45"/>
+  <rect x="0" y="485" width="1400" height="1" fill="url(#line)"/>
+  <!-- deep vignette so the left portrait separates cleanly -->
+  <rect width="1400" height="520" fill="#0b0907" opacity="0.18"/>
+</svg>

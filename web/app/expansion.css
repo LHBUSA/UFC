@@ -218,7 +218,10 @@
 .rank-nav a:hover { border-color: var(--pbe-gold); color: var(--pbe-gold); }
 .rank-grid { grid-template-columns: repeat(auto-fill,minmax(440px,1fr)); gap: var(--s-5); }
 .division { scroll-margin-top: 64px; }
-.division .champ.champ-elevated { grid-template-columns: 118px minmax(0,1fr) auto; padding: 20px; background: linear-gradient(135deg, rgba(212,175,55,.16), transparent 55%), url('/media/ufc-fence-1400.webp') center/cover, var(--pbe-ink-3); border-bottom: 1px solid rgba(212,175,55,.35); }
+/* Rankings champion header: its own opaque championship surface (original SVG geometry, no photograph), so the global cage/fighter background never bleeds through and no unrelated fighter appears behind a champion. */
+.division .champ.champ-elevated { grid-template-columns: 118px minmax(0,1fr) auto; padding: 20px; background: url('/media/rankings-champion-bg.svg') center / cover no-repeat, #110e0a; border-bottom: 1px solid rgba(212,175,55,.35); }
+.division .champ.champ-elevated .portrait { box-shadow: 0 10px 30px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.6); background: #0b0907; }
+.division .champ.champ-elevated .who .n { text-shadow: 0 2px 14px rgba(0,0,0,.8); }
 .division .champ.champ-elevated .portrait { aspect-ratio: 4/5; border-radius: var(--r-md); border: 1px solid rgba(212,175,55,.4); }
 .division .champ.champ-elevated .who .n { font-size: 24px; }
 .division .champ.champ-elevated .who .n:hover { color: var(--pbe-gold); }
