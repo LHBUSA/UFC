@@ -8,15 +8,16 @@ import { Mark } from "@/components/Brand";
 import { pickVariant, type Framing } from "@/lib/variants";
 import styles from "./PregameDesk.module.css";
 
-/* Pregame Desk — fight-week intelligence. Every analysis line comes from
- * lib/pregame.ts, which only writes what the stored packet supports. This
- * component edits for hierarchy; it never fills a missing fact with inference. */
+/* Pregame Desk — fight-week intelligence.
+ * The homepage marquee is intentionally a scan-first broadcast panel. Deep
+ * prose and the full evidence packet live on the matchup page. Nothing below
+ * invents a missing fact: unpublished values stay explicit. */
+
+type Portraits = Map<string, PortraitSet>;
 
 function Para({ lines }: { lines: string[] }) {
   return <>{lines.map((l) => <p key={l}>{l}</p>)}</>;
 }
-
-type Portraits = Map<string, PortraitSet>;
 
 function ageAt(dob: string | null, eventDate: string | null): number | null {
   if (!dob || !eventDate) return null;
@@ -51,11 +52,16 @@ function FighterPanel({ side, fighter, rank, img, framing }: { side: "a" | "b"; 
       {variant ? (
         <img src={variant.src} alt={fighter.name} width={variant.width} height={variant.height} loading="lazy" decoding="async" style={{ objectPosition: variant.objectPosition }} />
       ) : (
-        <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", padding: 24 }}><Avatar f={fighter} img={img || undefined} size={130} /></div>
+        <div className={styles.fighterFallback}><Avatar f={fighter} img={img || undefined} size={126} /></div>
       )}
+      <div className={styles.fighterShade} aria-hidden="true" />
       <div className={styles.fighterInfo}>
         <strong><Link href={`/fighters/${fighterSlug(fighter)}`}>{fighter.name}</Link></strong>
-        <div className={styles.fighterMeta}><span>{fmtRecord(fighter)}</span><span className={styles.rank}>{rank || "Unranked"}</span></div>
+        {fighter.nickname && <span className={styles.nickname}>“{fighter.nickname}”</span>}
+        <div className={styles.fighterMeta}>
+          <b>{fmtRecord(fighter)}</b>
+          <span className={rank ? styles.rank : styles.unranked}>{rank || "Unranked"}</span>
+        </div>
       </div>
     </div>
   );
@@ -70,26 +76,31 @@ function DeskArt({ brief, event, imgs, framing }: { brief: DeskBrief; event: Eve
   if (!ia && !ib) {
     return (
       <div className={styles.faceoff}>
-        <div className={styles.fallback} style={{ gridColumn: "1 / -1" }}>
-          <Mark size={64} />
-          <div className={styles.center} style={{ background: "transparent" }}>
-            <h3>{bout.fighter_a.name}<i>vs</i>{bout.fighter_b.name}</h3>
-            <div className={styles.eventline}>{event.name}</div>
-          </div>
-        </div>
+        <FighterPanel side="a" fighter={bout.fighter_a} rank={a.rank} img={null} framing={null} />
+        <FightCenter bout={bout} event={event} />
+        <FighterPanel side="b" fighter={bout.fighter_b} rank={b.rank} img={null} framing={null} />
       </div>
     );
   }
   return (
     <div className={styles.faceoff}>
       <FighterPanel side="a" fighter={bout.fighter_a} rank={a.rank} img={ia} framing={fa} />
-      <div className={styles.center}>
-        <div className={styles.kicker}>{bout.is_title ? "Title fight" : "Main event"} · {weightClassLabel(bout.weight_class, bout.is_womens)} · {bout.scheduled_rounds || 3} rounds</div>
-        <h3>{bout.fighter_a.name}<i>vs</i>{bout.fighter_b.name}</h3>
-        <div className={styles.eventline}>{event.name} · {fmtDate(event.event_date, { month: "short", day: "numeric" })}{locationLine(event) ? ` · ${locationLine(event)}` : ""}</div>
-      </div>
+      <FightCenter bout={bout} event={event} />
       <FighterPanel side="b" fighter={bout.fighter_b} rank={b.rank} img={ib} framing={fb} />
       {(ia?.attribution_text || ib?.attribution_text) && <div className={styles.credit}>Portraits: {[ia?.attribution_text, ib?.attribution_text].filter(Boolean).join(" · ")}</div>}
+    </div>
+  );
+}
+
+function FightCenter({ bout, event }: { bout: Bout; event: Event }) {
+  return (
+    <div className={styles.center}>
+      <Mark size={24} />
+      <span className={styles.centerKicker}>{bout.is_title ? "Title fight" : "Main event"}</span>
+      <b className={styles.vs}>VS</b>
+      <span className={styles.division}>{weightClassLabel(bout.weight_class, bout.is_womens)}</span>
+      <span className={styles.centerMeta}>{bout.scheduled_rounds || 3} rounds</span>
+      <span className={styles.centerMeta}>{fmtDate(event.event_date, { month: "short", day: "numeric" })}</span>
     </div>
   );
 }
@@ -106,45 +117,65 @@ function Tale({ brief, event }: { brief: DeskBrief; event: Event }) {
   return <div className={styles.tale}>{cells.map(([left, label, right]) => <div className={styles.taleCell} key={label}><b>{left}</b><span>{label}</span><b>{right}</b></div>)}</div>;
 }
 
-function Insight({ label, lines }: { label: string; lines: string[] }) {
-  if (!lines.length) return null;
-  return <div className={styles.insight}><div className={styles.label}>{label}</div><Para lines={lines} /></div>;
+function Signal({ label, line }: { label: string; line?: string }) {
+  if (!line) return null;
+  return (
+    <div className={styles.signal}>
+      <span>{label}</span>
+      <p>{line}</p>
+    </div>
+  );
 }
 
-function SideKeys({ s }: { s: DeskSide }) {
-  const last = s.fighter.name.split(" ").slice(-1)[0];
+function WinPath({ side }: { side: DeskSide }) {
+  const last = side.fighter.name.split(" ").slice(-1)[0];
   return (
-    <div className={styles.keyCard}>
-      <div className={styles.keyHead}><strong>{s.fighter.name}</strong><span>{fmtRecord(s.fighter)} · {s.rank || "Unranked"}</span></div>
-      <div className={styles.label} style={{ marginTop: 12 }}>How {last} wins</div>
-      <ul>{s.keys.slice(0, 3).map((k) => <li key={k}>{k}</li>)}</ul>
+    <div className={styles.winPath}>
+      <div className={styles.winPathHead}>
+        <div><span>Win path</span><strong>{side.fighter.name}</strong></div>
+        <b>{fmtRecord(side.fighter)}</b>
+      </div>
+      <ul>{side.keys.slice(0, 2).map((k) => <li key={k}>{k}</li>)}</ul>
+      <span className={styles.pathLabel}>How {last} gets there</span>
     </div>
   );
 }
 
 function Marquee({ brief, event, imgs, framing }: { brief: DeskBrief; event: Event; imgs?: Map<string, PortraitSet>; framing?: Map<string, Framing> }) {
   const { bout, a, b } = brief;
+  const coverage = brief.coverage.startsWith("Full") ? "Full archive coverage" : "Limited archive coverage";
+  const signals = [
+    { label: "The edge", line: brief.mainTake[0] },
+    { label: "Style collision", line: brief.styleClash[0] },
+    { label: "Opening round", line: brief.earlyRead[0] },
+    { label: "If it goes long", line: brief.ifItGoesLong[0] || brief.resultChanges[0] },
+  ].filter((x) => x.line);
+
   return (
     <article className={styles.marquee}>
       <div className={styles.top}>
-        <div className={styles.kicker}>{bout.is_title ? "Championship" : "Featured matchup"} · verified fight-week packet</div>
-        <div className={styles.stakes}>{brief.stakes.map((s) => <span key={s}>{s}</span>)}</div>
+        <div>
+          <div className={styles.kicker}>Fight-week intelligence · verified packet</div>
+          <div className={styles.eventName}>{event.name}</div>
+        </div>
+        <div className={styles.stakes}>{brief.stakes.slice(0, 3).map((s) => <span key={s}>{s}</span>)}</div>
       </div>
+
       <DeskArt brief={brief} event={event} imgs={imgs} framing={framing} />
       <Tale brief={brief} event={event} />
-      <div className={styles.insights}>
-        <Insight label="Main take" lines={brief.mainTake.slice(0, 2)} />
-        <Insight label="Style clash" lines={brief.styleClash.slice(0, 2)} />
-        <Insight label="Early read" lines={brief.earlyRead.slice(0, 2)} />
+
+      <div className={styles.signalGrid}>
+        {signals.map((s) => <Signal key={s.label} label={s.label} line={s.line} />)}
       </div>
-      <div className={styles.keys}><SideKeys s={a} /><SideKeys s={b} /></div>
-      <div className={styles.bottom}>
-        {brief.ifItGoesLong.length > 0 && <div className={styles.bottomCard}><div className={styles.label}>If it goes long</div><Para lines={brief.ifItGoesLong.slice(0, 2)} /></div>}
-        <div className={styles.bottomCard}><div className={styles.label}>What the result changes</div><Para lines={brief.resultChanges.slice(0, 2)} /></div>
+
+      <div className={styles.winGrid}>
+        <WinPath side={a} />
+        <WinPath side={b} />
       </div>
+
       <div className={styles.foot}>
-        <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`} className="btn gold">Open the full matchup →</Link>
-        <details className={styles.evidence}><summary>Evidence packet · {brief.coverage.startsWith("Full") ? "full" : "limited"}</summary><ul>{brief.evidence.map((e) => <li key={e}>{e}</li>)}</ul><p>{brief.coverage}</p></details>
+        <div className={styles.coverage}><span className={styles.coverageDot} />{coverage}<small> · records + UFC Stats + archive + rankings + Fight DNA</small></div>
+        <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`} className="btn gold">Full matchup intelligence →</Link>
       </div>
     </article>
   );
@@ -183,13 +214,13 @@ export function PregameDesk({ event, briefs, imgs, framing, compact = false }: {
         <div>
           <div className="eyebrow">Pregame Desk · Fight-week intelligence</div>
           <h2 id="pregame-title">{event.name}</h2>
-          <p>{fmtDate(event.event_date, { weekday: "long", month: "long", day: "numeric" })}{locationLine(event) ? ` · ${locationLine(event)}` : ""}. Evidence-led reads from fighter records, UFC Stats career rates, archived results, the dated rankings snapshot and Fight DNA. Missing facts remain explicitly unpublished rather than inferred.</p>
+          <p>{fmtDate(event.event_date, { weekday: "long", month: "long", day: "numeric" })}{locationLine(event) ? ` · ${locationLine(event)}` : ""}. A fast read from records, UFC Stats, archived results, rankings and Fight DNA. Missing facts stay unpublished instead of being guessed.</p>
         </div>
         <Link href={`/events/${eventSlug(event)}`} className="btn">Full card →</Link>
       </div>
       {lead.tier === "watch" ? <div className="desk-support-grid"><Supporting brief={lead} event={event} imgs={imgs} /></div> : <Marquee brief={lead} event={event} imgs={imgs} framing={framing} />}
       {rest.length > 0 && !compact && <div className="desk-support-grid">{rest.map((x) => <Supporting key={x.bout.id} brief={x} event={event} imgs={imgs} />)}</div>}
-      <p className="pregame-note">Pregame Desk is evidence-led commentary, not a pick generator. Every number is traceable to a stored packet; odds, model output, injuries, camps and referee assignments appear only when a verified source exists.</p>
+      <p className="pregame-note">Pregame Desk is evidence-led commentary, not a pick generator. Odds, model output, injuries, camps and referee assignments appear only when a verified source exists.</p>
     </section>
   );
 }
