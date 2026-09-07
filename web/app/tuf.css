@@ -1,0 +1,270 @@
+/* The Ultimate Fighter archive.
+ *
+ * Built entirely from the existing tokens, and every selector namespaced
+ * `tuf-`, so the archive reads as another room in the same building and
+ * cannot reach a page that is not its own. */
+
+.tuf-cov { margin-bottom: var(--s-7); }
+.tuf-cov-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--s-3);
+  margin-bottom: var(--s-3);
+}
+.tuf-cov-cell {
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-md);
+  background: var(--pbe-ink-2);
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+.tuf-cov-cell b {
+  font-family: var(--pbe-font-data);
+  font-size: 26px;
+  color: var(--pbe-gold);
+  line-height: 1;
+}
+.tuf-cov-cell span {
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--pbe-faint);
+}
+
+.tuf-note { color: var(--pbe-faint); font-size: var(--fs-sm); line-height: 1.6; max-width: 78ch; margin: 0; }
+.tuf-note a { color: var(--pbe-dim); }
+.tuf-fine { color: var(--pbe-subtle); font-size: var(--fs-sm); line-height: 1.6; margin: 0 0 var(--s-2); }
+.tuf-none { color: var(--pbe-faint); font-style: italic; font-size: var(--fs-sm); }
+
+.tuf-conflicts {
+  border: 1px solid var(--pbe-gold-soft);
+  border-left: 3px solid var(--pbe-gold);
+  border-radius: var(--r-md);
+  background: var(--pbe-gold-wash);
+  padding: var(--s-4) var(--s-5);
+  margin-bottom: var(--s-7);
+}
+.tuf-conflicts h2 {
+  margin: 0 0 var(--s-2);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--pbe-gold);
+}
+.tuf-conflicts p { margin: 0 0 var(--s-2); color: var(--pbe-dim); font-size: var(--fs-sm); line-height: 1.6; }
+.tuf-conflicts p:last-child { margin-bottom: 0; }
+.tuf-conflicts b { color: var(--pbe-paper); }
+
+.tuf-section { margin-bottom: var(--s-8); }
+.tuf-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  padding-bottom: var(--s-3);
+  margin-bottom: var(--s-5);
+  border-bottom: 1px solid var(--pbe-line);
+}
+.tuf-section-head h2 {
+  margin: 0;
+  font-family: var(--pbe-font-display);
+  font-size: var(--fs-h2);
+  letter-spacing: var(--ls-tight);
+  color: var(--pbe-paper);
+}
+.tuf-section-head p { margin: 0; color: var(--pbe-faint); font-size: var(--fs-sm); max-width: 70ch; }
+.tuf-count {
+  margin-left: auto;
+  font-family: var(--pbe-font-data);
+  font-size: var(--fs-sm);
+  color: var(--pbe-faint);
+}
+
+/* ---- season cards ------------------------------------------------------ */
+
+.tuf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--s-4); }
+
+.tuf-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-4);
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(160deg, var(--pbe-ink-2), var(--pbe-ink-4));
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.tuf-card:hover, .tuf-card:focus-visible {
+  border-color: var(--pbe-line-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--sh-2);
+}
+.tuf-card.has-detail { border-color: var(--pbe-gold-soft); }
+
+.tuf-card-top { display: flex; align-items: center; gap: var(--s-2); }
+.tuf-num {
+  font-family: var(--pbe-font-data);
+  font-size: 24px;
+  line-height: 1;
+  color: var(--pbe-gold);
+  min-width: 2ch;
+}
+.tuf-year { font-family: var(--pbe-font-data); font-size: var(--fs-sm); color: var(--pbe-faint); }
+
+.tuf-pill {
+  margin-left: auto;
+  padding: 2px var(--s-2);
+  border: 1px solid var(--pbe-line-strong);
+  border-radius: var(--r-pill);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-micro);
+  text-transform: uppercase;
+  color: var(--pbe-faint);
+  white-space: nowrap;
+}
+.tuf-pill-ok { border-color: var(--pbe-gold-soft); color: var(--pbe-gold); }
+.tuf-pill-live { border-color: rgba(230,57,70,.5); color: var(--pbe-live); }
+.tuf-pill-thin { opacity: .75; }
+
+.tuf-card-name {
+  font-family: var(--pbe-font-display);
+  font-size: var(--fs-h3);
+  line-height: 1.25;
+  color: var(--pbe-paper);
+}
+.tuf-coaches { font-size: var(--fs-sm); color: var(--pbe-dim); }
+.tuf-wc {
+  font-family: var(--pbe-font-data);
+  font-size: var(--fs-micro);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--pbe-faint);
+}
+.tuf-champs { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: auto; padding-top: var(--s-2); border-top: 1px solid var(--pbe-line-faint); }
+.tuf-champ { display: flex; flex-direction: column; }
+.tuf-champ b { color: var(--pbe-gold); font-size: var(--fs-sm); font-weight: 600; }
+.tuf-champ small { color: var(--pbe-subtle); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; }
+
+/* ---- season page ------------------------------------------------------- */
+
+.tuf-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-5);
+  margin-bottom: var(--s-7);
+}
+@media (max-width: 720px) { .tuf-hero { grid-template-columns: 1fr; } }
+
+.tuf-hero-side {
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-lg);
+  background: var(--pbe-ink-2);
+  padding: var(--s-4) var(--s-5);
+}
+.tuf-hero-side h2 {
+  margin: 0 0 var(--s-3);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--pbe-faint);
+}
+
+.tuf-people { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.tuf-people li { display: flex; flex-direction: column; }
+.tuf-people li.is-head .tuf-name, .tuf-people li.is-head { font-size: 17px; }
+.tuf-people small { color: var(--pbe-subtle); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; }
+.tuf-people em { color: var(--pbe-faint); font-size: var(--fs-sm); }
+
+.tuf-name { color: var(--pbe-paper); }
+.tuf-name.is-linked { color: var(--pbe-gold); text-decoration: none; }
+.tuf-name.is-linked:hover { text-decoration: underline; }
+
+.tuf-linkcard { margin: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.tuf-linkcard a {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-md);
+  background: var(--pbe-ink-2);
+  text-decoration: none;
+}
+.tuf-linkcard a b { color: var(--pbe-paper); font-family: var(--pbe-font-display); font-size: var(--fs-h3); }
+.tuf-linkcard a span { margin-left: auto; font-family: var(--pbe-font-data); font-size: var(--fs-sm); color: var(--pbe-gold); }
+.tuf-linkcard small { color: var(--pbe-subtle); font-size: var(--fs-sm); line-height: 1.6; }
+
+.tuf-teams { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); }
+@media (max-width: 720px) { .tuf-teams { grid-template-columns: 1fr; } }
+.tuf-team { border: 1px solid var(--pbe-line); border-radius: var(--r-lg); background: var(--pbe-ink-2); padding: var(--s-4) var(--s-5); }
+.tuf-team h3 { margin: 0 0 var(--s-3); font-family: var(--pbe-font-display); font-size: var(--fs-h3); color: var(--pbe-paper); display: flex; align-items: baseline; gap: var(--s-2); }
+.tuf-team h3 small { font-family: var(--pbe-font-data); font-size: var(--fs-micro); letter-spacing: .08em; text-transform: uppercase; color: var(--pbe-faint); }
+.tuf-team ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.tuf-team li { display: flex; flex-direction: column; padding-bottom: var(--s-2); border-bottom: 1px solid var(--pbe-line-faint); }
+.tuf-team li:last-child { border-bottom: 0; padding-bottom: 0; }
+.tuf-team li small { color: var(--pbe-subtle); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase; }
+.tuf-team li em { color: var(--pbe-faint); font-size: var(--fs-sm); line-height: 1.5; margin-top: 2px; }
+
+/* ---- bracket ----------------------------------------------------------- */
+
+.tuf-bracket { margin-bottom: var(--s-6); }
+.tuf-bracket > h3 {
+  margin: 0 0 var(--s-4);
+  font-family: var(--pbe-font-data);
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--pbe-gold);
+}
+.tuf-stage { margin-bottom: var(--s-5); }
+.tuf-stage-head { display: flex; align-items: center; gap: var(--s-3); margin-bottom: var(--s-2); }
+.tuf-stage-head h4 { margin: 0; font-family: var(--pbe-font-display); font-size: 17px; color: var(--pbe-paper); }
+.tuf-stage-head .tuf-pill { margin-left: 0; }
+
+.tuf-bouts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.tuf-bout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--pbe-line);
+  border-left: 3px solid var(--pbe-line-strong);
+  border-radius: var(--r-md);
+  background: var(--pbe-ink-2);
+}
+.tuf-bout.is-pro { border-left-color: var(--pbe-gold); }
+.tuf-bout-names { display: flex; align-items: baseline; gap: var(--s-2); flex-wrap: wrap; font-size: 15px; }
+.tuf-bout-names em { color: var(--pbe-subtle); font-size: var(--fs-sm); }
+.tuf-bout-meta { display: flex; align-items: center; gap: var(--s-3); margin-left: auto; flex-wrap: wrap; }
+.tuf-res { font-family: var(--pbe-font-data); font-size: var(--fs-sm); color: var(--pbe-dim); }
+.tuf-res b { color: var(--pbe-paper); }
+.tuf-ep { font-family: var(--pbe-font-data); font-size: var(--fs-micro); color: var(--pbe-subtle); }
+.tuf-bout-note { flex-basis: 100%; color: var(--pbe-faint); font-size: var(--fs-sm); line-height: 1.5; }
+.tuf-bout-note b { color: var(--pbe-gold); }
+
+.tuf-class {
+  padding: 2px var(--s-2);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--pbe-line-strong);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-micro);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tuf-class-professional { border-color: var(--pbe-gold-soft); color: var(--pbe-gold); }
+.tuf-class-exhibition { color: var(--pbe-faint); }
+.tuf-class-unverified { color: var(--pbe-crimson-bright); border-color: rgba(193,39,61,.45); }
+
+@media (max-width: 620px) {
+  .tuf-bout-meta { margin-left: 0; width: 100%; }
+  .tuf-cov-cell b { font-size: 22px; }
+}

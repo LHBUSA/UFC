@@ -1,0 +1,139 @@
+{
+  "slug": "tuf-22",
+  "name": "The Ultimate Fighter 22: Team McGregor vs. Team Faber",
+  "edition": "us",
+  "number": 22,
+  "year": 2015,
+  "weight_classes": ["Lightweight"],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter:_Team_McGregor_vs._Team_Faber",
+    "retrieved": "2026-09-07",
+    "note": "The finale bout is reconciled against our own ufc_events / ufc_bouts records and is NOT imported: we already hold that card. Everything inside the house exists only here."
+  },
+  "_conflicts": [
+    {
+      "field": "elimination_round",
+      "detail": "The source's preliminary-round table is internally inconsistent — it lists Ryan Hall vs Frantz Slioa as both an elimination bout and a quarter-final, and pairs cast members against each other in a round that is supposed to be cast members against outsiders. The entry round is therefore recorded as UNVERIFIED and no elimination bouts are asserted. The bracket from the announced quarter-finals onward is internally consistent and is recorded.",
+      "retrieved": "2026-09-07"
+    }
+  ],
+  "classification_policy": {
+    "in_house": "exhibition",
+    "finale": "professional",
+    "rationale": "Bouts filmed in the TUF house are unsanctioned exhibitions and do not appear on a fighter's professional record. The finale is a sanctioned bout on a UFC card and does. Each bout below carries its own classification explicitly — none is inferred from the TUF label, and anything we cannot establish is 'unverified' rather than assumed either way."
+  },
+  "coaches": [
+    { "team": "Team McGregor", "name": "Conor McGregor", "role": "head", "region": "Europe" },
+    { "team": "Team McGregor", "name": "Owen Roddy", "role": "assistant" },
+    { "team": "Team McGregor", "name": "Sergey Pikulskiy", "role": "assistant" },
+    { "team": "Team McGregor", "name": "Tom Egan", "role": "assistant" },
+    { "team": "Team McGregor", "name": "Arkadiusz Sternalski", "role": "assistant" },
+    { "team": "Team Faber", "name": "Urijah Faber", "role": "head", "region": "United States" },
+    { "team": "Team Faber", "name": "Andre Fili", "role": "assistant" },
+    { "team": "Team Faber", "name": "Cody Garbrandt", "role": "assistant" },
+    { "team": "Team Faber", "name": "Lance Palmer", "role": "assistant" },
+    { "team": "Team Faber", "name": "Fabio Prado", "role": "assistant" }
+  ],
+  "teams": [
+    {
+      "name": "Team McGregor",
+      "region": "Europe",
+      "roster": [
+        { "name": "Abner Lloveras", "country": "Spain" },
+        { "name": "David Teymur", "country": "Sweden" },
+        { "name": "Frantz Slioa", "country": "Sweden" },
+        { "name": "Marcin Wrzosek", "country": "Poland" },
+        { "name": "Martin Svensson", "country": "Sweden", "note": "Withdrew from the tournament with a broken elbow." },
+        { "name": "Mehdi Baghdad", "country": "France" },
+        { "name": "Sascha Sharma", "country": "Germany" },
+        { "name": "Saul Rogers", "country": "England", "note": "Reached the final but was pulled from the card over a visa application." },
+        { "name": "Artem Lobov", "country": "Ireland", "note": "Returned to the tournament after an earlier elimination." }
+      ]
+    },
+    {
+      "name": "Team Faber",
+      "region": "United States",
+      "roster": [
+        { "name": "Billy Quarantillo" },
+        { "name": "Chris Gruetzemacher", "note": "Entered the quarter-finals as a replacement for Martin Svensson." },
+        { "name": "James Jenkins" },
+        { "name": "Jason Gonzaléz" },
+        { "name": "Julian Erosa" },
+        { "name": "Ryan Hall", "note": "Lost in the quarter-finals, then replaced Saul Rogers in the final and won the tournament." },
+        { "name": "Thanh Le" },
+        { "name": "Tom Gallicchio" },
+        { "name": "Johnny Nuñez", "note": "Returned to the tournament after an earlier elimination." }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Lightweight",
+      "stages": [
+        {
+          "stage": "elimination",
+          "label": "Entry round",
+          "status": "unverified",
+          "note": "Not asserted: the source's account of this round contradicts itself. See _conflicts.",
+          "bouts": []
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "note": "Announced in episode 9 as Lobov v Svensson, Rogers v Hall, Wrzosek v Teymur, Lloveras v Erosa. Svensson withdrew with a broken elbow and Chris Gruetzemacher took his place.",
+          "bouts": [
+            { "a": "Artem Lobov", "b": "Chris Gruetzemacher", "winner": "Artem Lobov", "method": "KO", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned", "replacement": "Chris Gruetzemacher replaced Martin Svensson" },
+            { "a": "Saul Rogers", "b": "Ryan Hall", "winner": "Saul Rogers", "method": "Decision (majority)", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" },
+            { "a": "Marcin Wrzosek", "b": "David Teymur", "winner": "Marcin Wrzosek", "method": "Decision (majority)", "round": 2, "time": null, "episode": 11, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" },
+            { "a": "Julian Erosa", "b": "Abner Lloveras", "winner": "Julian Erosa", "method": "Decision (split)", "round": 3, "time": null, "episode": 11, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            { "a": "Saul Rogers", "b": "Marcin Wrzosek", "winner": "Saul Rogers", "method": "Submission", "round": 2, "time": null, "episode": 12, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" },
+            { "a": "Artem Lobov", "b": "Julian Erosa", "winner": "Artem Lobov", "method": "KO", "round": 1, "time": null, "episode": 12, "classification": "exhibition", "classification_basis": "in-house tournament bout, unsanctioned" }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "note": "Saul Rogers won his way to the final and was then pulled from the card over his visa application. Ryan Hall, who had lost to Rogers in the quarter-finals, replaced him and won the tournament.",
+          "bouts": [
+            {
+              "a": "Ryan Hall",
+              "b": "Artem Lobov",
+              "winner": "Ryan Hall",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": "5:00",
+              "episode": null,
+              "classification": "professional",
+              "classification_basis": "sanctioned bout on a UFC card",
+              "on_finale_card": true,
+              "tournament_deciding": true,
+              "replacement": "Ryan Hall replaced Saul Rogers"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale",
+    "event_date": "2015-12-11",
+    "venue": "The Chelsea at The Cosmopolitan, Las Vegas, Nevada",
+    "link_policy": "Resolved against our own ufc_events row by name and date. The card's bouts already exist in ufc_bouts and are NOT re-imported; the season page reads them from the database so there is exactly one copy of every professional result."
+  },
+  "champions": [
+    {
+      "weight_class": "Lightweight",
+      "fighter": "Ryan Hall",
+      "won_tournament": true,
+      "received_contract": true,
+      "contract_note": "Winning the tournament and being awarded a UFC contract are recorded separately, because they are not the same thing and have not always gone together.",
+      "winning_bout": { "a": "Ryan Hall", "b": "Artem Lobov", "event": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale", "date": "2015-12-11" }
+    }
+  ]
+}
