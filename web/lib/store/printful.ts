@@ -269,11 +269,14 @@ export type SyncProduct = { id: number; external_id: string | null; name: string
  * silently reconcile against a partial view and conclude a product is absent
  * when it is on page two.
  */
-export async function listSyncProducts(limit = 100): Promise<SyncProduct[]> {
+export async function listSyncProducts(limit = 100, storeId?: number): Promise<SyncProduct[]> {
   const out: SyncProduct[] = [];
   for (let offset = 0; offset < 2000; offset += limit) {
     const r = await get<{ result?: Array<Record<string, unknown>>; paging?: { total?: number } }>(
       `/store/products?limit=${limit}&offset=${offset}`,
+      /* Same surprise as the mockup generator: the sync-product listing wants
+       * an explicit store id even from a token already bound to one store. */
+      storeId,
     );
     const page = r?.result || [];
     for (const p of page) {

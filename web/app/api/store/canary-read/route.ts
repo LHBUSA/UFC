@@ -198,7 +198,7 @@ export async function GET(req: Request) {
 
     /* 4. what already exists in the store, and whether external_id is
      *    actually behaving as a unique key ------------------------------- */
-    const sync = await listSyncProducts();
+    const sync = await listSyncProducts(100, ctx.selected.id);
     out.sync_product_count = sync.length;
     const ours = PRODUCTS.map((p) => ({ slug: p.slug, matches: findByExternalId(sync, p.slug).map((s) => s.id) }));
     out.existing_for_our_slugs = ours.filter((o) => o.matches.length);
