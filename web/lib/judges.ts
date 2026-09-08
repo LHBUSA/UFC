@@ -2,7 +2,7 @@ import "server-only";
 import { cache } from "react";
 import {
   buildBoutScorecard, classifyGap, dissentRead, judgeSlug, resolveJudge, wentToTheJudges,
-  PROVISIONAL_IDENTITY_CANDIDATES, SPELLING_VARIANT_EVIDENCE,
+  JUDGE_ALIASES, PROVISIONAL_IDENTITY_CANDIDATES, SPELLING_VARIANT_EVIDENCE,
   type AttributedCard, type DecisionType, type DrawType, type GapClassification, type GapReason,
   type ProvisionalCandidate,
 } from "@/lib/judgeScoring";
@@ -405,6 +405,20 @@ export const getScorecardCoverage = cache(async (): Promise<ScorecardCoverage> =
 /* ---- helpers used by pages --------------------------------------------- */
 
 export { buildBoutScorecard, judgeSlug, resolveJudge, wentToTheJudges, PROVISIONAL_IDENTITY_CANDIDATES, SPELLING_VARIANT_EVIDENCE };
+
+/* A merged spelling had its own profile URL before the merge, and merging must
+ * not turn a live page into a dead end. Maps the alias spelling's slug to the
+ * canonical one so the route can redirect instead of 404ing.
+ *
+ * Only spelling_variant aliases: a deduction_annotation raw name is a parsing
+ * artefact ("Low Blow by Watson Richard Bertrand"), never a URL anyone held. */
+export function canonicalSlugFor(slug: string): string | null {
+  for (const [raw, alias] of Object.entries(JUDGE_ALIASES)) {
+    if (alias.kind !== "spelling_variant") continue;
+    if (judgeSlug(raw) === slug) return judgeSlug(alias.canonical);
+  }
+  return null;
+}
 
 /* The other half of a near-name pair that is deliberately NOT merged, if this
  * judge is on one. A reader looking at a three-card profile deserves to know a

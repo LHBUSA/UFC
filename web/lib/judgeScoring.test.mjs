@@ -360,37 +360,80 @@ test("a provisional candidate is never merged, in either direction", () => {
   }
 });
 
-test("Ritchie Gerard and Richie Gerrard stay two identities", () => {
-  /* Named explicitly: this pair was merged once on archive resemblance, and a
-     regression here would silently restate one person's record as another's. */
-  assert.equal(J.resolveJudge("Ritchie Gerard").name, "Ritchie Gerard");
-  assert.equal(J.resolveJudge("Richie Gerrard").name, "Richie Gerrard");
-  assert.ok(J.PROVISIONAL_IDENTITY_CANDIDATES.some((c) => c.names.includes("Ritchie Gerard") && c.names.includes("Richie Gerrard")),
-    "the pair must remain on the reviewable candidate list, with its evidence");
+test("Richie Gerrard resolves to Ritchie Gerard, in that direction only", () => {
+  /* This pair has been wrong in both available ways: first merged the other
+     way round on archive resemblance, then split while unsourced. It is now
+     merged on MMA Decisions judge 606, whose five decisions are exactly the
+     union of the two spellings — and the registry's spelling is the MINORITY
+     archive form, so a regression toward "whichever name appears more often"
+     would silently flip the canonical name back. */
+  assert.equal(J.resolveJudge("Richie Gerrard").name, "Ritchie Gerard");
+  assert.equal(J.resolveJudge("Ritchie Gerard").name, "Ritchie Gerard", "the canonical name must not itself be aliased away");
+  assert.ok(!J.JUDGE_ALIASES["Ritchie Gerard"], "canonical direction is reversed");
+  const ev = J.SPELLING_VARIANT_EVIDENCE.find((e) => e.rawName === "Richie Gerrard");
+  assert.ok(ev, "the merge exists with no evidence entry");
+  assert.equal(ev.canonical, "Ritchie Gerard");
+  assert.equal(ev.sourceUrl, "https://mmadecisions.com/judge/606/Ritchie-Gerard");
+  assert.equal(ev.crossMatchedEvents.length, 5, "all five registry decisions must be accounted for");
+  assert.ok(J.PROVISIONAL_IDENTITY_CANDIDATES.every((c) => !c.names.includes("Richie Gerrard")),
+    "a merged pair must not still be listed as awaiting review");
 });
 
-test("an unconfirmed near-name never combines samples", () => {
-  /* The behavioural version of the rule, not the structural one: run two real
-     bouts through the same path the archive uses and prove the cards land in
-     two buckets with two sample sizes, never one merged record. */
+test("a merged pair pools onto one record, and only because it is sourced", () => {
   const bout = (judge, winner) => J.buildBoutScorecard({
     method: "DEC_U",
-    scorecards: [card(judge, "27-30"), card("Chris Lee", "27-30"), card("Mike Bell", "27-30")],
+    scorecards: [card(judge, "27-30"), card("Mike Bell", "27-30"), card("Sal D'amato", "27-30")],
     winnerId: winner, fighterAId: A, fighterBId: B,
   });
   const bySlug = new Map();
   for (const [judge, winner] of [["Ritchie Gerard", A], ["Richie Gerrard", B]]) {
-    for (const c of bout(judge, winner).cards) {
-      bySlug.set(c.judgeSlug, (bySlug.get(c.judgeSlug) || 0) + 1);
-    }
+    for (const c of bout(judge, winner).cards) bySlug.set(c.judgeSlug, (bySlug.get(c.judgeSlug) || 0) + 1);
   }
-  assert.equal(bySlug.get("ritchie-gerard"), 1, "Ritchie Gerard's card did not stay on his own record");
-  assert.equal(bySlug.get("richie-gerrard"), 1, "Richie Gerrard's card did not stay on his own record");
-  assert.equal(bySlug.get("chris-lee"), 2, "a judge who really did work both bouts should accumulate");
-  assert.equal(bySlug.size, 4, "expected four distinct judges across the two bouts");
+  assert.equal(bySlug.get("ritchie-gerard"), 2, "both spellings must land on the canonical record");
+  assert.equal(bySlug.get("richie-gerrard"), undefined, "the alias must not keep a record of its own");
 });
 
-test("the withdrawn merge is absent from the migration too", () => {
+test("an unconfirmed near-name never combines samples", () => {
+  /* The behavioural form of the rule, and it must not depend on any pair
+     currently sitting in the review list — that list is empty in the steady
+     state. Chris Lee and Chris Leben are the real case: two working officials
+     whose names are one token apart, both present in the archive, neither
+     aliased. If resemblance ever started driving identity, this is where it
+     would show up first. */
+  const bout = (judge, winner) => J.buildBoutScorecard({
+    method: "DEC_U",
+    scorecards: [card(judge, "27-30"), card("Mike Bell", "27-30"), card("Sal D'amato", "27-30")],
+    winnerId: winner, fighterAId: A, fighterBId: B,
+  });
+  const bySlug = new Map();
+  for (const [judge, winner] of [["Chris Lee", A], ["Chris Leben", B], ["Chris Le", A]]) {
+    for (const c of bout(judge, winner).cards) bySlug.set(c.judgeSlug, (bySlug.get(c.judgeSlug) || 0) + 1);
+  }
+  assert.equal(bySlug.get("chris-lee"), 1, "Chris Lee's card did not stay on his own record");
+  assert.equal(bySlug.get("chris-leben"), 1, "Chris Leben's card did not stay on his own record");
+  assert.equal(bySlug.get("chris-le"), 1, "an unseen near-name was folded into an existing judge");
+  assert.equal(bySlug.get("mike-bell"), 3, "a judge who really did work all three bouts should accumulate");
+  assert.equal(bySlug.size, 5, "expected five distinct judges across the three bouts");
+});
+
+test("only names with evidence are merged; every other name resolves to itself", () => {
+  /* The general invariant behind the two tests above: resolveJudge merges
+     exactly the alias table and nothing else, so no amount of similarity can
+     pool two records without an entry — and no spelling_variant entry can
+     exist without a source, per the evidence test above. */
+  for (const name of ["Chris Lee", "Chris Leben", "Ritchie Gerard", "Maimunah Querido", "Derek Cleary", "Richard Bertrand"]) {
+    if (J.JUDGE_ALIASES[name]) continue;
+    assert.equal(J.resolveJudge(name).name, name, `${name} was rewritten without an alias entry`);
+  }
+  for (const [raw, alias] of Object.entries(J.JUDGE_ALIASES)) {
+    assert.equal(J.resolveJudge(raw).name, alias.canonical, `${raw} does not resolve to its declared canonical`);
+  }
+});
+
+test("a pair still under review is absent from the migration seed too", () => {
+  /* Vacuous while the review list is empty, and deliberately kept: it is the
+     guard that stops the next candidate being merged in SQL while the runtime
+     still shows it as undecided. */
   const root = join(fileURLToPath(new URL(".", import.meta.url)), "..", "..");
   const sql = readFileSync(join(root, "supabase", "migrations", "20260908000012_ufc_judge_intelligence.sql"), "utf8");
   const seed = sql.slice(sql.indexOf("_judge_alias_seed"), sql.indexOf("insert into public.ufc_judge_profiles"));
@@ -398,6 +441,11 @@ test("the withdrawn merge is absent from the migration too", () => {
     for (const name of c.names) {
       assert.ok(!seed.includes(`('${name}'`), `${name} is still seeded as an alias by the migration`);
     }
+  }
+  /* The other direction: every merge the runtime applies must be seeded. */
+  for (const e of J.SPELLING_VARIANT_EVIDENCE) {
+    assert.ok(seed.includes(`('${e.rawName}', '${e.canonical}', 'spelling_variant'`),
+      `${e.rawName} -> ${e.canonical} is applied at runtime but not seeded by the migration`);
   }
 });
 
@@ -411,5 +459,17 @@ test("a provisional candidate records what is and is not established", () => {
       assert.ok(c.proposedCanonical && c.names.includes(c.proposedCanonical),
         "a confirmed candidate must name which of the two spellings would become canonical");
     }
+  }
+});
+
+test("a merged spelling's old profile URL still resolves somewhere", () => {
+  /* Merging an identity retires a slug that was a live page. The route
+     redirects it to the canonical profile; this pins the mapping the route
+     depends on, so a merge can never silently 404 a URL that used to work. */
+  for (const e of J.SPELLING_VARIANT_EVIDENCE) {
+    const from = J.judgeSlug(e.rawName);
+    const to = J.judgeSlug(e.canonical);
+    assert.notEqual(from, to, `${e.rawName} and ${e.canonical} share a slug, so nothing to redirect`);
+    assert.ok(from && to, "both slugs must be non-empty");
   }
 });

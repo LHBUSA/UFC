@@ -57,7 +57,7 @@ must read 0.
 | attributed to a fighter | 11,821 (98.5%) |
 | left as an unattributed pair | 183 |
 | raw judge strings | 512 |
-| canonical judges after aliasing | 468 |
+| canonical judges after aliasing | 467 |
 
 ### The 291 missing, classified
 
@@ -83,7 +83,7 @@ different standards on purpose.
   provenance, shown under the judge's name on the fight page. This is a parsing
   artefact, not a claim about who someone is, so it needs no external source.
 
-- **`spelling_variant` (1)** — a merge of two *names*, which combines two
+- **`spelling_variant` (2)** — a merge of two *names*, which combines two
   people's records and can produce a confident, wrong career total. It requires
   an external judging registry holding a **single** official whose scored bouts
   account for the assignments filed under **both** of our spellings. The
@@ -91,9 +91,9 @@ different standards on purpose.
   spelling_variant row with no `source_url`, so the standard is enforced by the
   schema rather than by reviewer memory.
 
-### The one merge applied
+### Merges applied
 
-`Mamunah Querido` → `Maimunah Querido`.
+#### 1. `Mamunah Querido` → `Maimunah Querido`
 
 Source: [MMA Decisions judge 549](https://mmadecisions.com/judge/549/Munah-Querido),
 verified 2026-09-08. That registry lists exactly one Querido judge, and that
@@ -113,37 +113,54 @@ Two officials cannot both be that one record, so the merge is established.
 stored form. It confirms the merge, not the display spelling, so the canonical
 name stays the dominant archive spelling.
 
+#### 2. `Richie Gerrard` → `Ritchie Gerard`
+
+Source: [MMA Decisions judge 606](https://mmadecisions.com/judge/606/Ritchie-Gerard),
+verified 2026-09-08. The registry holds a single "Ritchie Gerard" with five
+scored decisions, and those five are exactly the union of the assignments this
+archive files under its two spellings — three under one, two under the other,
+with no sixth decision unaccounted for on either side:
+
+| event | date | bout | spelling in this archive |
+| --- | --- | --- | --- |
+| UFC Fight Night 110 | 2017-06-10 | Aldrich–Jeon | Ritchie Gerard |
+| UFC Fight Night 110 | 2017-06-10 | Volkanovski–Hirota | Ritchie Gerard |
+| UFC 243 | 2019-10-05 | Hooker–Iaquinta | **Richie Gerrard** |
+| UFC 243 | 2019-10-05 | Potter–Pitolo | **Richie Gerrard** |
+| UFC on ESPN+ 26 | 2020-02-22 | Kara-France–Nam | **Richie Gerrard** |
+
+**Canonical is `Ritchie Gerard`, the minority archive spelling** (2 cards
+against 3). That direction comes from the source, not from frequency, and the
+distinction is not academic: an earlier revision merged this pair the *other*
+way on archive resemblance alone — no source, and backwards. It was withdrawn
+for lack of evidence and reinstated only once the registry was cross-matched
+assignment by assignment. Merging on the archive's own majority would have
+shipped a confidently wrong canonical name.
+
+The registry's dates are US local and run a day behind ours for the Auckland
+and Melbourne cards. That is the dateline, not a mismatch.
+
+Merging the pair moves the archive from 468 canonical judges to **467** and
+gives the combined record 5 cards. Both halves sat far below the 40-card rate
+floor before and the union still does, so no published rate changes.
+
 ### Under review — evidence held, merge NOT applied
 
-`Ritchie Gerard` (2 cards) and `Richie Gerrard` (3 cards) are **separate
-identities with separate samples**. An earlier revision merged them on archive
-resemblance alone — same Oceania region, never on the same card, one letter
-apart. That is not evidence, the merge was withdrawn, and the pair now lives in
-`PROVISIONAL_IDENTITY_CANDIDATES` in `web/lib/judgeScoring.ts` and is shown as
-an open question on both judge profiles.
-
-External confirmation has since been found, *after* the withdrawal:
-[MMA Decisions judge 606](https://mmadecisions.com/judge/606/Ritchie-Gerard)
-holds one "Ritchie Gerard" with 5 scored decisions, and those five are exactly
-the union of our two spellings — Aldrich–Jeon and Volkanovski–Hirota (UFC Fight
-Night 110, filed here as *Ritchie Gerard*) plus Hooker–Iaquinta, Potter–Pitolo
-(UFC 243) and Kara-France–Nam (UFC on ESPN+ 26), filed here as *Richie Gerrard*.
-
-It is still not applied. The finding also **reverses the original merge
-direction** — the registry's spelling is `Ritchie Gerard`, the minority archive
-form — which is precisely why an unverified merge is dangerous: it was both
-unsourced and backwards. Promoting it is a two-line change (move the pair into
-`JUDGE_ALIASES` and `SPELLING_VARIANT_EVIDENCE` with `Ritchie Gerard` as
-canonical) and is left for sign-off. Both samples sit far below the 40-card rate
-floor, so no published rate moves either way.
+None. `PROVISIONAL_IDENTITY_CANDIDATES` is empty, which is the intended steady
+state: a pair sits there only while it is genuinely undecided, and both known
+pairs are now resolved. The mechanism stays in place — the review list, the
+"this record may be incomplete" notice on affected profiles, and the tests that
+keep a listed pair out of both `JUDGE_ALIASES` and the migration seed.
 
 ### Names that are not merged
 
 Similar names belonging to different officials are never merged. `Chris Lee`
 (701 cards) and `Chris Leben` (24 cards) are two people and stay separate.
-`judgeScoring.test.mjs` proves behaviourally that an unconfirmed near-name pair
-never combines samples — two bouts judged by the two spellings produce two
-records with one card each, never one record with two.
+`judgeScoring.test.mjs` proves this behaviourally rather than structurally: it
+runs Chris Lee, Chris Leben and an unseen third near-name through the same path
+the archive uses and asserts three separate records with one card each. Nothing
+in the resolver merges on similarity — it merges exactly the alias table, and no
+`spelling_variant` row can exist there without a source.
 
 ## Statistics discipline
 

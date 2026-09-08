@@ -43,7 +43,8 @@ with _alias(raw_name, canonical_name, kind, card_note) as (values
 ('Technical Decision - Eye Poke by Song Mike Bell', 'Mike Bell', 'deduction_annotation', 'Technical Decision - Eye Poke by Song'),
 ('Technical Decision after Headbutt by Abdul-Malik Will Fisher', 'Will Fisher', 'deduction_annotation', 'Technical Decision after Headbutt by Abdul-Malik'),
 ('Technical decision after clash of heads Ben Cartlidge', 'Ben Cartlidge', 'deduction_annotation', 'Technical decision after clash of heads'),
-('Mamunah Querido', 'Maimunah Querido', 'spelling_variant', null)
+('Mamunah Querido', 'Maimunah Querido', 'spelling_variant', null),
+('Richie Gerrard', 'Ritchie Gerard', 'spelling_variant', null)
 ), raw as (
   select
     r.bout_id, r.method, r.method_raw, r.winner_id, r.result_source, r.source_url,

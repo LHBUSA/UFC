@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Breadcrumbs, JsonLd } from "@/components/ui";
 import { eventSlug, matchupSlug } from "@/lib/slug";
 import { fmtDate, weightClassLabel } from "@/lib/format";
-import { getJudgeArchive, getJudgeBySlug, judgeArchiveBio, provisionalPairFor, tenureLine, type JudgeCard } from "@/lib/judges";
+import { canonicalSlugFor, getJudgeArchive, getJudgeBySlug, judgeArchiveBio, provisionalPairFor, tenureLine, type JudgeCard } from "@/lib/judges";
 import { DECISION_LABEL, DRAW_LABEL, MIN_RATE_SAMPLE, dissentRead, wilsonInterval } from "@/lib/judgeScoring";
 import { SITE } from "@/lib/site";
 import styles from "../judges.module.css";
@@ -33,7 +33,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function JudgeProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
   const [hit, archive] = await Promise.all([getJudgeBySlug(slug), getJudgeArchive()]);
-  if (!hit) notFound();
+  /* A spelling that has since been merged had its own URL. Send it to the
+   * canonical profile rather than letting an identity merge break a live
+   * link — the cards are all still there, under the other name. */
+  if (!hit) {
+    const canonical = canonicalSlugFor(slug);
+    if (canonical && canonical !== slug) permanentRedirect(`/judges/${canonical}`);
+    notFound();
+  }
   const { judge, cards } = hit;
   const { totals } = archive;
 

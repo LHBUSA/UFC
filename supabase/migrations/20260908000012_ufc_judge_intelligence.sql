@@ -147,14 +147,17 @@ insert into _judge_alias_seed (raw_name, canonical_name, kind, card_note) values
 -- same card - is not that bar, and the CHECK constraint on the alias table
 -- refuses a spelling_variant with no source_url so it cannot become one.
 --
--- Only one pair currently clears it. "Ritchie Gerard" / "Richie Gerrard" was
--- deliberately withdrawn from this seed: it had been merged on archive
--- evidence alone. Its evidence is preserved outside production canonical
--- identity, in docs/judge_intelligence.md and
--- web/lib/judgeScoring.ts PROVISIONAL_IDENTITY_CANDIDATES, and the two names
--- stay separate identities with separate samples until that is signed off.
+-- Two pairs clear it, each cross-matched assignment by assignment against a
+-- single external record. The second one is instructive: "Richie Gerrard" ->
+-- "Ritchie Gerard" was once seeded the other way round on archive resemblance
+-- alone, withdrawn for having no source, and only reinstated once the registry
+-- showed one official covering both spellings. The registry's spelling is the
+-- MINORITY archive form - 2 cards against 3 - so canonical here follows the
+-- source and not the frequency. Merging on the archive's own majority would
+-- have produced a confidently wrong canonical name.
 insert into _judge_alias_seed (raw_name, canonical_name, kind, card_note) values
-  ('Mamunah Querido', 'Maimunah Querido', 'spelling_variant', null);
+  ('Mamunah Querido', 'Maimunah Querido', 'spelling_variant', null),
+  ('Richie Gerrard', 'Ritchie Gerard', 'spelling_variant', null);
 
 insert into public.ufc_judge_profiles (canonical_name, slug, display_name)
 select distinct j.name,
@@ -176,11 +179,15 @@ select s.raw_name, s.canonical_name, s.kind, s.card_note,
          when 'deduction_annotation' then 'Upstream Details line prefixed a point-deduction or technical-decision note to the judge name. The note is preserved in card_note and the card is attributed to the canonical official.'
          else case s.raw_name
            when 'Mamunah Querido' then 'MMA Decisions lists exactly one Querido judge, and that single record''s scored events cover the assignments this archive files under BOTH spellings (UFC on Fox 18 2016-01-30, UFC 288 2023-05-06, UFC 302 2024-06-01 and UFC 316 2025-06-07 as "Maimunah"; UFC on ESPN 54 2024-03-30 as "Mamunah"), so the two spellings cannot be two officials. The source renders the name "Munah Querido", which matches neither stored form, so it confirms the merge but not the display spelling - canonical stays the dominant archive spelling.'
+           when 'Richie Gerrard' then 'MMA Decisions judge 606 holds a single "Ritchie Gerard" with five scored decisions, and those five are exactly the union of the assignments this archive files under its two spellings: UFC Fight Night 110 2017-06-10 (Aldrich-Jeon, Volkanovski-Hirota) as "Ritchie Gerard"; UFC 243 2019-10-05 (Hooker-Iaquinta, Potter-Pitolo) and UFC on ESPN+ 26 2020-02-22 (Kara-France-Nam) as "Richie Gerrard". No sixth decision is unaccounted for on either side. Canonical follows the registry spelling, which is the MINORITY archive form - an earlier revision merged this pair the other way round on resemblance alone and was withdrawn. The registry''s dates are US local and run a day behind ours for the Auckland and Melbourne cards; that is the dateline, not a mismatch.'
            else 'Archive spelling variant.'
          end
        end,
        case s.kind when 'spelling_variant' then
-         case s.raw_name when 'Mamunah Querido' then 'https://mmadecisions.com/judge/549/Munah-Querido' end
+         case s.raw_name
+           when 'Mamunah Querido' then 'https://mmadecisions.com/judge/549/Munah-Querido'
+           when 'Richie Gerrard' then 'https://mmadecisions.com/judge/606/Ritchie-Gerard'
+         end
        end,
        case s.kind when 'spelling_variant' then timestamptz '2026-09-08 00:00:00+00' end
 from _judge_alias_seed s
