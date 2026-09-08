@@ -33,6 +33,8 @@ jobs:
           copilot --version | tee copilot-version.log
           copilot --help | tee copilot-help.log
       - name: Structured provider canary
+        # Keep this as a real prompt-mode request. The newsroom depends on this
+        # exact Actions-native authentication path when Anthropic is absent.
         shell: bash
         run: node scripts/news/copilot_provider_canary.mjs | tee copilot-canary.log
       - name: Upload proof
