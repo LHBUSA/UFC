@@ -1048,6 +1048,82 @@ async function listResults(env, url) {
   return results.map((result) => ({ ...result, bout: byId.get(result.bout_id) || null }));
 }
 
+/* ---- fighter status -------------------------------------------------- */
+
+const STATUS_TYPES = new Set(['injury', 'illness', 'withdrawal', 'replacement', 'suspension', 'visa_travel', 'weight_miss', 'return', 'cleared', 'other']);
+const STATUS_STATES = new Set(['active', 'resolved', 'expired']);
+/* Which statuses mean "not available". Mirrors ufc_fighter_current_status. */
+const STATUS_UNAVAILABLE = new Set(['injury', 'illness', 'withdrawal', 'suspension', 'visa_travel']);
+
+/**
+ * Availability events.
+ *
+ * A CONTRACT NOTE THAT OUTRANKS THE SHAPE: injury_type / body_part /
+ * injury_side arrive null far more often than not, and a null there means the
+ * source did not say. It never means "unspecified injury" and never licenses a
+ * client to fill the gap — clinical_quote exists so a consumer can show the
+ * sentence a claim came from, and its absence is the signal that there is no
+ * claim to show.
+ */
+async function listStatusEvents(env, url) {
+  const limit = clampInt(url.searchParams.get("limit"), 50, 1, 200);
+  const offset = clampInt(url.searchParams.get("offset"), 0, 0, 100000);
+  const p = new URLSearchParams({ select: "*", order: "occurred_at.desc.nullslast", limit: String(limit), offset: String(offset) });
+
+  /* ?active=true is the shorthand the brief asked for; ?state= is the full
+   * control. active wins when both are given and disagree, because it is the
+   * more specific request. */
+  const active = url.searchParams.get("active");
+  const state = sanitizeLike(url.searchParams.get("state"));
+  if (active === "true") p.set("state", "eq.active");
+  else if (active === "false") p.set("state", "neq.active");
+  else if (state && state !== "all") {
+    if (!STATUS_STATES.has(state)) throw new ApiError(400, "invalid_state", `state must be one of ${[...STATUS_STATES].join(", ")} or all.`);
+    p.set("state", `eq.${state}`);
+  } else if (!state) p.set("state", "eq.active");
+
+  const type = sanitizeLike(url.searchParams.get("status_type"));
+  if (type) {
+    if (!STATUS_TYPES.has(type)) throw new ApiError(400, "invalid_status_type", `status_type must be one of ${[...STATUS_TYPES].join(", ")}.`);
+    p.set("status_type", `eq.${type}`);
+  }
+  const fighterId = sanitizeLike(url.searchParams.get("fighter_id"));
+  if (fighterId) p.set("fighter_id", `eq.${fighterId}`);
+  const eventId = sanitizeLike(url.searchParams.get("event_id"));
+  if (eventId) p.set("event_id", `eq.${eventId}`);
+
+  const out = await sb(env, "ufc_fighter_status_feed", p, { count: true });
+  return { data: out.data, meta: { count: out.data.length, total: out.count, limit, offset } };
+}
+
+async function eventCardChanges(env, id) {
+  const event = await resolveEvent(env, id);
+  if (!event) throw new ApiError(404, "event_not_found", "UFC event not found.");
+  const p = new URLSearchParams({ select: "*", event_id: `eq.${event.id}`, order: "occurred_at.desc.nullslast", limit: "60" });
+  const rows = (await sb(env, "ufc_event_card_changes", p)).data;
+  return { data: { event: { id: event.id, name: event.name, event_date: event.event_date }, changes: rows }, meta: { count: rows.length } };
+}
+
+async function fighterStatus(env, id, url) {
+  const fighter = await resolveFighter(env, id);
+  if (!fighter) throw new ApiError(404, "fighter_not_found", "UFC fighter not found.");
+  const limit = clampInt(url.searchParams.get("limit"), 20, 1, 100);
+  const p = new URLSearchParams({ select: "*", fighter_id: `eq.${fighter.id}`, order: "occurred_at.desc.nullslast", limit: String(limit) });
+  const history = (await sb(env, "ufc_fighter_status_feed", p)).data;
+  const current = history.find((e) => e.state === "active" && STATUS_UNAVAILABLE.has(e.status_type)) || null;
+  return {
+    data: {
+      fighter: { id: fighter.id, name: fighter.name },
+      current,
+      /* Said explicitly because the alternative reading is dangerous: no row
+       * is no report, not a clean bill of health. */
+      current_note: current ? null : "No availability event on file. This is the absence of a report, not a confirmation of fitness.",
+      history,
+    },
+    meta: { count: history.length },
+  };
+}
+
 async function listArticles(env, url) {
   const limit = clampInt(url.searchParams.get("limit"), 20, 1, 100);
   const offset = clampInt(url.searchParams.get("offset"), 0, 0, 100000);
@@ -1366,6 +1442,9 @@ function apiIndex(env) {
       bout_stats: "/v1/ufc/bouts/{id}/stats",
       results: "/v1/ufc/results",
       rankings: "/v1/ufc/rankings?division=MIDDLEWEIGHT",
+      injuries: "/v1/ufc/injuries?active=true",
+      event_card_changes: "/v1/ufc/events/{id}/card-changes",
+      fighter_status: "/v1/ufc/fighters/{id}/status",
       news: "/v1/ufc/news",
       wire: "/v1/ufc/wire?limit=20",
       article: "/v1/ufc/articles/{slug}",
@@ -1408,6 +1487,15 @@ async function route(request, env, url, access) {
     return ok(env, requestId, out.data, { ...out.meta, ...tier }, 120);
   }
 
+  /* Sub-routes precede the bare /{id} pattern. Ordering is not load-bearing —
+   * that pattern is anchored with $ and [^/]+ cannot span a slash — but an
+   * edit that relaxed the anchor should not silently reroute this. */
+  m = path.match(/^\/v1\/ufc\/events\/([^/]+)\/card-changes$/);
+  if (m) {
+    const out = await eventCardChanges(env, decodeURIComponent(m[1]));
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 60);
+  }
+
   m = path.match(/^\/v1\/ufc\/events\/([^/]+)$/);
   if (m) {
     const event = await resolveEvent(env, decodeURIComponent(m[1]));
@@ -1435,6 +1523,12 @@ async function route(request, env, url, access) {
   if (m) {
     const out = await articlesForFighter(env, decodeURIComponent(m[1]), url);
     return ok(env, requestId, out.data, { ...out.meta, ...tier }, 120);
+  }
+
+  m = path.match(/^\/v1\/ufc\/fighters\/([^/]+)\/status$/);
+  if (m) {
+    const out = await fighterStatus(env, decodeURIComponent(m[1]), url);
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 60);
   }
 
   m = path.match(/^\/v1\/ufc\/fighters\/([^/]+)$/);
@@ -1480,6 +1574,11 @@ async function route(request, env, url, access) {
     return ok(env, requestId, article, tier, 300);
   }
 
+  if (path === "/v1/ufc/injuries") {
+    const out = await listStatusEvents(env, url);
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 60);
+  }
+
   if (path === "/v1/ufc/search") {
     return ok(env, requestId, await searchAll(env, url), tier, 60);
   }
@@ -1499,6 +1598,7 @@ export const __test = {
   compactFighter, slugId, bulkFighterMedia, rankingsState,
   slugify, fighterSlug, eventSlug, matchupSlug, normalizeTitle, dedupeWireItems, articleMatchesItem, wireInternalUrl, wireTaxonomy, wire,
   wordCount, analysisSummaryFrom, articleAnalysis, withAnalysis,
+  listStatusEvents, eventCardChanges, fighterStatus, STATUS_TYPES, STATUS_STATES, STATUS_UNAVAILABLE,
 };
 
 export default {

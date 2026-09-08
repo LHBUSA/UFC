@@ -11,6 +11,8 @@ import { resolveFight } from "@/lib/resolve";
 import { JsonLd, ProLock, TaleOfTheTape, Breadcrumbs, Portrait, Credit, BoutRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { getMarketsFor, marketProviderLive, marketStateFor, unresolvedBouts } from "@/lib/market";
+import { getBoutStatusEvents } from "@/lib/status";
+import { BoutStatusAlert } from "@/components/StatusBits";
 import { MarketSection } from "@/components/Market";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, fmtDate, fmtRecord, fmtTime, METHOD_LABEL, weightClassLabel, totals, pct, archiveSummary, winnerOf, loserOf, daysUntil, locationLine, plural, METHOD_SHORT, eventBrand } from "@/lib/format";
@@ -37,9 +39,11 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   const hit = await resolveFight((await params).slug);
   if (!hit) notFound();
   const { e, b, bouts } = hit;
-  const [imgs, rounds, articles, histA, histB] = await Promise.all([
+  const [imgs, rounds, articles, histA, histB, statusByBout] = await Promise.all([
     getImagesForFighters([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
+    getBoutStatusEvents([b.id]).catch(() => new Map()),
   ]);
+  const boutStatus = statusByBout.get(b.id) || [];
   const [media, dna, dnaFighterA, dnaFighterB] = await Promise.all([
     storyMedia(articles),
     getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null),
@@ -132,6 +136,8 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
         <Credit img={imgs.get(b.fighter_a.id)} />
         <Credit img={imgs.get(b.fighter_b.id)} />
       </div>
+
+      <BoutStatusAlert events={boutStatus} settled={Boolean(r)} />
 
       <div className="card mt-5">
         <div className="between">
