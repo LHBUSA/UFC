@@ -1,207 +1,358 @@
 {
-  "generated_at": "2026-09-07T14:11:01.510Z",
+  "generated_at": "2026-09-08T11:39:53.837Z",
   "note": "Explicit Hall of Fame to canonical fighter mapping. Linked entries reference an existing ufc_fighters row; missing entries are backfill candidates and never create rows.",
   "linked": {
+    "amanda-nunes": {
+      "fighter_id": "c00f064b-2a2c-474f-b64d-057642207f6b",
+      "fighter_name": "Amanda Nunes",
+      "espn_athlete_id": null,
+      "ufcstats_id": "80fa8218c99f9c58",
+      "method": "exact_name",
+      "matched_on": "Amanda Nunes",
+      "verified_at": "2026-09-08T11:39:48.275Z"
+    },
+    "anderson-silva": {
+      "fighter_id": "465134b0-c6d2-405e-a4ec-7611bc87507d",
+      "fighter_name": "Anderson Silva",
+      "espn_athlete_id": null,
+      "ufcstats_id": "1f454354805b6f75",
+      "method": "exact_name",
+      "matched_on": "Anderson Silva",
+      "verified_at": "2026-09-08T11:39:48.422Z"
+    },
+    "bas-rutten": {
+      "fighter_id": "b664a683-4169-498b-a14c-658dc56b40be",
+      "fighter_name": "Bas Rutten",
+      "espn_athlete_id": null,
+      "ufcstats_id": "03688dc3c3af3ac1",
+      "method": "exact_name",
+      "matched_on": "Bas Rutten",
+      "verified_at": "2026-09-08T11:39:48.557Z"
+    },
+    "bj-penn": {
+      "fighter_id": "ac97d89c-5662-4416-a2bf-0c77d4ff080e",
+      "fighter_name": "BJ Penn",
+      "espn_athlete_id": null,
+      "ufcstats_id": "73c7cfa551289285",
+      "method": "exact_name",
+      "matched_on": "BJ Penn",
+      "verified_at": "2026-09-08T11:39:48.679Z"
+    },
+    "chuck-liddell": {
+      "fighter_id": "22356d0a-d3df-4100-988e-254ef08da3c5",
+      "fighter_name": "Chuck Liddell",
+      "espn_athlete_id": null,
+      "ufcstats_id": "a390eb8a9b2df298",
+      "method": "exact_name",
+      "matched_on": "Chuck Liddell",
+      "verified_at": "2026-09-08T11:39:48.818Z"
+    },
+    "dan-severn": {
+      "fighter_id": "f4bccc88-8b1e-4350-8b3d-a9571aa28c90",
+      "fighter_name": "Dan Severn",
+      "espn_athlete_id": null,
+      "ufcstats_id": "c670aa48827d6be6",
+      "method": "exact_name",
+      "matched_on": "Dan Severn",
+      "verified_at": "2026-09-08T11:39:48.946Z"
+    },
+    "daniel-cormier": {
+      "fighter_id": "189dbb32-67d4-42b7-b098-81be761d4146",
+      "fighter_name": "Daniel Cormier",
+      "espn_athlete_id": null,
+      "ufcstats_id": "d967f0128c323de6",
+      "method": "exact_name",
+      "matched_on": "Daniel Cormier",
+      "verified_at": "2026-09-08T11:39:49.061Z"
+    },
+    "don-frye": {
+      "fighter_id": "fd1c404f-a85b-4624-ad95-f7c476a60617",
+      "fighter_name": "Don Frye",
+      "espn_athlete_id": null,
+      "ufcstats_id": "271fe91f4ba9d2c5",
+      "method": "exact_name",
+      "matched_on": "Don Frye",
+      "verified_at": "2026-09-08T11:39:49.191Z"
+    },
+    "donald-cerrone": {
+      "fighter_id": "92214346-ec86-4bca-b7bf-53992d1ece25",
+      "fighter_name": "Donald Cerrone",
+      "espn_athlete_id": null,
+      "ufcstats_id": "1d00756835ca67c9",
+      "method": "exact_name",
+      "matched_on": "Donald Cerrone",
+      "verified_at": "2026-09-08T11:39:49.313Z"
+    },
+    "forrest-griffin": {
+      "fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+      "fighter_name": "Forrest Griffin",
+      "espn_athlete_id": null,
+      "ufcstats_id": "fcffee71cff5530e",
+      "method": "exact_name",
+      "matched_on": "Forrest Griffin",
+      "verified_at": "2026-09-08T11:39:49.450Z"
+    },
+    "frankie-edgar": {
+      "fighter_id": "ac16125b-e7be-4d3a-940d-f08b7a18663c",
+      "fighter_name": "Frankie Edgar",
+      "espn_athlete_id": null,
+      "ufcstats_id": "f2688492b9a525a3",
+      "method": "exact_name",
+      "matched_on": "Frankie Edgar",
+      "verified_at": "2026-09-08T11:39:49.534Z"
+    },
+    "georges-st-pierre": {
+      "fighter_id": "0d330097-6917-470a-a48f-40b4e85ec3bb",
+      "fighter_name": "Georges St-Pierre",
+      "espn_athlete_id": null,
+      "ufcstats_id": "6506c1d34da9c013",
+      "method": "exact_name",
+      "matched_on": "Georges St-Pierre",
+      "verified_at": "2026-09-08T11:39:49.647Z"
+    },
+    "jens-pulver": {
+      "fighter_id": "39ded89a-9eb8-42c6-8182-864f10dc8dee",
+      "fighter_name": "Jens Pulver",
+      "espn_athlete_id": null,
+      "ufcstats_id": "44260175069b6276",
+      "method": "exact_name",
+      "matched_on": "Jens Pulver",
+      "verified_at": "2026-09-08T11:39:49.800Z"
+    },
+    "joanna-jedrzejczyk": {
+      "fighter_id": "45693629-615d-4e6e-8d37-f6d388400ada",
+      "fighter_name": "Joanna Jedrzejczyk",
+      "espn_athlete_id": null,
+      "ufcstats_id": "3d6749c4267da18f",
+      "method": "surname_namelock",
+      "matched_on": "Joanna Jędrzejczyk",
+      "verified_at": "2026-09-08T11:39:50.187Z"
+    },
     "jose-aldo": {
       "fighter_id": "e7f02130-6df6-49c1-a1fb-099e6a776a60",
-      "fighter_name": "José Aldo",
+      "fighter_name": "Jose Aldo",
       "espn_athlete_id": "2447641",
-      "ufcstats_id": null,
-      "method": "exact_name",
+      "ufcstats_id": "d0f3959b4a9747e6",
+      "method": "surname_namelock",
       "matched_on": "José Aldo",
-      "verified_at": "2026-09-07T14:10:54.475Z"
+      "verified_at": "2026-09-08T11:39:50.656Z"
+    },
+    "kazushi-sakuraba": {
+      "fighter_id": "490b3e5a-d521-4433-9a57-a5ea4846a224",
+      "fighter_name": "Kazushi Sakuraba",
+      "espn_athlete_id": null,
+      "ufcstats_id": "9b5b5a75523728f3",
+      "method": "exact_name",
+      "matched_on": "Kazushi Sakuraba",
+      "verified_at": "2026-09-08T11:39:50.781Z"
+    },
+    "ken-shamrock": {
+      "fighter_id": "404702dc-e2b8-4703-a291-0299990a74d0",
+      "fighter_name": "Ken Shamrock",
+      "espn_athlete_id": null,
+      "ufcstats_id": "63b65af1c5cb02cb",
+      "method": "exact_name",
+      "matched_on": "Ken Shamrock",
+      "verified_at": "2026-09-08T11:39:50.907Z"
+    },
+    "kevin-randleman": {
+      "fighter_id": "fd3e0f60-4ea4-4669-a14b-69f9e8dfcec8",
+      "fighter_name": "Kevin Randleman",
+      "espn_athlete_id": null,
+      "ufcstats_id": "6859f67468ba8489",
+      "method": "exact_name",
+      "matched_on": "Kevin Randleman",
+      "verified_at": "2026-09-08T11:39:51.016Z"
+    },
+    "khabib-nurmagomedov": {
+      "fighter_id": "d026e9a8-bb3a-4265-a606-7896d9ba349c",
+      "fighter_name": "Khabib Nurmagomedov",
+      "espn_athlete_id": null,
+      "ufcstats_id": "032cc3922d871c7f",
+      "method": "exact_name",
+      "matched_on": "Khabib Nurmagomedov",
+      "verified_at": "2026-09-08T11:39:51.144Z"
+    },
+    "mark-coleman": {
+      "fighter_id": "4eaf4e2d-7570-4951-ab7c-240bc4ab21e6",
+      "fighter_name": "Mark Coleman",
+      "espn_athlete_id": null,
+      "ufcstats_id": "21b8a0f5c231096f",
+      "method": "exact_name",
+      "matched_on": "Mark Coleman",
+      "verified_at": "2026-09-08T11:39:51.267Z"
+    },
+    "mark-kerr": {
+      "fighter_id": "b1333dae-d014-4109-84ba-7d7bb742b91d",
+      "fighter_name": "Mark Kerr",
+      "espn_athlete_id": null,
+      "ufcstats_id": "a7b48e18ca27795d",
+      "method": "exact_name",
+      "matched_on": "Mark Kerr",
+      "verified_at": "2026-09-08T11:39:51.402Z"
+    },
+    "matt-hughes": {
+      "fighter_id": "a143202d-2906-4fb8-a91b-5165db04b5cf",
+      "fighter_name": "Matt Hughes",
+      "espn_athlete_id": null,
+      "ufcstats_id": "621a6c59f88a44fe",
+      "method": "exact_name",
+      "matched_on": "Matt Hughes",
+      "verified_at": "2026-09-08T11:39:51.527Z"
+    },
+    "matt-serra": {
+      "fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
+      "fighter_name": "Matt Serra",
+      "espn_athlete_id": null,
+      "ufcstats_id": "86dfed7cc24a9fa7",
+      "method": "exact_name",
+      "matched_on": "Matt Serra",
+      "verified_at": "2026-09-08T11:39:51.662Z"
+    },
+    "maurice-smith": {
+      "fighter_id": "183c9a9e-b752-403a-85ae-ffd6341eeda9",
+      "fighter_name": "Maurice Smith",
+      "espn_athlete_id": null,
+      "ufcstats_id": "33e33d51f289d2a1",
+      "method": "exact_name",
+      "matched_on": "Maurice Smith",
+      "verified_at": "2026-09-08T11:39:51.775Z"
+    },
+    "michael-bisping": {
+      "fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f",
+      "fighter_name": "Michael Bisping",
+      "espn_athlete_id": null,
+      "ufcstats_id": "2b93ebd9f5417ad2",
+      "method": "exact_name",
+      "matched_on": "Michael Bisping",
+      "verified_at": "2026-09-08T11:39:51.891Z"
+    },
+    "minotauro-nogueira": {
+      "fighter_id": "263f34d2-b82f-4678-9c98-59e9f6934935",
+      "fighter_name": "Antonio Rodrigo Nogueira",
+      "espn_athlete_id": null,
+      "ufcstats_id": "ee9d73f4fee9cbdd",
+      "method": "alias",
+      "matched_on": "Antonio Rodrigo Nogueira",
+      "verified_at": "2026-09-08T11:39:52.155Z"
+    },
+    "pat-miletich": {
+      "fighter_id": "cfb6b83c-2c71-4491-8204-76de2569f360",
+      "fighter_name": "Pat Miletich",
+      "espn_athlete_id": null,
+      "ufcstats_id": "cedfdf8d423d500c",
+      "method": "exact_name",
+      "matched_on": "Pat Miletich",
+      "verified_at": "2026-09-08T11:39:52.286Z"
+    },
+    "randy-couture": {
+      "fighter_id": "e5bc5dd5-58a7-419f-80ad-f97454d9e0ae",
+      "fighter_name": "Randy Couture",
+      "espn_athlete_id": null,
+      "ufcstats_id": "0aa92558424ced9e",
+      "method": "exact_name",
+      "matched_on": "Randy Couture",
+      "verified_at": "2026-09-08T11:39:52.388Z"
+    },
+    "rashad-evans": {
+      "fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+      "fighter_name": "Rashad Evans",
+      "espn_athlete_id": null,
+      "ufcstats_id": "ee779c43a8926d52",
+      "method": "exact_name",
+      "matched_on": "Rashad Evans",
+      "verified_at": "2026-09-08T11:39:52.499Z"
+    },
+    "rich-franklin": {
+      "fighter_id": "1eebf87a-9a1e-42ee-a43b-9facfda71466",
+      "fighter_name": "Rich Franklin",
+      "espn_athlete_id": null,
+      "ufcstats_id": "d897897060f10a3a",
+      "method": "exact_name",
+      "matched_on": "Rich Franklin",
+      "verified_at": "2026-09-08T11:39:52.622Z"
+    },
+    "robbie-lawler": {
+      "fighter_id": "47c1eaa5-954a-44c8-8cb1-7e03e0b37ad5",
+      "fighter_name": "Robbie Lawler",
+      "espn_athlete_id": null,
+      "ufcstats_id": "f2925e6db404bf1d",
+      "method": "exact_name",
+      "matched_on": "Robbie Lawler",
+      "verified_at": "2026-09-08T11:39:52.752Z"
+    },
+    "ronda-rousey": {
+      "fighter_id": "6875fd04-7728-4f59-b477-26ff3e9985f5",
+      "fighter_name": "Ronda Rousey",
+      "espn_athlete_id": null,
+      "ufcstats_id": "8bdac25ce0bb874d",
+      "method": "exact_name",
+      "matched_on": "Ronda Rousey",
+      "verified_at": "2026-09-08T11:39:52.875Z"
+    },
+    "royce-gracie": {
+      "fighter_id": "6929497f-df9e-45ca-914e-f39645721735",
+      "fighter_name": "Royce Gracie",
+      "espn_athlete_id": null,
+      "ufcstats_id": "429e7d3725852ce9",
+      "method": "exact_name",
+      "matched_on": "Royce Gracie",
+      "verified_at": "2026-09-08T11:39:52.991Z"
+    },
+    "shogun-rua": {
+      "fighter_id": "ba2738ef-636c-4ae4-b995-728e20f0aee6",
+      "fighter_name": "Mauricio Rua",
+      "espn_athlete_id": null,
+      "ufcstats_id": "140745cbbcb023ac",
+      "method": "alias",
+      "matched_on": "Mauricio Rua",
+      "verified_at": "2026-09-08T11:39:53.246Z"
+    },
+    "stephan-bonnar": {
+      "fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
+      "fighter_name": "Stephan Bonnar",
+      "espn_athlete_id": null,
+      "ufcstats_id": "c6a33ff198aaaeeb",
+      "method": "exact_name",
+      "matched_on": "Stephan Bonnar",
+      "verified_at": "2026-09-08T11:39:53.359Z"
+    },
+    "tito-ortiz": {
+      "fighter_id": "6c94e303-2ab9-4f5e-8a2b-b8a9a369c360",
+      "fighter_name": "Tito Ortiz",
+      "espn_athlete_id": null,
+      "ufcstats_id": "2f732dd9210d301f",
+      "method": "exact_name",
+      "matched_on": "Tito Ortiz",
+      "verified_at": "2026-09-08T11:39:53.485Z"
+    },
+    "urijah-faber": {
+      "fighter_id": "96fceb90-0bf8-4a2c-ab81-ffe2b5b6ed8b",
+      "fighter_name": "Urijah Faber",
+      "espn_athlete_id": null,
+      "ufcstats_id": "78114b7199cef90c",
+      "method": "exact_name",
+      "matched_on": "Urijah Faber",
+      "verified_at": "2026-09-08T11:39:53.610Z"
+    },
+    "vitor-belfort": {
+      "fighter_id": "47a004fd-5814-48fa-86de-5b6736999f42",
+      "fighter_name": "Vitor Belfort",
+      "espn_athlete_id": null,
+      "ufcstats_id": "0ee783aa00e468f0",
+      "method": "exact_name",
+      "matched_on": "Vitor Belfort",
+      "verified_at": "2026-09-08T11:39:53.729Z"
+    },
+    "wanderlei-silva": {
+      "fighter_id": "dcd7b51c-3599-4cb7-a218-d4b47bc62ce7",
+      "fighter_name": "Wanderlei Silva",
+      "espn_athlete_id": null,
+      "ufcstats_id": "a1f6999fe57236e0",
+      "method": "exact_name",
+      "matched_on": "Wanderlei Silva",
+      "verified_at": "2026-09-08T11:39:53.836Z"
     }
   },
-  "backfill_candidates": [
-    {
-      "slug": "amanda-nunes",
-      "name": "Amanda Nunes",
-      "wing": "modern"
-    },
-    {
-      "slug": "anderson-silva",
-      "name": "Anderson Silva",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "bas-rutten",
-      "name": "Bas Rutten",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "bj-penn",
-      "name": "BJ Penn",
-      "wing": "modern"
-    },
-    {
-      "slug": "chuck-liddell",
-      "name": "Chuck Liddell",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "dan-severn",
-      "name": "Dan Severn",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "daniel-cormier",
-      "name": "Daniel Cormier",
-      "wing": "modern"
-    },
-    {
-      "slug": "don-frye",
-      "name": "Don Frye",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "donald-cerrone",
-      "name": "Donald Cerrone",
-      "wing": "modern"
-    },
-    {
-      "slug": "forrest-griffin",
-      "name": "Forrest Griffin",
-      "wing": "modern"
-    },
-    {
-      "slug": "frankie-edgar",
-      "name": "Frankie Edgar",
-      "wing": "modern"
-    },
-    {
-      "slug": "georges-st-pierre",
-      "name": "Georges St-Pierre",
-      "wing": "modern"
-    },
-    {
-      "slug": "jens-pulver",
-      "name": "Jens Pulver",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "joanna-jedrzejczyk",
-      "name": "Joanna Jędrzejczyk",
-      "wing": "modern"
-    },
-    {
-      "slug": "kazushi-sakuraba",
-      "name": "Kazushi Sakuraba",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "ken-shamrock",
-      "name": "Ken Shamrock",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "kevin-randleman",
-      "name": "Kevin Randleman",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "khabib-nurmagomedov",
-      "name": "Khabib Nurmagomedov",
-      "wing": "modern"
-    },
-    {
-      "slug": "mark-coleman",
-      "name": "Mark Coleman",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "mark-kerr",
-      "name": "Mark Kerr",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "matt-hughes",
-      "name": "Matt Hughes",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "matt-serra",
-      "name": "Matt Serra",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "maurice-smith",
-      "name": "Maurice Smith",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "michael-bisping",
-      "name": "Michael Bisping",
-      "wing": "modern"
-    },
-    {
-      "slug": "minotauro-nogueira",
-      "name": "Minotauro Nogueira",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "pat-miletich",
-      "name": "Pat Miletich",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "randy-couture",
-      "name": "Randy Couture",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "rashad-evans",
-      "name": "Rashad Evans",
-      "wing": "modern"
-    },
-    {
-      "slug": "rich-franklin",
-      "name": "Rich Franklin",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "robbie-lawler",
-      "name": "Robbie Lawler",
-      "wing": "modern"
-    },
-    {
-      "slug": "ronda-rousey",
-      "name": "Ronda Rousey",
-      "wing": "modern"
-    },
-    {
-      "slug": "royce-gracie",
-      "name": "Royce Gracie",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "shogun-rua",
-      "name": "Shogun Rua",
-      "wing": "modern"
-    },
-    {
-      "slug": "stephan-bonnar",
-      "name": "Stephan Bonnar",
-      "wing": "modern"
-    },
-    {
-      "slug": "tito-ortiz",
-      "name": "Tito Ortiz",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "urijah-faber",
-      "name": "Urijah Faber",
-      "wing": "modern"
-    },
-    {
-      "slug": "vitor-belfort",
-      "name": "Vitor Belfort",
-      "wing": "pioneer"
-    },
-    {
-      "slug": "wanderlei-silva",
-      "name": "Wanderlei Silva",
-      "wing": "pioneer"
-    }
-  ]
+  "backfill_candidates": []
 }

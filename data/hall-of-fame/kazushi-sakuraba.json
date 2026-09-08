@@ -103,9 +103,20 @@
     "verified_at": "2026-09-07T14:09:45.116Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:54.932Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "490b3e5a-d521-4433-9a57-a5ea4846a224",
+    "fighter_name": "Kazushi Sakuraba",
+    "espn_athlete_id": null,
+    "ufcstats_id": "9b5b5a75523728f3",
+    "method": "exact_name",
+    "matched_on": "Kazushi Sakuraba",
+    "verified_at": "2026-09-08T11:39:50.781Z",
+    "record": {
+      "w": 26,
+      "l": 17,
+      "d": 1,
+      "nc": 2
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

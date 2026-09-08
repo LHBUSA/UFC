@@ -106,9 +106,20 @@
     "verified_at": "2026-09-07T14:09:41.186Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:52.023Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "fd1c404f-a85b-4624-ad95-f7c476a60617",
+    "fighter_name": "Don Frye",
+    "espn_athlete_id": null,
+    "ufcstats_id": "271fe91f4ba9d2c5",
+    "method": "exact_name",
+    "matched_on": "Don Frye",
+    "verified_at": "2026-09-08T11:39:49.191Z",
+    "record": {
+      "w": 20,
+      "l": 9,
+      "d": 1,
+      "nc": 1
+    }
   },
   "media": null,
   "media_search": {

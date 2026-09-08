@@ -103,9 +103,20 @@
     "verified_at": "2026-09-07T14:09:43.775Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:57.073Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "183c9a9e-b752-403a-85ae-ffd6341eeda9",
+    "fighter_name": "Maurice Smith",
+    "espn_athlete_id": null,
+    "ufcstats_id": "33e33d51f289d2a1",
+    "method": "exact_name",
+    "matched_on": "Maurice Smith",
+    "verified_at": "2026-09-08T11:39:51.775Z",
+    "record": {
+      "w": 12,
+      "l": 14,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": null,
   "media_search": {

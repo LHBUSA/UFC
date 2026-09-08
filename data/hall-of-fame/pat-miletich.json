@@ -104,9 +104,20 @@
     "verified_at": "2026-09-07T14:09:39.399Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:58.117Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "cfb6b83c-2c71-4491-8204-76de2569f360",
+    "fighter_name": "Pat Miletich",
+    "espn_athlete_id": null,
+    "ufcstats_id": "cedfdf8d423d500c",
+    "method": "exact_name",
+    "matched_on": "Pat Miletich",
+    "verified_at": "2026-09-08T11:39:52.286Z",
+    "record": {
+      "w": 29,
+      "l": 7,
+      "d": 2,
+      "nc": 0
+    }
   },
   "media": null,
   "media_search": {

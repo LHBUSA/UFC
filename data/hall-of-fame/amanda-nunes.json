@@ -112,9 +112,20 @@
     "verified_at": "2026-09-07T14:10:20.446Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:49.385Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "c00f064b-2a2c-474f-b64d-057642207f6b",
+    "fighter_name": "Amanda Nunes",
+    "espn_athlete_id": null,
+    "ufcstats_id": "80fa8218c99f9c58",
+    "method": "exact_name",
+    "matched_on": "Amanda Nunes",
+    "verified_at": "2026-09-08T11:39:48.275Z",
+    "record": {
+      "w": 23,
+      "l": 5,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

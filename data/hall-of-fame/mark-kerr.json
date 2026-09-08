@@ -90,9 +90,20 @@
     "verified_at": "2026-09-07T14:09:58.636Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:56.323Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "b1333dae-d014-4109-84ba-7d7bb742b91d",
+    "fighter_name": "Mark Kerr",
+    "espn_athlete_id": null,
+    "ufcstats_id": "a7b48e18ca27795d",
+    "method": "exact_name",
+    "matched_on": "Mark Kerr",
+    "verified_at": "2026-09-08T11:39:51.402Z",
+    "record": {
+      "w": 15,
+      "l": 11,
+      "d": 0,
+      "nc": 1
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

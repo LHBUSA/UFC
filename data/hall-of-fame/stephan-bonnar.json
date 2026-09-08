@@ -96,9 +96,20 @@
     "verified_at": "2026-09-07T14:10:00.629Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:11:00.381Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
+    "fighter_name": "Stephan Bonnar",
+    "espn_athlete_id": null,
+    "ufcstats_id": "c6a33ff198aaaeeb",
+    "method": "exact_name",
+    "matched_on": "Stephan Bonnar",
+    "verified_at": "2026-09-08T11:39:53.359Z",
+    "record": {
+      "w": 15,
+      "l": 9,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

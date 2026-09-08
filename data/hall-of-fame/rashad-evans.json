@@ -103,9 +103,20 @@
     "verified_at": "2026-09-07T14:10:04.924Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:58.618Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+    "fighter_name": "Rashad Evans",
+    "espn_athlete_id": null,
+    "ufcstats_id": "ee779c43a8926d52",
+    "method": "exact_name",
+    "matched_on": "Rashad Evans",
+    "verified_at": "2026-09-08T11:39:52.499Z",
+    "record": {
+      "w": 19,
+      "l": 8,
+      "d": 1,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

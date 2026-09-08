@@ -115,9 +115,20 @@
     "verified_at": "2026-09-07T14:09:30.777Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:55.184Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "404702dc-e2b8-4703-a291-0299990a74d0",
+    "fighter_name": "Ken Shamrock",
+    "espn_athlete_id": null,
+    "ufcstats_id": "63b65af1c5cb02cb",
+    "method": "exact_name",
+    "matched_on": "Ken Shamrock",
+    "verified_at": "2026-09-08T11:39:50.907Z",
+    "record": {
+      "w": 28,
+      "l": 17,
+      "d": 2,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

@@ -99,9 +99,20 @@
     "verified_at": "2026-09-07T14:10:21.012Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:59.073Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "47c1eaa5-954a-44c8-8cb1-7e03e0b37ad5",
+    "fighter_name": "Robbie Lawler",
+    "espn_athlete_id": null,
+    "ufcstats_id": "f2925e6db404bf1d",
+    "method": "exact_name",
+    "matched_on": "Robbie Lawler",
+    "verified_at": "2026-09-08T11:39:52.752Z",
+    "record": {
+      "w": 30,
+      "l": 16,
+      "d": 0,
+      "nc": 1
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

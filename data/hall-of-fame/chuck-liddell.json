@@ -114,9 +114,20 @@
     "verified_at": "2026-09-07T14:09:35.828Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:51.237Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "22356d0a-d3df-4100-988e-254ef08da3c5",
+    "fighter_name": "Chuck Liddell",
+    "espn_athlete_id": null,
+    "ufcstats_id": "a390eb8a9b2df298",
+    "method": "exact_name",
+    "matched_on": "Chuck Liddell",
+    "verified_at": "2026-09-08T11:39:48.818Z",
+    "record": {
+      "w": 21,
+      "l": 8,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

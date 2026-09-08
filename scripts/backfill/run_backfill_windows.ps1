@@ -19,6 +19,21 @@ Set-Location $PSScriptRoot
 New-Item -ItemType Directory -Force -Path logs | Out-Null
 $status = 'logs\queue_status.txt'
 
+# The worker imports the normalizers.py beside it, and the copies on this
+# machine differ. Checking before a window starts turns "died six windows in on
+# a label that is fixed elsewhere" into "did not start, and here is why".
+$checker = Join-Path $PSScriptRoot 'check_normalizer.py'
+if (Test-Path $checker) {
+  & python $checker $PSScriptRoot
+  if ($LASTEXITCODE -ne 0) {
+    "[preflight_fail] $(Get-Date -Format o) normaliser beside this script is missing required capabilities" | Add-Content $status
+    Write-Output "[queue] refusing to start: see the normaliser check above."
+    exit 4
+  }
+} else {
+  "[preflight_skip] $(Get-Date -Format o) check_normalizer.py not present" | Add-Content $status
+}
+
 # Normalise the labels before matching. Invoked as "powershell -File this.ps1
 # -Labels A,B,C" every argument arrives as a literal string, so the list lands
 # as the single element "A,B,C" rather than three elements, and every match

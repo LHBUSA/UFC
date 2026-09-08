@@ -50,8 +50,10 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
   /* The packet is checked in; the bout count is live. After an identity merge
    * or an archive load they disagree, and the page would then show a headline
    * over one record and a distribution over another. Withhold the distribution
-   * rather than render two referees at once. Kept even once every packet is
-   * current: it is the runtime net, not a substitute for regenerating. */
+   * rather than render two referees at once — the archive section below is
+   * computed from the live row and still covers the same ground. Kept even once
+   * every packet is current: it is the runtime net, not a substitute for
+   * regenerating. */
   const metricsCurrent = packetMetricsAreCurrent(pk, r.bouts);
   const m = metricsCurrent ? pk?.metrics || null : null;
   const methodRows = m ? Object.entries(m.method_distribution).sort((a, b) => b[1] - a[1]).slice(0, 6) : [];

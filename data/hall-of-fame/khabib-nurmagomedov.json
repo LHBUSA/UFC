@@ -114,9 +114,20 @@
     "verified_at": "2026-09-07T14:10:09.343Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:55.819Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "d026e9a8-bb3a-4265-a606-7896d9ba349c",
+    "fighter_name": "Khabib Nurmagomedov",
+    "espn_athlete_id": null,
+    "ufcstats_id": "032cc3922d871c7f",
+    "method": "exact_name",
+    "matched_on": "Khabib Nurmagomedov",
+    "verified_at": "2026-09-08T11:39:51.144Z",
+    "record": {
+      "w": 29,
+      "l": 0,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

@@ -106,9 +106,20 @@
     "verified_at": "2026-09-07T14:10:04.445Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:57.304Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f",
+    "fighter_name": "Michael Bisping",
+    "espn_athlete_id": null,
+    "ufcstats_id": "2b93ebd9f5417ad2",
+    "method": "exact_name",
+    "matched_on": "Michael Bisping",
+    "verified_at": "2026-09-08T11:39:51.891Z",
+    "record": {
+      "w": 30,
+      "l": 9,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

@@ -100,9 +100,20 @@
     "verified_at": "2026-09-07T14:10:11.600Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:53.074Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "ac16125b-e7be-4d3a-940d-f08b7a18663c",
+    "fighter_name": "Frankie Edgar",
+    "espn_athlete_id": null,
+    "ufcstats_id": "f2688492b9a525a3",
+    "method": "exact_name",
+    "matched_on": "Frankie Edgar",
+    "verified_at": "2026-09-08T11:39:49.534Z",
+    "record": {
+      "w": 23,
+      "l": 11,
+      "d": 1,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",
