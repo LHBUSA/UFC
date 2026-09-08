@@ -1,0 +1,318 @@
+{
+  "generated_at": "2026-09-08T19:11:35.888Z",
+  "migration": "20260908000014_referee_view_security.sql",
+  "checks": {
+    "roles": [
+      {
+        "rolname": "anon",
+        "rolbypassrls": false,
+        "rolsuper": false
+      },
+      {
+        "rolname": "authenticated",
+        "rolbypassrls": false,
+        "rolsuper": false
+      },
+      {
+        "rolname": "postgres",
+        "rolbypassrls": true,
+        "rolsuper": false
+      },
+      {
+        "rolname": "service_role",
+        "rolbypassrls": true,
+        "rolsuper": false
+      }
+    ],
+    "base_tables": [
+      {
+        "table": "ufc_bout_results",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_bouts",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_events",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_fighters",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_referee_profiles",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_referee_aliases",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      }
+    ],
+    "views": [
+      {
+        "view": "ufc_referee_stats",
+        "owner": "postgres",
+        "reloptions": null,
+        "security_invoker": false,
+        "anon_leaked": true,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "view": "ufc_referee_directory",
+        "owner": "postgres",
+        "reloptions": null,
+        "security_invoker": false,
+        "anon_leaked": true,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "view": "ufc_referee_bouts",
+        "owner": "postgres",
+        "reloptions": null,
+        "security_invoker": false,
+        "anon_leaked": true,
+        "anon_status": 200,
+        "service_reads": true
+      }
+    ],
+    "bypass_open": true,
+    "migration_applied": false,
+    "grants": [
+      {
+        "table_name": "ufc_referee_aliases",
+        "grantee": "anon",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_aliases",
+        "grantee": "authenticated",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_aliases",
+        "grantee": "service_role",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_bouts",
+        "grantee": "anon",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_bouts",
+        "grantee": "authenticated",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_bouts",
+        "grantee": "service_role",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_directory",
+        "grantee": "anon",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_directory",
+        "grantee": "authenticated",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_directory",
+        "grantee": "service_role",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_profiles",
+        "grantee": "anon",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_profiles",
+        "grantee": "authenticated",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_profiles",
+        "grantee": "service_role",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_stats",
+        "grantee": "anon",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_stats",
+        "grantee": "authenticated",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      },
+      {
+        "table_name": "ufc_referee_stats",
+        "grantee": "service_role",
+        "privs": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+      }
+    ],
+    "invoker_prerequisite": [
+      {
+        "table": "ufc_bout_results",
+        "service_role_select": true
+      },
+      {
+        "table": "ufc_bouts",
+        "service_role_select": true
+      },
+      {
+        "table": "ufc_events",
+        "service_role_select": true
+      },
+      {
+        "table": "ufc_fighters",
+        "service_role_select": true
+      },
+      {
+        "table": "ufc_referee_profiles",
+        "service_role_select": true
+      },
+      {
+        "table": "ufc_referee_aliases",
+        "service_role_select": true
+      }
+    ],
+    "shape": [
+      {
+        "view": "ufc_referee_bouts",
+        "columns": 29,
+        "columns_expected": 29,
+        "signature_matches": true,
+        "viewdef_md5": "44ec864704faf24addcd799d3d185d96",
+        "viewdef_md5_expected": "44ec864704faf24addcd799d3d185d96",
+        "viewdef_matches": true
+      },
+      {
+        "view": "ufc_referee_directory",
+        "columns": 30,
+        "columns_expected": 30,
+        "signature_matches": true,
+        "viewdef_md5": "2b8120be99e725e601a2106e32394728",
+        "viewdef_md5_expected": "2b8120be99e725e601a2106e32394728",
+        "viewdef_matches": true
+      },
+      {
+        "view": "ufc_referee_stats",
+        "columns": 19,
+        "columns_expected": 19,
+        "signature_matches": true,
+        "viewdef_md5": "e9285fb51559aa89e05e11569b1db99e",
+        "viewdef_md5_expected": "e9285fb51559aa89e05e11569b1db99e",
+        "viewdef_matches": true
+      }
+    ],
+    "metrics": {
+      "live": {
+        "stats_rows": 246,
+        "directory_rows": 246,
+        "bouts_rows": 9318,
+        "sum_bouts": 9318,
+        "sum_stoppages": 4934,
+        "sum_decisions": 4221,
+        "sum_title_bouts": 464,
+        "archive_stoppage_rate": "53.0",
+        "archive_decision_rate": "45.3",
+        "directory_with_slug": 246,
+        "stats_fingerprint": "fe63694e4c6dbded2d7aea85ab2cabd4"
+      },
+      "baseline": {
+        "stats_rows": 246,
+        "directory_rows": 246,
+        "bouts_rows": 9318,
+        "sum_bouts": 9318,
+        "sum_stoppages": 4934,
+        "sum_decisions": 4221,
+        "sum_title_bouts": 464,
+        "archive_stoppage_rate": "53.0",
+        "archive_decision_rate": "45.3",
+        "directory_with_slug": 246,
+        "stats_fingerprint": "fe63694e4c6dbded2d7aea85ab2cabd4"
+      },
+      "measured_at": "2026-09-09T00:00:00Z",
+      "drift": []
+    },
+    "security_definer": {
+      "live": [
+        "nfl_attach_user_by_email",
+        "nfl_auth_consume_magic_token",
+        "nfl_auth_session_state",
+        "nfl_promote_prop_selector",
+        "nfl_replace_open_prop_pick"
+      ],
+      "baseline": [
+        "nfl_attach_user_by_email",
+        "nfl_auth_consume_magic_token",
+        "nfl_auth_session_state",
+        "nfl_promote_prop_selector",
+        "nfl_replace_open_prop_pick"
+      ],
+      "added": []
+    },
+    "migration_audit": {
+      "secured": [
+        "ufc_referee_stats",
+        "ufc_referee_directory",
+        "ufc_referee_bouts"
+      ],
+      "rewritten": [],
+      "select_revoked": [
+        "ufc_referee_stats",
+        "ufc_referee_directory",
+        "ufc_referee_bouts"
+      ],
+      "service_select": [
+        "ufc_referee_stats",
+        "ufc_referee_directory",
+        "ufc_referee_bouts"
+      ]
+    }
+  },
+  "problems": [],
+  "notes": [
+    "BYPASS OPEN on ufc_referee_stats, ufc_referee_directory, ufc_referee_bouts - expected until 20260908000014 is applied.",
+    "anon holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_aliases - removed by 20260908000014.",
+    "anon holds SELECT on public.ufc_referee_aliases - removed by 20260908000014.",
+    "authenticated holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_aliases - removed by 20260908000014.",
+    "authenticated holds SELECT on public.ufc_referee_aliases - removed by 20260908000014.",
+    "anon holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_bouts - removed by 20260908000014.",
+    "anon holds SELECT on public.ufc_referee_bouts - removed by 20260908000014.",
+    "authenticated holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_bouts - removed by 20260908000014.",
+    "authenticated holds SELECT on public.ufc_referee_bouts - removed by 20260908000014.",
+    "anon holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_directory - removed by 20260908000014.",
+    "anon holds SELECT on public.ufc_referee_directory - removed by 20260908000014.",
+    "authenticated holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_directory - removed by 20260908000014.",
+    "authenticated holds SELECT on public.ufc_referee_directory - removed by 20260908000014.",
+    "anon holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_profiles - removed by 20260908000014.",
+    "anon holds SELECT on public.ufc_referee_profiles - removed by 20260908000014.",
+    "authenticated holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_profiles - removed by 20260908000014.",
+    "authenticated holds SELECT on public.ufc_referee_profiles - removed by 20260908000014.",
+    "anon holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_stats - removed by 20260908000014.",
+    "anon holds SELECT on public.ufc_referee_stats - removed by 20260908000014.",
+    "authenticated holds DELETE,INSERT,REFERENCES,TRIGGER,TRUNCATE,UPDATE on public.ufc_referee_stats - removed by 20260908000014.",
+    "authenticated holds SELECT on public.ufc_referee_stats - removed by 20260908000014."
+  ]
+}

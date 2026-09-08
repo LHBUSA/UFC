@@ -1,0 +1,79 @@
+{
+  "_comment": [
+    "Referee view shape and statistics measured on production BEFORE the",
+    "20260908000014 view-security repair, so that applying it can be shown to",
+    "change privileges and nothing else.",
+    "",
+    "The repair only sets a storage option and revokes grants. Every number here",
+    "is derived from the base tables, so none of it can move as a result. If any",
+    "of it does move after the migration is applied, the migration did something",
+    "it was not supposed to and scripts/referees/verify-view-security.mjs will",
+    "say which field.",
+    "",
+    "The archive itself does change over time - new events are ingested - so a",
+    "drift in the counts is not automatically a fault. viewdef_md5 and the column",
+    "signatures are the fields that must NEVER change; the counts are compared",
+    "with their source date attached so a reader can tell a real regression from",
+    "a week of new fights."
+  ],
+  "measured_at": "2026-09-09T00:00:00Z",
+  "measured_against": "tkmlnhmylqnttmnsnief",
+  "measured_before_migration": "20260908000014_referee_view_security.sql",
+  "views": {
+    "ufc_referee_stats": {
+      "columns": 19,
+      "viewdef_md5": "e9285fb51559aa89e05e11569b1db99e",
+      "viewdef_len": 3563,
+      "signature": "name:text|bouts:integer|stoppages:integer|ko_tko:integer|submissions:integer|decisions:integer|split_decisions:integer|nc_draws:integer|title_bouts:integer|five_round_bouts:integer|avg_fight_seconds:integer|avg_stoppage_seconds:integer|first_event_date:date|last_event_date:date|stoppage_rate:numeric|decision_rate:numeric|split_decision_share:numeric|archive_stoppage_rate:numeric|archive_decision_rate:numeric"
+    },
+    "ufc_referee_directory": {
+      "columns": 30,
+      "viewdef_md5": "2b8120be99e725e601a2106e32394728",
+      "viewdef_len": 742,
+      "signature": "name:text|bouts:integer|stoppages:integer|ko_tko:integer|submissions:integer|decisions:integer|split_decisions:integer|nc_draws:integer|title_bouts:integer|five_round_bouts:integer|avg_fight_seconds:integer|avg_stoppage_seconds:integer|first_event_date:date|last_event_date:date|stoppage_rate:numeric|decision_rate:numeric|split_decision_share:numeric|archive_stoppage_rate:numeric|archive_decision_rate:numeric|slug:text|display_name:text|bio:text|bio_source_url:text|bio_source_name:text|bio_verified_at:timestamp with time zone|country:text|image_url:text|image_source_url:text|image_credit:text|image_license:text"
+    },
+    "ufc_referee_bouts": {
+      "columns": 29,
+      "viewdef_md5": "44ec864704faf24addcd799d3d185d96",
+      "viewdef_len": 1225,
+      "signature": "referee_name:text|referee_slug:text|bout_id:uuid|method:text|method_raw:text|round:integer|time_sec:integer|finish_detail:text|result_source:text|has_stats:boolean|weight_class:text|is_womens:boolean|is_title:boolean|scheduled_rounds:integer|card_position:text|event_id:uuid|event_name:text|event_date:date|venue:text|city:text|region:text|country:text|fighter_a_id:uuid|fighter_a_name:text|fighter_b_id:uuid|fighter_b_name:text|winner_id:uuid|winner_name:text|source_url:text"
+    }
+  },
+  "metrics": {
+    "stats_rows": 246,
+    "directory_rows": 246,
+    "bouts_rows": 9318,
+    "sum_bouts": 9318,
+    "sum_stoppages": 4934,
+    "sum_decisions": 4221,
+    "sum_title_bouts": 464,
+    "archive_stoppage_rate": "53.0",
+    "archive_decision_rate": "45.3",
+    "directory_with_slug": 246,
+    "stats_fingerprint": "fe63694e4c6dbded2d7aea85ab2cabd4"
+  },
+  "grants_before": {
+    "_comment": "The Supabase default, on all five referee relations, for both public roles.",
+    "anon": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE",
+    "authenticated": "DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE"
+  },
+  "anon_probe_before": {
+    "_comment": "Live GETs through PostgREST with the public anon key. The base tables deny; the views do not.",
+    "ufc_bout_results": 0,
+    "ufc_bouts": 0,
+    "ufc_events": 0,
+    "ufc_fighters": 0,
+    "ufc_referee_profiles": 0,
+    "ufc_referee_aliases": 0,
+    "ufc_referee_stats": 1,
+    "ufc_referee_directory": 1,
+    "ufc_referee_bouts": 1
+  },
+  "security_definer_routines_before": [
+    "nfl_attach_user_by_email",
+    "nfl_auth_consume_magic_token",
+    "nfl_auth_session_state",
+    "nfl_promote_prop_selector",
+    "nfl_replace_open_prop_pick"
+  ]
+}
