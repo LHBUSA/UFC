@@ -1,0 +1,56 @@
+name: UFC Fight DNA historical repair
+
+on:
+  push:
+    branches:
+      - fight-dna-repair-v1
+    paths:
+      - 'scripts/dna/repair_historical_snapshots.mjs'
+      - '.github/dna-repair/APPLY'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ufc-fight-dna-history-repair
+  cancel-in-progress: false
+
+jobs:
+  repair-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Syntax check
+        run: node --check scripts/dna/repair_historical_snapshots.mjs
+
+      - name: Verify data credentials
+        shell: bash
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+
+      - name: Historical repair dry-run or explicit apply
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(--dry-run)
+          if [ -f .github/dna-repair/APPLY ]; then
+            args=(--apply)
+          fi
+          node scripts/dna/repair_historical_snapshots.mjs "${args[@]}" | tee fight-dna-history-repair.log
+
+      - name: Upload proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: fight-dna-history-repair-proof
+          path: fight-dna-history-repair.log
+          if-no-files-found: error
