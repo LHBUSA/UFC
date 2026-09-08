@@ -13,7 +13,8 @@
     "prebuild": "node scripts/preservation-check.mjs",
     "test:market": "node --experimental-strip-types --test lib/market.test.mjs",
     "test:store": "node --test lib/store/store.test.ts",
-    "test:judges": "node --experimental-strip-types --test lib/judgeScoring.test.mjs lib/judgeSchema.test.mjs"
+    "test:judges": "node --experimental-strip-types --test lib/judgeScoring.test.mjs lib/judgeSchema.test.mjs",
+    "test:model": "node --experimental-strip-types --test lib/model.test.mjs"
   },
   "dependencies": {
     "next": "^15.5.25",

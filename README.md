@@ -16,6 +16,7 @@ scripts/backfill/         backfill_ufcstats.py + parsers. Local Python 3.12+.
 scripts/news/             seed_sources / ingest_news / write_articles (docs/news_pipeline.md)
 scripts/rankings/         ingest_rankings.mjs -> Storage snapshot (docs/rankings.md)
 scripts/images/           fetch_fighter_portraits.mjs -> licensed Wikimedia portraits (docs/images.md)
+scripts/model/            PBE Fight Model v1: extract -> features -> walk-forward backtest -> leakage audit (docs/model/)
 scripts/merge_events.py   one-off: fold ESPN duplicate event rows into UFC Stats rows
 workers/ufc-stats-ingest/ nightly incremental Worker (deployed; cron 06:00 UTC)
 web/                      Next.js site, ufc.propbetedge.ai (docs/frontend.md)

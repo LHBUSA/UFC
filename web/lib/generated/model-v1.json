@@ -1,0 +1,1438 @@
+{
+  "generated_at": "2026-09-08T18:35:48.565Z",
+  "model": {
+    "model_version": "pbe-fight-model-v1",
+    "model_family": "pbe-fight-model",
+    "feature_version": "pbe-fight-features-v1",
+    "algorithm": "ridge logistic regression, no intercept, antisymmetric differential features",
+    "validation": "chronological walk-forward, expanding window, refit per calendar year",
+    "status": "candidate",
+    "spec_sha256": "75da0a1de14de2e186dea784dcbcfdbd140f592b3719b34bc11988cb52b7155f",
+    "lambda": 2,
+    "training_bouts": 9175,
+    "training_window_start": "1994-03-11",
+    "training_window_end": "2026-09-05",
+    "feature_count": 33,
+    "coefficients": {
+      "age_diff_years": -0.3322974606013555,
+      "reach_diff_in": 0.09416179298044929,
+      "height_diff_in": 0.013642194118380432,
+      "experience_log_diff": -0.15070936225574283,
+      "five_round_exp_diff": 0.07884423063748987,
+      "title_exp_diff": 0.055957316555404195,
+      "winrate_diff": 0.15508491108058695,
+      "recent5_winrate_diff": -0.03333854997774644,
+      "streak_diff": 0.07158165150971707,
+      "layoff_log_diff": -0.04353105090991817,
+      "slpm_diff": 0.03706479993708885,
+      "sapm_diff": -0.06555028929377751,
+      "sig_diff_per_min_diff": 0.08020453484400364,
+      "sig_accuracy_diff": 0.054418184240435104,
+      "sig_defense_diff": 0.09430946237766774,
+      "kd_per15_diff": -0.08436055574293791,
+      "kd_absorbed_per15_diff": 0.000015289029836795255,
+      "td_landed_per15_diff": 0.11594370467313563,
+      "td_accuracy_diff": -0.04153979482047,
+      "td_defense_diff": 0.05907121813769888,
+      "control_share_diff": 0.015417291195728225,
+      "sub_att_per15_diff": -0.05846053282527284,
+      "finish_rate_diff": 0.02530723461929685,
+      "ko_rate_diff": 0.005841709897534326,
+      "sub_rate_diff": 0.02365443331758785,
+      "ko_loss_rate_diff": -0.05928706797821376,
+      "sub_loss_rate_diff": -0.009295393293095765,
+      "pace_retention_diff": -0.037610135212205256,
+      "champ_round_delta_diff": -0.009032874623357725,
+      "southpaw_edge": 0.07413441338478495,
+      "sos_diff": 0.05250188251547922,
+      "quality_wins_diff": 0.0462522232342406,
+      "stat_sample_log_diff": 0.15007824688091104
+    },
+    "feature_scale": {
+      "age_diff_years": 5.201368317016624,
+      "reach_diff_in": 3.0642039829368937,
+      "height_diff_in": 2.5368993497233396,
+      "experience_log_diff": 0.6892881298362018,
+      "five_round_exp_diff": 0.5797655257326422,
+      "title_exp_diff": 0.5156653858249048,
+      "winrate_diff": 0.14555148363589362,
+      "recent5_winrate_diff": 0.305289509276235,
+      "streak_diff": 1.981989752432286,
+      "layoff_log_diff": 0.68578573678523,
+      "slpm_diff": 2.272622770027368,
+      "sapm_diff": 1.919887512043704,
+      "sig_diff_per_min_diff": 2.6251910338632025,
+      "sig_accuracy_diff": 0.11715700666351221,
+      "sig_defense_diff": 0.11508172921884707,
+      "kd_per15_diff": 3.866023300180837,
+      "kd_absorbed_per15_diff": 1.8253744820038884,
+      "td_landed_per15_diff": 2.163196164577683,
+      "td_accuracy_diff": 0.2534053856658711,
+      "td_defense_diff": 0.25801965082108475,
+      "control_share_diff": 0.19170630580399162,
+      "sub_att_per15_diff": 1.9138781102516094,
+      "finish_rate_diff": 0.35779893096466237,
+      "ko_rate_diff": 0.34162517014455324,
+      "sub_rate_diff": 0.3174649352646939,
+      "ko_loss_rate_diff": 0.22049695291957955,
+      "sub_loss_rate_diff": 0.19250344345013168,
+      "pace_retention_diff": 1.0829692644708602,
+      "champ_round_delta_diff": 1.0172895678924354,
+      "southpaw_edge": 0.5511444619912743,
+      "sos_diff": 0.22395085665414913,
+      "quality_wins_diff": 0.6382395054799576,
+      "stat_sample_log_diff": 0.7482951198410914
+    }
+  },
+  "features": [
+    {
+      "key": "age_diff_years",
+      "family": "age",
+      "source": "static",
+      "doc": "Age in years at the event date. Older is normally worse.",
+      "expected_sign": "-",
+      "coefficient": -0.3322974606013555
+    },
+    {
+      "key": "reach_diff_in",
+      "family": "reach",
+      "source": "static",
+      "doc": "Reach in inches.",
+      "expected_sign": "+",
+      "coefficient": 0.09416179298044929
+    },
+    {
+      "key": "height_diff_in",
+      "family": "reach",
+      "source": "static",
+      "doc": "Height in inches.",
+      "expected_sign": "+",
+      "coefficient": 0.013642194118380432
+    },
+    {
+      "key": "experience_log_diff",
+      "family": "experience",
+      "source": "dna_snapshot",
+      "doc": "log1p of completed prior bouts in the snapshot sample.",
+      "expected_sign": "+",
+      "coefficient": -0.15070936225574283
+    },
+    {
+      "key": "five_round_exp_diff",
+      "family": "experience",
+      "source": "dna_snapshot",
+      "doc": "log1p of prior scheduled-five-round appearances.",
+      "expected_sign": "+",
+      "coefficient": 0.07884423063748987
+    },
+    {
+      "key": "title_exp_diff",
+      "family": "experience",
+      "source": "dna_snapshot",
+      "doc": "log1p of prior title-bout appearances.",
+      "expected_sign": "+",
+      "coefficient": 0.055957316555404195
+    },
+    {
+      "key": "winrate_diff",
+      "family": "form",
+      "source": "dna_snapshot",
+      "doc": "Laplace-smoothed prior win rate, (w+1)/(appearances+2).",
+      "expected_sign": "+",
+      "coefficient": 0.15508491108058695
+    },
+    {
+      "key": "recent5_winrate_diff",
+      "family": "form",
+      "source": "dna_bout_rows",
+      "doc": "Win rate over the last five completed bouts before the event date.",
+      "expected_sign": "+",
+      "coefficient": -0.03333854997774644
+    },
+    {
+      "key": "streak_diff",
+      "family": "form",
+      "source": "dna_bout_rows",
+      "doc": "Signed current win or loss streak, clamped to plus or minus five.",
+      "expected_sign": "+",
+      "coefficient": 0.07158165150971707
+    },
+    {
+      "key": "layoff_log_diff",
+      "family": "form",
+      "source": "dna_bout_rows",
+      "doc": "log1p of days since the previous bout. A long layoff is normally a negative.",
+      "expected_sign": "-",
+      "coefficient": -0.04353105090991817
+    },
+    {
+      "key": "slpm_diff",
+      "family": "striking",
+      "source": "dna_snapshot",
+      "doc": "Significant strikes landed per minute.",
+      "expected_sign": "+",
+      "coefficient": 0.03706479993708885
+    },
+    {
+      "key": "sapm_diff",
+      "family": "striking",
+      "source": "dna_snapshot",
+      "doc": "Significant strikes absorbed per minute.",
+      "expected_sign": "-",
+      "coefficient": -0.06555028929377751
+    },
+    {
+      "key": "sig_diff_per_min_diff",
+      "family": "striking",
+      "source": "dna_snapshot",
+      "doc": "Significant strikes landed minus absorbed, per minute.",
+      "expected_sign": "+",
+      "coefficient": 0.08020453484400364
+    },
+    {
+      "key": "sig_accuracy_diff",
+      "family": "accuracy",
+      "source": "dna_snapshot",
+      "doc": "Significant strike accuracy.",
+      "expected_sign": "+",
+      "coefficient": 0.054418184240435104
+    },
+    {
+      "key": "sig_defense_diff",
+      "family": "accuracy",
+      "source": "dna_snapshot",
+      "doc": "Significant strike defence, one minus opponent accuracy.",
+      "expected_sign": "+",
+      "coefficient": 0.09430946237766774
+    },
+    {
+      "key": "kd_per15_diff",
+      "family": "striking",
+      "source": "dna_snapshot",
+      "doc": "Knockdowns scored per fifteen minutes.",
+      "expected_sign": "+",
+      "coefficient": -0.08436055574293791
+    },
+    {
+      "key": "kd_absorbed_per15_diff",
+      "family": "durability",
+      "source": "dna_snapshot",
+      "doc": "Knockdowns conceded per fifteen minutes.",
+      "expected_sign": "-",
+      "coefficient": 0.000015289029836795255
+    },
+    {
+      "key": "td_landed_per15_diff",
+      "family": "takedowns",
+      "source": "dna_snapshot",
+      "doc": "Takedowns landed per fifteen minutes.",
+      "expected_sign": "+",
+      "coefficient": 0.11594370467313563
+    },
+    {
+      "key": "td_accuracy_diff",
+      "family": "takedowns",
+      "source": "dna_snapshot",
+      "doc": "Takedown accuracy.",
+      "expected_sign": "+",
+      "coefficient": -0.04153979482047
+    },
+    {
+      "key": "td_defense_diff",
+      "family": "takedowns",
+      "source": "dna_bout_rows",
+      "doc": "One minus opponent takedown accuracy across prior stat-covered bouts.",
+      "expected_sign": "+",
+      "coefficient": 0.05907121813769888
+    },
+    {
+      "key": "control_share_diff",
+      "family": "control",
+      "source": "dna_snapshot",
+      "doc": "Control time as a share of observed fight time.",
+      "expected_sign": "+",
+      "coefficient": 0.015417291195728225
+    },
+    {
+      "key": "sub_att_per15_diff",
+      "family": "control",
+      "source": "dna_snapshot",
+      "doc": "Submission attempts per fifteen minutes.",
+      "expected_sign": "+",
+      "coefficient": -0.05846053282527284
+    },
+    {
+      "key": "finish_rate_diff",
+      "family": "finishing",
+      "source": "dna_snapshot",
+      "doc": "Finishes as a share of prior wins.",
+      "expected_sign": "+",
+      "coefficient": 0.02530723461929685
+    },
+    {
+      "key": "ko_rate_diff",
+      "family": "finishing",
+      "source": "dna_snapshot",
+      "doc": "KO/TKO wins as a share of prior wins.",
+      "expected_sign": "+",
+      "coefficient": 0.005841709897534326
+    },
+    {
+      "key": "sub_rate_diff",
+      "family": "finishing",
+      "source": "dna_snapshot",
+      "doc": "Submission wins as a share of prior wins.",
+      "expected_sign": "+",
+      "coefficient": 0.02365443331758785
+    },
+    {
+      "key": "ko_loss_rate_diff",
+      "family": "durability",
+      "source": "dna_snapshot",
+      "doc": "Times stopped by strikes as a share of prior appearances.",
+      "expected_sign": "-",
+      "coefficient": -0.05928706797821376
+    },
+    {
+      "key": "sub_loss_rate_diff",
+      "family": "durability",
+      "source": "dna_snapshot",
+      "doc": "Times submitted as a share of prior appearances.",
+      "expected_sign": "-",
+      "coefficient": -0.009295393293095765
+    },
+    {
+      "key": "pace_retention_diff",
+      "family": "pace",
+      "source": "dna_snapshot",
+      "doc": "Round-three attempt pace divided by round-one pace.",
+      "expected_sign": "+",
+      "coefficient": -0.037610135212205256
+    },
+    {
+      "key": "champ_round_delta_diff",
+      "family": "pace",
+      "source": "dna_snapshot",
+      "doc": "Rounds four and five pace minus rounds one to three pace.",
+      "expected_sign": "+",
+      "coefficient": -0.009032874623357725
+    },
+    {
+      "key": "southpaw_edge",
+      "family": "stance",
+      "source": "static",
+      "doc": "Plus one when this corner is the only southpaw, minus one when the opponent is, otherwise zero. Antisymmetric by construction.",
+      "expected_sign": "+",
+      "coefficient": 0.07413441338478495
+    },
+    {
+      "key": "sos_diff",
+      "family": "opponent",
+      "source": "dna_bout_rows",
+      "doc": "Mean pre-fight win rate of prior opponents, each measured as of the date they were fought.",
+      "expected_sign": "+",
+      "coefficient": 0.05250188251547922
+    },
+    {
+      "key": "quality_wins_diff",
+      "family": "opponent",
+      "source": "dna_bout_rows",
+      "doc": "log1p of prior wins over opponents who were above a .600 pre-fight win rate at the time.",
+      "expected_sign": "+",
+      "coefficient": 0.0462522232342406
+    },
+    {
+      "key": "stat_sample_log_diff",
+      "family": "confidence",
+      "source": "dna_snapshot",
+      "doc": "log1p of stat-covered prior bouts. Carries how much evidence each corner actually has.",
+      "expected_sign": "+",
+      "coefficient": 0.15007824688091104
+    }
+  ],
+  "evidence": {
+    "protocol": {
+      "validation": "chronological walk-forward, expanding training window, refit per fold",
+      "folds": "2013..2026 by calendar year",
+      "train_floor": "1994-01-01",
+      "lambda_grid": [
+        1,
+        2,
+        5,
+        10,
+        20,
+        40,
+        80,
+        160,
+        320
+      ],
+      "lambda_selection": "inner chronological split, last 20% of each training window",
+      "orientation": "canonical corner = lexicographically smaller fighter UUID; outcome-independent",
+      "intercept": "none (antisymmetric features)",
+      "excluded": "draws, no-contests and ungraded bouts carry no binary label and are excluded from training and scoring"
+    },
+    "out_of_sample": {
+      "n": 7047,
+      "first_event": "2013-01-19",
+      "last_event": "2026-09-05",
+      "base_rate": 0.508301404853129,
+      "hits": 4198,
+      "hit_rate_ci95": {
+        "lo": 0.5842071236104016,
+        "hi": 0.6071175545670232
+      }
+    },
+    "model": {
+      "label": "PBE Fight Model v1",
+      "n": 7047,
+      "brier": 0.23630287058225657,
+      "log_loss": 0.6650588590563373,
+      "accuracy": 0.5957854406130269,
+      "auc": 0.6336844556275042,
+      "brier_skill_vs_coin": 0.0547885176709737,
+      "calibration_ece": 0.013882105731542542,
+      "calibration_slope": 1.034958040227976
+    },
+    "coin": {
+      "label": "50/50 baseline",
+      "n": 7047,
+      "brier": 0.25,
+      "log_loss": 0.6931471805600282,
+      "accuracy": 0.5,
+      "auc": 0.5,
+      "brier_skill_vs_coin": 0,
+      "calibration_ece": 0.008301404853129024,
+      "calibration_slope": null
+    },
+    "winrate": {
+      "label": "Historical win-rate baseline",
+      "n": 7047,
+      "brier": 0.24474479406799157,
+      "log_loss": 0.682569883294139,
+      "accuracy": 0.5568326947637292,
+      "auc": 0.5849134239418996,
+      "brier_skill_vs_coin": 0.02102082372803371,
+      "calibration_ece": 0.016677123997515017,
+      "calibration_slope": 0.7878558606761681
+    },
+    "market": {
+      "label": "Market implied (de-vigged)",
+      "n": 0,
+      "note": "No completed bout in this database has a timestamp-compatible market observation. The comparison is built and will populate as the market ingest accumulates history against fights that then get graded; it is not estimated in the meantime."
+    },
+    "brier_skill_vs_coin": 0.0547885176709737,
+    "brier_skill_vs_winrate": 0.03449276017446068,
+    "calibration": {
+      "bins": [
+        {
+          "lo": 0.5,
+          "hi": 0.55,
+          "n": 2778,
+          "predicted": 0.5242676562186518,
+          "observed": 0.5302375809935205,
+          "hits": 1473
+        },
+        {
+          "lo": 0.55,
+          "hi": 0.6,
+          "n": 1996,
+          "predicted": 0.5729238021584911,
+          "observed": 0.6017034068136272,
+          "hits": 1201
+        },
+        {
+          "lo": 0.6,
+          "hi": 0.65,
+          "n": 1230,
+          "predicted": 0.6230491871238165,
+          "observed": 0.624390243902439,
+          "hits": 768
+        },
+        {
+          "lo": 0.65,
+          "hi": 0.7,
+          "n": 609,
+          "predicted": 0.6716442972934806,
+          "observed": 0.6945812807881774,
+          "hits": 423
+        },
+        {
+          "lo": 0.7,
+          "hi": 0.75,
+          "n": 274,
+          "predicted": 0.7214366922857831,
+          "observed": 0.7445255474452555,
+          "hits": 204
+        },
+        {
+          "lo": 0.75,
+          "hi": 0.8,
+          "n": 99,
+          "predicted": 0.7717944225311448,
+          "observed": 0.7676767676767676,
+          "hits": 76
+        },
+        {
+          "lo": 0.8,
+          "hi": 1,
+          "n": 61,
+          "predicted": 0.8451386845296931,
+          "observed": 0.8688524590163934,
+          "hits": 53
+        }
+      ],
+      "ece": 0.013882105731542542,
+      "slope": 1.034958040227976
+    },
+    "by_confidence_band": [
+      {
+        "band": "50-55",
+        "lo": 0.5,
+        "hi": 0.55,
+        "n": 2778,
+        "hits": 1473,
+        "hit_rate": 0.5302375809935205,
+        "mean_confidence": 0.5242676562186518,
+        "brier": 0.2489087407446796
+      },
+      {
+        "band": "55-60",
+        "lo": 0.55,
+        "hi": 0.6,
+        "n": 1996,
+        "hits": 1201,
+        "hit_rate": 0.6017034068136272,
+        "mean_confidence": 0.5729238021584911,
+        "brier": 0.24004019010795796
+      },
+      {
+        "band": "60-65",
+        "lo": 0.6,
+        "hi": 0.65,
+        "n": 1230,
+        "hits": 768,
+        "hit_rate": 0.624390243902439,
+        "mean_confidence": 0.6230491871238165,
+        "brier": 0.23432055549024827
+      },
+      {
+        "band": "65-70",
+        "lo": 0.65,
+        "hi": 0.7,
+        "n": 609,
+        "hits": 423,
+        "hit_rate": 0.6945812807881774,
+        "mean_confidence": 0.6716442972934806,
+        "brier": 0.21205308247665006
+      },
+      {
+        "band": "70-80",
+        "lo": 0.7,
+        "hi": 0.8,
+        "n": 373,
+        "hits": 280,
+        "hit_rate": 0.7506702412868632,
+        "mean_confidence": 0.7348024169353569,
+        "brier": 0.1874256587534173
+      },
+      {
+        "band": "80-100",
+        "lo": 0.8,
+        "hi": 1,
+        "n": 61,
+        "hits": 53,
+        "hit_rate": 0.8688524590163934,
+        "mean_confidence": 0.8451386845296931,
+        "brier": 0.12087289430574935
+      }
+    ],
+    "by_division": [
+      {
+        "key": "LIGHTWEIGHT",
+        "n": 1072,
+        "brier": 0.23533617728588832,
+        "log_loss": 0.663005195460565,
+        "accuracy": 0.5932835820895522,
+        "auc": 0.636944603978489,
+        "brier_skill_vs_coin": 0.05865529085644672
+      },
+      {
+        "key": "WELTERWEIGHT",
+        "n": 996,
+        "brier": 0.23708413808890139,
+        "log_loss": 0.6663887820499494,
+        "accuracy": 0.5943775100401606,
+        "auc": 0.6308961645945826,
+        "brier_skill_vs_coin": 0.051663447644394456
+      },
+      {
+        "key": "MIDDLEWEIGHT",
+        "n": 845,
+        "brier": 0.23719504960922239,
+        "log_loss": 0.6666344550307578,
+        "accuracy": 0.5846153846153846,
+        "auc": 0.6232315752863699,
+        "brier_skill_vs_coin": 0.051219801563110456
+      },
+      {
+        "key": "FEATHERWEIGHT",
+        "n": 833,
+        "brier": 0.23406213065285583,
+        "log_loss": 0.6602434221488179,
+        "accuracy": 0.6038415366146459,
+        "auc": 0.6486428810372472,
+        "brier_skill_vs_coin": 0.06375147738857667
+      },
+      {
+        "key": "BANTAMWEIGHT",
+        "n": 752,
+        "brier": 0.23501692765709822,
+        "log_loss": 0.6635256978049495,
+        "accuracy": 0.6236702127659575,
+        "auc": 0.6473178882972698,
+        "brier_skill_vs_coin": 0.059932289371607106
+      },
+      {
+        "key": "LIGHT_HEAVYWEIGHT",
+        "n": 527,
+        "brier": 0.24272894315826962,
+        "log_loss": 0.6779333062093486,
+        "accuracy": 0.5597722960151803,
+        "auc": 0.5925877498837749,
+        "brier_skill_vs_coin": 0.02908422736692151
+      },
+      {
+        "key": "HEAVYWEIGHT",
+        "n": 523,
+        "brier": 0.2355229374898094,
+        "log_loss": 0.6642448911435909,
+        "accuracy": 0.627151051625239,
+        "auc": 0.6477565982404692,
+        "brier_skill_vs_coin": 0.05790825004076239
+      },
+      {
+        "key": "FLYWEIGHT",
+        "n": 452,
+        "brier": 0.2328312298362782,
+        "log_loss": 0.6571754133852951,
+        "accuracy": 0.5995575221238938,
+        "auc": 0.6489401557724539,
+        "brier_skill_vs_coin": 0.06867508065488725
+      },
+      {
+        "key": "Women's STRAWWEIGHT",
+        "n": 399,
+        "brier": 0.23550133982633015,
+        "log_loss": 0.6624530253367363,
+        "accuracy": 0.575187969924812,
+        "auc": 0.6278191703584374,
+        "brier_skill_vs_coin": 0.05799464069467941
+      },
+      {
+        "key": "Women's FLYWEIGHT",
+        "n": 290,
+        "brier": 0.23789907925046966,
+        "log_loss": 0.6687407740276144,
+        "accuracy": 0.5827586206896552,
+        "auc": 0.6260944042634183,
+        "brier_skill_vs_coin": 0.04840368299812137
+      },
+      {
+        "key": "Women's BANTAMWEIGHT",
+        "n": 255,
+        "brier": 0.23639374260753448,
+        "log_loss": 0.6663729505755223,
+        "accuracy": 0.6,
+        "auc": 0.6434991381433145,
+        "brier_skill_vs_coin": 0.05442502956986206
+      },
+      {
+        "key": "CATCHWEIGHT",
+        "n": 72,
+        "brier": 0.24850206832704436,
+        "log_loss": 0.6910202298155288,
+        "accuracy": 0.5833333333333334,
+        "auc": 0.5861526357199056,
+        "brier_skill_vs_coin": 0.005991726691822574
+      },
+      {
+        "key": "Women's FEATHERWEIGHT",
+        "n": 31,
+        "brier": 0.23255348254838368,
+        "log_loss": 0.6547876000914713,
+        "accuracy": 0.5483870967741935,
+        "auc": 0.6271929824561403,
+        "brier_skill_vs_coin": 0.06978606980646529
+      }
+    ],
+    "by_year": [
+      {
+        "key": 2025,
+        "n": 574,
+        "brier": 0.2291284878193698,
+        "log_loss": 0.6500494997838009,
+        "accuracy": 0.627177700348432,
+        "auc": 0.6713332684067004,
+        "brier_skill_vs_coin": 0.08348604872252074
+      },
+      {
+        "key": 2024,
+        "n": 558,
+        "brier": 0.22992096575852233,
+        "log_loss": 0.6534662659935182,
+        "accuracy": 0.6272401433691757,
+        "auc": 0.6772664199814986,
+        "brier_skill_vs_coin": 0.08031613696591067
+      },
+      {
+        "key": 2022,
+        "n": 555,
+        "brier": 0.23258891460612868,
+        "log_loss": 0.6569535677816131,
+        "accuracy": 0.5963963963963964,
+        "auc": 0.6543968608700171,
+        "brier_skill_vs_coin": 0.06964434157548527
+      },
+      {
+        "key": 2019,
+        "n": 553,
+        "brier": 0.24490581677930487,
+        "log_loss": 0.6829115149357056,
+        "accuracy": 0.538878842676311,
+        "auc": 0.5770448894123805,
+        "brier_skill_vs_coin": 0.020376732882780524
+      },
+      {
+        "key": 2023,
+        "n": 552,
+        "brier": 0.2325573286221437,
+        "log_loss": 0.6571500939743589,
+        "accuracy": 0.6213768115942029,
+        "auc": 0.6624153573072119,
+        "brier_skill_vs_coin": 0.06977068551142518
+      },
+      {
+        "key": 2021,
+        "n": 545,
+        "brier": 0.24117565624817458,
+        "log_loss": 0.6759721262304362,
+        "accuracy": 0.5779816513761468,
+        "auc": 0.6054353974196677,
+        "brier_skill_vs_coin": 0.03529737500730168
+      },
+      {
+        "key": 2018,
+        "n": 522,
+        "brier": 0.2369608860524003,
+        "log_loss": 0.6661836013788954,
+        "accuracy": 0.6168582375478927,
+        "auc": 0.6303013392857143,
+        "brier_skill_vs_coin": 0.05215645579039885
+      },
+      {
+        "key": 2014,
+        "n": 494,
+        "brier": 0.24461381570410348,
+        "log_loss": 0.6817538297597846,
+        "accuracy": 0.5384615384615384,
+        "auc": 0.5811714450012322,
+        "brier_skill_vs_coin": 0.02154473718358607
+      },
+      {
+        "key": 2020,
+        "n": 492,
+        "brier": 0.2378221237357171,
+        "log_loss": 0.6688876014099815,
+        "accuracy": 0.6260162601626016,
+        "auc": 0.6384468912989486,
+        "brier_skill_vs_coin": 0.04871150505713162
+      },
+      {
+        "key": 2017,
+        "n": 485,
+        "brier": 0.23928255446595723,
+        "log_loss": 0.6710588006697448,
+        "accuracy": 0.5824742268041238,
+        "auc": 0.6101752827416544,
+        "brier_skill_vs_coin": 0.0428697821361711
+      },
+      {
+        "key": 2016,
+        "n": 483,
+        "brier": 0.24367695691914684,
+        "log_loss": 0.6807998507545842,
+        "accuracy": 0.556935817805383,
+        "auc": 0.599704984391616,
+        "brier_skill_vs_coin": 0.02529217232341263
+      },
+      {
+        "key": 2015,
+        "n": 464,
+        "brier": 0.234088357019444,
+        "log_loss": 0.6598770224828848,
+        "accuracy": 0.6012931034482759,
+        "auc": 0.6470292887029289,
+        "brier_skill_vs_coin": 0.063646571922224
+      },
+      {
+        "key": 2026,
+        "n": 394,
+        "brier": 0.22458275886609472,
+        "log_loss": 0.638899893545842,
+        "accuracy": 0.6116751269035533,
+        "auc": 0.6756014813663792,
+        "brier_skill_vs_coin": 0.10166896453562113
+      },
+      {
+        "key": 2013,
+        "n": 376,
+        "brier": 0.2358686958462822,
+        "log_loss": 0.66401584435855,
+        "accuracy": 0.6223404255319149,
+        "auc": 0.6470204127984556,
+        "brier_skill_vs_coin": 0.0565252166148712
+      }
+    ],
+    "by_sample_quality": [
+      {
+        "key": "b. both corners 1-2 prior bouts",
+        "n": 2068,
+        "brier": 0.234394242841619,
+        "log_loss": 0.6614295800974734,
+        "accuracy": 0.6029980657640233,
+        "auc": 0.6434244986530979,
+        "brier_skill_vs_coin": 0.062423028633524
+      },
+      {
+        "key": "d. both corners 6+ prior bouts",
+        "n": 1819,
+        "brier": 0.23456767222205208,
+        "log_loss": 0.6614361649350996,
+        "accuracy": 0.6085761407366685,
+        "auc": 0.645727452525907,
+        "brier_skill_vs_coin": 0.061729311111791696
+      },
+      {
+        "key": "c. both corners 3-5 prior bouts",
+        "n": 1642,
+        "brier": 0.23012450246287358,
+        "log_loss": 0.6519572933385515,
+        "accuracy": 0.6285018270401949,
+        "auc": 0.6654107187783314,
+        "brier_skill_vs_coin": 0.07950199014850567
+      },
+      {
+        "key": "a. one corner debuting",
+        "n": 1518,
+        "brier": 0.2476653530834955,
+        "log_loss": 0.688515908069557,
+        "accuracy": 0.5352437417654808,
+        "auc": 0.5591332333458318,
+        "brier_skill_vs_coin": 0.009338587666018028
+      }
+    ],
+    "folds": [
+      {
+        "year": 2013,
+        "train_n": 2128,
+        "test_n": 376,
+        "lambda": 320,
+        "brier": 0.2358686958462822,
+        "log_loss": 0.66401584435855,
+        "accuracy": 0.6223404255319149,
+        "auc": 0.6470204127984556
+      },
+      {
+        "year": 2014,
+        "train_n": 2504,
+        "test_n": 494,
+        "lambda": 40,
+        "brier": 0.24461381570410348,
+        "log_loss": 0.6817538297597846,
+        "accuracy": 0.5384615384615384,
+        "auc": 0.5811714450012322
+      },
+      {
+        "year": 2015,
+        "train_n": 2998,
+        "test_n": 464,
+        "lambda": 160,
+        "brier": 0.234088357019444,
+        "log_loss": 0.6598770224828848,
+        "accuracy": 0.6012931034482759,
+        "auc": 0.6470292887029289
+      },
+      {
+        "year": 2016,
+        "train_n": 3462,
+        "test_n": 483,
+        "lambda": 80,
+        "brier": 0.24367695691914684,
+        "log_loss": 0.6807998507545842,
+        "accuracy": 0.556935817805383,
+        "auc": 0.599704984391616
+      },
+      {
+        "year": 2017,
+        "train_n": 3945,
+        "test_n": 485,
+        "lambda": 160,
+        "brier": 0.23928255446595723,
+        "log_loss": 0.6710588006697448,
+        "accuracy": 0.5824742268041238,
+        "auc": 0.6101752827416544
+      },
+      {
+        "year": 2018,
+        "train_n": 4430,
+        "test_n": 522,
+        "lambda": 80,
+        "brier": 0.2369608860524003,
+        "log_loss": 0.6661836013788954,
+        "accuracy": 0.6168582375478927,
+        "auc": 0.6303013392857143
+      },
+      {
+        "year": 2019,
+        "train_n": 4952,
+        "test_n": 553,
+        "lambda": 80,
+        "brier": 0.24490581677930487,
+        "log_loss": 0.6829115149357056,
+        "accuracy": 0.538878842676311,
+        "auc": 0.5770448894123805
+      },
+      {
+        "year": 2020,
+        "train_n": 5505,
+        "test_n": 492,
+        "lambda": 160,
+        "brier": 0.2378221237357171,
+        "log_loss": 0.6688876014099815,
+        "accuracy": 0.6260162601626016,
+        "auc": 0.6384468912989486
+      },
+      {
+        "year": 2021,
+        "train_n": 5997,
+        "test_n": 545,
+        "lambda": 320,
+        "brier": 0.24117565624817458,
+        "log_loss": 0.6759721262304362,
+        "accuracy": 0.5779816513761468,
+        "auc": 0.6054353974196677
+      },
+      {
+        "year": 2022,
+        "train_n": 6542,
+        "test_n": 555,
+        "lambda": 320,
+        "brier": 0.23258891460612868,
+        "log_loss": 0.6569535677816131,
+        "accuracy": 0.5963963963963964,
+        "auc": 0.6543968608700171
+      },
+      {
+        "year": 2023,
+        "train_n": 7097,
+        "test_n": 552,
+        "lambda": 320,
+        "brier": 0.2325573286221437,
+        "log_loss": 0.6571500939743589,
+        "accuracy": 0.6213768115942029,
+        "auc": 0.6624153573072119
+      },
+      {
+        "year": 2024,
+        "train_n": 7649,
+        "test_n": 558,
+        "lambda": 160,
+        "brier": 0.22992096575852233,
+        "log_loss": 0.6534662659935182,
+        "accuracy": 0.6272401433691757,
+        "auc": 0.6772664199814986
+      },
+      {
+        "year": 2025,
+        "train_n": 8207,
+        "test_n": 574,
+        "lambda": 20,
+        "brier": 0.2291284878193698,
+        "log_loss": 0.6500494997838009,
+        "accuracy": 0.627177700348432,
+        "auc": 0.6713332684067004
+      },
+      {
+        "year": 2026,
+        "train_n": 8781,
+        "test_n": 394,
+        "lambda": 10,
+        "brier": 0.22458275886609472,
+        "log_loss": 0.638899893545842,
+        "accuracy": 0.6116751269035533,
+        "auc": 0.6756014813663792
+      }
+    ],
+    "coefficient_signs": [
+      {
+        "key": "age_diff_years",
+        "family": "age",
+        "source": "static",
+        "mean_coefficient": -0.2318014928198823,
+        "sign_stability": 1,
+        "expected_sign": "-",
+        "contradicts_prior": false
+      },
+      {
+        "key": "winrate_diff",
+        "family": "form",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.09428030522083142,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "td_landed_per15_diff",
+        "family": "takedowns",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.0880682483423325,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "sig_defense_diff",
+        "family": "accuracy",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.08272485635125382,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "kd_per15_diff",
+        "family": "striking",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.07812957541650843,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": true
+      },
+      {
+        "key": "title_exp_diff",
+        "family": "experience",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.07794590587496335,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "southpaw_edge",
+        "family": "stance",
+        "source": "static",
+        "mean_coefficient": 0.07677305230480931,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "sig_diff_per_min_diff",
+        "family": "striking",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.07172816430658668,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "sapm_diff",
+        "family": "striking",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.06657590976525805,
+        "sign_stability": 1,
+        "expected_sign": "-",
+        "contradicts_prior": false
+      },
+      {
+        "key": "reach_diff_in",
+        "family": "reach",
+        "source": "static",
+        "mean_coefficient": 0.06534984201962839,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "td_defense_diff",
+        "family": "takedowns",
+        "source": "dna_bout_rows",
+        "mean_coefficient": 0.06477189907851075,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "sos_diff",
+        "family": "opponent",
+        "source": "dna_bout_rows",
+        "mean_coefficient": 0.058683812403318984,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "pace_retention_diff",
+        "family": "pace",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.05703532466957225,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": true
+      },
+      {
+        "key": "sub_att_per15_diff",
+        "family": "control",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.04848625600980019,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": true
+      },
+      {
+        "key": "five_round_exp_diff",
+        "family": "experience",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.0483821730905399,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "streak_diff",
+        "family": "form",
+        "source": "dna_bout_rows",
+        "mean_coefficient": 0.04452477652544027,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "quality_wins_diff",
+        "family": "opponent",
+        "source": "dna_bout_rows",
+        "mean_coefficient": 0.03988412609279206,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "stat_sample_log_diff",
+        "family": "confidence",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.03940309586985548,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "ko_loss_rate_diff",
+        "family": "durability",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.03886035647118073,
+        "sign_stability": 1,
+        "expected_sign": "-",
+        "contradicts_prior": false
+      },
+      {
+        "key": "sig_accuracy_diff",
+        "family": "accuracy",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.036271354248402124,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "slpm_diff",
+        "family": "striking",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.0327212687827233,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "layoff_log_diff",
+        "family": "form",
+        "source": "dna_bout_rows",
+        "mean_coefficient": -0.02983763171734812,
+        "sign_stability": 1,
+        "expected_sign": "-",
+        "contradicts_prior": false
+      },
+      {
+        "key": "height_diff_in",
+        "family": "reach",
+        "source": "static",
+        "mean_coefficient": 0.02075189144995792,
+        "sign_stability": 1,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "td_accuracy_diff",
+        "family": "takedowns",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.019900510090619106,
+        "sign_stability": 0.8571428571428572,
+        "expected_sign": "+",
+        "contradicts_prior": true
+      },
+      {
+        "key": "champ_round_delta_diff",
+        "family": "pace",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.017975525047096024,
+        "sign_stability": 0.6428571428571429,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "kd_absorbed_per15_diff",
+        "family": "durability",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.014737558390355133,
+        "sign_stability": 1,
+        "expected_sign": "-",
+        "contradicts_prior": false
+      },
+      {
+        "key": "control_share_diff",
+        "family": "control",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.010757229864240537,
+        "sign_stability": 0.6428571428571429,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "sub_rate_diff",
+        "family": "finishing",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.00800526139454168,
+        "sign_stability": 0.7857142857142857,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "recent5_winrate_diff",
+        "family": "form",
+        "source": "dna_bout_rows",
+        "mean_coefficient": -0.007896813418202682,
+        "sign_stability": 0.6428571428571428,
+        "expected_sign": "+",
+        "contradicts_prior": true
+      },
+      {
+        "key": "finish_rate_diff",
+        "family": "finishing",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.007155681475452491,
+        "sign_stability": 0.7857142857142857,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      },
+      {
+        "key": "sub_loss_rate_diff",
+        "family": "durability",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.003945980773089516,
+        "sign_stability": 0.6428571428571428,
+        "expected_sign": "-",
+        "contradicts_prior": false
+      },
+      {
+        "key": "experience_log_diff",
+        "family": "experience",
+        "source": "dna_snapshot",
+        "mean_coefficient": -0.0023479620426317565,
+        "sign_stability": 0.7857142857142857,
+        "expected_sign": "+",
+        "contradicts_prior": true
+      },
+      {
+        "key": "ko_rate_diff",
+        "family": "finishing",
+        "source": "dna_snapshot",
+        "mean_coefficient": 0.00014277842380324042,
+        "sign_stability": 0.5,
+        "expected_sign": "+",
+        "contradicts_prior": false
+      }
+    ]
+  },
+  "leakage_audit": {
+    "all_passed": true,
+    "checks": [
+      {
+        "name": "source allowlist",
+        "pass": true
+      },
+      {
+        "name": "snapshot provenance",
+        "pass": true
+      },
+      {
+        "name": "truncation",
+        "pass": true
+      },
+      {
+        "name": "permutation",
+        "pass": true
+      },
+      {
+        "name": "antisymmetry",
+        "pass": true
+      },
+      {
+        "name": "fold boundaries",
+        "pass": true
+      }
+    ],
+    "truncation_sample": 250,
+    "permuted_label_skill": 0.0013107063897850324,
+    "snapshot_record_check": "0 mismatches in 15610 comparisons"
+  },
+  "examples": [
+    {
+      "note": "A typical confident call that landed.",
+      "bout_id": "7c3c9eb2-0221-4b55-9829-e228c0c77aff",
+      "event_date": "2026-03-28",
+      "event_name": "UFC Fight Night: Adesanya vs. Pyfer",
+      "weight_class": "STRAWWEIGHT",
+      "is_womens": true,
+      "fighter_a": {
+        "id": "106419dc-a8d0-451b-93f9-f2d9fae82363",
+        "name": "Bruna Brasil",
+        "prob": 0.3002423656041542
+      },
+      "fighter_b": {
+        "id": "21bc1b30-720d-4978-915b-1317603704c0",
+        "name": "Alexia Thainara",
+        "prob": 0.6997576343958458
+      },
+      "pick_name": "Alexia Thainara",
+      "pick_probability": 0.6997576343958458,
+      "confidence_band": "65-70",
+      "market": null,
+      "outcome": "WIN",
+      "winner_name": "Alexia Thainara",
+      "result_method": "DEC_U",
+      "sample_context": {
+        "min_prior_bouts": 3,
+        "min_stat_bouts": 2,
+        "features_available": 32,
+        "features_total": 33
+      },
+      "fold_year": 2026
+    },
+    {
+      "note": "The same confidence, wrong. Roughly a third of calls in this band are.",
+      "bout_id": "229d1f01-5348-4624-809f-249097ce9fab",
+      "event_date": "2025-03-08",
+      "event_name": "UFC 313: Pereira vs. Ankalaev",
+      "weight_class": "STRAWWEIGHT",
+      "is_womens": true,
+      "fighter_a": {
+        "id": "460898b7-fa15-47d6-8c23-4ce3cfcc1f3c",
+        "name": "Iasmin Lucindo",
+        "prob": 0.6994808168228647
+      },
+      "fighter_b": {
+        "id": "78e560e5-f498-4378-bf38-930b2ada1a5b",
+        "name": "Amanda Lemos",
+        "prob": 0.30051918317713533
+      },
+      "pick_name": "Iasmin Lucindo",
+      "pick_probability": 0.6994808168228647,
+      "confidence_band": "65-70",
+      "market": null,
+      "outcome": "LOSS",
+      "winner_name": "Amanda Lemos",
+      "result_method": "DEC_U",
+      "sample_context": {
+        "min_prior_bouts": 5,
+        "min_stat_bouts": 5,
+        "features_available": 32,
+        "features_total": 33
+      },
+      "fold_year": 2025
+    },
+    {
+      "note": "The most confident miss in the whole out-of-sample period.",
+      "bout_id": "c6724ca6-12b3-46f7-b319-dc7819f2baf6",
+      "event_date": "2024-03-23",
+      "event_name": "UFC Fight Night: Ribas vs. Namajunas",
+      "weight_class": "BANTAMWEIGHT",
+      "is_womens": false,
+      "fighter_a": {
+        "id": "927730a4-e72d-46b4-92da-986a60bba4d0",
+        "name": "Cameron Saaiman",
+        "prob": 0.9571560710417493
+      },
+      "fighter_b": {
+        "id": "fe0355cc-5366-44f9-8ea3-457744bde3c7",
+        "name": "Payton Talbott",
+        "prob": 0.04284392895825073
+      },
+      "pick_name": "Cameron Saaiman",
+      "pick_probability": 0.9571560710417493,
+      "confidence_band": "80-100",
+      "market": null,
+      "outcome": "LOSS",
+      "winner_name": "Payton Talbott",
+      "result_method": "KO_TKO",
+      "sample_context": {
+        "min_prior_bouts": 2,
+        "min_stat_bouts": 1,
+        "features_available": 31,
+        "features_total": 33
+      },
+      "fold_year": 2024
+    },
+    {
+      "note": "A fight the model has no read on. It says so.",
+      "bout_id": "fb071260-ccf4-49ab-960e-0e85c8973216",
+      "event_date": "2025-06-07",
+      "event_name": "UFC 316: Dvalishvili vs. O'Malley 2",
+      "weight_class": "FEATHERWEIGHT",
+      "is_womens": false,
+      "fighter_a": {
+        "id": "e0981fd6-3dde-4064-aee8-0b7a822e8fa2",
+        "name": "Jeka Saragih",
+        "prob": 0.5000591699406913
+      },
+      "fighter_b": {
+        "id": "fbc56eda-7373-44d8-980b-5fb9db5a7aff",
+        "name": "JooSang Yoo",
+        "prob": 0.49994083005930867
+      },
+      "pick_name": "Jeka Saragih",
+      "pick_probability": 0.5000591699406913,
+      "confidence_band": "50-55",
+      "market": null,
+      "outcome": "LOSS",
+      "winner_name": "JooSang Yoo",
+      "result_method": "KO_TKO",
+      "sample_context": {
+        "min_prior_bouts": 0,
+        "min_stat_bouts": 0,
+        "features_available": 4,
+        "features_total": 33
+      },
+      "fold_year": 2025
+    }
+  ]
+}
