@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     type: "website",
     url: `${SITE.url}/store`,
-    images: [{ url: `${SITE.url}/store/img/propbetedge-premium-hoodie.jpg`, width: 1024, height: 1024, alt: "PropBetEdge Premium Hoodie" }],
+    images: [{ url: `${SITE.url}/store/img/propbetedge-premium-hoodie.jpg`, width: 400, height: 500, alt: "PropBetEdge Premium Hoodie" }],
   },
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
@@ -103,7 +103,7 @@ export default async function StorePage() {
           <h2>PropBetEdge Premium Hoodie</h2>
           <p>8.5 oz premium fleece · 65/35 ring-spun cotton blend · 100% cotton face · 3-panel hood.</p>
         </div>
-        <div className="st-grid st-grid-launch" style={{ maxWidth: 380, gridTemplateColumns: "minmax(0, 1fr)" }}>
+        <div className="st-grid st-grid-launch">
           {firstDrop.map(({ pub }) => <Card key={pub.slug} p={pub} enabled={runtime.ready} />)}
         </div>
       </section>
