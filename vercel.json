@@ -4,5 +4,11 @@
   "ignoreCommand": "test \"$VERCEL_PROJECT_ID\" != \"prj_7jhcaeuQSl4gpjFcEe3XdBqRfC8V\"",
   "installCommand": "cp web/package.json package.json && cd web && npm ci",
   "buildCommand": "cd web && npm run build",
-  "outputDirectory": "web/.next"
+  "outputDirectory": "web/.next",
+  "crons": [
+    {
+      "path": "/api/store/fulfill",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }
