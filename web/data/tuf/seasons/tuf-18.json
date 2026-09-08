@@ -172,6 +172,64 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Chris Holdsworth",
+        "Louis Fisette"
+      ],
+      "episode": 2,
+      "detail": "Gorman's replacement on Team Tate is Louis Fisette, who was submitted by Holdsworth in the elimination round after an intense battle."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Chris Beal",
+        "Chris Holdsworth"
+      ],
+      "episode": 2,
+      "detail": "After Rousey went after Tate's top female pick in week one, Tate decides to flip the script by selecting the champion's top pick. The match will see Team Tate's second pick Holdsworth go up against Team Rousey's top selection Chris Beal, who earlier in the episode had complained about an injured hand."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Chris Beal",
+        "Anthony Gutierrez"
+      ],
+      "episode": 9,
+      "detail": "The fighting commission decides to either forfeit the match or have Anthony Gutierrez fight Chris Beal, who was selected as the wildcard."
+    },
+    {
+      "kinds": [
+        "bye"
+      ],
+      "fighters": [
+        "Davey Grant",
+        "Anthony Gutierrez",
+        "Cody Bollinger"
+      ],
+      "episode": 12,
+      "detail": "Gutierrez got a bye into the semifinals when he was scheduled to fight Cody Bollinger who missed weight. Gutierrez would find himself in a similar situation this time around when he was scheduled to face Grant."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Jessica Rakoczy",
+        "Raquel Pennington"
+      ],
+      "episode": 13,
+      "detail": "The last semifinals female match between Pennington and Rakoczy does not go off without a hitch, when both fighters get injured during training leading up to the fight."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Female Fighters",
@@ -189,7 +247,7 @@
               "time": "3:08",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "2 vs 1"
             },
             {
@@ -201,7 +259,7 @@
               "time": "4:39",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "6 vs 3"
             },
             {
@@ -213,7 +271,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "4 vs 5"
             },
             {
@@ -225,7 +283,7 @@
               "time": "2:33",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "8 vs 7"
             }
           ]
@@ -243,7 +301,7 @@
               "time": "3:31",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "1 vs 3"
             },
             {
@@ -255,7 +313,7 @@
               "time": null,
               "episode": 13,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 13, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 13 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "5 vs 8"
             }
           ]
@@ -298,7 +356,7 @@
               "time": "4:16",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "2 vs 3"
             },
             {
@@ -310,7 +368,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "8 vs 5"
             },
             {
@@ -322,7 +380,7 @@
               "time": "1:01",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "4 vs 7"
             },
             {
@@ -352,7 +410,7 @@
               "time": "3:11",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "3 vs 8"
             },
             {

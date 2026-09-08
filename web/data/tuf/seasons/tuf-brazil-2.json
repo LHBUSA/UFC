@@ -140,6 +140,65 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Leonardo Santos",
+        "Marcio Santos",
+        "Thiago de Lima Santos",
+        "Yan Cabral (Daniel Oliveira)",
+        "Thiago Santos",
+        "Yan Cabral"
+      ],
+      "episode": 4,
+      "detail": "Yan Cabral of Team Werdum is eliminated because of a broken hand and is replaced by Daniel Oliveira, whom Marcio Santos defeated in the elimination round."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Neilson Gomes (Thiago Gonçalves)",
+        "Viscardi Andrade",
+        "Thiago Goncalves"
+      ],
+      "episode": 4,
+      "detail": "Neilson Gomes of Team Nogueira is also eliminated due to a torn ligament in his knee and is replaced by Thiago Goncalves, whom Andrade defeated in the elimination round. They will have a rematch to see who will be in the quarterfinals."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Leonardo Santos",
+        "Pedro Iriê",
+        "Marcio Santos",
+        "Thiago de Lima Santos",
+        "Thiago Santos"
+      ],
+      "episode": 8,
+      "detail": "Two eliminated Team Werdum fighters, Thiago Santos and Pedro Iriê, were chosen for the wild card bout for an opportunity to return to the competition."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Santiago Ponzinibbio",
+        "Leonardo Santos",
+        "William Macário",
+        "Marcio Santos",
+        "Thiago de Lima Santos",
+        "Thiago Santos",
+        "William Macario"
+      ],
+      "episode": 12,
+      "detail": "It is revealed at the end of the episode that Ponzinibbio broke his hand during the fight. Santos was chosen to replace him against Macário."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Tournament",
@@ -157,7 +216,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Juliano Wandalen",
@@ -305,7 +364,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "William Macario",
@@ -316,7 +375,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

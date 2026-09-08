@@ -161,6 +161,30 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Tresean Gore",
+        "Miles Hunsinger"
+      ],
+      "episode": 8,
+      "detail": "Miles Hunsinger was going through a regular training session with his Team Ortega teammates and after throwing a left kick to Tresean Gore during a light sparring session, the strike landed awkwardly, causing hyperextension that left his knee unstable. After a review by a physical therapist Miles decided to get an MRI which provided a diagnosis of a grade 2 MCL strain, an injury that could be comp"
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Miles Hunsinger",
+        "Michael Gillmore"
+      ],
+      "episode": 8,
+      "detail": "Micheal Gillmore was brought in to meet with Dana White about potentially replacing Hunsinger. The meeting was brief as White was impressed with his story, so he was welcomed into the fighter house as a replacement."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Middleweight",
@@ -178,7 +202,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2021, which are complete for that year — 53 events, 559 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kemran Lachinov",
@@ -281,7 +305,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2021, which are complete for that year — 53 events, 559 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Daniel Argueta",

@@ -15,14 +15,33 @@
   },
   "_conflicts": [
     {
-      "field": "Light Heavyweight_semi_final",
-      "detail": "The source's semi-finals for this division do not close as a self-contained round: 1 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
       "field": "unplaced_bouts",
       "detail": "1 bout(s) appear in the episode summaries but in no bracket: Eric Spicely def. Elias Urbina. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
+    }
+  ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Cory Hendricks"
+      ],
+      "episode": 10,
+      "detail": "With a nerve injury in his neck, Cory Hendricks initially decides to push through the pain and continue to train, however, after being in intense constant pain, he takes Cláudia's advice and drops out of the competition to fight in the future."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Josh Stansbury",
+        "Khalil Rountree",
+        "Cory Hendricks"
+      ],
+      "episode": 10,
+      "detail": "Khalil Rountree replaces Cory Hendricks in the competition, but it's bittersweet because he has to fight Josh Stansbury, his teammate, and he gets upset."
     }
   ],
   "bracket": [
@@ -42,7 +61,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Elias Urbina IV",
@@ -64,7 +83,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Khalil Rountree",
@@ -75,7 +94,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -92,7 +111,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Josh Stansbury",
@@ -103,11 +122,19 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ],
-          "status": "unverified",
-          "note": "Partial. 1 fighter(s) enter this round without a recorded win in the previous one. See conflicts."
+          "format_exceptions": [
+            {
+              "fighter": "Khalil Rountree",
+              "kinds": [
+                "replacement"
+              ],
+              "episode": 10,
+              "evidence": "Khalil Rountree replaces Cory Hendricks in the competition, but it's bittersweet because he has to fight Josh Stansbury, his teammate, and he gets upset."
+            }
+          ]
         },
         {
           "stage": "final",
@@ -147,7 +174,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Helen Harper",
@@ -158,7 +185,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "JJ Aldrich",
@@ -169,7 +196,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ashley Yoder",
@@ -180,7 +207,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -197,7 +224,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Tatiana Suarez",
@@ -208,7 +235,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

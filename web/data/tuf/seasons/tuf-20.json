@@ -4,7 +4,9 @@
   "edition": "us",
   "number": 20,
   "year": 2014,
-  "weight_classes": ["Women's Strawweight"],
+  "weight_classes": [
+    "Women's Strawweight"
+  ],
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter:_A_Champion_Will_Be_Crowned",
     "retrieved": "2026-09-07",
@@ -23,46 +25,142 @@
     }
   ],
   "coaches": [
-    { "team": "Team Pettis", "name": "Anthony Pettis", "role": "head" },
-    { "team": "Team Pettis", "name": "Duke Roufus", "role": "assistant" },
-    { "team": "Team Pettis", "name": "Daniel Wanderley", "role": "assistant" },
-    { "team": "Team Pettis", "name": "Sergio Pettis", "role": "assistant" },
-    { "team": "Team Pettis", "name": "Scott Cushman", "role": "assistant" },
-    { "team": "Team Melendez", "name": "Gilbert Melendez", "role": "head" },
-    { "team": "Team Melendez", "name": "Jake Shields", "role": "assistant" },
-    { "team": "Team Melendez", "name": "Anucha Chayaisen", "role": "assistant" },
-    { "team": "Team Melendez", "name": "Nate Diaz", "role": "assistant" },
-    { "team": "Team Melendez", "name": "Josh Berkovic", "role": "assistant" }
+    {
+      "team": "Team Pettis",
+      "name": "Anthony Pettis",
+      "role": "head"
+    },
+    {
+      "team": "Team Pettis",
+      "name": "Duke Roufus",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Pettis",
+      "name": "Daniel Wanderley",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Pettis",
+      "name": "Sergio Pettis",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Pettis",
+      "name": "Scott Cushman",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Melendez",
+      "name": "Gilbert Melendez",
+      "role": "head"
+    },
+    {
+      "team": "Team Melendez",
+      "name": "Jake Shields",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Melendez",
+      "name": "Anucha Chayaisen",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Melendez",
+      "name": "Nate Diaz",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Melendez",
+      "name": "Josh Berkovic",
+      "role": "assistant"
+    }
   ],
   "coaching_changes": [
-    { "episode": null, "change": "Tecia Torres moved to Team Pettis after being given a second chance following her first-round loss" }
+    {
+      "episode": null,
+      "change": "Tecia Torres moved to Team Pettis after being given a second chance following her first-round loss"
+    }
   ],
   "teams": [
     {
       "name": "Team Pettis",
       "roster": [
-        { "name": "Carla Esparza", "seed": 1 },
-        { "name": "Joanne Calderwood", "seed": 2 },
-        { "name": "Jessica Penne", "seed": 4 },
-        { "name": "Aisling Daly", "seed": 5 },
-        { "name": "Felice Herrig", "seed": 6 },
-        { "name": "Justine Kish", "seed": 9, "note": "Withdrew with a torn ACL." },
-        { "name": "Alex Chambers", "seed": 10 },
-        { "name": "Randa Markos", "seed": 14 },
-        { "name": "Tecia Torres", "seed": 3, "note": "Moved here from Team Melendez after a second chance." }
+        {
+          "name": "Carla Esparza",
+          "seed": 1
+        },
+        {
+          "name": "Joanne Calderwood",
+          "seed": 2
+        },
+        {
+          "name": "Jessica Penne",
+          "seed": 4
+        },
+        {
+          "name": "Aisling Daly",
+          "seed": 5
+        },
+        {
+          "name": "Felice Herrig",
+          "seed": 6
+        },
+        {
+          "name": "Justine Kish",
+          "seed": 9,
+          "note": "Withdrew with a torn ACL."
+        },
+        {
+          "name": "Alex Chambers",
+          "seed": 10
+        },
+        {
+          "name": "Randa Markos",
+          "seed": 14
+        },
+        {
+          "name": "Tecia Torres",
+          "seed": 3,
+          "note": "Moved here from Team Melendez after a second chance."
+        }
       ]
     },
     {
       "name": "Team Melendez",
       "roster": [
-        { "name": "Rose Namajunas", "seed": 7 },
-        { "name": "Bec Rawlings", "seed": 8 },
-        { "name": "Heather Jo Clark", "seed": 11 },
-        { "name": "Angela Magaña", "seed": 12 },
-        { "name": "Lisa Ellis", "seed": 13 },
-        { "name": "Emily Kagan", "seed": 15 },
-        { "name": "Angela Hill", "seed": 16 },
-        { "name": "Seohee Ham", "note": "Named by the source as a replacement; seeding and bouts not stated, so she holds no bracket placement here." }
+        {
+          "name": "Rose Namajunas",
+          "seed": 7
+        },
+        {
+          "name": "Bec Rawlings",
+          "seed": 8
+        },
+        {
+          "name": "Heather Jo Clark",
+          "seed": 11
+        },
+        {
+          "name": "Angela Magaña",
+          "seed": 12
+        },
+        {
+          "name": "Lisa Ellis",
+          "seed": 13
+        },
+        {
+          "name": "Emily Kagan",
+          "seed": 15
+        },
+        {
+          "name": "Angela Hill",
+          "seed": 16
+        },
+        {
+          "name": "Seohee Ham",
+          "note": "Named by the source as a replacement; seeding and bouts not stated, so she holds no bracket placement here."
+        }
       ]
     }
   ],
@@ -75,32 +173,187 @@
           "label": "First round",
           "note": "A seeded sixteen-woman bracket, unusual for the show. Seeds are given by the source and recorded.",
           "bouts": [
-            { "a": "Tecia Torres", "b": "Randa Markos", "winner": "Randa Markos", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "3 vs 14" },
-            { "a": "Joanne Calderwood", "b": "Emily Kagan", "winner": "Joanne Calderwood", "method": "Decision (majority)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "2 vs 15" },
-            { "a": "Jessica Penne", "b": "Lisa Ellis", "winner": "Jessica Penne", "method": "Submission (rear naked choke)", "round": 1, "time": "1:14", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "4 vs 13" },
-            { "a": "Carla Esparza", "b": "Angela Hill", "winner": "Carla Esparza", "method": "Submission (rear naked choke)", "round": 1, "time": "1:18", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "1 vs 16" },
-            { "a": "Felice Herrig", "b": "Heather Jo Clark", "winner": "Felice Herrig", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "6 vs 11" },
-            { "a": "Aisling Daly", "b": "Angela Magaña", "winner": "Aisling Daly", "method": "TKO (punches)", "round": 3, "time": "2:34", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "5 vs 12" },
-            { "a": "Tecia Torres", "b": "Bec Rawlings", "winner": "Tecia Torres", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "3 vs 8", "replacement": "Torres returned after her first-round loss, taking the place of Justine Kish, who withdrew with a torn ACL" },
-            { "a": "Rose Namajunas", "b": "Alex Chambers", "winner": "Rose Namajunas", "method": "Submission (rear naked choke)", "round": 1, "time": "0:22", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "7 vs 10" }
+            {
+              "a": "Tecia Torres",
+              "b": "Randa Markos",
+              "winner": "Randa Markos",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "3 vs 14"
+            },
+            {
+              "a": "Joanne Calderwood",
+              "b": "Emily Kagan",
+              "winner": "Joanne Calderwood",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "2 vs 15"
+            },
+            {
+              "a": "Jessica Penne",
+              "b": "Lisa Ellis",
+              "winner": "Jessica Penne",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "1:14",
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "4 vs 13"
+            },
+            {
+              "a": "Carla Esparza",
+              "b": "Angela Hill",
+              "winner": "Carla Esparza",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "1:18",
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "1 vs 16"
+            },
+            {
+              "a": "Felice Herrig",
+              "b": "Heather Jo Clark",
+              "winner": "Felice Herrig",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "6 vs 11"
+            },
+            {
+              "a": "Aisling Daly",
+              "b": "Angela Magaña",
+              "winner": "Aisling Daly",
+              "method": "TKO (punches)",
+              "round": 3,
+              "time": "2:34",
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "5 vs 12"
+            },
+            {
+              "a": "Tecia Torres",
+              "b": "Bec Rawlings",
+              "winner": "Tecia Torres",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "3 vs 8",
+              "replacement": "Torres returned after her first-round loss, taking the place of Justine Kish, who withdrew with a torn ACL"
+            },
+            {
+              "a": "Rose Namajunas",
+              "b": "Alex Chambers",
+              "winner": "Rose Namajunas",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "0:22",
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "7 vs 10"
+            }
           ]
         },
         {
           "stage": "quarter_final",
           "label": "Quarter-finals",
           "bouts": [
-            { "a": "Felice Herrig", "b": "Randa Markos", "winner": "Randa Markos", "method": "Submission (armbar)", "round": 1, "time": "2:46", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "6 vs 14" },
-            { "a": "Aisling Daly", "b": "Jessica Penne", "winner": "Jessica Penne", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "5 vs 4" },
-            { "a": "Carla Esparza", "b": "Tecia Torres", "winner": "Carla Esparza", "method": "Decision (majority)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "1 vs 3" },
-            { "a": "Rose Namajunas", "b": "Joanne Calderwood", "winner": "Rose Namajunas", "method": "Submission (kimura)", "round": 2, "time": "2:55", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "7 vs 2" }
+            {
+              "a": "Felice Herrig",
+              "b": "Randa Markos",
+              "winner": "Randa Markos",
+              "method": "Submission (armbar)",
+              "round": 1,
+              "time": "2:46",
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "6 vs 14"
+            },
+            {
+              "a": "Aisling Daly",
+              "b": "Jessica Penne",
+              "winner": "Jessica Penne",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "5 vs 4"
+            },
+            {
+              "a": "Carla Esparza",
+              "b": "Tecia Torres",
+              "winner": "Carla Esparza",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "1 vs 3"
+            },
+            {
+              "a": "Rose Namajunas",
+              "b": "Joanne Calderwood",
+              "winner": "Rose Namajunas",
+              "method": "Submission (kimura)",
+              "round": 2,
+              "time": "2:55",
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "7 vs 2"
+            }
           ]
         },
         {
           "stage": "semi_final",
           "label": "Semi-finals",
           "bouts": [
-            { "a": "Carla Esparza", "b": "Jessica Penne", "winner": "Carla Esparza", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "1 vs 4" },
-            { "a": "Rose Namajunas", "b": "Randa Markos", "winner": "Rose Namajunas", "method": "Submission (kimura)", "round": 1, "time": "2:16", "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "seeds": "7 vs 14" }
+            {
+              "a": "Carla Esparza",
+              "b": "Jessica Penne",
+              "winner": "Carla Esparza",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "1 vs 4"
+            },
+            {
+              "a": "Rose Namajunas",
+              "b": "Randa Markos",
+              "winner": "Rose Namajunas",
+              "method": "Submission (kimura)",
+              "round": 1,
+              "time": "2:16",
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "seeds": "7 vs 14"
+            }
           ]
         },
         {
@@ -142,7 +395,12 @@
       "received_title": "UFC Women's Strawweight Championship (inaugural)",
       "contract_note": "The prize was the inaugural championship, not a contract — which is exactly why the two are recorded separately. The source also lists a motorcycle and a $50,000 bonus.",
       "verified_against": "ufc_bout_results — Carla Esparza def. Rose Namajunas, Submission, round 3, 86s, at The Ultimate Fighter: A Champion Will Be Crowned Finale, 2014-12-12",
-      "winning_bout": { "a": "Carla Esparza", "b": "Rose Namajunas", "event": "The Ultimate Fighter: A Champion Will Be Crowned Finale", "date": "2014-12-12" }
+      "winning_bout": {
+        "a": "Carla Esparza",
+        "b": "Rose Namajunas",
+        "event": "The Ultimate Fighter: A Champion Will Be Crowned Finale",
+        "date": "2014-12-12"
+      }
     }
   ]
 }

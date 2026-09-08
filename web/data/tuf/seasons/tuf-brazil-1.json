@@ -13,13 +13,6 @@
     "retrieved": "2026-09-08",
     "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
   },
-  "_conflicts": [
-    {
-      "field": "Featherweight_semi_final",
-      "detail": "The source's semi-finals for this division do not close as a self-contained round: 1 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    }
-  ],
   "coaches": [
     {
       "team": "",
@@ -219,6 +212,19 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Marcos Vinícius",
+        "Rodrigo Damm"
+      ],
+      "episode": 10,
+      "detail": "The doctors removed Damm from the competition, and he was replaced with Vinícius."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Featherweight",
@@ -302,8 +308,16 @@
               "classification_source": null
             }
           ],
-          "status": "unverified",
-          "note": "Partial. 1 fighter(s) enter this round without a recorded win in the previous one. See conflicts."
+          "format_exceptions": [
+            {
+              "fighter": "Marcos Vinícius",
+              "kinds": [
+                "replacement"
+              ],
+              "episode": 10,
+              "evidence": "The doctors removed Damm from the competition, and he was replaced with Vinícius."
+            }
+          ]
         },
         {
           "stage": "final",

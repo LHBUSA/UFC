@@ -144,6 +144,30 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Josh Samman"
+      ],
+      "episode": 5,
+      "detail": "Samman informed the coaches that he preferred to fight later since he had some injuries. Jones was receptive but the other coaches felt Samman was taking too much control over the team."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Robert \"Bubba\" McDaniel",
+        "Adam Cella",
+        "Bubba McDaniel"
+      ],
+      "episode": 8,
+      "detail": "Bubba McDaniel was stressed over being picked for the wildcard match-up and vented to Adam Cella."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Tournament",

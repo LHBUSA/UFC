@@ -183,6 +183,33 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "[[Paul Bradley",
+        "Patrick Schultz",
+        "Paul Bradley"
+      ],
+      "episode": 3,
+      "detail": "Bradley is removed from the house because of a contagious skin condition, so Patrick Schultz is brought back as his replacement."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "C. B. Dollaway",
+        "Tim Credeur",
+        "Amir Sadollah",
+        "Jesse Taylor"
+      ],
+      "episode": 12,
+      "detail": "Dollaway and Credeur are flown back to Las Vegas and arrive back at the training center, where they are told about the situation with Taylor. They are invited to fight each other for the chance to replace Taylor in the finale to fight against Sadollah. They agree and are given three weeks to prepare."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Tournament",
@@ -201,7 +228,7 @@
               "time": "1:21",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Cale Yarbrough",
@@ -212,7 +239,7 @@
               "time": "4:02",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Amir Sadollah",
@@ -223,7 +250,7 @@
               "time": "2:22",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jeremy May",
@@ -234,7 +261,7 @@
               "time": "1:17",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "C. B. Dollaway",
@@ -245,7 +272,7 @@
               "time": "1:29",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Dante Rivera",
@@ -256,7 +283,7 @@
               "time": "0:58",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Nick Klein",
@@ -267,7 +294,7 @@
               "time": "3:39",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Matt Riddle",
@@ -278,7 +305,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Luke Zachrich",
@@ -289,7 +316,7 @@
               "time": "2:29",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Tim Credeur",
@@ -300,7 +327,7 @@
               "time": "1:00",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jesse Taylor",
@@ -311,7 +338,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Matt Brown",
@@ -322,7 +349,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Brandon Sene",
@@ -333,7 +360,7 @@
               "time": "3:29",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Gerald Harris",
@@ -344,7 +371,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Dan Cramer",
@@ -355,7 +382,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "C. B. Dollaway",
@@ -366,7 +393,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -383,7 +410,7 @@
               "time": "1:47",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Dante Rivera",
@@ -394,7 +421,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Luke Zachrich",
@@ -405,7 +432,7 @@
               "time": "1:49",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Tim Credeur",
@@ -416,7 +443,7 @@
               "time": "4:06",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Amir Sadollah",
@@ -427,7 +454,7 @@
               "time": "2:36",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Matt Brown",
@@ -438,7 +465,7 @@
               "time": "3:35",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Nick Klein",
@@ -449,7 +476,7 @@
               "time": "2:41",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Cale Yarbrough",
@@ -460,7 +487,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -477,7 +504,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Dan Cramer",
@@ -488,7 +515,7 @@
               "time": "2:10",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Amir Sadollah",
@@ -499,7 +526,7 @@
               "time": "4:09",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "C. B. Dollaway",
@@ -510,7 +537,7 @@
               "time": "2:43",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -527,7 +554,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Amir Sadollah",
@@ -538,7 +565,7 @@
               "time": "2:50",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

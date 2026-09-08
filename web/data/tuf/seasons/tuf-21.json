@@ -24,6 +24,18 @@
       "retrieved": "2026-09-08"
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Michael Graves"
+      ],
+      "episode": 11,
+      "detail": "Before the fight, Graves appears to have injured his neck but he is still going to fight."
+    }
+  ],
   "team_competition": {
     "format": "gym versus gym, decided on points",
     "note": "Two gyms rather than two coaches, and no tournament bracket. Each result was worth points to a gym — 25 early in the season, then 50, then 100 — so the season was won on points rather than by a last fighter standing. American Top Team took it with fewer wins than Blackzilians.",
@@ -71,7 +83,7 @@
               "episode": null,
               "points": 25,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Luiz Firmino",
@@ -83,7 +95,7 @@
               "episode": null,
               "points": 25,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Valdir Araújo",
@@ -95,7 +107,7 @@
               "episode": null,
               "points": 25,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Carrington Banks",
@@ -107,7 +119,7 @@
               "episode": null,
               "points": 25,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Andrews Nakahara",
@@ -119,7 +131,7 @@
               "episode": null,
               "points": 50,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Marcelo Alfaya",
@@ -131,7 +143,7 @@
               "episode": null,
               "points": 50,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Vicente Luque",
@@ -143,7 +155,7 @@
               "episode": null,
               "points": 50,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Felipe Portela",
@@ -155,7 +167,7 @@
               "episode": null,
               "points": 50,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Steve Carl",
@@ -167,7 +179,7 @@
               "episode": null,
               "points": 100,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Valdir Araújo",
@@ -179,7 +191,7 @@
               "episode": null,
               "points": 100,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Michael Graves",
@@ -191,7 +203,7 @@
               "episode": null,
               "points": 100,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Hayder Hassan",
@@ -203,7 +215,7 @@
               "episode": null,
               "points": 100,
               "classification": "exhibition",
-              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+              "classification_source": "contested inside the competition as part of the scored gym-versus-gym series, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         }

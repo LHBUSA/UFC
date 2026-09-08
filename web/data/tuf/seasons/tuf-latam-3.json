@@ -12,11 +12,31 @@
     "retrieved": "2026-09-08",
     "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
   },
-  "_conflicts": [
+  "format_exceptions": [
     {
-      "field": "Season_quarter_final",
-      "detail": "The source's quarter-finals for this division do not close as a self-contained round: 1 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Javier Ganin",
+        "Martín Bravo"
+      ],
+      "episode": 4,
+      "detail": "Martín Bravo defeated Javier Ganin via TKO (knee injury) in round 1."
+    },
+    {
+      "kinds": [
+        "replacement",
+        "injury"
+      ],
+      "fighters": [
+        "John Bedoya",
+        "Fabian Quintanar",
+        "Alejandro Martínez",
+        "Alejandro Martinez"
+      ],
+      "episode": 5,
+      "detail": "John Bedoya replaces Alejandro Martinez due to him being unable to continue as he was suffering with injuries from his fight with Quintanar."
     }
   ],
   "bracket": [
@@ -36,7 +56,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Leonardo Rodríguez",
@@ -47,7 +67,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Javier Ganin",
@@ -58,7 +78,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ilianovich Chalo",
@@ -69,7 +89,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Santiago Cárdenas",
@@ -80,7 +100,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Claudio Puelles",
@@ -91,7 +111,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Juan Villaseca",
@@ -102,7 +122,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Fabian Quintanar",
@@ -113,7 +133,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -130,7 +150,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Martín Bravo",
@@ -141,7 +161,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Pablo Sabori",
@@ -152,7 +172,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Marcelo Rojo",
@@ -163,11 +183,20 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ],
-          "status": "unverified",
-          "note": "Partial. 1 fighter(s) enter this round without a recorded win in the previous one. See conflicts."
+          "format_exceptions": [
+            {
+              "fighter": "John Bedoya",
+              "kinds": [
+                "replacement",
+                "injury"
+              ],
+              "episode": 5,
+              "evidence": "John Bedoya replaces Alejandro Martinez due to him being unable to continue as he was suffering with injuries from his fight with Quintanar."
+            }
+          ]
         },
         {
           "stage": "semi_final",
@@ -182,7 +211,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Claudio Puelles",
@@ -193,7 +222,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

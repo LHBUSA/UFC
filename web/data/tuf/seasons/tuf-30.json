@@ -121,6 +121,35 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Chantel Coates",
+        "Coates was unable to make weight",
+        "was replaced on episode 4 by Gallardo",
+        "Laura Gallardo",
+        "Brogan Walker"
+      ],
+      "episode": 4,
+      "detail": "The next women's flyweight bout was set to be Chantal Coates vs Brogan Walker, however Coates was approximately 25 lbs over weight just a few days before the weigh-ins and the Pena coaches decided that it would be too unhealthy to even try to cut that weight in time. Coates was removed from the competition and replaced with Laura Gallardo."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "was replaced on episode 4 by Gallardo",
+        "Kathryn Paprocki",
+        "Laura Gallardo",
+        "Brogan Walker"
+      ],
+      "episode": 4,
+      "detail": "Since the Pena fighter was changed, Amanda Nunes was given the option of keeping or changing the fight. Since Brogan Walker was mending an injured knee they chose to have Kathryn Paprocki fight Laura Gallardo instead."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Heavyweight",
@@ -138,7 +167,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jordan Heiderman",
@@ -149,7 +178,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Eduardo Perez",
@@ -171,7 +200,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -188,7 +217,7 @@
               "time": "0:37",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Eduardo Perez",
@@ -199,7 +228,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -254,7 +283,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Helen Peralta",
@@ -265,7 +294,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Juliana Miller",
@@ -276,7 +305,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -304,7 +333,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

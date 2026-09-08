@@ -146,6 +146,61 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Kajan Johnson"
+      ],
+      "episode": 1,
+      "detail": "Johnson mentions a couple of injuries he has and states that he always fight injured but even in that situation he states that he is more dangerous than anybody else there."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Chad Laprise",
+        "Chris Indich"
+      ],
+      "episode": 3,
+      "detail": "Indich talks about his relationship with his dad in the past and how it affected him. Meanwhile, Laprise claims this will be the first time in his career where he's been completely injury-free. He talks about his road in the sport up to TUF and how his strong religious beliefs serve as motivation to succeed."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Tyler Manawaroa"
+      ],
+      "episode": 3,
+      "detail": "Manawaroa has some problems with an injured finger and his weight. The coaches are concerned about it and try to make him motivated to train hard and also make weight."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Nordine Taleb",
+        "Elias Theodorou",
+        "Sheldon Westcott"
+      ],
+      "episode": 5,
+      "detail": "Despite a broken foot, Taleb remains on the team and helps his teammates with training and advising. He became an unofficial \"fifth coach\". Later Westcott injuries his knee during a sparring session against Theodorou and Team Canada is worried that it might affect his usual gameplan. They assure that they need to win the next fight to make sure they have the last middleweight fight picks."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Daniel Kelly"
+      ],
+      "episode": 6,
+      "detail": "It was revealed that Kelly had injured his right knee during the fight and is taken off to the hospital for treatment."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Welterweight",
@@ -164,7 +219,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -181,7 +236,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Chad Laprise",
@@ -192,7 +247,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Matthew Desroches",
@@ -203,7 +258,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Oliver Aubin-Mercier",
@@ -231,7 +286,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Richard Walsh",
@@ -242,7 +297,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ],
           "status": "unverified",
@@ -286,7 +341,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Nordine Taleb",
@@ -297,7 +352,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Sheldon Westcott",
@@ -308,7 +363,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Luke Harris",
@@ -319,7 +374,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -336,7 +391,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Sheldon Westcott",
@@ -347,7 +402,7 @@
               "time": null,
               "episode": 13,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 13, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 13 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

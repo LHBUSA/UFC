@@ -132,6 +132,38 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Marcus Jones"
+      ],
+      "episode": 3,
+      "detail": "Marcus Jones again struggled in training, this time complaining of an apparent knee injury. Despite this, Jones expressed his desire to compete in the next fight."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Matt Mitrione"
+      ],
+      "episode": 5,
+      "detail": "Matt Mitrione injured his shoulder in training, but wished to fight soon, leading Team Rashad to question whether his shoulder was legitimately injured or merely sore."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Matt Mitrione"
+      ],
+      "episode": 11,
+      "detail": "Dana White wanted to talk with fighters for a possible replacement for Matt Mitrione."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Tournament",
@@ -149,7 +181,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Demico Rogers",
@@ -160,7 +192,7 @@
               "time": "3:17",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Zak Jensen",
@@ -171,7 +203,7 @@
               "time": "2:29",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Marcus Jones",
@@ -182,7 +214,7 @@
               "time": "0:50",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Wes Shivers",
@@ -193,7 +225,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Scott Junk",
@@ -204,7 +236,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kimbo Slice",
@@ -215,7 +247,7 @@
               "time": "2:01",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Wes Sims",
@@ -226,7 +258,7 @@
               "time": "1:34",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -243,7 +275,7 @@
               "time": "1:39",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Darrill Schoonover",
@@ -254,7 +286,7 @@
               "time": "2:37",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "James McSweeney",
@@ -265,7 +297,7 @@
               "time": "3:38",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Roy Nelson",
@@ -276,7 +308,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -293,7 +325,7 @@
               "time": "2:11",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "James McSweeney",
@@ -304,7 +336,7 @@
               "time": "4:13",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

@@ -17,6 +17,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
+import completenessJson from "../data/tuf/record_completeness.json" with { type: "json" };
 import inventoryJson from "../data/tuf/seasons.json" with { type: "json" };
 import tuf22Json from "../data/tuf/seasons/tuf-22.json" with { type: "json" };
 import tuf1Json from "../data/tuf/seasons/tuf-1.json" with { type: "json" };
@@ -31,7 +32,7 @@ type Bout = {
 };
 type Stage = { stage: string; label: string; status?: string; note?: string; bouts: Bout[]; disputed?: Bout[] };
 type Season = Record<string, unknown> & {
-  slug: string; coverage: string; season_state: string; detail?: string;
+  slug: string; coverage: string; season_state: string; detail?: string; year: number;
   winners: Array<{ weight_class: string; fighter: string }>;
   finalists?: Array<{ weight_class: string; fighters: string[] }>;
   finale_event: string | null; finale_date: string | null; edition: string;
@@ -49,6 +50,7 @@ const tuf22 = tuf22Json as unknown as {
   champions: Array<{ fighter: string; verified_against?: string; won_tournament: boolean; received_contract: boolean }>;
 };
 
+const completeness = completenessJson as unknown as { years: Record<string, { complete: boolean }> };
 const seasons = inventory.seasons;
 
 /* Read off disk rather than listed by hand. A list is a thing you forget to
@@ -427,4 +429,102 @@ test("an alternate spelling only excuses the champion, never a different fighter
   assert.ok(passes("Glaico Franca Moreira", "Glaico França"), "the declared archive spelling is accepted");
   assert.ok(!passes("Fernando Bruno", undefined), "the losing finalist is not");
   assert.ok(!passes("Fernando Bruno", "Fernando Bruno"), "and declaring his own name does not launder him into the champion");
+});
+
+/* ---- classification evidence ---------------------------------------------- */
+
+test("an exhibition cites both legs of its argument, not just the episode", () => {
+  /* Airing in an episode says WHERE the bout sat in the show. On its own it is
+   * not a claim about sanctioning — a bout can air in an episode and still have
+   * been contested on a card. The second leg is that no professional bout of
+   * that description exists, which only carries weight for a year our own
+   * records actually cover. Both facts have to appear in the source text. */
+  for (const [slug, detail] of Object.entries(DETAIL_BY_SLUG)) {
+    for (const div of detail.bracket ?? []) {
+      for (const st of div.stages) {
+        for (const b of st.bouts) {
+          if (b.classification !== "exhibition") continue;
+          const src = b.classification_source ?? "";
+          assert.ok(src, `${slug}: an exhibition must carry its evidence`);
+          const onFinaleCard = (b as { on_finale_card?: boolean }).on_finale_card === true;
+          if (onFinaleCard) continue;   // the hand-built seasons word these differently
+          /* Leg one: something that PLACES the bout inside the competition.
+           * An episode number does that; so does the season source stating it
+           * outright for a bout it does not date by episode. The test is for
+           * the leg, not for a particular wording. */
+          assert.match(
+            src,
+            /episode|contested inside the competition/i,
+            `${slug}: "${b.a} vs ${b.b}" should say what places it inside the season`,
+          );
+          assert.match(
+            src,
+            /absent from our fight records|not contested on a sanctioned card|sanctioned/i,
+            `${slug}: "${b.a} vs ${b.b}" should say why it was not a professional bout, not only that it aired`,
+          );
+        }
+      }
+    }
+  }
+});
+
+test("a season from a year our records do not cover claims no exhibitions", () => {
+  /* 2024 has bouts without results and 2026 has events without bouts, so an
+   * absence there is a gap in our loading rather than a fact about a fight.
+   * Those seasons must not borrow the argument. */
+  const incomplete = new Set<number>(
+    Object.entries(completeness.years)
+      .filter(([, v]) => !(v as { complete: boolean }).complete)
+      .map(([y]) => Number(y)),
+  );
+  assert.ok(incomplete.size > 0, "some year should be incomplete, or this test proves nothing");
+
+  for (const s of seasons) {
+    if (!incomplete.has(s.year)) continue;
+    const detail = DETAIL_BY_SLUG[s.slug];
+    for (const div of detail?.bracket ?? []) {
+      for (const st of div.stages) {
+        for (const b of st.bouts) {
+          if ((b as { on_finale_card?: boolean }).on_finale_card) continue;
+          assert.notEqual(
+            b.classification,
+            "exhibition",
+            `${s.slug} (${s.year}): our records for that year are incomplete, so "${b.a} vs ${b.b}" cannot be argued into an exhibition`,
+          );
+        }
+      }
+    }
+  }
+});
+
+/* ---- formats that are not gaps -------------------------------------------- */
+
+test("a documented wildcard or replacement is recorded with the sentence that documents it", () => {
+  let seen = 0;
+  for (const [slug, detail] of Object.entries(DETAIL_BY_SLUG)) {
+    const fx = (detail as { format_exceptions?: Array<{ kinds: string[]; fighters: string[]; detail: string }> }).format_exceptions ?? [];
+    for (const x of fx) {
+      seen += 1;
+      assert.ok(x.kinds.length, `${slug}: an exception must say what kind it is`);
+      assert.ok(x.fighters.length, `${slug}: an exception must name someone the season knows`);
+      assert.ok(x.detail && x.detail.length > 20, `${slug}: an exception must keep the sentence it came from`);
+    }
+  }
+  assert.ok(seen > 20, `these seasons are full of wildcards and replacements; only ${seen} were captured`);
+});
+
+test("a season with no bracket to load is not filed as missing data", () => {
+  const fc = seasons.filter((s) => s.coverage === "format_complete");
+  assert.equal(fc.length, 1, "season 21 is the only season with no tournament bracket");
+  for (const s of fc) {
+    const d = DETAIL_BY_SLUG[s.slug] as {
+      team_competition?: { standings?: unknown[]; concluding_bout?: { winner?: string | null } };
+    };
+    assert.ok(d?.team_competition, `${s.slug}: format_complete requires the format to be recorded`);
+    assert.ok(d.team_competition!.standings?.length, `${s.slug}: a scored season needs its standings`);
+    assert.ok(
+      d.team_competition!.concluding_bout?.winner,
+      `${s.slug}: the bout that concluded it must be visible, outside the bracket it never had`,
+    );
+  }
 });

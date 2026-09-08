@@ -149,6 +149,52 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Michael Pastou"
+      ],
+      "episode": 1,
+      "detail": "Team UK's Michael Pastou sustained a bicep injury in sparring and was later told that the injury would most likely need surgery"
+    },
+    {
+      "kinds": [
+        "replacement",
+        "withdrawal",
+        "injury"
+      ],
+      "fighters": [
+        "Michael Pastou",
+        "Brendan Loughnane"
+      ],
+      "episode": 2,
+      "detail": "Team UK's Michael Pastou was forced out of the competition due to his bicep injury, and was replaced by Brendan Loughnane."
+    },
+    {
+      "kinds": [
+        "replacement",
+        "withdrawal"
+      ],
+      "fighters": [
+        "Manny Rodriguez"
+      ],
+      "episode": 6,
+      "detail": "Team Australia's Manny Rodriguez was forced out of the competition after suffering a fractured leg in his previous bout, and was replaced by James Vainikolo."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Colin Fletcher"
+      ],
+      "episode": 6,
+      "detail": "Colin Fletcher dresses as the new replacement for Team Australia."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Welterweight",

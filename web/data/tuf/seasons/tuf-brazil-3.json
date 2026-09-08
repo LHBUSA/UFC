@@ -224,6 +224,31 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Wagner Silva",
+        "Bruno Silva"
+      ],
+      "episode": 2,
+      "detail": "Later, a day before the Ultimate Fighter Brazil 3 Finale, Sonnen revealed in a scrum session that after Silva had left the premises he called Vitor Belfort asserting that Silva fears Belfort more than Sonnen himself. Before the call, Sonnen instructed the crew of the show to tell Silva that Belfort was replacing him if he leaves. However, at that time Belfort was concentrating on a middleweight ti"
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Paulo Costa",
+        "Antônio Carlos Júnior",
+        "Márcio Alexandre Júnior"
+      ],
+      "episode": 8,
+      "detail": "Márcio Alexandre Júnior is limping around the house, having injured his foot against Paulo Costa. The doctors say that it should not hamper his fighting."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Middleweight",
@@ -242,7 +267,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Márcio Alexandre Júnior",
@@ -253,7 +278,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -270,7 +295,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ismael de Jesus",
@@ -281,7 +306,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ricardo Abreu",
@@ -292,7 +317,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Paulo Costa",
@@ -320,7 +345,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ricardo Abreu",
@@ -373,7 +398,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jollyson Francisco",
@@ -384,7 +409,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Richardson Moreira",
@@ -395,7 +420,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Antônio Branjão",
@@ -406,7 +431,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -423,7 +448,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Richardson Moreira",
@@ -434,7 +459,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

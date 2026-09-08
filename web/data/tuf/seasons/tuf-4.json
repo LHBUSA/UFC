@@ -64,6 +64,29 @@
       "note": "guest coach"
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Rich Clementi"
+      ],
+      "episode": 2,
+      "detail": "White announces that eliminated fighters will not leave the show, thus Rich Clementi will continue to live and train with the cast and be available as a replacement should someone drop out of the competition."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Rich Clementi",
+        "Pete Spratt"
+      ],
+      "episode": 5,
+      "detail": "To replace the newly evicted Jeremy Jackson, Team No Love decides to flip a coin to decide which eliminated welterweight, Pete Spratt or Rich Clementi, should replace him. Jorge Rivera's coin toss allows Spratt to take Jackson's place"
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Welterweight",
@@ -81,7 +104,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Pete Spratt",
@@ -92,7 +115,7 @@
               "time": "3:26",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Pete Spratt",
@@ -103,7 +126,7 @@
               "time": "2:06",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Mikey Burnett",
@@ -114,7 +137,7 @@
               "time": "2:30",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ],
           "status": "unverified",
@@ -133,7 +156,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Chris Lytle",
@@ -144,7 +167,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -186,7 +209,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Travis Lutter",
@@ -197,7 +220,7 @@
               "time": "1:13",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jorge Rivera",
@@ -208,7 +231,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Gideon Ray",
@@ -219,7 +242,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -236,7 +259,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Patrick Côté",
@@ -247,7 +270,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

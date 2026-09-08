@@ -25,7 +25,7 @@
     },
     {
       "field": "Tournament_quarter_final",
-      "detail": "The source's quarter-finals for this division do not close as a self-contained round: 3 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
+      "detail": "The source's quarter-finals for this division do not close as a self-contained round: 2 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     },
     {
@@ -125,6 +125,117 @@
       "role": "head"
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Kris McCray",
+        "Cleburn Walker"
+      ],
+      "episode": 1,
+      "detail": "Kris McCray defeated Cleburn Walker by TKO (shoulder injury) at 0:15 of the first round."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Clayton McKinney"
+      ],
+      "episode": 2,
+      "detail": "McKinney thought his shoulder injury was a torn rotator cuff, leading Ortiz to believe McKinney was mentally weak and makes a point of pushing him harder. After an MRI, the doctor wrongly diagnoses the injury as just a bone contusion, therefore painful, but not serious."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Clayton McKinney"
+      ],
+      "episode": 2,
+      "detail": "A visibly frustrated McKinney walked away in disappointment, but was called back by Ortiz to immediately practice escaping triangle chokes. Attempting to boost the morale of McKinney and his team-mates, Ortiz reminded him that he could still win a wildcard slot."
+    },
+    {
+      "kinds": [
+        "replacement",
+        "injury"
+      ],
+      "fighters": [
+        "Seth Baczynski",
+        "Chris Camozzi"
+      ],
+      "episode": 3,
+      "detail": "White called out Chris Camozzi telling him that what he thought was just a minor tooth ache, was actually a broken jaw. Because of this injury, Camozzi was sent home and Seth Baczynski replaced him."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Rich Attonito"
+      ],
+      "episode": 4,
+      "detail": "Attonito returned to the house and broke the news that his hand was injured and may be broken."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Brad Tavares",
+        "James Hammortree"
+      ],
+      "episode": 5,
+      "detail": "Wildcard predictions began by the fighters and James Hammortree stated his case, because of his \"controversial\" decision loss to Brad Tavares."
+    },
+    {
+      "kinds": [
+        "wildcard",
+        "injury"
+      ],
+      "fighters": [
+        "Charles Blanchard",
+        "Clayton McKinney"
+      ],
+      "episode": 5,
+      "detail": "It was revealed that the \"bruised bone\" Clayton McKinney was diagnosed with was actually a ripped off labrum ligament. While describing the surgery to his housemates, McKinney tells them that the doctor had to scrape the humeral bone, put screws in it, shave the ligament and then anchor the labrum to the humeral by using the screws. Since this type of injury takes 3–6 months to heal completely, it"
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Nick Ring"
+      ],
+      "episode": 7,
+      "detail": "Nick Ring expressed concern about a possible re-occurrence of a 3-year-old knee injury."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "James Hammortree",
+        "Joseph Henle"
+      ],
+      "episode": 7,
+      "detail": "This upset Henle and James Hammortree who both believed they did enough in their fights to earn either a wildcard or Attonito's slot."
+    },
+    {
+      "kinds": [
+        "replacement",
+        "withdrawal"
+      ],
+      "fighters": [
+        "James Hammortree",
+        "Nick Ring"
+      ],
+      "episode": 8,
+      "detail": "Ring withdrew and was replaced by Hammortree after he ran after White as he was leaving the house, stating he wanted the fight."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Tournament",
@@ -143,7 +254,7 @@
               "time": "0:26",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Brad Tavares",
@@ -154,7 +265,7 @@
               "time": "0:37",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kris McCray",
@@ -165,7 +276,7 @@
               "time": "0:15",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "James Hammortree",
@@ -176,7 +287,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Nick Ring",
@@ -187,7 +298,7 @@
               "time": "2:42",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kyle Noke",
@@ -198,7 +309,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Court McGee",
@@ -209,7 +320,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kyacey Uscola",
@@ -220,7 +331,7 @@
               "time": "0:25",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Joseph Henle",
@@ -231,7 +342,7 @@
               "time": "2:17",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Rich Attonito",
@@ -242,7 +353,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Josh Bryant",
@@ -253,7 +364,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Charles Blanchard",
@@ -264,7 +375,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Clayton McKinney",
@@ -275,7 +386,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -292,7 +403,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Joseph Henle",
@@ -303,7 +414,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Rich Attonito",
@@ -314,7 +425,7 @@
               "time": "3:36",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Court McGee",
@@ -325,7 +436,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Josh Bryant",
@@ -336,7 +447,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Charles Blanchard",
@@ -347,7 +458,7 @@
               "time": "1:09",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kyle Noke",
@@ -358,7 +469,7 @@
               "time": "2:44",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kris McCray",
@@ -369,7 +480,7 @@
               "time": "0:59",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ],
           "status": "unverified",
@@ -388,7 +499,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Court McGee",
@@ -399,7 +510,7 @@
               "time": "0:28",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Josh Bryant",
@@ -410,7 +521,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kyle Noke",
@@ -421,11 +532,21 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            }
+          ],
+          "format_exceptions": [
+            {
+              "fighter": "James Hammortree",
+              "kinds": [
+                "wildcard"
+              ],
+              "episode": 5,
+              "evidence": "Wildcard predictions began by the fighters and James Hammortree stated his case, because of his \"controversial\" decision loss to Brad Tavares."
             }
           ],
           "status": "unverified",
-          "note": "Partial. 3 fighter(s) enter this round without a recorded win in the previous one. See conflicts."
+          "note": "Partial. 2 fighter(s) enter this round without a recorded win in the previous one. See conflicts."
         },
         {
           "stage": "semi_final",
@@ -440,7 +561,7 @@
               "time": "4:45",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Josh Bryant",
@@ -451,7 +572,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

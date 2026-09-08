@@ -956,7 +956,7 @@
       ],
       "finale_event": "The Ultimate Fighter: American Top Team vs. Blackzilians Finale",
       "finale_date": "2015-07-12",
-      "coverage": "bracket_partial",
+      "coverage": "format_complete",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1204,7 +1204,7 @@
       ],
       "finale_event": "The Ultimate Fighter: Undefeated Finale",
       "finale_date": "2018-07-06",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1593,7 +1593,7 @@
       ],
       "finale_event": "UFC 147: Silva vs Franklin 2",
       "finale_date": "2012-06-23",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1800,7 +1800,7 @@
       ],
       "finale_event": "UFC 180: Werdum vs Hunt",
       "finale_date": "2014-11-15",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Alejandro Pérez def. Jose Quinonez (Decision - Unanimous, R3); Yair Rodríguez def. Leonardo Morales (Decision - Unanimous, R3) on UFC 180: Werdum vs Hunt, 2014-11-15.",
       "final_bouts": [
@@ -1906,7 +1906,7 @@
       ],
       "finale_event": "UFC Fight Night: Dos Anjos vs. Ferguson",
       "finale_date": "2016-11-05",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -2103,10 +2103,12 @@
     "buckets": {
       "bracket_full": "every documented round loaded, no unresolved dispute",
       "bracket_partial": "some rounds loaded, or a dispute is still open",
-      "metadata_only": "season facts only; no tournament bouts loaded"
+      "metadata_only": "season facts only; no tournament bouts loaded",
+      "format_complete": "a season with no tournament bracket, recorded fully in the format it actually used"
     },
     "rule": "The three buckets are mutually exclusive and every season is in exactly one, so they sum to the season count.",
     "finale_note": "finale_linked is tracked separately and is NOT coverage. Holding a finale card means we hold a UFC event; it says nothing about whether the tournament that led to it is in the archive.",
-    "state_note": "season_state (completed | ongoing) is a fact about the season, not about us."
+    "state_note": "season_state (completed | ongoing) is a fact about the season, not about us.",
+    "format_note": "format_complete is not a lesser kind of coverage. Season 21 had no bracket to load: two gyms fought a scored series. Filing it as partial counted the absence of a structure it never had as missing data, which is a statement about our template rather than about the season."
   }
 }

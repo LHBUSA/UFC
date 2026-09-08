@@ -1,0 +1,162 @@
+{
+  "_note": "Per-year completeness of our own fight records, used to decide whether a bout's ABSENCE from them carries any weight. A year counts as complete only when every event in it holds bouts and every one of those bouts holds a result. For such a year, a professional bout that happened would be in our records, so a TUF bout that is not there was not contested on a sanctioned card that year. For any other year the argument is not available and the bouts stay unverified.",
+  "_method": "For each year: every ufc_events row in range, then every ufc_bouts row on those events, then whether each carries a ufc_bout_results row. No sampling.",
+  "_generated_at": "2026-09-08T12:21:38.882Z",
+  "_generated_by": "scripts/tuf/record_completeness.mjs",
+  "years": {
+    "2005": {
+      "events": 10,
+      "events_without_bouts": 0,
+      "bouts": 80,
+      "bouts_with_result": 80,
+      "complete": true
+    },
+    "2006": {
+      "events": 18,
+      "events_without_bouts": 0,
+      "bouts": 158,
+      "bouts_with_result": 158,
+      "complete": true
+    },
+    "2007": {
+      "events": 19,
+      "events_without_bouts": 0,
+      "bouts": 171,
+      "bouts_with_result": 171,
+      "complete": true
+    },
+    "2008": {
+      "events": 20,
+      "events_without_bouts": 0,
+      "bouts": 201,
+      "bouts_with_result": 201,
+      "complete": true
+    },
+    "2009": {
+      "events": 20,
+      "events_without_bouts": 0,
+      "bouts": 215,
+      "bouts_with_result": 215,
+      "complete": true
+    },
+    "2010": {
+      "events": 24,
+      "events_without_bouts": 0,
+      "bouts": 253,
+      "bouts_with_result": 253,
+      "complete": true
+    },
+    "2011": {
+      "events": 27,
+      "events_without_bouts": 0,
+      "bouts": 300,
+      "bouts_with_result": 300,
+      "complete": true
+    },
+    "2012": {
+      "events": 31,
+      "events_without_bouts": 0,
+      "bouts": 341,
+      "bouts_with_result": 341,
+      "complete": true
+    },
+    "2013": {
+      "events": 33,
+      "events_without_bouts": 0,
+      "bouts": 386,
+      "bouts_with_result": 386,
+      "complete": true
+    },
+    "2014": {
+      "events": 46,
+      "events_without_bouts": 0,
+      "bouts": 503,
+      "bouts_with_result": 503,
+      "complete": true
+    },
+    "2015": {
+      "events": 41,
+      "events_without_bouts": 0,
+      "bouts": 473,
+      "bouts_with_result": 473,
+      "complete": true
+    },
+    "2016": {
+      "events": 41,
+      "events_without_bouts": 0,
+      "bouts": 493,
+      "bouts_with_result": 493,
+      "complete": true
+    },
+    "2017": {
+      "events": 47,
+      "events_without_bouts": 0,
+      "bouts": 497,
+      "bouts_with_result": 497,
+      "complete": true
+    },
+    "2018": {
+      "events": 50,
+      "events_without_bouts": 0,
+      "bouts": 529,
+      "bouts_with_result": 529,
+      "complete": true
+    },
+    "2019": {
+      "events": 52,
+      "events_without_bouts": 0,
+      "bouts": 565,
+      "bouts_with_result": 565,
+      "complete": true
+    },
+    "2020": {
+      "events": 51,
+      "events_without_bouts": 0,
+      "bouts": 504,
+      "bouts_with_result": 504,
+      "complete": true
+    },
+    "2021": {
+      "events": 53,
+      "events_without_bouts": 0,
+      "bouts": 559,
+      "bouts_with_result": 559,
+      "complete": true
+    },
+    "2022": {
+      "events": 52,
+      "events_without_bouts": 0,
+      "bouts": 560,
+      "bouts_with_result": 560,
+      "complete": true
+    },
+    "2023": {
+      "events": 53,
+      "events_without_bouts": 0,
+      "bouts": 569,
+      "bouts_with_result": 569,
+      "complete": true
+    },
+    "2024": {
+      "events": 52,
+      "events_without_bouts": 0,
+      "bouts": 566,
+      "bouts_with_result": 562,
+      "complete": false
+    },
+    "2025": {
+      "events": 53,
+      "events_without_bouts": 0,
+      "bouts": 582,
+      "bouts_with_result": 582,
+      "complete": true
+    },
+    "2026": {
+      "events": 51,
+      "events_without_bouts": 7,
+      "bouts": 476,
+      "bouts_with_result": 398,
+      "complete": false
+    }
+  }
+}

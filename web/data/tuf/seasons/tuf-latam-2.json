@@ -20,6 +20,50 @@
       "retrieved": "2026-09-08"
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Horacio Gutiérrez"
+      ],
+      "episode": 2,
+      "detail": "To mask his injury from the other team, Gutiérrez and his roommates decided to move his bed from the top bunk down to the floor so he could sleep there instead of being forced to jump or climb up on a sprained ankle. In turn, Gutiérrez kept his foot packed in ice hidden underneath the blankets in hopes of keeping his injury a secret. Whether Team Gastelum found out about the injury or Gutiérrez wa"
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Erick Montaño",
+        "Marco Olano"
+      ],
+      "episode": 2,
+      "detail": "Erick Montaño defeated Marco Olano via first-round TKO (arm injury)."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Danny Salas",
+        "Horacio Gutiérrez"
+      ],
+      "episode": 3,
+      "detail": "Marco Olano's injury was on the mind of Horacio Gutiérrez after he suffered an ankle injury and then got picked to compete next. Word of his injury had leaked out and he was selected to fight in just a few days. Gutiérrez refused to let an ankle injury knock him out of the fight or the competition although even he admitted it was impossible not to think about his ailment as the bout with Salas dre"
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Marco Olano"
+      ],
+      "episode": 3,
+      "detail": "Marco Olano returns from the hospital with his arm in a sling but is not expected to suffer any permanent damage from the injury. He promises to stay at the house and continue to cheer on Team Escudero from the sidelines despite being eliminated from the competition."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Lightweight",
@@ -37,7 +81,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jonathan Ortega",
@@ -48,7 +92,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Danny Salas",
@@ -59,7 +103,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Christhian Soto",
@@ -87,7 +131,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Horacio Gutiérrez",
@@ -140,7 +184,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Hector Aldana",
@@ -151,7 +195,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Erick Montaño",
@@ -162,7 +206,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Wilmer Fernández",
@@ -173,7 +217,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -190,7 +234,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Erick Montaño",
@@ -201,7 +245,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

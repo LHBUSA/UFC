@@ -74,7 +74,11 @@ export type SeasonRow = {
   detail?: string;
 };
 
-export type Coverage = "bracket_full" | "bracket_partial" | "metadata_only";
+/* format_complete is not a weaker bracket_full. It is for a season with no
+ * bracket to load — season 21 was a scored series between two gyms — where
+ * filing it as "partial" would count the absence of a structure it never had
+ * as data we are missing. */
+export type Coverage = "bracket_full" | "bracket_partial" | "metadata_only" | "format_complete";
 
 export type TufBout = {
   a: string;

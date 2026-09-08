@@ -20,6 +20,54 @@
       "retrieved": "2026-09-08"
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Bruno Silva",
+        "Joaquim Silva",
+        "Erick da Silva"
+      ],
+      "episode": 3,
+      "detail": "Silva announces that his coaching staff will remain on the show and Antônio Rodrigo Nogueira will replace him as head coach of the blue team, while his brother Antônio Rogério Nogueira will be added to the coaching staff. Everyone in the room is moved by the situation."
+    },
+    {
+      "kinds": [
+        "second chance",
+        "injury"
+      ],
+      "fighters": [
+        "Leandro Higo",
+        "Matheus Mattos"
+      ],
+      "episode": 8,
+      "detail": "White says Santos may be a good guy, but \"he wasn't able to handle the competition\". He decides to give Leangro Higo a second chance. Higo is hesitant due to having a small injury and also fears he won't be able to make weight. White tells him to not feel pressured into taking the spot, but a still reluctant Higo accepts it. He faces off against Matheus Mattos, but does not make eye contact. Matto"
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Leandro Higo"
+      ],
+      "episode": 8,
+      "detail": "After the fight, Higo tells Antônio Rodrigo Nogueira that his injury has worsened. He asks for a doctor, who advises him to really consider taking the fight as the pain will not go away quickly."
+    },
+    {
+      "kinds": [
+        "withdrawal"
+      ],
+      "fighters": [
+        "Reginaldo Vieira",
+        "Leandro Higo",
+        "Matheus Mattos"
+      ],
+      "episode": 8,
+      "detail": "Nogueira announces that Higo withdrew and Reginaldo Vieira will take his spot. Vieira and Mattos face off."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Bantamweight",
@@ -37,7 +85,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Dileno Lopes",
@@ -48,7 +96,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Bruno Korea",
@@ -59,7 +107,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Reginaldo Vieira",
@@ -70,7 +118,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ],
           "status": "unverified",
@@ -89,7 +137,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Bruno Korea",
@@ -100,7 +148,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -142,7 +190,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Glaico França",
@@ -153,7 +201,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Nazareno Malegarie",
@@ -164,7 +212,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Adílson Fernandes",
@@ -175,7 +223,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -192,7 +240,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Nazareno Malegarie",
@@ -203,7 +251,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

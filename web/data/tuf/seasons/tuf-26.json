@@ -146,6 +146,28 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Emily Whitmire"
+      ],
+      "episode": 3,
+      "detail": "Both teams visit the new UFC Performance Institute, a state-of-the-art training and wellness facility. They take advantage of their advanced equipment and technology. While there, Emily Whitmire gets her injured ribs checked out by the director of physical therapy, Heather Linden who uses compression tape and laser therapy to stabilize the pain."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Emily Whitmire"
+      ],
+      "episode": 8,
+      "detail": "Meisha Tate is back in town and helps her teammate Emily Whitmire with mending her injured ribs with a device called the Mac Pro. Meisha will also corner Emily's fight."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Tournament",
@@ -164,7 +186,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -181,7 +203,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "1 vs 16"
             },
             {
@@ -193,7 +215,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "8 vs 9"
             },
             {
@@ -205,7 +227,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "5 vs 12"
             },
             {
@@ -217,7 +239,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "4 vs 13"
             },
             {
@@ -229,7 +251,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "2 vs 15"
             },
             {
@@ -241,7 +263,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "7 vs 10"
             },
             {
@@ -253,7 +275,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "6 vs 11"
             },
             {
@@ -265,7 +287,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "3 vs 14"
             }
           ]
@@ -283,7 +305,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "1 vs 8"
             },
             {
@@ -295,7 +317,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "12 vs 4"
             },
             {
@@ -319,7 +341,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "6 vs 14"
             }
           ]
@@ -337,7 +359,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "1 vs 12"
             },
             {
@@ -349,7 +371,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card",
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "2 vs 14"
             }
           ]

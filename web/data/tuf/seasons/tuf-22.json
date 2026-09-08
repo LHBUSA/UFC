@@ -4,7 +4,9 @@
   "edition": "us",
   "number": 22,
   "year": 2015,
-  "weight_classes": ["Lightweight"],
+  "weight_classes": [
+    "Lightweight"
+  ],
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter:_Team_McGregor_vs._Team_Faber",
     "retrieved": "2026-09-07",
@@ -23,46 +25,139 @@
     }
   ],
   "coaches": [
-    { "team": "Team McGregor", "name": "Conor McGregor", "role": "head", "region": "Europe" },
-    { "team": "Team McGregor", "name": "Owen Roddy", "role": "assistant" },
-    { "team": "Team McGregor", "name": "Sergey Pikulskiy", "role": "assistant" },
-    { "team": "Team McGregor", "name": "Tom Egan", "role": "assistant" },
-    { "team": "Team McGregor", "name": "Arkadiusz Sternalski", "role": "assistant" },
-    { "team": "Team Faber", "name": "Urijah Faber", "role": "head", "region": "United States" },
-    { "team": "Team Faber", "name": "Andre Fili", "role": "assistant" },
-    { "team": "Team Faber", "name": "Cody Garbrandt", "role": "assistant" },
-    { "team": "Team Faber", "name": "Lance Palmer", "role": "assistant" },
-    { "team": "Team Faber", "name": "Fabio Prado", "role": "assistant" }
+    {
+      "team": "Team McGregor",
+      "name": "Conor McGregor",
+      "role": "head",
+      "region": "Europe"
+    },
+    {
+      "team": "Team McGregor",
+      "name": "Owen Roddy",
+      "role": "assistant"
+    },
+    {
+      "team": "Team McGregor",
+      "name": "Sergey Pikulskiy",
+      "role": "assistant"
+    },
+    {
+      "team": "Team McGregor",
+      "name": "Tom Egan",
+      "role": "assistant"
+    },
+    {
+      "team": "Team McGregor",
+      "name": "Arkadiusz Sternalski",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Faber",
+      "name": "Urijah Faber",
+      "role": "head",
+      "region": "United States"
+    },
+    {
+      "team": "Team Faber",
+      "name": "Andre Fili",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Faber",
+      "name": "Cody Garbrandt",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Faber",
+      "name": "Lance Palmer",
+      "role": "assistant"
+    },
+    {
+      "team": "Team Faber",
+      "name": "Fabio Prado",
+      "role": "assistant"
+    }
   ],
   "teams": [
     {
       "name": "Team McGregor",
       "region": "Europe",
       "roster": [
-        { "name": "Abner Lloveras", "country": "Spain" },
-        { "name": "David Teymur", "country": "Sweden" },
-        { "name": "Frantz Slioa", "country": "Sweden" },
-        { "name": "Marcin Wrzosek", "country": "Poland" },
-        { "name": "Martin Svensson", "country": "Sweden", "note": "Withdrew from the tournament with a broken elbow." },
-        { "name": "Mehdi Baghdad", "country": "France" },
-        { "name": "Sascha Sharma", "country": "Germany" },
-        { "name": "Saul Rogers", "country": "England", "note": "Reached the final and was then pulled from the card over his visa application." },
-        { "name": "Artem Lobov", "country": "Ireland", "note": "Lost his entry bout to Mehdi Baghdad and was brought back into the tournament." }
+        {
+          "name": "Abner Lloveras",
+          "country": "Spain"
+        },
+        {
+          "name": "David Teymur",
+          "country": "Sweden"
+        },
+        {
+          "name": "Frantz Slioa",
+          "country": "Sweden"
+        },
+        {
+          "name": "Marcin Wrzosek",
+          "country": "Poland"
+        },
+        {
+          "name": "Martin Svensson",
+          "country": "Sweden",
+          "note": "Withdrew from the tournament with a broken elbow."
+        },
+        {
+          "name": "Mehdi Baghdad",
+          "country": "France"
+        },
+        {
+          "name": "Sascha Sharma",
+          "country": "Germany"
+        },
+        {
+          "name": "Saul Rogers",
+          "country": "England",
+          "note": "Reached the final and was then pulled from the card over his visa application."
+        },
+        {
+          "name": "Artem Lobov",
+          "country": "Ireland",
+          "note": "Lost his entry bout to Mehdi Baghdad and was brought back into the tournament."
+        }
       ]
     },
     {
       "name": "Team Faber",
       "region": "United States",
       "roster": [
-        { "name": "Billy Quarantillo" },
-        { "name": "Chris Gruetzemacher", "note": "Entered the quarter-finals as a replacement for Martin Svensson." },
-        { "name": "James Jenkins" },
-        { "name": "Jason Gonzaléz" },
-        { "name": "Julian Erosa" },
-        { "name": "Ryan Hall", "note": "Lost in the quarter-finals, then replaced Saul Rogers in the final and won the tournament." },
-        { "name": "Thanh Le" },
-        { "name": "Tom Gallicchio" },
-        { "name": "Johnny Nuñez", "note": "Brought back into the tournament after an earlier elimination." }
+        {
+          "name": "Billy Quarantillo"
+        },
+        {
+          "name": "Chris Gruetzemacher",
+          "note": "Entered the quarter-finals as a replacement for Martin Svensson."
+        },
+        {
+          "name": "James Jenkins"
+        },
+        {
+          "name": "Jason Gonzaléz"
+        },
+        {
+          "name": "Julian Erosa"
+        },
+        {
+          "name": "Ryan Hall",
+          "note": "Lost in the quarter-finals, then replaced Saul Rogers in the final and won the tournament."
+        },
+        {
+          "name": "Thanh Le"
+        },
+        {
+          "name": "Tom Gallicchio"
+        },
+        {
+          "name": "Johnny Nuñez",
+          "note": "Brought back into the tournament after an earlier elimination."
+        }
       ]
     }
   ],
@@ -75,22 +170,182 @@
           "label": "Elimination round",
           "note": "Sixteen bouts decided the sixteen fighters who entered the house. Source section heading: \"Elimination round\". Times are not stated by the source and are left null rather than filled in.",
           "bouts": [
-            { "a": "Ryan Hall", "b": "Frantz Slioa", "winner": "Ryan Hall", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "David Teymur", "b": "Thibault Gouti", "winner": "David Teymur", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Thanh Le", "b": "Andres Quintana", "winner": "Thanh Le", "method": "KO", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Mehdi Baghdad", "b": "Artem Lobov", "winner": "Mehdi Baghdad", "method": "Decision (majority)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Julian Erosa", "b": "Jason Soares", "winner": "Julian Erosa", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Saul Rogers", "b": "Paulo Boer", "winner": "Saul Rogers", "method": "Submission", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Billy Quarantillo", "b": "Brandon Ricetti", "winner": "Billy Quarantillo", "method": "TKO", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Frantz Slioa", "b": "Martin Delaney", "winner": "Frantz Slioa", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Jason Gonzaléz", "b": "Tim Welch", "winner": "Jason Gonzaléz", "method": "TKO", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Abner Lloveras", "b": "Vlado Sikic", "winner": "Abner Lloveras", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Tom Gallicchio", "b": "Mike Flach", "winner": "Tom Gallicchio", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Martin Svensson", "b": "Mohamed Grabinski", "winner": "Martin Svensson", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Marcin Wrzosek", "b": "Djamil Chan", "winner": "Marcin Wrzosek", "method": "Submission", "round": 1, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Sascha Sharma", "b": "Sean Carter", "winner": "Sascha Sharma", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Chris Gruetzemacher", "b": "Austin Springer", "winner": "Chris Gruetzemacher", "method": "TKO", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "James Jenkins", "b": "Brennan Sevin", "winner": "James Jenkins", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": null, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+            {
+              "a": "Ryan Hall",
+              "b": "Frantz Slioa",
+              "winner": "Ryan Hall",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "David Teymur",
+              "b": "Thibault Gouti",
+              "winner": "David Teymur",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Thanh Le",
+              "b": "Andres Quintana",
+              "winner": "Thanh Le",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Mehdi Baghdad",
+              "b": "Artem Lobov",
+              "winner": "Mehdi Baghdad",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Julian Erosa",
+              "b": "Jason Soares",
+              "winner": "Julian Erosa",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Saul Rogers",
+              "b": "Paulo Boer",
+              "winner": "Saul Rogers",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Billy Quarantillo",
+              "b": "Brandon Ricetti",
+              "winner": "Billy Quarantillo",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Frantz Slioa",
+              "b": "Martin Delaney",
+              "winner": "Frantz Slioa",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Jason Gonzaléz",
+              "b": "Tim Welch",
+              "winner": "Jason Gonzaléz",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Abner Lloveras",
+              "b": "Vlado Sikic",
+              "winner": "Abner Lloveras",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Tom Gallicchio",
+              "b": "Mike Flach",
+              "winner": "Tom Gallicchio",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Martin Svensson",
+              "b": "Mohamed Grabinski",
+              "winner": "Martin Svensson",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Marcin Wrzosek",
+              "b": "Djamil Chan",
+              "winner": "Marcin Wrzosek",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Sascha Sharma",
+              "b": "Sean Carter",
+              "winner": "Sascha Sharma",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Chris Gruetzemacher",
+              "b": "Austin Springer",
+              "winner": "Chris Gruetzemacher",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "James Jenkins",
+              "b": "Brennan Sevin",
+              "winner": "James Jenkins",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "exhibition",
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            }
           ]
         },
         {
@@ -98,17 +353,108 @@
           "label": "First round",
           "note": "Eight bouts took the sixteen entrants to eight. Chris Gruetzemacher is described by the source as a winning fighter initially not advanced.",
           "bouts": [
-            { "a": "Chris Gruetzemacher", "b": "Sascha Sharma", "winner": "Chris Gruetzemacher", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": 3, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Tom Gallicchio", "b": "Marcin Wrzosek", "winner": "Marcin Wrzosek", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": 4, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Saul Rogers", "b": "Billy Quarantillo", "winner": "Saul Rogers", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": 5, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Julian Erosa", "b": "Mehdi Baghdad", "winner": "Julian Erosa", "method": "Decision (majority)", "round": 2, "time": null, "episode": 6, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Thanh Le", "b": "Martin Svensson", "winner": "Martin Svensson", "method": "Submission", "round": 2, "time": null, "episode": 7, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "James Jenkins", "b": "Artem Lobov", "winner": "Artem Lobov", "method": "TKO", "round": 1, "time": null, "episode": 8, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Johnny Nuñez", "b": "David Teymur", "winner": "David Teymur", "method": "Decision (unanimous)", "round": 3, "time": null, "episode": 8, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Jason Gonzaléz", "b": "Abner Lloveras", "winner": "Abner Lloveras", "method": "Decision (unanimous)", "round": 2, "time": null, "episode": 9, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+            {
+              "a": "Chris Gruetzemacher",
+              "b": "Sascha Sharma",
+              "winner": "Chris Gruetzemacher",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Tom Gallicchio",
+              "b": "Marcin Wrzosek",
+              "winner": "Marcin Wrzosek",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Saul Rogers",
+              "b": "Billy Quarantillo",
+              "winner": "Saul Rogers",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Julian Erosa",
+              "b": "Mehdi Baghdad",
+              "winner": "Julian Erosa",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Thanh Le",
+              "b": "Martin Svensson",
+              "winner": "Martin Svensson",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "James Jenkins",
+              "b": "Artem Lobov",
+              "winner": "Artem Lobov",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Johnny Nuñez",
+              "b": "David Teymur",
+              "winner": "David Teymur",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Jason Gonzaléz",
+              "b": "Abner Lloveras",
+              "winner": "Abner Lloveras",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            }
           ],
           "disputed": [
-            { "a": "Ryan Hall", "b": "Frantz Slioa", "winner": "Ryan Hall", "method": "Submission", "round": 1, "time": null, "episode": 2, "classification": "unverified", "classification_source": null, "dispute": "The source lists this bout in both the elimination round and this round. Recorded once, in the elimination round; this duplicate is kept visible and is not counted as a second result." }
+            {
+              "a": "Ryan Hall",
+              "b": "Frantz Slioa",
+              "winner": "Ryan Hall",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": 2,
+              "classification": "unverified",
+              "classification_source": null,
+              "dispute": "The source lists this bout in both the elimination round and this round. Recorded once, in the elimination round; this duplicate is kept visible and is not counted as a second result."
+            }
           ]
         },
         {
@@ -116,18 +462,79 @@
           "label": "Quarter-finals",
           "note": "Announced in episode 9 as Lobov v Svensson, Rogers v Hall, Wrzosek v Teymur, Lloveras v Erosa. Martin Svensson withdrew with a broken elbow and Chris Gruetzemacher took his place.",
           "bouts": [
-            { "a": "Artem Lobov", "b": "Chris Gruetzemacher", "winner": "Artem Lobov", "method": "KO", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card", "replacement": "Chris Gruetzemacher replaced Martin Svensson, who withdrew with a broken elbow" },
-            { "a": "Saul Rogers", "b": "Ryan Hall", "winner": "Saul Rogers", "method": "Decision (majority)", "round": 2, "time": null, "episode": 10, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Marcin Wrzosek", "b": "David Teymur", "winner": "Marcin Wrzosek", "method": "Decision (majority)", "round": 2, "time": null, "episode": 11, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Julian Erosa", "b": "Abner Lloveras", "winner": "Julian Erosa", "method": "Decision (split)", "round": 3, "time": null, "episode": 11, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+            {
+              "a": "Artem Lobov",
+              "b": "Chris Gruetzemacher",
+              "winner": "Artem Lobov",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "replacement": "Chris Gruetzemacher replaced Martin Svensson, who withdrew with a broken elbow"
+            },
+            {
+              "a": "Saul Rogers",
+              "b": "Ryan Hall",
+              "winner": "Saul Rogers",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Marcin Wrzosek",
+              "b": "David Teymur",
+              "winner": "Marcin Wrzosek",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Julian Erosa",
+              "b": "Abner Lloveras",
+              "winner": "Julian Erosa",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            }
           ]
         },
         {
           "stage": "semi_final",
           "label": "Semi-finals",
           "bouts": [
-            { "a": "Saul Rogers", "b": "Marcin Wrzosek", "winner": "Saul Rogers", "method": "Submission", "round": 2, "time": null, "episode": 12, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" },
-            { "a": "Artem Lobov", "b": "Julian Erosa", "winner": "Artem Lobov", "method": "KO", "round": 1, "time": null, "episode": 12, "classification": "exhibition", "classification_source": "filmed outside a sanctioned card" }
+            {
+              "a": "Saul Rogers",
+              "b": "Marcin Wrzosek",
+              "winner": "Saul Rogers",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Artem Lobov",
+              "b": "Julian Erosa",
+              "winner": "Artem Lobov",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            }
           ]
         },
         {
@@ -168,7 +575,12 @@
       "received_contract": true,
       "contract_note": "Winning the tournament and being awarded a UFC contract are recorded separately, because they are not the same thing and have not always gone together.",
       "verified_against": "ufc_bout_results — Ryan Hall def. Artem Lobov, Decision - Unanimous, round 3, 300s, source ufcstats",
-      "winning_bout": { "a": "Ryan Hall", "b": "Artem Lobov", "event": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale", "date": "2015-12-11" }
+      "winning_bout": {
+        "a": "Ryan Hall",
+        "b": "Artem Lobov",
+        "event": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale",
+        "date": "2015-12-11"
+      }
     }
   ]
 }

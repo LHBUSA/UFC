@@ -164,6 +164,53 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "wildcard",
+        "second chance"
+      ],
+      "fighters": [
+        "Hayder Hassan",
+        "Joe Stevenson"
+      ],
+      "episode": 7,
+      "detail": "Dana White asks Cody and T.J. their thoughts on what two fighters they think deserve a second chance in the wild card fight. Based on who will be the best and go the furthest in the UFC, Dana picks Joe Stevenson and Hayder Hassan. And Cody isn't happy with Dana's decision."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Eddie Gordon",
+        "Joe Stevenson"
+      ],
+      "episode": 7,
+      "detail": "Feeling like T.J. picked his fighter Stevenson after being a \"legend\" in the UFC, Cody does not think Stevenson is ready to fight in only six days rest due to taking \"too many shots\" in his last fight. Cody's fighter Eddie Gordon also argues with T.J. that he should have deserved a wild card pick as well."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Hayder Hassan",
+        "Joe Stevenson"
+      ],
+      "episode": 7,
+      "detail": "The wild card fight is announced by Dillashaw: Joe Stevenson vs. Hayder Hassan."
+    },
+    {
+      "kinds": [
+        "replacement",
+        "injury"
+      ],
+      "fighters": [
+        "James Krause"
+      ],
+      "episode": 11,
+      "detail": "With James Krause injured in his last fight due to a cornea scratch, Dana tells Cody he has the choice of picking Krause's replacement in the event the physician does not clear him to fight."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Tournament",
@@ -181,7 +228,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Hayder Hassan",
@@ -192,7 +239,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Eddie Gordon",
@@ -203,7 +250,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Justin Edwards",
@@ -214,7 +261,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "James Krause",
@@ -225,7 +272,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ramsey Nijem",
@@ -236,7 +283,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jesse Taylor",
@@ -247,7 +294,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Joe Stevenson",
@@ -258,7 +305,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ],
           "status": "unverified",
@@ -277,7 +324,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Tom Gallicchio",
@@ -288,7 +335,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "James Krause",
@@ -299,7 +346,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jesse Taylor",
@@ -310,7 +357,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -327,7 +374,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "James Krause",
@@ -338,7 +385,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

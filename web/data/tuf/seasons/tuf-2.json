@@ -122,6 +122,51 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Kerry Schall"
+      ],
+      "episode": 1,
+      "detail": "Heavyweight Kerry Schall is eliminated due to a knee injury."
+    },
+    {
+      "kinds": [
+        "replacement",
+        "injury"
+      ],
+      "fighters": [
+        "Dan Christison",
+        "Kerry Schall"
+      ],
+      "episode": 2,
+      "detail": "Dan Christison joins the show to replace the injured Schall."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Rob MacDonald"
+      ],
+      "episode": 3,
+      "detail": "Rob MacDonald complains about his shoulder which he claims he injured very badly. His constant complaining upsets Team Hughes, especially Hughes himself."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Josh Burkman",
+        "Jason Von Flue"
+      ],
+      "episode": 3,
+      "detail": "Jason Von Flue joins the show to replace Burkman."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Welterweight",
@@ -140,7 +185,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Joe Stevenson",
@@ -151,7 +196,7 @@
               "time": "4:10",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jason Von Flue",
@@ -162,7 +207,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Luke Cummo",
@@ -173,7 +218,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -190,7 +235,7 @@
               "time": "2:05",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Joe Stevenson",
@@ -201,7 +246,7 @@
               "time": "4:46",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -244,7 +289,7 @@
               "time": "4:07",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Rashad Evans",
@@ -255,7 +300,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Seth Petruzelli",
@@ -266,7 +311,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Rashad Evans",
@@ -277,7 +322,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -294,7 +339,7 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Rashad Evans",
@@ -305,7 +350,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

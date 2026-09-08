@@ -231,6 +231,73 @@
       ]
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Jason Guida",
+        "Mike Stewart"
+      ],
+      "episode": 1,
+      "detail": "Jason Guida is unable to make weight for the preliminary round and is replaced by Mike Stewart."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Vinny Magalhães",
+        "Lance Evans"
+      ],
+      "episode": 1,
+      "detail": "Vinny Magalhães defeats Lance Evans by TKO (rib injury) at :34 in the first round."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Eliot Marshall",
+        "Antwain Britt"
+      ],
+      "episode": 2,
+      "detail": "White announces that Antwain Britt broke his hand and would be unable to fight for about six to eight weeks. Therefore, he would not be able to compete and move into the house. Marshall is selected to replace Britt."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Kyle Kingsbury",
+        "Karn Grigoryan"
+      ],
+      "episode": 3,
+      "detail": "Kyle Kingsbury is brought in to replace Grigoryan and McLaughlin's replacement is initially a mystery."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Rolando Delgado"
+      ],
+      "episode": 3,
+      "detail": "The day after the picks, Rolando Delgado is announced as McLaughlin's replacement."
+    },
+    {
+      "kinds": [
+        "second chance"
+      ],
+      "fighters": [
+        "Junie Browning",
+        "Shane Nelson"
+      ],
+      "episode": 4,
+      "detail": "The next day, White shows up and talks to all of the fighters and particularly to Browning and Nelson about their behavior the previous night. He announces that he is giving both fighters a second chance and will not be kicking them out of the house. White tells Nelson that if he is interested in fighting already, he will be next in the first 155 lb fight."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Light Heavyweight",
@@ -249,7 +316,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Jules Bruchez",
@@ -260,7 +327,7 @@
               "time": "1:43",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Vinny Magalhães",
@@ -271,7 +338,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Shane Primm",
@@ -282,7 +349,7 @@
               "time": "3:40",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Tom Lawlor",
@@ -293,7 +360,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ryan Bader",
@@ -304,7 +371,7 @@
               "time": "1:33",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -321,7 +388,7 @@
               "time": "3:25",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Kyle Kingsbury",
@@ -332,7 +399,7 @@
               "time": "2:36",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ryan Bader",
@@ -343,7 +410,7 @@
               "time": "3:41",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Shane Primm",
@@ -354,7 +421,7 @@
               "time": "2:36",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -371,7 +438,7 @@
               "time": "3:45",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ryan Bader",
@@ -382,7 +449,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -425,7 +492,7 @@
               "time": "2:20",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Phillipe Nover",
@@ -436,7 +503,7 @@
               "time": "3:33",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Junie Browning",
@@ -447,7 +514,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "John Polakowski",
@@ -458,7 +525,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Efrain Escudero",
@@ -469,7 +536,7 @@
               "time": "3:37",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "George Roop",
@@ -480,7 +547,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Shane Nelson",
@@ -491,7 +558,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -508,7 +575,7 @@
               "time": "1:27",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "John Polakowski",
@@ -519,7 +586,7 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Efrain Escudero",
@@ -530,7 +597,7 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Rolando Delgado",
@@ -541,7 +608,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -558,7 +625,7 @@
               "time": "1:41",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Efrain Escudero",
@@ -569,7 +636,7 @@
               "time": "3:26",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },

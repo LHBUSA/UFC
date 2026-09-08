@@ -86,6 +86,92 @@
       "role": "head"
     }
   ],
+  "format_exceptions": [
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Chuck O'Neil"
+      ],
+      "episode": 1,
+      "detail": "Jury was replaced by Chuck O'Neil."
+    },
+    {
+      "kinds": [
+        "replacement"
+      ],
+      "fighters": [
+        "Justin Edwards"
+      ],
+      "episode": 3,
+      "detail": "Justin Edwards, a former Bellator MMA fighter and 6–0 in his career, arrived to replace Keon Caldwell on Team dos Santos."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Len Bentley"
+      ],
+      "episode": 6,
+      "detail": "During a sparring session, Len Bentley collapsed in pain holding his knee. Lesnar was bothered by the injuries his team was sustaining."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Clay Harvison",
+        "Len Bentley"
+      ],
+      "episode": 6,
+      "detail": "Clay Harvison and Bentley were both at the hospital where they found that both their respective injuries were nothing too serious."
+    },
+    {
+      "kinds": [
+        "wildcard",
+        "withdrawal"
+      ],
+      "fighters": [
+        "Justin Edwards"
+      ],
+      "episode": 6,
+      "detail": "The wildcard match is decided. Edwards was picked, but was told that he cannot compete due to being suspended by the athletic commission."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Javier Torres",
+        "Chuck O'Neil"
+      ],
+      "episode": 6,
+      "detail": "The wildcard matches up Torres against O'Neil."
+    },
+    {
+      "kinds": [
+        "wildcard"
+      ],
+      "fighters": [
+        "Ryan McGillivray",
+        "Len Bentley"
+      ],
+      "episode": 7,
+      "detail": "Len Bentley of Team Lesnar was confused about why he was not chosen for the wildcard match. He confronted White about it but instead, asked for a rematch with McGillivray at the finale."
+    },
+    {
+      "kinds": [
+        "injury"
+      ],
+      "fighters": [
+        "Shamar Bailey"
+      ],
+      "episode": 8,
+      "detail": "Shamar Bailey confided to his teammate about a back injury he had."
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Tournament",
@@ -103,7 +189,7 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Javier Torres",
@@ -114,7 +200,7 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Mick Bowman",
@@ -125,7 +211,7 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ramsey Nijem",
@@ -136,7 +222,7 @@
               "time": "3:31",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ryan McGillivray",
@@ -147,7 +233,7 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Justin Edwards",
@@ -158,7 +244,7 @@
               "time": "3:56",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Zach Davis",
@@ -169,7 +255,7 @@
               "time": "3:20",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Javier Torres",
@@ -199,7 +285,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Clay Harvison",
@@ -210,7 +296,7 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Ryan McGillivray",
@@ -221,7 +307,7 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Zach Davis",
@@ -232,7 +318,7 @@
               "time": "3:20",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
@@ -249,7 +335,7 @@
               "time": "1:49",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             },
             {
               "a": "Tony Ferguson",
@@ -260,7 +346,7 @@
               "time": "3:10",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
             }
           ]
         },
