@@ -73,6 +73,23 @@ _BRACKET_ROUND = re.compile(r"\b(Semifinals?|Quarterfinals?|Alternate|Final)\b",
 # cannot make anything else resolve.
 _ORPHAN_PUNCT = re.compile(r"[‘’'`.,\-]+")
 
+# What this normaliser knows how to resolve, declared so a launcher can check
+# it before starting a run instead of discovering it from a failed window
+# hours later.
+#
+# There are four copies of this file on a working machine — the main checkout
+# and three worktrees — and only some carry the rescues. The old launcher runs
+# whichever copy sits beside it, which for the main checkout is one with
+# neither, so a run started there would fail on exactly the labels these
+# rescues exist for and look like a fresh problem. Names, not a version
+# number: a version says which build this is, a capability says what it can
+# do, and the second is what a caller actually needs to know.
+NORMALIZER_CAPABILITIES = frozenset({
+    "tuf-matchup-prefix",   # "TUF Nations Canada vs. Australia Middleweight ..."  (B-2014)
+    "early-series",         # "Ultimate Ultimate '96 ...", "UFC Japan ..."        (B-1995/96/97/99)
+    "bracket-round",        # "Tournament Semifinal Bout", "Alternate Bout"
+})
+
 
 def norm_weight_class(raw: str, url: str) -> dict:
     """'UFC Women's Bantamweight Title Bout' -> {weight_class: BANTAMWEIGHT, is_womens: True, is_title: True}.
