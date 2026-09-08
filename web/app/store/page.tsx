@@ -103,7 +103,7 @@ export default async function StorePage() {
           <h2>PropBetEdge Premium Hoodie</h2>
           <p>8.5 oz premium fleece · 65/35 ring-spun cotton blend · 100% cotton face · 3-panel hood.</p>
         </div>
-        <div className="st-grid st-grid-launch">
+        <div className="st-grid st-grid-launch" style={{ maxWidth: 320, gridTemplateColumns: "minmax(0, 1fr)" }}>
           {firstDrop.map(({ pub }) => <Card key={pub.slug} p={pub} enabled={runtime.ready} />)}
         </div>
       </section>
