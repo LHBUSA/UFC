@@ -9,12 +9,14 @@
 //
 // Large JSON upsert batches can trip transient Supabase/Cloudflare 52x errors.
 // For the three conflict-key upsert tables only, a repeatedly failing JSON
-// array is bisected and replayed as smaller idempotent upserts. This avoids
-// hammering the same 100/150-row payload until the workflow timeout.
+// array is bisected and replayed as smaller idempotent upserts. Every replay-
+// safe request also has a hard timeout so an upstream socket cannot consume the
+// entire workflow timeout without entering retry/split recovery.
 
 const nativeFetch = globalThis.fetch.bind(globalThis);
 const MAX_ATTEMPTS = 8;
 const SPLIT_AFTER_ATTEMPT = 2;
+const REQUEST_TIMEOUT_MS = 30_000;
 const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524]);
 const SAFE_POST_TABLES = [
   '/rest/v1/ufc_fighter_bout_features',
@@ -59,12 +61,17 @@ function backoff(attempt) {
   return Math.min(12_000, 750 * (2 ** (attempt - 1))) + Math.floor(Math.random() * 250);
 }
 
+function timedInit(init, safe) {
+  if (!safe || init?.signal) return init;
+  return { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) };
+}
+
 async function splitAndReplay(input, init, rows, url) {
   const mid = Math.ceil(rows.length / 2);
   const halves = [rows.slice(0, mid), rows.slice(mid)];
   console.warn(`[repair-fetch] splitting POST ${new URL(url).pathname} batch ${rows.length} -> ${halves[0].length}+${halves[1].length}`);
   for (const half of halves) {
-    const response = await resilientFetch(input, { ...init, body: JSON.stringify(half) }, true);
+    const response = await resilientFetch(input, { ...init, body: JSON.stringify(half), signal: undefined }, true);
     if (!response.ok) return response;
     try { await response.arrayBuffer(); } catch {}
   }
@@ -80,7 +87,7 @@ async function resilientFetch(input, init, allowSplit) {
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
     try {
-      const response = await nativeFetch(input, init);
+      const response = await nativeFetch(input, timedInit(init, safe));
       if (!safe || !RETRYABLE_STATUS.has(response.status)) return response;
 
       if (rows && attempt >= SPLIT_AFTER_ATTEMPT) {
@@ -99,12 +106,12 @@ async function resilientFetch(input, init, allowSplit) {
       lastError = error;
       if (!safe) throw error;
       if (rows && attempt >= SPLIT_AFTER_ATTEMPT) {
-        console.warn(`[repair-fetch] ${method} ${new URL(url).pathname} network error; switching to smaller idempotent batches`);
+        console.warn(`[repair-fetch] ${method} ${new URL(url).pathname} ${error?.name || 'network'}; switching to smaller idempotent batches`);
         return splitAndReplay(input, init, rows, url);
       }
       if (attempt === MAX_ATTEMPTS) throw error;
       const delay = backoff(attempt);
-      console.warn(`[repair-fetch] ${method} ${new URL(url).pathname} network error; retry ${attempt}/${MAX_ATTEMPTS - 1} in ${delay}ms`);
+      console.warn(`[repair-fetch] ${method} ${new URL(url).pathname} ${error?.name || 'network'}; retry ${attempt}/${MAX_ATTEMPTS - 1} in ${delay}ms`);
       await sleep(delay);
     }
   }
