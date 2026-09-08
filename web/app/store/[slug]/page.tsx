@@ -14,7 +14,7 @@ export const revalidate = 60;
 export const dynamicParams = false;
 
 const HOODIE_DESCRIPTION =
-  "The first PropBetEdge physical drop: a black Cotton Heritage M2580 premium pullover hoodie with the full metallic PBE / PropBetEdge.ai corporate logo centered on the chest and the smaller gold fight mark on the sleeve. 65% ring-spun cotton, 35% polyester with a 100% cotton face, 3-panel hood and front pouch pocket.";
+  "A premium black Cotton Heritage M2580 pullover built for fight night: full metallic PBE / PropBetEdge.ai logo across the chest, gold fight mark on the sleeve, 8.5 oz fleece, 65% ring-spun cotton and 35% polyester with a 100% cotton face, 3-panel hood and front pouch pocket.";
 
 export function generateStaticParams() {
   return productsFor("ufc").map((p) => ({ slug: p.slug }));
@@ -35,7 +35,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       type: "website",
       url: `${SITE.url}/store/${def.slug}`,
-      images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630, alt: def.name }],
+      images: slug === DROP001_SLUG
+        ? [{ url: `${SITE.url}/store/img/propbetedge-premium-hoodie.jpg`, width: 400, height: 500, alt: def.name }]
+        : [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630, alt: def.name }],
     },
     twitter: { card: "summary_large_image", title, description },
   };
@@ -62,9 +64,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="wrap">
         <div className="page">
           <PageHead
-            eyebrow={hoodie ? "Store · Drop 001" : "Store"}
+            eyebrow={hoodie ? "PropBetEdge Store · Drop 001" : "Store"}
             title={p.name}
-            lede={hoodie ? "The one you wanted: black premium fleece, full metallic PBE on the chest, fight mark on the sleeve." : p.blurb}
+            lede={hoodie ? "Premium fleece. Metallic PBE across the chest. Gold fight mark on the sleeve." : p.blurb}
             crumbs={[{ name: "Store", href: "/store" }, { name: p.name }]}
           />
         </div>
@@ -78,13 +80,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <img className="st-art" src={p.images[0].url} alt={p.images[0].alt} width={p.images[0].width} height={p.images[0].height} />
           )}
           <p className="st-fine">
-            {hoodie ? "Placement preview. The final printer mockup is checked before the first draft order is confirmed." : "Design preview, not a photograph."}
+            {hoodie ? "Product image shown for design and placement. Final print position may vary slightly." : "Design preview, not a photograph."}
           </p>
         </div>
 
         <div className="st-detail-body">
           <p className={saleOpen ? "st-state st-state-open" : "st-state"}>
-            {saleOpen ? "On sale" : hoodie ? "Release gate closed" : p.awaiting_blank ? "Blank not chosen" : "Not released"}
+            {saleOpen ? "On sale" : hoodie ? "Coming soon" : p.awaiting_blank ? "Coming soon" : "Coming soon"}
           </p>
           <p className="st-price st-price-lg">{formatPrice(p.price_cents)}</p>
           <p className="st-desc">{description}</p>
@@ -96,7 +98,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <span>65/35 cotton-poly</span>
               <span>100% cotton face</span>
               <span>3-panel hood</span>
-              <span>Black only</span>
+              <span>Black</span>
             </p>
           )}
 
@@ -105,15 +107,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             sizes={sizes}
             colors={colors}
             purchasable={saleOpen}
-            reason={hoodie && !runtime.ready ? "Production release checks are not all green yet." : p.unavailable_reason}
+            reason={saleOpen ? undefined : hoodie ? "Drop 001 checkout opens soon." : p.unavailable_reason}
           />
 
           {!saleOpen && (
             <p className="st-notice" role="status">
-              <strong>Checkout is intentionally gated.</strong>{" "}
-              {hoodie
-                ? "The garment and retail price are locked. The button opens only after production can prove the live Stripe secrets, printer credential, signed webhook, fulfilment gate, exact Black S–2XL variants and the final front/sleeve print files."
-                : p.unavailable_reason}
+              <strong>Drop 001 is coming soon.</strong>{" "}
+              {hoodie ? "Black · S-2XL · $65. Secure checkout will open when the first production run is ready." : p.unavailable_reason}
             </p>
           )}
 
@@ -121,7 +121,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <span>Printed on demand</span>
             <span>{sizes.length > 1 ? `${sizes.length} sizes` : sizes[0]}</span>
             <span>{colors.join(" / ")}</span>
-            {hoodie && <span>First order stays printer-draft until inspected</span>}
+            {hoodie && <span>Ships direct from our print partner</span>}
           </p>
 
           <p className="st-fine">
@@ -137,7 +137,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         description,
         url: `${SITE.url}/store/${p.slug}`,
         brand: { "@type": "Brand", name: "PropBetEdge" },
-        image: hoodie ? ["https://propbetedge.ai/logo/pbe-full-600.png"] : p.images.map((i) => `${SITE.url}${i.url}`),
+        image: hoodie ? [`${SITE.url}/store/img/propbetedge-premium-hoodie.jpg`] : p.images.map((i) => `${SITE.url}${i.url}`),
         ...(hoodie ? { material: "65% ring-spun cotton, 35% polyester; 100% cotton face" } : {}),
         offers: {
           "@type": "Offer",
