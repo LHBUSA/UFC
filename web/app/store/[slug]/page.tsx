@@ -9,6 +9,7 @@ import { DROP001_COLOR, DROP001_SIZES, DROP001_SLUG, drop001RuntimeStatus } from
 import { formatPrice, toStorefront } from "@/lib/store/types";
 import { AddToCart } from "@/components/store/AddToCart";
 import { SITE } from "@/lib/site";
+import styles from "./product.module.css";
 
 export const revalidate = 60;
 export const dynamicParams = false;
@@ -75,8 +76,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
 
-      <section className={`wrap st-detail${hoodie ? " st-detail-hoodie" : ""}`}>
-        <div className="st-detail-art">
+      <section className={`wrap st-detail${hoodie ? ` ${styles.hoodieDetail}` : ""}`}>
+        <div className={`st-detail-art${hoodie ? ` ${styles.hoodieArt}` : ""}`}>
           {hoodie ? (
             <HoodieProductPreview />
           ) : (
