@@ -237,12 +237,13 @@
               "a": "Alejandro Pérez",
               "b": "José Alberto Quiñónez",
               "winner": "Alejandro Pérez",
-              "method": "Decision (unanimous)",
+              "method": "Decision - Unanimous",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2014-11-15",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
               "tournament_deciding": true
             }

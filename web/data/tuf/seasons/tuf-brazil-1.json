@@ -228,6 +228,7 @@
           "label": "Quarter-finals",
           "bouts": [
             {
+              "a_in_records": "Godofredo Pepey",
               "a": "Godofredo Castro",
               "b": "Wagner Campos",
               "winner": "Godofredo Castro",
@@ -278,6 +279,7 @@
           "label": "Semi-finals",
           "bouts": [
             {
+              "a_in_records": "Godofredo Pepey",
               "a": "Godofredo Castro",
               "b": "Marcos Vinícius",
               "winner": "Godofredo Castro",
@@ -308,15 +310,17 @@
           "label": "Tournament final",
           "bouts": [
             {
+              "a_in_records": "Godofredo Pepey",
               "a": "Godofredo Castro",
               "b": "Rony Jason",
               "winner": "Rony Jason",
-              "method": "Decision (unanimous)",
+              "method": "Decision - Unanimous",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2012-06-23",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
               "tournament_deciding": true
             }

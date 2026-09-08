@@ -32,6 +32,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { nameMatch, pairMatch, cornerNames } from './lib/names.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const DIR = path.join(ROOT, 'web', 'data', 'tuf', 'seasons');
@@ -81,108 +82,143 @@ const methodFamily = (m) => {
   if (/draw/.test(t)) return 'draw';
   if (/no contest|^nc$/.test(t)) return 'no-contest';
   if (/decision/.test(t)) return 'decision';
-  if (/submission|sub/.test(t)) return 'submission';
-  if (/tko|ko|knockout/.test(t)) return 'ko-tko';
+  if (/submission|\bsub\b/.test(t)) return 'submission';
+  if (/tko|\bko\b|knockout/.test(t)) return 'ko-tko';
   if (/disqual|dq/.test(t)) return 'dq';
   return t.slice(0, 20);
 };
 
 /**
- * Is this result row plausibly the bout the archive is describing, or another
- * meeting of the same two fighters?
+ * Does this result row identify the same bout the archive is describing?
  *
- * TUF 6 is the case that forced this. Ben Saunders beat Dan Barrera twice: by
- * majority decision over two rounds in the house, and by unanimous decision
- * over three on the finale card eight weeks later. Both fall inside the
- * season's window, so the window alone cannot separate them — but the results
- * can, and they disagree in both fields.
+ * Answered from sourced fields only — who fought, and when and where the
+ * source says they fought — never from what kind of round it was. An earlier
+ * version took "a tournament final was on the finale card by definition" as a
+ * premise, which is an assumption about how the show works rather than
+ * evidence about a bout, and it decided cases the data should decide. TUF 22's
+ * final was not on a card called a finale at all; several international finals
+ * sit on ordinary numbered events months apart. A rule that reasons from the
+ * stage gets those wrong for the same reason it got TUF 5 right: by luck.
  *
- * Undecidable stays undecidable: with no method or round recorded on our side
- * the answer is null, and the caller reports rather than resolves.
+ * So identity comes from the date the SOURCE gives for the bout:
+ *
+ *   Sourced date present, row on that date  -> the same bout. If the results
+ *     also disagree, that is two descriptions of one fight and is reported as
+ *     a method disagreement, kept separate from anything about identity.
+ *   Sourced date present, row on another date -> a different meeting.
+ *   No sourced date (a house bout, which the source dates by episode and not
+ *     by day) -> identity cannot be established from dates, so it falls back
+ *     to the result itself: method and round agreeing is the only remaining
+ *     evidence, and disagreement is reported as undecided rather than
+ *     asserted either way.
  */
-function sameBout(archiveBout, row, result, ctx = {}) {
-  const date = row?.ufc_events?.event_date || null;
+function boutIdentity(archiveBout, row, result, ctx = {}) {
+  const rowDate = row?.ufc_events?.event_date || null;
+  const rowEvent = row?.ufc_events?.name || null;
+  const sourcedDate = ctx.sourcedDate || archiveBout.fight_date || null;
+  const sourcedEvent = ctx.sourcedEvent || null;
 
-  /* Bout-specific evidence first, before any comparison of wording. A
-   * tournament final was contested on the finale card by definition, so a
-   * result row on that card IS that bout — there is no second meeting to
-   * confuse it with. A house-round bout was not on the card at all, so a row
-   * there is necessarily a different fight between the same two men.
-   *
-   * This is the difference between the two cases that look identical from the
-   * outside. TUF 5's final and TUF 6's round of 16 each match exactly one row
-   * on a finale card and each disagree with it about the method, so neither
-   * the number of rows nor the wording separates them. Their stage does.
-   *
-   * Both spellings of a shoulder giving out are the same fight: our records
-   * call Diaz over Gamburyan a submission, the season source calls it a TKO on
-   * a shoulder injury. Same night, same card, same bout, described twice. */
-  const isFinal = archiveBout.on_finale_card === true || ctx.stage === 'final';
-  if (ctx.finaleDate && date === ctx.finaleDate) return isFinal;
-  if (isFinal && ctx.finaleDate && date && date !== ctx.finaleDate) return false;
+  if (sourcedDate && rowDate) {
+    if (sourcedDate !== rowDate) return { same: false, why: 'different date' };
+    /* Same day. If the source also names the event, it has to be that event —
+     * two cards can run on one date. */
+    if (sourcedEvent && rowEvent && fold(sourcedEvent) !== fold(rowEvent)) {
+      return { same: false, why: 'same date, different event' };
+    }
+    const mA = methodFamily(archiveBout.method);
+    const mB = methodFamily(result?.method_raw);
+    const disagrees = Boolean(mA && mB && mA !== mB)
+      || Boolean(archiveBout.round && result?.round && archiveBout.round !== result.round);
+    return { same: true, why: 'sourced date and event', methodDisagreement: disagrees };
+  }
 
   const mA = methodFamily(archiveBout.method);
   const mB = methodFamily(result?.method_raw);
-  if (!mA || !mB) return null;
-  if (mA !== mB) return false;
-  if (archiveBout.round && result?.round && archiveBout.round !== result.round) return false;
-  return true;
+  if (!mA || !mB) return { same: null, why: 'no sourced date and no comparable result' };
+  if (mA !== mB) return { same: null, why: 'no sourced date; results differ, so this may be a second meeting' };
+  if (archiveBout.round && result?.round && archiveBout.round !== result.round) {
+    return { same: null, why: 'no sourced date; rounds differ, so this may be a second meeting' };
+  }
+  return { same: true, why: 'no sourced date; result matches exactly' };
 }
 
-/* One lookup per fighter name, cached, because the same contestants recur
- * across a season's rounds and across seasons. */
+/* Aliases that no spelling rule derives, with the bout each was checked
+ * against. Same file the importer reads, so the two cannot drift. */
+const ALIAS_FILE = path.join(ROOT, 'web', 'data', 'tuf', 'name_aliases.json');
+const ALIASES = fs.existsSync(ALIAS_FILE) ? JSON.parse(fs.readFileSync(ALIAS_FILE, 'utf8')).aliases : [];
+
+/**
+ * Find the fighter row for a name, under any spelling either side uses.
+ *
+ * Candidates come from the database and the decision is made by the shared
+ * matcher, so this cannot disagree with the importer or the summary about who
+ * someone is. That mattered: with three private matchers, the same fighter was
+ * simultaneously resolved by one and reported missing by another, and the
+ * reports were being read as gaps in the data.
+ */
 const idCache = new Map();
-async function fighterId(name) {
+async function fighterRows(name) {
   const k = fold(name);
   if (idCache.has(k)) return idCache.get(k);
-  const rows = await rest(`ufc_fighters?select=id,name&name=eq.${encodeURIComponent(name)}`);
-  let hit = rows[0] || null;
-  if (!hit) {
-    /* Second try, accent-folded on BOTH sides. The archive spells names as its
-     * sources do — "Patrick Côté", "Vinny Magalhães" — and our fighter rows
-     * generally do not. Searching on the accented surname finds nothing in a
-     * table that stores it plain, so the search term is folded too and the
-     * comparison is made after folding. */
-    const surname = fold(name).split(' ').pop();
-    const loose = await rest(`ufc_fighters?select=id,name&name=ilike.${encodeURIComponent(`%${surname}%`)}&limit=60`);
-    hit = loose.find((r) => fold(r.name) === k) || null;
 
-    /* Two remaining ways the same person is written differently, both real and
-     * both narrow. Our roster writes many Chinese names given-name-first where
-     * the season sources write family-name-first, so a two-token name is also
-     * tried reversed. And a shortened first name ("Manny" for "Manvel") is
-     * accepted only when the surname matches exactly and exactly one candidate
-     * remains — one surviving candidate is an identification, several is an
-     * ambiguity and is left unresolved. */
-    if (!hit) {
-      const parts = fold(name).split(' ');
-      if (parts.length === 2) {
-        const flipped = `${parts[1]} ${parts[0]}`;
-        hit = loose.find((r) => fold(r.name) === flipped) || null;
-        if (!hit) {
-          const byFlip = await rest(`ufc_fighters?select=id,name&name=ilike.${encodeURIComponent(`%${parts[0]}%`)}&limit=60`);
-          hit = byFlip.find((r) => fold(r.name) === flipped) || null;
-        }
-      }
-      if (!hit && parts.length >= 2) {
-        const surnameExact = parts[parts.length - 1];
-        const sameSurname = loose.filter((r) => fold(r.name).split(' ').pop() === surnameExact);
-        if (sameSurname.length === 1) hit = sameSurname[0];
+  const hits = new Map();
+  for (const r of await rest(`ufc_fighters?select=id,name&name=eq.${encodeURIComponent(name)}`)) hits.set(r.id, r);
+
+  /* Candidate pool: anything sharing a token with the name, plus anything
+   * sharing an alias' tokens. The shared matcher then decides, and EVERY row
+   * it accepts is kept — see resolveAll for why the first is not enough. */
+  const spellings = [name, ...ALIASES.filter((a) => fold(a.source_name) === k).map((a) => a.records_name)];
+  const seen = new Map();
+  for (const sp of spellings) {
+    for (const tok of fold(sp).split(' ').filter((t) => t.length > 2)) {
+      for (const r of await rest(`ufc_fighters?select=id,name&name=ilike.${encodeURIComponent(`%${tok}%`)}&limit=60`)) {
+        seen.set(r.id, r);
       }
     }
   }
-  idCache.set(k, hit);
-  return hit;
+  for (const sp of spellings) {
+    for (const r of seen.values()) if (nameMatch(r.name, sp).same) hits.set(r.id, r);
+  }
+
+  const out = [...hits.values()];
+  idCache.set(k, out);
+  return out;
 }
 
-/** The bout between these two, either corner order, inside the season's window. */
+/**
+ * Every fighter row a corner could be, not just the first.
+ *
+ * Our roster sometimes holds one fighter twice — "Marcio Alexandre Jr." and
+ * "Marcio Alexandre Junior" are both present, and only one of them carries the
+ * TUF Brazil 3 final. Taking the first match therefore reported a verified
+ * bout as unsupported: the name resolved, to the wrong one of two rows for the
+ * same man. Collecting every candidate and asking for a bout between any of
+ * them removes the coin-flip, and the duplicate itself is reported rather than
+ * quietly worked around.
+ */
+async function resolveAll(names) {
+  const out = new Map();
+  for (const n of (Array.isArray(names) ? names : [names]).filter(Boolean)) {
+    for (const r of await fighterRows(n)) out.set(r.id, r);
+  }
+  return [...out.values()];
+}
+
 async function boutBetween(a, b, window) {
-  const [x, y] = [await fighterId(a), await fighterId(b)];
-  if (!x || !y) return { found: false, why: `no fighter row for ${!x ? a : b}` };
+  const xs = await resolveAll(a);
+  const ys = await resolveAll(b);
+  if (!xs.length || !ys.length) {
+    const missing = !xs.length ? (Array.isArray(a) ? a[0] : a) : (Array.isArray(b) ? b[0] : b);
+    return { found: false, why: `no fighter row for ${missing}` };
+  }
+  const ids = (rows) => `(${rows.map((r) => r.id).join(',')})`;
   const rows = await rest(
     `ufc_bouts?select=id,weight_class,ufc_events!inner(name,event_date),ufc_bout_results(method_raw,round,winner_id)` +
-      `&or=(and(fighter_a_id.eq.${x.id},fighter_b_id.eq.${y.id}),and(fighter_a_id.eq.${y.id},fighter_b_id.eq.${x.id}))`,
+      `&or=(and(fighter_a_id.in.${ids(xs)},fighter_b_id.in.${ids(ys)}),and(fighter_a_id.in.${ids(ys)},fighter_b_id.in.${ids(xs)}))`,
   );
+  const x = xs[0];
+  const y = ys[0];
+  const dupes = [xs, ys].filter((g) => g.length > 1).map((g) => g.map((r) => r.name).join(' / '));
   /* The result embed comes back as an object for a one-to-one relationship and
    * as an array for a one-to-many. Reading only one shape silently drops every
    * row and turns "verified" into "unsupported", which is exactly the wrong
@@ -201,14 +237,75 @@ async function boutBetween(a, b, window) {
    * wrong finale card, so the window decides: a result dated after the season
    * finished is a later meeting and is reported as one, never as evidence
    * about this bout. */
+  /* The window is a fallback, not a filter on everything. When the source
+   * names the date, that date decides and the window has no business
+   * overruling it — TUF China's featherweight final was contested five months
+   * after the card its own season is dated by, and a window closing at the
+   * season's finale threw the correct row away and then called the bout
+   * unsupported. So a sourced date widens the search to the whole record; only
+   * a bout with no sourced date falls back to the season's span. */
+  if (window?.sourcedDate) return { found: Boolean(withResult.length), rows: withResult, later: [], x, y, dupes };
+
   const inWindow = [];
   const later = [];
   for (const r of withResult) {
     const d = r.ufc_events?.event_date || '';
     (window && d && d >= window.from && d <= window.to ? inWindow : later).push(r);
   }
-  return { found: Boolean(inWindow.length), rows: inWindow, later, x, y };
+  return { found: Boolean(inWindow.length), rows: inWindow, later, x, y, dupes };
 }
+
+/* The inventory is where a verified final's event and date live. The bracket
+ * file holds the bout; the inventory holds what it was checked against. */
+const INVENTORY = JSON.parse(fs.readFileSync(path.join(ROOT, 'web', 'data', 'tuf', 'seasons.json'), 'utf8'));
+const inventoryBySlug = new Map(INVENTORY.seasons.map((s) => [s.slug, s]));
+
+/**
+ * The source's own event and date for this bout, if it has one.
+ *
+ * Matched on the pair of fighters, not on the bout's position in the bracket,
+ * and returning nothing when the inventory does not carry this pairing — a
+ * house bout the source dates only by episode has no sourced date, and
+ * inventing one from the season's finale would be exactly the assumption this
+ * is replacing.
+ */
+function sourcedFinal(seasonRow, bout, stage) {
+  /* Only a bout the SOURCE labels a final may take its event and date from the
+   * inventory's list of finals. Not because finals happen anywhere in
+   * particular — that assumption is gone — but because those inventory entries
+   * describe the season's finals and nothing else, so lending their date to a
+   * different bout misidentifies it.
+   *
+   * TUF 7 is why this matters. Amir Sadollah beat C. B. Dollaway twice in one
+   * season, in the house semi-final and again in the final. Matching on names
+   * alone handed the semi-final the final's date, which then matched the
+   * finale card's result row and reported the house bout as a professional
+   * result the archive was wrongly excluding. Two fights, one pairing.
+   *
+   * The stage label is the source's own statement about the bout, not an
+   * inference about how the show works. */
+  if (stage !== 'final') return null;
+  const finals = seasonRow?.final_bouts || [];
+  const A = cornerNames(bout, 'a');
+  const B = cornerNames(bout, 'b');
+  for (const f of finals) {
+    const fa = [f.a, f.name_in_archive].filter(Boolean);
+    const fb = [f.b, f.name_in_archive].filter(Boolean);
+    for (const a1 of A) for (const b1 of B) {
+      for (const a2 of fa) for (const b2 of fb) {
+        if (a2 === b2) continue;
+        if (pairMatch(a1, b1, a2, b2).same) return { event: f.event || null, date: f.date || null };
+      }
+    }
+  }
+  return null;
+}
+
+/* Say which field actually separated two rows, rather than asserting
+ * "different dates" when it was the event name that differed on a shared
+ * date. */
+const differentWhy = (verdicts) =>
+  [...new Set(verdicts.filter((x) => x.v.same === false).map((x) => x.v.why))].join('; ');
 
 const main = async () => {
   const files = fs.readdirSync(DIR).filter((f) => f.endsWith('.json')).filter((f) => !ONLY || f === `${ONLY}.json`);
@@ -216,7 +313,7 @@ const main = async () => {
   const tally = {
     checked: 0, exhibition: 0, professional: 0, unverified: 0,
     confirmed_pro: 0, contradicted: 0, unsupported_pro: 0,
-    later_meetings: 0, name_unresolved: 0,
+    later_meetings: 0, name_unresolved: 0, method_disagreements: 0, undecided: 0, duplicate_rows: 0,
   };
 
   for (const file of files) {
@@ -242,23 +339,67 @@ const main = async () => {
           if (bout.classification === 'unverified') continue;   // absence proves nothing; leave it alone
           tally.checked += 1;
 
-          const hit = await boutBetween(bout.a, bout.b, window);
+          const sourcedPre = sourcedFinal(inventoryBySlug.get(slug), bout, st.stage);
+          const hit = await boutBetween(
+            cornerNames(bout, 'a'),
+            cornerNames(bout, 'b'),
+            { ...window, sourcedDate: sourcedPre?.date || bout.fight_date || null },
+          );
 
-          /* Split the in-window rows by whether they can be this bout at all.
-           * A row whose result disagrees with the archive's is another meeting
-           * of the same two fighters, not a contradiction about this one. */
           const resultOf = (r) => (Array.isArray(r.ufc_bout_results) ? r.ufc_bout_results[0] : r.ufc_bout_results);
-          const ctx = { stage: st.stage, finaleDate: season.finale?.event_date || null };
-          const matching = (hit.rows || []).filter((r) => sameBout(bout, r, resultOf(r), ctx) !== false);
-          const rematches = (hit.rows || []).filter((r) => sameBout(bout, r, resultOf(r), ctx) === false);
+
+          /* What the SOURCE says about when and where this bout happened. The
+           * inventory's verified finals carry an event and a date; a bout the
+           * source dates only by episode carries neither, and gets none here
+           * rather than borrowing the season's. */
+          const sourced = sourcedPre;
+          const ctx = {
+            sourcedDate: sourced?.date || bout.fight_date || null,
+            sourcedEvent: sourced?.event || null,
+          };
+
+          const verdicts = (hit.rows || []).map((r) => ({ row: r, v: boutIdentity(bout, r, resultOf(r), ctx) }));
+          const matching = verdicts.filter((x) => x.v.same === true).map((x) => x.row);
+          const different = verdicts.filter((x) => x.v.same === false).map((x) => x.row);
+          const undecided = verdicts.filter((x) => x.v.same === null);
           const inWindowMatch = matching.length > 0;
 
-          if (rematches.length) {
+          /* A method disagreement about a bout whose identity IS established
+           * is a difference of description, not of fact, and is recorded on
+           * its own rather than being allowed to look like a second fight. */
+          for (const x of verdicts.filter((y) => y.v.same === true && y.v.methodDisagreement)) {
+            tally.method_disagreements += 1;
+            findings.push({
+              kind: 'method-disagreement',
+              slug, stage: st.stage, bout: `${bout.a} vs ${bout.b}`,
+              detail: `same bout — ${x.row.ufc_events.name} on ${x.row.ufc_events.event_date}, matched on the date the source gives — described differently: our records say ${resultOf(x.row)?.method_raw} R${resultOf(x.row)?.round}, the season says ${bout.method}${bout.round ? ` R${bout.round}` : ''}.`,
+            });
+          }
+
+          if (different.length) {
             tally.later_meetings += 1;
             findings.push({
               kind: 'second-meeting',
               slug, stage: st.stage, bout: `${bout.a} vs ${bout.b}`,
-              detail: `also met on a sanctioned card inside this season, with a different result — ${rematches.map((r) => `${r.ufc_events.name} (${r.ufc_events.event_date}, ${resultOf(r)?.method_raw} R${resultOf(r)?.round})`).join('; ')} — against the archive's ${bout.method}${bout.round ? ` R${bout.round}` : ''}. Two fights, not one.`,
+              detail: `the source places this bout at ${ctx.sourcedEvent || '(event not named)'} on ${ctx.sourcedDate}; our records hold this pairing at ${different.map((r) => `${r.ufc_events.name} (${r.ufc_events.event_date})`).join('; ')}. ${differentWhy(verdicts)} — so these are different fights.`,
+            });
+          }
+
+          if (hit.dupes?.length) {
+            tally.duplicate_rows += 1;
+            findings.push({
+              kind: 'duplicate-fighter-row',
+              slug, stage: st.stage, bout: `${bout.a} vs ${bout.b}`,
+              detail: `our roster holds more than one row for the same fighter — ${hit.dupes.join('; ')}. The bout was matched against all of them, so this did not affect the result, but the duplicate is in the fight database and is reported rather than worked around.`,
+            });
+          }
+
+          if (undecided.length) {
+            tally.undecided += 1;
+            findings.push({
+              kind: 'undecided',
+              slug, stage: st.stage, bout: `${bout.a} vs ${bout.b}`,
+              detail: `${undecided[0].v.why}. Our records hold ${undecided.map((x) => `${x.row.ufc_events.name} (${x.row.ufc_events.event_date}, ${resultOf(x.row)?.method_raw} R${resultOf(x.row)?.round})`).join('; ')} against the archive's ${bout.method}${bout.round ? ` R${bout.round}` : ''}. Reported, not resolved.`,
             });
           }
 

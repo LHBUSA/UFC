@@ -345,6 +345,26 @@
               "classification_source": null
             }
           ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Ricky Turcios",
+              "b": "Brady Hiestand",
+              "winner": "Ricky Turcios",
+              "method": "Decision - Split",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2021-08-28",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
         }
       ]
     }

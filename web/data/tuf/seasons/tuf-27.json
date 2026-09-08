@@ -205,7 +205,7 @@
               "classification_source": null
             },
             {
-              "a": "José Martinez Jr",
+              "a": "José Martinez Jr.",
               "b": "Luis Peña",
               "winner": "Luis Peña",
               "method": null,
@@ -276,13 +276,14 @@
             {
               "a": "Mike Trizano",
               "b": "Joe Giannetti",
-              "winner": "Mike Trizano",
-              "method": "Decision (split)",
+              "winner": "Michael Trizano",
+              "method": "Decision - Split",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2018-07-06",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
               "tournament_deciding": true
             }

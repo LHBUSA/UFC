@@ -194,9 +194,9 @@
               "a": "Richie Hightower",
               "b": "George Sotiropoulos",
               "winner": "George Sotiropoulos",
-              "method": "Submission (kimura) at 4:07 in the first round",
+              "method": "Submission (kimura)",
               "round": 1,
-              "time": null,
+              "time": "4:07",
               "episode": 6,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
@@ -233,9 +233,9 @@
               "a": "Tom Speer",
               "b": "George Sotiropoulos",
               "winner": "Tom Speer",
-              "method": "KO (strikes) at 2:57 in the first round",
+              "method": "KO (strikes)",
               "round": 1,
-              "time": null,
+              "time": "2:57",
               "episode": 6,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
@@ -254,8 +254,9 @@
               "round": 1,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2007-12-08",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
               "tournament_deciding": true
             }

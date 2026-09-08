@@ -267,8 +267,8 @@
             },
             {
               "a": "Paulo Costa",
-              "b": "Márcio Alexandre Jr",
-              "winner": "Márcio Alexandre Jr",
+              "b": "Márcio Alexandre Jr.",
+              "winner": "Márcio Alexandre Jr.",
               "method": "Decision (split)",
               "round": 3,
               "time": null,
@@ -295,8 +295,8 @@
             },
             {
               "a": "Ricardo Abreu",
-              "b": "Márcio Alexandre Jr",
-              "winner": "Márcio Alexandre Jr",
+              "b": "Márcio Alexandre Jr.",
+              "winner": "Márcio Alexandre Jr.",
               "method": "Decision (split)",
               "round": 3,
               "time": null,
@@ -312,14 +312,15 @@
           "bouts": [
             {
               "a": "Warlley Alves",
-              "b": "Márcio Alexandre Jr",
+              "b": "Márcio Alexandre Jr.",
               "winner": "Warlley Alves",
               "method": "Submission",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2014-05-31",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
               "tournament_deciding": true
             }

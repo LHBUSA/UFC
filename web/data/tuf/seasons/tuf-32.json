@@ -219,7 +219,7 @@
             },
             {
               "a": "Mairon Santos",
-              "b": "Edwin Cooper Jr",
+              "b": "Edwin Cooper Jr.",
               "winner": "Mairon Santos",
               "method": "Decision (split)",
               "round": 3,
@@ -371,12 +371,13 @@
               "a": "Ryan Loder",
               "b": "Robert Valentin Frey",
               "winner": "Ryan Loder",
-              "method": "TKO",
+              "method": "KO/TKO",
               "round": 2,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2024-08-24",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
               "tournament_deciding": true
             }

@@ -40,6 +40,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { pairMatch } from './lib/names.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT = path.join(ROOT, 'web', 'data', 'tuf', 'seasons');
@@ -55,6 +56,19 @@ if (!SLUG) { console.error('--slug is required'); process.exit(1); }
  * title from a season name would quietly import the wrong show for at least
  * three of these — see the note in source_pages.json. */
 const SOURCES = JSON.parse(fs.readFileSync(path.join(ROOT, 'web', 'data', 'tuf', 'source_pages.json'), 'utf8'));
+
+/* Identities no spelling rule can derive, each carrying the bout it was
+ * checked against. Applied as a second name on the bout rather than replacing
+ * the source's, so both spellings survive and the page can still show what the
+ * season actually printed. */
+const ALIAS_FILE = path.join(ROOT, 'web', 'data', 'tuf', 'name_aliases.json');
+const ALIASES = fs.existsSync(ALIAS_FILE) ? JSON.parse(fs.readFileSync(ALIAS_FILE, 'utf8')).aliases : [];
+const aliasFor = (name) => {
+  const hit = ALIASES.find(
+    (a) => (!a.seasons || a.seasons.includes(SLUG)) && fold(a.source_name) === fold(name),
+  );
+  return hit ? hit.records_name : null;
+};
 const PAGE = opt('--page') || SOURCES.pages[SLUG];
 if (!PAGE) { console.error(`no source article recorded for ${SLUG} in web/data/tuf/source_pages.json`); process.exit(1); }
 
@@ -103,9 +117,95 @@ const clean = (s) =>
     .replace(/\s+/g, ' ')
     .trim();
 
+/**
+ * Cut a trailing clause the prose sometimes puts inside a fighter's name.
+ *
+ *   "Amir Sadollah defeated C. B. Dollaway in the second semifinal bout by
+ *    submission (armbar) at 2:50 in the third round."
+ *
+ * The name capture runs to " by ", so it swallowed "in the second semifinal
+ * bout". No fighter's name contains " in the ", so the clause is cut — narrow
+ * on purpose, and only at the end of a name.
+ */
+const stripTrailingClause = (n) => String(n || '').replace(/\s+in the\s.*$/i, '').trim();
+
 const isBold = (s) => /'''/.test(String(s || ''));
 const fold = (n) => clean(n).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z ]/g, '').trim();
 const pairKey = (a, b) => [fold(a), fold(b)].sort().join(' :: ');
+
+/**
+ * Split a bracket body into its entries.
+ *
+ * Three conventions appear across these articles for the same kind of bracket:
+ * "||" starting a line, "||" closing the previous one, and a bare "|" per cell
+ * with one entry spread over several lines. Season 28 uses the second, seasons
+ * 29 and 31 use the third for their final only — which is how each of the
+ * three lost exactly one bout, and always the last one, and was then reported
+ * as a verified final missing from the bracket. A parser defect wearing a
+ * source gap's clothes.
+ *
+ * So the separator is not what gets matched. See the note inside.
+ */
+function splitEntries(body) {
+  /* Chasing the separator turned out to be the wrong model, and so did simply
+   * discarding every empty cell.
+   *
+   * Splitting the body on single pipes produces two KINDS of empty cell: the
+   * one "||" leaves behind between entries, and a genuinely blank value. TUF
+   * 18's male bracket has both on one line —
+   *
+   *     ||Davey Grant|**|Anthony Gutierrez|
+   *
+   * where the last cell is empty because Gutierrez never fought; Bollinger
+   * missed weight and Gutierrez walked into the semi-final. Dropping all
+   * empties removed that blank, shifted every later cell by one, and cost the
+   * division its final. Keeping all empties instead breaks the layouts that
+   * omit the separator.
+   *
+   * The two are told apart by position rather than by appearance: an empty
+   * where a NAME belongs is a separator and is skipped, an empty where a
+   * RESULT belongs is a value and is kept. So the body is read as a stream —
+   * name, result, name, result — skipping blanks only when looking for a name.
+   * That reads all three of the layouts these articles use without needing to
+   * know which one it is looking at.
+   */
+  const cells = [];
+  let depth = 0;
+  let buf = '';
+  for (let i = 0; i < body.length; i += 1) {
+    const two = body.slice(i, i + 2);
+    if (two === '{{' || two === '[[') { depth += 1; buf += two; i += 1; continue; }
+    if (two === '}}' || two === ']]') { depth -= 1; buf += two; i += 1; continue; }
+    if (body[i] === '|' && depth === 0) { cells.push(buf); buf = ''; continue; }
+    buf += body[i];
+  }
+  cells.push(buf);
+
+  const stream = cells
+    .slice(1)                                                   // the "RoundN" header token
+    .filter((c) => !/^\s*[A-Za-z_][A-Za-z0-9_]*\s*=/.test(c));  // widescore=yes, RD1=..., 3rdplace=no
+
+  const entries = [];
+  let i = 0;
+  const isBlank = (c) => clean(c) === '';
+  const nextName = () => { while (i < stream.length && isBlank(stream[i])) i += 1; return i < stream.length ? stream[i++] : null; };
+  const nextResult = () => (i < stream.length ? stream[i++] : '');
+
+  for (;;) {
+    const a = nextName();
+    if (a === null) break;
+    const aScore = nextResult();
+    const b = nextName();
+    if (b === null) break;
+    const bScore = nextResult();
+    entries.push([a, aScore, b, bScore].join('|'));
+  }
+  return entries;
+}
+
+/** Both name slots of an entry have to hold a name for the chunking to be trusted. */
+const entryLooksSane = (cells) =>
+  /[A-Za-z]/.test(clean(cells[0])) && /[A-Za-z]/.test(clean(cells[2]));
 
 /** Split a template body on its top-level pipes, respecting nesting. */
 function splitPipes(body) {
@@ -200,14 +300,19 @@ function parseEpisodes(wt) {
     if (head) { episode = Number(head[1]); continue; }
     if (!/^\*/.test(raw)) continue;
     const m = raw.match(
-      /^\*+\s*'''(?<w>[^']+)'''\s+(?:defeated|defeats|def\.)\s+(?<l>.+?)\s+by\s+(?<method>.+?)(?:\s+at\s+(?<time>\d{1,2}:\d{2})\s+of\s+the\s+(?<rw>\w+)\s+round|\s+after\s+(?<rw2>\w+)\s+rounds?)?\s*\.?\s*$/i,
+      /^\*+\s*'''(?<w>[^']+)'''\s+(?:defeated|defeats|def\.)\s+(?<l>.+?)\s+(?:by|with)\s+(?:a\s+)?(?<method>.+?)(?:\s+at\s+(?<time>:?\d{1,2}:\d{2})\s+(?:of|in)\s+the\s+(?<rw>\w+)\s+round|\s+after\s+(?<rw2>\w+)\s+rounds?)?\s*\.?\s*$/i,
     );
     if (!m) continue;
     const g = m.groups;
     const rw = (g.rw || g.rw2 || '').toLowerCase();
     bouts.push({
       winner: clean(g.w),
-      loser: clean(g.l).replace(/\s*\(.*\)\s*$/, ''),
+      /* "Amir Sadollah defeated C. B. Dollaway in the second semifinal bout by
+       * submission" — the prose sometimes says WHICH bout between the loser's
+       * name and the method, and the name capture swallowed it. A fighter's
+       * name does not contain "in the", so the clause is cut. Narrow on
+       * purpose: only this one construction, only at the end of a name. */
+      loser: stripTrailingClause(clean(g.l).replace(/\s*\(.*\)\s*$/, '')),
       method: titleMethod(clean(g.method)),
       round: ROUND_WORDS[rw] ?? null,
       time: g.time || null,
@@ -237,12 +342,11 @@ const STAGE_PLAN = {
 function parseBracket(body, weightClass) {
   const size = Number((body.match(/^\s*Round(\d+)/i) || [])[1] || 0);
   const plan = STAGE_PLAN[size];
-  const entries = body
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .split(/\n\s*\|\|/)
-    .slice(1)
+  const parsed = splitEntries(body.replace(/<!--[\s\S]*?-->/g, ''))
     .map((e) => splitPipes(e))
-    .filter((cells) => cells.length >= 4 && clean(cells[0]));
+    .filter((cells) => cells.length >= 4);
+  const entries = parsed.filter(entryLooksSane);
+  const malformed = parsed.length - entries.length;
 
   const bouts = entries.map((cells) => {
     const [aRaw, aScore, bRaw, bScore] = cells;
@@ -272,7 +376,7 @@ function parseBracket(body, weightClass) {
     };
   });
 
-  if (!plan) return { weightClass, stages: null, bouts, size };
+  if (!plan) return { weightClass, stages: null, bouts, size, malformed };
 
   const stages = [];
   let i = 0;
@@ -281,7 +385,7 @@ function parseBracket(body, weightClass) {
     i += count;
     if (slice.length) stages.push({ stage, label, bouts: slice });
   }
-  return { weightClass, stages, bouts, size };
+  return { weightClass, stages, bouts, size, malformed };
 }
 
 /**
@@ -394,7 +498,7 @@ const tidyName = (n) => {
   /* A trailing asterisk is the source's own footnote marker on a roster entry,
    * not part of anybody's name. */
   const t = String(n || '').replace(/\s*\*+\s*$/, '').trim();
-  return /(?:[A-Z]|Jr|Sr|St|Dr|Mr|Ms)\.$/.test(t) ? t : t.replace(/\.$/, '').trim();
+  return /(?:[A-Z]|Jr|Sr|St|Dr|Mr|Ms)\.$/.test(t) ? t : t.replace(/\.$/, '').trim();
 };
 
 function competitor(cellRaw) {
@@ -649,6 +753,14 @@ const main = async () => {
       });
       continue;
     }
+    if (b.malformed) {
+      conflicts.push({
+        field: `${b.weightClass}_bracket`,
+        detail: `${b.malformed} entr${b.malformed === 1 ? 'y' : 'ies'} in this division's bracket did not read as a bout — a cell where a fighter's name should be was empty or numeric. Those entries are left out rather than recorded as bouts whose participants we guessed at, and the rest of the division is recorded as normal.`,
+        retrieved: today(),
+      });
+    }
+
     const stages = [];
     for (const st of b.stages) {
       const bouts = [];
@@ -699,9 +811,26 @@ const main = async () => {
          * but because seasons.json already holds this exact pairing as a bout
          * checked against one of our own result rows. The evidence is the
          * verification, and it is quoted rather than summarised. */
-        const verified = (row.final_bouts || []).find((f) => pairKey(f.a, f.b) === key && f.verified_against);
+        /* Matched with the shared name matcher, not a strict fold. The two
+         * files spell the same fighter differently often enough that a strict
+         * comparison left twelve verified finals sitting in the bracket as
+         * 'unverified' — the evidence existed and the lookup could not see it,
+         * which reads as missing verification rather than as a failed match. */
+        const aliasA = aliasFor(raw.a);
+        const aliasB = aliasFor(raw.b);
+        const verified = (row.final_bouts || []).find((f) => {
+          if (!f.verified_against) return false;
+          for (const x of [raw.a, aliasA].filter(Boolean)) {
+            for (const y of [raw.b, aliasB].filter(Boolean)) {
+              if (pairMatch(f.a, f.b, x, y).same) return true;
+            }
+          }
+          return false;
+        });
         if (isFinal && verified) {
           bouts.push({
+            ...(aliasA ? { a_in_records: aliasA } : {}),
+            ...(aliasB ? { b_in_records: aliasB } : {}),
             a: raw.a,
             b: raw.b,
             winner: verified.winner,
@@ -726,6 +855,8 @@ const main = async () => {
           : { classification: 'unverified', classification_source: null };
 
         bouts.push({
+          ...(aliasA ? { a_in_records: aliasA } : {}),
+          ...(aliasB ? { b_in_records: aliasB } : {}),
           a: raw.a,
           b: raw.b,
           winner: winner || null,

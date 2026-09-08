@@ -1047,7 +1047,7 @@
           "winner": "Andrew Sanchez",
           "method": "Decision - Unanimous",
           "round": 3,
-          "event": "The Ultimate Fighter: Team Joanna vs. Team Cl�udia Finale",
+          "event": "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale",
           "date": "2016-07-08",
           "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
         },
@@ -1058,7 +1058,7 @@
           "winner": "Tatiana Suarez",
           "method": "Submission",
           "round": 1,
-          "event": "The Ultimate Fighter: Team Joanna vs. Team Cl�udia Finale",
+          "event": "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale",
           "date": "2016-07-08",
           "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
         }
@@ -1173,7 +1173,7 @@
           "event": "The Ultimate Fighter: A New World Champion Finale",
           "date": "2017-12-01",
           "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
-          "name_in_archive": "Nicco Monta�o"
+          "name_in_archive": "Nicco Montaño"
         }
       ],
       "detail": "tuf-26"
@@ -1312,7 +1312,7 @@
       ],
       "finale_event": "UFC Fight Night: Barboza vs. Chikadze",
       "finale_date": "2021-08-28",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Ricky Turcios def. Brady Hiestand (Decision - Split, R3); Bryan Battle def. Gilbert Urbina (Submission, R2) on UFC Fight Night: Barboza vs. Chikadze, 2021-08-28.",
       "final_bouts": [
@@ -1423,7 +1423,7 @@
       "winner_note": "Brad Katona became the first two-time tournament winner, having also won season 27.",
       "finale_event": "UFC 292: Sterling vs. O'Malley",
       "finale_date": "2023-08-19",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Brad Katona def. Cody Gibson (Decision - Unanimous, R3); Kurt Holobaugh def. Austin Hubbard (Submission, R2) on UFC 292: Sterling vs. O'Malley, 2023-08-19.",
       "final_bouts": [

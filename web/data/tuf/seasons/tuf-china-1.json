@@ -250,12 +250,13 @@
               "a": "Zhang Lipeng",
               "b": "Wang Sai",
               "winner": "Zhang Lipeng",
-              "method": "Decision (split)",
+              "method": "Decision - Split",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2014-03-01",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
               "on_finale_card": true,
               "tournament_deciding": true
             }
@@ -351,13 +352,14 @@
             {
               "a": "Yang Jianping",
               "b": "Ning Guangyou",
-              "winner": "Ning Guangyou",
-              "method": "Decision (unanimous)",
+              "winner": "Guangyou Ning",
+              "method": "Decision - Unanimous",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2014-08-23",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
               "on_finale_card": true,
               "tournament_deciding": true
             }

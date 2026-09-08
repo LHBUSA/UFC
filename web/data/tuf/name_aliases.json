@@ -1,0 +1,14 @@
+{
+  "_note": "Fighters whose season source and our fighter roster use names that no spelling rule connects. Everything the shared matcher can derive — a shortened given name, an initial written two ways, a suffix, a reversed family-name order, an extra surname — lives in scripts/tuf/lib/names.mjs and is applied automatically. This file is only for identities that must be asserted, and each one records what it was checked against so the assertion can be argued with rather than taken on trust.",
+  "_rule": "An entry is added only when the same bout, on the same card and date, is confirmed in our own ufc_bouts under the other name. A name that merely looks similar does not belong here.",
+  "aliases": [
+    {
+      "source_name": "Godofredo Castro",
+      "records_name": "Godofredo Pepey",
+      "seasons": ["tuf-brazil-1"],
+      "evidence": "The season source's featherweight bracket names him Godofredo Castro; our roster holds exactly one candidate, Godofredo Pepey, and no fighter named Castro. The final that decides it is in our records: Rony Jason def. Godofredo Pepey, unanimous decision over three rounds, UFC 147 on 2012-06-23, featherweight — the same bout, card and date the source gives for the Castro pairing.",
+      "verified_against": "ufc_bouts + ufc_bout_results",
+      "retrieved": "2026-09-08"
+    }
+  ]
+}

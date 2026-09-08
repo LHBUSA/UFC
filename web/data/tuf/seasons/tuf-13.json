@@ -244,9 +244,9 @@
               "a": "Chris Cope",
               "b": "Ramsey Nijem",
               "winner": "Ramsey Nijem",
-              "method": "TKO (punches) at 1:49 in the second round",
+              "method": "TKO (punches)",
               "round": 2,
-              "time": null,
+              "time": "1:49",
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
@@ -255,9 +255,9 @@
               "a": "Tony Ferguson",
               "b": "Chuck O'Neil",
               "winner": "Tony Ferguson",
-              "method": "TKO (punches) at 3:10 in the third round",
+              "method": "TKO (punches)",
               "round": 3,
-              "time": null,
+              "time": "3:10",
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"

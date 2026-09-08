@@ -15,7 +15,7 @@
   "_conflicts": [
     {
       "field": "Tournament_elimination",
-      "detail": "The source's elimination round for this division do not form a consistent round: 3 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "detail": "The source's elimination round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     },
     {
@@ -200,15 +200,15 @@
         {
           "stage": "elimination",
           "label": "Elimination round",
-          "note": "Partial. 3 fighter(s) appear more than once in this round. See conflicts.",
+          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts.",
           "bouts": [
             {
               "a": "Mike Dolce",
               "b": "Prince McLean",
               "winner": "Mike Dolce",
-              "method": "KO (punches) at 1:21 in the first round",
-              "round": null,
-              "time": null,
+              "method": "KO (punches)",
+              "round": 1,
+              "time": "1:21",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
@@ -217,9 +217,9 @@
               "a": "Cale Yarbrough",
               "b": "John Clarke",
               "winner": "Cale Yarbrough",
-              "method": "TKO (punches) at 4:02 in the first round",
-              "round": null,
-              "time": null,
+              "method": "TKO (punches)",
+              "round": 1,
+              "time": "4:02",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
@@ -228,9 +228,9 @@
               "a": "Amir Sadollah",
               "b": "Steve Byrnes",
               "winner": "Amir Sadollah",
-              "method": "Submission (armlock) at 2:22 in the second round",
-              "round": null,
-              "time": null,
+              "method": "Submission (armlock)",
+              "round": 2,
+              "time": "2:22",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
@@ -239,9 +239,9 @@
               "a": "Jeremy May",
               "b": "David Roberts",
               "winner": "Jeremy May",
-              "method": "Submission (armlock) at 1:17 in the first round",
-              "round": null,
-              "time": null,
+              "method": "Submission (armlock)",
+              "round": 1,
+              "time": "1:17",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
@@ -250,9 +250,9 @@
               "a": "C. B. Dollaway",
               "b": "David Baggett",
               "winner": "C. B. Dollaway",
-              "method": "TKO (punches) at 1:29 in the first round",
-              "round": null,
-              "time": null,
+              "method": "TKO (punches)",
+              "round": 1,
+              "time": "1:29",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
@@ -261,9 +261,9 @@
               "a": "Dante Rivera",
               "b": "John Wood",
               "winner": "Dante Rivera",
-              "method": "Submission (kimura) at 0:58 in the first round",
-              "round": null,
-              "time": null,
+              "method": "Submission (kimura)",
+              "round": 1,
+              "time": "0:58",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
@@ -272,9 +272,9 @@
               "a": "Nick Klein",
               "b": "David Mewborn",
               "winner": "Nick Klein",
-              "method": "Submission (arm triangle choke) at 3:39 in the first round",
-              "round": null,
-              "time": null,
+              "method": "Submission (arm triangle choke)",
+              "round": 1,
+              "time": "3:39",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
@@ -294,9 +294,9 @@
               "a": "Luke Zachrich",
               "b": "Patrick Schultz",
               "winner": "Luke Zachrich",
-              "method": "Submission (rear naked choke) at 2:29 in the first round",
-              "round": null,
-              "time": null,
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "2:29",
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
@@ -305,9 +305,9 @@
               "a": "Tim Credeur",
               "b": "Erik Charles",
               "winner": "Tim Credeur",
-              "method": "Submission (armbar) at 1:00 in the first round",
-              "round": null,
-              "time": null,
+              "method": "Submission (armbar)",
+              "round": 1,
+              "time": "1:00",
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
@@ -338,9 +338,9 @@
               "a": "Brandon Sene",
               "b": "Aaron Meisner",
               "winner": "Brandon Sene",
-              "method": "Submission (rear naked choke) at 3:29 in the second round",
-              "round": null,
-              "time": null,
+              "method": "Submission (rear naked choke)",
+              "round": 2,
+              "time": "3:29",
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
@@ -366,17 +366,6 @@
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
-            },
-            {
-              "a": "Amir Sadollah",
-              "b": "C. B. Dollaway in the second semifinal bout",
-              "winner": "Amir Sadollah",
-              "method": "Submission (armbar) at 2:50 in the third round",
-              "round": null,
-              "time": null,
-              "episode": 12,
-              "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             },
             {
               "a": "C. B. Dollaway",
@@ -466,9 +455,9 @@
               "a": "Nick Klein",
               "b": "C. B. Dollaway",
               "winner": "C. B. Dollaway",
-              "method": "Submission (guillotine choke) at 2:41 in the second round",
+              "method": "Submission (guillotine choke)",
               "round": 2,
-              "time": null,
+              "time": "2:41",
               "episode": 8,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
@@ -507,20 +496,20 @@
               "a": "Dan Cramer",
               "b": "Tim Credeur",
               "winner": "Tim Credeur",
-              "method": "Submission",
+              "method": "Submission (heel lock)",
               "round": 1,
-              "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "time": "2:10",
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             },
             {
               "a": "Amir Sadollah",
               "b": "Matt Brown",
               "winner": "Amir Sadollah",
-              "method": "Submission (triangle choke) at 4:09 in the second round",
+              "method": "Submission (triangle choke)",
               "round": 2,
-              "time": null,
+              "time": "4:09",
               "episode": 9,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
@@ -529,9 +518,9 @@
               "a": "C. B. Dollaway",
               "b": "Cale Yarbrough",
               "winner": "C. B. Dollaway",
-              "method": "TKO (strikes) at 2:43 in the first round",
+              "method": "TKO (strikes)",
               "round": 1,
-              "time": null,
+              "time": "2:43",
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
@@ -557,12 +546,12 @@
               "a": "Amir Sadollah",
               "b": "C. B. Dollaway",
               "winner": "Amir Sadollah",
-              "method": "Submission",
+              "method": "Submission (armbar)",
               "round": 3,
-              "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "time": "2:50",
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
           ]
         },
@@ -578,8 +567,9 @@
               "round": 1,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2008-06-21",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
               "tournament_deciding": true
             }

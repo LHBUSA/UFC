@@ -112,12 +112,13 @@
               "a": "Andrew Sanchez",
               "b": "Khalil Rountree",
               "winner": "Andrew Sanchez",
-              "method": "Decision (unanimous)",
+              "method": "Decision - Unanimous",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2016-07-08",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
               "tournament_deciding": true
             }
@@ -243,7 +244,7 @@
       "winning_bout": {
         "a": "Andrew Sanchez",
         "b": "Khalil Rountree Jr.",
-        "event": "The Ultimate Fighter: Team Joanna vs. Team Cl�udia Finale",
+        "event": "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale",
         "date": "2016-07-08"
       },
       "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
@@ -256,7 +257,7 @@
       "winning_bout": {
         "a": "Tatiana Suarez",
         "b": "Amanda Cooper",
-        "event": "The Ultimate Fighter: Team Joanna vs. Team Cl�udia Finale",
+        "event": "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale",
         "date": "2016-07-08"
       },
       "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"

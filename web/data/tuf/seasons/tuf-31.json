@@ -307,6 +307,54 @@
               "classification_source": null
             }
           ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Roosevelt Roberts",
+              "b": "Austin Hubbard",
+              "winner": "Austin Hubbard",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jason Knight",
+              "b": "Kurt Holobaugh",
+              "winner": "Kurt Holobaugh",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Austin Hubbard",
+              "b": "Kurt Holobaugh",
+              "winner": "Kurt Holobaugh",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "fight_date": "2023-08-19",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
         }
       ]
     }

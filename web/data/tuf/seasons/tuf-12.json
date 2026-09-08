@@ -423,9 +423,9 @@
               "a": "Kyle Watson",
               "b": "Aaron Wilkinson",
               "winner": "Kyle Watson",
-              "method": "Submission (rear naked choke) at 3:59 in the first round",
+              "method": "Submission (rear naked choke)",
               "round": 1,
-              "time": null,
+              "time": "3:59",
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"

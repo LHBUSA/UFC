@@ -15,11 +15,6 @@
   },
   "_conflicts": [
     {
-      "field": "Women's Featherweight_semi_final",
-      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
       "field": "unplaced_bouts",
       "detail": "1 bout(s) appear in the episode summaries but in no bracket: Julija Stoliarenko def. Marciea Allen in. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
@@ -318,6 +313,23 @@
               "classification_source": null
             },
             {
+              "a": "Leah Letson",
+              "b": "Macy Chiasson",
+              "winner": "Macy Chiasson",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
               "a": "Pannie Kianzad",
               "b": "Macy Chiasson",
               "winner": "Macy Chiasson",
@@ -325,12 +337,13 @@
               "round": 2,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "fight_date": "2018-11-30",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 1 fighter(s) appear more than once in this round. See conflicts."
+          ]
         }
       ]
     }

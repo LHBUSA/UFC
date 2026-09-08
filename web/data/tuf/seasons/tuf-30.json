@@ -21,7 +21,7 @@
     },
     {
       "field": "unplaced_bouts",
-      "detail": "3 bout(s) appear in the episode summaries but in no bracket: Brogan Walker def. Hannah Guy; Zac Pauga def. Jordan Heiderman in the first heavyweight semi-final; Brogan Walker def. Laura Gallardo. Left unplaced rather than assigned to a division by guesswork.",
+      "detail": "2 bout(s) appear in the episode summaries but in no bracket: Brogan Walker def. Hannah Guy; Brogan Walker def. Laura Gallardo. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
     }
   ],
@@ -183,12 +183,12 @@
               "a": "Zac Pauga",
               "b": "Jordan Heiderman",
               "winner": "Zac Pauga",
-              "method": "TKO",
+              "method": "TKO at 0:37 of the 2nd round",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
             },
             {
               "a": "Eduardo Perez",
@@ -210,13 +210,14 @@
             {
               "a": "Zac Pauga",
               "b": "Mohammad Usman",
-              "winner": "Mohammad Usman",
-              "method": "KO",
+              "winner": "Mohammed Usman",
+              "method": "KO/TKO",
               "round": 2,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2022-08-06",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
               "tournament_deciding": true
             }
@@ -270,7 +271,7 @@
               "a": "Juliana Miller",
               "b": "Claire Guthrie",
               "winner": "Juliana Miller",
-              "method": "A unanimous decision after 3 rounds",
+              "method": "Unanimous decision after 3 rounds",
               "round": 3,
               "time": null,
               "episode": 6,
@@ -315,12 +316,13 @@
               "a": "Brogan Walker-Sanchez",
               "b": "Juliana Miller",
               "winner": "Juliana Miller",
-              "method": "TKO",
+              "method": "KO/TKO",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2022-08-06",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
               "tournament_deciding": true
             }

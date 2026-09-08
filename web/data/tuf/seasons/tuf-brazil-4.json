@@ -214,13 +214,14 @@
             {
               "a": "Glaico França",
               "b": "Fernando Bruno",
-              "winner": "Glaico França",
+              "winner": "Glaico Franca Moreira",
               "method": "Submission",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2015-08-01",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
               "tournament_deciding": true
             }
