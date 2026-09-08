@@ -115,8 +115,11 @@ function linkEntities(item, ctx, index) {
   return { fighter_ids: [...fighterIds], event_id: event ? event.id : null, bout_id: bout ? bout.id : null };
 }
 
-async function main() {
-  const sb = new Supabase();
+/* `injectedEnv` lets a non-Node host (the ufc-newsroom Worker) supply its own
+ * bindings. Passing nothing keeps the CLI behaviour exactly: Supabase's own
+ * default parameter falls back to loadEnv() and reads .env as before. */
+export async function main(injectedEnv) {
+  const sb = new Supabase(injectedEnv);
   const sources = await sb.select('ufc_news_sources', 'select=id,kind,name,url,weight&kind=eq.rss&enabled=is.true&order=name.asc');
   if (!sources.length) { console.log('no enabled rss sources; run seed_sources.mjs first'); return; }
 
@@ -216,4 +219,8 @@ async function main() {
   console.log(`linked: fighters on ${totals.linked_fighters}, event on ${totals.linked_event}, bout on ${totals.linked_bout} of the inserted items`);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+/* Only self-execute as a CLI. Imported by the Worker, this file must define
+ * and export, never run: an import that ingests would make merely loading the
+ * module a production write. */
+const isCli = typeof process !== 'undefined' && process.argv?.[1]?.endsWith('ingest_news.mjs');
+if (isCli) main().catch((e) => { console.error(e); process.exit(1); });

@@ -1479,8 +1479,11 @@ function wordTable(words) {
   return rows.length ? `\nwords by story_class:\n${rows.join('\n')}` : '';
 }
 
-async function main() {
-  const env = loadEnv();
+/* `injectedEnv` lets the ufc-newsroom Worker supply Cloudflare bindings in a
+ * runtime with no .env and no filesystem. Passing nothing is the CLI path,
+ * unchanged. */
+export async function main(injectedEnv) {
+  const env = injectedEnv || loadEnv();
   const sb = new Supabase(env);
   const world = await loadWorld(sb);
   /* review_reason lets a refresh tell a gate-held row from an editor-held one. */
@@ -1511,4 +1514,6 @@ async function main() {
   console.log(`\n${DRY ? '[dry-run] ' : ''}created=${stats.created} refreshed=${stats.refreshed} unchanged=${stats.unchanged} held_for_review=${stats.review}${wordTable(stats.words)}`);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+/* CLI only. Importing this module must never write an article. */
+const isCli = typeof process !== 'undefined' && process.argv?.[1]?.endsWith('write_articles.mjs');
+if (isCli) main().catch((e) => { console.error(e); process.exit(1); });
