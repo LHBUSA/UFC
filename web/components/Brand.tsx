@@ -5,19 +5,12 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 
-export const OCTAGON = "55.1,22.4 55.1,41.6 41.6,55.1 22.4,55.1 8.9,41.6 8.9,22.4 22.4,8.9 41.6,8.9";
-export const OCTAGON_INNER = "50.5,24.3 50.5,39.7 39.7,50.5 24.3,50.5 13.5,39.7 13.5,24.3 24.3,13.5 39.7,13.5";
-
-export const FIGHTER = {
-  head: { cx: 34.5, cy: 17.5, r: 4.2 },
-  torso: "M29 24 L40.5 24 L39.5 36 L31 36 Z",
-  rearArm: "M30.5 25.5 L25 29 L30 22.5",
-  leadArm: "M40 25.5 L46.5 28.5 L43.5 21",
-  rearLeg: "M32 35.5 L27 41.5 L24 49",
-  leadLeg: "M38.5 35.5 L43.5 41 L46 49",
-  armWidth: 4.8,
-  legWidth: 5.2,
-} as const;
+/* The geometry lives in lib/brand-mark.ts and is re-exported here so the many
+ * existing importers of `@/components/Brand` keep working. One set of
+ * coordinates, used by the header, the icons, the OG images, the store
+ * previews and the print files. */
+export { OCTAGON, OCTAGON_INNER, FIGHTER, fighterSvgMarkup } from "@/lib/brand-mark";
+import { FIGHTER, OCTAGON, OCTAGON_INNER } from "@/lib/brand-mark";
 
 export function fighterNodes(color = "#d4af37", scale = 1) {
   const limb = { fill: "none", stroke: color, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
@@ -33,18 +26,6 @@ export function fighterNodes(color = "#d4af37", scale = 1) {
 
 export function FighterGlyph({ color = "#d4af37", scale = 1 }: { color?: string; scale?: number }) {
   return <>{fighterNodes(color, scale)}</>;
-}
-
-export function fighterSvgMarkup(color = "#d4af37"): string {
-  const f = FIGHTER;
-  return `<g fill="${color}" stroke="${color}" stroke-linecap="round" stroke-linejoin="round">`
-    + `<circle cx="${f.head.cx}" cy="${f.head.cy}" r="${f.head.r}" stroke="none"/>`
-    + `<path d="${f.torso}" stroke-width="1.2"/>`
-    + `<path d="${f.rearArm}" fill="none" stroke-width="${f.armWidth}"/>`
-    + `<path d="${f.leadArm}" fill="none" stroke-width="${f.armWidth}"/>`
-    + `<path d="${f.rearLeg}" fill="none" stroke-width="${f.legWidth}"/>`
-    + `<path d="${f.leadLeg}" fill="none" stroke-width="${f.legWidth}"/>`
-    + `</g>`;
 }
 
 export function Mark({ size = 28, className, title = "PropBetEdge UFC fighter mark" }: { size?: number; className?: string; title?: string }) {

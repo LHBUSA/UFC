@@ -50,8 +50,10 @@ export type ArtTone = "dark" | "light";
  * Fight DNA tee, hoodie, cap and mug all draw `dna`. */
 export type MarkKind = "house" | "dna" | "tape" | "variance" | "rounds" | "strikes" | "grid" | "type";
 
-const GOLD = "#d4af37";
-const INK = "#14110d";
+import { BRAND_GOLD, BRAND_INK, MARK_BOX, houseMarkSvgMarkup } from "../brand-mark.ts";
+
+const GOLD = BRAND_GOLD;
+const INK = BRAND_INK;
 const CLOTH_DARK = { body: "#2a241c", shade: "#1c1712", seam: "rgba(255,245,220,.26)" };
 const CLOTH_LIGHT = { body: "#efe8dc", shade: "#d6ccba", seam: "rgba(20,17,13,.32)" };
 const GROUND_TOP = "#100e0b";
@@ -188,25 +190,34 @@ function typeLines(
     .join("");
 }
 
-/** The house mark: an octagon, because this desk reports on a sport fought in
- * one. Plain geometry, carrying no promotion's trade dress. */
+/**
+ * The house mark: the real one.
+ *
+ * This used to draw an octagon and a diamond invented in this file, which was
+ * a recreated approximation sitting next to the actual brand in the header.
+ * It now renders lib/brand-mark.ts — the same coordinates as the site logo,
+ * the favicons and the print files — scaled from its native 64-unit box into
+ * whatever room the garment gives it.
+ *
+ * The ghost octagon is dropped below a certain size: a 1.2-unit line at 35%
+ * opacity is invisible on a cap panel and unstitchable in embroidery, and a
+ * detail that survives only on the largest garment is a detail that makes the
+ * small ones look wrong.
+ */
 function house(w: number, ink: string, lines: readonly string[]): string {
-  const r = w * 0.23;
-  const ring = (k: number) => {
-    const pts: string[] = [];
-    for (let i = 0; i < 8; i += 1) {
-      const a = (Math.PI / 4) * i + Math.PI / 8;
-      pts.push(`${n(Math.cos(a) * r * k)},${n(Math.sin(a) * r * k)}`);
-    }
-    return pts.join(" ");
-  };
+  /* Restrained on purpose. The brief is a small premium mark, not a chest
+   * billboard: at 0.44 of the mark box the octagon sits at roughly the width
+   * of a breast pocket on a printed tee, which is where this kind of mark
+   * belongs. It grows slightly when there is no wordmark under it, because a
+   * lone symbol needs a little more presence to read as deliberate. */
+  const draw = w * (lines.length ? 0.4 : 0.46);
+  const k = draw / MARK_BOX;
+  const lift = lines.length ? w * 0.1 : w * 0.02;
   return (
-    `<g transform="translate(0,${n(-w * 0.12)})">` +
-    `<polygon points="${ring(1)}" fill="none" stroke="${ink}" stroke-width="${n(w * 0.018)}"/>` +
-    `<polygon points="${ring(0.62)}" fill="none" stroke="${ink}" stroke-width="${n(w * 0.009)}" opacity=".5"/>` +
-    `<path d="M${n(-r * 0.32)},0 L0,${n(-r * 0.32)} L${n(r * 0.32)},0 L0,${n(r * 0.32)} Z" fill="${ink}"/>` +
+    `<g transform="translate(${n(-draw / 2)},${n(-draw / 2 - lift)}) scale(${n(k)})">` +
+    houseMarkSvgMarkup(ink, { ghost: draw >= 64 }) +
     `</g>` +
-    typeLines(lines, ink, w * 0.28, w * 0.1, w)
+    typeLines(lines, ink, w * 0.3, w * 0.085, w)
   );
 }
 

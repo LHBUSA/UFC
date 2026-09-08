@@ -5,6 +5,7 @@ import { PageHead, JsonLd } from "@/components/ui";
 import { bySlug, productsFor } from "@/lib/store/catalog";
 import { getProvisioning } from "@/lib/store/provisioning";
 import { formatPrice, toStorefront } from "@/lib/store/types";
+import { AddToCart } from "@/components/store/AddToCart";
 import { SITE } from "@/lib/site";
 
 /* /store/[slug] — one product.
@@ -76,30 +77,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="st-price st-price-lg">{formatPrice(p.price_cents)}</p>
           <p className="st-desc">{p.description}</p>
 
-          <fieldset className="st-opts" disabled={!p.purchasable}>
-            <legend className="st-opt-label">Size</legend>
-            <div className="st-chips">
-              {p.sizes.map((s) => (
-                <span className="st-chip" key={s}>
-                  {s}
-                </span>
-              ))}
-            </div>
-            <legend className="st-opt-label">Colour</legend>
-            <div className="st-chips">
-              {p.colors.map((c) => (
-                <span className="st-chip" key={c}>
-                  {c}
-                </span>
-              ))}
-            </div>
-          </fieldset>
+          {/* The one interactive control in the shop. `purchasable` is
+              derived on the server from what the provider confirmed; nothing
+              in the client can turn it on, and /api/store/checkout derives it
+              again on the assumption this component was bypassed. */}
+          <AddToCart
+            slug={p.slug}
+            sizes={p.sizes}
+            colors={p.colors}
+            purchasable={p.purchasable}
+            reason={p.unavailable_reason}
+          />
 
-          {p.purchasable ? (
-            <p className="st-notice" role="status">
-              Checkout is being wired. This piece is confirmed with the printer.
-            </p>
-          ) : p.awaiting_blank ? (
+          {p.purchasable ? null : p.awaiting_blank ? (
             /* Said plainly, because it is not the same as "coming soon". The
              * design is finished; what is missing is the blank it prints on,
              * and several candidates at the printer fit our specification

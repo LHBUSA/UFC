@@ -265,10 +265,16 @@ const main = async () => {
    * decision one forgotten branch away from a wrong garment being printed. */
   const { PRODUCTS, provisionable } = await import("../../web/lib/store/catalog.ts");
   const OFFERED = provisionable();
-  const setAside = PRODUCTS.length - OFFERED.length;
+  /* Two different reasons, counted separately. `blocked` means we cannot
+   * make the thing: the blank is unidentified and a guess prints the wrong
+   * garment. `unreleased` means we can make it and have chosen not to yet.
+   * Reporting them as one number would make a scheduling decision look
+   * like a sourcing problem, and hide five real ones among sixteen. */
+  const heldBack = PRODUCTS.filter((p) => !p.blocked && p.status !== "launch").length;
+  const unresolved = PRODUCTS.filter((p) => p.blocked).length;
 
   log("PropBetEdge store — provisioning\n");
-  log(`catalog: ${OFFERED.length} provisionable of ${PRODUCTS.length}${setAside ? ` (${setAside} set aside, blank unresolved)` : ""}`);
+  log(`catalog: ${OFFERED.length} provisionable of ${PRODUCTS.length}` + ` (${heldBack} held for a later drop, ${unresolved} with an unresolved blank)`);
   log(`mode:    ${PLAN ? "plan (offline)" : RECONCILE ? "reconcile" : CREATE ? "CREATE" : "inspect"}\n`);
 
   if (WANTED_CREATE && !CREATE) {
@@ -284,6 +290,31 @@ const main = async () => {
     for (const p of PRODUCTS) {
       if (p.blocked) log(`  ${p.slug.padEnd(34)} SET ASIDE: ${p.blocked.note}`);
     }
+
+    /* The exact shape of every create this run would issue, so a reviewer
+     * approves a specific request rather than an intention. Variant ids are
+     * shown as the unresolved placeholders they currently are: they come
+     * from the live catalog at run time and are never written down here,
+     * because a transcribed variant id is a wrong garment nobody notices
+     * until it is worn. */
+    log(`
+Proposed provider creates (POST /store/products, one per slug):`);
+    for (const p of OFFERED) {
+      const variants = [];
+      for (const color of p.colors) for (const size of p.sizes) variants.push(`${size} / ${color}`);
+      log(`
+  ${p.slug}`);
+      log(`    external_id      ${p.slug}   (idempotency handle at the provider)`);
+      log(`    name             ${p.name}`);
+      log(`    retail           $${(p.retail_price / 100).toFixed(2)}`);
+      log(`    blank            ${p.form}  -> resolved live from /products, never hardcoded`);
+      log(`    print file       store/print/${p.art}.png  (print area must be verified first)`);
+      log(`    variants (${String(variants.length).padStart(2)})    ${variants.join(', ')}`);
+      log(`    variant ids      UNRESOLVED — one live lookup per size/colour at run time`);
+    }
+    log(`
+  ${OFFERED.reduce((n, p) => n + p.sizes.length * p.colors.length, 0)} provider variants across ${OFFERED.length} products.`);
+
     log(`\nNothing was contacted. ${OFFERED.length} slugs would be claimed one at a time.`);
     return;
   }

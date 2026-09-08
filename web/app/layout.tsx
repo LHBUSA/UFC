@@ -14,6 +14,7 @@ import "./market.css";
 import "./tuf.css";
 import "./store.css";
 import { Header, Footer } from "@/components/Shell";
+import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";
 import { ShareRail } from "@/components/ShareRail";
 import { JsonLd } from "@/components/ui";
@@ -110,11 +111,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ ["--pbe-font-ui" as string]: "var(--font-inter), Inter, sans-serif", ["--pbe-font-display" as string]: "var(--font-playfair), Georgia, serif", ["--pbe-font-data" as string]: "var(--font-mono), Menlo, monospace" } as React.CSSProperties}>
         <a className="skip" href="#main">Skip to content</a>
         <JsonLd data={ORG} />
-        <Header />
-        <LiveWire />
-        <ShareRail />
-        <main id="main">{children}</main>
-        <Footer />
+        {/* The cart is a client context and wraps everything, because the
+            header's cart count and the product pages both read it. It holds
+            slugs and quantities only; prices are resolved server-side at
+            checkout. */}
+        <CartProvider>
+          <Header />
+          <LiveWire />
+          <ShareRail />
+          <main id="main">{children}</main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

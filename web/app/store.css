@@ -258,3 +258,114 @@
   .st-card-foot { flex-direction: column; align-items: flex-start; gap: var(--s-1); }
   .st-soon { text-align: left; }
 }
+
+/* ---- launch collection vs the rest -------------------------------------- */
+
+/* Three pieces get room. A launch of three products laid out on the same
+ * auto-fill grid as twenty-one looks like a shop that ran out of stock. */
+.st-grid-launch { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); max-width: 1080px; }
+.st-grid-later { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--s-4); }
+
+.st-later { margin-bottom: var(--s-6); }
+.st-later-head {
+  margin: 0 0 var(--s-3);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--pbe-faint);
+}
+/* Quieter than the launch cards, deliberately: these are not for sale and the
+ * page should not invite a click that ends in "not yet". */
+.st-grid-later .st-card { opacity: .74; }
+.st-grid-later .st-card:hover, .st-grid-later .st-card:focus-visible { opacity: 1; }
+.st-grid-later .st-card-name { font-size: var(--fs-body); }
+
+/* ---- buying ------------------------------------------------------------- */
+
+.st-buy { display: flex; flex-direction: column; gap: var(--s-3); }
+
+button.st-chip { cursor: pointer; font: inherit; font-family: var(--pbe-font-data); font-size: var(--fs-sm); }
+button.st-chip:hover:not(:disabled) { border-color: var(--pbe-gold-soft); color: var(--pbe-paper); }
+.st-chip-on {
+  border-color: var(--pbe-gold);
+  background: var(--pbe-gold-wash);
+  color: var(--pbe-paper);
+}
+.st-opts[disabled] button.st-chip { cursor: not-allowed; }
+
+.st-add { align-self: flex-start; min-height: 44px; padding: 0 var(--s-5); }
+.st-add:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---- cart --------------------------------------------------------------- */
+
+.st-cart { list-style: none; margin: 0 0 var(--s-5); padding: 0; display: flex; flex-direction: column; gap: var(--s-3); }
+
+.st-cart-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-3);
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-md);
+  background: var(--pbe-ink-2);
+}
+.st-cart-art { border-radius: var(--r-sm); background: var(--pbe-ink); }
+.st-cart-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.st-cart-name { font-family: var(--pbe-font-display); font-size: var(--fs-h3); color: var(--pbe-paper); text-decoration: none; }
+.st-cart-variant { font-family: var(--pbe-font-data); font-size: var(--fs-sm); color: var(--pbe-faint); }
+
+.st-cart-qty { display: flex; flex-direction: column; gap: 2px; }
+.st-cart-qty input {
+  width: 64px;
+  min-height: 36px;
+  padding: 0 var(--s-2);
+  border: 1px solid var(--pbe-line-strong);
+  border-radius: var(--r-sm);
+  background: var(--pbe-ink-3);
+  color: var(--pbe-paper);
+  font-family: var(--pbe-font-data);
+  font-size: var(--fs-sm);
+}
+
+.st-cart-remove {
+  border: 0;
+  background: none;
+  padding: var(--s-2);
+  color: var(--pbe-subtle);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-micro);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.st-cart-remove:hover { color: var(--pbe-paper); }
+
+.st-cart-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--pbe-line);
+  margin-bottom: var(--s-4);
+}
+.st-cart-totals {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: var(--s-1) var(--s-5);
+  align-items: baseline;
+  color: var(--pbe-dim);
+  font-size: var(--fs-sm);
+}
+
+@media (max-width: 640px) {
+  .st-cart-row { grid-template-columns: 56px minmax(0, 1fr) auto; row-gap: var(--s-2); }
+  .st-cart-art { width: 56px; height: 70px; }
+  .st-cart-qty { grid-column: 2; }
+  .st-cart-remove { grid-column: 3; justify-self: end; }
+  .st-cart-foot { flex-direction: column; align-items: stretch; }
+  .st-add { align-self: stretch; text-align: center; }
+}

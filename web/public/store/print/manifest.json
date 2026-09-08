@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-09-08T18:41:52.077Z",
+  "files": [
+    {
+      "slug": "propbetedge-logo-tee",
+      "form": "tee",
+      "file_svg": "store/print/pbe-housemark-gold.svg",
+      "file_png": null,
+      "width": 1800,
+      "height": 2400,
+      "dpi": 300,
+      "placement": "front",
+      "color": "#d4af37",
+      "wordmark": false,
+      "area_verified": false,
+      "area_source": "recorded in the ufc-store-v1 catalog comments as live-verified on 2026-09-07, but not re-read since and not reproducible from this branch; treat as unconfirmed until the canary runs"
+    },
+    {
+      "slug": "propbetedge-hoodie",
+      "form": "hoodie",
+      "file_svg": "store/print/pbe-housemark-gold-hoodie.svg",
+      "file_png": null,
+      "width": 2100,
+      "height": 2100,
+      "dpi": 300,
+      "placement": "front",
+      "color": "#d4af37",
+      "wordmark": false,
+      "area_verified": false,
+      "area_source": "recorded in the ufc-store-v1 catalog comments as 'verified live' on 2026-09-07; the square aspect is the load-bearing claim and it is why the hoodie has its own print file rather than sharing the tee's, but it has not been re-read from this branch"
+    },
+    {
+      "slug": "propbetedge-mug",
+      "form": "mug",
+      "file_svg": "store/print/pbe-wordmark-ink-mug.svg",
+      "file_png": null,
+      "width": null,
+      "height": null,
+      "dpi": 300,
+      "placement": "default",
+      "color": "#14110d",
+      "wordmark": true,
+      "area_verified": false,
+      "area_source": "unknown. No dimension has ever been read for a mug blank from this codebase. Deliberately null rather than filled with Printful's commonly-quoted 11oz wrap, so the builder fails instead of producing a plausible wrong file."
+    }
+  ]
+}

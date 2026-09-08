@@ -1,9 +1,27 @@
 /**
  * GET /api/store/canary-read — the read-only provider canary.
  *
- * It runs where the credential actually resolves. A laptop is not the Vercel
- * runtime, so a token held as a Vercel environment variable can never be read
- * by a local script; this is the same questions asked server-side.
+ * It runs where the credential actually resolves.
+ *
+ * An earlier version of this comment said a Vercel environment variable can
+ * never be read by a local script. That is not true as written, and the
+ * correction is worth having because it changes what an operator should try
+ * first: `vercel env run --environment=preview --git-branch=<branch> -- <cmd>`
+ * downloads that branch's preview variables and injects them into a local
+ * process, so the app CAN be run against them from a laptop.
+ *
+ * What is true is narrower and is the reason this endpoint still exists. A
+ * variable marked Sensitive in Vercel is write-only: its value is never
+ * released to any client, including that command, which downloads the name
+ * with an empty value. Verified on this project — CATALOG_SHARED_SECRET
+ * injects and PRINTFUL_API_TOKEN does not, so a locally run canary
+ * authenticates by signature and then reports the provider token MISSING.
+ *
+ * So the split is: anything gated on a non-sensitive secret can be exercised
+ * locally, and anything needing the provider token must run in a deployment
+ * that has it bound. Product creation and order submission both need it,
+ * which is why the questions this endpoint asks are asked server-side rather
+ * than from wherever an operator happens to be sitting.
  *
  * Authentication, and why the shape matters.
  *

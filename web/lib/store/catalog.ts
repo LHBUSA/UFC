@@ -29,13 +29,21 @@
  * brand; merchandise carrying a rights-holder's marks would be a different
  * thing entirely, and not one we have a licence for. The type is ours.
  *
+ * Launch scope. Three pieces ship first — the logo tee, the premium hoodie
+ * and the mug — all carrying PropBetEdge's own house mark and nothing else.
+ * Everything below them stays in this file marked `unreleased`: designed,
+ * priced, visible, and not for sale. Cutting them out to make a small launch
+ * would mean re-adding the slugs later, and a slug is a product identity at
+ * the provider, so a design removed and restored comes back as a second
+ * product rather than the same one.
+ *
  * Prices are in cents. The browser is never trusted with them — the checkout
  * path, when it is eventually enabled, resolves every line back to this file
  * server-side. See docs/store_checkout.md.
  */
 import type { Blocked, Line, ProductDef } from "./types";
 
-export const CATALOG_VERSION = "2026-09-08.1";
+export const CATALOG_VERSION = "2026-09-08.2";
 
 /* Sizing mirrors the blanks we intend to resolve at the provider. They are
  * presentational until real variant ids exist; selectVariants reports any our
@@ -72,6 +80,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   /* ---- shared house pieces, identical on both storefronts ---------------- */
   {
     slug: "propbetedge-logo-tee",
+    status: "launch",
     name: "PropBetEdge Logo Tee",
     blurb: "The house mark, small on the chest.",
     description:
@@ -79,14 +88,17 @@ export const PRODUCTS: readonly ProductDef[] = [
     collection: "propbetedge",
     line: "house",
     ...TEE,
-    art: "propbetedge-wordmark-gold",
+    art: "pbe-housemark-gold",
     mark: "house",
-    lines: ["PROPBETEDGE"],
+    /* Mark only, small, centred high on the chest. The wordmark under it
+     * turned a house mark into a slogan; the tee is the quieter piece. */
+    lines: [],
     sites: BOTH,
     sort_order: 10,
   },
   {
     slug: "propbetedge-hoodie",
+    status: "launch",
     name: "PropBetEdge Premium Hoodie",
     blurb: "Heavy blend, quiet mark.",
     description:
@@ -96,14 +108,15 @@ export const PRODUCTS: readonly ProductDef[] = [
     ...HOODIE,
     /* Its own file: the hoodie front is 2100x2100 square, verified live, so it
      * cannot share the tee's 1800x2400 portrait print file. */
-    art: "propbetedge-wordmark-gold-hoodie",
+    art: "pbe-housemark-gold-hoodie",
     mark: "house",
-    lines: ["PROPBETEDGE"],
+    lines: [],
     sites: BOTH,
     sort_order: 20,
   },
   {
     slug: "propbetedge-hat",
+    status: "unreleased",
     name: "PropBetEdge Cap",
     blurb: "Embroidered mark, unstructured.",
     description: "An unstructured cap with the mark embroidered at the front panel. One size, adjustable.",
@@ -119,20 +132,24 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "propbetedge-mug",
+    status: "launch",
     name: "PropBetEdge Mug",
     blurb: "For the morning after a late card.",
     description: "An 11oz glossy mug carrying the wordmark. For the morning after a card that finished at two.",
     collection: "propbetedge",
     line: "house",
     ...MUG,
-    art: "mug-wordmark-ink",
+    art: "pbe-wordmark-ink-mug",
     mark: "house",
+    /* The mug is the one launch piece that carries the wordmark: a mug is
+     * read at arm's length on a desk, where a bare symbol says less. */
     lines: ["PROPBETEDGE"],
     sites: BOTH,
     sort_order: 40,
   },
   {
     slug: "trust-the-data-tee",
+    status: "unreleased",
     name: "Trust the Data Tee",
     blurb: "Three words, set straight.",
     description:
@@ -148,6 +165,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "no-vibes-just-variance-tee",
+    status: "unreleased",
     name: "No Vibes, Just Variance Tee",
     blurb: "The distribution does not care how you feel.",
     description:
@@ -163,6 +181,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "my-model-said-no-tee",
+    status: "unreleased",
     name: "My Model Said No Tee",
     blurb: "Worn in defeat, mostly.",
     description:
@@ -178,6 +197,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "spreadsheet-for-this-mug",
+    status: "unreleased",
     name: "I Have a Spreadsheet for This Mug",
     blurb: "You do. Everyone knows.",
     description:
@@ -195,6 +215,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   /* ---- Fight DNA: born on this site, the two originals sold on both ------ */
   {
     slug: "fight-dna-tee",
+    status: "unreleased",
     name: "Fight DNA Tee",
     blurb: "The house method, on cotton.",
     description:
@@ -210,6 +231,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "fight-dna-over-fight-takes-tee",
+    status: "unreleased",
     name: "Fight DNA Over Fight Takes Tee",
     blurb: "Evidence over opinion.",
     description:
@@ -225,6 +247,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "fight-dna-hoodie",
+    status: "unreleased",
     name: "Fight DNA Hoodie",
     blurb: "The helix, at chest height, in gold.",
     description:
@@ -240,6 +263,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "fight-dna-cap",
+    status: "unreleased",
     name: "Fight DNA Cap",
     blurb: "The helix, embroidered small.",
     description:
@@ -256,6 +280,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "fight-dna-mug",
+    status: "unreleased",
     name: "Fight DNA Mug",
     blurb: "Read the matchup before the coffee goes cold.",
     description:
@@ -273,6 +298,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   /* ---- Tale of the Tape -------------------------------------------------- */
   {
     slug: "tale-of-the-tape-mug",
+    status: "unreleased",
     name: "Tale of the Tape Mug",
     blurb: "Reach, stance, and a strong opinion.",
     description:
@@ -288,6 +314,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "tale-of-the-tape-tee",
+    status: "unreleased",
     name: "Tale of the Tape Tee",
     blurb: "The rule, graduated, with the reach span under it.",
     description:
@@ -303,6 +330,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "tale-of-the-tape-hoodie",
+    status: "unreleased",
     name: "Tale of the Tape Hoodie",
     blurb: "The measurements, on something warm.",
     description:
@@ -318,6 +346,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "tale-of-the-tape-cap",
+    status: "unreleased",
     name: "Tale of the Tape Cap",
     blurb: "Graduations across the front panel.",
     description:
@@ -336,6 +365,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   /* ---- the analytics line, extended on this site only -------------------- */
   {
     slug: "trust-the-data-hoodie",
+    status: "unreleased",
     name: "Trust the Data Hoodie",
     blurb: "Three words, warmer.",
     description:
@@ -351,6 +381,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "no-vibes-just-variance-cap",
+    status: "unreleased",
     name: "No Vibes, Just Variance Cap",
     blurb: "The distribution, embroidered.",
     description:
@@ -367,6 +398,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "no-vibes-just-variance-mug",
+    status: "unreleased",
     name: "No Vibes, Just Variance Mug",
     blurb: "A bell curve you can drink out of.",
     description:
@@ -384,6 +416,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   /* ---- fight intelligence: this site's own reading of a card ------------- */
   {
     slug: "round-by-round-tee",
+    status: "unreleased",
     name: "Round by Round Tee",
     blurb: "Scored the way it was fought.",
     description:
@@ -399,6 +432,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "round-by-round-hoodie",
+    status: "unreleased",
     name: "Round by Round Hoodie",
     blurb: "Five blocks, three usually used.",
     description:
@@ -414,6 +448,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "significant-strikes-tee",
+    status: "unreleased",
     name: "Significant Strikes Tee",
     blurb: "The stat that actually settles it.",
     description:
@@ -429,6 +464,7 @@ export const PRODUCTS: readonly ProductDef[] = [
   },
   {
     slug: "fight-week-cap",
+    status: "unreleased",
     name: "Fight Week Cap",
     blurb: "Six days, one card.",
     description:
@@ -469,13 +505,24 @@ export function productsFor(site: "ufc" | "news"): ProductDef[] {
     .sort((a, b) => a.sort_order - b.sort_order);
 }
 
+/** The launch collection, in order. Three pieces, all PropBetEdge house
+ * branding, all on blanks we can actually source. */
+export function launchProducts(site: "ufc" | "news"): ProductDef[] {
+  return productsFor(site).filter((p) => p.status === "launch");
+}
+
+/** Designed, kept, not shipping yet. Shown, never sold. */
+export function unreleasedProducts(site: "ufc" | "news"): ProductDef[] {
+  return productsFor(site).filter((p) => p.status === "unreleased");
+}
+
 /**
  * Products provisioning may actually create. Blocked pieces are excluded here
  * and only here — this is the list the operator script walks, and it is the
  * boundary that keeps an unresolved blank from reaching a create call.
  */
 export function provisionable(): ProductDef[] {
-  return PRODUCTS.filter((p) => !p.blocked)
+  return PRODUCTS.filter((p) => !p.blocked && p.status === "launch")
     .slice()
     .sort((a, b) => a.sort_order - b.sort_order);
 }
@@ -483,7 +530,7 @@ export function provisionable(): ProductDef[] {
 /** Forms an offered product actually needs. A blank nothing offers does not
  * need resolving, and must not fail a run. */
 export function activeForms(): string[] {
-  return [...new Set(PRODUCTS.filter((p) => !p.blocked).map((p) => p.form))];
+  return [...new Set(provisionable().map((p) => p.form))];
 }
 
 export function bySlug(slug: string): ProductDef | null {

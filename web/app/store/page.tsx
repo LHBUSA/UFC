@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHead, JsonLd } from "@/components/ui";
-import { LINES, productsFor } from "@/lib/store/catalog";
+import { LINES, launchProducts, unreleasedProducts } from "@/lib/store/catalog";
 import { getProvisioning, anyPurchasable } from "@/lib/store/provisioning";
 import { formatPrice, toStorefront, type StorefrontProduct } from "@/lib/store/types";
 import { SITE } from "@/lib/site";
@@ -25,7 +25,7 @@ export const revalidate = 60;
 
 const TITLE = "Store | PropBetEdge UFC";
 const DESCRIPTION =
-  "PropBetEdge UFC merchandise: Fight DNA, Tale of the Tape and analytics designs on tees, hoodies, caps and mugs. Printed on demand, shipped by our print partner.";
+  "PropBetEdge merchandise: the logo tee, the premium hoodie and the mug, carrying the house mark. Printed on demand, shipped by our print partner.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -74,9 +74,13 @@ export default async function StorePage() {
    * does not exist on StorefrontProduct: it decides how this page is laid
    * out, and putting it in the projection would add it to the contract the
    * other storefront reads for no reason other than convenience here. */
-  const items = productsFor("ufc").map((d) => ({ line: d.line, pub: toStorefront(d, provisioning.get(d.slug) ?? null) }));
+  const project = (d: Parameters<typeof toStorefront>[0]) => ({
+    line: d.line,
+    pub: toStorefront(d, provisioning.get(d.slug) ?? null),
+  });
+  const launch = launchProducts("ufc").map(project);
+  const later = unreleasedProducts("ufc").map(project);
   const open = anyPurchasable(provisioning);
-  const awaiting = items.filter((i) => i.pub.awaiting_blank);
 
   return (
     <>
@@ -103,37 +107,44 @@ export default async function StorePage() {
         </div>
       )}
 
-      {awaiting.length > 0 && (
-        <div className="wrap">
-          {/* Named rather than hidden. The caps are designed and priced; what
-              is missing is the blank, and several catalog hats match our
-              search equally well. Picking one on a hunch prints the wrong hat
-              and nobody finds out until it arrives. */}
-          <p className="st-notice st-notice-quiet" role="status">
-            <strong>The caps are last.</strong> {awaiting.length} pieces are drawn and priced but not yet matched to a
-            blank at the printer — several candidates fit our specification equally well, and we would rather choose
-            deliberately than embroider the wrong hat.
-          </p>
+      <section className="wrap st-section">
+        <div className="st-section-head">
+          <h2>The collection</h2>
+          <p>Three pieces, the house mark, and nothing we cannot make.</p>
         </div>
-      )}
+        <div className="st-grid st-grid-launch">
+          {launch.map(({ pub }) => (
+            <Card key={pub.slug} p={pub} />
+          ))}
+        </div>
+      </section>
 
-      {LINES.map((c) => {
-        const inLine = items.filter((i) => i.line === c.key);
-        if (!inLine.length) return null;
-        return (
-          <section className="wrap st-section" key={c.key}>
-            <div className="st-section-head">
-              <h2>{c.name}</h2>
-              <p>{c.blurb}</p>
-            </div>
-            <div className="st-grid">
-              {inLine.map(({ pub }) => (
-                <Card key={pub.slug} p={pub} />
-              ))}
-            </div>
-          </section>
-        );
-      })}
+      {later.length > 0 && (
+        <section className="wrap st-section">
+          <div className="st-section-head">
+            <h2>In the works</h2>
+            <p>
+              Designed and kept. These are not part of the launch, and some are waiting on a blank we have not chosen.
+            </p>
+          </div>
+          {/* Grouped by design family rather than shown as one long list, so
+              "not yet" still reads as a plan instead of as a backlog. */}
+          {LINES.map((c) => {
+            const inLine = later.filter((i) => i.line === c.key);
+            if (!inLine.length) return null;
+            return (
+              <div className="st-later" key={c.key}>
+                <h3 className="st-later-head">{c.name}</h3>
+                <div className="st-grid st-grid-later">
+                  {inLine.map(({ pub }) => (
+                    <Card key={pub.slug} p={pub} />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </section>
+      )}
 
       <section className="wrap st-section">
         <p className="st-fine">

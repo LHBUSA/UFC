@@ -1,13 +1,16 @@
 -- Store provisioning state.
 --
--- STATUS: this file has NOT been applied to any environment, and the
--- enforcement it describes is therefore UNVERIFIED. The JavaScript tests in
--- scripts/store/reconcile_rules.test.mjs exercise a mirror of these rules,
--- not these rules: they show the client asks for the right transition, and
--- say nothing about whether Postgres actually refuses the wrong one.
--- migrations/tests/010_store_provisioning.test.sql is the file that would
--- establish that, against a throwaway database. It has not been run, because
--- the only Postgres this platform has is production.
+-- STATUS: applied and tested against a disposable local Postgres 17 cluster
+-- (initdb into a scratch directory, dropped afterwards). NOT applied to any
+-- hosted environment.
+--
+-- What that establishes: the file applies cleanly, is idempotent under a
+-- second application, and migrations/tests/010_store_provisioning.test.sql
+-- passes against the result — so Postgres itself refuses the transitions
+-- described below, rather than us merely believing it would. The JavaScript
+-- tests in scripts/store/reconcile_rules.test.mjs exercise a mirror of these
+-- rules and show the client asks for the right transition; this file is what
+-- shows the database enforces it against a client that does not.
 --
 -- Why this table exists at all.
 --

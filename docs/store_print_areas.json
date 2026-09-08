@@ -1,0 +1,44 @@
+{
+  "_comment": [
+    "Print-area dimensions, with provenance per placement.",
+    "",
+    "scripts/store/build_print_files.mjs reads this and refuses to emit a raster",
+    "for any placement whose `verified` is false. That is the whole point of the",
+    "file: a print file is a physical commitment, and 'this is probably the",
+    "standard size' is exactly the reasoning that prints a mug design at cap",
+    "dimensions. A number here without a source is a guess wearing a schema.",
+    "",
+    "`source` must name where the number came from. The only source that sets",
+    "verified true is a live read of Printful's mockup-generator printfiles",
+    "endpoint via lib/store/printful.ts getPrintAreas — the canary's",
+    "print-areas step. Nothing else counts, including Printful's own published",
+    "help pages, because those describe a product family and not the specific",
+    "catalog id we will actually order."
+  ],
+  "placements": {
+    "tee": {
+      "placement": "front",
+      "width": 1800,
+      "height": 2400,
+      "dpi": 300,
+      "verified": false,
+      "source": "recorded in the ufc-store-v1 catalog comments as live-verified on 2026-09-07, but not re-read since and not reproducible from this branch; treat as unconfirmed until the canary runs"
+    },
+    "hoodie": {
+      "placement": "front",
+      "width": 2100,
+      "height": 2100,
+      "dpi": 300,
+      "verified": false,
+      "source": "recorded in the ufc-store-v1 catalog comments as 'verified live' on 2026-09-07; the square aspect is the load-bearing claim and it is why the hoodie has its own print file rather than sharing the tee's, but it has not been re-read from this branch"
+    },
+    "mug": {
+      "placement": "default",
+      "width": null,
+      "height": null,
+      "dpi": 300,
+      "verified": false,
+      "source": "unknown. No dimension has ever been read for a mug blank from this codebase. Deliberately null rather than filled with Printful's commonly-quoted 11oz wrap, so the builder fails instead of producing a plausible wrong file."
+    }
+  }
+}

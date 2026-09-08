@@ -40,6 +40,25 @@ export type Site = "ufc" | "news";
 export type Line = "house" | "fight-dna" | "tale-of-the-tape" | "analytics" | "fight-intelligence";
 
 /**
+ * Whether a piece is part of the launch, or waiting behind it.
+ *
+ *   launch      offered now, provisioned now, buyable once the provider
+ *               confirms it
+ *   unreleased  designed, kept, and deliberately not shipping yet
+ *
+ * This is separate from `blocked`, and the difference matters. `blocked`
+ * means we cannot make the thing: the blank is unidentified and a guess would
+ * print the wrong garment. `unreleased` means we can make it and have chosen
+ * not to yet. Conflating them would either put a hat on sale we cannot source
+ * or imply a design problem where there is only a schedule.
+ *
+ * Nothing is deleted to achieve a small launch. Slugs are permanent product
+ * identities at the provider, so a design removed today and restored next
+ * month would come back as a second product.
+ */
+export type Status = "launch" | "unreleased";
+
+/**
  * A blank we have not been able to identify at the provider.
  *
  * Two strings because they have two audiences. `note` says which blanks
@@ -77,6 +96,8 @@ export type ProductDef = {
   lines?: readonly string[];
   /** Section of our own shop. Not part of the shared contract. */
   line: Line;
+  /** Launch collection, or held back for a later drop. */
+  status: Status;
   /** Which storefronts feature it. Shared pieces list both. */
   sites: readonly Site[];
   sort_order: number;
@@ -133,6 +154,8 @@ export type StorefrontProduct = {
   /** Set when the design is finished but its blank is not chosen. Reader
    * facing; the operational detail behind it never leaves the server. */
   awaiting_blank: boolean;
+  /** In the launch collection, or held for a later drop. */
+  status: Status;
   /** Why it is not purchasable, in words a reader can act on. Null when it is. */
   unavailable_reason: string | null;
 };
@@ -166,13 +189,14 @@ export const FORBIDDEN_PUBLIC_KEYS = [
  * to sell something we cannot confirm is worse than saying it is not ready.
  */
 export function toStorefront(def: ProductDef, rec: ProvisionRecord | null, origin = ""): StorefrontProduct {
-  /* `!def.blocked` first, and it is not redundant with the provisioning
-   * check. A blocked piece should have no provisioning row at all, but
+  /* `!def.blocked` and `status === "launch"` come first, and neither is
+   * redundant with the provisioning check. A blocked piece should have no provisioning row at all, but
    * "should" is not a guarantee: a row written by hand, or left behind after
    * a blank was set aside, would otherwise flip a piece we cannot make to
    * purchasable. The authored decision wins over the recorded state. */
   const confirmed =
     !def.blocked &&
+    def.status === "launch" &&
     rec?.state === "created" &&
     typeof rec.provider_product_id === "number" &&
     Object.keys(rec.provider_variant_ids || {}).length > 0;
@@ -207,9 +231,16 @@ export function toStorefront(def: ProductDef, rec: ProvisionRecord | null, origi
     ],
     purchasable: confirmed,
     awaiting_blank: Boolean(def.blocked),
+    status: def.status,
     /* def.blocked.public, never def.blocked.note: the note names the
      * provider's suppliers and the shape of our catalog search. */
-    unavailable_reason: confirmed ? null : def.blocked ? def.blocked.public : unavailableReason(rec),
+    unavailable_reason: confirmed
+      ? null
+      : def.blocked
+        ? def.blocked.public
+        : def.status === "unreleased"
+          ? "A later drop."
+          : unavailableReason(rec),
   };
 }
 
