@@ -249,3 +249,65 @@ test('a stale snapshot stays visibly stale, and keeps its prices', () => {
   ), 'available');
   assert.equal(M.describeAge(2880), '2 days ago');
 });
+
+/* ---- provider readiness must never be a stale "no" ---------------------- */
+
+/** Capture what market.ts asks the network for, and answer it. */
+function stubFetch(countHeader, ok = true) {
+  const calls = [];
+  globalThis.fetch = async (url, init = {}) => {
+    calls.push({ url: String(url), init });
+    return {
+      ok,
+      headers: { get: (h) => (h.toLowerCase() === 'content-range' ? countHeader : null) },
+      json: async () => [],
+    };
+  };
+  return calls;
+}
+
+test('provider readiness cannot get stuck on a stale "not configured"', async (t) => {
+  const real = globalThis.fetch;
+  t.after(() => { globalThis.fetch = real; });
+
+  /* The production failure this pins: 352 observations in the table and the
+     site still saying "Market data not configured" because a cached false
+     from before the first ingest was still being served. The one moment this
+     answer ever changes is the one moment a cache is guaranteed wrong. */
+  const withRows = stubFetch('0-0/352');
+  assert.equal(await M.marketProviderLive(), true, 'observations exist, so the provider is live');
+
+  const req = withRows[0].init;
+  assert.equal(req.cache, 'no-store', 'readiness must be uncached');
+  assert.ok(!req.next?.revalidate, 'readiness must carry no revalidate window at all');
+
+  /* Uncached means uncached: a second call re-asks rather than replaying. */
+  await M.marketProviderLive();
+  assert.equal(withRows.length, 2, 'every call reaches the database');
+
+  /* And it still reports honestly when the table really is empty. */
+  const empty = stubFetch('*/0');
+  assert.equal(await M.marketProviderLive(), false, 'an empty table is genuinely not configured');
+  assert.equal(empty[0].init.cache, 'no-store');
+
+  /* A failed read is not evidence of a live provider. */
+  stubFetch('0-0/352', false);
+  assert.equal(await M.marketProviderLive(), false, 'a non-ok response must not read as live');
+});
+
+test('readiness, observation freshness and staleness stay three separate knobs', async (t) => {
+  const real = globalThis.fetch;
+  t.after(() => { globalThis.fetch = real; });
+
+  const calls = stubFetch('0-0/1');
+  await M.marketProviderLive();
+  await M.getMarketsFor(['bout-1'], new Map([['bout-1', { a: 'A', b: 'B' }]]));
+
+  const readiness = calls.find((c) => c.url.includes('limit=1'));
+  const observations = calls.find((c) => c.url.includes('market_key=eq.h2h'));
+
+  assert.equal(readiness.init.cache, 'no-store', 'readiness: uncached');
+  assert.equal(observations.init.next.revalidate, 60, 'observations: one minute');
+  assert.equal(M.STALE_AFTER_MINUTES, 720, 'staleness: twelve hours, and not a cache setting');
+  assert.notEqual(M.STALE_AFTER_MINUTES, observations.init.next.revalidate / 60);
+});

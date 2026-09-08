@@ -61,14 +61,31 @@ export function marketConfigured(): boolean {
  * label is not-configured rather than not-yet-posted, which would imply we
  * are watching a market we are not watching at all.
  *
- * Cached for an hour: this changes once, when the provider is turned on.
+ * Never cached, and the reason is asymmetry rather than freshness.
+ *
+ * This was cached for an hour on the reasoning that it flips once, when the
+ * provider is turned on. That is true and it is exactly the problem: the one
+ * moment the answer ever changes is the one moment the cache is guaranteed
+ * wrong, and it is wrong in the direction that tells every reader the product
+ * has no market feed while 352 observations sit in the table. It stuck in
+ * production for precisely that reason, on a page rendering fresh from a
+ * database that already had the data.
+ *
+ * A stale false here is a lie about the product. A stale true would merely be
+ * optimistic for a few minutes. The costs are not symmetric, so this one-row
+ * existence check pays for itself on every render rather than being cached.
+ *
+ * Readiness, observation freshness and staleness are three different
+ * questions and are deliberately not tuned together: this is uncached, the
+ * observation reads are short-lived, and STALE_AFTER_MINUTES is a judgement
+ * about the market rather than about caching.
  */
 export async function marketProviderLive(): Promise<boolean> {
   if (!marketConfigured()) return false;
   try {
     const r = await fetch(`${URL_}/rest/v1/ufc_market_observations?select=id&limit=1`, {
       headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, Accept: "application/json", Prefer: "count=exact" },
-      next: { revalidate: 3600 },
+      cache: "no-store",
     });
     if (!r.ok) return false;                    // table absent: provider never ran
     const total = Number((r.headers.get("content-range") || "/0").split("/")[1]);
@@ -362,12 +379,22 @@ export function movement(side: SidePrices | null, basis: "first" | "previous" = 
 
 /* ---- reads --------------------------------------------------------------- */
 
+/* Observation reads refresh on the minute.
+ *
+ * Separate from readiness above, and separate again from staleness: this is
+ * only how long a page may serve prices it already has. Sixty seconds is
+ * chosen against the ingest cadence rather than against the provider - the
+ * ingest is the only thing that can change these rows, it runs a few times a
+ * day, and it costs a credit, so a shorter window adds database reads and
+ * cannot add provider spend. Five minutes was the previous value and meant a
+ * fresh ingest could take five minutes to appear on a page that had just been
+ * told the provider was live. */
 async function rows<T>(q: string): Promise<T[]> {
   if (!marketConfigured()) return [];
   try {
     const r = await fetch(`${URL_}/rest/v1/${q}`, {
       headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, Accept: "application/json" },
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
     });
     if (!r.ok) return [];
     const j = await r.json();
