@@ -359,7 +359,15 @@ const titleMethod = (m) => {
 
 /* ---------- episode prose ---------- */
 
-const ROUND_WORDS = { first: 1, second: 2, third: 3, fourth: 4, fifth: 5, one: 1, two: 2, three: 3 };
+/* Rounds appear as words and as digits — "after three rounds" and "after 3
+ * rounds" both occur, sometimes in the same article. Accepting only words lost
+ * the round on every numeric one. */
+const ROUND_WORDS = {
+  first: 1, second: 2, third: 3, fourth: 4, fifth: 5,
+  one: 1, two: 2, three: 3, four: 4, five: 5,
+  1: 1, 2: 2, 3: 3, 4: 4, 5: 5,
+};
+const roundOf = (w) => ROUND_WORDS[String(w).toLowerCase()] ?? null;
 
 /**
  * Pull the fight results out of the episode summaries.
@@ -381,29 +389,71 @@ const METHOD_HEAD = /^(TKO|KO|SUB|Submission|Decision|Unanimous|Split|Majority|T
 
 /** Take the round and the time off the end of a method phrase. */
 function splitMethodTail(phrase) {
+  /* The round and the time sit at the end of the method phrase, and these
+   * articles write that ending at least six ways:
+   *
+   *   at 2:49 of the first round      at 2:49 in the third round
+   *   at 4:28 in round one            in round 2
+   *   after three rounds              in two rounds
+   *
+   * Handling only the first two left 101 methods with the round welded into
+   * them — "Unanimous decision in three rounds", "TKO (punches) in round 2" —
+   * which is both a wrong method string and a lost round. Ordered longest-match
+   * first so a pattern carrying a time is tried before the bare round forms.
+   */
+  const PATTERNS = [
+    // a time and a round
+    /\s+at\s+(?<time>:?\d{1,2}:\d{2})\s+(?:of|in|into)\s+(?:the\s+)?(?<round>\w+)\s+round\b/i,
+    /\s+at\s+(?<time>:?\d{1,2}:\d{2})\s+(?:of|in)\s+round\s+(?<round>\w+)\b/i,
+    /\s+after\s+(?<time>:?\d{1,2}:\d{2})\s+of\s+the\s+(?<round>\w+)\s+round\b/i,
+    /\s+\d+\s+minutes?\s+and\s+\d+\s+seconds?\s+into\s+the\s+(?<round>\w+)\s+round\b/i,
+    // a round, no time
+    /\s+at\s+the\s+end\s+of\s+the\s+(?<round>\w+)\s+round\b/i,
+    /,?\s+after\s+(?:going\s+to\s+)?(?:a|the)\s+(?<round>\w+)\s+round\b/i,
+    /\s+after\s+(?<round>\w+)\s+rounds?\b/i,
+    /\s+in\s+the\s+(?<round>\w+)\s+round\b/i,
+    /\s+in\s+round\s+(?<round>\w+)\b/i,
+    /\s+in\s+(?<round>\w+)\s+rounds?\b/i,
+    // a bare time, no round named. The trailing full stop of the sentence
+    // survives into the method phrase, so the anchor has to allow for it.
+    /\s+at\s+(?<time>:?\d{1,2}:\d{2})\s*\.?\s*$/i,
+  ];
+
+  /* "with 2:47 left" is time REMAINING, not time elapsed — a five-minute round
+   * ending with 2:47 left ended at 2:13. Converting it would mean assuming a
+   * round length the source does not state, so the phrase is removed from the
+   * method and no time is recorded. A clean method and an honest gap beats a
+   * derived number. */
+  const remaining = phrase.match(/\s+with\s+\d{1,2}:\d{2}\s+(?:left|remaining)\b/i);
+  if (remaining) {
+    return { method: phrase.slice(0, remaining.index).replace(/[\s.,]+$/, '').trim(), time: null, round: null };
+  }
+
+  /* A few lines put the round in FRONT — "First-round TKO (punches)" — where
+   * no tail pattern can reach it. */
+  const prefix = phrase.match(/^(?<round>first|second|third|fourth|fifth)-round\s+/i);
+  if (prefix) {
+    return {
+      method: phrase.slice(prefix[0].length).replace(/[\s.,]+$/, '').trim(),
+      time: null,
+      round: roundOf(prefix.groups.round),
+    };
+  }
+
   let method = phrase;
   let time = null;
   let round = null;
 
-  const at = method.match(/\s+at\s+(:?\d{1,2}:\d{2})\s+(?:of|in)\s+the\s+(\w+)\s+round\b/i);
-  if (at) {
-    time = at[1].replace(/^:/, '0:');
-    round = ROUND_WORDS[at[2].toLowerCase()] ?? null;
-    method = method.slice(0, at.index);
-  } else {
-    const after = method.match(/\s+after\s+(\w+)\s+rounds?\b/i);
-    if (after) {
-      round = ROUND_WORDS[after[1].toLowerCase()] ?? null;
-      method = method.slice(0, after.index);
-    } else {
-      const inRound = method.match(/\s+in\s+the\s+(\w+)\s+round\b/i);
-      if (inRound) {
-        round = ROUND_WORDS[inRound[1].toLowerCase()] ?? null;
-        method = method.slice(0, inRound.index);
-      }
-    }
+  for (const re of PATTERNS) {
+    const m = method.match(re);
+    if (!m) continue;
+    if (m.groups.time) time = m.groups.time.replace(/^:/, '0:');
+    if (m.groups.round) round = roundOf(m.groups.round);
+    method = method.slice(0, m.index);
+    break;
   }
-  return { method: method.replace(/[\s.]+$/, '').trim(), time, round };
+
+  return { method: method.replace(/[\s.,]+$/, '').trim(), time, round };
 }
 
 /* The formats these seasons actually used, as their own prose describes them.

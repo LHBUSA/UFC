@@ -196,9 +196,9 @@
               "a": "Mando Gutierrez",
               "b": "Cody Gibson",
               "winner": "Cody Gibson",
-              "method": "TKO (switch knee and punches) at 3:23 of round 1",
+              "method": "TKO (switch knee and punches)",
               "round": 1,
-              "time": null,
+              "time": "3:23",
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2023, which are complete for that year — 53 events, 569 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
@@ -266,9 +266,9 @@
               "a": "Roosevelt Roberts",
               "b": "Nate Jennerman",
               "winner": "Roosevelt Roberts",
-              "method": "KO (punches) at 0:08 of round 1",
+              "method": "KO (punches)",
               "round": 1,
-              "time": null,
+              "time": "0:08",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2023, which are complete for that year — 53 events, 569 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
