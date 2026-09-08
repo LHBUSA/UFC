@@ -1,6 +1,9 @@
 {
-  "generated_at": "2026-09-08T19:22:36.478Z",
-  "applied_boundary": "20260907000009_ufc_market.sql",
+  "generated_at": "2026-09-08T20:46:28.246Z",
+  "applied_boundary": "20260908000016_ufc_media_registry_videos.sql",
+  "renamed_after_apply": {
+    "20260906000006_ufc_media_registry_videos.sql": "20260908000016_ufc_media_registry_videos.sql"
+  },
   "root": [
     {
       "dir": "migrations",
@@ -163,55 +166,62 @@
       "file": "20260907000010_store_provisioning.sql",
       "version": "20260907000010",
       "slug": "store_provisioning",
-      "applied": false
+      "applied": true
     },
     {
       "dir": "supabase/migrations",
       "file": "20260908000010_ufc_model_predictions.sql",
       "version": "20260908000010",
       "slug": "ufc_model_predictions",
-      "applied": false
+      "applied": true
     },
     {
       "dir": "supabase/migrations",
       "file": "20260908000011_ufc_fighter_status.sql",
       "version": "20260908000011",
       "slug": "ufc_fighter_status",
-      "applied": false
+      "applied": true
     },
     {
       "dir": "supabase/migrations",
       "file": "20260908000012_ufc_judge_intelligence.sql",
       "version": "20260908000012",
       "slug": "ufc_judge_intelligence",
-      "applied": false
+      "applied": true
     },
     {
       "dir": "supabase/migrations",
       "file": "20260908000013_ufc_weigh_ins.sql",
       "version": "20260908000013",
       "slug": "ufc_weigh_ins",
-      "applied": false
+      "applied": true
     },
     {
       "dir": "supabase/migrations",
       "file": "20260908000014_referee_view_security.sql",
       "version": "20260908000014",
       "slug": "referee_view_security",
-      "applied": false
+      "applied": true
     },
     {
       "dir": "supabase/migrations",
       "file": "20260908000015_store_orders.sql",
       "version": "20260908000015",
       "slug": "store_orders",
-      "applied": false
+      "applied": true
     },
     {
       "dir": "supabase/migrations",
       "file": "20260908000016_ufc_media_registry_videos.sql",
       "version": "20260908000016",
       "slug": "ufc_media_registry_videos",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260908000017_model_store_view_security.sql",
+      "version": "20260908000017",
+      "slug": "model_store_view_security",
       "applied": false
     }
   ],
