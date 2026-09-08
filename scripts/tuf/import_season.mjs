@@ -386,10 +386,12 @@ const titleCase = (s) => clean(s).replace(/\b([a-z])/g, (c) => c.toUpperCase());
  * the link is unwrapped, which is after any splitting has happened. A real
  * suffix keeps its period: Leonard Gabriel Jr. is not a sentence.
  */
-const tidyName = (n) =>
-  /(?:[A-Z]|Jr|Sr|St|Dr|Mr|Ms)\.$/.test(String(n || '').trim())
-    ? String(n || '').trim()
-    : String(n || '').trim().replace(/\.$/, '').trim();
+const tidyName = (n) => {
+  /* A trailing asterisk is the source's own footnote marker on a roster entry,
+   * not part of anybody's name. */
+  const t = String(n || '').replace(/\s*\*+\s*$/, '').trim();
+  return /(?:[A-Z]|Jr|Sr|St|Dr|Mr|Ms)\.$/.test(t) ? t : t.replace(/\.$/, '').trim();
+};
 
 function competitor(cellRaw) {
   let name = tidyName(clean(cellRaw).replace(/\s*\*+\s*$/, ''));
@@ -466,7 +468,7 @@ function parseRosters(wt) {
     const one = line.match(/^\*(?!\*)\s*(.+)$/);
     const two = line.match(/^\*\*+\s*(.+)$/);
     if (one) {
-      const name = clean(one[1]).replace(/:$/, '');
+      const name = tidyName(clean(one[1]).replace(/:$/, ''));
       if (!name) continue;
       current = { name, roster: [] };
       teams.push(current);

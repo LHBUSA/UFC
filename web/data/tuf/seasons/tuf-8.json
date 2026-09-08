@@ -103,7 +103,7 @@
           "weight_class": "Light Heavyweight"
         },
         {
-          "name": "Eliot Marshall*",
+          "name": "Eliot Marshall",
           "weight_class": "Light Heavyweight"
         },
         {
@@ -140,7 +140,7 @@
           "weight_class": "Light Heavyweight"
         },
         {
-          "name": "Kyle Kingsbury*",
+          "name": "Kyle Kingsbury",
           "weight_class": "Light Heavyweight"
         },
         {
@@ -160,7 +160,7 @@
           "weight_class": "Lightweight"
         },
         {
-          "name": "Rolando Delgado*",
+          "name": "Rolando Delgado",
           "weight_class": "Lightweight"
         }
       ]
@@ -227,7 +227,7 @@
       ]
     },
     {
-      "name": "Unassigned *",
+      "name": "Unassigned",
       "roster": [
         {
           "name": "Antwain Britt"
