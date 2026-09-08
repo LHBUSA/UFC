@@ -108,6 +108,11 @@ function BoutRow({ b, linked, faces }: { b: TufBout; linked: Map<string, LinkedF
           <span className="tuf-res tuf-none">Result unavailable</span>
         )}
         <span className={`tuf-class tuf-class-${b.classification}`}>{CLASS_LABEL[b.classification]}</span>
+        {/* Season 21 was scored rather than bracketed, and what a win was worth
+          * rose through the season. Without the number the twelve bouts look
+          * like an unordered list; with it they read as the standings they
+          * were. No other season carries points, so no other season shows one. */}
+        {typeof b.points === "number" ? <span className="tuf-ep">{b.points} pts</span> : null}
         {b.episode ? <span className="tuf-ep">Episode {b.episode}</span> : null}
       </span>
       {(b.replacement || b.tournament_deciding) && (
