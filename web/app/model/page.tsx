@@ -86,7 +86,6 @@ export default async function ModelPage() {
             <h2>
               {live.status === "publishing" ? `${live.record?.wins}-${live.record?.losses}${live.record?.no_decision ? `-${live.record.no_decision}` : ""}`
                 : live.status === "publishing_ungraded" ? "Awaiting the first result"
-                : live.status === "unavailable" ? "Tracker not provisioned here"
                 : "Not publishing yet"}
             </h2>
             <p>
@@ -94,10 +93,18 @@ export default async function ModelPage() {
                 `Locked before the fight, graded after it, never edited in between. ${live.record?.locked_predictions ?? 0} picks locked to date.`}
             </p>
             <p style={{ marginTop: "var(--s-3)" }}>
-              A pick enters this record only once it has been written down and locked <em>before</em> the bout. Once locked, the
-              database refuses to change the probability, the pick, the model version or the feature vector — grading is the only
-              write that is still permitted, and it is permitted once. That is a storage-layer guarantee, not a promise made in
-              application code.
+              A pick enters this record only once it has been written down and locked <em>before</em> the bout — and the lock time
+              is the database&rsquo;s own clock, not a timestamp supplied by whatever wrote the row. From that moment the
+              probability, the pick, the model version and the feature vector are frozen: there is no permitted edit to a published
+              prediction at all. That is a storage-layer guarantee rather than a promise made in application code.
+            </p>
+            <p style={{ marginTop: "var(--s-3)" }}>
+              Results are kept separately, because a result is not a prediction. Combat-sports outcomes get overturned on appeal and
+              corrected by commissions, so a grade can be revised — as a new entry that supersedes the last one and has to say why.
+              The record you see follows the current entry; every superseded one stays on file.
+              {live.record && live.record.revised_grades > 0
+                ? ` ${live.record.revised_grades} result${live.record.revised_grades === 1 ? " has" : "s have"} been revised so far.`
+                : ""}
             </p>
           </div>
         </div>
@@ -109,6 +116,7 @@ export default async function ModelPage() {
           <Stat label="Brier" value={num3(live.record?.brier ?? null)} empty={live.record?.brier == null} sub="lower is better" />
           <Stat label="Last 30" value={live.recent ? `${live.recent.wins}-${live.recent.losses}` : "—"} empty={!live.recent} />
           <Stat label="No contest / draw" value={live.record ? String(live.record.no_decision) : "—"} empty={!live.record?.no_decision} />
+          <Stat label="Results revised" value={live.record ? String(live.record.revised_grades) : "—"} empty={!live.record?.revised_grades} sub="overturned or corrected" />
         </div>
 
         <p className="mdl-split-note">
@@ -240,31 +248,6 @@ export default async function ModelPage() {
           {MODEL.examples.map((e) => <ExampleCard key={e.bout_id} e={e} />)}
         </div>
 
-        {/* Every real example above shows the market row empty, because no
-            completed bout in this database has a price recorded before it
-            started. That leaves the populated state of the card unshown, so it
-            is shown here with invented numbers and said so twice - on the badge
-            and in the caption. Fabricating a fighter or a fight to fill the gap
-            would have been the wrong trade. */}
-        <div className="mdl-specimen" style={{ marginTop: "var(--s-5)", maxWidth: 560 }}>
-          <span className="mdl-specimen-tag">Specimen · invented numbers</span>
-          <ModelProbability
-            a={{ name: "Fighter A", prob: 0.618 }}
-            b={{ name: "Fighter B", prob: 0.382 }}
-            marketImpliedA={0.554}
-            marketBooks={7}
-            modelVersion={MODEL.model.model_version}
-            featureVersion={MODEL.model.feature_version}
-            sample={{ minPriorBouts: 9, minStatBouts: 8, featuresAvailable: 33, featuresTotal: 33 }}
-            kicker="Component specimen"
-            disclaimer="Not a pick. Not a fight. Layout only."
-          />
-          <p className="mdl-example-note">
-            The card with a market price attached. These figures are illustrative and describe no real bout — they exist because
-            the market comparison has no live example yet, and inventing a fighter to fill the gap would have been worse than
-            labelling a specimen as one.
-          </p>
-        </div>
       </section>
 
       {/* ---- where it is weak ---- */}

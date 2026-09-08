@@ -21,6 +21,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { cacheDir, readJsonl, writeJsonl } from './common.mjs';
 import { FEATURES, FEATURE_KEYS, FEATURE_VERSION, MODEL_VERSION } from './feature_spec.mjs';
 import { fitLogistic, fitScale, applyScale, predictOne } from './logistic.mjs';
@@ -260,5 +261,5 @@ function coefficientReport(folds) {
   }).sort((a, b) => Math.abs(b.mean_coefficient ?? 0) - Math.abs(a.mean_coefficient ?? 0));
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1].replace(/\\/g, '/')}`).href) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
 export { main as runBacktest, fitFold, winRateBaseline };

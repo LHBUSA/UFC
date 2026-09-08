@@ -191,6 +191,14 @@ completed bout in this database has a market observation, so N=0.**
 
 ---
 
+## A related guarantee, argued elsewhere
+
+This document is about the MODEL not seeing the future. The parallel question -
+whether a PUBLISHED pick was really written down before the fight - is a
+different mechanism with its own proof, because it rests on the database's clock
+rather than on the feature pipeline. See `docs/model/LIVE_CONTRACT.md` and the
+56 behavioural assertions in `migrations/tests/011_ufc_model_predictions.test.sql`.
+
 ## Files
 
 | File | Role |

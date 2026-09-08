@@ -15,7 +15,7 @@
 | Out-of-sample bouts | 7,047 |
 | Period scored | 2013-01-19 → 2026-09-05 |
 | Base rate (canonical corner one) | 50.83% |
-| Generated | 2026-09-08T17:44:41.196Z |
+| Generated | 2026-09-08T18:34:03.790Z |
 
 ## Headline: does v1 provide real signal?
 

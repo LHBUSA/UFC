@@ -66,7 +66,7 @@ export const MODEL = artifact as unknown as ModelArtifact;
 /** Status of the live publishing programme. Deliberately explicit: "we have
  *  not started" is a different sentence from "we have started and are 0-0",
  *  and the page must be able to say the right one. */
-export type LiveStatus = "not_publishing" | "publishing_ungraded" | "publishing" | "unavailable";
+export type LiveStatus = "not_publishing" | "publishing_ungraded" | "publishing";
 
 export type LiveRecord = {
   model_version: string;
@@ -85,6 +85,10 @@ export type LiveRecord = {
   mean_confidence: number | null;
   market_compared: number;
   mean_edge_pts: number | null;
+  /* Predictions whose result has been corrected since it was first graded.
+     Surfaced rather than hidden: a record that silently restates results is
+     worth less than one that says how many it has revised. */
+  revised_grades: number;
   first_locked_at: string | null;
   last_locked_at: string | null;
 };
@@ -116,14 +120,20 @@ export type LiveState = {
   reason: string;
 };
 
+/* One sentence, used for every reason the record is empty. A reader does not
+   need to know which of them applies, and the honest summary is the same in
+   all of them: nothing has been published, so there is nothing to show. */
+export const PRE_LAUNCH_REASON =
+  "No pick has been locked yet. The live record opens on the day the first prediction is published before a fight, and not a day earlier.";
+
 export function modelDbConfigured(): boolean {
   return Boolean(URL_ && KEY);
 }
 
-/* Reads are wrapped so that a missing table renders the honest empty state
- * rather than a 500. Migration 010 may not be applied in every environment,
- * and "the tracker has not been provisioned here" must look different from
- * "the model has no record", which is what the reason string carries. */
+/* Reads are wrapped so that a missing table renders the empty state rather
+ * than a 500. Migration 011 may not be applied in every environment, and the
+ * page must render either way - see getLiveState for why that difference is
+ * logged rather than shown. */
 async function read<T>(path: string): Promise<{ rows: T[]; missing: boolean }> {
   if (!modelDbConfigured()) return { rows: [], missing: true };
   try {
@@ -156,12 +166,18 @@ export async function getLiveState(modelVersion = MODEL.model.model_version): Pr
   ]);
 
   if (rec.missing) {
+    /* The tracker tables are not present in this environment. That is an
+       operational fact about a deployment, not something a reader of a fight
+       site should be shown: to them it is indistinguishable from "the model
+       has not started publishing", which is also true and is the sentence
+       that actually means something. The detail goes to the server log. */
+    console.warn("[model] live record views unavailable; rendering the pre-launch empty state");
     return {
-      status: "unavailable",
+      status: "not_publishing",
       record: null,
       recent: null,
       calibration: [],
-      reason: "The prediction tracker is not provisioned in this environment. Migration 010 has not been applied here, so there is no live record to read.",
+      reason: PRE_LAUNCH_REASON,
     };
   }
 
@@ -172,7 +188,7 @@ export async function getLiveState(modelVersion = MODEL.model.model_version): Pr
       record,
       recent: null,
       calibration: [],
-      reason: "No pick has been locked yet. The live record begins at zero on the day the first prediction is published before a fight, and not before.",
+      reason: PRE_LAUNCH_REASON,
     };
   }
   if (record.decided === 0) {
@@ -217,6 +233,28 @@ export function bandEvidence(p: number) {
   const band = bandOf(p);
   const row = MODEL.evidence.by_confidence_band.find((b) => b.band === band);
   return row ? { band, n: row.n, hit_rate: row.hit_rate, mean_confidence: row.mean_confidence } : { band, n: 0, hit_rate: null, mean_confidence: null };
+}
+
+/* The card's arithmetic, extracted from the component so it can be tested and
+   so there is exactly one place where model and market are subtracted. Both
+   figures on screen and the number between them cannot disagree if only one
+   function computes it. */
+export function pickSide<T extends { prob: number }>(a: T, b: T): { pick: T; aFavoured: boolean } {
+  const aFavoured = a.prob >= b.prob;
+  return { pick: aFavoured ? a : b, aFavoured };
+}
+
+/** De-vigged market probability on the side the MODEL picked, given the market
+ *  probability for corner A. Null in, null out: never estimated. */
+export function marketProbForPick(marketImpliedA: number | null | undefined, aFavoured: boolean): number | null {
+  if (marketImpliedA == null || !Number.isFinite(marketImpliedA)) return null;
+  return aFavoured ? marketImpliedA : 1 - marketImpliedA;
+}
+
+/** Model minus market on the picked side, in percentage points. */
+export function modelEdgePts(pickProb: number, marketPickProb: number | null): number | null {
+  if (marketPickProb == null || !Number.isFinite(marketPickProb)) return null;
+  return (pickProb - marketPickProb) * 100;
 }
 
 export const WEIGHT_SHORT: Record<string, string> = {

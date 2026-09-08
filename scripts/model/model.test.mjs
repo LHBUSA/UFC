@@ -19,6 +19,9 @@ import { brier, logLoss, accuracy, auc, calibration, byConfidenceBand, wilson, s
 import { impliedFromAmerican, consensusForBout } from './market_baseline.mjs';
 import { buildFromTables } from './build_features.mjs';
 import { cacheDir, readJsonl, daysBetween } from './common.mjs';
+import { gradeFor } from './grade_predictions.mjs';
+import { evaluate } from './publish_predictions.mjs';
+import { BAND, lockCutoff, hoursUntil } from './live.mjs';
 
 const near = (a, b, tol = 1e-9) => assert.ok(Math.abs(a - b) <= tol, `${a} !== ${b} (tol ${tol})`);
 
@@ -352,4 +355,70 @@ test('rebuilding features from the cache is byte-identical', { skip: hasDataset 
   ).rows;
   const text = rebuilt.map((r) => JSON.stringify(r)).join('\n') + '\n';
   assert.equal(createHash('sha256').update(text).digest('hex'), createHash('sha256').update(first).digest('hex'));
+});
+
+/* ------------------------------------------------- the live pipeline --- */
+
+const PRED = { pick_fighter_id: 'pick', fighter_a_id: 'pick', fighter_b_id: 'other' };
+
+test('a grade is derived from the official result and the pick, and nothing else', () => {
+  assert.deepEqual(gradeFor({ method: 'DEC_U', winner_id: 'pick' }, PRED), { result: 'WIN', winner_id: 'pick' });
+  assert.deepEqual(gradeFor({ method: 'KO_TKO', winner_id: 'other' }, PRED), { result: 'LOSS', winner_id: 'other' });
+  assert.deepEqual(gradeFor({ method: 'DRAW', winner_id: null }, PRED), { result: 'DRAW', winner_id: null });
+  assert.deepEqual(gradeFor({ method: 'NC', winner_id: null }, PRED), { result: 'NC', winner_id: null });
+  // A no-contest is a no-contest even when the source left a winner behind.
+  assert.deepEqual(gradeFor({ method: 'NC', winner_id: 'pick' }, PRED), { result: 'NC', winner_id: null });
+});
+
+test('an ungradeable result is left alone rather than guessed at', () => {
+  assert.equal(gradeFor(null, PRED), null, 'no result yet');
+  // A winner who is not one of the two corners is a data problem, not a grade.
+  assert.equal(gradeFor({ method: 'DEC_U', winner_id: 'someone-else' }, PRED), null);
+  // A decision with no winner recorded is incoherent; do not invent a draw.
+  assert.equal(gradeFor({ method: 'DEC_U', winner_id: null }, PRED), null);
+});
+
+test('the publish gate blocks everything it should', () => {
+  const soon = new Date(Date.now() + 72 * 3600_000).toISOString().slice(0, 10);
+  const past = new Date(Date.now() - 72 * 3600_000).toISOString().slice(0, 10);
+  const fresh = { hours: 1 };
+  const p = (over = {}) => ({
+    event_date: soon, fighter_1_name: 'A', fighter_2_name: 'B',
+    pick_fighter_id: 'pick', pick_probability: 0.62, confidence_band: '60-65',
+    pick_fighter_name: 'A', ...over,
+  });
+  const draft = (over = {}) => ({ id: 'd1', locked_at: null, pick_fighter_id: 'pick', pick_probability: 0.62, ...over });
+
+  assert.equal(evaluate(p(), draft(), fresh).ready, true, 'a fresh, matching, in-window draft should publish');
+
+  assert.equal(evaluate(p(), undefined, fresh).ready, false);
+  assert.match(evaluate(p(), undefined, fresh).reason, /no draft/);
+
+  assert.match(evaluate(p(), draft({ locked_at: '2026-01-01T00:00:00Z' }), fresh).reason, /already published/);
+  assert.match(evaluate(p({ event_date: past }), draft(), fresh).reason, /lock window closed/);
+  assert.match(evaluate(p(), draft(), { hours: 999 }).reason, /old/);
+
+  // The two drift guards. A draft whose pick has flipped is the dangerous one:
+  // the number would be published against the corner the model now prefers.
+  assert.match(evaluate(p(), draft({ pick_fighter_id: 'other' }), fresh).reason, /OTHER corner/);
+  assert.match(evaluate(p(), draft({ pick_probability: 0.70 }), fresh).reason, /differs from current data/);
+  // A trivial difference is not drift.
+  assert.equal(evaluate(p(), draft({ pick_probability: 0.6201 }), fresh).ready, true);
+});
+
+test('the lock cutoff is the start of the event UTC day, not the end of it', () => {
+  const cutoff = lockCutoff('2026-09-19');
+  assert.equal(cutoff.toISOString(), '2026-09-19T00:00:00.000Z');
+  // The whole point: 23:00 on fight night is AFTER the cutoff, because an early
+  // bout on that card may already have finished.
+  assert.ok(hoursUntil(cutoff, new Date('2026-09-19T23:00:00Z')) < 0);
+  assert.ok(hoursUntil(cutoff, new Date('2026-09-18T23:00:00Z')) > 0);
+});
+
+test('band labels agree between the scoring code and the schema enum', () => {
+  const allowed = new Set(['50-55', '55-60', '60-65', '65-70', '70-80', '80-100']);
+  for (const p of [0.5, 0.5499, 0.55, 0.5999, 0.6, 0.6499, 0.65, 0.6999, 0.7, 0.7999, 0.8, 0.999]) {
+    assert.ok(allowed.has(BAND(p)), `${p} -> ${BAND(p)}`);
+    assert.equal(BAND(p), BAND(1 - p), 'both corners of a bout must land in one band');
+  }
 });

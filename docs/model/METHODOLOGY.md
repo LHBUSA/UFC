@@ -15,7 +15,8 @@ Two constraints shaped every decision below, and they are not negotiable in v1:
    enforcement of this is in `docs/model/LEAKAGE.md`, and it is enforced by
    tests rather than asserted by comment.
 
-Results: `docs/model/BACKTEST_v1.md`. Schema: `migrations/010_ufc_model_predictions.sql`.
+Results: `docs/model/BACKTEST_v1.md`. Leakage proof: `docs/model/LEAKAGE.md`.
+Live record contract and schema: `docs/model/LIVE_CONTRACT.md`, `migrations/011_ufc_model_predictions.sql`.
 
 ---
 
@@ -250,9 +251,17 @@ independent variance left to explain. They are reported rather than corrected.
 Pinning a sign to match intuition would be fitting the report, not the fights.
 
 **Nothing is published.** `status: candidate`. No live prediction has been
-generated, locked, or written to a database. Migration 010 has not been applied.
-The `/model` page shows backtest output labelled as backtest output, and a live
+locked or written to a database, and migration 011 has not been applied. The
+`/model` page shows backtest output labelled as backtest output, and a live
 record that says it has not started.
+
+**The model disagrees with the market far more than its skill justifies.** Over
+the 31 upcoming bouts that currently carry a price, the median absolute
+disagreement is 10.7 percentage points. A model with a 5.5% Brier improvement
+over a coin, facing a line that does considerably better, should sit close to
+the market and differ occasionally. Differing by double digits on the typical
+fight is far more likely to be v1's own error than a discovered edge, and the
+generator prints that as a warning rather than as a feature.
 
 ---
 
@@ -271,25 +280,36 @@ node --test scripts/model/model.test.mjs  # unit and invariant tests
 The extract is ~85 MB; set `PBE_MODEL_CACHE` to keep it off the repo volume.
 Nothing in `scripts/model/` writes to the database.
 
-Schema tests run against a throwaway Postgres with 001, 009 and 010 applied:
+Live pipeline, all dry-run by default and all requiring `--apply` to write:
 
 ```bash
-psql -d <throwaway> -v ON_ERROR_STOP=1 -f scripts/model/schema_tests.sql
+node scripts/model/predict_upcoming.mjs               # score upcoming bouts
+node scripts/model/publish_predictions.mjs --event X  # lock, behind six gates
+node scripts/model/grade_predictions.mjs              # grade from stored results
+```
+
+Schema tests run against a throwaway Postgres with 001, 009 and 011 applied:
+
+```bash
+psql -d <throwaway> -v ON_ERROR_STOP=1 -f migrations/tests/011_ufc_model_predictions.test.sql
 ```
 
 ---
 
 ## 8. Next, in order of expected value
 
-1. **Let the market comparison populate.** It is the only benchmark that tells us
+1. **Add `ufc_events.event_start_at`.** The lock window is currently a full day
+   earlier than it needs to be, because there is no trustworthy bout start time
+   to close it against. See `docs/model/LIVE_CONTRACT.md`.
+2. **Let the market comparison populate.** It is the only benchmark that tells us
    whether v1 is worth publishing against a line rather than merely worth
    publishing. Until then the question is open.
-2. **Stance as-of history** in the Fight DNA layer, closing the one documented
+3. **Stance as-of history** in the Fight DNA layer, closing the one documented
    approximation in section 1.
-3. **Opponent-adjusted metric quality, not just win rate.** Strength of schedule
+4. **Opponent-adjusted metric quality, not just win rate.** Strength of schedule
    currently uses the opponent's record; using their as-of DNA metrics is
    defensible and better, and the snapshots already support it.
-4. **Bout-context interactions** — five-round bouts, short notice, layoff-by-age —
+5. **Bout-context interactions** — five-round bouts, short notice, layoff-by-age —
    as antisymmetric interaction terms rather than symmetric main effects.
-5. **Method and round distributions**, which is where prop pricing actually
+6. **Method and round distributions**, which is where prop pricing actually
    lives; a win probability is the least interesting thing a fight model can say.

@@ -16,7 +16,7 @@
  * plainly instead of showing a placeholder, and a low-sample corner is labelled
  * low-sample rather than quietly averaged into confidence it has not earned.
  */
-import { bandEvidence, pct, pts, type ModelSide } from "@/lib/model";
+import { bandEvidence, marketProbForPick, modelEdgePts, pct, pickSide, pts, type ModelSide } from "@/lib/model";
 
 export type ModelProbabilityProps = {
   a: ModelSide;
@@ -48,15 +48,12 @@ export function ModelProbability({
   a, b, marketImpliedA = null, marketBooks = null, modelVersion, featureVersion,
   sample, settled, kicker, disclaimer,
 }: ModelProbabilityProps) {
-  const aFavoured = a.prob >= b.prob;
-  const pick = aFavoured ? a : b;
+  const { pick, aFavoured } = pickSide(a, b);
   const evidence = bandEvidence(a.prob);
-
-  const marketPick = marketImpliedA == null ? null : aFavoured ? marketImpliedA : 1 - marketImpliedA;
-  // Percentage points, model minus market, on the side the model picked. The
-  // subtraction happens here and nowhere else so the two figures on screen and
-  // the number between them cannot disagree.
-  const edge = marketPick == null ? null : (pick.prob - marketPick) * 100;
+  // The arithmetic lives in lib/model.ts, tested, so that the two figures on
+  // screen and the number between them cannot drift apart.
+  const marketPick = marketProbForPick(marketImpliedA, aFavoured);
+  const edge = modelEdgePts(pick.prob, marketPick);
 
   const thin = sample && sample.minStatBouts < 3;
 

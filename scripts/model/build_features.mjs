@@ -33,6 +33,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { cacheDir, readJsonl, writeJsonl, num, daysBetween, round } from './common.mjs';
 import { FEATURE_KEYS, FEATURE_VERSION } from './feature_spec.mjs';
 
@@ -388,4 +389,4 @@ function main() {
   console.log(`-> ${file}`);
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1].replace(/\\/g, '/')}`).href) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
