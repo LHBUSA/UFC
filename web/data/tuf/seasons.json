@@ -91,7 +91,31 @@
       "finale_date": "2005-04-09",
       "coverage": "bracket_partial",
       "season_state": "completed",
-      "detail": "tuf-1"
+      "detail": "tuf-1",
+      "final_bouts": [
+        {
+          "weight_class": "Light Heavyweight",
+          "a": "Forrest Griffin",
+          "b": "Stephan Bonnar",
+          "winner": "Forrest Griffin",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
+          "date": "2005-04-09",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        },
+        {
+          "weight_class": "Middleweight",
+          "a": "Diego Sanchez",
+          "b": "Kenny Florian",
+          "winner": "Diego Sanchez",
+          "method": "KO/TKO",
+          "round": 1,
+          "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
+          "date": "2005-04-09",
+          "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+        }
+      ]
     },
     {
       "slug": "tuf-2",
