@@ -27,6 +27,16 @@
       "field": "final_method_and_opponent_name",
       "detail": "Our own records and the season source describe the same bout differently. Both agree on round 2 at twenty seconds and on Nate Diaz winning. The source calls it a TKO from a shoulder injury; UFC Stats records it as a submission. And the opponent is 'Manny Gamburyan' in the source and 'Manvel Gamburyan' in ufc_fighters — the same man under two spellings. Both readings are kept; neither is corrected into the other.",
       "retrieved": "2026-09-07"
+    },
+    {
+      "field": "gamburyan_name",
+      "detail": "The season source calls him Manny Gamburyan; our fighter roster and ufcstats call him Manvel Gamburyan. One man, two spellings — the archive keeps the source’s and records the roster’s alongside it, so a lookup on either resolves. Found because the classification check reported the final as unverifiable when the bout was in our records all along.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "final_method_wording",
+      "detail": "Our result row records the final as a submission; the season source records a TKO on a shoulder injury. Both describe the same bout on the same card — Gamburyan’s shoulder dislocated and the fight ended there — so this is two descriptions of one finish, not two fights. Recorded rather than reconciled, because neither source is wrong about what happened.",
+      "retrieved": "2026-09-08"
     }
   ],
   "coaches": [
@@ -198,7 +208,9 @@
               "time": "2:09",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "filmed outside a sanctioned card"
+              "classification_source": "filmed outside a sanctioned card",
+              "a_in_records": "Manvel Gamburyan",
+              "winner_in_records": "Manvel Gamburyan"
             },
             {
               "a": "Nate Diaz",
@@ -317,7 +329,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed outside a sanctioned card"
+              "classification_source": "filmed outside a sanctioned card",
+              "a_in_records": "Manvel Gamburyan",
+              "winner_in_records": "Manvel Gamburyan"
             }
           ]
         },
@@ -334,7 +348,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed outside a sanctioned card"
+              "classification_source": "filmed outside a sanctioned card",
+              "a_in_records": "Manvel Gamburyan",
+              "winner_in_records": "Manvel Gamburyan"
             },
             {
               "a": "Nate Diaz",
@@ -369,7 +385,8 @@
                 "source": "season record",
                 "method": "TKO (shoulder injury)",
                 "opponent": "Manny Gamburyan"
-              }
+              },
+              "b_in_records": "Manvel Gamburyan"
             }
           ]
         }

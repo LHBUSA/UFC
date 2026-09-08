@@ -12,18 +12,6 @@
     "retrieved": "2026-09-08",
     "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
   },
-  "_conflicts": [
-    {
-      "field": "Tournament_round_of_16",
-      "detail": "The source's bracket has a slot holding only Melinda Fábián, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Tournament_quarter_final",
-      "detail": "The source's bracket has a slot holding only Barb Honchak, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    }
-  ],
   "coaches": [
     {
       "team": "Team Alvarez",
@@ -224,6 +212,18 @@
               "seeds": "2 vs 15"
             },
             {
+              "a": "Melinda Fábián",
+              "b": "Rachael Ostovich-Berdon",
+              "winner": "Rachael Ostovich-Berdon",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "seeds": "7 vs 10"
+            },
+            {
               "a": "Montana Stewart",
               "b": "Ariel Beck",
               "winner": "Montana Stewart",
@@ -276,6 +276,18 @@
               "classification": "unverified",
               "classification_source": null,
               "seeds": "12 vs 4"
+            },
+            {
+              "a": "Barb Honchak",
+              "b": "Rachael Ostovich-Berdon",
+              "winner": "Barb Honchak",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "seeds": "2 vs 10"
             },
             {
               "a": "Montana Stewart",

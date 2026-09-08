@@ -15,8 +15,8 @@
   },
   "_conflicts": [
     {
-      "field": "Middleweight_final",
-      "detail": "The source's tournament final for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "field": "Welterweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     },
     {
@@ -193,9 +193,9 @@
               "classification_source": null
             },
             {
-              "a": "{{nowrap| Oliver Aubin-Mercier}}",
+              "a": "Oliver Aubin-Mercier",
               "b": "Jake Matthews",
-              "winner": "{{nowrap| Oliver Aubin-Mercier}}",
+              "winner": "Oliver Aubin-Mercier",
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
@@ -222,8 +222,8 @@
             },
             {
               "a": "Richard Walsh",
-              "b": "{{nowrap| Olivier Aubin-Mercier}}",
-              "winner": "{{nowrap| Olivier Aubin-Mercier}}",
+              "b": "Olivier Aubin-Mercier",
+              "winner": "Olivier Aubin-Mercier",
               "method": "Submission",
               "round": 1,
               "time": null,
@@ -231,7 +231,9 @@
               "classification": "unverified",
               "classification_source": null
             }
-          ]
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
         },
         {
           "stage": "final",
@@ -239,7 +241,7 @@
           "bouts": [
             {
               "a": "Chad Laprise",
-              "b": "{{nowrap| Olivier Aubin-Mercier}}",
+              "b": "Olivier Aubin-Mercier",
               "winner": "Chad Laprise",
               "method": "Decision (split)",
               "round": 3,
@@ -341,7 +343,7 @@
           "bouts": [
             {
               "a": "Elias Theodorou",
-              "b": "{{nowrap| Sheldon Westcott}}",
+              "b": "Sheldon Westcott",
               "winner": "Elias Theodorou",
               "method": "TKO",
               "round": 2,
@@ -352,9 +354,7 @@
               "on_finale_card": true,
               "tournament_deciding": true
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+          ]
         }
       ]
     }

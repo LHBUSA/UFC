@@ -253,23 +253,46 @@ test("every season has a unique slug in a declared edition, and the internationa
 /* ---- finale matching: regressions for two real false positives ---------- */
 
 test("a champion merely appearing on a card is not a finale match", () => {
-  /* Both of these were linked by an earlier pass that matched on a champion
-   * being somewhere on a card. Chad Laprise fought Yosdenis Cedeno that night,
-   * not his tournament final; Zhang Lipeng fought Brendan O'Reilly, not Wang
-   * Sai. Named explicitly so neither can come back. */
-  const rejected: Array<[string, string]> = [
-    ["tuf-nations-1", "UFC Fight Night: MacDonald vs Saffiedine"],
-    ["tuf-china-1", "UFC Fight Night: Bisping vs Le"],
+  /* Two seasons were once linked by matching a champion to any card he
+   * appeared on. Chad Laprise fought Yosdenis Cedeno that night, not his
+   * tournament final; Zhang Lipeng fought Brendan O'Reilly, not Wang Sai.
+   *
+   * Both seasons are now resolved, so this can no longer assert that they stay
+   * empty — that was a statement about how much data we had, not about what
+   * counts as evidence. What it asserts instead is the rule itself, which
+   * outlives the gap: the two wrong PAIRINGS may never appear as a verified
+   * final, and a season with no verified final keeps an empty link.
+   *
+   * TUF China makes the distinction concrete. Its featherweight final really
+   * was on UFC Fight Night: Bisping vs Le — the same card the bad match once
+   * picked — but between Guangyou Ning and Jianping Yang, who are not Zhang
+   * Lipeng. Banning the card would now reject a correct finding; banning the
+   * pairing rejects only the error. */
+  const forbidden: Array<[string, string, string]> = [
+    ["tuf-nations-1", "Chad Laprise", "Yosdenis Cedeno"],
+    ["tuf-china-1", "Zhang Lipeng", "Brendan O'Reilly"],
   ];
-  for (const [slug, wrongCard] of rejected) {
+  const fold = (n: string) => n.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  for (const [slug, a, b] of forbidden) {
     const s = seasons.find((x) => x.slug === slug)!;
-    assert.notEqual(s.finale_event, wrongCard, `${slug} must not be linked to ${wrongCard}`);
-    assert.equal(s.finale_event, null, `${slug}: an unverified finale link stays empty`);
-    assert.equal(s.finale_date, null);
-    assert.ok(
-      (s as Record<string, unknown>).unresolved_finale,
-      `${slug}: a withdrawn match must record what was wrong and what blocks it`,
-    );
+    const finals = ((s as Record<string, unknown>).final_bouts ?? []) as Array<{ a: string; b: string }>;
+    for (const f of finals) {
+      const pair = [fold(f.a), fold(f.b)].sort().join("|");
+      assert.notEqual(
+        pair,
+        [fold(a), fold(b)].sort().join("|"),
+        `${slug}: ${a} versus ${b} was never a tournament final and must not be recorded as one`,
+      );
+    }
+  }
+
+  /* And the general form: no verified final, no link. */
+  for (const s of seasons) {
+    const finals = ((s as Record<string, unknown>).final_bouts ?? []) as unknown[];
+    if (finals.length) continue;
+    if ((s as Record<string, unknown>).champion_verification_blocked) continue;
+    assert.equal(s.finale_event, null, `${s.slug}: an unverified finale link stays empty`);
+    assert.equal(s.finale_date, null, `${s.slug}: an unverified finale date stays empty`);
   }
 });
 

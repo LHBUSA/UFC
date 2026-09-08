@@ -13,23 +13,6 @@
     "retrieved": "2026-09-08",
     "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
   },
-  "_conflicts": [
-    {
-      "field": "Welterweight_quarter_final",
-      "detail": "The source's quarter-finals for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Flyweight_semi_final",
-      "detail": "The source's bracket has a slot holding only Alibi Idiris, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Flyweight_quarter_final",
-      "detail": "The source's quarter-finals for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    }
-  ],
   "coaches": [
     {
       "team": "Team Cormier",
@@ -184,6 +167,17 @@
           "label": "Quarter-finals",
           "bouts": [
             {
+              "a": "Jefferson Creighton",
+              "b": "Andreeas Binder",
+              "winner": "Jefferson Creighton",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
               "a": "Rodrigo Sezinando",
               "b": "Diego Bianchini",
               "winner": "Rodrigo Sezinando",
@@ -215,6 +209,23 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Jefferson Creighton",
+              "b": "Rodrigo Sezinando",
+              "winner": "Rodrigo Sezinando",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
             },
             {
               "a": "Daniil Donchenko",
@@ -227,9 +238,26 @@
               "classification": "unverified",
               "classification_source": null
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts."
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Daniil Donchenko",
+              "b": "Rodrigo Sezinando",
+              "winner": "Daniil Donchenko",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
         }
       ]
     },
@@ -274,6 +302,23 @@
               "classification_source": null
             },
             {
+              "a": "Tumelo Manyamala",
+              "b": "Roybert Echeverria",
+              "winner": "Roybert Echeverria",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
               "a": "Joseph Morales",
               "b": "Imanol Rodriguez",
               "winner": "Joseph Morales",
@@ -283,15 +328,38 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null
+            },
+            {
+              "a": "Alibi Idiris",
+              "b": "Roybert Echeverria",
+              "winner": "Alibi Idiris",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts."
+          ]
         },
         {
-          "stage": "semi_final",
-          "label": "Semi-finals",
-          "bouts": []
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Joseph Morales",
+              "b": "Alibi Idiris",
+              "winner": "Joseph Morales",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
         }
       ]
     }

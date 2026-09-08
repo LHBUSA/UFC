@@ -15,32 +15,7 @@
   },
   "_conflicts": [
     {
-      "field": "Featherweight_quarter_final",
-      "detail": "The source's bracket has a slot holding only Bekhzod Usmonov, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
       "field": "Featherweight_semi_final",
-      "detail": "The source's bracket has a slot holding only Kaan Ofli, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Middleweight_quarter_final",
-      "detail": "The source's bracket has a slot holding only Omran Chaaban, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Middleweight_semi_final",
-      "detail": "The source's bracket has a slot holding only Paddy McCorry, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Middleweight_final",
-      "detail": "The source's bracket has a slot holding only Ryan Loder, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Middleweight_semi_final",
       "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     }
@@ -232,6 +207,17 @@
               "classification_source": null
             },
             {
+              "a": "Bekhzod Usmonov",
+              "b": "Žygimantas Ramaška",
+              "winner": "Žygimantas Ramaška",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
               "a": "Mairon Santos",
               "b": "Edwin Cooper Jr.",
               "winner": "Mairon Santos",
@@ -258,6 +244,39 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null
+            },
+            {
+              "a": "Guillermo Torres",
+              "b": "Mairon Santos",
+              "winner": "Mairon Santos",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Kaan Ofli",
+              "b": "Mairon Santos",
+              "winner": "Mairon Santos",
+              "method": "KO/TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "fight_date": "2024-08-24",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+              "on_finale_card": true,
+              "tournament_deciding": true
             }
           ]
         }
@@ -270,6 +289,17 @@
           "stage": "quarter_final",
           "label": "Quarter-finals",
           "bouts": [
+            {
+              "a": "Omran Chaaban",
+              "b": "Shamidkhan Magomedov",
+              "winner": "Omran Chaaban",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
             {
               "a": "Tom Theocharis",
               "b": "Ryan Loder",
@@ -319,15 +349,38 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null
+            },
+            {
+              "a": "Paddy McCorry",
+              "b": "Robert Valentin Frey",
+              "winner": "Robert Valentin Frey",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+          ]
         },
         {
           "stage": "final",
           "label": "Tournament final",
-          "bouts": []
+          "bouts": [
+            {
+              "a": "Ryan Loder",
+              "b": "Robert Valentin Frey",
+              "winner": "Ryan Loder",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
         }
       ]
     }

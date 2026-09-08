@@ -60,10 +60,39 @@ if (!PAGE) { console.error(`no source article recorded for ${SLUG} in web/data/t
 
 /* ---------- wikitext helpers ---------- */
 
+/* Templates come in two kinds and must not be treated alike.
+ *
+ * Most are decoration — a flag, a coloured square — and the whole thing goes.
+ * A few WRAP the text they are given, and {{nowrap}} is the one that matters
+ * here: the source writes
+ *
+ *   {{nowrap|{{flagicon|CAN}} '''Oliver Aubin-Mercier'''}}
+ *
+ * so deleting every template outright deletes the fighter. Surveying the
+ * bracket blocks of all forty-four articles turns up exactly five wrappers —
+ * nowrap, center, nobold, small, nts — against nine hundred-odd decorations,
+ * so the wrappers are unwrapped by name and everything else is dropped.
+ *
+ * Both passes repeat until the string stops changing, because these nest and a
+ * single left-to-right scan only ever reaches the innermost one. That is what
+ * left "{{nowrap| Olivier Aubin-Mercier}}" sitting in the archive as a
+ * fighter's name: the inner {{flagicon}} was removed and the outer wrapper was
+ * then behind the scan position and never reconsidered.
+ */
+const WRAPPERS = /\{\{\s*(?:nowrap|center|nobold|small|nts)\s*\|([^{}]*)\}\}/gi;
+
+const stripTemplates = (s) => {
+  let out = String(s || '');
+  for (let i = 0; i < 8; i += 1) {
+    const before = out;
+    out = out.replace(WRAPPERS, '$1').replace(/\{\{[^{}]*\}\}/g, ' ');
+    if (out === before) break;
+  }
+  return out;
+};
+
 const clean = (s) =>
-  String(s || '')
-    .replace(/\{\{color box\|[^}]*\}\}/gi, '')
-    .replace(/\{\{[^{}]*\}\}/g, '')
+  stripTemplates(s)
     .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2')
     .replace(/\[\[([^\]]+)\]\]/g, '$1')
     .replace(/<ref[^>]*>[\s\S]*?<\/ref>/gi, '')

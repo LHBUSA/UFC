@@ -15,21 +15,6 @@
   },
   "_conflicts": [
     {
-      "field": "Heavyweight_quarter_final",
-      "detail": "The source's bracket has a slot holding only Ben Sosoli, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Heavyweight_semi_final",
-      "detail": "The source's bracket has a slot holding only Maurice Greene, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Heavyweight_final",
-      "detail": "The source's bracket has a slot holding only Justin Frazier, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
-      "retrieved": "2026-09-08"
-    },
-    {
       "field": "Women's Featherweight_semi_final",
       "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
@@ -200,6 +185,17 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null
+            },
+            {
+              "a": "Ben Sosoli",
+              "b": "Juan Espino",
+              "winner": "Juan Espino",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
             }
           ]
         },
@@ -217,13 +213,39 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null
+            },
+            {
+              "a": "Maurice Greene",
+              "b": "Juan Espino",
+              "winner": "Juan Espino",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
             }
           ]
         },
         {
           "stage": "final",
           "label": "Tournament final",
-          "bouts": []
+          "bouts": [
+            {
+              "a": "Justin Frazier",
+              "b": "Juan Espino",
+              "winner": "Juan Espino",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "fight_date": "2018-11-30",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
         }
       ]
     },

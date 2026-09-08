@@ -1160,7 +1160,7 @@
       "winner_note": "The winner received the inaugural UFC Women's Flyweight Championship.",
       "finale_event": "The Ultimate Fighter: A New World Champion Finale",
       "finale_date": "2017-12-01",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1542,7 +1542,7 @@
       "completion_unverified": true,
       "finale_event": null,
       "finale_date": null,
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "detail": "tuf-33"
     },
@@ -1688,7 +1688,7 @@
       ],
       "finale_event": "UFC Fight Night: Miocic vs Maldonado",
       "finale_date": "2014-05-31",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1953,17 +1953,40 @@
           "fighter": "Zhang Lipeng"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC Fight Night: Kim vs Hathaway",
+      "finale_date": "2014-03-01",
       "coverage": "bracket_partial",
       "season_state": "completed",
-      "unresolved_finale": {
-        "withdrawn_match": "UFC Fight Night: Bisping vs Le (2014-08-23)",
-        "why_wrong": "Matched because Zhang Lipeng appeared on that card. He fought Brendan O'Reilly there, not his tournament final.",
-        "candidate_card": "UFC Fight Night: Kim vs Hathaway (2014-03-01)",
-        "blocker": "The card exists in our events, but the final bout Zhang Lipeng vs Wang Sai is not in ufc_bouts and Wang Sai has no fighter row at all. Left unresolved."
-      },
-      "detail": "tuf-china-1"
+      "detail": "tuf-china-1",
+      "finale_note": "This season’s two finals were contested five months apart on different cards: the welterweight final on 2014-03-01, the featherweight final on 2014-08-23. Each final carries its own event and date.",
+      "final_bouts": [
+        {
+          "weight_class": "Welterweight",
+          "a": "Zhang Lipeng",
+          "b": "Sai Wang",
+          "winner": "Zhang Lipeng",
+          "method": "Decision - Split",
+          "round": 3,
+          "event": "UFC Fight Night: Kim vs Hathaway",
+          "date": "2014-03-01",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
+          "name_in_archive": "Wang Sai"
+        },
+        {
+          "weight_class": "Featherweight",
+          "a": "Guangyou Ning",
+          "b": "Jianping Yang",
+          "winner": "Guangyou Ning",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC Fight Night: Bisping vs Le",
+          "date": "2014-08-23",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
+          "name_in_archive": "Ning Guangyou"
+        }
+      ],
+      "finale_link_basis": "Resolved after B-2014 completed. The block was never the card: our roster writes these fighters given-name-first (Sai Wang, Guangyou Ning, Jianping Yang) where the season record writes family-name-first, so a lookup on the archive spelling found nothing. Both spellings are kept.",
+      "china_note": "Worth recording precisely because the earlier bad match also pointed at UFC Fight Night: Bisping vs Le. That match was wrong — it was made because Zhang Lipeng appeared on the card, fighting Brendan O’Reilly rather than a final. The featherweight final genuinely was on that card, between two different men. A right answer reached by wrong reasoning is still wrong reasoning."
     },
     {
       "slug": "tuf-nations-1",
@@ -1989,17 +2012,36 @@
           "fighter": "Elias Theodorou"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC Fight Night: Bisping vs Kennedy",
+      "finale_date": "2014-04-16",
       "coverage": "bracket_partial",
       "season_state": "completed",
-      "unresolved_finale": {
-        "withdrawn_match": "UFC Fight Night: MacDonald vs Saffiedine (2014-10-04)",
-        "why_wrong": "Matched because Chad Laprise appeared on that card. He fought Yosdenis Cedeno there, not his tournament final. Champion-on-card is not evidence of a final.",
-        "candidate_card": "UFC Fight Night: Bisping vs Kennedy (2014-04-16)",
-        "blocker": "The card exists in our events, but the final bout Chad Laprise vs Olivier Aubin-Mercier is not in ufc_bouts — the 2014 cards are still ahead of the historical backfill. Left unresolved rather than linked to the wrong card."
-      },
-      "detail": "tuf-nations-1"
+      "detail": "tuf-nations-1",
+      "final_bouts": [
+        {
+          "weight_class": "Welterweight",
+          "a": "Chad Laprise",
+          "b": "Olivier Aubin-Mercier",
+          "winner": "Chad Laprise",
+          "method": "Decision - Split",
+          "round": 3,
+          "event": "UFC Fight Night: Bisping vs Kennedy",
+          "date": "2014-04-16",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record"
+        },
+        {
+          "weight_class": "Middleweight",
+          "a": "Elias Theodorou",
+          "b": "Sheldon Westcott",
+          "winner": "Elias Theodorou",
+          "method": "KO/TKO",
+          "round": 2,
+          "event": "UFC Fight Night: Bisping vs Kennedy",
+          "date": "2014-04-16",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record"
+        }
+      ],
+      "finale_link_basis": "Resolved once window B-2014 finished loading. Both finals are on the card the season record named as the candidate all along; what was missing was the data, not the identification."
     },
     {
       "slug": "tuf-smashes-1",

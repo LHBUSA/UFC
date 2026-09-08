@@ -100,7 +100,27 @@ const methodFamily = (m) => {
  * Undecidable stays undecidable: with no method or round recorded on our side
  * the answer is null, and the caller reports rather than resolves.
  */
-function sameBout(archiveBout, row, result) {
+function sameBout(archiveBout, row, result, ctx = {}) {
+  const date = row?.ufc_events?.event_date || null;
+
+  /* Bout-specific evidence first, before any comparison of wording. A
+   * tournament final was contested on the finale card by definition, so a
+   * result row on that card IS that bout — there is no second meeting to
+   * confuse it with. A house-round bout was not on the card at all, so a row
+   * there is necessarily a different fight between the same two men.
+   *
+   * This is the difference between the two cases that look identical from the
+   * outside. TUF 5's final and TUF 6's round of 16 each match exactly one row
+   * on a finale card and each disagree with it about the method, so neither
+   * the number of rows nor the wording separates them. Their stage does.
+   *
+   * Both spellings of a shoulder giving out are the same fight: our records
+   * call Diaz over Gamburyan a submission, the season source calls it a TKO on
+   * a shoulder injury. Same night, same card, same bout, described twice. */
+  const isFinal = archiveBout.on_finale_card === true || ctx.stage === 'final';
+  if (ctx.finaleDate && date === ctx.finaleDate) return isFinal;
+  if (isFinal && ctx.finaleDate && date && date !== ctx.finaleDate) return false;
+
   const mA = methodFamily(archiveBout.method);
   const mB = methodFamily(result?.method_raw);
   if (!mA || !mB) return null;
@@ -126,6 +146,30 @@ async function fighterId(name) {
     const surname = fold(name).split(' ').pop();
     const loose = await rest(`ufc_fighters?select=id,name&name=ilike.${encodeURIComponent(`%${surname}%`)}&limit=60`);
     hit = loose.find((r) => fold(r.name) === k) || null;
+
+    /* Two remaining ways the same person is written differently, both real and
+     * both narrow. Our roster writes many Chinese names given-name-first where
+     * the season sources write family-name-first, so a two-token name is also
+     * tried reversed. And a shortened first name ("Manny" for "Manvel") is
+     * accepted only when the surname matches exactly and exactly one candidate
+     * remains — one surviving candidate is an identification, several is an
+     * ambiguity and is left unresolved. */
+    if (!hit) {
+      const parts = fold(name).split(' ');
+      if (parts.length === 2) {
+        const flipped = `${parts[1]} ${parts[0]}`;
+        hit = loose.find((r) => fold(r.name) === flipped) || null;
+        if (!hit) {
+          const byFlip = await rest(`ufc_fighters?select=id,name&name=ilike.${encodeURIComponent(`%${parts[0]}%`)}&limit=60`);
+          hit = byFlip.find((r) => fold(r.name) === flipped) || null;
+        }
+      }
+      if (!hit && parts.length >= 2) {
+        const surnameExact = parts[parts.length - 1];
+        const sameSurname = loose.filter((r) => fold(r.name).split(' ').pop() === surnameExact);
+        if (sameSurname.length === 1) hit = sameSurname[0];
+      }
+    }
   }
   idCache.set(k, hit);
   return hit;
@@ -204,8 +248,9 @@ const main = async () => {
            * A row whose result disagrees with the archive's is another meeting
            * of the same two fighters, not a contradiction about this one. */
           const resultOf = (r) => (Array.isArray(r.ufc_bout_results) ? r.ufc_bout_results[0] : r.ufc_bout_results);
-          const matching = (hit.rows || []).filter((r) => sameBout(bout, r, resultOf(r)) !== false);
-          const rematches = (hit.rows || []).filter((r) => sameBout(bout, r, resultOf(r)) === false);
+          const ctx = { stage: st.stage, finaleDate: season.finale?.event_date || null };
+          const matching = (hit.rows || []).filter((r) => sameBout(bout, r, resultOf(r), ctx) !== false);
+          const rematches = (hit.rows || []).filter((r) => sameBout(bout, r, resultOf(r), ctx) === false);
           const inWindowMatch = matching.length > 0;
 
           if (rematches.length) {
