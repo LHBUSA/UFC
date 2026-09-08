@@ -9,7 +9,7 @@ import {
   updateLine, timelineKind, clockTime, WEIGHIN_REVALIDATE,
   type WeighIn,
 } from "@/lib/weighins";
-import { eventSlug, fighterSlug } from "@/lib/slug";
+import { fighterSlug } from "@/lib/slug";
 import { fmtDate } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { WeighInAutoRefresh } from "@/components/WeighInAutoRefresh";
@@ -23,7 +23,7 @@ export const revalidate = 15;
 export const metadata: Metadata = {
   title: "UFC Official Weigh-In Results — Live Desk",
   description:
-    "Live official UFC weigh-in results: every fighter's scale reading against the contracted limit, misses, catchweights, withdrawals and corrections, each with the source that published it.",
+    "Live and recent official UFC weigh-in results: every fighter's scale reading against the applicable limit, misses, catchweights, withdrawals and corrections, each with its source.",
   alternates: { canonical: "/weigh-ins" },
   openGraph: { title: "UFC Weigh-Ins — PropBetEdge", description: "Structured official weigh-in results, updated from sourced readings.", url: `${SITE.url}/weigh-ins` },
   twitter: { card: "summary_large_image", title: "UFC Weigh-Ins — PropBetEdge" },
@@ -83,12 +83,22 @@ function Row({ w }: { w: WeighIn }) {
   );
 }
 
-export default async function WeighInsPage() {
+export default async function WeighInsPage({ searchParams }: { searchParams: Promise<{ event?: string }> }) {
+  const sp = await searchParams;
   const [upcoming, covered] = await Promise.all([
     getUpcomingEvents(6).catch(() => []),
-    getWeighInEvents(8).catch(() => []),
+    getWeighInEvents(12).catch(() => []),
   ]);
-  const desk = pickDeskEvent(upcoming.map((e) => ({ id: e.id, name: e.name, event_date: e.event_date })), covered);
+  const upcomingDesk = upcoming.map((e) => ({ id: e.id, name: e.name, event_date: e.event_date }));
+  const selected = sp.event ? covered.find((e) => e.event_id === sp.event) : null;
+  const desk = selected
+    ? {
+        eventId: selected.event_id,
+        eventName: selected.event_name,
+        eventDate: selected.event_date,
+        state: upcomingDesk.some((e) => e.id === selected.event_id) ? "upcoming" as const : "recent" as const,
+      }
+    : pickDeskEvent(upcomingDesk, covered);
 
   const [rows, summary, history] = desk
     ? await Promise.all([
@@ -101,6 +111,10 @@ export default async function WeighInsPage() {
   const table = sortForTable(rows);
   const live = isLive(summary);
   const missed = table.filter((r) => r.result === "missed");
+  const cutoff = new Date(Date.now() - 21 * 86400e3).toISOString().slice(0, 10);
+  const recentCovered = covered.filter((e) => e.event_date && e.event_date >= cutoff);
+  const sourceStamp = summary?.newest_source_published_at || summary?.last_source_update || null;
+  const sourceStampIsPublisher = Boolean(summary?.newest_source_published_at);
 
   return (
     <div className="wrap page">
@@ -121,15 +135,17 @@ export default async function WeighInsPage() {
             <p className={styles.event}>
               {desk.eventName}
               {desk.eventDate && <span className={styles.eventDate}> · {fmtDate(desk.eventDate)}</span>}
-              {desk.state === "recent" && <span className={styles.eventNote}> · most recent card with results</span>}
+              {desk.state === "recent" && <span className={styles.eventNote}> · covered archive</span>}
             </p>
           ) : (
             <p className={styles.event}>No card on file</p>
           )}
           <p className={styles.freshness}>
-            Last source update: <strong>{freshness(summary?.last_source_update ?? null)}</strong>
+            {sourceStampIsPublisher ? "Latest source publication" : "Latest verified capture"}: <strong>{freshness(sourceStamp)}</strong>
             <span className={styles.freshNote}>
-              {" "}— from the publisher&rsquo;s own timestamp, not this page&rsquo;s. Sources are fetched every few minutes during a weigh-in window.
+              {sourceStampIsPublisher
+                ? " — from the publisher's retained timestamp."
+                : " — the historical source is verified, but its publication time was not retained."}
             </span>
           </p>
         </div>
@@ -150,8 +166,6 @@ export default async function WeighInsPage() {
       </section>
 
       {missed.length > 0 && (
-        /* Impossible to overlook, without turning the page into an emergency
-           screen: one banded strip at the top, the rest of the desk normal. */
         <section className={styles.missStrip} aria-label="Missed weight">
           <span className={styles.missLabel}>Missed weight</span>
           <ul>{missed.map((m) => <li key={m.id}>{updateLine(m)}</li>)}</ul>
@@ -173,7 +187,7 @@ export default async function WeighInsPage() {
           </section>
 
           <aside className={styles.timeline} aria-label="Live timeline">
-            <h2>Live timeline</h2>
+            <h2>Timeline</h2>
             {history.length ? (
               <ol>
                 {history.map((h) => (
@@ -198,16 +212,48 @@ export default async function WeighInsPage() {
       ) : (
         <Empty title="Official weigh-in result not recorded yet">
           <p>
-            The weigh-in tables are defined but not yet populated in this environment. Readings appear here as they
-            are published — each one with the source that published it, and never a figure we inferred.
+            No sourced scale readings are on file for this card yet. Once an official or verified source publishes them,
+            they appear here without guessing a weight or contractual limit.
           </p>
         </Empty>
       )}
 
+      <section className={styles.method} aria-labelledby="recent-weighins-heading">
+        <div className="eyebrow">21-day archive · official results</div>
+        <h2 id="recent-weighins-heading">Recent official weigh-ins</h2>
+        <p className={styles.panelNote}>
+          The current desk does not erase the previous card. These are the covered weigh-ins from the last three weeks; select any card to reopen its full fighter table and source trail.
+        </p>
+        {recentCovered.length ? (
+          <div className="grid-3" style={{ marginTop: 16 }}>
+            {recentCovered.map((e) => (
+              <Link key={e.event_id} href={`/weigh-ins?event=${encodeURIComponent(e.event_id)}`} className={styles.panel}>
+                <div className={styles.panelHead}>
+                  <h3>{e.event_name}</h3>
+                  <span className={styles.eventNote}>{e.event_date ? fmtDate(e.event_date) : "date unavailable"}</span>
+                </div>
+                <div className={styles.panelCounts}>
+                  <span className={styles.panelCount}><b>{e.weighed}</b><span>weighed</span></span>
+                  <span className={styles.panelCount} data-tone="ok"><b>{e.made}</b><span>made</span></span>
+                  <span className={styles.panelCount} data-tone={e.missed ? "alert" : undefined}><b>{e.missed}</b><span>missed</span></span>
+                </div>
+                <p className={styles.panelNote}>
+                  {e.newest_source_published_at
+                    ? `Official source timestamp retained · ${fmtDate(e.newest_source_published_at)}`
+                    : "Official source retained · original publication time not retained"}
+                </p>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.tEmpty}>No official weigh-in cards are on file in the last 21 days.</p>
+        )}
+      </section>
+
       <section className={styles.method}>
         <h2>How this desk works</h2>
         <ul>
-          <li><strong>Official sources first.</strong> The promotion&rsquo;s own results, then the athletic commission, then established reporting. Every row carries its source and timestamp.</li>
+          <li><strong>Official sources first.</strong> The promotion&rsquo;s own results, then the athletic commission, then established reporting. Every row carries its source and timestamp when the source supplied one.</li>
           <li><strong>A weight class is not a limit.</strong> A lightweight title fight is 155 lb; a non-title bout is 156 with the one-pound allowance; a catchweight is whatever was agreed. Where the contracted limit is not published, this says so and shows no delta.</li>
           <li><strong>Nothing is inferred from a picture of a scale</strong> or from commentary. If a source reports a miss without a figure, the miss is recorded and the number stays empty.</li>
           <li><strong>Corrections are kept.</strong> A revised weight becomes a new reading; the earlier one stays readable and the row is marked corrected.</li>
