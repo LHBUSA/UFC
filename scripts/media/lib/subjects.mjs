@@ -330,10 +330,44 @@ export function writeCombined() {
 }
 
 /* ---- CLI + Supabase ------------------------------------------------------- */
-export function cli() {
+/**
+ * Parse the standard options.
+ *
+ * Pass `known` — the flags and options this particular script accepts — to
+ * have anything else rejected before the script does any work. It is opt-in
+ * because this parser is shared and other callers take flags of their own;
+ * a caller that opts in gets told about a typo instead of running without the
+ * option it thinks it passed.
+ *
+ * That distinction is not academic. `--dry-run` here was invoked as `--dry`,
+ * which this parser ignored, so `dry` was false and the script rewrote
+ * forty-one repository files that the caller expected it to leave alone. The
+ * flag most worth protecting is always the one that means "do not change
+ * anything".
+ */
+export function cli(known = null) {
   const argv = process.argv.slice(2);
   const flag = (n) => argv.includes(n);
   const opt = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
+
+  if (known) {
+    const flags = new Set(known.flags || []);
+    const opts = new Set(known.opts || []);
+    const unknown = [];
+    for (let i = 0; i < argv.length; i += 1) {
+      const a = argv[i];
+      if (opts.has(a)) { i += 1; continue; }     // consume its value
+      if (flags.has(a)) continue;
+      unknown.push(a);
+    }
+    if (unknown.length) {
+      console.error(`unknown option(s): ${unknown.join(' ')}`);
+      console.error(`supported: ${[...flags, ...opts].join(', ')}`);
+      console.error('refusing to run — an unrecognised option is usually a misspelt one, and the one that matters most is the one that means "change nothing".');
+      process.exit(2);
+    }
+  }
+
   return { dry: flag('--dry-run'), limit: opt('--limit') ? Number(opt('--limit')) : Infinity, slug: opt('--slug') || null, resume: flag('--resume'), report: flag('--report'), force: flag('--force') };
 }
 export function loadEnv() {

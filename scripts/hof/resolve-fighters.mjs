@@ -19,7 +19,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, cli, listPackets, nowIso, readPacket, rest, titleMatchesSubject, writeCombined, writePacket } from '../media/lib/subjects.mjs';
 
-const args = cli();
+const args = cli({
+  flags: ['--dry-run', '--report'],
+  opts: ['--limit', '--slug'],
+});
 
 /* Historical / promotional display names the archive may store differently.
  * Each entry is a documented alternate spelling of the SAME person. */

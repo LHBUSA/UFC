@@ -21,6 +21,31 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+/* Options are validated before anything else runs, and an unrecognised one is
+ * fatal.
+ *
+ * Silently ignoring a flag is how a rehearsal becomes a live write. "--dry" is
+ * not "--dry-run": ignoring it leaves DRY false, and the script inserts rows
+ * while whoever typed it believes nothing is happening. That is not
+ * hypothetical — it is how 185 referee profiles were written from this script
+ * by someone who meant to watch it do nothing.
+ *
+ * Refusing over a misspelt flag costs one re-run. Accepting it costs a data
+ * change nobody decided to make, reported as success. */
+const KNOWN_FLAGS = new Set(['--dry-run', '--report']);
+{
+  const unknown = process.argv.slice(2).filter((a) => !KNOWN_FLAGS.has(a));
+  if (unknown.length) {
+    console.error(`unknown option(s): ${unknown.join(' ')}`);
+    console.error(`supported: ${[...KNOWN_FLAGS].join(', ')}`);
+    console.error('refusing to run — an unrecognised flag is usually a misspelt one, and here the gap between --dry and --dry-run is a live write.');
+    process.exit(2);
+  }
+}
+
+/* process.env wins over the dotfiles, so a test or an operator can point this
+ * at a different endpoint without editing a file other tools also read. */
 const env = {};
 for (const f of [path.join(ROOT, '.env'), path.join(ROOT, 'web', '.env.local')]) {
   if (!fs.existsSync(f)) continue;
@@ -28,6 +53,9 @@ for (const f of [path.join(ROOT, '.env'), path.join(ROOT, 'web', '.env.local')])
     const i = line.indexOf('=');
     if (i > 0 && !line.trimStart().startsWith('#')) env[line.slice(0, i).trim()] = line.slice(i + 1).trim().replace(/^"|"$/g, '');
   }
+}
+for (const k of ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY']) {
+  if (process.env[k]) env[k] = process.env[k];
 }
 const URL_ = (env.SUPABASE_URL || '').replace(/\/$/, '');
 const KEY = env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -57,7 +85,11 @@ async function all(q, pageSize = 1000) {
   return out;
 }
 async function post(table, rows, prefer) {
-  if (!rows.length || DRY) return;
+  /* The dry-run gate is HERE, at the write, not around the callers. A guard
+   * around a call site is walked past the moment someone adds another call
+   * site; a guard inside the only function that writes cannot be. */
+  if (DRY) { console.log(`  [dry-run] would POST ${rows.length} row(s) to ${table}`); return; }
+  if (!rows.length) return;
   const r = await fetch(`${URL_}/rest/v1/${table}`, { method: 'POST', headers: { ...H, Prefer: prefer }, body: JSON.stringify(rows) });
   if (!r.ok) throw new Error(`${table} -> ${r.status} ${await r.text()}`);
 }
