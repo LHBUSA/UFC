@@ -123,15 +123,59 @@ export type SidePrices = {
   latest: { price: number; at: string } | null;
 };
 
+/**
+ * How old an observation may be before the page stops presenting it as the
+ * current market.
+ *
+ * The ingest is deliberately low-cadence: the provider bills per call against
+ * a monthly allowance, and this product polls nothing. At three runs a day
+ * the widest legitimate gap between observations is eight hours, so twelve
+ * gives a missed run room to be late without being wrong. Past that, a run
+ * has actually been skipped, and a price we have not rechecked since
+ * yesterday is not "the current market" no matter how real it was when we
+ * recorded it.
+ *
+ * The prices are still shown. They were genuinely observed and hiding them
+ * would be its own dishonesty; what changes is that the page says how old
+ * they are instead of implying they are live.
+ */
+export const STALE_AFTER_MINUTES = 12 * 60;
+
 export type BoutMarket = {
   boutId: string;
   state: MarketState;
   marketKey: string;
   a: SidePrices | null;
   b: SidePrices | null;
+  /* When THIS SYSTEM last recorded a price. Not when a book last moved one. */
   lastUpdated: string | null;
+  /* The newest last_update the books themselves reported, which is a
+   * different fact and is labelled differently in the UI. A book that has not
+   * repriced in a day is normal; an ingest that has not run in a day is not. */
+  sourceLastUpdate: string | null;
+  /* Older than STALE_AFTER_MINUTES: real prices, presented as history. */
+  stale: boolean;
+  ageMinutes: number | null;
   bookCount: number;
 };
+
+/** Whole minutes since an ISO timestamp, or null if it is unusable. */
+export function ageInMinutes(iso: string | null | undefined, now = Date.now()): number | null {
+  if (!iso) return null;
+  const t = new Date(iso).getTime();
+  if (!Number.isFinite(t)) return null;
+  return Math.max(0, Math.round((now - t) / 60000));
+}
+
+/** "14 minutes ago", "3 hours ago", "2 days ago" - no library, no drift. */
+export function describeAge(minutes: number | null): string {
+  if (minutes === null) return "at an unknown time";
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  const h = Math.round(minutes / 60);
+  if (h < 48) return `${h} hour${h === 1 ? "" : "s"} ago`;
+  return `${Math.round(h / 24)} days ago`;
+}
 
 function sideFrom(obs: Observation[], fighterId: string): SidePrices | null {
   const mine = obs.filter((o) => o.outcome_fighter_id === fighterId);
@@ -250,13 +294,22 @@ export async function getMarketsFor(
     if (!a && !b) continue;
     const books = new Set(list.map((o) => o.bookmaker_key));
     const lastUpdated = list.reduce<string | null>((acc, o) => (!acc || o.observed_at > acc ? o.observed_at : acc), null);
+    const sourceLastUpdate = list.reduce<string | null>(
+      (acc, o) => (o.source_last_update && (!acc || o.source_last_update > acc) ? o.source_last_update : acc),
+      null,
+    );
+    const ageMinutes = ageInMinutes(lastUpdated);
     out.set(id, {
       boutId: id,
       /* Both corners priced is a usable market. One corner is partial and is
        * labelled as such rather than shown as if it were complete. */
       state: a && b ? "available" : "partial",
       marketKey,
-      a, b, lastUpdated,
+      a, b, lastUpdated, sourceLastUpdate,
+      /* Staleness describes the observation, not the bout: the prices below
+       * are still the real last-known ones and are shown either way. */
+      stale: ageMinutes !== null && ageMinutes > STALE_AFTER_MINUTES,
+      ageMinutes,
       bookCount: books.size,
     });
   }

@@ -1,8 +1,24 @@
 import {
   CONSENSUS_NOTE, FIRST_OBSERVED_NOTE, MARKET_STATE_COPY,
-  formatAmerican, movement,
+  describeAge, formatAmerican, movement,
   type BoutMarket, type MarketState, type SidePrices,
 } from "@/lib/market";
+
+/* A timestamp is only useful if the reader can tell what it is the time OF.
+ * Two different facts get two different labels and are never merged:
+ * "observed" is when this system last recorded a price, "book last moved" is
+ * when the books themselves last repriced. A quiet market and a broken ingest
+ * look identical if you only print one of them. */
+const Stamp = ({ iso, label }: { iso: string | null; label: string }) => {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (!Number.isFinite(d.getTime())) return null;
+  return (
+    <time dateTime={iso} title={d.toUTCString().replace("GMT", "UTC")}>
+      {label} {d.toUTCString().replace("GMT", "UTC")}
+    </time>
+  );
+};
 
 /* Market surfaces.
  *
@@ -45,6 +61,7 @@ export function MarketInline({
         <b>{formatAmerican(market?.b?.consensus)}</b>
       </span>
       {state === "partial" ? <span className="mk-partial">One corner priced</span> : null}
+      {market?.stale ? <span className="mk-stale-tag">Last observed {describeAge(market.ageMinutes)}</span> : null}
     </div>
   );
 }
@@ -104,14 +121,24 @@ export function MarketSection({
           <p className="mk-sub">What books are charging. Descriptive pricing, kept separate from Fight DNA and from round-level analysis.</p>
         </div>
         <div className="mk-stamp">
-          <span className="mk-chip">{copy.label}</span>
-          {market?.lastUpdated ? (
-            <time dateTime={market.lastUpdated}>Updated {new Date(market.lastUpdated).toUTCString().replace("GMT", "UTC")}</time>
-          ) : null}
+          <span className={`mk-chip${market?.stale ? " stale" : ""}`}>
+            {market?.stale ? "Market not current" : copy.label}
+          </span>
+          <Stamp iso={market?.lastUpdated ?? null} label="Observed" />
+          <Stamp iso={market?.sourceLastUpdate ?? null} label="Book last moved" />
         </div>
       </div>
 
       <div className="card mk-card">
+        {market?.stale && (
+          /* The prices below are real and were really observed; what is no
+           * longer true is that they are current. Say exactly that, rather
+           * than hiding a fact we hold or presenting it as live. */
+          <p className="mk-stale-note">
+            These prices were last observed {describeAge(market.ageMinutes)} and have not been rechecked since.
+            They are the last prices this system recorded, not the current market. Books may have moved.
+          </p>
+        )}
         <div className="mk-cols">
           <Side side={market?.a ?? null} name={nameA} label={nameA} />
           <Side side={market?.b ?? null} name={nameB} label={nameB} />

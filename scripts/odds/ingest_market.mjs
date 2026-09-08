@@ -19,6 +19,13 @@
  * overwritten.
  *
  *   node scripts/odds/ingest_market.mjs [--dry-run] [--markets h2h] [--json out]
+ *                                        [--save-source f] [--source f]
+ *
+ * One paid call, replayed as often as needed. --save-source writes the raw
+ * provider payload beside the run; --source re-processes that payload instead
+ * of calling the provider. Matching and resolution are pure functions of the
+ * payload, so every rerun during debugging costs nothing and the archived
+ * response is also the audit trail for what the provider actually said.
  *
  * Requires ODDS_API_KEY, matching the convention already used by the network's
  * odds worker. Without it the script exits MARKET_DATA_NOT_CONFIGURED and
@@ -51,6 +58,8 @@ const argv = process.argv.slice(2);
 const opt = (n, d) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
 const DRY = argv.includes('--dry-run');
 const MARKETS = opt('--markets', 'h2h');
+const SAVE_SOURCE = opt('--save-source');
+const SOURCE = opt('--source');
 
 const H = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'content-type': 'application/json', accept: 'application/json' };
 
@@ -178,7 +187,7 @@ function matchBout(srcEvent, bouts, byNorm) {
 }
 
 const main = async () => {
-  if (!ODDS_KEY) {
+  if (!ODDS_KEY && !SOURCE) {
     log('MARKET_DATA_NOT_CONFIGURED: ODDS_API_KEY is not set.');
     log('Nothing was fetched and nothing was written. No fallback prices exist by design.');
     process.exit(3);
@@ -195,15 +204,32 @@ const main = async () => {
   try {
     /* One bulk call covers every listed event. The per-event endpoint would
      * cost a credit per fight and is prohibited for this market. */
-    const url = `${API}/sports/${SPORT}/odds?apiKey=${encodeURIComponent(ODDS_KEY)}&regions=us&markets=${encodeURIComponent(MARKETS)}&oddsFormat=american`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(25000) });
-    const quota = {
-      used: Number(res.headers.get('x-requests-used')) || null,
-      remaining: Number(res.headers.get('x-requests-remaining')) || null,
-      lastCost: Number(res.headers.get('x-requests-last')) || null,
-    };
-    if (!res.ok) throw new Error(`odds api ${res.status}: ${(await res.text()).slice(0, 200)}`);
-    const events = await res.json();
+    let events;
+    let quota;
+    if (SOURCE) {
+      /* Replay. The payload is the whole input to matching, so a rerun is a
+       * faithful repeat of the paid call and is billed nothing. */
+      const saved = JSON.parse(fs.readFileSync(SOURCE, 'utf8'));
+      events = Array.isArray(saved) ? saved : saved.events;
+      quota = (Array.isArray(saved) ? null : saved.quota) || { used: null, remaining: null, lastCost: 0 };
+      log(`replaying ${SOURCE}: ${events.length} source events, no provider call, no quota spent`);
+    } else {
+      const url = `${API}/sports/${SPORT}/odds?apiKey=${encodeURIComponent(ODDS_KEY)}&regions=us&markets=${encodeURIComponent(MARKETS)}&oddsFormat=american`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(25000) });
+      quota = {
+        used: Number(res.headers.get('x-requests-used')) || null,
+        remaining: Number(res.headers.get('x-requests-remaining')) || null,
+        /* Measured, never predicted: a bulk call bills regions x markets. */
+        lastCost: Number(res.headers.get('x-requests-last')) || null,
+      };
+      /* The provider echoes the key in some error bodies. Status only. */
+      if (!res.ok) throw new Error(`odds api ${res.status}`);
+      events = await res.json();
+      if (SAVE_SOURCE) {
+        fs.writeFileSync(SAVE_SOURCE, JSON.stringify({ fetched_at: new Date().toISOString(), sport_key: SPORT, markets: MARKETS, regions: 'us', quota, events }, null, 2) + '\n');
+        log(`source payload -> ${SAVE_SOURCE} (replay with --source, costs nothing)`);
+      }
+    }
     run.source_events = events.length;
     log(`source events ${events.length} · quota used ${quota.used} remaining ${quota.remaining} cost ${quota.lastCost}`);
 

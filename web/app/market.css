@@ -33,6 +33,15 @@
 .mk-notes { margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--pbe-line-faint); }
 .mk-notes p { color: var(--pbe-faint); font-size: var(--fs-xs); line-height: 1.6; margin-top: 8px; max-width: 78ch; }
 
+/* Staleness. Deliberately not an alarm colour: an old price is a caveat on a
+   real number, not an error, and dressing it as one would overstate it. The
+   gold chip is reserved for a market we are actually current on, so a stale
+   card loses the gold rather than gaining a red. */
+.mk-chip.stale { background: transparent; color: var(--pbe-faint); border: 1px solid var(--pbe-line); }
+.mk-stale-note { color: var(--pbe-dim); font-size: var(--fs-xs); line-height: 1.6; max-width: 78ch;
+  padding: 10px 12px; margin-bottom: var(--s-4); border-left: 2px solid var(--pbe-line); background: rgba(255, 255, 255, 0.02); }
+.mk-stale-tag { color: var(--pbe-faint); font: 500 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; }
+
 .mk-empty { text-align: center; padding: var(--s-6) var(--s-5); }
 .mk-state { font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); }
 .mk-empty p { color: var(--pbe-dim); font-size: var(--fs-sm); margin-top: var(--s-3); max-width: 56ch; margin-inline: auto; }
@@ -48,4 +57,13 @@
 @media (max-width: 640px) {
   .mk-cols { grid-template-columns: minmax(0, 1fr); }
   .mk-head { flex-direction: column; }
+  /* Two timestamps and a chip will not sit on one phone line without either
+     truncating a date or pushing the card sideways. Stack them. */
+  .mk-stamp { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .mk-stamp time { line-height: 1.4; }
+  /* The book grid is three columns of numbers; below this width the name
+     column starves and every book reads as an ellipsis. */
+  .mk-book-grid { grid-template-columns: minmax(0, 1fr); }
+  .mk-inline { gap: 8px; }
+  .mk-nm { max-width: 8rem; }
 }
