@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs, JsonLd } from "@/components/ui";
 import { getJudgeArchive, getScorecardCoverage, tenureLine } from "@/lib/judges";
+import { PROVISIONAL_IDENTITY_CANDIDATES, SPELLING_VARIANT_EVIDENCE } from "@/lib/judgeScoring";
 import { GAP_LABEL, GAP_REASON_LABEL, MIN_RATE_SAMPLE, dissentRead } from "@/lib/judgeScoring";
 import { fmtDate } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -263,9 +264,38 @@ export default async function JudgesPage() {
         <p>
           <strong>Identity.</strong> Judge names are canonicalised the same way referee names are. The upstream Details line
           sometimes prefixes a point deduction onto the judge&rsquo;s name (&ldquo;Low Blow by Watson Richard Bertrand&rdquo;); those
-          are mapped to the official and the deduction is kept as bout provenance. Two spelling variants are merged. Similar names
-          belonging to different people are never merged.
+          are mapped to the official and the deduction is kept as bout provenance. Merging two <em>names</em> is different: it
+          combines two people&rsquo;s records, so it is only done when an external judging registry holds a single official whose
+          scored bouts account for the assignments filed under both spellings. Resemblance is not evidence, and the database refuses
+          a merge with no source attached.
         </p>
+        {SPELLING_VARIANT_EVIDENCE.length > 0 && (
+          <p>
+            <strong>Merges applied ({SPELLING_VARIANT_EVIDENCE.length}).</strong>{" "}
+            {SPELLING_VARIANT_EVIDENCE.map((e) => (
+              <span key={e.rawName}>
+                &ldquo;{e.rawName}&rdquo; → &ldquo;{e.canonical}&rdquo;, confirmed against{" "}
+                <a href={e.sourceUrl} target="_blank" rel="noopener">{e.sourceName} ↗</a> (verified {e.verifiedAt}) by cross-matching{" "}
+                {e.crossMatchedEvents.length} assignments. {e.limits}{" "}
+              </span>
+            ))}
+          </p>
+        )}
+        {PROVISIONAL_IDENTITY_CANDIDATES.length > 0 && (
+          <p>
+            <strong>Under review, not merged ({PROVISIONAL_IDENTITY_CANDIDATES.length}).</strong>{" "}
+            {PROVISIONAL_IDENTITY_CANDIDATES.map((c) => (
+              <span key={c.names.join("|")}>
+                &ldquo;{c.names[0]}&rdquo; and &ldquo;{c.names[1]}&rdquo; keep separate profiles and separate samples.{" "}
+                {c.externalSourceUrl ? (
+                  <>Evidence now exists (<a href={c.externalSourceUrl} target="_blank" rel="noopener">{c.externalSourceName} ↗</a>) and the merge is queued for review rather than applied silently. </>
+                ) : (
+                  <>No external judging record confirms the merge. </>
+                )}
+              </span>
+            ))}
+          </p>
+        )}
         <p>
           <strong>What these numbers are not.</strong> A dissent count says a judge&rsquo;s card differed from the official result. It
           does not say the card was wrong, and it is not evidence that an official favours a style, a nationality or any type of

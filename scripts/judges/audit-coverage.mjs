@@ -173,6 +173,16 @@ const main = async () => {
       aliases_applied: aliasRaw.filter((r) => rawSeen.has(r)).length,
       aliases_defined: aliasRaw.length,
       aliases_unused: aliasRaw.filter((r) => !rawSeen.has(r)),
+      /* Every name merge, with the external source that licenses it. A merge
+         with no citable source is the one identity error that produces a
+         confident wrong answer, so the evidence travels with the numbers. */
+      spelling_variant_evidence: S.SPELLING_VARIANT_EVIDENCE,
+      /* Near-name pairs deliberately NOT merged. Their card counts are listed
+         so a reviewer can see exactly what would move if one were promoted. */
+      provisional_candidates: S.PROVISIONAL_IDENTITY_CANDIDATES.map((c) => ({
+        ...c,
+        cards_in_archive: Object.fromEntries(c.names.map((n) => [n, judgeCards.get(n) || 0])),
+      })),
     },
     integrity: {
       card_shape_mismatches: shapeMismatch,
@@ -204,6 +214,13 @@ const main = async () => {
     console.log(`  canonical judges after aliasing  ${i.canonical_judges}`);
     console.log(`  aliases applied / defined        ${i.aliases_applied} / ${i.aliases_defined}`);
     if (i.aliases_unused.length) console.log(`  aliases matching nothing         ${i.aliases_unused.join(', ')}`);
+    console.log(`  name merges (all sourced)        ${i.spelling_variant_evidence.length}`);
+    for (const e of i.spelling_variant_evidence) console.log(`    "${e.rawName}" -> "${e.canonical}"  ${e.sourceName}  ${e.sourceUrl}`);
+    console.log(`  near-name pairs NOT merged       ${i.provisional_candidates.length}`);
+    for (const c of i.provisional_candidates) {
+      const counts = c.names.map((n) => `${n} (${c.cards_in_archive[n]} cards)`).join(' | ');
+      console.log(`    ${counts}  [${c.status}]`);
+    }
     console.log('\nINTEGRITY');
     console.log(`  card shape vs method mismatches  ${shapeMismatch.length}`);
     for (const m of shapeMismatch) console.log(`    ${m.event_date}  ${m.bout} — ${m.method}, ${m.dissent_cards} dissent / ${m.even_cards} even`);
@@ -222,6 +239,19 @@ const main = async () => {
   if (c_total(report) !== report.coverage.judged_results) problems.push('coverage buckets do not sum to the judged-result total');
   if (report.coverage.finishes_with_unexpected_scorecard > 0) problems.push('a bout that ended in a finish carries a scorecard');
   if (report.identity.aliases_unused.length) problems.push(`alias(es) match nothing in the archive: ${report.identity.aliases_unused.join(', ')}`);
+  /* An unverified merge must never reach the archive's canonical identities.
+     Checked against what actually came out of the aggregation, not against the
+     alias table, so a merge introduced anywhere in the path is caught. */
+  for (const variant of Object.entries(S.JUDGE_ALIASES).filter(([, a]) => a.kind === 'spelling_variant')) {
+    const [raw] = variant;
+    if (!S.SPELLING_VARIANT_EVIDENCE.some((e) => e.rawName === raw)) problems.push(`spelling_variant ${raw} is applied with no external evidence`);
+  }
+  for (const candidate of S.PROVISIONAL_IDENTITY_CANDIDATES) {
+    const present = candidate.names.filter((n) => judgeCards.has(n));
+    if (present.length < candidate.names.length && present.length > 0) {
+      problems.push(`provisional pair ${candidate.names.join(' / ')} collapsed: only ${present.join(', ')} survived as a canonical identity`);
+    }
+  }
   if (problems.length) { for (const p of problems) console.error(`FAIL: ${p}`); process.exit(1); }
 };
 

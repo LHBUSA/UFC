@@ -12,7 +12,7 @@
     "preserve:baseline": "node scripts/preservation-check.mjs --write-baseline",
     "prebuild": "node scripts/preservation-check.mjs",
     "test:market": "node --experimental-strip-types --test lib/market.test.mjs",
-    "test:judges": "node --experimental-strip-types --test lib/judgeScoring.test.mjs"
+    "test:judges": "node --experimental-strip-types --test lib/judgeScoring.test.mjs lib/judgeSchema.test.mjs"
   },
   "dependencies": {
     "next": "^15.5.25",

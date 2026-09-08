@@ -28,6 +28,18 @@
 --    describe what a judge's cards did in the loaded sample. They are not
 --    evidence that a judge favours a style, a nationality or a fighter
 --    archetype, and every consumer must render a sample size beside them.
+--
+-- 4. AN UNVERIFIED IDENTITY NEVER BECOMES CANONICAL. Merging two names is the
+--    only operation here that can combine two people's records, and a merge
+--    made on resemblance produces a confident, wrong career total. So a
+--    spelling_variant requires an external registry source, enforced by a
+--    CHECK constraint rather than by reviewer discipline. Candidates that do
+--    not clear that bar stay as separate identities with separate samples.
+--
+-- 5. EVERY VIEW IS security_invoker. Without it a view runs as its owner, and
+--    on this project the owner holds BYPASSRLS - so a view over an
+--    RLS-protected table hands anon the rows the table refuses it. The flag is
+--    stated explicitly on all seven views below; defaults are not relied on.
 
 -- ---------------------------------------------------------------------------
 -- 1. Identity
@@ -65,7 +77,15 @@ create table if not exists public.ufc_judge_aliases (
   kind text not null default 'spelling_variant' check (kind in ('spelling_variant','deduction_annotation')),
   card_note text,
   source_note text,
-  created_at timestamptz not null default now()
+  source_url text,
+  verified_at timestamptz,
+  created_at timestamptz not null default now(),
+  -- The evidence standard, made structural. A deduction_annotation is a
+  -- parsing artefact and needs no external source; merging two NAMES combines
+  -- two officials' records, so it may not be written without one. This is what
+  -- stops the next plausible near-name from being merged on a resemblance.
+  constraint ufc_judge_aliases_variant_needs_source
+    check (kind <> 'spelling_variant' or (source_url is not null and btrim(source_url) <> ''))
 );
 
 -- Seed canonical identities from the archive itself. A raw string that is only
@@ -118,13 +138,23 @@ insert into _judge_alias_seed (raw_name, canonical_name, kind, card_note) values
   ('Technical Decision after Headbutt by Abdul-Malik Will Fisher', 'Will Fisher', 'deduction_annotation', 'Technical Decision after Headbutt by Abdul-Malik'),
   ('Technical decision after clash of heads Ben Cartlidge', 'Ben Cartlidge', 'deduction_annotation', 'Technical decision after clash of heads');
 
--- Spelling variants. Both are officials who appear under two forms, never on
--- the same event, and inside one commission's territory. The Querido spelling
--- is confirmed against external judging records; the Gerrard merge rests on
--- archive evidence alone and is labelled as such in source_note.
+-- Spelling variants.
+--
+-- Merging two names is the one operation in this migration that can combine
+-- two people's records, so the bar is an EXTERNAL registry holding a single
+-- official whose scored bouts account for the assignments filed under both of
+-- our spellings. Archive resemblance - similar name, same region, never on the
+-- same card - is not that bar, and the CHECK constraint on the alias table
+-- refuses a spelling_variant with no source_url so it cannot become one.
+--
+-- Only one pair currently clears it. "Ritchie Gerard" / "Richie Gerrard" was
+-- deliberately withdrawn from this seed: it had been merged on archive
+-- evidence alone. Its evidence is preserved outside production canonical
+-- identity, in docs/judge_intelligence.md and
+-- web/lib/judgeScoring.ts PROVISIONAL_IDENTITY_CANDIDATES, and the two names
+-- stay separate identities with separate samples until that is signed off.
 insert into _judge_alias_seed (raw_name, canonical_name, kind, card_note) values
-  ('Mamunah Querido', 'Maimunah Querido', 'spelling_variant', null),
-  ('Ritchie Gerard', 'Richie Gerrard', 'spelling_variant', null);
+  ('Mamunah Querido', 'Maimunah Querido', 'spelling_variant', null);
 
 insert into public.ufc_judge_profiles (canonical_name, slug, display_name)
 select distinct j.name,
@@ -140,21 +170,31 @@ where j.name <> ''
   and not exists (select 1 from _judge_alias_seed s where s.raw_name = j.name)
 on conflict (canonical_name) do nothing;
 
-insert into public.ufc_judge_aliases (raw_name, canonical_name, kind, card_note, source_note)
+insert into public.ufc_judge_aliases (raw_name, canonical_name, kind, card_note, source_note, source_url, verified_at)
 select s.raw_name, s.canonical_name, s.kind, s.card_note,
        case s.kind
          when 'deduction_annotation' then 'Upstream Details line prefixed a point-deduction or technical-decision note to the judge name. The note is preserved in card_note and the card is attributed to the canonical official.'
          else case s.raw_name
-           when 'Mamunah Querido' then 'Archive spelling variant. Canonical spelling confirmed against external judging records; both forms are New Jersey assignments (Newark, Atlantic City) and never share an event.'
-           when 'Ritchie Gerard' then 'Archive spelling variant merged on archive evidence only: both forms are Oceania assignments (Auckland, Melbourne), never share an event, and differ by one letter in each name part. Not confirmed against an external judging record - review before treating the merged sample as a career record.'
+           when 'Mamunah Querido' then 'MMA Decisions lists exactly one Querido judge, and that single record''s scored events cover the assignments this archive files under BOTH spellings (UFC on Fox 18 2016-01-30, UFC 288 2023-05-06, UFC 302 2024-06-01 and UFC 316 2025-06-07 as "Maimunah"; UFC on ESPN 54 2024-03-30 as "Mamunah"), so the two spellings cannot be two officials. The source renders the name "Munah Querido", which matches neither stored form, so it confirms the merge but not the display spelling - canonical stays the dominant archive spelling.'
            else 'Archive spelling variant.'
          end
-       end
+       end,
+       case s.kind when 'spelling_variant' then
+         case s.raw_name when 'Mamunah Querido' then 'https://mmadecisions.com/judge/549/Munah-Querido' end
+       end,
+       case s.kind when 'spelling_variant' then timestamptz '2026-09-08 00:00:00+00' end
 from _judge_alias_seed s
 where exists (select 1 from public.ufc_judge_profiles p where p.canonical_name = s.canonical_name)
 on conflict (raw_name) do update
   set canonical_name = excluded.canonical_name, kind = excluded.kind,
-      card_note = excluded.card_note, source_note = excluded.source_note;
+      card_note = excluded.card_note, source_note = excluded.source_note,
+      source_url = excluded.source_url, verified_at = excluded.verified_at;
+
+-- A spelling variant withdrawn from the seed must not survive a re-run of an
+-- earlier version of this migration as a live merge.
+delete from public.ufc_judge_aliases a
+where a.kind = 'spelling_variant'
+  and not exists (select 1 from _judge_alias_seed s where s.raw_name = a.raw_name);
 
 -- A spelling variant seeded as its own profile by an earlier run must not
 -- survive as a second identity for the same official.
@@ -166,7 +206,7 @@ create index if not exists ufc_judge_aliases_canonical_idx on public.ufc_judge_a
 -- ---------------------------------------------------------------------------
 -- 2. The attributed scorecard layer. One row per judge card.
 -- ---------------------------------------------------------------------------
-create or replace view public.ufc_bout_scorecards as
+create or replace view public.ufc_bout_scorecards with (security_invoker = true) as
 with raw as (
   select
     r.bout_id, r.method, r.method_raw, r.winner_id, r.result_source, r.source_url,
@@ -264,7 +304,7 @@ comment on view public.ufc_bout_scorecards is 'One row per stored judge scorecar
 -- ---------------------------------------------------------------------------
 -- 3. Per-bout summary, including the explicit absence on a finish.
 -- ---------------------------------------------------------------------------
-create or replace view public.ufc_bout_scorecard_summary as
+create or replace view public.ufc_bout_scorecard_summary with (security_invoker = true) as
 with cards as (
   select bout_id,
          count(*)::int as card_count,
@@ -330,7 +370,7 @@ comment on view public.ufc_bout_scorecard_summary is 'Per-bout view of the offic
 -- ---------------------------------------------------------------------------
 -- 4. Judge -> bout archive, mirroring ufc_referee_bouts.
 -- ---------------------------------------------------------------------------
-create or replace view public.ufc_judge_bouts as
+create or replace view public.ufc_judge_bouts with (security_invoker = true) as
 select
   s.judge_name,
   p.slug as judge_slug,
@@ -388,7 +428,7 @@ comment on view public.ufc_judge_bouts is 'Normalized judge-to-bout scorecard ar
 -- ---------------------------------------------------------------------------
 -- 5. Judge statistics. Descriptive counts with their sample sizes attached.
 -- ---------------------------------------------------------------------------
-create or replace view public.ufc_judge_stats as
+create or replace view public.ufc_judge_stats with (security_invoker = true) as
 with base as (
   select s.*, b.is_title as title_bout, b.scheduled_rounds as sched, e.event_date
   from public.ufc_bout_scorecards s
@@ -434,7 +474,7 @@ from agg a cross join baseline;
 
 comment on view public.ufc_judge_stats is 'Descriptive judging history from the loaded archive. dissent_rate is the share of a judge''s orientation-resolved cards that went to the fighter who did not win the bout. It is not a competence or bias measure, and must always be rendered with attributed_cards as the sample size.';
 
-create or replace view public.ufc_judge_directory as
+create or replace view public.ufc_judge_directory with (security_invoker = true) as
 select
   s.*,
   p.slug,
@@ -459,7 +499,7 @@ left join public.ufc_judge_profiles p on p.canonical_name = s.name;
 -- Every decision or draw result carrying no scorecard, classified by what
 -- closing it would take. Derived rather than seeded, so the register cannot
 -- freeze today's counts and go quietly stale as the archive grows.
-create or replace view public.ufc_scorecard_gaps as
+create or replace view public.ufc_scorecard_gaps with (security_invoker = true) as
 select
   r.bout_id,
   e.id as event_id,
@@ -512,7 +552,7 @@ where r.method in ('DEC_U','DEC_S','DEC_M','DRAW')
 
 comment on view public.ufc_scorecard_gaps is 'Decision and draw results with no stored scorecard, classified recoverable / identity_mismatch / source_unavailable / non_standard, with the evidence each classification rests on.';
 
-create or replace view public.ufc_scorecard_coverage as
+create or replace view public.ufc_scorecard_coverage with (security_invoker = true) as
 select
   count(*) filter (where r.method in ('DEC_U','DEC_S','DEC_M','DRAW'))::int as judged_results,
   count(*) filter (where r.method in ('DEC_U','DEC_S','DEC_M','DRAW') and r.scorecards is not null and jsonb_array_length(r.scorecards) > 0)::int as with_scorecards,
@@ -525,8 +565,46 @@ select
   (select count(*) from public.ufc_judge_aliases)::int as judge_aliases
 from public.ufc_bout_results r;
 
+-- ---------------------------------------------------------------------------
+-- 7. Access control.
+-- ---------------------------------------------------------------------------
+-- Row level security, with no policy. In Postgres that denies every row to
+-- every role without BYPASSRLS, which on this project is anon and
+-- authenticated; service_role has BYPASSRLS and keeps working. There is no
+-- public read path to these tables by design - the site reads them
+-- server-side with the service key, exactly as it reads the bout archive.
 alter table public.ufc_judge_profiles enable row level security;
 alter table public.ufc_judge_aliases enable row level security;
 
-comment on table public.ufc_judge_profiles is 'Canonical MMA judge identities seeded from the stored scorecard archive, with optional sourced enrichment. Judging statistics are computed from bout rows, never hand-entered.';
-comment on table public.ufc_judge_aliases is 'Raw scorecard judge strings mapped to canonical identities. deduction_annotation rows carry an upstream point-deduction note that was concatenated onto the judge name; spelling_variant rows merge two spellings of one official.';
+-- Belt and braces on the mutation path. RLS with no policy already refuses
+-- anon and authenticated writes, but that protection is invisible and one
+-- well-meaning "allow public read" policy added later would silently unlock
+-- INSERT/UPDATE/DELETE too, because Supabase grants all table privileges to
+-- both roles by default. Revoking the write privileges outright means a
+-- future policy cannot re-open a write path on its own.
+revoke insert, update, delete, truncate, references, trigger
+  on public.ufc_judge_profiles, public.ufc_judge_aliases
+  from anon, authenticated;
+
+-- The server reads these as service_role; nothing else needs them.
+grant select on public.ufc_judge_profiles, public.ufc_judge_aliases to service_role;
+
+-- Views are declared security_invoker above, so a reader reaches the base
+-- tables as themselves and RLS applies to them. Without it a view runs as its
+-- owner - `postgres`, which holds BYPASSRLS on this project - and anon would
+-- read straight through it into RLS-protected rows. That is not theoretical:
+-- it is the live behaviour of the referee views created in migration 008, and
+-- scripts/judges/verify-view-security.mjs demonstrates it against the running
+-- database. These views must never be created without the flag.
+--
+-- The grants below therefore change nothing about what anon can see: they only
+-- keep the surface honest, so exposure depends on RLS rather than on nobody
+-- having guessed a view name.
+revoke insert, update, delete, truncate, references, trigger on
+  public.ufc_bout_scorecards, public.ufc_bout_scorecard_summary,
+  public.ufc_judge_bouts, public.ufc_judge_stats, public.ufc_judge_directory,
+  public.ufc_scorecard_gaps, public.ufc_scorecard_coverage
+  from anon, authenticated;
+
+comment on table public.ufc_judge_profiles is 'Canonical MMA judge identities seeded from the stored scorecard archive, with optional sourced enrichment. Judging statistics are computed from bout rows, never hand-entered. RLS on with no policy: server-side service_role reads only.';
+comment on table public.ufc_judge_aliases is 'Raw scorecard judge strings mapped to canonical identities. deduction_annotation rows carry an upstream point-deduction note that was concatenated onto the judge name; spelling_variant rows merge two spellings of one official and REQUIRE an external source_url - see the ufc_judge_aliases_variant_needs_source constraint.';

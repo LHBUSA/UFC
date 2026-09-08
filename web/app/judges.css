@@ -124,3 +124,9 @@
   .sc-none { grid-template-columns: 1fr; }
   .sc-none-mark { display: none; }
 }
+
+/* An identity we have deliberately not merged. Styled as a caution rather
+   than an error: the record is correct, it is the completeness that is open. */
+.jg-provisional { margin-top: 14px; padding: 12px 15px; border-left: 2px solid var(--pbe-gold); background: var(--pbe-gold-wash); color: var(--pbe-dim); font: 400 13px/1.6 var(--pbe-font-ui); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.jg-provisional b { color: var(--pbe-paper); }
+.jg-provisional a { color: var(--pbe-gold); }

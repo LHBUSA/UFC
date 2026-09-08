@@ -57,7 +57,7 @@ must read 0.
 | attributed to a fighter | 11,821 (98.5%) |
 | left as an unattributed pair | 183 |
 | raw judge strings | 512 |
-| canonical judges after aliasing | 467 |
+| canonical judges after aliasing | 468 |
 
 ### The 291 missing, classified
 
@@ -74,20 +74,76 @@ Classified from evidence in the row, not from an assumption about the era.
 
 ## Identity
 
-Two kinds of alias, held in `ufc_judge_aliases.kind`:
+Two kinds of alias, held in `ufc_judge_aliases.kind`, and they are held to
+different standards on purpose.
 
 - **`deduction_annotation` (43)** — the upstream Details line prefixes a point
   deduction onto the judge's name: `"Low Blow by Watson Richard Bertrand"`. The
   card is attributed to Richard Bertrand and the note is preserved as bout
-  provenance, shown under the judge's name on the fight page.
-- **`spelling_variant` (2)** — `Mamunah Querido` → `Maimunah Querido`
-  (spelling confirmed externally; both forms are New Jersey assignments) and
-  `Ritchie Gerard` → `Richie Gerrard` (**archive evidence only**: both forms are
-  Oceania assignments, never share an event, differ by one letter in each name
-  part — not confirmed against an external judging record).
+  provenance, shown under the judge's name on the fight page. This is a parsing
+  artefact, not a claim about who someone is, so it needs no external source.
+
+- **`spelling_variant` (1)** — a merge of two *names*, which combines two
+  people's records and can produce a confident, wrong career total. It requires
+  an external judging registry holding a **single** official whose scored bouts
+  account for the assignments filed under **both** of our spellings. The
+  `ufc_judge_aliases_variant_needs_source` CHECK constraint refuses a
+  spelling_variant row with no `source_url`, so the standard is enforced by the
+  schema rather than by reviewer memory.
+
+### The one merge applied
+
+`Mamunah Querido` → `Maimunah Querido`.
+
+Source: [MMA Decisions judge 549](https://mmadecisions.com/judge/549/Munah-Querido),
+verified 2026-09-08. That registry lists exactly one Querido judge, and that
+single record's scored events cover assignments this archive files under both
+spellings:
+
+| event | date | spelling in this archive |
+| --- | --- | --- |
+| UFC on Fox 18 | 2016-01-30 | Maimunah Querido |
+| UFC 288 | 2023-05-06 | Maimunah Querido |
+| UFC on ESPN 54 | 2024-03-30 | **Mamunah Querido** |
+| UFC 302 | 2024-06-01 | Maimunah Querido |
+| UFC 316 | 2025-06-07 | Maimunah Querido |
+
+Two officials cannot both be that one record, so the merge is established.
+**Limit:** the source renders the name "Munah Querido", which matches neither
+stored form. It confirms the merge, not the display spelling, so the canonical
+name stays the dominant archive spelling.
+
+### Under review — evidence held, merge NOT applied
+
+`Ritchie Gerard` (2 cards) and `Richie Gerrard` (3 cards) are **separate
+identities with separate samples**. An earlier revision merged them on archive
+resemblance alone — same Oceania region, never on the same card, one letter
+apart. That is not evidence, the merge was withdrawn, and the pair now lives in
+`PROVISIONAL_IDENTITY_CANDIDATES` in `web/lib/judgeScoring.ts` and is shown as
+an open question on both judge profiles.
+
+External confirmation has since been found, *after* the withdrawal:
+[MMA Decisions judge 606](https://mmadecisions.com/judge/606/Ritchie-Gerard)
+holds one "Ritchie Gerard" with 5 scored decisions, and those five are exactly
+the union of our two spellings — Aldrich–Jeon and Volkanovski–Hirota (UFC Fight
+Night 110, filed here as *Ritchie Gerard*) plus Hooker–Iaquinta, Potter–Pitolo
+(UFC 243) and Kara-France–Nam (UFC on ESPN+ 26), filed here as *Richie Gerrard*.
+
+It is still not applied. The finding also **reverses the original merge
+direction** — the registry's spelling is `Ritchie Gerard`, the minority archive
+form — which is precisely why an unverified merge is dangerous: it was both
+unsourced and backwards. Promoting it is a two-line change (move the pair into
+`JUDGE_ALIASES` and `SPELLING_VARIANT_EVIDENCE` with `Ritchie Gerard` as
+canonical) and is left for sign-off. Both samples sit far below the 40-card rate
+floor, so no published rate moves either way.
+
+### Names that are not merged
 
 Similar names belonging to different officials are never merged. `Chris Lee`
 (701 cards) and `Chris Leben` (24 cards) are two people and stay separate.
+`judgeScoring.test.mjs` proves behaviourally that an unconfirmed near-name pair
+never combines samples — two bouts judged by the two spellings produce two
+records with one card each, never one record with two.
 
 ## Statistics discipline
 
@@ -118,29 +174,87 @@ surfaced on the fight page, not corrected:
 Nine bouts hold fewer than three cards. The missing card is not reconstructed
 and the displayed totals cover only the cards held.
 
+## View security
+
+Every one of the seven views is created `with (security_invoker = true)`, and
+this is not defensive boilerplate.
+
+A Postgres view runs as its **owner** unless that flag is set. On this project
+views are owned by `postgres`, which holds `BYPASSRLS`. So a view over an
+RLS-protected table hands its reader the rows the table itself refuses them —
+and the default gives you that behaviour.
+
+That is not theoretical here. `scripts/judges/verify-view-security.mjs` probes
+the running database with the **anon** key and finds:
+
+| relation | anon gets rows? | |
+| --- | --- | --- |
+| `ufc_bout_results`, `ufc_bouts`, `ufc_events`, `ufc_fighters` | no | RLS enabled, no policy — correctly denied |
+| `ufc_referee_bouts`, `ufc_referee_stats`, `ufc_referee_directory` | **yes** | views from migration 008, no `security_invoker` |
+
+The referee views expose, to any holder of the public anon key, exactly the
+archive rows their base tables deny. **That is a live finding in the referee
+layer, reported and not changed on this branch** — it is a different layer's
+production DDL. It serves here as the control: it is what these judge views
+would do without the flag.
+
+Role facts the model rests on, read from `pg_roles`:
+
+| role | `BYPASSRLS` |
+| --- | --- |
+| `anon` | no |
+| `authenticated` | no |
+| `service_role` | yes — server reads keep working |
+| `postgres` (view owner) | yes — which is the whole problem |
+
+Alongside the flag the migration:
+
+- enables RLS on both judge tables and creates **no policy**, so there is no
+  public read path at all;
+- **revokes** `insert, update, delete, truncate, references, trigger` from
+  `anon` and `authenticated` on both tables *and* all seven views. Supabase
+  grants those by default and only RLS was stopping them; revoking means a
+  future "allow public read" policy cannot quietly re-open a write path, and a
+  simple view cannot be written through;
+- grants only `select` to `service_role`;
+- contains no `SECURITY DEFINER` routine, so nothing reintroduces the
+  escalation the views just closed.
+
+`web/lib/judgeSchema.test.mjs` asserts all of the above statically, so it holds
+before anyone applies the migration. Once applied, re-running
+`verify-view-security.mjs` additionally probes the real views with the anon key.
+
 ## Where the code lives
 
 | | |
 | --- | --- |
-| `supabase/migrations/20260908000012_ufc_judge_intelligence.sql` | Identity tables, aliases, and the `ufc_bout_scorecards` / `ufc_bout_scorecard_summary` / `ufc_judge_bouts` / `ufc_judge_stats` / `ufc_judge_directory` / `ufc_scorecard_gaps` / `ufc_scorecard_coverage` views. **Not applied.** |
+| `supabase/migrations/20260908000012_ufc_judge_intelligence.sql` | Identity tables, aliases, and the `ufc_bout_scorecards` / `ufc_bout_scorecard_summary` / `ufc_judge_bouts` / `ufc_judge_stats` / `ufc_judge_directory` / `ufc_scorecard_gaps` / `ufc_scorecard_coverage` views, all `security_invoker`. **Not applied.** |
 | `web/lib/judgeScoring.ts` | The same rules in TypeScript — pure, no I/O. The runtime twin of the migration. |
 | `web/lib/judges.ts` | Reads the base tables and builds the judge layer in process, so `/judges` works before the migration is applied. |
 | `web/components/Scorecard.tsx` | The Official Scorecards section, including the explicit-absence state. |
-| `web/app/judges/` | Directory, profiles, coverage register. |
+| `web/app/judges/` | Directory, profiles, coverage register, published identity evidence. |
+| `web/lib/judgeSchema.test.mjs` | Static access-control tests over the unapplied migration. |
+| `scripts/judges/verify-view-security.mjs` | Live read-only RLS probe with the anon key, plus the migration audit. |
 
 ## Commands
 
 ```bash
 # Independent read-only audit; writes docs/judge_scorecard_coverage.json.
-# Fails if a finish carries a scorecard, if the buckets do not sum, or if an
-# alias matches nothing in the archive.
+# Fails if a finish carries a scorecard, if the buckets do not sum, if an alias
+# matches nothing, if a merge is applied with no external evidence, or if a
+# provisional pair collapses into one identity.
 node --experimental-strip-types scripts/judges/audit-coverage.mjs
 
 # Prove the checked-in (unapplied) migration agrees with the runtime rules by
 # running its view bodies read-only through the Management API.
 node --experimental-strip-types scripts/judges/verify-migration-sql.mjs
 
-# Unit tests for attribution, gap classification and the statistics gates,
-# including alias parity between judgeScoring.ts and the migration.
+# Prove no view can bypass base-table RLS. Reads only: probes the live database
+# with the anon key and statically audits the migration. Writes
+# docs/judge_view_security.json.
+node scripts/judges/verify-view-security.mjs
+
+# Unit tests for attribution, gap classification, the statistics gates, the
+# identity evidence rule, and the schema's access control.
 cd web && npm run test:judges
 ```

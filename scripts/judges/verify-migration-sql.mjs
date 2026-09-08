@@ -39,10 +39,18 @@ if (aliasRows.length !== Object.keys(S.JUDGE_ALIASES).length) {
 function q(s) { return `'${s.replace(/''/g, "'").replace(/'/g, "''")}'`; }
 
 /* Lift the view body: everything between the view's `as` and its terminating
-   semicolon, so the SQL under test is the file's own text, not a copy. */
-const start = sql.indexOf('create or replace view public.ufc_bout_scorecards as');
-if (start < 0) { console.error('ufc_bout_scorecards not found in the migration'); process.exit(1); }
-const bodyStart = start + 'create or replace view public.ufc_bout_scorecards as'.length;
+   semicolon, so the SQL under test is the file's own text, not a copy. The
+   header is matched loosely because it also carries the security_invoker
+   declaration; that flag is asserted separately by web/lib/judgeSchema.test.mjs
+   and cannot be probed here, since a CTE has no view options. */
+function viewHeader(name) {
+  const m = new RegExp(`create\\s+or\\s+replace\\s+view\\s+public\\.${name}\\b[^]*?\\bas\\b`, 'i').exec(sql);
+  if (!m) { console.error(`${name} not found in the migration`); process.exit(1); }
+  return { start: m.index, end: m.index + m[0].length };
+}
+const head = viewHeader('ufc_bout_scorecards');
+const start = head.start;
+const bodyStart = head.end;
 const bodyEnd = sql.indexOf('\n;', bodyStart) >= 0 ? sql.indexOf('\n;', bodyStart) : sql.indexOf(';\n\ncomment on view public.ufc_bout_scorecards', bodyStart);
 const body = sql.slice(bodyStart, bodyEnd).trim().replace(/;$/, '');
 
@@ -75,11 +83,10 @@ const sqlResult = Array.isArray(got) ? got[0] : got;
 
 /* The gap register is the migration's other load-bearing derivation, and it
    reads only base tables, so it runs exactly as written with no rewriting. */
-const GAP_HEADER = 'create or replace view public.ufc_scorecard_gaps as';
-const gapStart = sql.indexOf(GAP_HEADER);
-const gapEnd = sql.indexOf(';\n\ncomment on view public.ufc_scorecard_gaps', gapStart);
-if (gapStart < 0 || gapEnd < 0) { console.error('ufc_scorecard_gaps not found in the migration'); process.exit(1); }
-const gapBody = sql.slice(gapStart + GAP_HEADER.length, gapEnd).trim();
+const gapHead = viewHeader('ufc_scorecard_gaps');
+const gapEnd = sql.indexOf(';\n\ncomment on view public.ufc_scorecard_gaps', gapHead.end);
+if (gapEnd < 0) { console.error('ufc_scorecard_gaps comment terminator not found'); process.exit(1); }
+const gapBody = sql.slice(gapHead.end, gapEnd).trim();
 const gapProbe = `select classification, reason, count(*)::int as n from (\n${gapBody}\n) g group by 1, 2 order by 3 desc;`;
 const gapPath = path.join(ROOT, 'docs', 'qa', 'judges-gaps-probe.sql');
 fs.writeFileSync(gapPath, `${gapProbe}\n`);

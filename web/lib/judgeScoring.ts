@@ -34,7 +34,13 @@ export type JudgeAlias = { canonical: string; kind: AliasKind; cardNote: string 
  * carries a point deduction glued to the official's name. The note is real
  * bout provenance and is kept; the card belongs to the canonical official.
  *
- * 'spelling_variant': one official stored under two spellings.
+ * 'spelling_variant': one official stored under two spellings. A merge of two
+ * names is the one operation here that can silently combine two people's
+ * records, so every spelling_variant MUST carry an entry in
+ * SPELLING_VARIANT_EVIDENCE naming an external, re-checkable source.
+ * judgeScoring.test.mjs enforces that, which is what stops the next plausible
+ * near-name from being merged on a hunch. Candidates without such a source
+ * live in PROVISIONAL_IDENTITY_CANDIDATES and stay unmerged.
  *
  * Kept in sync with the migration's _judge_alias_seed by judgeScoring.test.mjs. */
 export const JUDGE_ALIASES: Readonly<Record<string, JudgeAlias>> = {
@@ -82,8 +88,86 @@ export const JUDGE_ALIASES: Readonly<Record<string, JudgeAlias>> = {
   "Technical Decision after Headbutt by Abdul-Malik Will Fisher": { canonical: "Will Fisher", kind: "deduction_annotation", cardNote: "Technical Decision after Headbutt by Abdul-Malik" },
   "Technical decision after clash of heads Ben Cartlidge": { canonical: "Ben Cartlidge", kind: "deduction_annotation", cardNote: "Technical decision after clash of heads" },
   "Mamunah Querido": { canonical: "Maimunah Querido", kind: "spelling_variant", cardNote: null },
-  "Ritchie Gerard": { canonical: "Richie Gerrard", kind: "spelling_variant", cardNote: null },
 };
+
+export type VariantEvidence = {
+  /** The alias key in JUDGE_ALIASES this evidence licenses. */
+  rawName: string;
+  canonical: string;
+  sourceName: string;
+  sourceUrl: string;
+  /** How the source was matched to our rows — re-checkable, not "looks right". */
+  method: string;
+  /** The archive assignments the external record accounts for, as proof the
+   *  two spellings are one official rather than two people with similar names. */
+  crossMatchedEvents: string[];
+  verifiedAt: string;
+  /** What the external source is NOT evidence for. */
+  limits: string;
+};
+
+/* External confirmation for every spelling_variant merge.
+ *
+ * The test that both spellings belong to one official is not "the names look
+ * alike" — it is that an independent judging registry holds a SINGLE official
+ * whose scored bouts account for the assignments filed under BOTH of our
+ * spellings. Anything less merges two records on a resemblance. */
+export const SPELLING_VARIANT_EVIDENCE: readonly VariantEvidence[] = [
+  {
+    rawName: "Mamunah Querido",
+    canonical: "Maimunah Querido",
+    sourceName: "MMA Decisions — judge 549",
+    sourceUrl: "https://mmadecisions.com/judge/549/Munah-Querido",
+    method:
+      "MMA Decisions lists exactly one Querido judge. That single record's scored events cover the assignments the archive files under both of our spellings, so the two spellings cannot be two officials.",
+    crossMatchedEvents: [
+      "UFC on Fox 18 · 2016-01-30 — archive spelling: Maimunah Querido",
+      "UFC 288 · 2023-05-06 — archive spelling: Maimunah Querido",
+      "UFC on ESPN 54 · 2024-03-30 — archive spelling: Mamunah Querido",
+      "UFC 302 · 2024-06-01 — archive spelling: Maimunah Querido",
+      "UFC 316 · 2025-06-07 — archive spelling: Maimunah Querido",
+    ],
+    verifiedAt: "2026-09-08",
+    limits:
+      "Confirms that the two archive spellings are one official. It does not settle the display spelling: the external registry renders the name \"Munah Querido\", which matches neither stored form, so the canonical name here stays the dominant archive spelling.",
+  },
+];
+
+export type ProvisionalCandidate = {
+  /** Both names as the archive stores them. Neither is canonical over the other. */
+  names: [string, string];
+  status: "unconfirmed" | "externally_confirmed_pending_review";
+  /** Why the pair is worth reviewing at all. */
+  archiveEvidence: string;
+  externalSourceName: string | null;
+  externalSourceUrl: string | null;
+  externalFinding: string | null;
+  /** The merge that would be applied if this is promoted. */
+  proposedCanonical: string | null;
+  note: string;
+};
+
+/* Near-name pairs that are NOT merged.
+ *
+ * These are deliberately inert: nothing in this module consults them when
+ * resolving a judge, so the two names keep separate identities, separate
+ * profiles and separate samples. The list exists so a reviewable candidate
+ * does not quietly become a canonical fact, and so the evidence is not lost. */
+export const PROVISIONAL_IDENTITY_CANDIDATES: readonly ProvisionalCandidate[] = [
+  {
+    names: ["Ritchie Gerard", "Richie Gerrard"],
+    status: "externally_confirmed_pending_review",
+    archiveEvidence:
+      "Both forms are Oceania assignments (Auckland, Melbourne), never appear on the same event, and differ by one letter in each name part. Archive resemblance alone is not sufficient to merge two officials.",
+    externalSourceName: "MMA Decisions — judge 606",
+    externalSourceUrl: "https://mmadecisions.com/judge/606/Ritchie-Gerard",
+    externalFinding:
+      "The registry holds a single \"Ritchie Gerard\" with 5 scored decisions, and those five bouts are exactly the union of the archive's two spellings: Aldrich–Jeon and Volkanovski–Hirota (UFC Fight Night 110, filed here as Ritchie Gerard), plus Hooker–Iaquinta and Potter–Pitolo (UFC 243) and Kara-France–Nam (UFC on ESPN+ 26), filed here as Richie Gerrard. The registry's spelling also reverses the merge direction originally proposed.",
+    proposedCanonical: "Ritchie Gerard",
+    note:
+      "Confirmation was found after this pair had already been pulled from the production alias table, and it corrects the direction of the original merge. It stays unmerged pending sign-off: promoting it means moving the pair into JUDGE_ALIASES and SPELLING_VARIANT_EVIDENCE with 'Ritchie Gerard' as canonical. Both samples are far below the rate floor, so no published rate changes either way.",
+  },
+];
 
 export function resolveJudge(rawName: string | null | undefined): { name: string; rawName: string; cardNote: string | null } {
   const raw = String(rawName || "").trim();

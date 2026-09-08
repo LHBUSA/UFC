@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs, JsonLd } from "@/components/ui";
 import { eventSlug, matchupSlug } from "@/lib/slug";
 import { fmtDate, weightClassLabel } from "@/lib/format";
-import { getJudgeArchive, getJudgeBySlug, judgeArchiveBio, tenureLine, type JudgeCard } from "@/lib/judges";
+import { getJudgeArchive, getJudgeBySlug, judgeArchiveBio, provisionalPairFor, tenureLine, type JudgeCard } from "@/lib/judges";
 import { DECISION_LABEL, DRAW_LABEL, MIN_RATE_SAMPLE, dissentRead, wilsonInterval } from "@/lib/judgeScoring";
 import { SITE } from "@/lib/site";
 import styles from "../judges.module.css";
@@ -42,6 +42,9 @@ export default async function JudgeProfilePage({ params }: { params: Promise<{ s
     archiveDissents: totals.dissentCards, archiveAttributed: totals.attributedCards,
   });
   const tenure = tenureLine(judge);
+  /* A near-name pair we have deliberately not merged. Saying nothing would let
+   * a split record read as a complete one. */
+  const provisional = provisionalPairFor(judge.name);
   const interval = wilsonInterval(judge.dissentCards, judge.attributedCards);
   const archiveRate = totals.attributedCards ? totals.dissentCards / totals.attributedCards : 0;
   const judgeRate = judge.attributedCards ? judge.dissentCards / judge.attributedCards : 0;
@@ -118,6 +121,23 @@ export default async function JudgeProfilePage({ params }: { params: Promise<{ s
           <h2>{judge.displayName}</h2>
           <p>{judgeArchiveBio(judge, tenure)}</p>
           <p className="faint sm">No externally sourced biography is attached to this official. PropBetEdge does not generate one, and no personal detail appears here that is not derived from the loaded bout archive.</p>
+          {provisional && (
+            <p className="jg-provisional">
+              <b>This record may be incomplete.</b> The archive also holds cards under{" "}
+              <Link href={`/judges/${provisional.otherSlug}`}>{provisional.other}</Link>, a spelling close enough that the two may be
+              the same official. They are kept as separate identities here, with separate samples, because PropBetEdge does not merge
+              two names on resemblance.{" "}
+              {provisional.candidate.status === "externally_confirmed_pending_review" && provisional.candidate.externalSourceUrl ? (
+                <>
+                  An external registry does now appear to confirm the merge —{" "}
+                  <a href={provisional.candidate.externalSourceUrl} target="_blank" rel="noopener">{provisional.candidate.externalSourceName} ↗</a>{" "}
+                  — and it is queued for review rather than applied silently.
+                </>
+              ) : (
+                <>No external judging record has confirmed the merge, so it is not applied.</>
+              )}
+            </p>
+          )}
         </div>
       </section>
 

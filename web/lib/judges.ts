@@ -2,7 +2,9 @@ import "server-only";
 import { cache } from "react";
 import {
   buildBoutScorecard, classifyGap, dissentRead, judgeSlug, resolveJudge, wentToTheJudges,
+  PROVISIONAL_IDENTITY_CANDIDATES, SPELLING_VARIANT_EVIDENCE,
   type AttributedCard, type DecisionType, type DrawType, type GapClassification, type GapReason,
+  type ProvisionalCandidate,
 } from "@/lib/judgeScoring";
 
 /* Judge intelligence data access.
@@ -402,7 +404,20 @@ export const getScorecardCoverage = cache(async (): Promise<ScorecardCoverage> =
 
 /* ---- helpers used by pages --------------------------------------------- */
 
-export { buildBoutScorecard, judgeSlug, resolveJudge, wentToTheJudges };
+export { buildBoutScorecard, judgeSlug, resolveJudge, wentToTheJudges, PROVISIONAL_IDENTITY_CANDIDATES, SPELLING_VARIANT_EVIDENCE };
+
+/* The other half of a near-name pair that is deliberately NOT merged, if this
+ * judge is on one. A reader looking at a three-card profile deserves to know a
+ * candidate sibling record exists and why it has not been combined into this
+ * one; leaving it silent is how a split record reads as a complete one. */
+export function provisionalPairFor(name: string): { other: string; otherSlug: string; candidate: ProvisionalCandidate } | null {
+  for (const candidate of PROVISIONAL_IDENTITY_CANDIDATES) {
+    const i = candidate.names.indexOf(name);
+    if (i < 0) continue;
+    return { other: candidate.names[i === 0 ? 1 : 0], otherSlug: judgeSlug(candidate.names[i === 0 ? 1 : 0]), candidate };
+  }
+  return null;
+}
 
 export function tenureLine(j: Pick<JudgeProfile, "firstEventDate" | "lastEventDate">): string | null {
   const y = (d: string | null) => (d ? new Date(`${d}T00:00:00Z`).getUTCFullYear() : null);

@@ -327,3 +327,89 @@ test("no alias points at another alias, and none is a self-reference", () => {
     assert.ok(!J.JUDGE_ALIASES[alias.canonical], `${raw} resolves to another alias (${alias.canonical})`);
   }
 });
+
+/* ---- identity evidence: an unconfirmed name never becomes canonical ----- */
+
+test("every spelling_variant merge carries external, re-checkable evidence", () => {
+  /* The rule that stops the next plausible near-name from being merged on a
+     resemblance. A deduction_annotation is a parsing artefact and needs no
+     source; merging two NAMES combines two officials' records and does. */
+  const variants = Object.entries(J.JUDGE_ALIASES).filter(([, a]) => a.kind === "spelling_variant");
+  for (const [raw, alias] of variants) {
+    const ev = J.SPELLING_VARIANT_EVIDENCE.find((e) => e.rawName === raw);
+    assert.ok(ev, `spelling_variant ${raw} has no entry in SPELLING_VARIANT_EVIDENCE`);
+    assert.equal(ev.canonical, alias.canonical, `evidence for ${raw} names a different canonical`);
+    assert.match(ev.sourceUrl, /^https?:\/\/\S+$/, `evidence for ${raw} has no usable source URL`);
+    assert.ok(ev.sourceName && ev.method, `evidence for ${raw} does not say what was checked`);
+    assert.ok(ev.crossMatchedEvents.length >= 2, `evidence for ${raw} cites fewer than two cross-matched assignments`);
+    assert.ok(ev.verifiedAt, `evidence for ${raw} has no verification date`);
+  }
+  assert.equal(J.SPELLING_VARIANT_EVIDENCE.length, variants.length, "evidence exists for a merge that is not applied");
+});
+
+test("a provisional candidate is never merged, in either direction", () => {
+  for (const c of J.PROVISIONAL_IDENTITY_CANDIDATES) {
+    for (const name of c.names) {
+      assert.ok(!J.JUDGE_ALIASES[name], `${name} is a provisional candidate but appears as an alias key`);
+      const asTarget = Object.entries(J.JUDGE_ALIASES).find(([, a]) => a.canonical === name);
+      assert.ok(!asTarget, `${name} is a provisional candidate but is the canonical target of ${asTarget?.[0]}`);
+      assert.equal(J.resolveJudge(name).name, name, `${name} does not resolve to itself`);
+    }
+    const [a, b] = c.names;
+    assert.notEqual(J.judgeSlug(a), J.judgeSlug(b), `${a} and ${b} collide on one profile URL`);
+  }
+});
+
+test("Ritchie Gerard and Richie Gerrard stay two identities", () => {
+  /* Named explicitly: this pair was merged once on archive resemblance, and a
+     regression here would silently restate one person's record as another's. */
+  assert.equal(J.resolveJudge("Ritchie Gerard").name, "Ritchie Gerard");
+  assert.equal(J.resolveJudge("Richie Gerrard").name, "Richie Gerrard");
+  assert.ok(J.PROVISIONAL_IDENTITY_CANDIDATES.some((c) => c.names.includes("Ritchie Gerard") && c.names.includes("Richie Gerrard")),
+    "the pair must remain on the reviewable candidate list, with its evidence");
+});
+
+test("an unconfirmed near-name never combines samples", () => {
+  /* The behavioural version of the rule, not the structural one: run two real
+     bouts through the same path the archive uses and prove the cards land in
+     two buckets with two sample sizes, never one merged record. */
+  const bout = (judge, winner) => J.buildBoutScorecard({
+    method: "DEC_U",
+    scorecards: [card(judge, "27-30"), card("Chris Lee", "27-30"), card("Mike Bell", "27-30")],
+    winnerId: winner, fighterAId: A, fighterBId: B,
+  });
+  const bySlug = new Map();
+  for (const [judge, winner] of [["Ritchie Gerard", A], ["Richie Gerrard", B]]) {
+    for (const c of bout(judge, winner).cards) {
+      bySlug.set(c.judgeSlug, (bySlug.get(c.judgeSlug) || 0) + 1);
+    }
+  }
+  assert.equal(bySlug.get("ritchie-gerard"), 1, "Ritchie Gerard's card did not stay on his own record");
+  assert.equal(bySlug.get("richie-gerrard"), 1, "Richie Gerrard's card did not stay on his own record");
+  assert.equal(bySlug.get("chris-lee"), 2, "a judge who really did work both bouts should accumulate");
+  assert.equal(bySlug.size, 4, "expected four distinct judges across the two bouts");
+});
+
+test("the withdrawn merge is absent from the migration too", () => {
+  const root = join(fileURLToPath(new URL(".", import.meta.url)), "..", "..");
+  const sql = readFileSync(join(root, "supabase", "migrations", "20260908000012_ufc_judge_intelligence.sql"), "utf8");
+  const seed = sql.slice(sql.indexOf("_judge_alias_seed"), sql.indexOf("insert into public.ufc_judge_profiles"));
+  for (const c of J.PROVISIONAL_IDENTITY_CANDIDATES) {
+    for (const name of c.names) {
+      assert.ok(!seed.includes(`('${name}'`), `${name} is still seeded as an alias by the migration`);
+    }
+  }
+});
+
+test("a provisional candidate records what is and is not established", () => {
+  for (const c of J.PROVISIONAL_IDENTITY_CANDIDATES) {
+    assert.ok(["unconfirmed", "externally_confirmed_pending_review"].includes(c.status));
+    assert.ok(c.archiveEvidence && c.note, "a candidate must say why it is a candidate and why it is not merged");
+    if (c.status === "externally_confirmed_pending_review") {
+      assert.match(c.externalSourceUrl || "", /^https?:\/\/\S+$/, "a confirmed candidate must cite its source");
+      assert.ok(c.externalFinding, "a confirmed candidate must say what the source showed");
+      assert.ok(c.proposedCanonical && c.names.includes(c.proposedCanonical),
+        "a confirmed candidate must name which of the two spellings would become canonical");
+    }
+  }
+});
