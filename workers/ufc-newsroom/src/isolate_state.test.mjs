@@ -119,25 +119,70 @@ test('the ingest and desk CLIs parse to their previous defaults', () => {
 
 /* ---- the property, checked against the source rather than one instance ---- */
 
-test('no news module computes a clock, an argv or an env at module scope', () => {
+/**
+ * Walk the Worker's real import graph from its entry module.
+ *
+ * Computed rather than listed. A hardcoded set of files would go stale the
+ * moment the Worker imported something new, and the gap would be invisible:
+ * the test would keep passing while no longer covering the module that had
+ * just been added.
+ */
+function workerImportGraph() {
+  const entry = new URL('./index.js', import.meta.url);
+  const seen = new Set();
+  const stack = [entry.href];
+  while (stack.length) {
+    const href = stack.pop();
+    if (seen.has(href)) continue;
+    seen.add(href);
+    let src;
+    try { src = readFileSync(new URL(href), 'utf8'); } catch { continue; }
+    const specs = [
+      ...src.matchAll(/from\s+'([^']+)'/g),
+      ...src.matchAll(/import\('([^']+)'\)/g),
+    ].map((m) => m[1]).filter((m) => m.startsWith('.'));
+    for (const spec of specs) stack.push(new URL(spec, href).href);
+  }
+  return seen;
+}
+
+test('no module the Worker imports computes a clock, an argv or an env at module scope', () => {
   /* An assertion about the shape of the code, because the failure it guards is
-   * invisible at runtime until an isolate has been warm long enough. Function
-   * bodies are exempt: `new Date()` inside a function runs per call. */
-  const dir = new URL('../../../scripts/news/', import.meta.url);
+   * invisible at runtime until an isolate has been warm long enough.
+   *
+   * Scoped to what the WORKER actually imports, not to every file in
+   * scripts/news/. Those are two different properties and only one of them is
+   * about this Worker: a CLI-only tool may read process.argv at module scope
+   * because it runs once per process and exits, while a module inside a
+   * long-lived isolate may not, because the value it captured on first import
+   * is then served to every later invocation. Asserting the CLI property over
+   * the whole directory would fail on tools that are behaving correctly, and
+   * the pressure would be to weaken the assertion rather than aim it. */
+  const graph = workerImportGraph();
   const offenders = [];
 
-  for (const file of readdirSync(dir).filter((f) => f.endsWith('.mjs') && !f.endsWith('.test.mjs'))) {
-    const src = readFileSync(new URL(file, dir), 'utf8');
+  for (const href of graph) {
+    if (href.endsWith('.test.mjs')) continue;
+    const file = href.split('/').pop();
+    let src;
+    try { src = readFileSync(new URL(href), 'utf8'); } catch { continue; }
     let depth = 0;
     for (const raw of src.split('\n')) {
       const line = raw.trim();
-      const atModuleScope = depth === 0;
-      if (atModuleScope && /^(export\s+)?(const|let|var)\s/.test(line)) {
+      if (depth === 0 && /^(export\s+)?(const|let|var)\s/.test(line)) {
         /* isCli reads process.argv[1], the entry-point path. That genuinely
          * does not change for the life of a process or an isolate, and it is
          * the CLI self-execution guard every one of these files needs. */
         const isCliGuard = /^(export\s+)?const isCli\s*=/.test(line);
-        if (!isCliGuard && /(new Date\(\)|Date\.now\(\)|process\.argv|process\.env)/.test(line)) {
+        /* A declaration that assigns a FUNCTION defers its body to call time:
+         * `const nowIso = () => new Date().toISOString()` evaluates nothing at
+         * import, so only what precedes the arrow or the `function` keyword is
+         * module scope. Without this the scanner cannot tell a captured value
+         * from a deferred one, and the pressure would be to delete the check.
+         */
+        const fnAt = line.search(/=>|\bfunction\b/);
+        const evaluatedNow = fnAt >= 0 ? line.slice(0, fnAt) : line;
+        if (!isCliGuard && /(new Date\(\)|Date\.now\(\)|process\.argv|process\.env)/.test(evaluatedNow)) {
           offenders.push(`${file}: ${line.slice(0, 90)}`);
         }
       }
@@ -146,7 +191,25 @@ test('no news module computes a clock, an argv or an env at module scope', () =>
     }
   }
 
-  assert.deepEqual(offenders, [], `module-scope runtime state:\n${offenders.join('\n')}`);
+  assert.deepEqual(offenders, [], `module-scope runtime state reachable from the Worker:
+${offenders.join('\n')}`);
+});
+
+test('the graph actually covers the newsroom, and excludes CLI-only tools', () => {
+  /* Two failures this catches. If the walker silently resolved nothing the
+   * test above would pass vacuously, so the modules that carry the editorial
+   * product must be present by name. And the CLI-only tools must be absent:
+   * copilot_compat.mjs and release_safe_reviews.mjs legitimately read
+   * process.argv at module scope, so if one of them ever enters the Worker's
+   * graph the assertion above starts covering it and fails - which is the
+   * correct outcome, not a gap. */
+  const names = [...workerImportGraph()].map((h) => h.split('/').pop());
+  for (const required of ['write_articles.mjs', 'ingest_news.mjs', 'polish_world_class.mjs', 'seed_sources.mjs', 'lib.mjs', 'anthropic.mjs']) {
+    assert.ok(names.includes(required), `${required} must be in the Worker's import graph`);
+  }
+  for (const cliOnly of ['copilot_compat.mjs', 'copilot_provider_canary.mjs', 'release_safe_reviews.mjs']) {
+    assert.ok(!names.includes(cliOnly), `${cliOnly} is a CLI tool and must not be imported by the Worker`);
+  }
 });
 
 test('importing a news module writes nothing and calls nothing', async () => {
