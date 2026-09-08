@@ -1,0 +1,8 @@
+{
+  "name": "ufc-newsroom",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test src/coordinator.test.mjs src/newsroom.test.mjs"
+  }
+}
