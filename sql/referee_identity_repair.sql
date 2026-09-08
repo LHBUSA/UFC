@@ -1,5 +1,20 @@
 -- ============================================================================
--- Referee identity repair — two clusters, NOT EXECUTED
+-- Referee identity repair — two clusters
+--
+-- EXECUTED ONCE, 2026-09-08T13:56:03Z, against production, on approval.
+-- The transaction committed; all 22 assertions passed. Verified before and
+-- after with scripts/referees/verify-identity-repair.mjs:
+--
+--   profiles                 249 -> 246
+--   eric-mcmahon              26 -> 29 bouts, display_name "Eric McMahon"
+--   vyacheslav-kiselev         4 -> 10 bouts, span 2018-09-15 to 2021-10-30
+--   ufc_referee_bouts       9318 -> 9318   (unchanged; nothing deleted)
+--   rows with no slug           0 -> 0
+--   aliases                    3 -> 6
+--
+-- Re-running it now would fail at the first insert on the alias primary key,
+-- which is the correct behaviour for a repair that has already been applied.
+-- The rollback block at the foot remains unexecuted.
 --
 --   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f sql/referee_identity_repair.sql
 --
@@ -10,9 +25,9 @@
 -- Both identities are confirmed against sources outside our own database; see
 -- the per-cluster notes below. Neither rests on spelling similarity.
 --
--- Nothing here has been run. The read-only companion,
--- scripts/referees/verify-identity-repair.mjs, establishes the preconditions
--- before and confirms the postconditions after; run it on both sides.
+-- The read-only companion, scripts/referees/verify-identity-repair.mjs,
+-- establishes the preconditions before and confirms the postconditions after;
+-- it was run on both sides and passed on both.
 --
 -- ---------------------------------------------------------------------------
 -- WHY IT IS SHAPED THIS WAY
