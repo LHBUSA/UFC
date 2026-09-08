@@ -1,4 +1,0 @@
-One-time apply authorization for the Fight DNA historical repair proven by dry-run commit 0ae3e87773f9f678d68aea8f0abae834ca4595c1.
-Expected source counts at proof: complete_bouts=9343, results=9339, round_rows=41542.
-Expected output: feature_rows=18686, snapshots=21747, historical_snapshots=18588, distinct_snapshot_dates=876.
-Remove this marker immediately after the apply run completes.
