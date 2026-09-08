@@ -15,6 +15,7 @@
 // Usage: node scripts/referees/enrich.mjs [--dry-run] [--limit N] [--slug s]
 //                                          [--resume] [--report] [--force]
 import { claim, cli, identityFacts, nowIso, readPacket, resolveWiki, rest, writeCombined, writePacket } from '../media/lib/subjects.mjs';
+import { archiveMetricsFor } from './lib/archive-metrics.mjs';
 
 /* A referee article must actually describe officiating. "mixed martial arts"
  * alone is not enough — that matches every fighter who shares the name. */
@@ -27,31 +28,20 @@ const yearOf = (d) => (d ? new Date(`${d}T00:00:00Z`).getUTCFullYear() : null);
 
 /* Archive metrics: factual distributions from our own bout rows, with the
  * sample size attached. No characterisation of officiating style. */
-async function archiveMetrics(slug) {
-  const bouts = await rest(`ufc_referee_bouts?select=method,round,time_sec,is_title,card_position,scheduled_rounds,event_date,event_name,fighter_a_name,fighter_b_name,winner_name,weight_class,is_womens&referee_slug=eq.${encodeURIComponent(slug)}&order=event_date.desc.nullslast&limit=500`).catch(() => []);
-  if (!bouts.length) return null;
-  const rounds = {};
-  let mainEvents = 0, timed = 0, totalTime = 0;
-  const byMethod = {};
-  for (const b of bouts) {
-    const m = String(b.method || 'UNKNOWN');
-    byMethod[m] = (byMethod[m] || 0) + 1;
-    if (b.round) rounds[b.round] = (rounds[b.round] || 0) + 1;
-    if (b.card_position === 'main') mainEvents += 1;
-    if (b.round && b.time_sec != null) { timed += 1; totalTime += (b.round - 1) * 300 + b.time_sec; }
-  }
-  const stoppageTimes = bouts.filter((b) => /KO_TKO|SUB/.test(b.method || '') && b.round && b.time_sec != null).map((b) => (b.round - 1) * 300 + b.time_sec).sort((a, b) => a - b);
-  const pctile = (p) => (stoppageTimes.length ? stoppageTimes[Math.min(stoppageTimes.length - 1, Math.floor(stoppageTimes.length * p))] : null);
-  return {
-    sample_bouts: bouts.length,
-    main_event_assignments: mainEvents,
-    method_distribution: byMethod,
-    round_distribution: rounds,
-    avg_fight_seconds: timed ? Math.round(totalTime / timed) : null,
-    timed_sample: timed,
-    stoppage_time_seconds: stoppageTimes.length ? { p25: pctile(0.25), median: pctile(0.5), p75: pctile(0.75), sample: stoppageTimes.length } : null,
-    notable: bouts.filter((b) => b.is_title).slice(0, 8).map((b) => ({ fight: `${b.fighter_a_name} vs ${b.fighter_b_name}`, event: b.event_name, date: b.event_date, method: b.method, round: b.round })),
-  };
+/**
+ * Archive metrics for one referee, via the shared paginated implementation.
+ *
+ * This used to issue a single query with limit=500 — not a page size, the
+ * whole request — so any referee past 500 assignments described a truncated
+ * sample and said nothing about it. Herb Dean's packet claimed 203 of 1,351.
+ * Both this command and refresh-archive-metrics.mjs now go through the same
+ * module, so a full enrichment run cannot reintroduce the shortfall.
+ *
+ * expectedBouts is the directory count; a mismatch throws and the caller
+ * writes nothing for that referee.
+ */
+async function archiveMetrics(slug, expectedBouts) {
+  return archiveMetricsFor(slug, expectedBouts, (q) => rest(q));
 }
 
 async function enrichOne(r) {
@@ -62,7 +52,12 @@ async function enrichOne(r) {
   const qid = wiki?.wikibase_item || null;
   const facts = qid ? await identityFacts(qid).catch(() => null) : null;
   const wikiUrl = wiki?.content_urls?.desktop?.page || (wiki?.title ? `https://en.wikipedia.org/wiki/${encodeURIComponent(wiki.title.replace(/ /g, '_'))}` : null);
-  const metrics = await archiveMetrics(r.slug).catch(() => null);
+  /* No .catch(() => null) here any more. A failed or short read used to become
+   * "no metrics", which is indistinguishable from a referee with no bouts and
+   * was how a truncated sample got written without anyone noticing. Let it
+   * throw: the per-referee handler in main() records the error and moves on
+   * without writing a packet. */
+  const metrics = await archiveMetrics(r.slug, r.bouts);
 
   const firstYear = yearOf(r.first_event_date), lastYear = yearOf(r.last_event_date);
   const archiveSrc = 'PropBetEdge UFC archive (ufc_referee_directory)';
@@ -88,7 +83,7 @@ async function enrichOne(r) {
       ufc_bout_count: claim(r.bouts, archiveSrc, 'archive_count'),
       title_fight_count: claim(r.title_bouts, archiveSrc, 'archive_count'),
       five_round_count: claim(r.five_round_bouts, archiveSrc, 'archive_count'),
-      main_event_count: claim(metrics?.main_event_assignments, archiveSrc, 'archive_count'),
+      main_event_count: claim(metrics?.main_event_assignments, archiveSrc, 'archive_count_card_position'),
     },
     bio: {
       /* Sourced prose only: the Wikipedia extract when the article passed the

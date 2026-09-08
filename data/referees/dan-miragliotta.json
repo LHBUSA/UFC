@@ -33,52 +33,52 @@
       "verified_at": "2026-09-07T14:03:28.325Z"
     },
     "documented_since": {
-      "value": 2023,
+      "value": 2007,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:03:28.325Z"
+      "verified_at": "2026-09-08T14:37:51.731Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:03:28.325Z"
+      "verified_at": "2026-09-08T14:37:51.731Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments 2023–2026",
+      "value": "Documented UFC assignments 2007–2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:28.325Z"
+      "verified_at": "2026-09-08T14:37:51.731Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:28.325Z"
+      "verified_at": "2026-09-08T14:37:51.731Z"
     },
     "ufc_bout_count": {
-      "value": 30,
+      "value": 507,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:28.325Z"
+      "verified_at": "2026-09-08T14:37:51.731Z"
     },
     "title_fight_count": {
-      "value": 0,
+      "value": 23,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:28.325Z"
+      "verified_at": "2026-09-08T14:37:51.731Z"
     },
     "five_round_count": {
-      "value": 3,
+      "value": 55,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:28.325Z"
+      "verified_at": "2026-09-08T14:37:51.731Z"
     },
     "main_event_count": {
       "value": 15,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:28.325Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:51.731Z"
     }
   },
   "bio": {
@@ -89,31 +89,94 @@
     "verified_at": "2026-09-07T14:03:28.325Z"
   },
   "metrics": {
-    "sample_bouts": 30,
+    "sample_bouts": 507,
     "main_event_assignments": 15,
+    "card_position_sample": 29,
     "method_distribution": {
-      "DEC_U": 16,
-      "DEC_S": 2,
-      "KO_TKO": 8,
-      "SUB": 4
+      "KO_TKO": 192,
+      "DEC_S": 40,
+      "DEC_U": 172,
+      "SUB": 87,
+      "NC": 6,
+      "DRAW": 5,
+      "DQ": 2,
+      "DEC_M": 3
     },
     "round_distribution": {
-      "1": 7,
-      "2": 3,
-      "3": 19,
-      "5": 1
+      "1": 156,
+      "2": 83,
+      "3": 240,
+      "4": 5,
+      "5": 23
     },
-    "avg_fight_seconds": 686,
-    "timed_sample": 30,
+    "avg_fight_seconds": 618,
+    "timed_sample": 507,
     "stoppage_time_seconds": {
-      "p25": 85,
-      "median": 282,
+      "p25": 150,
+      "median": 279,
       "p75": 548,
-      "sample": 12
+      "sample": 279
     },
-    "notable": [],
+    "notable": [
+      {
+        "fight": "Amanda Nunes vs Irene Aldana",
+        "event": "UFC 289: Nunes vs. Aldana",
+        "date": "2023-06-10",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Israel Adesanya vs Alex Pereira",
+        "event": "UFC 287: Pereira vs. Adesanya 2",
+        "date": "2023-04-08",
+        "method": "KO_TKO",
+        "round": 2
+      },
+      {
+        "fight": "Kamaru Usman vs Colby Covington",
+        "event": "UFC 268: Usman vs. Covington 2",
+        "date": "2021-11-06",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Ciryl Gane vs Derrick Lewis",
+        "event": "UFC 265: Lewis vs. Gane",
+        "date": "2021-08-07",
+        "method": "KO_TKO",
+        "round": 3
+      },
+      {
+        "fight": "Charles Oliveira vs Michael Chandler",
+        "event": "UFC 262: Oliveira vs. Chandler",
+        "date": "2021-05-15",
+        "method": "KO_TKO",
+        "round": 2
+      },
+      {
+        "fight": "Valentina Shevchenko vs Jessica Andrade",
+        "event": "UFC 261: Usman vs. Masvidal 2",
+        "date": "2021-04-24",
+        "method": "KO_TKO",
+        "round": 2
+      },
+      {
+        "fight": "Israel Adesanya vs Yoel Romero",
+        "event": "UFC 248: Adesanya vs. Romero",
+        "date": "2020-03-07",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Jon Jones vs Dominick Reyes",
+        "event": "UFC 247: Jones vs. Reyes",
+        "date": "2020-02-08",
+        "method": "DEC_U",
+        "round": 5
+      }
+    ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:03:28.325Z",
+    "computed_at": "2026-09-08T14:37:51.731Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

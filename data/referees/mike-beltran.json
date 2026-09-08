@@ -26,57 +26,57 @@
       "value": "United States",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "verified_at": "2026-09-08T14:37:52.124Z"
     },
     "date_of_birth": null,
     "occupations": null,
     "documented_since": {
-      "value": 2021,
+      "value": 2013,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "verified_at": "2026-09-08T14:37:52.124Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "verified_at": "2026-09-08T14:37:52.124Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments 2021–2026",
+      "value": "Documented UFC assignments 2013–2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "verified_at": "2026-09-08T14:37:52.124Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "verified_at": "2026-09-08T14:37:52.124Z"
     },
     "ufc_bout_count": {
-      "value": 112,
+      "value": 250,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "verified_at": "2026-09-08T14:37:52.124Z"
     },
     "title_fight_count": {
-      "value": 1,
+      "value": 8,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "verified_at": "2026-09-08T14:37:52.124Z"
     },
     "five_round_count": {
-      "value": 7,
+      "value": 17,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "verified_at": "2026-09-08T14:37:52.124Z"
     },
     "main_event_count": {
       "value": 76,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:18.780Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:52.124Z"
     }
   },
   "bio": {
@@ -87,41 +87,92 @@
     "verified_at": "2026-09-07T14:03:18.780Z"
   },
   "metrics": {
-    "sample_bouts": 112,
+    "sample_bouts": 250,
     "main_event_assignments": 76,
+    "card_position_sample": 108,
     "method_distribution": {
-      "DEC_U": 43,
-      "KO_TKO": 41,
-      "DEC_S": 9,
-      "SUB": 16,
-      "DEC_M": 1,
-      "NC": 2
+      "KO_TKO": 80,
+      "DEC_U": 94,
+      "DEC_S": 21,
+      "SUB": 42,
+      "DEC_M": 5,
+      "NC": 6,
+      "DRAW": 2
     },
     "round_distribution": {
-      "1": 38,
-      "2": 10,
-      "3": 61,
-      "5": 3
+      "1": 72,
+      "2": 28,
+      "3": 144,
+      "5": 6
     },
-    "avg_fight_seconds": 612,
-    "timed_sample": 112,
+    "avg_fight_seconds": 636,
+    "timed_sample": 250,
     "stoppage_time_seconds": {
-      "p25": 110,
-      "median": 246,
-      "p75": 486,
-      "sample": 57
+      "p25": 117,
+      "median": 259,
+      "p75": 552,
+      "sample": 122
     },
     "notable": [
+      {
+        "fight": "Zhang Weili vs Tatiana Suarez",
+        "event": "UFC 312: Du Plessis vs. Strickland 2",
+        "date": "2025-02-08",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "SuYoung You vs Baergeng Jieleyisi",
+        "event": "UFC Fight Night: Yan vs. Figueiredo",
+        "date": "2024-11-23",
+        "method": "DEC_U",
+        "round": 3
+      },
       {
         "fight": "Belal Muhammad vs Leon Edwards",
         "event": "UFC 304: Edwards vs. Muhammad 2",
         "date": "2024-07-27",
         "method": "DEC_U",
         "round": 5
+      },
+      {
+        "fight": "Amanda Nunes vs Julianna Pena",
+        "event": "UFC 277: Pena vs. Nunes 2",
+        "date": "2022-07-30",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Brandon Moreno vs Deiveson Figueiredo",
+        "event": "UFC 263: Adesanya vs. Vettori 2",
+        "date": "2021-06-12",
+        "method": "SUB",
+        "round": 3
+      },
+      {
+        "fight": "Jon Jones vs Alexander Gustafsson",
+        "event": "UFC 232: Jones vs. Gustafsson 2",
+        "date": "2018-12-29",
+        "method": "KO_TKO",
+        "round": 3
+      },
+      {
+        "fight": "Henry Cejudo vs Demetrious Johnson",
+        "event": "UFC 227: Dillashaw vs. Garbrandt 2",
+        "date": "2018-08-04",
+        "method": "DEC_S",
+        "round": 5
+      },
+      {
+        "fight": "Cristiane Justino vs Tonya Evinger",
+        "event": "UFC 214: Cormier vs. Jones 2",
+        "date": "2017-07-29",
+        "method": "KO_TKO",
+        "round": 3
       }
     ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:03:18.780Z",
+    "computed_at": "2026-09-08T14:37:52.124Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

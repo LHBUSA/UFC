@@ -7,7 +7,7 @@ import { fmtDate, fmtTime, METHOD_LABEL, weightClassLabel } from "@/lib/format";
 import { getRefereeBouts, getRefereeBySlug, refereeArchiveBio, refereeImpactRead, type RefereeBout } from "@/lib/referees";
 import { SITE } from "@/lib/site";
 import { RefereePhoto, refereeImage, tenureLine } from "@/components/RefereeBits";
-import { refereePacket, val, type Claim } from "@/lib/enrichment";
+import { refereePacket, packetMetricsAreCurrent, val, type Claim } from "@/lib/enrichment";
 import styles from "../referees.module.css";
 
 /* /referees/[slug] — premium intelligence profile: photo (or monogram),
@@ -47,9 +47,18 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
   const bio = sourcedBio || r.bio || refereeArchiveBio(r);
   const bioSourceUrl = sourcedBio ? pk?.bio?.source_url : r.bio_source_url;
   const bioSourceName = sourcedBio ? `${pk?.bio?.source_name}${pk?.bio?.license ? ` · ${pk.bio.license}` : ""}` : r.bio_source_name;
-  const m = pk?.metrics || null;
+  /* The packet is checked in; the bout count is live. After an identity merge
+   * or an archive load they disagree, and the page would then show a headline
+   * over one record and a distribution over another. Withhold the distribution
+   * rather than render two referees at once. Kept even once every packet is
+   * current: it is the runtime net, not a substitute for regenerating. */
+  const metricsCurrent = packetMetricsAreCurrent(pk, r.bouts);
+  const m = metricsCurrent ? pk?.metrics || null : null;
   const methodRows = m ? Object.entries(m.method_distribution).sort((a, b) => b[1] - a[1]).slice(0, 6) : [];
   const roundRows = m ? Object.entries(m.round_distribution).sort((a, b) => Number(a[0]) - Number(b[0])) : [];
+  /* Older packets predate this field; treat an absent subset size as covering
+   * the whole sample, which is what it meant when every sample was recent. */
+  const positionedSample = m ? m.card_position_sample ?? m.sample_bouts : 0;
   const tendencies: string[] = [];
   if (r.bouts >= 20) {
     if (r.stoppage_rate != null) tendencies.push(`${pct(r.stoppage_rate)} of loaded assignments ended by stoppage (${r.ko_tko} KO/TKO, ${r.submissions} submissions) against a ${pct(r.archive_stoppage_rate)} archive baseline.`);
@@ -127,7 +136,13 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
                   <div><dt>Stoppage time · median</dt><dd>{fmtTime(m.stoppage_time_seconds.median)}</dd></div>
                   <div><dt>Stoppage time · middle 50%</dt><dd>{fmtTime(m.stoppage_time_seconds.p25)} – {fmtTime(m.stoppage_time_seconds.p75)} <small className="faint">({m.stoppage_time_seconds.sample} stoppages)</small></dd></div>
                 </>}
-                <div><dt>Main events</dt><dd>{m.main_event_assignments}</dd></div>
+                {/* Card position is only recorded for recent events, so this
+                    counts a subset of the sample the rest of this block covers.
+                    Say so, the way the timing lines above do, rather than let
+                    "153" sit next to "1,351" and read as a rate. */}
+                {positionedSample > 0 && (
+                  <div><dt>Main events</dt><dd>{m.main_event_assignments}{positionedSample < m.sample_bouts && <small className="faint"> (of {positionedSample.toLocaleString()} assignments with a card position recorded)</small>}</dd></div>
+                )}
               </dl>
             </div>
           </div>

@@ -6,6 +6,10 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    // Node's test runner resolves TypeScript by exact specifier, so a test that
+    // imports a .ts module must say so. Safe because noEmit is set: this
+    // affects type checking only, never what ships.
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",

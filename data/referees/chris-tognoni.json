@@ -14,7 +14,7 @@
       "value": "Chris Tognoni",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:03:12.143Z"
+      "verified_at": "2026-09-08T14:37:51.360Z"
     },
     "role": {
       "value": "Mixed martial arts referee",
@@ -26,52 +26,52 @@
     "date_of_birth": null,
     "occupations": null,
     "documented_since": {
-      "value": 2017,
+      "value": 2010,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:03:12.143Z"
+      "verified_at": "2026-09-08T14:37:51.360Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:03:12.143Z"
+      "verified_at": "2026-09-08T14:37:51.360Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments 2017–2026",
+      "value": "Documented UFC assignments 2010–2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:12.143Z"
+      "verified_at": "2026-09-08T14:37:51.360Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:12.143Z"
+      "verified_at": "2026-09-08T14:37:51.360Z"
     },
     "ufc_bout_count": {
-      "value": 126,
+      "value": 518,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:12.143Z"
+      "verified_at": "2026-09-08T14:37:51.360Z"
     },
     "title_fight_count": {
-      "value": 0,
-      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:12.143Z"
-    },
-    "five_round_count": {
       "value": 1,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:12.143Z"
+      "verified_at": "2026-09-08T14:37:51.360Z"
+    },
+    "five_round_count": {
+      "value": 3,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-08T14:37:51.360Z"
     },
     "main_event_count": {
       "value": 80,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:12.143Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:51.360Z"
     }
   },
   "bio": {
@@ -82,33 +82,44 @@
     "verified_at": null
   },
   "metrics": {
-    "sample_bouts": 126,
+    "sample_bouts": 518,
     "main_event_assignments": 80,
+    "card_position_sample": 126,
     "method_distribution": {
-      "KO_TKO": 37,
-      "DEC_U": 53,
-      "SUB": 22,
-      "DEC_S": 11,
-      "DEC_M": 1,
-      "NC": 2
+      "KO_TKO": 154,
+      "DEC_U": 191,
+      "SUB": 100,
+      "DEC_S": 53,
+      "DEC_M": 6,
+      "DQ": 2,
+      "NC": 9,
+      "DRAW": 3
     },
     "round_distribution": {
-      "1": 38,
-      "2": 19,
-      "3": 68,
-      "5": 1
+      "1": 130,
+      "2": 95,
+      "3": 291,
+      "5": 2
     },
-    "avg_fight_seconds": 604,
-    "timed_sample": 126,
+    "avg_fight_seconds": 621,
+    "timed_sample": 518,
     "stoppage_time_seconds": {
-      "p25": 110,
-      "median": 250,
-      "p75": 406,
-      "sample": 59
+      "p25": 135,
+      "median": 326,
+      "p75": 549,
+      "sample": 254
     },
-    "notable": [],
+    "notable": [
+      {
+        "fight": "Mairon Santos vs Kaan Ofli",
+        "event": "UFC Fight Night: Cannonier vs. Borralho",
+        "date": "2024-08-24",
+        "method": "KO_TKO",
+        "round": 2
+      }
+    ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:03:12.143Z",
+    "computed_at": "2026-09-08T14:37:51.360Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

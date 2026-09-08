@@ -26,7 +26,7 @@
       "value": "United States",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "verified_at": "2026-09-08T14:37:50.787Z"
     },
     "date_of_birth": null,
     "occupations": {
@@ -38,52 +38,52 @@
       "verified_at": "2026-09-07T14:03:00.586Z"
     },
     "documented_since": {
-      "value": 2017,
+      "value": 2009,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "verified_at": "2026-09-08T14:37:50.787Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "verified_at": "2026-09-08T14:37:50.787Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments 2017–2026",
+      "value": "Documented UFC assignments 2009–2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "verified_at": "2026-09-08T14:37:50.787Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "verified_at": "2026-09-08T14:37:50.787Z"
     },
     "ufc_bout_count": {
-      "value": 195,
+      "value": 570,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "verified_at": "2026-09-08T14:37:50.787Z"
     },
     "title_fight_count": {
-      "value": 0,
+      "value": 21,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "verified_at": "2026-09-08T14:37:50.787Z"
     },
     "five_round_count": {
-      "value": 13,
+      "value": 53,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "verified_at": "2026-09-08T14:37:50.787Z"
     },
     "main_event_count": {
       "value": 146,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:00.586Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:50.787Z"
     }
   },
   "bio": {
@@ -94,35 +94,94 @@
     "verified_at": "2026-09-07T14:03:00.587Z"
   },
   "metrics": {
-    "sample_bouts": 195,
+    "sample_bouts": 570,
     "main_event_assignments": 146,
+    "card_position_sample": 195,
     "method_distribution": {
-      "KO_TKO": 68,
-      "DEC_U": 66,
-      "SUB": 42,
-      "DEC_S": 13,
-      "DRAW": 3,
-      "NC": 2,
-      "DEC_M": 1
+      "KO_TKO": 184,
+      "DEC_U": 208,
+      "SUB": 110,
+      "DEC_S": 48,
+      "DRAW": 6,
+      "NC": 6,
+      "DEC_M": 6,
+      "DQ": 2
     },
     "round_distribution": {
-      "1": 55,
-      "2": 38,
-      "3": 96,
-      "4": 2,
-      "5": 4
+      "1": 142,
+      "2": 105,
+      "3": 295,
+      "4": 4,
+      "5": 24
     },
-    "avg_fight_seconds": 615,
-    "timed_sample": 195,
+    "avg_fight_seconds": 655,
+    "timed_sample": 570,
     "stoppage_time_seconds": {
       "p25": 185,
-      "median": 368,
-      "p75": 535,
-      "sample": 110
+      "median": 357,
+      "p75": 547,
+      "sample": 294
     },
-    "notable": [],
+    "notable": [
+      {
+        "fight": "Merab Dvalishvili vs Sean O'Malley",
+        "event": "UFC 316: Dvalishvili vs. O'Malley 2",
+        "date": "2025-06-07",
+        "method": "SUB",
+        "round": 3
+      },
+      {
+        "fight": "Belal Muhammad vs Jack Della Maddalena",
+        "event": "UFC 315: Muhammad vs. Della Maddalena",
+        "date": "2025-05-10",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Merab Dvalishvili vs Umar Nurmagomedov",
+        "event": "UFC 311: Makhachev vs. Moicano",
+        "date": "2025-01-18",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Alexandre Pantoja vs Kai Asakura",
+        "event": "UFC 310: Pantoja vs. Asakura",
+        "date": "2024-12-07",
+        "method": "SUB",
+        "round": 2
+      },
+      {
+        "fight": "Julianna Pena vs Raquel Pennington",
+        "event": "UFC 307: Pereira vs. Rountree Jr.",
+        "date": "2024-10-05",
+        "method": "DEC_S",
+        "round": 5
+      },
+      {
+        "fight": "Zhang Weili vs Yan Xiaonan",
+        "event": "UFC 300: Pereira vs. Hill",
+        "date": "2024-04-13",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Alex Pereira vs Jamahal Hill",
+        "event": "UFC 300: Pereira vs. Hill",
+        "date": "2024-04-13",
+        "method": "KO_TKO",
+        "round": 1
+      },
+      {
+        "fight": "Ilia Topuria vs Alexander Volkanovski",
+        "event": "UFC 298: Volkanovski vs. Topuria",
+        "date": "2024-02-17",
+        "method": "KO_TKO",
+        "round": 2
+      }
+    ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:03:00.587Z",
+    "computed_at": "2026-09-08T14:37:50.787Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

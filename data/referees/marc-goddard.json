@@ -14,7 +14,7 @@
       "value": "Marc Goddard",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "role": {
       "value": "Mixed martial arts referee",
@@ -26,57 +26,57 @@
       "value": "United Kingdom",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "date_of_birth": null,
     "occupations": null,
     "documented_since": {
-      "value": 2020,
+      "value": 2008,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments 2020–2026",
+      "value": "Documented UFC assignments 2008–2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "ufc_bout_count": {
-      "value": 113,
+      "value": 624,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "title_fight_count": {
-      "value": 1,
+      "value": 55,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "five_round_count": {
-      "value": 30,
+      "value": 135,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "verified_at": "2026-09-08T14:37:50.487Z"
     },
     "main_event_count": {
       "value": 64,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:03:17.734Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:50.487Z"
     }
   },
   "bio": {
@@ -87,42 +87,93 @@
     "verified_at": null
   },
   "metrics": {
-    "sample_bouts": 113,
+    "sample_bouts": 624,
     "main_event_assignments": 64,
+    "card_position_sample": 107,
     "method_distribution": {
-      "KO_TKO": 39,
-      "DEC_U": 51,
-      "DEC_S": 5,
-      "SUB": 15,
-      "DEC_M": 2,
-      "DRAW": 1
+      "KO_TKO": 205,
+      "DEC_U": 245,
+      "DEC_S": 53,
+      "SUB": 105,
+      "DEC_M": 7,
+      "DRAW": 7,
+      "NC": 2
     },
     "round_distribution": {
-      "1": 35,
-      "2": 13,
-      "3": 48,
-      "4": 1,
-      "5": 16
+      "1": 160,
+      "2": 93,
+      "3": 307,
+      "4": 9,
+      "5": 55
     },
-    "avg_fight_seconds": 702,
-    "timed_sample": 113,
+    "avg_fight_seconds": 692,
+    "timed_sample": 624,
     "stoppage_time_seconds": {
-      "p25": 144,
-      "median": 238,
-      "p75": 408,
-      "sample": 54
+      "p25": 155,
+      "median": 299,
+      "p75": 548,
+      "sample": 310
     },
     "notable": [
       {
-        "fight": "Tom Aspinall vs Curtis Blaydes",
-        "event": "UFC 304: Edwards vs. Muhammad 2",
-        "date": "2024-07-27",
+        "fight": "Dricus Du Plessis vs Khamzat Chimaev",
+        "event": "UFC 319: Du Plessis vs. Chimaev",
+        "date": "2025-08-16",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Ilia Topuria vs Charles Oliveira",
+        "event": "UFC 317: Topuria vs. Oliveira",
+        "date": "2025-06-28",
         "method": "KO_TKO",
         "round": 1
+      },
+      {
+        "fight": "Valentina Shevchenko vs Manon Fiorot",
+        "event": "UFC 315: Muhammad vs. Della Maddalena",
+        "date": "2025-05-10",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Alexander Volkanovski vs Diego Lopes",
+        "event": "UFC 314: Volkanovski vs. Lopes",
+        "date": "2025-04-12",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Alex Pereira vs Magomed Ankalaev",
+        "event": "UFC 313: Pereira vs. Ankalaev",
+        "date": "2025-03-08",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Dricus Du Plessis vs Sean Strickland",
+        "event": "UFC 312: Du Plessis vs. Strickland 2",
+        "date": "2025-02-08",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Ilia Topuria vs Max Holloway",
+        "event": "UFC 308: Topuria vs. Holloway",
+        "date": "2024-10-26",
+        "method": "KO_TKO",
+        "round": 3
+      },
+      {
+        "fight": "Alex Pereira vs Khalil Rountree Jr.",
+        "event": "UFC 307: Pereira vs. Rountree Jr.",
+        "date": "2024-10-05",
+        "method": "KO_TKO",
+        "round": 4
       }
     ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:03:17.734Z",
+    "computed_at": "2026-09-08T14:37:50.487Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

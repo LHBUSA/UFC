@@ -14,7 +14,7 @@
       "value": "Robert Madrigal",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:08:05.897Z"
+      "verified_at": "2026-09-08T14:37:53.836Z"
     },
     "role": {
       "value": "Mixed martial arts referee",
@@ -26,52 +26,52 @@
     "date_of_birth": null,
     "occupations": null,
     "documented_since": {
-      "value": 2025,
+      "value": 2012,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:08:05.897Z"
+      "verified_at": "2026-09-08T14:37:53.836Z"
     },
     "documented_through": {
       "value": 2025,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:08:05.897Z"
+      "verified_at": "2026-09-08T14:37:53.836Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments in 2025",
+      "value": "Documented UFC assignments 2012–2025",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:08:05.897Z"
+      "verified_at": "2026-09-08T14:37:53.836Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:08:05.897Z"
+      "verified_at": "2026-09-08T14:37:53.836Z"
     },
     "ufc_bout_count": {
+      "value": 24,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-08T14:37:53.836Z"
+    },
+    "title_fight_count": {
+      "value": 1,
+      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
+      "method": "archive_count",
+      "verified_at": "2026-09-08T14:37:53.836Z"
+    },
+    "five_round_count": {
       "value": 2,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:05.897Z"
-    },
-    "title_fight_count": {
-      "value": 0,
-      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:05.897Z"
-    },
-    "five_round_count": {
-      "value": 0,
-      "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:05.897Z"
+      "verified_at": "2026-09-08T14:37:53.836Z"
     },
     "main_event_count": {
       "value": 1,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:05.897Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:53.836Z"
     }
   },
   "bio": {
@@ -82,27 +82,40 @@
     "verified_at": null
   },
   "metrics": {
-    "sample_bouts": 2,
+    "sample_bouts": 24,
     "main_event_assignments": 1,
+    "card_position_sample": 2,
     "method_distribution": {
-      "DEC_U": 1,
-      "SUB": 1
+      "DEC_U": 8,
+      "SUB": 6,
+      "KO_TKO": 7,
+      "DEC_S": 3
     },
     "round_distribution": {
-      "2": 1,
-      "3": 1
+      "1": 5,
+      "2": 5,
+      "3": 13,
+      "5": 1
     },
-    "avg_fight_seconds": 740,
-    "timed_sample": 2,
+    "avg_fight_seconds": 656,
+    "timed_sample": 24,
     "stoppage_time_seconds": {
-      "p25": 579,
-      "median": 579,
+      "p25": 264,
+      "median": 327,
       "p75": 579,
-      "sample": 1
+      "sample": 13
     },
-    "notable": [],
+    "notable": [
+      {
+        "fight": "Valentina Shevchenko vs Jessica Eye",
+        "event": "UFC 238: Cejudo vs. Moraes",
+        "date": "2019-06-08",
+        "method": "KO_TKO",
+        "round": 2
+      }
+    ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:08:05.897Z",
+    "computed_at": "2026-09-08T14:37:53.836Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

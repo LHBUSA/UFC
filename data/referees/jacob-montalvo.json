@@ -14,7 +14,7 @@
       "value": "Jacob Montalvo",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "verified_at": "2026-09-08T14:37:52.613Z"
     },
     "role": {
       "value": "Mixed martial arts referee",
@@ -26,52 +26,52 @@
     "date_of_birth": null,
     "occupations": null,
     "documented_since": {
-      "value": 2023,
+      "value": 2011,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "verified_at": "2026-09-08T14:37:52.613Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "verified_at": "2026-09-08T14:37:52.613Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments 2023–2026",
+      "value": "Documented UFC assignments 2011–2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "verified_at": "2026-09-08T14:37:52.613Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "verified_at": "2026-09-08T14:37:52.613Z"
     },
     "ufc_bout_count": {
-      "value": 14,
+      "value": 87,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "verified_at": "2026-09-08T14:37:52.613Z"
     },
     "title_fight_count": {
-      "value": 0,
+      "value": 2,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "verified_at": "2026-09-08T14:37:52.613Z"
     },
     "five_round_count": {
-      "value": 0,
+      "value": 2,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "verified_at": "2026-09-08T14:37:52.613Z"
     },
     "main_event_count": {
       "value": 9,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:17.640Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:52.613Z"
     }
   },
   "bio": {
@@ -82,32 +82,50 @@
     "verified_at": null
   },
   "metrics": {
-    "sample_bouts": 14,
+    "sample_bouts": 87,
     "main_event_assignments": 9,
+    "card_position_sample": 14,
     "method_distribution": {
-      "KO_TKO": 5,
-      "SUB": 3,
-      "DEC_U": 2,
-      "DEC_S": 2,
+      "KO_TKO": 22,
+      "SUB": 18,
+      "DEC_U": 36,
+      "DEC_S": 7,
       "DQ": 1,
-      "DEC_M": 1
+      "DEC_M": 1,
+      "NC": 2
     },
     "round_distribution": {
-      "1": 6,
-      "2": 2,
-      "3": 6
+      "1": 19,
+      "2": 16,
+      "3": 51,
+      "5": 1
     },
-    "avg_fight_seconds": 531,
-    "timed_sample": 14,
+    "avg_fight_seconds": 657,
+    "timed_sample": 87,
     "stoppage_time_seconds": {
       "p25": 221,
-      "median": 254,
-      "p75": 464,
-      "sample": 8
+      "median": 420,
+      "p75": 564,
+      "sample": 40
     },
-    "notable": [],
+    "notable": [
+      {
+        "fight": "Valentina Shevchenko vs Katlyn Cerminara",
+        "event": "UFC 247: Jones vs. Reyes",
+        "date": "2020-02-08",
+        "method": "KO_TKO",
+        "round": 3
+      },
+      {
+        "fight": "Joanna Jedrzejczyk vs Jessica Andrade",
+        "event": "UFC 211: Miocic vs. Dos Santos",
+        "date": "2017-05-13",
+        "method": "DEC_U",
+        "round": 5
+      }
+    ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:04:17.640Z",
+    "computed_at": "2026-09-08T14:37:52.613Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

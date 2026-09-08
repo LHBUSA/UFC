@@ -46,52 +46,52 @@
       "verified_at": "2026-09-07T14:04:37.397Z"
     },
     "documented_since": {
-      "value": 2017,
+      "value": 1994,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:04:37.397Z"
+      "verified_at": "2026-09-08T14:37:50.222Z"
     },
     "documented_through": {
       "value": 2017,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:04:37.397Z"
+      "verified_at": "2026-09-08T14:37:50.222Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments in 2017",
+      "value": "Documented UFC assignments 1994–2017",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:04:37.397Z"
+      "verified_at": "2026-09-08T14:37:50.222Z"
     },
     "status": {
       "value": "No loaded assignment since 2017",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:04:37.397Z"
+      "verified_at": "2026-09-08T14:37:50.222Z"
     },
     "ufc_bout_count": {
-      "value": 9,
+      "value": 669,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:37.397Z"
+      "verified_at": "2026-09-08T14:37:50.222Z"
     },
     "title_fight_count": {
-      "value": 0,
+      "value": 129,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:37.397Z"
+      "verified_at": "2026-09-08T14:37:50.222Z"
     },
     "five_round_count": {
-      "value": 0,
+      "value": 154,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:37.397Z"
+      "verified_at": "2026-09-08T14:37:50.222Z"
     },
     "main_event_count": {
       "value": 9,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:37.397Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:50.222Z"
     }
   },
   "bio": {
@@ -102,31 +102,94 @@
     "verified_at": "2026-09-07T14:04:37.397Z"
   },
   "metrics": {
-    "sample_bouts": 9,
+    "sample_bouts": 669,
     "main_event_assignments": 9,
+    "card_position_sample": 9,
     "method_distribution": {
-      "KO_TKO": 4,
-      "DEC_U": 1,
-      "DEC_S": 1,
-      "SUB": 2,
-      "NC": 1
+      "DEC_U": 166,
+      "DEC_S": 38,
+      "DRAW": 6,
+      "KO_TKO": 263,
+      "SUB": 174,
+      "NC": 13,
+      "DEC_M": 8,
+      "DQ": 1
     },
     "round_distribution": {
-      "1": 4,
-      "2": 3,
-      "3": 2
+      "1": 304,
+      "2": 120,
+      "3": 198,
+      "4": 5,
+      "5": 42
     },
-    "avg_fight_seconds": 443,
-    "timed_sample": 9,
+    "avg_fight_seconds": 534,
+    "timed_sample": 669,
     "stoppage_time_seconds": {
-      "p25": 190,
-      "median": 395,
-      "p75": 467,
-      "sample": 6
+      "p25": 113,
+      "median": 262,
+      "p75": 464,
+      "sample": 437
     },
-    "notable": [],
+    "notable": [
+      {
+        "fight": "Nicco Montano vs Roxanne Modafferi",
+        "event": "The Ultimate Fighter: A New World Champion Finale",
+        "date": "2017-12-01",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Rose Namajunas vs Joanna Jedrzejczyk",
+        "event": "UFC 217: Bisping vs. St-Pierre",
+        "date": "2017-11-04",
+        "method": "KO_TKO",
+        "round": 1
+      },
+      {
+        "fight": "Georges St-Pierre vs Michael Bisping",
+        "event": "UFC 217: Bisping vs. St-Pierre",
+        "date": "2017-11-04",
+        "method": "SUB",
+        "round": 3
+      },
+      {
+        "fight": "Amanda Nunes vs Valentina Shevchenko",
+        "event": "UFC 215: Nunes vs Shevchenko 2",
+        "date": "2017-09-09",
+        "method": "DEC_S",
+        "round": 5
+      },
+      {
+        "fight": "Daniel Cormier vs Jon Jones",
+        "event": "UFC 214: Cormier vs. Jones 2",
+        "date": "2017-07-29",
+        "method": "NC",
+        "round": 3
+      },
+      {
+        "fight": "Robert Whittaker vs Yoel Romero",
+        "event": "UFC 213: Romero vs. Whittaker",
+        "date": "2017-07-08",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Max Holloway vs Jose Aldo",
+        "event": "UFC 212: Aldo vs. Holloway",
+        "date": "2017-06-03",
+        "method": "KO_TKO",
+        "round": 3
+      },
+      {
+        "fight": "Daniel Cormier vs Anthony Johnson",
+        "event": "UFC 210: Cormier vs. Johnson 2",
+        "date": "2017-04-08",
+        "method": "SUB",
+        "round": 2
+      }
+    ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:04:37.397Z",
+    "computed_at": "2026-09-08T14:37:50.222Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": {

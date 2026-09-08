@@ -32,7 +32,7 @@ export type RefereePacket = {
   facts: Record<string, Claim<unknown> | null>;
   bio: { text: string | null; source_url: string | null; source_name: string | null; license: string | null; verified_at: string | null };
   metrics: null | {
-    sample_bouts: number; main_event_assignments: number;
+    sample_bouts: number; main_event_assignments: number; card_position_sample?: number;
     method_distribution: Record<string, number>; round_distribution: Record<string, number>;
     avg_fight_seconds: number | null; timed_sample: number;
     stoppage_time_seconds: null | { p25: number; median: number; p75: number; sample: number };
@@ -55,6 +55,10 @@ const DB = data as unknown as { generated_at: string; referees: Record<string, R
 
 export const enrichmentGeneratedAt = DB.generated_at;
 export function refereePacket(slug: string): RefereePacket | null { return DB.referees[slug] || null; }
+
+/* The staleness guard lives in its own dependency-free module so it can be
+ * tested directly; re-exported here because this is where callers look. */
+export { packetMetricsAreCurrent } from "./packet-freshness";
 export function hofPacket(slug: string): HofPacket | null { return DB.hof[slug] || null; }
 export function allRefereePackets(): RefereePacket[] { return Object.values(DB.referees); }
 export function allHofPackets(): HofPacket[] { return Object.values(DB.hof); }

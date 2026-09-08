@@ -14,7 +14,7 @@
       "value": "Jerin Valel",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "verified_at": "2026-09-08T14:37:52.468Z"
     },
     "role": {
       "value": "Mixed martial arts referee",
@@ -26,52 +26,52 @@
     "date_of_birth": null,
     "occupations": null,
     "documented_since": {
-      "value": 2026,
+      "value": 2011,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "verified_at": "2026-09-08T14:37:52.468Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "verified_at": "2026-09-08T14:37:52.468Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments in 2026",
+      "value": "Documented UFC assignments 2011–2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "verified_at": "2026-09-08T14:37:52.468Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "verified_at": "2026-09-08T14:37:52.468Z"
     },
     "ufc_bout_count": {
-      "value": 6,
+      "value": 93,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "verified_at": "2026-09-08T14:37:52.468Z"
     },
     "title_fight_count": {
-      "value": 0,
+      "value": 3,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "verified_at": "2026-09-08T14:37:52.468Z"
     },
     "five_round_count": {
-      "value": 0,
+      "value": 7,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "verified_at": "2026-09-08T14:37:52.468Z"
     },
     "main_event_count": {
       "value": 3,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:05:00.958Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:52.468Z"
     }
   },
   "bio": {
@@ -82,27 +82,55 @@
     "verified_at": null
   },
   "metrics": {
-    "sample_bouts": 6,
+    "sample_bouts": 93,
     "main_event_assignments": 3,
+    "card_position_sample": 6,
     "method_distribution": {
-      "DEC_U": 5,
-      "SUB": 1
+      "DEC_U": 39,
+      "SUB": 13,
+      "DEC_S": 13,
+      "KO_TKO": 26,
+      "DRAW": 2
     },
     "round_distribution": {
-      "2": 1,
-      "3": 5
+      "1": 17,
+      "2": 14,
+      "3": 59,
+      "5": 3
     },
-    "avg_fight_seconds": 824,
-    "timed_sample": 6,
+    "avg_fight_seconds": 709,
+    "timed_sample": 93,
     "stoppage_time_seconds": {
-      "p25": 445,
-      "median": 445,
-      "p75": 445,
-      "sample": 1
+      "p25": 179,
+      "median": 355,
+      "p75": 576,
+      "sample": 39
     },
-    "notable": [],
+    "notable": [
+      {
+        "fight": "Raquel Pennington vs Mayra Bueno Silva",
+        "event": "UFC 297: Strickland vs. Du Plessis",
+        "date": "2024-01-20",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Demetrious Johnson vs Ali Bagautinov",
+        "event": "UFC 174: Johnson vs Bagautinov",
+        "date": "2014-06-14",
+        "method": "DEC_U",
+        "round": 5
+      },
+      {
+        "fight": "Zhang Lipeng vs Sai Wang",
+        "event": "UFC Fight Night: Kim vs Hathaway",
+        "date": "2014-03-01",
+        "method": "DEC_S",
+        "round": 3
+      }
+    ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:05:00.958Z",
+    "computed_at": "2026-09-08T14:37:52.468Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

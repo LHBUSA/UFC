@@ -14,7 +14,7 @@
       "value": "Mourad Benseghir",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "verified_at": "2026-09-08T14:37:58.402Z"
     },
     "role": {
       "value": "Mixed martial arts referee",
@@ -29,49 +29,49 @@
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "verified_at": "2026-09-08T14:37:58.402Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "verified_at": "2026-09-08T14:37:58.402Z"
     },
     "tenure_label": {
       "value": "Documented UFC assignments in 2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "verified_at": "2026-09-08T14:37:58.402Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "verified_at": "2026-09-08T14:37:58.402Z"
     },
     "ufc_bout_count": {
       "value": 1,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "verified_at": "2026-09-08T14:37:58.402Z"
     },
     "title_fight_count": {
       "value": 0,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "verified_at": "2026-09-08T14:37:58.402Z"
     },
     "five_round_count": {
       "value": 0,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "verified_at": "2026-09-08T14:37:58.402Z"
     },
     "main_event_count": {
       "value": 0,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:41.540Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:58.402Z"
     }
   },
   "bio": {
@@ -84,6 +84,7 @@
   "metrics": {
     "sample_bouts": 1,
     "main_event_assignments": 0,
+    "card_position_sample": 1,
     "method_distribution": {
       "SUB": 1
     },
@@ -100,7 +101,7 @@
     },
     "notable": [],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:08:41.540Z",
+    "computed_at": "2026-09-08T14:37:58.402Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

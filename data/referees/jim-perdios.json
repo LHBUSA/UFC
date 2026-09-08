@@ -14,7 +14,7 @@
       "value": "Jim Perdios",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "verified_at": "2026-09-08T14:37:53.526Z"
     },
     "role": {
       "value": "Mixed martial arts referee",
@@ -26,52 +26,52 @@
     "date_of_birth": null,
     "occupations": null,
     "documented_since": {
-      "value": 2025,
+      "value": 2017,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "verified_at": "2026-09-08T14:37:53.526Z"
     },
     "documented_through": {
       "value": 2026,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "verified_at": "2026-09-08T14:37:53.526Z"
     },
     "tenure_label": {
-      "value": "Documented UFC assignments 2025–2026",
+      "value": "Documented UFC assignments 2017–2026",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "verified_at": "2026-09-08T14:37:53.526Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "verified_at": "2026-09-08T14:37:53.526Z"
     },
     "ufc_bout_count": {
-      "value": 19,
+      "value": 31,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "verified_at": "2026-09-08T14:37:53.526Z"
     },
     "title_fight_count": {
       "value": 0,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "verified_at": "2026-09-08T14:37:53.526Z"
     },
     "five_round_count": {
       "value": 0,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "verified_at": "2026-09-08T14:37:53.526Z"
     },
     "main_event_count": {
       "value": 4,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:04:02.278Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:53.526Z"
     }
   },
   "bio": {
@@ -82,31 +82,32 @@
     "verified_at": null
   },
   "metrics": {
-    "sample_bouts": 19,
+    "sample_bouts": 31,
     "main_event_assignments": 4,
+    "card_position_sample": 19,
     "method_distribution": {
-      "KO_TKO": 8,
-      "DEC_U": 6,
-      "SUB": 3,
+      "KO_TKO": 11,
+      "DEC_U": 9,
+      "SUB": 6,
       "DEC_M": 1,
-      "DEC_S": 1
+      "DEC_S": 4
     },
     "round_distribution": {
-      "1": 4,
-      "2": 4,
-      "3": 11
+      "1": 7,
+      "2": 6,
+      "3": 18
     },
-    "avg_fight_seconds": 642,
-    "timed_sample": 19,
+    "avg_fight_seconds": 639,
+    "timed_sample": 31,
     "stoppage_time_seconds": {
       "p25": 205,
-      "median": 548,
-      "p75": 672,
-      "sample": 11
+      "median": 479,
+      "p75": 599,
+      "sample": 17
     },
     "notable": [],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:04:02.278Z",
+    "computed_at": "2026-09-08T14:37:53.526Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,

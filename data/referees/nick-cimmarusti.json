@@ -14,7 +14,7 @@
       "value": "Nick Cimmarusti",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "verified_at": "2026-09-08T14:37:56.732Z"
     },
     "role": {
       "value": "Mixed martial arts referee",
@@ -29,49 +29,49 @@
       "value": 2025,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_first_assignment",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "verified_at": "2026-09-08T14:37:56.732Z"
     },
     "documented_through": {
       "value": 2025,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_last_assignment",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "verified_at": "2026-09-08T14:37:56.732Z"
     },
     "tenure_label": {
       "value": "Documented UFC assignments in 2025",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "verified_at": "2026-09-08T14:37:56.732Z"
     },
     "status": {
       "value": "Active in the loaded archive",
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_derived",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "verified_at": "2026-09-08T14:37:56.732Z"
     },
     "ufc_bout_count": {
       "value": 2,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "verified_at": "2026-09-08T14:37:56.732Z"
     },
     "title_fight_count": {
-      "value": 0,
+      "value": 1,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "verified_at": "2026-09-08T14:37:56.732Z"
     },
     "five_round_count": {
-      "value": 0,
+      "value": 1,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
       "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "verified_at": "2026-09-08T14:37:56.732Z"
     },
     "main_event_count": {
       "value": 0,
       "source": "PropBetEdge UFC archive (ufc_referee_directory)",
-      "method": "archive_count",
-      "verified_at": "2026-09-07T14:08:13.003Z"
+      "method": "archive_count_card_position",
+      "verified_at": "2026-09-08T14:37:56.732Z"
     }
   },
   "bio": {
@@ -84,6 +84,7 @@
   "metrics": {
     "sample_bouts": 2,
     "main_event_assignments": 0,
+    "card_position_sample": 2,
     "method_distribution": {
       "SUB": 1,
       "DEC_U": 1
@@ -100,9 +101,17 @@
       "p75": 484,
       "sample": 1
     },
-    "notable": [],
+    "notable": [
+      {
+        "fight": "Alibi Idiris vs Joseph Morales",
+        "event": "UFC 319: Du Plessis vs. Chimaev",
+        "date": "2025-08-16",
+        "method": "SUB",
+        "round": 2
+      }
+    ],
     "origin": "pbe_derived",
-    "computed_at": "2026-09-07T14:08:13.003Z",
+    "computed_at": "2026-09-08T14:37:56.732Z",
     "note": "Historical distribution across loaded assignments. Descriptive only; a referee does not choose the matchup, styles or scheduled length."
   },
   "media": null,
