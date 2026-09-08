@@ -1,6 +1,8 @@
 /**
- * POST /api/store/fulfill — submit already-paid orders to Printful as drafts.
- * Never called from the Stripe webhook and never confirms manufacturing.
+ * /api/store/fulfill — submit already-paid orders to Printful as drafts.
+ *
+ * POST is the operator path. GET is the Vercel Cron path. Both are authenticated,
+ * both use the same durable order claims, and neither confirms manufacturing.
  */
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
@@ -42,6 +44,15 @@ function bearerMatches(presented: string, expected: string): boolean {
   return timingSafeEqual(a, b);
 }
 
+function presentedBearer(req: Request): string {
+  return String(req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+}
+
+function authorize(req: Request, expected: string | undefined): boolean {
+  const presented = presentedBearer(req);
+  return Boolean(expected && presented && bearerMatches(presented, expected));
+}
+
 function releaseFiles(slug: string, origin: string, art: string): { files?: OrderItem["files"]; fileUrl?: string; missing?: string[] } {
   if (slug !== DROP001_SLUG) return { fileUrl: `${origin}/store/print/${art}.png` };
   const release = drop001ArtFiles();
@@ -54,12 +65,7 @@ function releaseFiles(slug: string, origin: string, art: string): { files?: Orde
   };
 }
 
-export async function POST(req: Request) {
-  const gate = process.env.STORE_FULFILL_TOKEN;
-  if (!gate) return json({ error: "FULFILMENT_NOT_ENABLED", message: "Set STORE_FULFILL_TOKEN to enable printer submission." }, 503);
-
-  const presented = String(req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
-  if (!presented || !bearerMatches(presented, gate)) return json({ error: "unauthorized" }, 401);
+async function runFulfillment(req: Request) {
   if (!ordersConfigured()) return json({ error: "ORDERS_NOT_CONFIGURED" }, 503);
   if (!writeConfigured()) return json({ error: "PROVIDER_NOT_CONFIGURED" }, 503);
 
@@ -184,4 +190,21 @@ export async function POST(req: Request) {
     results: report,
     reconciled,
   });
+}
+
+/** Manual operator trigger. STORE_FULFILL_TOKEN is preferred; CRON_SECRET is
+ * accepted as a fallback so one production secret can safely serve both paths. */
+export async function POST(req: Request) {
+  const gate = process.env.STORE_FULFILL_TOKEN || process.env.CRON_SECRET;
+  if (!gate) return json({ error: "FULFILMENT_NOT_ENABLED" }, 503);
+  if (!authorize(req, gate)) return json({ error: "unauthorized" }, 401);
+  return runFulfillment(req);
+}
+
+/** Vercel Cron trigger. Vercel sends Authorization: Bearer $CRON_SECRET. */
+export async function GET(req: Request) {
+  const gate = process.env.CRON_SECRET;
+  if (!gate) return json({ error: "CRON_NOT_ENABLED" }, 503);
+  if (!authorize(req, gate)) return json({ error: "unauthorized" }, 401);
+  return runFulfillment(req);
 }
