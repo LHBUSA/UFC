@@ -69,10 +69,16 @@ try {
   const args = ['-p', prompt];
   if (supports('--model')) args.push('--model', process.env.UFC_EDITORIAL_COPILOT_MODEL || 'auto');
   if (supports('--output-format')) args.push('--output-format=json');
+  if (supports('--stream')) args.push('--stream=off');
   if (supports('--no-color')) args.push('--no-color');
   if (supports('--no-ask-user')) args.push('--no-ask-user');
   if (supports('--no-custom-instructions')) args.push('--no-custom-instructions');
   if (supports('--no-remote')) args.push('--no-remote');
+  if (supports('--disable-builtin-mcps')) args.push('--disable-builtin-mcps');
+  // Copilot CLI 1.0.83 explicitly requires this in prompt/non-interactive mode.
+  // The canary runs in an empty temp directory with built-in MCPs disabled, so
+  // permission is granted without exposing the repository or external tools.
+  if (supports('--allow-all-tools')) args.push('--allow-all-tools');
 
   console.log(JSON.stringify({
     help_contract: {
@@ -82,6 +88,8 @@ try {
       no_ask_user: supports('--no-ask-user'),
       no_custom_instructions: supports('--no-custom-instructions'),
       no_remote: supports('--no-remote'),
+      disable_builtin_mcps: supports('--disable-builtin-mcps'),
+      allow_all_tools: supports('--allow-all-tools'),
       model: supports('--model'),
     },
     invocation_flags: args.filter((x) => String(x).startsWith('-')),
@@ -91,13 +99,13 @@ try {
   if (child.error) throw child.error;
   if (child.signal) throw new Error(`copilot terminated by ${child.signal}`);
   if (child.status !== 0) {
-    throw new Error(`copilot exit ${child.status}: ${String(child.stderr || child.stdout || '').trim().replace(/\s+/g, ' ').slice(0, 1200)}`);
+    throw new Error(`copilot exit ${child.status}: ${String(child.stderr || child.stdout || '').trim().replace(/\s+/g, ' ').slice(0, 1600)}`);
   }
 
   const content = extract(child.stdout);
   const obj = parseObject(content);
   if (!obj || obj.ok !== REQUIRED.ok || obj.provider !== REQUIRED.provider) {
-    throw new Error(`unexpected structured response: ${String(content || child.stdout).slice(0, 1200)}`);
+    throw new Error(`unexpected structured response: ${String(content || child.stdout).slice(0, 1600)}`);
   }
 
   console.log(JSON.stringify({ acceptance: 'PASS', response: obj }, null, 2));
