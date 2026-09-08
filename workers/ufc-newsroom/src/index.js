@@ -50,7 +50,7 @@
 import { Supabase } from './supabase.mjs';
 import { planRun, shouldWriteAfterIngest, PHASES } from './coordinator.mjs';
 import { WORKER, findActiveRun, lastSuccessByPhase, openRun, closeRun } from './runlog.mjs';
-import { acquire as acquireLock, release as releaseLock } from './lock.mjs';
+import { acquire as acquireLock, release as releaseLock, MANUAL_DEADLINE_MS } from './lock.mjs';
 import { runSources, runIngest, runWrite, runRefresh, runSweep, anthropicConfigured } from './phases.mjs';
 
 /* The Durable Object class must be exported from the entry module for the
@@ -59,6 +59,8 @@ export { NewsroomLock } from './lock.mjs';
 
 const SERVICE = WORKER;
 const VERSION = 'v0.1.0';
+
+
 
 /* In-memory only: survives a warm isolate and nothing more. The ledger is the
  * durable record; this is a convenience for whoever curls /health. */
@@ -116,10 +118,41 @@ export default {
     if (url.pathname === '/admin/run') {
       if (req.method !== 'POST') return json({ error: 'not_found' }, 404);
       if (!adminAuthorized(req, env)) return json({ error: 'not_found' }, 404);
-      const force = (url.searchParams.get('phases') || '')
-        .split(',').map((s) => s.trim()).filter((p) => PHASES.includes(p));
-      const result = await run(env, { cron: null, invoked: 'manual', force });
-      return json({ service: SERVICE, version: VERSION, ...result });
+
+      /* Presence of the parameter is the signal, not its contents.
+       *
+       * `?phases=x` means EXACTLY x. No parameter at all means the ordinary
+       * catch-up planner, which is a deliberate and different request. The two
+       * are distinguished by has(), so `?phases=` is an empty explicit
+       * request — an error — rather than silently becoming "run everything
+       * overdue", which on an empty ledger is the entire newsroom. */
+      const requestedPhases = url.searchParams.has('phases');
+      const raw = (url.searchParams.get('phases') || '')
+        .split(',').map((s) => s.trim()).filter(Boolean);
+      const valid = raw.filter((p) => PHASES.includes(p));
+      const unknown = raw.filter((p) => !PHASES.includes(p));
+
+      if (requestedPhases && !valid.length) {
+        /* Nothing runs. Returning 400 before any lock, ledger row, database
+         * read or model call is the point: a typo must cost nothing. */
+        console.warn(`[${SERVICE}] rejected /admin/run: no valid phase in "${url.searchParams.get('phases')}"`);
+        return json({
+          service: SERVICE, version: VERSION,
+          error: 'no_valid_phase',
+          message: 'The phases parameter was supplied but named no valid phase, so nothing was run.',
+          requested: raw, unknown, valid_phases: PHASES,
+        }, 400);
+      }
+
+      const result = await run(env, {
+        cron: null,
+        invoked: 'manual',
+        force: valid,
+        exact: requestedPhases,
+        /* Only manual runs need this; see MANUAL_DEADLINE_MS. */
+        deadlineMs: MANUAL_DEADLINE_MS,
+      });
+      return json({ service: SERVICE, version: VERSION, requested: requestedPhases ? valid : null, unknown_ignored: unknown.length ? unknown : undefined, ...result });
     }
 
     return json({ error: 'not_found', service: SERVICE, version: VERSION }, 404);
@@ -138,7 +171,7 @@ export default {
  * closes 'partial'. One dead RSS source must not stop the writer, and a failed
  * enhancement must not stop publication.
  */
-export async function run(env, { cron = null, invoked = 'cron', force = [], now = Date.now() } = {}) {
+export async function run(env, { cron = null, invoked = 'cron', force = [], exact = false, now = Date.now(), deadlineMs = null } = {}) {
   health.last_run_at = nowIso();
   let sb;
   try {
@@ -173,7 +206,7 @@ export async function run(env, { cron = null, invoked = 'cron', force = [], now 
   }
 
   try {
-    return await runPhases(env, sb, { cron, invoked, force, now, guard });
+    return await runPhases(env, sb, { cron, invoked, force, exact, now, guard, lock, deadlineMs });
   } finally {
     /* Always, including after a throw: a lock a dead run never released costs
      * everyone else the full TTL. */
@@ -181,9 +214,10 @@ export async function run(env, { cron = null, invoked = 'cron', force = [], now 
   }
 }
 
-async function runPhases(env, sb, { cron, invoked, force, now, guard }) {
-  const lastSuccess = await lastSuccessByPhase(sb).catch(() => ({}));
-  const { phases, reasons } = planRun({ cron, now, lastSuccessByPhase: lastSuccess, force });
+async function runPhases(env, sb, { cron, invoked, force, exact, now, guard, lock, deadlineMs }) {
+  /* An exact request does not consult the ledger, so it is not read. */
+  const lastSuccess = exact ? {} : await lastSuccessByPhase(sb).catch(() => ({}));
+  const { phases, reasons } = planRun({ cron, now, lastSuccessByPhase: lastSuccess, force, exact });
 
   if (!phases.length) {
     console.log(`[${SERVICE}] nothing due (cron=${cron})`);
@@ -192,13 +226,56 @@ async function runPhases(env, sb, { cron, invoked, force, now, guard }) {
     return { status: 'idle', concurrency_guard: guard, phases: [], reasons };
   }
 
-  const runId = await openRun(sb, { cron, invoked, phases, reasons }).catch(() => null);
+  /* FAIL CLOSED without a durable run row.
+   *
+   * The ledger is not a log here, it is an input: catch-up scheduling reads it
+   * to decide what is overdue, and the concurrency fallback reads it to decide
+   * whether a run is already in flight. A side-effecting run with no row is
+   * therefore invisible to the next invocation in both of those decisions —
+   * it would ingest, publish and spend on Anthropic while leaving the system
+   * believing nothing had happened, which is worse than not running at all.
+   * Previously this was `.catch(() => null)` and continued regardless. */
+  let runId = null;
+  let openError = null;
+  try {
+    runId = await openRun(sb, { cron, invoked, phases, reasons });
+  } catch (e) {
+    openError = e;
+  }
+  if (!runId) {
+    const detail = String(openError?.message || openError || 'openRun returned no id').slice(0, 300);
+    console.error(`[${SERVICE}] LEDGER OPEN FAILED, running nothing: ${detail}`);
+    health.last_status = 'ledger_open_failed';
+    health.last_error_class = openError?.name || 'LedgerError';
+    /* No phase runs, so no source is fetched, no article is written and no
+     * model is called. The caller releases the lock in its finally block. */
+    return {
+      status: 'ledger_open_failed',
+      concurrency_guard: guard,
+      error: detail,
+      planned: phases,
+      phases: [],
+      reasons,
+    };
+  }
+
   const counters = {};
   const succeeded = [];
   const failures = [];
   console.log(`[${SERVICE}] START ${invoked} cron=${cron} phases=${phases.join(',')}`);
 
+  const deadlineAt = deadlineMs ? now + deadlineMs : null;
+  const abandoned = [];
+
   for (const phase of phases) {
+    /* Checked between phases, never inside one: a phase already talking to
+     * Supabase or Anthropic is left to finish, which is why the deadline sits
+     * well under the lease rather than at it. */
+    if (deadlineAt && Date.now() > deadlineAt) {
+      abandoned.push(phase);
+      console.warn(`[${SERVICE}] deadline reached; abandoning ${phase}`);
+      continue;
+    }
     try {
       if (phase === 'write') {
         /* The single decision point for writing within this invocation.
@@ -228,7 +305,12 @@ async function runPhases(env, sb, { cron, invoked, force, now, guard }) {
     }
   }
 
-  const status = failures.length ? (succeeded.length ? 'partial' : 'failed') : 'success';
+  /* Abandoning work is not success even when nothing failed: the run did less
+   * than it planned and the ledger must say so, or the next catch-up will
+   * believe those phases are fresh. */
+  const status = failures.length
+    ? (succeeded.length ? 'partial' : 'failed')
+    : (abandoned.length ? 'partial' : 'success');
   const notes = {
     cron,
     invoked,
@@ -240,11 +322,23 @@ async function runPhases(env, sb, { cron, invoked, force, now, guard }) {
     /* Which guarantee was actually in force for this run. A reader of the
      * ledger should never have to infer it from the deployment. */
     concurrency_guard: guard,
+    exact: Boolean(exact),
+    /* Named, because a phase abandoned to a deadline is not a phase that was
+     * never planned, and the difference matters to whoever reads this next. */
+    phases_abandoned: abandoned,
   };
+
+  /* Closing the row is best effort BY DESIGN, and the asymmetry with opening
+   * it is deliberate. Failing to OPEN means the work is unrecorded before it
+   * happens, so it must not happen. Failing to CLOSE means work that already
+   * happened cannot be un-happened, so the result is still returned to the
+   * caller — losing it would be a second failure on top of the first. It is
+   * loud in the log and leaves a row stuck 'running' that the lock's staleness
+   * window later reclaims. */
   await closeRun(sb, runId, { status, notes, failures });
 
   health.last_status = status;
   health.last_phases = succeeded;
-  console.log(`[${SERVICE}] END status=${status} ran=${succeeded.join(',') || 'none'}`);
-  return { status, run_id: runId, concurrency_guard: guard, phases: succeeded, planned: phases, reasons, counters, failures };
+  console.log(`[${SERVICE}] END status=${status} ran=${succeeded.join(',') || 'none'}${abandoned.length ? ` abandoned=${abandoned.join(',')}` : ''}`);
+  return { status, run_id: runId, concurrency_guard: guard, phases: succeeded, planned: phases, abandoned, reasons, counters, failures };
 }

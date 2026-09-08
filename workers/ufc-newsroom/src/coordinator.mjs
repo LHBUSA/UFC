@@ -69,7 +69,32 @@ const minutesSince = (iso, now) => {
  * places - here for the overdue case, and by `shouldWriteAfterIngest` once
  * the ingest result exists. Both funnel into the same single writer.
  */
-export function planRun({ cron, now = Date.now(), lastSuccessByPhase = {}, force = [] } = {}) {
+export function planRun({ cron, now = Date.now(), lastSuccessByPhase = {}, force = [], exact = false } = {}) {
+  /* EXACT mode: run precisely what was asked for and nothing else.
+   *
+   * This exists because catch-up and an operator's explicit request are
+   * opposite intentions, and conflating them made the canary a lie. Overdue
+   * phases are added below on the reasoning that a phase which has not run is
+   * always worth running — sound for a cron, wrong for a human. Production's
+   * ledger holds ZERO ufc-newsroom rows, so every phase reads as never having
+   * succeeded, so `?phases=sources` planned sources, ingest, write, refresh
+   * and sweep: the first careful step of a canary would have been the whole
+   * newsroom, against production, on its first ever run.
+   *
+   * So exactness is a separate path rather than a stronger `force`. Nothing
+   * here consults the ledger or the cron at all: what the caller named is what
+   * runs, ordered canonically and deduplicated by the filter over PHASES.
+   * An unrecognised name is simply not in PHASES and therefore cannot appear;
+   * the caller is responsible for rejecting a request that names nothing
+   * valid, which is a client error rather than a licence to do something else.
+   */
+  if (exact) {
+    const requested = new Set(force.filter((p) => PHASES.includes(p)));
+    const reasons = {};
+    for (const p of requested) reasons[p] = 'requested explicitly (exact)';
+    return { phases: PHASES.filter((p) => requested.has(p)), reasons, exact: true };
+  }
+
   const intended = CRON_PHASES[cron] || [];
   const reasons = {};
   const chosen = new Set();
@@ -87,6 +112,8 @@ export function planRun({ cron, now = Date.now(), lastSuccessByPhase = {}, force
     }
   }
 
+  /* Non-exact force: an addition to a normal plan, used by nothing today but
+   * kept distinct from `exact` so the two intentions never share a field. */
   for (const p of force) {
     if (PHASES.includes(p)) { chosen.add(p); reasons[p] = 'forced'; }
   }

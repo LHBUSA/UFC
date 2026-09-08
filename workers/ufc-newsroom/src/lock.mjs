@@ -29,10 +29,56 @@
  * landing if one ever does.
  */
 
-/** Past this, a holder is presumed dead: a Worker that is CPU-killed or times
- *  out never releases. Matches STALE_RUN_MINUTES in runlog.mjs — one crash
- *  must not stop the newsroom forever. */
+/**
+ * Lease length. Past this a holder is presumed dead, because a Worker that is
+ * CPU-killed or times out never releases. Matches STALE_RUN_MINUTES in
+ * runlog.mjs — one crash must not stop the newsroom forever.
+ *
+ * What this lease does and does not guarantee, precisely:
+ *
+ *   ACQUISITION IS ATOMIC. The read of `holder` and the write that replaces it
+ *   happen inside one Durable Object request. Requests to a single object are
+ *   delivered one at a time and storage input-gate semantics hold concurrent
+ *   callers at the await, so no interleaving is possible and exactly one of
+ *   two simultaneous callers can win. This is the property no database
+ *   constraint provides: it stops the second run STARTING, and so stops it
+ *   paying Anthropic for work the first run is already doing.
+ *
+ *   SCHEDULED RUNS ARE COVERED FOR THEIR WHOLE POSSIBLE LIFETIME. Cloudflare
+ *   caps a cron invocation at 15 minutes of wall clock, which is strictly less
+ *   than this 20-minute lease, so a scheduled run can never outlive its own
+ *   protection.
+ *
+ *   MANUAL RUNS ARE COVERED BY A DEADLINE, NOT BY THE PLATFORM. An HTTP
+ *   invocation has no equivalent wall-clock cap, so index.js gives a manual
+ *   run MANUAL_DEADLINE_MS (12 minutes) and abandons any remaining phases past
+ *   it. The deadline is checked between phases and never interrupts one, which
+ *   is why it sits eight minutes under the lease rather than at it: the margin
+ *   is for the phase already in flight. There is no lease renewal, on purpose —
+ *   a heartbeat would keep a wedged run alive and invisible for as long as it
+ *   kept beating, and bounding the run is the smaller, truthful claim.
+ *
+ *   DEAD HOLDERS STAY RECOVERABLE. A holder past its lease is stolen rather
+ *   than waited on, so a crash costs at most one lease and never the newsroom.
+ *
+ * Nothing here wraps the run in blockConcurrencyWhile: holding the object's
+ * gate across external network I/O would serialise unrelated callers behind
+ * the newsroom's own latency, which is a different and worse failure.
+ */
 export const DEFAULT_TTL_MS = 20 * 60 * 1000;
+
+/**
+ * How long a MANUAL run may execute before it abandons the rest of its phases.
+ *
+ * Lives here rather than in index.js for two reasons. It is meaningless except
+ * in relation to DEFAULT_TTL_MS, and the two must be read together to see that
+ * the bound is real. And the entry module may only export handlers and Durable
+ * Object classes: workerd refuses to start with "Incorrect type for map entry
+ * ... not of type 'function or ExportedHandler'" if a number is exported from
+ * it. A bundler will not catch that — `wrangler deploy --dry-run` builds it
+ * happily — so it surfaces only when the runtime boots.
+ */
+export const MANUAL_DEADLINE_MS = 12 * 60 * 1000;
 
 export class NewsroomLock {
   constructor(ctx) {

@@ -35,6 +35,12 @@ function fakeRest({ tables = {}, onPost } = {}) {
       };
     }
     if (onPost) onPost(table, init);
+    /* A real ledger returns the row it just created, because openRun asks for
+       return=representation and fails closed without an id. A fake that
+       returns nothing makes every run look like a ledger outage. */
+    if (table === 'ufc_ingest_runs' && (init.method || 'GET') === 'POST') {
+      return { ok: true, headers: { get: () => null }, text: async () => JSON.stringify([{ id: 'run-fake-1' }]), json: async () => [{ id: 'run-fake-1' }] };
+    }
     return { ok: true, headers: { get: () => null }, text: async () => '', json: async () => ({}) };
   };
   return { calls, counts };
@@ -191,11 +197,12 @@ test('the one Anthropic module is the one the writer imports', async () => {
 test('a phase failure is contained and the run is recorded partial', async () => {
   const { run } = await import('./index.js');
   fakeRest({ tables: { ufc_news_items: 70, ufc_articles: 34, 'ufc_ingest_runs:rows': [] } });
-  /* Force only the sweep, which needs no imports beyond counts, and confirm
-     the run closes cleanly with a status a human can read. */
-  const res = await run({ ...ENV }, { cron: null, invoked: 'test', force: ['sweep'] });
-  assert.ok(['success', 'partial'].includes(res.status));
+  /* Exactly the sweep, which needs no imports beyond counts. `exact` is what a
+     canary sends; without it an empty ledger would plan every phase. */
+  const res = await run({ ...ENV }, { cron: null, invoked: 'test', force: ['sweep'], exact: true });
+  assert.ok(['success', 'partial'].includes(res.status), `status was ${res.status}`);
   assert.ok(res.phases.includes('sweep'));
+  assert.equal(res.run_id, 'run-fake-1', 'a run that did work has a ledger row behind it');
 });
 
 test('missing configuration fails closed and loudly, writing nothing', async () => {

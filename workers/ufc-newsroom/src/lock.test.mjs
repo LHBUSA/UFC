@@ -16,9 +16,10 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { NewsroomLock, acquire, release, DEFAULT_TTL_MS } from './lock.mjs';
+import { NewsroomLock, acquire, release, DEFAULT_TTL_MS, MANUAL_DEADLINE_MS } from './lock.mjs';
 import { CONFLICT_TARGETS } from './supabase.mjs';
 import { findActiveRun, STALE_RUN_MINUTES } from './runlog.mjs';
+import { run } from './index.js';
 
 /** An in-process stand-in for the Durable Object namespace: one object, real
  *  class, storage in a Map. The runtime's serialisation is what makes the real
@@ -175,4 +176,67 @@ test('concurrent ingests and concurrent writers cannot create duplicate rows', a
       assert.ok(!/on_conflict=id/.test(u));
     }
   } finally { globalThis.fetch = real; }
+});
+
+/* ---- lease boundary, and release on the fail-closed path ----------------- */
+
+test('the lease expires exactly at its TTL, and a dead holder is recoverable', async () => {
+  /* The boundary matters in both directions. One second early and a crashed
+     run keeps the newsroom locked for longer than the lease promises; one
+     second late and a live run can be stolen from underneath itself. */
+  const env = envWithLock();
+  const t0 = Date.parse('2026-09-08T12:00:00Z');
+  const first = await acquire(env, { now: t0 });
+  assert.equal(first.acquired, true);
+
+  const justInside = await acquire(env, { now: t0 + DEFAULT_TTL_MS - 1000 });
+  assert.equal(justInside.acquired, false, 'a live holder is not stolen from');
+  assert.equal(justInside.stole, undefined);
+
+  const justOutside = await acquire(env, { now: t0 + DEFAULT_TTL_MS + 1000 });
+  assert.equal(justOutside.acquired, true, 'a dead holder is recoverable');
+  assert.equal(justOutside.stole, true, 'and the takeover is reported, not silent');
+  assert.notEqual(justOutside.token, first.token, 'the new holder gets its own token');
+});
+
+test('the scheduled ceiling sits under the lease, and the manual deadline under that', async () => {
+  /* The whole reason a manual deadline exists. Cloudflare caps a cron
+     invocation at 15 minutes, which is already inside the 20-minute lease, so
+     a scheduled run is protected by the platform for its entire possible life.
+     An HTTP invocation has no such cap, so index.js bounds it instead. */
+  const CLOUDFLARE_SCHEDULED_MAX_MS = 15 * 60 * 1000;
+  assert.ok(CLOUDFLARE_SCHEDULED_MAX_MS < DEFAULT_TTL_MS,
+    'a scheduled run can never outlive its own lease');
+  assert.ok(MANUAL_DEADLINE_MS < CLOUDFLARE_SCHEDULED_MAX_MS,
+    'and a manual run is bounded more tightly still');
+  assert.ok(DEFAULT_TTL_MS - MANUAL_DEADLINE_MS >= 5 * 60 * 1000,
+    'with real margin for a phase already in flight, since the deadline is only checked between phases');
+});
+
+test('a run that fails to open its ledger row still releases the lock', async () => {
+  /* Otherwise the newsroom is locked for a full lease by a run that did
+     nothing at all — the failure compounding itself. */
+  const env = envWithLock();
+  globalThis.fetch = async (url, init = {}) => {
+    const u = String(url);
+    const method = init.method || 'GET';
+    const table = (u.split('/rest/v1/')[1] || '').split('?')[0];
+    if (method === 'POST' && table === 'ufc_ingest_runs') {
+      return { ok: false, status: 503, headers: { get: () => null }, text: async () => 'ledger down' };
+    }
+    return {
+      ok: true,
+      headers: { get: (h) => (h.toLowerCase() === 'content-range' ? '*/0' : null) },
+      text: async () => '[]', json: async () => [],
+    };
+  };
+  const t0 = Date.parse('2026-09-08T12:00:00Z');
+  const res = await run(env, { cron: null, invoked: 'manual', force: ['ingest'], exact: true, now: t0 });
+  assert.equal(res.status, 'ledger_open_failed');
+  assert.deepEqual(res.phases, []);
+
+  /* The proof: the very next run acquires cleanly, with no takeover. */
+  const next = await acquire(env, { now: t0 + 1000 });
+  assert.equal(next.acquired, true, 'the lock was released');
+  assert.notEqual(next.stole, true, 'and released properly rather than expiring');
 });
