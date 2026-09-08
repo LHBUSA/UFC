@@ -9,10 +9,9 @@ export {
 /* Weigh-in read path.
  *
  * Reads ufc_weigh_in_current / _event_summary / _history, defined in
- * supabase/migrations/20260908000013_ufc_weigh_ins.sql, which HAS NOT BEEN
- * APPLIED. Every reader returns empty rather than throwing, so /weigh-ins and
- * the event and fight panels render their empty states today and fill in the
- * moment the migration lands.
+ * supabase/migrations/20260908000013_ufc_weigh_ins.sql. The migration is live
+ * in production; readers still fail closed to an empty result if the data
+ * plane is unavailable so a transient database problem never becomes a 500.
  *
  * REVALIDATE IS 15 SECONDS, and that number needs a caveat attached to it
  * wherever it is read: it bounds how stale THIS CACHE is, not how fresh the
@@ -39,7 +38,6 @@ async function read<T>(path: string, fallback: T, revalidate = WEIGHIN_REVALIDAT
   try {
     const res = await fetch(`${URL_}/rest/v1/${path}`, { headers: headers(), next: { revalidate } });
     if (!res.ok) {
-      /* 404 is expected until the migration is applied. */
       if (res.status !== 404) console.error(`[weighins] ${path.split("?")[0]} -> HTTP ${res.status}`);
       return fallback;
     }
@@ -124,8 +122,8 @@ export async function getWeighInsForBouts(boutIds: string[]): Promise<Map<string
   return out;
 }
 
-/** Any event with weigh-in coverage, newest first — used to pick a fallback
- *  when the next card has no readings yet. */
+/** Any event with weigh-in coverage, newest first — used both to select the
+ * live desk and to render the recent weigh-in archive. */
 export async function getWeighInEvents(limit = 8): Promise<WeighInSummary[]> {
   return read<WeighInSummary[]>(
     `ufc_weigh_in_event_summary?select=*&order=event_date.desc.nullslast&limit=${limit}`,
@@ -136,10 +134,9 @@ export async function getWeighInEvents(limit = 8): Promise<WeighInSummary[]> {
 /**
  * Which event the desk should show.
  *
- * The next card if it has any readings; otherwise the most recent card that
- * does. A live desk pointed at an event with nothing on it is a blank page
- * that looks broken, and the most recent completed weigh-in is genuinely the
- * most useful thing to show between fight weeks.
+ * The next card ONLY when it already has readings; otherwise the most recent
+ * covered card. The old fallback returned upcoming[0] even when it had zero
+ * readings, which hid a fully populated recent weigh-in behind an empty desk.
  *
  * `upcoming` comes from the caller so this module does not duplicate the
  * schedule query lib/db.ts already owns.
@@ -151,7 +148,6 @@ export function pickDeskEvent(
   const coveredIds = new Set(covered.map((c) => c.event_id));
   const next = upcoming.find((e) => coveredIds.has(e.id));
   if (next) return { eventId: next.id, eventName: next.name, eventDate: next.event_date, state: "upcoming" };
-  if (upcoming[0]) return { eventId: upcoming[0].id, eventName: upcoming[0].name, eventDate: upcoming[0].event_date, state: "upcoming" };
   const recent = covered[0];
   if (recent) return { eventId: recent.event_id, eventName: recent.event_name, eventDate: recent.event_date, state: "recent" };
   return null;
