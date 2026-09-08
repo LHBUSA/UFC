@@ -1,0 +1,6 @@
+One-time recovery apply authorization.
+Dry-run proof commit: 6f27c12b6158e3ec75cff299230c556c912adc1d.
+Source counts: complete_bouts=9343, results=9339, round_rows=41542.
+Expected output: feature_rows=18686, snapshots=21747, historical_snapshots=18588, distinct_snapshot_dates=876, stance_rows=38708.
+The prior apply was interrupted by a transient Supabase/Cloudflare 520 after feature upserts and partial snapshot upserts. All target writes are conflict-key upserts; this run resumes idempotently with bounded retries only on replay-safe requests.
+Remove this marker immediately after the recovery run.
