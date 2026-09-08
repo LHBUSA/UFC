@@ -7,42 +7,28 @@ import {
   listCatalog,
   resolveStoreContext,
 } from "@/lib/store/printful";
+import { DROP001_SIZES, drop001RuntimeStatus } from "@/lib/store/release";
 
-/**
- * TEMPORARY read-only release probe for the first PropBetEdge hoodie.
- *
- * This route intentionally exposes no credential, provider store id/name,
- * costs, customer data or write capability. It exists only long enough to
- * resolve the exact Cotton Heritage M2580 blank, Black S-2XL catalog variants,
- * and provider-reported print placements/dimensions in the production runtime
- * where the Sensitive Printful token is available. Remove after the release
- * facts have been committed.
- */
+/** Temporary, read-only Drop 001 readiness probe. No secret value, store id,
+ * provider cost or customer data is returned. Remove after the first release
+ * facts are committed and the paid acceptance order has passed. */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const SIZES = ["S", "M", "L", "XL", "2XL"] as const;
+const noStore = { "Cache-Control": "no-store" };
 
 export async function GET() {
-  const env = {
-    printful: isConfigured(),
-    stripe: Boolean(process.env.STRIPE_SECRET_KEY),
-    stripe_webhook: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
-    supabase: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
-    fulfill_gate: Boolean(process.env.STORE_FULFILL_TOKEN),
-  };
+  const release = drop001RuntimeStatus();
+  const env = release.checks;
 
-  if (!env.printful) {
-    return NextResponse.json({ ok: false, env, error: "PRINTFUL_NOT_CONFIGURED" }, { status: 503, headers: { "Cache-Control": "no-store" } });
+  if (!isConfigured()) {
+    return NextResponse.json({ ok: false, runtime_ready: false, env, error: "PRINTFUL_NOT_CONFIGURED" }, { status: 503, headers: noStore });
   }
 
   try {
     const ctx = await resolveStoreContext();
     if (!ctx.ok) {
-      return NextResponse.json(
-        { ok: false, env, provider_store_resolved: false, error: "PROVIDER_STORE_NOT_RESOLVED" },
-        { status: 503, headers: { "Cache-Control": "no-store" } },
-      );
+      return NextResponse.json({ ok: false, runtime_ready: release.ready, env, provider_store_resolved: false, error: "PROVIDER_STORE_NOT_RESOLVED" }, { status: 503, headers: noStore });
     }
 
     const catalog = await listCatalog();
@@ -50,17 +36,17 @@ export async function GET() {
       String(p.model || "").trim().toLowerCase() === "m2580" &&
       String(p.brand || "").toLowerCase().includes("cotton heritage"),
     );
-
     if (exact.length !== 1) {
       return NextResponse.json(
         {
           ok: false,
+          runtime_ready: release.ready,
           env,
           provider_store_resolved: true,
           error: exact.length ? "HOODIE_BLANK_AMBIGUOUS" : "HOODIE_BLANK_NOT_FOUND",
           candidates: exact.map((p) => ({ id: p.id, brand: p.brand, model: p.model, type: p.type })),
         },
-        { status: 409, headers: { "Cache-Control": "no-store" } },
+        { status: 409, headers: noStore },
       );
     }
 
@@ -70,10 +56,9 @@ export async function GET() {
       getVariants(product.id),
       getPrintAreas(product.id, ctx.selected.id),
     ]);
-
     const black: Record<string, number> = {};
     const missing: string[] = [];
-    for (const size of SIZES) {
+    for (const size of DROP001_SIZES) {
       const hit = variants.find((v) =>
         String(v.color || "").trim().toLowerCase() === "black" &&
         String(v.size || "").trim().toLowerCase() === size.toLowerCase(),
@@ -82,9 +67,16 @@ export async function GET() {
       else missing.push(size);
     }
 
+    const placements = new Set(printAreas.map((p) => p.placement));
+    const placementReady = placements.has("front") && placements.has("sleeve_right");
+    const variantsReady = missing.length === 0;
+
     return NextResponse.json(
       {
-        ok: missing.length === 0,
+        ok: release.ready && variantsReady && placementReady,
+        runtime_ready: release.ready,
+        variants_ready: variantsReady,
+        placements_ready: placementReady,
         env,
         provider_store_resolved: true,
         hoodie: {
@@ -98,12 +90,12 @@ export async function GET() {
           print_areas: printAreas,
         },
       },
-      { headers: { "Cache-Control": "no-store" } },
+      { headers: noStore },
     );
   } catch (e) {
     return NextResponse.json(
-      { ok: false, env, error: "PROVIDER_READ_FAILED", detail: String((e as Error)?.message || e).slice(0, 160) },
-      { status: 502, headers: { "Cache-Control": "no-store" } },
+      { ok: false, runtime_ready: release.ready, env, error: "PROVIDER_READ_FAILED", detail: String((e as Error)?.message || e).slice(0, 160) },
+      { status: 502, headers: noStore },
     );
   }
 }
