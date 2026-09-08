@@ -7,6 +7,9 @@
 -- one page with their officiating record split between them. This collapses
 -- each cluster to one identity without losing a single officiated bout.
 --
+-- Both identities are confirmed against sources outside our own database; see
+-- the per-cluster notes below. Neither rests on spelling similarity.
+--
 -- Nothing here has been run. The read-only companion,
 -- scripts/referees/verify-identity-repair.mjs, establishes the preconditions
 -- before and confirms the postconditions after; run it on both sides.
@@ -55,13 +58,26 @@
 --   is the spelling the source used most recently, through 2021, while
 --   'Kiselev Viacheslav' is plainly the same name written family-name first.
 --
---   This one is a judgement about a person's identity from spelling and
---   context rather than a verified match. The supporting evidence: all ten
---   bouts are on Russian or Abu Dhabi cards between 2018 and 2021, the three
---   date ranges are sequential and never overlap, and no two spellings ever
---   appear on the same event. If the judgement is wrong the cost is three
---   officials merged into one, which is the worse error, so confirm before
---   running this half.
+--   This was recorded as a judgement needing confirmation. It no longer is.
+--   Cross-source confirmation now exists, independent of our own data:
+--
+--     * An external UFC referee archive groups exactly 10 UFC bouts, from
+--       2018-09-15 to 2021-10-30, under Vyacheslav Kiselev — the same span
+--       and the same count as our 4 + 4 + 2.
+--     * Contemporary UFC 267 reporting names the referee Vyacheslav Kiselev,
+--       which fixes the spelling for the most recent bout in the cluster.
+--     * Earlier independent fight records use Viacheslav Kiselev, which is
+--       the transliteration variance itself being attested rather than
+--       inferred from our rows.
+--
+--   Our own corroboration is unchanged and still holds: all ten bouts are on
+--   Russian or Abu Dhabi cards between 2018 and 2021, the three date ranges
+--   are sequential and never overlap, and no two spellings ever appear on the
+--   same event.
+--
+--   Removing the two surplus rows discards no enrichment: all five profile
+--   rows in scope carry null bio, image, country and source fields and an
+--   empty source_metadata, so nothing but the duplicate key is lost.
 -- ============================================================================
 
 
@@ -133,11 +149,11 @@ create temporary table _repair_totals on commit drop as
 insert into public.ufc_referee_aliases (raw_name, canonical_name, source_note)
 values
   ('Eric McMahon', 'Eric Mcmahon',
-   'Capitalisation variant of one official. UFC Stats prints both: 26 bouts as "Eric Mcmahon" across 13 events 2023-2026, and 3 as "Eric McMahon" on UFC Fight Night: Dolidze vs. Imavov, 2024-02-03.'),
+   'Capitalisation variant of one official. UFC Stats prints both: 26 bouts as "Eric Mcmahon" across 13 events 2023-2026, and 3 as "Eric McMahon" on UFC Fight Night: Dolidze vs. Imavov, 2024-02-03. Nevada Athletic Commission records independently confirm the conventional "Eric McMahon" spelling, which is why that is the display name while the incumbent key is kept.'),
   ('Vjacheslav Kiselev', 'Vyacheslav Kiselev',
-   'Transliteration variant of one Russian official; 4 bouts 2019-04-20 to 2019-09-07, on Russian and Abu Dhabi cards.'),
+   'Transliteration variant of one Russian official; 4 bouts 2019-04-20 to 2019-09-07, on Russian and Abu Dhabi cards. Confirmed against an external UFC referee archive that groups all 10 bouts 2018-09-15 to 2021-10-30 under Vyacheslav Kiselev.'),
   ('Kiselev Viacheslav', 'Vyacheslav Kiselev',
-   'Same name written family-name first, and a transliteration variant; 2 bouts on UFC Fight Night: Hunt vs. Oleinik, 2018-09-15, Moscow.');
+   'Same name written family-name first, and a transliteration variant; 2 bouts on UFC Fight Night: Hunt vs. Oleinik, 2018-09-15, Moscow. Independent fight records of that era use "Viacheslav Kiselev", attesting the variance directly; contemporary UFC 267 reporting names the same official Vyacheslav Kiselev.');
 
 
 -- ---------------------------------------------------------------------------
