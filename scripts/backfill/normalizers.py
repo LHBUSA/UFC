@@ -63,6 +63,16 @@ _TUF_MATCHUP_PREFIX = re.compile(
 _EARLY_SERIES = re.compile(r"\b(Ultimate Ultimate|Ultimate Japan|Japan)\b", re.I)
 _BRACKET_ROUND = re.compile(r"\b(Semifinals?|Quarterfinals?|Alternate|Final)\b", re.I)
 
+# What is left once a series name goes. The real label is
+#   "Ultimate Ultimate '96 Tournament Title Bout"
+# and the generic numeric strip above has already taken the 96, so removing the
+# series leaves a lone apostrophe. It is punctuation from a year that no longer
+# exists, not a division, and without dropping it the rescue sees a non-empty
+# remainder and refuses a label it has in fact fully resolved. Confined to this
+# rescue, where the result must still match a known division or be empty, so it
+# cannot make anything else resolve.
+_ORPHAN_PUNCT = re.compile(r"[‘’'`.,\-]+")
+
 
 def norm_weight_class(raw: str, url: str) -> dict:
     """'UFC Women's Bantamweight Title Bout' -> {weight_class: BANTAMWEIGHT, is_womens: True, is_title: True}.
@@ -125,6 +135,7 @@ def norm_weight_class(raw: str, url: str) -> dict:
     # because those bouts had none, which is exactly what the empty-core branch
     # above already concludes for "UFC 2 Tournament Title Bout".
     early = _BRACKET_ROUND.sub(" ", _EARLY_SERIES.sub(" ", core))
+    early = _ORPHAN_PUNCT.sub(" ", early)
     early = re.sub(r"\s+", " ", early).strip()
     if early != core:
         if not early:
