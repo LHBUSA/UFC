@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" width="480" height="600" role="img" aria-label="Fight Week Cap — design preview, not a photograph">
+  <title>Fight Week Cap — design preview, not a photograph</title>
+  <defs>
+    <linearGradient id="ground-cap-dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#100e0b"/><stop offset="100%" stop-color="#1a1611"/>
+    </linearGradient>
+    <linearGradient id="cloth-cap-dark" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#2a241c"/><stop offset="100%" stop-color="#1c1712"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="600" fill="url(#ground-cap-dark)"/>
+  <path d="M106,338 Q106,208 240,208 Q374,208 374,338 Z M92,338 Q240,324 388,338 Q404,342 396,364 Q240,394 84,364 Q76,342 92,338 Z" fill="url(#cloth-cap-dark)" stroke="rgba(255,245,220,.26)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M240,210 L240,336 M170,220 Q188,282 178,336 M310,220 Q292,282 302,336 M92,338 Q240,352 388,338" fill="none" stroke="rgba(255,245,220,.26)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(240,284)"><text x="0" y="-6.72" text-anchor="middle" font-family="Georgia,&#39;Times New Roman&#39;,&#39;Iowan Old Style&#39;,serif" font-size="14" letter-spacing="2.1" fill="#d4af37" opacity="1">FIGHT WEEK</text></g>
+</svg>

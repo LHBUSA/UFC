@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" width="480" height="600" role="img" aria-label="Round by Round Hoodie — design preview, not a photograph">
+  <title>Round by Round Hoodie — design preview, not a photograph</title>
+  <defs>
+    <linearGradient id="ground-hoodie-dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#100e0b"/><stop offset="100%" stop-color="#1a1611"/>
+    </linearGradient>
+    <linearGradient id="cloth-hoodie-dark" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#2a241c"/><stop offset="100%" stop-color="#1c1712"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="600" fill="url(#ground-hoodie-dark)"/>
+  <path d="M148,250 Q148,134 240,134 Q332,134 332,250 Z" fill="url(#cloth-hoodie-dark)" stroke="rgba(255,245,220,.26)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M148,250 Q148,134 240,134 Q332,134 332,250 Z" fill="url(#cloth-hoodie-dark)" stroke="none" stroke-width="0" stroke-linecap="round"/>
+  <path d="M182,178 Q240,216 298,178 L344,190 L410,238 L386,486 L356,470 L356,556 Q356,568 344,568 L136,568 Q124,568 124,556 L124,470 L94,486 L70,238 L136,190 Z" fill="url(#cloth-hoodie-dark)" stroke="rgba(255,245,220,.26)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M182,176 Q240,214 298,176 M170,196 Q240,150 310,196 M214,194 L210,276 M266,194 L270,276 M156,420 L324,420 L318,486 L162,486 Z M124,540 L356,540 M386,470 L358,458 M94,470 L122,458 M344,192 L356,466 M136,192 L124,466" fill="none" stroke="rgba(255,245,220,.26)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(240,318)"><rect x="-62.78" y="-35.04" width="21.84" height="27.74" rx="1.75" fill="#d4af37" opacity=".9"/><text x="-51.86" y="4.67" text-anchor="middle" font-family="&#39;DejaVu Sans Mono&#39;,Menlo,Consolas,&#39;Courier New&#39;,monospace" font-size="8.18" fill="#d4af37" opacity=".7">R1</text><rect x="-36.85" y="-35.04" width="21.84" height="27.74" rx="1.75" fill="#d4af37" opacity=".9"/><text x="-25.93" y="4.67" text-anchor="middle" font-family="&#39;DejaVu Sans Mono&#39;,Menlo,Consolas,&#39;Courier New&#39;,monospace" font-size="8.18" fill="#d4af37" opacity=".7">R2</text><rect x="-10.92" y="-35.04" width="21.84" height="27.74" rx="1.75" fill="none" stroke="#d4af37" stroke-width="2.04" opacity=".7"/><text x="0" y="4.67" text-anchor="middle" font-family="&#39;DejaVu Sans Mono&#39;,Menlo,Consolas,&#39;Courier New&#39;,monospace" font-size="8.18" fill="#d4af37" opacity=".7">R3</text><rect x="15.01" y="-35.04" width="21.84" height="27.74" rx="1.75" fill="#d4af37" opacity=".9"/><text x="25.93" y="4.67" text-anchor="middle" font-family="&#39;DejaVu Sans Mono&#39;,Menlo,Consolas,&#39;Courier New&#39;,monospace" font-size="8.18" fill="#d4af37" opacity=".7">R4</text><rect x="40.94" y="-35.04" width="21.84" height="27.74" rx="1.75" fill="none" stroke="#d4af37" stroke-width="2.04" opacity=".7"/><text x="51.86" y="4.67" text-anchor="middle" font-family="&#39;DejaVu Sans Mono&#39;,Menlo,Consolas,&#39;Courier New&#39;,monospace" font-size="8.18" fill="#d4af37" opacity=".7">R5</text><text x="0" y="23.36" text-anchor="middle" font-family="Georgia,&#39;Times New Roman&#39;,&#39;Iowan Old Style&#39;,serif" font-size="13.04" letter-spacing="1.96" fill="#d4af37" opacity="1">ROUND BY ROUND</text></g>
+</svg>

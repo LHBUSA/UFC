@@ -9,11 +9,16 @@
  * The point of this file is one property: nothing operational reaches a page.
  * Everything else here is scaffolding around that.
  */
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { FORBIDDEN_PUBLIC_KEYS, formatPrice, toStorefront, variantKey, type ProvisionRecord } from "./types.ts";
-import { PRODUCTS, bySlug, productsFor } from "./catalog.ts";
-import { IMAGE_VERSION } from "./art.ts";
+import { LINES, PRODUCTS, bySlug, productsFor, provisionable } from "./catalog.ts";
+import { IMAGE_VERSION, imagePath, toneFor } from "./art.ts";
+
+const IMG_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "public", "store", "img");
 import { MAX_SKEW_MS, SIGNATURE_HEADER, TIMESTAMP_HEADER, sign, signedPayload, verifySignedRequest } from "./signing.ts";
 
 const NOW = Date.parse("2026-09-07T12:00:00Z");
@@ -81,6 +86,112 @@ test("slugs are unique and stable-looking", () => {
     assert.ok(!seen.has(p.slug), `duplicate slug ${p.slug}`);
     seen.add(p.slug);
     assert.match(p.slug, /^[a-z0-9]+(-[a-z0-9]+)*$/, `slug ${p.slug} is not kebab-case`);
+  }
+});
+
+test("the shared set is exactly ten slugs, and nothing new has joined it", () => {
+  /* This file is served to another site's shop. A new `sites: [ufc, news]`
+   * product does not just appear here, it appears there, on a shelf whose
+   * owner never agreed to it. Widening the shared set is a decision for both
+   * sites; asserting the count makes taking it by accident impossible. */
+  const shared = PRODUCTS.filter((p) => p.sites.includes("news"));
+  assert.equal(shared.length, 10, `the shared set changed: ${shared.map((p) => p.slug).join(", ")}`);
+});
+
+test("a piece whose blank is unresolved can never be purchasable", () => {
+  /* The strongest property in this file. A blocked piece should have no
+   * provisioning row at all, but a row written by hand, or left behind when a
+   * blank was set aside, must not be able to put it on sale: the authored
+   * decision wins over the recorded state. */
+  const blocked = PRODUCTS.filter((p) => p.blocked);
+  assert.ok(blocked.length > 0, "expected at least one set-aside blank to exercise this");
+  for (const def of blocked) {
+    const p = toStorefront(def, created({ slug: def.slug }));
+    assert.equal(p.purchasable, false, `${def.slug} was purchasable despite an unresolved blank`);
+    assert.equal(p.awaiting_blank, true, `${def.slug} must say why`);
+    assert.ok(p.unavailable_reason, `${def.slug} must explain itself`);
+  }
+});
+
+test("the operational reason a blank was set aside never reaches a page", () => {
+  /* `note` names the printer's suppliers and the shape of our catalog search.
+   * `public` is the sentence a reader gets. They are separate fields so this
+   * can be asserted rather than remembered. */
+  for (const def of PRODUCTS) {
+    if (!def.blocked) continue;
+    const wire = JSON.stringify(toStorefront(def, null));
+    assert.ok(!wire.includes(def.blocked.note), `${def.slug} leaked the operational block note`);
+    assert.ok(wire.includes(def.blocked.public), `${def.slug} did not carry its reader-facing reason`);
+  }
+});
+
+test("provisioning walks a narrower list than the shop displays", () => {
+  /* The shop shows a set-aside piece and says why. Provisioning must not see
+   * it at all: an unresolved blank one forgotten branch away from a create
+   * call is how the wrong garment gets printed. */
+  const offered = provisionable().map((p) => p.slug);
+  const shown = productsFor("ufc").map((p) => p.slug);
+  for (const def of PRODUCTS) {
+    if (!def.blocked) continue;
+    assert.ok(!offered.includes(def.slug), `${def.slug} is provisionable despite an unresolved blank`);
+    assert.ok(shown.includes(def.slug), `${def.slug} should still be displayed, with its reason`);
+  }
+  assert.ok(offered.length > 0 && offered.length < PRODUCTS.length);
+});
+
+test("every product has a mark, a line with a section to sit in, and copy for it", () => {
+  const sections = new Set(LINES.map((l) => l.key));
+  for (const p of PRODUCTS) {
+    assert.ok(p.mark, `${p.slug} has no mark`);
+    assert.ok(sections.has(p.line), `${p.slug} is in line "${p.line}", which no section renders`);
+    for (const line of p.lines ?? []) {
+      assert.ok(line.trim().length > 0, `${p.slug} carries an empty type line`);
+    }
+  }
+  /* Each section must actually have something in it, or the shop renders a
+   * heading over nothing. */
+  for (const l of LINES) {
+    assert.ok(PRODUCTS.some((p) => p.line === l.key), `section "${l.key}" is empty`);
+  }
+});
+
+test("all four forms are offered, and every design family covers more than one", () => {
+  const forms = new Set(PRODUCTS.map((p) => p.form));
+  for (const f of ["tee", "hoodie", "cap", "mug"] as const) assert.ok(forms.has(f), `no ${f} in the catalog`);
+  for (const l of LINES) {
+    const inLine = PRODUCTS.filter((p) => p.line === l.key);
+    assert.ok(new Set(inLine.map((p) => p.form)).size > 1, `line "${l.key}" is only one form`);
+  }
+});
+
+test("the preview tone follows the colourway, and the print file name agrees", () => {
+  /* A preview showing gold type on a garment we only sell in white is a
+   * preview of a product that does not exist. The -ink / -gold suffix on the
+   * print file is the same claim written down twice, so it is checked against
+   * the colours rather than trusted. */
+  for (const p of PRODUCTS) {
+    const tone = toneFor(p.colors);
+    const claimsInk = p.art.includes("-ink");
+    assert.equal(
+      tone === "light",
+      claimsInk,
+      `${p.slug}: lead colour "${p.colors[0]}" gives ${tone}, but the print file is named ${p.art}`,
+    );
+  }
+});
+
+test("every product has its committed preview image, and no orphans are left behind", () => {
+  /* The images are committed rather than built, so the bytes a reviewer sees
+   * are the bytes that ship. That only holds if somebody actually ran
+   * scripts/store/build_images.mjs after editing the catalog, which is
+   * exactly the step a person forgets. */
+  const onDisk = new Set(fs.readdirSync(IMG_DIR).filter((f) => f.endsWith(".svg")));
+  const expected = new Set(PRODUCTS.map((p) => path.basename(imagePath(p.slug))));
+  for (const want of expected) {
+    assert.ok(onDisk.has(want), `missing preview image ${want} — run scripts/store/build_images.mjs`);
+  }
+  for (const got of onDisk) {
+    assert.ok(expected.has(got), `orphaned preview image ${got} — run scripts/store/build_images.mjs`);
   }
 });
 

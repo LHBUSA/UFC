@@ -70,6 +70,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
 
         <div className="st-detail-body">
+          <p className={p.purchasable ? "st-state st-state-open" : "st-state"}>
+            {p.purchasable ? "On sale" : p.awaiting_blank ? "Blank not chosen" : "Not released"}
+          </p>
           <p className="st-price st-price-lg">{formatPrice(p.price_cents)}</p>
           <p className="st-desc">{p.description}</p>
 
@@ -96,12 +99,27 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <p className="st-notice" role="status">
               Checkout is being wired. This piece is confirmed with the printer.
             </p>
+          ) : p.awaiting_blank ? (
+            /* Said plainly, because it is not the same as "coming soon". The
+             * design is finished; what is missing is the blank it prints on,
+             * and several candidates at the printer fit our specification
+             * equally well. Choosing on a hunch embroiders the wrong hat. */
+            <p className="st-notice" role="status">
+              <strong>Not on sale yet.</strong> {p.unavailable_reason} Several blanks at our printer match this
+              specification equally well, and we would rather pick deliberately than send you the wrong one.
+            </p>
           ) : (
             <p className="st-notice" role="status">
               <strong>Not on sale yet.</strong> {p.unavailable_reason} We publish the design and the price before the
               button works, so nothing about this page changes when it does.
             </p>
           )}
+
+          <p className="st-meta">
+            <span>Printed on demand</span>
+            <span>{p.sizes.length > 1 ? `${p.sizes.length} sizes` : p.sizes[0]}</span>
+            <span>{p.colors.join(" / ")}</span>
+          </p>
 
           <p className="st-fine">
             Printed and shipped on demand by our print partner. <Link href="/store/policies">Shipping and returns</Link>.

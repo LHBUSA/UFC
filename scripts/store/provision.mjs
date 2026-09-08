@@ -259,10 +259,16 @@ async function reconcile(rows, syncProducts) {
 /* ---- main ---------------------------------------------------------------- */
 
 const main = async () => {
-  const { PRODUCTS } = await import("../../web/lib/store/catalog.ts");
+  /* provisionable(), not PRODUCTS. A piece whose blank we could not identify
+   * must never reach a create call, and the only safe place to enforce that
+   * is the list this script walks: filtering it further down would leave the
+   * decision one forgotten branch away from a wrong garment being printed. */
+  const { PRODUCTS, provisionable } = await import("../../web/lib/store/catalog.ts");
+  const OFFERED = provisionable();
+  const setAside = PRODUCTS.length - OFFERED.length;
 
   log("PropBetEdge store — provisioning\n");
-  log(`catalog: ${PRODUCTS.length} products`);
+  log(`catalog: ${OFFERED.length} provisionable of ${PRODUCTS.length}${setAside ? ` (${setAside} set aside, blank unresolved)` : ""}`);
   log(`mode:    ${PLAN ? "plan (offline)" : RECONCILE ? "reconcile" : CREATE ? "CREATE" : "inspect"}\n`);
 
   if (WANTED_CREATE && !CREATE) {
@@ -272,10 +278,13 @@ const main = async () => {
   if (PLAN) {
     /* Offline. Shows what the run would touch without a credential in sight,
      * which is the only mode that is useful before provisioning is enabled. */
-    for (const p of PRODUCTS) {
+    for (const p of OFFERED) {
       log(`  ${p.slug.padEnd(34)} ${p.form.padEnd(7)} ${p.sizes.length}×${p.colors.length} variants  [${p.sites.join(", ")}]`);
     }
-    log(`\nNothing was contacted. ${PRODUCTS.length} slugs would be claimed one at a time.`);
+    for (const p of PRODUCTS) {
+      if (p.blocked) log(`  ${p.slug.padEnd(34)} SET ASIDE: ${p.blocked.note}`);
+    }
+    log(`\nNothing was contacted. ${OFFERED.length} slugs would be claimed one at a time.`);
     return;
   }
 
@@ -284,7 +293,7 @@ const main = async () => {
   const counts = {};
   for (const r of rows || []) counts[r.state] = (counts[r.state] || 0) + 1;
   log(`provisioning rows: ${rows?.length ?? 0}${Object.keys(counts).length ? ` (${Object.entries(counts).map(([k, v]) => `${k}:${v}`).join(", ")})` : ""}`);
-  for (const p of PRODUCTS) if (!byslug.has(p.slug)) log(`  unclaimed (no row): ${p.slug}`);
+  for (const p of OFFERED) if (!byslug.has(p.slug)) log(`  unclaimed (no row): ${p.slug}`);
 
   /* Crash recovery, first. Any claim whose holder never reported back is an
    * outcome nobody observed, so it is expired into uncertainty rather than

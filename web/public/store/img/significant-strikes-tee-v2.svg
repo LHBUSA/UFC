@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" width="480" height="600" role="img" aria-label="Significant Strikes Tee — design preview, not a photograph">
+  <title>Significant Strikes Tee — design preview, not a photograph</title>
+  <defs>
+    <linearGradient id="ground-tee-dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#100e0b"/><stop offset="100%" stop-color="#1a1611"/>
+    </linearGradient>
+    <linearGradient id="cloth-tee-dark" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#2a241c"/><stop offset="100%" stop-color="#1c1712"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="600" fill="url(#ground-tee-dark)"/>
+  <path d="M186,140 Q240,178 294,140 L340,152 L432,196 L400,282 L352,262 L352,528 Q352,540 340,540 L140,540 Q128,540 128,528 L128,262 L80,282 L48,196 L140,152 Z" fill="url(#cloth-tee-dark)" stroke="rgba(255,245,220,.26)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M180,132 Q240,172 300,132 M406,272 L358,252 M74,272 L122,252 M128,514 L352,514" fill="none" stroke="rgba(255,245,220,.26)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(240,306)"><rect x="-66.88" y="-33.44" width="133.76" height="10.94" rx="5.47" fill="none" stroke="#d4af37" stroke-width="1.82" opacity=".55"/><rect x="-66.88" y="-33.44" width="90.96" height="10.94" rx="5.47" fill="#d4af37" opacity=".9"/><line x1="-53.5" y1="-19.76" x2="-53.5" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><line x1="-40.13" y1="-19.76" x2="-40.13" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><line x1="-26.75" y1="-19.76" x2="-26.75" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><line x1="-13.38" y1="-19.76" x2="-13.38" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><line x1="0" y1="-19.76" x2="0" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><line x1="13.38" y1="-19.76" x2="13.38" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><line x1="26.75" y1="-19.76" x2="26.75" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><line x1="40.13" y1="-19.76" x2="40.13" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><line x1="53.5" y1="-19.76" x2="53.5" y2="-14.14" stroke="#d4af37" stroke-width="1.22" opacity=".5"/><text x="0" y="15.2" text-anchor="middle" font-family="Georgia,&#39;Times New Roman&#39;,&#39;Iowan Old Style&#39;,serif" font-size="10" letter-spacing="1.5" fill="#d4af37" opacity="1">SIGNIFICANT STRIKES</text><text x="0" y="38.2" text-anchor="middle" font-family="&#39;DejaVu Sans Mono&#39;,Menlo,Consolas,&#39;Courier New&#39;,monospace" font-size="8.82" letter-spacing="1.32" fill="#d4af37" opacity=".72">LANDED / ATTEMPTED</text></g>
+</svg>

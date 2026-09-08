@@ -21,6 +21,15 @@
 }
 .st-notice strong { color: var(--pbe-paper); }
 
+/* The second notice on the page. It carries a real constraint, not an
+ * announcement, so it is stated in the line colour rather than in gold: two
+ * gold panels stacked read as two alarms. */
+.st-notice-quiet {
+  border-color: var(--pbe-line);
+  border-left-color: var(--pbe-line-strong);
+  background: var(--pbe-ink-2);
+}
+
 .st-section { margin-bottom: var(--s-8); }
 
 .st-section-head {
@@ -65,7 +74,31 @@
   box-shadow: var(--sh-2);
 }
 
-.st-art { display: block; width: 100%; height: auto; background: var(--pbe-ink); }
+/* The preview sits in its own frame so the form tag can be positioned
+ * against it. aspect-ratio holds the box before the SVG has loaded, which is
+ * the whole reason the projection declares width and height at all. */
+.st-art-frame {
+  display: block;
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: var(--pbe-ink);
+}
+.st-art { display: block; width: 100%; height: 100%; object-fit: cover; background: var(--pbe-ink); }
+
+.st-form-tag {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  padding: 3px var(--s-2);
+  border: 1px solid var(--pbe-line-strong);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--pbe-ink) 78%, transparent);
+  color: var(--pbe-faint);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-micro);
+  text-transform: uppercase;
+}
 
 .st-card-body {
   display: flex;
@@ -103,13 +136,26 @@
   letter-spacing: var(--ls-micro);
   text-transform: uppercase;
   color: var(--pbe-faint);
+  text-align: right;
+}
+/* A piece whose blank is unchosen is a different state from one that is
+ * merely unreleased, and it stays that way until somebody picks a hat. Given
+ * a border so the two do not read as the same "coming soon". */
+.st-soon-blank {
+  padding: 2px var(--s-2);
+  border: 1px dashed var(--pbe-line-strong);
+  border-radius: var(--r-sm);
+  color: var(--pbe-subtle);
 }
 
 /* ---- product detail ---------------------------------------------------- */
 
 .st-detail {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  /* The preview is 4:5 and scales to its column, so a 5fr column on a wide
+   * screen rendered it nearly nine hundred pixels tall and pushed its own
+   * caption off the fold. It is a diagram of a garment, not the garment. */
+  grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
   gap: var(--s-7);
   align-items: start;
   margin-bottom: var(--s-8);
@@ -123,7 +169,9 @@
   border-radius: var(--r-lg);
   overflow: hidden;
   background: var(--pbe-ink-2);
+  max-width: 440px;
 }
+.st-detail-art .st-art { width: 100%; height: auto; object-fit: contain; }
 .st-detail-art .st-fine { padding: var(--s-3) var(--s-4); margin: 0; border-top: 1px solid var(--pbe-line-faint); }
 
 .st-detail-body { display: flex; flex-direction: column; gap: var(--s-4); }
@@ -169,3 +217,44 @@
 }
 .st-prose h2:first-child { margin-top: 0; }
 .st-prose p { margin: 0 0 var(--s-3); color: var(--pbe-dim); font-size: var(--fs-body); line-height: 1.75; }
+
+/* ---- detail: the state of one piece ------------------------------------ */
+
+.st-state {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--pbe-font-ui);
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--pbe-faint);
+}
+.st-state::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pbe-line-strong);
+}
+.st-state-open::before { background: var(--pbe-gold); }
+
+.st-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  margin: 0;
+  padding: var(--s-3) 0 0;
+  border-top: 1px solid var(--pbe-line-faint);
+  font-family: var(--pbe-font-data);
+  font-size: var(--fs-sm);
+  color: var(--pbe-subtle);
+}
+.st-meta span { white-space: nowrap; }
+
+@media (max-width: 520px) {
+  .st-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--s-4); }
+  .st-card-body { padding: var(--s-3); }
+  .st-card-foot { flex-direction: column; align-items: flex-start; gap: var(--s-1); }
+  .st-soon { text-align: left; }
+}

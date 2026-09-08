@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHead, JsonLd } from "@/components/ui";
-import { COLLECTIONS, productsFor } from "@/lib/store/catalog";
+import { LINES, productsFor } from "@/lib/store/catalog";
 import { getProvisioning, anyPurchasable } from "@/lib/store/provisioning";
 import { formatPrice, toStorefront, type StorefrontProduct } from "@/lib/store/types";
 import { SITE } from "@/lib/site";
@@ -15,12 +15,17 @@ import { SITE } from "@/lib/site";
  *
  * Purchasability is not a flag anybody sets by hand. It is derived, per
  * product, from whether the print provider has confirmed that exact product
- * exists — see lib/store/provisioning.ts. Nothing here can turn it on. */
+ * exists — see lib/store/provisioning.ts. Nothing here can turn it on.
+ *
+ * Sections are design lines, not collections. `collection` is part of the
+ * contract the other storefront reads; how this shop lays itself out is our
+ * own business, and grouping by it would have put a Fight DNA mug and a
+ * spreadsheet joke under one heading because they share a shelf. */
 export const revalidate = 60;
 
 const TITLE = "Store | PropBetEdge UFC";
 const DESCRIPTION =
-  "PropBetEdge UFC merchandise: fight-intelligence tees, hoodies, caps and mugs. Printed on demand, shipped by our print partner.";
+  "PropBetEdge UFC merchandise: Fight DNA, Tale of the Tape and analytics designs on tees, hoodies, caps and mugs. Printed on demand, shipped by our print partner.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -36,18 +41,27 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
+const FORM_LABEL: Record<string, string> = { tee: "Tee", hoodie: "Hoodie", cap: "Cap", mug: "Mug" };
+
 function Card({ p }: { p: StorefrontProduct }) {
   return (
     <Link href={`/store/${p.slug}`} className="st-card">
       {/* The same file the shared catalog API hands the other storefront, so
           both shops show one image rather than each drawing their own. */}
-      <img className="st-art" src={p.images[0].url} alt={p.images[0].alt} width={p.images[0].width} height={p.images[0].height} loading="lazy" decoding="async" />
+      <span className="st-art-frame">
+        <img className="st-art" src={p.images[0].url} alt={p.images[0].alt} width={p.images[0].width} height={p.images[0].height} loading="lazy" decoding="async" />
+        <span className="st-form-tag">{FORM_LABEL[p.form] ?? p.form}</span>
+      </span>
       <span className="st-card-body">
         <span className="st-card-name">{p.name}</span>
         <span className="st-card-blurb">{p.blurb}</span>
         <span className="st-card-foot">
           <span className="st-price">{formatPrice(p.price_cents)}</span>
-          {p.purchasable ? null : <span className="st-soon">{p.unavailable_reason}</span>}
+          {p.purchasable ? null : (
+            <span className={p.awaiting_blank ? "st-soon st-soon-blank" : "st-soon"}>
+              {p.awaiting_blank ? "Blank not chosen" : p.unavailable_reason}
+            </span>
+          )}
         </span>
       </span>
     </Link>
@@ -56,8 +70,13 @@ function Card({ p }: { p: StorefrontProduct }) {
 
 export default async function StorePage() {
   const provisioning = await getProvisioning();
-  const products = productsFor("ufc").map((d) => toStorefront(d, provisioning.get(d.slug) ?? null));
+  /* Grouped on the definition, projected for rendering. `line` deliberately
+   * does not exist on StorefrontProduct: it decides how this page is laid
+   * out, and putting it in the projection would add it to the contract the
+   * other storefront reads for no reason other than convenience here. */
+  const items = productsFor("ufc").map((d) => ({ line: d.line, pub: toStorefront(d, provisioning.get(d.slug) ?? null) }));
   const open = anyPurchasable(provisioning);
+  const awaiting = items.filter((i) => i.pub.awaiting_blank);
 
   return (
     <>
@@ -84,9 +103,23 @@ export default async function StorePage() {
         </div>
       )}
 
-      {COLLECTIONS.map((c) => {
-        const items = products.filter((p) => p.collection === c.key);
-        if (!items.length) return null;
+      {awaiting.length > 0 && (
+        <div className="wrap">
+          {/* Named rather than hidden. The caps are designed and priced; what
+              is missing is the blank, and several catalog hats match our
+              search equally well. Picking one on a hunch prints the wrong hat
+              and nobody finds out until it arrives. */}
+          <p className="st-notice st-notice-quiet" role="status">
+            <strong>The caps are last.</strong> {awaiting.length} pieces are drawn and priced but not yet matched to a
+            blank at the printer — several candidates fit our specification equally well, and we would rather choose
+            deliberately than embroider the wrong hat.
+          </p>
+        </div>
+      )}
+
+      {LINES.map((c) => {
+        const inLine = items.filter((i) => i.line === c.key);
+        if (!inLine.length) return null;
         return (
           <section className="wrap st-section" key={c.key}>
             <div className="st-section-head">
@@ -94,8 +127,8 @@ export default async function StorePage() {
               <p>{c.blurb}</p>
             </div>
             <div className="st-grid">
-              {items.map((p) => (
-                <Card key={p.slug} p={p} />
+              {inLine.map(({ pub }) => (
+                <Card key={pub.slug} p={pub} />
               ))}
             </div>
           </section>

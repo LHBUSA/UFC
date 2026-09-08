@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" width="480" height="600" role="img" aria-label="PropBetEdge Cap — design preview, not a photograph">
+  <title>PropBetEdge Cap — design preview, not a photograph</title>
+  <defs>
+    <linearGradient id="ground-cap-dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#100e0b"/><stop offset="100%" stop-color="#1a1611"/>
+    </linearGradient>
+    <linearGradient id="cloth-cap-dark" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#2a241c"/><stop offset="100%" stop-color="#1c1712"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="600" fill="url(#ground-cap-dark)"/>
+  <path d="M106,338 Q106,208 240,208 Q374,208 374,338 Z M92,338 Q240,324 388,338 Q404,342 396,364 Q240,394 84,364 Q76,342 92,338 Z" fill="url(#cloth-cap-dark)" stroke="rgba(255,245,220,.26)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M240,210 L240,336 M170,220 Q188,282 178,336 M310,220 Q292,282 302,336 M92,338 Q240,352 388,338" fill="none" stroke="rgba(255,245,220,.26)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(240,284)"><g transform="translate(0,-13.44)"><polygon points="23.8,9.86 9.86,23.8 -9.86,23.8 -23.8,9.86 -23.8,-9.86 -9.86,-23.8 9.86,-23.8 23.8,-9.86" fill="none" stroke="#d4af37" stroke-width="2.02"/><polygon points="14.76,6.11 6.11,14.76 -6.11,14.76 -14.76,6.11 -14.76,-6.11 -6.11,-14.76 6.11,-14.76 14.76,-6.11" fill="none" stroke="#d4af37" stroke-width="1.01" opacity=".5"/><path d="M-8.24,0 L0,-8.24 L8.24,0 L0,8.24 Z" fill="#d4af37"/></g></g>
+</svg>

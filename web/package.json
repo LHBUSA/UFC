@@ -11,7 +11,8 @@
     "preserve:diff": "node scripts/preservation-diff.mjs",
     "preserve:baseline": "node scripts/preservation-check.mjs --write-baseline",
     "prebuild": "node scripts/preservation-check.mjs",
-    "test:market": "node --experimental-strip-types --test lib/market.test.mjs"
+    "test:market": "node --experimental-strip-types --test lib/market.test.mjs",
+    "test:store": "node --test lib/store/store.test.ts"
   },
   "dependencies": {
     "next": "^15.5.25",

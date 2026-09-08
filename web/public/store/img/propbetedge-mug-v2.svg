@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" width="480" height="600" role="img" aria-label="PropBetEdge Mug — design preview, not a photograph">
+  <title>PropBetEdge Mug — design preview, not a photograph</title>
+  <defs>
+    <linearGradient id="ground-mug-light" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#100e0b"/><stop offset="100%" stop-color="#1a1611"/>
+    </linearGradient>
+    <linearGradient id="cloth-mug-light" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#efe8dc"/><stop offset="100%" stop-color="#d6ccba"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="600" fill="url(#ground-mug-light)"/>
+  <path d="M326,260 Q394,260 394,320 Q394,380 326,380" fill="none" stroke="rgba(20,17,13,.32)" stroke-width="26" stroke-linecap="round"/>
+  <path d="M326,260 Q394,260 394,320 Q394,380 326,380" fill="none" stroke="#d6ccba" stroke-width="20" stroke-linecap="round"/>
+  <path d="M152,196 L328,196 L328,468 Q328,486 310,486 L170,486 Q152,486 152,468 Z" fill="url(#cloth-mug-light)" stroke="rgba(20,17,13,.32)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M152,198 Q240,228 328,198" fill="none" stroke="rgba(20,17,13,.32)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(240,348)"><g transform="translate(0,-15.6)"><polygon points="27.62,11.44 11.44,27.62 -11.44,27.62 -27.62,11.44 -27.62,-11.44 -11.44,-27.62 11.44,-27.62 27.62,-11.44" fill="none" stroke="#14110d" stroke-width="2.34"/><polygon points="17.13,7.09 7.09,17.13 -7.09,17.13 -17.13,7.09 -17.13,-7.09 -7.09,-17.13 7.09,-17.13 17.13,-7.09" fill="none" stroke="#14110d" stroke-width="1.17" opacity=".5"/><path d="M-9.57,0 L0,-9.57 L9.57,0 L0,9.57 Z" fill="#14110d"/></g><text x="0" y="36.4" text-anchor="middle" font-family="Georgia,&#39;Times New Roman&#39;,&#39;Iowan Old Style&#39;,serif" font-size="13" letter-spacing="1.95" fill="#14110d" opacity="1">PROPBETEDGE</text></g>
+</svg>

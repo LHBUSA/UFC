@@ -22,11 +22,38 @@
  * silent publication.
  */
 
-import { IMAGE_H, IMAGE_W, imagePath } from "./art.ts";
+import { IMAGE_H, IMAGE_W, imagePath, type MarkKind } from "./art.ts";
 
 export type Collection = "propbetedge" | "ufc";
 export type Form = "tee" | "hoodie" | "cap" | "mug";
 export type Site = "ufc" | "news";
+
+/**
+ * The display grouping a piece belongs to.
+ *
+ * Kept separate from `collection` on purpose. `collection` is part of the
+ * shared contract the other storefront reads, and widening a value a consumer
+ * switches on is a breaking change made quietly. `line` is ours: it decides
+ * which section of our own shop a piece appears under, and a consumer that
+ * has never heard of it is unaffected.
+ */
+export type Line = "house" | "fight-dna" | "tale-of-the-tape" | "analytics" | "fight-intelligence";
+
+/**
+ * A blank we have not been able to identify at the provider.
+ *
+ * Two strings because they have two audiences. `note` says which blanks
+ * matched and why none was decisive; it names the provider's suppliers and
+ * belongs in an operator's console, never on a page. `public` is what a
+ * reader sees, and it says the honest thing without the supply chain.
+ *
+ * A blocked piece is still shown. Hiding it would leave a shop that quietly
+ * has no hats in it, which reads as an oversight rather than as a decision;
+ * showing it with the reason attached is what actually happened. What blocked
+ * guarantees is stronger than invisibility: it can never be purchasable and
+ * it is never provisioned, whatever any provisioning row claims.
+ */
+export type Blocked = { note: string; public: string };
 
 /** Authored. Public. The single source of truth for what exists and what we charge. */
 export type ProductDef = {
@@ -44,13 +71,19 @@ export type ProductDef = {
   colors: readonly string[];
   /** Path under /store/print, without extension. The vector source is authoritative. */
   art: string;
+  /** Which mark the preview draws. Several products share one. */
+  mark: MarkKind;
+  /** Type set with the mark. Empty for a piece that is mark only. */
+  lines?: readonly string[];
+  /** Section of our own shop. Not part of the shared contract. */
+  line: Line;
   /** Which storefronts feature it. Shared pieces list both. */
   sites: readonly Site[];
   sort_order: number;
-  /** Set aside: the blank could not be resolved, so this is not offered and
-   * is not provisioned. The slug stays so it keeps its identity if the blank
-   * is chosen later. */
-  blocked?: string;
+  /** Set aside: the blank could not be resolved, so this is never
+   * provisioned and never purchasable. The slug stays so it keeps its
+   * identity once the blank is chosen. */
+  blocked?: Blocked;
 };
 
 export type ProvisionState = "unclaimed" | "in_flight" | "created" | "failed" | "uncertain";
@@ -94,8 +127,12 @@ export type StorefrontProduct = {
   /** Permanent, versioned image URLs. Never a provider mockup link: those
    * expire, and a URL handed to another storefront must not. */
   images: { url: string; width: number; height: number; alt: string; kind: "design_preview" | "provider_mockup" }[];
-  /** True only when the provider has confirmed this exact product exists. */
+  /** True only when the provider has confirmed this exact product exists,
+   * and the blank it prints on is one we have identified. */
   purchasable: boolean;
+  /** Set when the design is finished but its blank is not chosen. Reader
+   * facing; the operational detail behind it never leaves the server. */
+  awaiting_blank: boolean;
   /** Why it is not purchasable, in words a reader can act on. Null when it is. */
   unavailable_reason: string | null;
 };
@@ -129,7 +166,13 @@ export const FORBIDDEN_PUBLIC_KEYS = [
  * to sell something we cannot confirm is worse than saying it is not ready.
  */
 export function toStorefront(def: ProductDef, rec: ProvisionRecord | null, origin = ""): StorefrontProduct {
+  /* `!def.blocked` first, and it is not redundant with the provisioning
+   * check. A blocked piece should have no provisioning row at all, but
+   * "should" is not a guarantee: a row written by hand, or left behind after
+   * a blank was set aside, would otherwise flip a piece we cannot make to
+   * purchasable. The authored decision wins over the recorded state. */
   const confirmed =
+    !def.blocked &&
     rec?.state === "created" &&
     typeof rec.provider_product_id === "number" &&
     Object.keys(rec.provider_variant_ids || {}).length > 0;
@@ -163,7 +206,10 @@ export function toStorefront(def: ProductDef, rec: ProvisionRecord | null, origi
       },
     ],
     purchasable: confirmed,
-    unavailable_reason: confirmed ? null : unavailableReason(rec),
+    awaiting_blank: Boolean(def.blocked),
+    /* def.blocked.public, never def.blocked.note: the note names the
+     * provider's suppliers and the shape of our catalog search. */
+    unavailable_reason: confirmed ? null : def.blocked ? def.blocked.public : unavailableReason(rec),
   };
 }
 

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" width="480" height="600" role="img" aria-label="No Vibes, Just Variance Mug — design preview, not a photograph">
+  <title>No Vibes, Just Variance Mug — design preview, not a photograph</title>
+  <defs>
+    <linearGradient id="ground-mug-light" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#100e0b"/><stop offset="100%" stop-color="#1a1611"/>
+    </linearGradient>
+    <linearGradient id="cloth-mug-light" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#efe8dc"/><stop offset="100%" stop-color="#d6ccba"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="600" fill="url(#ground-mug-light)"/>
+  <path d="M326,260 Q394,260 394,320 Q394,380 326,380" fill="none" stroke="rgba(20,17,13,.32)" stroke-width="26" stroke-linecap="round"/>
+  <path d="M326,260 Q394,260 394,320 Q394,380 326,380" fill="none" stroke="#d6ccba" stroke-width="20" stroke-linecap="round"/>
+  <path d="M152,196 L328,196 L328,468 Q328,486 310,486 L170,486 Q152,486 152,468 Z" fill="url(#cloth-mug-light)" stroke="rgba(20,17,13,.32)" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M152,198 Q240,228 328,198" fill="none" stroke="rgba(20,17,13,.32)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(240,348)"><rect x="-53.17" y="-9.7" width="5.54" height="1.9" fill="#14110d" opacity="0.31"/><rect x="-44.77" y="-12.49" width="5.54" height="4.69" fill="#14110d" opacity="0.35"/><rect x="-36.37" y="-17.61" width="5.54" height="9.81" fill="#14110d" opacity="0.43"/><rect x="-27.97" y="-25.21" width="5.54" height="17.41" fill="#14110d" opacity="0.54"/><rect x="-19.57" y="-34.03" width="5.54" height="26.23" fill="#14110d" opacity="0.68"/><rect x="-11.17" y="-41.34" width="5.54" height="33.54" fill="#14110d" opacity="0.79"/><rect x="-2.77" y="-44.2" width="5.54" height="36.4" fill="#14110d" opacity="0.83"/><rect x="5.63" y="-41.34" width="5.54" height="33.54" fill="#14110d" opacity="0.79"/><rect x="14.03" y="-34.03" width="5.54" height="26.23" fill="#14110d" opacity="0.68"/><rect x="22.43" y="-25.21" width="5.54" height="17.41" fill="#14110d" opacity="0.54"/><rect x="30.83" y="-17.61" width="5.54" height="9.81" fill="#14110d" opacity="0.43"/><rect x="39.23" y="-12.49" width="5.54" height="4.69" fill="#14110d" opacity="0.35"/><rect x="47.63" y="-9.7" width="5.54" height="1.9" fill="#14110d" opacity="0.31"/><path d="M-50.4,-13.86 L-42,-16.65 L-33.6,-21.77 L-25.2,-29.37 L-16.8,-38.19 L-8.4,-45.5 L0,-48.36 L8.4,-45.5 L16.8,-38.19 L25.2,-29.37 L33.6,-21.77 L42,-16.65 L50.4,-13.86" fill="none" stroke="#14110d" stroke-width="2.08" stroke-linejoin="round" opacity=".9"/><line x1="-54.6" y1="-7.8" x2="54.6" y2="-7.8" stroke="#14110d" stroke-width="1.56"/><text x="0" y="18.2" text-anchor="middle" font-family="Georgia,&#39;Times New Roman&#39;,&#39;Iowan Old Style&#39;,serif" font-size="11.96" letter-spacing="1.79" fill="#14110d" opacity="1">NO VIBES,</text><text x="0" y="34.23" text-anchor="middle" font-family="Georgia,&#39;Times New Roman&#39;,&#39;Iowan Old Style&#39;,serif" font-size="11.96" letter-spacing="1.79" fill="#14110d" opacity="1">JUST VARIANCE</text></g>
+</svg>
