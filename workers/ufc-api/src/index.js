@@ -1048,6 +1048,99 @@ async function listResults(env, url) {
   return results.map((result) => ({ ...result, bout: byId.get(result.bout_id) || null }));
 }
 
+/* ---- weigh-ins ------------------------------------------------------- */
+
+const WEIGHIN_RESULTS = new Set(['pending', 'made', 'missed', 'cancelled', 'withdrawn']);
+
+/**
+ * Official weigh-in readings.
+ *
+ * READ ONLY. There is no collector path on this Worker and no write route: the
+ * pass that gathers weights runs separately with its own credentials and its
+ * own single-flight identity, so a public read API cannot be tricked into
+ * recording a weight for a named athlete.
+ *
+ * THE CONTRACT NOTE THAT OUTRANKS THE SHAPE: contracted_limit_lbs,
+ * applicable_limit_lbs and over_by_lbs are null far more often than not, and a
+ * null there means the contracted figure was not published — NOT that the
+ * division default applies. A client that fills the gap from a weight class is
+ * asserting a limit nobody agreed to, and will be wrong on every title fight
+ * and every catchweight. limit_basis says which of the three cases holds.
+ */
+async function listWeighIns(env, url) {
+  const limit = clampInt(url.searchParams.get("limit"), 60, 1, 200);
+  const offset = clampInt(url.searchParams.get("offset"), 0, 0, 100000);
+  const p = new URLSearchParams({ select: "*", order: "bout_order.desc.nullslast,fighter_name.asc", limit: String(limit), offset: String(offset) });
+
+  const eventId = sanitizeLike(url.searchParams.get("event_id"));
+  if (eventId) p.set("event_id", `eq.${eventId}`);
+  const fighterId = sanitizeLike(url.searchParams.get("fighter_id"));
+  if (fighterId) p.set("fighter_id", `eq.${fighterId}`);
+
+  const status = sanitizeLike(url.searchParams.get("status"));
+  if (status) {
+    if (!WEIGHIN_RESULTS.has(status)) {
+      throw new ApiError(400, "invalid_status", `status must be one of ${[...WEIGHIN_RESULTS].join(", ")}.`);
+    }
+    p.set("result", `eq.${status}`);
+  }
+
+  /* ?since= filters on when WE detected the reading, not when the source
+   * published it: a poller asking "what is new to you" wants our clock, and a
+   * source that back-dates its timestamps must not hide a change from it. */
+  const since = sanitizeLike(url.searchParams.get("since"));
+  if (since) {
+    if (Number.isNaN(Date.parse(since))) throw new ApiError(400, "invalid_since", "since must be an ISO 8601 timestamp.");
+    p.set("detected_at", `gte.${new Date(since).toISOString()}`);
+  }
+
+  const out = await sb(env, "ufc_weigh_in_current", p, { count: true });
+  return {
+    data: out.data,
+    meta: {
+      count: out.data.length, total: out.count, limit, offset,
+      /* Stated on every response so a consumer never has to infer it. */
+      contract: "null contracted_limit_lbs / over_by_lbs means the limit was not published, not that a division default applies",
+    },
+  };
+}
+
+/** One event's weigh-ins, with coverage state and the correction history. */
+async function eventWeighIns(env, id, url) {
+  const event = await resolveEvent(env, id);
+  if (!event) throw new ApiError(404, "event_not_found", "UFC event not found.");
+
+  const cur = new URLSearchParams({ select: "*", event_id: `eq.${event.id}`, order: "bout_order.desc.nullslast,fighter_name.asc", limit: "200" });
+  const sum = new URLSearchParams({ select: "*", event_id: `eq.${event.id}`, limit: "1" });
+  const [results, summaryRows] = await Promise.all([
+    sb(env, "ufc_weigh_in_current", cur),
+    sb(env, "ufc_weigh_in_event_summary", sum),
+  ]);
+
+  const wantHistory = Boolean(url && url.searchParams.get("include") === "history");
+  let history = [];
+  if (wantHistory) {
+    const h = new URLSearchParams({ select: "*", event_id: `eq.${event.id}`, order: "occurred_at.desc.nullslast", limit: "200" });
+    history = (await sb(env, "ufc_weigh_in_history", h)).data;
+  }
+
+  const summary = summaryRows.data[0] || null;
+  return {
+    data: {
+      event: { id: event.id, name: event.name, event_date: event.event_date },
+      /* Coverage state, so a consumer can tell "nobody has weighed in yet"
+       * from "we are not covering this card" — which look identical in an
+       * empty array. */
+      coverage: summary
+        ? Object.assign({}, summary, { state: summary.pending > 0 ? "live" : "final" })
+        : { state: "no_data", note: "no weigh-in readings recorded for this event" },
+      results: results.data,
+      ...(wantHistory ? { history } : {}),
+    },
+    meta: { count: results.data.length, contract: "latest corrected reading per fighter; supersedes_id chains the earlier ones" },
+  };
+}
+
 /* ---- fighter status -------------------------------------------------- */
 
 const STATUS_TYPES = new Set(['injury', 'illness', 'withdrawal', 'replacement', 'suspension', 'visa_travel', 'weight_miss', 'return', 'cleared', 'other']);
@@ -1442,6 +1535,8 @@ function apiIndex(env) {
       bout_stats: "/v1/ufc/bouts/{id}/stats",
       results: "/v1/ufc/results",
       rankings: "/v1/ufc/rankings?division=MIDDLEWEIGHT",
+      weigh_ins: "/v1/ufc/weigh-ins?event_id={id}&status=missed",
+      event_weigh_ins: "/v1/ufc/events/{id}/weigh-ins?include=history",
       injuries: "/v1/ufc/injuries?active=true",
       event_card_changes: "/v1/ufc/events/{id}/card-changes",
       fighter_status: "/v1/ufc/fighters/{id}/status",
@@ -1490,6 +1585,13 @@ async function route(request, env, url, access) {
   /* Sub-routes precede the bare /{id} pattern. Ordering is not load-bearing —
    * that pattern is anchored with $ and [^/]+ cannot span a slash — but an
    * edit that relaxed the anchor should not silently reroute this. */
+  m = path.match(/^\/v1\/(?:ufc\/)?events\/([^/]+)\/weigh-ins$/);
+  if (m) {
+    const out = await eventWeighIns(env, decodeURIComponent(m[1]), url);
+    /* 15s, matching the desk. Weights change on a scale, not continuously. */
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 15);
+  }
+
   m = path.match(/^\/v1\/ufc\/events\/([^/]+)\/card-changes$/);
   if (m) {
     const out = await eventCardChanges(env, decodeURIComponent(m[1]));
@@ -1574,6 +1676,11 @@ async function route(request, env, url, access) {
     return ok(env, requestId, article, tier, 300);
   }
 
+  if (path === "/v1/ufc/weigh-ins" || path === "/v1/weigh-ins") {
+    const out = await listWeighIns(env, url);
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 15);
+  }
+
   if (path === "/v1/ufc/injuries") {
     const out = await listStatusEvents(env, url);
     return ok(env, requestId, out.data, { ...out.meta, ...tier }, 60);
@@ -1599,6 +1706,7 @@ export const __test = {
   slugify, fighterSlug, eventSlug, matchupSlug, normalizeTitle, dedupeWireItems, articleMatchesItem, wireInternalUrl, wireTaxonomy, wire,
   wordCount, analysisSummaryFrom, articleAnalysis, withAnalysis,
   listStatusEvents, eventCardChanges, fighterStatus, STATUS_TYPES, STATUS_STATES, STATUS_UNAVAILABLE,
+  listWeighIns, eventWeighIns, WEIGHIN_RESULTS,
 };
 
 export default {

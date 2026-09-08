@@ -12,6 +12,8 @@ import { JsonLd, ProLock, TaleOfTheTape, Breadcrumbs, Portrait, Credit, BoutRow 
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { getMarketsFor, marketProviderLive, marketStateFor, unresolvedBouts } from "@/lib/market";
 import { getBoutStatusEvents } from "@/lib/status";
+import { getWeighInsForBouts } from "@/lib/weighins";
+import { BoutWeighIns } from "@/components/WeighInBits";
 import { BoutStatusAlert } from "@/components/StatusBits";
 import { MarketSection } from "@/components/Market";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
@@ -39,11 +41,13 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   const hit = await resolveFight((await params).slug);
   if (!hit) notFound();
   const { e, b, bouts } = hit;
-  const [imgs, rounds, articles, histA, histB, statusByBout] = await Promise.all([
+  const [imgs, rounds, articles, histA, histB, statusByBout, weighInsByBout] = await Promise.all([
     getImagesForFighters([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
     getBoutStatusEvents([b.id]).catch(() => new Map()),
+    getWeighInsForBouts([b.id]).catch(() => new Map()),
   ]);
   const boutStatus = statusByBout.get(b.id) || [];
+  const boutWeighIns = weighInsByBout.get(b.id) || [];
   const [media, dna, dnaFighterA, dnaFighterB] = await Promise.all([
     storyMedia(articles),
     getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null),
@@ -138,6 +142,8 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
       </div>
 
       <BoutStatusAlert events={boutStatus} settled={Boolean(r)} />
+
+      {!r && <BoutWeighIns weighIns={boutWeighIns} cornerA={{ id: b.fighter_a.id, name: b.fighter_a.name }} cornerB={{ id: b.fighter_b.id, name: b.fighter_b.name }} />}
 
       <div className="card mt-5">
         <div className="between">

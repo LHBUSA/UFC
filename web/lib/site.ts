@@ -66,6 +66,10 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
    * withdrawal is the single most schedule-changing thing on the site, and a
    * reader checking whether a fight is still on should not have to hunt. */
   { href: "/injuries", label: "Injuries & Withdrawals", place: "primary" },
+  /* Fight week only makes sense next to the other live surfaces. A reader
+   * checking whether a main event is still on asks about weights and
+   * withdrawals in the same breath. */
+  { href: "/weigh-ins", label: "Weigh-Ins", place: "primary" },
   { href: "/contender-series", label: "DWCS", place: "more", group: "Contender Series" },
   { href: "/tuf", label: "The Ultimate Fighter", place: "more", group: "Contender Series" },
   { href: "/history", label: "History", place: "more", group: "Archive" },
