@@ -16,9 +16,12 @@
  *   ufc_news_items.fingerprint  unique
  *   ufc_articles.slug           unique
  *
- * Duplicate suppression is therefore the database's job, not a lock's. The
- * advisory lock in runlog.mjs stops wasted work; these constraints are what
- * make a duplicate publication impossible.
+ * Duplicate ROWS are therefore the database's job, and it does that job
+ * unconditionally. Duplicate WORK is a different question with a different
+ * answer: a constraint rejects the second INSERT, which is long after the
+ * second writer has built its drafts and paid for any model rewrite. Only the
+ * Durable Object in lock.mjs stops that, and only where it is bound. Neither
+ * mechanism substitutes for the other.
  */
 
 export const CONFLICT_TARGETS = {

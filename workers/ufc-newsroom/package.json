@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test src/coordinator.test.mjs src/newsroom.test.mjs"
+    "test": "node --test src/coordinator.test.mjs src/newsroom.test.mjs src/writer_path.test.mjs src/isolate_state.test.mjs src/lock.test.mjs src/sources_sweep.test.mjs",
+    "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun"
   }
 }

@@ -9,14 +9,32 @@
  * only be answered by rows like these, which is precisely what the GitHub
  * workflow had no way to ask - and why a dropped cron slot was never made up.
  *
- * ON THE LOCK, honestly: it is advisory. Reading for a running row and then
- * inserting one is not atomic, so two invocations landing in the same instant
- * could both proceed. That is tolerable because it is not what protects the
- * product. Duplicate publication is prevented by unique indexes on
- * ufc_news_items.fingerprint, ufc_news_items.url and ufc_articles.slug: two
- * concurrent writers produce one row and one conflict, not two articles. The
- * lock exists to stop two runs wasting work and confusing the ledger, and it
- * is described as advisory so nobody later mistakes it for the guarantee.
+ * ON THIS LOCK, honestly: it is advisory and it is the FALLBACK. Reading for a
+ * running row and then inserting one is two round trips with no transaction,
+ * so two invocations landing in the same instant both read "nothing running"
+ * and both proceed. Nothing here makes that unconstructible.
+ *
+ * What each guard actually buys, kept apart because they are not
+ * interchangeable:
+ *
+ *   lock.mjs (Durable Object)   excludes concurrent runs outright, and is
+ *                               therefore the only thing that prevents two
+ *                               invocations both paying Anthropic for the same
+ *                               rewrite. Used whenever NEWSROOM_LOCK is bound.
+ *   unique indexes              prevent duplicate ROWS unconditionally —
+ *                               ufc_news_items.fingerprint, .url and
+ *                               ufc_articles.slug mean two concurrent writers
+ *                               produce one row and one conflict. They cannot
+ *                               prevent duplicate WORK or duplicate spend: the
+ *                               losing writer has already built its drafts and
+ *                               paid for its rewrite before the INSERT fails.
+ *   this file                   reduces wasted work and keeps the ledger
+ *                               legible when the Durable Object is not bound.
+ *
+ * So: duplicate publication is impossible in every configuration; duplicate
+ * execution is impossible only with the Durable Object, and merely unlikely
+ * without it. index.js records which of the two was in force as
+ * notes.concurrency_guard, so the ledger never leaves that to be guessed.
  */
 
 export const WORKER = 'ufc-newsroom';

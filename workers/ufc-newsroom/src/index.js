@@ -15,23 +15,47 @@
  *
  * The fixes are structural, not tuning: phases are chosen from the run ledger
  * as well as the cron (see coordinator.mjs), a single coordinator runs every
- * phase in one invocation so no two writers can race, and a run that does
- * nothing says so in a row a human can read.
+ * phase in one invocation, and a run that does nothing says so in a row a
+ * human can read.
+ *
+ * On concurrency, precisely — earlier drafts of this file overclaimed it.
+ * Within one invocation there is one writer, by construction. Across
+ * invocations there are two different guards doing two different jobs:
+ *
+ *   Durable Object (lock.mjs, binding NEWSROOM_LOCK) serialises invocations.
+ *   Requests to one object are single-threaded, so read-then-write inside it
+ *   is atomic and a second run cannot start. This is what stops duplicate
+ *   Anthropic spend, which no database constraint can.
+ *
+ *   Unique indexes (ufc_news_items.fingerprint/.url, ufc_articles.slug) stop
+ *   duplicate ROWS unconditionally, including when the lock is unavailable.
+ *   They cannot stop duplicate WORK: a losing writer has already built its
+ *   drafts and paid for any rewrite before its INSERT is rejected.
+ *
+ * Without the binding the Worker falls back to the ledger's advisory check,
+ * which is a read-then-insert over two round trips and therefore racy. That
+ * fallback is recorded in the run row as concurrency_guard, so the ledger
+ * always says which guarantee was actually in force.
  *
  * Endpoints
  *   GET  /health      unauthenticated, no side effects, no model call
  *   POST /admin/run   ADMIN_TRIGGER_TOKEN required, same path as the cron
  *
  * Configuration
- *   vars:    SUPABASE_URL
- *   secrets: SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY (optional),
- *            ADMIN_TRIGGER_TOKEN, DISCORD_WEBHOOK_URL (optional)
+ *   vars:     SUPABASE_URL
+ *   secrets:  SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY (optional),
+ *             ADMIN_TRIGGER_TOKEN, DISCORD_WEBHOOK_URL (optional)
+ *   durable:  NEWSROOM_LOCK -> NewsroomLock (single-flight; see lock.mjs)
  */
 import { Supabase } from './supabase.mjs';
 import { planRun, shouldWriteAfterIngest, PHASES } from './coordinator.mjs';
 import { WORKER, findActiveRun, lastSuccessByPhase, openRun, closeRun } from './runlog.mjs';
-import { isConfigured as anthropicConfigured } from './anthropic.mjs';
-import { runIngest, runWrite, runRefresh, runSweep } from './phases.mjs';
+import { acquire as acquireLock, release as releaseLock } from './lock.mjs';
+import { runSources, runIngest, runWrite, runRefresh, runSweep, anthropicConfigured } from './phases.mjs';
+
+/* The Durable Object class must be exported from the entry module for the
+ * runtime to find it. It is the single-flight guard; see lock.mjs. */
+export { NewsroomLock } from './lock.mjs';
 
 const SERVICE = WORKER;
 const VERSION = 'v0.1.0';
@@ -127,13 +151,37 @@ export async function run(env, { cron = null, invoked = 'cron', force = [], now 
     return { status: 'misconfigured', error: e.message, phases: [] };
   }
 
-  const active = await findActiveRun(sb, now).catch(() => null);
-  if (active) {
-    console.log(`[${SERVICE}] SKIP: run ${active.id} started ${active.age_minutes}m ago is still going`);
-    health.last_status = 'skipped_locked';
-    return { status: 'skipped_locked', held_by: active.id, age_minutes: active.age_minutes, phases: [] };
+  /* Single-flight. The Durable Object is authoritative where it exists; the
+   * ledger check is the fallback and is honestly labelled as advisory. */
+  const lock = await acquireLock(env, { now }).catch((e) => ({ kind: 'none', acquired: false, reason: String(e?.message || e) }));
+  let guard = 'durable_object';
+  if (lock.kind === 'durable') {
+    if (!lock.acquired) {
+      console.log(`[${SERVICE}] SKIP: lock held by ${lock.holder} for ${lock.age_minutes}m`);
+      health.last_status = 'skipped_locked';
+      return { status: 'skipped_locked', concurrency_guard: guard, held_by: lock.holder, age_minutes: lock.age_minutes, phases: [] };
+    }
+    if (lock.stole) console.log(`[${SERVICE}] took over an expired lock; the previous run did not release`);
+  } else {
+    guard = 'advisory_ledger';
+    const active = await findActiveRun(sb, now).catch(() => null);
+    if (active) {
+      console.log(`[${SERVICE}] SKIP: run ${active.id} started ${active.age_minutes}m ago is still going`);
+      health.last_status = 'skipped_locked';
+      return { status: 'skipped_locked', concurrency_guard: guard, held_by: active.id, age_minutes: active.age_minutes, phases: [] };
+    }
   }
 
+  try {
+    return await runPhases(env, sb, { cron, invoked, force, now, guard });
+  } finally {
+    /* Always, including after a throw: a lock a dead run never released costs
+     * everyone else the full TTL. */
+    if (lock.kind === 'durable' && lock.acquired) await releaseLock(env, lock.token, { now });
+  }
+}
+
+async function runPhases(env, sb, { cron, invoked, force, now, guard }) {
   const lastSuccess = await lastSuccessByPhase(sb).catch(() => ({}));
   const { phases, reasons } = planRun({ cron, now, lastSuccessByPhase: lastSuccess, force });
 
@@ -141,7 +189,7 @@ export async function run(env, { cron = null, invoked = 'cron', force = [], now 
     console.log(`[${SERVICE}] nothing due (cron=${cron})`);
     health.last_status = 'idle';
     health.last_phases = [];
-    return { status: 'idle', phases: [], reasons };
+    return { status: 'idle', concurrency_guard: guard, phases: [], reasons };
   }
 
   const runId = await openRun(sb, { cron, invoked, phases, reasons }).catch(() => null);
@@ -153,9 +201,9 @@ export async function run(env, { cron = null, invoked = 'cron', force = [], now 
   for (const phase of phases) {
     try {
       if (phase === 'write') {
-        /* The single decision point for writing. Nothing else in this Worker
-         * may start a writer, which is what makes two racing writers
-         * impossible rather than merely unlikely. */
+        /* The single decision point for writing within this invocation.
+         * Nothing else here may start a writer; two CONCURRENT invocations are
+         * excluded by the lock above, not by this. */
         const decision = shouldWriteAfterIngest({
           insertedNew: counters.ingest?.inserted ?? 0,
           plannedPhases: phases.filter((p) => p !== 'write'),
@@ -168,7 +216,7 @@ export async function run(env, { cron = null, invoked = 'cron', force = [], now 
           continue;
         }
       }
-      const fn = { ingest: runIngest, write: runWrite, refresh: runRefresh, sweep: runSweep }[phase];
+      const fn = { sources: runSources, ingest: runIngest, write: runWrite, refresh: runRefresh, sweep: runSweep }[phase];
       counters[phase] = await fn(env, sb, { now });
       succeeded.push(phase);
     } catch (e) {
@@ -189,11 +237,14 @@ export async function run(env, { cron = null, invoked = 'cron', force = [], now 
     phase_reasons: reasons,
     counters,
     anthropic_configured: anthropicConfigured(env),
+    /* Which guarantee was actually in force for this run. A reader of the
+     * ledger should never have to infer it from the deployment. */
+    concurrency_guard: guard,
   };
   await closeRun(sb, runId, { status, notes, failures });
 
   health.last_status = status;
   health.last_phases = succeeded;
   console.log(`[${SERVICE}] END status=${status} ran=${succeeded.join(',') || 'none'}`);
-  return { status, run_id: runId, phases: succeeded, planned: phases, reasons, counters, failures };
+  return { status, run_id: runId, concurrency_guard: guard, phases: succeeded, planned: phases, reasons, counters, failures };
 }

@@ -36,25 +36,70 @@ import {
   isContenderSeries, formatDate, shortDate, dedupeEvents, loadFighterIndex, EXTERNAL_STORY_LABELS, titleCase,
   pctPrinted, numOrNull, daysBetween,
 } from './lib.mjs';
+import { callMessages, DEFAULT_MODEL } from './anthropic.mjs';
 
-/* --------------------------------------------------------------- args */
-const args = process.argv.slice(2);
-const flag = (name) => args.includes(name);
-const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 && args[i + 1] ? args[i + 1] : dflt; };
-const DRY = flag('--dry-run');
-const LLM = flag('--llm');
-const FORCE = flag('--force');   /* refresh preview/results rows even when the fact-block hash is unchanged (prose/template fixes) */
-const PRINT = flag('--print');   /* dump every created/refreshed article (body + bettor_angle) to stdout */
-const LIMIT = Number(opt('--limit', 0)) || 0;
-const EVENT_FILTER = opt('--event', '').toLowerCase();   /* results only: restrict to events whose name contains this */
+/* --------------------------------------------------------------- options
+ *
+ * Every one of these used to be a module-scope constant computed from
+ * process.argv at import time. That is correct for a process that parses its
+ * arguments once and exits, and wrong for a Worker: an isolate imports this
+ * module once and then serves many scheduled invocations, so a value fixed at
+ * import is fixed for the life of the isolate. It was also silently broken —
+ * the Worker set process.argv around the call, which cannot change constants
+ * that were already computed, so `--llm` never reached anything.
+ *
+ * So options are now an argument. The CLI parses argv and passes the result
+ * in; the Worker passes its own object. Nothing mutates process.argv, and the
+ * defaults below are exactly the previous no-flag CLI behaviour. */
 const TYPE_ALIASES = { preview: 'fight_preview', previews: 'fight_preview', fight_preview: 'fight_preview', results: 'results', result: 'results', external: 'external', card_change: 'card_change', cardchange: 'card_change' };
-const TYPES = new Set(opt('--types', 'preview,results,external,card_change').split(',').map((t) => TYPE_ALIASES[t.trim()]).filter(Boolean));
+const ALL_TYPES = 'preview,results,external,card_change';
+
+const parseTypes = (spec) => new Set(String(spec ?? ALL_TYPES).split(',').map((t) => TYPE_ALIASES[t.trim()]).filter(Boolean));
+
+/** Parse CLI flags into the options object `main` takes. Exported so the CLI
+ *  adapter at the bottom of this file is the ONLY place argv is read. */
+export function parseCliOptions(argv = []) {
+  const flag = (name) => argv.includes(name);
+  const opt = (name, dflt) => { const i = argv.indexOf(name); return i >= 0 && argv[i + 1] ? argv[i + 1] : dflt; };
+  return {
+    dry: flag('--dry-run'),
+    llm: flag('--llm'),
+    force: flag('--force'),   /* refresh preview/results rows even when the fact-block hash is unchanged (prose/template fixes) */
+    print: flag('--print'),   /* dump every created/refreshed article (body + bettor_angle) to stdout */
+    limit: Number(opt('--limit', 0)) || 0,
+    event: String(opt('--event', '')).toLowerCase(),   /* results only: restrict to events whose name contains this */
+    types: opt('--types', ALL_TYPES),
+  };
+}
+
+/**
+ * Normalise caller options into the shape the rest of this module uses.
+ *
+ * `now` is here so the current date is computed per invocation. It was
+ * `const TODAY = new Date()...` at module scope, which in a long-lived isolate
+ * means every article written after the first UTC midnight is filtered against
+ * yesterday: upcoming events silently include one that has already happened,
+ * and the newest completed card is not yet eligible for a results story.
+ */
+export function resolveOptions(options = {}) {
+  const now = options.now ?? Date.now();
+  return {
+    dry: Boolean(options.dry),
+    llm: Boolean(options.llm),
+    force: Boolean(options.force),
+    print: Boolean(options.print),
+    limit: Number(options.limit) || 0,
+    event: String(options.event || '').toLowerCase(),
+    types: options.types instanceof Set ? options.types : parseTypes(options.types),
+    now,
+    today: new Date(now).toISOString().slice(0, 10),
+  };
+}
 
 const FACT_VERSION = 2;
 const HASH_SALT = 'v2';                 /* bump -> every stored preview/results article regenerates once */
 const TEMPLATE_VERSION = 'template-2';
-const LLM_MODEL = 'claude-sonnet-5';
-const TODAY = new Date().toISOString().slice(0, 10);
+const LLM_MODEL = DEFAULT_MODEL;
 
 /* Depth targets (addendum §2) and the floor a story marked `depth.short` must still clear. */
 const DEPTH = {
@@ -684,9 +729,9 @@ function renderPreview(fb, slug) {
   return { headline: previewHeadline(fb), dek: previewDek(fb, slug), body: sections.filter(Boolean).join('\n\n') };
 }
 
-function generatePreviews(world) {
+function generatePreviews(world, today) {
   const upcoming = world.events
-    .filter((e) => e.event_date && e.event_date >= TODAY && !isContenderSeries(e.name))
+    .filter((e) => e.event_date && e.event_date >= today && !isContenderSeries(e.name))
     .map((e) => ({ e, bouts: world.boutsOfEvent(e.id).filter((b) => b.status === 'announced' || b.status === 'confirmed') }))
     .filter((x) => x.bouts.length)
     .sort((x, y) => x.e.event_date.localeCompare(y.e.event_date))
@@ -1010,10 +1055,10 @@ function postMortemProse(fb, slug) {
   return paras.join('\n\n');
 }
 
-function generateResults(world) {
+function generateResults(world, today, eventFilter = '') {
   const done = world.events
-    .filter((e) => e.event_date && e.event_date <= TODAY && !isContenderSeries(e.name))
-    .filter((e) => !EVENT_FILTER || e.name.toLowerCase().includes(EVENT_FILTER))
+    .filter((e) => e.event_date && e.event_date <= today && !isContenderSeries(e.name))
+    .filter((e) => !eventFilter || e.name.toLowerCase().includes(eventFilter))
     .filter((e) => world.boutsOfEvent(e.id).some((b) => world.resultsByBout.has(b.id)))
     .sort((x, y) => y.event_date.localeCompare(x.event_date))
     .slice(0, 4);
@@ -1042,11 +1087,11 @@ function titlePhrase(title, maxWords = 10) {
   return `${words.slice(0, maxWords).join(' ').replace(/[,;:\-–—]$/, '')}…`;
 }
 
-function nextBoutFor(world, fid) {
+function nextBoutFor(world, fid, today) {
   const cands = world.bouts
     .filter((b) => (b.fighter_a_id === fid || b.fighter_b_id === fid) && (b.status === 'announced' || b.status === 'confirmed'))
     .map((b) => ({ b, e: world.eventById.get(world.canon.get(b.event_id)) }))
-    .filter((x) => x.e && x.e.event_date && x.e.event_date >= TODAY)
+    .filter((x) => x.e && x.e.event_date && x.e.event_date >= today)
     .sort((x, y) => x.e.event_date.localeCompare(y.e.event_date));
   if (!cands.length) return null;
   const { b, e } = cands[0];
@@ -1078,8 +1123,8 @@ function externalAngle(fb) {
   };
 }
 
-async function generateExternal(world, sb) {
-  const since = new Date(Date.now() - 48 * 3600e3).toISOString();
+async function generateExternal(world, sb, today, now) {
+  const since = new Date(now - 48 * 3600e3).toISOString();
   const items = await sb.select('ufc_news_items', `select=id,source_id,url,title,published_at,summary,taxonomy,fighter_ids,bout_id,event_id,captured_at&or=(published_at.gte.${since},and(published_at.is.null,captured_at.gte.${since}))&order=published_at.desc.nullslast`);
   const sources = new Map((await sb.select('ufc_news_sources', 'select=id,name,url')).map((s) => [s.id, s]));
   const out = [];
@@ -1090,8 +1135,8 @@ async function generateExternal(world, sb) {
     if (!it.fighter_ids || !it.fighter_ids.length) continue;   /* nothing of our own to add -> no story */
     const src = sources.get(it.source_id);
     const fighters = it.fighter_ids.slice(0, 3).map((fid) => {
-      const f = fighterFacts(world, fid, TODAY);
-      return f ? { fighter_id: f.fighter_id, name: f.name, slug: f.slug, record: recStr(f), next_bout: nextBoutFor(world, fid), last: f.archive.last[0] || null } : null;
+      const f = fighterFacts(world, fid, today);
+      return f ? { fighter_id: f.fighter_id, name: f.name, slug: f.slug, record: recStr(f), next_bout: nextBoutFor(world, fid, today), last: f.archive.last[0] || null } : null;
     }).filter(Boolean);
     if (!fighters.length) continue;
     let bout = null;
@@ -1165,10 +1210,10 @@ function renderExternal(fb, slug) {
 
 /* ---------------------------------------------------------- card_change */
 
-function generateCardChanges(world) {
+function generateCardChanges(world, today) {
   const out = [];
   for (const e of world.events) {
-    if (!e.event_date || e.event_date < TODAY || isContenderSeries(e.name)) continue;
+    if (!e.event_date || e.event_date < today || isContenderSeries(e.name)) continue;
     for (const bout of world.boutsOfEvent(e.id)) {
       if (bout.status !== 'cancelled' && bout.status !== 'replaced') continue;
       const a = fighterFacts(world, bout.fighter_a_id, e.event_date);
@@ -1366,30 +1411,24 @@ function validateRewrite(draft, out, fb) {
   return null;
 }
 
-/* Raw Messages API on purpose: the news scripts are dependency-free (no
- * package.json at the repo root, CI runs them without npm install). Current
- * Sonnet-class id, adaptive thinking, refusal handled. */
+/* The transport lives in ./anthropic.mjs — one implementation, shared with the
+ * editorial desk, so a fix to refusal or truncation handling cannot land in a
+ * copy that production does not run. The prompt, the model choice and the
+ * accept/reject rules stay here, because a copy edit that must preserve every
+ * number is not the same job as the desk's restructuring pass. */
 async function llmRewrite(apiKey, draft, fb) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: LLM_MODEL,
-      max_tokens: 16000,
-      thinking: { type: 'adaptive' },
-      system: LLM_SYSTEM,
-      messages: [{ role: 'user', content: `FACT BLOCK:\n${JSON.stringify(fb, null, 1)}\n\nDRAFT:\n${draft}` }],
-    }),
+  const { text } = await callMessages(apiKey, {
+    model: LLM_MODEL,
+    maxTokens: 16000,
+    thinking: { type: 'adaptive' },
+    system: LLM_SYSTEM,
+    prompt: `FACT BLOCK:\n${JSON.stringify(fb, null, 1)}\n\nDRAFT:\n${draft}`,
   });
-  const json = await res.json();
-  if (!res.ok) throw new Error(`anthropic ${res.status}: ${JSON.stringify(json).slice(0, 300)}`);
-  if (json.stop_reason === 'refusal') throw new Error(`anthropic: refusal${json.stop_details && json.stop_details.category ? ` (${json.stop_details.category})` : ''}`);
-  if (json.stop_reason === 'max_tokens') throw new Error('anthropic: output truncated at max_tokens');
-  return (json.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  return text;
 }
 
-async function maybeRewrite(env, art, body, model) {
-  if (!LLM) return { body, model };
+async function maybeRewrite(env, art, body, model, opts) {
+  if (!opts.llm) return { body, model };
   if (!env.ANTHROPIC_API_KEY) { console.log('    llm: ANTHROPIC_API_KEY not set, template kept'); return { body, model }; }
   try {
     const out = await llmRewrite(env.ANTHROPIC_API_KEY, body, art.fact_block);
@@ -1408,7 +1447,7 @@ function printArticle(art, tag) {
   console.log(`\n${'='.repeat(78)}\n[${tag}] ${art.story_type} · ${art.fact_block.story_class} · ${art.slug}\n# ${art.headline}\n_${art.dek}_\n\n${art.body_md}\n\n--- bettor_angle ---\n${JSON.stringify(art.fact_block.bettor_angle, null, 2)}\n--- market_watch ---\n${JSON.stringify(art.fact_block.market_watch)}\n${'='.repeat(78)}\n`);
 }
 
-async function persist(sb, world, art, env, stats, batch) {
+async function persist(sb, world, art, env, stats, batch, opts) {
   const heroNote = enforceHeroCredit(art);
   const hash = factHash(art.fact_block, { salt: HASH_SALT });
   const problems = gateArticle(art, world, batch);
@@ -1428,14 +1467,14 @@ async function persist(sb, world, art, env, stats, batch) {
   if (existing) {
     const refreshable = art.story_type === 'results' || art.story_type === 'fight_preview';
     const oldHash = (Array.isArray(existing.sources) ? existing.sources : []).find((s) => s && s.kind === 'fact_block');
-    if (!refreshable || (!FORCE && oldHash && oldHash.hash === hash)) { stats.unchanged += 1; return; }
+    if (!refreshable || (!opts.force && oldHash && oldHash.hash === hash)) { stats.unchanged += 1; return; }
     stats.refreshed += 1;
     if (problems.length) stats.review += 1;
     console.log(`  ~ refresh ${art.story_type.padEnd(13)} ${cls.padEnd(19)} ${depthTag.padEnd(11)} ${art.slug}${note}`);
-    if (PRINT) printArticle(art, 'refresh');
-    if (DRY) return;
+    if (opts.print) printArticle(art, 'refresh');
+    if (opts.dry) return;
     let body = art.body_md; let model = TEMPLATE_VERSION;
-    ({ body, model } = await maybeRewrite(env, art, body, model));
+    ({ body, model } = await maybeRewrite(env, art, body, model, opts));
     const patch = {
       headline: art.headline, dek: art.dek, body_md: body, fact_block: art.fact_block, sources, model_version: model,
       fighter_ids: art.fighter_ids, bout_id: art.bout_id, event_id: art.event_id, hero_image_ref: art.hero_image_ref, hero_credit: art.hero_credit,
@@ -1452,10 +1491,10 @@ async function persist(sb, world, art, env, stats, batch) {
   stats.created += 1;
   if (problems.length) stats.review += 1;
   console.log(`  + ${art.story_type.padEnd(13)} ${art.status.padEnd(9)} ${cls.padEnd(19)} ${depthTag.padEnd(11)} ${art.slug}${note}`);
-  if (PRINT) printArticle(art, 'create');
-  if (DRY) return;
+  if (opts.print) printArticle(art, 'create');
+  if (opts.dry) return;
   let body = art.body_md; let model = TEMPLATE_VERSION;
-  ({ body, model } = await maybeRewrite(env, art, body, model));
+  ({ body, model } = await maybeRewrite(env, art, body, model, opts));
   const now = new Date().toISOString();
   const row = {
     slug: art.slug, headline: art.headline, dek: art.dek, body_md: body, story_type: art.story_type, status: art.status,
@@ -1482,38 +1521,45 @@ function wordTable(words) {
 /* `injectedEnv` lets the ufc-newsroom Worker supply Cloudflare bindings in a
  * runtime with no .env and no filesystem. Passing nothing is the CLI path,
  * unchanged. */
-export async function main(injectedEnv) {
+export async function main(injectedEnv, options = {}) {
+  const opts = resolveOptions(options);
   const env = injectedEnv || loadEnv();
   const sb = new Supabase(env);
   const world = await loadWorld(sb);
   /* review_reason lets a refresh tell a gate-held row from an editor-held one. */
   for (const r of await sb.select('ufc_articles', 'select=slug,review_reason:fact_block->>review_reason&status=eq.review')) { const a = world.articles.get(r.slug); if (a) a.review_reason = r.review_reason || null; }
   console.log(`world: ${world.events.length} events (deduped), ${world.bouts.length} bouts, ${world.resultsByBout.size} results, ${world.statsByBout.size} bouts with round stats, ${world.index.fighters.length} fighters, ${world.imageByFighter.size} portraits, ${world.articles.size} existing articles`);
-  if (LLM && !env.ANTHROPIC_API_KEY) console.log('--llm requested but ANTHROPIC_API_KEY is not set: running template mode');
+  console.log(`options: today=${opts.today} llm=${opts.llm} dry=${opts.dry} force=${opts.force} limit=${opts.limit || 'none'} types=${[...opts.types].join(',')}`);
+  if (opts.llm && !env.ANTHROPIC_API_KEY) console.log('llm requested but ANTHROPIC_API_KEY is not set: running template mode');
 
   const batches = [];
-  if (TYPES.has('fight_preview')) {
-    const r = generatePreviews(world);
+  if (opts.types.has('fight_preview')) {
+    const r = generatePreviews(world, opts.today);
     console.log(`previews: ${r.events.length ? r.events.map((e) => `${e.name} (${e.date}, ${e.bouts} bouts)`).join('; ') : 'no upcoming card with announced bouts'}`);
     batches.push(r.articles);
   }
-  if (TYPES.has('results')) {
-    const r = generateResults(world);
+  if (opts.types.has('results')) {
+    const r = generateResults(world, opts.today, opts.event);
     console.log(`results: ${r.events.length ? r.events.map((e) => `${e.name} (${e.date})`).join('; ') : 'no completed event with results'}`);
     batches.push(r.articles);
   }
-  if (TYPES.has('external')) batches.push((await generateExternal(world, sb)).articles);
-  if (TYPES.has('card_change')) batches.push(generateCardChanges(world).articles);
+  if (opts.types.has('external')) batches.push((await generateExternal(world, sb, opts.today, opts.now)).articles);
+  if (opts.types.has('card_change')) batches.push(generateCardChanges(world, opts.today).articles);
 
   const stats = { created: 0, refreshed: 0, unchanged: 0, review: 0, words: {} };
   const batch = { slugs: new Set(), headlines: new Map() };
   for (const list of batches) {
-    const slice = LIMIT ? list.slice(0, LIMIT) : list;
-    for (const art of slice) await persist(sb, world, art, env, stats, batch);
+    const slice = opts.limit ? list.slice(0, opts.limit) : list;
+    for (const art of slice) await persist(sb, world, art, env, stats, batch, opts);
   }
-  console.log(`\n${DRY ? '[dry-run] ' : ''}created=${stats.created} refreshed=${stats.refreshed} unchanged=${stats.unchanged} held_for_review=${stats.review}${wordTable(stats.words)}`);
+  console.log(`\n${opts.dry ? '[dry-run] ' : ''}created=${stats.created} refreshed=${stats.refreshed} unchanged=${stats.unchanged} held_for_review=${stats.review}${wordTable(stats.words)}`);
+  /* Returned so a caller that is not a terminal — the Worker — can record what
+   * happened without scraping stdout. The GitHub workflow grepped `inserted=N`
+   * out of a log line, and when the line moved the gate silently read zero. */
+  return { created: stats.created, refreshed: stats.refreshed, unchanged: stats.unchanged, held_for_review: stats.review, llm: opts.llm && Boolean(env.ANTHROPIC_API_KEY) };
 }
 
-/* CLI only. Importing this module must never write an article. */
+/* CLI adapter. This is the ONLY place process.argv is read, and importing this
+ * module must never write an article. */
 const isCli = typeof process !== 'undefined' && process.argv?.[1]?.endsWith('write_articles.mjs');
-if (isCli) main().catch((e) => { console.error(e); process.exit(1); });
+if (isCli) main(undefined, parseCliOptions(process.argv.slice(2))).catch((e) => { console.error(e); process.exit(1); });

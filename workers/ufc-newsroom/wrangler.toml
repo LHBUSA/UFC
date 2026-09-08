@@ -15,6 +15,25 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
 
+# Single-flight guard. One Durable Object, id "newsroom", serialises
+# invocations so read-then-write inside it is atomic — which is what makes two
+# concurrent runs unconstructible rather than unlikely.
+#
+# It is here rather than in the database on purpose. The run ledger's lock is a
+# SELECT followed by an INSERT over PostgREST with no transaction between them,
+# and making that atomic would need a lease table or a partial unique index on
+# ufc_ingest_runs — a production migration bought purely to strengthen a
+# sentence. This needs no schema change at all, and it closes the one hole the
+# unique indexes cannot: two invocations both paying Anthropic for the same
+# rewrite before the losing INSERT is rejected. See src/lock.mjs.
+[[durable_objects.bindings]]
+name = "NEWSROOM_LOCK"
+class_name = "NewsroomLock"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["NewsroomLock"]
+
 # Cadence. Three triggers, and the coordinator may add overdue phases to any of
 # them — see src/coordinator.mjs.
 #
@@ -30,9 +49,9 @@ SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
 # fires next. Cadence is a floor on freshness rather than a hope about timers.
 [triggers]
 crons = [
-  "*/30 * * * *",   # source and news ingest; writer follows a meaningful ingest
+  "*/30 * * * *",   # news ingest; writer follows a meaningful ingest
   "15 */2 * * *",   # two-hourly baseline article refresh
-  "20 10 * * *",    # daily editorial quality sweep
+  "20 10 * * *",    # RSS source verification, then ingest, then the editorial desk
 ]
 
 # Retained logs. Without this there is no record that a cron ever fired, which
@@ -44,7 +63,9 @@ head_sampling_rate = 1
 # Secrets (wrangler secret put --name ufc-newsroom):
 #   SUPABASE_SERVICE_ROLE_KEY  required; database access
 #   ADMIN_TRIGGER_TOKEN        required to expose POST /admin/run at all (404 without it)
-#   ANTHROPIC_API_KEY          optional; enables editorial enhancement only
+#   ANTHROPIC_API_KEY          optional; enables the writer's LLM rewrite AND the
+#                              daily editorial desk. Without it both fall back to
+#                              deterministic output and publication is unaffected.
 #   DISCORD_WEBHOOK_URL        optional; alerts
 #
 # No GitHub Copilot CLI, no GITHUB_TOKEN, and no npm install at run time.

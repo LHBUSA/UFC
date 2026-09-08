@@ -10,7 +10,7 @@ const NOW = Date.parse('2026-09-08T14:00:00Z');
 const ago = (min) => new Date(NOW - min * 60000).toISOString();
 /* A ledger where everything just ran, so nothing is overdue and each test
    only exercises the one thing it is about. */
-const fresh = { ingest: ago(1), write: ago(1), refresh: ago(1), sweep: ago(1) };
+const fresh = { sources: ago(1), ingest: ago(1), write: ago(1), refresh: ago(1), sweep: ago(1) };
 
 test('the 30-minute cron runs ingest', () => {
   const { phases, reasons } = planRun({ cron: '*/30 * * * *', now: NOW, lastSuccessByPhase: fresh });
@@ -25,9 +25,11 @@ test('the two-hour cron runs the baseline refresh', () => {
   assert.ok(!phases.includes('sweep'), 'the daily sweep is not a two-hourly job');
 });
 
-test('the daily cron runs the editorial sweep', () => {
+test('the daily cron verifies sources and runs the editorial sweep', () => {
   const { phases } = planRun({ cron: '20 10 * * *', now: NOW, lastSuccessByPhase: fresh });
   assert.ok(phases.includes('sweep'));
+  assert.ok(phases.includes('sources'), 'feeds move; a source that is never re-verified stays enabled and silent');
+  assert.ok(phases.indexOf('sources') < phases.indexOf('ingest'), 'and they are reconciled before ingest reads them');
   assert.ok(!phases.includes('refresh'), 'sweep and refresh are different jobs');
 });
 
@@ -46,7 +48,7 @@ test('phases always execute in dependency order', () => {
   const { phases } = planRun({ cron: '20 10 * * *', now: NOW, lastSuccessByPhase: {} });
   const idx = phases.map((p) => PHASES.indexOf(p));
   assert.deepEqual(idx, [...idx].sort((a, b) => a - b),
-    'ingest before write before refresh before sweep');
+    'sources before ingest before write before refresh before sweep');
 });
 
 /* ---- the regression the whole module exists for ------------------------- */
@@ -56,7 +58,7 @@ test('a dropped slot is made up on the next invocation, whatever woke it', () =>
      selection keyed on the exact cron string, that run skipped news and
      reported success, and the missed slot was never made up. Here the
      every-30-minutes cron picks up everything that has gone overdue. */
-  const stale = { ingest: ago(300), write: ago(400), refresh: ago(700), sweep: ago(3000) };
+  const stale = { sources: ago(1), ingest: ago(300), write: ago(400), refresh: ago(700), sweep: ago(3000) };
   const { phases, reasons } = planRun({ cron: '*/30 * * * *', now: NOW, lastSuccessByPhase: stale });
   assert.deepEqual(phases, ['ingest', 'write', 'refresh', 'sweep']);
   assert.match(reasons.refresh, /catch-up/);
@@ -65,14 +67,16 @@ test('a dropped slot is made up on the next invocation, whatever woke it', () =>
 
 test('a phase that has never run is overdue', () => {
   const { phases, reasons } = planRun({ cron: '*/30 * * * *', now: NOW, lastSuccessByPhase: {} });
-  assert.deepEqual(phases, ['ingest', 'write', 'refresh', 'sweep']);
+  assert.deepEqual(phases, ['sources', 'ingest', 'write', 'refresh', 'sweep']);
   assert.match(reasons.sweep, /no recorded success/);
+  assert.match(reasons.sources, /no recorded success/,
+    'a newsroom that has never verified a feed should not wait a day to start');
 });
 
 test('an on-time schedule never triggers catch-up', () => {
   /* Each max-age must exceed its cadence, or every run would drag in every
      phase and the cadence would mean nothing. */
-  for (const [phase, cadence] of [['ingest', 30], ['refresh', 120], ['sweep', 1440]]) {
+  for (const [phase, cadence] of [['ingest', 30], ['refresh', 120], ['sweep', 1440], ['sources', 1440]]) {
     assert.ok(MAX_AGE_MINUTES[phase] > cadence,
       `${phase} max age ${MAX_AGE_MINUTES[phase]}m must exceed its ${cadence}m cadence`);
     const { phases } = planRun({ cron: '*/30 * * * *', now: NOW, lastSuccessByPhase: { ...fresh, [phase]: ago(cadence) } });
@@ -87,6 +91,8 @@ test('an unknown cron still runs whatever is overdue rather than nothing', () =>
   assert.deepEqual(phases, [], 'nothing overdue, so nothing runs');
   const stale = planRun({ cron: '0 0 31 2 *', now: NOW, lastSuccessByPhase: { ...fresh, sweep: ago(5000) } });
   assert.deepEqual(stale.phases, ['sweep']);
+  const noSources = planRun({ cron: '0 0 31 2 *', now: NOW, lastSuccessByPhase: { ...fresh, sources: ago(5000) } });
+  assert.deepEqual(noSources.phases, ['sources'], 'overdue source verification is picked up by any trigger too');
 });
 
 test('every declared cron maps to phases, and every phase has a max age', () => {
