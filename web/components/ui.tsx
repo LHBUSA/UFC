@@ -189,7 +189,7 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState
     </Link>
   );
 }
-export function CardSegments({ bouts, e, imgs, roundCoverage, markets }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }>; markets?: Map<string, BoutMarket> }) {
+export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolved }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }>; markets?: Map<string, BoutMarket>; unresolved?: Set<string> }) {
   const order = ["main", "prelim", "early", null] as const;
   const groups = order.map((p) => ({ p, rows: bouts.filter((b) => (b.card_position || null) === p) })).filter((g) => g.rows.length);
   const mainId = bouts[0]?.id;
@@ -199,7 +199,7 @@ export function CardSegments({ bouts, e, imgs, roundCoverage, markets }: { bouts
         <section className="segment" key={String(g.p)}>
           <h3>{g.p ? cardPositionLabel(g.p) : e.card_status === "complete" ? "Results" : "Announced bouts"} <small>{g.rows.length} bouts</small></h3>
           <div className="bouts">
-            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} market={markets?.get(b.id)} marketState={markets ? marketStateFor(markets.get(b.id), { eventDate: e.event_date, hasResult: Boolean(b.result) }) : undefined} />)}
+            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} market={markets?.get(b.id)} marketState={markets ? marketStateFor(markets.get(b.id), { eventDate: e.event_date, hasResult: Boolean(b.result), unresolved: unresolved?.has(b.id) }) : undefined} />)}
           </div>
         </section>
       ))}

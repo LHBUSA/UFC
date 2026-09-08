@@ -32,6 +32,7 @@ export type MarketState =
   | "available"
   | "partial"
   | "not_posted"
+  | "unresolved"
   | "unavailable"
   | "not_configured";
 
@@ -39,6 +40,10 @@ export const MARKET_STATE_COPY: Record<MarketState, { label: string; body: strin
   available: { label: "Market available", body: "Prices from the books currently posting this bout." },
   partial: { label: "Market partial", body: "Only one corner is currently priced by the books we read." },
   not_posted: { label: "Market not yet posted", body: "No book we read has posted a price for this bout yet." },
+  unresolved: {
+    label: "Market not matched",
+    body: "Books are pricing this bout, but the provider names it in a way we could not match to our records with certainty, so no price is shown. A price is never attached on a guess.",
+  },
   unavailable: { label: "Market data unavailable", body: "No market observation could be sourced for this bout." },
   not_configured: { label: "Market data not configured", body: "The market provider is not connected in this environment. No prices are estimated in its absence." },
 };
@@ -71,6 +76,56 @@ export async function marketProviderLive(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/* Bouts the provider is pricing but we could not attach a price to.
+ *
+ * This exists to stop one true sentence being used where a different true
+ * sentence is meant. "No book has posted a price" and "books have posted a
+ * price we could not match" are different facts with different fixes - the
+ * first is waiting, the second is an alias someone has to add - and showing
+ * the first for the second quietly hides our own failure behind the books'.
+ *
+ * The name comparison here decides WHICH SENTENCE TO SHOW and nothing else.
+ * It never selects, attaches or displays a price, so it is allowed to be
+ * approximate in a way ingest-time resolution is not. A false positive costs
+ * a slightly wrong caption on a bout that has no odds either way.
+ */
+const normalise = (v: string | null | undefined) =>
+  String(v || "")
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+export async function unresolvedBouts(
+  bouts: Array<{ id: string; a: string; b: string }>,
+  eventDate: string | null,
+): Promise<Set<string>> {
+  const out = new Set<string>();
+  if (!marketConfigured() || !bouts.length || !eventDate) return out;
+
+  const from = new Date(`${eventDate}T00:00:00Z`);
+  const lo = new Date(from.getTime() - 2 * 86400000).toISOString();
+  const hi = new Date(from.getTime() + 2 * 86400000).toISOString();
+  const listedRows = await rows<{ home_team: string | null; away_team: string | null }>(
+    `ufc_market_unmatched?select=home_team,away_team&resolved=is.false&commence_time=gte.${lo}&commence_time=lte.${hi}`,
+  );
+  if (!listedRows.length) return out;
+
+  const listed = listedRows.map((r) => [normalise(r.home_team), normalise(r.away_team)] as const);
+  for (const b of bouts) {
+    const a = normalise(b.a);
+    const c = normalise(b.b);
+    /* Both corners must appear in the same unmatched event, for the same
+     * reason bout matching requires both: one surname in common is a
+     * coincidence, two names in one bout is the bout. */
+    const hit = listed.some(([h, w]) => {
+      const pair = `${h} ${w}`;
+      const has = (n: string) => Boolean(n) && (pair.includes(n) || n.split(" ").every((t) => t.length > 2 && pair.includes(t)));
+      return has(a) && has(c);
+    });
+    if (hit) out.add(b.id);
+  }
+  return out;
 }
 
 export type Observation = {
@@ -172,6 +227,12 @@ export function ageInMinutes(iso: string | null | undefined, now = Date.now()): 
   return Math.max(0, Math.round((now - t) / 60000));
 }
 
+/** Whether an observation is too old to be presented as the current market. */
+export function isStale(observedAt: string | null | undefined, now = Date.now()): boolean {
+  const age = ageInMinutes(observedAt, now);
+  return age !== null && age > STALE_AFTER_MINUTES;
+}
+
 /** "14 minutes ago", "3 hours ago", "2 days ago" - no library, no drift. */
 export function describeAge(minutes: number | null): string {
   if (minutes === null) return "at an unknown time";
@@ -200,7 +261,11 @@ function consensusOf(rows: Observation[]): number | null {
   return med === null ? null : probabilityToAmerican(med);
 }
 
-function sideFrom(obs: Observation[], fighterId: string): SidePrices | null {
+/* Exported as a test seam. The run-bucketing rules it encodes - which books
+ * count as current, and what may be compared against what - are the ones most
+ * likely to go quietly wrong, and they are unreachable through getMarketsFor
+ * without a live database. */
+export function sideFrom(obs: Observation[], fighterId: string): SidePrices | null {
   const mine = obs.filter((o) => o.outcome_fighter_id === fighterId);
   if (!mine.length) return null;
 
@@ -358,6 +423,7 @@ export async function getMarketsFor(
       null,
     );
     const ageMinutes = ageInMinutes(lastUpdated);
+    const stale = isStale(lastUpdated);
     out.set(id, {
       boutId: id,
       /* Both corners priced is a usable market. One corner is partial and is
@@ -367,7 +433,7 @@ export async function getMarketsFor(
       a, b, lastUpdated, sourceLastUpdate,
       /* Staleness describes the observation, not the bout: the prices below
        * are still the real last-known ones and are shown either way. */
-      stale: ageMinutes !== null && ageMinutes > STALE_AFTER_MINUTES,
+      stale,
       ageMinutes,
       bookCount: books.size,
     });
@@ -381,7 +447,7 @@ export async function getMarketsFor(
  */
 export function marketStateFor(
   market: BoutMarket | undefined,
-  opts: { eventDate: string | null; hasResult: boolean; providerLive?: boolean },
+  opts: { eventDate: string | null; hasResult: boolean; providerLive?: boolean; unresolved?: boolean },
 ): MarketState {
   if (!marketConfigured()) return "not_configured";
   /* Nothing has ever been ingested, so this is not a bout without a price, it
@@ -390,6 +456,10 @@ export function marketStateFor(
   if (market) return market.state;
   if (opts.hasResult) return "unavailable";
   if (opts.eventDate && new Date(`${opts.eventDate}T00:00:00Z`).getTime() < Date.now()) return "unavailable";
+  /* Checked before not-posted, because a bout the books ARE pricing must
+   * never be described as one nobody has priced. Our failure to match is
+   * ours to admit, not something to attribute to the books. */
+  if (opts.unresolved) return "unresolved";
   return "not_posted";
 }
 

@@ -17,7 +17,7 @@ import { daysUntil, fmtDate, locationLine, eventBrand, eventStatusLabel, fmtReco
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { SITE } from "@/lib/site";
 import { getRoundCoverageFor } from "@/lib/roundIndex";
-import { getMarketsFor, marketProviderLive } from "@/lib/market";
+import { getMarketsFor, marketProviderLive, unresolvedBouts } from "@/lib/market";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 
 export const revalidate = 300;
@@ -64,6 +64,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const marketMap = done || !providerLive
     ? new Map()
     : await getMarketsFor(bouts.map((b) => b.id), new Map(bouts.map((b) => [b.id, { a: b.fighter_a.id, b: b.fighter_b.id }])));
+  /* Bouts the books are pricing that we could not attach. Only meaningful on
+   * a card that has not happened, for the same reason the prices are. */
+  const unresolved = done || !providerLive
+    ? new Set<string>()
+    : await unresolvedBouts(bouts.map((b) => ({ id: b.id, a: b.fighter_a.name, b: b.fighter_b.name })), e.event_date);
   const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
   const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
   const isCurrent = !done && nearby[0]?.id === e.id;
@@ -109,7 +114,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       {bouts.length ? (
         <>
-          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={providerLive && !done ? marketMap : undefined} />
+          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={providerLive && !done ? marketMap : undefined} unresolved={unresolved} />
           {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} />)}</div></section>}
         </>
       ) : historical ? (

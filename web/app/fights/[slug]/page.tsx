@@ -10,7 +10,7 @@ import { DnaMatchup } from "@/components/dna";
 import { resolveFight } from "@/lib/resolve";
 import { JsonLd, ProLock, TaleOfTheTape, Breadcrumbs, Portrait, Credit, BoutRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
-import { getMarketsFor, marketProviderLive, marketStateFor } from "@/lib/market";
+import { getMarketsFor, marketProviderLive, marketStateFor, unresolvedBouts } from "@/lib/market";
 import { MarketSection } from "@/components/Market";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, fmtDate, fmtRecord, fmtTime, METHOD_LABEL, weightClassLabel, totals, pct, archiveSummary, winnerOf, loserOf, daysUntil, locationLine, plural, METHOD_SHORT, eventBrand } from "@/lib/format";
@@ -61,12 +61,16 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
    * the client component, which only owns which round is selected. */
   /* Market is an independent layer: fetched separately, rendered in its own
    * section, and never mixed into Fight DNA or the round analysis. */
-  const [markets, providerLive] = await Promise.all([
+  const [markets, providerLive, unresolved] = await Promise.all([
     getMarketsFor([b.id], new Map([[b.id, { a: b.fighter_a.id, b: b.fighter_b.id }]])),
     marketProviderLive(),
+    unresolvedBouts([{ id: b.id, a: b.fighter_a.name, b: b.fighter_b.name }], e.event_date),
   ]);
   const market = markets.get(b.id);
-  const marketState = marketStateFor(market, { eventDate: e.event_date, hasResult: Boolean(r), providerLive });
+  const marketState = marketStateFor(market, {
+    eventDate: e.event_date, hasResult: Boolean(r), providerLive,
+    unresolved: unresolved.has(b.id),
+  });
 
   const rbaRounds = buildRounds(rounds, b.fighter_a.id, b.fighter_b.id, r?.round ?? null, r?.time_sec ?? null);
   const rbaState = analysisState({

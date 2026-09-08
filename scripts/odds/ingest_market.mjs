@@ -63,7 +63,64 @@ const SOURCE = opt('--source');
 
 const H = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'content-type': 'application/json', accept: 'application/json' };
 
+/**
+ * The ON CONFLICT target, which must equal ufc_market_obs_unique exactly.
+ *
+ * Exported so a test can assert the two never drift apart. If a column is
+ * added to the constraint and not to this list, PostgREST silently stops
+ * deduplicating on it; if one is named here that the constraint lacks, every
+ * insert errors. Neither failure is visible until the second ingest.
+ *
+ * observed_at is deliberately ABSENT: it records when we looked, so including
+ * it would make every run's rows unique and defeat the whole mechanism.
+ */
+export const OBS_CONFLICT_COLUMNS = [
+  'bout_id', 'bookmaker_key', 'market_key', 'outcome_name', 'source_last_update', 'price',
+];
+export const OBS_CONFLICT = OBS_CONFLICT_COLUMNS.join(',');
+
+/** The identity a row collides on. Two rows with the same key are one fact. */
+export const observationKey = (r) => OBS_CONFLICT_COLUMNS.map((c) => String(r[c] ?? '')).join('|');
+
 const log = (...a) => console.log(...a);
+
+/**
+ * The observed_at that a replay must reuse.
+ *
+ * A saved payload is ONE provider fetch. If a replay stamps newly resolvable
+ * rows with now(), that single fetch ends up split across two timestamps, the
+ * read layer buckets those as two runs, and the difference between them
+ * becomes reported line movement - a second market reading that never
+ * happened, invented by re-processing the first one.
+ *
+ * So the timestamp is read back from the rows the original ingest already
+ * wrote for these very source events, not taken from the clock and not from
+ * the payload's own fetched_at, which differs from the insert time by however
+ * long the matching took. Exactly one distinct value is required: zero means
+ * nothing from this snapshot has ever landed, and more than one means the
+ * chronology is already ambiguous and this script must not guess which
+ * reading the new rows belong to.
+ */
+async function snapshotObservedAt(sourceEventIds) {
+  const seen = new Set();
+  const ids = [...new Set(sourceEventIds)];
+  for (let i = 0; i < ids.length; i += 50) {
+    const slice = ids.slice(i, i + 50).map((x) => `"${x}"`).join(',');
+    const rows = await all(`ufc_market_observations?select=observed_at&source_event_id=in.(${slice})`);
+    for (const r of rows) seen.add(r.observed_at);
+  }
+  return [...seen];
+}
+
+/** Exact row count, so a run reports what landed rather than what was sent. */
+async function countObservations() {
+  const r = await fetch(`${SUPA}/rest/v1/ufc_market_observations?select=id`, {
+    headers: { ...H, Prefer: 'count=exact', Range: '0-0' },
+  });
+  if (!r.ok) return 0;
+  const n = Number((r.headers.get('content-range') || '/0').split('/')[1]);
+  return Number.isFinite(n) ? n : 0;
+}
 
 async function rest(pathq, init = {}) {
   const r = await fetch(`${SUPA}/rest/v1/${pathq}`, { ...init, headers: { ...H, ...(init.headers || {}) } });
@@ -195,8 +252,15 @@ const main = async () => {
   if (!SUPA || !KEY) { console.error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY missing'); process.exit(2); }
 
   const run = { sport_key: SPORT, markets: MARKETS, source_events: 0, matched_bouts: 0, unmatched_events: 0, observations_written: 0, books_seen: 0 };
+  /* Offered is not a column and this task adds no DDL, so it rides in the
+   * existing notes jsonb. Offered minus written is the idempotency working. */
+  let offered = 0;
   let runId = null;
-  if (!DRY) {
+  /* A replay re-processes a fetch that already has a ledger entry. Opening a
+   * second successful run for it would double-count the snapshot in the audit
+   * trail and make one provider call look like two. The original entry, and
+   * any failure against it, stay exactly as they are. */
+  if (!DRY && !SOURCE) {
     const created = await rest('ufc_market_runs', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify([{ sport_key: SPORT, markets: MARKETS }]) });
     runId = created?.[0]?.id ?? null;
   }
@@ -206,11 +270,13 @@ const main = async () => {
      * cost a credit per fight and is prohibited for this market. */
     let events;
     let quota;
+    let savedFetchedAt = null;
     if (SOURCE) {
       /* Replay. The payload is the whole input to matching, so a rerun is a
        * faithful repeat of the paid call and is billed nothing. */
       const saved = JSON.parse(fs.readFileSync(SOURCE, 'utf8'));
       events = Array.isArray(saved) ? saved : saved.events;
+      savedFetchedAt = Array.isArray(saved) ? null : saved.fetched_at || null;
       quota = (Array.isArray(saved) ? null : saved.quota) || { used: null, remaining: null, lastCost: 0 };
       log(`replaying ${SOURCE}: ${events.length} source events, no provider call, no quota spent`);
     } else {
@@ -254,6 +320,7 @@ const main = async () => {
 
     const rows = [];
     const unmatched = [];
+    const matchedSourceIds = [];
     const books = new Set();
     let matched = 0;
 
@@ -269,6 +336,7 @@ const main = async () => {
         continue;
       }
       matched += 1;
+      matchedSourceIds.push(se.id);
       const bout = m.bout;
       const boutFighters = [bout.a, bout.b];
 
@@ -309,6 +377,25 @@ const main = async () => {
       }
     }
 
+    /* Replays inherit the original snapshot's timestamp, or stop. */
+    if (SOURCE && rows.length) {
+      const stamps = await snapshotObservedAt(events.map((e) => e.id));
+      if (stamps.length > 1) {
+        throw new Error(
+          `refusing to replay: this snapshot already has ${stamps.length} distinct observed_at values ` +
+          `(${stamps.sort().join(', ')}). The chronology is ambiguous and guessing which reading these ` +
+          `rows belong to would manufacture movement. Resolve by hand.`,
+        );
+      }
+      const observedAt = stamps[0] || new Date(savedFetchedAt || Date.now()).toISOString();
+      if (!stamps.length) {
+        log(`no prior rows for this snapshot; stamping with the payload's own fetch time ${observedAt}`);
+      } else {
+        log(`replay inherits the original snapshot timestamp ${observedAt}`);
+      }
+      for (const r of rows) r.observed_at = observedAt;
+    }
+
     run.matched_bouts = matched;
     run.books_seen = books.size;
     log(`matched bouts ${matched} · unmatched source events ${run.unmatched_events} · books ${books.size} · candidate observations ${rows.length}`);
@@ -317,22 +404,58 @@ const main = async () => {
       log('dry run: nothing written');
       log(JSON.stringify({ sample: rows.slice(0, 3), unmatched: unmatched.slice(0, 3) }, null, 2));
     } else {
-      /* ignore-duplicates is the idempotency: an unchanged price collides with
-       * the unique constraint and is skipped, a changed one is inserted. */
+      /* Idempotency, and the conflict target is not optional.
+       *
+       * PostgREST infers ON CONFLICT from the PRIMARY KEY unless a target is
+       * named. The primary key here is a bigserial that can never collide, so
+       * `resolution=ignore-duplicates` alone compiles to ON CONFLICT (id) DO
+       * NOTHING, which does not cover ufc_market_obs_unique at all: the second
+       * ingest raises 23505 and the whole batch is lost. That is invisible on
+       * an empty table and fatal on every run after the first, so the target
+       * is spelled out here and must match the constraint exactly.
+       *
+       * Caveat worth knowing: source_last_update is nullable and Postgres
+       * treats NULLs as distinct, so a book that reports no last_update would
+       * re-insert every run rather than dedupe. The provider has always sent
+       * one, and a null is left to become visible history rather than being
+       * silently coalesced into a false match. */
+      let written = 0;
       for (let i = 0; i < rows.length; i += 500) {
-        await rest('ufc_market_observations', {
+        const slice = rows.slice(i, i + 500);
+        const before = await countObservations();
+        await rest(`ufc_market_observations?on_conflict=${OBS_CONFLICT}`, {
           method: 'POST',
           headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
-          body: JSON.stringify(rows.slice(i, i + 500)),
+          body: JSON.stringify(slice),
         });
+        const after = await countObservations();
+        written += Math.max(0, after - before);
       }
-      run.observations_written = rows.length;
+      /* What actually landed, not what was offered. On a repeat ingest at
+       * unchanged prices this is legitimately zero, and recording the row
+       * count instead would make a no-op look like a full write. */
+      run.observations_written = written;
+      offered = rows.length;
       if (unmatched.length) {
-        await rest('ufc_market_unmatched', {
+        await rest('ufc_market_unmatched?on_conflict=source_event_id,reason', {
           method: 'POST',
           headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
           body: JSON.stringify(unmatched.map((u) => ({ ...u, last_seen_at: new Date().toISOString() }))),
         });
+      }
+      /* An event that matched this time is no longer unmatched. Without this
+       * the fail-closed landing zone keeps asserting a failure that has since
+       * been fixed - by an alias, a corrected name, or a bout appearing - and
+       * a stale complaint there is worse than none, because it is read as
+       * current. */
+      const matchedIds = [...new Set(matchedSourceIds)];
+      for (let i = 0; i < matchedIds.length; i += 100) {
+        const slice = matchedIds.slice(i, i + 100).map((x) => `"${x}"`).join(',');
+        await rest(`ufc_market_unmatched?source_event_id=in.(${slice})&resolved=is.false`, {
+          method: 'PATCH',
+          headers: { Prefer: 'return=minimal' },
+          body: JSON.stringify({ resolved: true }),
+        }).catch(() => {});
       }
       if (runId) {
         await rest(`ufc_market_runs?id=eq.${runId}`, {
@@ -340,6 +463,7 @@ const main = async () => {
           body: JSON.stringify({
             finished_at: new Date().toISOString(), status: 'success',
             ...run, quota_used: quota.used, quota_remaining: quota.remaining, last_cost: quota.lastCost,
+            notes: { observations_offered: offered, observations_skipped_as_duplicate: Math.max(0, offered - run.observations_written), replayed_from_source: Boolean(SOURCE) },
           }),
         });
       }

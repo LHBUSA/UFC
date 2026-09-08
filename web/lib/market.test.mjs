@@ -11,6 +11,14 @@ import assert from 'node:assert/strict';
 import { register } from 'node:module';
 
 register('./market.test-hooks.mjs', import.meta.url);
+
+/* market.ts reads its connection at module scope, and marketConfigured()
+   gates every state decision, so these must be set BEFORE the import or every
+   state collapses to not_configured. They are placeholders: nothing in this
+   file makes a request, and a real key must never be needed to run tests. */
+process.env.SUPABASE_URL ||= 'https://example.invalid';
+process.env.SUPABASE_SERVICE_ROLE_KEY ||= 'test-key-not-a-real-credential';
+
 const M = await import('./market.ts');
 
 test('describeAge speaks in the right unit', () => {
@@ -79,7 +87,7 @@ test('movement compares consensus across runs, in the right direction', () => {
 });
 
 test('every state has copy, and none of it implies a model', () => {
-  for (const s of ['available', 'partial', 'not_posted', 'unavailable', 'not_configured']) {
+  for (const s of ['available', 'partial', 'not_posted', 'unresolved', 'unavailable', 'not_configured']) {
     const c = M.MARKET_STATE_COPY[s];
     assert.ok(c?.label && c?.body, `${s} has copy`);
   }
@@ -90,4 +98,154 @@ test('every state has copy, and none of it implies a model', () => {
   for (const banned of ['edge', 'value bet', 'sharp', 'steam', 'lock', 'prediction']) {
     assert.ok(!all.toLowerCase().includes(banned), `market copy must not say "${banned}"`);
   }
+});
+
+test('a bout the books are pricing is never called unpriced', () => {
+  /* The two sentences are both true of different situations and must not be
+     swapped: "nobody has posted a price" blames the books for our own
+     unmatched name. */
+  const base = { eventDate: '2099-01-01', hasResult: false, providerLive: true };
+  assert.equal(M.marketStateFor(undefined, base), 'not_posted');
+  assert.equal(M.marketStateFor(undefined, { ...base, unresolved: true }), 'unresolved');
+
+  const posted = M.MARKET_STATE_COPY.not_posted.body.toLowerCase();
+  const unres = M.MARKET_STATE_COPY.unresolved.body.toLowerCase();
+  assert.ok(posted.includes('no book'), 'not_posted says the books have not posted');
+  assert.ok(!unres.includes('no book'), 'unresolved must NOT claim the books posted nothing');
+  assert.ok(unres.includes('could not match'), 'unresolved names our failure, not theirs');
+});
+
+test('a real price and a finished fight still outrank an unmatched name', () => {
+  const base = { eventDate: '2099-01-01', hasResult: false, providerLive: true, unresolved: true };
+  const market = { boutId: 'b', state: 'available', marketKey: 'h2h', a: null, b: null,
+    lastUpdated: null, sourceLastUpdate: null, stale: false, ageMinutes: 0, bookCount: 2 };
+  assert.equal(M.marketStateFor(market, base), 'available', 'having prices wins');
+  assert.equal(M.marketStateFor(undefined, { ...base, hasResult: true }), 'unavailable', 'a finished bout has no market');
+  assert.equal(M.marketStateFor(undefined, { ...base, providerLive: false }), 'not_configured', 'no feed at all wins');
+});
+
+/* ---- run bucketing: the rules that decide what is "current" ------------- */
+const obs = (book, price, at, fighter = 'A', last = at) => ({
+  bout_id: 'b1', bookmaker_key: book, bookmaker_name: book, market_key: 'h2h',
+  outcome_name: fighter, outcome_fighter_id: fighter, price, point: null,
+  source_last_update: last, observed_at: at,
+});
+
+const RUN1 = '2026-09-08T04:00:00Z';
+const RUN2 = '2026-09-08T12:00:00Z';
+
+test('a book that stops pricing stops voting', () => {
+  /* Three books in the morning, two by midday. Carrying the absent book
+     forward would keep a price nobody is offering inside the consensus and
+     inflate the book count with it. */
+  const side = M.sideFrom([
+    obs('bookA', -200, RUN1), obs('bookB', -210, RUN1), obs('gone', +900, RUN1),
+    obs('bookA', -200, RUN2), obs('bookB', -210, RUN2),
+  ], 'A');
+
+  assert.equal(side.bookCount, 2, 'only books in the latest run count');
+  assert.deepEqual(side.books.map((b) => b.key).sort(), ['bookA', 'bookB']);
+  assert.ok(!side.books.some((b) => b.key === 'gone'), 'the departed book is gone from the readout');
+  assert.equal(side.worst, -210, 'its +900 no longer stretches the book range');
+  assert.equal(side.runCount, 2);
+});
+
+test('movement is measured between snapshots, not between books', () => {
+  /* Within RUN1 the books disagree by 60 points. That spread is not a move
+     and must not appear as one; only the run-to-run consensus shift counts. */
+  const side = M.sideFrom([
+    obs('bookA', -180, RUN1), obs('bookB', -240, RUN1),
+    obs('bookA', -300, RUN2), obs('bookB', -320, RUN2),
+  ], 'A');
+
+  assert.equal(side.runCount, 2);
+  /* -207, not the -210 midpoint of -180 and -240. Consensus is the median
+     IMPLIED PROBABILITY converted back, because American odds jump across the
+     +/-100 boundary and averaging them is arithmetically meaningless. The two
+     answers differ here by three points, which is exactly the kind of small
+     wrongness that would never be noticed in the UI. */
+  assert.equal(side.firstObserved.price, -207, 'consensus of run 1, not a single book, not a price average');
+  assert.equal(side.latest.price, -310, 'consensus of run 2');
+
+  const m = M.movement(side, 'first');
+  assert.equal(m.direction, 'toward', 'the price shortened across the two snapshots');
+  assert.equal(m.from, -207);
+  assert.equal(m.to, -310);
+});
+
+test('a single snapshot yields one run and no movement, however many books', () => {
+  const side = M.sideFrom([
+    obs('bookA', -430, RUN1), obs('bookB', -450, RUN1), obs('bookC', -420, RUN1),
+  ], 'A');
+  assert.equal(side.runCount, 1);
+  assert.equal(side.bookCount, 3);
+  assert.equal(M.movement(side, 'first'), null, 'book disagreement is not chronology');
+});
+
+test('an unchanged reprice is not a move', () => {
+  const side = M.sideFrom([
+    obs('bookA', -200, RUN1), obs('bookA', -200, RUN2),
+  ], 'A');
+  assert.equal(side.runCount, 2);
+  assert.equal(M.movement(side, 'first').direction, 'unchanged');
+  assert.equal(side.previous, null, 'no earlier DIFFERENT price exists');
+});
+
+/* ---- idempotency and staleness, without touching a database ------------- */
+const ING = await import('../../scripts/odds/ingest_market.mjs');
+
+test('the conflict target matches the unique constraint exactly', () => {
+  /* ufc_market_obs_unique, from supabase/migrations/20260907000009_ufc_market.sql.
+     PostgREST infers ON CONFLICT from the PRIMARY KEY unless a target is
+     named, and the PK here is a bigserial that never collides — so if these
+     two ever drift, the second ingest of any day fails wholesale with 23505.
+     That is exactly what happened before this was pinned. */
+  assert.deepEqual(ING.OBS_CONFLICT_COLUMNS, [
+    'bout_id', 'bookmaker_key', 'market_key', 'outcome_name', 'source_last_update', 'price',
+  ]);
+  assert.equal(ING.OBS_CONFLICT, 'bout_id,bookmaker_key,market_key,outcome_name,source_last_update,price');
+  /* Checked against the column list, not the joined string: "bout_id" contains
+     "id" as a substring, so a naive includes() on the joined form is a test
+     that fails on correct code. */
+  assert.ok(!ING.OBS_CONFLICT_COLUMNS.includes('observed_at'),
+    'observed_at must never be in the key: it changes every run and would defeat deduplication');
+  assert.ok(!ING.OBS_CONFLICT_COLUMNS.includes('id'), 'the surrogate key is not the identity');
+});
+
+test('replaying the same snapshot collides on every row', () => {
+  const row = {
+    bout_id: 'b1', bookmaker_key: 'fanduel', market_key: 'h2h', outcome_name: 'Jean Silva',
+    source_last_update: '2026-09-08T12:22:41Z', price: -440,
+    observed_at: '2026-09-08T12:25:03Z', bookmaker_name: 'FanDuel',
+  };
+  /* Same fact re-read: identical key, so the database rejects it as a duplicate. */
+  const replay = { ...row, observed_at: '2026-09-08T20:00:00Z', bookmaker_name: 'FanDuel Sportsbook' };
+  assert.equal(ING.observationKey(replay), ING.observationKey(row),
+    'a later look at an unchanged price is the same observation');
+
+  /* A moved price is new history and must NOT collide. */
+  assert.notEqual(ING.observationKey({ ...row, price: -450 }), ING.observationKey(row));
+  /* So is the same price newly stamped by the book. */
+  assert.notEqual(ING.observationKey({ ...row, source_last_update: '2026-09-08T18:00:00Z' }), ING.observationKey(row));
+});
+
+test('a stale snapshot stays visibly stale, and keeps its prices', () => {
+  const now = Date.parse('2026-09-08T12:00:00Z');
+  const at = (mins) => new Date(now - mins * 60000).toISOString();
+
+  assert.equal(M.isStale(at(0), now), false, 'a fresh read is current');
+  assert.equal(M.isStale(at(8 * 60), now), false, 'an on-time run at the 8h cadence is current');
+  assert.equal(M.isStale(at(M.STALE_AFTER_MINUTES), now), false, 'exactly at the threshold is not yet stale');
+  assert.equal(M.isStale(at(M.STALE_AFTER_MINUTES + 1), now), true, 'one minute past it is');
+  assert.equal(M.isStale(at(48 * 60), now), true, 'two days old is plainly stale');
+  assert.equal(M.isStale(null, now), false, 'no timestamp is not a staleness claim');
+
+  /* Staleness is a caveat on real prices, never a reason to hide them: the
+     state stays available/partial so the numbers still render. */
+  assert.equal(M.marketStateFor(
+    { boutId: 'b', state: 'available', marketKey: 'h2h', a: null, b: null,
+      lastUpdated: at(48 * 60), sourceLastUpdate: null, stale: true, ageMinutes: 2880, bookCount: 8 },
+    { eventDate: '2099-01-01', hasResult: false, providerLive: true },
+  ), 'available');
+  assert.equal(M.describeAge(2880), '2 days ago');
 });
