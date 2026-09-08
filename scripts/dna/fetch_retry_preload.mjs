@@ -8,8 +8,8 @@
 // because a lost response there could otherwise create duplicate ledger rows.
 
 const nativeFetch = globalThis.fetch.bind(globalThis);
-const MAX_ATTEMPTS = 6;
-const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504, 520, 522, 524]);
+const MAX_ATTEMPTS = 8;
+const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524]);
 const SAFE_POST_TABLES = [
   '/rest/v1/ufc_fighter_bout_features',
   '/rest/v1/ufc_fighter_dna_snapshots',
@@ -39,7 +39,7 @@ function sleep(ms) {
 }
 
 function backoff(attempt) {
-  // 0.75s, 1.5s, 3s, 6s, 12s between attempts, capped with small jitter.
+  // 0.75s, 1.5s, 3s, 6s, then 12s, capped with small jitter.
   return Math.min(12_000, 750 * (2 ** (attempt - 1))) + Math.floor(Math.random() * 250);
 }
 
