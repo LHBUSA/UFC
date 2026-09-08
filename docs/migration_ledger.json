@@ -1,0 +1,220 @@
+{
+  "generated_at": "2026-09-08T19:22:36.478Z",
+  "applied_boundary": "20260907000009_ufc_market.sql",
+  "root": [
+    {
+      "dir": "migrations",
+      "file": "001_ufc_phase1_core.sql",
+      "version": "001",
+      "slug": "ufc_phase1_core",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "002_ufc_result_enrichment.sql",
+      "version": "002",
+      "slug": "ufc_result_enrichment",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "003_ufc_rankings.sql",
+      "version": "003",
+      "slug": "ufc_rankings",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "004_ufc_fight_dna.sql",
+      "version": "004",
+      "slug": "ufc_fight_dna",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "005_ufc_fight_state_ledger.sql",
+      "version": "005",
+      "slug": "ufc_fight_state_ledger",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "006_ufc_image_candidates.sql",
+      "version": "006",
+      "slug": "ufc_image_candidates",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "007_ufc_image_rights_capabilities.sql",
+      "version": "007",
+      "slug": "ufc_image_rights_capabilities",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "008_ufc_open_media_rights_trigger.sql",
+      "version": "008",
+      "slug": "ufc_open_media_rights_trigger",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "009_ufc_market.sql",
+      "version": "009",
+      "slug": "ufc_market",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "010_store_provisioning.sql",
+      "version": "010",
+      "slug": "store_provisioning",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "011_ufc_model_predictions.sql",
+      "version": "011",
+      "slug": "ufc_model_predictions",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "012_store_orders.sql",
+      "version": "012",
+      "slug": "store_orders",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "013_ufc_media_registry_videos.sql",
+      "version": "013",
+      "slug": "ufc_media_registry_videos",
+      "applied": null
+    }
+  ],
+  "supabase": [
+    {
+      "dir": "supabase/migrations",
+      "file": "20260906000001_ufc_phase1_core.sql",
+      "version": "20260906000001",
+      "slug": "ufc_phase1_core",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260906000002_ufc_result_enrichment.sql",
+      "version": "20260906000002",
+      "slug": "ufc_result_enrichment",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260906000003_ufc_rankings.sql",
+      "version": "20260906000003",
+      "slug": "ufc_rankings",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260906000004_ufc_fight_dna.sql",
+      "version": "20260906000004",
+      "slug": "ufc_fight_dna",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260906000005_ufc_fight_state_ledger.sql",
+      "version": "20260906000005",
+      "slug": "ufc_fight_state_ledger",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260906000006_ufc_official_videos.sql",
+      "version": "20260906000006",
+      "slug": "ufc_official_videos",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260906000007_ufc_video_channels.sql",
+      "version": "20260906000007",
+      "slug": "ufc_video_channels",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260907000008_ufc_referee_intelligence.sql",
+      "version": "20260907000008",
+      "slug": "ufc_referee_intelligence",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260907000009_ufc_market.sql",
+      "version": "20260907000009",
+      "slug": "ufc_market",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260907000010_store_provisioning.sql",
+      "version": "20260907000010",
+      "slug": "store_provisioning",
+      "applied": false
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260908000010_ufc_model_predictions.sql",
+      "version": "20260908000010",
+      "slug": "ufc_model_predictions",
+      "applied": false
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260908000011_ufc_fighter_status.sql",
+      "version": "20260908000011",
+      "slug": "ufc_fighter_status",
+      "applied": false
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260908000012_ufc_judge_intelligence.sql",
+      "version": "20260908000012",
+      "slug": "ufc_judge_intelligence",
+      "applied": false
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260908000013_ufc_weigh_ins.sql",
+      "version": "20260908000013",
+      "slug": "ufc_weigh_ins",
+      "applied": false
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260908000014_referee_view_security.sql",
+      "version": "20260908000014",
+      "slug": "referee_view_security",
+      "applied": false
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260908000015_store_orders.sql",
+      "version": "20260908000015",
+      "slug": "store_orders",
+      "applied": false
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260908000016_ufc_media_registry_videos.sql",
+      "version": "20260908000016",
+      "slug": "ufc_media_registry_videos",
+      "applied": false
+    }
+  ],
+  "collisions": 0,
+  "problems": []
+}

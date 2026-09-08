@@ -1,7 +1,7 @@
--- Schema tests for 011_store_orders.sql.
+-- Schema tests for 012_store_orders.sql.
 --
---   psql -d <disposable> -v ON_ERROR_STOP=1 -f migrations/011_store_orders.sql
---   psql -d <disposable> -v ON_ERROR_STOP=1 -f migrations/tests/011_store_orders.test.sql
+--   psql -d <disposable> -v ON_ERROR_STOP=1 -f migrations/012_store_orders.sql
+--   psql -d <disposable> -v ON_ERROR_STOP=1 -f migrations/tests/012_store_orders.test.sql
 --
 -- Runs inside a transaction and rolls back, so it leaves nothing behind. It
 -- asserts the properties the application relies on but cannot enforce: that

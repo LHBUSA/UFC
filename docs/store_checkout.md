@@ -101,7 +101,7 @@ test-mode key is never the one deployed to production.
 
 ### 2. An order table with the same discipline as `store_provisioning`
 
-`migrations/011_store_orders.sql`, mirroring the shape that already works:
+`migrations/012_store_orders.sql`, mirroring the shape that already works:
 
 - `stripe_session_id` unique, so a replayed webhook cannot create a second
   order;

@@ -2,7 +2,7 @@
 
 Implements `docs/UFC_MEDIA_VIDEO_ADDENDUM.md` sections 4-6 and 10. Tables:
 `ufc_video_channels` (allowlist) and `ufc_videos` (normalized metadata), both from
-`migrations/006_ufc_media_registry_videos.sql`. Code: `scripts/videos/`
+`migrations/013_ufc_media_registry_videos.sql`. Code: `scripts/videos/`
 (`channels.json`, `seed_channels.mjs`, `ingest_youtube.mjs`, `lib.mjs`,
 `lib.test.mjs`). Node 24, no npm dependencies; Supabase creds from `.env`.
 
