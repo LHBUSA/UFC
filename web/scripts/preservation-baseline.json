@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T13:43:45.454Z",
+  "generated_at": "2026-09-08T17:54:21.290Z",
   "routes": [
     "/",
     "/about",
@@ -14,6 +14,8 @@
     "/hall-of-fame",
     "/hall-of-fame/[slug]",
     "/history",
+    "/judges",
+    "/judges/[slug]",
     "/learn/fight-dna",
     "/login",
     "/news",
@@ -24,6 +26,10 @@
     "/rankings",
     "/referees",
     "/referees/[slug]",
+    "/round-by-round",
+    "/tuf",
+    "/tuf/[slug]",
+    "/tuf/champions",
     "/voices/[key]"
   ],
   "nav": [
@@ -56,6 +62,10 @@
       "label": "DWCS"
     },
     {
+      "href": "/tuf",
+      "label": "The Ultimate Fighter"
+    },
+    {
       "href": "/history",
       "label": "History"
     },
@@ -64,8 +74,16 @@
       "label": "Hall of Fame"
     },
     {
+      "href": "/round-by-round",
+      "label": "Round-by-Round"
+    },
+    {
       "href": "/referees",
       "label": "Referees"
+    },
+    {
+      "href": "/judges",
+      "label": "Judges & Scorecards"
     },
     {
       "href": "/#notable-voices",
@@ -117,6 +135,7 @@
     "app/fightdna.css",
     "app/fightweek.css",
     "app/icon.svg",
+    "app/judges.css",
     "app/opengraph-image.tsx",
     "components/Brand.tsx",
     "components/ChampionshipBelt.tsx",
@@ -132,6 +151,7 @@
     "components/OfficialVideo.tsx",
     "components/PregameDesk.module.css",
     "components/PregameDesk.tsx",
+    "components/Scorecard.tsx",
     "components/VideoRail.tsx",
     "components/VideoRailClient.tsx",
     "components/VoiceImage.tsx",
@@ -144,6 +164,8 @@
     "lib/fightweek.ts",
     "lib/heritage.ts",
     "lib/hof.ts",
+    "lib/judgeScoring.ts",
+    "lib/judges.ts",
     "lib/pregame.ts",
     "lib/referees.ts",
     "lib/videoPolicy.ts",

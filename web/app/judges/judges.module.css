@@ -1,0 +1,25 @@
+.hero{padding:42px 0 20px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:28px;align-items:flex-end}
+.hero h1{font:900 clamp(42px,6vw,76px)/.94 var(--pbe-font-display);letter-spacing:-.035em;margin:8px 0 16px}
+.hero p{max-width:72ch;color:var(--pbe-dim);font-size:15px;line-height:1.7}
+.heroAside{border:1px solid rgba(212,175,55,.24);border-radius:18px;padding:20px;background:linear-gradient(145deg,rgba(212,175,55,.08),rgba(0,0,0,.24))}
+.heroAside b{display:block;color:var(--pbe-paper);font:800 26px/1 var(--pbe-font-display)}
+.heroAside span{display:block;color:var(--pbe-faint);font:600 10px/1.4 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.12em;margin-top:7px}
+.section{margin:38px 0}
+.sectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;border-bottom:1px solid var(--pbe-line);padding-bottom:12px;margin-bottom:14px}
+.sectionHead h2{font:800 30px/1 var(--pbe-font-display)}
+.sectionHead p{color:var(--pbe-faint);font-size:12px;max-width:62ch;text-align:right}
+.tableWrap{overflow:auto;border:1px solid var(--pbe-line);border-radius:14px}
+.table{width:100%;border-collapse:collapse;min-width:880px}
+.table th{padding:10px 12px;text-align:left;color:var(--pbe-faint);font:700 8px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.11em;border-bottom:1px solid var(--pbe-line);position:sticky;top:0;background:#0d0b08}
+.table td{padding:11px 12px;border-bottom:1px solid var(--pbe-line-faint);color:var(--pbe-paper-2);font-size:12px;vertical-align:top;font-variant-numeric:tabular-nums}
+.table tr:last-child td{border-bottom:0}
+.table a{color:var(--pbe-paper);font-weight:700}
+.table a:hover{color:var(--pbe-gold)}
+.num{text-align:right}
+.note{margin:14px 0 46px;padding:16px 18px;border:1px solid var(--pbe-line);border-radius:12px;color:var(--pbe-faint);font-size:12px;line-height:1.65}
+.note b{display:block;color:var(--pbe-paper-2);font-size:12.5px;margin-bottom:6px}
+.note p{margin-top:9px}
+.empty{padding:36px;border:1px dashed var(--pbe-line);border-radius:14px;color:var(--pbe-faint);text-align:center}
+.method{color:var(--pbe-gold);font:700 10px/1.3 var(--pbe-font-data)}
+@media(max-width:980px){.hero{grid-template-columns:1fr}}
+@media(max-width:640px){.hero{padding-top:28px}.sectionHead{align-items:start;flex-direction:column}.sectionHead p{text-align:left}}

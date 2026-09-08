@@ -68,6 +68,7 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
   { href: "/hall-of-fame", label: "Hall of Fame", place: "more", group: "Archive" },
   { href: "/round-by-round", label: "Round-by-Round", place: "more", group: "Intelligence" },
   { href: "/referees", label: "Referees", place: "more", group: "Intelligence" },
+  { href: "/judges", label: "Judges & Scorecards", place: "more", group: "Intelligence" },
   { href: "/#notable-voices", label: "Notable Voices", place: "more", group: "Intelligence" },
   { href: "/learn/fight-dna", label: "How Fight DNA works", place: "more", group: "Intelligence" },
   { href: "/pro", label: "Pro", place: "cta" },

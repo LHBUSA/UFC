@@ -60,7 +60,7 @@ export default async function QaPreview() {
   };
   const dwcsNext: Event = { ...event, id: "dw-1", name: "Dana White's Contender Series Season 10 Week 6", event_date: "2026-09-15", is_ppv: false, venue: "UFC Apex", city: "Las Vegas" };
   const dwcsLast: Event = { ...dwcsNext, id: "dw-0", name: "Dana White's Contender Series Season 10 Week 5", event_date: "2026-09-08", card_status: "complete" };
-  const mains = new Map<string, Bout>([["dw-1", bout("db-1", e1, f1, 1, { event_id: "dw-1" })], ["dw-0", bout("db-0", c, dd, 1, { event_id: "dw-0", result: { bout_id: "db-0", winner_id: c.id, method: "KO_TKO", method_raw: "KO", round: 2, time_sec: 143, time_format: null, referee: null, finish_detail: null, result_source: "espn", has_stats: false, scorecards: null, judge_1: null, judge_2: null, judge_3: null } })]]);
+  const mains = new Map<string, Bout>([["dw-1", bout("db-1", e1, f1, 1, { event_id: "dw-1" })], ["dw-0", bout("db-0", c, dd, 1, { event_id: "dw-0", result: { bout_id: "db-0", winner_id: c.id, method: "KO_TKO", method_raw: "KO", round: 2, time_sec: 143, time_format: null, referee: null, finish_detail: null, result_source: "espn", has_stats: false, scorecards: null, judge_1: null, judge_2: null, judge_3: null, source_url: null } })]]);
   const packet = assemblePacket({ event, bouts, live: bouts, briefs, imgs: fixtureImgs, framing: new Map(), videos, done: false, roundCoverage: new Map(), updated: new Date().toISOString(), rankingsDate: rankings.snapshot_date, sources: ["UFC Stats career averages (fixture)", `Official rankings snapshot ${rankings.snapshot_date} (fixture)`, "Fight DNA not available for the fixture pairing", "Archived results (fixture)", "Event card as published (fixture)"] });
   return (
     <div className="wrap page">
