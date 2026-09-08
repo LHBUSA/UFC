@@ -1,0 +1,50 @@
+name: UFC newsroom review repair
+
+on:
+  push:
+    branches:
+      - fight-dna-repair-v1
+    paths:
+      - 'scripts/news/release_safe_reviews.mjs'
+      - '.github/workflows/newsroom-review-repair.yml'
+      - '.github/newsroom-review-repair/APPLY'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ufc-newsroom-review-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Syntax check
+        run: node --check scripts/news/release_safe_reviews.mjs
+      - name: Verify credentials
+        shell: bash
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+      - name: Dry-run or explicit apply
+        shell: bash
+        run: |
+          set -euo pipefail
+          mode=--dry-run
+          if [ -f .github/newsroom-review-repair/APPLY ]; then mode=--apply; fi
+          node scripts/news/release_safe_reviews.mjs "$mode" | tee newsroom-review-repair.log
+      - name: Upload proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: newsroom-review-repair-proof
+          path: newsroom-review-repair.log
+          if-no-files-found: error
