@@ -94,7 +94,10 @@ export function impliedProbability(american: number): number {
 
 export function probabilityToAmerican(p: number): number {
   if (!(p > 0 && p < 1)) return 0;
-  return p >= 0.5 ? -Math.round((p / (1 - p)) * 100) : Math.round(((1 - p) / p) * 100);
+  /* Strictly greater, so an exactly even market converts to +100 rather than
+   * -100. Both mean the same wager, but +100 is how books write it, and this
+   * is also what makes the conversion round-trip with impliedProbability. */
+  return p > 0.5 ? -Math.round((p / (1 - p)) * 100) : Math.round(((1 - p) / p) * 100);
 }
 
 export const formatAmerican = (v: number | null | undefined): string =>
@@ -118,6 +121,8 @@ export type SidePrices = {
   worst: number | null;
   bookCount: number;
   books: Array<{ key: string; name: string | null; price: number }>;
+  /* Distinct ingest runs behind this side. Movement needs at least two. */
+  runCount: number;
   firstObserved: { price: number; at: string } | null;
   previous: { price: number; at: string } | null;
   latest: { price: number; at: string } | null;
@@ -177,42 +182,86 @@ export function describeAge(minutes: number | null): string {
   return `${Math.round(h / 24)} days ago`;
 }
 
+/* One ingest writes every book's price in a single transaction, so all of its
+ * rows share an observed_at. Bucketing by the minute therefore groups a run
+ * with itself and never with another: an ingest completes in seconds and runs
+ * are hours apart. */
+const RUN_BUCKET_MS = 60_000;
+const runKey = (iso: string) => Math.floor(new Date(iso).getTime() / RUN_BUCKET_MS);
+
+/** Consensus across books within one run: median implied probability. */
+function consensusOf(rows: Observation[]): number | null {
+  const byBook = new Map<string, Observation>();
+  for (const o of rows) {
+    const cur = byBook.get(o.bookmaker_key);
+    if (!cur || o.observed_at > cur.observed_at) byBook.set(o.bookmaker_key, o);
+  }
+  const med = median([...byBook.values()].map((o) => impliedProbability(o.price)));
+  return med === null ? null : probabilityToAmerican(med);
+}
+
 function sideFrom(obs: Observation[], fighterId: string): SidePrices | null {
   const mine = obs.filter((o) => o.outcome_fighter_id === fighterId);
   if (!mine.length) return null;
 
-  /* Latest observation per book is the current market. */
-  const byBook = new Map<string, Observation>();
+  /* Runs, oldest first. Movement is a comparison BETWEEN runs and never
+   * within one: the prices inside a single run differ because books disagree
+   * with each other, not because a line moved, and reading that spread as
+   * chronology invents a move out of a snapshot. This is the whole reason
+   * first/latest are computed per run rather than per row. */
+  const runs = new Map<number, Observation[]>();
   for (const o of mine) {
+    const k = runKey(o.observed_at);
+    if (!runs.has(k)) runs.set(k, []);
+    runs.get(k)!.push(o);
+  }
+  const ordered = [...runs.entries()].sort((a, b) => a[0] - b[0]).map(([, rows]) => rows);
+
+  /* The current market is the most recent run only. A book absent from it is
+   * not pricing this bout now, and carrying its older number forward would
+   * quietly pad the book count with prices nobody is offering. */
+  const currentRun = ordered[ordered.length - 1] || [];
+  const byBook = new Map<string, Observation>();
+  for (const o of currentRun) {
     const cur = byBook.get(o.bookmaker_key);
-    if (!cur || new Date(o.observed_at) > new Date(cur.observed_at)) byBook.set(o.bookmaker_key, o);
+    if (!cur || o.observed_at > cur.observed_at) byBook.set(o.bookmaker_key, o);
   }
   const current = [...byBook.values()];
-  const probs = current.map((o) => impliedProbability(o.price));
-  const med = median(probs);
-
   const byFavourability = [...current].sort((x, y) => impliedProbability(x.price) - impliedProbability(y.price));
 
-  /* Chronology for movement. Sorted oldest first across all books, because
-   * "first observed" is a property of this system's watching, not of a book. */
-  const chrono = [...mine].sort((x, y) => new Date(x.observed_at).getTime() - new Date(y.observed_at).getTime());
-  const first = chrono[0] || null;
-  const last = chrono[chrono.length - 1] || null;
-  /* The previous distinct price, so an unchanged re-read does not read as a move. */
-  const prior = [...chrono].reverse().find((o) => last && o.price !== last.price) || null;
+  const at = (rows: Observation[]) => rows.reduce((acc, o) => (o.observed_at > acc ? o.observed_at : acc), rows[0].observed_at);
+  const stamp = (rows: Observation[] | undefined) => {
+    if (!rows?.length) return null;
+    const price = consensusOf(rows);
+    return price === null ? null : { price, at: at(rows) };
+  };
+
+  const firstObserved = stamp(ordered[0]);
+  const latest = stamp(currentRun);
+  /* The most recent earlier run whose consensus actually differs, so a
+   * repeated read at an unchanged price does not present as a move. */
+  let previous: { price: number; at: string } | null = null;
+  for (let i = ordered.length - 2; i >= 0; i--) {
+    const s = stamp(ordered[i]);
+    if (s && latest && s.price !== latest.price) { previous = s; break; }
+  }
 
   return {
     fighterId,
-    consensus: med === null ? null : probabilityToAmerican(med),
+    consensus: latest?.price ?? null,
+    /* Best available is the price most favourable to the bettor, which is the
+     * highest American number on either side of zero once compared as a payout,
+     * so it is chosen by lowest implied probability rather than by raw value. */
     best: byFavourability[0]?.price ?? null,
     worst: byFavourability[byFavourability.length - 1]?.price ?? null,
     bookCount: current.length,
-    books: current
-      .sort((x, y) => impliedProbability(x.price) - impliedProbability(y.price))
-      .map((o) => ({ key: o.bookmaker_key, name: o.bookmaker_name, price: o.price })),
-    firstObserved: first ? { price: first.price, at: first.observed_at } : null,
-    previous: prior ? { price: prior.price, at: prior.observed_at } : null,
-    latest: last ? { price: last.price, at: last.observed_at } : null,
+    books: byFavourability.map((o) => ({ key: o.bookmaker_key, name: o.bookmaker_name, price: o.price })),
+    /* How many times we have looked. One look is a snapshot, not a history,
+     * and nothing may be said about movement from it. */
+    runCount: ordered.length,
+    firstObserved,
+    previous,
+    latest,
   };
 }
 
@@ -225,9 +274,19 @@ export type Movement = { direction: "toward" | "away" | "unchanged"; delta: numb
  * is deliberately phrased as movement toward or away from a fighter and never
  * as sharp money, steam or public action, because those are claims about who
  * is betting and we have no source that supports them.
+ *
+ * Both endpoints are CONSENSUS figures from different runs, so this compares
+ * like with like. Comparing individual rows would compare one book to another
+ * and call the disagreement a move.
  */
 export function movement(side: SidePrices | null, basis: "first" | "previous" = "first"): Movement {
   if (!side?.latest) return null;
+  /* A single run is a snapshot. The spread inside it is books disagreeing
+   * with each other, not a line moving, and there is no earlier reading to
+   * compare against - so there is nothing truthful to say and we say nothing.
+   * This is the first-ingest case, and it must stay silent rather than
+   * reporting "unchanged", which would claim we had watched and seen no move. */
+  if (side.runCount < 2) return null;
   const start = basis === "first" ? side.firstObserved : side.previous;
   if (!start) return null;
   const delta = side.latest.price - start.price;
