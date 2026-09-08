@@ -10,9 +10,9 @@ import { SITE } from "@/lib/site";
 
 export const revalidate = 60;
 
-const TITLE = "Store | PropBetEdge UFC";
+const TITLE = "PropBetEdge Store | Premium Fight-Night Gear";
 const DESCRIPTION =
-  "The first PropBetEdge merch drop: our premium black hoodie with the metallic PBE corporate logo on the chest and the fight mark on the sleeve.";
+  "Shop the first PropBetEdge drop: a premium black hoodie with the metallic PBE chest logo and gold fight mark on the sleeve.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     type: "website",
     url: `${SITE.url}/store`,
-    images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630, alt: "PropBetEdge UFC Store" }],
+    images: [{ url: `${SITE.url}/store/img/propbetedge-premium-hoodie.jpg`, width: 1024, height: 1024, alt: "PropBetEdge Premium Hoodie" }],
   },
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
@@ -50,11 +50,7 @@ function Card({ p, enabled = false }: { p: StorefrontProduct; enabled?: boolean 
         </span>
         <span className="st-card-foot">
           <span className="st-price">{formatPrice(p.price_cents)}</span>
-          {onSale ? <span className="st-state st-state-open">On sale</span> : (
-            <span className={p.awaiting_blank ? "st-soon st-soon-blank" : "st-soon"}>
-              {p.awaiting_blank ? "Blank not chosen" : hoodie ? "Release gate" : p.unavailable_reason}
-            </span>
-          )}
+          {onSale ? <span className="st-state st-state-open">On sale</span> : <span className="st-soon">Coming soon</span>}
         </span>
       </span>
     </Link>
@@ -84,9 +80,9 @@ export default async function StorePage() {
       <div className="wrap">
         <div className="page">
           <PageHead
-            eyebrow="Store · First drop"
-            title="The hoodie first"
-            lede="One piece worth shipping before we turn this into a catalog: the premium black PropBetEdge hoodie, built around the actual corporate mark."
+            eyebrow="PropBetEdge Store · Drop 001"
+            title="Built for fight night."
+            lede="Premium black fleece. Metallic PBE across the chest. Gold fight mark on the sleeve. The first PropBetEdge drop is made for the arena and everywhere after."
             crumbs={[{ name: "Store" }]}
           />
         </div>
@@ -95,19 +91,19 @@ export default async function StorePage() {
       <div className="wrap">
         <p className={open ? "st-notice st-notice-quiet" : "st-notice"} role="status">
           {open ? (
-            <><strong>The first drop is live.</strong> Black, S–2XL, $65. Checkout uses live Stripe and the exact printer-confirmed variant for the size you choose.</>
+            <><strong>Drop 001 is live.</strong> Black · S-2XL · $65 · Secure checkout.</>
           ) : (
-            <><strong>The hoodie is staged, not fake-live.</strong> The design, garment and $65 retail are locked. Checkout stays closed until the production runtime can prove Stripe, the printer credential, signed webhook, fulfilment gate, final art files and exact Black S–2XL provider variants.</>
+            <><strong>Drop 001 is coming soon.</strong> Black · S-2XL · $65.</>
           )}
         </p>
       </div>
 
       <section className="wrap st-section">
         <div className="st-section-head">
-          <h2>Drop 001</h2>
-          <p>Cotton Heritage M2580 · Black · S–2XL · full PBE chest logo + fight mark sleeve.</p>
+          <h2>PropBetEdge Premium Hoodie</h2>
+          <p>8.5 oz premium fleece · 65/35 ring-spun cotton blend · 100% cotton face · 3-panel hood.</p>
         </div>
-        <div className="st-grid st-grid-launch">
+        <div className="st-grid st-grid-launch" style={{ maxWidth: 380, gridTemplateColumns: "minmax(0, 1fr)" }}>
           {firstDrop.map(({ pub }) => <Card key={pub.slug} p={pub} enabled={runtime.ready} />)}
         </div>
       </section>
@@ -115,8 +111,8 @@ export default async function StorePage() {
       {later.length > 0 && (
         <section className="wrap st-section">
           <div className="st-section-head">
-            <h2>After the first hoodie</h2>
-            <p>Designed and kept, but deliberately not part of the first paid production test.</p>
+            <h2>More gear coming</h2>
+            <p>Tees, mugs and additional PropBetEdge pieces are on the way.</p>
           </div>
           {LINES.map((c) => {
             const inLine = later.filter((i) => i.line === c.key);
@@ -135,7 +131,7 @@ export default async function StorePage() {
 
       <section className="wrap st-section">
         <p className="st-fine">
-          The hoodie image is a placement preview using PropBetEdge's corporate logo and fight mark, not the printer's final garment photograph. The production file is kept separate and is only released after the printer reports the exact print areas. <Link href="/store/policies">Shipping, returns and print policies</Link>.
+          Product image shown for design and placement. Final print position may vary slightly in production. <Link href="/store/policies">Shipping and returns</Link>.
         </p>
       </section>
 
