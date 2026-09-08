@@ -6,6 +6,7 @@ on:
       - fight-dna-repair-v1
     paths:
       - 'scripts/dna/repair_historical_snapshots.mjs'
+      - 'scripts/dna/fetch_retry_preload.mjs'
       - '.github/dna-repair/APPLY'
 
 permissions:
@@ -30,7 +31,9 @@ jobs:
           node-version: '24'
 
       - name: Syntax check
-        run: node --check scripts/dna/repair_historical_snapshots.mjs
+        run: |
+          node --check scripts/dna/repair_historical_snapshots.mjs
+          node --check scripts/dna/fetch_retry_preload.mjs
 
       - name: Verify data credentials
         shell: bash
@@ -46,7 +49,7 @@ jobs:
           if [ -f .github/dna-repair/APPLY ]; then
             args=(--apply)
           fi
-          node scripts/dna/repair_historical_snapshots.mjs "${args[@]}" | tee fight-dna-history-repair.log
+          node --import ./scripts/dna/fetch_retry_preload.mjs scripts/dna/repair_historical_snapshots.mjs "${args[@]}" | tee fight-dna-history-repair.log
 
       - name: Upload proof
         uses: actions/upload-artifact@v4
