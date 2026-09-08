@@ -93,6 +93,45 @@ expect_raises("Nations Canada vs. Australia Middleweight Bout")
 # test here and, if it needs one, a rule. Until then it fails closed like
 # anything else we have not seen.
 
+# ---------------------------------------------------------------------------
+# The tournament era, 1993-1999.
+#
+# Four windows failed here: B-1995 and B-1996 on the Ultimate Ultimate cards,
+# B-1997 and B-1999 on the two Ultimate Japan cards. Two different things were
+# landing in the division slot — the event series name, and where a fighter
+# stood in the bracket. Neither is a weight.
+
+# The series name is stripped and the real division survives.
+expect("UFC Japan Openweight Bout", "OPEN")
+expect("UFC Japan Heavyweight Bout", "HEAVYWEIGHT")
+expect("UFC Japan Lightweight Bout", "LIGHTWEIGHT")
+expect("Ultimate Japan Openweight Bout", "OPEN")
+expect("UFC Japan Middleweight Tournament Title Bout", "MIDDLEWEIGHT", title=True)
+expect("UFC Ultimate Ultimate 96 Openweight Bout", "OPEN")
+
+# A bracket position is not a division, and a bout that had no division still
+# resolves to None rather than failing — the same answer "UFC 2 Tournament
+# Title Bout" already gets, for the same reason.
+expect("Tournament Semifinal Bout", None)
+expect("Tournament Quarterfinal Bout", None)
+expect("Alternate Bout", None)
+expect("UFC Ultimate Ultimate 95 Tournament Title Bout", None, title=True)
+expect("UFC Japan Tournament Title Bout", None, title=True)
+
+# Both leftovers can appear at once.
+expect("Openweight Tournament Semifinal Bout", "OPEN")
+expect("Heavyweight Tournament Alternate Bout", "HEAVYWEIGHT")
+
+# And it still cannot invent a division. Stripping the series name off a label
+# whose remainder is not a real weight leaves it failing closed, exactly as
+# before.
+expect_raises("Ultimate Ultimate Bogusweight Bout")
+expect_raises("UFC Japan Ultraweight Bout")
+
+# The lists are closed on purpose. Another country or another round word is
+# added when a window actually fails on it, not in anticipation of one.
+expect_raises("UFC Ireland Openweight Bout")
+
 if failures:
     print(f"\n{failures} failure(s)")
     sys.exit(1)

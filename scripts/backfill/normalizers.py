@@ -43,6 +43,26 @@ _TUF_MATCHUP_PREFIX = re.compile(
     re.I,
 )
 
+# The tournament era, 1993-1999. Four windows failed on it — B-1995, B-1996,
+# B-1997 and B-1999 — and the four events they died on say what the two
+# leftovers are:
+#
+#   Ultimate Ultimate '95, Ultimate Ultimate '96   the EVENT SERIES name lands
+#   Ultimate Japan, Ultimate Japan 2               in the division slot, the
+#                                                  same way Brazil and China
+#                                                  already do above.
+#
+#   "Tournament Semifinal Bout", "Alternate Bout"  the BRACKET POSITION lands
+#                                                  there too. Where a fighter
+#                                                  stood in a tournament is not
+#                                                  what weight he stood at.
+#
+# Both lists are closed: only strings our own failing events produced. A new
+# series or a new round word is added when a window proves it, not in
+# anticipation of one.
+_EARLY_SERIES = re.compile(r"\b(Ultimate Ultimate|Ultimate Japan|Japan)\b", re.I)
+_BRACKET_ROUND = re.compile(r"\b(Semifinals?|Quarterfinals?|Alternate|Final)\b", re.I)
+
 
 def norm_weight_class(raw: str, url: str) -> dict:
     """'UFC Women's Bantamweight Title Bout' -> {weight_class: BANTAMWEIGHT, is_womens: True, is_title: True}.
@@ -91,6 +111,26 @@ def norm_weight_class(raw: str, url: str) -> dict:
     if rescued and rescued != core:
         for k, v in wc["map"].items():
             if rescued.lower() == k.lower():
+                return {"weight_class": v, "is_womens": is_womens, "is_title": is_title}
+
+    # Second rescue, on the same terms as the first: it runs only after normal
+    # resolution has failed, it strips only the closed lists above, and it is
+    # accepted only if what remains is a division we recognise or nothing at
+    # all. So it cannot change any label that resolves today, and it cannot
+    # invent a division — "Japan Featherweight" is still not a weight class and
+    # still fails closed.
+    #
+    # Resolving to nothing is a real answer here, not a failure to find one.
+    # "Alternate Bout" and "UFC Japan Tournament Title Bout" carry no division
+    # because those bouts had none, which is exactly what the empty-core branch
+    # above already concludes for "UFC 2 Tournament Title Bout".
+    early = _BRACKET_ROUND.sub(" ", _EARLY_SERIES.sub(" ", core))
+    early = re.sub(r"\s+", " ", early).strip()
+    if early != core:
+        if not early:
+            return {"weight_class": None, "is_womens": is_womens, "is_title": is_title}
+        for k, v in wc["map"].items():
+            if early.lower() == k.lower():
                 return {"weight_class": v, "is_womens": is_womens, "is_title": is_title}
 
     raise SchemaAssertionError(url, f"unknown weight class {raw!r} (core={core!r})")
