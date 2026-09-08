@@ -1,0 +1,47 @@
+name: UFC newsroom provider canary
+
+on:
+  push:
+    branches:
+      - fight-dna-repair-v1
+    paths:
+      - '.github/workflows/newsroom-provider-canary.yml'
+      - 'scripts/news/copilot_provider_canary.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  copilot-requests: write
+
+jobs:
+  copilot-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install current Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Version and help
+        shell: bash
+        run: |
+          set -o pipefail
+          copilot --version | tee copilot-version.log
+          copilot --help | tee copilot-help.log
+      - name: Structured provider canary
+        shell: bash
+        run: node scripts/news/copilot_provider_canary.mjs | tee copilot-canary.log
+      - name: Upload proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newsroom-provider-canary-${{ github.run_id }}
+          path: |
+            copilot-version.log
+            copilot-help.log
+            copilot-canary.log
+          if-no-files-found: warn
