@@ -147,7 +147,8 @@ create index if not exists ufc_status_active_idx on public.ufc_fighter_status_ev
 create index if not exists ufc_status_detected_idx on public.ufc_fighter_status_events (detected_at desc);
 
 -- Read path for the site and the API. Joins the names once so no page has to.
-create or replace view public.ufc_fighter_status_feed as
+create or replace view public.ufc_fighter_status_feed
+  with (security_invoker = true) as
 select
   s.id,
   s.fighter_id,
@@ -191,9 +192,25 @@ left join public.ufc_fighters rf on rf.id = s.replacement_fighter_id
 left join public.ufc_fighters pf on pf.id = s.replaced_fighter_id;
 
 -- One row per fighter: the current availability read, or nothing.
+--
 -- 'active' only — a resolved or expired event is history, and history must not
 -- render as a present-tense claim that someone is unavailable.
-create or replace view public.ufc_fighter_current_status as
+--
+-- AND a second, independent guard: a card-specific status whose event has
+-- already happened is excluded HERE, in the view, regardless of its stored
+-- state. The lifecycle pass (scripts/status/lifecycle.mjs) marks such rows
+-- 'expired', but that pass is a scheduled job and a scheduled job can be late,
+-- can fail, or can be switched off. If the only thing standing between a
+-- withdrawal from a card fought last March and today's availability page is a
+-- cron that ran, then one missed run publishes a false present-tense claim
+-- about a named athlete. The view does not depend on the job having run.
+--
+-- Non-card statuses (an injury with no event_id, a suspension) are NOT expired
+-- by time here: nothing in the passage of time tells us a fighter recovered,
+-- and inferring that would be exactly the medical inference this system
+-- refuses to make. Those end only when a source says so.
+create or replace view public.ufc_fighter_current_status
+  with (security_invoker = true) as
 select distinct on (s.fighter_id)
   s.fighter_id,
   s.id as status_event_id,
@@ -210,15 +227,21 @@ select distinct on (s.fighter_id)
   s.confidence,
   coalesce(s.effective_at, s.source_published_at, s.detected_at) as occurred_at
 from public.ufc_fighter_status_events s
+left join public.ufc_events e on e.id = s.event_id
 where s.state = 'active'
   and s.status_type in ('injury', 'illness', 'withdrawal', 'suspension', 'visa_travel')
+  /* Card-specific and the card has passed -> not a current availability claim,
+     whatever the stored state says. A null event_date is treated as not-passed:
+     an unknown date is not evidence the event happened. */
+  and (s.event_id is null or e.event_date is null or e.event_date >= current_date)
 order by s.fighter_id,
          coalesce(s.effective_at, s.source_published_at, s.detected_at) desc,
          s.confidence desc,
          s.id;
 
 -- Card changes for one event, in the order a reader wants them.
-create or replace view public.ufc_event_card_changes as
+create or replace view public.ufc_event_card_changes
+  with (security_invoker = true) as
 select
   s.event_id,
   s.id,
@@ -248,7 +271,50 @@ left join public.ufc_fighters pf on pf.id = s.replaced_fighter_id
 where s.event_id is not null
   and s.status_type in ('withdrawal', 'replacement', 'weight_miss', 'injury', 'illness', 'visa_travel', 'suspension');
 
+-- ---------------------------------------------------------------------------
+-- ACCESS CONTROL
+--
+-- RLS on the base table is only half of a guarantee. A view in PostgreSQL runs
+-- with the privileges of its OWNER by default, so a view over an RLS-protected
+-- table hands every row to anyone who can select from the view — the policies
+-- are evaluated as the owner, who is exempt. Three read views over a table of
+-- sourced medical and disciplinary claims about named people is exactly where
+-- that must not happen.
+--
+-- security_invoker = true makes each view execute as the CALLER, so the base
+-- table's RLS is evaluated against the role that actually asked. Requires
+-- PostgreSQL 15+, which this project is on.
+--
+-- Belt and braces, because the two mechanisms fail differently:
+--
+--   security_invoker  ensures RLS is applied to the caller. With no policies
+--                     defined, anon and authenticated therefore see zero rows
+--                     even if they hold SELECT.
+--   explicit revoke   removes SELECT from anon/authenticated outright, so the
+--                     view is not merely empty for them but inaccessible. This
+--                     survives a future policy being added to the table for a
+--                     different purpose — a policy written for one reason must
+--                     not silently open three views.
+--
+-- service_role keeps SELECT and bypasses RLS, which is how every server-side
+-- read in this repo works (web/lib/status.ts and workers/ufc-api both use the
+-- service-role key). Nothing about the server path changes.
 alter table public.ufc_fighter_status_events enable row level security;
+
+-- No policies are defined for anon or authenticated. Under RLS that is a
+-- default deny, and it is deliberate: this data reaches the public only
+-- through the server, which decides what to show and how to caveat it.
+revoke all on public.ufc_fighter_status_events from anon, authenticated;
+revoke all on public.ufc_fighter_status_feed from anon, authenticated;
+revoke all on public.ufc_fighter_current_status from anon, authenticated;
+revoke all on public.ufc_event_card_changes from anon, authenticated;
+
+-- The collector inserts and the lifecycle pass updates; nothing deletes.
+-- History is never removed, only superseded or expired.
+grant select, insert, update on public.ufc_fighter_status_events to service_role;
+grant select on public.ufc_fighter_status_feed to service_role;
+grant select on public.ufc_fighter_current_status to service_role;
+grant select on public.ufc_event_card_changes to service_role;
 
 comment on table public.ufc_fighter_status_events is
   'Structured, individually sourced fighter availability events. Every clinical field is null unless the cited source states it in words: this table records what a source said, never what a condition probably was.';

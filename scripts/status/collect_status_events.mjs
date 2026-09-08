@@ -109,7 +109,10 @@ export async function collectStatusEvents(injectedEnv, options = {}) {
 
   const counters = {
     window_hours: opts.sinceHours, items_read: items.length, candidates: candidates.length,
-    events: 0, below_confidence: 0, extraction_errors: 0, written: 0, duplicates: 0,
+    events: 0, below_confidence: 0, extraction_errors: 0,
+    /* Measured against what the database did, never against what we offered.
+     * offered = inserted + duplicate_noop + rejected, always. */
+    offered: 0, inserted: 0, duplicate_noop: 0, rejected: 0,
   };
   const events = [];
   const skipped = [];
@@ -146,19 +149,70 @@ export async function collectStatusEvents(injectedEnv, options = {}) {
   /* The write path. Unreachable until the migration is applied, and shaped so
    * that a repeat pass is a database no-op rather than a client decision:
    * on_conflict names the real unique index, never the surrogate primary key. */
-  for (const evt of events) {
+  const rows = events.map((evt) => {
     const row = { ...evt };
     delete row.fighter_name; delete row.ambiguous;
+    return row;
+  });
+  const write = await insertCountingRows(sb, rows);
+  Object.assign(counters, write.counters);
+  skipped.push(...write.rejected);
+
+  console.log(`[status] offered=${counters.offered} inserted=${counters.inserted} duplicate_noop=${counters.duplicate_noop} rejected=${counters.rejected}`);
+  return { ...counters, events, skipped, wrote: true };
+}
+
+/**
+ * Insert status rows and count what ACTUALLY landed.
+ *
+ * The bug this replaces: the previous version called insert() with
+ * `returning: false` and incremented a `written` counter whenever the request
+ * did not throw. With `resolution=ignore-duplicates` a duplicate does not
+ * throw — it succeeds and inserts nothing — so every re-read of the overlapping
+ * feed window reported the same stories as freshly written. On a ten-minute
+ * cadence that is roughly a hundred and forty phantom writes a day in the run
+ * ledger, and the one number anybody would look at to answer "is the collector
+ * working?" would say yes while the table sat still.
+ *
+ * The fix is to ask the database what it did. Under
+ * `Prefer: resolution=ignore-duplicates, return=representation` PostgREST
+ * returns a row per INSERTED row and nothing for the ones it ignored, so
+ * `inserted` is measured rather than assumed and `duplicate_noop` is the
+ * remainder.
+ *
+ * A batch is attempted first because it is one round trip. If it fails — a
+ * CHECK violation on one malformed row would otherwise take the whole pass
+ * down — each row is retried alone, so one bad row costs one row.
+ */
+export async function insertCountingRows(sb, rows) {
+  const counters = { offered: rows.length, inserted: 0, duplicate_noop: 0, rejected: 0 };
+  const rejected = [];
+  if (!rows.length) return { counters, rejected };
+
+  const opts = { onConflict: 'fingerprint', ignoreDuplicates: true, returning: true };
+  try {
+    const back = await sb.insert('ufc_fighter_status_events', rows, opts);
+    counters.inserted = Array.isArray(back) ? back.length : 0;
+    counters.duplicate_noop = rows.length - counters.inserted;
+    return { counters, rejected };
+  } catch (batchError) {
+    console.log(`[status] batch insert failed (${String(batchError?.message).slice(0, 120)}); retrying row by row`);
+  }
+
+  for (const row of rows) {
     try {
-      await sb.insert('ufc_fighter_status_events', [row], { onConflict: 'fingerprint', ignoreDuplicates: true, returning: false });
-      counters.written += 1;
+      const back = await sb.insert('ufc_fighter_status_events', [row], opts);
+      const landed = Array.isArray(back) ? back.length : 0;
+      if (landed) counters.inserted += 1; else counters.duplicate_noop += 1;
     } catch (e) {
-      if (/23505|duplicate/i.test(String(e?.message))) counters.duplicates += 1;
-      else throw e;
+      /* A unique violation that escapes ignore-duplicates is still a no-op on
+       * the table, so it counts as one — not as a write and not as a loss. */
+      if (/23505|duplicate key/i.test(String(e?.message))) { counters.duplicate_noop += 1; continue; }
+      counters.rejected += 1;
+      rejected.push({ id: row.news_item_id, title: null, reason: 'insert_rejected', detail: String(e?.message || e).slice(0, 200) });
     }
   }
-  console.log(`[status] wrote ${counters.written}, ${counters.duplicates} already known`);
-  return { ...counters, events, skipped, wrote: true };
+  return { counters, rejected };
 }
 
 /* CLI only. Importing this module must never read or write anything. */

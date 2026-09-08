@@ -10,7 +10,7 @@ export {
 /* Fighter availability read path.
  *
  * Reads ufc_fighter_status_feed / ufc_event_card_changes, which the migration
- * in supabase/migrations/20260908000010_ufc_fighter_status.sql defines and
+ * in supabase/migrations/20260908000011_ufc_fighter_status.sql defines and
  * which HAS NOT BEEN APPLIED. Every reader below therefore returns an empty
  * result rather than throwing: the pages that use them render their empty
  * state today and fill in the moment the migration lands, with no code change.

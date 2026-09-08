@@ -211,7 +211,7 @@ test("the endpoints are advertised on the API index", async () => {
 test("the status vocabulary matches the migration's CHECK constraint", async () => {
   /* Two lists of the same enum will drift; this is the cheap guard. */
   const { readFileSync } = await import("node:fs");
-  const sql = readFileSync(new URL("../../../supabase/migrations/20260908000010_ufc_fighter_status.sql", import.meta.url), "utf8");
+  const sql = readFileSync(new URL("../../../supabase/migrations/20260908000011_ufc_fighter_status.sql", import.meta.url), "utf8");
   for (const t of __test.STATUS_TYPES) {
     assert.ok(sql.includes(`'${t}'`), `status_type ${t} is missing from the migration`);
   }
