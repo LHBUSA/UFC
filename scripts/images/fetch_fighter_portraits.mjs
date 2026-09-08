@@ -52,6 +52,12 @@ const LIMIT = opt('--limit') ? Number(opt('--limit')) : Infinity;
 const FORCE = flag('--force');
 const DRY = flag('--dry-run');
 const ONLY_FIGHTER = opt('--fighter');
+// A reviewed list of names to work through, so a surface that needs pictures
+// — the TUF archive, the Contender Series roster — can be filled without
+// walking all 2,500 fighters. Names are resolved against ufc_fighters and
+// anything that does not resolve is reported rather than guessed at; the
+// license gate and the identity lock below are unchanged.
+const NAMES_FILE = opt('--names');
 const MISSING_ONLY = flag('--missing-only');
 const PRIORITY = !flag('--no-priority'); // --priority is the default
 
@@ -337,7 +343,18 @@ async function processFighter(f) {
   }
 
   const ent = await resolveEntity(f);
-  if (ent.status !== 'ok') return { status: ent.status, note: ent.note };
+  if (ent.status !== 'ok') {
+    // No Wikidata entity says nobody has written a structured record for this
+    // fighter. It says nothing about whether a freely licensed photograph of
+    // them exists, and treating the two as the same thing left most of the
+    // roster unpictured for no good reason. The gated search still applies:
+    // the filename must carry the name and tie it to the sport, so an absent
+    // entity costs us the DOB cross-check but never lowers the identity bar
+    // to a bare name match.
+    const searched = await findCommonsSearchFallback(f);
+    if (!searched) return { status: ent.status, note: `${ent.note}; gated commons search found nothing usable` };
+    return finalizeImage(f, searched.info, { qid: null, source: `Search/${searched.info.filename}` });
+  }
 
   const p18 = ent.entity?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;
   let info = p18 ? await commonsImageInfo(p18) : null;
@@ -361,12 +378,73 @@ async function processFighter(f) {
     }
   }
 
+  // Third route, added after a coverage pass showed the two above leave most
+  // of the roster with nothing: a free-text Commons search, gated hard.
+  //
+  // The original note here warned that free-text image search across Commons
+  // is dangerous, and it is right — a name query returns photographs of other
+  // people with the same name, and putting one of those on a fighter's page
+  // is worse than leaving the page without a face. So the search is only a
+  // CANDIDATE GENERATOR: every file must then carry the fighter's name in its
+  // filename AND something that ties it to this sport before it is even sent
+  // for a license check. A file that merely matches the name is discarded.
+  if (!info) {
+    const searched = await findCommonsSearchFallback(f);
+    if (searched) {
+      info = searched.info;
+      source = `Search/${searched.info.filename}`;
+    }
+  }
+
   if (!info || !info.url) {
-    if (rejectedP18) return { status: 'license_rejected', qid: ent.qid, note: `P18 rejected (${rejectedP18}); no safe category fallback` };
-    return { status: 'no_image', qid: ent.qid, note: `${ent.qid} has no safe P18/category portrait` };
+    if (rejectedP18) return { status: 'license_rejected', qid: ent.qid, note: `P18 rejected (${rejectedP18}); no safe category or search fallback` };
+    return { status: 'no_image', qid: ent.qid, note: `${ent.qid} has no safe P18/category/search portrait` };
   }
 
   return finalizeImage(f, info, { qid: ent.qid, source });
+}
+
+/** Does this filename plausibly depict THIS fighter in THIS sport? */
+function fighterFilenameGate(file, name) {
+  const f = String(file).toLowerCase().replace(/[_-]+/g, ' ');
+  const n = String(name).toLowerCase();
+  const parts = n.split(/\s+/).filter((x) => x.length > 2);
+  const surname = parts[parts.length - 1] || '';
+  // Every part of the name, or at least a distinctive surname, must appear.
+  const allParts = parts.length > 1 && parts.every((p) => f.includes(p));
+  if (!allParts && !(surname.length > 5 && f.includes(surname))) {
+    return { ok: false, why: 'filename does not carry the name' };
+  }
+  if (!/(mma|ufc|bellator|octagon|cage|weigh|fight night|ufc \d)/.test(f)) {
+    return { ok: false, why: 'filename carries the name but nothing tying it to the sport' };
+  }
+  return { ok: true };
+}
+
+/**
+ * Candidate generator of last resort. Returns an accepted, license-checked
+ * image or null; never a guess.
+ */
+async function findCommonsSearchFallback(f) {
+  let hits;
+  try {
+    const j = await wikiFetch(
+      `https://commons.wikimedia.org/w/api.php?action=query&format=json&list=search&srnamespace=6&srlimit=20&srsearch=${encodeURIComponent(f.name)}`,
+    );
+    hits = (j?.query?.search || []).map((h) => String(h.title).replace(/^File:/, ''));
+  } catch { return null; }
+
+  for (const file of hits) {
+    if (!/\.(jpe?g|png|webp)$/i.test(file)) continue;
+    if (!fighterFilenameGate(file, f.name).ok) continue;
+    let info = null;
+    try { info = await commonsImageInfo(file); } catch { continue; }
+    if (!info || !info.url) continue;
+    if (!LICENSE_OK.test(info.license || '')) continue;
+    if (Math.min(info.width || 0, info.height || 0) < MIN_SOURCE_EDGE) continue;
+    return { info };
+  }
+  return null;
 }
 
 // ---------------------------------------------------------------- main
@@ -376,6 +454,35 @@ async function main() {
     ? await sbSelectAll('ufc_fighters', `select=id,name,nickname,dob&id=eq.${ONLY_FIGHTER}`)
     : await sbSelectAll('ufc_fighters', 'select=id,name,nickname,dob&order=name.asc');
   if (ONLY_FIGHTER && fighters.length === 0) { console.error(`fighter ${ONLY_FIGHTER} not found`); process.exit(1); }
+  /* The full roster, captured before any filtering, so a name-list report can
+   * tell "not in ufc_fighters at all" from "filtered out for another reason". */
+  const allNames = new Set(fighters.map((f) => String(f.name)));
+
+  if (NAMES_FILE) {
+    const wanted = JSON.parse(fs.readFileSync(NAMES_FILE, 'utf8'));
+    /* Accent-folded, because the archive spells names as its sources do
+     * ("Alejandro Pérez", "Antônio Rodrigo Nogueira") and ufc_fighters
+     * generally does not. Folding is only for MATCHING; the stored row keeps
+     * whatever the database already has, and no name is rewritten. */
+    const fold = (n) => String(n).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+    const want = new Set(wanted.map(fold));
+    const before = fighters.length;
+    fighters = fighters.filter((f) => want.has(fold(f.name)));
+    /* Preserve the caller's ordering: the list is written most-important
+     * first (coaches and champions before contestants) and that is the order
+     * a limited run should work through. */
+    const rank = new Map(wanted.map((n, i) => [fold(n), i]));
+    fighters.sort((a, b) => (rank.get(fold(a.name)) ?? 1e9) - (rank.get(fold(b.name)) ?? 1e9));
+    const got = new Set(fighters.map((f) => fold(f.name)));
+    /* Two very different reasons a name is not in the work list, and calling
+     * both "unresolved" reads as a data gap when half of them are successes. */
+    const known = new Set([...allNames].map(fold));
+    const absent = wanted.filter((n) => !known.has(fold(n)));
+    const pictured = wanted.filter((n) => known.has(fold(n)) && !got.has(fold(n)));
+    console.log(`name list: ${fighters.length} of ${wanted.length} queued (from ${before} candidate fighters)`);
+    if (pictured.length) console.log(`  already have stored media, skipped: ${pictured.length}`);
+    if (absent.length) console.log(`  no fighter row, left alone: ${absent.length} — ${absent.slice(0, 10).join(', ')}${absent.length > 10 ? ` … +${absent.length - 10}` : ''}`);
+  }
 
   if (MISSING_ONLY && !ONLY_FIGHTER) {
     const existing = await sbSelectAll('ufc_images', 'select=fighter_id&kind=eq.wikimedia&fighter_id=not.is.null');
@@ -384,7 +491,7 @@ async function main() {
   }
 
   const prioritySet = new Set();
-  if (PRIORITY && !ONLY_FIGHTER) {
+  if (PRIORITY && !ONLY_FIGHTER && !NAMES_FILE) {
     const bouts = await sbSelectAll('ufc_bouts', `select=fighter_a_id,fighter_b_id,ufc_events!inner(event_date)&ufc_events.event_date=gte.${today}`);
     for (const b of bouts) { prioritySet.add(b.fighter_a_id); prioritySet.add(b.fighter_b_id); }
     fighters.sort((a, b) => (prioritySet.has(b.id) - prioritySet.has(a.id)) || a.name.localeCompare(b.name));

@@ -29,6 +29,21 @@ def norm_method(raw: str, url: str) -> str:
     raise SchemaAssertionError(url, f"unknown method {raw!r}")
 
 
+# "TUF <edition> <side A> vs. <side B> " where a division follows. Anchored at
+# the start and requiring the TUF prefix, so it matches the international
+# seasons' verified label format and nothing else. Only the formats we have
+# actually seen in source data belong here; more are added when a fixture
+# proves them, not in anticipation.
+_TUF_MATCHUP_PREFIX = re.compile(
+    r"^\s*TUF\s+"
+    r"[A-Za-z][A-Za-z.'\-]*(?:\s+[A-Za-z][A-Za-z.'\-]*)*?"
+    r"\s+vs\.?\s+"
+    r"[A-Za-z][A-Za-z.'\-]*(?:\s+[A-Za-z][A-Za-z.'\-]*)*?"
+    r"\s+(?=\S)",
+    re.I,
+)
+
+
 def norm_weight_class(raw: str, url: str) -> dict:
     """'UFC Women's Bantamweight Title Bout' -> {weight_class: BANTAMWEIGHT, is_womens: True, is_title: True}.
     Empty string (some very old bouts) -> weight_class None."""
@@ -58,6 +73,26 @@ def norm_weight_class(raw: str, url: str) -> dict:
     for k, v in wc["map"].items():
         if core.lower() == k.lower():
             return {"weight_class": v, "is_womens": is_womens, "is_title": is_title}
+
+    # Last chance, and only for a TUF label whose matchup leaked into the
+    # division. B-2014 stopped on
+    #   "TUF Nations Canada vs. Australia Middleweight Tournament Title Bout"
+    # which reduces to "TUF Canada vs. Australia Middleweight": the country
+    # pairing is part of the SEASON's name, not of the weight class.
+    #
+    # Deliberately a rescue rather than another pass over every label. It runs
+    # only after normal resolution has already failed, and it is accepted only
+    # if what remains is a division we recognise, so it cannot change the
+    # outcome of any label that resolves today and cannot turn an unknown
+    # division into a known one. The anchor is the literal "TUF" prefix plus an
+    # "X vs. Y" pairing followed by something else; a label that merely
+    # contains a country name is untouched and still fails closed.
+    rescued = _TUF_MATCHUP_PREFIX.sub(" ", core, count=1).strip()
+    if rescued and rescued != core:
+        for k, v in wc["map"].items():
+            if rescued.lower() == k.lower():
+                return {"weight_class": v, "is_womens": is_womens, "is_title": is_title}
+
     raise SchemaAssertionError(url, f"unknown weight class {raw!r} (core={core!r})")
 
 
