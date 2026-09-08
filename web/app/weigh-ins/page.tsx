@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Breadcrumbs, Empty, JsonLd } from "@/components/ui";
-import { getUpcomingEvents } from "@/lib/db";
+import { Breadcrumbs, Empty, JsonLd, Portrait } from "@/components/ui";
+import {
+  getUpcomingEvents, getFightersByIds, getImagesForFighters,
+  type Fighter, type PortraitSet,
+} from "@/lib/db";
 import {
   getWeighIns, getWeighInSummary, getWeighInHistory, getWeighInEvents, pickDeskEvent,
   RESULT_LABEL, RESULT_TONE, SOURCE_KIND_LABEL,
@@ -10,14 +13,11 @@ import {
   type WeighIn,
 } from "@/lib/weighins";
 import { fighterSlug } from "@/lib/slug";
-import { fmtDate } from "@/lib/format";
+import { fmtDate, fmtHeight, fmtReach, fmtRecord, stanceLabel } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { WeighInAutoRefresh } from "@/components/WeighInAutoRefresh";
 import styles from "./weighins.module.css";
 
-/* The desk re-reads its own cache this often. It bounds cache staleness, NOT
- * data freshness — the source is fetched every few minutes, and the header
- * shows the source's own timestamp rather than this page's render time. */
 export const revalidate = 15;
 
 export const metadata: Metadata = {
@@ -29,57 +29,101 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "UFC Weigh-Ins — PropBetEdge" },
 };
 
-function Row({ w }: { w: WeighIn }) {
+type BoutGroup = { key: string; boutId: string | null; rows: WeighIn[] };
+
+function groupByBout(rows: WeighIn[]): BoutGroup[] {
+  const groups = new Map<string, BoutGroup>();
+  for (const row of rows) {
+    const key = row.bout_id || `row:${row.id}`;
+    const current = groups.get(key);
+    if (current) current.rows.push(row);
+    else groups.set(key, { key, boutId: row.bout_id, rows: [row] });
+  }
+  return [...groups.values()];
+}
+
+function profileValue(value: string) {
+  return value === "—" ? "Not on file" : value;
+}
+
+function FighterReading({ w, fighter, img }: { w: WeighIn; fighter: Fighter | null; img?: PortraitSet | null }) {
   const weight = weightCell(w);
   const limit = limitCell(w);
   const delta = deltaCell(w);
   const tone = RESULT_TONE[w.result];
+  const href = `/fighters/${fighterSlug(fighter || { name: w.fighter_name, espn_athlete_id: w.fighter_espn_athlete_id, ufcstats_id: w.fighter_ufcstats_id })}`;
+  const visualFighter = fighter || { name: w.fighter_name };
 
   return (
-    <tr className={styles.row} data-tone={tone}>
-      <td className={styles.cFighter}>
-        <Link href={`/fighters/${fighterSlug({ name: w.fighter_name, espn_athlete_id: w.fighter_espn_athlete_id, ufcstats_id: w.fighter_ufcstats_id })}`}>
-          {w.fighter_name}
+    <section className={styles.reading} data-tone={tone} aria-label={`${w.fighter_name} weigh-in result`}>
+      <div className={styles.fighterTop}>
+        <Link href={href} aria-label={`${w.fighter_name} fighter profile`}>
+          <Portrait f={visualFighter} img={img} sizes="(max-width: 680px) 82px, 104px" className={styles.fighterPortrait} />
         </Link>
-        {w.attempt_number > 1 && <span className={styles.attempt}>attempt {w.attempt_number}</span>}
-        {w.is_correction && <span className={styles.corrected}>Corrected</span>}
-      </td>
+        <div className={styles.fighterIdentity}>
+          <div className={styles.statusLine}>
+            <span className={styles.badge} data-tone={tone}>{RESULT_LABEL[w.result]}</span>
+            {w.is_correction && <span className={styles.corrected}>Corrected</span>}
+            {w.attempt_number > 1 && <span className={styles.attempt}>Attempt {w.attempt_number}</span>}
+          </div>
+          <h3><Link href={href}>{w.fighter_name}</Link></h3>
+          {fighter?.nickname && <p className={styles.nickname}>“{fighter.nickname}”</p>}
+          <div className={styles.profileFacts}>
+            <span><small>Record</small><b>{profileValue(fighter ? fmtRecord(fighter) : "—")}</b></span>
+            <span><small>Height</small><b>{profileValue(fighter ? fmtHeight(fighter.height_in) : "—")}</b></span>
+            <span><small>Reach</small><b>{profileValue(fighter ? fmtReach(fighter.reach_in) : "—")}</b></span>
+            <span><small>Stance</small><b>{profileValue(fighter ? stanceLabel(fighter.stance) : "—")}</b></span>
+          </div>
+        </div>
+      </div>
 
-      <td className={styles.cBout}>
-        {w.card_position && <span className={styles.pos}>{w.card_position}</span>}
-        {w.bout_id ? <Link href={`/weigh-ins#bout-${w.bout_id}`}>{w.weight_class_raw || classCell(w)}</Link> : (w.weight_class_raw || "Bout not on file")}
-      </td>
+      <div className={styles.scaleGrid}>
+        <div className={styles.scalePrimary}>
+          <span>Official weight</span>
+          <b className={weight.known ? styles.weight : styles.weightUnknown}>{weight.text}</b>
+        </div>
+        <div className={styles.scaleMetric}>
+          <span>Applicable limit</span>
+          <b className={limit.known ? styles.limit : styles.limitUnknown}>{limit.text}</b>
+          {limit.note && <small>{limit.note}</small>}
+        </div>
+        <div className={styles.scaleMetric} data-alert={delta.over ? "true" : undefined}>
+          <span>Delta</span>
+          <b className={delta.over ? styles.over : styles.under}>{delta.text}</b>
+          {w.catchweight_lbs != null && <small>Catchweight agreed</small>}
+        </div>
+      </div>
 
-      <td className={styles.cClass}>
-        <span className={styles.className}>{classCell(w)}</span>
-        <span className={limit.known ? styles.limit : styles.limitUnknown}>{limit.text}</span>
-        {limit.note && <span className={styles.limitNote}>{limit.note}</span>}
-      </td>
-
-      <td className={styles.cWeight}>
-        <span className={weight.known ? styles.weight : styles.weightUnknown}>{weight.text}</span>
-      </td>
-
-      <td className={styles.cDelta}>
-        <span className={delta.over ? styles.over : styles.under}>{delta.text}</span>
-      </td>
-
-      <td className={styles.cStatus}>
-        <span className={styles.badge} data-tone={tone}>{RESULT_LABEL[w.result]}</span>
-        {w.catchweight_lbs != null && <span className={styles.catch}>Catchweight agreed</span>}
-      </td>
-
-      <td className={styles.cWhen}>
-        {clockTime(w.weighed_at || w.source_published_at) ? (
-          <span className={styles.time}>{clockTime(w.weighed_at || w.source_published_at)}</span>
-        ) : (
-          <span className={styles.timeUnknown}>no timestamp published</span>
-        )}
-        <a className={styles.src} href={w.source_url} target="_blank" rel="noopener noreferrer nofollow">
-          {SOURCE_KIND_LABEL[w.source_kind]} ↗
+      <div className={styles.receipt}>
+        <span>{clockTime(w.weighed_at || w.source_published_at) || "Timestamp not published"}</span>
+        <a href={w.source_url} target="_blank" rel="noopener noreferrer nofollow">
+          {SOURCE_KIND_LABEL[w.source_kind]} · {w.source_name} ↗
         </a>
-      </td>
-    </tr>
+      </div>
+    </section>
+  );
+}
+
+function BoutCard({ group, fighters, images }: { group: BoutGroup; fighters: Map<string, Fighter>; images: Map<string, PortraitSet> }) {
+  const first = group.rows[0];
+  return (
+    <article className={styles.boutCard} id={group.boutId ? `bout-${group.boutId}` : undefined}>
+      <header className={styles.boutHead}>
+        <div>
+          <span>{first.card_position ? first.card_position.replace(/_/g, " ") : "Card"}{first.bout_order != null ? ` · Bout ${first.bout_order}` : ""}</span>
+          <h2>{first.weight_class_raw || classCell(first)}</h2>
+        </div>
+        <div className={styles.boutLimit}>
+          <small>Contract</small>
+          <b>{limitCell(first).text}</b>
+        </div>
+      </header>
+      <div className={styles.readings}>
+        {group.rows.map((w) => (
+          <FighterReading key={w.id} w={w} fighter={fighters.get(w.fighter_id) || null} img={images.get(w.fighter_id)} />
+        ))}
+      </div>
+    </article>
   );
 }
 
@@ -104,11 +148,18 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
     ? await Promise.all([
         getWeighIns(desk.eventId).catch(() => []),
         getWeighInSummary(desk.eventId).catch(() => null),
-        getWeighInHistory(desk.eventId, 40).catch(() => []),
+        getWeighInHistory(desk.eventId, 18).catch(() => []),
       ])
     : [[], null, []];
 
   const table = sortForTable(rows);
+  const fighterIds = [...new Set(table.map((r) => r.fighter_id).filter(Boolean))];
+  const [fighters, images] = await Promise.all([
+    getFightersByIds(fighterIds).catch(() => []),
+    getImagesForFighters(fighterIds).catch(() => new Map<string, PortraitSet>()),
+  ]);
+  const fighterMap = new Map(fighters.map((f) => [f.id, f]));
+  const boutGroups = groupByBout(table);
   const live = isLive(summary);
   const missed = table.filter((r) => r.result === "missed");
   const cutoff = new Date(Date.now() - 21 * 86400e3).toISOString().slice(0, 10);
@@ -119,9 +170,6 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
   return (
     <div className="wrap page">
       <Breadcrumbs items={[{ name: "Weigh-Ins" }]} />
-      {/* Browser polls OUR route only. It never touches a publisher: source
-          cadence is what determines freshness, and a page that fanned out to
-          third parties would multiply their load by our readership. */}
       <WeighInAutoRefresh seconds={WEIGHIN_REVALIDATE} enabled={live} />
 
       <section className={styles.hero}>
@@ -137,15 +185,11 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
               {desk.eventDate && <span className={styles.eventDate}> · {fmtDate(desk.eventDate)}</span>}
               {desk.state === "recent" && <span className={styles.eventNote}> · covered archive</span>}
             </p>
-          ) : (
-            <p className={styles.event}>No card on file</p>
-          )}
+          ) : <p className={styles.event}>No card on file</p>}
           <p className={styles.freshness}>
             {sourceStampIsPublisher ? "Latest source publication" : "Latest verified capture"}: <strong>{freshness(sourceStamp)}</strong>
             <span className={styles.freshNote}>
-              {sourceStampIsPublisher
-                ? " — from the publisher's retained timestamp."
-                : " — the historical source is verified, but its publication time was not retained."}
+              {sourceStampIsPublisher ? " — publisher timestamp retained." : " — verified source; publication time was not retained."}
             </span>
           </p>
         </div>
@@ -154,14 +198,10 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
           {[
             { n: summary?.expected ?? 0, l: "expected" },
             { n: summary?.weighed ?? 0, l: "weighed" },
-            { n: summary?.made ?? 0, l: "made weight", tone: "ok" },
+            { n: summary?.made ?? 0, l: "made", tone: "ok" },
             { n: summary?.missed ?? 0, l: "missed", tone: summary?.missed ? "alert" : undefined },
             { n: summary?.pending ?? 0, l: "pending", tone: "neutral" },
-          ].map((c) => (
-            <div key={c.l} className={styles.counter} data-tone={c.tone}>
-              <b>{c.n}</b><span>{c.l}</span>
-            </div>
-          ))}
+          ].map((c) => <div key={c.l} className={styles.counter} data-tone={c.tone}><b>{c.n}</b><span>{c.l}</span></div>)}
         </aside>
       </section>
 
@@ -174,28 +214,21 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
 
       {table.length ? (
         <div className={styles.layout}>
-          <section className={styles.tableWrap} aria-label="Weigh-in results">
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Fighter</th><th>Bout</th><th>Weight class / limit</th>
-                  <th>Official weight</th><th>Delta</th><th>Status</th><th>Time</th>
-                </tr>
-              </thead>
-              <tbody>{table.map((w) => <Row key={w.id} w={w} />)}</tbody>
-            </table>
+          <section className={styles.boutList} aria-label="Weigh-in results by bout">
+            {boutGroups.map((group) => <BoutCard key={group.key} group={group} fighters={fighterMap} images={images} />)}
           </section>
 
-          <aside className={styles.timeline} aria-label="Live timeline">
-            <h2>Timeline</h2>
+          <aside className={styles.timeline} aria-label="Weigh-in timeline">
+            <div className={styles.timelineHead}>
+              <div><span>Source trail</span><h2>Timeline</h2></div>
+              <b>{history.length}</b>
+            </div>
             {history.length ? (
               <ol>
                 {history.map((h) => (
                   <li key={h.id} data-kind={h.result}>
                     <span className={styles.tKind}>{timelineKind({ ...(h as unknown as WeighIn), is_correction: Boolean(h.supersedes_id) })}</span>
-                    <span className={styles.tLine}>
-                      {updateLine({ ...(h as unknown as WeighIn), fighter_name: h.fighter_name })}
-                    </span>
+                    <span className={styles.tLine}>{updateLine({ ...(h as unknown as WeighIn), fighter_name: h.fighter_name })}</span>
                     <span className={styles.tMeta}>
                       {clockTime(h.occurred_at) ?? "time not published"} ·{" "}
                       <a href={h.source_url} target="_blank" rel="noopener noreferrer nofollow">{h.source_name}</a>
@@ -204,28 +237,21 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
                   </li>
                 ))}
               </ol>
-            ) : (
-              <p className={styles.tEmpty}>No readings recorded yet.</p>
-            )}
+            ) : <p className={styles.tEmpty}>No readings recorded yet.</p>}
           </aside>
         </div>
       ) : (
         <Empty title="Official weigh-in result not recorded yet">
-          <p>
-            No sourced scale readings are on file for this card yet. Once an official or verified source publishes them,
-            they appear here without guessing a weight or contractual limit.
-          </p>
+          <p>No sourced scale readings are on file for this card yet. The desk stays empty rather than guessing a weight or contractual limit.</p>
         </Empty>
       )}
 
-      <section className={styles.method} aria-labelledby="recent-weighins-heading">
+      <section className={styles.archive} aria-labelledby="recent-weighins-heading">
         <div className="eyebrow">21-day archive · official results</div>
         <h2 id="recent-weighins-heading">Recent official weigh-ins</h2>
-        <p className={styles.panelNote}>
-          The current desk does not erase the previous card. These are the covered weigh-ins from the last three weeks; select any card to reopen its full fighter table and source trail.
-        </p>
+        <p className={styles.panelNote}>Every covered card stays selectable after the next fight week begins.</p>
         {recentCovered.length ? (
-          <div className="grid-3" style={{ marginTop: 16 }}>
+          <div className={styles.archiveGrid}>
             {recentCovered.map((e) => (
               <Link key={e.event_id} href={`/weigh-ins?event=${encodeURIComponent(e.event_id)}`} className={styles.panel}>
                 <div className={styles.panelHead}>
@@ -238,27 +264,23 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
                   <span className={styles.panelCount} data-tone={e.missed ? "alert" : undefined}><b>{e.missed}</b><span>missed</span></span>
                 </div>
                 <p className={styles.panelNote}>
-                  {e.newest_source_published_at
-                    ? `Official source timestamp retained · ${fmtDate(e.newest_source_published_at)}`
-                    : "Official source retained · original publication time not retained"}
+                  {e.newest_source_published_at ? `Source timestamp · ${fmtDate(e.newest_source_published_at)}` : "Official source retained · publication time unavailable"}
                 </p>
               </Link>
             ))}
           </div>
-        ) : (
-          <p className={styles.tEmpty}>No official weigh-in cards are on file in the last 21 days.</p>
-        )}
+        ) : <p className={styles.tEmpty}>No official weigh-in cards are on file in the last 21 days.</p>}
       </section>
 
       <section className={styles.method}>
+        <div className="eyebrow">Rules behind the numbers</div>
         <h2>How this desk works</h2>
-        <ul>
-          <li><strong>Official sources first.</strong> The promotion&rsquo;s own results, then the athletic commission, then established reporting. Every row carries its source and timestamp when the source supplied one.</li>
-          <li><strong>A weight class is not a limit.</strong> A lightweight title fight is 155 lb; a non-title bout is 156 with the one-pound allowance; a catchweight is whatever was agreed. Where the contracted limit is not published, this says so and shows no delta.</li>
-          <li><strong>Nothing is inferred from a picture of a scale</strong> or from commentary. If a source reports a miss without a figure, the miss is recorded and the number stays empty.</li>
-          <li><strong>Corrections are kept.</strong> A revised weight becomes a new reading; the earlier one stays readable and the row is marked corrected.</li>
-          <li><strong>Never a blank where it matters.</strong> Not-yet-weighed, withdrew, cancelled and not-published are four different things and each says which.</li>
-        </ul>
+        <div className={styles.methodGrid}>
+          <p><strong>Official sources first.</strong> Promotion results, athletic commissions, then established reporting.</p>
+          <p><strong>Class is not the limit.</strong> Title, non-title allowance and catchweight contracts remain distinct.</p>
+          <p><strong>No scale-photo inference.</strong> If a source reports a miss without a number, the number stays empty.</p>
+          <p><strong>Corrections stay visible.</strong> Revised readings append to the trail instead of overwriting history.</p>
+        </div>
       </section>
 
       <JsonLd data={{
