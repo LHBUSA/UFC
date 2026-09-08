@@ -1,4 +1,5 @@
 // Preload for the one-time Fight DNA historical repair.
+// This file must be loaded through NODE_OPTIONS so the spawned builder inherits it.
 // Retries only operations that are safe to replay:
 //   - GET/HEAD reads,
 //   - PATCH updates,
@@ -15,8 +16,10 @@ const SAFE_POST_TABLES = [
   '/rest/v1/ufc_fighter_stance_splits',
 ];
 
-function methodOf(init) {
-  return String(init?.method || 'GET').toUpperCase();
+function methodOf(input, init) {
+  if (init?.method) return String(init.method).toUpperCase();
+  if (typeof Request !== 'undefined' && input instanceof Request) return String(input.method || 'GET').toUpperCase();
+  return 'GET';
 }
 
 function urlOf(input) {
@@ -42,7 +45,7 @@ function backoff(attempt) {
 
 globalThis.fetch = async function repairFetch(input, init) {
   const url = urlOf(input);
-  const method = methodOf(init);
+  const method = methodOf(input, init);
   const safe = replaySafe(url, method);
   let lastError;
 
