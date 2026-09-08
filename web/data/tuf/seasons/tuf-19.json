@@ -230,9 +230,9 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card",
               "seeds": "6 vs 7"
             },
             {
@@ -242,33 +242,33 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card",
               "seeds": "2 vs 5"
             },
             {
               "a": "Tim Williams",
               "b": "Dhiego Lima",
               "winner": "Dhiego Lima",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke) in round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card",
               "seeds": "4 vs 3"
             },
             {
               "a": "Roger Zapata",
               "b": "Ian Stephens",
               "winner": "Roger Zapata",
-              "method": "D*",
+              "method": "\"judges' decision\"",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card",
               "seeds": "8 vs 1"
             }
           ]
@@ -284,21 +284,21 @@
               "method": "Decision (split)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card",
               "seeds": "6 vs 5"
             },
             {
               "a": "Dhiego Lima",
               "b": "Roger Zapata",
               "winner": "Dhiego Lima",
-              "method": "Submission",
+              "method": "Submission (armbar) in round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card",
               "seeds": "3 vs 8"
             }
           ]
@@ -339,9 +339,9 @@
               "method": "Decision (majority)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card",
               "seeds": "4 vs 1"
             },
             {
@@ -351,21 +351,21 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card",
               "seeds": "2 vs 3"
             },
             {
               "a": "Chris Fields",
               "b": "Matt Van Buren",
               "winner": "Matt Van Buren",
-              "method": "Decision (majority)",
+              "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card",
               "seeds": "8 vs 5"
             },
             {
@@ -375,9 +375,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card",
               "seeds": "6 vs 7"
             }
           ]
@@ -393,21 +393,21 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card",
               "seeds": "1 vs 3"
             },
             {
               "a": "Matt Van Buren",
               "b": "Daniel Spohn",
               "winner": "Matt Van Buren",
-              "method": "TKO",
+              "method": "TKO (punches) in round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card",
               "seeds": "5 vs 6"
             }
           ]

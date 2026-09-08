@@ -16,7 +16,7 @@
   "_conflicts": [
     {
       "field": "Bantamweight_quarter_final",
-      "detail": "The source's quarter-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "detail": "The source's quarter-finals for this division do not close as a self-contained round: 1 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     }
   ],
@@ -35,31 +35,31 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
             },
             {
               "a": "Dileno Lopes",
               "b": "Bruno Silva",
               "winner": "Dileno Lopes",
-              "method": "Submission",
+              "method": "Submission (guillotine choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             },
             {
               "a": "Bruno Korea",
               "b": "Leandro Higo",
               "winner": "Bruno Korea",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
             },
             {
               "a": "Reginaldo Vieira",
@@ -68,9 +68,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
             }
           ],
           "status": "unverified",
@@ -87,20 +87,20 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
             },
             {
               "a": "Bruno Korea",
               "b": "Reginaldo Vieira",
               "winner": "Reginaldo Vieira",
-              "method": "Submission",
+              "method": "Submission (guillotine choke)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
           ]
         },
@@ -140,31 +140,31 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
             },
             {
               "a": "Glaico França",
               "b": "Nikolas Motta",
               "winner": "Glaico França",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Nazareno Malegarie",
               "b": "André Ricardo",
               "winner": "Nazareno Malegarie",
-              "method": "TKO",
+              "method": "TKO (punches and elbows)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
             },
             {
               "a": "Adílson Fernandes",
@@ -173,9 +173,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             }
           ]
         },
@@ -187,12 +187,12 @@
               "a": "Joaquim Silva",
               "b": "Glaico França",
               "winner": "Glaico França",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
             },
             {
               "a": "Nazareno Malegarie",
@@ -201,9 +201,9 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
           ]
         },

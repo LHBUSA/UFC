@@ -173,12 +173,12 @@
               "a": "Andre Petroski",
               "b": "Aaron Phillips",
               "winner": "Andre Petroski",
-              "method": "Submission",
+              "method": "Submission (guillotine choke) in round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Kemran Lachinov",
@@ -276,12 +276,12 @@
               "a": "Liudvik Sholinian",
               "b": "Mitch Raposo",
               "winner": "Liudvik Sholinian",
-              "method": "Decision (unanimous)",
+              "method": "Unanimous decision, after going to a third round",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Daniel Argueta",

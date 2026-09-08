@@ -16,7 +16,7 @@
   "_conflicts": [
     {
       "field": "unplaced_bouts",
-      "detail": "1 bout(s) appear in the episode summaries but in no bracket: Julija Stoliarenko def. Marciea Allen in. Left unplaced rather than assigned to a division by guesswork.",
+      "detail": "3 bout(s) appear in the episode summaries but in no bracket: Julija Stoliarenko def. Marciea Allen in; Juan Francisco Espino Dieppa def. Ben Sosoli; Juan Francisco Espino Dieppa def. Maurice Greene. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
     }
   ],
@@ -152,12 +152,12 @@
               "a": "Josh Parisian",
               "b": "Michel Batista",
               "winner": "Michel Batista",
-              "method": "TKO",
+              "method": "TKO (punches) in Round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             },
             {
               "a": "Justin Frazier",
@@ -166,20 +166,20 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
             },
             {
               "a": "Maurice Greene",
               "b": "Przemysław Mysiala",
               "winner": "Maurice Greene",
-              "method": "KO",
+              "method": "KO (punch) in Round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Ben Sosoli",
@@ -202,12 +202,12 @@
               "a": "Michel Batista",
               "b": "Justin Frazier",
               "winner": "Justin Frazier",
-              "method": "TKO",
+              "method": "TKO in Round One",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
             },
             {
               "a": "Maurice Greene",
@@ -258,9 +258,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Marciea Allen",
@@ -280,9 +280,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Macy Chiasson",
@@ -308,20 +308,20 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             },
             {
               "a": "Leah Letson",
               "b": "Macy Chiasson",
               "winner": "Macy Chiasson",
-              "method": "KO",
+              "method": "KO (knees to the body) in Round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
           ]
         },

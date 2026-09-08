@@ -15,16 +15,6 @@
   },
   "_conflicts": [
     {
-      "field": "Light Heavyweight_quarter_final",
-      "detail": "The source's quarter-finals for this division do not form a consistent round: 2 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Lightweight_quarter_final",
-      "detail": "The source's quarter-finals for this division do not form a consistent round: 2 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
       "field": "unplaced_bouts",
       "detail": "3 bout(s) appear in the episode summaries but in no bracket: Antwain Britt def. Ryan Jimmo; Brian McLaughlin def. Brandon Garner; Karn Grigoryan def. Eliot Marshall. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
@@ -254,8 +244,8 @@
               "a": "Krzysztof Soszynski",
               "b": "Mike Stewart",
               "winner": "Krzysztof Soszynski",
-              "method": "TKO (strikes) at :17 in the first round",
-              "round": null,
+              "method": "TKO (strikes) at :17",
+              "round": 1,
               "time": null,
               "episode": 1,
               "classification": "exhibition",
@@ -276,8 +266,8 @@
               "a": "Vinny Magalhães",
               "b": "Lance Evans",
               "winner": "Vinny Magalhães",
-              "method": "TKO (rib injury) at :34 in the first round",
-              "round": null,
+              "method": "TKO (rib injury) at :34",
+              "round": 1,
               "time": null,
               "episode": 1,
               "classification": "exhibition",
@@ -298,8 +288,8 @@
               "a": "Tom Lawlor",
               "b": "Ryan Lopez",
               "winner": "Tom Lawlor",
-              "method": "Submission (rear naked choke) at :42 in the first round",
-              "round": null,
+              "method": "Submission (rear naked choke) at :42",
+              "round": 1,
               "time": null,
               "episode": 2,
               "classification": "exhibition",
@@ -366,9 +356,7 @@
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 2 fighter(s) appear here without a bout in the previous round. See conflicts."
+          ]
         },
         {
           "stage": "semi_final",
@@ -465,8 +453,8 @@
               "a": "John Polakowski",
               "b": "Wesley Murch",
               "winner": "John Polakowski",
-              "method": "TKO (referee stoppage) at :15 in the second round",
-              "round": null,
+              "method": "TKO (referee stoppage) at :15",
+              "round": 2,
               "time": null,
               "episode": 2,
               "classification": "exhibition",
@@ -555,9 +543,7 @@
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 2 fighter(s) appear here without a bout in the previous round. See conflicts."
+          ]
         },
         {
           "stage": "semi_final",

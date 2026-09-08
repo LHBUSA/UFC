@@ -436,3 +436,38 @@
 @media (max-width: 430px) {
   .dwcs-portrait { float: none; margin: 0 0 var(--s-3) 0; width: 96px; }
 }
+
+/* ---- team competition (season 21: two gyms, scored on points) ------------
+ * Standings rather than a bracket, because the season was decided on points
+ * and the gym with fewer wins took it. The concluding bout sits apart from the
+ * series it concluded: it was contested on a sanctioned card months later, and
+ * putting it at the end of the bout list would read as the last rung of a
+ * ladder this season did not have. */
+.tuf-standings { display: grid; gap: var(--s-2); margin: 0 0 var(--s-5); }
+.tuf-standing {
+  display: grid; grid-template-columns: 1fr auto auto; gap: var(--s-4);
+  align-items: baseline; padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+}
+.tuf-standing.is-winner { border-color: var(--gold); }
+.tuf-standing-team { font-weight: 700; }
+.tuf-standing.is-winner .tuf-standing-team { color: var(--gold); }
+.tuf-standing-pts { font-family: var(--mono, ui-monospace, monospace); font-weight: 700; }
+.tuf-standing-wins { font-family: var(--mono, ui-monospace, monospace); color: var(--muted); font-size: .85em; }
+
+.tuf-concluding { border-top: 1px solid var(--line); padding-top: var(--s-4); }
+.tuf-concluding h3 { margin: 0 0 var(--s-2); }
+.tuf-concluding-note { color: var(--muted); margin: 0 0 var(--s-3); max-width: 62ch; }
+.tuf-concluding-bout {
+  display: grid; gap: var(--s-1); padding: var(--s-4);
+  border: 1px solid var(--gold); border-radius: 10px; background: var(--card);
+}
+.tuf-concluding-names { font-size: 1.05rem; }
+.tuf-concluding-meta { font-family: var(--mono, ui-monospace, monospace); font-size: .9em; }
+.tuf-concluding-event,
+.tuf-concluding-verified { color: var(--muted); font-size: .82em; }
+
+@media (max-width: 640px) {
+  .tuf-standing { grid-template-columns: 1fr auto; row-gap: var(--s-1); }
+  .tuf-standing-wins { grid-column: 2; }
+}

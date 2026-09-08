@@ -15,7 +15,7 @@
   "_conflicts": [
     {
       "field": "Tournament_round_of_16",
-      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "detail": "The source's first round for this division do not close as a self-contained round: 2 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     }
   ],
@@ -156,8 +156,8 @@
               "a": "Nam Phan",
               "b": "Mike Budnik",
               "winner": "Nam Phan",
-              "method": "TKO (liver strike and punches) in the first round",
-              "round": null,
+              "method": "TKO (liver strike and punches)",
+              "round": 1,
               "time": null,
               "episode": 1,
               "classification": "exhibition",
@@ -277,8 +277,8 @@
               "a": "Dane Sayers",
               "b": "Ariel Sexton",
               "winner": "Dane Sayers",
-              "method": "Submission (standing rear naked choke) in the second round",
-              "round": null,
+              "method": "Submission (standing rear naked choke)",
+              "round": 2,
               "time": null,
               "episode": 1,
               "classification": "exhibition",
@@ -338,12 +338,12 @@
               "a": "Jonathan Brookins",
               "b": "Sevak Magakian",
               "winner": "Jonathan Brookins",
-              "method": "Submission",
+              "method": "Submission (rear naked choke)",
               "round": 1,
-              "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "time": "2:04",
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Dane Sayers",
@@ -360,7 +360,7 @@
               "a": "Kyle Watson",
               "b": "Andy Main",
               "winner": "Kyle Watson",
-              "method": "Submission with a rear-naked choke in the second round",
+              "method": "Submission with a rear-naked choke",
               "round": 2,
               "time": null,
               "episode": 4,

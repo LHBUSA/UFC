@@ -14,16 +14,6 @@
   },
   "_conflicts": [
     {
-      "field": "Tournament_elimination",
-      "detail": "The source's elimination round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Tournament_round_of_16",
-      "detail": "The source's first round for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
       "field": "unplaced_bouts",
       "detail": "1 bout(s) appear in the episode summaries but in no bracket: Paul Bradley def. Reggie Orr. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
@@ -200,7 +190,7 @@
         {
           "stage": "elimination",
           "label": "Elimination round",
-          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts.",
+          "note": "Bouts the episode summaries record but the source's bracket does not include.",
           "bouts": [
             {
               "a": "Mike Dolce",
@@ -283,8 +273,8 @@
               "a": "Matt Riddle",
               "b": "Dan Simmler",
               "winner": "Matt Riddle",
-              "method": "KO (punches) at :09 in the second round",
-              "round": null,
+              "method": "KO (punches) at :09",
+              "round": 2,
               "time": null,
               "episode": 2,
               "classification": "exhibition",
@@ -378,8 +368,7 @@
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
-          ],
-          "status": "unverified"
+          ]
         },
         {
           "stage": "round_of_16",
@@ -473,9 +462,7 @@
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+          ]
         },
         {
           "stage": "quarter_final",

@@ -151,6 +151,24 @@
       "weight_class": "Tournament",
       "stages": [
         {
+          "stage": "elimination",
+          "label": "Elimination round",
+          "note": "Bouts the episode summaries record but the source's bracket does not include.",
+          "bouts": [
+            {
+              "a": "Barb Honchak",
+              "b": "Rachael Ostovich-Berdin",
+              "winner": "Barb Honchak",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
           "stage": "round_of_16",
           "label": "First round",
           "bouts": [
@@ -158,84 +176,84 @@
               "a": "Roxanne Modafferi",
               "b": "Shana Dobson",
               "winner": "Roxanne Modafferi",
-              "method": "TKO",
+              "method": "TKO (elbows)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card",
               "seeds": "1 vs 16"
             },
             {
               "a": "Emily Whitmire",
               "b": "Christina Marks",
               "winner": "Emily Whitmire",
-              "method": "Submission",
+              "method": "Verbal submission (armbar)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card",
               "seeds": "8 vs 9"
             },
             {
               "a": "Maia Stevenson",
               "b": "Sijara Eubanks",
               "winner": "Sijara Eubanks",
-              "method": "Submission",
+              "method": "Submission (kimura)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card",
               "seeds": "5 vs 12"
             },
             {
               "a": "DeAnna Bennett",
               "b": "Karine Gevorgyan",
               "winner": "DeAnna Bennett",
-              "method": "TKO",
+              "method": "TKO (punches)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card",
               "seeds": "4 vs 13"
             },
             {
               "a": "Barb Honchak",
               "b": "Gillian Robertson",
               "winner": "Barb Honchak",
-              "method": "TKO",
+              "method": "TKO (punches and elbows)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card",
               "seeds": "2 vs 15"
             },
             {
               "a": "Melinda Fábián",
               "b": "Rachael Ostovich-Berdon",
               "winner": "Rachael Ostovich-Berdon",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card",
               "seeds": "7 vs 10"
             },
             {
               "a": "Montana Stewart",
               "b": "Ariel Beck",
               "winner": "Montana Stewart",
-              "method": "Submission",
+              "method": "Submission (D'Arce choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card",
               "seeds": "6 vs 11"
             },
             {
@@ -245,9 +263,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card",
               "seeds": "3 vs 14"
             }
           ]
@@ -260,24 +278,24 @@
               "a": "Roxanne Modafferi",
               "b": "Emily Whitmire",
               "winner": "Roxanne Modafferi",
-              "method": "TKO",
+              "method": "TKO (elbows)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card",
               "seeds": "1 vs 8"
             },
             {
               "a": "Sijara Eubanks",
               "b": "DeAnna Bennett",
               "winner": "Sijara Eubanks",
-              "method": "KO",
+              "method": "KO (head kick)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card",
               "seeds": "12 vs 4"
             },
             {
@@ -299,9 +317,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card",
               "seeds": "6 vs 14"
             }
           ]
@@ -317,9 +335,9 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card",
               "seeds": "1 vs 12"
             },
             {
@@ -329,9 +347,9 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card",
               "seeds": "2 vs 14"
             }
           ]

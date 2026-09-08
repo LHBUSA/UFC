@@ -120,6 +120,20 @@ export type SeasonDetail = SeasonRow & {
   coaches_full?: Array<{ team: string; name: string; role: string; region?: string }>;
   teams?: Array<{ name: string; region?: string; roster: Array<{ name: string; country?: string; note?: string }> }>;
   bracket?: Array<{ weight_class: string; stages: Stage[] }>;
+  /** Seasons decided by points between two gyms rather than by a bracket.
+   * Season 21 is the only one so far. Its standings are read from the source
+   * rather than counted off the bouts, because the gym with fewer wins won. */
+  team_competition?: {
+    format: string;
+    note?: string;
+    standings?: Array<{ team: string; points: number | null; wins: number | null }>;
+    concluding_bout?: {
+      a: string; b: string; winner: string | null;
+      method?: string | null; round?: number | null; weight_class?: string | null;
+      event?: string | null; date?: string | null;
+      verified_against?: string | null; note?: string;
+    };
+  };
   finale?: { event_name: string; event_date: string; venue?: string; link_policy?: string };
   champions?: Array<{
     weight_class: string;

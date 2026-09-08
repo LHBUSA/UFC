@@ -229,6 +229,35 @@
       "weight_class": "Middleweight",
       "stages": [
         {
+          "stage": "elimination",
+          "label": "Elimination round",
+          "note": "Bouts the episode summaries record but the source's bracket does not include.",
+          "bouts": [
+            {
+              "a": "Márcio Alexandre Júnior",
+              "b": "Paulo Costa",
+              "winner": "Márcio Alexandre Júnior",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            },
+            {
+              "a": "Márcio Alexandre Júnior",
+              "b": "Ricardo Abreu",
+              "winner": "Márcio Alexandre Júnior",
+              "method": "Decision (split)",
+              "round": null,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
           "stage": "quarter_final",
           "label": "Quarter-finals",
           "bouts": [
@@ -236,34 +265,34 @@
               "a": "Wagner Silva",
               "b": "Joilton Santos",
               "winner": "Wagner Silva",
-              "method": "Decision (split)",
+              "method": "Split decision in three rounds",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
             },
             {
               "a": "Ismael de Jesus",
               "b": "Warlley Alves",
               "winner": "Warlley Alves",
-              "method": "KO",
+              "method": "KO (knees) at 3:38 in round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
             },
             {
               "a": "Ricardo Abreu",
               "b": "Guilherme Vasconcelos",
               "winner": "Ricardo Abreu",
-              "method": "Decision (unanimous)",
+              "method": "Unanimous decision in two rounds",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             },
             {
               "a": "Paulo Costa",
@@ -286,12 +315,12 @@
               "a": "Wagner Silva",
               "b": "Warlley Alves",
               "winner": "Warlley Alves",
-              "method": "Submission",
+              "method": "Submission (guillotine choke) in round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
             },
             {
               "a": "Ricardo Abreu",
@@ -339,12 +368,12 @@
               "a": "Antônio Carlos Júnior",
               "b": "Edgard Castaldelli Filho",
               "winner": "Antônio Carlos Júnior",
-              "method": "KO",
+              "method": "KO (punch)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
             },
             {
               "a": "Jollyson Francisco",
@@ -353,31 +382,31 @@
               "method": "Decision (unanimous)",
               "round": null,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             },
             {
               "a": "Richardson Moreira",
               "b": "Job Kleber Melo",
               "winner": "Richardson Moreira",
-              "method": "Submission",
+              "method": "Submission (armbar)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Antônio Branjão",
               "b": "Vitor Miranda",
               "winner": "Vitor Miranda",
-              "method": "TKO",
+              "method": "TKO (punches)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
             }
           ]
         },
@@ -389,23 +418,23 @@
               "a": "Antônio Carlos Júnior",
               "b": "Marcos Rogério de Lima",
               "winner": "Antônio Carlos Júnior",
-              "method": "Submission",
+              "method": "Submission (rear naked choke) in round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
             },
             {
               "a": "Richardson Moreira",
               "b": "Vitor Miranda",
               "winner": "Vitor Miranda",
-              "method": "TKO",
+              "method": "TKO (punches) in round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
           ]
         },

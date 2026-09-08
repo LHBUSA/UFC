@@ -319,11 +319,65 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
         </section>
       ) : null}
 
+      {/* ---- team competition (a season decided on points, not a bracket) ---- */}
+      {season.team_competition ? (
+        <section className="wrap tuf-section">
+          <div className="tuf-section-head">
+            <h2>Team competition</h2>
+            <p>{season.team_competition.note}</p>
+          </div>
+
+          {season.team_competition.standings?.length ? (
+            <div className="tuf-standings">
+              {season.team_competition.standings.map((row, i) => (
+                <div className={`tuf-standing${i === 0 ? " is-winner" : ""}`} key={row.team}>
+                  <span className="tuf-standing-team">{row.team}</span>
+                  <span className="tuf-standing-pts">{row.points ?? "—"} pts</span>
+                  <span className="tuf-standing-wins">{row.wins ?? "—"} wins</span>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          {season.team_competition.concluding_bout ? (
+            <div className="tuf-concluding">
+              <h3>Concluding bout</h3>
+              <p className="tuf-concluding-note">{season.team_competition.concluding_bout.note}</p>
+              <div className="tuf-concluding-bout">
+                <span className="tuf-concluding-names">
+                  <b>{season.team_competition.concluding_bout.winner}</b>
+                  {" def. "}
+                  {season.team_competition.concluding_bout.winner === season.team_competition.concluding_bout.a
+                    ? season.team_competition.concluding_bout.b
+                    : season.team_competition.concluding_bout.a}
+                </span>
+                <span className="tuf-concluding-meta">
+                  {[
+                    season.team_competition.concluding_bout.method,
+                    season.team_competition.concluding_bout.round ? `R${season.team_competition.concluding_bout.round}` : null,
+                    season.team_competition.concluding_bout.weight_class,
+                  ].filter(Boolean).join(" · ")}
+                </span>
+                <span className="tuf-concluding-event">
+                  {season.team_competition.concluding_bout.event}
+                  {season.team_competition.concluding_bout.date ? ` · ${season.team_competition.concluding_bout.date}` : ""}
+                </span>
+                {season.team_competition.concluding_bout.verified_against ? (
+                  <span className="tuf-concluding-verified">
+                    Verified against {season.team_competition.concluding_bout.verified_against}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
       {/* ---- bracket ---- */}
       {season.bracket?.length ? (
         <section className="wrap tuf-section">
           <div className="tuf-section-head">
-            <h2>Tournament</h2>
+            <h2>{season.team_competition ? "Series results" : "Tournament"}</h2>
             <p>
               {proCount} professional · {exCount} exhibition or unverified. House bouts are unsanctioned and are excluded
               from professional records and every professional stat aggregate.

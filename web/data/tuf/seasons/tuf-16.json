@@ -165,12 +165,12 @@
               "a": "Jon Manley",
               "b": "James Chaney",
               "winner": "Jon Manley",
-              "method": "Submission",
+              "method": "Submission (guillotine choke)",
               "round": 1,
-              "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "time": "3:25",
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
             },
             {
               "a": "Nic Herron-Webb",
@@ -179,9 +179,9 @@
               "method": "Decision (majority)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             },
             {
               "a": "Colton Smith",
@@ -201,9 +201,9 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
             },
             {
               "a": "Michael Hill",
@@ -220,23 +220,23 @@
               "a": "Julian Lane",
               "b": "Bristol Marunde",
               "winner": "Bristol Marunde",
-              "method": "Decision (unanimous)",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
             },
             {
               "a": "Cameron Diffley",
               "b": "Neil Magny",
               "winner": "Neil Magny",
-              "method": "Decision (unanimous)",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             }
           ]
         },
@@ -248,45 +248,45 @@
               "a": "Joey Rivera",
               "b": "Jon Manley",
               "winner": "Jon Manley",
-              "method": "Decision (majority)",
+              "method": "Majority decision (19–19, 20–18, 20–18)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
             },
             {
               "a": "Igor Araujo",
               "b": "Colton Smith",
               "winner": "Colton Smith",
-              "method": "Decision (unanimous)",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             },
             {
               "a": "Mike Ricci",
               "b": "Michael Hill",
               "winner": "Mike Ricci",
-              "method": "Decision (unanimous)",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
             },
             {
               "a": "Bristol Marunde",
               "b": "Neil Magny",
               "winner": "Neil Magny",
-              "method": "Decision (unanimous)",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             }
           ]
         },
@@ -301,20 +301,20 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             },
             {
               "a": "Mike Ricci",
               "b": "Neil Magny",
               "winner": "Mike Ricci",
-              "method": "KO",
+              "method": "KO (elbow)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
           ]
         },

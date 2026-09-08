@@ -143,7 +143,7 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
       "finale_date": "2005-11-05",
-      "coverage": "bracket_partial",
+      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1855,7 +1855,7 @@
       ],
       "finale_event": "UFC Fight Night: Magny vs Gastelum",
       "finale_date": "2015-11-21",
-      "coverage": "bracket_full",
+      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {

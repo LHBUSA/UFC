@@ -15,10 +15,43 @@
   "_conflicts": [
     {
       "field": "format",
-      "detail": "This season has no tournament bracket. The source records 12 bouts as a scored gym-versus-gym series, with the points each result was worth, and that is what is recorded here — under the season's single weight class, in the order the source lists them, with no rounds invented to hold them.",
+      "detail": "This season has no tournament bracket, and recording one would misdescribe it. The source records 12 bouts as a scored gym-versus-gym series: results were worth points to a gym rather than a place in a next round, and what a win was worth rose as the season went on. The bouts are kept in the order the source lists them, with no rounds invented to hold them.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "unplaced_bouts",
+      "detail": "12 bout(s) appear in the episode summaries but in no bracket: Kamarudeen Usman def. Michael Graves; Luiz Firmino def. Uros Jurisic; Valdir Araújo def. Steve Carl; Carrington Banks def. Sabah Homasi; Hayder Hassan def. Andrews Nakahara; Jason Jackson def. Marcelo Alfaya; Vicente Luque def. Nathan Coy; Hayder Hassan def. Felipe Portela; Kamarudeen Usman def. Steve Carl; Nathan Coy def. Valdir Araújo; Michael Graves def. Jason Jackson; Hayder Hassan def. Vicente Luque. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
     }
   ],
+  "team_competition": {
+    "format": "gym versus gym, decided on points",
+    "note": "Two gyms rather than two coaches, and no tournament bracket. Each result was worth points to a gym — 25 early in the season, then 50, then 100 — so the season was won on points rather than by a last fighter standing. American Top Team took it with fewer wins than Blackzilians.",
+    "standings": [
+      {
+        "team": "American Top Team",
+        "points": 400,
+        "wins": 5
+      },
+      {
+        "team": "Blackzilians",
+        "points": 300,
+        "wins": 7
+      }
+    ],
+    "concluding_bout": {
+      "a": "Kamaru Usman",
+      "b": "Hayder Hassan",
+      "winner": "Kamaru Usman",
+      "method": "Submission",
+      "round": 2,
+      "weight_class": "Welterweight",
+      "event": "The Ultimate Fighter: American Top Team vs. Blackzilians Finale",
+      "date": "2015-07-12",
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "note": "Contested on the finale card, on a sanctioned UFC card, months after the series it concluded. It decided the individual contract; the gym competition was already decided on points."
+    }
+  },
   "bracket": [
     {
       "weight_class": "Welterweight",

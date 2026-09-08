@@ -147,9 +147,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Demico Rogers",

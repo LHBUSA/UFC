@@ -339,34 +339,34 @@
               "a": "Steven Siler",
               "b": "Diego Brandao",
               "winner": "Diego Brandao",
-              "method": "KO",
+              "method": "Knock out (punches) at 0:30 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Bryan Caraway",
               "b": "Marcus Brimage",
               "winner": "Bryan Caraway",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke) at 2:55 of round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Dennis Bermudez",
               "b": "Stephen Bass",
               "winner": "Dennis Bermudez",
-              "method": "TKO",
+              "method": "Technical knock out (referee stoppage due to punches) at 2:58 of round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
             },
             {
               "a": "Dustin Neace",
@@ -375,9 +375,9 @@
               "method": "Decision (majority)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             }
           ]
         },
@@ -389,23 +389,23 @@
               "a": "Diego Brandao",
               "b": "Bryan Caraway",
               "winner": "Diego Brandao",
-              "method": "KO",
+              "method": "Technical knock out (punches) at 4:15 of round 1, to move onto the finale",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             },
             {
               "a": "Dennis Bermudez",
               "b": "Akira Corassani",
               "winner": "Dennis Bermudez",
-              "method": "Submission",
+              "method": "Submission (guillotine choke) at 3:12 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
             }
           ]
         },
@@ -538,9 +538,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
             },
             {
               "a": "John Dodson",
@@ -549,31 +549,31 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Dustin Pague",
               "b": "Louis Gaudinot",
               "winner": "Dustin Pague",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke) at 2:32 of round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
             },
             {
               "a": "Roland Delorme",
               "b": "T.J. Dillashaw",
               "winner": "T.J. Dillashaw",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke) at 1:43 of round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
             }
           ]
         },
@@ -585,23 +585,23 @@
               "a": "Johnny Bedford",
               "b": "John Dodson",
               "winner": "John Dodson",
-              "method": "KO",
+              "method": "Knock out (punches) at 1:00 of round 2, to move onto the finale",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             },
             {
               "a": "Dustin Pague",
               "b": "T.J. Dillashaw",
               "winner": "T.J. Dillashaw",
-              "method": "Decision (unanimous)",
+              "method": "Unanimous decision (30-26, 30–27, 30–26)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
             }
           ]
         },

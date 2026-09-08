@@ -15,7 +15,7 @@
   "_conflicts": [
     {
       "field": "Tournament_round_of_16",
-      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "detail": "The source's first round for this division do not close as a self-contained round: 2 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     }
   ],

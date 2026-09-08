@@ -16,7 +16,12 @@
   "_conflicts": [
     {
       "field": "Welterweight_quarter_final",
-      "detail": "The source's quarter-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "detail": "The source's quarter-finals for this division do not close as a self-contained round: 1 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "unplaced_bouts",
+      "detail": "1 bout(s) appear in the episode summaries but in no bracket: Mark Miller def. Kevin Knabjian, his teammate from home,. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
     }
   ],
@@ -258,89 +263,89 @@
               "a": "Santino DeFranco",
               "b": "Waylon Lowe",
               "winner": "Santino DeFranco",
-              "method": "Submission",
+              "method": "Submission (rear naked choke) at 0:45 of round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Andre Winner",
               "b": "Gary Kelly",
               "winner": "Andre Winner",
-              "method": "KO",
+              "method": "KO (knees and punches) at 1:48 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Cameron Dollar",
               "b": "Tommy Hayden",
               "winner": "Cameron Dollar",
-              "method": "Submission",
+              "method": "Technical submission (rear naked choke) in round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Martin Stapleton",
               "b": "Dan James",
               "winner": "Martin Stapleton",
-              "method": "Submission",
+              "method": "Submission (rear naked choke) at 1:28 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Richie Whitson",
               "b": "Paul Bird",
               "winner": "Richie Whitson",
-              "method": "Submission",
+              "method": "Submission (rear naked choke) at 3:11 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Ross Pearson",
               "b": "A.J. Wenn",
               "winner": "Ross Pearson",
-              "method": "TKO",
+              "method": "TKO (strikes) at 0:21 of round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Jason Dent",
               "b": "Robert Browning",
               "winner": "Jason Dent",
-              "method": "TKO",
+              "method": "TKO (strikes)",
               "round": 1,
-              "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "time": "3:36",
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
             },
             {
               "a": "Jeff Lawson",
               "b": "James Bryan",
               "winner": "Jeff Lawson",
-              "method": "Submission",
+              "method": "Submission (armbar) at 1:45 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             }
           ]
         },
@@ -352,45 +357,45 @@
               "a": "Santino DeFranco",
               "b": "Andre Winner",
               "winner": "Andre Winner",
-              "method": "TKO",
+              "method": "TKO (strikes) at 3:49 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             },
             {
               "a": "Cameron Dollar",
               "b": "Martin Stapleton",
               "winner": "Cameron Dollar",
-              "method": "Submission",
+              "method": "Submission (rear naked choke) at 1:34 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Richie Whitson",
               "b": "Ross Pearson",
               "winner": "Ross Pearson",
-              "method": "Submission",
+              "method": "Submission (armbar) at 3:40 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
             },
             {
               "a": "Jason Dent",
               "b": "Jeff Lawson",
               "winner": "Jason Dent",
-              "method": "Submission",
+              "method": "Submission (anaconda choke) at 2:22 of round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
             }
           ]
         },
@@ -402,12 +407,12 @@
               "a": "Andre Winner",
               "b": "Cameron Dollar",
               "winner": "Andre Winner",
-              "method": "Submission",
+              "method": "Submission (triangle choke) in round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
             },
             {
               "a": "Ross Pearson",
@@ -466,56 +471,56 @@
               "a": "Nick Osipczak",
               "b": "Tommy Maguire",
               "winner": "Nick Osipczak",
-              "method": "KO",
+              "method": "KO at 4:08 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "DaMarques Johnson",
               "b": "Ray Elbe",
               "winner": "DaMarques Johnson",
-              "method": "TKO",
+              "method": "TKO (strikes) at 3:10 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Dean Amasinger",
               "b": "Alex Reid",
               "winner": "Dean Amasinger",
-              "method": "Decision (unanimous)",
+              "method": "Decision",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Frank Lester",
               "b": "Kiel Reid",
               "winner": "Frank Lester",
-              "method": "TKO",
+              "method": "TKO at 3:16 of round 1. Referee Steve Mazzagatti stopped the fight while Lester had a kimura applied to Reid's arm. Reid appeared to be unconscious due to a slam he applied to Lester which resulted in Reid hitting his own head into the mat in the process",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
             },
             {
               "a": "James Wilks",
               "b": "Che Mills",
               "winner": "James Wilks",
-              "method": "Submission",
+              "method": "Submission (heel hook) at 0:30 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Jason Pierce",
@@ -524,20 +529,20 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "David Faulkner",
               "b": "James Bateman",
               "winner": "David Faulkner",
-              "method": "Submission",
+              "method": "Submission (heel hook) at 1:47 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             }
           ]
         },
@@ -549,34 +554,34 @@
               "a": "Mark Miller",
               "b": "Nick Osipczak",
               "winner": "Nick Osipczak",
-              "method": "KO",
+              "method": "KO (head kick) at 3:54 of round 2",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
             },
             {
               "a": "DaMarques Johnson",
               "b": "Dean Amasinger",
               "winner": "DaMarques Johnson",
-              "method": "Submission",
+              "method": "Submission (triangle choke) at 1:40 of round 1",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             },
             {
               "a": "Frank Lester",
               "b": "James Wilks",
               "winner": "James Wilks",
-              "method": "Submission",
+              "method": "TKO (knees) in round 3",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             },
             {
               "a": "Frank Lester",
@@ -601,23 +606,23 @@
               "a": "Nick Osipczak",
               "b": "DaMarques Johnson",
               "winner": "DaMarques Johnson",
-              "method": "Decision (unanimous)",
+              "method": "Decision",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             },
             {
               "a": "James Wilks",
               "b": "Frank Lester",
               "winner": "James Wilks",
-              "method": "TKO",
+              "method": "TKO (knees) in round 3",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
           ]
         },

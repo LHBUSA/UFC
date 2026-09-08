@@ -15,7 +15,7 @@
   "_conflicts": [
     {
       "field": "Tournament_round_of_16",
-      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "detail": "The source's first round for this division do not close as a self-contained round: 2 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     }
   ],
@@ -179,9 +179,9 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Hayder Hassan",
@@ -190,20 +190,20 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             },
             {
               "a": "Eddie Gordon",
               "b": "Tom Gallicchio",
               "winner": "Tom Gallicchio",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Justin Edwards",
@@ -212,31 +212,31 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
             },
             {
               "a": "James Krause",
               "b": "Johnny Nunez",
               "winner": "James Krause",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
             },
             {
               "a": "Ramsey Nijem",
               "b": "Julian Lane",
               "winner": "Ramsey Nijem",
-              "method": "TKO",
+              "method": "TKO (punches)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Jesse Taylor",
@@ -245,20 +245,20 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
             },
             {
               "a": "Joe Stevenson",
               "b": "Hayder Hassan",
               "winner": "Hayder Hassan",
-              "method": "KO",
+              "method": "KO (punch)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
             }
           ],
           "status": "unverified",
@@ -275,20 +275,20 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
             },
             {
               "a": "Tom Gallicchio",
               "b": "Justin Edwards",
               "winner": "Tom Gallicchio",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
             },
             {
               "a": "James Krause",
@@ -297,20 +297,20 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             },
             {
               "a": "Jesse Taylor",
               "b": "Hayder Hassan",
               "winner": "Jesse Taylor",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
             }
           ]
         },
@@ -333,12 +333,12 @@
               "a": "James Krause",
               "b": "Jesse Taylor",
               "winner": "Jesse Taylor",
-              "method": "Submission",
+              "method": "Technical submission (guillotine choke)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             }
           ]
         },

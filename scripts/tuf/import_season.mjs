@@ -290,32 +290,107 @@ const ROUND_WORDS = { first: 1, second: 2, third: 3, fourth: 4, fifth: 5, one: 1
  *   *'''Rashad Evans''' defeated Tom Murphy by unanimous decision after three rounds.
  * Anything that does not match that shape is left alone rather than guessed at.
  */
+/* The connectives these articles put between the loser and the method. "via"
+ * is as common as "by", and some lines use none at all. */
+const CONNECTIVE = /\s+(?:by|with|via|through)\s+(?:a\s+)?/i;
+
+/* Method words a line may begin with when it names no connective — "Richie
+ * Hightower defeats Blake Bowman TKO (strikes) at 0:49". Listed rather than
+ * inferred, so a loser whose name happens to read like a method word cannot
+ * cause the split to land in the wrong place. */
+const METHOD_HEAD = /^(TKO|KO|SUB|Submission|Decision|Unanimous|Split|Majority|Technical|Doctor|Disqualification|DQ|Draw|No contest)\b/i;
+
+/** Take the round and the time off the end of a method phrase. */
+function splitMethodTail(phrase) {
+  let method = phrase;
+  let time = null;
+  let round = null;
+
+  const at = method.match(/\s+at\s+(:?\d{1,2}:\d{2})\s+(?:of|in)\s+the\s+(\w+)\s+round\b/i);
+  if (at) {
+    time = at[1].replace(/^:/, '0:');
+    round = ROUND_WORDS[at[2].toLowerCase()] ?? null;
+    method = method.slice(0, at.index);
+  } else {
+    const after = method.match(/\s+after\s+(\w+)\s+rounds?\b/i);
+    if (after) {
+      round = ROUND_WORDS[after[1].toLowerCase()] ?? null;
+      method = method.slice(0, after.index);
+    } else {
+      const inRound = method.match(/\s+in\s+the\s+(\w+)\s+round\b/i);
+      if (inRound) {
+        round = ROUND_WORDS[inRound[1].toLowerCase()] ?? null;
+        method = method.slice(0, inRound.index);
+      }
+    }
+  }
+  return { method: method.replace(/[\s.]+$/, '').trim(), time, round };
+}
+
+/**
+ * Pull the fight results out of the episode summaries.
+ *
+ * Two stages rather than one regex, because one regex is what made this miss
+ * 378 of the 616 result lines across these articles. Every one of those was a
+ * bout left with no evidence that it was filmed in an episode, so it stayed
+ * 'unverified' — which read as the sources being silent about it. They were
+ * not silent. The sentence shapes simply vary more than a single pattern
+ * allows: some write "via" where others write "by", one bolds the loser too,
+ * one leaves a stray space inside the bold markers, and some name no
+ * connective at all and go straight from the loser to "TKO".
+ *
+ * So: take the bolded winner and the verb; split what remains on a connective
+ * if there is one, and otherwise at the first word that starts a method. A
+ * line matching neither is left alone rather than guessed at.
+ */
 function parseEpisodes(wt) {
   const bouts = [];
   const section = sliceSection(wt, /^==\s*Episodes?/im);
   if (!section) return bouts;
   let episode = null;
+
   for (const raw of section.split(/\n/)) {
     const head = raw.match(/'''Episode\s+(\d+)/i);
     if (head) { episode = Number(head[1]); continue; }
     if (!/^\*/.test(raw)) continue;
-    const m = raw.match(
-      /^\*+\s*'''(?<w>[^']+)'''\s+(?:defeated|defeats|def\.)\s+(?<l>.+?)\s+(?:by|with)\s+(?:a\s+)?(?<method>.+?)(?:\s+at\s+(?<time>:?\d{1,2}:\d{2})\s+(?:of|in)\s+the\s+(?<rw>\w+)\s+round|\s+after\s+(?<rw2>\w+)\s+rounds?)?\s*\.?\s*$/i,
-    );
+
+    const m = raw.match(/^\*+\s*'''\s*(?<w>[^']+?)\s*'''\s*(?:defeated|defeats|def\.)\s+(?<rest>.+?)\s*$/i);
     if (!m) continue;
-    const g = m.groups;
-    const rw = (g.rw || g.rw2 || '').toLowerCase();
+
+    const rest = m.groups.rest;
+    let loserRaw = null;
+    let methodRaw = null;
+
+    const conn = rest.match(CONNECTIVE);
+    if (conn) {
+      loserRaw = rest.slice(0, conn.index);
+      methodRaw = rest.slice(conn.index + conn[0].length);
+    } else {
+      const words = rest.split(/\s+/);
+      for (let i = 1; i < words.length; i += 1) {
+        if (METHOD_HEAD.test(clean(words.slice(i).join(' ')))) {
+          loserRaw = words.slice(0, i).join(' ');
+          methodRaw = words.slice(i).join(' ');
+          break;
+        }
+      }
+    }
+    if (!loserRaw || !methodRaw) continue;
+
+    const tail = splitMethodTail(clean(methodRaw));
+    const method = titleMethod(tail.method);
+    if (!method) continue;
+
     bouts.push({
-      winner: clean(g.w),
+      winner: clean(m.groups.w),
       /* "Amir Sadollah defeated C. B. Dollaway in the second semifinal bout by
        * submission" — the prose sometimes says WHICH bout between the loser's
        * name and the method, and the name capture swallowed it. A fighter's
-       * name does not contain "in the", so the clause is cut. Narrow on
-       * purpose: only this one construction, only at the end of a name. */
-      loser: stripTrailingClause(clean(g.l).replace(/\s*\(.*\)\s*$/, '')),
-      method: titleMethod(clean(g.method)),
-      round: ROUND_WORDS[rw] ?? null,
-      time: g.time || null,
+       * name does not contain " in the ", so the clause is cut. */
+      loser: stripTrailingClause(clean(loserRaw).replace(/\s*\(.*\)\s*$/, '')),
+      method,
+      round: tail.round,
+      time: tail.time,
       episode,
     });
   }
@@ -435,6 +510,46 @@ function findBrackets(wt, weightClasses = []) {
  * actually declares a Method column and two competitor columns — anything else
  * is some other table on the page and is left alone.
  */
+/**
+ * The standings of a season decided by points rather than by a bracket.
+ *
+ * Worth reading rather than inferring from the bouts, because the two do not
+ * agree in the way you would expect: season 21 was won by the gym with FEWER
+ * wins. Blackzilians took seven of the twelve, American Top Team took five and
+ * won the season 400-300, because a result late in the series was worth four
+ * times one from the start. Counting wins would produce a confident wrong
+ * answer, so the totals are taken from the table that states them.
+ */
+function parseOverallTable(wt) {
+  /* Anchored on the section, not on a header search across the whole article.
+   * A lazy scan for "!Teams" starts at the FIRST wikitable and runs forward
+   * until it finds one, which meant it opened at the per-bout results table
+   * and read twelve fighters as twelve teams. The heading is what identifies
+   * this table; the header row only describes it. */
+  const section = sliceSection(wt, /^===+\s*Overall table/im);
+  if (!section) return null;
+  const start = section.search(/\{\|[^\n]*wikitable/i);
+  if (start < 0) return null;
+  const end = section.indexOf('\n|}', start);
+  const table = section.slice(start, end < 0 ? undefined : end);
+
+  const header = table.split(/\n/).filter((l) => /^!/.test(l)).flatMap((l) => l.replace(/^!/, '').split('!!')).map((h) => clean(h).toLowerCase());
+  const col = (n) => header.findIndex((h) => h.startsWith(n));
+  const iPoints = col('total point') >= 0 ? col('total point') : col('point');
+  const iWins = col('win');
+  if (iPoints < 0) return null;
+
+  const rows = [];
+  for (const rowText of table.split(/\n\|-/).slice(1)) {
+    const cells = rowText.split(/\n\|/).slice(1);
+    const team = clean(cells[0] || '');
+    if (!team) continue;
+    const num = (i) => (i >= 0 && /^\d+$/.test(clean(cells[i] || '')) ? Number(clean(cells[i])) : null);
+    rows.push({ team, points: num(iPoints), wins: num(iWins) });
+  }
+  return rows.length ? rows : null;
+}
+
 function parseResultsTable(wt) {
   const start = wt.search(/\{\|[^\n]*wikitable[^\n]*\n(?:[^\n]*\n)*?!\s*Home Gym/i);
   if (start < 0) return null;
@@ -618,23 +733,48 @@ const today = () => new Date().toISOString().slice(0, 10);
  * means the source is internally inconsistent — which gets said, not fixed.
  */
 function withIntegrity(previous, stage, weightClass, conflicts) {
+  /* The elimination stage is not a round and must not be checked as one.
+   *
+   * It is defined as "bouts the episode summaries record but the bracket does
+   * not include" — a bag, gathered from prose, spanning many episodes. Two
+   * things follow, and getting them wrong produced most of this archive's
+   * false flags:
+   *
+   *   A fighter may legitimately appear in it more than once. Rashad Evans
+   *   fought twice before season 2's bracket; Tecia Torres fought again after
+   *   a second chance. That is the format, not an inconsistency.
+   *
+   *   A fighter entering the bracket need not appear in it at all, because it
+   *   holds only the bouts the bracket left out. Requiring a bracket entrant
+   *   to have fought there asks the wrong question of the wrong list.
+   *
+   * So the shape checks apply between bracket rounds only. */
+  const isElimination = stage.stage === 'elimination';
+  const bracketPrevious = previous.filter((s) => s.stage !== 'elimination');
+
   const seen = new Map();
   for (const b of stage.bouts) for (const n of [b.a, b.b]) seen.set(fold(n), (seen.get(fold(n)) || 0) + 1);
-  const twice = [...seen.entries()].filter(([, n]) => n > 1).map(([n]) => n);
+  const twice = isElimination ? [] : [...seen.entries()].filter(([, n]) => n > 1).map(([n]) => n);
 
-  const advanced = new Set(previous.flatMap((s) => s.bouts.filter((b) => b.winner).map((b) => fold(b.winner))));
-  const unexplained = previous.length
+  const advanced = new Set(bracketPrevious.flatMap((s) => s.bouts.filter((b) => b.winner).map((b) => fold(b.winner))));
+  const unexplained = (!isElimination && bracketPrevious.length)
     ? [...new Set(stage.bouts.flatMap((b) => [b.a, b.b]))].filter((n) => !advanced.has(fold(n)))
     : [];
 
   const notes = [];
   if (twice.length) notes.push(`${twice.length} fighter(s) appear more than once in this round`);
-  if (unexplained.length) notes.push(`${unexplained.length} fighter(s) appear here without a bout in the previous round`);
+  if (unexplained.length) notes.push(`${unexplained.length} fighter(s) enter this round without a recorded win in the previous one`);
   if (!notes.length) return stage;
 
+  /* Deliberately describing what was observed rather than declaring the source
+   * wrong. A fighter entering a round without a win in the previous one is
+   * what a wildcard, a second chance or an injury replacement looks like — all
+   * of which these seasons really have — and it is also what an omission looks
+   * like. We cannot tell which from the bracket alone, so the round says so
+   * and stays unverified instead of picking one. */
   conflicts.push({
     field: `${weightClass}_${stage.stage}`,
-    detail: `The source's ${stage.label.toLowerCase()} for this division do not form a consistent round: ${notes.join(', ')}. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.`,
+    detail: `The source's ${stage.label.toLowerCase()} for this division do not close as a self-contained round: ${notes.join(', ')}. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.`,
     retrieved: today(),
   });
   return { ...stage, status: 'unverified', note: `Partial. ${notes.join('; ')}. See conflicts.` };
@@ -695,13 +835,15 @@ const main = async () => {
    * have one, and keeps twenty-one from being filed as "no data" when what it
    * actually has is a different shape of data. */
   let league = null;
+  let standings = null;
   if (!brackets.length) {
     league = parseResultsTable(wt);
     if (league) {
       brackets = [];
+      standings = parseOverallTable(wt);
       conflicts.push({
         field: 'format',
-        detail: `This season has no tournament bracket. The source records ${league.bouts.length} bouts as a scored gym-versus-gym series, with the points each result was worth, and that is what is recorded here — under the season's single weight class, in the order the source lists them, with no rounds invented to hold them.`,
+        detail: `This season has no tournament bracket, and recording one would misdescribe it. The source records ${league.bouts.length} bouts as a scored gym-versus-gym series: results were worth points to a gym rather than a place in a next round, and what a win was worth rose as the season went on. The bouts are kept in the order the source lists them, with no rounds invented to hold them.`,
         retrieved: today(),
       });
     }
@@ -934,6 +1076,47 @@ const main = async () => {
     });
   }
 
+  /* The season's actual shape, recorded as itself.
+   *
+   * A scored series has two things a bracket does not: standings, and a
+   * concluding bout that is not the last node of a tree. Season 21 makes the
+   * difference concrete — American Top Team won it 400-300 having won FIVE of
+   * the twelve bouts to Blackzilians' seven, because a result late in the
+   * series was worth four times one from the start. Anything that reads the
+   * winner off the bout list gets that backwards.
+   *
+   * The concluding bout is taken from the inventory's verified final, which is
+   * where the checked-against-our-records version lives. It is deliberately
+   * NOT pushed into the bracket: it was contested on the finale card, months
+   * after the series, and filing it as the last rung of a ladder the season
+   * did not have is exactly the misdescription this block exists to avoid. */
+  let teamCompetition = null;
+  if (league) {
+    const finals = row.final_bouts || [];
+    const concluding = finals.find((f) => f.verified_against) || finals[0] || null;
+    teamCompetition = {
+      format: 'gym versus gym, decided on points',
+      note: "Two gyms rather than two coaches, and no tournament bracket. Each result was worth points to a gym — 25 early in the season, then 50, then 100 — so the season was won on points rather than by a last fighter standing. American Top Team took it with fewer wins than Blackzilians.",
+      ...(standings ? { standings } : {}),
+      ...(concluding
+        ? {
+            concluding_bout: {
+              a: concluding.a,
+              b: concluding.b,
+              winner: concluding.winner,
+              method: concluding.method ?? null,
+              round: concluding.round ?? null,
+              weight_class: concluding.weight_class ?? null,
+              event: concluding.event ?? null,
+              date: concluding.date ?? null,
+              verified_against: concluding.verified_against ?? null,
+              note: 'Contested on the finale card, on a sanctioned UFC card, months after the series it concluded. It decided the individual contract; the gym competition was already decided on points.',
+            },
+          }
+        : {}),
+    };
+  }
+
   /* Any remaining prose bout belongs to no division we could place it in. */
   const orphans = episodes.filter((e) => !usedPairs.has(pairKey(e.winner, e.loser)));
   if (orphans.length && bracket.length) {
@@ -959,6 +1142,7 @@ const main = async () => {
     ...(conflicts.length ? { _conflicts: conflicts } : {}),
     ...(coaches.length ? { coaches } : {}),
     ...(teams.length ? { teams } : {}),
+    ...(teamCompetition ? { team_competition: teamCompetition } : {}),
     ...(bracket.length ? { bracket } : {}),
     ...(row.finale_event
       ? {

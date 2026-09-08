@@ -20,7 +20,7 @@
     },
     {
       "field": "Tournament_round_of_16",
-      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "detail": "The source's first round for this division do not close as a self-contained round: 2 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
     }
   ],
@@ -98,7 +98,7 @@
               "a": "Shamar Bailey",
               "b": "Nordin Asrih",
               "winner": "Shamar Bailey",
-              "method": "Unanimous decision after two rounds",
+              "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": 1,
@@ -112,9 +112,9 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Mick Bowman",
@@ -131,9 +131,9 @@
               "a": "Ramsey Nijem",
               "b": "Charlie Rader",
               "winner": "Ramsey Nijem",
-              "method": "Submission (rear naked choke) at 3:31 of the second round",
+              "method": "Submission (rear naked choke)",
               "round": 2,
-              "time": null,
+              "time": "3:31",
               "episode": 4,
               "classification": "exhibition",
               "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
@@ -142,7 +142,7 @@
               "a": "Ryan McGillivray",
               "b": "Len Bentley",
               "winner": "Ryan McGillivray",
-              "method": "Majority decision after two rounds",
+              "method": "Decision (majority)",
               "round": 2,
               "time": null,
               "episode": 3,
@@ -205,7 +205,7 @@
               "a": "Clay Harvison",
               "b": "Ramsey Nijem",
               "winner": "Ramsey Nijem",
-              "method": "Submission (rear-naked choke) at :56 in the first round",
+              "method": "Submission (rear-naked choke) at :56",
               "round": 1,
               "time": null,
               "episode": 8,
@@ -216,7 +216,7 @@
               "a": "Ryan McGillivray",
               "b": "Tony Ferguson",
               "winner": "Tony Ferguson",
-              "method": "TKO (punches) at :46 in the first round",
+              "method": "TKO (punches) at :46",
               "round": 1,
               "time": null,
               "episode": 9,

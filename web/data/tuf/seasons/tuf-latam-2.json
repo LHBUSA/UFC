@@ -13,6 +13,13 @@
     "retrieved": "2026-09-08",
     "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
   },
+  "_conflicts": [
+    {
+      "field": "unplaced_bouts",
+      "detail": "1 bout(s) appear in the episode summaries but in no bracket: Horacio Gutiérrez def. Polo Reyes. Left unplaced rather than assigned to a division by guesswork.",
+      "retrieved": "2026-09-08"
+    }
+  ],
   "bracket": [
     {
       "weight_class": "Lightweight",
@@ -25,12 +32,12 @@
               "a": "Cesar Arzamendia",
               "b": "Oliver Meza",
               "winner": "Cesar Arzamendia",
-              "method": "TKO",
+              "method": "First-round TKO (punches)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
             },
             {
               "a": "Jonathan Ortega",
@@ -39,9 +46,9 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
             },
             {
               "a": "Danny Salas",
@@ -50,9 +57,9 @@
               "method": "Decision (majority)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
             },
             {
               "a": "Christhian Soto",
@@ -75,12 +82,12 @@
               "a": "Cesar Arzamendia",
               "b": "Enrique Barzola",
               "winner": "Enrique Barzola",
-              "method": "Submission",
+              "method": "Submission (punch to body)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
             },
             {
               "a": "Horacio Gutiérrez",
@@ -131,9 +138,9 @@
               "method": "Decision (majority)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
             },
             {
               "a": "Hector Aldana",
@@ -142,20 +149,20 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
             },
             {
               "a": "Erick Montaño",
               "b": "Marco Olano",
               "winner": "Erick Montaño",
-              "method": "TKO",
+              "method": "First-round TKO (arm injury)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
             },
             {
               "a": "Wilmer Fernández",
@@ -164,9 +171,9 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
             }
           ]
         },
@@ -178,23 +185,23 @@
               "a": "Enrique Marín",
               "b": "Hector Aldana",
               "winner": "Enrique Marín",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
             },
             {
               "a": "Erick Montaño",
               "b": "Vernon Ramos",
               "winner": "Erick Montaño",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
             }
           ]
         },
