@@ -28,7 +28,7 @@
 import { cli, nowIso, readPacket, rest, writeCombined, writePacket } from '../media/lib/subjects.mjs';
 import { archiveMetricsFor } from './lib/archive-metrics.mjs';
 
-const args = cli({ flags: ['--dry-run', '--report'], opts: ['--limit', '--slug'] });
+const args = cli(); // --dry-run, --limit, --slug
 
 const SELECT = 'name,display_name,slug,bouts,title_bouts,five_round_bouts,first_event_date,last_event_date,country,bio_source_url';
 const ARCHIVE_SRC = 'PropBetEdge UFC archive (ufc_referee_directory)';

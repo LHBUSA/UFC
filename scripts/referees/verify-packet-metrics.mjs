@@ -14,9 +14,11 @@
  * (web/lib/packet-freshness.ts); this is the build-time half of it, so the two
  * cannot drift apart in what they consider fresh.
  */
-import { cli, readPacket, rest } from '../media/lib/subjects.mjs';
+import { readPacket, rest } from '../media/lib/subjects.mjs';
 
-const args = cli({ flags: ['--json'], opts: [] });
+/* Read argv directly rather than through cli(), which returns a fixed set of
+ * keys and would silently hand back undefined for a flag it does not know. */
+const asJson = process.argv.slice(2).includes('--json');
 
 const main = async () => {
   const refs = await rest('ufc_referee_directory?select=slug,display_name,bouts&order=bouts.desc&limit=1000');
@@ -51,7 +53,7 @@ const main = async () => {
   const methodMismatch = rows.filter((r) => r.method_total != null && r.method_total !== r.packet_sample);
   const countMismatch = rows.filter((r) => r.packet_bout_count !== r.live_bouts);
 
-  if (args.json) {
+  if (asJson) {
     console.log(JSON.stringify({ packets: rows.length, orphans, stale, methodMismatch, countMismatch, rows }, null, 2));
   } else {
     console.log(`packets: ${rows.length}   orphaned: ${orphans.length}${orphans.length ? ` (${orphans.join(', ')})` : ''}`);
