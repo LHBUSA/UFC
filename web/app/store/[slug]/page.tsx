@@ -86,7 +86,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         <div className="st-detail-body">
           <p className={saleOpen ? "st-state st-state-open" : "st-state"}>
-            {saleOpen ? "On sale" : hoodie ? "Coming soon" : p.awaiting_blank ? "Coming soon" : "Coming soon"}
+            {saleOpen ? "On sale" : "Coming soon"}
           </p>
           <p className="st-price st-price-lg">{formatPrice(p.price_cents)}</p>
           <p className="st-desc">{description}</p>
@@ -107,7 +107,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             sizes={sizes}
             colors={colors}
             purchasable={saleOpen}
-            reason={saleOpen ? undefined : hoodie ? "Drop 001 checkout opens soon." : p.unavailable_reason}
+            reason={saleOpen ? null : hoodie ? "Drop 001 checkout opens soon." : (p.unavailable_reason ?? null)}
           />
 
           {!saleOpen && (
