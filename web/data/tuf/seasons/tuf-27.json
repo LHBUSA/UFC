@@ -122,7 +122,11 @@
           "weight_class": "Featherweight"
         },
         {
-          "name": "Jay Cucciniello and Dulani Perry",
+          "name": "Jay Cucciniello",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Dulani Perry",
           "weight_class": "Featherweight"
         },
         {
@@ -138,7 +142,7 @@
           "weight_class": "Lightweight"
         },
         {
-          "name": "and Allan Zuñiga",
+          "name": "Allan Zuñiga",
           "weight_class": "Lightweight"
         }
       ]
@@ -155,7 +159,11 @@
           "weight_class": "Featherweight"
         },
         {
-          "name": "Brad Katona and Ricky Steele",
+          "name": "Brad Katona",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Ricky Steele",
           "weight_class": "Featherweight"
         },
         {
@@ -167,7 +175,11 @@
           "weight_class": "Lightweight"
         },
         {
-          "name": "Joe Giannetti and Thailand Clark",
+          "name": "Joe Giannetti",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Thailand Clark",
           "weight_class": "Lightweight"
         }
       ]
@@ -193,7 +205,7 @@
               "classification_source": null
             },
             {
-              "a": "José Martinez Jr.",
+              "a": "José Martinez Jr",
               "b": "Luis Peña",
               "winner": "Luis Peña",
               "method": null,

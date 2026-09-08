@@ -117,7 +117,7 @@
           "weight_class": "Featherweight"
         },
         {
-          "name": "and Mairon Santos",
+          "name": "Mairon Santos",
           "weight_class": "Featherweight"
         },
         {
@@ -133,7 +133,7 @@
           "weight_class": "Middleweight"
         },
         {
-          "name": "and Paddy McCorry",
+          "name": "Paddy McCorry",
           "weight_class": "Middleweight"
         }
       ]
@@ -154,7 +154,7 @@
           "weight_class": "Featherweight"
         },
         {
-          "name": "and Roedie Roets",
+          "name": "Roedie Roets",
           "weight_class": "Featherweight"
         },
         {
@@ -170,7 +170,7 @@
           "weight_class": "Middleweight"
         },
         {
-          "name": "and Giannis Bachar",
+          "name": "Giannis Bachar",
           "weight_class": "Middleweight"
         }
       ]
@@ -219,7 +219,7 @@
             },
             {
               "a": "Mairon Santos",
-              "b": "Edwin Cooper Jr.",
+              "b": "Edwin Cooper Jr",
               "winner": "Mairon Santos",
               "method": "Decision (split)",
               "round": 3,

@@ -94,7 +94,11 @@
           "weight_class": "Bantamweight"
         },
         {
-          "name": "Ricky Turcios and Brady Hiestand",
+          "name": "Ricky Turcios",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Brady Hiestand",
           "weight_class": "Bantamweight"
         },
         {
@@ -106,7 +110,11 @@
           "weight_class": "Middleweight"
         },
         {
-          "name": "Aaron Phillips and Bryan Battle",
+          "name": "Aaron Phillips",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Bryan Battle",
           "weight_class": "Middleweight"
         }
       ]
@@ -123,7 +131,11 @@
           "weight_class": "Bantamweight"
         },
         {
-          "name": "Joshua Rettinghouse and Vince Murdock",
+          "name": "Joshua Rettinghouse",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Vince Murdock",
           "weight_class": "Bantamweight"
         },
         {
@@ -139,7 +151,11 @@
           "weight_class": "Middleweight"
         },
         {
-          "name": "Kemran Lachinov and Michael Gillmore",
+          "name": "Kemran Lachinov",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Michael Gillmore",
           "weight_class": "Middleweight"
         }
       ]

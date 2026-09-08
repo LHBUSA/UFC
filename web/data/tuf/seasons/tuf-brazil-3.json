@@ -96,7 +96,7 @@
           "weight_class": "Middleweight"
         },
         {
-          "name": "and Ismael de Jesus",
+          "name": "Ismael de Jesus",
           "weight_class": "Middleweight"
         },
         {
@@ -112,7 +112,7 @@
           "weight_class": "Heavyweight"
         },
         {
-          "name": "and Antônio Branjão",
+          "name": "Antônio Branjão",
           "weight_class": "Heavyweight"
         }
       ]
@@ -133,7 +133,7 @@
           "weight_class": "Middleweight"
         },
         {
-          "name": "and Márcio Alexandre Júnior",
+          "name": "Márcio Alexandre Júnior",
           "weight_class": "Middleweight"
         },
         {
@@ -149,7 +149,7 @@
           "weight_class": "Heavyweight"
         },
         {
-          "name": "and Vitor Miranda",
+          "name": "Vitor Miranda",
           "weight_class": "Heavyweight"
         }
       ]
@@ -267,8 +267,8 @@
             },
             {
               "a": "Paulo Costa",
-              "b": "Márcio Alexandre Jr.",
-              "winner": "Márcio Alexandre Jr.",
+              "b": "Márcio Alexandre Jr",
+              "winner": "Márcio Alexandre Jr",
               "method": "Decision (split)",
               "round": 3,
               "time": null,
@@ -295,8 +295,8 @@
             },
             {
               "a": "Ricardo Abreu",
-              "b": "Márcio Alexandre Jr.",
-              "winner": "Márcio Alexandre Jr.",
+              "b": "Márcio Alexandre Jr",
+              "winner": "Márcio Alexandre Jr",
               "method": "Decision (split)",
               "round": 3,
               "time": null,
@@ -312,7 +312,7 @@
           "bouts": [
             {
               "a": "Warlley Alves",
-              "b": "Márcio Alexandre Jr.",
+              "b": "Márcio Alexandre Jr",
               "winner": "Warlley Alves",
               "method": "Submission",
               "round": 3,

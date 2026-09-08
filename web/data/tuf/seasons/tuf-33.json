@@ -99,7 +99,7 @@
           "weight_class": "Flyweight"
         },
         {
-          "name": "and Tumelo Manyamala",
+          "name": "Tumelo Manyamala",
           "weight_class": "Flyweight"
         },
         {
@@ -115,7 +115,7 @@
           "weight_class": "Welterweight"
         },
         {
-          "name": "and Rodrigo Sezinando",
+          "name": "Rodrigo Sezinando",
           "weight_class": "Welterweight"
         }
       ]
@@ -136,7 +136,7 @@
           "weight_class": "Flyweight"
         },
         {
-          "name": "and Joseph Morales",
+          "name": "Joseph Morales",
           "weight_class": "Flyweight"
         },
         {
@@ -152,7 +152,7 @@
           "weight_class": "Welterweight"
         },
         {
-          "name": "and Andreeas Binder",
+          "name": "Andreeas Binder",
           "weight_class": "Welterweight"
         }
       ]

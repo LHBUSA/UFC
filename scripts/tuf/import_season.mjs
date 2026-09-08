@@ -379,8 +379,20 @@ const titleCase = (s) => clean(s).replace(/\b([a-z])/g, (c) => c.toUpperCase());
  * information, so it is separated out rather than thrown away, and recorded
  * the way the hand-built seasons already record it.
  */
+/**
+ * Final tidy for a name, applied after link resolution rather than before it.
+ * Sources sometimes put the sentence's full stop inside the link text —
+ * "[[Richard Walsh (MMA)|Richard Walsh.]]" — so the period only appears once
+ * the link is unwrapped, which is after any splitting has happened. A real
+ * suffix keeps its period: Leonard Gabriel Jr. is not a sentence.
+ */
+const tidyName = (n) =>
+  /(?:[A-Z]|Jr|Sr|St|Dr|Mr|Ms)\.$/.test(String(n || '').trim())
+    ? String(n || '').trim()
+    : String(n || '').trim().replace(/\.$/, '').trim();
+
 function competitor(cellRaw) {
-  let name = clean(cellRaw).replace(/\s*\*+\s*$/, '').trim();
+  let name = tidyName(clean(cellRaw).replace(/\s*\*+\s*$/, ''));
   let seed = null;
   const m = name.match(/^(\d{1,2})\s+(\p{L}.*)$/u);
   if (m) { seed = Number(m[1]); name = m[2].trim(); }
@@ -424,7 +436,19 @@ function splitList(s) {
     buf += c;
   }
   out.push(buf);
-  return out.map((x) => x.trim()).filter(Boolean);
+
+  /* English lists end "A, B and C", so the comma split leaves the conjunction
+   * welded to the last name — the archive was carrying 46 contestants called
+   * "and Sheldon Westcott". Split on it too, and drop a trailing full stop
+   * from the sentence the list sat in. Not from every name, though: "Leonard
+   * Gabriel Jr." ends in a period because that is his name, so suffixes and
+   * single initials keep theirs. */
+  return out
+    .flatMap((x) => x.split(/\s+(?:and|&)\s+/i))
+    .map((x) => x.trim().replace(/^(?:and|&)\s+/i, '').trim())
+    .map((x) => (/\b(?:[A-Z]|Jr|Sr|St|Dr|Mr|Ms)\.$/.test(x) ? x : x.replace(/\.$/, '')))
+    .map((x) => x.trim())
+    .filter(Boolean);
 }
 
 /**
@@ -455,11 +479,11 @@ function parseRosters(wt) {
       const listRaw = divM ? divM[2] : txt;
       for (const part of splitList(listRaw)) {
         const repl = part.match(/^(.+?)\s*\(\s*(.+?)\s*\)\s*$/);
-        const base = clean(repl ? repl[1] : part);
+        const base = tidyName(clean(repl ? repl[1] : part));
         if (!base) continue;
         current.roster.push({ name: base, ...(division ? { weight_class: division } : {}) });
         if (repl) {
-          const sub = clean(repl[2]);
+          const sub = tidyName(clean(repl[2]));
           if (sub && /^[A-Z]/.test(sub)) {
             current.roster.push({
               name: sub,

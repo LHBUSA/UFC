@@ -92,7 +92,7 @@
           "weight_class": "Welterweight"
         },
         {
-          "name": "and Chad Laprise",
+          "name": "Chad Laprise",
           "weight_class": "Welterweight"
         },
         {
@@ -108,7 +108,7 @@
           "weight_class": "Middleweight"
         },
         {
-          "name": "and Sheldon Westcott",
+          "name": "Sheldon Westcott",
           "weight_class": "Middleweight"
         }
       ]
@@ -129,7 +129,7 @@
           "weight_class": "Welterweight"
         },
         {
-          "name": "and Richard Walsh.",
+          "name": "Richard Walsh",
           "weight_class": "Welterweight"
         },
         {
@@ -145,7 +145,7 @@
           "weight_class": "Middleweight"
         },
         {
-          "name": "and Zein Saliba",
+          "name": "Zein Saliba",
           "weight_class": "Middleweight"
         }
       ]
@@ -243,12 +243,13 @@
               "a": "Chad Laprise",
               "b": "Olivier Aubin-Mercier",
               "winner": "Chad Laprise",
-              "method": "Decision (split)",
+              "method": "Decision - Split",
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2014-04-16",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
               "on_finale_card": true,
               "tournament_deciding": true
             }
@@ -345,12 +346,13 @@
               "a": "Elias Theodorou",
               "b": "Sheldon Westcott",
               "winner": "Elias Theodorou",
-              "method": "TKO",
+              "method": "KO/TKO",
               "round": 2,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "fight_date": "2014-04-16",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
               "on_finale_card": true,
               "tournament_deciding": true
             }
@@ -359,18 +361,37 @@
       ]
     }
   ],
+  "finale": {
+    "event_name": "UFC Fight Night: Bisping vs Kennedy",
+    "event_date": "2014-04-16",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
   "champions": [
     {
       "weight_class": "Welterweight",
       "fighter": "Chad Laprise",
       "won_tournament": true,
-      "received_contract": true
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Chad Laprise",
+        "b": "Olivier Aubin-Mercier",
+        "event": "UFC Fight Night: Bisping vs Kennedy",
+        "date": "2014-04-16"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record"
     },
     {
       "weight_class": "Middleweight",
       "fighter": "Elias Theodorou",
       "won_tournament": true,
-      "received_contract": true
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Elias Theodorou",
+        "b": "Sheldon Westcott",
+        "event": "UFC Fight Night: Bisping vs Kennedy",
+        "date": "2014-04-16"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record"
     }
   ]
 }

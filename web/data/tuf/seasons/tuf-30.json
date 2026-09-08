@@ -52,7 +52,11 @@
           "weight_class": "Heavyweight"
         },
         {
-          "name": "Jordan Heiderman and Bobby Maximus",
+          "name": "Jordan Heiderman",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Bobby Maximus",
           "weight_class": "Heavyweight"
         },
         {
@@ -64,11 +68,18 @@
           "weight_class": "Women's Flyweight"
         },
         {
-          "name": "Hannah Guy and Chantel Coates",
+          "name": "Hannah Guy",
           "weight_class": "Women's Flyweight"
         },
         {
-          "name": "Coates was unable to make weight and was replaced on episode 4 by Gallardo"
+          "name": "Chantel Coates",
+          "weight_class": "Women's Flyweight"
+        },
+        {
+          "name": "Coates was unable to make weight"
+        },
+        {
+          "name": "was replaced on episode 4 by Gallardo"
         }
       ]
     },
@@ -84,7 +95,11 @@
           "weight_class": "Heavyweight"
         },
         {
-          "name": "Mitchell Sipe and Nyle Bartling",
+          "name": "Mitchell Sipe",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Nyle Bartling",
           "weight_class": "Heavyweight"
         },
         {
@@ -96,7 +111,11 @@
           "weight_class": "Women's Flyweight"
         },
         {
-          "name": "Kaytlin Neil and Kathryn Paprocki",
+          "name": "Kaytlin Neil",
+          "weight_class": "Women's Flyweight"
+        },
+        {
+          "name": "Kathryn Paprocki",
           "weight_class": "Women's Flyweight"
         }
       ]
