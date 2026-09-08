@@ -1,0 +1,132 @@
+/* PBE Fight Model surfaces.
+   --pbe-model (a cool blue) is the one colour reserved for model output in the
+   design system, and it is used here and nowhere else on the site. Gold stays
+   editorial, crimson stays live, blue means "this number came from a model" —
+   so a reader can tell a measured fact from an estimate at a glance, without
+   reading a label. Never colour alone: every model surface is also labelled. */
+
+/* ---- the probability card ---- */
+.mp {
+  background: var(--pbe-ink-2); border: 1px solid var(--pbe-line);
+  border-top: 3px solid var(--pbe-model); border-radius: var(--r-md);
+  padding: var(--s-4) var(--s-5) var(--s-3); box-shadow: var(--sh-1);
+}
+.mp-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); flex-wrap: wrap; margin-bottom: var(--s-3); }
+.mp-brand {
+  display: inline-flex; align-items: center; gap: 7px;
+  font: 700 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-micro);
+  text-transform: uppercase; color: var(--pbe-model);
+}
+.mp-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pbe-model); box-shadow: 0 0 0 3px rgba(122,169,255,.16); }
+.mp-kicker { font: 500 var(--fs-micro)/1.3 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-faint); text-align: right; }
+
+.mp-split { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-4); }
+.mp-side { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.mp-side.r { align-items: flex-end; text-align: right; }
+.mp-name { font-size: var(--fs-sm); color: var(--pbe-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 42vw; }
+.mp-pc { font: 700 clamp(26px, 4.4vw, 38px)/1 var(--pbe-font-data); font-variant-numeric: tabular-nums; color: var(--pbe-faint); letter-spacing: -.02em; }
+.mp-side.lead .mp-name { color: var(--pbe-paper); }
+.mp-side.lead .mp-pc { color: var(--pbe-paper); }
+
+.mp-bar { display: flex; height: 6px; border-radius: var(--r-pill); overflow: hidden; margin: var(--s-3) 0 var(--s-4); background: var(--pbe-ink-4); }
+.mp-bar-a { background: var(--pbe-model); }
+.mp-bar-b { background: rgba(122,169,255,.22); }
+
+.mp-rows { margin: 0; display: grid; gap: 1px; background: var(--pbe-line-faint); border-top: 1px solid var(--pbe-line-faint); }
+.mp-row { display: grid; grid-template-columns: 132px 1fr; gap: var(--s-3); align-items: baseline; background: var(--pbe-ink-2); padding: 9px 0; }
+.mp-row dt { font: 600 var(--fs-micro)/1.3 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-faint); }
+.mp-row dd { margin: 0; font: 600 var(--fs-sm)/1.45 var(--pbe-font-data); color: var(--pbe-paper); font-variant-numeric: tabular-nums; }
+.mp-sub { font-weight: 400; color: var(--pbe-faint); font-family: var(--pbe-font-ui); font-size: var(--fs-sm); }
+.mp-none { font-weight: 400; color: var(--pbe-faint); font-family: var(--pbe-font-ui); font-style: italic; }
+.mp-edge.pos { color: var(--pbe-pos); }
+.mp-edge.neg { color: var(--pbe-crimson-bright); }
+.mp-warn { display: inline-block; white-space: nowrap; margin-left: 6px; padding: 1px 6px; border-radius: var(--r-pill); border: 1px solid var(--pbe-line-strong); font: 600 var(--fs-micro)/1.6 var(--pbe-font-data); letter-spacing: .08em; text-transform: uppercase; color: var(--pbe-dim); }
+.mp-res.win { color: var(--pbe-pos); }
+.mp-res.loss { color: var(--pbe-crimson-bright); }
+
+.mp-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); flex-wrap: wrap; padding-top: var(--s-3); border-top: 1px solid var(--pbe-line-faint); margin-top: 2px; }
+.mp-ver { font: 500 var(--fs-micro)/1 var(--pbe-font-data); letter-spacing: .06em; color: var(--pbe-subtle); }
+.mp-disc { font-size: var(--fs-micro); color: var(--pbe-faint); text-align: right; }
+
+/* ---- inline form ---- */
+.mp-inline { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; font: 600 var(--fs-sm)/1 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.mp-inline-tag { font: 700 var(--fs-micro)/1 var(--pbe-font-data); letter-spacing: var(--ls-micro); color: var(--pbe-model); }
+.mp-inline-side { display: inline-flex; align-items: baseline; gap: 6px; }
+.mp-inline-side span { color: var(--pbe-dim); font-family: var(--pbe-font-ui); font-weight: 400; }
+.mp-inline-side b { color: var(--pbe-paper); }
+.mp-inline-sep { width: 1px; height: 12px; background: var(--pbe-line-strong); }
+.mp-inline-ver { margin-left: auto; font-size: var(--fs-micro); color: var(--pbe-subtle); }
+
+/* ---- tracker page ---- */
+.mdl-status {
+  display: flex; gap: var(--s-4); align-items: flex-start;
+  border: 1px solid var(--pbe-line); border-left: 3px solid var(--pbe-model);
+  border-radius: var(--r-md); background: rgba(122,169,255,.05);
+  padding: var(--s-4) var(--s-5); margin-bottom: var(--s-6);
+}
+.mdl-status h2 { font-size: var(--fs-h3); margin-bottom: 4px; }
+.mdl-status p { color: var(--pbe-dim); font-size: var(--fs-sm); max-width: 74ch; }
+
+.mdl-rec { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: var(--s-4); margin-bottom: var(--s-5); }
+.mdl-rec .stat b.empty { color: var(--pbe-subtle); }
+.mdl-rec .stat.model { border-left-color: var(--pbe-model); }
+/* The shared .stat sets its label span inline, which reads as one run-on word
+   once a second line is added under it. Model stats carry a qualifier on almost
+   every tile, so they stack. */
+.mdl-rec .stat span { display: block; }
+.mdl-rec .stat span + span { margin-top: 2px; line-height: 1.35; }
+
+.mdl-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--s-5); align-items: start; }
+
+.mdl-sec { margin: var(--s-7) 0 0; }
+.mdl-sec > p.note { color: var(--pbe-dim); font-size: var(--fs-sm); max-width: 78ch; margin: var(--s-2) 0 var(--s-4); }
+
+.mdl-split-note {
+  border: 1px dashed var(--pbe-line-strong); border-radius: var(--r-md);
+  padding: var(--s-3) var(--s-4); margin: var(--s-3) 0 var(--s-5);
+  font-size: var(--fs-sm); color: var(--pbe-dim);
+}
+.mdl-split-note b { color: var(--pbe-paper); }
+
+.mdl-cal { display: grid; gap: 6px; }
+.mdl-cal-row { display: grid; grid-template-columns: 78px 1fr 96px; gap: var(--s-3); align-items: center; font: 500 var(--fs-sm)/1 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.mdl-cal-key { color: var(--pbe-faint); font-size: var(--fs-micro); letter-spacing: .06em; }
+.mdl-cal-track { position: relative; height: 20px; background: var(--pbe-ink-4); border-radius: var(--r-sm); overflow: hidden; }
+.mdl-cal-pred { position: absolute; top: 0; bottom: 0; background: rgba(122,169,255,.20); }
+.mdl-cal-obs { position: absolute; top: 5px; bottom: 5px; width: 2px; background: var(--pbe-gold); }
+.mdl-cal-val { text-align: right; color: var(--pbe-dim); font-size: var(--fs-micro); }
+
+.mdl-legend { display: flex; gap: var(--s-4); flex-wrap: wrap; margin-top: var(--s-3); font-size: var(--fs-micro); color: var(--pbe-faint); }
+.mdl-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.mdl-legend .pred { background: rgba(122,169,255,.35); }
+.mdl-legend .obs { background: var(--pbe-gold); width: 3px; height: 12px; }
+
+.mdl-audit { display: grid; gap: 8px; }
+.mdl-audit li { display: flex; align-items: baseline; gap: var(--s-3); font-size: var(--fs-sm); color: var(--pbe-dim); }
+.mdl-audit .ok { color: var(--pbe-pos); font: 700 var(--fs-sm)/1 var(--pbe-font-data); min-width: 42px; }
+.mdl-audit .bad { color: var(--pbe-crimson-bright); font: 700 var(--fs-sm)/1 var(--pbe-font-data); min-width: 42px; }
+.mdl-audit b { color: var(--pbe-paper); }
+
+.mdl-examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--s-4); }
+.mdl-example-note { font-size: var(--fs-sm); color: var(--pbe-faint); margin: var(--s-2) 0 var(--s-3); }
+
+/* The specimen carries invented numbers, so it is drawn as a specimen: dashed,
+   desaturated, and captioned. It exists to show the market and edge rows in
+   their populated state, which no real bout in this database can currently do,
+   and it must never be mistakable for a call. */
+.mdl-specimen { border: 1px dashed var(--pbe-line-strong); border-radius: var(--r-lg); padding: var(--s-4); background: rgba(20,17,13,.5); }
+.mdl-specimen .mp { opacity: .92; border-top-color: var(--pbe-subtle); }
+.mdl-specimen .mp-brand, .mdl-specimen .mp-dot { color: var(--pbe-dim); }
+.mdl-specimen .mp-dot { background: var(--pbe-dim); box-shadow: none; }
+.mdl-specimen-tag { display: inline-block; margin-bottom: var(--s-3); padding: 2px 8px; border-radius: var(--r-pill); border: 1px solid var(--pbe-line-strong); font: 700 var(--fs-micro)/1.7 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-dim); }
+
+.mdl-feat { columns: 2 260px; column-gap: var(--s-5); }
+.mdl-feat li { break-inside: avoid; margin-bottom: 10px; font-size: var(--fs-sm); color: var(--pbe-dim); }
+.mdl-feat b { display: block; color: var(--pbe-paper); font: 600 var(--fs-sm)/1.3 var(--pbe-font-data); }
+.mdl-feat .fam { font: 500 var(--fs-micro)/1 var(--pbe-font-data); letter-spacing: .08em; text-transform: uppercase; color: var(--pbe-subtle); }
+
+@media (max-width: 560px) {
+  .mp-row { grid-template-columns: 1fr; gap: 2px; }
+  .mp-name { max-width: 38vw; }
+  .mdl-cal-row { grid-template-columns: 62px 1fr 78px; }
+}

@@ -32,7 +32,14 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
-    return [{ source: "/rss", destination: "/feed.xml", permanent: true }, { source: "/rss.xml", destination: "/feed.xml", permanent: true }];
+    return [
+      { source: "/rss", destination: "/feed.xml", permanent: true },
+      { source: "/rss.xml", destination: "/feed.xml", permanent: true },
+      // /picks is the phrase people type; /model is the page. A config
+      // redirect rather than a second route, so there is one canonical URL and
+      // the alias never competes with it in search.
+      { source: "/picks", destination: "/model", permanent: true },
+    ];
   },
 };
 

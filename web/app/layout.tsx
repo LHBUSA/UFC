@@ -12,6 +12,7 @@ import "./depth.css";
 import "./roundanalysis.css";
 import "./market.css";
 import "./tuf.css";
+import "./model.css";
 import { Header, Footer } from "@/components/Shell";
 import { LiveWire } from "@/components/LiveWire";
 import { ShareRail } from "@/components/ShareRail";
