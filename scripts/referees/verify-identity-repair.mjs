@@ -188,6 +188,54 @@ const main = async () => {
     problems.push('state is neither cleanly before nor cleanly after the repair');
   }
 
+  /* ---- checked-in packets against the live record ----
+   *
+   * The repair moves bouts in the database. Enrichment packets are committed
+   * files and do not move with it, so after any identity merge a packet can go
+   * on describing a record that no longer exists. That is exactly what put a
+   * 29-assignment headline above a 26-bout distribution on one page. Checked
+   * here because this harness is the thing that runs either side of a merge.
+   */
+  const packetPath = path.join(ROOT, 'web', 'lib', 'generated', 'enrichment.json');
+  if (fs.existsSync(packetPath)) {
+    const packets = JSON.parse(fs.readFileSync(packetPath, 'utf8')).referees || {};
+    const dir = await q('ufc_referee_directory?select=slug,bouts,display_name');
+    const live = new Map(dir.map((d) => [d.slug, d]));
+    const stale = [];
+    const orphaned = [];
+    for (const [slug, p] of Object.entries(packets)) {
+      const sample = p?.metrics?.sample_bouts;
+      const row = live.get(slug);
+      if (!row) { orphaned.push(slug); continue; }
+      if (typeof sample === 'number' && sample !== row.bouts) {
+        stale.push(`${slug}: packet sample ${sample} vs live ${row.bouts}`);
+      }
+    }
+    report.packets = { checked: Object.keys(packets).length, stale, orphaned };
+    console.log(`\nPACKETS vs LIVE RECORD (${Object.keys(packets).length} checked)`);
+    for (const s of stale) console.log(`  stale     ${s}`);
+    for (const s of orphaned) console.log(`  orphaned  ${s} — packet for a referee the directory no longer has`);
+    if (!stale.length && !orphaned.length) console.log('  every packet agrees with the live directory');
+    /* Staleness is split by cause, because these are two different problems.
+     *
+     * Most of it predates any merge: the packets were generated before the
+     * historical backfill loaded the archive, so Herb Dean's says 203 bouts
+     * against a live 1,351. That is a real defect and it is reported loudly,
+     * but it is not evidence that this repair went wrong, and failing the
+     * repair harness for it would bury the signal it exists to give.
+     *
+     * A stale packet for one of the MERGED identities is repair-relevant, and
+     * so is a packet for a referee the directory no longer has. Those fail. */
+    const repairSlugs = new Set(CLUSTERS.map((c) => c.keepSlug));
+    const repairStale = stale.filter((s) => repairSlugs.has(s.split(':')[0]));
+    for (const s of repairStale) note(false, `packet out of date for a merged identity — ${s}`);
+    for (const s of orphaned) note(false, `packet survives a referee the directory no longer has: ${s}`);
+    if (stale.length > repairStale.length) {
+      console.log(`  ${stale.length - repairStale.length} of these predate this repair — packets generated before the backfill loaded the archive.`);
+      console.log('  Not failed here: it is a real defect, but not evidence about this merge. Regenerate with scripts/referees/enrich.mjs.');
+    }
+  }
+
   console.log('\nCHECKS');
   if (problems.length) {
     for (const p of problems) console.log(`  ✖ ${p}`);

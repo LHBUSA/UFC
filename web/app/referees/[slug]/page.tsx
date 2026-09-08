@@ -7,7 +7,7 @@ import { fmtDate, fmtTime, METHOD_LABEL, weightClassLabel } from "@/lib/format";
 import { getRefereeBouts, getRefereeBySlug, refereeArchiveBio, refereeImpactRead, type RefereeBout } from "@/lib/referees";
 import { SITE } from "@/lib/site";
 import { RefereePhoto, refereeImage, tenureLine } from "@/components/RefereeBits";
-import { refereePacket, val, type Claim } from "@/lib/enrichment";
+import { refereePacket, packetMetricsAreCurrent, val, type Claim } from "@/lib/enrichment";
 import styles from "../referees.module.css";
 
 /* /referees/[slug] — premium intelligence profile: photo (or monogram),
@@ -47,7 +47,13 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
   const bio = sourcedBio || r.bio || refereeArchiveBio(r);
   const bioSourceUrl = sourcedBio ? pk?.bio?.source_url : r.bio_source_url;
   const bioSourceName = sourcedBio ? `${pk?.bio?.source_name}${pk?.bio?.license ? ` · ${pk.bio.license}` : ""}` : r.bio_source_name;
-  const m = pk?.metrics || null;
+  /* The packet is checked in; the bout count is live. After an identity merge
+   * they disagree, and the page would then show a headline over one record and
+   * a distribution over another. Withhold the distribution rather than render
+   * two referees at once — the archive section below is computed from the live
+   * row and still covers the same ground. */
+  const metricsCurrent = packetMetricsAreCurrent(pk, r.bouts);
+  const m = metricsCurrent ? pk?.metrics || null : null;
   const methodRows = m ? Object.entries(m.method_distribution).sort((a, b) => b[1] - a[1]).slice(0, 6) : [];
   const roundRows = m ? Object.entries(m.round_distribution).sort((a, b) => Number(a[0]) - Number(b[0])) : [];
   const tendencies: string[] = [];

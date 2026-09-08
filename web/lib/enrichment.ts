@@ -55,6 +55,10 @@ const DB = data as unknown as { generated_at: string; referees: Record<string, R
 
 export const enrichmentGeneratedAt = DB.generated_at;
 export function refereePacket(slug: string): RefereePacket | null { return DB.referees[slug] || null; }
+
+/* The staleness guard lives in its own dependency-free module so it can be
+ * tested directly; re-exported here because this is where callers look. */
+export { packetMetricsAreCurrent } from "./packet-freshness";
 export function hofPacket(slug: string): HofPacket | null { return DB.hof[slug] || null; }
 export function allRefereePackets(): RefereePacket[] { return Object.values(DB.referees); }
 export function allHofPackets(): HofPacket[] { return Object.values(DB.hof); }
