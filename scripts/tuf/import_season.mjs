@@ -160,6 +160,10 @@ const expandMethod = (s) => {
   const up = t.toUpperCase().replace(/[^A-Z]/g, '');
   if (METHODS[up]) return METHODS[up];
   if (/^\d+$/.test(t)) return null;
+  /* A result cell holding only a footnote marker — "*", "**" — is a pointer to
+   * a note, not a method. Recorded as no method rather than as a method called
+   * "*", which is what the page was rendering. */
+  if (!/[a-z0-9]/i.test(t)) return null;
   return t;
 };
 

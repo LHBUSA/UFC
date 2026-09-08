@@ -181,7 +181,7 @@
               "a": "Fu Ziyi",
               "b": "Wang Anying",
               "winner": "Wang Anying",
-              "method": "*",
+              "method": null,
               "round": null,
               "time": null,
               "episode": null,
