@@ -10,7 +10,7 @@ export function drop001RuntimeStatus() {
     stripe: Boolean(process.env.STRIPE_SECRET_KEY),
     stripe_webhook: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
     supabase: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
-    fulfill_gate: Boolean(process.env.STORE_FULFILL_TOKEN),
+    fulfill_gate: Boolean(process.env.CRON_SECRET || process.env.STORE_FULFILL_TOKEN),
     hoodie_front_art: Boolean(process.env.STORE_HOODIE_FRONT_FILE_URL),
     hoodie_sleeve_art: Boolean(process.env.STORE_HOODIE_SLEEVE_FILE_URL),
   };
@@ -19,7 +19,7 @@ export function drop001RuntimeStatus() {
     stripe: "STRIPE_SECRET_KEY",
     stripe_webhook: "STRIPE_WEBHOOK_SECRET",
     supabase: "SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY",
-    fulfill_gate: "STORE_FULFILL_TOKEN",
+    fulfill_gate: "CRON_SECRET/STORE_FULFILL_TOKEN",
     hoodie_front_art: "STORE_HOODIE_FRONT_FILE_URL",
     hoodie_sleeve_art: "STORE_HOODIE_SLEEVE_FILE_URL",
   };
