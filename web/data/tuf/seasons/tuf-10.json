@@ -1,0 +1,354 @@
+{
+  "slug": "tuf-10",
+  "name": "The Ultimate Fighter 10: Heavyweights",
+  "edition": "us",
+  "number": 10,
+  "year": 2009,
+  "weight_classes": [
+    "Heavyweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Heavyweights",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "Team Rampage",
+      "name": "; Team Rampage",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Quinton \"Rampage\" Jackson",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Tom Blackledge",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Tiki Ghosn",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Mike Dolce",
+      "role": "head",
+      "note": "nutritionist"
+    },
+    {
+      "team": "Team Rashad",
+      "name": "; Team Rashad",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rashad Evans",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Greg Jackson",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Trevor Wittman",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Mike Van Arsdale",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rolles Gracie",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Rashad",
+      "roster": [
+        {
+          "name": "James McSweeney"
+        },
+        {
+          "name": "Brendan Schaub"
+        },
+        {
+          "name": "Justin Wren"
+        },
+        {
+          "name": "Jon Madsen"
+        },
+        {
+          "name": "Roy Nelson"
+        },
+        {
+          "name": "Darrill “Titties” Schoonover"
+        },
+        {
+          "name": "Matt Mitrione"
+        },
+        {
+          "name": "Mike Wessel"
+        }
+      ]
+    },
+    {
+      "name": "Team Rampage",
+      "roster": [
+        {
+          "name": "Kevin \"Kimbo Slice\" Ferguson"
+        },
+        {
+          "name": "Abe Wagner"
+        },
+        {
+          "name": "Demico Rogers"
+        },
+        {
+          "name": "Wes Sims"
+        },
+        {
+          "name": "Scott Junk"
+        },
+        {
+          "name": "Wes Shivers"
+        },
+        {
+          "name": "Marcus Jones"
+        },
+        {
+          "name": "Zak Jensen"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Abe Wagner",
+              "b": "Jon Madsen",
+              "winner": "Jon Madsen",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Demico Rogers",
+              "b": "Brendan Schaub",
+              "winner": "Brendan Schaub",
+              "method": "Submission (anaconda choke) at 3:17 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+            },
+            {
+              "a": "Zak Jensen",
+              "b": "Darrill Schoonover",
+              "winner": "Darrill Schoonover",
+              "method": "Submission (triangle choke) at 2:29 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Marcus Jones",
+              "b": "Mike Wessel",
+              "winner": "Marcus Jones",
+              "method": "Submission (armbar) at 0:50 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+            },
+            {
+              "a": "Wes Shivers",
+              "b": "James McSweeney",
+              "winner": "James McSweeney",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Scott Junk",
+              "b": "Matt Mitrione",
+              "winner": "Matt Mitrione",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kimbo Slice",
+              "b": "Roy Nelson",
+              "winner": "Roy Nelson",
+              "method": "TKO (strikes) at 2:01 in the second round",
+              "round": 2,
+              "time": null,
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Wes Sims",
+              "b": "Justin Wren",
+              "winner": "Justin Wren",
+              "method": "Submission (arm triangle choke) at 1:34 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Jon Madsen",
+              "b": "Brendan Schaub",
+              "winner": "Brendan Schaub",
+              "method": "KO (punch) at 1:39 in the second round",
+              "round": 2,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            },
+            {
+              "a": "Darrill Schoonover",
+              "b": "Marcus Jones",
+              "winner": "Marcus Jones",
+              "method": "TKO (punches) at 2:37 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            },
+            {
+              "a": "James McSweeney",
+              "b": "Matt Mitrione",
+              "winner": "James McSweeney",
+              "method": "Submission (guillotine choke) at 3:38 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            },
+            {
+              "a": "Roy Nelson",
+              "b": "Justin Wren",
+              "winner": "Roy Nelson",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Brendan Schaub",
+              "b": "Marcus Jones",
+              "winner": "Brendan Schaub",
+              "method": "TKO (punches) at 2:11 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            },
+            {
+              "a": "James McSweeney",
+              "b": "Roy Nelson",
+              "winner": "Roy Nelson",
+              "method": "TKO (strikes) at 4:13 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Brendan Schaub",
+              "b": "Roy Nelson",
+              "winner": "Roy Nelson",
+              "method": "KO/TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "fight_date": "2009-12-05",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Heavyweights Finale",
+    "event_date": "2009-12-05",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Heavyweight",
+      "fighter": "Roy Nelson",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Roy Nelson",
+        "b": "Brendan Schaub",
+        "event": "The Ultimate Fighter: Heavyweights Finale",
+        "date": "2009-12-05"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

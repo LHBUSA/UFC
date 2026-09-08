@@ -1,0 +1,494 @@
+{
+  "slug": "tuf-11",
+  "name": "The Ultimate Fighter 11: Team Liddell vs. Team Ortiz",
+  "edition": "us",
+  "number": 11,
+  "year": 2010,
+  "weight_classes": [
+    "Middleweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Liddell_vs._Team_Ortiz",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Tournament_semi_final",
+      "detail": "The bracket and the episode summary disagree about Josh Bryant versus Kris McCray: the bracket advances Kris McCray, the episode text says Josh Bryant won. Recorded with no winner.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Tournament_round_of_16",
+      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round, 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "unplaced_bouts",
+      "detail": "1 bout(s) appear in the episode summaries but in no bracket: Chris Camozzi def. Victor O'Donnell. Left unplaced rather than assigned to a division by guesswork.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "",
+      "name": "; Team Liddell",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Chuck Liddell",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Howard Davis",
+      "role": "head",
+      "note": "Jr., boxing coach"
+    },
+    {
+      "team": "",
+      "name": "Scott Epstein",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "John Hackleman",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jake Shields",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Antonio Banuelos",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "; Team Punishment",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Tito Ortiz",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Cleber Luciano",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rob McCullough",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Saul Soliz",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "; Team Franklin",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rich Franklin",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Forrest Griffin",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Tyson Griffin",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Gray Maynard",
+      "role": "head"
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "elimination",
+          "label": "Elimination round",
+          "note": "Bouts the episode summaries record but the source's bracket does not include.",
+          "bouts": [
+            {
+              "a": "Jamie Yager",
+              "b": "Ben Stark",
+              "winner": "Jamie Yager",
+              "method": "KO (head kick)",
+              "round": 1,
+              "time": "0:26",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Brad Tavares",
+              "b": "Jordan Smith",
+              "winner": "Brad Tavares",
+              "method": "KO (strikes)",
+              "round": 1,
+              "time": "0:37",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kris McCray",
+              "b": "Cleburn Walker",
+              "winner": "Kris McCray",
+              "method": "TKO (shoulder injury)",
+              "round": 1,
+              "time": "0:15",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "James Hammortree",
+              "b": "Norman Paraisy",
+              "winner": "James Hammortree",
+              "method": "TKO (retirement) at the end of the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Nick Ring",
+              "b": "Woody Weatherby",
+              "winner": "Nick Ring",
+              "method": "TKO (punches)",
+              "round": 1,
+              "time": "2:42",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kyle Noke",
+              "b": "Warren Thompson",
+              "winner": "Kyle Noke",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": 2,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Court McGee",
+              "b": "Seth Baczynski",
+              "winner": "Court McGee",
+              "method": "Unanimous decision (29–28, 29–28, 29–28)",
+              "round": 3,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kyacey Uscola",
+              "b": "Brent Cooper",
+              "winner": "Kyacey Uscola",
+              "method": "KO (punches)",
+              "round": 1,
+              "time": "0:25",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Joseph Henle",
+              "b": "Costas Philippou",
+              "winner": "Joseph Henle",
+              "method": "Submission (armbar)",
+              "round": 2,
+              "time": "2:17",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Rich Attonito",
+              "b": "Lyle Steffens",
+              "winner": "Rich Attonito",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": 2,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Josh Bryant",
+              "b": "Greg Rebello",
+              "winner": "Josh Bryant",
+              "method": "Majority decision (20–18, 19–19, 20–18)",
+              "round": 2,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Charles Blanchard",
+              "b": "Jacen Flynn",
+              "winner": "Charles Blanchard",
+              "method": "TKO (referee stoppage) at the end of the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Clayton McKinney",
+              "b": "Charley Lynch",
+              "winner": "Clayton McKinney",
+              "method": "TKO (punches) at 4:07 of first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Brad Tavares",
+              "b": "James Hammortree",
+              "winner": "Brad Tavares",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Joseph Henle",
+              "b": "Seth Baczynski",
+              "winner": "Seth Baczynski",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Rich Attonito",
+              "b": "Kyacey Uscola",
+              "winner": "Rich Attonito",
+              "method": "Disqualification (illegal knee)",
+              "round": 1,
+              "time": "3:36",
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+            },
+            {
+              "a": "Court McGee",
+              "b": "Nick Ring",
+              "winner": "Nick Ring",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Josh Bryant",
+              "b": "Kris McCray",
+              "winner": "Josh Bryant",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+            },
+            {
+              "a": "Charles Blanchard",
+              "b": "Jamie Yager",
+              "winner": "Jamie Yager",
+              "method": "TKO (strikes)",
+              "round": 1,
+              "time": "1:09",
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kyle Noke",
+              "b": "Clayton McKinney",
+              "winner": "Kyle Noke",
+              "method": "Submission (triangle choke)",
+              "round": 1,
+              "time": "2:44",
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kris McCray",
+              "b": "Kyacey Uscola",
+              "winner": "Kris McCray",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 2 fighter(s) appear more than once in this round; 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Brad Tavares",
+              "b": "Seth Baczynski",
+              "winner": "Brad Tavares",
+              "method": "Disqualification",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Court McGee *",
+              "b": "James Hammortree**",
+              "winner": "Court McGee *",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Josh Bryant",
+              "b": "Jamie Yager",
+              "winner": "Josh Bryant",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Kyle Noke",
+              "b": "Kris McCray",
+              "winner": "Kris McCray",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Brad Tavares",
+              "b": "Court McGee",
+              "winner": "Court McGee",
+              "method": "Submission",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Josh Bryant",
+              "b": "Kris McCray",
+              "winner": null,
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Court McGee",
+              "b": "Kris McCray",
+              "winner": "Court McGee",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "fight_date": "2010-06-19",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Liddell vs Team Ortiz Finale",
+    "event_date": "2010-06-19",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Court McGee",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Court McGee",
+        "b": "Kris McCray",
+        "event": "The Ultimate Fighter: Team Liddell vs Team Ortiz Finale",
+        "date": "2010-06-19"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

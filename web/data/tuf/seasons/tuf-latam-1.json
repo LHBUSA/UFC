@@ -1,0 +1,367 @@
+{
+  "slug": "tuf-latam-1",
+  "name": "The Ultimate Fighter Latin America 1",
+  "edition": "latam",
+  "number": 1,
+  "year": 2014,
+  "weight_classes": [
+    "Bantamweight",
+    "Featherweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Latin_America",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Bantamweight_quarter_final",
+      "detail": "The source's quarter-finals for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Bantamweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Velasquez (Mexico)",
+      "name": "Cain Velasquez",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Daniel \"DC\" Cormier",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Leandro Vieira",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Javier Mendez",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Luke Rockhold",
+      "role": "head"
+    },
+    {
+      "team": "Team Werdum (Latin America)",
+      "name": "Fabrício Werdum",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Rafael Cordeiro",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Victor Davila",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Kenny Johnson",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Velasquez (Mexico)",
+      "roster": [
+        {
+          "name": "Enrique Briones",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "José Alberto Quiñónez",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Alejandro Pérez",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "and Marco Beltrán",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Gabriel Benítez",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Yair Rodríguez",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Rodolfo Rubio",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "and Masio Fullen",
+          "weight_class": "Featherweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Werdum (Latin America)",
+      "roster": [
+        {
+          "name": "Marlon Vera",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Bentley Syler",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Guido Cannetti",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Fredy Serrano",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Alexander Torres",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Diego Rivas",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Leonardo Morales",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Humberto Brown",
+          "weight_class": "Featherweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Bantamweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Alejandro Pérez",
+              "b": "Fredy Serrano",
+              "winner": "Alejandro Pérez",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Enrique Briones",
+              "b": "Marlon Vera",
+              "winner": "Marlon Vera",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Marco Beltrán",
+              "b": "Guido Cannetti",
+              "winner": "Marco Beltrán",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Alejandro Pérez",
+              "b": "Guido Cannetti*",
+              "winner": "Alejandro Pérez",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts."
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Alejandro Pérez",
+              "b": "",
+              "winner": "Alejandro Pérez",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        }
+      ]
+    },
+    {
+      "weight_class": "Featherweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Rodolfo Rubio",
+              "b": "Alexander Torres",
+              "winner": "Rodolfo Rubio",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Yair Rodríguez",
+              "b": "Humberto Brown",
+              "winner": "Yair Rodríguez",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Gabriel Benítez",
+              "b": "Diego Rivas",
+              "winner": "Gabriel Benítez",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Masiosare Fullen",
+              "b": "Leonardo Morales",
+              "winner": "Leonardo Morales",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Rodolfo Rubio",
+              "b": "Yair Rodríguez",
+              "winner": "Yair Rodríguez",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Gabriel Benítez",
+              "b": "Leonardo Morales",
+              "winner": "Leonardo Morales",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Yair Rodríguez",
+              "b": "Leonardo Morales",
+              "winner": "Yair Rodríguez",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2014-11-15",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC 180: Werdum vs Hunt",
+    "event_date": "2014-11-15",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Bantamweight",
+      "fighter": "Alejandro Pérez",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Alejandro Pérez",
+        "b": "Jose Quinonez",
+        "event": "UFC 180: Werdum vs Hunt",
+        "date": "2014-11-15"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    },
+    {
+      "weight_class": "Featherweight",
+      "fighter": "Yair Rodríguez",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Yair Rodríguez",
+        "b": "Leonardo Morales",
+        "event": "UFC 180: Werdum vs Hunt",
+        "date": "2014-11-15"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    }
+  ]
+}

@@ -1,0 +1,415 @@
+{
+  "slug": "tuf-32",
+  "name": "The Ultimate Fighter 32: Team Grasso vs. Team Shevchenko",
+  "edition": "us",
+  "number": 32,
+  "year": 2024,
+  "weight_classes": [
+    "Featherweight",
+    "Middleweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Grasso_vs._Team_Shevchenko",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Featherweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round, 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Middleweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Middleweight_final",
+      "detail": "The source's tournament final for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Grasso",
+      "name": "Alexa Grasso",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Diego Lopes",
+      "role": "assistant",
+      "note": "assistant coach"
+    },
+    {
+      "team": "Team Grasso",
+      "name": "Francisco Grasso",
+      "role": "assistant",
+      "note": "assistant coach"
+    },
+    {
+      "team": "",
+      "name": "Alessandro Costa",
+      "role": "head",
+      "note": "BJJ coach"
+    },
+    {
+      "team": "",
+      "name": "Colin Daynes",
+      "role": "head",
+      "note": "wrestling coach"
+    },
+    {
+      "team": "",
+      "name": "Jose Martinez",
+      "role": "head",
+      "note": "striking coach"
+    },
+    {
+      "team": "Team Shevchenko",
+      "name": "Valentina Shevchenko",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Pavel Fedotov",
+      "role": "assistant",
+      "note": "assistant coach"
+    },
+    {
+      "team": "",
+      "name": "Jason Andrada",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Miguel Carpinacci",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Richie Van Houten",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Martin Gil",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Louai Kiblawi",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rocky Kiblawi",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Grasso",
+      "roster": [
+        {
+          "name": "Bekhzod Usmonov",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Guillermo Torres",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Kaan Ofli",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "and Mairon Santos",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Omran Chaaban",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Robert Valentin",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Thomas Theocharis",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "and Paddy McCorry",
+          "weight_class": "Middleweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Shevchenko",
+      "roster": [
+        {
+          "name": "Edwin Cooper Jr",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Nathan Fletcher",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Žygimantas Ramaška",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "and Roedie Roets",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Shamidkhan Magomedov",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Mark Hulme",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Ryan Loder",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "and Giannis Bachar",
+          "weight_class": "Middleweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Featherweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Guillermo Torres",
+              "b": "Roedie Roets",
+              "winner": "Roedie Roets",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Kaan Ofli",
+              "b": "Nathan Fletcher",
+              "winner": "Kaan Ofli",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bekhzod Usmonov",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Mairon Santos",
+              "b": "Edwin Cooper Jr.",
+              "winner": "Mairon Santos",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Roedie Roets",
+              "b": "Kaan Ofli",
+              "winner": "Kaan Ofli",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Kaan Ofli",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear more than once in this round; 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        }
+      ]
+    },
+    {
+      "weight_class": "Middleweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Omran Chaaban",
+              "b": "",
+              "winner": "Omran Chaaban",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Tom Theocharis",
+              "b": "Ryan Loder",
+              "winner": "Ryan Loder",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Paddy McCorry",
+              "b": "Mark Hulme",
+              "winner": "Paddy McCorry",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Robert Valentin Frey",
+              "b": "Giannis Bachar",
+              "winner": "Robert Valentin Frey",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Omran Chaaban",
+              "b": "Ryan Loder",
+              "winner": "Ryan Loder",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Paddy McCorry",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Ryan Loder",
+              "b": "",
+              "winner": "Ryan Loder",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC Fight Night: Cannonier vs. Borralho",
+    "event_date": "2024-08-24",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Featherweight",
+      "fighter": "Mairon Santos",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Mairon Santos",
+        "b": "Kaan Ofli",
+        "event": "UFC Fight Night: Cannonier vs. Borralho",
+        "date": "2024-08-24"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    },
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Ryan Loder",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Ryan Loder",
+        "b": "Robert Valentin",
+        "event": "UFC Fight Night: Cannonier vs. Borralho",
+        "date": "2024-08-24"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    }
+  ]
+}

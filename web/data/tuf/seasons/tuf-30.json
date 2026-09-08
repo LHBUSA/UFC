@@ -1,0 +1,316 @@
+{
+  "slug": "tuf-30",
+  "name": "The Ultimate Fighter 30: Team Peña vs. Team Nunes",
+  "edition": "us",
+  "number": 30,
+  "year": 2022,
+  "weight_classes": [
+    "Heavyweight",
+    "Women's Flyweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Pe%C3%B1a_vs._Team_Nunes",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Heavyweight_final",
+      "detail": "The source's tournament final for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "unplaced_bouts",
+      "detail": "3 bout(s) appear in the episode summaries but in no bracket: Brogan Walker def. Hannah Guy; Zac Pauga def. Jordan Heiderman in the first heavyweight semi-final; Brogan Walker def. Laura Gallardo. Left unplaced rather than assigned to a division by guesswork.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Peña",
+      "name": "Julianna Peña",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "Team Nunes",
+      "name": "Amanda Nunes",
+      "role": "head",
+      "note": "Head Coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Peña",
+      "roster": [
+        {
+          "name": "Mohammed Usman",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Zac Pauga",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Jordan Heiderman and Bobby Maximus",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Helen Peralta",
+          "weight_class": "Women's Flyweight"
+        },
+        {
+          "name": "Juliana Miller",
+          "weight_class": "Women's Flyweight"
+        },
+        {
+          "name": "Hannah Guy and Chantel Coates",
+          "weight_class": "Women's Flyweight"
+        },
+        {
+          "name": "Coates was unable to make weight and was replaced on episode 4 by Gallardo"
+        }
+      ]
+    },
+    {
+      "name": "Team Nunes",
+      "roster": [
+        {
+          "name": "Eduardo Perez",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Chandler Cole",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Mitchell Sipe and Nyle Bartling",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Claire Guthrie",
+          "weight_class": "Women's Flyweight"
+        },
+        {
+          "name": "Brogan Walker-Sanchez",
+          "weight_class": "Women's Flyweight"
+        },
+        {
+          "name": "Kaytlin Neil and Kathryn Paprocki",
+          "weight_class": "Women's Flyweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Heavyweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Zac Pauga",
+              "b": "Nyle Bartling",
+              "winner": "Zac Pauga",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jordan Heiderman",
+              "b": "Chandler Cole",
+              "winner": "Jordan Heiderman",
+              "method": "TKO (punches) at 1:16 of round 3",
+              "round": 3,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            },
+            {
+              "a": "Eduardo Perez",
+              "b": "Bobby Maximus",
+              "winner": "Eduardo Perez",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Mohammed Usman",
+              "b": "Mitchell Sipe",
+              "winner": "Mohammed Usman",
+              "method": "Unanimous decision after going to a third round",
+              "round": 3,
+              "time": null,
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Zac Pauga",
+              "b": "Jordan Heiderman",
+              "winner": "Zac Pauga",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Eduardo Perez",
+              "b": "Mohammed Usman",
+              "winner": "Mohammed Usman",
+              "method": "Split decision after 3 rounds",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Zac Pauga",
+              "b": "Mohammad Usman",
+              "winner": "Mohammad Usman",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        }
+      ]
+    },
+    {
+      "weight_class": "Women'S Flyweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Hannah Guy",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Laura Gallardo",
+              "b": "Kathryn Paprocki",
+              "winner": "Laura Gallardo",
+              "method": "Majority decision after 2 rounds",
+              "round": 2,
+              "time": null,
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+            },
+            {
+              "a": "Helen Peralta",
+              "b": "Kaytlin Neil",
+              "winner": "Kaytlin Neil",
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Juliana Miller",
+              "b": "Claire Guthrie",
+              "winner": "Juliana Miller",
+              "method": "A unanimous decision after 3 rounds",
+              "round": 3,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Juliana Miller",
+              "b": "Kaytlin Neil",
+              "winner": "Juliana Miller",
+              "method": "Kimura submission at 3:34 of round 2",
+              "round": 2,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC Fight Night: Santos vs. Hill",
+    "event_date": "2022-08-06",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Heavyweight",
+      "fighter": "Mohammed Usman",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Mohammed Usman",
+        "b": "Zac Pauga",
+        "event": "UFC Fight Night: Santos vs. Hill",
+        "date": "2022-08-06"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    },
+    {
+      "weight_class": "Women's Flyweight",
+      "fighter": "Juliana Miller",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Juliana Miller",
+        "b": "Brogan Walker",
+        "event": "UFC Fight Night: Santos vs. Hill",
+        "date": "2022-08-06"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    }
+  ]
+}

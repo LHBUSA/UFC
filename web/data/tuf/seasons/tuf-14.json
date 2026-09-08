@@ -1,0 +1,657 @@
+{
+  "slug": "tuf-14",
+  "name": "The Ultimate Fighter 14: Team Bisping vs. Team Miller",
+  "edition": "us",
+  "number": 14,
+  "year": 2011,
+  "weight_classes": [
+    "Bantamweight",
+    "Featherweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Bisping_vs._Team_Miller",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "Team Bisping",
+      "name": "Michael Bisping",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Brady Fink",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Tiki Ghosn",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rob McCullough",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Zoran Dubaic",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Sean Keefe",
+      "role": "head"
+    },
+    {
+      "team": "Team Miller",
+      "name": "Jason Miller",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Ryan Parsons",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Danny Perez",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Darren Morris",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jake Ellenberger",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Melchor Menor",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Kamaru Usman (wrestling)",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Bisping",
+      "roster": [
+        {
+          "name": "Louis Gaudinot",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "T.J. Dillashaw",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "John Albert",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Josh Ferguson",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Diego Brandão",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Akira Corassani",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Marcus Brimage",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Stephen Bass",
+          "weight_class": "Featherweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Miller",
+      "roster": [
+        {
+          "name": "John Dodson",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Johnny Bedford",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Dustin Pague",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Roland Delorme",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Dennis Bermudez",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Bryan Caraway",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Dustin Neace",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Steven Siler",
+          "weight_class": "Featherweight"
+        }
+      ]
+    },
+    {
+      "name": "Fighters eliminated before entry round",
+      "roster": [
+        {
+          "name": "Carson Beebe",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Casey Dyer",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "B",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "J",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Ferguson",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Tateki Matsuda",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Matt Jaggers",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Paul McVeigh",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Brandon Merkt",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Orville Smith",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Josh Clopton",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Karsten Lenjoint",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Eric Marriott",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Micah Miller",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Jimmie Rivera",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Jesse Newell",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Brian Pearman",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Bryson Wailehua-Hansen",
+          "weight_class": "Featherweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Featherweight",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Steven Siler",
+              "b": "Micah Miller",
+              "winner": "Steven Siler",
+              "method": "Submission",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Diego Brandao",
+              "b": "Jesse Newell",
+              "winner": "Diego Brandao",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bryan Caraway",
+              "b": "Eric Marriott",
+              "winner": "Bryan Caraway",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Marcus Brimage",
+              "b": "Bryson Hansen",
+              "winner": "Marcus Brimage",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dennis Bermudez",
+              "b": "Jimmie Rivera",
+              "winner": "Dennis Bermudez",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Stephen Bass",
+              "b": "Karsten Lenjoint",
+              "winner": "Stephen Bass",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dustin Neace",
+              "b": "Josh Clopton",
+              "winner": "Dustin Neace",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Akira Corassani",
+              "b": "Brian Pearman",
+              "winner": "Akira Corassani",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Steven Siler",
+              "b": "Diego Brandao",
+              "winner": "Diego Brandao",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bryan Caraway",
+              "b": "Marcus Brimage",
+              "winner": "Bryan Caraway",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dennis Bermudez",
+              "b": "Stephen Bass",
+              "winner": "Dennis Bermudez",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dustin Neace",
+              "b": "Akira Corassani",
+              "winner": "Akira Corassani",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Diego Brandao",
+              "b": "Bryan Caraway",
+              "winner": "Diego Brandao",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dennis Bermudez",
+              "b": "Akira Corassani",
+              "winner": "Dennis Bermudez",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Diego Brandao",
+              "b": "Dennis Bermudez",
+              "winner": "Diego Brandao",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Bantamweight",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Johnny Bedford",
+              "b": "Carson Beebe",
+              "winner": "Johnny Bedford",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Josh Ferguson",
+              "b": "Casey Dyer",
+              "winner": "Josh Ferguson",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "John Dodson",
+              "b": "Brandon Merkt",
+              "winner": "John Dodson",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "John Albert",
+              "b": "Orville Smith",
+              "winner": "John Albert",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dustin Pague",
+              "b": "Tateki Matsuda",
+              "winner": "Dustin Pague",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Louis Gaudinot",
+              "b": "Paul McVeigh",
+              "winner": "Louis Gaudinot",
+              "method": "TKO",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Roland Delorme",
+              "b": "B.J Ferguson",
+              "winner": "Roland Delorme",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "T.J. Dillashaw",
+              "b": "Matt Jaggers",
+              "winner": "T.J. Dillashaw",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Johnny Bedford",
+              "b": "Josh Ferguson",
+              "winner": "Johnny Bedford",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "John Dodson",
+              "b": "John Albert",
+              "winner": "John Dodson",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dustin Pague",
+              "b": "Louis Gaudinot",
+              "winner": "Dustin Pague",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Roland Delorme",
+              "b": "T.J. Dillashaw",
+              "winner": "T.J. Dillashaw",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Johnny Bedford",
+              "b": "John Dodson",
+              "winner": "John Dodson",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dustin Pague",
+              "b": "T.J. Dillashaw",
+              "winner": "T.J. Dillashaw",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "John Dodson",
+              "b": "T.J. Dillashaw",
+              "winner": "John Dodson",
+              "method": "KO/TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "fight_date": "2011-12-03",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Bisping vs Team Miller Finale",
+    "event_date": "2011-12-03",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Bantamweight",
+      "fighter": "John Dodson",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "John Dodson",
+        "b": "TJ Dillashaw",
+        "event": "The Ultimate Fighter: Team Bisping vs Team Miller Finale",
+        "date": "2011-12-03"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    },
+    {
+      "weight_class": "Featherweight",
+      "fighter": "Diego Brandão",
+      "won_tournament": true,
+      "received_contract": true
+    }
+  ]
+}

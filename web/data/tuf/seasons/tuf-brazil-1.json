@@ -1,0 +1,464 @@
+{
+  "slug": "tuf-brazil-1",
+  "name": "The Ultimate Fighter Brazil 1",
+  "edition": "brazil",
+  "number": 1,
+  "year": 2012,
+  "weight_classes": [
+    "Featherweight",
+    "Middleweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Brazil_1",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Featherweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "",
+      "name": "Vitor Belfort",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Rodrigo Artilheiro",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Gilbert Burns",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Luiz Carlos Dórea",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Francisco Filho",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Wanderlei Silva",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Andre Amade",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rafael Cordeiro",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Renato Sobral",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Fabrício Werdum",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Wanderlei",
+      "roster": [
+        {
+          "name": "Featherweights"
+        },
+        {
+          "name": "Rony Mariano Bezerra"
+        },
+        {
+          "name": "John Teixeira"
+        },
+        {
+          "name": "Marcos Vinícius"
+        },
+        {
+          "name": "Wagner Campos"
+        },
+        {
+          "name": "Middleweights"
+        },
+        {
+          "name": "Delson Heleno"
+        },
+        {
+          "name": "Francisco Trinaldo"
+        },
+        {
+          "name": "Renee Forte"
+        },
+        {
+          "name": "Leonardo Mafra"
+        }
+      ]
+    },
+    {
+      "name": "Team Vitor",
+      "roster": [
+        {
+          "name": "Featherweights"
+        },
+        {
+          "name": "Hugo Viana"
+        },
+        {
+          "name": "Rodrigo Damm"
+        },
+        {
+          "name": "Godofredo Pepey"
+        },
+        {
+          "name": "Anistávio Medeiros"
+        },
+        {
+          "name": "Middleweights"
+        },
+        {
+          "name": "Cezar Ferreira"
+        },
+        {
+          "name": "Daniel Sarafian"
+        },
+        {
+          "name": "Thiago Perpétuo"
+        },
+        {
+          "name": "Sérgio Moraes"
+        }
+      ]
+    },
+    {
+      "name": "Fighters eliminated before entry round",
+      "roster": [
+        {
+          "name": "Rafael Bueno",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Jhonny Goncalves",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Fernando Duarte",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Dileno Lopes",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Pedro Nobre",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Alexandre Ramos",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Giovanni da Silva Santos",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Jr",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Fabrício Guerreiro",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Charles Maicon",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Gustavo Sampaio",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Richardson Moreira",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Thiago Rela",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "João Paulo de Souza",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Gilberto Galvão",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Fabio Luiz Vital da Costa",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Samuel Trindade",
+          "weight_class": "Middleweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Featherweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Godofredo Castro",
+              "b": "Wagner Campos",
+              "winner": "Godofredo Castro",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Rodrigo Damm",
+              "b": "John Teixeira",
+              "winner": "Rodrigo Damm",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Hugo Viana",
+              "b": "Marcos Vinícius",
+              "winner": "Hugo Viana",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Anistavio Medeiros",
+              "b": "Rony Jason",
+              "winner": "Rony Jason",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Godofredo Castro",
+              "b": "Marcos Vinícius*",
+              "winner": "Godofredo Castro",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Hugo Viana",
+              "b": "Rony Jason",
+              "winner": "Rony Jason",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Godofredo Castro",
+              "b": "Rony Jason",
+              "winner": "Rony Jason",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Middleweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Daniel Sarafian",
+              "b": "Renee Forte",
+              "winner": "Daniel Sarafian",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Sérgio Moraes",
+              "b": "Delson Heleno",
+              "winner": "Sérgio Moraes",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Cezar Ferreira",
+              "b": "Leonardo Mafra",
+              "winner": "Cezar Ferreira",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Thiago Perpétuo",
+              "b": "Francisco Trinaldo",
+              "winner": "Thiago Perpétuo",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Daniel Sarafian",
+              "b": "Sérgio Moraes",
+              "winner": "Daniel Sarafian",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Cezar Ferreira",
+              "b": "Thiago Perpétuo",
+              "winner": "Cezar Ferreira",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Sérgio Moraes *",
+              "b": "Cezar Ferreira",
+              "winner": "Cezar Ferreira",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2012-06-23",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC 147: Silva vs Franklin 2",
+    "event_date": "2012-06-23",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Featherweight",
+      "fighter": "Rony Jason",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Rony Jason",
+        "b": "Godofredo Pepey",
+        "event": "UFC 147: Silva vs Franklin 2",
+        "date": "2012-06-23"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    },
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Cezar Ferreira",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Cezar Ferreira",
+        "b": "Sergio Moraes",
+        "event": "UFC 147: Silva vs Franklin 2",
+        "date": "2012-06-23"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    }
+  ]
+}

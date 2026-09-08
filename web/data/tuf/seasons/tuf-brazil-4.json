@@ -1,0 +1,265 @@
+{
+  "slug": "tuf-brazil-4",
+  "name": "The Ultimate Fighter Brazil 4",
+  "edition": "brazil",
+  "number": 4,
+  "year": 2015,
+  "weight_classes": [
+    "Bantamweight",
+    "Lightweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Brazil_4",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Bantamweight_quarter_final",
+      "detail": "The source's quarter-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Bantamweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Matheus Nicolau",
+              "b": "Reginaldo Vieira",
+              "winner": "Matheus Nicolau",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dileno Lopes",
+              "b": "Bruno Silva",
+              "winner": "Dileno Lopes",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bruno Korea",
+              "b": "Leandro Higo",
+              "winner": "Bruno Korea",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Reginaldo Vieira *",
+              "b": "Matheus Mattos",
+              "winner": "Reginaldo Vieira *",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear more than once in this round. See conflicts."
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Matheus Nicolau",
+              "b": "Dileno Lopes",
+              "winner": "Dileno Lopes",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bruno Korea",
+              "b": "Reginaldo Vieira",
+              "winner": "Reginaldo Vieira",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Dileno Lopes",
+              "b": "Reginaldo Vieira",
+              "winner": "Reginaldo Vieira",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2015-08-01",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Lightweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Joaquim Silva",
+              "b": "Erick da Silva",
+              "winner": "Joaquim Silva",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Glaico França",
+              "b": "Nikolas Motta",
+              "winner": "Glaico França",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Nazareno Malegarie",
+              "b": "André Ricardo",
+              "winner": "Nazareno Malegarie",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Adílson Fernandes",
+              "b": "Fernando Bruno",
+              "winner": "Fernando Bruno",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Joaquim Silva",
+              "b": "Glaico França",
+              "winner": "Glaico França",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Nazareno Malegarie",
+              "b": "Fernando Bruno",
+              "winner": "Fernando Bruno",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Glaico França",
+              "b": "Fernando Bruno",
+              "winner": "Glaico França",
+              "method": "Submission",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC 190: Rousey vs Correia",
+    "event_date": "2015-08-01",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Bantamweight",
+      "fighter": "Reginaldo Vieira",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Reginaldo Vieira",
+        "b": "Dileno Lopes",
+        "event": "UFC 190: Rousey vs Correia",
+        "date": "2015-08-01"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    },
+    {
+      "weight_class": "Lightweight",
+      "fighter": "Glaico França",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Glaico Franca Moreira",
+        "b": "Fernando Bruno",
+        "event": "UFC 190: Rousey vs Correia",
+        "date": "2015-08-01"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    }
+  ]
+}

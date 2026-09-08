@@ -1,0 +1,390 @@
+{
+  "slug": "tuf-2",
+  "name": "The Ultimate Fighter 2",
+  "edition": "us",
+  "number": 2,
+  "year": 2005,
+  "weight_classes": [
+    "Welterweight",
+    "Heavyweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Welterweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Heavyweight_elimination",
+      "detail": "The source's elimination round for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Heavyweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Hughes",
+      "name": "Matt Hughes",
+      "role": "head",
+      "team_in_source": "Blue"
+    },
+    {
+      "team": "Team Franklin",
+      "name": "Rich Franklin",
+      "role": "head",
+      "team_in_source": "Green"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Franklin",
+      "roster": [
+        {
+          "name": "Jorge Gurgel",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Marcus Davis",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Anthony Torres",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Melvin Guillard",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Keith Jardine",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Seth Petruzelli",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Rashad Evans",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Brad Imes",
+          "weight_class": "Heavyweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Hughes",
+      "roster": [
+        {
+          "name": "Joe Stevenson",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Josh Burkman",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Jason Von Flue",
+          "weight_class": "Welterweight",
+          "note": "Named by the source as Josh Burkman's replacement."
+        },
+        {
+          "name": "Sammy Morgan",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Luke Cummo",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Mike Whitehead",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Dan Christison",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Rob MacDonald",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Tom Murphy",
+          "weight_class": "Heavyweight"
+        }
+      ]
+    },
+    {
+      "name": "Unassigned",
+      "roster": [
+        {
+          "name": "Kenny Stevens"
+        },
+        {
+          "name": "Kerry Schall"
+        },
+        {
+          "name": "Eli Joslin"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Welterweight",
+      "stages": [
+        {
+          "stage": "elimination",
+          "label": "Elimination round",
+          "note": "Bouts the episode summaries record but the source's bracket does not include.",
+          "bouts": [
+            {
+              "a": "Josh Burkman",
+              "b": "Melvin Guillard",
+              "winner": "Josh Burkman",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Joe Stevenson",
+              "b": "Marcus Davis",
+              "winner": "Joe Stevenson",
+              "method": "Submission (elbows)",
+              "round": 1,
+              "time": "4:10",
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jason Von Flue",
+              "b": "Jorge Gurgel",
+              "winner": "Jason Von Flue",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Luke Cummo",
+              "b": "Anthony Torres",
+              "winner": "Luke Cummo",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Luke Cummo",
+              "b": "Sammy Morgan",
+              "winner": "Luke Cummo",
+              "method": "KO (knee)",
+              "round": 2,
+              "time": "2:05",
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            },
+            {
+              "a": "Joe Stevenson",
+              "b": "Jason Von Flue",
+              "winner": "Joe Stevenson",
+              "method": "Submission (armbar)",
+              "round": 1,
+              "time": "4:46",
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Luke Cummo",
+              "b": "Joe Stevenson",
+              "winner": "Joe Stevenson",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2005-11-05",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Heavyweight",
+      "stages": [
+        {
+          "stage": "elimination",
+          "label": "Elimination round",
+          "note": "Partial. 1 fighter(s) appear more than once in this round. See conflicts.",
+          "bouts": [
+            {
+              "a": "Brad Imes",
+              "b": "Rob MacDonald",
+              "winner": "Brad Imes",
+              "method": "Submission (triangle choke)",
+              "round": 1,
+              "time": "4:07",
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Rashad Evans",
+              "b": "Tom Murphy",
+              "winner": "Rashad Evans",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+            },
+            {
+              "a": "Seth Petruzelli",
+              "b": "Dan Christison",
+              "winner": "Seth Petruzelli",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            },
+            {
+              "a": "Rashad Evans",
+              "b": "Mike Whitehead",
+              "winner": "Rashad Evans",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+            }
+          ],
+          "status": "unverified"
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Brad Imes",
+              "b": "Seth Petruzelli",
+              "winner": "Brad Imes",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            },
+            {
+              "a": "Rashad Evans",
+              "b": "Keith Jardine",
+              "winner": "Rashad Evans",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Brad Imes",
+              "b": "Rashad Evans",
+              "winner": "Rashad Evans",
+              "method": "Decision - Split",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2005-11-05",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
+    "event_date": "2005-11-05",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Joe Stevenson",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Joe Stevenson",
+        "b": "Luke Cummo",
+        "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
+        "date": "2005-11-05"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    },
+    {
+      "weight_class": "Heavyweight",
+      "fighter": "Rashad Evans",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Rashad Evans",
+        "b": "Brad Imes",
+        "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
+        "date": "2005-11-05"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

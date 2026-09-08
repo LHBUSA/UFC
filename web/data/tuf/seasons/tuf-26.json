@@ -1,0 +1,374 @@
+{
+  "slug": "tuf-26",
+  "name": "The Ultimate Fighter 26: A New World Champion",
+  "edition": "us",
+  "number": 26,
+  "year": 2017,
+  "weight_classes": [
+    "Women's Flyweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_A_New_World_Champion",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Tournament_quarter_final",
+      "detail": "The source's quarter-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Alvarez",
+      "name": "Eddie Alvarez",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Mark Henry",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Zabit Magomedsharipov",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Marlon Moraes",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Corey Anderson",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rich Pohler",
+      "role": "head"
+    },
+    {
+      "team": "Team Gaethje",
+      "name": "Justin Gaethje",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Trevor Wittman",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Phil Nurse",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Matthew Lopez",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Luke Caudillo",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jacob Ramos",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Vinny Magalhães",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Miesha Tate",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Alvarez",
+      "roster": [
+        {
+          "name": "Barb Honchak"
+        },
+        {
+          "name": "Lauren Murphy"
+        },
+        {
+          "name": "DeAnna Bennett"
+        },
+        {
+          "name": "Melinda Fábián"
+        },
+        {
+          "name": "Christina Marks"
+        },
+        {
+          "name": "Ariel Beck"
+        },
+        {
+          "name": "Sijara Eubanks"
+        },
+        {
+          "name": "and Shana Dobson"
+        }
+      ]
+    },
+    {
+      "name": "Team Gaethje",
+      "roster": [
+        {
+          "name": "Roxanne Modafferi"
+        },
+        {
+          "name": "Maia Stevenson"
+        },
+        {
+          "name": "Montana Stewart"
+        },
+        {
+          "name": "Emily Whitmire"
+        },
+        {
+          "name": "Rachael Ostovich-Berdon"
+        },
+        {
+          "name": "Karine Gevorgyan"
+        },
+        {
+          "name": "Nicco Montaño and Gillian Robertson"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "1 Roxanne Modafferi",
+              "b": "16 Shana Dobson",
+              "winner": "1 Roxanne Modafferi",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "8 Emily Whitmire",
+              "b": "9 Christina Marks",
+              "winner": "8 Emily Whitmire",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "5 Maia Stevenson",
+              "b": "12 Sijara Eubanks",
+              "winner": "12 Sijara Eubanks",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "4 DeAnna Bennett",
+              "b": "13 Karine Gevorgyan",
+              "winner": "4 DeAnna Bennett",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "2 Barb Honchak",
+              "b": "15 Gillian Robertson",
+              "winner": "2 Barb Honchak",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "7 Melinda Fábián",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "6 Montana Stewart",
+              "b": "11 Ariel Beck",
+              "winner": "6 Montana Stewart",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "3 Lauren Murphy",
+              "b": "14 Nicco Montaño",
+              "winner": "14 Nicco Montaño",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "1 Roxanne Modafferi",
+              "b": "8 Emily Whitmire",
+              "winner": "1 Roxanne Modafferi",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "12 Sijara Eubanks",
+              "b": "4 DeAnna Bennett",
+              "winner": "12 Sijara Eubanks",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "2 Barb Honchak",
+              "b": "",
+              "winner": "2 Barb Honchak",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "6 Montana Stewart",
+              "b": "14 Nicco Montaño",
+              "winner": "14 Nicco Montaño",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "1 Roxanne Modafferi",
+              "b": "12 Sijara Eubanks",
+              "winner": "12 Sijara Eubanks",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "2 Barb Honchak",
+              "b": "14 Nicco Montaño",
+              "winner": "14 Nicco Montaño",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "1 Roxanne Modafferi*",
+              "b": "14 Nicco Montaño",
+              "winner": "Nicco Montano",
+              "method": "Decision - Unanimous",
+              "round": 5,
+              "time": null,
+              "episode": null,
+              "fight_date": "2017-12-01",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: A New World Champion Finale",
+    "event_date": "2017-12-01",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Women's Flyweight",
+      "fighter": "Nicco Montaño",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Nicco Montano",
+        "b": "Roxanne Modafferi",
+        "event": "The Ultimate Fighter: A New World Champion Finale",
+        "date": "2017-12-01"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

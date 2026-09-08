@@ -21,15 +21,15 @@
 import "server-only";
 import { getImagesForFighters, type PortraitSet } from "@/lib/db";
 import inventory from "@/data/tuf/seasons.json";
-import tuf1 from "@/data/tuf/seasons/tuf-1.json";
-import tuf5 from "@/data/tuf/seasons/tuf-5.json";
-import tuf20 from "@/data/tuf/seasons/tuf-20.json";
-import tuf22 from "@/data/tuf/seasons/tuf-22.json";
+import { TUF_DETAILS } from "@/data/tuf/details.generated";
 
 /* Detail files are imported rather than read from disk so they are bundled
  * with the deployment. A season with no detail file yet renders from its
- * inventory row alone, which is the honest state for most of the archive. */
-const DETAILS: Record<string, unknown> = { "tuf-1": tuf1, "tuf-5": tuf5, "tuf-20": tuf20, "tuf-22": tuf22 };
+ * inventory row alone, which is the honest state for much of the archive.
+ * The import map is generated from the directory by
+ * scripts/tuf/build_details_index.mjs, so adding a season cannot silently
+ * leave it unbundled and looking like missing data. */
+const DETAILS: Record<string, unknown> = TUF_DETAILS;
 
 export type Classification = "professional" | "exhibition" | "unverified";
 
@@ -96,6 +96,10 @@ export type TufBout = {
   replacement?: string;
   on_finale_card?: boolean;
   tournament_deciding?: boolean;
+  /** What a result was worth, for the one season scored by points rather than
+   * decided by a bracket. Absent everywhere else, because everywhere else the
+   * prize for winning was the next round. */
+  points?: number | null;
 };
 
 export type Stage = {

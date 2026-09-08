@@ -1,0 +1,287 @@
+{
+  "slug": "tuf-6",
+  "name": "The Ultimate Fighter 6: Team Hughes vs. Team Serra",
+  "edition": "us",
+  "number": 6,
+  "year": 2007,
+  "weight_classes": [
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "",
+      "name": "Team Hughes",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Matt Hughes",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Robbie Lawler",
+      "role": "head",
+      "note": "wrestling coach"
+    },
+    {
+      "team": "",
+      "name": "Matt Pena",
+      "role": "head",
+      "note": "boxing coach"
+    },
+    {
+      "team": "",
+      "name": "Marc Fiore",
+      "role": "head",
+      "note": "strength and conditioning coach"
+    },
+    {
+      "team": "",
+      "name": "Team Serra",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Matt Serra",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Ray Longo",
+      "role": "head",
+      "note": "kickboxing coach"
+    },
+    {
+      "team": "",
+      "name": "Pete Sell",
+      "role": "head",
+      "note": "jiu-jitsu coach"
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Mac Danzig",
+              "b": "Joe Scarola",
+              "winner": "Mac Danzig",
+              "method": "Submission (triangle choke)",
+              "round": 1,
+              "time": "4:54",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Billy Miles",
+              "b": "John Kolosci",
+              "winner": "John Kolosci",
+              "method": "Submission (guillotine choke)",
+              "round": 1,
+              "time": "2:56",
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Dorian Price",
+              "b": "Matt Arroyo",
+              "winner": "Matt Arroyo",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "1:48",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Paul Georgieff",
+              "b": "Troy Mandaloniz",
+              "winner": "Troy Mandaloniz",
+              "method": "KO (punch)",
+              "round": 1,
+              "time": "2:39",
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Blake Bowman",
+              "b": "Richie Hightower",
+              "winner": "Richie Hightower",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jared Rollins",
+              "b": "George Sotiropoulos",
+              "winner": "George Sotiropoulos",
+              "method": "TKO (strikes)",
+              "round": 1,
+              "time": "3:48",
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Tom Speer",
+              "b": "Jon Koppenhaver",
+              "winner": "Tom Speer",
+              "method": "Decision",
+              "round": 2,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Dan Barrera",
+              "b": "Ben Saunders",
+              "winner": "Ben Saunders",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Mac Danzig",
+              "b": "John Kolosci",
+              "winner": "Mac Danzig",
+              "method": "Submission (rear naked choke) at 4:28 in round one",
+              "round": 1,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Matt Arroyo",
+              "b": "Troy Mandaloniz",
+              "winner": "Matt Arroyo",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Richie Hightower",
+              "b": "George Sotiropoulos",
+              "winner": "George Sotiropoulos",
+              "method": "Submission (kimura) at 4:07 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Tom Speer",
+              "b": "Ben Saunders",
+              "winner": "Tom Speer",
+              "method": "Unanimous decision after the second round",
+              "round": 2,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Mac Danzig",
+              "b": "John Kolosci*",
+              "winner": "Mac Danzig",
+              "method": "Submission (rear naked choke) at 4:28 in round one",
+              "round": 1,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Tom Speer",
+              "b": "George Sotiropoulos",
+              "winner": "Tom Speer",
+              "method": "KO (strikes) at 2:57 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Mac Danzig",
+              "b": "Tom Speer",
+              "winner": "Mac Danzig",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
+    "event_date": "2007-12-08",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Mac Danzig",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Mac Danzig",
+        "b": "Tommy Speer",
+        "event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
+        "date": "2007-12-08"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

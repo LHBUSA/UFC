@@ -1,0 +1,369 @@
+{
+  "slug": "tuf-29",
+  "name": "The Ultimate Fighter 29: Team Volkanovski vs. Team Ortega",
+  "edition": "us",
+  "number": 29,
+  "year": 2021,
+  "weight_classes": [
+    "Bantamweight",
+    "Middleweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Return_of_The_Ultimate_Fighter%3A_Team_Volkanovski_vs._Team_Ortega",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "Team Volkanovski",
+      "name": "Alexander Volkanovski",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Joe Lopez",
+      "role": "assistant",
+      "note": "Assistant Coach"
+    },
+    {
+      "team": "",
+      "name": "Craig Jones",
+      "role": "head",
+      "note": "Jiu Jitsu Coach"
+    },
+    {
+      "team": "",
+      "name": "Frank Hickman",
+      "role": "head",
+      "note": "Wrestling Coach"
+    },
+    {
+      "team": "",
+      "name": "Colby Thicknesse",
+      "role": "head",
+      "note": "Striking Coach"
+    },
+    {
+      "team": "",
+      "name": "Andrew Wood",
+      "role": "head",
+      "note": "Strength and Conditioning Coach"
+    },
+    {
+      "team": "Team Ortega",
+      "name": "Brian Ortega",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Tiki Ghosn",
+      "role": "assistant",
+      "note": "Assistant Coach"
+    },
+    {
+      "team": "",
+      "name": "Paul Herrera",
+      "role": "assistant",
+      "note": "Assistant Coach"
+    },
+    {
+      "team": "",
+      "name": "Rener Gracie",
+      "role": "head",
+      "note": "Jiu Jitsu Coach"
+    },
+    {
+      "team": "",
+      "name": "Jason Park",
+      "role": "head",
+      "note": "Strength and Conditioning Coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Volkanovski",
+      "roster": [
+        {
+          "name": "Mitch Raposo",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Dustin Lampros",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Ricky Turcios and Brady Hiestand",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Ryder Newman",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Gilbert Urbina",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Aaron Phillips and Bryan Battle",
+          "weight_class": "Middleweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Ortega",
+      "roster": [
+        {
+          "name": "Daniel Argueta",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Liudvik Sholinian",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Joshua Rettinghouse and Vince Murdock",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Andre Petroski",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Tresean Gore",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Miles Hunsinger",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Kemran Lachinov and Michael Gillmore",
+          "weight_class": "Middleweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Middleweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Andre Petroski",
+              "b": "Aaron Phillips",
+              "winner": "Andre Petroski",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Kemran Lachinov",
+              "b": "Bryan Battle",
+              "winner": "Bryan Battle",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Tresean Gore",
+              "b": "Ryder Newman",
+              "winner": "Tresean Gore",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Michael Gillmore*",
+              "b": "Gilbert Urbina",
+              "winner": "Gilbert Urbina",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Andre Petroski",
+              "b": "Bryan Battle",
+              "winner": "Bryan Battle",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Tresean Gore",
+              "b": "Gilbert Urbina",
+              "winner": "Tresean Gore",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Bryan Battle",
+              "b": "Gilbert Urbina**",
+              "winner": "Bryan Battle",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "fight_date": "2021-08-28",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Bantamweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Liudvik Sholinian",
+              "b": "Mitch Raposo",
+              "winner": "Liudvik Sholinian",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Daniel Argueta",
+              "b": "Ricky Turcios",
+              "winner": "Ricky Turcios",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Vince Murdock",
+              "b": "Dustin Lampros",
+              "winner": "Vince Murdock",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Joshua Rettinghouse",
+              "b": "Brady Hiestand",
+              "winner": "Brady Hiestand",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Liudvik Sholinian",
+              "b": "Ricky Turcios",
+              "winner": "Ricky Turcios",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Vince Murdock",
+              "b": "Brady Hiestand",
+              "winner": "Brady Hiestand",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC Fight Night: Barboza vs. Chikadze",
+    "event_date": "2021-08-28",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Bantamweight",
+      "fighter": "Ricky Turcios",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Ricky Turcios",
+        "b": "Brady Hiestand",
+        "event": "UFC Fight Night: Barboza vs. Chikadze",
+        "date": "2021-08-28"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    },
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Bryan Battle",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Bryan Battle",
+        "b": "Gilbert Urbina",
+        "event": "UFC Fight Night: Barboza vs. Chikadze",
+        "date": "2021-08-28"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    }
+  ]
+}

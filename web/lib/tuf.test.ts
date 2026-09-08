@@ -16,6 +16,7 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readdirSync, readFileSync } from "node:fs";
 import inventoryJson from "../data/tuf/seasons.json" with { type: "json" };
 import tuf22Json from "../data/tuf/seasons/tuf-22.json" with { type: "json" };
 import tuf1Json from "../data/tuf/seasons/tuf-1.json" with { type: "json" };
@@ -49,12 +50,22 @@ const tuf22 = tuf22Json as unknown as {
 };
 
 const seasons = inventory.seasons;
-const DETAIL_BY_SLUG: Record<string, { bracket: Array<{ weight_class: string; stages: Stage[] }> }> = {
-  "tuf-1": tuf1Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
-  "tuf-5": tuf5Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
-  "tuf-20": tuf20Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
-  "tuf-22": tuf22Json as unknown as { bracket: Array<{ weight_class: string; stages: Stage[] }> },
-};
+
+/* Read off disk rather than listed by hand. A list is a thing you forget to
+ * add to, and a season missing from it would skip every rule below while
+ * looking fully checked — the failure mode that matters least when there are
+ * four seasons and most when there are forty. Tests do not need bundling, so
+ * there is no reason for them to carry the bundler's constraint. */
+const DETAIL_DIR = new URL("../data/tuf/seasons/", import.meta.url);
+const DETAIL_BY_SLUG: Record<string, { bracket?: Array<{ weight_class: string; stages: Stage[] }> }> =
+  Object.fromEntries(
+    readdirSync(DETAIL_DIR)
+      .filter((f) => f.endsWith(".json"))
+      .map((f) => [
+        f.replace(/\.json$/, ""),
+        JSON.parse(readFileSync(new URL(f, DETAIL_DIR), "utf8")) as { bracket?: Array<{ weight_class: string; stages: Stage[] }> },
+      ]),
+  );
 const stages = tuf22.bracket.flatMap((wc) => wc.stages);
 const bouts = stages.flatMap((st) => st.bouts);
 
@@ -84,13 +95,30 @@ test("season state is a separate axis from coverage", () => {
 });
 
 test("a finale we hold is not counted as tournament coverage", () => {
+  /* Originally this checked that some season naming a finale was still
+   * metadata_only — a proxy for "coverage is not just mirroring finale_event",
+   * and one that only worked while most of the archive was unloaded. Now that
+   * every season carries a bracket the proxy is vacuous, so the property it
+   * stood for is asserted directly, in both directions: coverage is a claim
+   * about the bracket and about nothing else. */
   const withFinale = seasons.filter((s) => s.finale_event);
   assert.ok(withFinale.length > 1, "several seasons name a finale");
-  const loaded = withFinale.filter((s) => s.coverage !== "metadata_only");
-  assert.ok(
-    loaded.length < withFinale.length,
-    "naming a finale must not by itself lift a season out of metadata_only",
-  );
+
+  for (const s of seasons) {
+    const bracket = DETAIL_BY_SLUG[s.slug]?.bracket ?? [];
+    const hasBouts = bracket.some((d) => d.stages.some((st) => st.bouts.length));
+    if (s.coverage === "metadata_only") {
+      assert.ok(
+        !hasBouts,
+        `${s.slug}: has a bracket with bouts but is filed as metadata_only`,
+      );
+    } else {
+      assert.ok(
+        hasBouts,
+        `${s.slug}: claims ${s.coverage} without a bracket holding any bout — a named finale is not tournament coverage`,
+      );
+    }
+  }
 });
 
 test("only a season with a bracket claims bracket coverage", () => {
@@ -293,7 +321,8 @@ test("a season claiming full bracket coverage has no unverified round and no dis
   for (const s of full) {
     const detail = DETAIL_BY_SLUG[s.slug];
     assert.ok(detail, `${s.slug}: claims full coverage but has no detail file`);
-    for (const wc of detail.bracket) {
+    assert.ok(detail.bracket?.length, `${s.slug}: claims full coverage but its detail file has no bracket`);
+    for (const wc of detail.bracket!) {
       for (const st of wc.stages) {
         assert.notEqual(st.status, "unverified", `${s.slug}/${st.stage}: full coverage cannot contain an unverified round`);
         assert.ok(!st.disputed?.length, `${s.slug}/${st.stage}: full coverage cannot contain a disputed bout`);

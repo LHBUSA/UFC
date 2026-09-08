@@ -1,0 +1,200 @@
+{
+  "slug": "tuf-21",
+  "name": "The Ultimate Fighter 21: American Top Team vs. Blackzilians",
+  "edition": "us",
+  "number": 21,
+  "year": 2015,
+  "weight_classes": [
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_American_Top_Team_vs._Blackzilians",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "format",
+      "detail": "This season has no tournament bracket. The source records 12 bouts as a scored gym-versus-gym series, with the points each result was worth, and that is what is recorded here — under the season's single weight class, in the order the source lists them, with no rounds invented to hold them.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Welterweight",
+      "stages": [
+        {
+          "stage": "elimination",
+          "label": "Gym versus gym",
+          "note": "This season was scored, not bracketed: each result was worth points to a gym rather than a place in a next round, and the points rose as the season went on. The bouts are listed in the order the source gives them.",
+          "bouts": [
+            {
+              "a": "Kamaru Usman",
+              "b": "Michael Graves",
+              "winner": "Kamaru Usman",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "points": 25,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Luiz Firmino",
+              "b": "Uros Jurisic",
+              "winner": "Luiz Firmino",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "points": 25,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Valdir Araújo",
+              "b": "Steve Carl",
+              "winner": "Valdir Araújo",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "points": 25,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Carrington Banks",
+              "b": "Sabah Homasi",
+              "winner": "Carrington Banks",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "points": 25,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Andrews Nakahara",
+              "b": "Hayder Hassan",
+              "winner": "Hayder Hassan",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "points": 50,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Marcelo Alfaya",
+              "b": "Jason Jackson",
+              "winner": "Jason Jackson",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "points": 50,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Vicente Luque",
+              "b": "Nathan Coy",
+              "winner": "Vicente Luque",
+              "method": "Submission",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "points": 50,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Felipe Portela",
+              "b": "Hayder Hassan",
+              "winner": "Hayder Hassan",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "points": 50,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Steve Carl",
+              "b": "Kamaru Usman",
+              "winner": "Kamaru Usman",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "points": 100,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Valdir Araújo",
+              "b": "Nathan Coy",
+              "winner": "Nathan Coy",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "points": 100,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Michael Graves",
+              "b": "Jason Jackson",
+              "winner": "Michael Graves",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "points": 100,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            },
+            {
+              "a": "Hayder Hassan",
+              "b": "Vicente Luque",
+              "winner": "Hayder Hassan",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "points": 100,
+              "classification": "exhibition",
+              "classification_source": "contested inside the season as part of the scored gym-versus-gym series, not on a sanctioned card"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: American Top Team vs. Blackzilians Finale",
+    "event_date": "2015-07-12",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Kamaru Usman",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Kamaru Usman",
+        "b": "Hayder Hassan",
+        "event": "The Ultimate Fighter: American Top Team vs. Blackzilians Finale",
+        "date": "2015-07-12"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

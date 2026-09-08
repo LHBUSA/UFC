@@ -1,0 +1,257 @@
+{
+  "slug": "tuf-latam-2",
+  "name": "The Ultimate Fighter Latin America 2",
+  "edition": "latam",
+  "number": 2,
+  "year": 2015,
+  "weight_classes": [
+    "Lightweight",
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Latin_America_2",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "bracket": [
+    {
+      "weight_class": "Lightweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Cesar Arzamendia",
+              "b": "Oliver Meza",
+              "winner": "Cesar Arzamendia",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jonathan Ortega",
+              "b": "Enrique Barzola",
+              "winner": "Enrique Barzola",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Danny Salas",
+              "b": "Horacio Gutiérrez",
+              "winner": "Horacio Gutiérrez",
+              "method": "Decision (majority)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Christhian Soto",
+              "b": "Marco Polo Reyes",
+              "winner": "Marco Polo Reyes",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Cesar Arzamendia",
+              "b": "Enrique Barzola",
+              "winner": "Enrique Barzola",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Horacio Gutiérrez",
+              "b": "Marco Polo Reyes",
+              "winner": "Horacio Gutiérrez",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Enrique Barzola",
+              "b": "Horacio Gutiérrez",
+              "winner": "Enrique Barzola",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2015-11-21",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Welterweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Enrique Marín",
+              "b": "Kevin Medinilla",
+              "winner": "Enrique Marín",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Hector Aldana",
+              "b": "Álvaro Herrera",
+              "winner": "Hector Aldana",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Erick Montaño",
+              "b": "Marco Olano",
+              "winner": "Erick Montaño",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Wilmer Fernández",
+              "b": "Vernon Ramos",
+              "winner": "Vernon Ramos",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Enrique Marín",
+              "b": "Hector Aldana",
+              "winner": "Enrique Marín",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Erick Montaño",
+              "b": "Vernon Ramos",
+              "winner": "Erick Montaño",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Enrique Marín",
+              "b": "Erick Montaño",
+              "winner": "Erick Montano",
+              "method": "Decision - Split",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2015-11-21",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC Fight Night: Magny vs Gastelum",
+    "event_date": "2015-11-21",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Lightweight",
+      "fighter": "Enrique Barzola",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Enrique Barzola",
+        "b": "Horacio Gutierrez",
+        "event": "UFC Fight Night: Magny vs Gastelum",
+        "date": "2015-11-21"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    },
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Erick Montaño",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Erick Montano",
+        "b": "Enrique Marin",
+        "event": "UFC Fight Night: Magny vs Gastelum",
+        "date": "2015-11-21"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    }
+  ]
+}

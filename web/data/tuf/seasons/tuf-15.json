@@ -1,0 +1,503 @@
+{
+  "slug": "tuf-15",
+  "name": "The Ultimate Fighter 15: Live",
+  "edition": "us",
+  "number": 15,
+  "year": 2012,
+  "weight_classes": [
+    "Lightweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Live",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "",
+      "name": "Dominick Cruz",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Doug Balzarini",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Phil Davis",
+      "role": "head",
+      "note": "wrestling coach"
+    },
+    {
+      "team": "",
+      "name": "Eric DelFierro",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Lloyd Irvin",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Ross Pearson",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Wilson Reis",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Shanon Slack",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Urijah Faber",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Dustin Akbari",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Justin Buchholz",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Lance Palmer",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Fabio Prado",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Thonglor \"Master Thong\" Armatsena",
+      "role": "head",
+      "note": "Muay Thai coach"
+    },
+    {
+      "team": "",
+      "name": "Danny Castillo",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "T.J. Dillashaw",
+      "role": "head"
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "elimination",
+          "label": "Elimination round",
+          "note": "Bouts the episode summaries record but the source's bracket does not include.",
+          "bouts": [
+            {
+              "a": "Joe Proctor",
+              "b": "Jordan Rinaldi",
+              "winner": "Joe Proctor",
+              "method": "Submission (guillotine choke) at 2:08",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Cristiano Marcello",
+              "b": "Jared Carlsten",
+              "winner": "Cristiano Marcello",
+              "method": "Submission (rear naked choke) at 2:43",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Sam Sicilia",
+              "b": "Erin Beach",
+              "winner": "Sam Sicilia",
+              "method": "TKO (strikes) at :08",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Chris Tickle",
+              "b": "Austin Lyons",
+              "winner": "Chris Tickle",
+              "method": "TKO (strikes) at :24",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Andy Ogle",
+              "b": "Brendan Weafer",
+              "winner": "Andy Ogle",
+              "method": "Unanimous decision (10–9, 10–9, 10–9)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Vinc Pichel",
+              "b": "Cody Pfister",
+              "winner": "Vinc Pichel",
+              "method": "Submission (rear naked choke) at 3:39",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "John Cofer",
+              "b": "Mark Glover",
+              "winner": "John Cofer",
+              "method": "Unanimous decision (10–9, 10–9, 10–9)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Chris Saunders",
+              "b": "Chase Hackett",
+              "winner": "Chris Saunders",
+              "method": "Unanimous decision (10–9, 10–9, 10–9)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "James Vick",
+              "b": "Dakota Cochrane",
+              "winner": "James Vick",
+              "method": "Split decision (9–10, 10–9, 10–9)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Michael Chiesa",
+              "b": "Johnavan Vistante",
+              "winner": "Michael Chiesa",
+              "method": "Submission (rear naked choke) at 2:05",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Mike Rio",
+              "b": "Ali Maclean",
+              "winner": "Mike Rio",
+              "method": "Submission (rear naked choke) at 3:32",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Justin Lawrence",
+              "b": "James Krause",
+              "winner": "Justin Lawrence",
+              "method": "TKO (strikes) at 1:25",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Daron Cruickshank",
+              "b": "Drew Dober",
+              "winner": "Daron Cruickshank",
+              "method": "Unanimous decision (10–9, 10–9, 10–9)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jeremy Larsen",
+              "b": "Jeff Smith",
+              "winner": "Jeremy Larsen",
+              "method": "Unanimous decision (10–9, 10–9, 10–9)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Al Iaquinta",
+              "b": "Jon Tuck",
+              "winner": "Al Iaquinta",
+              "method": "Unanimous decision (10–9, 10–9, 10–9)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Myles Jury",
+              "b": "Akbarh Arreola",
+              "winner": "Myles Jury",
+              "method": "Unanimous decision (10–9, 10–9, 10–9)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Joe Proctor",
+              "b": "Chris Tickle",
+              "winner": "Joe Proctor",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Daron Cruickshank",
+              "b": "James Vick",
+              "winner": "James Vick",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Michael Chiesa",
+              "b": "Jeremy Larsen",
+              "winner": "Michael Chiesa",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+            },
+            {
+              "a": "Cristiano Marcello",
+              "b": "Justin Lawrence",
+              "winner": "Justin Lawrence",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Chris Saunders",
+              "b": "Sam Sicilia",
+              "winner": "Chris Saunders",
+              "method": "Decision (split)",
+              "round": 2,
+              "time": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+            },
+            {
+              "a": "John Cofer",
+              "b": "Vinc Pichel",
+              "winner": "Vinc Pichel",
+              "method": "Submission (arm triangle choke) at :44 in the third round",
+              "round": 3,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            },
+            {
+              "a": "Al Iaquinta",
+              "b": "Myles Jury",
+              "winner": "Al Iaquinta",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Andy Ogle",
+              "b": "Mike Rio",
+              "winner": "Andy Ogle",
+              "method": "Submission (rear naked choke) at 4:19 in the second round",
+              "round": 2,
+              "time": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Joe Proctor",
+              "b": "James Vick",
+              "winner": "James Vick",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            },
+            {
+              "a": "Michael Chiesa",
+              "b": "Justin Lawrence",
+              "winner": "Michael Chiesa",
+              "method": "TKO (punches) at 1:02 in the third round",
+              "round": 3,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            },
+            {
+              "a": "Chris Saunders",
+              "b": "Vinc Pichel",
+              "winner": "Vinc Pichel",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            },
+            {
+              "a": "Al Iaquinta",
+              "b": "Andy Ogle",
+              "winner": "Al Iaquinta",
+              "method": "TKO (punches) at 4:44 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "James Vick",
+              "b": "Michael Chiesa",
+              "winner": "Michael Chiesa",
+              "method": "TKO (strikes) at 1:55 in the second round",
+              "round": 2,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            },
+            {
+              "a": "Vinc Pichel",
+              "b": "Al Iaquinta",
+              "winner": "Al Iaquinta",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Michael Chiesa",
+              "b": "Al Iaquinta",
+              "winner": "Michael Chiesa",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "fight_date": "2012-06-01",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Live Finale",
+    "event_date": "2012-06-01",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Lightweight",
+      "fighter": "Michael Chiesa",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Michael Chiesa",
+        "b": "Al Iaquinta",
+        "event": "The Ultimate Fighter: Live Finale",
+        "date": "2012-06-01"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

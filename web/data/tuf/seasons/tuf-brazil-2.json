@@ -1,0 +1,366 @@
+{
+  "slug": "tuf-brazil-2",
+  "name": "The Ultimate Fighter Brazil 2",
+  "edition": "brazil",
+  "number": 2,
+  "year": 2013,
+  "weight_classes": [
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Brazil_2",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Tournament_round_of_16",
+      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Tournament_quarter_final",
+      "detail": "The source's quarter-finals for this division do not form a consistent round: 2 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Nogueira",
+      "name": "Antônio Rodrigo Nogueira",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Luiz Dorea (boxing)",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Everaldo Penco (jiu-jitsu)",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Eric Albarracin (wrestling)",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Sheymon Moraes (Muay Thai)",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Vitor Miranda (kickboxing)",
+      "role": "head"
+    },
+    {
+      "team": "Team Werdum",
+      "name": "Fabrício Werdum",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Wanderlei Silva",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rafael Cordeiro (Muay Thai)",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Rubens Cobrinha (jiu-jitsu)",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Kenny Johnson (wrestling)",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Felipe Werdum (capoeira)",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Nogueira",
+      "roster": [
+        {
+          "name": "Luiz Dutra Jr"
+        },
+        {
+          "name": "Santiago Ponzinibbio"
+        },
+        {
+          "name": "Leonardo Santos"
+        },
+        {
+          "name": "David Vieira"
+        },
+        {
+          "name": "William Macário"
+        },
+        {
+          "name": "Cleiton Duarte"
+        },
+        {
+          "name": "Neilson Gomes (Thiago Gonçalves)*"
+        }
+      ]
+    },
+    {
+      "name": "Team Werdum",
+      "roster": [
+        {
+          "name": "Pedro Iriê"
+        },
+        {
+          "name": "Tiago Alves"
+        },
+        {
+          "name": "Viscardi Andrade"
+        },
+        {
+          "name": "Marcio Santos"
+        },
+        {
+          "name": "Juliano Wandalen"
+        },
+        {
+          "name": "Thiago de Lima Santos"
+        },
+        {
+          "name": "Yan Cabral (Daniel Oliveira)*"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Pedro Iriê",
+              "b": "Thiago Santos",
+              "winner": "Thiago Santos",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+            },
+            {
+              "a": "Juliano Wandalen",
+              "b": "Leonardo Santos",
+              "winner": "Leonardo Santos",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Marcio Santos",
+              "b": "Santiago Ponzinibbio",
+              "winner": "Santiago Ponzinibbio",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Yan Cabral",
+              "b": "David Vieira",
+              "winner": "Yan Cabral",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Tiago Alves",
+              "b": "Cleiton Duarte",
+              "winner": "Tiago Alves",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Thiago Santos",
+              "b": "William Macário",
+              "winner": "William Macário",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Viscardi Andrade",
+              "b": "Thiago Goncalves",
+              "winner": "Viscardi Andrade",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Pedro Iriê",
+              "b": "Luiz Dutra Jr.",
+              "winner": "Luiz Dutra Jr.",
+              "method": "Submission",
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts."
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Thiago Santos",
+              "b": "Leonardo Santos",
+              "winner": "Leonardo Santos",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Santiago Ponzinibbio",
+              "b": "Cleiton Duarte*",
+              "winner": "Santiago Ponzinibbio",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Tiago Alves",
+              "b": "William Macário",
+              "winner": "William Macário",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Viscardi Andrade",
+              "b": "David Vieira**",
+              "winner": "Viscardi Andrade",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 2 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Leonardo Santos",
+              "b": "Santiago Ponzinibbio",
+              "winner": "Santiago Ponzinibbio",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            },
+            {
+              "a": "William Macario",
+              "b": "Viscardi Andrade",
+              "winner": "William Macario",
+              "method": "TKO (punches) in the third round",
+              "round": 3,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Leonardo Santos***",
+              "b": "William Macário",
+              "winner": "Leonardo Santos",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "fight_date": "2013-06-08",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC on FUEL TV: Nogueira vs. Werdum",
+    "event_date": "2013-06-08",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Leonardo Santos",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Leonardo Santos",
+        "b": "William Macario",
+        "event": "UFC on FUEL TV: Nogueira vs. Werdum",
+        "date": "2013-06-08"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    }
+  ]
+}

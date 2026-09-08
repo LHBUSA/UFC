@@ -1,0 +1,226 @@
+{
+  "slug": "tuf-24",
+  "name": "The Ultimate Fighter 24: Tournament of Champions",
+  "edition": "us",
+  "number": 24,
+  "year": 2016,
+  "weight_classes": [
+    "Flyweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Tournament_of_Champions",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "1 Alexandre Pantoja",
+              "b": "16 Brandon Moreno",
+              "winner": "1 Alexandre Pantoja",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "8 Terrence Mitchell",
+              "b": "9 Kai Kara France",
+              "winner": "9 Kai Kara France",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "5 Hiromasa Ogikubo",
+              "b": "12 Nkazimulo Zulu",
+              "winner": "5 Hiromasa Ogikubo",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "4 Damacio Page",
+              "b": "13 Adam Antolin",
+              "winner": "13 Adam Antolin",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "2 Yoni Sherbatov",
+              "b": "15 Eric Shelton",
+              "winner": "15 Eric Shelton",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "7 Ronaldo Candido",
+              "b": "10 Jamie Alvarez",
+              "winner": "7 Ronaldo Candido",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "6 Matt Schnell",
+              "b": "11 Matt Rizzo",
+              "winner": "6 Matt Schnell",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "3 Tim Elliott",
+              "b": "14 Charlie Alaniz",
+              "winner": "3 Tim Elliott",
+              "method": "Submission (bulldog choke) in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "1 Alexandre Pantoja",
+              "b": "9 Kai Kara France",
+              "winner": "1 Alexandre Pantoja",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "5 Hiromasa Ogikubo",
+              "b": "13 Adam Antolin",
+              "winner": "5 Hiromasa Ogikubo",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "15 Eric Shelton",
+              "b": "7 Ronaldo Candido",
+              "winner": "15 Eric Shelton",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "6 Matt Schnell",
+              "b": "3 Tim Elliott",
+              "winner": "3 Tim Elliott",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "1 Alexandre Pantoja",
+              "b": "5 Hiromasa Ogikubo",
+              "winner": "5 Hiromasa Ogikubo",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "15 Eric Shelton",
+              "b": "3 Tim Elliott",
+              "winner": "3 Tim Elliott",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "5 Hiromasa Ogikubo",
+              "b": "3 Tim Elliott",
+              "winner": "3 Tim Elliott",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Tournament of Champions Finale",
+    "event_date": "2016-12-03",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Flyweight",
+      "fighter": "Tim Elliott",
+      "won_tournament": true,
+      "received_contract": true
+    }
+  ]
+}

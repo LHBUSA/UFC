@@ -1,0 +1,384 @@
+{
+  "slug": "tuf-28",
+  "name": "The Ultimate Fighter 28: Heavy Hitters",
+  "edition": "us",
+  "number": 28,
+  "year": 2018,
+  "weight_classes": [
+    "Heavyweight",
+    "Women's Featherweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Heavy_Hitters",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Heavyweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Heavyweight_final",
+      "detail": "The source's tournament final for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Women'S Featherweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "unplaced_bouts",
+      "detail": "1 bout(s) appear in the episode summaries but in no bracket: Julija Stoliarenko def. Marciea Allen in. Left unplaced rather than assigned to a division by guesswork.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Whittaker",
+      "name": "Robert Whittaker",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Fabricio Itte",
+      "role": "head",
+      "note": "Wrestling Coach"
+    },
+    {
+      "team": "",
+      "name": "Justin Fitzgerald",
+      "role": "head",
+      "note": "Boxing Coach"
+    },
+    {
+      "team": "",
+      "name": "Sergio Penha",
+      "role": "head",
+      "note": "Jiu Jitsu Coach"
+    },
+    {
+      "team": "Team Gastelum",
+      "name": "Kelvin Gastelum",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Terrell Hunsinger",
+      "role": "assistant",
+      "note": "Assistant Coach"
+    },
+    {
+      "team": "",
+      "name": "Tyler Minton",
+      "role": "assistant",
+      "note": "Assistant Coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Whittaker",
+      "roster": [
+        {
+          "name": "Anderson da Silva",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Juan Espino",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Michel Batista",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "and Przemysław Mysiala",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Julija Stoliarenko",
+          "weight_class": "Women's Featherweight"
+        },
+        {
+          "name": "Leah Letson",
+          "weight_class": "Women's Featherweight"
+        },
+        {
+          "name": "Larissa Pacheco",
+          "weight_class": "Women's Featherweight"
+        },
+        {
+          "name": "and Katharina Lehner",
+          "weight_class": "Women's Featherweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Gastelum",
+      "roster": [
+        {
+          "name": "Ben Sosoli",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Maurice Greene",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Josh Parisian",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "and Justin Frazier",
+          "weight_class": "Heavyweight"
+        },
+        {
+          "name": "Macy Chiasson",
+          "weight_class": "Women's Featherweight"
+        },
+        {
+          "name": "Pannie Kianzad",
+          "weight_class": "Women's Featherweight"
+        },
+        {
+          "name": "Bea Malecki",
+          "weight_class": "Women's Featherweight"
+        },
+        {
+          "name": "and Marciea Allen",
+          "weight_class": "Women's Featherweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Heavyweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Josh Parisian",
+              "b": "Michel Batista",
+              "winner": "Michel Batista",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Justin Frazier",
+              "b": "Anderson da Silva",
+              "winner": "Justin Frazier",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Maurice Greene",
+              "b": "Przemysław Mysiala",
+              "winner": "Maurice Greene",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ben Sosoli",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Michel Batista",
+              "b": "Justin Frazier",
+              "winner": "Justin Frazier",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Maurice Greene",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Justin Frazier",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        }
+      ]
+    },
+    {
+      "weight_class": "Women'S Featherweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Pannie Kianzad",
+              "b": "Katharina Lehner",
+              "winner": "Pannie Kianzad",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Marciea Allen",
+              "b": "Julija Stoliarenko",
+              "winner": "Julija Stoliarenko",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bea Malecki",
+              "b": "Leah Letson",
+              "winner": "Leah Letson",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Macy Chiasson",
+              "b": "Larissa Pacheco",
+              "winner": "Macy Chiasson",
+              "method": "TKO (punches) in Round 1",
+              "round": 1,
+              "time": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Pannie Kianzad",
+              "b": "Julija Stoliarenko",
+              "winner": "Pannie Kianzad",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Pannie Kianzad",
+              "b": "Macy Chiasson",
+              "winner": "Macy Chiasson",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear more than once in this round. See conflicts."
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Heavy Hitters Finale",
+    "event_date": "2018-11-30",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Heavyweight",
+      "fighter": "Juan Espino",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Juan Espino",
+        "b": "Justin Frazier",
+        "event": "The Ultimate Fighter: Heavy Hitters Finale",
+        "date": "2018-11-30"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    },
+    {
+      "weight_class": "Women's Featherweight",
+      "fighter": "Macy Chiasson",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Macy Chiasson",
+        "b": "Pannie Kianzad",
+        "event": "The Ultimate Fighter: Heavy Hitters Finale",
+        "date": "2018-11-30"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

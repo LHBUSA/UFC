@@ -1,0 +1,347 @@
+{
+  "slug": "tuf-31",
+  "name": "The Ultimate Fighter 31: Team McGregor vs. Team Chandler",
+  "edition": "us",
+  "number": 31,
+  "year": 2023,
+  "weight_classes": [
+    "Bantamweight",
+    "Lightweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_McGregor_vs._Team_Chandler",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "Team McGregor",
+      "name": "Conor McGregor",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "John Kavanagh",
+      "role": "assistant",
+      "note": "Assistant Coach"
+    },
+    {
+      "team": "",
+      "name": "Owen Roddy",
+      "role": "head",
+      "note": "Striking/Boxing Coach"
+    },
+    {
+      "team": "",
+      "name": "Cian Cowley",
+      "role": "head",
+      "note": "Muay Thai Coach"
+    },
+    {
+      "team": "",
+      "name": "Phil Sutcliffe",
+      "role": "head",
+      "note": "Boxing Coach"
+    },
+    {
+      "team": "Team Chandler",
+      "name": "Michael Chandler",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Ryan Bader",
+      "role": "assistant",
+      "note": "Assistant Coach"
+    },
+    {
+      "team": "",
+      "name": "Robert Drysdale",
+      "role": "head",
+      "note": "Jiu Jitsu Coach"
+    },
+    {
+      "team": "",
+      "name": "Jason Strout",
+      "role": "head",
+      "note": "Striking Coach"
+    },
+    {
+      "team": "",
+      "name": "Greg Jones",
+      "role": "head",
+      "note": "Wrestling Coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team McGregor",
+      "roster": [
+        {
+          "name": "Rico DiSciullo",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Mando Gutierrez",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Carlos Vera",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "and Trevor Wells",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Lee Hammond",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Nate Jennerman",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Aaron McKenzie",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "and Landon Quiñones",
+          "weight_class": "Lightweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Chandler",
+      "roster": [
+        {
+          "name": "Hunter Azure",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Cody Gibson",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Brad Katona*",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "and Timur Valiev",
+          "weight_class": "Bantamweight"
+        },
+        {
+          "name": "Kurt Holobaugh",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Austin Hubbard",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Jason Knight",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "and Roosevelt Roberts",
+          "weight_class": "Lightweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Bantamweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Carlos Vera",
+              "b": "Brad Katona",
+              "winner": "Brad Katona",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Trevor Wells",
+              "b": "Timur Valiev",
+              "winner": "Timur Valiev",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Hunter Azure",
+              "b": "Rico DiSciullo",
+              "winner": "Rico DiSciullo",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Mando Gutierrez",
+              "b": "Cody Gibson",
+              "winner": "Cody Gibson",
+              "method": "TKO (switch knee and punches) at 3:23 of round 1",
+              "round": 1,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Brad Katona*",
+              "b": "Timur Valiev",
+              "winner": "Brad Katona*",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Rico DiSciullo",
+              "b": "Cody Gibson",
+              "winner": "Cody Gibson",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Brad Katona",
+              "b": "Cody Gibson",
+              "winner": "Brad Katona",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2023-08-19",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Lightweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Roosevelt Roberts",
+              "b": "Nate Jennerman",
+              "winner": "Roosevelt Roberts",
+              "method": "KO (punches) at 0:08 of round 1",
+              "round": 1,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Aaron McKenzie",
+              "b": "Austin Hubbard",
+              "winner": "Austin Hubbard",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jason Knight",
+              "b": "Landon Quiñones",
+              "winner": "Jason Knight",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Lee Hammond",
+              "b": "Kurt Holobaugh",
+              "winner": "Kurt Holobaugh",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC 292: Sterling vs. O'Malley",
+    "event_date": "2023-08-19",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Bantamweight",
+      "fighter": "Brad Katona",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Brad Katona",
+        "b": "Cody Gibson",
+        "event": "UFC 292: Sterling vs. O'Malley",
+        "date": "2023-08-19"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    },
+    {
+      "weight_class": "Lightweight",
+      "fighter": "Kurt Holobaugh",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Kurt Holobaugh",
+        "b": "Austin Hubbard",
+        "event": "UFC 292: Sterling vs. O'Malley",
+        "date": "2023-08-19"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+    }
+  ]
+}

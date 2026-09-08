@@ -1,0 +1,611 @@
+{
+  "slug": "tuf-7",
+  "name": "The Ultimate Fighter 7: Team Rampage vs. Team Forrest",
+  "edition": "us",
+  "number": 7,
+  "year": 2008,
+  "weight_classes": [
+    "Middleweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Rampage_vs._Team_Forrest",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Tournament_elimination",
+      "detail": "The source's elimination round for this division do not form a consistent round: 3 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Tournament_round_of_16",
+      "detail": "The source's first round for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "unplaced_bouts",
+      "detail": "1 bout(s) appear in the episode summaries but in no bracket: Paul Bradley def. Reggie Orr. Left unplaced rather than assigned to a division by guesswork.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Rampage",
+      "name": "Team Rampage",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Quinton \"Rampage\" Jackson",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Zach Light",
+      "role": "head",
+      "note": "wrestling coach"
+    },
+    {
+      "team": "",
+      "name": "Juanito Ibarra",
+      "role": "head",
+      "note": "boxing coach"
+    },
+    {
+      "team": "Team Forrest",
+      "name": "Team Forrest",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Forrest Griffin",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Cameron Diffley",
+      "role": "head",
+      "note": "jiu jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Mark Beecher",
+      "role": "head",
+      "note": "Muay Thai coach"
+    },
+    {
+      "team": "",
+      "name": "Gray Maynard",
+      "role": "head",
+      "note": "wrestling coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Rampage",
+      "roster": [
+        {
+          "name": "C. B. Dollaway"
+        },
+        {
+          "name": "Matt Riddle"
+        },
+        {
+          "name": "[[Paul Bradley"
+        },
+        {
+          "name": "Dan Cramer"
+        },
+        {
+          "name": "Gerald Harris"
+        },
+        {
+          "name": "Mike Dolce"
+        },
+        {
+          "name": "Jeremy May"
+        },
+        {
+          "name": "Brandon Sene"
+        }
+      ]
+    },
+    {
+      "name": "Team Forrest",
+      "roster": [
+        {
+          "name": "Tim Credeur"
+        },
+        {
+          "name": "Amir Sadollah"
+        },
+        {
+          "name": "Jesse Taylor"
+        },
+        {
+          "name": "Matt Brown"
+        },
+        {
+          "name": "Cale Yarbrough"
+        },
+        {
+          "name": "Dante Rivera"
+        },
+        {
+          "name": "Nick Klein"
+        },
+        {
+          "name": "Luke Zachrich"
+        }
+      ]
+    },
+    {
+      "name": "Fighters Eliminated in or before Entry Round",
+      "roster": [
+        {
+          "name": "David Baggett"
+        },
+        {
+          "name": "Steve Byrnes"
+        },
+        {
+          "name": "Erik Charles"
+        },
+        {
+          "name": "John Clarke"
+        },
+        {
+          "name": "Josh Hall"
+        },
+        {
+          "name": "Mike Marrello"
+        },
+        {
+          "name": "Prince McLean"
+        },
+        {
+          "name": "Aaron Meisner"
+        },
+        {
+          "name": "David Mewborn"
+        },
+        {
+          "name": "Reggie Orr"
+        },
+        {
+          "name": "Jeremiah Riggs"
+        },
+        {
+          "name": "David Roberts"
+        },
+        {
+          "name": "Nick Rossborough"
+        },
+        {
+          "name": "Dan Simmler"
+        },
+        {
+          "name": "John Wood"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "elimination",
+          "label": "Elimination round",
+          "note": "Partial. 3 fighter(s) appear more than once in this round. See conflicts.",
+          "bouts": [
+            {
+              "a": "Mike Dolce",
+              "b": "Prince McLean",
+              "winner": "Mike Dolce",
+              "method": "KO (punches) at 1:21 in the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Cale Yarbrough",
+              "b": "John Clarke",
+              "winner": "Cale Yarbrough",
+              "method": "TKO (punches) at 4:02 in the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Amir Sadollah",
+              "b": "Steve Byrnes",
+              "winner": "Amir Sadollah",
+              "method": "Submission (armlock) at 2:22 in the second round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jeremy May",
+              "b": "David Roberts",
+              "winner": "Jeremy May",
+              "method": "Submission (armlock) at 1:17 in the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "C. B. Dollaway",
+              "b": "David Baggett",
+              "winner": "C. B. Dollaway",
+              "method": "TKO (punches) at 1:29 in the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Dante Rivera",
+              "b": "John Wood",
+              "winner": "Dante Rivera",
+              "method": "Submission (kimura) at 0:58 in the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Nick Klein",
+              "b": "David Mewborn",
+              "winner": "Nick Klein",
+              "method": "Submission (arm triangle choke) at 3:39 in the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Matt Riddle",
+              "b": "Dan Simmler",
+              "winner": "Matt Riddle",
+              "method": "KO (punches) at :09 in the second round",
+              "round": null,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Luke Zachrich",
+              "b": "Patrick Schultz",
+              "winner": "Luke Zachrich",
+              "method": "Submission (rear naked choke) at 2:29 in the first round",
+              "round": null,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Tim Credeur",
+              "b": "Erik Charles",
+              "winner": "Tim Credeur",
+              "method": "Submission (armbar) at 1:00 in the first round",
+              "round": null,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jesse Taylor",
+              "b": "Nick Rossborough",
+              "winner": "Jesse Taylor",
+              "method": "Submission (rear naked choke) at 1:50 in first round",
+              "round": null,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Matt Brown",
+              "b": "Josh Hall",
+              "winner": "Matt Brown",
+              "method": "TKO (punches) at 4:57 in first round",
+              "round": null,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Brandon Sene",
+              "b": "Aaron Meisner",
+              "winner": "Brandon Sene",
+              "method": "Submission (rear naked choke) at 3:29 in the second round",
+              "round": null,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Gerald Harris",
+              "b": "Mike Marrello",
+              "winner": "Gerald Harris",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Dan Cramer",
+              "b": "Jeremiah Riggs",
+              "winner": "Dan Cramer",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Amir Sadollah",
+              "b": "C. B. Dollaway in the second semifinal bout",
+              "winner": "Amir Sadollah",
+              "method": "Submission (armbar) at 2:50 in the third round",
+              "round": null,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            },
+            {
+              "a": "C. B. Dollaway",
+              "b": "Tim Credeur",
+              "winner": "C. B. Dollaway",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            }
+          ],
+          "status": "unverified"
+        },
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Jesse Taylor",
+              "b": "Mike Dolce",
+              "winner": "Jesse Taylor",
+              "method": "Submission (rear naked choke)",
+              "round": 2,
+              "time": "1:47",
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Dante Rivera",
+              "b": "Brandon Sene",
+              "winner": "Dante Rivera",
+              "method": "Decision",
+              "round": 3,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+            },
+            {
+              "a": "Luke Zachrich",
+              "b": "Dan Cramer",
+              "winner": "Dan Cramer",
+              "method": "TKO (strikes)",
+              "round": 2,
+              "time": "1:49",
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Tim Credeur",
+              "b": "Matt Riddle",
+              "winner": "Tim Credeur",
+              "method": "Submission (armbar)",
+              "round": 2,
+              "time": "4:06",
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+            },
+            {
+              "a": "Amir Sadollah",
+              "b": "Gerald Harris",
+              "winner": "Amir Sadollah",
+              "method": "TKO (strikes)",
+              "round": 2,
+              "time": "2:36",
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            },
+            {
+              "a": "Matt Brown",
+              "b": "Jeremy May",
+              "winner": "Matt Brown",
+              "method": "KO (head kick)",
+              "round": 1,
+              "time": "3:35",
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Nick Klein",
+              "b": "C. B. Dollaway",
+              "winner": "C. B. Dollaway",
+              "method": "Submission (guillotine choke) at 2:41 in the second round",
+              "round": 2,
+              "time": null,
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+            },
+            {
+              "a": "Cale Yarbrough",
+              "b": "Patrick Schultz",
+              "winner": "Cale Yarbrough",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Jesse Taylor",
+              "b": "Dante Rivera",
+              "winner": "Jesse Taylor",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+            },
+            {
+              "a": "Dan Cramer",
+              "b": "Tim Credeur",
+              "winner": "Tim Credeur",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Amir Sadollah",
+              "b": "Matt Brown",
+              "winner": "Amir Sadollah",
+              "method": "Submission (triangle choke) at 4:09 in the second round",
+              "round": 2,
+              "time": null,
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+            },
+            {
+              "a": "C. B. Dollaway",
+              "b": "Cale Yarbrough",
+              "winner": "C. B. Dollaway",
+              "method": "TKO (strikes) at 2:43 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Jesse Taylor",
+              "b": "Tim Credeur",
+              "winner": "Jesse Taylor",
+              "method": "Unanimous decision (30–27, 30–26, 30–26)",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            },
+            {
+              "a": "Amir Sadollah",
+              "b": "C. B. Dollaway",
+              "winner": "Amir Sadollah",
+              "method": "Submission",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "C. B. Dollaway*",
+              "b": "Amir Sadollah",
+              "winner": "Amir Sadollah",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Rampage vs Team Forrest Finale",
+    "event_date": "2008-06-21",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Amir Sadollah",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Amir Sadollah",
+        "b": "CB Dollaway",
+        "event": "The Ultimate Fighter: Team Rampage vs Team Forrest Finale",
+        "date": "2008-06-21"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

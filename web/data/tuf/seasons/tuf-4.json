@@ -1,0 +1,310 @@
+{
+  "slug": "tuf-4",
+  "name": "The Ultimate Fighter 4: The Comeback",
+  "edition": "us",
+  "number": 4,
+  "year": 2006,
+  "weight_classes": [
+    "Welterweight",
+    "Middleweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Welterweight_quarter_final",
+      "detail": "The source's quarter-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "",
+      "name": "Randy Couture",
+      "role": "head",
+      "note": "coach"
+    },
+    {
+      "team": "",
+      "name": "Georges St-Pierre",
+      "role": "head",
+      "note": "coach"
+    },
+    {
+      "team": "",
+      "name": "Mark DellaGrotte",
+      "role": "head",
+      "note": "Muay Thai/kickboxing coach"
+    },
+    {
+      "team": "",
+      "name": "Marc Laimon",
+      "role": "head",
+      "note": "Brazilian jiu-jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Rich Franklin",
+      "role": "head",
+      "note": "guest coach"
+    },
+    {
+      "team": "",
+      "name": "Chuck Liddell",
+      "role": "head",
+      "note": "guest coach"
+    },
+    {
+      "team": "",
+      "name": "Matt Hughes",
+      "role": "head",
+      "note": "guest coach"
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Welterweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Rich Clementi",
+              "b": "Shonie Carter",
+              "winner": "Shonie Carter",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Pete Spratt *",
+              "b": "Matt Serra",
+              "winner": "Matt Serra",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Pete Spratt",
+              "b": "Chris Lytle",
+              "winner": "Chris Lytle",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Mikey Burnett",
+              "b": "Din Thomas",
+              "winner": "Din Thomas",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear more than once in this round. See conflicts."
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Shonie Carter",
+              "b": "Matt Serra",
+              "winner": "Matt Serra",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Chris Lytle",
+              "b": "Din Thomas",
+              "winner": "Chris Lytle",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Matt Serra",
+              "b": "Chris Lytle",
+              "winner": "Matt Serra",
+              "method": "Decision - Split",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2006-11-11",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Middleweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Charles McCarthy",
+              "b": "Pete Sell",
+              "winner": "Pete Sell",
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Travis Lutter",
+              "b": "Scott Smith",
+              "winner": "Travis Lutter",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jorge Rivera",
+              "b": "Patrick Côté",
+              "winner": "Patrick Côté",
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Gideon Ray",
+              "b": "Edwin DeWees",
+              "winner": "Edwin DeWees",
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Pete Sell",
+              "b": "Travis Lutter",
+              "winner": "Travis Lutter",
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Patrick Côté",
+              "b": "Edwin DeWees",
+              "winner": "Patrick Côté",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Travis Lutter",
+              "b": "Patrick Côté",
+              "winner": "Travis Lutter",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "fight_date": "2006-11-11",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: The Comeback Finale",
+    "event_date": "2006-11-11",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Matt Serra",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Matt Serra",
+        "b": "Chris Lytle",
+        "event": "The Ultimate Fighter: The Comeback Finale",
+        "date": "2006-11-11"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    },
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Travis Lutter",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Travis Lutter",
+        "b": "Patrick Cote",
+        "event": "The Ultimate Fighter: The Comeback Finale",
+        "date": "2006-11-11"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

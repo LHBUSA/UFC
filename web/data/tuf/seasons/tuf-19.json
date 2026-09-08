@@ -1,0 +1,459 @@
+{
+  "slug": "tuf-19",
+  "name": "The Ultimate Fighter 19: Team Edgar vs. Team Penn",
+  "edition": "us",
+  "number": 19,
+  "year": 2014,
+  "weight_classes": [
+    "Middleweight",
+    "Light Heavyweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Edgar_vs._Team_Penn",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "Team Edgar",
+      "name": "Frankie Edgar",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Mark Henry",
+      "role": "head",
+      "note": "Boxing Coach"
+    },
+    {
+      "team": "",
+      "name": "Ricardo Almeida",
+      "role": "head",
+      "note": "Jiu Jitsu Coach"
+    },
+    {
+      "team": "",
+      "name": "Steve Rivera",
+      "role": "head",
+      "note": "Wrestling Coach"
+    },
+    {
+      "team": "",
+      "name": "Anderson França",
+      "role": "head",
+      "note": "Muay Thai Coach"
+    },
+    {
+      "team": "Team Penn",
+      "name": "B.J. Penn",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Mark Coleman",
+      "role": "head",
+      "note": "Wrestling Coach"
+    },
+    {
+      "team": "",
+      "name": "Andre Pederneiras",
+      "role": "head",
+      "note": "Jiu Jitsu Coach"
+    },
+    {
+      "team": "",
+      "name": "Jason Parillo",
+      "role": "head",
+      "note": "Boxing Coach"
+    },
+    {
+      "team": "",
+      "name": "John Hackleman",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Edgar",
+      "roster": [
+        {
+          "name": "Hector Urbina",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Ian Stephens",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Eddie Gordon",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "and Dhiego Lima",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Todd Monaghan",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Patrick Walsh",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Matt Van Buren",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "and Corey Anderson",
+          "weight_class": "Light Heavyweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Penn",
+      "roster": [
+        {
+          "name": "Cathal Pendred",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Roger Zapata",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Tim Williams",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "and Mike King",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Daniel Spohn",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Chris Fields",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Anton Berzin",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "and Josh Clark",
+          "weight_class": "Light Heavyweight"
+        }
+      ]
+    },
+    {
+      "name": "Fighters eliminated before entry round",
+      "roster": [
+        {
+          "name": "Adrian Miles",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Tyler Minton",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Lyman Good",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Bojan Veličković",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Matt Gabel",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Adam Stroup",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "and Nordine Taleb",
+          "weight_class": "Middleweight"
+        },
+        {
+          "name": "Tyler King",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Jake Heun",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Josh Stansbury",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Cody Mumma",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "John Poppie",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Doug Sparks",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "Daniel Vizcaya",
+          "weight_class": "Light Heavyweight"
+        },
+        {
+          "name": "and Kelly Anundson",
+          "weight_class": "Light Heavyweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Middleweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "6 Cathal Pendred",
+              "b": "7 Hector Urbina",
+              "winner": "6 Cathal Pendred",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "2 Mike King",
+              "b": "5 Eddie Gordon",
+              "winner": "5 Eddie Gordon",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "4 Tim Williams",
+              "b": "3 Dhiego Lima",
+              "winner": "3 Dhiego Lima",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "8 Roger Zapata",
+              "b": "1 Ian Stephens",
+              "winner": "8 Roger Zapata",
+              "method": "D*",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "6 Cathal Pendred",
+              "b": "5 Eddie Gordon",
+              "winner": "5 Eddie Gordon",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "3 Dhiego Lima",
+              "b": "8 Roger Zapata",
+              "winner": "3 Dhiego Lima",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "5 Eddie Gordon",
+              "b": "3 Dhiego Lima",
+              "winner": "Eddie Gordon",
+              "method": "KO/TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "fight_date": "2014-07-06",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Light Heavyweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "4 Josh Clark",
+              "b": "1 Corey Anderson",
+              "winner": "1 Corey Anderson",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "2 Anton Berzin",
+              "b": "3 Patrick Walsh",
+              "winner": "3 Patrick Walsh",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "8 Chris Fields",
+              "b": "5 Matt Van Buren",
+              "winner": "5 Matt Van Buren",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "6 Daniel Spohn",
+              "b": "7 Todd Monaghan",
+              "winner": "6 Daniel Spohn",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "1 Corey Anderson",
+              "b": "3 Patrick Walsh",
+              "winner": "1 Corey Anderson",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "5 Matt Van Buren",
+              "b": "6 Daniel Spohn",
+              "winner": "5 Matt Van Buren",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "1 Corey Anderson",
+              "b": "5 Matt Van Buren",
+              "winner": "Corey Anderson",
+              "method": "KO/TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "fight_date": "2014-07-06",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
+    "event_date": "2014-07-06",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Eddie Gordon",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Eddie Gordon",
+        "b": "Dhiego Lima",
+        "event": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
+        "date": "2014-07-06"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    },
+    {
+      "weight_class": "Light Heavyweight",
+      "fighter": "Corey Anderson",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Corey Anderson",
+        "b": "Matt Van Buren",
+        "event": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
+        "date": "2014-07-06"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

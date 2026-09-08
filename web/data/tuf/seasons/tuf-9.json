@@ -1,0 +1,680 @@
+{
+  "slug": "tuf-9",
+  "name": "The Ultimate Fighter 9: United States vs. United Kingdom",
+  "edition": "us",
+  "number": 9,
+  "year": 2009,
+  "weight_classes": [
+    "Lightweight",
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_United_States_vs._United_Kingdom",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Welterweight_quarter_final",
+      "detail": "The source's quarter-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team United States",
+      "name": "Team United States",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Dan Henderson",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Cyrille Diabaté",
+      "role": "head",
+      "note": "Muay Thai instructor"
+    },
+    {
+      "team": "",
+      "name": "Ricardo Feliciano",
+      "role": "head",
+      "note": "Jiu-Jitsu instructor"
+    },
+    {
+      "team": "",
+      "name": "Gustavo Pugliese",
+      "role": "head",
+      "note": "Boxing instructor"
+    },
+    {
+      "team": "",
+      "name": "Heath Sims",
+      "role": "head",
+      "note": "Wrestling instructor"
+    },
+    {
+      "team": "Team United Kingdom",
+      "name": "Team United Kingdom",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Michael Bisping",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Dave Jackson",
+      "role": "head",
+      "note": "Thai Boxing instructor"
+    },
+    {
+      "team": "",
+      "name": "Mario Neto",
+      "role": "head",
+      "note": "Brazilian jiu-jitsu instructor"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team United States",
+      "roster": [
+        {
+          "name": "Santino DeFranco",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Jason Dent",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Cameron Dollar",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Richie Whitson",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "DaMarques Johnson",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Frank Lester",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Mark Miller",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Jason Pierce",
+          "weight_class": "Welterweight"
+        }
+      ]
+    },
+    {
+      "name": "Team United Kingdom",
+      "roster": [
+        {
+          "name": "Jeff Lawson",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Ross Pearson",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Martin Stapleton",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Andre Winner",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Dean Amasinger",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "David Faulkner",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Nick Osipczak",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "James Wilks",
+          "weight_class": "Welterweight"
+        }
+      ]
+    },
+    {
+      "name": "US Fighters Eliminated in or before Entry Round",
+      "roster": [
+        {
+          "name": "Paul Bird",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "John David-Shackelford",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Tommy Hayden",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Waylon Lowe",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Rob Browning",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Steve Berger",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Ray Elbe",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Christian Fulgium",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Kevin Knabjian",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Kiel Reid",
+          "weight_class": "Welterweight"
+        }
+      ]
+    },
+    {
+      "name": "UK Fighters Eliminated in Entry Round",
+      "roster": [
+        {
+          "name": "James Bryan",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Dan James",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Gary Kelly",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "A",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "J",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "Wenn",
+          "weight_class": "Lightweight"
+        },
+        {
+          "name": "James Bateman",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Tommy Maguire",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Che Mills",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Alex Reid",
+          "weight_class": "Welterweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Lightweight",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Santino DeFranco",
+              "b": "Waylon Lowe",
+              "winner": "Santino DeFranco",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Andre Winner",
+              "b": "Gary Kelly",
+              "winner": "Andre Winner",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Cameron Dollar",
+              "b": "Tommy Hayden",
+              "winner": "Cameron Dollar",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Martin Stapleton",
+              "b": "Dan James",
+              "winner": "Martin Stapleton",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Richie Whitson",
+              "b": "Paul Bird",
+              "winner": "Richie Whitson",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ross Pearson",
+              "b": "A.J. Wenn",
+              "winner": "Ross Pearson",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jason Dent",
+              "b": "Robert Browning",
+              "winner": "Jason Dent",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jeff Lawson",
+              "b": "James Bryan",
+              "winner": "Jeff Lawson",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Santino DeFranco",
+              "b": "Andre Winner",
+              "winner": "Andre Winner",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Cameron Dollar",
+              "b": "Martin Stapleton",
+              "winner": "Cameron Dollar",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Richie Whitson",
+              "b": "Ross Pearson",
+              "winner": "Ross Pearson",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jason Dent",
+              "b": "Jeff Lawson",
+              "winner": "Jason Dent",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Andre Winner",
+              "b": "Cameron Dollar",
+              "winner": "Andre Winner",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ross Pearson",
+              "b": "Jason Dent",
+              "winner": "Ross Pearson",
+              "method": "Decision",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Andre Winner",
+              "b": "Ross Pearson",
+              "winner": "Ross Pearson",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2009-06-20",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Welterweight",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Mark Miller",
+              "b": "Kevin Knabjian",
+              "winner": "Mark Miller",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Nick Osipczak",
+              "b": "Tommy Maguire",
+              "winner": "Nick Osipczak",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "DaMarques Johnson",
+              "b": "Ray Elbe",
+              "winner": "DaMarques Johnson",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dean Amasinger",
+              "b": "Alex Reid",
+              "winner": "Dean Amasinger",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Frank Lester",
+              "b": "Kiel Reid",
+              "winner": "Frank Lester",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "James Wilks",
+              "b": "Che Mills",
+              "winner": "James Wilks",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jason Pierce",
+              "b": "Steve Berger",
+              "winner": "Jason Pierce",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "David Faulkner",
+              "b": "James Bateman",
+              "winner": "David Faulkner",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Mark Miller",
+              "b": "Nick Osipczak",
+              "winner": "Nick Osipczak",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "DaMarques Johnson",
+              "b": "Dean Amasinger",
+              "winner": "DaMarques Johnson",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Frank Lester",
+              "b": "James Wilks",
+              "winner": "James Wilks",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Frank Lester",
+              "b": "David Faulkner",
+              "winner": "Frank Lester",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear more than once in this round. See conflicts."
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Nick Osipczak",
+              "b": "DaMarques Johnson",
+              "winner": "DaMarques Johnson",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "James Wilks",
+              "b": "Frank Lester",
+              "winner": "James Wilks",
+              "method": "TKO",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "DaMarques Johnson",
+              "b": "James Wilks",
+              "winner": "James Wilks",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "fight_date": "2009-06-20",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: United States vs. United Kingdom Finale",
+    "event_date": "2009-06-20",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Lightweight",
+      "fighter": "Ross Pearson",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Ross Pearson",
+        "b": "Andre Winner",
+        "event": "The Ultimate Fighter: United States vs. United Kingdom Finale",
+        "date": "2009-06-20"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    },
+    {
+      "weight_class": "Welterweight",
+      "fighter": "James Wilks",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "James Wilks",
+        "b": "DaMarques Johnson",
+        "event": "The Ultimate Fighter: United States vs. United Kingdom Finale",
+        "date": "2009-06-20"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

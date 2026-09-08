@@ -1,0 +1,396 @@
+{
+  "slug": "tuf-3",
+  "name": "The Ultimate Fighter 3",
+  "edition": "us",
+  "number": 3,
+  "year": 2006,
+  "weight_classes": [
+    "Middleweight",
+    "Light Heavyweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Light Heavyweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 2 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "",
+      "name": "Team Ortiz",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Tito Ortiz",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Dean Lister",
+      "role": "head",
+      "note": "jiu jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Saul Soliz",
+      "role": "head",
+      "note": "kickboxing coach"
+    },
+    {
+      "team": "",
+      "name": "Wing Butler",
+      "role": "head",
+      "note": "sign language interpreter"
+    },
+    {
+      "team": "",
+      "name": "Team Shamrock",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Ken Shamrock",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Roman Pollock",
+      "role": "head",
+      "note": "boxing coach"
+    },
+    {
+      "team": "",
+      "name": "Dan Freeman",
+      "role": "head",
+      "note": "nutrition/strength coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Middleweights",
+      "roster": [
+        {
+          "name": "Mike Stine",
+          "weight_class": "Team Ortiz"
+        },
+        {
+          "name": "Kendall Grove",
+          "weight_class": "Team Ortiz"
+        },
+        {
+          "name": "Rory Singer",
+          "weight_class": "Team Ortiz"
+        },
+        {
+          "name": "Danny Abbadi",
+          "weight_class": "Team Ortiz"
+        },
+        {
+          "name": "Kalib Starnes",
+          "weight_class": "Team Shamrock"
+        },
+        {
+          "name": "Solomon Hutcherson",
+          "weight_class": "Team Shamrock"
+        },
+        {
+          "name": "Ed Herman",
+          "weight_class": "Team Shamrock"
+        },
+        {
+          "name": "Ross Pointon",
+          "weight_class": "Team Shamrock"
+        }
+      ]
+    },
+    {
+      "name": "Light Heavyweights",
+      "roster": [
+        {
+          "name": "Matt Hamill",
+          "weight_class": "Team Ortiz"
+        },
+        {
+          "name": "Michael Bisping",
+          "weight_class": "Team Ortiz"
+        },
+        {
+          "name": "Noah Inhofer",
+          "weight_class": "Team Ortiz"
+        },
+        {
+          "name": "Josh Haynes",
+          "weight_class": "Team Ortiz"
+        },
+        {
+          "name": "Jesse Forbes",
+          "weight_class": "Team Shamrock"
+        },
+        {
+          "name": "Kristian Rothaermel",
+          "weight_class": "Team Shamrock"
+        },
+        {
+          "name": "Tait Fletcher",
+          "weight_class": "Team Shamrock"
+        },
+        {
+          "name": "Mike Nickels",
+          "weight_class": "Team Shamrock"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Middleweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Kalib Starnes",
+              "b": "Mike Stine",
+              "winner": "Kalib Starnes",
+              "method": "KO (punches)",
+              "round": 1,
+              "time": "2:09",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Ross Pointon",
+              "b": "Kendall Grove",
+              "winner": "Kendall Grove",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "3:45",
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Solomon Hutcherson",
+              "b": "Rory Singer",
+              "winner": "Rory Singer",
+              "method": "KO (head kick and punches) after 0:21 of the second round",
+              "round": 2,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+            },
+            {
+              "a": "Ed Herman",
+              "b": "Danny Abbadi",
+              "winner": "Ed Herman",
+              "method": "Submission (armbar)",
+              "round": 1,
+              "time": "4:14",
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Kalib Starnes",
+              "b": "Kendall Grove",
+              "winner": "Kendall Grove",
+              "method": "Verbal submission (rib injury) at 0:30 of the third round",
+              "round": 3,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            },
+            {
+              "a": "Rory Singer",
+              "b": "Ed Herman",
+              "winner": "Ed Herman",
+              "method": "Submission (rear naked choke)",
+              "round": 2,
+              "time": "2:31",
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Kendall Grove",
+              "b": "Ed Herman",
+              "winner": "Kendall Grove",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2006-06-24",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Light Heavyweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Jesse Forbes",
+              "b": "Noah Inhofer",
+              "winner": "Noah Inhofer",
+              "method": "Submission (armbar)",
+              "round": 1,
+              "time": "2:35",
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Tait Fletcher",
+              "b": "Josh Haynes",
+              "winner": "Josh Haynes",
+              "method": "Decision (split)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Mike Nickels",
+              "b": "Matt Hamill",
+              "winner": "Matt Hamill",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Kristian Rothaermel",
+              "b": "Michael Bisping",
+              "winner": "Michael Bisping",
+              "method": "TKO (strikes)",
+              "round": 1,
+              "time": "3:51",
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Jesse Forbes *",
+              "b": "Josh Haynes",
+              "winner": "Josh Haynes",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ross Pointon *",
+              "b": "Michael Bisping",
+              "winner": "Michael Bisping",
+              "method": "Submission (strikes) with 2:47 left in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 12,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 12, not contested on a sanctioned card"
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 2 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Josh Haynes",
+              "b": "Michael Bisping",
+              "winner": "Michael Bisping",
+              "method": "KO/TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "fight_date": "2006-06-24",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Ortiz vs. Team Shamrock Finale",
+    "event_date": "2006-06-24",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Kendall Grove",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Kendall Grove",
+        "b": "Ed Herman",
+        "event": "The Ultimate Fighter: Team Ortiz vs. Team Shamrock Finale",
+        "date": "2006-06-24"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    },
+    {
+      "weight_class": "Light Heavyweight",
+      "fighter": "Michael Bisping",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Michael Bisping",
+        "b": "Josh Haynes",
+        "event": "The Ultimate Fighter: Team Ortiz vs. Team Shamrock Finale",
+        "date": "2006-06-24"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

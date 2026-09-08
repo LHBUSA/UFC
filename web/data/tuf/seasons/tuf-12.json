@@ -1,0 +1,506 @@
+{
+  "slug": "tuf-12",
+  "name": "The Ultimate Fighter 12: Team GSP vs. Team Koscheck",
+  "edition": "us",
+  "number": 12,
+  "year": 2010,
+  "weight_classes": [
+    "Lightweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_GSP_vs._Team_Koscheck",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Tournament_round_of_16",
+      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "",
+      "name": "Georges St-Pierre",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Greg Jackson",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Phil Nurse",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Freddie Roach",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Firas Zahabi",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Howard Grant",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "John Danaher",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Shawn Williams",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jean-Charles Skarbowsky",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Kristof Midoux",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Cleopas Ncube",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Gia Sissaouri",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Josh Koscheck",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jon Fitch",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Chuck Liddell",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Javier Mendez",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Bob Cook",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Dave Camarillo",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Teddy Lucio",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Daniel Cormier",
+      "role": "head"
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "elimination",
+          "label": "Elimination round",
+          "note": "Bouts the episode summaries record but the source's bracket does not include.",
+          "bouts": [
+            {
+              "a": "Marc Stevens",
+              "b": "TJ O'Brien",
+              "winner": "Marc Stevens",
+              "method": "KO (punches)",
+              "round": 1,
+              "time": "0:13",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Spencer Paige",
+              "b": "Steve Magdaleno",
+              "winner": "Spencer Paige",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Nam Phan",
+              "b": "Mike Budnik",
+              "winner": "Nam Phan",
+              "method": "TKO (liver strike and punches) in the first round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Andy Main",
+              "b": "Jason Brenton",
+              "winner": "Andy Main",
+              "method": "Submission (triangle armbar)",
+              "round": 1,
+              "time": "3:33",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jonathan Brookins",
+              "b": "Ran Weathers",
+              "winner": "Jonathan Brookins",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Sako Chivitchian",
+              "b": "Toby Grear",
+              "winner": "Sako Chivitchian",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jeff Lentz",
+              "b": "Daniel Head",
+              "winner": "Jeff Lentz",
+              "method": "Submission (rear naked choke)",
+              "round": 2,
+              "time": "3:45",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Alex Caceres",
+              "b": "Paul Barrow",
+              "winner": "Alex Caceres",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "3:55",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Michael Johnson",
+              "b": "Pablo Garza",
+              "winner": "Michael Johnson",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Aaron Wilkinson",
+              "b": "Mike Richman",
+              "winner": "Aaron Wilkinson",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kyle Watson",
+              "b": "Joseph Duffy",
+              "winner": "Kyle Watson",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "3:33",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Sevak Magakian",
+              "b": "JJ Ambrose",
+              "winner": "Sevak Magakian",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Cody McKenzie",
+              "b": "Amir Khillah",
+              "winner": "Cody McKenzie",
+              "method": "Technical submission (guillotine choke)",
+              "round": 1,
+              "time": "2:15",
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            },
+            {
+              "a": "Dane Sayers",
+              "b": "Ariel Sexton",
+              "winner": "Dane Sayers",
+              "method": "Submission (standing rear naked choke) in the second round",
+              "round": null,
+              "time": null,
+              "episode": 1,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 1, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Spencer Paige",
+              "b": "Nam Phan",
+              "winner": "Nam Phan",
+              "method": "Decision",
+              "round": 2,
+              "time": null,
+              "episode": 5,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 5, not contested on a sanctioned card"
+            },
+            {
+              "a": "Cody McKenzie",
+              "b": "Marc Stevens",
+              "winner": "Cody McKenzie",
+              "method": "Technical submission (guillotine choke)",
+              "round": 1,
+              "time": "0:17",
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Alex Caceres",
+              "b": "Jeff Lentz",
+              "winner": "Alex Caceres",
+              "method": "Submission (triangle choke)",
+              "round": 2,
+              "time": "2:27",
+              "episode": 2,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 2, not contested on a sanctioned card"
+            },
+            {
+              "a": "Michael Johnson",
+              "b": "Aaron Wilkinson",
+              "winner": "Michael Johnson",
+              "method": "Submission (rear naked choke)",
+              "round": 3,
+              "time": "0:37",
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jonathan Brookins",
+              "b": "Sevak Magakian",
+              "winner": "Jonathan Brookins",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dane Sayers",
+              "b": "Sako Chivitchian",
+              "winner": "Sako Chivitchian",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": 2,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kyle Watson",
+              "b": "Andy Main",
+              "winner": "Kyle Watson",
+              "method": "Submission with a rear-naked choke in the second round",
+              "round": 2,
+              "time": null,
+              "episode": 4,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 4, not contested on a sanctioned card"
+            },
+            {
+              "a": "Aaron Wilkinson",
+              "b": "Marc Stevens",
+              "winner": "Aaron Wilkinson",
+              "method": "Submission (guillotine choke)",
+              "round": 2,
+              "time": "0:47",
+              "episode": 8,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 8, not contested on a sanctioned card"
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts."
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Nam Phan",
+              "b": "Cody McKenzie",
+              "winner": "Nam Phan",
+              "method": "TKO (punches)",
+              "round": 2,
+              "time": "2:54",
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+            },
+            {
+              "a": "Alex Caceres",
+              "b": "Michael Johnson",
+              "winner": "Michael Johnson",
+              "method": "Unanimous decision (20–18, 20–18, 20–18)",
+              "round": 2,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jonathan Brookins",
+              "b": "Sako Chivitchian",
+              "winner": "Jonathan Brookins",
+              "method": "Submission (rear naked choke)",
+              "round": 1,
+              "time": "2:05",
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 9, not contested on a sanctioned card"
+            },
+            {
+              "a": "Kyle Watson",
+              "b": "Aaron Wilkinson",
+              "winner": "Kyle Watson",
+              "method": "Submission (rear naked choke) at 3:59 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Nam Phan",
+              "b": "Michael Johnson",
+              "winner": "Michael Johnson",
+              "method": "Split decision (29–28, 28–29, 29–28)",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jonathan Brookins",
+              "b": "Kyle Watson",
+              "winner": "Jonathan Brookins",
+              "method": "Unanimous decision (30–27, 30–27, 30–27)",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Michael Johnson",
+              "b": "Jonathan Brookins",
+              "winner": "Jonathan Brookins",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2010-12-04",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team GSP vs Team Koscheck Finale",
+    "event_date": "2010-12-04",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Lightweight",
+      "fighter": "Jonathan Brookins",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Jonathan Brookins",
+        "b": "Michael Johnson",
+        "event": "The Ultimate Fighter: Team GSP vs Team Koscheck Finale",
+        "date": "2010-12-04"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

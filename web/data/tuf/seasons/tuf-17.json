@@ -1,0 +1,368 @@
+{
+  "slug": "tuf-17",
+  "name": "The Ultimate Fighter 17: Team Jones vs. Team Sonnen",
+  "edition": "us",
+  "number": 17,
+  "year": 2013,
+  "weight_classes": [
+    "Middleweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Jones_vs._Team_Sonnen",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Tournament_round_of_16",
+      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Jones",
+      "name": "Jon Jones",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Stonehorse Goeman",
+      "role": "head",
+      "note": "Muay Thai Coach"
+    },
+    {
+      "team": "",
+      "name": "Frank Mir",
+      "role": "head",
+      "note": "jiu jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Bubba Jenkins",
+      "role": "head",
+      "note": "wrestling coach"
+    },
+    {
+      "team": "",
+      "name": "John Woods",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Ricky Lundell",
+      "role": "head",
+      "note": "wrestling/grappling Coach"
+    },
+    {
+      "team": "Team Sonnen",
+      "name": "Chael Sonnen",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Vinny Magalhães",
+      "role": "head",
+      "note": "jiu jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Clayton Hires",
+      "role": "head",
+      "note": "boxing coach"
+    },
+    {
+      "team": "",
+      "name": "Scott McQuary",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jamie Huey",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Mike Dolce",
+      "role": "head",
+      "note": "nutritionist"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Sonnen",
+      "roster": [
+        {
+          "name": "Luke Barnatt"
+        },
+        {
+          "name": "Uriah Hall"
+        },
+        {
+          "name": "Zak Cummings"
+        },
+        {
+          "name": "Tor Troéng"
+        },
+        {
+          "name": "Jimmy Quinlan"
+        },
+        {
+          "name": "Kevin Casey"
+        },
+        {
+          "name": "Kelvin Gastelum"
+        }
+      ]
+    },
+    {
+      "name": "Team Jones",
+      "roster": [
+        {
+          "name": "Clint Hester"
+        },
+        {
+          "name": "Josh Samman"
+        },
+        {
+          "name": "Robert \"Bubba\" McDaniel"
+        },
+        {
+          "name": "Gilbert Smith"
+        },
+        {
+          "name": "Collin Hart"
+        },
+        {
+          "name": "Adam Cella"
+        },
+        {
+          "name": "Dylan Andrews"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Colin Hart",
+              "b": "Kevin Casey",
+              "winner": "Colin Hart",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bubba McDaniel",
+              "b": "Kelvin Gastelum",
+              "winner": "Kelvin Gastelum",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Josh Samman",
+              "b": "Tor Troeng",
+              "winner": "Josh Samman",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Clint Hester",
+              "b": "Jimmy Quinlan",
+              "winner": "Jimmy Quinlan",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dylan Andrews",
+              "b": "Zak Cummings",
+              "winner": "Dylan Andrews",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Gilbert Smith Jr.",
+              "b": "Luke Barnatt",
+              "winner": "Luke Barnatt",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bubba McDaniel",
+              "b": "Kevin Casey",
+              "winner": "Bubba McDaniel",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Adam Cella",
+              "b": "Uriah Hall",
+              "winner": "Uriah Hall",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts."
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Colin Hart",
+              "b": "Kelvin Gastelum",
+              "winner": "Kelvin Gastelum",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Josh Samman",
+              "b": "Jimmy Quinlan",
+              "winner": "Josh Samman",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dylan Andrews",
+              "b": "Luke Barnatt",
+              "winner": "Dylan Andrews",
+              "method": "KO",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bubba McDaniel",
+              "b": "Uriah Hall",
+              "winner": "Uriah Hall",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Kelvin Gastelum",
+              "b": "Josh Samman",
+              "winner": "Kelvin Gastelum",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Dylan Andrews",
+              "b": "Uriah Hall",
+              "winner": "Uriah Hall",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Kelvin Gastelum",
+              "b": "Uriah Hall",
+              "winner": "Kelvin Gastelum",
+              "method": "Decision - Split",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2013-04-13",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Jones vs. Team Sonnen Finale",
+    "event_date": "2013-04-13",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Middleweight",
+      "fighter": "Kelvin Gastelum",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Kelvin Gastelum",
+        "b": "Uriah Hall",
+        "event": "The Ultimate Fighter: Team Jones vs. Team Sonnen Finale",
+        "date": "2013-04-13"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

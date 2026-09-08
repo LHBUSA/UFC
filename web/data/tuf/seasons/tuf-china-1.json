@@ -1,0 +1,383 @@
+{
+  "slug": "tuf-china-1",
+  "name": "The Ultimate Fighter China",
+  "edition": "china",
+  "number": 1,
+  "year": 2013,
+  "weight_classes": [
+    "Featherweight",
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_China",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Welterweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "",
+      "name": "Tiequan Zhang",
+      "role": "head",
+      "note": "Head coach"
+    },
+    {
+      "team": "",
+      "name": "Bao Li Gao",
+      "role": "head",
+      "note": "Sanda coach"
+    },
+    {
+      "team": "",
+      "name": "Vince Soberano",
+      "role": "head",
+      "note": "Muay Thai coach"
+    },
+    {
+      "team": "",
+      "name": "Flavio Bueno",
+      "role": "head",
+      "note": "jiu jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Hailin Ao",
+      "role": "head",
+      "note": "head coach (Episodes 1–4)"
+    },
+    {
+      "team": "",
+      "name": "An Hu",
+      "role": "head",
+      "note": "Sanda coach"
+    },
+    {
+      "team": "",
+      "name": "Marco Machado",
+      "role": "head",
+      "note": "jiu jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Fred Thomassen",
+      "role": "assistant",
+      "note": "assistant coach"
+    },
+    {
+      "team": "",
+      "name": "Scott Sheeley",
+      "role": "assistant",
+      "note": "assistant coach (Episode 5-)"
+    },
+    {
+      "team": "",
+      "name": "Alexander Gustafsson",
+      "role": "head",
+      "note": "guest coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Sky Dragons",
+      "roster": [
+        {
+          "name": "Ning Guangyou",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Fu Changxin",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Yao Zhikui",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "and He Jianwei",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Zhang Lipeng",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Albert Cheng",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Wu Qize",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "and Li Jinying*",
+          "weight_class": "Welterweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Flying Lions",
+      "roster": [
+        {
+          "name": "Yang Jianping",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Rocky Lee",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Allen Chong",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "and Shih Liang",
+          "weight_class": "Featherweight"
+        },
+        {
+          "name": "Wang Sai",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Wang Anying",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "Zhu Qingxiang",
+          "weight_class": "Welterweight"
+        },
+        {
+          "name": "and Dong Xin*",
+          "weight_class": "Welterweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Welterweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Wu Qize",
+              "b": "Wang Sai",
+              "winner": "Wang Sai",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Fu Ziyi",
+              "b": "Wang Anying",
+              "winner": "Wang Anying",
+              "method": "*",
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Zhang Lipeng",
+              "b": "Zhu Qingxiang",
+              "winner": "Zhang Lipeng",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Albert Cheng",
+              "b": "Dong Xin",
+              "winner": "Dong Xin",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Wang Sai",
+              "b": "Wang Anying",
+              "winner": "Wang Sai",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Zhang Lipeng",
+              "b": "Albert Cheng**",
+              "winner": "Zhang Lipeng",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Zhang Lipeng",
+              "b": "Wang Sai",
+              "winner": "Zhang Lipeng",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Featherweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Fu Changxin",
+              "b": "Yang Jianping",
+              "winner": "Yang Jianping",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Yao Zhikui",
+              "b": "Allen Chong",
+              "winner": "Yao Zhikui",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ning Guangyou",
+              "b": "Shih Liang",
+              "winner": "Ning Guangyou",
+              "method": "KO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "He Jianwei",
+              "b": "Rocky Lee",
+              "winner": "Rocky Lee",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Yang Jianping",
+              "b": "Yao Zhikui",
+              "winner": "Yang Jianping",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ning Guangyou",
+              "b": "Rocky Lee",
+              "winner": "Ning Guangyou",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Yang Jianping",
+              "b": "Ning Guangyou",
+              "winner": "Ning Guangyou",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "champions": [
+    {
+      "weight_class": "Featherweight",
+      "fighter": "Ning Guangyou",
+      "won_tournament": true,
+      "received_contract": true
+    },
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Zhang Lipeng",
+      "won_tournament": true,
+      "received_contract": true
+    }
+  ]
+}

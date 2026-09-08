@@ -1,0 +1,408 @@
+{
+  "slug": "tuf-18",
+  "name": "The Ultimate Fighter 18: Team Rousey vs. Team Tate",
+  "edition": "us",
+  "number": 18,
+  "year": 2013,
+  "weight_classes": [
+    "Bantamweight",
+    "Women's Bantamweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Rousey_vs._Team_Tate",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "Team Rousey",
+      "name": "Ronda Rousey",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Andy Dermenjian",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Manny Gamburyan",
+      "role": "head",
+      "note": "grappling coach"
+    },
+    {
+      "team": "",
+      "name": "Marina Shafir",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Edmond Tarverdyan",
+      "role": "head",
+      "note": "striking coach"
+    },
+    {
+      "team": "",
+      "name": "Nate Diaz",
+      "role": "head",
+      "note": "guest coach"
+    },
+    {
+      "team": "Team Tate",
+      "name": "Miesha Tate",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Thonglor \"Master Thong\" Armatsena",
+      "role": "head",
+      "note": "Muay Thai coach"
+    },
+    {
+      "team": "",
+      "name": "Ricky Lundell",
+      "role": "head",
+      "note": "wrestling coach"
+    },
+    {
+      "team": "",
+      "name": "Bryan Caraway",
+      "role": "head",
+      "note": "jiu jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Shaine Jaime",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jack Anderson",
+      "role": "head",
+      "note": "wrestling/submission wrestling coach"
+    },
+    {
+      "team": "",
+      "name": "Eric Triliegi",
+      "role": "head",
+      "note": "nutritionist"
+    },
+    {
+      "team": "",
+      "name": "Melchor Menor",
+      "role": "head",
+      "note": "guest coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Rousey",
+      "roster": [
+        {
+          "name": "Shayna Baszler",
+          "weight_class": "Female fighter"
+        },
+        {
+          "name": "Jessamyn Duke",
+          "weight_class": "Female fighter"
+        },
+        {
+          "name": "Peggy Morgan",
+          "weight_class": "Female fighter"
+        },
+        {
+          "name": "Jessica Rakoczy",
+          "weight_class": "Female fighter"
+        },
+        {
+          "name": "Chris Beal",
+          "weight_class": "Male Fighter"
+        },
+        {
+          "name": "Davey Grant",
+          "weight_class": "Male Fighter"
+        },
+        {
+          "name": "Anthony Gutierrez",
+          "weight_class": "Male Fighter"
+        },
+        {
+          "name": "Michael Wootten",
+          "weight_class": "Male Fighter"
+        }
+      ]
+    },
+    {
+      "name": "Team Tate",
+      "roster": [
+        {
+          "name": "Julianna Peña",
+          "weight_class": "Female fighter"
+        },
+        {
+          "name": "Sarah Moras",
+          "weight_class": "Female fighter"
+        },
+        {
+          "name": "Raquel Pennington",
+          "weight_class": "Female fighter"
+        },
+        {
+          "name": "Roxanne Modafferi",
+          "weight_class": "Female fighter"
+        },
+        {
+          "name": "Cody Bollinger",
+          "weight_class": "Male Fighter"
+        },
+        {
+          "name": "Chris Holdsworth",
+          "weight_class": "Male Fighter"
+        },
+        {
+          "name": "Josh Hill",
+          "weight_class": "Male Fighter"
+        },
+        {
+          "name": "Tim Gorman",
+          "weight_class": "Male Fighter"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Female Fighters",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "2 Shayna Baszler",
+              "b": "1 Julianna Peña",
+              "winner": "1 Julianna Peña",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "6 Peggy Morgan",
+              "b": "3 Sarah Moras",
+              "winner": "3 Sarah Moras",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "4 Jessamyn Duke",
+              "b": "5 Raquel Pennington",
+              "winner": "5 Raquel Pennington",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "8 Jessica Rakoczy",
+              "b": "7 Roxanne Modafferi",
+              "winner": "8 Jessica Rakoczy",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "1 Julianna Peña",
+              "b": "3 Sarah Moras",
+              "winner": "1 Julianna Peña",
+              "method": "Submission (guillotine choke) at 3:31 in the second round",
+              "round": 2,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            },
+            {
+              "a": "5 Raquel Pennington",
+              "b": "8 Jessica Rakoczy",
+              "winner": "8 Jessica Rakoczy",
+              "method": "Unanimous decision in three rounds",
+              "round": 3,
+              "time": null,
+              "episode": 13,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 13, not contested on a sanctioned card"
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "1 Julianna Peña",
+              "b": "8 Jessica Rakoczy",
+              "winner": "1 Julianna Peña",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null,
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Male Fighters",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "2 Chris Beal",
+              "b": "3 Chris Holdsworth",
+              "winner": "3 Chris Holdsworth",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "8 Michael Wootten",
+              "b": "5 Josh Hill",
+              "winner": "8 Michael Wootten",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "4 Davey Grant",
+              "b": "7 Louis Fisette",
+              "winner": "4 Davey Grant",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "6 Anthony Gutierrez",
+              "b": "1 Cody Bollinger",
+              "winner": "6 Anthony Gutierrez",
+              "method": "*",
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "3 Chris Holdsworth",
+              "b": "8 Michael Wootten",
+              "winner": "3 Chris Holdsworth",
+              "method": "Submission (rear naked choke) at 3:11 in the first round",
+              "round": 1,
+              "time": null,
+              "episode": 10,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+            },
+            {
+              "a": "4 Davey Grant",
+              "b": "6 Anthony Gutierrez",
+              "winner": "4 Davey Grant",
+              "method": "**",
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "3 Chris Holdsworth",
+              "b": "4 Davey Grant",
+              "winner": "Chris Holdsworth",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "fight_date": "2013-11-30",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
+    "event_date": "2013-11-30",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Bantamweight",
+      "fighter": "Chris Holdsworth",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Chris Holdsworth",
+        "b": "Davey Grant",
+        "event": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
+        "date": "2013-11-30"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    },
+    {
+      "weight_class": "Women's Bantamweight",
+      "fighter": "Julianna Peña",
+      "won_tournament": true,
+      "received_contract": true
+    }
+  ]
+}

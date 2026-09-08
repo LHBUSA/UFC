@@ -1,0 +1,380 @@
+{
+  "slug": "tuf-25",
+  "name": "The Ultimate Fighter 25: Redemption",
+  "edition": "us",
+  "number": 25,
+  "year": 2017,
+  "weight_classes": [
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Redemption",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Tournament_round_of_16",
+      "detail": "The source's first round for this division do not form a consistent round: 2 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Garbrandt",
+      "name": "Cody Garbrandt",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Urijah Faber",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Danny Castillo",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Justin Buchholz",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Fábio Prado",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Robert Meese",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Eddie Barraco",
+      "role": "head"
+    },
+    {
+      "team": "Team Dillashaw",
+      "name": "T.J. Dillashaw",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Duane Ludwig",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Eliot Marshall",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Leister Bowling",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Matt Brown",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Robert Follis",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Garbrandt",
+      "roster": [
+        {
+          "name": "Team Liddell vs",
+          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Ortiz|TUF 11]]), Mehdi Baghdad ([[The Ultimate Fighter: Team McGregor vs",
+          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Faber|TUF 22]]), Eddie Gordon ([[The Ultimate Fighter: Team Edgar vs",
+          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Penn|TUF 19]]), Hayder Hassan ([[The Ultimate Fighter: American Top Team vs",
+          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Blackzilians|TUF 21]]), Julian Lane ([[The Ultimate Fighter: Team Carwin vs",
+          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Nelson|TUF 16]]), Justin Edwards ([[The Ultimate Fighter: Team Lesnar vs",
+          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team dos Santos|TUF 13]]) and Johnny Nunez* ([[The Ultimate Fighter: Team McGregor vs",
+          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Faber|TUF 22]])",
+          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+        }
+      ]
+    },
+    {
+      "name": "Team Dillashaw",
+      "roster": [
+        {
+          "name": "Live|TUF 15]]), Jesse Taylor ([[The Ultimate Fighter: Team Rampage vs",
+          "weight_class": "James Krause ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Forrest|TUF 7]]), Ramsey Nijem ([[The Ultimate Fighter: Team Lesnar vs",
+          "weight_class": "James Krause ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team dos Santos|TUF 13]]), Dhiego Lima ([[The Ultimate Fighter: Team Edgar vs",
+          "weight_class": "James Krause ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Penn|TUF 19]]), Joe Stevenson (TUF 2), Tom Gallicchio ([[The Ultimate Fighter: Team McGregor vs",
+          "weight_class": "James Krause ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Faber|TUF 22]]) and Gilbert Smith ([[The Ultimate Fighter: Team Jones vs",
+          "weight_class": "James Krause ([[The Ultimate Fighter"
+        },
+        {
+          "name": "Team Sonnen|TUF 17]]).",
+          "weight_class": "James Krause ([[The Ultimate Fighter"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Seth Baczynski",
+              "b": "Gilbert Smith",
+              "winner": "Gilbert Smith",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Hayder Hassan",
+              "b": "Dhiego Lima",
+              "winner": "Dhiego Lima",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Eddie Gordon",
+              "b": "Tom Gallicchio",
+              "winner": "Tom Gallicchio",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Justin Edwards",
+              "b": "Joe Stevenson",
+              "winner": "Justin Edwards",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "James Krause",
+              "b": "Johnny Nunez",
+              "winner": "James Krause",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ramsey Nijem",
+              "b": "Julian Lane",
+              "winner": "Ramsey Nijem",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jesse Taylor",
+              "b": "Mehdi Baghdad",
+              "winner": "Jesse Taylor",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Joe Stevenson",
+              "b": "Hayder Hassan",
+              "winner": "Hayder Hassan",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts."
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Gilbert Smith",
+              "b": "Dhiego Lima",
+              "winner": "Dhiego Lima",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Tom Gallicchio",
+              "b": "Justin Edwards",
+              "winner": "Tom Gallicchio",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "James Krause",
+              "b": "Ramsey Nijem",
+              "winner": "James Krause",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Jesse Taylor",
+              "b": "Hayder Hassan",
+              "winner": "Jesse Taylor",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Dhiego Lima",
+              "b": "Tom Gallicchio",
+              "winner": "Dhiego Lima",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 11,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+            },
+            {
+              "a": "James Krause",
+              "b": "Jesse Taylor",
+              "winner": "Jesse Taylor",
+              "method": "Submission",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Dhiego Lima",
+              "b": "Jesse Taylor",
+              "winner": "Jesse Taylor",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "fight_date": "2017-07-07",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Redemption Finale",
+    "event_date": "2017-07-07",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Jesse Taylor",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Jesse Taylor",
+        "b": "Dhiego Lima",
+        "event": "The Ultimate Fighter: Redemption Finale",
+        "date": "2017-07-07"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

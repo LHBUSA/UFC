@@ -1,0 +1,364 @@
+{
+  "slug": "tuf-16",
+  "name": "The Ultimate Fighter 16: Team Carwin vs. Team Nelson",
+  "edition": "us",
+  "number": 16,
+  "year": 2012,
+  "weight_classes": [
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Carwin_vs._Team_Nelson",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "coaches": [
+    {
+      "team": "Team Carwin",
+      "name": "Shane Carwin",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Trevor Wittman",
+      "role": "head",
+      "note": "boxing coach"
+    },
+    {
+      "team": "",
+      "name": "Nate Marquardt",
+      "role": "head",
+      "note": "jiu Jitsu coach"
+    },
+    {
+      "team": "",
+      "name": "Pat Barry",
+      "role": "head",
+      "note": "striking coach"
+    },
+    {
+      "team": "",
+      "name": "Duane Ludwig",
+      "role": "head",
+      "note": "striking coach"
+    },
+    {
+      "team": "",
+      "name": "Leister Bowling",
+      "role": "head",
+      "note": "wrestling coach"
+    },
+    {
+      "team": "",
+      "name": "Loren Landlow",
+      "role": "head",
+      "note": "sports performance coach"
+    },
+    {
+      "team": "Team Nelson",
+      "name": "Roy Nelson",
+      "role": "head",
+      "note": "head coach"
+    },
+    {
+      "team": "",
+      "name": "Nick Diaz",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Nate Diaz",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jake Shields",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Gilbert Melendez",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Carwin",
+      "roster": [
+        {
+          "name": "Sam Alvey"
+        },
+        {
+          "name": "Bristol Marunde"
+        },
+        {
+          "name": "Mike Ricci"
+        },
+        {
+          "name": "Neil Magny"
+        },
+        {
+          "name": "James Chaney"
+        },
+        {
+          "name": "Eddy Ellis"
+        },
+        {
+          "name": "Igor Araujo"
+        },
+        {
+          "name": "Matt Secor"
+        }
+      ]
+    },
+    {
+      "name": "Team Nelson",
+      "roster": [
+        {
+          "name": "Dom Waters"
+        },
+        {
+          "name": "Michael Hill"
+        },
+        {
+          "name": "Cameron Diffley"
+        },
+        {
+          "name": "Colton Smith"
+        },
+        {
+          "name": "Jon Manley"
+        },
+        {
+          "name": "Nic Herron-Webb"
+        },
+        {
+          "name": "Joey Rivera"
+        },
+        {
+          "name": "Julian Lane"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Tournament",
+      "stages": [
+        {
+          "stage": "round_of_16",
+          "label": "First round",
+          "bouts": [
+            {
+              "a": "Joey Rivera",
+              "b": "Sam Alvey",
+              "winner": "Joey Rivera",
+              "method": "Majority decision (19–19, 20–18, 20–18)",
+              "round": 2,
+              "time": null,
+              "episode": 3,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 3, not contested on a sanctioned card"
+            },
+            {
+              "a": "Jon Manley",
+              "b": "James Chaney",
+              "winner": "Jon Manley",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Nic Herron-Webb",
+              "b": "Igor Araujo",
+              "winner": "Igor Araujo",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Colton Smith",
+              "b": "Eddy Ellis",
+              "winner": "Colton Smith",
+              "method": "Majority decision (19–18, 19–18, 19–19)",
+              "round": 2,
+              "time": null,
+              "episode": 6,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+            },
+            {
+              "a": "Dom Waters",
+              "b": "Mike Ricci",
+              "winner": "Mike Ricci",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Michael Hill",
+              "b": "Matt Secor",
+              "winner": "Michael Hill",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": 7,
+              "classification": "exhibition",
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+            },
+            {
+              "a": "Julian Lane",
+              "b": "Bristol Marunde",
+              "winner": "Bristol Marunde",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Cameron Diffley",
+              "b": "Neil Magny",
+              "winner": "Neil Magny",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Joey Rivera",
+              "b": "Jon Manley",
+              "winner": "Jon Manley",
+              "method": "Decision (majority)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Igor Araujo",
+              "b": "Colton Smith",
+              "winner": "Colton Smith",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Mike Ricci",
+              "b": "Michael Hill",
+              "winner": "Mike Ricci",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Bristol Marunde",
+              "b": "Neil Magny",
+              "winner": "Neil Magny",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Jon Manley",
+              "b": "Colton Smith",
+              "winner": "Colton Smith",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Mike Ricci",
+              "b": "Neil Magny",
+              "winner": "Mike Ricci",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Colton Smith",
+              "b": "Mike Ricci",
+              "winner": "Colton Smith",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2012-12-15",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "The Ultimate Fighter: Team Carwin vs. Team Nelson Finale",
+    "event_date": "2012-12-15",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Colton Smith",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Colton Smith",
+        "b": "Mike Ricci",
+        "event": "The Ultimate Fighter: Team Carwin vs. Team Nelson Finale",
+        "date": "2012-12-15"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ]
+}

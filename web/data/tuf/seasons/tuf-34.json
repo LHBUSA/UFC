@@ -1,0 +1,245 @@
+{
+  "slug": "tuf-34",
+  "name": "The Ultimate Fighter 34: Team Cormier vs. Team Bisping",
+  "edition": "us",
+  "number": 34,
+  "year": 2026,
+  "weight_classes": [
+    "Bantamweight",
+    "Women's Strawweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Cormier_vs._Team_Bisping",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Bantamweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Women'S Strawweight_quarter_final",
+      "detail": "For Melissa Amaya versus , the source marks neither fighter as the winner, and no episode summary settles it. Recorded with no winner.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Women'S Strawweight_quarter_final",
+      "detail": "The source's quarter-finals for this division do not form a consistent round: 1 fighter(s) appear more than once in this round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "Team Cormier",
+      "name": "Daniel Cormier",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "Team Bisping",
+      "name": "Michael Bisping",
+      "role": "head",
+      "note": "Head Coach"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Team Cormier",
+      "roster": [
+        {
+          "name": "Artem Belakh",
+          "weight_class": "Men's Bantamweight"
+        },
+        {
+          "name": "Micaias Ureña",
+          "weight_class": "Men's Bantamweight"
+        },
+        {
+          "name": "Sean Mora",
+          "weight_class": "Men's Bantamweight"
+        },
+        {
+          "name": "and Christian Strong",
+          "weight_class": "Men's Bantamweight"
+        },
+        {
+          "name": "Valesca Machado",
+          "weight_class": "Women's Strawweight"
+        },
+        {
+          "name": "Delphine Benouaich",
+          "weight_class": "Women's Strawweight"
+        },
+        {
+          "name": "Melissa Amaya",
+          "weight_class": "Women's Strawweight"
+        },
+        {
+          "name": "and Anita Karim",
+          "weight_class": "Women's Strawweight"
+        }
+      ]
+    },
+    {
+      "name": "Team Bisping",
+      "roster": [
+        {
+          "name": "Xavier Franklin",
+          "weight_class": "Men's Bantameight"
+        },
+        {
+          "name": "Mehemmedeli Osmanli",
+          "weight_class": "Men's Bantameight"
+        },
+        {
+          "name": "Illimbek Akylbek Uulu",
+          "weight_class": "Men's Bantameight"
+        },
+        {
+          "name": "and Marlon Jones",
+          "weight_class": "Men's Bantameight"
+        },
+        {
+          "name": "Anna Melisano",
+          "weight_class": "Women's Strawweight"
+        },
+        {
+          "name": "Giovanna Canuto",
+          "weight_class": "Women's Strawweight"
+        },
+        {
+          "name": "Mackenzie Stiller",
+          "weight_class": "Women's Strawweight"
+        },
+        {
+          "name": "and Natalia Alves",
+          "weight_class": "Women's Strawweight"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Bantamweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Christian Strong",
+              "b": "Marlon Jones",
+              "winner": "Christian Strong",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Artem Belakh",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Sean Mora",
+              "b": "Ilimbek Akylbek Uulu",
+              "winner": "Ilimbek Akylbek Uulu",
+              "method": "Decision (split)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Micaias Ureña",
+              "b": "Xavier Franklin",
+              "winner": "Xavier Franklin",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Christian Strong",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ilimbek Akylbek Uulu",
+              "b": "Xavier Franklin",
+              "winner": "Ilimbek Akylbek Uulu",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        }
+      ]
+    },
+    {
+      "weight_class": "Women'S Strawweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Valesca Machado",
+              "b": "",
+              "winner": "Valesca Machado",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Melissa Amaya",
+              "b": "",
+              "winner": null,
+              "method": null,
+              "round": null,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear more than once in this round. See conflicts."
+        }
+      ]
+    }
+  ]
+}

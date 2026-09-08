@@ -1,0 +1,397 @@
+{
+  "slug": "tuf-smashes-1",
+  "name": "The Ultimate Fighter: The Smashes",
+  "edition": "smashes",
+  "number": 1,
+  "year": 2012,
+  "weight_classes": [
+    "Lightweight",
+    "Welterweight"
+  ],
+  "_provenance": {
+    "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_The_Smashes",
+    "retrieved": "2026-09-08",
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+  },
+  "_conflicts": [
+    {
+      "field": "Welterweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Lightweight_semi_final",
+      "detail": "The source's semi-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08"
+    }
+  ],
+  "coaches": [
+    {
+      "team": "",
+      "name": "George Sotiropoulos",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Nick Kara",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Charles Blanchard",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Leonard Gabriel Jr.",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Nathan Coy",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Ross Pearson",
+      "role": "head",
+      "note": "Head Coach"
+    },
+    {
+      "team": "",
+      "name": "Dean Amasinger",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jimmy Harbison",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Jason Soares",
+      "role": "head"
+    },
+    {
+      "team": "",
+      "name": "Erin Beach",
+      "role": "head"
+    }
+  ],
+  "teams": [
+    {
+      "name": "Welterweights",
+      "roster": [
+        {
+          "name": "Benny Alloway"
+        },
+        {
+          "name": "Xavier Lucas"
+        },
+        {
+          "name": "Manny Rodriguez"
+        },
+        {
+          "name": "and Robert Whittaker"
+        }
+      ]
+    },
+    {
+      "name": "Lightweights",
+      "roster": [
+        {
+          "name": "Grant Blackler"
+        },
+        {
+          "name": "Patrick Iodice"
+        },
+        {
+          "name": "Richie Vaculik"
+        },
+        {
+          "name": "and Ben Wall"
+        }
+      ]
+    },
+    {
+      "name": "Welterweights",
+      "roster": [
+        {
+          "name": "Luke Newman"
+        },
+        {
+          "name": "Bola Omoyele"
+        },
+        {
+          "name": "Valentino Petrescu"
+        },
+        {
+          "name": "and Brad Scott"
+        }
+      ]
+    },
+    {
+      "name": "Lightweights",
+      "roster": [
+        {
+          "name": "Colin Fletcher"
+        },
+        {
+          "name": "Norman Parke"
+        },
+        {
+          "name": "Michael Pastou"
+        },
+        {
+          "name": "and Mike Wilkinson"
+        }
+      ]
+    }
+  ],
+  "bracket": [
+    {
+      "weight_class": "Welterweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Robert Whittaker",
+              "b": "Luke Newman",
+              "winner": "Robert Whittaker",
+              "method": "KO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Manny Rodriguez*",
+              "b": "Bola Omoyele",
+              "winner": "Manny Rodriguez*",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Xavier Lucas",
+              "b": "Brad Scott",
+              "winner": "Brad Scott",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Benny Alloway",
+              "b": "Valentino Petrescu",
+              "winner": "Benny Alloway",
+              "method": "TKO",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Robert Whittaker",
+              "b": "Xavier Lucas**",
+              "winner": "Robert Whittaker",
+              "method": "TKO",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Brad Scott",
+              "b": "Benny Alloway",
+              "winner": "Brad Scott",
+              "method": "Decision (split)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Robert Whittaker",
+              "b": "Brad Scott",
+              "winner": "Robert Whittaker",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2012-12-14",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weight_class": "Lightweight",
+      "stages": [
+        {
+          "stage": "quarter_final",
+          "label": "Quarter-finals",
+          "bouts": [
+            {
+              "a": "Richie Vaculik",
+              "b": "Norman Parke",
+              "winner": "Norman Parke",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Patrick Iodice",
+              "b": "Brendan Loughnane",
+              "winner": "Brendan Loughnane",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Ben Wall",
+              "b": "Colin Fletcher",
+              "winner": "Colin Fletcher",
+              "method": "Decision (unanimous)",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Grant Blackler",
+              "b": "Mike Wilkinson*",
+              "winner": "Mike Wilkinson*",
+              "method": "Submission",
+              "round": 1,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ]
+        },
+        {
+          "stage": "semi_final",
+          "label": "Semi-finals",
+          "bouts": [
+            {
+              "a": "Norman Parke",
+              "b": "Brendan Loughnane",
+              "winner": "Norman Parke",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            },
+            {
+              "a": "Colin Fletcher",
+              "b": "Richie Vaculik",
+              "winner": "Colin Fletcher",
+              "method": "Submission",
+              "round": 2,
+              "time": null,
+              "episode": null,
+              "classification": "unverified",
+              "classification_source": null
+            }
+          ],
+          "status": "unverified",
+          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+        },
+        {
+          "stage": "final",
+          "label": "Tournament final",
+          "bouts": [
+            {
+              "a": "Norman Parke",
+              "b": "Colin Fletcher",
+              "winner": "Norman Parke",
+              "method": "Decision - Unanimous",
+              "round": 3,
+              "time": null,
+              "episode": null,
+              "fight_date": "2012-12-14",
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+              "on_finale_card": true,
+              "tournament_deciding": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finale": {
+    "event_name": "UFC on FX: Sotiropoulos vs Pearson",
+    "event_date": "2012-12-14",
+    "link_policy": "Linked to our own event row. The final is verified in seasons.json against a real result, not restated here."
+  },
+  "champions": [
+    {
+      "weight_class": "Lightweight",
+      "fighter": "Norman Parke",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Norman Parke",
+        "b": "Colin Fletcher",
+        "event": "UFC on FX: Sotiropoulos vs Pearson",
+        "date": "2012-12-14"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    },
+    {
+      "weight_class": "Welterweight",
+      "fighter": "Robert Whittaker",
+      "won_tournament": true,
+      "received_contract": true,
+      "winning_bout": {
+        "a": "Robert Whittaker",
+        "b": "Brad Scott",
+        "event": "UFC on FX: Sotiropoulos vs Pearson",
+        "date": "2012-12-14"
+      },
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+    }
+  ]
+}
