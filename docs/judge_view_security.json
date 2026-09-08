@@ -1,0 +1,127 @@
+{
+  "generated_at": "2026-09-08T19:07:33.371Z",
+  "checks": {
+    "roles": [
+      {
+        "rolname": "anon",
+        "rolbypassrls": false,
+        "rolsuper": false
+      },
+      {
+        "rolname": "authenticated",
+        "rolbypassrls": false,
+        "rolsuper": false
+      },
+      {
+        "rolname": "postgres",
+        "rolbypassrls": true,
+        "rolsuper": false
+      },
+      {
+        "rolname": "service_role",
+        "rolbypassrls": true,
+        "rolsuper": false
+      }
+    ],
+    "base_tables": [
+      {
+        "table": "ufc_bout_results",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_bouts",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_events",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_fighters",
+        "anon_leaked": false,
+        "anon_status": 200,
+        "service_reads": true
+      },
+      {
+        "table": "ufc_judge_profiles",
+        "anon_leaked": false,
+        "anon_status": 404,
+        "service_reads": null,
+        "note": "not applied yet"
+      },
+      {
+        "table": "ufc_judge_aliases",
+        "anon_leaked": false,
+        "anon_status": 404,
+        "service_reads": null,
+        "note": "not applied yet"
+      }
+    ],
+    "control_views": [
+      {
+        "view": "ufc_referee_bouts",
+        "anon_leaked": true,
+        "anon_status": 200
+      },
+      {
+        "view": "ufc_referee_stats",
+        "anon_leaked": true,
+        "anon_status": 200
+      },
+      {
+        "view": "ufc_referee_directory",
+        "anon_leaked": true,
+        "anon_status": 200
+      }
+    ],
+    "control_demonstrates_bypass": true,
+    "migration": {
+      "views": [
+        {
+          "name": "ufc_bout_scorecards",
+          "security_invoker": true
+        },
+        {
+          "name": "ufc_bout_scorecard_summary",
+          "security_invoker": true
+        },
+        {
+          "name": "ufc_judge_bouts",
+          "security_invoker": true
+        },
+        {
+          "name": "ufc_judge_stats",
+          "security_invoker": true
+        },
+        {
+          "name": "ufc_judge_directory",
+          "security_invoker": true
+        },
+        {
+          "name": "ufc_scorecard_gaps",
+          "security_invoker": true
+        },
+        {
+          "name": "ufc_scorecard_coverage",
+          "security_invoker": true
+        }
+      ],
+      "rls_enabled": [
+        "ufc_judge_profiles",
+        "ufc_judge_aliases"
+      ],
+      "policies": []
+    },
+    "applied": {
+      "applied": false,
+      "views": []
+    }
+  },
+  "problems": []
+}

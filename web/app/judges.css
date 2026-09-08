@@ -1,0 +1,132 @@
+/* ---- official scorecards (fight pages) ----------------------------------- */
+/* A scorecard is a document, so it is set like one: a fixed four-column grid,
+   tabular figures, the judge on the left and the verdict on the right. The
+   dissenting row is the only one that carries colour, because on a split
+   decision it is the whole story. */
+.sc-card { margin-top: 14px; border: 1px solid rgba(212,175,55,.3); border-radius: var(--r-lg); background: linear-gradient(180deg, rgba(29,25,20,.9), rgba(10,9,7,.92)); overflow: hidden; }
+.sc-head, .sc-row { display: grid; grid-template-columns: minmax(0, 1.5fr) 78px 78px minmax(0, 1.15fr); gap: 12px; align-items: center; padding: 12px 18px; }
+.sc-head { border-bottom: 1px solid rgba(212,175,55,.24); background: rgba(212,175,55,.06); }
+.sc-head span { color: var(--pbe-gold); font: 700 9.5px/1.3 var(--pbe-font-data); letter-spacing: .12em; text-transform: uppercase; }
+.sc-h-score { text-align: center; }
+.sc-row { border-bottom: 1px solid var(--pbe-line-faint); }
+.sc-row:last-child { border-bottom: 0; }
+.sc-row.dissent { background: linear-gradient(90deg, rgba(193,39,61,.14), transparent 65%); }
+.sc-row.total { border-top: 1px solid rgba(212,175,55,.24); background: rgba(0,0,0,.28); }
+.sc-judge { min-width: 0; color: var(--pbe-paper); font: 600 14px/1.35 var(--pbe-font-ui); }
+.sc-judge a { color: var(--pbe-paper); border-bottom: 1px solid rgba(212,175,55,.35); }
+.sc-judge a:hover { color: var(--pbe-gold); }
+.sc-note { display: block; margin-top: 3px; color: var(--pbe-faint); font: 500 10.5px/1.4 var(--pbe-font-data); font-style: normal; }
+.sc-score { text-align: center; color: var(--pbe-dim); font: 700 20px/1 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.sc-score.hi { color: var(--pbe-paper); }
+.sc-score.pair { color: var(--pbe-paper-2); font-size: 17px; letter-spacing: .02em; }
+.sc-row.total .sc-score { color: var(--pbe-gold); font-size: 17px; }
+.sc-fav { min-width: 0; color: var(--pbe-paper-2); font: 500 12.5px/1.4 var(--pbe-font-data); }
+.sc-fav em { font-style: normal; color: var(--pbe-faint); }
+.sc-flag { display: inline-block; margin-left: 8px; padding: 2px 7px; border-radius: var(--r-pill); background: rgba(193,39,61,.2); border: 1px solid rgba(239,90,102,.4); color: var(--pbe-crimson-bright); font: 700 9px/1.4 var(--pbe-font-data); letter-spacing: .1em; text-transform: uppercase; vertical-align: 1px; }
+.sc-unattributed { color: var(--pbe-faint); }
+.sc-reads { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.sc-reads p { color: var(--pbe-paper-2); font: 400 14px/1.6 var(--pbe-font-ui); max-width: 78ch; }
+.sc-reads strong { color: var(--pbe-paper); }
+.sc-warn { padding: 11px 14px; border-left: 2px solid var(--pbe-gold); background: var(--pbe-gold-wash); color: var(--pbe-dim) !important; font-size: 13px !important; }
+.sc-src { color: var(--pbe-faint) !important; font: 500 11.5px/1.5 var(--pbe-font-data) !important; }
+.sc-src a { color: var(--pbe-gold); }
+/* The explicit-absence state. Deliberately as substantial as the panel: a
+   finish having no scorecard is a fact about the fight, not a hole. */
+.sc-none { margin-top: 14px; display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 18px; align-items: start; padding: 20px 22px; border: 1px dashed var(--pbe-line-strong); border-radius: var(--r-lg); background: rgba(13,11,8,.6); }
+.sc-none-mark { width: 64px; height: 64px; border-radius: 12px; display: grid; place-items: center; border: 1px solid var(--pbe-line); background: rgba(0,0,0,.3); color: var(--pbe-subtle); font: 800 30px/1 var(--pbe-font-data); }
+.sc-none b { display: block; color: var(--pbe-paper); font: 700 16px/1.3 var(--pbe-font-ui); }
+.sc-none p { margin-top: 8px; color: var(--pbe-dim); font: 400 14px/1.6 var(--pbe-font-ui); max-width: 74ch; }
+.sc-none p strong { color: var(--pbe-paper-2); }
+.sc-none a { color: var(--pbe-gold); }
+
+/* ---- judge cards on the fight result strip ------------------------------- */
+.jd-panel { display: flex; flex-wrap: wrap; gap: 6px; }
+.jd-panel a { display: inline-flex; align-items: baseline; gap: 7px; padding: 5px 11px; border: 1px solid var(--pbe-line); border-radius: var(--r-pill); color: var(--pbe-paper-2); font: 500 11.5px/1.4 var(--pbe-font-data); }
+.jd-panel a:hover { border-color: var(--pbe-gold); color: var(--pbe-paper); }
+.jd-panel a b { color: var(--pbe-gold); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* ---- judges directory ---------------------------------------------------- */
+.jg-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
+.jg-card { display: flex; flex-direction: column; padding: 18px; border: 1px solid var(--pbe-line); border-radius: var(--r-lg); background: rgba(29,25,20,.8); color: inherit; }
+.jg-card:hover { border-color: var(--pbe-gold); }
+.jg-card h2 { font: 800 19px/1.15 var(--pbe-font-display); color: var(--pbe-paper); letter-spacing: -.01em; }
+.jg-role { margin-top: 3px; color: var(--pbe-dim); font: 600 11px/1.4 var(--pbe-font-data); letter-spacing: .04em; }
+.jg-role em { font-style: normal; color: var(--pbe-gold); }
+.jg-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.jg-stats span { padding: 8px 8px 7px; border-radius: 8px; background: rgba(0,0,0,.28); min-width: 0; }
+.jg-stats b { display: block; color: var(--pbe-paper); font: 800 16px/1.1 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.jg-stats span span { display: block; padding: 0; margin-top: 3px; background: none; color: var(--pbe-dim); font: 650 9px/1.3 var(--pbe-font-data); letter-spacing: .07em; text-transform: uppercase; }
+.jg-read { margin-top: 11px; color: var(--pbe-paper-2); font: 400 12.5px/1.5 var(--pbe-font-ui); }
+.jg-read strong { color: var(--pbe-paper); }
+.jg-more { margin-top: auto; padding-top: 12px; color: var(--pbe-gold); font: 700 11px/1 var(--pbe-font-ui); }
+
+.jg-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); gap: 26px; align-items: start; padding: 28px 0 24px; border-bottom: 1px solid rgba(212,175,55,.24); }
+.jg-hero h1 { font: 900 clamp(34px, 4.4vw, 58px)/1 var(--pbe-font-display); letter-spacing: -.025em; color: var(--pbe-paper); margin-top: 8px; }
+.jg-hero p { margin-top: 12px; color: var(--pbe-paper-2); font: 400 15px/1.65 var(--pbe-font-ui); max-width: 70ch; }
+.jg-hero p em { font-style: normal; color: var(--pbe-gold); }
+.jg-keystats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.jg-keystats div { padding: 12px 12px 10px; border: 1px solid var(--pbe-line); border-radius: var(--r-md); background: rgba(13,11,8,.66); }
+.jg-keystats b { display: block; color: var(--pbe-paper); font: 800 22px/1.1 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.jg-keystats span { display: block; margin-top: 4px; color: var(--pbe-dim); font: 650 9px/1.3 var(--pbe-font-data); letter-spacing: .09em; text-transform: uppercase; }
+.jg-know { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 14px; margin-top: 26px; }
+.jg-know > div { padding: 20px 22px; border: 1px solid var(--pbe-line); border-radius: var(--r-lg); background: rgba(29,25,20,.75); }
+.jg-know > div.hi { border-color: rgba(212,175,55,.35); }
+.jg-know h2 { font: 800 20px/1.15 var(--pbe-font-display); color: var(--pbe-paper); margin-top: 6px; }
+.jg-know p { margin-top: 10px; color: var(--pbe-paper-2); font: 400 14.5px/1.6 var(--pbe-font-ui); max-width: 64ch; }
+.jg-know ul { margin: 12px 0 0; padding-left: 18px; color: var(--pbe-paper-2); font: 400 14px/1.55 var(--pbe-font-ui); display: flex; flex-direction: column; gap: 6px; }
+.jg-know li::marker { color: var(--pbe-gold); }
+/* The sample-size rail. Every rate on a judge page is required to sit beside
+   its denominator, so the denominator gets real typographic weight. */
+.jg-sample { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.jg-sample span { padding: 5px 10px; border: 1px solid var(--pbe-line); border-radius: var(--r-pill); color: var(--pbe-dim); font: 600 10.5px/1.4 var(--pbe-font-data); letter-spacing: .04em; }
+.jg-sample span b { color: var(--pbe-paper); font-variant-numeric: tabular-nums; }
+.jg-interval { margin-top: 12px; }
+.jg-interval-bar { position: relative; height: 8px; border-radius: var(--r-pill); background: rgba(0,0,0,.4); border: 1px solid var(--pbe-line); overflow: hidden; }
+.jg-interval-bar i { position: absolute; top: 0; bottom: 0; background: rgba(212,175,55,.45); }
+.jg-interval-bar u { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--pbe-paper); text-decoration: none; }
+.jg-interval-bar s { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--pbe-crimson-bright); text-decoration: none; }
+.jg-interval-key { display: flex; gap: 14px; margin-top: 7px; color: var(--pbe-faint); font: 500 10.5px/1.4 var(--pbe-font-data); }
+
+.jg-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.jg-cards a { display: flex; flex-direction: column; gap: 5px; padding: 14px 16px; border: 1px solid var(--pbe-line); border-radius: var(--r-md); background: rgba(13,11,8,.6); color: inherit; }
+.jg-cards a:hover { border-color: var(--pbe-gold); }
+.jg-cards a.dissent { border-color: rgba(239,90,102,.4); }
+.jg-cards em { font-style: normal; color: var(--pbe-gold); font: 700 10px/1.3 var(--pbe-font-data); letter-spacing: .1em; text-transform: uppercase; }
+.jg-cards a.dissent em { color: var(--pbe-crimson-bright); }
+.jg-cards b { color: var(--pbe-paper); font: 700 14.5px/1.35 var(--pbe-font-ui); }
+.jg-cards span { color: var(--pbe-dim); font: 500 11.5px/1.45 var(--pbe-font-data); }
+
+/* ---- coverage register --------------------------------------------------- */
+.jg-cov { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.jg-cov > div { padding: 16px 18px; border: 1px solid var(--pbe-line); border-radius: var(--r-md); background: rgba(13,11,8,.6); }
+.jg-cov b { display: block; color: var(--pbe-paper); font: 800 26px/1 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.jg-cov > div > span { display: block; margin-top: 6px; color: var(--pbe-gold); font: 700 9.5px/1.3 var(--pbe-font-data); letter-spacing: .1em; text-transform: uppercase; }
+.jg-cov p { margin-top: 9px; color: var(--pbe-dim); font: 400 12px/1.5 var(--pbe-font-ui); }
+.jg-cov ul { margin: 9px 0 0; padding-left: 16px; color: var(--pbe-faint); font: 400 11.5px/1.5 var(--pbe-font-ui); }
+.jg-bar { display: flex; height: 12px; border-radius: var(--r-pill); overflow: hidden; border: 1px solid var(--pbe-line); margin-top: 16px; }
+.jg-bar i { display: block; height: 100%; }
+.jg-bar-key { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 9px; color: var(--pbe-dim); font: 500 11px/1.4 var(--pbe-font-data); }
+.jg-bar-key span { display: inline-flex; align-items: center; gap: 6px; }
+.jg-bar-key i { width: 9px; height: 9px; border-radius: 2px; }
+
+@media (max-width: 980px) {
+  .jg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .jg-hero, .jg-know, .jg-cards { grid-template-columns: 1fr; }
+  .jg-cov { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .jg-grid { grid-template-columns: 1fr; }
+  .jg-keystats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sc-head, .sc-row { grid-template-columns: minmax(0, 1fr) 54px 54px; padding: 11px 14px; row-gap: 4px; }
+  .sc-h-fav { display: none; }
+  .sc-fav { grid-column: 1 / -1; font-size: 11.5px; }
+  .sc-score { font-size: 17px; }
+  .sc-none { grid-template-columns: 1fr; }
+  .sc-none-mark { display: none; }
+}
+
+/* An identity we have deliberately not merged. Styled as a caution rather
+   than an error: the record is correct, it is the completeness that is open. */
+.jg-provisional { margin-top: 14px; padding: 12px 15px; border-left: 2px solid var(--pbe-gold); background: var(--pbe-gold-wash); color: var(--pbe-dim); font: 400 13px/1.6 var(--pbe-font-ui); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.jg-provisional b { color: var(--pbe-paper); }
+.jg-provisional a { color: var(--pbe-gold); }

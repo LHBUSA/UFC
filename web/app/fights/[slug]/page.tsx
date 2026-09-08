@@ -16,6 +16,8 @@ import { getWeighInsForBouts } from "@/lib/weighins";
 import { BoutWeighIns } from "@/components/WeighInBits";
 import { BoutStatusAlert } from "@/components/StatusBits";
 import { MarketSection } from "@/components/Market";
+import { OfficialScorecards } from "@/components/Scorecard";
+import { buildBoutScorecard } from "@/lib/judgeScoring";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, fmtDate, fmtRecord, fmtTime, METHOD_LABEL, weightClassLabel, totals, pct, archiveSummary, winnerOf, loserOf, daysUntil, locationLine, plural, METHOD_SHORT, eventBrand } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -107,7 +109,13 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   const sumA = archiveSummary(b.fighter_a.id, histA.filter((x) => x.id !== b.id)), sumB = archiveSummary(b.fighter_b.id, histB.filter((x) => x.id !== b.id));
   const idx = bouts.findIndex((x) => x.id === b.id);
   const neighbours = [bouts[idx - 1], bouts[idx + 1]].filter(Boolean);
-  const scorecards = r?.scorecards && Array.isArray(r.scorecards) ? r.scorecards : [];
+  /* Judge cards, attributed to a fighter using the bout's own result. Built
+   * here so the result strip can link each judge and show the score the right
+   * way round, rather than repeating the source's bare pair. */
+  const panel = r
+    ? buildBoutScorecard({ method: r.method, scorecards: r.scorecards, winnerId: r.winner_id, fighterAId: b.fighter_a.id, fighterBId: b.fighter_b.id }).cards
+    : [];
+  const resultSourceUrl = r?.source_url || null;
 
   return (
     <div className="wrap page">
@@ -164,12 +172,29 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
             </div>
             <div className="tags mt-3">
               {r.referee && <span className="tag">Referee · {r.referee}</span>}
-              {scorecards.map((s, i) => s?.judge ? <span key={i} className="tag">{s.judge} · {s.score}</span> : null)}
               <span className="tag dim">Source · {r.result_source === "espn" ? "ESPN" : "UFC Stats"}{r.has_stats ? " · round stats archived" : ""}</span>
             </div>
+            {/* The judges leave the flat tag strip and become links into the
+                judge archive. The scores themselves belong to the Official
+                Scorecards section below, where they can be attributed to a
+                fighter instead of floating as a bare pair. */}
+            {panel.length > 0 && (
+              <div className="jd-panel mt-3">
+                {panel.map((c) => (
+                  <Link href={`/judges/${c.judgeSlug}`} key={`${c.cardIndex}-${c.judge}`}>
+                    {c.judge} <b>{c.fighterAScore != null ? `${c.fighterAScore}–${c.fighterBScore}` : c.rawScore}</b>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       )}
+
+      {/* Official scorecards. Rendered for every completed bout, because the
+          absence of a card on a finish is itself the answer and has to be
+          stated rather than left as a missing section. */}
+      {r && <OfficialScorecards result={r} a={b.fighter_a} b={b.fighter_b} sourceUrl={resultSourceUrl} />}
 
       <MarketSection market={market} state={marketState} nameA={b.fighter_a.name} nameB={b.fighter_b.name} />
 

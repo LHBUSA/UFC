@@ -61,6 +61,8 @@ export type Result = {
   bout_id: string; winner_id: string | null; method: string; method_raw: string; round: number | null; time_sec: number | null;
   time_format: string | null; referee: string | null; finish_detail: string | null; result_source: string; has_stats: boolean;
   scorecards: Array<{ judge?: string; score?: string }> | null; judge_1: string | null; judge_2: string | null; judge_3: string | null;
+  /* The row the result was captured from. Rendered as scorecard provenance. */
+  source_url: string | null;
 };
 export type Bout = {
   id: string; ufcstats_id: string | null; espn_competition_id: string | null; event_id: string; weight_class: string | null;
@@ -99,7 +101,7 @@ export type RankingsSnapshot = { captured_at: string; source_url: string; snapsh
 const FIGHTER_COLS = "id,ufcstats_id,espn_athlete_id,name,nickname,dob,height_in,reach_in,weight_lbs,stance,record_w,record_l,record_d,record_nc,is_active," +
   "career_slpm,career_str_acc,career_sapm,career_str_def,career_td_avg,career_td_acc,career_td_def,career_sub_avg";
 const EVENT_COLS = "id,ufcstats_id,espn_event_id,name,event_date,venue,city,region,country,card_status,is_ppv";
-const RESULT_COLS = "bout_id,winner_id,method,method_raw,round,time_sec,time_format,referee,finish_detail,result_source,has_stats,scorecards,judge_1,judge_2,judge_3";
+const RESULT_COLS = "bout_id,winner_id,method,method_raw,round,time_sec,time_format,referee,finish_detail,result_source,has_stats,scorecards,judge_1,judge_2,judge_3,source_url";
 const BOUT_SELECT = `id,ufcstats_id,espn_competition_id,event_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status,` +
   `fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(${FIGHTER_COLS}),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(${FIGHTER_COLS}),` +
   `result:ufc_bout_results(${RESULT_COLS})`;

@@ -9,6 +9,7 @@ import "./expansion.css";
 import "./fightweek.css";
 import "./fightdna.css";
 import "./depth.css";
+import "./judges.css";
 import "./roundanalysis.css";
 import "./market.css";
 import "./tuf.css";
