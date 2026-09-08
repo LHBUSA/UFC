@@ -19,6 +19,10 @@ import { SITE } from "@/lib/site";
 import { getRoundCoverageFor } from "@/lib/roundIndex";
 import { getMarketsFor, marketProviderLive, unresolvedBouts } from "@/lib/market";
 import { UFC_OFFICIAL } from "@/lib/heritage";
+import { getEventCardChanges } from "@/lib/status";
+import { getWeighInSummary, getWeighIns } from "@/lib/weighins";
+import { EventWeighInPanel } from "@/components/WeighInBits";
+import { EventCardChanges } from "@/components/StatusBits";
 
 export const revalidate = 300;
 
@@ -41,7 +45,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const e = await resolveEvent((await params).slug);
   if (!e) notFound();
-  const [bouts, articles, videosRaw] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, 24).catch(() => [])]);
+  const [bouts, articles, videosRaw, cardChanges] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, 24).catch(() => []), getEventCardChanges(e.id).catch(() => [])]);
+  const [weighInSummary, weighIns] = await Promise.all([
+    getWeighInSummary(e.id).catch(() => null),
+    getWeighIns(e.id).catch(() => []),
+  ]);
   const videos = sortVideosTimeline(videosRaw);
   const imgs = await getImagesForFighters(bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
   const framing = await getImageFraming(bouts.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]);
@@ -122,6 +130,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       ) : (
         <div className="mt-6"><Empty title="Card not published yet" cta={{ href: "/events", label: "Other cards" }}>This event is on the schedule but no bouts have been announced. The card appears as soon as it is published, with fighter records and matchup pages.</Empty></div>
       )}
+
+      <EventWeighInPanel summary={weighInSummary} eventName={e.name} missed={weighIns.filter((w) => w.result === "missed")} />
+
+      <EventCardChanges changes={cardChanges} />
 
       <VideoRail variant="timeline" videos={videos} title={done ? "Official video from this card" : "Fight-week video"} eyebrow="Official channels · event relevance first" note="Videos are attached to this event by the resolver only when the title or description names it · embedded from YouTube, not hosted by PropBetEdge" />
 

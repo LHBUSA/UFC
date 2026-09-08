@@ -1,0 +1,152 @@
+/* The weigh-in desk. A live terminal, not a blog.
+ *
+ * The miss has to be impossible to overlook without turning the page into a
+ * red emergency screen: one banded strip at the top, one crimson left rule and
+ * one badge per row, on an otherwise calm gold-on-black table. Everything that
+ * is fine looks fine, so the one thing that is not draws the eye on its own.
+ */
+
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);gap:28px;align-items:flex-end;padding:38px 0 22px}
+.heroMain{min-width:0}
+.eyebrow{display:flex;align-items:center;gap:8px;color:var(--pbe-gold);font:700 10px/1 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.16em}
+.dotLive{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 2.2s infinite}
+.dotIdle{width:8px;height:8px;border-radius:50%;background:var(--pbe-faint)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.55)}70%{box-shadow:0 0 0 9px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+@media(prefers-reduced-motion:reduce){.dotLive{animation:none}}
+
+.hero h1{font:900 clamp(40px,5.6vw,72px)/.94 var(--pbe-font-display);letter-spacing:-.035em;margin:10px 0 10px}
+.event{font:800 20px/1.25 var(--pbe-font-display);color:var(--pbe-paper);margin:0 0 10px}
+.eventDate{color:var(--pbe-dim);font-weight:600}
+.eventNote{color:var(--pbe-faint);font:600 12px/1 var(--pbe-font-data)}
+.freshness{color:var(--pbe-dim);font-size:13px;line-height:1.6;max-width:70ch;margin:0}
+.freshness strong{color:var(--pbe-paper)}
+.freshNote{color:var(--pbe-faint);font-size:12px}
+
+.counters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;border:1px solid rgba(212,175,55,.24);border-radius:16px;padding:16px;background:linear-gradient(145deg,rgba(212,175,55,.08),rgba(0,0,0,.28))}
+.counter{text-align:center;padding:6px 2px}
+.counter b{display:block;color:var(--pbe-paper);font:800 26px/1 var(--pbe-font-display)}
+.counter span{display:block;margin-top:6px;color:var(--pbe-faint);font:600 8.5px/1.3 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.09em}
+.counter[data-tone="ok"] b{color:#7fc79b}
+.counter[data-tone="alert"] b{color:#f2879a}
+.counter[data-tone="neutral"] b{color:var(--pbe-gold-bright)}
+
+/* The one loud element. A band, not a full-bleed red screen. */
+.missStrip{display:flex;gap:16px;align-items:flex-start;margin:6px 0 22px;padding:14px 18px;border:1px solid rgba(193,39,61,.55);border-left:4px solid var(--pbe-crimson);border-radius:12px;background:linear-gradient(90deg,rgba(193,39,61,.14),rgba(193,39,61,.03))}
+.missLabel{flex:0 0 auto;color:#f2879a;font:800 10px/1.6 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.14em}
+.missStrip ul{list-style:none;margin:0;padding:0;display:grid;gap:5px;min-width:0}
+.missStrip li{color:var(--pbe-paper);font:700 14px/1.45 var(--pbe-font-data);overflow-wrap:anywhere}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,340px);gap:18px;margin-bottom:48px}
+.tableWrap{overflow-x:auto;border:1px solid var(--pbe-line);border-radius:14px;background:linear-gradient(180deg,#15120e,#0a0907)}
+.table{width:100%;border-collapse:collapse;min-width:860px}
+.table th{padding:11px 12px;text-align:left;color:var(--pbe-faint);font:700 8px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.11em;border-bottom:1px solid var(--pbe-line);white-space:nowrap}
+.table td{padding:12px;border-bottom:1px solid var(--pbe-line-faint);vertical-align:top}
+.table tr:last-child td{border-bottom:0}
+
+.row[data-tone="alert"]{background:linear-gradient(90deg,rgba(193,39,61,.1),transparent 55%);box-shadow:inset 3px 0 0 var(--pbe-crimson)}
+.row[data-tone="gone"]{opacity:.55}
+
+.cFighter a{color:var(--pbe-paper);font:800 15px/1.2 var(--pbe-font-display)}
+.cFighter a:hover{color:var(--pbe-gold)}
+.attempt,.corrected{display:inline-block;margin-top:5px;margin-right:5px;padding:2px 7px;border-radius:4px;border:1px solid var(--pbe-line);color:var(--pbe-faint);font:700 7.5px/1.4 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.09em}
+.corrected{border-color:rgba(212,175,55,.5);color:var(--pbe-gold-bright)}
+
+.cBout{color:var(--pbe-dim);font-size:12.5px;line-height:1.45;max-width:230px}
+.cBout a{color:var(--pbe-dim)}
+.pos{display:block;color:var(--pbe-faint);font:700 7.5px/1.4 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em}
+
+.cClass{max-width:210px}
+.className{display:block;color:var(--pbe-paper-2);font-size:12.5px}
+.limit{display:block;margin-top:3px;color:var(--pbe-gold);font:700 12px/1.3 var(--pbe-font-data)}
+/* An unknown limit is a sentence, styled as absence — never a value. */
+.limitUnknown{display:block;margin-top:3px;color:var(--pbe-faint);font-size:11.5px;font-style:italic}
+.limitNote{display:block;margin-top:3px;color:var(--pbe-faint);font-size:10.5px;line-height:1.4}
+
+.weight{color:var(--pbe-paper);font:800 19px/1 var(--pbe-font-data);white-space:nowrap}
+.weightUnknown{color:var(--pbe-faint);font-size:11.5px;font-style:italic;line-height:1.4}
+
+.over{color:#f2879a;font:800 13px/1.3 var(--pbe-font-data);white-space:nowrap}
+.under{color:var(--pbe-dim);font:600 12px/1.3 var(--pbe-font-data);white-space:nowrap}
+
+.badge{display:inline-block;padding:5px 10px;border-radius:5px;font:800 8.5px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.11em;white-space:nowrap;border:1px solid var(--pbe-line);color:var(--pbe-dim)}
+.badge[data-tone="ok"]{border-color:rgba(90,160,120,.5);color:#7fc79b;background:rgba(90,160,120,.1)}
+.badge[data-tone="alert"]{border-color:var(--pbe-crimson);color:#fff;background:var(--pbe-crimson)}
+.badge[data-tone="neutral"]{border-color:rgba(212,175,55,.4);color:var(--pbe-gold-bright);background:rgba(212,175,55,.08)}
+.catch{display:block;margin-top:5px;color:var(--pbe-gold-bright);font:700 8px/1.3 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.09em}
+
+.cWhen{white-space:nowrap;min-width:104px}
+.time{display:block;color:var(--pbe-paper-2);font:700 12px/1.3 var(--pbe-font-data)}
+.timeUnknown{display:block;color:var(--pbe-faint);font-size:10.5px;font-style:italic;white-space:normal;line-height:1.35}
+.src{display:block;margin-top:4px;color:var(--pbe-gold);font:650 9px/1.3 var(--pbe-font-data);letter-spacing:.05em}
+
+.timeline{border:1px solid var(--pbe-line);border-radius:14px;padding:18px;background:rgba(0,0,0,.22);align-self:start;position:sticky;top:16px}
+.timeline h2{font:800 18px/1 var(--pbe-font-display);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--pbe-line)}
+.timeline ol{list-style:none;margin:0;padding:0;display:grid;gap:13px;max-height:70vh;overflow-y:auto}
+.timeline li{padding-left:13px;border-left:2px solid var(--pbe-line);min-width:0}
+.timeline li[data-kind="missed"]{border-left-color:var(--pbe-crimson)}
+.timeline li[data-kind="made"]{border-left-color:rgba(90,160,120,.6)}
+.timeline li[data-kind="withdrawn"]{border-left-color:var(--pbe-gold)}
+.tKind{display:block;color:var(--pbe-gold);font:800 7.5px/1.4 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.13em}
+.tLine{display:block;margin-top:4px;color:var(--pbe-paper-2);font-size:12.5px;line-height:1.45;overflow-wrap:anywhere}
+.tMeta{display:block;margin-top:4px;color:var(--pbe-faint);font:600 9.5px/1.4 var(--pbe-font-data)}
+.tMeta a{color:var(--pbe-faint)}
+.tMeta em{color:var(--pbe-gold-bright);font-style:normal}
+.tEmpty{color:var(--pbe-faint);font-size:12.5px}
+
+.method{margin:0 0 56px;padding:22px 24px;border:1px solid var(--pbe-line);border-radius:14px;background:rgba(0,0,0,.2)}
+.method h2{font:800 23px/1 var(--pbe-font-display);margin-bottom:14px}
+.method ul{display:grid;gap:9px;list-style:none;padding:0}
+.method li{color:var(--pbe-dim);font-size:13px;line-height:1.65;padding-left:16px;position:relative}
+.method li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--pbe-gold)}
+.method strong{color:var(--pbe-paper)}
+
+/* --- panels reused on the event and fight pages ------------------------- */
+.panel{border:1px solid var(--pbe-line);border-radius:14px;padding:18px 20px;background:linear-gradient(180deg,#15120e,#0a0907)}
+.panelHead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.panelHead h3{font:800 19px/1 var(--pbe-font-display)}
+.panelHead a{color:var(--pbe-gold);font:700 9.5px/1 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em}
+.panelCounts{display:flex;flex-wrap:wrap;gap:8px}
+.panelCount{padding:8px 12px;border:1px solid var(--pbe-line);border-radius:9px;min-width:74px}
+.panelCount b{display:block;color:var(--pbe-paper);font:800 18px/1 var(--pbe-font-display)}
+.panelCount span{display:block;margin-top:4px;color:var(--pbe-faint);font:600 8px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.08em}
+.panelCount[data-tone="alert"]{border-color:rgba(193,39,61,.5)}
+.panelCount[data-tone="alert"] b{color:#f2879a}
+.panelCount[data-tone="ok"] b{color:#7fc79b}
+.panelNote{margin-top:10px;color:var(--pbe-faint);font-size:11.5px;line-height:1.5}
+
+/* Fight page: one line per corner. */
+.fightWeights{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.fightCorner{padding:12px 14px;border:1px solid var(--pbe-line);border-radius:10px}
+.fightCorner[data-tone="alert"]{border-color:rgba(193,39,61,.55);background:linear-gradient(180deg,rgba(193,39,61,.1),transparent)}
+.fcName{display:block;color:var(--pbe-faint);font:700 8.5px/1.3 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em}
+.fcWeight{display:block;margin-top:5px;color:var(--pbe-paper);font:800 21px/1 var(--pbe-font-data)}
+.fcWeightUnknown{display:block;margin-top:5px;color:var(--pbe-faint);font-size:12px;font-style:italic;line-height:1.4}
+.fcMeta{display:block;margin-top:6px;color:var(--pbe-dim);font-size:11.5px;line-height:1.45}
+.fcBadge{display:inline-block;margin-top:7px;padding:4px 9px;border-radius:5px;font:800 8px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em;border:1px solid var(--pbe-line);color:var(--pbe-dim)}
+.fcBadge[data-tone="alert"]{border-color:var(--pbe-crimson);background:var(--pbe-crimson);color:#fff}
+.fcBadge[data-tone="ok"]{border-color:rgba(90,160,120,.5);color:#7fc79b}
+.fcSrc{display:block;margin-top:7px;color:var(--pbe-gold);font:650 9px/1.35 var(--pbe-font-data);overflow-wrap:anywhere}
+
+@media(max-width:1080px){
+  .layout{grid-template-columns:1fr}
+  .timeline{position:static;max-height:none}
+  .timeline ol{max-height:none}
+}
+@media(max-width:980px){
+  .hero{grid-template-columns:1fr;padding-top:28px}
+  .counters{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .hero h1{font-size:clamp(32px,9vw,44px)}
+  .counters{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:12px}
+  .counter b{font-size:21px}
+  .missStrip{flex-direction:column;gap:8px;padding:12px 14px}
+  .missStrip li{font-size:13px}
+  /* The table keeps its own horizontal scroll rather than forcing the page
+     wider — a body that scrolls sideways breaks every other heading on it. */
+  .table{min-width:720px}
+  .fightWeights{grid-template-columns:1fr}
+  .method{padding:18px 16px}
+  .panelCounts{gap:6px}
+  .panelCount{min-width:64px;padding:7px 10px}
+}

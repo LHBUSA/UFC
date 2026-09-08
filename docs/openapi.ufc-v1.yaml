@@ -255,6 +255,66 @@ paths:
       responses:
         '200': { $ref: '#/components/responses/Success' }
         '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/injuries:
+    get:
+      summary: Structured fighter availability events — injuries, withdrawals, replacements, suspensions, visa issues, weight misses, returns
+      description: >-
+        One row per individually sourced availability change, newest first by
+        `occurred_at` (the source's effective time, falling back to publication,
+        then detection).
+
+        NEVER AN INFERRED DIAGNOSIS. `injury_type`, `body_part` and
+        `injury_side` are null unless the cited source names them in words, and
+        any non-null value is accompanied by `clinical_quote` — the sentence that
+        licensed it. "Out with an injury" is `status_type: injury` with
+        `injury_type: null`, and consumers must render that as an unknown cause
+        rather than substituting a placeholder. A client that fills the gap is
+        making a medical claim about a named person that no source made.
+
+        `state` is `active` (current), `resolved` (a later sourced event ended
+        it, see `resolved_by_event_id`) or `expired` (the card it concerned has
+        passed with nothing resolving it — history, not a present-tense claim).
+        `source_kind: official` marks the promotion amending its own card, which
+        outranks a report about it.
+      parameters:
+        - { name: active, in: query, description: "true is shorthand for state=active", schema: { type: boolean } }
+        - { name: state, in: query, schema: { type: string, enum: [active, resolved, expired, all], default: active } }
+        - { name: status_type, in: query, schema: { type: string, enum: [injury, illness, withdrawal, replacement, suspension, visa_travel, weight_miss, return, cleared, other] } }
+        - { name: fighter_id, in: query, schema: { type: string } }
+        - { name: event_id, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 50 } }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+  /v1/ufc/events/{id}/card-changes:
+    get:
+      summary: Withdrawals, replacements and other sourced changes to one event's card
+      description: >-
+        The same events as /v1/ufc/injuries scoped to one card and ordered
+        newest first. Empty array when nothing has changed — which is the
+        normal state of a card and is not an error.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/status:
+    get:
+      summary: One fighter's availability now, and the sourced history behind it
+      description: >-
+        `current` is the most recent ACTIVE event of a type that means
+        unavailable (injury, illness, withdrawal, suspension, visa_travel), or
+        null when the fighter has no such event on file. `null` means "no
+        availability event on file", NOT "confirmed fit": absence of a report is
+        not a medical clearance, and clients must not render it as one.
+        `history` is every status event for this fighter, newest first,
+        including resolved and expired ones.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/search:
     get:
       summary: Search fighters (with primary_image + slug_id), events, and articles (with hero media)

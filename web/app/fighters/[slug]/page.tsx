@@ -11,6 +11,8 @@ import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { VideoRail } from "@/components/VideoRail";
 import { getVideosForFighters } from "@/lib/db";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
+import { getFighterStatusHistory } from "@/lib/status";
+import { FighterStatusSection } from "@/components/StatusBits";
 import { age, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, METHOD_LABEL, stanceLabel, weightClassLabel, archiveSummary, totals, pct, plural, daysUntil } from "@/lib/format";
 import { TufOnFighter } from "@/components/TufOnFighter";
 import { SITE } from "@/lib/site";
@@ -34,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function FighterPage({ params }: { params: Promise<{ slug: string }> }) {
   const f = await resolveFighter((await params).slug);
   if (!f) notFound();
-  const [bouts, articles, rounds, rankings, dna, videos] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => [])]);
+  const [bouts, articles, rounds, rankings, dna, videos, statusEvents] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => [])]);
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
   /* Coverage for this fighter's completed bouts, same rule as the index. */
@@ -85,6 +87,8 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
           {ranked.length > 1 && <div className="tags mt-4">{ranked.map((r) => <span key={r.label} className="tag gold">{r.rank === 0 ? "C" : `#${r.rank}`} {r.label}</span>)}</div>}
         </div>
       </div>
+
+      <FighterStatusSection events={statusEvents} />
 
       <section className="segment">
         <h3>Next fight</h3>

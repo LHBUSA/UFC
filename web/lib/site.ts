@@ -62,6 +62,15 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
   { href: "/fighters", label: "Fighters", place: "primary" },
   { href: "/rankings", label: "Rankings", place: "primary" },
   { href: "/news", label: "News", place: "primary" },
+  /* Availability belongs in the primary bar, not behind "More": a main-event
+   * withdrawal is the single most schedule-changing thing on the site, and a
+   * reader checking whether a fight is still on should not have to hunt. */
+  { href: "/injuries", label: "Injuries & Withdrawals", place: "primary" },
+  /* Next to the other live surfaces, because a reader checking whether a main
+   * event is still on asks about weights and withdrawals in the same breath. */
+  { href: "/weigh-ins", label: "Weigh-Ins", place: "primary" },
+  /* Last in the primary bar. It is the only commercial item here and it should
+   * not sit between two editorial surfaces a reader is mid-task on. */
   { href: "/store", label: "Store", place: "primary" },
   { href: "/contender-series", label: "DWCS", place: "more", group: "Contender Series" },
   { href: "/tuf", label: "The Ultimate Fighter", place: "more", group: "Contender Series" },

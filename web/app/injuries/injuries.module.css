@@ -1,0 +1,76 @@
+.hero{padding:42px 0 20px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:28px;align-items:flex-end}
+.hero h1{font:900 clamp(42px,6vw,76px)/.94 var(--pbe-font-display);letter-spacing:-.035em;margin:8px 0 16px}
+.hero p{max-width:72ch;color:var(--pbe-dim);font-size:15px;line-height:1.7;margin-bottom:12px}
+.rule{border-left:2px solid var(--pbe-gold);padding:12px 0 12px 16px;background:rgba(212,175,55,.045);color:var(--pbe-paper-2)!important;font-size:14px!important}
+.heroAside{border:1px solid rgba(212,175,55,.24);border-radius:18px;padding:20px;background:linear-gradient(145deg,rgba(212,175,55,.08),rgba(0,0,0,.24))}
+.heroAside b{display:block;color:var(--pbe-paper);font:800 26px/1 var(--pbe-font-display)}
+.heroAside span{display:block;color:var(--pbe-faint);font:600 10px/1.4 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.12em;margin-top:7px}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.filters a{padding:8px 16px;border:1px solid var(--pbe-line);border-radius:999px;color:var(--pbe-dim);font:700 10px/1 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.11em;transition:border-color .18s ease,color .18s ease}
+.filters a:hover{border-color:rgba(212,175,55,.5);color:var(--pbe-paper)}
+.filters a.on{border-color:var(--pbe-gold);background:rgba(212,175,55,.12);color:var(--pbe-paper)}
+
+.list{display:grid;gap:10px;margin:26px 0 46px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,240px);gap:20px;padding:18px 20px;border:1px solid var(--pbe-line);border-radius:14px;background:linear-gradient(180deg,#15120e,#0a0907);min-width:0}
+.row[data-state="resolved"],.row[data-state="expired"]{opacity:.72}
+.rowMain{min-width:0}
+.rowMain h3{font:800 21px/1.15 var(--pbe-font-display);margin:8px 0 4px}
+.rowMain h3 a{color:var(--pbe-paper)}
+.rowMain h3 a:hover{color:var(--pbe-gold)}
+
+.badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.type{padding:4px 9px;border-radius:5px;font:700 8px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.11em;border:1px solid var(--pbe-line);color:var(--pbe-dim)}
+.type[data-type="injury"],.type[data-type="illness"]{border-color:rgba(193,39,61,.55);color:#e8778a;background:rgba(193,39,61,.12)}
+.type[data-type="withdrawal"],.type[data-type="visa_travel"]{border-color:rgba(212,175,55,.5);color:var(--pbe-gold-bright);background:rgba(212,175,55,.1)}
+.type[data-type="suspension"]{border-color:rgba(193,39,61,.4);color:#d98f9c}
+.type[data-type="replacement"],.type[data-type="return"],.type[data-type="cleared"]{border-color:rgba(90,160,120,.5);color:#7fc79b;background:rgba(90,160,120,.1)}
+.state{padding:4px 9px;border-radius:5px;border:1px solid var(--pbe-line-faint);color:var(--pbe-faint);font:700 8px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em}
+.official{padding:4px 9px;border-radius:5px;background:var(--pbe-gold);color:#14110d;font:800 8px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em}
+
+.headline{color:var(--pbe-paper-2);font-size:14px;line-height:1.6;margin:0 0 6px;overflow-wrap:anywhere}
+.diagnosis{color:var(--pbe-paper);font:700 13px/1.5 var(--pbe-font-data);margin:0 0 6px}
+/* Deliberately quieter than a real diagnosis, and never styled as a value:
+   "no diagnosis stated" is the absence of a claim, not a claim. */
+.noDiagnosis{color:var(--pbe-faint);font-size:12px;font-style:italic;line-height:1.5;margin:0 0 6px}
+.quote{margin:8px 0 0;padding:9px 12px;border-left:2px solid rgba(212,175,55,.5);background:rgba(212,175,55,.04);color:var(--pbe-dim);font-size:12px;line-height:1.6}
+.rel{color:var(--pbe-dim);font-size:12.5px;margin:4px 0 0}
+
+.rowMeta{display:flex;flex-direction:column;gap:6px;align-items:flex-start;border-left:1px solid var(--pbe-line-faint);padding-left:18px;min-width:0}
+.rowMeta>*{min-width:0;max-width:100%}
+.event{color:var(--pbe-paper);font:700 12px/1.35 var(--pbe-font-display);overflow-wrap:anywhere}
+.event:hover{color:var(--pbe-gold)}
+.date,.when{color:var(--pbe-faint);font:600 9px/1.3 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.09em}
+.source{color:var(--pbe-gold);font:650 9.5px/1.4 var(--pbe-font-data);letter-spacing:.06em;overflow-wrap:anywhere}
+.flag{margin-top:auto;padding:4px 9px;border-radius:5px;border:1px solid rgba(193,39,61,.55);color:#e8778a;font:700 8px/1.2 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em}
+
+.method{margin:10px 0 56px;padding:22px 24px;border:1px solid var(--pbe-line);border-radius:14px;background:rgba(0,0,0,.2)}
+.method h2{font:800 24px/1 var(--pbe-font-display);margin-bottom:14px}
+.method ul{display:grid;gap:9px;list-style:none;padding:0}
+.method li{color:var(--pbe-dim);font-size:13px;line-height:1.65;padding-left:16px;position:relative}
+.method li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--pbe-gold)}
+.method strong{color:var(--pbe-paper)}
+.method code{font-family:var(--pbe-font-data);font-size:11.5px;color:var(--pbe-gold-bright)}
+
+/* --- shared section styles for the fighter / event / bout surfaces ------- */
+.section{margin:34px 0}
+.sectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;border-bottom:1px solid var(--pbe-line);padding-bottom:12px;margin-bottom:14px}
+.sectionHead h2{font:800 28px/1 var(--pbe-font-display)}
+.sectionHead p{color:var(--pbe-faint);font-size:12px;max-width:56ch;text-align:right}
+
+@media(max-width:980px){
+  .hero{grid-template-columns:1fr;padding-top:30px}
+  .row{grid-template-columns:1fr;gap:14px}
+  .rowMeta{border-left:0;border-top:1px solid var(--pbe-line-faint);padding-left:0;padding-top:12px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px}
+  .flag{margin-top:0}
+  .rowMeta .source{flex-basis:100%}
+}
+@media(max-width:640px){
+  .hero h1{font-size:clamp(34px,10vw,48px)}
+  .row{padding:15px 16px}
+  .rowMeta{flex-direction:column;align-items:flex-start;gap:5px}
+  .rowMain h3{font-size:19px}
+  .sectionHead{flex-direction:column;align-items:flex-start}
+  .sectionHead p{text-align:left}
+  .method{padding:18px 16px}
+}
