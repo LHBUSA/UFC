@@ -46,6 +46,7 @@ from common import (AccessGateError, Config, Fetcher, RunLog, SchemaAssertionErr
                     Supabase, discord, now_iso)
 from wayback import WaybackMissing, WaybackUnavailable  # noqa: E402
 import parsers  # noqa: E402
+import normalizers  # noqa: E402  (imported for the capability guard in main())
 from alias_resolver import AliasResolver, FighterRef, alias_rows_for_fighter, normalize  # noqa: E402
 
 WORKER = "backfill_ufcstats"
@@ -513,7 +514,45 @@ class Backfill:
         return code
 
 
+def _assert_normalizer_capable() -> None:
+    """Refuse to run against a normaliser that cannot resolve labels we know about.
+
+    The guard belongs here rather than in a launcher script. There are four
+    copies of this tree on a working machine and Python imports the
+    normalizers.py sitting beside whichever copy of this file is executed, so
+    the launcher is not what decides which normaliser gets used - this file's
+    location is. A guard in one launcher protects one launcher; a guard here
+    protects every way of starting a run, including a hand-typed one.
+
+    What it prevents: a run that fetches for an hour and then dies on
+    "Ultimate Ultimate '96 Tournament Title Bout" or the TUF Nations final,
+    labels that four windows already died on and that are fixed in the copies
+    which declare these capabilities. Failing on the first line with the reason
+    is strictly better than failing on the sixth window without it.
+
+    Absence of the declaration is itself the failure: a normaliser too old to
+    say what it can do is too old to have the rescues.
+    """
+    required = {
+        "tuf-matchup-prefix": "TUF international finals; stopped window B-2014",
+        "early-series": "Ultimate Ultimate / Ultimate Japan cards; stopped B-1995, B-1996, B-1997, B-1999",
+        "bracket-round": "tournament round labels such as 'Alternate Bout'",
+    }
+    have = set(getattr(normalizers, "NORMALIZER_CAPABILITIES", ()) or ())
+    missing = sorted(name for name in required if name not in have)
+    if not missing:
+        return
+    where = getattr(normalizers, "__file__", "<unknown>")
+    print(f"[normalizer_check] FAIL {where}", file=sys.stderr)
+    print("  missing capabilities this repository depends on:", file=sys.stderr)
+    for name in missing:
+        print(f"    - {name}: {required[name]}", file=sys.stderr)
+    print("  refusing to start: this run would fail on labels that are already fixed elsewhere.", file=sys.stderr)
+    sys.exit(2)
+
+
 def main():
+    _assert_normalizer_capable()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["events", "fighters", "fights", "all"], required=True)
     ap.add_argument("--source", choices=["wayback", "live"], default="wayback",
