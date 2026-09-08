@@ -3,17 +3,16 @@
 //
 // This deliberately does NOT edit production tables unless --apply is passed.
 // It patches the committed v1.1 builder into a temporary v1.2 repair build so
-// the repair can prove the two structural issues before we change the canonical
-// builder: (1) unbounded deterministic pagination over the full source tables,
-// and (2) exclusive as-of semantics (event_date < as_of_date).
+// the repair can prove the structural issues before we change the canonical
+// builder: full deterministic pagination, exclusive as-of semantics, and full
+// regeneration of every historical pre-fight snapshot from backfilled evidence.
 //
 // Usage:
 //   node scripts/dna/repair_historical_snapshots.mjs --dry-run
 //   node scripts/dna/repair_historical_snapshots.mjs --apply
-//   node scripts/dna/repair_historical_snapshots.mjs --dry-run --as-of 2026-09-12
 //
-// A successful dry-run must show every current round-stat row was loaded. That
-// is the key regression guard against the pre-backfill 10k/5k query limits.
+// A successful dry-run must show every current source row was loaded and must
+// resolve known historical canaries with their backfilled pre-fight stat sample.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -95,6 +94,30 @@ function patchedBuilder() {
     "const BUILDER = 'scripts/dna/build_fight_dna.mjs@v1.2-history-repair';",
     'builder provenance',
   );
+  src = replaceOnce(
+    src,
+    "const AS_OF = opt('--as-of') || new Date().toISOString().slice(0, 10);",
+    "const AS_OF = opt('--as-of') || new Date().toISOString().slice(0, 10);\nlet METRIC_AS_OF = AS_OF;",
+    'snapshot metric clock',
+  );
+  src = replaceOnce(
+    src,
+    "    source_families: sourceFamilies,\n    as_of_date: AS_OF,\n    origin: 'pbe_derived',",
+    "    source_families: sourceFamilies,\n    as_of_date: METRIC_AS_OF,\n    origin: 'pbe_derived',",
+    'metric as-of date',
+  );
+  src = replaceOnce(
+    src,
+    'function buildSnapshot(fighter, features, runId, watermarks) {\n  const record = recordOf(features);',
+    'function buildSnapshot(fighter, features, runId, watermarks, snapshotDate = AS_OF) {\n  METRIC_AS_OF = snapshotDate;\n  const record = recordOf(features);',
+    'snapshot date parameter',
+  );
+  src = replaceOnce(
+    src,
+    '    fighter_id: fighter.id,\n    as_of_date: AS_OF,\n    definition_version: DEFINITION_VERSION,',
+    '    fighter_id: fighter.id,\n    as_of_date: snapshotDate,\n    definition_version: DEFINITION_VERSION,',
+    'snapshot row as-of date',
+  );
 
   src = replaceOnce(
     src,
@@ -131,6 +154,134 @@ function patchedBuilder() {
     "return e?.event_date && e.event_date <= AS_OF && fighterMap.has(b.fighter_a_id) && fighterMap.has(b.fighter_b_id) && (!ONLY_FIGHTER || b.fighter_a_id === ONLY_FIGHTER || b.fighter_b_id === ONLY_FIGHTER);",
     "return e?.event_date && e.event_date < AS_OF && fighterMap.has(b.fighter_a_id) && fighterMap.has(b.fighter_b_id) && (!ONLY_FIGHTER || b.fighter_a_id === ONLY_FIGHTER || b.fighter_b_id === ONLY_FIGHTER);",
     'exclusive relevant-bout cutoff',
+  );
+
+  const oldSnapshotLoop = `    const targetFighters = ONLY_FIGHTER ? fighters.filter((f) => f.id === ONLY_FIGHTER) : fighters;
+    const snapshots = [];
+    const stanceRows = [];
+    for (const fighter of targetFighters) {
+      const fs = (byFighter.get(fighter.id) || []).sort((a, b) => a.event_date.localeCompare(b.event_date));
+      if (!fs.length) continue;
+      const snap = buildSnapshot(fighter, fs, runId, watermarks);
+      snapshots.push(snap);
+      for (const s of ['ORTHODOX', 'SOUTHPAW', 'SWITCH', 'SIDEWAYS', 'UNKNOWN']) {
+        const split = snap.stance_splits[s];
+        if (!split || !split.record.appearances) continue;
+        stanceRows.push({
+          fighter_id: fighter.id,
+          as_of_date: AS_OF,
+          opponent_stance: s,
+          definition_version: DEFINITION_VERSION,
+          appearances: split.record.appearances,
+          wins: split.record.w,
+          losses: split.record.l,
+          draws: split.record.d,
+          no_contests: split.record.nc,
+          ko_tko_wins: split.ko_tko_wins,
+          submission_wins: split.submission_wins,
+          decision_wins: split.decision_wins,
+          stat_bouts: split.stat_bouts,
+          stat_rounds: split.stat_rounds,
+          observed_seconds: split.observed_seconds,
+          metrics: {
+            finish_rate: split.finish_rate,
+            ko_rate: split.ko_rate,
+            sub_rate: split.sub_rate,
+            sig_diff_per_min: split.sig_diff_per_min,
+            td_landed_per_15: split.td_landed_per_15,
+            kd_per_15: split.kd_per_15,
+          },
+          confidence: split.confidence,
+          provenance: { builder: BUILDER, build_run_id: runId, as_of_date: AS_OF },
+          generated_at: new Date().toISOString(),
+        });
+      }
+    }
+`;
+
+  const newSnapshotLoop = `    const targetFighters = ONLY_FIGHTER ? fighters.filter((f) => f.id === ONLY_FIGHTER) : fighters;
+    const snapshots = [];
+    const stanceRows = [];
+    const addOneDay = (date) => {
+      const d = new Date(date + 'T00:00:00Z');
+      d.setUTCDate(d.getUTCDate() + 1);
+      return d.toISOString().slice(0, 10);
+    };
+    for (const fighter of targetFighters) {
+      const fs = (byFighter.get(fighter.id) || []).sort((a, b) => a.event_date.localeCompare(b.event_date));
+      if (!fs.length) continue;
+      const dates = [...new Set([...fs.map((f) => addOneDay(f.event_date)).filter((d) => d <= AS_OF), AS_OF])].sort();
+      for (const snapshotDate of dates) {
+        const eligible = fs.filter((f) => f.event_date < snapshotDate);
+        if (!eligible.length) continue;
+        const snap = buildSnapshot(fighter, eligible, runId, watermarks, snapshotDate);
+        snapshots.push(snap);
+        for (const s of ['ORTHODOX', 'SOUTHPAW', 'SWITCH', 'SIDEWAYS', 'UNKNOWN']) {
+          const split = snap.stance_splits[s];
+          if (!split || !split.record.appearances) continue;
+          stanceRows.push({
+            fighter_id: fighter.id,
+            as_of_date: snapshotDate,
+            opponent_stance: s,
+            definition_version: DEFINITION_VERSION,
+            appearances: split.record.appearances,
+            wins: split.record.w,
+            losses: split.record.l,
+            draws: split.record.d,
+            no_contests: split.record.nc,
+            ko_tko_wins: split.ko_tko_wins,
+            submission_wins: split.submission_wins,
+            decision_wins: split.decision_wins,
+            stat_bouts: split.stat_bouts,
+            stat_rounds: split.stat_rounds,
+            observed_seconds: split.observed_seconds,
+            metrics: {
+              finish_rate: split.finish_rate,
+              ko_rate: split.ko_rate,
+              sub_rate: split.sub_rate,
+              sig_diff_per_min: split.sig_diff_per_min,
+              td_landed_per_15: split.td_landed_per_15,
+              kd_per_15: split.kd_per_15,
+            },
+            confidence: split.confidence,
+            provenance: { builder: BUILDER, build_run_id: runId, as_of_date: snapshotDate },
+            generated_at: new Date().toISOString(),
+          });
+        }
+      }
+    }
+`;
+  src = replaceOnce(src, oldSnapshotLoop, newSnapshotLoop, 'full historical snapshot loop');
+
+  src = replaceOnce(
+    src,
+    "    const output = {\n      feature_rows: featureRows.length,",
+    `    const resolveCanary = (name, requestedAsOf) => {
+      const fighter = fighters.find((f) => f.name === name);
+      if (!fighter) return { name, requested_as_of: requestedAsOf, missing: 'fighter' };
+      const row = snapshots
+        .filter((s) => s.fighter_id === fighter.id && s.as_of_date <= requestedAsOf)
+        .sort((a, b) => b.as_of_date.localeCompare(a.as_of_date))[0];
+      return row ? {
+        name,
+        requested_as_of: requestedAsOf,
+        resolved_as_of: row.as_of_date,
+        sample_completed_bouts: row.sample_completed_bouts,
+        sample_stat_bouts: row.sample_stat_bouts,
+        sample_rounds: row.sample_rounds,
+        sample_seconds: row.sample_seconds,
+      } : { name, requested_as_of: requestedAsOf, missing: 'snapshot' };
+    };
+    const repairCanaries = [
+      resolveCanary('Michael Page', '2026-09-05'),
+      resolveCanary('Nursulton Ruziboev', '2026-09-05'),
+    ];
+    const output = {
+      feature_rows: featureRows.length,
+      historical_snapshots: snapshots.filter((s) => s.as_of_date !== AS_OF).length,
+      distinct_snapshot_dates: new Set(snapshots.map((s) => s.as_of_date)).size,
+      repair_canaries: repairCanaries,`,
+    'historical proof output',
   );
   src = replaceOnce(
     src,
@@ -187,7 +338,16 @@ async function main() {
     if (proof.round_rows_source !== roundRows) failures.push(`round rows loaded ${proof.round_rows_source} != source ${roundRows}`);
     if (!ONLY_FIGHTER && proof.feature_rows !== loaded.bouts * 2) failures.push(`feature rows ${proof.feature_rows} != 2 x relevant bouts ${loaded.bouts}`);
     if (!proof.snapshots) failures.push('zero snapshots generated');
+    if (!proof.historical_snapshots) failures.push('zero historical snapshots generated');
+    if (!(proof.distinct_snapshot_dates > 1)) failures.push(`expected multiple historical snapshot dates, got ${proof.distinct_snapshot_dates}`);
     if (!loaded.bouts || loaded.bouts > completeBouts) failures.push(`invalid relevant bout count ${loaded.bouts} / ${completeBouts}`);
+
+    if (!ONLY_FIGHTER) {
+      const page = (proof.repair_canaries || []).find((c) => c.name === 'Michael Page');
+      const ruz = (proof.repair_canaries || []).find((c) => c.name === 'Nursulton Ruziboev');
+      if (!page || page.missing || page.sample_stat_bouts < 5) failures.push(`Michael Page pre-fight stat sample invalid: ${JSON.stringify(page)}`);
+      if (!ruz || ruz.missing || ruz.sample_stat_bouts < 6) failures.push(`Nursulton Ruziboev pre-fight stat sample invalid: ${JSON.stringify(ruz)}`);
+    }
 
     console.log(JSON.stringify({
       acceptance: failures.length ? 'FAIL' : 'PASS',
@@ -199,8 +359,11 @@ async function main() {
         round_rows_loaded: proof.round_rows_source,
         feature_rows: proof.feature_rows,
         snapshots: proof.snapshots,
+        historical_snapshots: proof.historical_snapshots,
+        distinct_snapshot_dates: proof.distinct_snapshot_dates,
         stance_rows: proof.stance_rows,
         stat_snapshots: proof.stat_snapshots,
+        repair_canaries: proof.repair_canaries,
       },
       failures,
     }, null, 2));
