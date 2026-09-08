@@ -62,6 +62,7 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
   { href: "/fighters", label: "Fighters", place: "primary" },
   { href: "/rankings", label: "Rankings", place: "primary" },
   { href: "/news", label: "News", place: "primary" },
+  { href: "/store", label: "Store", place: "primary" },
   { href: "/contender-series", label: "DWCS", place: "more", group: "Contender Series" },
   { href: "/tuf", label: "The Ultimate Fighter", place: "more", group: "Contender Series" },
   { href: "/history", label: "History", place: "more", group: "Archive" },
