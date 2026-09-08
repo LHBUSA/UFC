@@ -181,48 +181,52 @@
           "label": "Quarter-finals",
           "bouts": [
             {
-              "a": "2 Shayna Baszler",
-              "b": "1 Julianna Peña",
-              "winner": "1 Julianna Peña",
+              "a": "Shayna Baszler",
+              "b": "Julianna Peña",
+              "winner": "Julianna Peña",
               "method": "Submission",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "2 vs 1"
             },
             {
-              "a": "6 Peggy Morgan",
-              "b": "3 Sarah Moras",
-              "winner": "3 Sarah Moras",
+              "a": "Peggy Morgan",
+              "b": "Sarah Moras",
+              "winner": "Sarah Moras",
               "method": "Submission",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 3"
             },
             {
-              "a": "4 Jessamyn Duke",
-              "b": "5 Raquel Pennington",
-              "winner": "5 Raquel Pennington",
+              "a": "Jessamyn Duke",
+              "b": "Raquel Pennington",
+              "winner": "Raquel Pennington",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "4 vs 5"
             },
             {
-              "a": "8 Jessica Rakoczy",
-              "b": "7 Roxanne Modafferi",
-              "winner": "8 Jessica Rakoczy",
+              "a": "Jessica Rakoczy",
+              "b": "Roxanne Modafferi",
+              "winner": "Jessica Rakoczy",
               "method": "TKO",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "8 vs 7"
             }
           ]
         },
@@ -231,26 +235,28 @@
           "label": "Semi-finals",
           "bouts": [
             {
-              "a": "1 Julianna Peña",
-              "b": "3 Sarah Moras",
-              "winner": "1 Julianna Peña",
+              "a": "Julianna Peña",
+              "b": "Sarah Moras",
+              "winner": "Julianna Peña",
               "method": "Submission (guillotine choke) at 3:31 in the second round",
               "round": 2,
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card"
+              "classification_source": "filmed during production and broadcast in episode 11, not contested on a sanctioned card",
+              "seeds": "1 vs 3"
             },
             {
-              "a": "5 Raquel Pennington",
-              "b": "8 Jessica Rakoczy",
-              "winner": "8 Jessica Rakoczy",
+              "a": "Raquel Pennington",
+              "b": "Jessica Rakoczy",
+              "winner": "Jessica Rakoczy",
               "method": "Unanimous decision in three rounds",
               "round": 3,
               "time": null,
               "episode": 13,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 13, not contested on a sanctioned card"
+              "classification_source": "filmed during production and broadcast in episode 13, not contested on a sanctioned card",
+              "seeds": "5 vs 8"
             }
           ]
         },
@@ -259,15 +265,16 @@
           "label": "Tournament final",
           "bouts": [
             {
-              "a": "1 Julianna Peña",
-              "b": "8 Jessica Rakoczy",
-              "winner": "1 Julianna Peña",
+              "a": "Julianna Peña",
+              "b": "Jessica Rakoczy",
+              "winner": "Julianna Peña",
               "method": "TKO",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
               "classification_source": null,
+              "seeds": "1 vs 8",
               "on_finale_card": true,
               "tournament_deciding": true
             }
@@ -283,48 +290,52 @@
           "label": "Quarter-finals",
           "bouts": [
             {
-              "a": "2 Chris Beal",
-              "b": "3 Chris Holdsworth",
-              "winner": "3 Chris Holdsworth",
+              "a": "Chris Beal",
+              "b": "Chris Holdsworth",
+              "winner": "Chris Holdsworth",
               "method": "Submission",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "2 vs 3"
             },
             {
-              "a": "8 Michael Wootten",
-              "b": "5 Josh Hill",
-              "winner": "8 Michael Wootten",
+              "a": "Michael Wootten",
+              "b": "Josh Hill",
+              "winner": "Michael Wootten",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "8 vs 5"
             },
             {
-              "a": "4 Davey Grant",
-              "b": "7 Louis Fisette",
-              "winner": "4 Davey Grant",
+              "a": "Davey Grant",
+              "b": "Louis Fisette",
+              "winner": "Davey Grant",
               "method": "Submission",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "4 vs 7"
             },
             {
-              "a": "6 Anthony Gutierrez",
-              "b": "1 Cody Bollinger",
-              "winner": "6 Anthony Gutierrez",
+              "a": "Anthony Gutierrez",
+              "b": "Cody Bollinger",
+              "winner": "Anthony Gutierrez",
               "method": "*",
               "round": null,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 1"
             }
           ]
         },
@@ -333,26 +344,28 @@
           "label": "Semi-finals",
           "bouts": [
             {
-              "a": "3 Chris Holdsworth",
-              "b": "8 Michael Wootten",
-              "winner": "3 Chris Holdsworth",
+              "a": "Chris Holdsworth",
+              "b": "Michael Wootten",
+              "winner": "Chris Holdsworth",
               "method": "Submission (rear naked choke) at 3:11 in the first round",
               "round": 1,
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card"
+              "classification_source": "filmed during production and broadcast in episode 10, not contested on a sanctioned card",
+              "seeds": "3 vs 8"
             },
             {
-              "a": "4 Davey Grant",
-              "b": "6 Anthony Gutierrez",
-              "winner": "4 Davey Grant",
+              "a": "Davey Grant",
+              "b": "Anthony Gutierrez",
+              "winner": "Davey Grant",
               "method": "**",
               "round": null,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "4 vs 6"
             }
           ]
         },
@@ -361,8 +374,8 @@
           "label": "Tournament final",
           "bouts": [
             {
-              "a": "3 Chris Holdsworth",
-              "b": "4 Davey Grant",
+              "a": "Chris Holdsworth",
+              "b": "Davey Grant",
               "winner": "Chris Holdsworth",
               "method": "Submission",
               "round": 2,

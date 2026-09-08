@@ -233,7 +233,7 @@
           "bouts": [
             {
               "a": "Mike Trizano",
-              "b": "John Gunther*",
+              "b": "John Gunther",
               "winner": "Mike Trizano",
               "method": "Decision (unanimous)",
               "round": 3,
@@ -347,9 +347,9 @@
               "classification_source": null
             },
             {
-              "a": "Jay Cucciniello *",
+              "a": "Jay Cucciniello",
               "b": "Tyler Diamond",
-              "winner": "Jay Cucciniello *",
+              "winner": "Jay Cucciniello",
               "method": "TKO",
               "round": 3,
               "time": null,

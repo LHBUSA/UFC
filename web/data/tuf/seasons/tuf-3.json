@@ -312,7 +312,7 @@
           "label": "Semi-finals",
           "bouts": [
             {
-              "a": "Jesse Forbes *",
+              "a": "Jesse Forbes",
               "b": "Josh Haynes",
               "winner": "Josh Haynes",
               "method": "Submission",
@@ -323,7 +323,7 @@
               "classification_source": null
             },
             {
-              "a": "Ross Pointon *",
+              "a": "Ross Pointon",
               "b": "Michael Bisping",
               "winner": "Michael Bisping",
               "method": "Submission (strikes) with 2:47 left in the first round",

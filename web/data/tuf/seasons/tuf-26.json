@@ -14,8 +14,13 @@
   },
   "_conflicts": [
     {
+      "field": "Tournament_round_of_16",
+      "detail": "The source's bracket has a slot holding only Melinda Fábián, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
+      "retrieved": "2026-09-08"
+    },
+    {
       "field": "Tournament_quarter_final",
-      "detail": "The source's quarter-finals for this division do not form a consistent round: 1 fighter(s) appear here without a bout in the previous round. The stated bouts are recorded as given and the round is marked partial rather than reordered into something the source does not say.",
+      "detail": "The source's bracket has a slot holding only Barb Honchak, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
       "retrieved": "2026-09-08"
     }
   ],
@@ -159,92 +164,88 @@
           "label": "First round",
           "bouts": [
             {
-              "a": "1 Roxanne Modafferi",
-              "b": "16 Shana Dobson",
-              "winner": "1 Roxanne Modafferi",
+              "a": "Roxanne Modafferi",
+              "b": "Shana Dobson",
+              "winner": "Roxanne Modafferi",
               "method": "TKO",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "1 vs 16"
             },
             {
-              "a": "8 Emily Whitmire",
-              "b": "9 Christina Marks",
-              "winner": "8 Emily Whitmire",
+              "a": "Emily Whitmire",
+              "b": "Christina Marks",
+              "winner": "Emily Whitmire",
               "method": "Submission",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "8 vs 9"
             },
             {
-              "a": "5 Maia Stevenson",
-              "b": "12 Sijara Eubanks",
-              "winner": "12 Sijara Eubanks",
+              "a": "Maia Stevenson",
+              "b": "Sijara Eubanks",
+              "winner": "Sijara Eubanks",
               "method": "Submission",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "5 vs 12"
             },
             {
-              "a": "4 DeAnna Bennett",
-              "b": "13 Karine Gevorgyan",
-              "winner": "4 DeAnna Bennett",
+              "a": "DeAnna Bennett",
+              "b": "Karine Gevorgyan",
+              "winner": "DeAnna Bennett",
               "method": "TKO",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "4 vs 13"
             },
             {
-              "a": "2 Barb Honchak",
-              "b": "15 Gillian Robertson",
-              "winner": "2 Barb Honchak",
+              "a": "Barb Honchak",
+              "b": "Gillian Robertson",
+              "winner": "Barb Honchak",
               "method": "TKO",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "2 vs 15"
             },
             {
-              "a": "7 Melinda Fábián",
-              "b": "",
-              "winner": null,
-              "method": null,
-              "round": null,
-              "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
-            },
-            {
-              "a": "6 Montana Stewart",
-              "b": "11 Ariel Beck",
-              "winner": "6 Montana Stewart",
+              "a": "Montana Stewart",
+              "b": "Ariel Beck",
+              "winner": "Montana Stewart",
               "method": "Submission",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 11"
             },
             {
-              "a": "3 Lauren Murphy",
-              "b": "14 Nicco Montaño",
-              "winner": "14 Nicco Montaño",
+              "a": "Lauren Murphy",
+              "b": "Nicco Montaño",
+              "winner": "Nicco Montaño",
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "3 vs 14"
             }
           ]
         },
@@ -253,78 +254,70 @@
           "label": "Quarter-finals",
           "bouts": [
             {
-              "a": "1 Roxanne Modafferi",
-              "b": "8 Emily Whitmire",
-              "winner": "1 Roxanne Modafferi",
+              "a": "Roxanne Modafferi",
+              "b": "Emily Whitmire",
+              "winner": "Roxanne Modafferi",
               "method": "TKO",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "1 vs 8"
             },
             {
-              "a": "12 Sijara Eubanks",
-              "b": "4 DeAnna Bennett",
-              "winner": "12 Sijara Eubanks",
+              "a": "Sijara Eubanks",
+              "b": "DeAnna Bennett",
+              "winner": "Sijara Eubanks",
               "method": "KO",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "12 vs 4"
             },
             {
-              "a": "2 Barb Honchak",
-              "b": "",
-              "winner": "2 Barb Honchak",
+              "a": "Montana Stewart",
+              "b": "Nicco Montaño",
+              "winner": "Nicco Montaño",
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
-            },
-            {
-              "a": "6 Montana Stewart",
-              "b": "14 Nicco Montaño",
-              "winner": "14 Nicco Montaño",
-              "method": "Decision (unanimous)",
-              "round": 2,
-              "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 14"
             }
-          ],
-          "status": "unverified",
-          "note": "Partial. 1 fighter(s) appear here without a bout in the previous round. See conflicts."
+          ]
         },
         {
           "stage": "semi_final",
           "label": "Semi-finals",
           "bouts": [
             {
-              "a": "1 Roxanne Modafferi",
-              "b": "12 Sijara Eubanks",
-              "winner": "12 Sijara Eubanks",
+              "a": "Roxanne Modafferi",
+              "b": "Sijara Eubanks",
+              "winner": "Sijara Eubanks",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "1 vs 12"
             },
             {
-              "a": "2 Barb Honchak",
-              "b": "14 Nicco Montaño",
-              "winner": "14 Nicco Montaño",
+              "a": "Barb Honchak",
+              "b": "Nicco Montaño",
+              "winner": "Nicco Montaño",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "2 vs 14"
             }
           ]
         },
@@ -333,8 +326,8 @@
           "label": "Tournament final",
           "bouts": [
             {
-              "a": "1 Roxanne Modafferi*",
-              "b": "14 Nicco Montaño",
+              "a": "Roxanne Modafferi",
+              "b": "Nicco Montaño",
               "winner": "Nicco Montano",
               "method": "Decision - Unanimous",
               "round": 5,

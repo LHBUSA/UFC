@@ -210,9 +210,9 @@
           "label": "Semi-finals",
           "bouts": [
             {
-              "a": "Brad Katona*",
+              "a": "Brad Katona",
               "b": "Timur Valiev",
-              "winner": "Brad Katona*",
+              "winner": "Brad Katona",
               "method": "Decision (split)",
               "round": 3,
               "time": null,

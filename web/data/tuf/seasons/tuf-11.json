@@ -386,9 +386,9 @@
               "classification_source": null
             },
             {
-              "a": "Court McGee *",
-              "b": "James Hammortree**",
-              "winner": "Court McGee *",
+              "a": "Court McGee",
+              "b": "James Hammortree",
+              "winner": "Court McGee",
               "method": "Submission",
               "round": 2,
               "time": null,

@@ -169,9 +169,9 @@
               "classification_source": null
             },
             {
-              "a": "Manny Rodriguez*",
+              "a": "Manny Rodriguez",
               "b": "Bola Omoyele",
-              "winner": "Manny Rodriguez*",
+              "winner": "Manny Rodriguez",
               "method": "Submission",
               "round": 1,
               "time": null,
@@ -209,7 +209,7 @@
           "bouts": [
             {
               "a": "Robert Whittaker",
-              "b": "Xavier Lucas**",
+              "b": "Xavier Lucas",
               "winner": "Robert Whittaker",
               "method": "TKO",
               "round": 1,
@@ -297,8 +297,8 @@
             },
             {
               "a": "Grant Blackler",
-              "b": "Mike Wilkinson*",
-              "winner": "Mike Wilkinson*",
+              "b": "Mike Wilkinson",
+              "winner": "Mike Wilkinson",
               "method": "Submission",
               "round": 1,
               "time": null,

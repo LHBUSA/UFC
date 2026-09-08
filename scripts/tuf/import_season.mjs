@@ -213,13 +213,16 @@ function parseBracket(body, weightClass) {
 
   const bouts = entries.map((cells) => {
     const [aRaw, aScore, bRaw, bScore] = cells;
-    const a = clean(aRaw);
-    const b = clean(bRaw);
+    const A = competitor(aRaw);
+    const B = competitor(bRaw);
+    const a = A.name;
+    const b = B.name;
     const aWon = isBold(aRaw);
     const bWon = isBold(bRaw);
     let winner = null;
     let reason = null;
-    if (aWon && !bWon) winner = a;
+    if (!a || !b) reason = 'the source leaves one side of this bout empty';
+    else if (aWon && !bWon) winner = a;
     else if (bWon && !aWon) winner = b;
     else reason = aWon && bWon ? 'the source marks both fighters as winners' : 'the source marks neither fighter as the winner';
     const winnerCell = winner === a ? aScore : bScore;
@@ -230,6 +233,8 @@ function parseBracket(body, weightClass) {
       winner,
       method: winner ? expandMethod(winnerCell) : null,
       round: winner && /^\d+$/.test(clean(loserCell)) ? Number(clean(loserCell)) : null,
+      seeds: A.seed && B.seed ? `${A.seed} vs ${B.seed}` : null,
+      empty: !a || !b,
       reason,
     };
   });
@@ -334,6 +339,24 @@ function parseResultsTable(wt) {
 /* ---------- cast ---------- */
 
 const titleCase = (s) => clean(s).replace(/\b([a-z])/g, (c) => c.toUpperCase());
+
+/**
+ * Read one competitor cell into a name and, where the source gives one, a seed.
+ *
+ * Seeded seasons write the seed into the cell — "1 Roxanne Modafferi", "14
+ * Nicco Montaño" — and some cells carry a footnote asterisk. Left in, those
+ * become part of the name, and a name with a number welded to the front
+ * matches no fighter row and reads as a typo on the page. The seed is real
+ * information, so it is separated out rather than thrown away, and recorded
+ * the way the hand-built seasons already record it.
+ */
+function competitor(cellRaw) {
+  let name = clean(cellRaw).replace(/\s*\*+\s*$/, '').trim();
+  let seed = null;
+  const m = name.match(/^(\d{1,2})\s+(\p{L}.*)$/u);
+  if (m) { seed = Number(m[1]); name = m[2].trim(); }
+  return { name, seed };
+}
 
 function parseCoaches(wt) {
   const sec = sliceSection(wt, /^===\s*Coaches/im);
@@ -571,6 +594,19 @@ const main = async () => {
     for (const st of b.stages) {
       const bouts = [];
       for (const raw of st.bouts) {
+        /* A bracket cell with only one side filled in is not a bout. It is
+         * usually a bye or a walkover the source did not spell out, and
+         * recording it as a contest against nobody would put an empty name on
+         * the page and in the archive. */
+        if (raw.empty) {
+          conflicts.push({
+            field: `${b.weightClass}_${st.stage}`,
+            detail: `The source's bracket has a slot holding only ${raw.a || raw.b || 'an unnamed competitor'}, with no opponent. It is left out of the round rather than recorded as a bout against nobody.`,
+            retrieved: today(),
+          });
+          continue;
+        }
+
         const key = pairKey(raw.a, raw.b);
         const ep = byPair.get(key);
         if (ep) usedPairs.add(key);
@@ -639,6 +675,7 @@ const main = async () => {
           time: (ep && ep.time) || null,
           episode: (ep && ep.episode) ?? null,
           ...classified,
+          ...(raw.seeds ? { seeds: raw.seeds } : {}),
           ...(isFinal ? { on_finale_card: true, tournament_deciding: true } : {}),
         });
       }

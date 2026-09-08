@@ -257,7 +257,7 @@
             },
             {
               "a": "Santiago Ponzinibbio",
-              "b": "Cleiton Duarte*",
+              "b": "Cleiton Duarte",
               "winner": "Santiago Ponzinibbio",
               "method": "Decision (unanimous)",
               "round": 2,
@@ -279,7 +279,7 @@
             },
             {
               "a": "Viscardi Andrade",
-              "b": "David Vieira**",
+              "b": "David Vieira",
               "winner": "Viscardi Andrade",
               "method": "Decision (unanimous)",
               "round": 2,
@@ -325,7 +325,7 @@
           "label": "Tournament final",
           "bouts": [
             {
-              "a": "Leonardo Santos***",
+              "a": "Leonardo Santos",
               "b": "William Macário",
               "winner": "Leonardo Santos",
               "method": "Submission",

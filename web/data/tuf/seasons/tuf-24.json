@@ -21,92 +21,100 @@
           "label": "First round",
           "bouts": [
             {
-              "a": "1 Alexandre Pantoja",
-              "b": "16 Brandon Moreno",
-              "winner": "1 Alexandre Pantoja",
+              "a": "Alexandre Pantoja",
+              "b": "Brandon Moreno",
+              "winner": "Alexandre Pantoja",
               "method": "Submission",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "1 vs 16"
             },
             {
-              "a": "8 Terrence Mitchell",
-              "b": "9 Kai Kara France",
-              "winner": "9 Kai Kara France",
+              "a": "Terrence Mitchell",
+              "b": "Kai Kara France",
+              "winner": "Kai Kara France",
               "method": "KO",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "8 vs 9"
             },
             {
-              "a": "5 Hiromasa Ogikubo",
-              "b": "12 Nkazimulo Zulu",
-              "winner": "5 Hiromasa Ogikubo",
+              "a": "Hiromasa Ogikubo",
+              "b": "Nkazimulo Zulu",
+              "winner": "Hiromasa Ogikubo",
               "method": "Submission",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "5 vs 12"
             },
             {
-              "a": "4 Damacio Page",
-              "b": "13 Adam Antolin",
-              "winner": "13 Adam Antolin",
+              "a": "Damacio Page",
+              "b": "Adam Antolin",
+              "winner": "Adam Antolin",
               "method": "TKO",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "4 vs 13"
             },
             {
-              "a": "2 Yoni Sherbatov",
-              "b": "15 Eric Shelton",
-              "winner": "15 Eric Shelton",
+              "a": "Yoni Sherbatov",
+              "b": "Eric Shelton",
+              "winner": "Eric Shelton",
               "method": "Submission",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "2 vs 15"
             },
             {
-              "a": "7 Ronaldo Candido",
-              "b": "10 Jamie Alvarez",
-              "winner": "7 Ronaldo Candido",
+              "a": "Ronaldo Candido",
+              "b": "Jamie Alvarez",
+              "winner": "Ronaldo Candido",
               "method": "Submission",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "7 vs 10"
             },
             {
-              "a": "6 Matt Schnell",
-              "b": "11 Matt Rizzo",
-              "winner": "6 Matt Schnell",
+              "a": "Matt Schnell",
+              "b": "Matt Rizzo",
+              "winner": "Matt Schnell",
               "method": "Submission",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 11"
             },
             {
-              "a": "3 Tim Elliott",
-              "b": "14 Charlie Alaniz",
-              "winner": "3 Tim Elliott",
+              "a": "Tim Elliott",
+              "b": "Charlie Alaniz",
+              "winner": "Tim Elliott",
               "method": "Submission (bulldog choke) in the first round",
               "round": 1,
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card"
+              "classification_source": "filmed during production and broadcast in episode 7, not contested on a sanctioned card",
+              "seeds": "3 vs 14"
             }
           ]
         },
@@ -115,48 +123,52 @@
           "label": "Quarter-finals",
           "bouts": [
             {
-              "a": "1 Alexandre Pantoja",
-              "b": "9 Kai Kara France",
-              "winner": "1 Alexandre Pantoja",
+              "a": "Alexandre Pantoja",
+              "b": "Kai Kara France",
+              "winner": "Alexandre Pantoja",
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "1 vs 9"
             },
             {
-              "a": "5 Hiromasa Ogikubo",
-              "b": "13 Adam Antolin",
-              "winner": "5 Hiromasa Ogikubo",
+              "a": "Hiromasa Ogikubo",
+              "b": "Adam Antolin",
+              "winner": "Hiromasa Ogikubo",
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "5 vs 13"
             },
             {
-              "a": "15 Eric Shelton",
-              "b": "7 Ronaldo Candido",
-              "winner": "15 Eric Shelton",
+              "a": "Eric Shelton",
+              "b": "Ronaldo Candido",
+              "winner": "Eric Shelton",
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "15 vs 7"
             },
             {
-              "a": "6 Matt Schnell",
-              "b": "3 Tim Elliott",
-              "winner": "3 Tim Elliott",
+              "a": "Matt Schnell",
+              "b": "Tim Elliott",
+              "winner": "Tim Elliott",
               "method": "Submission",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 3"
             }
           ]
         },
@@ -165,26 +177,28 @@
           "label": "Semi-finals",
           "bouts": [
             {
-              "a": "1 Alexandre Pantoja",
-              "b": "5 Hiromasa Ogikubo",
-              "winner": "5 Hiromasa Ogikubo",
+              "a": "Alexandre Pantoja",
+              "b": "Hiromasa Ogikubo",
+              "winner": "Hiromasa Ogikubo",
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "1 vs 5"
             },
             {
-              "a": "15 Eric Shelton",
-              "b": "3 Tim Elliott",
-              "winner": "3 Tim Elliott",
+              "a": "Eric Shelton",
+              "b": "Tim Elliott",
+              "winner": "Tim Elliott",
               "method": "Decision (majority)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "15 vs 3"
             }
           ]
         },
@@ -193,15 +207,16 @@
           "label": "Tournament final",
           "bouts": [
             {
-              "a": "5 Hiromasa Ogikubo",
-              "b": "3 Tim Elliott",
-              "winner": "3 Tim Elliott",
+              "a": "Hiromasa Ogikubo",
+              "b": "Tim Elliott",
+              "winner": "Tim Elliott",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
               "classification_source": null,
+              "seeds": "5 vs 3",
               "on_finale_card": true,
               "tournament_deciding": true
             }

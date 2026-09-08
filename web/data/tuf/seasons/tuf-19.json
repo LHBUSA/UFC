@@ -224,48 +224,52 @@
           "label": "Quarter-finals",
           "bouts": [
             {
-              "a": "6 Cathal Pendred",
-              "b": "7 Hector Urbina",
-              "winner": "6 Cathal Pendred",
+              "a": "Cathal Pendred",
+              "b": "Hector Urbina",
+              "winner": "Cathal Pendred",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 7"
             },
             {
-              "a": "2 Mike King",
-              "b": "5 Eddie Gordon",
-              "winner": "5 Eddie Gordon",
+              "a": "Mike King",
+              "b": "Eddie Gordon",
+              "winner": "Eddie Gordon",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "2 vs 5"
             },
             {
-              "a": "4 Tim Williams",
-              "b": "3 Dhiego Lima",
-              "winner": "3 Dhiego Lima",
+              "a": "Tim Williams",
+              "b": "Dhiego Lima",
+              "winner": "Dhiego Lima",
               "method": "Submission",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "4 vs 3"
             },
             {
-              "a": "8 Roger Zapata",
-              "b": "1 Ian Stephens",
-              "winner": "8 Roger Zapata",
+              "a": "Roger Zapata",
+              "b": "Ian Stephens",
+              "winner": "Roger Zapata",
               "method": "D*",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "8 vs 1"
             }
           ]
         },
@@ -274,26 +278,28 @@
           "label": "Semi-finals",
           "bouts": [
             {
-              "a": "6 Cathal Pendred",
-              "b": "5 Eddie Gordon",
-              "winner": "5 Eddie Gordon",
+              "a": "Cathal Pendred",
+              "b": "Eddie Gordon",
+              "winner": "Eddie Gordon",
               "method": "Decision (split)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 5"
             },
             {
-              "a": "3 Dhiego Lima",
-              "b": "8 Roger Zapata",
-              "winner": "3 Dhiego Lima",
+              "a": "Dhiego Lima",
+              "b": "Roger Zapata",
+              "winner": "Dhiego Lima",
               "method": "Submission",
               "round": 1,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "3 vs 8"
             }
           ]
         },
@@ -302,8 +308,8 @@
           "label": "Tournament final",
           "bouts": [
             {
-              "a": "5 Eddie Gordon",
-              "b": "3 Dhiego Lima",
+              "a": "Eddie Gordon",
+              "b": "Dhiego Lima",
               "winner": "Eddie Gordon",
               "method": "KO/TKO",
               "round": 1,
@@ -327,48 +333,52 @@
           "label": "Quarter-finals",
           "bouts": [
             {
-              "a": "4 Josh Clark",
-              "b": "1 Corey Anderson",
-              "winner": "1 Corey Anderson",
+              "a": "Josh Clark",
+              "b": "Corey Anderson",
+              "winner": "Corey Anderson",
               "method": "Decision (majority)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "4 vs 1"
             },
             {
-              "a": "2 Anton Berzin",
-              "b": "3 Patrick Walsh",
-              "winner": "3 Patrick Walsh",
+              "a": "Anton Berzin",
+              "b": "Patrick Walsh",
+              "winner": "Patrick Walsh",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "2 vs 3"
             },
             {
-              "a": "8 Chris Fields",
-              "b": "5 Matt Van Buren",
-              "winner": "5 Matt Van Buren",
+              "a": "Chris Fields",
+              "b": "Matt Van Buren",
+              "winner": "Matt Van Buren",
               "method": "Decision (majority)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "8 vs 5"
             },
             {
-              "a": "6 Daniel Spohn",
-              "b": "7 Todd Monaghan",
-              "winner": "6 Daniel Spohn",
+              "a": "Daniel Spohn",
+              "b": "Todd Monaghan",
+              "winner": "Daniel Spohn",
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "6 vs 7"
             }
           ]
         },
@@ -377,26 +387,28 @@
           "label": "Semi-finals",
           "bouts": [
             {
-              "a": "1 Corey Anderson",
-              "b": "3 Patrick Walsh",
-              "winner": "1 Corey Anderson",
+              "a": "Corey Anderson",
+              "b": "Patrick Walsh",
+              "winner": "Corey Anderson",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "1 vs 3"
             },
             {
-              "a": "5 Matt Van Buren",
-              "b": "6 Daniel Spohn",
-              "winner": "5 Matt Van Buren",
+              "a": "Matt Van Buren",
+              "b": "Daniel Spohn",
+              "winner": "Matt Van Buren",
               "method": "TKO",
               "round": 2,
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "seeds": "5 vs 6"
             }
           ]
         },
@@ -405,8 +417,8 @@
           "label": "Tournament final",
           "bouts": [
             {
-              "a": "1 Corey Anderson",
-              "b": "5 Matt Van Buren",
+              "a": "Corey Anderson",
+              "b": "Matt Van Buren",
               "winner": "Corey Anderson",
               "method": "KO/TKO",
               "round": 1,

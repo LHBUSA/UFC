@@ -160,7 +160,14 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card"
+              "classification_source": "filmed during production and broadcast in episode 6, not contested on a sanctioned card",
+              "rematched_professionally": {
+                "event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
+                "date": "2007-12-08",
+                "result": "Ben Saunders def. Dan Barrera, Decision - Unanimous, round 3",
+                "note": "A second, separate fight. This one was filmed in the house and went to a majority decision after two rounds; the finale bout went the full three and was unanimous. Found by scripts/tuf/verify_classifications.mjs, which flagged the pairing and was then able to tell the two apart by their results.",
+                "verified_against": "ufc_bouts + ufc_bout_results"
+              }
             }
           ]
         },
@@ -220,7 +227,7 @@
           "bouts": [
             {
               "a": "Mac Danzig",
-              "b": "John Kolosci*",
+              "b": "John Kolosci",
               "winner": "Mac Danzig",
               "method": "Submission (rear naked choke) at 4:28 in round one",
               "round": 1,
@@ -282,6 +289,13 @@
         "date": "2007-12-08"
       },
       "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ],
+  "_conflicts": [
+    {
+      "field": "round_of_16_barrera_saunders",
+      "detail": "Ben Saunders beat Dan Barrera twice in this season: by majority decision over two rounds in the house, and by unanimous decision over three on the finale card eight weeks later. Both are recorded, and only the finale bout is professional. Noting it because a check on the pairing alone reads the two as one bout and would reclassify the house fight.",
+      "retrieved": "2026-09-08"
     }
   ]
 }

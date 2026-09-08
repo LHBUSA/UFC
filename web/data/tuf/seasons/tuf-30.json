@@ -20,6 +20,11 @@
       "retrieved": "2026-09-08"
     },
     {
+      "field": "Women's Flyweight_quarter_final",
+      "detail": "The source's bracket has a slot holding only Hannah Guy, with no opponent. It is left out of the round rather than recorded as a bout against nobody.",
+      "retrieved": "2026-09-08"
+    },
+    {
       "field": "unplaced_bouts",
       "detail": "3 bout(s) appear in the episode summaries but in no bracket: Brogan Walker def. Hannah Guy; Zac Pauga def. Jordan Heiderman in the first heavyweight semi-final; Brogan Walker def. Laura Gallardo. Left unplaced rather than assigned to a division by guesswork.",
       "retrieved": "2026-09-08"
@@ -208,23 +213,12 @@
       ]
     },
     {
-      "weight_class": "Women'S Flyweight",
+      "weight_class": "Women's Flyweight",
       "stages": [
         {
           "stage": "quarter_final",
           "label": "Quarter-finals",
           "bouts": [
-            {
-              "a": "Hannah Guy",
-              "b": "",
-              "winner": null,
-              "method": null,
-              "round": null,
-              "time": null,
-              "episode": null,
-              "classification": "unverified",
-              "classification_source": null
-            },
             {
               "a": "Laura Gallardo",
               "b": "Kathryn Paprocki",
