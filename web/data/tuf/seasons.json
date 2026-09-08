@@ -1561,10 +1561,35 @@
           "fighter": "Cezar Ferreira"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC 147: Silva vs Franklin 2",
+      "finale_date": "2012-06-23",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Featherweight",
+          "a": "Rony Jason",
+          "b": "Godofredo Pepey",
+          "winner": "Rony Jason",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC 147: Silva vs Franklin 2",
+          "date": "2012-06-23",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+        },
+        {
+          "weight_class": "Middleweight",
+          "a": "Cezar Ferreira",
+          "b": "Sergio Moraes",
+          "winner": "Cezar Ferreira",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC 147: Silva vs Franklin 2",
+          "date": "2012-06-23",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+        }
+      ],
+      "finale_link_basis": "Resolved by the exact final matchup in our own records — both finalists facing each other, with a result — not by a card name or by a champion merely appearing somewhere."
     },
     {
       "slug": "tuf-brazil-2",
@@ -1585,10 +1610,24 @@
           "fighter": "Leonardo Santos"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC on FUEL TV: Nogueira vs. Werdum",
+      "finale_date": "2013-06-08",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Welterweight",
+          "a": "Leonardo Santos",
+          "b": "William Macario",
+          "winner": "Leonardo Santos",
+          "method": "Submission",
+          "round": 2,
+          "event": "UFC on FUEL TV: Nogueira vs. Werdum",
+          "date": "2013-06-08",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+        }
+      ],
+      "finale_link_basis": "Resolved by the exact final matchup in our own records — both finalists facing each other, with a result — not by a card name or by a champion merely appearing somewhere."
     },
     {
       "slug": "tuf-brazil-3",
@@ -1615,10 +1654,36 @@
           "fighter": "Antônio Carlos Júnior"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC Fight Night: Miocic vs Maldonado",
+      "finale_date": "2014-05-31",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Middleweight",
+          "a": "Warlley Alves",
+          "b": "Marcio Alexandre Junior",
+          "winner": "Warlley Alves",
+          "method": "Submission",
+          "round": 3,
+          "event": "UFC Fight Night: Miocic vs Maldonado",
+          "date": "2014-05-31",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+        },
+        {
+          "weight_class": "Heavyweight",
+          "a": "Antonio Carlos Junior",
+          "b": "Vitor Miranda",
+          "winner": "Antonio Carlos Junior",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC Fight Night: Miocic vs Maldonado",
+          "date": "2014-05-31",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+          "name_in_archive": "Antônio Carlos Júnior"
+        }
+      ],
+      "finale_link_basis": "Resolved by the exact final matchup in our own records — both finalists facing each other, with a result — not by a card name or by a champion merely appearing somewhere."
     },
     {
       "slug": "tuf-brazil-4",
@@ -1644,10 +1709,36 @@
           "fighter": "Glaico França"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC 190: Rousey vs Correia",
+      "finale_date": "2015-08-01",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Bantamweight",
+          "a": "Reginaldo Vieira",
+          "b": "Dileno Lopes",
+          "winner": "Reginaldo Vieira",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC 190: Rousey vs Correia",
+          "date": "2015-08-01",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+        },
+        {
+          "weight_class": "Lightweight",
+          "a": "Glaico Franca Moreira",
+          "b": "Fernando Bruno",
+          "winner": "Glaico Franca Moreira",
+          "method": "Submission",
+          "round": 3,
+          "event": "UFC 190: Rousey vs Correia",
+          "date": "2015-08-01",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+          "name_in_archive": "Glaico França"
+        }
+      ],
+      "finale_link_basis": "Resolved by the exact final matchup in our own records — both finalists facing each other, with a result — not by a card name or by a champion merely appearing somewhere."
     },
     {
       "slug": "tuf-latam-1",
@@ -1727,10 +1818,36 @@
           "fighter": "Erick Montaño"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC Fight Night: Magny vs Gastelum",
+      "finale_date": "2015-11-21",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Enrique Barzola",
+          "b": "Horacio Gutierrez",
+          "winner": "Enrique Barzola",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC Fight Night: Magny vs Gastelum",
+          "date": "2015-11-21",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+        },
+        {
+          "weight_class": "Welterweight",
+          "a": "Erick Montano",
+          "b": "Enrique Marin",
+          "winner": "Erick Montano",
+          "method": "Decision - Split",
+          "round": 3,
+          "event": "UFC Fight Night: Magny vs Gastelum",
+          "date": "2015-11-21",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+          "name_in_archive": "Erick Montaño"
+        }
+      ],
+      "finale_link_basis": "Resolved by the exact final matchup in our own records — both finalists facing each other, with a result — not by a card name or by a champion merely appearing somewhere."
     },
     {
       "slug": "tuf-latam-3",
@@ -1751,10 +1868,25 @@
           "fighter": "Martín Bravo"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC Fight Night: Dos Anjos vs. Ferguson",
+      "finale_date": "2016-11-05",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Martin Bravo",
+          "b": "Claudio Puelles",
+          "winner": "Martin Bravo",
+          "method": "KO/TKO",
+          "round": 2,
+          "event": "UFC Fight Night: Dos Anjos vs. Ferguson",
+          "date": "2016-11-05",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+          "name_in_archive": "Martín Bravo"
+        }
+      ],
+      "finale_link_basis": "Resolved by the exact final matchup in our own records — both finalists facing each other, with a result — not by a card name or by a champion merely appearing somewhere."
     },
     {
       "slug": "tuf-china-1",
@@ -1854,10 +1986,35 @@
           "fighter": "Robert Whittaker"
         }
       ],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC on FX: Sotiropoulos vs Pearson",
+      "finale_date": "2012-12-14",
       "coverage": "metadata_only",
-      "season_state": "completed"
+      "season_state": "completed",
+      "final_bouts": [
+        {
+          "weight_class": "Lightweight",
+          "a": "Norman Parke",
+          "b": "Colin Fletcher",
+          "winner": "Norman Parke",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC on FX: Sotiropoulos vs Pearson",
+          "date": "2012-12-14",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+        },
+        {
+          "weight_class": "Welterweight",
+          "a": "Robert Whittaker",
+          "b": "Brad Scott",
+          "winner": "Robert Whittaker",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "event": "UFC on FX: Sotiropoulos vs Pearson",
+          "date": "2012-12-14",
+          "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+        }
+      ],
+      "finale_link_basis": "Resolved by the exact final matchup in our own records — both finalists facing each other, with a result — not by a card name or by a champion merely appearing somewhere."
     }
   ],
   "_coverage_model": {

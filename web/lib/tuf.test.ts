@@ -347,10 +347,32 @@ test("every verified final records the champion as the winner", () => {
        * are one person. A verified row records the database's spelling and
        * keeps the archive's in name_in_archive, so both survive. */
       const fold = (n: string) => n.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+      /* Two spellings are allowed to stand for the champion: the winner as our
+       * database records it, and the archive's own spelling in name_in_archive.
+       * Folding closes an accent gap ("Montaño" / "Montano") but not a naming
+       * one — our row for the TUF Brazil 4 lightweight champion carries a third
+       * name the archive's does not. That is a declaration, not a fuzzy match:
+       * a winner who is not the champion still fails unless the file says
+       * outright which champion the spelling belongs to. */
+      const spellings = [f.winner!, (f as { name_in_archive?: string }).name_in_archive].filter(Boolean) as string[];
       assert.ok(
-        s.winners.some((w) => fold(w.fighter) === fold(f.winner!)),
+        s.winners.some((w) => spellings.some((n) => fold(w.fighter) === fold(n))),
         `${s.slug}: a verified final must be won by a recorded champion, not merely contested by one`,
       );
     }
   }
+});
+
+test("an alternate spelling only excuses the champion, never a different fighter", () => {
+  /* The rule above accepts name_in_archive as a second spelling of the winner.
+   * That must not become a hole a stranger fits through: a bout whose winner is
+   * nobody's champion under either spelling still has to fail. */
+  const fold = (n: string) => n.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  const champions = ["Glaico França"];
+  const passes = (winner: string, archive?: string) =>
+    [winner, archive].filter(Boolean).some((n) => champions.some((c) => fold(c) === fold(n as string)));
+
+  assert.ok(passes("Glaico Franca Moreira", "Glaico França"), "the declared archive spelling is accepted");
+  assert.ok(!passes("Fernando Bruno", undefined), "the losing finalist is not");
+  assert.ok(!passes("Fernando Bruno", "Fernando Bruno"), "and declaring his own name does not launder him into the champion");
 });
