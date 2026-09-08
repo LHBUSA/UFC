@@ -49,7 +49,10 @@ jobs:
           if [ -f .github/dna-repair/APPLY ]; then
             args=(--apply)
           fi
-          node --import ./scripts/dna/fetch_retry_preload.mjs scripts/dna/repair_historical_snapshots.mjs "${args[@]}" | tee fight-dna-history-repair.log
+          # NODE_OPTIONS is inherited by the repair runner's spawned builder.
+          # Passing --import only to the parent left the child unprotected.
+          export NODE_OPTIONS="--import=$(pwd)/scripts/dna/fetch_retry_preload.mjs ${NODE_OPTIONS:-}"
+          node scripts/dna/repair_historical_snapshots.mjs "${args[@]}" | tee fight-dna-history-repair.log
 
       - name: Upload proof
         uses: actions/upload-artifact@v4
