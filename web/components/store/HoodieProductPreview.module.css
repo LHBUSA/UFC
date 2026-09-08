@@ -1,12 +1,7 @@
-.preview{position:relative;display:block;aspect-ratio:4/5;overflow:hidden;border-radius:18px;background:radial-gradient(circle at 50% 34%,rgba(212,175,55,.08),transparent 30%),linear-gradient(180deg,#15130f 0%,#070706 72%,#0d0b08 100%);isolation:isolate;box-shadow:inset 0 0 0 1px rgba(212,175,55,.12)}
-.halo{position:absolute;inset:15% 10% 17%;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.07),transparent 65%);filter:blur(14px);z-index:0}
-.hoodie{position:absolute;inset:2% 0 3%;width:100%;height:95%;z-index:1;filter:drop-shadow(0 28px 34px rgba(0,0,0,.48))}
-.logo{position:absolute;z-index:3;left:50%;top:39.2%;width:39%;height:auto;transform:translateX(-50%);object-fit:contain;filter:drop-shadow(0 2px 5px rgba(0,0,0,.55));mix-blend-mode:screen}
-.sleeveMark{position:absolute;z-index:3;right:13.7%;top:47.3%;width:8.5%;aspect-ratio:1;color:#d4af37;transform:rotate(-7deg);filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))}
-.sleeveMark svg{display:block;width:100%;height:100%}
-.badge{position:absolute;z-index:4;left:16px;bottom:34px;padding:6px 9px;border:1px solid rgba(212,175,55,.28);border-radius:999px;background:rgba(8,7,5,.78);backdrop-filter:blur(8px);color:var(--pbe-gold-bright);font:750 8px/1 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em}
-.note{position:absolute;z-index:4;left:17px;bottom:17px;color:rgba(255,245,220,.52);font:650 7.5px/1 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.09em}
+.preview{position:relative;display:block;aspect-ratio:4/5;overflow:hidden;border-radius:18px;background:#090908;isolation:isolate;box-shadow:inset 0 0 0 1px rgba(212,175,55,.14),0 22px 55px rgba(0,0,0,.32)}
+.photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center;background:#090908;transform:scale(1.004)}
+.preview::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.035),inset 0 -80px 85px rgba(0,0,0,.28);border-radius:inherit}
+.badge{position:absolute;z-index:2;left:16px;bottom:16px;padding:7px 10px;border:1px solid rgba(212,175,55,.32);border-radius:999px;background:rgba(8,7,5,.78);backdrop-filter:blur(10px);color:var(--pbe-gold-bright);font:750 8px/1 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.1em;box-shadow:0 8px 24px rgba(0,0,0,.28)}
 .compact{border-radius:0;box-shadow:none}
-.compact .badge{left:12px;bottom:29px;font-size:7px}
-.compact .note{left:13px;bottom:13px;font-size:6.5px}
-@media(max-width:520px){.badge{left:12px;bottom:29px;font-size:7px}.note{left:13px;bottom:13px;font-size:6.5px}.logo{width:42%}.sleeveMark{width:9%}}
+.compact .badge{left:12px;bottom:12px;font-size:7px}
+@media(max-width:520px){.badge{left:12px;bottom:12px;font-size:7px}.photo{transform:none}}
