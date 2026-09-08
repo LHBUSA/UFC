@@ -1,0 +1,6 @@
+One-time recovery apply authorization after dry-run PASS at 6f6b6218eca09cf77c5743af431dedbf77745ef6.
+Source counts: complete_bouts=9343, results=9339, round_rows=41542.
+Expected generated output: feature_rows=18686, snapshots=21747, historical_snapshots=18588, distinct_snapshot_dates=876, stance_rows=38708, stat_snapshots=20349.
+Canaries: Michael Page 5/5 stat bouts, 15 rounds; Nursulton Ruziboev 6/6, 11 rounds for requested as_of 2026-09-05.
+Prior partial writes are conflict-key upserts. Recovery transport now retries 408/425/429/5xx/520-524, bisects repeatedly failing JSON upsert batches, and bounds replay-safe requests to 30 seconds.
+Remove this marker immediately after the apply run completes.
