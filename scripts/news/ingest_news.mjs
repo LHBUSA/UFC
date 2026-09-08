@@ -22,10 +22,28 @@ import {
   loadFighterIndex, findFighterMentions, dedupeEvents, surname,
 } from './lib.mjs';
 
-const args = process.argv.slice(2);
-const DRY = args.includes('--dry-run');
-const RELINK = args.includes('--relink');   /* re-run classification + entity links on recent items (fighters/bouts load continuously) */
-const MAX_AGE_DAYS = Number(args[args.indexOf('--max-age-days') + 1] || 14) || 14;
+/* Options are an argument, not a module-scope constant read from argv at
+ * import time. The Worker imports this module once per isolate and then calls
+ * main() many times; anything decided at import is decided for the life of the
+ * isolate, and process.argv in workerd is empty regardless. */
+export function parseCliOptions(argv = []) {
+  return {
+    dry: argv.includes('--dry-run'),
+    relink: argv.includes('--relink'),   /* re-run classification + entity links on recent items (fighters/bouts load continuously) */
+    maxAgeDays: Number(argv[argv.indexOf('--max-age-days') + 1] || 14) || 14,
+  };
+}
+
+export function resolveOptions(options = {}) {
+  return {
+    dry: Boolean(options.dry),
+    relink: Boolean(options.relink),
+    maxAgeDays: Number(options.maxAgeDays) || 14,
+    /* Per invocation: the freshness cutoff and the +-60d event window both
+     * move with the clock, and a scheduled Worker crosses midnight. */
+    now: options.now ?? Date.now(),
+  };
+}
 
 function fingerprintOf(title, url) {
   return sha256(`${normalize(title)}|${domainOf(url)}`);
@@ -46,8 +64,8 @@ function eventKeys(e) {
   return [...keys];
 }
 
-async function loadEventContext(sb) {
-  const today = new Date();
+async function loadEventContext(sb, now) {
+  const today = new Date(now);
   const lo = new Date(today.getTime() - 60 * 86400e3).toISOString().slice(0, 10);
   const hi = new Date(today.getTime() + 60 * 86400e3).toISOString().slice(0, 10);
   const events = await sb.select('ufc_events', `select=id,name,event_date,venue,city,country,card_status&event_date=gte.${lo}&event_date=lte.${hi}`);
@@ -67,7 +85,7 @@ async function loadEventContext(sb) {
   return { events: primaries.map((e) => ({ ...e, keys: eventKeys(e) })), bouts };
 }
 
-function linkEntities(item, ctx, index) {
+function linkEntities(item, ctx, index, now) {
   const text = `${item.title}. ${item.summary || ''}`;
   const norm = ` ${normalize(text)} `;
   const fighterIds = new Set(findFighterMentions(text, index).map((m) => m.fighter_id));
@@ -75,7 +93,6 @@ function linkEntities(item, ctx, index) {
   /* Event: longest key match wins; ties go to the event closest to today. */
   let event = null;
   let bestLen = 0;
-  const now = Date.now();
   for (const e of ctx.events) {
     for (const k of e.keys) {
       if (!norm.includes(` ${k} `)) continue;
@@ -118,15 +135,16 @@ function linkEntities(item, ctx, index) {
 /* `injectedEnv` lets a non-Node host (the ufc-newsroom Worker) supply its own
  * bindings. Passing nothing keeps the CLI behaviour exactly: Supabase's own
  * default parameter falls back to loadEnv() and reads .env as before. */
-export async function main(injectedEnv) {
+export async function main(injectedEnv, options = {}) {
+  const opts = resolveOptions(options);
   const sb = new Supabase(injectedEnv);
   const sources = await sb.select('ufc_news_sources', 'select=id,kind,name,url,weight&kind=eq.rss&enabled=is.true&order=name.asc');
   if (!sources.length) { console.log('no enabled rss sources; run seed_sources.mjs first'); return; }
 
-  const [index, ctx] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb)]);
+  const [index, ctx] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb, opts.now)]);
   console.log(`index: ${index.fighters.length} fighters, ${ctx.events.length} events within +-60d, ${ctx.bouts.length} bouts`);
 
-  const cutoff = Date.now() - MAX_AGE_DAYS * 86400e3;
+  const cutoff = opts.now - opts.maxAgeDays * 86400e3;
   const totals = { fetched: 0, parsed: 0, stale: 0, dup: 0, inserted: 0, failed: 0, linked_fighters: 0, linked_event: 0, linked_bout: 0 };
   const seenThisRun = new Set();
 
@@ -166,7 +184,7 @@ export async function main(injectedEnv) {
     for (const it of fresh) {
       if (known.has(it.link) || known.has(it.fingerprint)) { totals.dup += 1; continue; }
       const taxonomy = classify(it.title, it.summary);
-      const links = linkEntities(it, ctx, index);
+      const links = linkEntities(it, ctx, index, opts.now);
       const row = {
         source_id: src.id,
         url: it.link,
@@ -183,7 +201,7 @@ export async function main(injectedEnv) {
       if (links.event_id) totals.linked_event += 1;
       if (links.bout_id) totals.linked_bout += 1;
       const tagLine = `[${taxonomy.labels.slice(0, 3).join(',')} ${taxonomy.confidence}] f=${links.fighter_ids.length} e=${links.event_id ? 'y' : '-'} b=${links.bout_id ? 'y' : '-'}`;
-      if (DRY) { console.log(`  would insert ${tagLine} ${it.title}`); inserted += 1; continue; }
+      if (opts.dry) { console.log(`  would insert ${tagLine} ${it.title}`); inserted += 1; continue; }
       try {
         await sb.insert('ufc_news_items', [row], { onConflict: 'fingerprint', ignoreDuplicates: true, returning: false });
         inserted += 1;
@@ -194,33 +212,36 @@ export async function main(injectedEnv) {
       }
     }
     totals.inserted += inserted;
-    console.log(`${src.name}: ${items.length} items, ${fresh.length} fresh, ${inserted} ${DRY ? 'would be ' : ''}inserted`);
+    console.log(`${src.name}: ${items.length} items, ${fresh.length} fresh, ${inserted} ${opts.dry ? 'would be ' : ''}inserted`);
   }
 
-  if (RELINK) {
+  if (opts.relink) {
     const since = new Date(cutoff).toISOString();
     const items = await sb.select('ufc_news_items', `select=id,title,summary,fighter_ids,event_id,bout_id,taxonomy&captured_at=gte.${since}&order=captured_at.desc`);
     let changed = 0;
     for (const it of items) {
-      const links = linkEntities({ title: it.title, summary: it.summary }, ctx, index);
+      const links = linkEntities({ title: it.title, summary: it.summary }, ctx, index, opts.now);
       const taxonomy = classify(it.title, it.summary);
       const same = JSON.stringify([...it.fighter_ids].sort()) === JSON.stringify([...links.fighter_ids].sort())
         && it.event_id === links.event_id && it.bout_id === links.bout_id
         && JSON.stringify(it.taxonomy.labels) === JSON.stringify(taxonomy.labels) && it.taxonomy.confidence === taxonomy.confidence;
       if (same) continue;
       changed += 1;
-      if (DRY) { console.log(`  would relink ${it.title.slice(0, 70)} -> f=${links.fighter_ids.length} e=${links.event_id ? 'y' : '-'} b=${links.bout_id ? 'y' : '-'}`); continue; }
+      if (opts.dry) { console.log(`  would relink ${it.title.slice(0, 70)} -> f=${links.fighter_ids.length} e=${links.event_id ? 'y' : '-'} b=${links.bout_id ? 'y' : '-'}`); continue; }
       await sb.patch('ufc_news_items', `id=eq.${it.id}`, { ...links, taxonomy });
     }
-    console.log(`relink: ${items.length} items checked, ${changed} ${DRY ? 'would change' : 'patched'}`);
+    console.log(`relink: ${items.length} items checked, ${changed} ${opts.dry ? 'would change' : 'patched'}`);
   }
 
   console.log(`\nsources fetched=${totals.fetched} failed=${totals.failed} | items parsed=${totals.parsed} stale=${totals.stale} dup=${totals.dup} inserted=${totals.inserted}`);
   console.log(`linked: fighters on ${totals.linked_fighters}, event on ${totals.linked_event}, bout on ${totals.linked_bout} of the inserted items`);
+  /* Returned rather than logged-and-grepped: the GitHub workflow parsed
+   * `inserted=N` out of stdout and read 0 whenever the line moved. */
+  return totals;
 }
 
 /* Only self-execute as a CLI. Imported by the Worker, this file must define
  * and export, never run: an import that ingests would make merely loading the
  * module a production write. */
 const isCli = typeof process !== 'undefined' && process.argv?.[1]?.endsWith('ingest_news.mjs');
-if (isCli) main().catch((e) => { console.error(e); process.exit(1); });
+if (isCli) main(undefined, parseCliOptions(process.argv.slice(2))).catch((e) => { console.error(e); process.exit(1); });

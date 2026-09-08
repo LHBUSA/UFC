@@ -12,7 +12,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Supabase, CONFLICT_TARGETS } from './supabase.mjs';
-import { enhance, enhanceOrKeep, parseEnvelope, isConfigured } from './anthropic.mjs';
+import { isConfigured } from '../../../scripts/news/anthropic.mjs';
 import { findActiveRun, lastSuccessByPhase, STALE_RUN_MINUTES, WORKER } from './runlog.mjs';
 
 const ENV = { SUPABASE_URL: 'https://db.invalid', SUPABASE_SERVICE_ROLE_KEY: 'service-role-test-key' };
@@ -145,87 +145,45 @@ test('a crashed run does not lock the newsroom forever', async () => {
 
 /* ---- 7, 8. the enhancement can never stop publication -------------------- */
 
-test('Anthropic unconfigured: the deterministic article survives untouched', async () => {
-  const draft = { headline: 'H', body_md: 'B', model_version: 'template-2' };
-  const out = await enhanceOrKeep({}, draft, { prompt: 'x' });
-  assert.equal(out.enhanced, false);
-  assert.deepEqual(out.article, draft);
+/* These properties are now asserted against the writer PRODUCTION runs, in
+ * writer_path.test.mjs, rather than against a helper module beside it.
+ *
+ * That is the whole lesson of this file's previous version. It tested
+ * workers/ufc-newsroom/src/anthropic.mjs — enhance(), enhanceOrKeep(),
+ * parseEnvelope() — thoroughly and correctly, and none of it touched the code
+ * that wrote articles. The writer had its own Messages implementation, the
+ * Worker never called the helper for anything but isConfigured(), and the
+ * Worker's attempt to switch the writer's LLM path on could not work. Four
+ * green tests about provider failure sat next to a writer that had never once
+ * been asked to call a provider.
+ *
+ * The helper is deleted. There is one transport (scripts/news/anthropic.mjs),
+ * used by the writer and by the editorial desk, and the guarantees below are
+ * tested through them:
+ *
+ *   llm off            -> template stored, no request made
+ *   llm on + key       -> the writer itself calls Anthropic
+ *   provider fails     -> template survives, five different failure shapes
+ *   gate rejects       -> template survives, four different violations
+ */
+
+test('the one Anthropic module is the one the writer imports', async () => {
+  /* Cheap, and it is exactly the property that was violated: two modules, one
+   * of them believed to be production. */
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const here = new URL('./', import.meta.url);
+  const workerModules = readdirSync(here).filter((f) => f.endsWith('.mjs') && !f.endsWith('.test.mjs'));
+  assert.ok(!workerModules.includes('anthropic.mjs'),
+    'a second Anthropic implementation beside the Worker is how the first one stopped being run');
+
+  const writer = readFileSync(new URL('../../../scripts/news/write_articles.mjs', import.meta.url), 'utf8');
+  const desk = readFileSync(new URL('../../../scripts/news/polish_world_class.mjs', import.meta.url), 'utf8');
+  for (const [name, src] of [['writer', writer], ['desk', desk]]) {
+    assert.ok(src.includes("from './anthropic.mjs'"), `the ${name} must use the shared transport`);
+    assert.ok(!src.includes('api.anthropic.com'), `the ${name} must not open its own connection`);
+  }
+  assert.equal(isConfigured({ ANTHROPIC_API_KEY: 'k' }), true);
   assert.equal(isConfigured({}), false);
-});
-
-test('Anthropic unavailable in every way: still the deterministic article', async () => {
-  const draft = { headline: 'H', body_md: 'B', model_version: 'template-2' };
-  const real = globalThis.fetch;
-  try {
-    for (const [label, impl] of [
-      ['network error', async () => { throw new Error('ECONNRESET'); }],
-      ['timeout', async () => { const e = new Error('timed out'); e.name = 'TimeoutError'; throw e; }],
-      ['http 529', async () => ({ ok: false, status: 529 })],
-      ['empty content', async () => ({ ok: true, json: async () => ({ content: [] }) })],
-      ['unparseable', async () => ({ ok: true, json: async () => ({ content: [{ type: 'text', text: 'sorry, no.' }] }) })],
-    ]) {
-      globalThis.fetch = impl;
-      const out = await enhanceOrKeep({ ANTHROPIC_API_KEY: 'k' }, draft, { prompt: 'x' });
-      assert.equal(out.enhanced, false, `${label} must not enhance`);
-      assert.deepEqual(out.article, draft, `${label} must leave the draft intact`);
-    }
-  } finally { globalThis.fetch = real; }
-});
-
-test('Anthropic output that fails the editorial gate is discarded', async () => {
-  const draft = { headline: 'Verified headline', body_md: 'Facts only.', model_version: 'template-2' };
-  const real = globalThis.fetch;
-  globalThis.fetch = async () => ({
-    ok: true,
-    json: async () => ({
-      model: 'claude-sonnet-5',
-      content: [{ type: 'text', text: '{"headline":"Lock of the night","body_md":"Guaranteed winner at -400."}' }],
-    }),
-  });
-  try {
-    /* A gate that rejects invented betting language, the same shape the
-       template had to satisfy. The only way to publish an enhanced version is
-       to be strictly better by the rules the deterministic one already met. */
-    const gate = (c) => (/lock|guaranteed|winner/i.test(`${c.headline} ${c.body_md}`)
-      ? { ok: false, reason: 'unsupported betting claim' }
-      : { ok: true });
-    const out = await enhanceOrKeep({ ANTHROPIC_API_KEY: 'k' }, draft, { prompt: 'x', gate });
-    assert.equal(out.enhanced, false);
-    assert.match(out.reason, /gate: unsupported betting claim/);
-    assert.deepEqual(out.article, draft, 'the verified article is what gets stored');
-  } finally { globalThis.fetch = real; }
-});
-
-test('an accepted enhancement is recorded as the model that wrote it', async () => {
-  const draft = { headline: 'H', body_md: 'B', slug: 's', model_version: 'template-2' };
-  const real = globalThis.fetch;
-  globalThis.fetch = async () => ({
-    ok: true,
-    json: async () => ({ model: 'claude-sonnet-5', content: [{ type: 'text', text: '{"headline":"Clearer headline"}' }] }),
-  });
-  try {
-    const out = await enhanceOrKeep({ ANTHROPIC_API_KEY: 'k' }, draft, { prompt: 'x', gate: () => ({ ok: true }) });
-    assert.equal(out.enhanced, true);
-    assert.equal(out.article.headline, 'Clearer headline');
-    assert.equal(out.article.slug, 's', 'identity fields survive the merge');
-    assert.equal(out.article.model_version, 'anthropic:claude-sonnet-5');
-  } finally { globalThis.fetch = real; }
-});
-
-test('enhance() never throws, whatever the provider does', async () => {
-  const real = globalThis.fetch;
-  globalThis.fetch = async () => { throw new Error('boom'); };
-  try {
-    assert.equal(await enhance({ ANTHROPIC_API_KEY: 'k' }, { prompt: 'x' }), null,
-      'a forgotten catch here would take down publication, so there is no throw path');
-  } finally { globalThis.fetch = real; }
-});
-
-test('a fenced or chatty JSON envelope is still parsed', () => {
-  assert.deepEqual(parseEnvelope('```json\n{"a":1}\n```'), { a: 1 });
-  assert.deepEqual(parseEnvelope('Here you go: {"a":2} hope that helps'), { a: 2 });
-  assert.equal(parseEnvelope('no json at all'), null);
-  assert.equal(parseEnvelope(''), null);
 });
 
 /* ---- 10. one dead source must not kill the healthy ones ------------------ */

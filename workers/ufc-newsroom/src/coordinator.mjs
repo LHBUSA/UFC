@@ -18,18 +18,23 @@
  * whatever woke it. Cadence is then a floor on freshness rather than a hope
  * about timers.
  *
- * The second rule is that there is exactly one writer. Phases are computed
- * once, deduplicated, and executed in a fixed order inside a single
- * invocation. Nothing here can schedule two writers against each other.
+ * The second rule is that ONE INVOCATION runs at most one writer. Phases are
+ * computed once, deduplicated, and executed in a fixed order, so nothing here
+ * can schedule two writers against each other. That is a statement about this
+ * module and not about the world: two concurrent invocations are excluded by
+ * the Durable Object in lock.mjs where its binding exists, and by unique
+ * indexes on the rows themselves in every case. See lock.mjs for what each of
+ * those actually guarantees.
  */
 
 /** Phases, in the only order they may execute. */
-export const PHASES = ['ingest', 'write', 'refresh', 'sweep'];
+export const PHASES = ['sources', 'ingest', 'write', 'refresh', 'sweep'];
 
 /* Maximum age before a phase is overdue regardless of which cron fired.
  * Each is the intended cadence plus room for one late run, so an on-time
  * schedule never triggers catch-up and a skipped slot always does. */
 export const MAX_AGE_MINUTES = {
+  sources: 1560,     // intended daily, 26h; feeds move on the scale of months
   ingest: 45,        // intended every 30
   write: 45,         // follows a meaningful ingest
   refresh: 150,      // intended every 120
@@ -40,7 +45,10 @@ export const MAX_AGE_MINUTES = {
 export const CRON_PHASES = {
   '*/30 * * * *': ['ingest'],
   '15 */2 * * *': ['ingest', 'refresh'],
-  '20 10 * * *': ['ingest', 'sweep'],
+  /* Source verification rides the daily slot, before ingest reads the table it
+   * reconciles. Verifying every 30 minutes would fetch five feeds we already
+   * know are healthy; verifying never is how a dead feed stays enabled. */
+  '20 10 * * *': ['sources', 'ingest', 'sweep'],
 };
 
 const minutesSince = (iso, now) => {
@@ -84,7 +92,8 @@ export function planRun({ cron, now = Date.now(), lastSuccessByPhase = {}, force
   }
 
   /* Fixed order, each phase at most once. The ordering is not cosmetic:
-   * writing before ingesting would publish against yesterday's news, and
+   * verifying sources after ingest would reconcile a table ingest has already
+   * read, writing before ingesting would publish against yesterday's news, and
    * sweeping before writing would skip the articles just created. */
   return { phases: PHASES.filter((p) => chosen.has(p)), reasons };
 }

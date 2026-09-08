@@ -10,17 +10,42 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AliasResolver, normalize } from '../../shared/alias_resolver.mjs';
 
-export const HERE = dirname(fileURLToPath(import.meta.url));
-export const REPO_ROOT = resolve(HERE, '..', '..');
 export const SITE_URL = 'https://ufc.propbetedge.ai';
 export const USER_AGENT = 'Mozilla/5.0 (compatible; PropBetEdgeNewsBot/1.0; +https://ufc.propbetedge.ai/about)';
+
+/* Where this file lives on disk — a question only the CLI has any business
+ * asking, and one that has no answer in a Worker.
+ *
+ * These were module-scope constants: `dirname(fileURLToPath(import.meta.url))`
+ * evaluated on import. Under nodejs_compat that is not a soft failure. The
+ * bundler rewrites modules into one file and `import.meta.url` comes out
+ * undefined, so fileURLToPath threw at load and the ENTIRE WORKER refused to
+ * start — no /health, no scheduled handler, nothing. A bundle that builds is
+ * not a bundle that runs, and only starting workerd showed the difference.
+ *
+ * Lazy and guarded now: the CLI still resolves the repo root the first time
+ * loadEnv wants it, and a runtime with no filesystem simply gets null and
+ * falls through to the environment it was given. */
+let repoRoot;
+export function repoRootOrNull() {
+  if (repoRoot !== undefined) return repoRoot;
+  try {
+    const here = dirname(fileURLToPath(import.meta.url));
+    repoRoot = resolve(here, '..', '..');
+  } catch {
+    repoRoot = null;
+  }
+  return repoRoot;
+}
 
 /* ------------------------------------------------------------------ env */
 
 export function loadEnv() {
   const env = { ...process.env };
   try {
-    const raw = readFileSync(resolve(REPO_ROOT, '.env'), 'utf8');
+    const root = repoRootOrNull();
+    if (!root) return env;
+    const raw = readFileSync(resolve(root, '.env'), 'utf8');
     for (const line of raw.split(/\r?\n/)) {
       const m = line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
       if (!m) continue;

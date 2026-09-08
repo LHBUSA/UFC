@@ -8,7 +8,18 @@
  *
  * Provider order:
  *   1. Anthropic when ANTHROPIC_API_KEY is configured.
- *   2. GitHub Copilot CLI using the short-lived Actions token.
+ *   2. GitHub Copilot CLI using the short-lived Actions token — CLI only.
+ *
+ * WORKER-CALLABLE. The ufc-newsroom Worker imports this module and calls main()
+ * with its own bindings, which imposes three rules that the rest of the file
+ * now keeps. Nothing runs on import: this file used to call main() at module
+ * scope with no CLI guard, so importing it would have started an editorial
+ * pass and patched published articles. Nothing is decided at import: the
+ * limits, the window and the models were module-scope constants read from
+ * process.argv and process.env, which in a long-lived isolate is once, ever.
+ * And node:child_process is imported lazily inside the Copilot provider rather
+ * than at the top of the file, so a runtime with no subprocesses can bundle
+ * and load this module: the Copilot path simply reports itself unavailable.
  *
  * Each provider gets one bounded corrective rewrite when the deterministic
  * fact/depth validator rejects its first draft. The correction includes only
@@ -21,21 +32,44 @@
  * Usage:
  *   node scripts/news/polish_world_class.mjs [--limit 20] [--recent-hours 720] [--force] [--dry-run]
  */
-import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { Supabase, loadEnv, wordCount } from './lib.mjs';
+import { callMessages, DEFAULT_MODEL } from './anthropic.mjs';
 
-const args = process.argv.slice(2);
-const flag = (name) => args.includes(name);
-const opt = (name, fallback) => { const i = args.indexOf(name); return i >= 0 && args[i + 1] ? args[i + 1] : fallback; };
-const LIMIT = Math.min(60, Math.max(1, Number(opt('--limit', '30')) || 30));
-const HOURS = Math.min(24 * 60, Math.max(1, Number(opt('--recent-hours', '720')) || 720));
-const FORCE = flag('--force');
-const DRY = flag('--dry-run');
-const ANTHROPIC_MODEL = process.env.UFC_EDITORIAL_MODEL || 'claude-sonnet-5';
-const COPILOT_MODEL = process.env.UFC_EDITORIAL_COPILOT_MODEL || 'auto';
 const DESK_VERSION = 'editorial-desk-v3';
+const DEFAULT_COPILOT_MODEL = 'auto';
+
+export function parseCliOptions(argv = []) {
+  const flag = (name) => argv.includes(name);
+  const opt = (name, fallback) => { const i = argv.indexOf(name); return i >= 0 && argv[i + 1] ? argv[i + 1] : fallback; };
+  return {
+    limit: Number(opt('--limit', '30')) || 30,
+    recentHours: Number(opt('--recent-hours', '720')) || 720,
+    force: flag('--force'),
+    dry: flag('--dry-run'),
+  };
+}
+
+/**
+ * Normalise caller options.
+ *
+ * `env` is threaded in because the model ids used to be read from
+ * process.env at import time; a Worker has no process.env worth reading and an
+ * isolate would freeze whatever it found on the first load either way.
+ */
+export function resolveOptions(options = {}, env = {}) {
+  return {
+    limit: Math.min(60, Math.max(1, Number(options.limit) || 30)),
+    recentHours: Math.min(24 * 60, Math.max(1, Number(options.recentHours) || 720)),
+    force: Boolean(options.force),
+    dry: Boolean(options.dry),
+    now: options.now ?? Date.now(),
+    anthropicModel: options.anthropicModel || env.UFC_EDITORIAL_MODEL || DEFAULT_MODEL,
+    copilotModel: options.copilotModel || env.UFC_EDITORIAL_COPILOT_MODEL || DEFAULT_COPILOT_MODEL,
+    /* The Copilot fallback needs a subprocess. Off by default so a host that
+     * cannot spawn one never tries; the CLI turns it on. */
+    allowCopilot: Boolean(options.allowCopilot),
+  };
+}
 
 const SYSTEM = `You are the senior editor of PropBetEdge UFC, a premium bettor-facing combat-sports intelligence newsroom. You receive one complete SOURCE PACKET containing a deterministic draft and its machine-readable fact block. Your job is to turn it into publication-grade sports journalism without adding a single unsupported fact.
 
@@ -182,7 +216,7 @@ function parseModelJson(text) {
   }
 }
 
-function parseCopilotJsonl(stdout) {
+function parseCopilotJsonl(stdout, fallbackModel) {
   let finalMessage = null;
   for (const raw of String(stdout || '').split(/\r?\n/)) {
     const line = raw.trim();
@@ -192,7 +226,7 @@ function parseCopilotJsonl(stdout) {
     if (event?.type !== 'assistant.message') continue;
     if (typeof event?.data?.content !== 'string') continue;
     if (event.data.phase && event.data.phase !== 'final_answer') continue;
-    finalMessage = { content: event.data.content, model: event.data.model || COPILOT_MODEL };
+    finalMessage = { content: event.data.content, model: event.data.model || fallbackModel };
   }
   if (!finalMessage) throw new Error('copilot-cli JSONL contained no final assistant.message');
   return finalMessage;
@@ -214,29 +248,24 @@ function parseAndValidate(text, source, article) {
   return { out, problem };
 }
 
-async function polishAnthropic(apiKey, article, source) {
+async function polishAnthropic(apiKey, article, source, opts) {
   let correction = '';
   let lastProblem = '';
   for (let attempt = 1; attempt <= 2; attempt += 1) {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: ANTHROPIC_MODEL,
-        max_tokens: 18000,
-        thinking: { type: 'adaptive' },
-        system: SYSTEM,
-        messages: [{ role: 'user', content: `${acceptanceInstructions(article)}${correction ? `\n\n${correction}` : ''}\n\nSOURCE PACKET:\n${source}` }],
-      }),
+    /* The transport is shared with the article writer (./anthropic.mjs); the
+     * prompt, the gate and the single corrective retry stay here, because a
+     * copy edit that must preserve every number is not the same editorial job
+     * as this desk's restructuring pass. */
+    const { text } = await callMessages(apiKey, {
+      model: opts.anthropicModel,
+      maxTokens: 18000,
+      thinking: { type: 'adaptive' },
+      system: SYSTEM,
+      prompt: `${acceptanceInstructions(article)}${correction ? `\n\n${correction}` : ''}\n\nSOURCE PACKET:\n${source}`,
     });
-    const json = await res.json();
-    if (!res.ok) throw new Error(`anthropic ${res.status}: ${JSON.stringify(json).slice(0, 320)}`);
-    if (json.stop_reason === 'refusal') throw new Error('anthropic refusal');
-    if (json.stop_reason === 'max_tokens') throw new Error('anthropic output truncated');
-    const text = (json.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
     try {
       const { out, problem } = parseAndValidate(text, source, article);
-      if (!problem) return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'anthropic', model: ANTHROPIC_MODEL, attempts: attempt };
+      if (!problem) return { headline: out.headline.trim(), dek: out.dek.trim(), body_md: out.body_md.trim(), provider: 'anthropic', model: opts.anthropicModel, attempts: attempt };
       lastProblem = problem;
     } catch (error) {
       lastProblem = `invalid output serialization: ${String(error?.message || error).slice(0, 260)}`;
@@ -249,13 +278,19 @@ async function polishAnthropic(apiKey, article, source) {
   throw new Error(`validation after corrective retry: ${lastProblem}`);
 }
 
-function runCopilot(prompt) {
+async function runCopilot(prompt, opts) {
+  /* Imported here, not at the top of the file. A Worker has no subprocesses;
+   * a static import of node:child_process would make this module unloadable
+   * there and take the Anthropic desk down with a fallback nobody can use. */
+  const { spawnSync } = await import('node:child_process');
+  const { mkdtempSync, rmSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
   const workdir = mkdtempSync(`${tmpdir()}/pbe-ufc-editorial-`);
   let child;
   try {
     child = spawnSync('copilot', [
       '-p', prompt,
-      '--model', COPILOT_MODEL,
+      '--model', opts.copilotModel,
       '--stream=off',
       '--output-format=json',
       '--no-color',
@@ -284,16 +319,16 @@ function runCopilot(prompt) {
     const detail = String(child.stderr || child.stdout || '').trim().replace(/\s+/g, ' ').slice(0, 500);
     throw new Error(`copilot-cli exit ${child.status}: ${detail}`);
   }
-  return parseCopilotJsonl(child.stdout);
+  return parseCopilotJsonl(child.stdout, opts.copilotModel);
 }
 
-function polishCopilot(article, source) {
+async function polishCopilot(article, source, opts) {
   let correction = '';
   let lastProblem = '';
-  let lastModel = COPILOT_MODEL;
+  let lastModel = opts.copilotModel;
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     const prompt = `${SYSTEM}\n\n${acceptanceInstructions(article)}${correction ? `\n\n${correction}` : ''}\n\nSOURCE PACKET:\n${source}`;
-    const envelope = runCopilot(prompt);
+    const envelope = await runCopilot(prompt, opts);
     lastModel = envelope.model;
     try {
       const { out, problem } = parseAndValidate(envelope.content, source, article);
@@ -310,70 +345,104 @@ function polishCopilot(article, source) {
   throw new Error(`validation after corrective retry via ${lastModel}: ${lastProblem}`);
 }
 
-async function polish(env, article) {
+/** Which providers this host can actually use, given its bindings. */
+export function providersFor(env = {}, opts = { allowCopilot: false }) {
+  return {
+    anthropic: Boolean(env.ANTHROPIC_API_KEY),
+    /* A token is not enough: the Copilot path spawns a process, so a host that
+     * cannot spawn one does not have this provider however many tokens it
+     * holds. The Worker never sets allowCopilot. */
+    copilot: Boolean(opts.allowCopilot && (env.COPILOT_GITHUB_TOKEN || env.GITHUB_TOKEN)),
+  };
+}
+
+async function polish(env, article, opts) {
   const { source } = sourcePacket(article);
-  const copilotToken = env.COPILOT_GITHUB_TOKEN || env.GITHUB_TOKEN || '';
+  const have = providersFor(env, opts);
   const errors = [];
 
-  if (env.ANTHROPIC_API_KEY) {
-    try { return await polishAnthropic(env.ANTHROPIC_API_KEY, article, source); }
+  if (have.anthropic) {
+    try { return await polishAnthropic(env.ANTHROPIC_API_KEY, article, source, opts); }
     catch (error) {
       errors.push(`anthropic: ${String(error?.message || error)}`);
-      if (!copilotToken) throw error;
+      if (!have.copilot) throw error;
       console.log(`  FALLBACK ${article.slug}: Anthropic unavailable/held; trying Copilot CLI`);
     }
   }
 
-  if (copilotToken) {
-    try { return polishCopilot(article, source); }
+  if (have.copilot) {
+    try { return await polishCopilot(article, source, opts); }
     catch (error) { errors.push(`copilot-cli: ${String(error?.message || error)}`); }
   }
 
-  if (!env.ANTHROPIC_API_KEY && !copilotToken) throw new Error('no editorial model provider configured');
+  if (!have.anthropic && !have.copilot) throw new Error('no editorial model provider configured');
   throw new Error(errors.join(' | ').slice(0, 900));
 }
 
-async function main() {
-  const env = loadEnv();
-  const copilotToken = env.COPILOT_GITHUB_TOKEN || env.GITHUB_TOKEN || '';
-  if (!env.ANTHROPIC_API_KEY && !copilotToken) {
-    throw new Error('world-class desk: neither ANTHROPIC_API_KEY nor Copilot token is configured');
+export async function main(injectedEnv, options = {}) {
+  const env = injectedEnv || loadEnv();
+  const opts = resolveOptions(options, env);
+  const have = providersFor(env, opts);
+
+  /* No provider is not a crash and not a silent success. The desk is the
+   * polish layer; publication does not pass through it, so a host with no
+   * model reports that it did nothing and returns. The CLI adapter below
+   * turns this into a non-zero exit, which is what the workflow relied on. */
+  if (!have.anthropic && !have.copilot) {
+    console.log('world-class desk: no editorial model provider configured; nothing polished');
+    return { status: 'no_provider', candidates: 0, passed: 0, skipped: 0, held: 0, provider: null };
   }
-  const provider = env.ANTHROPIC_API_KEY
-    ? `anthropic:${ANTHROPIC_MODEL}${copilotToken ? ' (+ copilot-cli fallback)' : ''}`
-    : `copilot-cli:${COPILOT_MODEL}`;
+
+  const provider = have.anthropic
+    ? `anthropic:${opts.anthropicModel}${have.copilot ? ' (+ copilot-cli fallback)' : ''}`
+    : `copilot-cli:${opts.copilotModel}`;
   console.log(`world-class desk: provider=${provider}`);
 
   const sb = new Supabase(env);
-  const since = new Date(Date.now() - HOURS * 3600 * 1000).toISOString();
-  const rows = await sb.select('ufc_articles', `select=id,slug,headline,dek,body_md,story_type,status,fact_block,sources,model_version,updated_at&status=eq.published&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.desc&limit=${LIMIT}`);
+  const since = new Date(opts.now - opts.recentHours * 3600 * 1000).toISOString();
+  const rows = await sb.select('ufc_articles', `select=id,slug,headline,dek,body_md,story_type,status,fact_block,sources,model_version,updated_at&status=eq.published&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.desc&limit=${opts.limit}`);
   let passed = 0, skipped = 0, rejected = 0;
-  console.log(`world-class desk: candidates=${rows.length} limit=${LIMIT} hours=${HOURS} force=${FORCE} dry=${DRY}`);
+  console.log(`world-class desk: candidates=${rows.length} limit=${opts.limit} hours=${opts.recentHours} force=${opts.force} dry=${opts.dry}`);
   for (const article of rows) {
-    if (!FORCE && /\/editorial-desk-v\d+(?:$|\b)/.test(String(article.model_version || ''))) { skipped++; continue; }
+    if (!opts.force && /\/editorial-desk-v\d+(?:$|\b)/.test(String(article.model_version || ''))) { skipped++; continue; }
     if (!article.fact_block || !article.body_md) { skipped++; continue; }
     try {
-      const out = await polish(env, article);
+      const out = await polish(env, article, opts);
       console.log(`  PASS ${article.story_type.padEnd(13)} ${wordCount(article.body_md)}w -> ${wordCount(out.body_md)}w  ${article.slug} via ${out.provider}:${out.model} attempts=${out.attempts || 1}`);
       passed++;
-      if (!DRY) {
+      if (!opts.dry) {
         await sb.patch('ufc_articles', `id=eq.${article.id}`, {
           headline: out.headline,
           dek: out.dek,
           body_md: out.body_md,
           model_version: `${out.provider}:${out.model}/${DESK_VERSION}`,
-          updated_at: new Date().toISOString(),
+          updated_at: new Date(opts.now).toISOString(),
         });
       }
     } catch (error) {
+      /* A held article keeps the version already published. The desk may only
+       * improve an article; it may never remove or downgrade one. */
       rejected++;
       console.log(`  HOLD ${article.slug}: ${String(error?.message || error).slice(0, 900)}`);
     }
   }
   console.log(`world-class desk: passed=${passed} skipped=${skipped} held=${rejected}`);
+  const result = { status: 'ran', candidates: rows.length, passed, skipped, held: rejected, provider, dry: opts.dry };
   if (rows.length > 0 && passed === 0 && skipped === 0 && rejected > 0) {
-    throw new Error(`world-class desk: every candidate was held (${rejected}/${rows.length}); failing closed`);
+    /* Fail closed: every candidate held means the gate is rejecting everything
+     * the model produces, which is a desk fault worth surfacing, not a quiet
+     * no-op. Published articles are untouched either way. */
+    const e = new Error(`world-class desk: every candidate was held (${rejected}/${rows.length}); failing closed`);
+    e.deskResult = result;
+    throw e;
   }
+  return result;
 }
 
-main().catch((error) => { console.error(error); process.exit(1); });
+/* CLI only. Importing this module must never start an editorial pass. */
+const isCli = typeof process !== 'undefined' && process.argv?.[1]?.endsWith('polish_world_class.mjs');
+if (isCli) {
+  main(undefined, { ...parseCliOptions(process.argv.slice(2)), allowCopilot: true })
+    .then((r) => { if (r && r.status === 'no_provider') { console.error('world-class desk: neither ANTHROPIC_API_KEY nor Copilot token is configured'); process.exit(1); } })
+    .catch((error) => { console.error(error); process.exit(1); });
+}
