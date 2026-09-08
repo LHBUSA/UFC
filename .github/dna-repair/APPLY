@@ -1,7 +1,0 @@
-One-time recovery apply authorization after inherited-child retry dry-run PASS.
-Dry-run proof commit: 0e4e5f744c2d9643f48b5ba63c9ad7a15bf1c105.
-Source counts: complete_bouts=9343, results=9339, round_rows=41542.
-Expected output: feature_rows=18686, snapshots=21747, historical_snapshots=18588, distinct_snapshot_dates=876, stance_rows=38708, stat_snapshots=20349.
-Canaries: Michael Page 5/5 stat bouts, 15 rounds; Nursulton Ruziboev 6/6, 11 rounds for requested as_of 2026-09-05.
-Prior partial writes are conflict-key upserts and this recovery is idempotent. Retry preload is now inherited by the spawned builder through NODE_OPTIONS.
-Remove this marker immediately after the apply run completes.
