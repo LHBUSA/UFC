@@ -317,6 +317,19 @@ test("a champion who lost the matched bout is never recorded as verified", () =>
   assert.ok(!(t24 as Record<string, unknown>).final_bouts, "and must carry no verified final");
 });
 
+test("a differing spelling is recorded, not resolved away", () => {
+  /* TUF 26's champion is "Nicco Montaño" in the season record and "Nicco
+   * Montano" in ufc_fighters. The verified row carries the database's
+   * spelling — it has to, that is what was matched — and keeps the archive's
+   * beside it rather than quietly adopting one as the truth. */
+  const t26 = seasons.find((s) => s.slug === "tuf-26")!;
+  const finals = (t26 as Record<string, unknown>).final_bouts as Array<{ winner?: string; name_in_archive?: string }>;
+  assert.ok(finals?.length, "tuf-26 should be verified");
+  const f = finals[0];
+  assert.ok(f.name_in_archive, "the archive's spelling must be preserved when it differs");
+  assert.notEqual(f.name_in_archive, f.winner, "and it must differ, which is the point of the field");
+});
+
 test("every verified final records the champion as the winner", () => {
   for (const s of seasons) {
     const finals = (s as Record<string, unknown>).final_bouts as
@@ -329,8 +342,13 @@ test("every verified final records the champion as the winner", () => {
         f.winner === f.a || f.winner === f.b,
         `${s.slug}: the recorded winner must be one of the two fighters`,
       );
+      /* Accent-folded, because the archive spells names as its sources do and
+       * ufc_fighters generally does not — "Nicco Montaño" and "Nicco Montano"
+       * are one person. A verified row records the database's spelling and
+       * keeps the archive's in name_in_archive, so both survive. */
+      const fold = (n: string) => n.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
       assert.ok(
-        s.winners.some((w) => w.fighter === f.winner),
+        s.winners.some((w) => fold(w.fighter) === fold(f.winner!)),
         `${s.slug}: a verified final must be won by a recorded champion, not merely contested by one`,
       );
     }
