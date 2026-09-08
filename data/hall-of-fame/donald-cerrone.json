@@ -99,9 +99,20 @@
     "verified_at": "2026-09-07T14:10:10.093Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:52.259Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "92214346-ec86-4bca-b7bf-53992d1ece25",
+    "fighter_name": "Donald Cerrone",
+    "espn_athlete_id": null,
+    "ufcstats_id": "1d00756835ca67c9",
+    "method": "exact_name",
+    "matched_on": "Donald Cerrone",
+    "verified_at": "2026-09-08T11:39:49.313Z",
+    "record": {
+      "w": 36,
+      "l": 17,
+      "d": 0,
+      "nc": 2
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

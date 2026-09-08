@@ -113,9 +113,20 @@
     "verified_at": "2026-09-07T14:10:07.369Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:51.794Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "189dbb32-67d4-42b7-b098-81be761d4146",
+    "fighter_name": "Daniel Cormier",
+    "espn_athlete_id": null,
+    "ufcstats_id": "d967f0128c323de6",
+    "method": "exact_name",
+    "matched_on": "Daniel Cormier",
+    "verified_at": "2026-09-08T11:39:49.061Z",
+    "record": {
+      "w": 22,
+      "l": 3,
+      "d": 0,
+      "nc": 1
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

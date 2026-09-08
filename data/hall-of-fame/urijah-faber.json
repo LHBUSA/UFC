@@ -104,9 +104,20 @@
     "verified_at": "2026-09-07T14:10:02.219Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:11:00.851Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "96fceb90-0bf8-4a2c-ab81-ffe2b5b6ed8b",
+    "fighter_name": "Urijah Faber",
+    "espn_athlete_id": null,
+    "ufcstats_id": "78114b7199cef90c",
+    "method": "exact_name",
+    "matched_on": "Urijah Faber",
+    "verified_at": "2026-09-08T11:39:53.610Z",
+    "record": {
+      "w": 35,
+      "l": 11,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

@@ -86,9 +86,20 @@
     "verified_at": null
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:57.905Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "263f34d2-b82f-4678-9c98-59e9f6934935",
+    "fighter_name": "Antonio Rodrigo Nogueira",
+    "espn_athlete_id": null,
+    "ufcstats_id": "ee9d73f4fee9cbdd",
+    "method": "alias",
+    "matched_on": "Antonio Rodrigo Nogueira",
+    "verified_at": "2026-09-08T11:39:52.155Z",
+    "record": {
+      "w": 34,
+      "l": 10,
+      "d": 1,
+      "nc": 1
+    }
   },
   "media": null,
   "media_search": {

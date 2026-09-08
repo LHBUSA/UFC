@@ -99,9 +99,20 @@
     "verified_at": "2026-09-07T14:09:56.568Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:11:01.509Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "dcd7b51c-3599-4cb7-a218-d4b47bc62ce7",
+    "fighter_name": "Wanderlei Silva",
+    "espn_athlete_id": null,
+    "ufcstats_id": "a1f6999fe57236e0",
+    "method": "exact_name",
+    "matched_on": "Wanderlei Silva",
+    "verified_at": "2026-09-08T11:39:53.836Z",
+    "record": {
+      "w": 35,
+      "l": 13,
+      "d": 1,
+      "nc": 1
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

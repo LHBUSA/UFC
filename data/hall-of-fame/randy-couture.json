@@ -116,9 +116,20 @@
     "verified_at": "2026-09-07T14:09:33.304Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:58.382Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "e5bc5dd5-58a7-419f-80ad-f97454d9e0ae",
+    "fighter_name": "Randy Couture",
+    "espn_athlete_id": null,
+    "ufcstats_id": "0aa92558424ced9e",
+    "method": "exact_name",
+    "matched_on": "Randy Couture",
+    "verified_at": "2026-09-08T11:39:52.388Z",
+    "record": {
+      "w": 19,
+      "l": 11,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

@@ -81,9 +81,20 @@
     "verified_at": null
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:11:00.154Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "ba2738ef-636c-4ae4-b995-728e20f0aee6",
+    "fighter_name": "Mauricio Rua",
+    "espn_athlete_id": null,
+    "ufcstats_id": "140745cbbcb023ac",
+    "method": "alias",
+    "matched_on": "Mauricio Rua",
+    "verified_at": "2026-09-08T11:39:53.246Z",
+    "record": {
+      "w": 27,
+      "l": 14,
+      "d": 1,
+      "nc": 0
+    }
   },
   "media": null,
   "media_search": {

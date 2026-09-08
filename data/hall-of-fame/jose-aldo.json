@@ -114,17 +114,17 @@
   "archive": {
     "archive_status": "linked",
     "fighter_id": "e7f02130-6df6-49c1-a1fb-099e6a776a60",
-    "fighter_name": "José Aldo",
+    "fighter_name": "Jose Aldo",
     "espn_athlete_id": "2447641",
-    "ufcstats_id": null,
-    "method": "exact_name",
+    "ufcstats_id": "d0f3959b4a9747e6",
+    "method": "surname_namelock",
     "matched_on": "José Aldo",
-    "verified_at": "2026-09-07T14:10:54.475Z",
+    "verified_at": "2026-09-08T11:39:50.656Z",
     "record": {
       "w": 32,
       "l": 10,
       "d": 0,
-      "nc": null
+      "nc": 0
     }
   },
   "media": {

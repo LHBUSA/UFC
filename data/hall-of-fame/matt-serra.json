@@ -102,9 +102,20 @@
     "verified_at": "2026-09-07T14:09:45.636Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:56.864Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
+    "fighter_name": "Matt Serra",
+    "espn_athlete_id": null,
+    "ufcstats_id": "86dfed7cc24a9fa7",
+    "method": "exact_name",
+    "matched_on": "Matt Serra",
+    "verified_at": "2026-09-08T11:39:51.662Z",
+    "record": {
+      "w": 11,
+      "l": 7,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": null,
   "media_search": {

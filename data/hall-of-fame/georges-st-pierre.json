@@ -116,9 +116,20 @@
     "verified_at": "2026-09-07T14:10:06.535Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:53.729Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "0d330097-6917-470a-a48f-40b4e85ec3bb",
+    "fighter_name": "Georges St-Pierre",
+    "espn_athlete_id": null,
+    "ufcstats_id": "6506c1d34da9c013",
+    "method": "exact_name",
+    "matched_on": "Georges St-Pierre",
+    "verified_at": "2026-09-08T11:39:49.647Z",
+    "record": {
+      "w": 26,
+      "l": 2,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

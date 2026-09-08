@@ -105,9 +105,20 @@
     "verified_at": "2026-09-07T14:09:40.560Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:50.180Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "b664a683-4169-498b-a14c-658dc56b40be",
+    "fighter_name": "Bas Rutten",
+    "espn_athlete_id": null,
+    "ufcstats_id": "03688dc3c3af3ac1",
+    "method": "exact_name",
+    "matched_on": "Bas Rutten",
+    "verified_at": "2026-09-08T11:39:48.557Z",
+    "record": {
+      "w": 28,
+      "l": 4,
+      "d": 1,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

@@ -103,9 +103,20 @@
     "verified_at": "2026-09-07T14:09:54.941Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:53.966Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "39ded89a-9eb8-42c6-8182-864f10dc8dee",
+    "fighter_name": "Jens Pulver",
+    "espn_athlete_id": null,
+    "ufcstats_id": "44260175069b6276",
+    "method": "exact_name",
+    "matched_on": "Jens Pulver",
+    "verified_at": "2026-09-08T11:39:49.800Z",
+    "record": {
+      "w": 27,
+      "l": 19,
+      "d": 1,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

@@ -102,9 +102,20 @@
     "verified_at": "2026-09-07T14:09:57.198Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:11:01.202Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "47a004fd-5814-48fa-86de-5b6736999f42",
+    "fighter_name": "Vitor Belfort",
+    "espn_athlete_id": null,
+    "ufcstats_id": "0ee783aa00e468f0",
+    "method": "exact_name",
+    "matched_on": "Vitor Belfort",
+    "verified_at": "2026-09-08T11:39:53.729Z",
+    "record": {
+      "w": 26,
+      "l": 14,
+      "d": 0,
+      "nc": 1
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

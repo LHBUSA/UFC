@@ -99,9 +99,20 @@
     "verified_at": "2026-09-07T14:09:41.886Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:55.425Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "fd3e0f60-4ea4-4669-a14b-69f9e8dfcec8",
+    "fighter_name": "Kevin Randleman",
+    "espn_athlete_id": null,
+    "ufcstats_id": "6859f67468ba8489",
+    "method": "exact_name",
+    "matched_on": "Kevin Randleman",
+    "verified_at": "2026-09-08T11:39:51.016Z",
+    "record": {
+      "w": 17,
+      "l": 16,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

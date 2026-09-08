@@ -107,9 +107,20 @@
     "verified_at": "2026-09-07T14:10:01.212Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:50.723Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "ac97d89c-5662-4416-a2bf-0c77d4ff080e",
+    "fighter_name": "BJ Penn",
+    "espn_athlete_id": null,
+    "ufcstats_id": "73c7cfa551289285",
+    "method": "exact_name",
+    "matched_on": "BJ Penn",
+    "verified_at": "2026-09-08T11:39:48.679Z",
+    "record": {
+      "w": 16,
+      "l": 14,
+      "d": 2,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

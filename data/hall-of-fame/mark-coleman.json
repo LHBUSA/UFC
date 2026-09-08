@@ -106,9 +106,20 @@
     "verified_at": "2026-09-07T14:09:34.351Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:56.058Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "4eaf4e2d-7570-4951-ab7c-240bc4ab21e6",
+    "fighter_name": "Mark Coleman",
+    "espn_athlete_id": null,
+    "ufcstats_id": "21b8a0f5c231096f",
+    "method": "exact_name",
+    "matched_on": "Mark Coleman",
+    "verified_at": "2026-09-08T11:39:51.267Z",
+    "record": {
+      "w": 16,
+      "l": 10,
+      "d": 0,
+      "nc": 0
+    }
   },
   "media": null,
   "media_search": {

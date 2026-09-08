@@ -115,9 +115,20 @@
     "verified_at": "2026-09-07T14:09:55.777Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:49.900Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "465134b0-c6d2-405e-a4ec-7611bc87507d",
+    "fighter_name": "Anderson Silva",
+    "espn_athlete_id": null,
+    "ufcstats_id": "1f454354805b6f75",
+    "method": "exact_name",
+    "matched_on": "Anderson Silva",
+    "verified_at": "2026-09-08T11:39:48.422Z",
+    "record": {
+      "w": 34,
+      "l": 11,
+      "d": 0,
+      "nc": 1
+    }
   },
   "media": null,
   "media_search": {

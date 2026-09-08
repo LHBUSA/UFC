@@ -107,9 +107,20 @@
     "verified_at": "2026-09-07T14:09:31.894Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:51.496Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "f4bccc88-8b1e-4350-8b3d-a9571aa28c90",
+    "fighter_name": "Dan Severn",
+    "espn_athlete_id": null,
+    "ufcstats_id": "c670aa48827d6be6",
+    "method": "exact_name",
+    "matched_on": "Dan Severn",
+    "verified_at": "2026-09-08T11:39:48.946Z",
+    "record": {
+      "w": 101,
+      "l": 19,
+      "d": 1,
+      "nc": 0
+    }
   },
   "media": {
     "subject_type": "hof_inductee",

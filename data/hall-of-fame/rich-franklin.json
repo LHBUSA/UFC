@@ -104,9 +104,20 @@
     "verified_at": "2026-09-07T14:09:46.760Z"
   },
   "archive": {
-    "archive_status": "missing",
-    "searched_at": "2026-09-07T14:10:58.855Z",
-    "note": "No canonical fighter row matched under exact, normalized, alias or name-locked surname matching. Backfill candidate; no fighter row was created."
+    "archive_status": "linked",
+    "fighter_id": "1eebf87a-9a1e-42ee-a43b-9facfda71466",
+    "fighter_name": "Rich Franklin",
+    "espn_athlete_id": null,
+    "ufcstats_id": "d897897060f10a3a",
+    "method": "exact_name",
+    "matched_on": "Rich Franklin",
+    "verified_at": "2026-09-08T11:39:52.622Z",
+    "record": {
+      "w": 29,
+      "l": 7,
+      "d": 0,
+      "nc": 1
+    }
   },
   "media": {
     "subject_type": "hof_inductee",
