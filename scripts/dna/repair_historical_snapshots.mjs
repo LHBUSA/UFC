@@ -66,8 +66,8 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
 }
 const HEADERS = { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` };
 
-async function exactCount(table, filter = '') {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=id${filter}`, {
+async function exactCount(table, column, filter = '') {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=${encodeURIComponent(column)}${filter}`, {
     headers: { ...HEADERS, Prefer: 'count=exact', Range: '0-0', 'Range-Unit': 'items' },
   });
   if (!r.ok && r.status !== 206) {
@@ -151,9 +151,9 @@ function parseProof(stdout) {
 
 async function main() {
   const [completeBouts, results, roundRows] = await Promise.all([
-    exactCount('ufc_bouts', '&status=eq.complete'),
-    exactCount('ufc_bout_results'),
-    exactCount('ufc_bout_round_stats'),
+    exactCount('ufc_bouts', 'id', '&status=eq.complete'),
+    exactCount('ufc_bout_results', 'bout_id'),
+    exactCount('ufc_bout_round_stats', 'bout_id'),
   ]);
 
   console.log(JSON.stringify({
