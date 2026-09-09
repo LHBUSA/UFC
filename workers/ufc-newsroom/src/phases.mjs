@@ -192,6 +192,6 @@ export async function runSweep(env, sb, { now = Date.now(), limit, recentHours, 
     status: 'no_provider',
     review_queue: held ?? 0,
     published: published ?? 0,
-    note: 'No OPENAI_API_KEY or ANTHROPIC_API_KEY configured; the desk polished nothing. Deterministic publication is unaffected.',
+    note: 'No OPENAI_API_KEY or ANTHROPIC_API_KEY configured; the desk polished nothing. Publication does not depend on it; deterministic publication is unaffected.',
   };
 }
