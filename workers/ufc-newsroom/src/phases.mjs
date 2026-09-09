@@ -1,13 +1,11 @@
 /* The five newsroom phases.
  *
  * The editorial product is NOT reimplemented here. Source verification, ingest,
- * the core article writer, the bettor-first feature writer and the editorial
- * desk are the same modules the CLI runs — scripts/news/*.mjs — imported and
- * called with the Worker's bindings injected. That is deliberate: dedupe,
- * fighter and event linking, qualification, fact-block construction and
- * hashing, create/refresh semantics, editorial gates, review-queue behaviour,
- * source attribution, bettor-angle and market-watch logic and the licensed-
- * media rules stay in one implementation.
+ * the core article writer, the bettor-first feature writer and the established
+ * Anthropic editorial desk are the same modules the CLI runs — scripts/news/*.mjs
+ * — imported and called with the Worker's bindings injected. The OpenAI desk is
+ * Worker-native because the Cloudflare scheduler is the production owner and
+ * OpenAI is its primary editorial provider.
  *
  * What this file owns is orchestration: which phase, with what options,
  * counted how, and failing how.
@@ -18,8 +16,25 @@ import { main as writeArticles } from '../../../scripts/news/write_articles.mjs'
 import { main as writeFeatures } from '../../../scripts/news/write_features.mjs';
 import { main as polishArticles } from '../../../scripts/news/polish_world_class.mjs';
 import { isConfigured as anthropicConfigured } from '../../../scripts/news/anthropic.mjs';
+import {
+  runOpenAIEditorial,
+  isConfigured as openaiConfigured,
+  DEFAULT_MODEL as DEFAULT_OPENAI_MODEL,
+} from './openai_editorial.mjs';
 
-export { anthropicConfigured };
+export { anthropicConfigured, openaiConfigured, DEFAULT_OPENAI_MODEL };
+
+export function editorialConfigured(env) {
+  return openaiConfigured(env) || anthropicConfigured(env);
+}
+
+export function editorialProvider(env) {
+  if (openaiConfigured(env)) {
+    return `openai:${env.UFC_EDITORIAL_OPENAI_MODEL || DEFAULT_OPENAI_MODEL}`;
+  }
+  if (anthropicConfigured(env)) return 'anthropic';
+  return 'deterministic';
+}
 
 /* Counters are read back from the database rather than parsed out of stdout. */
 async function newsItemCount(sb) { return (await sb.count('ufc_news_items')) ?? 0; }
@@ -43,12 +58,11 @@ export async function runIngest(env, sb, { now = Date.now() } = {}) {
 /**
  * Options the scheduled core writer runs with.
  *
- * Third-party RSS/news items are newsroom inputs, not PropBetEdge publications.
- * They remain available to the live wire, fighter-status machinery and source
- * provenance, but the scheduled article writer may only publish stories that
- * originate in PropBetEdge's verified fight state: previews, results and card
- * changes. Outside reporting can be cited as evidence inside owned reporting;
- * it cannot become a standalone referral article.
+ * The legacy writer's optional inline rewrite is still Anthropic-specific.
+ * When only OPENAI_API_KEY is configured the core writer stays deterministic,
+ * then the OpenAI desk below polishes the published fact-block article through
+ * the same fail-closed publication posture. That keeps the writer authoritative
+ * and avoids passing an OpenAI credential into an Anthropic transport.
  */
 function writerOptions(env, now) {
   return {
@@ -58,20 +72,41 @@ function writerOptions(env, now) {
   };
 }
 
+async function openAIEnhancement(env, sb, {
+  now = Date.now(),
+  limit = 12,
+  recentHours = 72,
+  force = false,
+} = {}) {
+  if (!openaiConfigured(env)) {
+    return { status: 'not_configured', provider: null, candidates: 0, passed: 0, skipped: 0, held: 0 };
+  }
+
+  try {
+    return await runOpenAIEditorial(env, sb, { now, limit, recentHours, force });
+  } catch (e) {
+    if (e && e.deskResult) {
+      return { status: 'all_held', ...e.deskResult, error: String(e.message).slice(0, 200) };
+    }
+    throw e;
+  }
+}
+
 /**
  * Write new core articles, then immediately synthesize the higher-order bettor
- * layer from those published first-party fact blocks.
+ * layer, then offer the freshest published packets to OpenAI when configured.
  *
- * Ordering matters. Features must see the freshest preview/result packets from
- * this same invocation. The feature writer is deterministic, idempotent and
- * never reads RSS rows directly.
+ * OpenAI is idempotent: articles already stamped by the OpenAI desk are skipped,
+ * so a no-change 30-minute run does not repeatedly spend model tokens.
  */
 export async function runWrite(env, sb, { now = Date.now() } = {}) {
   const before = await articleCount(sb);
   const opts = writerOptions(env, now);
   const result = await writeArticles(env, opts);
   const features = await writeFeatures(env, { now });
+  const openai = await openAIEnhancement(env, sb, { now, limit: 12, recentHours: 72 });
   const after = await articleCount(sb);
+
   return {
     created: Math.max(0, after - before),
     articles_total: after,
@@ -84,22 +119,26 @@ export async function runWrite(env, sb, { now = Date.now() } = {}) {
       unchanged: features?.unchanged ?? 0,
       held: features?.held ?? 0,
     },
-    enhancement: result?.llm ? 'anthropic offered' : 'deterministic only',
+    enhancement: openaiConfigured(env)
+      ? `openai:${env.UFC_EDITORIAL_OPENAI_MODEL || DEFAULT_OPENAI_MODEL}`
+      : (result?.llm ? 'anthropic offered' : 'deterministic only'),
+    openai,
   };
 }
 
 /**
  * Baseline refresh.
  *
- * Refresh core packets first, then refresh any automated guide/reset whose
- * source hashes changed. A manual/editor-written feature wins: the feature
- * writer detects it and does not publish a competing automated story.
+ * Refresh core packets first, refresh automated guides/resets, then run the
+ * idempotent OpenAI enhancement over recently changed published packets.
  */
 export async function runRefresh(env, sb, { now = Date.now() } = {}) {
   const before = await articleCount(sb);
   const result = await writeArticles(env, writerOptions(env, now));
   const features = await writeFeatures(env, { now });
+  const openai = await openAIEnhancement(env, sb, { now, limit: 12, recentHours: 72 });
   const after = await articleCount(sb);
+
   return {
     created: Math.max(0, after - before),
     articles_total: after,
@@ -112,32 +151,47 @@ export async function runRefresh(env, sb, { now = Date.now() } = {}) {
       unchanged: features?.unchanged ?? 0,
       held: features?.held ?? 0,
     },
+    openai,
   };
 }
 
-/** Daily editorial sweep — the real desk pass, not a report about one. */
+/** Daily editorial sweep — OpenAI primary, Anthropic fallback if configured. */
 export async function runSweep(env, sb, { now = Date.now(), limit, recentHours, force } = {}) {
   const held = await sb.count('ufc_articles', 'needs_human=is.true');
   const published = await sb.count('ufc_articles', 'status=eq.published');
 
-  if (!anthropicConfigured(env)) {
-    return {
-      status: 'no_provider',
-      review_queue: held ?? 0,
-      published: published ?? 0,
-      note: 'ANTHROPIC_API_KEY not configured; the desk polished nothing. Publication does not depend on it.',
-    };
-  }
-
-  let desk;
-  try {
-    desk = await polishArticles(env, { now, limit, recentHours, force, allowCopilot: false });
-  } catch (e) {
-    if (e && e.deskResult) {
-      return { status: 'all_held', review_queue: held ?? 0, published: published ?? 0, ...e.deskResult, error: String(e.message).slice(0, 200) };
+  if (openaiConfigured(env)) {
+    try {
+      const desk = await runOpenAIEditorial(env, sb, { now, limit, recentHours, force });
+      return { status: 'ran', review_queue: held ?? 0, published: published ?? 0, ...desk };
+    } catch (e) {
+      if (!anthropicConfigured(env)) {
+        if (e && e.deskResult) {
+          return { status: 'all_held', review_queue: held ?? 0, published: published ?? 0, ...e.deskResult, error: String(e.message).slice(0, 200) };
+        }
+        throw e;
+      }
+      console.warn(`[ufc-newsroom] OpenAI sweep unavailable/held; falling back to Anthropic: ${String(e?.message || e).slice(0, 180)}`);
     }
-    throw e;
   }
 
-  return { status: 'ran', review_queue: held ?? 0, published: published ?? 0, ...desk };
+  if (anthropicConfigured(env)) {
+    let desk;
+    try {
+      desk = await polishArticles(env, { now, limit, recentHours, force, allowCopilot: false });
+    } catch (e) {
+      if (e && e.deskResult) {
+        return { status: 'all_held', review_queue: held ?? 0, published: published ?? 0, ...e.deskResult, error: String(e.message).slice(0, 200) };
+      }
+      throw e;
+    }
+    return { status: 'ran', review_queue: held ?? 0, published: published ?? 0, ...desk };
+  }
+
+  return {
+    status: 'no_provider',
+    review_queue: held ?? 0,
+    published: published ?? 0,
+    note: 'No OPENAI_API_KEY or ANTHROPIC_API_KEY configured; the desk polished nothing. Deterministic publication is unaffected.',
+  };
 }
