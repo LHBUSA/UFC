@@ -73,10 +73,24 @@ export async function runIngest(env, sb, { now = Date.now() } = {}) {
   return { inserted, news_items_total: after, sources_fetched: totals?.fetched ?? null, sources_failed: totals?.failed ?? null };
 }
 
-/** Options the writer runs with in this Worker. `llm` is the whole point of
- *  the refactor above: it is now a value the writer actually receives. */
+/**
+ * Options the scheduled writer runs with.
+ *
+ * Third-party RSS/news items are newsroom inputs, not PropBetEdge publications.
+ * They remain available to the live wire, fighter-status machinery and source
+ * provenance, but the scheduled article writer may only publish stories that
+ * originate in PropBetEdge's verified fight state: previews, results and card
+ * changes. A sourced outside report can still be cited inside one of those
+ * stories when a verified fact packet supports the claim; it must never become
+ * a standalone "Publisher X reports... read the original" article merely
+ * because it appeared in an RSS feed.
+ */
 function writerOptions(env, now) {
-  return { llm: anthropicConfigured(env), now };
+  return {
+    llm: anthropicConfigured(env),
+    now,
+    types: 'preview,results,card_change',
+  };
 }
 
 /**
