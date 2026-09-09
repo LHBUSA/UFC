@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { MAX_LINES, parseCart, validateAgainstCatalog } from "@/lib/store/cart";
 import { getProvisioning, provisioningConfigured } from "@/lib/store/provisioning";
 import { createPendingOrder, newExternalId, newPublicToken, ordersConfigured } from "@/lib/store/orders";
-import { DROP001_SLUG, drop001ProvisioningReady, drop001RuntimeStatus, isDrop001Line } from "@/lib/store/release";
+import { drop001RuntimeStatus } from "@/lib/store/release";
+import { isReleaseLine, releaseProvisioningReady } from "@/lib/store/release-policy";
 import { automaticTaxEnabled, SHIP_TO_COUNTRIES, shippingOptions, stripe, stripeConfigured } from "@/lib/store/stripe";
 import { variantKey } from "@/lib/store/types";
 import { SITE } from "@/lib/site";
@@ -50,12 +51,12 @@ export async function POST(req: Request) {
     return json({ error: "cart is not purchasable", problems: problems.map((p) => p.reason) }, 400);
   }
 
-  const releaseProblems = ok.flatMap((r) => {
-    if (r.line.slug !== DROP001_SLUG) return [`${r.name}: not part of Drop 001`];
-    if (!isDrop001Line(r.line.slug, r.line.color)) return [`${r.name}: Drop 001 is Black only`];
-    return [];
-  });
-  if (releaseProblems.length) return json({ error: "NOT_IN_CURRENT_DROP", problems: releaseProblems }, 409);
+  const releaseProblems = ok.flatMap((r) =>
+    isReleaseLine(r.line.slug, r.line.size, r.line.color)
+      ? []
+      : [`${r.name}: that size/colour is not in the active release`],
+  );
+  if (releaseProblems.length) return json({ error: "NOT_IN_CURRENT_RELEASE", problems: releaseProblems }, 409);
 
   const provisioning = await getProvisioning();
   const priced: Array<{ line: (typeof ok)[number]["line"]; name: string; unit_price_cents: number; provider_variant_id: number }> = [];
@@ -63,7 +64,7 @@ export async function POST(req: Request) {
 
   for (const r of ok) {
     const rec = provisioning.get(r.line.slug);
-    const confirmed = r.line.slug === DROP001_SLUG && drop001ProvisioningReady(rec);
+    const confirmed = releaseProvisioningReady(r.line.slug, rec);
     const variant = confirmed ? rec?.provider_variant_ids[variantKey(r.line.size, r.line.color)] : undefined;
     if (!confirmed || typeof variant !== "number") {
       unavailable.push(`${r.name} (${r.line.size} / ${r.line.color})`);
@@ -76,7 +77,7 @@ export async function POST(req: Request) {
     return json(
       {
         error: "NOT_AVAILABLE",
-        message: "That exact hoodie variant is not available for checkout right now. Nothing was charged.",
+        message: "One or more exact product variants are not verified for checkout right now. Nothing was charged.",
         items: unavailable,
       },
       409,
