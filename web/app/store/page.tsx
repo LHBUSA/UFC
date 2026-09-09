@@ -12,7 +12,8 @@ export const revalidate = 60;
 
 const TITLE = "PropBetEdge Store | Premium Fight-Night Gear";
 const DESCRIPTION =
-  "Shop the first PropBetEdge drop: a premium black hoodie with the metallic PBE chest logo and gold fight mark on the sleeve.";
+  "Shop PropBetEdge fight-night gear: the premium PBE hoodie, Fight DNA tee, PBE mug and bettor-first designs built around the same intelligence platform.";
+const DROP002_SLUGS = new Set(["fight-dna-tee", "propbetedge-mug"]);
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
 
 const FORM_LABEL: Record<string, string> = { tee: "Tee", hoodie: "Hoodie", cap: "Cap", mug: "Mug" };
 
-function Card({ p, enabled = false }: { p: StorefrontProduct; enabled?: boolean }) {
+function Card({ p, enabled = false, stateLabel }: { p: StorefrontProduct; enabled?: boolean; stateLabel?: string }) {
   const hoodie = p.slug === DROP001_SLUG;
   const onSale = hoodie ? enabled : enabled && p.purchasable;
   return (
@@ -50,7 +51,7 @@ function Card({ p, enabled = false }: { p: StorefrontProduct; enabled?: boolean 
         </span>
         <span className="st-card-foot">
           <span className="st-price">{formatPrice(p.price_cents)}</span>
-          {onSale ? <span className="st-state st-state-open">On sale</span> : <span className="st-soon">Coming soon</span>}
+          {onSale ? <span className="st-state st-state-open">On sale</span> : <span className="st-soon">{stateLabel ?? "Coming soon"}</span>}
         </span>
       </span>
     </Link>
@@ -67,12 +68,17 @@ export default async function StorePage() {
     pub: toStorefront(d, provisioning.get(d.slug) ?? null),
   });
 
-  const authoredLaunch = launchProducts("ufc").map(project);
-  const firstDrop = authoredLaunch.filter(({ pub }) => pub.slug === DROP001_SLUG);
-  const later = [
+  const all = [
+    ...launchProducts("ufc").map(project),
     ...unreleasedProducts("ufc").map(project),
-    ...authoredLaunch.filter(({ pub }) => pub.slug !== DROP001_SLUG),
-  ].sort((a, b) => a.pub.name.localeCompare(b.pub.name));
+  ];
+  const firstDrop = all.filter(({ pub }) => pub.slug === DROP001_SLUG);
+  const drop002 = all
+    .filter(({ pub }) => DROP002_SLUGS.has(pub.slug))
+    .sort((a, b) => (a.pub.slug === "fight-dna-tee" ? -1 : b.pub.slug === "fight-dna-tee" ? 1 : a.pub.name.localeCompare(b.pub.name)));
+  const later = all
+    .filter(({ pub }) => pub.slug !== DROP001_SLUG && !DROP002_SLUGS.has(pub.slug))
+    .sort((a, b) => a.pub.name.localeCompare(b.pub.name));
   const open = runtime.ready && drop001ProvisioningReady(provisioning.get(DROP001_SLUG));
 
   return (
@@ -80,9 +86,9 @@ export default async function StorePage() {
       <div className="wrap">
         <div className="page">
           <PageHead
-            eyebrow="PropBetEdge Store · Drop 001"
+            eyebrow="PropBetEdge Store · Fight-night gear"
             title="Built for fight night."
-            lede="Premium black fleece. Metallic PBE across the chest. Gold fight mark on the sleeve. The first PropBetEdge drop is made for the arena and everywhere after."
+            lede="The premium PBE hoodie is only the start. Fight DNA gets its own black-and-gold tee, the house logo gets a desk-ready mug, and the rest of the merch line is built from the same bettor-first identity as the platform."
             crumbs={[{ name: "Store" }]}
           />
         </div>
@@ -100,7 +106,7 @@ export default async function StorePage() {
 
       <section className="wrap st-section">
         <div className="st-section-head">
-          <h2>PropBetEdge Premium Hoodie</h2>
+          <h2>Drop 001 · PropBetEdge Premium Hoodie</h2>
           <p>8.5 oz premium fleece · 65/35 ring-spun cotton blend · 100% cotton face · 3-panel hood.</p>
         </div>
         <div className="st-grid st-grid-launch" style={{ maxWidth: 320, gridTemplateColumns: "minmax(0, 1fr)" }}>
@@ -108,11 +114,24 @@ export default async function StorePage() {
         </div>
       </section>
 
+      {drop002.length > 0 && (
+        <section className="wrap st-section">
+          <div className="st-section-head">
+            <div className="eyebrow">Drop 002 · Next up</div>
+            <h2>Fight DNA Tee + PBE Mug</h2>
+            <p>The two quick wins: Fight DNA as a real wearable brand piece, plus the core PBE mark on something that lives on the desk every day.</p>
+          </div>
+          <div className="st-grid st-grid-launch">
+            {drop002.map(({ pub }) => <Card key={pub.slug} p={pub} stateLabel="Next drop" />)}
+          </div>
+        </section>
+      )}
+
       {later.length > 0 && (
         <section className="wrap st-section">
           <div className="st-section-head">
-            <h2>More gear coming</h2>
-            <p>Tees, mugs and additional PropBetEdge pieces are on the way.</p>
+            <h2>More from the merch lab</h2>
+            <p>Additional tees, mugs, Fight DNA pieces, Tale of the Tape gear and bettor-first designs stay visible while we decide what earns the next production slot.</p>
           </div>
           {LINES.map((c) => {
             const inLine = later.filter((i) => i.line === c.key);
