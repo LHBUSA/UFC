@@ -11,7 +11,6 @@
  * counted how, and failing how.
  */
 import { main as seedSources } from '../../../scripts/news/seed_sources.mjs';
-import { main as ingestNews } from '../../../scripts/news/ingest_news.mjs';
 import { main as writeArticles } from '../../../scripts/news/write_articles.mjs';
 import { main as writeFeatures } from '../../../scripts/news/write_features.mjs';
 import { main as polishArticles } from '../../../scripts/news/polish_world_class.mjs';
@@ -48,11 +47,40 @@ export async function runSources(env, sb) {
 
 /** Pull every enabled source into ufc_news_items. */
 export async function runIngest(env, sb, { now = Date.now() } = {}) {
-  const before = await newsItemCount(sb);
-  const totals = await ingestNews(env, { now });
-  const after = await newsItemCount(sb);
-  const inserted = Math.max(0, after - before);
-  return { inserted, news_items_total: after, sources_fetched: totals?.fetched ?? null, sources_failed: totals?.failed ?? null };
+  /* RETIRED AS A WRITER 2026-09-09. This phase now OBSERVES the wire; it does
+   * not fill it. ufc-news-ingest is the sole writer to ufc_news_items.
+   *
+   * WHY THE WRITER HAD TO GO, and it is not tidiness. Two writers were filling
+   * one table with different semantics:
+   *
+   *   ufc-news-ingest   applies the UFC-focus filter, so a boxing item lands
+   *                     state='skipped' and can never be scored; stamps one
+   *                     detected_at per poll; writes a detect event.
+   *   this path         applied no focus filter, so every row it wrote was
+   *                     state='new' - the column default - and therefore
+   *                     ENRICHMENT-ELIGIBLE regardless of what sport it was
+   *                     about; took the per-row now() default; wrote no event.
+   *
+   * On 2026-09-09 that produced 22 unfiltered rows in one six-second burst at
+   * 23:01Z against 214 filtered ones. Harmless while nothing consumed them, and
+   * a direct route to GPT-5.6 Sol spend on boxing the moment ufc-news-enrich
+   * starts reading state='new'.
+   *
+   * The control plane still wants to KNOW about the wire - freshness is a
+   * health signal and this phase is where the ledger records it - so it reports
+   * what the sole writer has done rather than doing it again. */
+  const total = await newsItemCount(sb);
+  const since = new Date(now - 60 * 60 * 1000).toISOString();
+  const recent = await sb.count('ufc_news_items', `detected_at=gte.${encodeURIComponent(since)}`);
+  const scoreable = await sb.count('ufc_news_items', 'state=eq.new');
+  return {
+    writer: 'ufc-news-ingest',
+    retired_here: true,
+    inserted: 0,
+    news_items_total: total,
+    detected_last_hour: recent ?? null,
+    scoreable_backlog: scoreable ?? null,
+  };
 }
 
 /**

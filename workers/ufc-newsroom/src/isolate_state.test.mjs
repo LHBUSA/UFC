@@ -204,9 +204,21 @@ test('the graph actually covers the newsroom, and excludes CLI-only tools', () =
    * graph the assertion above starts covering it and fails - which is the
    * correct outcome, not a gap. */
   const names = [...workerImportGraph()].map((h) => h.split('/').pop());
-  for (const required of ['write_articles.mjs', 'ingest_news.mjs', 'polish_world_class.mjs', 'seed_sources.mjs', 'lib.mjs', 'anthropic.mjs']) {
+  for (const required of ['write_articles.mjs', 'polish_world_class.mjs', 'seed_sources.mjs', 'lib.mjs', 'anthropic.mjs']) {
     assert.ok(names.includes(required), `${required} must be in the Worker's import graph`);
   }
+
+  /* ingest_news.mjs is deliberately ABSENT since 2026-09-09. ufc-news-ingest is
+   * the sole writer to ufc_news_items; this Worker observes the wire and no
+   * longer fills it. Importing the module here would put a main() that inserts
+   * news rows back inside the control plane, one careless call away from a
+   * second writer with no UFC-focus filter. Its linkEntities and
+   * loadEventContext are still used - by ufc-news-ingest, which imports them
+   * directly, so there is exactly one implementation and no drift. */
+  assert.ok(
+    !names.includes('ingest_news.mjs'),
+    'ingest_news.mjs must NOT be in the import graph of the control plane; ufc-news-ingest owns wire writing',
+  );
   for (const cliOnly of ['copilot_compat.mjs', 'copilot_provider_canary.mjs', 'release_safe_reviews.mjs']) {
     assert.ok(!names.includes(cliOnly), `${cliOnly} is a CLI tool and must not be imported by the Worker`);
   }
