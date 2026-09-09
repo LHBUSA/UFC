@@ -1,4 +1,6 @@
 import "server-only";
+import type { ProvisionRecord } from "./types";
+import { variantKey } from "./types";
 
 export const DROP001_SLUG = "propbetedge-hoodie";
 export const DROP001_COLOR = "Black";
@@ -42,6 +44,25 @@ export function drop001RuntimeStatus() {
     .filter(([, ok]) => !ok)
     .map(([name]) => envName[name]);
   return { ready: missing.length === 0, checks, missing };
+}
+
+/**
+ * Drop 001 is fulfilled directly from Printful's catalog variant ids plus our
+ * production files. A separately-created sync product is not required for an
+ * order, so the sale gate is the thing fulfillment actually needs: a recent
+ * provider reconciliation and every exact Black S-2XL variant id.
+ *
+ * `unclaimed` is valid here because it means no sync-product creation claim is
+ * active; it does not mean the catalog variants are unknown. Failed,
+ * uncertain, and in-flight rows remain fail-closed.
+ */
+export function drop001ProvisioningReady(rec: ProvisionRecord | null | undefined): boolean {
+  if (!rec || !rec.reconciled_at) return false;
+  if (rec.state !== "unclaimed" && rec.state !== "created") return false;
+  return DROP001_SIZES.every((size) => {
+    const id = rec.provider_variant_ids?.[variantKey(size, DROP001_COLOR)];
+    return typeof id === "number" && Number.isInteger(id) && id > 0;
+  });
 }
 
 export function isDrop001Line(slug: string, color: string): boolean {
