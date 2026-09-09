@@ -1,7 +1,5 @@
 # ufc.propbetedge.ai — newsroom, rankings and portrait pipelines.
-# This schedule must live on the default branch to execute. Until the active
-# UFC production branch is merged, jobs explicitly checkout ufc-fight-dna-v1
-# so scheduled automation runs the same code currently under release QA.
+# Production automation runs directly from the default branch.
 #
 # Freshness contract:
 #   * source ingest every 30 minutes year-round;
@@ -47,8 +45,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -85,8 +81,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -108,8 +102,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -120,8 +112,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ufc-fight-dna-v1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
