@@ -46,7 +46,7 @@ export default async function OrderPage({ params }: { params: Promise<{ token: s
   return (
     <>
       {paid ? <ClearCartOnConfirm /> : null}
-      <div className="wrap"><div className="page"><PageHead eyebrow="Store" title={copy.head} lede={`Order ${order.token}`} crumbs={[{ name: "Store", href: "/store" }, { name: "Order" }]} /></div></div>
+      <div className="wrap"><div className="page"><PageHead eyebrow="Store" title={copy.head} lede={`Order ${order.token.slice(-8).toUpperCase()}`} crumbs={[{ name: "Store", href: "/store" }, { name: "Order" }]} /></div></div>
       <section className="wrap st-section">
         <p className="st-notice" role="status">{copy.body}</p>
         <ul className="st-cart">
@@ -66,7 +66,19 @@ export default async function OrderPage({ params }: { params: Promise<{ token: s
           {order.total_cents != null && <><span>Total</span><span className="st-price st-price-lg">{formatPrice(order.total_cents)}</span></>}
           {order.ships_to && <><span className="st-fine">Ships to</span><span className="st-fine">{order.ships_to}</span></>}
         </div>
-        <p className="st-fine">Keep this link — it is the receipt for this order. Questions: <Link href="/store/policies">shipping, returns and print policies</Link>.</p>
+
+        {paid ? (
+          <div className="card mt-5 between" style={{ gap: 18 }}>
+            <div>
+              <div className="eyebrow">Keep every order in one place</div>
+              <div className="serif" style={{ fontSize: 20, fontWeight: 800, marginTop: 6 }}>No account was required to buy.</div>
+              <p className="dim sm mt-2">Sign in with the same email you used at checkout and this order will appear automatically in your PropBetEdge UFC account.</p>
+            </div>
+            <Link href="/account#orders" className="btn gold">View my orders →</Link>
+          </div>
+        ) : null}
+
+        <p className="st-fine mt-5">Keep this link — it is the receipt for this order. Questions: <Link href="/store/policies">shipping, returns and print policies</Link>.</p>
       </section>
     </>
   );
