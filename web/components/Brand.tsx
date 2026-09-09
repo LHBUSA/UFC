@@ -1,14 +1,13 @@
 /* PropBetEdge UFC brand system: the parent PropBetEdge identity stays primary
- * while the gold fighter/octagon acts as the UFC product badge. The fighter
- * drawing is still shared by favicons, app icons and UFC-specific editorial
- * surfaces, but it no longer replaces the network mark in the header. */
+ * while the gold fighter/octagon remains available for UFC-specific product
+ * surfaces. The global header uses the network mark + wordmark + UFC badge
+ * only; the extra 21px fighter glyph was redundant at navigation scale. */
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 
 /* The geometry lives in lib/brand-mark.ts and is re-exported here so the many
  * existing importers of `@/components/Brand` keep working. One set of
- * coordinates, used by the header, the icons, the OG images, the store
- * previews and the print files. */
+ * coordinates, used by icons, OG images, store previews and print files. */
 export { OCTAGON, OCTAGON_INNER, FIGHTER, fighterSvgMarkup } from "@/lib/brand-mark";
 import { FIGHTER, OCTAGON, OCTAGON_INNER } from "@/lib/brand-mark";
 
@@ -44,7 +43,6 @@ export function Logo({ compact = false, href = "/" }: { compact?: boolean; href?
       <img className="brand-mark" src={SITE.logo.mark160} alt="" width={compact ? 57 : 68} height={compact ? 22 : 27} decoding="async" fetchPriority="high" />
       <span className="brand-word">PropBet<em>Edge</em></span>
       <strong className="brand-tag">UFC</strong>
-      <Mark size={compact ? 18 : 21} className="oct brand-product-mark" />
     </Link>
   );
 }
