@@ -4,7 +4,7 @@ import { PageHead, JsonLd } from "@/components/ui";
 import { HoodieProductPreview } from "@/components/store/HoodieProductPreview";
 import { LINES, launchProducts, unreleasedProducts } from "@/lib/store/catalog";
 import { getProvisioning } from "@/lib/store/provisioning";
-import { DROP001_SLUG, drop001RuntimeStatus } from "@/lib/store/release";
+import { DROP001_SLUG, drop001ProvisioningReady, drop001RuntimeStatus } from "@/lib/store/release";
 import { formatPrice, toStorefront, type StorefrontProduct } from "@/lib/store/types";
 import { SITE } from "@/lib/site";
 
@@ -32,7 +32,7 @@ const FORM_LABEL: Record<string, string> = { tee: "Tee", hoodie: "Hoodie", cap: 
 
 function Card({ p, enabled = false }: { p: StorefrontProduct; enabled?: boolean }) {
   const hoodie = p.slug === DROP001_SLUG;
-  const onSale = enabled && p.purchasable;
+  const onSale = hoodie ? enabled : enabled && p.purchasable;
   return (
     <Link href={`/store/${p.slug}`} className="st-card">
       <span className="st-art-frame">
@@ -73,7 +73,7 @@ export default async function StorePage() {
     ...unreleasedProducts("ufc").map(project),
     ...authoredLaunch.filter(({ pub }) => pub.slug !== DROP001_SLUG),
   ].sort((a, b) => a.pub.name.localeCompare(b.pub.name));
-  const open = runtime.ready && firstDrop.some(({ pub }) => pub.purchasable);
+  const open = runtime.ready && drop001ProvisioningReady(provisioning.get(DROP001_SLUG));
 
   return (
     <>
@@ -104,7 +104,7 @@ export default async function StorePage() {
           <p>8.5 oz premium fleece · 65/35 ring-spun cotton blend · 100% cotton face · 3-panel hood.</p>
         </div>
         <div className="st-grid st-grid-launch" style={{ maxWidth: 320, gridTemplateColumns: "minmax(0, 1fr)" }}>
-          {firstDrop.map(({ pub }) => <Card key={pub.slug} p={pub} enabled={runtime.ready} />)}
+          {firstDrop.map(({ pub }) => <Card key={pub.slug} p={pub} enabled={open} />)}
         </div>
       </section>
 
