@@ -5,7 +5,10 @@
 #
 # Freshness contract:
 #   * source ingest every 30 minutes year-round;
+#   * third-party items feed the live wire / source layer, not standalone publications;
 #   * deterministic article writer runs when new items land or on a two-hour baseline;
+#   * published stories originate in PropBetEdge fight state: previews, results, card changes;
+#   * outside reporting may be cited as evidence inside owned reporting;
 #   * every writer pass is followed by the fail-closed premium editorial desk;
 #   * Anthropic is preferred when configured; Copilot CLI is the automatic
 #     Actions-native fallback using the short-lived GITHUB_TOKEN;
@@ -65,9 +68,9 @@ jobs:
           baseline=false; if [ $((10#$hour % 2)) -eq 0 ] && [ "$minute" -lt 30 ]; then baseline=true; fi
           if [ "${{ steps.ingest.outputs.inserted }}" != "0" ] || [ "$baseline" = "true" ] || [ "${{ inputs.force_write }}" = "true" ]; then echo "write=true" >> "$GITHUB_OUTPUT"; else echo "write=false" >> "$GITHUB_OUTPUT"; fi
           echo "inserted=${{ steps.ingest.outputs.inserted }} baseline=$baseline"
-      - name: Write deterministic fact-block articles (gated)
+      - name: Write PropBetEdge-owned fact-block articles (gated)
         if: steps.gate.outputs.write == 'true'
-        run: node scripts/news/write_articles.mjs ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
+        run: node scripts/news/write_articles.mjs --types preview,results,card_change ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
       - name: Install Copilot CLI for editorial fallback
         if: steps.gate.outputs.write == 'true'
         run: npm install -g @github/copilot
