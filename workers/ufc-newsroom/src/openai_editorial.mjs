@@ -14,6 +14,8 @@
 const API = 'https://api.openai.com/v1/responses';
 export const DEFAULT_MODEL = 'gpt-5.6-sol';
 const DESK_VERSION = 'editorial-desk-openai-v1';
+const DEFAULT_CALL_TIMEOUT_MS = 75 * 1000;
+const DEFAULT_MAX_POLISH_PER_RUN = 4;
 
 export const isConfigured = (env) => Boolean(env && env.OPENAI_API_KEY);
 
@@ -176,46 +178,59 @@ export async function callOpenAI(apiKey, {
   instructions = SYSTEM,
   input,
   maxOutputTokens = 18000,
+  timeoutMs = DEFAULT_CALL_TIMEOUT_MS,
   fetchImpl = fetch,
 } = {}) {
   if (!apiKey) throw new Error('openai: no API key');
 
-  const res = await fetchImpl(API, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      store: false,
-      reasoning: { effort: 'medium' },
-      instructions,
-      input,
-      max_output_tokens: maxOutputTokens,
-      text: {
-        format: {
-          type: 'json_schema',
-          name: 'ufc_editorial_article',
-          strict: true,
-          schema: ARTICLE_SCHEMA,
-        },
+  const safeTimeout = Math.min(120000, Math.max(5000, Number(timeoutMs) || DEFAULT_CALL_TIMEOUT_MS));
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), safeTimeout);
+
+  try {
+    const res = await fetchImpl(API, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
       },
-    }),
-  });
+      signal: controller.signal,
+      body: JSON.stringify({
+        model,
+        store: false,
+        reasoning: { effort: 'medium' },
+        instructions,
+        input,
+        max_output_tokens: maxOutputTokens,
+        text: {
+          format: {
+            type: 'json_schema',
+            name: 'ufc_editorial_article',
+            strict: true,
+            schema: ARTICLE_SCHEMA,
+          },
+        },
+      }),
+    });
 
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(`openai ${res.status}: ${JSON.stringify(json).slice(0, 300)}`);
-  if (json.status === 'incomplete') {
-    const why = json.incomplete_details?.reason || 'unknown';
-    throw new Error(`openai: incomplete response (${why})`);
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(`openai ${res.status}: ${JSON.stringify(json).slice(0, 300)}`);
+    if (json.status === 'incomplete') {
+      const why = json.incomplete_details?.reason || 'unknown';
+      throw new Error(`openai: incomplete response (${why})`);
+    }
+    if (json.status === 'failed') throw new Error(`openai: failed response: ${JSON.stringify(json.error || {}).slice(0, 240)}`);
+
+    return { text: extractOutputText(json), model: json.model || model };
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error(`openai: timeout after ${safeTimeout}ms`);
+    throw error;
+  } finally {
+    clearTimeout(timer);
   }
-  if (json.status === 'failed') throw new Error(`openai: failed response: ${JSON.stringify(json.error || {}).slice(0, 240)}`);
-
-  return { text: extractOutputText(json), model: json.model || model };
 }
 
-async function polishOne(env, article, source, { model, fetchImpl } = {}) {
+async function polishOne(env, article, source, { model, fetchImpl, timeoutMs } = {}) {
   let correction = '';
   let lastProblem = '';
   let lastModel = model || env.UFC_EDITORIAL_OPENAI_MODEL || DEFAULT_MODEL;
@@ -226,6 +241,7 @@ async function polishOne(env, article, source, { model, fetchImpl } = {}) {
       model: lastModel,
       input: prompt,
       fetchImpl,
+      timeoutMs,
     });
     lastModel = envelope.model || lastModel;
 
@@ -262,14 +278,17 @@ export async function runOpenAIEditorial(env, sb, {
   recentHours = 720,
   force = false,
   model = null,
+  maxPolish = DEFAULT_MAX_POLISH_PER_RUN,
+  callTimeoutMs = DEFAULT_CALL_TIMEOUT_MS,
   fetchImpl = fetch,
 } = {}) {
   if (!isConfigured(env)) {
-    return { status: 'no_provider', candidates: 0, passed: 0, skipped: 0, held: 0, provider: null };
+    return { status: 'no_provider', candidates: 0, passed: 0, skipped: 0, held: 0, deferred: 0, provider: null };
   }
 
   const safeLimit = Math.min(60, Math.max(1, Number(limit) || 30));
   const safeHours = Math.min(24 * 60, Math.max(1, Number(recentHours) || 720));
+  const safeMaxPolish = Math.min(8, Math.max(1, Number(maxPolish) || DEFAULT_MAX_POLISH_PER_RUN));
   const selectedModel = model || env.UFC_EDITORIAL_OPENAI_MODEL || DEFAULT_MODEL;
   const since = new Date(now - safeHours * 3600 * 1000).toISOString();
 
@@ -281,7 +300,9 @@ export async function runOpenAIEditorial(env, sb, {
   let passed = 0;
   let skipped = 0;
   let held = 0;
-  console.log(`openai editorial desk: candidates=${rows.length} limit=${safeLimit} hours=${safeHours} force=${Boolean(force)} model=${selectedModel}`);
+  let deferred = 0;
+  let attempted = 0;
+  console.log(`openai editorial desk: candidates=${rows.length} limit=${safeLimit} max_polish=${safeMaxPolish} hours=${safeHours} force=${Boolean(force)} model=${selectedModel}`);
 
   for (const article of rows) {
     if (!force && String(article.model_version || '').includes(`/${DESK_VERSION}`)) {
@@ -292,10 +313,19 @@ export async function runOpenAIEditorial(env, sb, {
       skipped += 1;
       continue;
     }
+    if (attempted >= safeMaxPolish) {
+      deferred += 1;
+      continue;
+    }
 
+    attempted += 1;
     const source = sourcePacket(article);
     try {
-      const out = await polishOne(env, article, source, { model: selectedModel, fetchImpl });
+      const out = await polishOne(env, article, source, {
+        model: selectedModel,
+        fetchImpl,
+        timeoutMs: callTimeoutMs,
+      });
       console.log(`  PASS ${article.slug} via ${out.provider}:${out.model} attempts=${out.attempts}`);
       passed += 1;
       await sb.patch('ufc_articles', `id=eq.${article.id}`, {
@@ -314,15 +344,17 @@ export async function runOpenAIEditorial(env, sb, {
   const result = {
     status: 'ran',
     candidates: rows.length,
+    attempted,
     passed,
     skipped,
     held,
+    deferred,
     provider: `openai:${selectedModel}`,
     model: selectedModel,
   };
 
-  if (rows.length > 0 && passed === 0 && skipped === 0 && held > 0) {
-    const error = new Error(`openai editorial desk: every candidate was held (${held}/${rows.length}); failing closed`);
+  if (attempted > 0 && passed === 0 && held === attempted) {
+    const error = new Error(`openai editorial desk: every attempted candidate was held (${held}/${attempted}); failing closed`);
     error.deskResult = result;
     throw error;
   }
