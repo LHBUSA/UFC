@@ -11,8 +11,18 @@ import { variantKey } from "./types.ts";
 export const DROP001_SLUG = "propbetedge-hoodie";
 export const FIGHT_DNA_TEE_SLUG = "fight-dna-tee";
 export const PBE_MUG_SLUG = "propbetedge-mug";
+export const TALE_OF_TAPE_HOODIE_SLUG = "tale-of-the-tape-hoodie";
+export const PBE_CLASSIC_HAT_SLUG = "propbetedge-hat";
+export const TRUST_DATA_MUG_SLUG = "trust-the-data-mug";
 
-export const ACTIVE_RELEASE_SLUGS = [DROP001_SLUG, FIGHT_DNA_TEE_SLUG, PBE_MUG_SLUG] as const;
+export const ACTIVE_RELEASE_SLUGS = [
+  DROP001_SLUG,
+  FIGHT_DNA_TEE_SLUG,
+  PBE_MUG_SLUG,
+  TALE_OF_TAPE_HOODIE_SLUG,
+  PBE_CLASSIC_HAT_SLUG,
+  TRUST_DATA_MUG_SLUG,
+] as const;
 export type ActiveReleaseSlug = (typeof ACTIVE_RELEASE_SLUGS)[number];
 
 type ReleaseSpec = {
@@ -34,6 +44,21 @@ const RELEASE: Record<ActiveReleaseSlug, ReleaseSpec> = {
   },
   [PBE_MUG_SLUG]: {
     label: "Drop 002 · PBE Black Mug",
+    sizes: ["11 oz"],
+    colors: ["Black"],
+  },
+  [TALE_OF_TAPE_HOODIE_SLUG]: {
+    label: "Drop 003 · Tale of the Tape Hoodie",
+    sizes: ["S", "M", "L", "XL", "2XL"],
+    colors: ["Black"],
+  },
+  [PBE_CLASSIC_HAT_SLUG]: {
+    label: "Drop 003 · PBE Classic Hat",
+    sizes: ["One size"],
+    colors: ["Black"],
+  },
+  [TRUST_DATA_MUG_SLUG]: {
+    label: "Drop 003 · Trust the Data Mug",
     sizes: ["11 oz"],
     colors: ["Black"],
   },
