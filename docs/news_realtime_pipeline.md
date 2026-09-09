@@ -164,3 +164,68 @@ This is a pre-existing bug the migration exposed, not a bug it introduced: any
 row rewrite would do the same. The fix is a secondary sort key on the news
 queries in `workers/ufc-api` and `web/lib/db.ts`. It is deliberately **not**
 done here, because Phase 2 changes no public behaviour.
+
+---
+
+# Phase 3 → Phase 4 boundary: two things that must land first
+
+Neither is optional and neither is part of Phase 4's feature scope. Both were
+found by running Phase 3 against production rather than by reading the code.
+
+## 1. `ufc-news-ingest` becomes the sole writer to `ufc_news_items`
+
+Production evidence, 2026-09-09: 214 wire rows arrived from `ufc-news-ingest`
+and 22 from `ufc-newsroom`'s legacy ingest phase at 23:01:17–23:01:23Z. They are
+not the same kind of row.
+
+| | ufc-news-ingest | ufc-newsroom legacy ingest |
+|---|---|---|
+| UFC-focus filter | yes — boxing/PFL/RIZIN land `state='skipped'` | none — everything is `state='new'` |
+| `detected_at` | the run's clock, one value per poll | column default `now()`, per row |
+| pipeline event | one `detect` row per item | none |
+| queue ownership | Phase 4 | never |
+
+The second column is the problem. A boxing item written by the legacy path is
+`state='new'` and therefore *scoreable*, which is exactly the GPT-5.6 Sol spend
+the focus filter exists to prevent. Two writers with different semantics is
+tolerable only while nothing consumes the rows; the moment Phase 4 processes
+candidates it stops being tolerable.
+
+So before Phase 4 processes anything real, the legacy per-item ingest path stops
+writing new news rows. **`ufc-newsroom` itself stays** — Durable Object lock,
+run ledger, control-plane cron, catch-up planning, `/health`, `/admin/run`,
+source and batch orchestration. This is a narrow cutover of one writer, not a
+newsroom rewrite, and it ships with a rollback.
+
+Proof required after cutover:
+
+- every new wire row originates from `ufc-news-ingest`
+- no row-by-row `detected_at` clusters (the legacy signature)
+- every new eligible item has a `detect` pipeline event
+- published article count and slug set unchanged
+- `ufc-newsroom` `/health` clean, ledger still recording runs
+
+## 2. `?dry=true` must be genuinely side-effect free
+
+`fetchFeed` persists feed health — including the ETag and Last-Modified
+validators — on every call, `dry` included. So a dry run makes the *next* real
+run conditional, the origin answers 304, and the items the dry run just looked
+at are never inserted at all.
+
+This is not theoretical. On 2026-09-09 a `?dry=true` probe consumed the
+freshness of Combat Press and LowKick MMA; the next real run got 304 for both,
+and their items reached the database only because `ufc-newsroom`'s legacy path
+was still fetching unconditionally. Under a sole-writer regime those items would
+simply have been lost, silently, with every counter reporting success.
+
+A dry run must mutate none of: ETag state, Last-Modified state, source freshness
+metadata, circuit state, Supabase rows, queue state, pipeline events, or any
+counter that affects future execution.
+
+Regression test required:
+
+- snapshot the whole KV namespace before a dry run and after it; assert equal
+- assert the immediately following real run still receives and inserts an item
+  that the dry run observed
+
+A dry run that changes the next production fetch is not a dry run.
