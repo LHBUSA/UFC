@@ -15,18 +15,18 @@
  *    succeeded but before Stripe saw the 200. All of those collapse onto
  *    store_order_mark_paid, which moves pending -> paid and does nothing at
  *    all on a second call. A replay returning "no row updated" is success,
- *    not an error, and answering anything but 2xx to it would earn another
- *    retry.
+ *    not an error.
  *
  * 3. IT DOES NOT CALL THE PRINTER. Fulfilment happens out of band, claimed
- *    from the database by /api/store/fulfill. A provider call inside a
- *    webhook handler is a call that can exceed Stripe's timeout, which
- *    produces a retry, which — without the claim discipline — produces a
- *    second parcel. The handler's only job is to record the fact and get out.
+ *    from the database by /api/store/fulfill. The webhook records payment,
+ *    sends the transactional receipt with a stable idempotency key, and gets
+ *    out. Provider fulfilment still cannot happen twice because it remains
+ *    behind the separate claim discipline.
  */
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { markPaid, ordersConfigured } from "@/lib/store/orders";
+import { sendOrderConfirmationForSession } from "@/lib/store/customer-orders";
 import { stripe, stripeConfigured, webhookConfigured } from "@/lib/store/stripe";
 
 export const runtime = "nodejs";
@@ -39,23 +39,18 @@ const cents = (v: number | null | undefined): number | null => (typeof v === "nu
 
 export async function POST(req: Request) {
   if (!stripeConfigured() || !webhookConfigured() || !ordersConfigured()) {
-    /* 503 rather than 400: nothing is wrong with the caller. Stripe will
-     * retry, which is the correct behaviour while the deployment is being
-     * configured. */
     return json({ error: "WEBHOOK_NOT_CONFIGURED" }, 503);
   }
 
   const signature = req.headers.get("stripe-signature");
   if (!signature) return json({ error: "missing signature" }, 400);
 
-  /* Raw bytes. The signature covers exactly these. */
   const raw = await req.text();
 
   let event: Stripe.Event;
   try {
     event = stripe().webhooks.constructEvent(raw, signature, process.env.STRIPE_WEBHOOK_SECRET as string);
   } catch (e) {
-    /* Do not log the body. It is unverified input and may be anything. */
     console.error(`[store] webhook signature rejected: ${String((e as Error)?.message).slice(0, 120)}`);
     return json({ error: "invalid signature" }, 400);
   }
@@ -66,10 +61,6 @@ export async function POST(req: Request) {
       case "checkout.session.async_payment_succeeded": {
         const session = event.data.object as Stripe.Checkout.Session;
 
-        /* `complete` is not the same as paid. A session can complete with a
-         * payment still processing, and treating that as paid would hand an
-         * unpaid order to fulfilment. The async_payment_succeeded event is
-         * the one that arrives later for those. */
         if (session.payment_status !== "paid") {
           return json({ received: true, ignored: `payment_status=${session.payment_status}` });
         }
@@ -97,17 +88,18 @@ export async function POST(req: Request) {
             : null,
         });
 
-        /* `applied: false` means the row had already moved past pending: a
-         * replay, or a race with another delivery of the same event. Both are
-         * fine and both are 200. */
-        return json({ received: true, applied });
+        /* Confirmation mail is part of the paid-order experience, but not of
+         * the payment state machine. If the mail provider has a transient
+         * failure we return 500 so Stripe retries this already-idempotent event.
+         * markPaid safely no-ops and the email call uses a stable idempotency
+         * key, so neither money nor mail can duplicate. */
+        const email = await sendOrderConfirmationForSession(session.id);
+
+        return json({ received: true, applied, email });
       }
 
       case "checkout.session.expired": {
         const session = event.data.object as Stripe.Checkout.Session;
-        /* Nothing is written. An expired pending row is harmless, and a
-         * cancel path that mutates state is one more way for a late
-         * `completed` event to be lost. */
         return json({ received: true, note: `session ${session.id} expired; pending row left as-is` });
       }
 
@@ -115,8 +107,6 @@ export async function POST(req: Request) {
         return json({ received: true, ignored: event.type });
     }
   } catch (e) {
-    /* A 500 asks Stripe to try again, which is right: the payment is real and
-     * we failed to record it. The retry hits the same idempotent function. */
     console.error(`[store] webhook handling failed for ${event.type}: ${String((e as Error)?.message).slice(0, 200)}`);
     return json({ error: "handler failed" }, 500);
   }
