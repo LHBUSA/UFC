@@ -1,0 +1,57 @@
+name = "ufc-news-ingest"
+main = "src/index.js"
+compatibility_date = "2026-09-09"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# Required, not a convenience. This Worker imports scripts/news/lib.mjs for the
+# feed parser, the taxonomy classifier and the fingerprint hash, and
+# scripts/news/ingest_news.mjs for entity linking. Those modules use node:crypto
+# and touch node:fs inside a try/catch for .env. Reimplementing them here would
+# give two fingerprint functions and two entity linkers writing the same table,
+# and the day they disagreed the wire would silently lose entity links
+# depending on which worker saw an item first.
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+
+# THE QUEUE PRODUCER IS OFF, IN TWO INDEPENDENT WAYS.
+#
+# This flag is read by src/index.js, and there is no [[queues.producers]] block
+# below, so even flipping the flag cannot enqueue anything: the binding does not
+# exist. Two locks on one door because "detection is proven before anything
+# consumes it" is the entire point of this phase, and a single boolean is the
+# kind of thing that gets changed by accident.
+QUEUE_PRODUCER_ENABLED = "false"
+
+# Detection cadence. Every two minutes, which is the part of the
+# detection-to-publish budget this Worker owns.
+#
+# Two minutes is affordable only because of what feed_health.mjs does: ETag and
+# If-Modified-Since mean an unchanged feed answers 304 with no body, and an open
+# circuit means a dead feed is not contacted at all. Without both, this cadence
+# would be 720 full fetches per feed per day.
+[triggers]
+crons = ["*/2 * * * *"]
+
+# Per-feed circuit state, cached validators and latency samples. Volatile
+# operational state, 90-day TTL per record; ufc_news_sources keeps the durable
+# facts.
+[[kv_namespaces]]
+binding = "UFC_NEWS_KV"
+id = "67bea024456546f1b839856b4152c7ca"
+
+# Without this there is no record that a cron ever fired, which is half of how
+# the previous GitHub-scheduled newsroom failed unnoticed.
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Secrets (wrangler secret put, for the ufc-news-ingest Worker):
+#   SUPABASE_SERVICE_ROLE_KEY  required; database access
+#   ADMIN_TRIGGER_TOKEN        required to expose any POST route at all
+#
+# This Worker never reads OPENAI_API_KEY or ANTHROPIC_API_KEY and must not be
+# given either. It cannot call a model, and not holding the credential is the
+# cheapest possible proof of that.

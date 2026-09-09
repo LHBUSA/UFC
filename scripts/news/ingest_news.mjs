@@ -64,7 +64,13 @@ function eventKeys(e) {
   return [...keys];
 }
 
-async function loadEventContext(sb, now) {
+/* Exported for the ufc-news-ingest Worker. The real-time ingest path must link
+ * fighters, events and bouts EXACTLY as this script does: both writers insert
+ * into ufc_news_items, and whichever one wins the fingerprint race writes the
+ * row the wire renders. A second implementation would drift, and the drift
+ * would surface as a wire item that lost its entity links depending on which
+ * worker happened to see it first. */
+export async function loadEventContext(sb, now) {
   const today = new Date(now);
   const lo = new Date(today.getTime() - 60 * 86400e3).toISOString().slice(0, 10);
   const hi = new Date(today.getTime() + 60 * 86400e3).toISOString().slice(0, 10);
@@ -85,7 +91,7 @@ async function loadEventContext(sb, now) {
   return { events: primaries.map((e) => ({ ...e, keys: eventKeys(e) })), bouts };
 }
 
-function linkEntities(item, ctx, index, now) {
+export function linkEntities(item, ctx, index, now) {
   const text = `${item.title}. ${item.summary || ''}`;
   const norm = ` ${normalize(text)} `;
   const fighterIds = new Set(findFighterMentions(text, index).map((m) => m.fighter_id));

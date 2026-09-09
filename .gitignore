@@ -17,3 +17,10 @@ supabase/.temp/
 supabase/.branches/
 .cache/
 .worktrees/
+
+# Local operator token for the ufc-news-ingest Worker. Never committed.
+.ufc-news-ingest-admin-token
+
+# Wrangler dry-run build output.
+.wrangler-dryrun/
+.wrangler/
