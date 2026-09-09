@@ -5,12 +5,15 @@
 #
 # Freshness contract:
 #   * source ingest every 30 minutes year-round;
-#   * deterministic article writer runs when new items land or on a two-hour baseline;
+#   * third-party items remain source/live-wire material, not standalone publications;
+#   * deterministic first-party article writer runs when new items land or on a two-hour baseline;
+#   * every core writer pass is followed by a bettor-first feature pass that builds
+#     card-level guides and post-event market resets from verified PropBetEdge fact blocks;
 #   * every writer pass is followed by the fail-closed premium editorial desk;
 #   * Anthropic is preferred when configured; Copilot CLI is the automatic
 #     Actions-native fallback using the short-lived GITHUB_TOKEN;
 #   * a daily quality sweep catches any recent story that missed the editorial desk;
-#   * the writer remains fact-block-first and idempotent.
+#   * both writer layers are fact-block-first and idempotent.
 name: newsroom
 on:
   schedule:
@@ -65,9 +68,12 @@ jobs:
           baseline=false; if [ $((10#$hour % 2)) -eq 0 ] && [ "$minute" -lt 30 ]; then baseline=true; fi
           if [ "${{ steps.ingest.outputs.inserted }}" != "0" ] || [ "$baseline" = "true" ] || [ "${{ inputs.force_write }}" = "true" ]; then echo "write=true" >> "$GITHUB_OUTPUT"; else echo "write=false" >> "$GITHUB_OUTPUT"; fi
           echo "inserted=${{ steps.ingest.outputs.inserted }} baseline=$baseline"
-      - name: Write deterministic fact-block articles (gated)
+      - name: Write PropBetEdge-owned fact-block articles (gated)
         if: steps.gate.outputs.write == 'true'
-        run: node scripts/news/write_articles.mjs ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
+        run: node scripts/news/write_articles.mjs --types preview,results,card_change ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
+      - name: Write bettor-first newsroom features (gated)
+        if: steps.gate.outputs.write == 'true'
+        run: node scripts/news/write_features.mjs
       - name: Install Copilot CLI for editorial fallback
         if: steps.gate.outputs.write == 'true'
         run: npm install -g @github/copilot
