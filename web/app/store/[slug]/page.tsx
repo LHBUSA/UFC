@@ -27,6 +27,11 @@ export const revalidate = 0;
 
 const DROP002_SLUGS = new Set([FIGHT_DNA_TEE_SLUG, PBE_MUG_SLUG]);
 const DROP003_SLUGS = new Set([TALE_OF_TAPE_HOODIE_SLUG, PBE_CLASSIC_HAT_SLUG, TRUST_DATA_MUG_SLUG]);
+const DROP003_PHOTOS: Record<string, { url: string; width: number; height: number; alt: string }> = {
+  [TALE_OF_TAPE_HOODIE_SLUG]: { url: "/store/img/tale-of-the-tape-hoodie.webp", width: 640, height: 800, alt: "Tale of the Tape Hoodie" },
+  [PBE_CLASSIC_HAT_SLUG]: { url: "/store/img/pbe-classic-hat.webp", width: 480, height: 600, alt: "PBE Classic Hat" },
+  [TRUST_DATA_MUG_SLUG]: { url: "/store/img/trust-the-data-mug.webp", width: 480, height: 600, alt: "Trust the Data Mug" },
+};
 
 const DESCRIPTION: Record<string, string> = {
   [DROP001_SLUG]: "A premium black Cotton Heritage M2580 pullover built for fight night: full metallic PBE / PropBetEdge.ai logo across the chest, gold fight mark on the sleeve, 8.5 oz fleece, 65% ring-spun cotton and 35% polyester with a 100% cotton face.",
@@ -37,9 +42,8 @@ const DESCRIPTION: Record<string, string> = {
   [TRUST_DATA_MUG_SLUG]: "An 11 oz black glossy ceramic mug built around the PropBetEdge editorial position: Trust the Data. Gold-and-white fight intelligence artwork wraps the cup with Less Opinions. More Winning. and the PBE mark.",
 };
 
-function drop003Image(slug: string) {
-  if (!DROP003_SLUGS.has(slug)) return null;
-  return { url: `/store/product-photo/${slug}`, width: 720, height: 900, alt: `${liveBySlug(slug)?.name ?? "PropBetEdge product"} product image` };
+function drop003Photo(slug: string) {
+  return DROP003_PHOTOS[slug] ?? null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -48,7 +52,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!def) return { title: { absolute: "Not found | PropBetEdge UFC" } };
   const title = `${def.name} | PropBetEdge UFC Store`;
   const description = DESCRIPTION[slug] ?? def.description;
-  const productPhoto = drop003Image(slug);
+  const productPhoto = drop003Photo(slug);
   const mockup = approvedMockup(slug);
   const image = productPhoto
     ? { url: `${SITE.url}${productPhoto.url}`, width: productPhoto.width, height: productPhoto.height, alt: productPhoto.alt }
@@ -93,7 +97,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             ? "The full PBE house mark on black ceramic — built for the desk, the recap and the next card."
             : p.blurb;
 
-  const productPhoto = drop003Image(p.slug);
+  const productPhoto = drop003Photo(p.slug);
   const mockup = approvedMockup(p.slug);
   const displayImage = productPhoto ?? mockup ?? p.images[0];
 
@@ -103,7 +107,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <section className="wrap st-detail">
         <div className="st-detail-art">
           {hoodie ? <HoodieProductPreview /> : <img className="st-art" src={displayImage.url} alt={displayImage.alt} width={displayImage.width} height={displayImage.height} />}
-          <p className="st-fine">Product image shows the released design. Final print or embroidery position can vary slightly in production.</p>
+          <p className="st-fine">Product photo shows the released design. Final print or embroidery position can vary slightly in production.</p>
         </div>
         <div className="st-detail-body">
           <p className={saleOpen ? "st-state st-state-open" : "st-state"}>{saleOpen ? "On sale" : "Checkout temporarily unavailable"}</p>
