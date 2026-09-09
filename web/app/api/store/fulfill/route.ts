@@ -25,7 +25,8 @@ import {
   type OrderItem,
 } from "@/lib/store/printful-orders";
 import { bySlug } from "@/lib/store/catalog";
-import { DROP001_SLUG, drop001ArtFiles, isDrop001Line } from "@/lib/store/release";
+import { DROP001_SLUG, drop001ArtFiles } from "@/lib/store/release";
+import { FIGHT_DNA_TEE_SLUG, PBE_MUG_SLUG, isReleaseLine } from "@/lib/store/release-policy";
 import { SITE } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -53,16 +54,24 @@ function authorize(req: Request, expected: string | undefined): boolean {
   return Boolean(expected && presented && bearerMatches(presented, expected));
 }
 
-function releaseFiles(slug: string, origin: string, art: string): { files?: OrderItem["files"]; fileUrl?: string; missing?: string[] } {
-  if (slug !== DROP001_SLUG) return { fileUrl: `${origin}/store/print/${art}.png` };
-  const release = drop001ArtFiles();
-  if (!release.ready) return { missing: release.missing };
-  return {
-    files: [
-      { type: "front", url: release.front },
-      { type: "sleeve_right", url: release.sleeve },
-    ],
-  };
+function releaseFiles(slug: string, origin: string): { files?: OrderItem["files"]; fileUrl?: string; missing?: string[] } {
+  if (slug === DROP001_SLUG) {
+    const release = drop001ArtFiles();
+    if (!release.ready) return { missing: release.missing };
+    return {
+      files: [
+        { type: "front", url: release.front },
+        { type: "sleeve_right", url: release.sleeve },
+      ],
+    };
+  }
+  if (slug === FIGHT_DNA_TEE_SLUG) {
+    return { fileUrl: `${origin}/store/print/drop002-fight-dna-tee-front` };
+  }
+  if (slug === PBE_MUG_SLUG) {
+    return { fileUrl: `${origin}/store/print/drop002-pbe-mug-wrap` };
+  }
+  return { missing: ["no released production artwork"] };
 }
 
 async function runFulfillment(req: Request) {
@@ -89,12 +98,12 @@ async function runFulfillment(req: Request) {
         missing.push(`${l.slug} ${l.size}/${l.color}: no provider variant recorded`);
         continue;
       }
-      if (!isDrop001Line(l.slug, l.color)) {
-        missing.push(`${l.slug} ${l.size}/${l.color}: not part of Drop 001`);
+      if (!isReleaseLine(l.slug, l.size, l.color)) {
+        missing.push(`${l.slug} ${l.size}/${l.color}: not in the active release`);
         continue;
       }
 
-      const art = releaseFiles(l.slug, origin, def.art);
+      const art = releaseFiles(l.slug, origin);
       if (art.missing?.length) {
         missing.push(`${l.slug}: final production art not released (${art.missing.join(", ")})`);
         continue;
