@@ -8,7 +8,11 @@ import { formatPrice } from "@/lib/store/types";
 import { useCart } from "./CartProvider";
 
 const HOODIE_SLUG = "propbetedge-hoodie";
-const DROP003 = new Set(["tale-of-the-tape-hoodie", "propbetedge-hat", "trust-the-data-mug"]);
+const DROP003_IMAGES: Record<string, string> = {
+  "tale-of-the-tape-hoodie": "/store/img/tale-of-the-tape-hoodie.webp",
+  "propbetedge-hat": "/store/img/pbe-classic-hat.webp",
+  "trust-the-data-mug": "/store/img/trust-the-data-mug.webp",
+};
 
 export function CartView({ cancelled }: { cancelled: boolean }) {
   const cart = useCart();
@@ -41,7 +45,7 @@ export function CartView({ cancelled }: { cancelled: boolean }) {
         <ul className="st-cart">
           {ok.map(({ line, name, unit_price_cents }) => {
             const key = lineKey(line);
-            const image = line.slug === HOODIE_SLUG ? "/store/img/propbetedge-premium-hoodie.jpg" : DROP003.has(line.slug) ? `/store/product-photo/${line.slug}` : imagePath(line.slug);
+            const image = line.slug === HOODIE_SLUG ? "/store/img/propbetedge-premium-hoodie.jpg" : DROP003_IMAGES[line.slug] ?? imagePath(line.slug);
             return <li className="st-cart-row" key={key}>
               <Link href={`/store/${line.slug}`} className="st-cart-art-link" aria-label={`View ${name}`}><img className="st-cart-art" src={image} alt="" width={96} height={120} loading="lazy" /></Link>
               <div className="st-cart-main"><Link href={`/store/${line.slug}`} className="st-cart-name">{name}</Link><span className="st-cart-variant">{line.size} · {line.color}</span><button type="button" className="st-cart-remove" onClick={() => cart.remove(key)} aria-label={`Remove ${name}`}>Remove</button></div>
