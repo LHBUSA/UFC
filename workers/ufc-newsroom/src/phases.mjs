@@ -68,7 +68,10 @@ function writerOptions(env, now) {
   return {
     llm: anthropicConfigured(env),
     now,
-    types: 'preview,results,card_change',
+    /* `external` matches what has been deployed since 2026-09-09T21:26:47Z.
+     * Carried here so the containment deploy changes exactly one behaviour --
+     * external drafts becoming private -- and not two. */
+    types: 'preview,results,external,card_change',
   };
 }
 

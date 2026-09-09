@@ -1159,10 +1159,24 @@ async function generateExternal(world, sb, today, now) {
     fb.depth = { class: 'external', target: DEPTH.external, short: true, short_reason: 'external wire item with limited verified context' };
     const slug = slugify(it.title).slice(0, 80).replace(/-+$/, '');
     if (!slug) continue;
-    const review = qualifying.some((l) => l === 'injury' || l === 'withdrawal');
+    /* EMERGENCY CONTAINMENT 2026-09-09. An external draft is a ~76-101 word
+     * deterministic fact packet -- "Contract report from Bloody Elbow: the table
+     * view on Paulo Costa". It is never a publishable article.
+     *
+     * The previous line held a draft for review only when its qualifying label
+     * was injury or withdrawal, so a `contract`, `rankings`, `suspension`,
+     * `replacement`, `weight_miss` or `bout_moved` item went straight to the
+     * public site. Three did on 2026-09-08 and stayed live about seven hours;
+     * one more did at 2026-09-09T22:16Z, ten minutes after `external` was added
+     * to the writer's story types and the Worker was deployed.
+     *
+     * Which label a wire item carries says nothing about whether 80 words of
+     * table lookup is worth reading, so it was never the right question. No
+     * external draft is publishable until a stage that has actually fetched the
+     * source and assembled first-party evidence says so. */
     const { headline, dek, body } = renderExternal(fb, slug);
     out.push({
-      slug, story_type: 'external', headline, dek, body_md: body, fact_block: fb, status: review ? 'review' : 'published', needs_human: review,
+      slug, story_type: 'external', headline, dek, body_md: body, fact_block: fb, status: 'review', needs_human: true,
       fighter_ids: fighters.map((f) => f.fighter_id), bout_id: bout ? bout.id : null, event_id: event ? event.id : null, ...heroFor(world, fighters.map((f) => f.fighter_id)),
       extra_sources: [{ kind: 'news_item', id: it.id, url: it.url }],
     });

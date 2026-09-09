@@ -24,3 +24,4 @@ supabase/.branches/
 # Wrangler dry-run build output.
 .wrangler-dryrun/
 .wrangler/
+.ufc-newsroom-admin-token
