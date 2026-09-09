@@ -11,18 +11,22 @@ export type StoreImage = {
  * Approved customer-facing mockups. These are deliberately separate from the
  * production print files: mockups show the finished object; production art is
  * transparent artwork sent to the printer.
+ *
+ * They are served from first-party, immutable routes because the originals
+ * arrived as conversation attachments and those attachment URLs are not a
+ * durable storefront dependency.
  */
 export const APPROVED_MOCKUPS: Readonly<Record<string, StoreImage>> = {
   [FIGHT_DNA_TEE_SLUG]: {
-    url: "/store/img/fight-dna-tee-hero-v1.jpg",
-    width: 720,
-    height: 900,
+    url: `/store/mockup/${FIGHT_DNA_TEE_SLUG}`,
+    width: 420,
+    height: 525,
     alt: "Black Fight DNA tee with metallic gold DNA and PropBetEdge artwork",
   },
   [PBE_MUG_SLUG]: {
-    url: "/store/img/propbetedge-mug-black-hero-v1.jpg",
-    width: 720,
-    height: 900,
+    url: `/store/mockup/${PBE_MUG_SLUG}`,
+    width: 420,
+    height: 525,
     alt: "Black PropBetEdge mug with the metallic PBE logo",
   },
 };
