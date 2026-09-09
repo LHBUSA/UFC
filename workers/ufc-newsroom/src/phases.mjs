@@ -77,13 +77,14 @@ async function openAIEnhancement(env, sb, {
   limit = 12,
   recentHours = 72,
   force = false,
+  maxPolish = 1,
 } = {}) {
   if (!openaiConfigured(env)) {
     return { status: 'not_configured', provider: null, candidates: 0, passed: 0, skipped: 0, held: 0 };
   }
 
   try {
-    return await runOpenAIEditorial(env, sb, { now, limit, recentHours, force });
+    return await runOpenAIEditorial(env, sb, { now, limit, recentHours, force, maxPolish });
   } catch (e) {
     if (e && e.deskResult) {
       return { status: 'all_held', ...e.deskResult, error: String(e.message).slice(0, 200) };
@@ -104,7 +105,7 @@ export async function runWrite(env, sb, { now = Date.now() } = {}) {
   const opts = writerOptions(env, now);
   const result = await writeArticles(env, opts);
   const features = await writeFeatures(env, { now });
-  const openai = await openAIEnhancement(env, sb, { now, limit: 12, recentHours: 72 });
+  const openai = await openAIEnhancement(env, sb, { now, limit: 12, recentHours: 72, maxPolish: 1 });
   const after = await articleCount(sb);
 
   return {
@@ -136,7 +137,7 @@ export async function runRefresh(env, sb, { now = Date.now() } = {}) {
   const before = await articleCount(sb);
   const result = await writeArticles(env, writerOptions(env, now));
   const features = await writeFeatures(env, { now });
-  const openai = await openAIEnhancement(env, sb, { now, limit: 12, recentHours: 72 });
+  const openai = await openAIEnhancement(env, sb, { now, limit: 12, recentHours: 72, maxPolish: 1 });
   const after = await articleCount(sb);
 
   return {
@@ -162,7 +163,7 @@ export async function runSweep(env, sb, { now = Date.now(), limit, recentHours, 
 
   if (openaiConfigured(env)) {
     try {
-      const desk = await runOpenAIEditorial(env, sb, { now, limit, recentHours, force });
+      const desk = await runOpenAIEditorial(env, sb, { now, limit, recentHours, force, maxPolish: 1 });
       return { status: 'ran', review_queue: held ?? 0, published: published ?? 0, ...desk };
     } catch (e) {
       if (!anthropicConfigured(env)) {
