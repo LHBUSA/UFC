@@ -21,6 +21,7 @@ const TITLE = "PropBetEdge Store | Premium Fight-Night Gear";
 const DESCRIPTION =
   "Shop PropBetEdge fight-night gear: the premium PBE hoodie, Fight DNA tee, PBE black mug and bettor-first designs built around the same intelligence platform.";
 const DROP002_SLUGS = new Set([FIGHT_DNA_TEE_SLUG, PBE_MUG_SLUG]);
+const STORE_HERO = `${SITE.url}/store/mockup/${FIGHT_DNA_TEE_SLUG}`;
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -31,9 +32,9 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     type: "website",
     url: `${SITE.url}/store`,
-    images: [{ url: `${SITE.url}/store/img/fight-dna-tee-hero-v1.jpg`, width: 720, height: 900, alt: "Fight DNA Tee" }],
+    images: [{ url: STORE_HERO, width: 420, height: 525, alt: "Fight DNA Tee" }],
   },
-  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: [`${SITE.url}/store/img/fight-dna-tee-hero-v1.jpg`] },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: [STORE_HERO] },
 };
 
 const FORM_LABEL: Record<string, string> = { tee: "Tee", hoodie: "Hoodie", cap: "Cap", mug: "Mug" };
