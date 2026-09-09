@@ -3,15 +3,10 @@
 /**
  * The cart page body.
  *
- * The subtotal here is a courtesy. Shipping and tax are Stripe's to compute
- * from an address this page has never seen, so the page shows the item total
- * and says plainly that the rest is calculated at checkout, rather than
- * inventing a number that changes on the next screen.
- *
- * "Checkout" posts slugs, sizes, colours and quantities. Every price is looked
- * up again on the server. If the route answers 409 the piece stopped being
- * available between rendering and clicking, which is exactly the case a stale
- * page cannot detect on its own, so the message is shown rather than swallowed.
+ * The customer gets one clear decision here: review the order, then continue
+ * to Stripe. Shipping and tax remain intentionally unguessed until Stripe has
+ * the destination address, and the server still resolves every price and
+ * provider variant again before a session can start.
  */
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -20,6 +15,8 @@ import { lineKey, validateAgainstCatalog, subtotalCents, MAX_QTY } from "@/lib/s
 import { formatPrice } from "@/lib/store/types";
 import { useCart } from "./CartProvider";
 
+const HOODIE_SLUG = "propbetedge-hoodie";
+
 export function CartView({ cancelled }: { cancelled: boolean }) {
   const cart = useCart();
   const [busy, setBusy] = useState(false);
@@ -27,6 +24,7 @@ export function CartView({ cancelled }: { cancelled: boolean }) {
 
   const { ok, problems } = useMemo(() => validateAgainstCatalog(cart.lines, "ufc"), [cart.lines]);
   const subtotal = subtotalCents(ok);
+  const units = ok.reduce((sum, item) => sum + item.line.qty, 0);
 
   async function checkout() {
     setBusy(true);
@@ -56,14 +54,18 @@ export function CartView({ cancelled }: { cancelled: boolean }) {
     }
   }
 
-  if (!cart.ready) return <p className="st-fine">Loading your cart…</p>;
+  if (!cart.ready) return <p className="st-fine">Loading your bag…</p>;
 
   if (!cart.lines.length) {
     return (
-      <p className="st-notice" role="status">
-        {cancelled ? <strong>Checkout cancelled. Nothing was charged.</strong> : <strong>Your cart is empty.</strong>}{" "}
-        <Link href="/store">Back to the store</Link>.
-      </p>
+      <div className="st-empty-cart" role="status">
+        <span className="st-empty-icon" aria-hidden="true">□</span>
+        <div>
+          <strong>{cancelled ? "Checkout cancelled." : "Your bag is empty."}</strong>
+          <p>{cancelled ? "Nothing was charged. Your order was not placed." : "Add a piece from the store and it will stay here while you shop."}</p>
+        </div>
+        <Link href="/store" className="btn gold">Back to the store</Link>
+      </div>
     );
   }
 
@@ -71,72 +73,111 @@ export function CartView({ cancelled }: { cancelled: boolean }) {
     <>
       {cancelled && (
         <p className="st-notice" role="status">
-          <strong>Checkout cancelled.</strong> Nothing was charged and your cart is exactly as you left it.
+          <strong>Checkout cancelled.</strong> Nothing was charged and your bag is exactly as you left it.
         </p>
       )}
 
       {problems.length > 0 && (
         <p className="st-notice" role="status">
-          <strong>Some items were removed.</strong> {problems.map((p) => p.reason).join("; ")}.
+          <strong>Some items need attention.</strong> {problems.map((p) => p.reason).join("; ")}.
         </p>
       )}
 
-      <ul className="st-cart">
-        {ok.map(({ line, name, unit_price_cents }) => {
-          const key = lineKey(line);
-          return (
-            <li className="st-cart-row" key={key}>
-              <img className="st-cart-art" src={imagePath(line.slug)} alt="" width={72} height={90} loading="lazy" />
-              <div className="st-cart-main">
-                <Link href={`/store/${line.slug}`} className="st-cart-name">
-                  {name}
-                </Link>
-                <span className="st-cart-variant">
-                  {line.size} / {line.color}
-                </span>
-              </div>
-              <label className="st-cart-qty">
-                <span className="st-opt-label">Qty</span>
-                <input
-                  type="number"
-                  min={1}
-                  max={MAX_QTY}
-                  value={line.qty}
-                  onChange={(e) => cart.setQuantity(key, Number(e.target.value))}
-                  aria-label={`Quantity of ${name}, ${line.size} ${line.color}`}
-                />
-              </label>
-              <span className="st-price">{formatPrice(unit_price_cents * line.qty)}</span>
-              <button type="button" className="st-cart-remove" onClick={() => cart.remove(key)} aria-label={`Remove ${name}`}>
-                Remove
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="st-cart-layout">
+        <div className="st-cart-items-panel">
+          <div className="st-cart-panel-head">
+            <div>
+              <span className="st-kicker">Your bag</span>
+              <h2>{units === 1 ? "1 item" : `${units} items`}</h2>
+            </div>
+            <Link href="/store" className="st-continue-link">Continue shopping</Link>
+          </div>
 
-      <div className="st-cart-foot">
-        <div className="st-cart-totals">
-          <span>Items</span>
-          <span className="st-price">{formatPrice(subtotal)}</span>
-          <span className="st-fine">Shipping and tax</span>
-          <span className="st-fine">Calculated at checkout</span>
+          <ul className="st-cart">
+            {ok.map(({ line, name, unit_price_cents }) => {
+              const key = lineKey(line);
+              const image = line.slug === HOODIE_SLUG ? "/store/img/propbetedge-premium-hoodie.jpg" : imagePath(line.slug);
+              return (
+                <li className="st-cart-row" key={key}>
+                  <Link href={`/store/${line.slug}`} className="st-cart-art-link" aria-label={`View ${name}`}>
+                    <img className="st-cart-art" src={image} alt="" width={96} height={120} loading="lazy" />
+                  </Link>
+                  <div className="st-cart-main">
+                    <Link href={`/store/${line.slug}`} className="st-cart-name">
+                      {name}
+                    </Link>
+                    <span className="st-cart-variant">{line.size} · {line.color}</span>
+                    <button type="button" className="st-cart-remove" onClick={() => cart.remove(key)} aria-label={`Remove ${name}`}>
+                      Remove
+                    </button>
+                  </div>
+                  <label className="st-cart-qty">
+                    <span className="st-opt-label">Qty</span>
+                    <select
+                      value={line.qty}
+                      onChange={(e) => cart.setQuantity(key, Number(e.target.value))}
+                      aria-label={`Quantity of ${name}, ${line.size} ${line.color}`}
+                    >
+                      {Array.from({ length: MAX_QTY }, (_, i) => i + 1).map((qty) => (
+                        <option key={qty} value={qty}>{qty}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <span className="st-cart-line-price">{formatPrice(unit_price_cents * line.qty)}</span>
+                </li>
+              );
+            })}
+          </ul>
         </div>
 
-        <button type="button" className="btn gold st-add" onClick={checkout} disabled={busy || !ok.length}>
-          {busy ? "Starting checkout…" : "Checkout"}
-        </button>
+        <aside className="st-cart-summary" aria-label="Order summary">
+          <span className="st-kicker">Order summary</span>
+          <h2>Ready when you are.</h2>
+
+          <div className="st-summary-lines">
+            <div>
+              <span>Items</span>
+              <strong>{formatPrice(subtotal)}</strong>
+            </div>
+            <div>
+              <span>Shipping</span>
+              <span>Calculated next</span>
+            </div>
+            <div>
+              <span>Tax</span>
+              <span>Calculated next</span>
+            </div>
+          </div>
+
+          <div className="st-summary-total">
+            <span>Subtotal</span>
+            <strong>{formatPrice(subtotal)}</strong>
+          </div>
+
+          <button type="button" className="btn gold st-checkout-button" onClick={checkout} disabled={busy || !ok.length}>
+            {busy ? "Opening secure checkout…" : "Continue to secure checkout"}
+            {!busy && <span aria-hidden="true">→</span>}
+          </button>
+
+          <div className="st-checkout-trust">
+            <div><span aria-hidden="true">▣</span><span><strong>Secure payment</strong><small>Handled by Stripe</small></span></div>
+            <div><span aria-hidden="true">◇</span><span><strong>Made for your order</strong><small>Printed on demand</small></span></div>
+          </div>
+
+          <p className="st-fine st-summary-note">
+            Shipping and any applicable tax are shown before you pay. Card details never reach PropBetEdge servers.
+          </p>
+        </aside>
       </div>
 
       {error && (
-        <p className="st-notice" role="alert">
+        <p className="st-notice st-cart-error" role="alert">
           <strong>{error}</strong>
         </p>
       )}
 
-      <p className="st-fine">
-        Payment is handled by Stripe; card details never reach our servers. Printed and shipped on demand —{" "}
-        <Link href="/store/policies">shipping, returns and print policies</Link>.
+      <p className="st-fine st-cart-policy">
+        Printed and shipped on demand by our print partner. <Link href="/store/policies">Shipping, returns and print policies</Link>.
       </p>
     </>
   );

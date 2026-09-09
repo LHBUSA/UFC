@@ -14,6 +14,7 @@ import "./roundanalysis.css";
 import "./market.css";
 import "./tuf.css";
 import "./store.css";
+import "./store-commerce.css";
 import "./model.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";

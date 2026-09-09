@@ -18,24 +18,33 @@
 }
 .hero h1 { letter-spacing: -.018em !important; }
 
-/* Header: the next-card pill is information, not a 150px tooltip. Give the
- * product chrome enough width on desktop and only collapse at the mobile nav. */
+/* Header: six core destinations + Store + More. The previous bar tried to
+ * present every live utility at once, which made the product look compressed
+ * even on wide screens. Keep the core nav relaxed, then progressively remove
+ * secondary utility chrome before the existing mobile breakpoint. */
 .hdr-wrap { max-width: 1500px; padding-left: clamp(18px, 2.3vw, 34px); padding-right: clamp(18px, 2.3vw, 34px); }
-.hdr-in { gap: clamp(12px, 1.5vw, 24px); }
-.hdr-in .nav { margin-left: clamp(0px, .5vw, 10px); }
-.hdr-in .nav a { padding-left: clamp(8px, .75vw, 12px); padding-right: clamp(8px, .75vw, 12px); }
-.hdr-cta { min-width: 0; }
-/* Compact current-card chip (FIGHT WEEK / SEP 12): the old wide event-name pill is retired; the Fight Week page owns the event title. */
-.hdr-next { width: auto; min-width: 0; max-width: 150px; }
-.account-btn { padding-left: 13px; padding-right: 13px; }
-@media (max-width: 1220px) {
-  .hdr-wrap .brand-word, .hdr-wrap .oct { display: none; }
+.hdr-in { gap: clamp(15px, 1.55vw, 26px); }
+.hdr-in > .brand { flex: none; }
+.hdr-in .nav { margin-left: clamp(2px, .7vw, 12px); gap: 4px; white-space: nowrap; }
+.hdr-in .nav a,
+.hdr-in .nav .dd-btn { padding-left: clamp(10px, .8vw, 13px); padding-right: clamp(10px, .8vw, 13px); }
+.hdr-cta { min-width: 0; gap: 7px; }
+/* Compact current-card chip (FIGHT WEEK / SEP 12): informational, not a CTA. */
+.hdr-next { width: auto; min-width: 0; max-width: 142px; }
+.account-btn { padding-left: 13px; padding-right: 13px; background: rgba(255,255,255,.012); }
+.hdr-cta .st-cart-link { background: rgba(255,255,255,.012); }
+
+/* Preserve typography first. If space tightens, lose secondary utilities
+ * before squeezing the primary navigation. */
+@media (max-width: 1360px) {
+  .hdr-next { display: none; }
 }
-@media (max-width: 1040px) {
-  .hdr-in .nav a { font-size: 12px; padding-left: 7px; padding-right: 7px; }
-}
-@media (max-width: 900px) {
+@media (max-width: 1190px) {
   .account-btn { display: none; }
+}
+@media (max-width: 1120px) {
+  .hdr-wrap .brand-word { display: none; }
+  .hdr-in { gap: 12px; }
 }
 
 /* Auth */
