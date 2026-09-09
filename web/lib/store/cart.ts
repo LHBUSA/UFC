@@ -18,7 +18,8 @@
  * specifier, and these are value imports, so they survive type stripping and
  * have to resolve at runtime. tsconfig sets allowImportingTsExtensions, and
  * noEmit means this affects type checking only, never what ships. */
-import { PRODUCTS, bySlug } from "./catalog.ts";
+import { bySlug } from "./catalog.ts";
+import { ACTIVE_RELEASE_SLUGS, isActiveReleaseSlug, releaseLineAllowed, releaseSpec } from "./release-policy.ts";
 import { formatPrice } from "./types.ts";
 
 export const CART_STORAGE_KEY = "pbe.store.cart.v1";
@@ -83,18 +84,12 @@ export function parseCart(raw: unknown): CartLine[] {
 }
 
 /**
- * Check every line against the catalog.
+ * Check every line against the authored catalog AND the active release gate.
  *
- * This is the half of validation that does not need the database: does the
- * product exist, is it in the launch collection, is it offered on this site,
- * and are the size and colour ones we actually sell? A line that fails here
- * can never be bought regardless of provisioning state, so it is worth
- * refusing early and saying why.
- *
- * It deliberately does NOT decide purchasability. That depends on what the
- * provider has confirmed, which lives in store_provisioning and is checked
- * server-side in the checkout route. Two halves, and the browser only ever
- * gets to see this one.
+ * The permanent catalog can contain unreleased concepts and legacy launch
+ * pieces. Neither is a promise that checkout accepts them. `release-policy`
+ * is the narrow customer-facing allowlist: today it is the black premium
+ * hoodie, black Fight DNA tee, and black 11 oz PBE mug.
  */
 export function validateAgainstCatalog(
   lines: readonly CartLine[],
@@ -117,20 +112,20 @@ export function validateAgainstCatalog(
       problems.push({ line, reason: "not sold on this storefront" });
       continue;
     }
-    if (def.status !== "launch") {
-      problems.push({ line, reason: `${def.name} is not part of the launch collection` });
-      continue;
-    }
     if (def.blocked) {
       problems.push({ line, reason: `${def.name} is not on sale yet` });
       continue;
     }
-    if (!def.sizes.includes(line.size)) {
-      problems.push({ line, reason: `${def.name} is not made in size ${line.size}` });
+    if (!isActiveReleaseSlug(line.slug)) {
+      problems.push({ line, reason: `${def.name} is not in the current release` });
       continue;
     }
-    if (!def.colors.includes(line.color)) {
-      problems.push({ line, reason: `${def.name} is not made in ${line.color}` });
+    if (!releaseLineAllowed(line)) {
+      const spec = releaseSpec(line.slug)!;
+      problems.push({
+        line,
+        reason: `${def.name} is offered only as ${spec.sizes.join("/")} in ${spec.colors.join("/")}`,
+      });
       continue;
     }
     if (!Number.isInteger(line.qty) || line.qty < 1 || line.qty > MAX_QTY) {
@@ -181,8 +176,7 @@ export function setQty(lines: readonly CartLine[], key: string, qty: number): Ca
   return lines.map((l) => (lineKey(l) === key ? { ...l, qty: Math.min(MAX_QTY, Math.floor(qty)) } : l));
 }
 
-/** Slugs the launch collection actually offers, for a client that wants to
- * prune a stale cart without a round trip. */
+/** Slugs the currently orderable release offers, for pruning stale carts. */
 export function launchSlugs(): string[] {
-  return PRODUCTS.filter((p) => p.status === "launch" && !p.blocked).map((p) => p.slug);
+  return [...ACTIVE_RELEASE_SLUGS];
 }
