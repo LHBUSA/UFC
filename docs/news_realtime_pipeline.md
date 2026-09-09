@@ -167,12 +167,52 @@ done here, because Phase 2 changes no public behaviour.
 
 ---
 
-# Phase 3 → Phase 4 boundary: two things that must land first
+# Phase 3 → Phase 4 boundary: two changes, in order, separately proven
 
 Neither is optional and neither is part of Phase 4's feature scope. Both were
 found by running Phase 3 against production rather than by reading the code.
 
-## 1. `ufc-news-ingest` becomes the sole writer to `ufc_news_items`
+**They ship as two independent deployments, A then B, each observed over normal
+cron execution and reported before the next begins.** Not because the ordering
+is a nicety — because the two bugs were concealing each other. A `?dry=true`
+probe consumed Combat Press and LowKick MMA's feed freshness; the next real run
+got 304 for both; and their items reached the database ONLY because the legacy
+newsroom writer was still fetching unconditionally. Do B before A and those
+items vanish silently, with every counter reporting success. Do them in one
+deployment and there is no moment at which either is known to work on its own.
+
+---
+
+## Step A — `?dry=true` must be genuinely side-effect free
+
+`fetchFeed` persists feed health — including the ETag and Last-Modified
+validators — on every call, `dry` included. So a dry run makes the *next* real
+run conditional, the origin answers 304, and the items the dry run just looked
+at are never inserted at all. A dry run that changes the next production fetch
+is not a dry run.
+
+Dry mode must mutate none of: ETag, Last-Modified, source freshness metadata,
+circuit-breaker state, success/failure counters that affect behaviour, Supabase
+rows, queue messages, pipeline events, or any other future-fetch decision state.
+
+Proof protocol, in order:
+
+1. capture the exact relevant KV state
+2. make a source response available to dry mode
+3. execute the dry run
+4. prove the KV operational state is unchanged, byte-wise where the encoding is
+   stable and semantically where it is not
+5. run a real ingest immediately afterwards
+6. prove the real run still sees and processes that same item
+7. prove no duplicate is introduced
+
+Deploy only this fix. Observe normal cron execution. Stop and report.
+
+---
+
+## Step B — `ufc-news-ingest` becomes the sole writer to `ufc_news_items`
+
+Only after Step A is proven.
 
 Production evidence, 2026-09-09: 214 wire rows arrived from `ufc-news-ingest`
 and 22 from `ufc-newsroom`'s legacy ingest phase at 23:01:17–23:01:23Z. They are
@@ -191,41 +231,22 @@ the focus filter exists to prevent. Two writers with different semantics is
 tolerable only while nothing consumes the rows; the moment Phase 4 processes
 candidates it stops being tolerable.
 
-So before Phase 4 processes anything real, the legacy per-item ingest path stops
-writing new news rows. **`ufc-newsroom` itself stays** — Durable Object lock,
-run ledger, control-plane cron, catch-up planning, `/health`, `/admin/run`,
-source and batch orchestration. This is a narrow cutover of one writer, not a
-newsroom rewrite, and it ships with a rollback.
+**`ufc-newsroom` itself stays.** Durable Object lock, run ledger, control-plane
+cron, catch-up planning, `/health`, `/admin/run`, source and batch
+orchestration. This disables one writer. It is not a newsroom rewrite and it
+ships with a rollback.
 
-Proof required after cutover:
+Proof required, across multiple real cron cycles rather than one triggered run:
 
-- every new wire row originates from `ufc-news-ingest`
-- no row-by-row `detected_at` clusters (the legacy signature)
-- every new eligible item has a `detect` pipeline event
-- published article count and slug set unchanged
-- `ufc-newsroom` `/health` clean, ledger still recording runs
+- `ufc-news-ingest` is the only process creating `ufc_news_items`
+- every new item carries the new `detected_at` semantics (one value per poll,
+  never a row-by-row cluster)
+- every eligible item has a `detect` pipeline event
+- cross-sport items never reach an enrichment-eligible state
+- duplicate delivery remains harmless
+- no legitimate item disappears
+- the published article set is unchanged
+- `ufc-newsroom` `/health` stays clean and its ledger keeps recording runs
 
-## 2. `?dry=true` must be genuinely side-effect free
-
-`fetchFeed` persists feed health — including the ETag and Last-Modified
-validators — on every call, `dry` included. So a dry run makes the *next* real
-run conditional, the origin answers 304, and the items the dry run just looked
-at are never inserted at all.
-
-This is not theoretical. On 2026-09-09 a `?dry=true` probe consumed the
-freshness of Combat Press and LowKick MMA; the next real run got 304 for both,
-and their items reached the database only because `ufc-newsroom`'s legacy path
-was still fetching unconditionally. Under a sole-writer regime those items would
-simply have been lost, silently, with every counter reporting success.
-
-A dry run must mutate none of: ETag state, Last-Modified state, source freshness
-metadata, circuit state, Supabase rows, queue state, pipeline events, or any
-counter that affects future execution.
-
-Regression test required:
-
-- snapshot the whole KV namespace before a dry run and after it; assert equal
-- assert the immediately following real run still receives and inserts an item
-  that the dry run observed
-
-A dry run that changes the next production fetch is not a dry run.
+Only after A and B are each independently proven may the queue producer be
+considered for enablement. Not before.
