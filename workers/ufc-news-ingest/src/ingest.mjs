@@ -44,6 +44,26 @@ const USER_AGENT = 'Mozilla/5.0 (compatible; PropBetEdgeUFCBot/1.0; +https://ufc
 const fingerprintOf = (title, url) => sha256(`${normalize(title)}|${domainOf(url)}`);
 
 /**
+ * A KV handle that reads normally and refuses to write.
+ *
+ * Used only for dry runs. Writes are counted and dropped rather than thrown,
+ * deliberately: saveHealth swallows its own errors by design (health is an aid,
+ * not a gate), so a throw here would be silently absorbed and prove nothing. A
+ * counter surfaces in the dry-run result instead, where a human and a test can
+ * both see it.
+ */
+export function countingReadOnlyKV(kv, counter) {
+  if (!kv) return kv;
+  return {
+    get: (...args) => kv.get(...args),
+    list: (...args) => kv.list(...args),
+    getWithMetadata: (...args) => kv.getWithMetadata?.(...args),
+    put: async () => { counter.attempted += 1; },
+    delete: async () => { counter.attempted += 1; },
+  };
+}
+
+/**
  * Fetch one feed, honouring its circuit and its cached validators.
  *
  * Never throws. A feed that cannot be reached is a fact about that feed, and
@@ -130,9 +150,32 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
     return { status: 'no_sources', sources: 0, note: 'no enabled rss source; run /admin/verify first' };
   }
 
-  const fetched = await Promise.all(sources.map((s) => fetchFeed(env, s, { now })));
+  /* DRY MODE PERSISTS NOTHING.
+   *
+   * This is not a tidiness rule, it is a bug that already cost us items. Feed
+   * health carries the ETag and Last-Modified validators, so persisting it from
+   * a dry run makes the NEXT REAL RUN conditional: the origin answers 304, and
+   * the items the dry run just looked at are never inserted at all. On
+   * 2026-09-09 a ?dry=true probe consumed Combat Press and LowKick MMA that way,
+   * and their items reached the database only because a second, unconditional
+   * writer happened to still be running. Once this Worker is the sole writer,
+   * the same sequence loses them silently with every counter reporting success.
+   *
+   * The request itself is unchanged - a dry run still sends the stored
+   * validators, because a dry run that fetches differently from a real run is
+   * not previewing the real run. What changes is that nothing it learns is
+   * written back.
+   *
+   * The counter below is the visible half of the guarantee: any future code
+   * that tries to write KV during a dry run shows up in the result rather than
+   * being swallowed by saveHealth's catch. */
+  const kvWrites = { attempted: 0 };
+  const kv = dry ? countingReadOnlyKV(env.UFC_NEWS_KV, kvWrites) : env.UFC_NEWS_KV;
+  const fetchEnv = dry ? { ...env, UFC_NEWS_KV: kv } : env;
+
+  const fetched = await Promise.all(sources.map((s) => fetchFeed(fetchEnv, s, { now })));
   await Promise.all(fetched.map(({ result, health, changed }) =>
-    changed ? saveHealth(env.UFC_NEWS_KV, result.source, health) : null));
+    (changed && !dry) ? saveHealth(env.UFC_NEWS_KV, result.source, health) : null));
 
   const totals = {
     sources: sources.length, fetched_ok: 0, not_modified: 0, failed: 0, circuit_skipped: 0,
@@ -220,6 +263,9 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
   if (dry) {
     return {
       status: 'dry_run', duration_ms: Date.now() - started, totals,
+      /* Must be 0. Anything else means this dry run mutated operational state
+       * and the next real fetch is compromised. */
+      kv_writes_attempted: kvWrites.attempted,
       per_source: perSource,
       would_insert: accepted.map((a) => ({
         source: a.source_name, state: a.row.state, reason: a.row.state_reason,

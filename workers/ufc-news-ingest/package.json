@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test src/ufc_focus.test.mjs src/feed_health.test.mjs src/ingest.test.mjs",
+    "test": "node --test src/ufc_focus.test.mjs src/feed_health.test.mjs src/ingest.test.mjs src/dry_purity.test.mjs",
     "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun"
   }
 }
