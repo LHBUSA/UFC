@@ -1,4 +1,5 @@
-import type { CartLine } from "./cart.ts";
+import type { ProvisionRecord } from "./types.ts";
+import { variantKey } from "./types.ts";
 
 /**
  * The products we are actually willing to charge for right now.
@@ -56,8 +57,27 @@ export function releaseOptions(slug: string): { sizes: string[]; colors: string[
   return spec ? { sizes: [...spec.sizes], colors: [...spec.colors] } : null;
 }
 
-export function releaseLineAllowed(line: Pick<CartLine, "slug" | "size" | "color">): boolean {
+export function releaseLineAllowed(line: { slug: string; size: string; color: string }): boolean {
   return isReleaseLine(line.slug, line.size, line.color);
+}
+
+/**
+ * A release is buyable only after the provider catalog has been reconciled and
+ * every size/colour we advertise has an exact catalog variant id. `unclaimed`
+ * remains valid because these orders are created directly from catalog variant
+ * ids; a separately-created sync product is not required.
+ */
+export function releaseProvisioningReady(slug: string, rec: ProvisionRecord | null | undefined): boolean {
+  const spec = releaseSpec(slug);
+  if (!spec || !rec || !rec.reconciled_at) return false;
+  if (rec.state !== "unclaimed" && rec.state !== "created") return false;
+  for (const color of spec.colors) {
+    for (const size of spec.sizes) {
+      const id = rec.provider_variant_ids?.[variantKey(size, color)];
+      if (typeof id !== "number" || !Number.isInteger(id) || id <= 0) return false;
+    }
+  }
+  return true;
 }
 
 export const DROP001_COLOR = RELEASE[DROP001_SLUG].colors[0];
