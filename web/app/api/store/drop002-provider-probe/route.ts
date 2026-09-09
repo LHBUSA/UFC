@@ -4,9 +4,17 @@ import { getPrintAreas, getProductDetail, getVariants, listCatalog, resolveStore
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+/**
+ * One-time read-only verification endpoint for Drop 002.
+ *
+ * It exposes no credential and performs no mutation. It exists only so the
+ * production runtime — where PRINTFUL_API_TOKEN is bound — can resolve the
+ * exact catalog product / variant ids and print areas we need before opening
+ * checkout. Delete this route immediately after the reconciliation is stored.
+ */
 export async function GET() {
-  if (process.env.VERCEL_ENV !== "preview" || process.env.VERCEL_GIT_COMMIT_REF !== "store-checkout-products-v1") {
-    return NextResponse.json({ error: "preview only" }, { status: 404 });
+  if (process.env.VERCEL_ENV !== "production") {
+    return NextResponse.json({ error: "production verification only" }, { status: 404 });
   }
 
   const ctx = await resolveStoreContext();
