@@ -2,6 +2,7 @@ import Link from "next/link";
 import { NavLinks } from "./NavLinks";
 import { MobileNav } from "./MobileNav";
 import { Logo, Mark } from "./Brand";
+import { StoreCartButton } from "./store/StoreCartButton";
 import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getNextEvent } from "@/lib/db";
@@ -34,6 +35,7 @@ export async function Header() {
               </span>
             </Link>
           )}
+          <StoreCartButton />
           {account ? <Link href="/account" className="btn account-btn">{account.unlimited ? "Owner" : account.plan === "pro" ? "Pro" : "Account"}</Link> : <Link href="/login" className="btn account-btn">Sign in</Link>}
           <Link href="/pro" className="btn gold">Go Pro</Link>
           <label htmlFor="mnav-toggle" className="menu-btn" aria-label="Open menu"><span /><span /><span /></label>
@@ -42,6 +44,7 @@ export async function Header() {
       <MobileNav>
         <NavLinks className="" variant="mobile" />
         <div className="mnav-foot">
+          <StoreCartButton mobile />
           {next && <Link href={nextHref} className="btn">{nextLabel} · {fmtDate(next.event_date, { month: "short", day: "numeric" })}</Link>}
           <Link href={account ? "/account" : "/login"} className="btn">{account ? "Account" : "Sign in"}</Link>
           <Link href="/pro" className="btn gold">Go Pro</Link>
