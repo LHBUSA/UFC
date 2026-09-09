@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHead, JsonLd } from "@/components/ui";
 import { HoodieProductPreview } from "@/components/store/HoodieProductPreview";
-import { bySlug, productsFor } from "@/lib/store/catalog";
+import { bySlug } from "@/lib/store/catalog";
 import { approvedMockup } from "@/lib/store/display";
 import { getProvisioning } from "@/lib/store/provisioning";
 import { drop001RuntimeStatus } from "@/lib/store/release";
@@ -19,8 +19,11 @@ import { formatPrice, toStorefront } from "@/lib/store/types";
 import { AddToCart } from "@/components/store/AddToCart";
 import { SITE } from "@/lib/site";
 
-export const revalidate = 60;
-export const dynamicParams = false;
+/* Product availability depends on live provisioning state. Do not prerender a
+ * stale "Final verification" state into the release pages after the exact
+ * Printful variants have been reconciled. */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const DROP002_SLUGS = new Set([FIGHT_DNA_TEE_SLUG, PBE_MUG_SLUG]);
 
@@ -33,10 +36,6 @@ const DROP002_DESCRIPTION: Record<string, string> = {
   [PBE_MUG_SLUG]:
     "An 11 oz black glossy ceramic mug carrying the same full metallic PBE / PropBetEdge.ai house logo used on the premium hoodie. Built for the morning card read, the late recap and the spreadsheet that never really closes.",
 };
-
-export function generateStaticParams() {
-  return productsFor("ufc").map((p) => ({ slug: p.slug }));
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -161,14 +160,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             sizes={sizes}
             colors={colors}
             purchasable={saleOpen}
-            reason={saleOpen ? null : isActiveReleaseSlug(p.slug) ? "Checkout opens as soon as the exact printer variants are verified." : (p.unavailable_reason ?? null)}
+            reason={saleOpen ? null : isActiveReleaseSlug(p.slug) ? "Checkout is temporarily unavailable for this release item." : (p.unavailable_reason ?? null)}
           />
 
           {!saleOpen && (
             <p className="st-notice" role="status">
-              <strong>{drop002 ? "Drop 002 is being verified." : hoodie ? "Drop 001 is coming soon." : "Coming soon."}</strong>{" "}
+              <strong>{drop002 ? "Drop 002 checkout is temporarily unavailable." : hoodie ? "Drop 001 checkout is temporarily unavailable." : "Coming soon."}</strong>{" "}
               {isActiveReleaseSlug(p.slug)
-                ? "The design and product are locked. We do not accept payment until every advertised variant and production file is confirmed with the printer."
+                ? "This product is part of the active release. Refresh shortly while the live fulfillment state catches up."
                 : p.unavailable_reason}
             </p>
           )}
