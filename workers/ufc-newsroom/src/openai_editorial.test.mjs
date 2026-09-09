@@ -171,7 +171,7 @@ test('provider failure holds the article and never patches it', async () => {
         }),
       },
     ),
-    /every candidate was held/,
+    /every attempted candidate was held/,
   );
   assert.equal(patched, false);
 });
