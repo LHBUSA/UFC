@@ -22,11 +22,16 @@ const TITLE = "PropBetEdge Store | Premium Fight-Night Gear";
 const DESCRIPTION = "Shop live PropBetEdge fight-night gear: premium hoodies, Fight DNA, Tale of the Tape, PBE headwear and bettor-first mugs built around the same intelligence platform.";
 const DROP002_SLUGS = new Set([FIGHT_DNA_TEE_SLUG, PBE_MUG_SLUG]);
 const DROP003_SLUGS = new Set([TALE_OF_TAPE_HOODIE_SLUG, PBE_CLASSIC_HAT_SLUG, TRUST_DATA_MUG_SLUG]);
-const STORE_HERO = `${SITE.url}/store/product-photo/${TALE_OF_TAPE_HOODIE_SLUG}`;
+const DROP003_PHOTOS: Record<string, { url: string; width: number; height: number; alt: string }> = {
+  [TALE_OF_TAPE_HOODIE_SLUG]: { url: "/store/img/tale-of-the-tape-hoodie.webp", width: 640, height: 800, alt: "Tale of the Tape Hoodie" },
+  [PBE_CLASSIC_HAT_SLUG]: { url: "/store/img/pbe-classic-hat.webp", width: 480, height: 600, alt: "PBE Classic Hat" },
+  [TRUST_DATA_MUG_SLUG]: { url: "/store/img/trust-the-data-mug.webp", width: 480, height: 600, alt: "Trust the Data Mug" },
+};
+const STORE_HERO = `${SITE.url}${DROP003_PHOTOS[TALE_OF_TAPE_HOODIE_SLUG].url}`;
 
 export const metadata: Metadata = {
   title: { absolute: TITLE }, description: DESCRIPTION, alternates: { canonical: "/store" },
-  openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/store`, images: [{ url: STORE_HERO, width: 720, height: 900, alt: "Tale of the Tape Hoodie" }] },
+  openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/store`, images: [{ url: STORE_HERO, width: 640, height: 800, alt: "Tale of the Tape Hoodie" }] },
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: [STORE_HERO] },
 };
 
@@ -34,9 +39,8 @@ const FORM_LABEL: Record<string, string> = { tee: "Tee", hoodie: "Hoodie", cap: 
 
 function Card({ p, enabled = false }: { p: StorefrontProduct; enabled?: boolean }) {
   const hoodie = p.slug === DROP001_SLUG;
-  const drop003 = DROP003_SLUGS.has(p.slug);
   const mockup = approvedMockup(p.slug);
-  const image = drop003 ? { url: `/store/product-photo/${p.slug}`, width: 720, height: 900, alt: `${p.name} product image` } : (mockup ?? p.images[0]);
+  const image = DROP003_PHOTOS[p.slug] ?? mockup ?? p.images[0];
   return (
     <Link href={`/store/${p.slug}`} className="st-card">
       <span className="st-art-frame">
