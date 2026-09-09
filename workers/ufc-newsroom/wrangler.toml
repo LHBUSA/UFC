@@ -4,16 +4,17 @@ compatibility_date = "2026-09-08"
 account_id = "fd3a233edadd0a60916413c1199f71ee"
 workers_dev = true
 
-# The newsroom imports scripts/news/*.mjs unchanged so the Worker runs the same
-# editorial code as the CLI. Those modules use node:crypto for the fact-block
-# hash and node:fs inside a try/catch for .env, so Node compatibility is a hard
-# requirement, not a convenience. The hash in particular must stay byte-identical
+# The newsroom imports scripts/news/*.mjs for the deterministic writer and
+# established Anthropic fallback. Those modules use node:crypto for the
+# fact-block hash and node:fs inside a try/catch for .env, so Node compatibility
+# is a hard requirement, not a convenience. The hash must stay byte-identical
 # to the CLI's: a different digest would change every article's fact-block hash
-# at once and trigger a full, meaningless refresh of the archive.
+# and trigger a meaningless full refresh of the archive.
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+UFC_EDITORIAL_OPENAI_MODEL = "gpt-5.6-sol"
 
 # Single-flight guard. One Durable Object, id "newsroom", serialises
 # invocations so read-then-write inside it is atomic — which is what makes two
@@ -22,10 +23,9 @@ SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
 # It is here rather than in the database on purpose. The run ledger's lock is a
 # SELECT followed by an INSERT over PostgREST with no transaction between them,
 # and making that atomic would need a lease table or a partial unique index on
-# ufc_ingest_runs — a production migration bought purely to strengthen a
-# sentence. This needs no schema change at all, and it closes the one hole the
-# unique indexes cannot: two invocations both paying Anthropic for the same
-# rewrite before the losing INSERT is rejected. See src/lock.mjs.
+# ufc_ingest_runs. The Durable Object closes the hole the unique indexes cannot:
+# two invocations both paying a model for the same rewrite before the losing
+# INSERT is rejected. See src/lock.mjs.
 [[durable_objects.bindings]]
 name = "NEWSROOM_LOCK"
 class_name = "NewsroomLock"
@@ -37,21 +37,16 @@ new_sqlite_classes = ["NewsroomLock"]
 # Cadence. Three triggers, and the coordinator may add overdue phases to any of
 # them — see src/coordinator.mjs.
 #
-# This is the part that replaces GitHub Actions, so it is worth being precise
-# about what changed. The workflow selected jobs by matching the exact cron
-# string, and GitHub's scheduler is best effort: on this repository the
-# every-30-minutes cron was observed firing at 1 to 5 hour gaps, and the daily
-# 09:05 slot ran at 13:29. A late run still carried its own cron string, so it
-# ran its own job and skipped the others; a dropped slot was never made up by
-# anything. Cloudflare's scheduler is considerably more reliable, but the fix
-# here does not rest on that: every phase also carries a maximum age checked
-# against the run ledger, so a missed slot is picked up by whichever trigger
-# fires next. Cadence is a floor on freshness rather than a hope about timers.
+# This is the part that replaces GitHub Actions. The old workflow selected jobs
+# by matching the exact cron string, and GitHub's scheduler was observed firing
+# the every-30-minutes cron at 1 to 5 hour gaps. Cloudflare cron plus the run
+# ledger's overdue-phase catch-up makes cadence a floor on freshness rather than
+# a hope about timer delivery.
 [triggers]
 crons = [
   "*/30 * * * *",   # news ingest; writer follows a meaningful ingest
   "15 */2 * * *",   # two-hourly baseline article refresh
-  "20 10 * * *",    # RSS source verification, then ingest, then the editorial desk
+  "20 10 * * *",    # RSS source verification, ingest, then full editorial sweep
 ]
 
 # Retained logs. Without this there is no record that a cron ever fired, which
@@ -60,12 +55,11 @@ crons = [
 enabled = true
 head_sampling_rate = 1
 
-# Secrets (wrangler secret put --name ufc-newsroom):
+# Secrets (set with wrangler for the ufc-newsroom Worker):
 #   SUPABASE_SERVICE_ROLE_KEY  required; database access
 #   ADMIN_TRIGGER_TOKEN        required to expose POST /admin/run at all (404 without it)
-#   ANTHROPIC_API_KEY          optional; enables the writer's LLM rewrite AND the
-#                              daily editorial desk. Without it both fall back to
-#                              deterministic output and publication is unaffected.
+#   OPENAI_API_KEY             primary editorial provider; GPT-5.6 Sol by default
+#   ANTHROPIC_API_KEY          optional fallback; legacy inline writer rewrite + desk fallback
 #   DISCORD_WEBHOOK_URL        optional; alerts
 #
 # No GitHub Copilot CLI, no GITHUB_TOKEN, and no npm install at run time.
