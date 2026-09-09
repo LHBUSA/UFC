@@ -25,7 +25,7 @@
  *   Durable Object (lock.mjs, binding NEWSROOM_LOCK) serialises invocations.
  *   Requests to one object are single-threaded, so read-then-write inside it
  *   is atomic and a second run cannot start. This is what stops duplicate
- *   Anthropic spend, which no database constraint can.
+ *   model spend, which no database constraint can.
  *
  *   Unique indexes (ufc_news_items.fingerprint/.url, ufc_articles.slug) stop
  *   duplicate ROWS unconditionally, including when the lock is unavailable.
@@ -43,24 +43,32 @@
  *
  * Configuration
  *   vars:     SUPABASE_URL
- *   secrets:  SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY (optional),
- *             ADMIN_TRIGGER_TOKEN, DISCORD_WEBHOOK_URL (optional)
+ *   secrets:  SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY (primary editorial),
+ *             ANTHROPIC_API_KEY (optional fallback), ADMIN_TRIGGER_TOKEN,
+ *             DISCORD_WEBHOOK_URL (optional)
  *   durable:  NEWSROOM_LOCK -> NewsroomLock (single-flight; see lock.mjs)
  */
 import { Supabase } from './supabase.mjs';
 import { planRun, shouldWriteAfterIngest, PHASES } from './coordinator.mjs';
 import { WORKER, findActiveRun, lastSuccessByPhase, openRun, closeRun } from './runlog.mjs';
 import { acquire as acquireLock, release as releaseLock, MANUAL_DEADLINE_MS } from './lock.mjs';
-import { runSources, runIngest, runWrite, runRefresh, runSweep, anthropicConfigured } from './phases.mjs';
+import {
+  runSources,
+  runIngest,
+  runWrite,
+  runRefresh,
+  runSweep,
+  anthropicConfigured,
+  openaiConfigured,
+  editorialProvider,
+} from './phases.mjs';
 
 /* The Durable Object class must be exported from the entry module for the
  * runtime to find it. It is the single-flight guard; see lock.mjs. */
 export { NewsroomLock } from './lock.mjs';
 
 const SERVICE = WORKER;
-const VERSION = 'v0.1.0';
-
-
+const VERSION = 'v0.2.0';
 
 /* In-memory only: survives a warm isolate and nothing more. The ledger is the
  * durable record; this is a convenience for whoever curls /health. */
@@ -104,14 +112,11 @@ export default {
           SUPABASE_URL: Boolean(env.SUPABASE_URL),
           SUPABASE_SERVICE_ROLE_KEY: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
           ADMIN_TRIGGER_TOKEN: Boolean(env.ADMIN_TRIGGER_TOKEN),
+          OPENAI_API_KEY: openaiConfigured(env),
           ANTHROPIC_API_KEY: anthropicConfigured(env),
           DISCORD_WEBHOOK_URL: Boolean(env.DISCORD_WEBHOOK_URL),
         },
-        /* Stated plainly so a reader of /health knows the enhancement is
-         * optional and its absence is not an outage. */
-        editorial_provider: anthropicConfigured(env)
-          ? 'anthropic (optional enhancement); deterministic templates always publish'
-          : 'deterministic templates only',
+        editorial_provider: `${editorialProvider(env)}; deterministic templates always publish`,
       });
     }
 
@@ -232,9 +237,8 @@ async function runPhases(env, sb, { cron, invoked, force, exact, now, guard, loc
    * to decide what is overdue, and the concurrency fallback reads it to decide
    * whether a run is already in flight. A side-effecting run with no row is
    * therefore invisible to the next invocation in both of those decisions —
-   * it would ingest, publish and spend on Anthropic while leaving the system
-   * believing nothing had happened, which is worse than not running at all.
-   * Previously this was `.catch(() => null)` and continued regardless. */
+   * it would ingest, publish and spend on a model while leaving the system
+   * believing nothing had happened, which is worse than not running at all. */
   let runId = null;
   let openError = null;
   try {
@@ -247,8 +251,6 @@ async function runPhases(env, sb, { cron, invoked, force, exact, now, guard, loc
     console.error(`[${SERVICE}] LEDGER OPEN FAILED, running nothing: ${detail}`);
     health.last_status = 'ledger_open_failed';
     health.last_error_class = openError?.name || 'LedgerError';
-    /* No phase runs, so no source is fetched, no article is written and no
-     * model is called. The caller releases the lock in its finally block. */
     return {
       status: 'ledger_open_failed',
       concurrency_guard: guard,
@@ -269,8 +271,7 @@ async function runPhases(env, sb, { cron, invoked, force, exact, now, guard, loc
 
   for (const phase of phases) {
     /* Checked between phases, never inside one: a phase already talking to
-     * Supabase or Anthropic is left to finish, which is why the deadline sits
-     * well under the lease rather than at it. */
+     * Supabase or a model is left to finish. */
     if (deadlineAt && Date.now() > deadlineAt) {
       abandoned.push(phase);
       console.warn(`[${SERVICE}] deadline reached; abandoning ${phase}`);
@@ -318,23 +319,18 @@ async function runPhases(env, sb, { cron, invoked, force, exact, now, guard, loc
     phases_succeeded: succeeded,
     phase_reasons: reasons,
     counters,
+    openai_configured: openaiConfigured(env),
     anthropic_configured: anthropicConfigured(env),
-    /* Which guarantee was actually in force for this run. A reader of the
-     * ledger should never have to infer it from the deployment. */
+    editorial_provider: editorialProvider(env),
+    /* Which guarantee was actually in force for this run. */
     concurrency_guard: guard,
     exact: Boolean(exact),
-    /* Named, because a phase abandoned to a deadline is not a phase that was
-     * never planned, and the difference matters to whoever reads this next. */
     phases_abandoned: abandoned,
   };
 
-  /* Closing the row is best effort BY DESIGN, and the asymmetry with opening
-   * it is deliberate. Failing to OPEN means the work is unrecorded before it
-   * happens, so it must not happen. Failing to CLOSE means work that already
-   * happened cannot be un-happened, so the result is still returned to the
-   * caller — losing it would be a second failure on top of the first. It is
-   * loud in the log and leaves a row stuck 'running' that the lock's staleness
-   * window later reclaims. */
+  /* Closing the row is best effort BY DESIGN. Failing to OPEN means the work
+   * would be unrecorded before it happens, so it must not happen. Failing to
+   * CLOSE means work already happened and cannot be undone; log it loudly. */
   await closeRun(sb, runId, { status, notes, failures });
 
   health.last_status = status;
