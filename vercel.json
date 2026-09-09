@@ -2,8 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "ignoreCommand": "test \"$VERCEL_PROJECT_ID\" != \"prj_7jhcaeuQSl4gpjFcEe3XdBqRfC8V\"",
-  "installCommand": "cp web/package.json package.json && cd web && npm ci",
-  "buildCommand": "cd web && npm run build",
+  "installCommand": "cp web/package.json package.json && cp web/package-lock.json package-lock.json && npm ci",
+  "buildCommand": "cd web && node scripts/preservation-check.mjs && node ../node_modules/next/dist/bin/next build",
   "outputDirectory": "web/.next",
   "crons": [
     {
