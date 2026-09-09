@@ -2,15 +2,12 @@ import type { Metadata } from "next";
 import { PageHead } from "@/components/ui";
 import { CartView } from "@/components/store/CartView";
 
-/* /store/cart — the only page between choosing a piece and paying for it.
- *
- * Kept to one screen on purpose. This shop sells three things; a multi-step
- * cart would be ceremony around a decision the customer already made. */
+/* /store/cart — the only page between choosing a piece and paying for it. */
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: { absolute: "Cart | PropBetEdge UFC Store" },
-  description: "Your PropBetEdge store cart.",
+  title: { absolute: "Bag & Checkout | PropBetEdge UFC Store" },
+  description: "Review your PropBetEdge order and continue to secure checkout.",
   robots: { index: false, follow: false },
 };
 
@@ -21,10 +18,10 @@ export default async function CartPage({ searchParams }: { searchParams: Promise
       <div className="wrap">
         <div className="page">
           <PageHead
-            eyebrow="Store"
-            title="Your cart"
-            lede="Printed on demand. Nothing is made until the order is paid for."
-            crumbs={[{ name: "Store", href: "/store" }, { name: "Cart" }]}
+            eyebrow="PropBetEdge Store"
+            title="Bag & checkout"
+            lede="Review your items, then continue to Stripe for shipping, tax and secure payment."
+            crumbs={[{ name: "Store", href: "/store" }, { name: "Bag & checkout" }]}
           />
         </div>
       </div>
