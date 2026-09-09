@@ -7,9 +7,9 @@
 #   * source ingest every 30 minutes year-round;
 #   * third-party items remain source/live-wire material, not standalone publications;
 #   * deterministic first-party article writer runs when new items land or on a two-hour baseline;
-#   * every core writer pass is followed by a bettor-first feature pass that builds
+#   * the bettor-first feature layer runs every newsroom pass and builds/refreshes
 #     card-level guides and post-event market resets from verified PropBetEdge fact blocks;
-#   * every writer pass is followed by the fail-closed premium editorial desk;
+#   * every core writer pass is followed by the fail-closed premium editorial desk;
 #   * Anthropic is preferred when configured; Copilot CLI is the automatic
 #     Actions-native fallback using the short-lived GITHUB_TOKEN;
 #   * a daily quality sweep catches any recent story that missed the editorial desk;
@@ -71,8 +71,7 @@ jobs:
       - name: Write PropBetEdge-owned fact-block articles (gated)
         if: steps.gate.outputs.write == 'true'
         run: node scripts/news/write_articles.mjs --types preview,results,card_change ${{ env.ANTHROPIC_API_KEY != '' && '--llm' || '' }}
-      - name: Write bettor-first newsroom features (gated)
-        if: steps.gate.outputs.write == 'true'
+      - name: Write bettor-first newsroom features (every pass, idempotent)
         run: node scripts/news/write_features.mjs
       - name: Install Copilot CLI for editorial fallback
         if: steps.gate.outputs.write == 'true'
