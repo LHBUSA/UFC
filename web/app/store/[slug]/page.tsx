@@ -5,7 +5,7 @@ import { PageHead, JsonLd } from "@/components/ui";
 import { HoodieProductPreview } from "@/components/store/HoodieProductPreview";
 import { bySlug, productsFor } from "@/lib/store/catalog";
 import { getProvisioning } from "@/lib/store/provisioning";
-import { DROP001_COLOR, DROP001_SIZES, DROP001_SLUG, drop001RuntimeStatus } from "@/lib/store/release";
+import { DROP001_COLOR, DROP001_SIZES, DROP001_SLUG, drop001ProvisioningReady, drop001RuntimeStatus } from "@/lib/store/release";
 import { formatPrice, toStorefront } from "@/lib/store/types";
 import { AddToCart } from "@/components/store/AddToCart";
 import { SITE } from "@/lib/site";
@@ -52,12 +52,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     getProvisioning(),
     Promise.resolve(drop001RuntimeStatus()),
   ]);
-  const p = toStorefront(def, provisioning.get(def.slug) ?? null);
+  const rec = provisioning.get(def.slug) ?? null;
+  const p = toStorefront(def, rec);
   const hoodie = p.slug === DROP001_SLUG;
   const sizes = hoodie ? p.sizes.filter((s) => DROP001_SIZES.includes(s as (typeof DROP001_SIZES)[number])) : p.sizes;
   const colors = hoodie ? [DROP001_COLOR] : p.colors;
   const description = hoodie ? HOODIE_DESCRIPTION : p.description;
-  const saleOpen = hoodie ? p.purchasable && runtime.ready : false;
+  const saleOpen = hoodie ? runtime.ready && drop001ProvisioningReady(rec) : false;
 
   return (
     <>
