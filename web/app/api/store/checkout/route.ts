@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { MAX_LINES, parseCart, validateAgainstCatalog } from "@/lib/store/cart";
 import { getProvisioning, provisioningConfigured } from "@/lib/store/provisioning";
 import { createPendingOrder, newExternalId, newPublicToken, ordersConfigured } from "@/lib/store/orders";
-import { DROP001_SLUG, drop001RuntimeStatus, isDrop001Line } from "@/lib/store/release";
+import { DROP001_SLUG, drop001ProvisioningReady, drop001RuntimeStatus, isDrop001Line } from "@/lib/store/release";
 import { automaticTaxEnabled, SHIP_TO_COUNTRIES, shippingOptions, stripe, stripeConfigured } from "@/lib/store/stripe";
 import { variantKey } from "@/lib/store/types";
 import { SITE } from "@/lib/site";
@@ -63,8 +63,8 @@ export async function POST(req: Request) {
 
   for (const r of ok) {
     const rec = provisioning.get(r.line.slug);
-    const confirmed = rec?.state === "created" && typeof rec.provider_product_id === "number" && rec.provider_variant_ids;
-    const variant = confirmed ? rec.provider_variant_ids[variantKey(r.line.size, r.line.color)] : undefined;
+    const confirmed = r.line.slug === DROP001_SLUG && drop001ProvisioningReady(rec);
+    const variant = confirmed ? rec?.provider_variant_ids[variantKey(r.line.size, r.line.color)] : undefined;
     if (!confirmed || typeof variant !== "number") {
       unavailable.push(`${r.name} (${r.line.size} / ${r.line.color})`);
       continue;
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     return json(
       {
         error: "NOT_AVAILABLE",
-        message: "The exact printer variant for this hoodie is not confirmed yet, so we cannot take an order for it.",
+        message: "That exact hoodie variant is not available for checkout right now. Nothing was charged.",
         items: unavailable,
       },
       409,
