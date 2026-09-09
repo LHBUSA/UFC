@@ -101,6 +101,11 @@ export const APPLIED = new Set([
 
   // Applied before the renumber, under the old name in RENAMED_AFTER_APPLY.
   '20260908000016_ufc_media_registry_videos.sql',
+
+  // Applied 2026-09-09 after a BEGIN..ROLLBACK proof, a double-apply proof of
+  // idempotence, and a BEGIN..ROLLBACK proof of its own rollback file. Purely
+  // additive; no deployed Worker, the API or the website reads any of it yet.
+  '20260909180000_ufc_news_pipeline.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))
