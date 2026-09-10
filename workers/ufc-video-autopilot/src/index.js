@@ -87,23 +87,43 @@ const VIDEO_COLS = 'id,provider,provider_video_id,channel_id,channel_name,channe
  * video about one of the fighters some other time.
  */
 export async function resolveVideos(env, { fighterId, boutId, eventId, articleId, limit = 3 } = {}) {
-  const filters = [];
-  if (articleId) filters.push(`article_id=eq.${articleId}`);
-  if (boutId) filters.push(`bout_id=eq.${boutId}`);
-  if (eventId) filters.push(`event_id=eq.${eventId}`);
-  if (fighterId) filters.push(`fighter_ids=cs.{${fighterId}}`);
-  if (!filters.length) return { videos: [], reason: 'no subject given' };
+  if (!fighterId && !boutId && !eventId && !articleId) return { videos: [], tier: null, reason: 'no subject given' };
+
+  /* THE RELEVANCE HIERARCHY, strongest first. The rule it encodes is that a
+   * video must involve THE SUBJECT of the story, not merely the card the
+   * subject appears on.
+   *
+   *   1  the article itself
+   *   2  the exact bout, and the primary fighter is in it
+   *   3  the exact event, AND the primary fighter is in the video
+   *   4  an official video involving the primary fighter, any time
+   *   5  nothing
+   *
+   * Tier 3 is where the previous version was wrong: it matched on event alone,
+   * which attaches a generic same-card clip to a story about someone who is not
+   * in it. Every tier below the first therefore carries the fighter predicate.
+   *
+   * A video does not have to have been ingested FOR this article to belong to
+   * it — the fighter/bout/event graph is what connects them, and history counts
+   * as much as this morning's discovery. */
+  const tiers = [];
+  if (articleId) tiers.push({ tier: 1, name: 'article', filter: `article_id=eq.${articleId}` });
+  if (boutId && fighterId) tiers.push({ tier: 2, name: 'bout+fighter', filter: `bout_id=eq.${boutId}&fighter_ids=cs.{${fighterId}}` });
+  if (boutId && !fighterId) tiers.push({ tier: 2, name: 'bout', filter: `bout_id=eq.${boutId}` });
+  if (eventId && fighterId) tiers.push({ tier: 3, name: 'event+fighter', filter: `event_id=eq.${eventId}&fighter_ids=cs.{${fighterId}}` });
+  if (fighterId) tiers.push({ tier: 4, name: 'fighter', filter: `fighter_ids=cs.{${fighterId}}` });
 
   const seen = new Map();
-  /* Queried in precedence order rather than OR-ed, so the strongest link that
-   * exists is the one that ranks — an OR would let a fighter-level clip outrank
-   * a bout-level one purely on recency. */
-  for (const f of filters) {
+  let matchedTier = null;
+  for (const t of tiers) {
     const rows = await sb(env, 'GET',
-      `ufc_videos?select=${VIDEO_COLS}&${f}&provider=eq.${PROVIDER}`
+      `ufc_videos?select=${VIDEO_COLS}&${t.filter}&provider=eq.${PROVIDER}`
       + `&resolver_confidence=eq.high&link_status=neq.rejected&embeddable=is.true`
-      + `&order=published_at.desc&limit=${limit * 2}`);
-    for (const v of rows || []) if (!seen.has(v.id)) seen.set(v.id, v);
+      + `&order=published_at.desc&limit=${limit}`);
+    for (const v of rows || []) {
+      if (!seen.has(v.id)) { seen.set(v.id, { ...v, _tier: t.tier, _tier_name: t.name }); }
+    }
+    if (seen.size) { matchedTier = matchedTier ?? t.tier; }
     if (seen.size >= limit) break;
   }
 
@@ -115,22 +135,29 @@ export async function resolveVideos(env, { fighterId, boutId, eventId, articleId
     title: v.title,
     /* Attribution travels WITH the video. A page that embeds a channel's work
      * without naming the channel is not attribution, and the renderer should
-     * never have to look this up separately. */
+     * never have to look it up separately or be able to forget it. */
     publisher: v.channel_name,
     channel_id: v.channel_id,
     channel_verified_source: v.channel_verified_source,
     published_at: v.published_at,
-    duration_sec: v.duration_sec,
+    /* Null when discovery came from the Atom feed rather than the Data API.
+     * Left null rather than guessed, and never a publication requirement. */
+    duration_sec: v.duration_sec ?? null,
     thumbnail_url: v.thumbnail_url,
     language: v.source_metadata?.language ?? null,
     video_type: v.video_type,
     embeddable: v.embeddable,
-    matched_on: v.article_id === articleId && articleId ? 'article'
-      : (v.bout_id === boutId && boutId ? 'bout'
-        : (v.event_id === eventId && eventId ? 'event' : 'fighter')),
+    matched_tier: v._tier,
+    matched_on: v._tier_name,
     resolver_confidence: v.resolver_confidence,
   }));
-  return { videos, reason: videos.length ? null : 'no high-confidence embeddable video for this subject' };
+
+  return {
+    videos,
+    tier: matchedTier,
+    reason: videos.length ? null
+      : 'no high-confidence embeddable video involves this story subject (tier 5: none)',
+  };
 }
 
 /* ---- ledger ------------------------------------------------------------- */

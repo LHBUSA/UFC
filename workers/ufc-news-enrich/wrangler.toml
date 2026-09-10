@@ -50,6 +50,21 @@ cpu_ms = 120000
 
 # The fast path: ufc-news-ingest produces, this consumes. Detection to article
 # is then bounded by the model call rather than by a polling interval.
+# Worker-to-Worker, via a SERVICE BINDING rather than an HTTP fetch.
+#
+# The first version called https://ufc-video-autopilot.sales-fd3.workers.dev
+# directly and got a 404 for every article. Both Workers live on the same
+# workers.dev subdomain, so the request looped back into the CALLING Worker,
+# hit its own router, found no /resolve route and returned its own not_found.
+# Nothing errored; video was simply never attached, and the reason string said
+# "resolver http 404" as though the other Worker had answered.
+#
+# A service binding routes in-process, skips DNS and TLS entirely, and cannot
+# be intercepted by the caller's own routes.
+[[services]]
+binding = "VIDEO"
+service = "ufc-video-autopilot"
+
 [[queues.consumers]]
 queue = "ufc-news-candidates"
 max_batch_size = 3

@@ -27,7 +27,9 @@
  *   POST /admin/item      run one specific item   (?id=UUID)
  */
 import { Supabase } from './supabase.mjs';
-import { processItem, pickCandidates, reclaimStalled, WORKER } from './pipeline.mjs';
+import { processItem, pickCandidates, reclaimStalled, resolveVideosFor, WORKER } from './pipeline.mjs';
+import { buildContentPlan, loadDna } from './content_plan.mjs';
+import { pickHero } from './pipeline.mjs';
 import { isConfigured, DEFAULT_MODEL, DESK_VERSION } from './editorial.mjs';
 import { SCORER_MODEL } from './relevance.mjs';
 
@@ -114,6 +116,52 @@ export default {
       const limit = Math.min(10, Math.max(1, Number(url.searchParams.get('limit')) || 3));
       return json({ service: WORKER, ...(await runBatch(env, { limit })) });
     }
+    if (url.pathname === '/admin/replan') {
+      /* Build or rebuild the content plan for articles this Worker wrote,
+       * WITHOUT touching their prose. The narrative already passed the gate;
+       * re-running the model to gain a chart would risk a worse article for a
+       * richer one, and the plan is deterministic anyway — it can be derived
+       * from the stored packet at any time. */
+      const sb = new Supabase(env);
+      const n = Math.min(20, Math.max(1, Number(url.searchParams.get('n')) || 3));
+      const rows = await sb.select('ufc_articles',
+        `select=id,slug,headline,body_md,status,fact_block,hero_image_ref,primary_fighter_id,bout_id,event_id,validation,model_version`
+        + `&model_version=like.*${DESK_VERSION}&order=created_at.desc&limit=${n}`);
+      const out = [];
+      for (const a of rows) {
+        const packet = a.fact_block || {};
+        if (!packet.primary) { out.push({ slug: a.slug, skipped: 'no stored packet' }); continue; }
+        const ids = [a.primary_fighter_id].filter(Boolean);
+        const dna = await loadDna(sb, ids).catch(() => new Map());
+        const videos = await resolveVideosFor(env, {
+          fighterId: a.primary_fighter_id,
+          boutId: packet.bout?.bout_id || a.bout_id || null,
+          eventId: packet.bout?.event?.id || a.event_id || null,
+          articleId: a.id,
+        });
+        const hero = a.primary_fighter_id ? await pickHero(sb, a.primary_fighter_id) : null;
+        const plan = await buildContentPlan(sb, {
+          packet,
+          article: { bettor_angle: packet.bettor_angle, model: a.model_version, validation: a.validation },
+          hero, videos, dna,
+        });
+        await sb.patch('ufc_articles', `id=eq.${a.id}`, {
+          fact_block: { ...packet, content_plan: plan },
+          hero_image_ref: a.hero_image_ref || hero?.id || null,
+          hero_credit: a.hero_image_ref ? undefined : (hero?.credit || undefined),
+          updated_at: new Date().toISOString(),
+        });
+        out.push({
+          slug: a.slug, headline: a.headline, status: a.status,
+          words: String(a.body_md || '').trim().split(/\s+/).length,
+          modules: plan.module_ids, charts: plan.chart_count,
+          video_tier: plan.video_tier, videos: (videos.videos || []).length,
+          omitted: plan.omitted,
+        });
+      }
+      return json({ service: WORKER, replanned: out.length, articles: out });
+    }
+
     if (url.pathname === '/admin/item') {
       const id = url.searchParams.get('id');
       if (!id) return json({ error: 'id_required' }, 400);

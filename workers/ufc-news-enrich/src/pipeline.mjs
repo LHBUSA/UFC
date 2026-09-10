@@ -19,10 +19,49 @@ import { writeArticle, isConfigured, DESK_VERSION, redactSecrets } from './edito
 import { scoreRelevance } from './relevance.mjs';
 import { resolvePrimary } from './entities.mjs';
 import { fetchSource } from './source_fetch.mjs';
+import { buildContentPlan, loadDna } from './content_plan.mjs';
 
 const domainOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return null; } };
 
 export const WORKER = 'ufc-news-enrich';
+
+/**
+ * Ask ufc-video-autopilot which videos belong to this story.
+ *
+ * That lane owns discovery, classification and the relevance hierarchy; this
+ * one asks and attaches what it is given. Duplicating the hierarchy here would
+ * give two answers to one question, and the day they disagreed a page would
+ * show a video the owner had already rejected.
+ *
+ * A failure is never fatal: video is one module of eleven, and an article
+ * without it is a correct article.
+ */
+export async function resolveVideosFor(env, { fighterId, boutId, eventId, articleId, limit = 2 } = {}) {
+  const q = new URLSearchParams();
+  if (fighterId) q.set('fighter', fighterId);
+  if (boutId) q.set('bout', boutId);
+  if (eventId) q.set('event', eventId);
+  if (articleId) q.set('article', articleId);
+  if (![...q.keys()].length) return { videos: [], tier: null, reason: 'no subject to match on' };
+  q.set('limit', String(limit));
+
+  /* Service binding first. An HTTP call to the sibling's workers.dev hostname
+   * loops back into THIS Worker -- same subdomain -- so it hit our own router
+   * and returned our own 404 for every article, while the reason string
+   * claimed the resolver had answered. The binding routes in-process and
+   * cannot be intercepted by our own routes. */
+  const path = `https://video/resolve?${q}`;
+  try {
+    const res = env.VIDEO
+      ? await env.VIDEO.fetch(path)
+      : await fetch(`${env.VIDEO_RESOLVER_URL || 'https://ufc-video-autopilot.sales-fd3.workers.dev'}/resolve?${q}`,
+        { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return { videos: [], tier: null, reason: `resolver http ${res.status}` };
+    return await res.json();
+  } catch (e) {
+    return { videos: [], tier: null, reason: `resolver unavailable: ${String(e?.message || e).slice(0, 120)}` };
+  }
+}
 const LEASE_MS = 6 * 60 * 1000;
 const RELEVANCE_GATE = 3;
 const ENTITY_CONFIDENCE_GATE = 0.6;
@@ -312,6 +351,25 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
     const hero = await pickHero(sb, ent.primary_fighter_id);
     await log('media', hero ? 'ok' : 'skipped', hero || { reason: 'no rights-cleared portrait for the primary subject' }, t);
 
+    /* 8. CONTENT PLAN ---------------------------------------------------- */
+    /* Deterministic, and deliberately AFTER the narrative. The model wrote
+     * prose from the packet and never sees this stage, so no chart series can
+     * originate from it. Video is ASKED of ufc-video-autopilot rather than
+     * decided here, because that lane owns resolution. */
+    t = Date.now();
+    const fighterIds = [ent.primary_fighter_id, ...(ent.secondary_fighter_ids || [])].filter(Boolean);
+    const dna = await loadDna(sb, fighterIds).catch(() => new Map());
+    const videos = await resolveVideosFor(env, {
+      fighterId: ent.primary_fighter_id,
+      boutId: packet.bout?.bout_id || item.bout_id || null,
+      eventId: packet.bout?.event?.id || item.event_id || null,
+    });
+    const plan = await buildContentPlan(sb, { packet, article, hero, videos, dna });
+    await log('media', 'ok', {
+      modules: plan.module_ids, charts: plan.chart_count,
+      video_tier: plan.video_tier, omitted: plan.omitted.map((x) => x.id),
+    }, t);
+
     /* 8. WRITE, PRIVATE -------------------------------------------------- */
     /* THE GREEN PATH. Publication is decided per article, from what actually
      * happened to it, not from a global switch. The switch is one of the
@@ -332,9 +390,10 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
       status: publishThis ? 'published' : 'review',
       needs_human: !publishThis,
       hold_reason: publishThis ? null : green.blockers.join('; ').slice(0, 480),
-      fact_block: { ...packet, bettor_angle: article.bettor_angle },
+      fact_block: { ...packet, bettor_angle: article.bettor_angle, content_plan: plan },
       sources: [{ kind: 'news_item', id: item.id, url: item.url },
-        { kind: 'packet', version: packet.version, families }],
+        { kind: 'packet', version: packet.version, families },
+        { kind: 'content_plan', version: plan.version, modules: plan.module_ids }],
       fighter_ids: [ent.primary_fighter_id, ...ent.secondary_fighter_ids].filter(Boolean),
       primary_fighter_id: ent.primary_fighter_id,
       bout_id: packet.bout?.bout_id || item.bout_id || null,
