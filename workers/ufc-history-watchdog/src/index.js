@@ -1,4 +1,9 @@
-/* ufc-history-repair — the production owner of historical gap detection.
+/* ufc-history-watchdog — historical archive gap DETECTION.
+ *
+ * NAMED FOR WHAT IT DOES. It was called ufc-history-repair, which claimed more
+ * than it delivers: it detects gaps and reports them, and it cannot repair one.
+ * A lane whose name overstates it is how an operator comes to believe the
+ * archive is self-healing when it is not.
  *
  * WHAT THIS WORKER DOES, AND THE ONE THING IT DELIBERATELY DOES NOT
  *
@@ -37,7 +42,7 @@
  *   GET  /health        unauthenticated, no writes
  *   POST /admin/scan    scan now  (?limit=&reset_cursor=true)
  */
-const WORKER = 'ufc-history-repair';
+const WORKER = 'ufc-history-watchdog';
 const VERSION = 'v0.1.0';
 const DEFAULT_BATCH = 500;
 const CURSOR_KEY = 'history:scan_cursor';
@@ -95,7 +100,7 @@ async function sbRange(env, path, from, to) {
 async function openRun(env, invoked) {
   try {
     const rows = await sb(env, 'POST', 'ufc_ingest_runs', {
-      body: [{ worker: WORKER, status: 'running', notes: { lane: 'history_gap_scan', invoked } }],
+      body: [{ worker: WORKER, status: 'running', notes: { lane: 'history_gap_watchdog', invoked } }],
       prefer: 'return=representation',
     });
     return rows?.[0]?.id || null;
@@ -242,7 +247,15 @@ export default {
       return json({
         service: WORKER,
         version: VERSION,
-        owns: 'historical archive gap DETECTION: schedule, bounded batching, resumable cursor, counts and ledger',
+        owns: 'historical archive gap DETECTION only: schedule, bounded batching, resumable cursor, counts and ledger',
+        is_not: 'an autonomous repair executor. It cannot fix a gap.',
+        known_manual_exception: {
+          what: 'repair EXECUTION',
+          how: 'GitHub workflow history-gap-repair.yml, manual dispatch only (its cron was removed)',
+          why: '2,585 lines of validated BeautifulSoup/lxml parsers writing to the canonical event/bout/result/round tables; '
+            + 'a second unvalidated JS parser in front of the sport history is a worse risk than a manual step',
+          when_to_revisit: 'if gaps reappear, a parser migration becomes its own validated project',
+        },
         does_not_do: 'scraping or writing canonical event/bout/result/round rows — repair execution remains the '
           + 'validated Python tool in scripts/backfill, run by manual dispatch, because a second unvalidated parser '
           + 'writing to the canonical history of the sport is a worse risk than a lane that does not run',

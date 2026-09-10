@@ -199,7 +199,9 @@ upgrades discovery to the Data API (durations, live state, exact embeddability).
 GitHub fires `schedule` only from the default branch. While this file lives on
 `ufc-fight-dna-v1` the cadence is branch-ready, not live; run it on demand with
 `gh workflow run video-autopilot.yml --ref ufc-fight-dna-v1`. Once the workflow
-file exists on `main` (as `newsroom.yml` already does, checking out the
+file exists on `main` (this was written when `newsroom.yml` scheduled production;
+it no longer does -- video ingest is `workers/ufc-video-autopilot`, cron
+`13,43 * * * *`) checking out the
 release branch), the 30-minute cadence is live with no further change.
 
 ## Content language (V1 strategy)

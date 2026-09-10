@@ -28,7 +28,18 @@
  */
 
 /** Phases, in the only order they may execute. */
-export const PHASES = ['sources', 'ingest', 'write', 'refresh', 'sweep'];
+/* Phases, in the only order they may execute.
+ *
+ * ARTICLE GENERATION LEFT THIS WORKER on 2026-09-10. `write`, `refresh` and
+ * `sweep` produced fight_preview, results, card_change and rankings articles,
+ * plus the feature layer and the editorial polish pass -- inside a Worker whose
+ * stated role is the control plane. That is now ufc-event-editorial, which owns
+ * those story types and nothing else.
+ *
+ * What remains here is orchestration: verify the feed registry, OBSERVE the
+ * wire (ufc-news-ingest fills it), and report catch-up and pipeline status.
+ * This Worker no longer writes ufc_articles at all. */
+export const PHASES = ['sources', 'ingest'];
 
 /* Maximum age before a phase is overdue regardless of which cron fired.
  * Each is the intended cadence plus room for one late run, so an on-time
@@ -36,19 +47,16 @@ export const PHASES = ['sources', 'ingest', 'write', 'refresh', 'sweep'];
 export const MAX_AGE_MINUTES = {
   sources: 1560,     // intended daily, 26h; feeds move on the scale of months
   ingest: 45,        // intended every 30
-  write: 45,         // follows a meaningful ingest
-  refresh: 150,      // intended every 120
-  sweep: 1560,       // intended daily, 26h
 };
 
 /* What each cron is FOR. Catch-up can still add phases beyond these. */
 export const CRON_PHASES = {
   '*/30 * * * *': ['ingest'],
-  '15 */2 * * *': ['ingest', 'refresh'],
+  '15 */2 * * *': ['ingest'],
   /* Source verification rides the daily slot, before ingest reads the table it
    * reconciles. Verifying every 30 minutes would fetch five feeds we already
    * know are healthy; verifying never is how a dead feed stays enabled. */
-  '20 10 * * *': ['sources', 'ingest', 'sweep'],
+  '20 10 * * *': ['sources', 'ingest'],
 };
 
 const minutesSince = (iso, now) => {

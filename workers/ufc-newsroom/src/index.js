@@ -55,9 +55,6 @@ import { acquire as acquireLock, release as releaseLock, MANUAL_DEADLINE_MS } fr
 import {
   runSources,
   runIngest,
-  runWrite,
-  runRefresh,
-  runSweep,
   anthropicConfigured,
   openaiConfigured,
   editorialProvider,
@@ -294,7 +291,8 @@ async function runPhases(env, sb, { cron, invoked, force, exact, now, guard, loc
           continue;
         }
       }
-      const fn = { sources: runSources, ingest: runIngest, write: runWrite, refresh: runRefresh, sweep: runSweep }[phase];
+      /* Only the control-plane phases remain; article generation is ufc-event-editorial's. */
+      const fn = { sources: runSources, ingest: runIngest }[phase];
       counters[phase] = await fn(env, sb, { now });
       succeeded.push(phase);
     } catch (e) {

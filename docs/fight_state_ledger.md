@@ -44,7 +44,18 @@ Nothing is guessed.
 ## Running
 
 ```
-node scripts/ledger/capture_fight_state.mjs --auto                    # due checkpoints (hourly via .github/workflows/fight-state-ledger.yml)
+node scripts/ledger/capture_fight_state.mjs --auto                    # due checkpoints, LOCAL inspection only
+
+PRODUCTION OWNER: the Cloudflare Worker `workers/ufc-fight-state`, cron `23 * * * *`.
+The GitHub workflow `.github/workflows/fight-state-ledger.yml` is disabled_manually
+and no longer schedules anything: its declared hourly cron was in practice firing
+every four to five hours, which is where the ledger's missed windows came from.
+The Worker imports this same module, so there is one implementation of fight state.
+
+CORRECTIONS ARE APPEND-ONLY. A row that should not stand is invalidated by a LATER
+row naming it (provenance.correction.invalidates_ledger_id); UPDATE and DELETE are
+refused by trigger. Idempotence and every product read use the EFFECTIVE ledger,
+which excludes invalidated rows. `GET /ledger?event=<id>&audit=true` shows both.
 node scripts/ledger/capture_fight_state.mjs --checkpoint ad_hoc --event noche
 node scripts/ledger/capture_fight_state.mjs --auto --dry-run --json
 ```

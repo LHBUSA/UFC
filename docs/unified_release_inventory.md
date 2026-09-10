@@ -28,7 +28,7 @@ them unchecked would have lost or double-counted work.
 | weigh-ins "not yet a finished pushed branch" | **pushed at `ec00fb9d`** | It exists and is complete. It also *contains* `ufc-injuries-v1`, so merging it carries both. |
 
 **The main-only work is not at risk.** `origin/main`'s 12 commits touch exactly
-two files — `.github/workflows/newsroom.yml` and
+two files (HISTORICAL: newsroom.yml no longer schedules production) — `.github/workflows/newsroom.yml` and
 `newsroom-editorial-provider-canary.yml` — and `git diff BASE origin/main`
 over those two files shows production is already a **superset** (it carries one
 extra line, `workflow_dispatch:`). So there is no main-only content to lose. The

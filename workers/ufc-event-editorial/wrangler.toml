@@ -1,0 +1,27 @@
+name = "ufc-event-editorial"
+main = "src/index.js"
+compatibility_date = "2026-09-10"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# The shared writers reach for node built-ins behind capability checks.
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+UFC_EDITORIAL_OPENAI_MODEL = "gpt-5.6-sol"
+
+# The two article slots taken over from ufc-newsroom. The 30-minute slot did NOT
+# move: it was the wire-ingest cadence, and event-level articles have no reason
+# to be written every half hour -- a card does not change that often.
+[triggers]
+crons = ["15 */2 * * *", "20 10 * * *"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Secrets, set with wrangler secret put:
+#   SUPABASE_SERVICE_ROLE_KEY   article writes
+#   ADMIN_TRIGGER_TOKEN         required to expose any POST route at all
+#   OPENAI_API_KEY              editorial polish; absent = deterministic only

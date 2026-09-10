@@ -1,0 +1,8 @@
+{
+  "name": "ufc-event-editorial",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/writer_path.test.mjs test/editorial_desk.test.mjs"
+  }
+}

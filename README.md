@@ -20,7 +20,8 @@ scripts/model/            PBE Fight Model v1: extract -> features -> walk-forwar
 scripts/merge_events.py   one-off: fold ESPN duplicate event rows into UFC Stats rows
 workers/ufc-stats-ingest/ nightly incremental Worker (deployed; cron 06:00 UTC)
 web/                      Next.js site, ufc.propbetedge.ai (docs/frontend.md)
-.github/workflows/        newsroom.yml: news every 2 h, rankings Tue/Wed, portraits daily
+.github/workflows/        NOT a scheduler. Every cron-bearing workflow is disabled;
+                          production runs on Cloudflare Workers (see workers/).
 shared/                   enums.json, alias_resolver.{py,mjs}, tests. Both languages read enums.json.
 docs/                     brief, scraper notes, verification reports, runbooks.
 ```

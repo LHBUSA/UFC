@@ -89,7 +89,12 @@ Zuffa, TKO, ESPN or sportsbook marks are legible at the opacities used.
 
 - Ingest run at 15:04Z inserted 1 new item; newest item age **5 min** at that moment.
 - `GET /v1/ufc/wire` at 15:46Z: `newest_published_at 15:00Z`, `freshness_minutes 46`, `live true`, `fight_week true` (Noche UFC Sept 12), `linked 10/20`, cache `max-age=15, s-maxage=30`.
-- Cadence: `newsroom.yml` now ingests every 30 minutes (writer gated to new items or the 2-hour baseline) and is valid YAML (the previous file failed to parse on GitHub because `${{ github.run_id }}` sat inside a flow mapping, so no scheduled newsroom run had ever executed). GitHub schedules run from the default branch, so the cadence takes effect on merge.
+- Cadence: SUPERSEDED 2026-09-10. GitHub schedules nothing; `newsroom.yml` is
+  disabled_manually. Detection runs on Cloudflare every 2 minutes
+  (`ufc-news-ingest`), the article factory every 5 (`ufc-news-enrich`), and
+  event-level articles on `ufc-event-editorial`. The note below is kept as the
+  record of why the GitHub cadence was never trustworthy: the workflow failed to
+  parse for a period, and even once valid its scheduled runs were dropped by hours.
 
 ## Preview
 

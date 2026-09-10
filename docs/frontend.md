@@ -92,7 +92,10 @@ never shows a number the model did not produce.
   the ESPN schedule, bouts, results and fighters. It links ESPN events onto
   UFC Stats rows by date + name (see `scripts/merge_events.py` for the one-off
   dedupe that fixed 45 duplicate cards).
-- `.github/workflows/newsroom.yml` runs the news ingest + article writer
+- Cloudflare Workers run the newsroom: `ufc-news-ingest` detects the wire,
+  `ufc-news-enrich` writes wire-triggered articles, `ufc-event-editorial` writes
+  event-level ones. `.github/workflows/newsroom.yml` is disabled_manually and
+  schedules nothing.
   every 2 h, rankings Tue/Wed, portraits daily. Secrets: `SUPABASE_URL`,
   `SUPABASE_SERVICE_ROLE_KEY`, optional `ANTHROPIC_API_KEY` (enables `--llm`).
 - Pages revalidate every 300 s; rankings snapshot every 1800 s.

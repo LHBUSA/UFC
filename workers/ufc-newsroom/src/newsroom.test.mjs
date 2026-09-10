@@ -197,11 +197,20 @@ test('the one Anthropic module is the one the writer imports', async () => {
 test('a phase failure is contained and the run is recorded partial', async () => {
   const { run } = await import('./index.js');
   fakeRest({ tables: { ufc_news_items: 70, ufc_articles: 34, 'ufc_ingest_runs:rows': [] } });
-  /* Exactly the sweep, which needs no imports beyond counts. `exact` is what a
-     canary sends; without it an empty ledger would plan every phase. */
-  const res = await run({ ...ENV }, { cron: null, invoked: 'test', force: ['sweep'], exact: true });
+  /* Exactly one phase. `exact` is what a canary sends; without it an empty
+     ledger would plan every phase.
+
+     This forced `sweep` until 2026-09-10, when the editorial sweep moved to
+     ufc-event-editorial along with the rest of article generation. Forcing a
+     phase that no longer exists plans nothing, and the run reports idle -- so
+     the test was asserting containment of a phase this Worker cannot run. It
+     now forces `ingest`, which since being inverted to OBSERVE the wire reads
+     counts and nothing else -- the same property the sweep had, and the reason
+     the original test chose the sweep. `sources` would not do: it verifies live
+     feeds over the network, which this harness does not stub. */
+  const res = await run({ ...ENV }, { cron: null, invoked: 'test', force: ['ingest'], exact: true });
   assert.ok(['success', 'partial'].includes(res.status), `status was ${res.status}`);
-  assert.ok(res.phases.includes('sweep'));
+  assert.ok(res.phases.includes('ingest'));
   assert.equal(res.run_id, 'run-fake-1', 'a run that did work has a ledger row behind it');
 });
 

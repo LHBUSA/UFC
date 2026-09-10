@@ -1,3 +1,10 @@
+/* MOVED FROM ufc-newsroom ON 2026-09-10 with the article lane it covers.
+ *
+ * These are the guarantees of the WRITER, not of whichever Worker holds its
+ * schedule: no model call when no key is configured, the rewrite stored when
+ * one is, and -- the important one -- a rewrite that breaks the editorial
+ * rules is discarded and the deterministic article left standing.
+ */
 /* The writer path the Worker actually runs. Run: node --test src/writer_path.test.mjs
  *
  * These tests exist because the previous ones could not have caught the bug
@@ -13,7 +20,25 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { runWrite } from './phases.mjs';
+import { main as writeArticles } from '../../../scripts/news/write_articles.mjs';
+import { isConfigured as anthropicConfigured } from '../../../scripts/news/anthropic.mjs';
+import { isConfigured as openaiConfigured, DEFAULT_MODEL as DEFAULT_OPENAI_MODEL } from '../../ufc-newsroom/src/openai_editorial.mjs';
+
+/* What phases.runWrite used to be: options in, writer called. The wrapper
+ * moved to ufc-event-editorial; these assertions were always about the
+ * writer underneath it, so they now address it directly. */
+const runWrite = async (env, _sb, { now } = {}) => {
+  const result = await writeArticles(env, { llm: anthropicConfigured(env), now, types: 'preview,results,card_change' });
+  /* The wrapper also reported WHICH editorial path was available. That label is
+   * what several assertions below are about, so it is reproduced here exactly
+   * as phases.runWrite computed it rather than dropped with the wrapper. */
+  return {
+    ...result,
+    enhancement: openaiConfigured(env)
+      ? `openai:${env.UFC_EDITORIAL_OPENAI_MODEL || DEFAULT_OPENAI_MODEL}`
+      : (result?.llm ? 'anthropic offered' : 'deterministic only'),
+  };
+};
 
 const ENV = { SUPABASE_URL: 'https://db.invalid', SUPABASE_SERVICE_ROLE_KEY: 'k' };
 const ANTHROPIC = 'https://api.anthropic.com/v1/messages';
