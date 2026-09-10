@@ -151,6 +151,11 @@ if (mode === 'plan') {
   if (mode === 'apply') {
     const count = async (b) => { const cr = (await rest(`ufc_bout_round_stats?select=bout_id&bout_id=eq.${b}`, { headers: { prefer: 'count=exact', range: '0-0' } })).headers.get('content-range'); return Number(cr.slice(cr.lastIndexOf('/') + 1)); };
     let written = 0, applied = 0, skipped = 0;
+    /* Every writer appends its own ufc_ingest_runs row (docs/ufc_autopilot_ownership.md). */
+    const started = new Date().toISOString();
+    const [run] = await (await rest('ufc_ingest_runs', { method: 'POST', headers: { prefer: 'return=representation' },
+      body: JSON.stringify({ worker: 'dwcs_round_repair', status: 'running', started_at: started, notes: { mode: 'manual_repair', tool: 'scripts/backfill/dwcs_round_repair.mjs' } }) })).json();
+    const log = [];
     for (const { t, fight, f, url } of valid) {
       const taken = await (await rest(`ufc_bouts?select=id&ufcstats_id=eq.${fight}`)).json();
       if (taken.length && taken[0].id !== t.bout.id) { skipped += 1; console.log('  skip: ufcstats_id held by', taken[0].id); continue; }
@@ -164,7 +169,11 @@ if (mode === 'plan') {
       await rest(`ufc_bout_results?bout_id=eq.${t.bout.id}`, { method: 'PATCH', headers: { prefer: 'return=minimal' }, body: JSON.stringify({ stats_source_url: url, stats_captured_at: at, has_stats: true,
         ...(f.scorecards ? { scorecards: f.scorecards, judge_1: f.scorecards[0]?.judge ?? null, judge_2: f.scorecards[1]?.judge ?? null, judge_3: f.scorecards[2]?.judge ?? null } : {}) }) });
       written += after - before; applied += 1;
+      log.push({ bout_id: t.bout.id, ufcstats_fight: fight, rows: rows.length, rows_before: before, rows_after: after });
     }
+    await rest(`ufc_ingest_runs?id=eq.${run.id}`, { method: 'PATCH', headers: { prefer: 'return=minimal' }, body: JSON.stringify({
+      status: 'success', finished_at: new Date().toISOString(), bouts_new: 0, events_new: 0, fighters_touched: 0,
+      notes: { mode: 'manual_repair', tool: 'scripts/backfill/dwcs_round_repair.mjs', source: 'wayback', applied, skipped, round_rows_written: written, bouts: log } }) });
     console.log({ applied, skipped, round_rows_written: written });
   }
 } else {
