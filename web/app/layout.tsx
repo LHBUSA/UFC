@@ -17,6 +17,7 @@ import "./tuf.css";
 import "./store.css";
 import "./store-commerce.css";
 import "./model.css";
+import "./fighter-dna-polish.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";
@@ -100,7 +101,7 @@ const ORG = {
       name: SITE.name,
       alternateName: "PropBetEdge UFC Fight Intelligence",
       description: DESCRIPTION,
-      publisher: { "@id": `${SITE.parent}/#org` },
+      publisher: { "@id": `${SITE.url}/#desk` },
       creator: { "@id": `${SITE.url}/#desk` },
       inLanguage: "en-US",
       isPartOf: { "@type": "WebSite", "@id": `${SITE.parent}/#site`, name: "PropBetEdge", url: SITE.parent },
