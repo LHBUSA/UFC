@@ -44,6 +44,27 @@ function ageOn(dob, onDate) {
 const heightStr = (inches) => (inches == null ? null
   : `${Math.floor(Number(inches) / 12)}'${Math.round(Number(inches) % 12)}"`);
 
+/**
+ * Number tokens, defined ONCE so the packet and the validator cannot disagree.
+ *
+ * They did disagree, and it held a finished article. A UFC record is written
+ * "23-4" and a naive [-+]?\d+ reads the hyphen as a minus sign, producing a
+ * token "-4" that appears nowhere in the packet - so the gate rejected an
+ * article for inventing a number the model had not invented. Any tokenizer
+ * used on one side of a whitelist has to be the same function used on the
+ * other, or the whitelist is comparing two different alphabets.
+ *
+ * Hyphen-joined digit runs are therefore split, not signed: 23-4-0 is three
+ * values, and 5'11" is five and eleven. A genuine negative still parses,
+ * because a rank change of -4 is preceded by a space rather than a digit.
+ */
+export function numberTokens(text) {
+  const normalised = String(text || '')
+    .replace(/(\d)\s*[-‐-―]\s*(?=\d)/g, '$1 ')   /* 23-4-0, 6-4 */
+    .replace(/(\d),(?=\d{3}(?!\d))/g, '$1');                /* 1,234 */
+  return [...normalised.matchAll(/(?<![\w.])[-+]?\d+(?:\.\d+)?/g)].map((m) => m[0]);
+}
+
 /** Every number the packet contains, with the class that governs its use. */
 export function factNumbers(packet) {
   const out = new Map();
@@ -57,8 +78,8 @@ export function factNumbers(packet) {
   walk({ ...packet, source_excerpt: undefined, source: undefined });
   /* Class B: numbers that exist only in the fetched source article. They are
    * permitted in the body, but only in a sentence that attributes them. */
-  for (const m of String(packet.source?.excerpt || '').matchAll(/(?<![A-Za-z])[-+]?\d+(?:\.\d+)?/g)) {
-    const k = String(Number(m[0]));
+  for (const t of numberTokens(packet.source?.excerpt || '')) {
+    const k = String(Number(t));
     if (!out.has(k)) out.set(k, 'B');
   }
   return out;

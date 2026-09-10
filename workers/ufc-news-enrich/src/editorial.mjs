@@ -21,7 +21,7 @@
  * reporting through, which is the whole difference between a database summary
  * and journalism.
  */
-import { factNumbers } from './packet.mjs';
+import { factNumbers, numberTokens } from './packet.mjs';
 
 const API = 'https://api.openai.com/v1/responses';
 export const DEFAULT_MODEL = 'gpt-5.6-sol';
@@ -76,7 +76,20 @@ const SCHEMA = {
       additionalProperties: false,
       properties: {
         summary: { type: 'string' },
-        markets: { type: 'array', items: { type: 'string' } },
+        /* Enumerated in the schema, not merely validated afterwards. Given a
+         * free-string array the model wrote a full sentence into it -- "No
+         * current betting market can be assessed because..." -- which is a
+         * reasonable thing to want to say and the wrong field to say it in.
+         * Constraining the schema makes that unconstructible; the sentence
+         * belongs in `summary`, which is free text. */
+        markets: {
+          type: 'array',
+          items: {
+            type: 'string',
+            enum: ['moneyline', 'fight_goes_distance', 'total_rounds', 'method_of_victory',
+              'round_betting', 'significant_strikes', 'takedowns', 'none'],
+          },
+        },
         supporting: { type: 'array', items: { type: 'string' } },
         against: { type: 'array', items: { type: 'string' } },
         unknown: { type: 'array', items: { type: 'string' } },
@@ -133,17 +146,24 @@ export function validate(out, packet, { minWords = 500 } = {}) {
   const publisher = packet.source?.publisher || null;
   for (const sent of sentences(body)) {
     const attributed = publisher && sent.toLowerCase().includes(String(publisher).toLowerCase().split(' ')[0].toLowerCase());
-    for (const m of sent.matchAll(/(?<![A-Za-z%$])[-+]?\d+(?:\.\d+)?/g)) {
-      const key = String(Number(m[0]));
+    for (const tokenText of numberTokens(sent)) {
+      const key = String(Number(tokenText));
       /* Small integers, years and round numbers are structural language, not
        * claims: "the third round", "in 2026", "one of two". Treating them as
        * facts needing provenance would fail every real article. */
       const n = Number(key);
       if (Number.isInteger(n) && ((n >= 0 && n <= 5) || (n >= 1990 && n <= 2100) || n === 15 || n === 25)) continue;
       const cls = allowed.get(key);
-      if (!cls) { failures.push(`class C number "${m[0]}" is in no part of the packet`); continue; }
+      if (!cls) {
+        /* The sentence travels with the failure. The first version of this
+         * message named only the number, and the corrective retry failed the
+         * same way twice: the model could not locate a bare "10" in 900 words
+         * and guessed. Quoting the sentence turns the retry into an edit. */
+        failures.push(`class C number "${tokenText}" is in no part of the packet — remove it or replace it with a packet value. In: "${sent.trim().slice(0, 180)}"`);
+        continue;
+      }
       if (cls === 'B' && !attributed) {
-        failures.push(`class B number "${m[0]}" comes only from ${publisher} and is stated without attribution in that sentence`);
+        failures.push(`class B number "${tokenText}" comes only from ${publisher}, so that sentence must name ${publisher}. In: "${sent.trim().slice(0, 180)}"`);
       }
     }
   }
@@ -195,6 +215,24 @@ export function validate(out, packet, { minWords = 500 } = {}) {
 
 /* ------------------------------------------------------------ transport */
 
+/**
+ * Provider error bodies are never stored verbatim.
+ *
+ * A 401 from OpenAI quotes the key it rejected back at you. Most of it is
+ * masked, but on 2026-09-10 a Stripe live key was configured here by mistake
+ * and its prefix and last four characters landed in ufc_news_items.state_reason
+ * and in the pipeline event detail. A credential fragment does not belong in a
+ * table the whole team can read, and the next provider might mask less.
+ *
+ * So: strip anything key-shaped before the message goes anywhere it persists.
+ */
+export function redactSecrets(text) {
+  return String(text || '')
+    .replace(/(sk|pk|rk)[-_](live|test|proj|ant|or)?[-_]?[A-Za-z0-9*_-]{8,}/gi, '<redacted-credential>')
+    .replace(/Bearer\s+[A-Za-z0-9._\-*]{12,}/gi, 'Bearer <redacted>')
+    .replace(/Incorrect API key provided:[^.]*/gi, 'Incorrect API key provided: <redacted>');
+}
+
 function extractText(json) {
   const refusals = [], text = [];
   for (const item of json?.output || []) {
@@ -227,9 +265,9 @@ export async function callSol(apiKey, { model, input, timeoutMs = CALL_TIMEOUT_M
       }),
     });
     const json = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(`openai ${res.status}: ${JSON.stringify(json).slice(0, 300)}`);
+    if (!res.ok) throw new Error(redactSecrets(`openai ${res.status}: ${JSON.stringify(json).slice(0, 300)}`));
     if (json.status === 'incomplete') throw new Error(`openai incomplete: ${json.incomplete_details?.reason || 'unknown'}`);
-    if (json.status === 'failed') throw new Error(`openai failed: ${JSON.stringify(json.error || {}).slice(0, 240)}`);
+    if (json.status === 'failed') throw new Error(redactSecrets(`openai failed: ${JSON.stringify(json.error || {}).slice(0, 240)}`));
     return { text: extractText(json), model: json.model || model };
   } catch (e) {
     if (controller.signal.aborted) throw new Error(`openai timeout after ${timeoutMs}ms`);

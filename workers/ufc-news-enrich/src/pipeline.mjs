@@ -15,10 +15,12 @@
  * article per wire item, which holds even if a consumer misbehaves.
  */
 import { buildPacket } from './packet.mjs';
-import { writeArticle, isConfigured, DESK_VERSION } from './editorial.mjs';
+import { writeArticle, isConfigured, DESK_VERSION, redactSecrets } from './editorial.mjs';
 import { scoreRelevance } from './relevance.mjs';
 import { resolvePrimary } from './entities.mjs';
 import { fetchSource } from './source_fetch.mjs';
+
+const domainOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return null; } };
 
 export const WORKER = 'ufc-news-enrich';
 const LEASE_MS = 6 * 60 * 1000;
@@ -62,7 +64,22 @@ export async function claim(sb, itemId, { from = ['new', 'scored'], now = Date.n
       state_changed_at: nowIso(now),
     });
   if (!rows?.length) return null;
-  return { ...rows[0], lease_token: token };
+
+  /* PATCH...returning gives back BASE COLUMNS ONLY - an embedded resource like
+   * source:ufc_news_sources(name) does not survive it. pickCandidates selects
+   * the join, claim throws it away, and the publisher silently becomes null.
+   *
+   * That is not cosmetic. The class-B rule requires the source to be named in
+   * the same sentence as its number, so a null publisher produced the failure
+   * 'class B number "332" comes only from null, so that sentence must name
+   * null' - an unsatisfiable instruction that held finished articles. One
+   * lookup restores it. */
+  const item = { ...rows[0], lease_token: token };
+  if (!item.source && item.source_id) {
+    const src = await sb.select('ufc_news_sources', `select=name,url&id=eq.${item.source_id}&limit=1`);
+    if (src?.[0]) item.source = src[0];
+  }
+  return item;
 }
 
 /** Settle an item, but only if we still hold the lease we claimed it with. */
@@ -158,7 +175,13 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
       now,
       sourceExcerpt: src.ok ? src.text : null,
       sourceMeta: src.ok
-        ? { publisher: item.source?.name || null, url: item.url, published_at: item.published_at, title: src.title }
+        ? {
+          /* Never null. An unattributable source excerpt makes every class-B
+           * number unusable, so the domain is a worse name than the real one
+           * and a far better one than nothing. */
+          publisher: item.source?.name || domainOf(item.url) || 'the original report',
+          url: item.url, published_at: item.published_at, title: src.title,
+        }
         : null,
     });
     const families = ['primary', packet.opponent && 'opponent', packet.bout && 'bout',
@@ -202,10 +225,10 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
     try {
       article = await writeArticle(env, packet, { minWords: 500 });
     } catch (e) {
-      await log('editorial', 'held', { error: String(e.message).slice(0, 600), validation: e.validation }, t);
-      await settle(sb, item, 'held', String(e.message).slice(0, 480),
+      await log('editorial', 'held', { error: redactSecrets(String(e.message)).slice(0, 600), validation: e.validation }, t);
+      await settle(sb, item, 'held', redactSecrets(String(e.message)).slice(0, 480),
         { relevance_score: rel.score, primary_fighter_id: ent.primary_fighter_id, topic_signature: signature });
-      return { item_id: item.id, status: 'held', stage: 'editorial', reason: String(e.message).slice(0, 240) };
+      return { item_id: item.id, status: 'held', stage: 'editorial', reason: redactSecrets(String(e.message)).slice(0, 240) };
     }
     const genMs = Date.now() - t;
     await log('editorial', 'ok', { model: article.model, attempts: article.attempts, words: article.body_md.split(/\s+/).length }, t);
@@ -280,10 +303,10 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
       generation_ms: genMs, total_ms: Date.now() - t0,
     };
   } catch (e) {
-    await log('error', 'failed', { error: String(e?.message || e).slice(0, 600) }, t0);
+    await log('error', 'failed', { error: redactSecrets(String(e?.message || e)).slice(0, 600) }, t0);
     const attempts = (item.attempts ?? 0);
-    await settle(sb, item, attempts >= MAX_ATTEMPTS ? 'failed' : 'new', String(e?.message || e).slice(0, 480));
-    return { item_id: item.id, status: 'error', error: String(e?.message || e).slice(0, 300) };
+    await settle(sb, item, attempts >= MAX_ATTEMPTS ? 'failed' : 'new', redactSecrets(String(e?.message || e)).slice(0, 480));
+    return { item_id: item.id, status: 'error', error: redactSecrets(String(e?.message || e)).slice(0, 300) };
   }
 }
 

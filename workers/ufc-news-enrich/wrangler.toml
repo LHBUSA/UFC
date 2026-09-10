@@ -13,7 +13,13 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
 UFC_EDITORIAL_OPENAI_MODEL = "gpt-5.6-sol"
-UFC_RELEVANCE_MODEL = "gpt-5.6-sol-mini"
+# Scoring wants a cheaper model than the writer, and the obvious name for one
+# ("...-mini") returned 404: it does not exist on this account. Rather than
+# guess again, scoring runs on the model we KNOW is available -- the same one
+# ufc-newsroom has used in production since 2026-09-08. Cost per score is a
+# short structured call on a headline, and a wrong model name costs every
+# article, so the trade is not close.
+UFC_RELEVANCE_MODEL = "gpt-5.6-sol"
 
 # PUBLICATION IS OFF.
 #

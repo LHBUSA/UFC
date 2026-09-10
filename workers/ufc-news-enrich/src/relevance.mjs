@@ -12,6 +12,8 @@
  *   editorial runs on the survivors. Using GPT-5.6 Sol here would multiply the
  *   cost of the stage that exists to control cost.
  */
+import { redactSecrets } from './editorial.mjs';
+
 const API = 'https://api.openai.com/v1/responses';
 export const SCORER_MODEL = 'gpt-5.6-sol-mini';
 
@@ -78,7 +80,9 @@ export async function scoreRelevance(env, item, { fetchImpl = fetch, timeoutMs =
       model,
     };
   } catch (e) {
-    return { score: 3, reason: `scorer error, default posture: ${String(e.message).slice(0, 120)}`,
+    /* Redacted for the same reason the editorial path is: a provider 401
+     * quotes the key it rejected, and this reason string is persisted. */
+    return { score: 3, reason: redactSecrets(`scorer error, default posture: ${String(e.message)}`).slice(0, 160),
       story_kind: 'other', primary_fighter_name: null, other_fighter_names: [], degraded: true };
   } finally {
     clearTimeout(timer);
