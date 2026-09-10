@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Breadcrumbs, JsonLd } from "@/components/ui";
+import { Avatar, Breadcrumbs, JsonLd } from "@/components/ui";
+import type { PortraitSet } from "@/lib/db";
+import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import { buildSections, getRoundIndex, type RoundIndexBout } from "@/lib/roundIndex";
 import { fmtDate, METHOD_SHORT, weightClassLabel } from "@/lib/format";
 import { matchupSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
 import styles from "./round-by-round.module.css";
+import cardStyles from "./round-cards.module.css";
 
 /* /round-by-round is the discovery surface for the verified round archive.
  * Nothing on this page is inferred. Every fight shown here has stored round
  * observations behind it, and every coverage number comes from the same read
- * model that powers the fight links. */
+ * model that powers the fight links. Fighter imagery uses the shared verified
+ * display resolver: stored assets first, ESPN for coverage, bad mappings out. */
 export const revalidate = 300;
 
 const TITLE = "UFC Round-by-Round Analysis | PropBetEdge";
@@ -42,29 +46,37 @@ function pct(value: number, total: number) {
   return total > 0 ? Math.round((value / total) * 1000) / 10 : 0;
 }
 
-function FightCard({ b }: { b: RoundIndexBout }) {
+function FightCard({ b, images, highlight = false }: { b: RoundIndexBout; images: Map<string, PortraitSet>; highlight?: boolean }) {
   const wc = weightClassLabel(b.weightClass, b.isWomens);
   const winner = b.winnerId === b.fighterA.id ? "a" : b.winnerId === b.fighterB.id ? "b" : null;
   const finish = b.method ? `${METHOD_SHORT[b.method] || b.method}${b.finishRound ? ` · R${b.finishRound}` : ""}` : null;
+  const imageA = images.get(b.fighterA.id);
+  const imageB = images.get(b.fighterB.id);
 
   return (
-    <Link href={boutHref(b)} className={styles.fightCard}>
+    <Link href={boutHref(b)} className={`${styles.fightCard} ${cardStyles.visualCard}${highlight ? ` ${cardStyles.recentCard}` : ""}`}>
       <span className={styles.cardTop}>
         <span className={styles.event}>{b.eventName}</span>
         <span className={styles.date}>{b.eventDate ? fmtDate(b.eventDate, DAY) : "Date unrecorded"}</span>
       </span>
 
-      <span className={styles.matchup}>
-        <span className={`${styles.fighter}${winner === "a" ? ` ${styles.winner}` : ""}`}>
-          <span className={styles.corner}>A</span>
+      <span className={`${styles.matchup} ${cardStyles.matchupVisual}`}>
+        <span className={`${styles.fighter} ${cardStyles.fighterVisual}${winner === "a" ? ` ${styles.winner} ${cardStyles.winnerVisual}` : ""}`}>
+          <span className={cardStyles.fighterFace}>
+            <Avatar f={b.fighterA} img={imageA} size={68} className={cardStyles.roundAvatar} />
+            {winner === "a" ? <i className={cardStyles.winBadge}>WIN</i> : null}
+          </span>
+          <span className={styles.corner}>A corner</span>
           <b>{b.fighterA.name}</b>
-          {winner === "a" ? <i>WIN</i> : null}
         </span>
-        <span className={styles.versus}>VS</span>
-        <span className={`${styles.fighter}${winner === "b" ? ` ${styles.winner}` : ""}`}>
-          <span className={styles.corner}>B</span>
+        <span className={`${styles.versus} ${cardStyles.vsVisual}`}>VS</span>
+        <span className={`${styles.fighter} ${cardStyles.fighterVisual}${winner === "b" ? ` ${styles.winner} ${cardStyles.winnerVisual}` : ""}`}>
+          <span className={cardStyles.fighterFace}>
+            <Avatar f={b.fighterB} img={imageB} size={68} className={cardStyles.roundAvatar} />
+            {winner === "b" ? <i className={cardStyles.winBadge}>WIN</i> : null}
+          </span>
+          <span className={styles.corner}>B corner</span>
           <b>{b.fighterB.name}</b>
-          {winner === "b" ? <i>WIN</i> : null}
         </span>
       </span>
 
@@ -98,6 +110,8 @@ export default async function RoundByRoundIndex() {
   const t = ok?.totals;
   const sections = buildSections(index);
   const recent = ok?.shelves.recent || [];
+  const visibleFighterIds = [...new Set(sections.flatMap((section) => section.bouts.flatMap((b) => [b.fighterA.id, b.fighterB.id])))];
+  const images = await getVerifiedDisplayImagesForFighters(visibleFighterIds);
   const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t?.byObservedRounds[n] || 0 }));
   const maxRoundBucket = Math.max(1, ...rounds.map((r) => r.count));
   const completeCoverage = t ? pct(t.bothCorners, t.eligible) : 0;
@@ -214,7 +228,7 @@ export default async function RoundByRoundIndex() {
                 <span className={styles.shelfCount}>{s.bouts.length} fights loaded</span>
               </div>
               <div className={styles.fightGrid}>
-                {s.bouts.map((b) => <FightCard b={b} key={`${s.key}-${b.boutId}`} />)}
+                {s.bouts.map((b) => <FightCard b={b} images={images} highlight={s.key === "recent"} key={`${s.key}-${b.boutId}`} />)}
               </div>
             </section>
           ))}
