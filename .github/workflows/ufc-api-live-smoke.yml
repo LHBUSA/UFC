@@ -19,7 +19,7 @@ permissions:
 jobs:
   live-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -29,9 +29,13 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Worker unit tests
+      - name: UFC API worker unit tests
         working-directory: workers/ufc-api
         run: npm install && npm test && npm run check
+
+      - name: Combat Wikipedia worker unit tests and dry build
+        working-directory: workers/combat-wikipedia-ingest
+        run: npm install && npm test && npx wrangler deploy --dry-run --outdir /tmp/combat-wikipedia-dry-run
 
       - name: Live production API smoke
         working-directory: workers/ufc-api

@@ -5,13 +5,14 @@ import { normalizeName, parseMmaRecord, promotionGuess } from './parser.js';
 const HTML = `
 <html><body>
 <table class="infobox"><tr><td><span class="bday">1990-07-02</span></td></tr></table>
-<h2>Mixed martial arts record</h2>
+<div class="mw-heading mw-heading2"><h2 id="Mixed_martial_arts_record">Mixed martial arts record</h2></div>
+<p>Professional mixed martial arts results.</p>
 <table>
 <tr><th>Res.</th><th>Record</th><th>Opponent</th><th>Method</th><th>Event</th><th>Date</th><th>Round</th><th>Time</th><th>Location</th></tr>
 <tr><td>Win</td><td>18-1</td><td><a href="/wiki/Holly_Holm">Holly Holm</a></td><td>Submission (rear-naked choke)</td><td><a href="/wiki/UFC_300">UFC 300</a></td><td><span>2024-04-13</span></td><td>2</td><td>3:06</td><td>Las Vegas</td></tr>
 <tr><td>Win</td><td>17-1</td><td><a href="/wiki/Aspen_Ladd">Aspen Ladd</a></td><td>Decision (unanimous)</td><td><a href="/wiki/2023_Professional_Fighters_League_season">PFL 10</a></td><td><time datetime="2023-11-24">November 24, 2023</time></td><td>5</td><td>5:00</td><td>Washington</td></tr>
 </table>
-<h2>Kickboxing record</h2>
+<div class="mw-heading mw-heading2"><h2 id="Kickboxing_record">Kickboxing record</h2></div>
 <table>
 <tr><th>Res.</th><th>Record</th><th>Opponent</th><th>Method</th><th>Event</th><th>Date</th><th>Round</th><th>Time</th><th>Location</th></tr>
 ${Array.from({ length: 8 }, (_, i) => `<tr><td>Win</td><td>${i + 1}-0</td><td>Wrong Sport ${i}</td><td>Decision</td><td>Glory ${i}</td><td>2020-01-0${(i % 8) + 1}</td><td>3</td><td>3:00</td><td>Tokyo</td></tr>`).join('')}
@@ -23,7 +24,7 @@ test('normalization handles common fighter name variants', () => {
   assert.equal(normalizeName("O'Malley"), 'omalley');
 });
 
-test('MMA section wins even when another combat-sport table is larger', () => {
+test('wrapped MMA section wins even when another combat-sport table is larger', () => {
   const p = parseMmaRecord(HTML);
   assert.equal(p.dob, '1990-07-02');
   assert.equal(p.rows.length, 2);
