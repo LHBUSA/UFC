@@ -113,11 +113,11 @@ export default async function RoundByRoundIndex() {
             {rounds.filter((r) => r.count > 0).map((r) => (
               <div className="rbi-stat" key={r.n}><b>{r.count.toLocaleString()}</b><span>{`with ${r.n} round${r.n === 1 ? "" : "s"} of recorded data`}</span></div>
             ))}
+            <p className="rbi-fresh">
+              {t.firstEventDate && t.lastEventDate ? <>Coverage {fmtDate(t.firstEventDate, DAY)} to {fmtDate(t.lastEventDate, DAY)}. </> : null}
+              {ok.freshness.lastRoundCaptureAt ? <>Round data last captured {fmtDate(ok.freshness.lastRoundCaptureAt, DAY)}.</> : null}
+            </p>
           </section>
-          <p className="rbi-fresh">
-            {t.firstEventDate && t.lastEventDate ? <>Coverage {fmtDate(t.firstEventDate, DAY)} to {fmtDate(t.lastEventDate, DAY)}. </> : null}
-            {ok.freshness.lastRoundCaptureAt ? <>Round data last captured {fmtDate(ok.freshness.lastRoundCaptureAt, DAY)}.</> : null}
-          </p>
 
           {sections.map((s) => (
             <section className="segment" key={s.key} id={s.key}>
