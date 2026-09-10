@@ -165,10 +165,17 @@ export function Methodology({ fb, updated }: { fb: FactBlock; updated: string })
   return (
     <div className="method">
       <div className="eyebrow dim">Source &amp; methodology</div>
+      {/* Same reader-first standard as the content-plan articles. "Fact block"
+        * is our word for the verified data set behind a story, and it meant
+        * nothing to a reader; the UTC generation timestamp was build detail. The
+        * substance -- what the analysis is built on, and that every number is
+        * checked -- is unchanged and now legible. */}
       <p>
-        Generated from the PropBetEdge UFC database and a stored fact block{fam.length ? ` (${fam.join(", ")})` : ""}. Every number in the analysis traces to that block or an attributed source.
-        Bettor's Edge is analysis, clearly labelled; odds and model fields stay unavailable until verified data exists.
-        {fb.generated_at ? ` Fact block generated ${new Date(fb.generated_at).toUTCString()}.` : ""} Updated {new Date(updated).toUTCString()}. <Link href="/about">Editorial policy</Link>.
+        PropBetEdge analysis built on its own UFC records{fam.length ? ` (${fam.join(", ")})` : ""}. Every number traces
+        either to that data or to an attributed source report. Bettor&rsquo;s Edge is analysis and is labelled as such;
+        odds and model figures stay blank until verified data exists.
+        {" "}Last updated {new Date(updated).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}.{" "}
+        <Link href="/methodology">Editorial &amp; Data Methodology</Link>.
       </p>
     </div>
   );

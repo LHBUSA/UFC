@@ -24,6 +24,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Chart, ChartSet, type ChartSpec } from "@/components/charts";
 import { fmtDate } from "@/lib/format";
+import { readableFamilies, familiesSentence } from "@/lib/provenance";
 import { renderMarkdownBlocks } from "@/lib/markdown";
 
 export type PlanModule = { id: string; title?: string; note?: string; data: unknown };
@@ -184,7 +185,7 @@ export function ComparisonModule({ plan, charts }: { plan: ContentPlan | null; c
         </ul>
       )}
       {own.length > 0 && <div className="chart-grid mt-5">{own.map((c) => <Chart key={c.id} spec={c} />)}</div>}
-      <p className="module-src">Career averages from <code>ufc_fighters</code>. The marked side leads that row; for strikes absorbed the lower number leads.</p>
+      <p className="module-src">Career averages from PropBetEdge fighter profiles. The marked side leads that row; for strikes absorbed the lower number leads.</p>
     </Module>
   );
 }
@@ -551,68 +552,79 @@ type Methodology = {
 };
 
 /**
- * The receipt.
+ * Sources and method, written for a reader.
  *
- * This module is the reason the rest of the page can be trusted, so it names the
- * wire item that triggered the story, links to it, lists the tables the analysis
- * was built from, and states plainly what we do NOT have. A methodology block
- * that only ever reports success is decoration; this one reports the blockers.
+ * WHAT THIS BLOCK IS FOR
+ *
+ * A reader arriving from search has one question: can I trust this? The answer
+ * is genuinely strong -- the story is attributed to whoever broke it, the
+ * analysis is built on our own fight data, and every number in the prose was
+ * checked against that data before it published. This block says exactly that,
+ * in language that means something to someone who does not work here.
+ *
+ * WHAT IT IS NOT
+ *
+ * It used to print the model name, the gate identifier, validator status chips,
+ * the raw table names and the list of modules the plan omitted. All of that is
+ * true and none of it is for readers: it made a finished article look like a
+ * build log, and it published implementation detail that no reader benefits
+ * from. It still exists, in the stored plan, in telemetry and in /desk/preview,
+ * which is where an engineer looks.
+ *
+ * THE CLAIM WE ARE CAREFUL NOT TO MAKE
+ *
+ * The previous wording said PropBetEdge "verified the development". We did not.
+ * We fetched and read the original report, and we analysed the data around it
+ * using our own records -- which is a real and defensible thing, and a
+ * different thing from independently confirming that the event occurred. The
+ * copy now says what actually happened.
  */
-export function MethodologyModule({ plan, omitted, updated }: { plan: ContentPlan | null; omitted?: { id: string; reason: string }[]; updated?: string }) {
+export function MethodologyModule({ plan, updated }: { plan: ContentPlan | null; omitted?: { id: string; reason: string }[]; updated?: string }) {
   const m = moduleOf<Methodology>(plan, "source_methodology");
   if (!m?.data) return null;
   const d = m.data;
-  const blockers = [...(d.gate?.blockers || []), ...(d.gate?.failures || [])];
+  const families = readableFamilies(d.first_party_tables);
+  const familySentence = familiesSentence(d.first_party_tables);
+  const oddsConnected = d.odds_status === "available";
   return (
     <Module eyebrow="Sources and method" className="method">
-      {d.trigger?.url ? (
-        <p className="method-trigger">
-          Reported first by <a href={d.trigger.url} rel="noopener nofollow" target="_blank"><b>{d.trigger.publisher}</b></a>
-          {d.trigger.published_at ? <> · {fmtDate(d.trigger.published_at)}</> : null}.
-          PropBetEdge verified the development, then built this analysis from its own fight tables.
-        </p>
-      ) : null}
-      {d.first_party_tables?.length ? (
+      <p className="method-lede">
+        {d.trigger?.url ? (
+          <>
+            First reported by{" "}
+            <a href={d.trigger.url} rel="noopener nofollow" target="_blank"><b>{d.trigger.publisher || "the original outlet"}</b></a>
+            {d.trigger.published_at ? <> on {fmtDate(d.trigger.published_at)}</> : null}.{" "}
+          </>
+        ) : null}
+        PropBetEdge read that report and analysed the development against its own UFC records
+        {familySentence ? <> — {familySentence}</> : null}.
+      </p>
+
+      {families.length > 0 && (
         <div className="method-row">
-          <span className="k">First-party data</span>
-          <div className="chips">{d.first_party_tables.map((t) => <code key={t}>{t}</code>)}</div>
+          <span className="k">Data used</span>
+          <div className="chips">{families.map((f) => <span key={f} className="tag">{f}</span>)}</div>
         </div>
-      ) : null}
+      )}
+
       <div className="method-row">
-        <span className="k">Status</span>
-        <div className="chips">
-          <span className={`tag${d.odds_status === "available" ? " pos" : ""}`}>Odds · {d.odds_status === "available" ? "connected" : "not connected"}</span>
-          <span className={`tag${d.model_status === "priced" ? " model" : ""}`}>Model · {d.model_status === "priced" ? "priced" : "not yet produced"}</span>
-          {/* Two facts, not one. gate.ok says the deterministic validators passed;
-            * green_path says the article was fit to publish itself. Garry's
-            * story passed every validator and was still held for a stale news
-            * peg, so collapsing them into a single "passed" chip beside a
-            * "held because" list is a contradiction printed on the page. */}
-          <span className={`tag${d.gate?.ok ? " pos" : " warn"}`}>Validators · {d.gate?.ok ? "passed" : "failed"}</span>
-          <span className={`tag${d.gate?.green_path ? " pos" : " warn"}`}>{d.gate?.green_path ? "Published automatically" : "Held for review"}</span>
-          <span className="tag">Gate · {d.gate?.gate || "unknown"}</span>
-        </div>
+        <span className="k">Editorial method</span>
+        <p>
+          PropBetEdge uses AI-assisted editorial analysis grounded in a verified fact set. Every numerical claim in this
+          article is checked automatically before publication: it must either appear in our own first-party data, or be
+          attributed in the same sentence to the reporting it came from. Charts are drawn directly from those verified
+          figures rather than written by the model.
+          {oddsConnected ? " Odds shown are a snapshot taken when this analysis was written, not a live feed; prices move." : ""}
+        </p>
       </div>
-      {blockers.length > 0 ? (
-        <div className="method-row"><span className="k warn">Held because</span><ul>{blockers.map((b, i) => <li key={i}>{b}</li>)}</ul></div>
-      ) : null}
-      {omitted && omitted.length > 0 ? (
-        <details className="method-omitted">
-          <summary>{omitted.length} module{omitted.length === 1 ? "" : "s"} not shown on this story, and why</summary>
-          <ul>{omitted.map((o) => <li key={o.id}><code>{o.id}</code> — {o.reason}</li>)}</ul>
-        </details>
-      ) : null}
+
       <p className="module-src">
-        Written by {d.model ? <code>{d.model}</code> : "the PropBetEdge UFC desk"} from a stored fact block, then checked by
-        deterministic validators: every number in the prose must appear in that fact block or be attributed to the source in the same sentence.
-        Charts are drawn from the fact block directly and are never model-generated.
-        {updated ? <> Last rebuilt {fmtDate(updated)}.</> : null}{" "}
-        <Link href="/about" className="dim">Editorial policy →</Link>
+        <Link href="/methodology">Read our Editorial &amp; Data Methodology →</Link>
+        {updated ? <> · Last updated {fmtDate(updated)}</> : null}
       </p>
     </Module>
   );
 }
-
 
 /**
  * Prose with intelligence modules set between its paragraphs.

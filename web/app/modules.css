@@ -196,3 +196,17 @@
    the recessive wire treatment it already had. */
 .wire-rail .wire-own .wire-title { color: var(--pbe-paper); font-weight: 600; }
 .wire-rail .wire-tag.own { background: var(--pbe-gold); color: var(--pbe-ink); border-color: var(--pbe-gold); font-weight: 700; }
+
+/* Sources & method, reader-facing. Quieter than the modules it follows: it is
+   the last thing on the page and should read as a note, not another exhibit. */
+.method-lede { margin: 0 0 var(--s-4); color: var(--pbe-paper-2); font-size: var(--fs-body); line-height: 1.65; }
+.method-lede a { color: var(--pbe-gold); }
+.method-row p { margin: 0; color: var(--pbe-dim); font-size: var(--fs-sm); line-height: 1.65; flex: 1 1 320px; }
+
+/* The methodology page. Long-form, so it gets reading measure and clear seams. */
+.prose.meth { max-width: 74ch; }
+.meth-section { padding-top: var(--s-5); margin-top: var(--s-5); border-top: 1px solid var(--pbe-line-faint); }
+.meth-section:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+.meth-section h2 { font: 800 22px/1.25 var(--pbe-font-display); margin: 0 0 var(--s-3); padding: 0; border: 0; }
+.meth-section ul { margin: 0 0 var(--s-4) 20px; }
+.meth-section strong { color: var(--pbe-paper); }

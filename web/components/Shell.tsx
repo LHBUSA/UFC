@@ -83,6 +83,7 @@ export function Footer() {
             <Link href="/news">Newsroom</Link>
             <Link href="/#notable-voices">Notable voices</Link>
             <Link href="/about">Editorial policy</Link>
+            <Link href="/methodology">Editorial &amp; Data Methodology</Link>
             <a href="/feed.xml">RSS feed</a>
             <Link href="/pro">UFC Pro</Link>
             <Link href="/store">PropBetEdge Store</Link>

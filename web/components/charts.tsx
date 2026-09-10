@@ -28,6 +28,7 @@
  * with one series and a chart with two paint the first fighter identically.
  */
 import type { ReactNode } from "react";
+import { readableSource } from "@/lib/provenance";
 
 export const CHART_HUES = ["#c98500", "#3987e5", "#199e70"] as const;
 
@@ -74,6 +75,9 @@ const rowLabel = (spec: ChartSpec, row: Record<string, unknown>) =>
 
 function Figure({ spec, children, footnote }: { spec: ChartSpec; children: ReactNode; footnote?: string }) {
   const notes = [spec.note, spec.sample_note, footnote].filter(Boolean) as string[];
+  /* The spec records provenance as our own table paths. Readers get the same
+   * claim in their own language; the precise form stays in the stored plan. */
+  const source = readableSource(spec.source);
   return (
     <figure className="chart" aria-labelledby={`ct-${spec.id}`}>
       <figcaption>
@@ -81,11 +85,11 @@ function Figure({ spec, children, footnote }: { spec: ChartSpec; children: React
         {spec.unit ? <span className="chart-unit">{spec.unit}</span> : null}
       </figcaption>
       {children}
-      {(notes.length > 0 || spec.source) && (
+      {(notes.length > 0 || source) && (
         <div className="chart-src">
           {notes.join(" · ")}
-          {notes.length > 0 && spec.source ? " · " : ""}
-          {spec.source ? <>Source: {spec.source}</> : null}
+          {notes.length > 0 && source ? " · " : ""}
+          {source ? <>Source: {source}</> : null}
         </div>
       )}
     </figure>
