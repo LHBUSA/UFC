@@ -219,9 +219,28 @@ def _table_header_map(table) -> tuple[dict[str, int], object | None]:
     return {}, None
 
 
+def _mma_section_table(soup: BeautifulSoup):
+    """Prefer the table immediately following the MMA-record heading.
+
+    Fighters can have boxing/kickboxing/amateur tables with the same columns.
+    Selecting the largest matching table can silently ingest the wrong sport.
+    """
+    for heading in soup.find_all(["h2", "h3", "h4"]):
+        if "mixed martial arts record" not in normalize_name(clean_text(heading)):
+            continue
+        table = heading.find_next("table")
+        if table is not None:
+            header_map, header_row = _table_header_map(table)
+            if header_map:
+                return table, header_map, header_row
+    return None
+
+
 def parse_mma_record(html: str) -> dict:
     soup = BeautifulSoup(html or "", "lxml")
     dob = parse_infobox_dob(soup)
+
+    selected = _mma_section_table(soup)
     candidates = []
     for table in soup.find_all("table"):
         header_map, header_row = _table_header_map(table)
@@ -230,8 +249,7 @@ def parse_mma_record(html: str) -> dict:
     if not candidates:
         return {"dob": dob, "rows": [], "table_count": 0}
 
-    # The real professional MMA record is normally the largest matching table.
-    table, header_map, header_row = max(candidates, key=lambda x: len(x[0].find_all("tr")))
+    table, header_map, header_row = selected or max(candidates, key=lambda x: len(x[0].find_all("tr")))
     out: list[CareerRow] = []
     started = False
     row_index = 0

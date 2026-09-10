@@ -1,0 +1,32 @@
+name = "combat-wikipedia-ingest"
+main = "src/index.js"
+compatibility_date = "2026-08-29"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+WIKIMEDIA_API = "https://en.wikipedia.org/w/api.php"
+WIKIMEDIA_USER_AGENT = "PropBetEdge-MMA-Ingest/1.0 (+https://ufc.propbetedge.ai/)"
+# Staged off until /admin/canary proves real Cloudflare egress + parser + UFC
+# identity checksum against a few known multi-promotion fighters.
+SCHEDULE_ENABLED = "false"
+WRITE_ENABLED = "false"
+MAX_FIGHTERS_PER_RUN = "5"
+MAX_WIKIMEDIA_REQUESTS_PER_RUN = "40"
+WIKIMEDIA_MIN_INTERVAL_MS = "500"
+
+# Cloudflare owns cadence. GitHub remains source/deployment plumbing only.
+# Once canary is green and writes are explicitly enabled, this small batch runs
+# four times daily; idempotency makes repeat observations safe.
+[triggers]
+crons = ["17 */6 * * *"]
+
+# Secrets (wrangler secret put):
+#   SUPABASE_SERVICE_ROLE_KEY
+#   ADMIN_TRIGGER_TOKEN
+#   DISCORD_WEBHOOK_URL (optional)
+
+[observability]
+enabled = true
+head_sampling_rate = 1

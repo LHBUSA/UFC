@@ -17,8 +17,8 @@ For Career DNA and cross-promotion MMA history:
 3. Identify our client with a real User-Agent and throttle requests.
 4. Store normalized facts + source URL + source revision/locator, not copied
    article prose.
-5. Cross-check a fighter's Wikipedia UFC rows against our canonical UFC graph
-   before that page is trusted as the person's career page.
+5. Cross-check a fighter's Wikipedia UFC rows against our **completed**
+   canonical UFC graph before that page is trusted as the person's career page.
 6. Never auto-merge fighter identities on name alone.
 7. If a source blocks access, stop. Do not solve CAPTCHAs, evade challenges,
    rotate identities, or otherwise bypass the source's access control.
@@ -45,14 +45,16 @@ location and notes across the fighter's professional career. For UFC-linked
 fighters this can include pre-UFC PFL, Bellator, WSOF, KSW, ONE, RIZIN,
 Strikeforce, WEC and regional history on the same page.
 
-The new collector uses the Wikimedia **Action API** to obtain the page and its
-revision id. It does not crawl arbitrary links or copy article prose into our
-product.
+The production collector uses the Wikimedia **Action API** to obtain the page
+and its revision id. It does not crawl arbitrary links or copy article prose
+into our product.
 
 Before any non-UFC row is promoted:
 
-- the page must contain a parseable MMA record table;
+- the parser must select the `Mixed martial arts record` section rather than a
+  boxing/kickboxing/amateur table;
 - DOB conflicts fail identity verification;
+- only completed UFC bouts count as checksum evidence;
 - at least two exact UFC opponent+date overlaps are required for ordinary
   multi-fight UFC careers, or DOB + an exact overlap for a one-UFC-bout case;
 - every stored external row keeps the Wikipedia page title, page id, revision
@@ -61,10 +63,10 @@ Before any non-UFC row is promoted:
   `combat_bouts`.
 
 Opponent identity is also fail-closed. A stable Wikipedia opponent link may
-create a source-native combat identity **only when it does not collide with an
-existing fighter name**. If it could be an existing UFC fighter and we have not
-yet proven the Wikipedia identity, the row goes to review instead of merging by
-name.
+create a source-native combat identity only when it does not collide with an
+existing fighter or alias. If it could be an existing fighter and we have not
+yet proven that Wikipedia identity, the row goes to review instead of merging
+by name.
 
 **Registry state:** `approved_ingest`, enabled after
 `20260910231000_combat_direct_public_sources.sql`.
@@ -72,7 +74,7 @@ name.
 ## Wikidata
 
 Wikidata remains the preferred open identity/reference layer where it has the
-needed entity. It is CC0 and is useful for stable identity keys, names and
+needed entity. It is CC0 and useful for stable identity keys, names and
 biographical cross-checks, but it is not deep enough by itself to supply full
 bout careers.
 
@@ -97,9 +99,8 @@ These are not required for the direct-source Career DNA strategy. Their source
 rows remain in the registry only so a future business decision would have to be
 explicit.
 
-**Registry state after the direct-source migration:** `blocked`, disabled by
-product policy. `rights_state` remains `unknown`; we are not making a legal
-claim about their data rights.
+**Registry state:** `blocked`, disabled by product policy. `rights_state`
+remains `unknown`; we are not making a legal claim about their data rights.
 
 ## Combat Registry / MixedMartialArts.com
 
@@ -121,31 +122,44 @@ records for UFC-linked fighters.
 
 ## Implementation
 
-The direct Wikipedia lane is:
+The production direct-Wikipedia runtime is:
 
-```bash
-python scripts/combat/wikipedia_mma_ingest.py --fighter "Kayla Harrison"
+```text
+workers/combat-wikipedia-ingest/
 ```
 
-That command is audit-only. It resolves the Wikipedia page, parses the record,
-and compares the UFC portion to our canonical UFC history.
+It is a Cloudflare Worker. Cloudflare owns its cron; GitHub is source/deployment
+plumbing only. Both scheduling and writes ship disabled.
 
-For the ranked/upcoming pilot:
+Read-only production canary after deploy:
 
-```bash
-node scripts/combat/build_pilot_queue.mjs --limit 100 --json logs/combat-pilot.json
-python scripts/combat/wikipedia_mma_ingest.py --pilot logs/combat-pilot.json --limit 10
+```text
+POST /admin/canary
+Authorization: Bearer <ADMIN_TRIGGER_TOKEN>
 ```
 
-Only after the audit output is clean do we write:
+Default canary fighters:
 
-```bash
-python scripts/combat/wikipedia_mma_ingest.py --pilot logs/combat-pilot.json --limit 10 --write
+- Kayla Harrison — positive UFC/PFL multi-promotion case.
+- Patricio Pitbull — positive UFC/Bellator/PFL/Rizin-style career case.
+- Salahdine Parnasse — one-completed-UFC-bout freshness case. If Wikipedia has
+  not yet added the UFC bout, the correct result is **unverified**, not a forced
+  identity.
+
+Manual audit:
+
+```text
+POST /admin/run?limit=5
 ```
 
-The write pass registers verified Wikipedia identities, stores a normalized
-career packet with page/revision provenance, and promotes recognized non-UFC
-professional bouts into `combat_*`. UFC rows remain solely in `ufc_*`.
+An actual write requires both `WRITE_ENABLED="true"` in the Worker environment
+and `POST /admin/run?limit=5&write=1`. Only after a bounded write proves
+idempotency and UFC-only regression should `SCHEDULE_ENABLED="true"` be turned
+on.
+
+The worker registers verified Wikipedia identities, stores source packets with
+page/revision provenance, and promotes recognized non-UFC professional bouts
+into `combat_*`. UFC rows remain solely in `ufc_*`.
 
 ## Decision
 
