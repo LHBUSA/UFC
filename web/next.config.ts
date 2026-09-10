@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "propbetedge.ai" },
-      { protocol: "https", hostname: "a.espncdn.com", pathname: "/i/headshots/mma/players/full/**" },
       { protocol: "https", hostname: supabaseHost, pathname: "/storage/v1/object/public/**" },
     ],
     formats: ["image/avif", "image/webp"],

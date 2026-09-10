@@ -7,12 +7,37 @@ import "server-only";
  * point of the surface is that everything on it can be opened and read. A
  * category with nothing behind it is omitted rather than shown empty.
  *
- * One paged read of the round-stat table gives coverage for every bout at
- * once, which is far cheaper than asking per bout and keeps this page a
- * single round trip regardless of how far the backfill has advanced.
+ * READ ARCHITECTURE. The page used to download five whole tables (about 67
+ * PostgREST pages at the 1,000-row cap) and join them in memory, and its pager
+ * returned whatever prefix it had when a page failed — a partial archive
+ * rendered as the whole one. The database now does that work:
+ *
+ *   rpc/ufc_round_index_page   one call, one jsonb value: totals, provenance
+ *                              and five shelves of <= 12. A single value has
+ *                              no row cap to truncate, and the call either
+ *                              returns all of it or fails.
+ *   ufc_round_index            one row per eligible bout; round-link coverage
+ *                              for a page's own bouts, <= 60 ids per request.
+ *
+ * Every response is validated. Anything short of the full contract is a
+ * RoundIndexUnavailable error, never a smaller archive.
  */
 const URL_ = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+export class RoundIndexUnavailable extends Error {
+  constructor(detail: string) { super(`round index unavailable: ${detail}`); this.name = "RoundIndexUnavailable"; }
+}
+
+export function roundIndexConfigured(): boolean {
+  return Boolean(URL_ && KEY);
+}
+
+function headers(extra: Record<string, string> = {}): Record<string, string> {
+  const h: Record<string, string> = { apikey: KEY, Accept: "application/json", ...extra };
+  if (KEY.startsWith("eyJ")) h.Authorization = `Bearer ${KEY}`;
+  return h;
+}
 
 export type RoundIndexBout = {
   boutId: string;
@@ -28,56 +53,20 @@ export type RoundIndexBout = {
   method: string | null;
   finishRound: number | null;
   winnerId: string | null;
-  /* How many distinct rounds we hold observations for, and whether both
-   * corners are present in every one of them. */
+  /* How many distinct rounds we hold observations for (rounds actually fought,
+   * as far as the source recorded them), and whether both corners are present
+   * in every one of them. Not the scheduled distance: that is scheduledRounds. */
   roundsCovered: number;
   bothCorners: boolean;
   scheduledRounds: number | null;
+  isTournament: boolean;
 };
-
-type BoutRow = {
-  id: string; event_id: string; fighter_a_id: string; fighter_b_id: string;
-  weight_class: string | null; is_womens: boolean | null; is_title: boolean | null;
-  bout_order: number | null; scheduled_rounds: number | null; status: string | null;
-};
-type EventRow = { id: string; name: string; event_date: string | null };
-type FighterRow = { id: string; name: string; espn_athlete_id: string | null; ufcstats_id: string | null };
-type ResultRow = { bout_id: string; method: string | null; round: number | null; winner_id: string | null };
-type StatRow = { bout_id: string; fighter_id: string; round: number };
-
-/* Paged reader. PostgREST caps rows per response, so coverage for the whole
- * archive is walked with range headers rather than requested in one go. */
-async function all<T>(path: string, pageSize = 1000): Promise<T[]> {
-  if (!URL_ || !KEY) return [];
-  const out: T[] = [];
-  for (let from = 0; ; from += pageSize) {
-    try {
-      const res = await fetch(`${URL_}/rest/v1/${path}`, {
-        headers: {
-          apikey: KEY,
-          Authorization: `Bearer ${KEY}`,
-          Accept: "application/json",
-          Range: `${from}-${from + pageSize - 1}`,
-        },
-        next: { revalidate: 300 },
-      });
-      if (!res.ok) return out;
-      const rows = (await res.json()) as T[];
-      if (!Array.isArray(rows)) return out;
-      out.push(...rows);
-      if (rows.length < pageSize) break;
-    } catch {
-      return out;
-    }
-  }
-  return out;
-}
 
 /* ---- the single eligibility definition ---------------------------------
  * Every surface that offers a round-by-round link asks this, and only this.
  * A second definition living next to a card component is how a link starts
  * appearing on fights that cannot open, so there is deliberately one rule and
- * one place to change it. */
+ * one place to change it. The database view applies the same rule. */
 export type RoundCoverage = { rounds: number; bothCorners: boolean };
 
 export const ELIGIBLE_MIN_ROUNDS = 1;
@@ -86,162 +75,167 @@ export function isEligible(c: RoundCoverage | null | undefined): boolean {
   return Boolean(c && c.rounds >= ELIGIBLE_MIN_ROUNDS);
 }
 
-/* Coverage for a specific set of bouts. The index page needs the whole table;
- * a fight card needs twelve rows, so this asks only for what is on screen
- * rather than making every event page pay for the full archive. */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/* Coverage for a specific set of bouts (an event card, a fighter's history).
+ * Reads the view for only the ids on screen: <= 60 per request, one row per
+ * bout, so a response can never be silently cut by the row cap. A request that
+ * fails leaves those bouts with NO coverage entry — callers render no link,
+ * which is the safe direction — and never a guessed one. */
 export async function getRoundCoverageFor(boutIds: string[]): Promise<Map<string, RoundCoverage>> {
   const out = new Map<string, RoundCoverage>();
-  const ids = [...new Set(boutIds.filter(Boolean))];
-  if (!ids.length || !URL_ || !KEY) return out;
-
-  const cover = new Map<string, Map<number, Set<string>>>();
-  /* PostgREST puts the filter in the URL, so long id lists are chunked to stay
-   * well inside any request-line limit. */
+  const ids = [...new Set(boutIds.filter((x) => UUID.test(String(x || ""))))];
+  if (!ids.length || !roundIndexConfigured()) return out;
   const CHUNK = 60;
   for (let i = 0; i < ids.length; i += CHUNK) {
     const slice = ids.slice(i, i + CHUNK);
-    const rows = await all<StatRow>(`ufc_bout_round_stats?select=bout_id,fighter_id,round&bout_id=in.(${slice.join(",")})`);
-    for (const r of rows) {
-      let byRound = cover.get(r.bout_id);
-      if (!byRound) { byRound = new Map(); cover.set(r.bout_id, byRound); }
-      let corners = byRound.get(r.round);
-      if (!corners) { corners = new Set(); byRound.set(r.round, corners); }
-      corners.add(r.fighter_id);
+    try {
+      const res = await fetch(`${URL_}/rest/v1/ufc_round_index?select=bout_id,rounds_observed,both_corners&bout_id=in.(${slice.join(",")})`, {
+        headers: headers(), next: { revalidate: 300 },
+      });
+      if (!res.ok) { console.error(`[roundIndex] coverage -> HTTP ${res.status}`); continue; }
+      const rows = (await res.json()) as Array<{ bout_id: string; rounds_observed: number; both_corners: boolean }>;
+      if (!Array.isArray(rows) || rows.length > slice.length) { console.error("[roundIndex] coverage response malformed"); continue; }
+      for (const r of rows) out.set(r.bout_id, { rounds: r.rounds_observed, bothCorners: Boolean(r.both_corners) });
+    } catch (e) {
+      console.error(`[roundIndex] coverage failed: ${String((e as Error)?.message || e).slice(0, 120)}`);
     }
-  }
-  for (const [boutId, byRound] of cover) {
-    out.set(boutId, { rounds: byRound.size, bothCorners: [...byRound.values()].every((c) => c.size >= 2) });
   }
   return out;
 }
 
-export type RoundIndex = {
-  bouts: RoundIndexBout[];
-  totals: { eligible: number; byRounds: Record<number, number>; bothCorners: number };
+export type RoundIndexTotals = {
+  eligible: number;
+  bothCorners: number;
+  /* keyed by rounds OBSERVED */
+  byRoundsObserved: Record<number, number>;
+  /* keyed by SCHEDULED distance; "unknown" when the record does not say */
+  byScheduledRounds: Record<string, number>;
+  scheduledFiveRound: number;
 };
 
-export async function getRoundIndex(): Promise<RoundIndex> {
-  const [stats, bouts, events, results, fighters] = await Promise.all([
-    all<StatRow>("ufc_bout_round_stats?select=bout_id,fighter_id,round"),
-    all<BoutRow>("ufc_bouts?select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,bout_order,scheduled_rounds,status"),
-    all<EventRow>("ufc_events?select=id,name,event_date"),
-    all<ResultRow>("ufc_bout_results?select=bout_id,method,round,winner_id"),
-    all<FighterRow>("ufc_fighters?select=id,name,espn_athlete_id,ufcstats_id"),
-  ]);
-
-  /* Coverage per bout: which rounds exist, and how many corners in each. */
-  const cover = new Map<string, Map<number, Set<string>>>();
-  for (const s of stats) {
-    let byRound = cover.get(s.bout_id);
-    if (!byRound) { byRound = new Map(); cover.set(s.bout_id, byRound); }
-    let corners = byRound.get(s.round);
-    if (!corners) { corners = new Set(); byRound.set(s.round, corners); }
-    corners.add(s.fighter_id);
-  }
-
-  const evById = new Map(events.map((e) => [e.id, e]));
-  const fById = new Map(fighters.map((f) => [f.id, f]));
-  const resByBout = new Map(results.map((r) => [r.bout_id, r]));
-
-  const out: RoundIndexBout[] = [];
-  for (const b of bouts) {
-    const byRound = cover.get(b.id);
-    const coverage: RoundCoverage | null = byRound
-      ? { rounds: byRound.size, bothCorners: [...byRound.values()].every((c) => c.size >= 2) }
-      : null;
-    if (!isEligible(coverage)) continue;                // nothing to open
-    const e = evById.get(b.event_id);
-    const a = fById.get(b.fighter_a_id);
-    const z = fById.get(b.fighter_b_id);
-    if (!e || !a || !z) continue;                       // cannot render a name
-    const r = resByBout.get(b.id) || null;
-    out.push({
-      boutId: b.id,
-      eventId: e.id,
-      eventName: e.name,
-      eventDate: e.event_date,
-      fighterA: a,
-      fighterB: z,
-      weightClass: b.weight_class,
-      isWomens: Boolean(b.is_womens),
-      isTitle: Boolean(b.is_title),
-      boutOrder: b.bout_order,
-      method: r?.method || null,
-      finishRound: r?.round ?? null,
-      winnerId: r?.winner_id || null,
-      roundsCovered: coverage!.rounds,
-      bothCorners: coverage!.bothCorners,
-      scheduledRounds: b.scheduled_rounds,
-    });
-  }
-
-  out.sort((x, y) => String(y.eventDate || "").localeCompare(String(x.eventDate || "")) || (x.boutOrder ?? 0) - (y.boutOrder ?? 0));
-
-  const byRounds: Record<number, number> = {};
-  for (const b of out) byRounds[b.roundsCovered] = (byRounds[b.roundsCovered] || 0) + 1;
-
-  return {
-    bouts: out,
-    totals: { eligible: out.length, byRounds, bothCorners: out.filter((b) => b.bothCorners).length },
-  };
-}
-
-/* ---- discovery sections -------------------------------------------------
- * Every section is defined by canonical data, never by editorial taste, so a
- * category cannot quietly become a list of fights someone liked. A section
- * with no members is dropped by the page rather than rendered empty. */
+export type RoundIndexProvenance = {
+  generatedAt: string;
+  roundRows: number;
+  lastCapturedAt: string | null;
+  source: string;
+  requests: number;
+};
 
 export type Section = { key: string; title: string; blurb: string; bouts: RoundIndexBout[] };
 
-export function buildSections(index: RoundIndex): Section[] {
-  const { bouts } = index;
+export type RoundIndex = {
+  totals: RoundIndexTotals;
+  provenance: RoundIndexProvenance;
+  sections: Section[];
+  /* every bout on any shelf, de-duplicated, for structured data */
+  bouts: RoundIndexBout[];
+};
 
-  /* A fighter appearing more than once on one event is a same-night bracket.
-   * That is the tournament signature, and it must not be collapsed: each bout
-   * keeps its own analysis and its own place in the progression. */
-  const perEventFighter = new Map<string, number>();
-  for (const b of bouts) {
-    for (const fid of [b.fighterA.id, b.fighterB.id]) {
-      const k = `${b.eventId}|${fid}`;
-      perEventFighter.set(k, (perEventFighter.get(k) || 0) + 1);
-    }
+/* Shelf definitions. Membership is decided by canonical data in the database
+ * function, never by editorial taste; this table only names and explains. */
+const SHELVES: Array<{ key: string; title: string; blurb: string }> = [
+  { key: "recent", title: "Recent analysis", blurb: "The most recent completed bouts with verified round observations." },
+  { key: "five-round", title: "Five-round fights", blurb: "Bouts scheduled for five rounds, championship and main-event distance, however long they actually lasted." },
+  { key: "title", title: "Championship fights", blurb: "Bouts the canonical record marks as title fights." },
+  { key: "tournament", title: "Tournament nights", blurb: "Same-night brackets, where a fighter has more than one bout on the card. Each bout keeps its own analysis." },
+  { key: "historic", title: "Historic fights", blurb: "The oldest bouts the archive can reconstruct, recovered from archived captures." },
+];
+const SHELF_MAX = 12;
+
+type RawBout = {
+  bout_id: string; event_id: string; event_name: string; event_date: string | null;
+  fighter_a_id: string; fighter_a_name: string; fighter_a_espn_athlete_id: string | null; fighter_a_ufcstats_id: string | null;
+  fighter_b_id: string; fighter_b_name: string; fighter_b_espn_athlete_id: string | null; fighter_b_ufcstats_id: string | null;
+  weight_class: string | null; is_womens: boolean; is_title: boolean; bout_order: number | null; scheduled_rounds: number | null;
+  method: string | null; finish_round: number | null; winner_id: string | null;
+  rounds_observed: number; both_corners: boolean; is_tournament: boolean;
+};
+type RawPage = {
+  contract: string; generated_at: string;
+  totals: { eligible: number; both_corners: number; by_rounds_observed: Record<string, number>; by_scheduled_rounds: Record<string, number>; scheduled_five_round: number };
+  provenance: { round_rows: number; last_captured_at: string | null; source: string };
+  shelves: Record<string, RawBout[]>;
+};
+
+const isInt = (v: unknown): v is number => typeof v === "number" && Number.isInteger(v) && v >= 0;
+
+function toBout(r: RawBout): RoundIndexBout {
+  return {
+    boutId: r.bout_id, eventId: r.event_id, eventName: r.event_name, eventDate: r.event_date,
+    fighterA: { id: r.fighter_a_id, name: r.fighter_a_name, espn_athlete_id: r.fighter_a_espn_athlete_id, ufcstats_id: r.fighter_a_ufcstats_id },
+    fighterB: { id: r.fighter_b_id, name: r.fighter_b_name, espn_athlete_id: r.fighter_b_espn_athlete_id, ufcstats_id: r.fighter_b_ufcstats_id },
+    weightClass: r.weight_class, isWomens: Boolean(r.is_womens), isTitle: Boolean(r.is_title), boutOrder: r.bout_order,
+    method: r.method, finishRound: r.finish_round, winnerId: r.winner_id,
+    roundsCovered: r.rounds_observed, bothCorners: Boolean(r.both_corners), scheduledRounds: r.scheduled_rounds,
+    isTournament: Boolean(r.is_tournament),
+  };
+}
+
+/* Strict contract check. The page is allowed to be unavailable; it is not
+ * allowed to be quietly incomplete. Exported for tests. */
+export function parseRoundIndexPage(raw: unknown): RoundIndex {
+  const p = raw as RawPage;
+  if (!p || typeof p !== "object") throw new RoundIndexUnavailable("empty payload");
+  if (p.contract !== "ufc_round_index_page.v1") throw new RoundIndexUnavailable(`unexpected contract ${JSON.stringify(p.contract)}`);
+  const t = p.totals;
+  if (!t || !isInt(t.eligible) || !isInt(t.both_corners) || !isInt(t.scheduled_five_round) || typeof t.by_rounds_observed !== "object" || typeof t.by_scheduled_rounds !== "object") {
+    throw new RoundIndexUnavailable("totals missing or malformed");
   }
-  const isTournament = (b: RoundIndexBout) =>
-    (perEventFighter.get(`${b.eventId}|${b.fighterA.id}`) || 0) > 1 ||
-    (perEventFighter.get(`${b.eventId}|${b.fighterB.id}`) || 0) > 1;
+  const observedSum = Object.values(t.by_rounds_observed).reduce((a, b) => a + (isInt(b) ? b : NaN), 0);
+  const scheduledSum = Object.values(t.by_scheduled_rounds).reduce((a, b) => a + (isInt(b) ? b : NaN), 0);
+  if (observedSum !== t.eligible || scheduledSum !== t.eligible) throw new RoundIndexUnavailable(`distribution sums ${observedSum}/${scheduledSum} != eligible ${t.eligible}`);
+  if (t.both_corners > t.eligible) throw new RoundIndexUnavailable("both_corners exceeds eligible");
+  if (!p.provenance || !isInt(p.provenance.round_rows)) throw new RoundIndexUnavailable("provenance missing");
+  if (!p.shelves || typeof p.shelves !== "object") throw new RoundIndexUnavailable("shelves missing");
 
-  const sections: Section[] = [
-    {
-      key: "recent",
-      title: "Recent analysis",
-      blurb: "The most recent completed bouts with verified round observations.",
-      bouts: bouts.slice(0, 12),
-    },
-    {
-      key: "five-round",
-      title: "Five-round fights",
-      blurb: "Championship and main-event distance, where round-over-round change has the most room to show.",
-      bouts: bouts.filter((b) => b.roundsCovered >= 5).slice(0, 12),
-    },
-    {
-      key: "title",
-      title: "Championship fights",
-      blurb: "Bouts the canonical record marks as title fights.",
-      bouts: bouts.filter((b) => b.isTitle).slice(0, 12),
-    },
-    {
-      key: "tournament",
-      title: "Tournament nights",
-      blurb: "Same-night brackets, where a fighter has more than one bout on the card. Each bout keeps its own analysis.",
-      bouts: bouts.filter(isTournament).slice(0, 12),
-    },
-    {
-      key: "historic",
-      title: "Historic fights",
-      blurb: "The oldest bouts the archive can reconstruct, recovered from archived captures.",
-      bouts: bouts.slice().sort((a, b) => String(a.eventDate || "").localeCompare(String(b.eventDate || ""))).slice(0, 12),
-    },
-  ];
+  const sections: Section[] = [];
+  const all = new Map<string, RoundIndexBout>();
+  for (const def of SHELVES) {
+    const rows = p.shelves[def.key] ?? [];
+    if (!Array.isArray(rows) || rows.length > SHELF_MAX) throw new RoundIndexUnavailable(`shelf ${def.key} malformed`);
+    const bouts = rows.map((r) => {
+      if (!r || !UUID.test(r.bout_id) || !r.event_name || !r.fighter_a_name || !r.fighter_b_name || !isInt(r.rounds_observed) || r.rounds_observed < ELIGIBLE_MIN_ROUNDS) {
+        throw new RoundIndexUnavailable(`shelf ${def.key} carries an incomplete bout`);
+      }
+      if (def.key === "five-round" && r.scheduled_rounds !== 5) throw new RoundIndexUnavailable("five-round shelf holds a bout not scheduled for five");
+      return toBout(r);
+    });
+    /* A shelf can only be empty if nothing qualifies; an empty "recent" shelf
+     * with a non-empty archive is a broken response, not a quiet week. */
+    if (def.key === "recent" && t.eligible > 0 && bouts.length !== Math.min(SHELF_MAX, t.eligible)) throw new RoundIndexUnavailable("recent shelf short");
+    if (def.key === "five-round" && bouts.length !== Math.min(SHELF_MAX, t.scheduled_five_round)) throw new RoundIndexUnavailable("five-round shelf short");
+    for (const b of bouts) all.set(b.boutId, b);
+    if (bouts.length) sections.push({ ...def, bouts });
+  }
 
-  return sections.filter((s) => s.bouts.length > 0);
+  const byRoundsObserved: Record<number, number> = {};
+  for (const [k, v] of Object.entries(t.by_rounds_observed)) byRoundsObserved[Number(k)] = v;
+  return {
+    totals: { eligible: t.eligible, bothCorners: t.both_corners, byRoundsObserved, byScheduledRounds: { ...t.by_scheduled_rounds }, scheduledFiveRound: t.scheduled_five_round },
+    provenance: { generatedAt: p.generated_at, roundRows: p.provenance.round_rows, lastCapturedAt: p.provenance.last_captured_at, source: p.provenance.source, requests: 1 },
+    sections,
+    bouts: [...all.values()],
+  };
+}
+
+/* One request. Throws RoundIndexUnavailable on any failure, so the caller can
+ * never render a partial archive. */
+export async function getRoundIndex(): Promise<RoundIndex> {
+  if (!roundIndexConfigured()) throw new RoundIndexUnavailable("database not configured");
+  let res: Response;
+  try {
+    res = await fetch(`${URL_}/rest/v1/rpc/ufc_round_index_page`, {
+      method: "POST",
+      headers: headers({ "Content-Type": "application/json" }),
+      body: "{}",
+      next: { revalidate: 300 },
+    });
+  } catch (e) {
+    throw new RoundIndexUnavailable(`transport: ${String((e as Error)?.message || e).slice(0, 120)}`);
+  }
+  if (!res.ok) throw new RoundIndexUnavailable(`HTTP ${res.status}`);
+  let body: unknown;
+  try { body = await res.json(); } catch { throw new RoundIndexUnavailable("response is not JSON"); }
+  return parseRoundIndexPage(body);
 }

@@ -260,43 +260,13 @@ export function portraitSet(img: FighterImage): PortraitSet {
   };
 }
 
-/* ESPN headshots are display-only fallbacks and not every athlete id has one.
- * Probe the CDN once per id (cached in-process and by the fetch data cache) so a
- * missing headshot never renders as broken media: the fighter simply stays on
- * the branded initials fallback. Transient network failures keep the image. */
-const ESPN_PROBE_TTL_MS = 6 * 60 * 60 * 1000;
-const espnProbe = new Map<string, { ok: boolean; at: number }>();
-async function espnHeadshotAvailable(url: string): Promise<boolean> {
-  const hit = espnProbe.get(url);
-  if (hit && Date.now() - hit.at < ESPN_PROBE_TTL_MS) return hit.ok;
-  let ok = true;
-  try {
-    const res = await fetch(url, { method: "HEAD", next: { revalidate: 21600 }, signal: AbortSignal.timeout(4000) });
-    if (res.status === 404 || res.status === 410) ok = false;
-  } catch { ok = true; }
-  espnProbe.set(url, { ok, at: Date.now() });
-  return ok;
-}
-
-function espnDisplayPortrait(fighter: Pick<Fighter, "id" | "espn_athlete_id">): PortraitSet | null {
-  const athleteId = String(fighter.espn_athlete_id || "").trim();
-  if (!/^\d+$/.test(athleteId)) return null;
-  const url = `https://a.espncdn.com/i/headshots/mma/players/full/${athleteId}.png`;
-  return {
-    id: `espn:${athleteId}`,
-    portrait: url,
-    card: url,
-    thumb: url,
-    license: null,
-    author: "ESPN",
-    source_url: `https://www.espn.com/mma/fighter/_/id/${athleteId}`,
-    kind: "display_fallback",
-    source_family: "espn",
-    rights_label: "display_only",
-    attribution_text: "ESPN · display fallback",
-    stored_first_party: false,
-  };
-}
+/* Rights-first image policy (see /about#images). Public rendering uses only a
+ * stored ufc_images row that is cleared for commercial use; otherwise the
+ * fighter gets NO photograph and the surface shows its initials plate. There is
+ * deliberately no third-party fallback: an ESPN headshot hotlinked to fill a
+ * hole is still ESPN imagery on a commercial page, whatever label it carries.
+ * ESPN athlete ids remain in use for identity and data linkage only. */
+const RIGHTS_FILTER = "&commercial_use_allowed=is.true";
 
 export async function getImagesForFighters(ids: string[]): Promise<Map<string, PortraitSet>> {
   const m = new Map<string, PortraitSet>();
@@ -305,7 +275,7 @@ export async function getImagesForFighters(ids: string[]): Promise<Map<string, P
   const select = "id,kind,r2_key,license,author,source_url,fighter_id,source_family,attribution_text,rights_label,rights_expires_at,provider_asset_id,stored_first_party,created_at";
   for (let i = 0; i < uniq.length; i += 150) {
     const chunk = uniq.slice(i, i + 150);
-    const rows = (await rest<FighterImage[]>(`ufc_images?select=${select}&fighter_id=in.(${chunk.join(",")})&order=created_at.desc`, [], { revalidate: 300 })).data;
+    const rows = (await rest<FighterImage[]>(`ufc_images?select=${select}&fighter_id=in.(${chunk.join(",")})${RIGHTS_FILTER}&order=created_at.desc`, [], { revalidate: 300 })).data;
     for (const r of rows) {
       if (!r.fighter_id) continue;
       if (r.rights_expires_at && Date.parse(r.rights_expires_at) <= Date.now()) continue;
@@ -314,28 +284,12 @@ export async function getImagesForFighters(ids: string[]): Promise<Map<string, P
     }
   }
   for (const [fighterId, img] of chosen) m.set(fighterId, portraitSet(img));
-
-  /* Every visible fighter surface uses this function. When a rights-cleared
-   * PBE asset is not available, fill only the presentation gap with that
-   * fighter's ESPN MMA athlete headshot. These synthetic PortraitSets are
-   * never written to ufc_images and are marked display_only, so they cannot
-   * leak into the commercial / API-redistributable media catalog. */
-  const missing = uniq.filter((id) => !m.has(id));
-  for (let i = 0; i < missing.length; i += 150) {
-    const chunk = missing.slice(i, i + 150);
-    const fighters = (await rest<Array<Pick<Fighter, "id" | "espn_athlete_id">>>(
-      `ufc_fighters?select=id,espn_athlete_id&id=in.(${chunk.join(",")})`, [], { revalidate: 300 },
-    )).data;
-    const fallbacks = fighters.map((fighter) => ({ fighter, fallback: espnDisplayPortrait(fighter) })).filter((x) => x.fallback);
-    const available = await Promise.all(fallbacks.map((x) => espnHeadshotAvailable((x.fallback as PortraitSet).card)));
-    fallbacks.forEach((x, idx) => { if (available[idx]) m.set(x.fighter.id, x.fallback as PortraitSet); });
-  }
   return m;
 }
 
 export async function getImageById(id: string): Promise<PortraitSet | null> {
   const select = "id,kind,r2_key,license,author,source_url,fighter_id,source_family,attribution_text,rights_label,rights_expires_at,provider_asset_id,stored_first_party,created_at";
-  const rows = (await rest<FighterImage[]>(`ufc_images?select=${select}&id=eq.${id}&limit=1`, [], { revalidate: 300 })).data;
+  const rows = (await rest<FighterImage[]>(`ufc_images?select=${select}&id=eq.${id}${RIGHTS_FILTER}&limit=1`, [], { revalidate: 300 })).data;
   const row = rows[0];
   if (!row || (row.rights_expires_at && Date.parse(row.rights_expires_at) <= Date.now())) return null;
   return portraitSet(row);

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHead, JsonLd } from "@/components/ui";
-import { buildSections, getRoundIndex, type RoundIndexBout } from "@/lib/roundIndex";
+import { getRoundIndex, RoundIndexUnavailable, type RoundIndex, type RoundIndexBout } from "@/lib/roundIndex";
 import { fmtDate, METHOD_SHORT, weightClassLabel } from "@/lib/format";
 import { matchupSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
@@ -11,7 +11,13 @@ import { SITE } from "@/lib/site";
  * Every fight listed here has stored round observations, so every card on the
  * page opens onto something real. Nothing is listed speculatively and no
  * category is shown empty, because the value of this surface is that it only
- * promises what the archive can actually deliver. */
+ * promises what the archive can actually deliver.
+ *
+ * The whole page is one database call (lib/roundIndex.ts). If that call fails
+ * or returns less than its full contract, the page does not render a smaller
+ * archive: at runtime the error propagates, so the last complete render keeps
+ * being served (its own "archive state" line says when it was built); with no
+ * complete render to fall back on, the visitor gets an explicit failure. */
 export const revalidate = 300;
 
 const TITLE = "UFC Round-by-Round Analysis | PropBetEdge";
@@ -67,11 +73,40 @@ function Card({ b }: { b: RoundIndexBout }) {
   );
 }
 
+/* Build-time rendering must not fail the whole site's deploy over one page, so
+ * during `next build` an unavailable index renders the explicit state below and
+ * the first runtime revalidation replaces it. At runtime the error is thrown
+ * instead (see the file comment). */
+async function loadIndex(): Promise<RoundIndex | RoundIndexUnavailable> {
+  try {
+    return await getRoundIndex();
+  } catch (e) {
+    const err = e instanceof RoundIndexUnavailable ? e : new RoundIndexUnavailable(String((e as Error)?.message || e));
+    console.error(`[round-by-round] ${err.message}`);
+    if (process.env.NEXT_PHASE === "phase-production-build") return err;
+    throw err;
+  }
+}
+
 export default async function RoundByRoundIndex() {
-  const index = await getRoundIndex();
-  const sections = buildSections(index);
+  const loaded = await loadIndex();
+  if (loaded instanceof RoundIndexUnavailable) {
+    return (
+      <div className="wrap page rbi">
+        <PageHead crumbs={[{ name: "Round-by-Round" }]} eyebrow="Round-level fight intelligence" title="Round-by-Round Analysis" />
+        <section className="segment">
+          <div className="card rbi-empty" role="status">
+            <div className="rbi-empty-k">Round index unavailable</div>
+            <p>The round-level archive could not be read completely just now, so nothing is listed rather than a partial archive. Individual fight pages are unaffected.</p>
+          </div>
+        </section>
+      </div>
+    );
+  }
+  const index = loaded;
+  const sections = index.sections;
   const t = index.totals;
-  const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t.byRounds[n] || 0 }));
+  const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t.byRoundsObserved[n] || 0 }));
 
   return (
     <div className="wrap page rbi">
@@ -94,8 +129,11 @@ export default async function RoundByRoundIndex() {
           <section className="segment rbi-stats" aria-label="Coverage">
             <div className="rbi-stat"><b>{t.eligible.toLocaleString()}</b><span>fights with round data</span></div>
             <div className="rbi-stat"><b>{t.bothCorners.toLocaleString()}</b><span>with both corners in every round</span></div>
+            {/* Rounds OBSERVED (how far the fight went, as recorded), not the
+                scheduled distance. The five-round shelf below uses the
+                scheduled distance, so the two are labelled apart. */}
             {rounds.filter((r) => r.count > 0).map((r) => (
-              <div className="rbi-stat" key={r.n}><b>{r.count.toLocaleString()}</b><span>{`${r.n}-round fights`}</span></div>
+              <div className="rbi-stat" key={r.n}><b>{r.count.toLocaleString()}</b><span>{`${r.n} round${r.n === 1 ? "" : "s"} observed`}</span></div>
             ))}
           </section>
 
@@ -117,6 +155,11 @@ export default async function RoundByRoundIndex() {
           <p>Every number comes from stored round-level observations of a completed fight. A missing observation is shown as unavailable rather than as zero, and a round the source never recorded is left out rather than inferred.</p>
           <p>Round signals describe what the numbers show: more output, more control, a shift in targeting. They are not judge scores and they do not say who won a round. PropBetEdge has no scoring source and does not invent one.</p>
           <p>PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group or ESPN.</p>
+          <p className="rbi-prov" data-round-rows={index.provenance.roundRows} data-generated-at={index.provenance.generatedAt}>
+            Archive state: {index.provenance.roundRows.toLocaleString()} round observations
+            {index.provenance.lastCapturedAt ? `, newest captured ${fmtDate(index.provenance.lastCapturedAt.slice(0, 10))}` : ""}.
+            {" "}Index built {fmtDate(index.provenance.generatedAt.slice(0, 10))}.
+          </p>
         </div>
       </section>
 

@@ -442,30 +442,33 @@
  * and the gym with fewer wins took it. The concluding bout sits apart from the
  * series it concluded: it was contested on a sanctioned card months later, and
  * putting it at the end of the bout list would read as the last rung of a
- * ladder this season did not have. */
+ * ladder this season did not have.
+ * Tokens are the site's --pbe-* set: this block originally named generic
+ * --line/--card/--gold/--muted that nothing defines, so its borders, card fill
+ * and winner gold never rendered. */
 .tuf-standings { display: grid; gap: var(--s-2); margin: 0 0 var(--s-5); }
 .tuf-standing {
   display: grid; grid-template-columns: 1fr auto auto; gap: var(--s-4);
   align-items: baseline; padding: var(--s-3) var(--s-4);
-  border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+  border: 1px solid var(--pbe-line); border-radius: 10px; background: var(--pbe-ink-2);
 }
-.tuf-standing.is-winner { border-color: var(--gold); }
+.tuf-standing.is-winner { border-color: var(--pbe-gold); }
 .tuf-standing-team { font-weight: 700; }
-.tuf-standing.is-winner .tuf-standing-team { color: var(--gold); }
-.tuf-standing-pts { font-family: var(--mono, ui-monospace, monospace); font-weight: 700; }
-.tuf-standing-wins { font-family: var(--mono, ui-monospace, monospace); color: var(--muted); font-size: .85em; }
+.tuf-standing.is-winner .tuf-standing-team { color: var(--pbe-gold); }
+.tuf-standing-pts { font-family: var(--pbe-font-data); font-weight: 700; }
+.tuf-standing-wins { font-family: var(--pbe-font-data); color: var(--pbe-faint); font-size: .85em; }
 
-.tuf-concluding { border-top: 1px solid var(--line); padding-top: var(--s-4); }
+.tuf-concluding { border-top: 1px solid var(--pbe-line); padding-top: var(--s-4); }
 .tuf-concluding h3 { margin: 0 0 var(--s-2); }
-.tuf-concluding-note { color: var(--muted); margin: 0 0 var(--s-3); max-width: 62ch; }
+.tuf-concluding-note { color: var(--pbe-faint); margin: 0 0 var(--s-3); max-width: 62ch; }
 .tuf-concluding-bout {
   display: grid; gap: var(--s-1); padding: var(--s-4);
-  border: 1px solid var(--gold); border-radius: 10px; background: var(--card);
+  border: 1px solid var(--pbe-gold); border-radius: 10px; background: var(--pbe-ink-2);
 }
 .tuf-concluding-names { font-size: 1.05rem; }
-.tuf-concluding-meta { font-family: var(--mono, ui-monospace, monospace); font-size: .9em; }
+.tuf-concluding-meta { font-family: var(--pbe-font-data); font-size: .9em; }
 .tuf-concluding-event,
-.tuf-concluding-verified { color: var(--muted); font-size: .82em; }
+.tuf-concluding-verified { color: var(--pbe-faint); font-size: .82em; }
 
 @media (max-width: 640px) {
   .tuf-standing { grid-template-columns: 1fr auto; row-gap: var(--s-1); }
