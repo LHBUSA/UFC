@@ -141,6 +141,10 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
  * sequential and small.
  */
 export async function runIngest(env, sb, { now = Date.now(), dry = false } = {}) {
+  /* A dry run never enqueues: a queue message is an instruction to spend money
+   * on a model, which is exactly the kind of side effect dry mode exists to
+   * avoid. */
+  const queueEnabled = !dry && String(env.QUEUE_PRODUCER_ENABLED || 'false').toLowerCase() === 'true';
   const started = Date.now();
   const sources = await sb.select(
     'ufc_news_sources',
@@ -336,6 +340,32 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
     if (events.length) {
       try { await sb.insert('ufc_news_pipeline_events', events); }
       catch (e) { totals.errors += 1; totals.event_error = String(e?.message || e).slice(0, 200); }
+    }
+
+    /* Hand the scoreable ones to the enricher immediately.
+     *
+     * Only focus.ok items are enqueued: a boxing row exists in the wire and is
+     * visible to a human, but it must never reach a stage that spends money.
+     * That is the same rule the state column encodes, applied at the door.
+     *
+     * Enqueueing is best effort ON PURPOSE. The row and its detect event are
+     * already committed, and ufc-news-enrich's cron claim loop picks up
+     * anything the queue drops. A queue outage must cost latency, never an
+     * article. */
+    if (queueEnabled && env.UFC_NEWS_QUEUE) {
+      const toSend = fresh
+        .filter((a) => a.focus.ok)
+        .map((a) => byFingerprint.get(a.row.fingerprint))
+        .filter(Boolean)
+        .map((it) => ({ body: { news_item_id: it.id, detected_at: it.detected_at } }));
+      if (toSend.length) {
+        try {
+          await env.UFC_NEWS_QUEUE.sendBatch(toSend);
+          totals.enqueued = toSend.length;
+        } catch (e) {
+          totals.enqueue_error = String(e?.message || e).slice(0, 200);
+        }
+      }
     }
   }
 

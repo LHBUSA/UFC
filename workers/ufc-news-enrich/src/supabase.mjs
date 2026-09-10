@@ -149,4 +149,20 @@ export class Supabase {
   patch(table, filter, body) {
     return this.request('PATCH', `${table}?${filter}`, { body, prefer: 'return=minimal' });
   }
+
+  /**
+   * PATCH that returns the rows it changed.
+   *
+   * This is what makes the candidate state machine a lock. A conditional update
+   *
+   *   ...?id=eq.X&state=in.(new,scored)  ->  {state:'enriching', lease_token}
+   *
+   * is atomic in Postgres, so of two consumers racing the same item exactly one
+   * gets a row back and the other gets an empty array and stops. `return=minimal`
+   * throws that answer away, which is why the ordinary patch() above cannot be
+   * used for a claim.
+   */
+  patchReturning(table, filter, body) {
+    return this.request('PATCH', `${table}?${filter}`, { body, prefer: 'return=representation' });
+  }
 }

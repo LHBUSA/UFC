@@ -1,0 +1,56 @@
+name = "ufc-news-enrich"
+main = "src/index.js"
+compatibility_date = "2026-09-09"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# Required. This Worker imports scripts/news/lib.mjs for the fighter index and
+# the alias resolver, which use node:crypto and touch node:fs inside a
+# try/catch. Entity resolution must use the SAME resolver ufc-news-ingest and
+# the CLI use, or "who is this story about" gets three different answers.
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+UFC_EDITORIAL_OPENAI_MODEL = "gpt-5.6-sol"
+UFC_RELEVANCE_MODEL = "gpt-5.6-sol-mini"
+
+# PUBLICATION IS OFF.
+#
+# Every article this Worker writes lands at status='review', which the site
+# (web/lib/db.ts) and the API (workers/ufc-api) already filter out. The pipeline
+# runs to its last step so the output can be judged on real articles instead of
+# promises; flipping this to "true" is the only change needed to go live, and it
+# is deliberately a config change with an obvious blast radius rather than code
+# written in a hurry.
+PUBLISH_ENABLED = "false"
+
+# CPU. The editorial call is the long pole: GPT-5.6 Sol at medium reasoning over
+# a full intelligence packet routinely runs 30-60s of wall clock, and a
+# corrective retry doubles it. Wall time is not CPU time, but the packet build
+# and the validators are real work and the default 30s is not enough headroom.
+[limits]
+cpu_ms = 120000
+
+# The fast path: ufc-news-ingest produces, this consumes. Detection to article
+# is then bounded by the model call rather than by a polling interval.
+[[queues.consumers]]
+queue = "ufc-news-candidates"
+max_batch_size = 3
+max_batch_timeout = 5
+max_retries = 2
+dead_letter_queue = "ufc-news-candidates-dlq"
+
+# The claim loop. Not a backup for the queue - it is how the backlog drains and
+# how an item whose consumer died gets its lease reclaimed.
+[triggers]
+crons = ["*/5 * * * *"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Secrets (wrangler secret put, for the ufc-news-enrich Worker):
+#   SUPABASE_SERVICE_ROLE_KEY  required
+#   OPENAI_API_KEY             required; GPT-5.6 Sol writes, sol-mini scores
+#   ADMIN_TRIGGER_TOKEN        required to expose any POST route at all

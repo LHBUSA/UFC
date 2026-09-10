@@ -1,0 +1,9 @@
+{
+  "name": "ufc-news-enrich",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test src/editorial.test.mjs src/entities.test.mjs src/source_fetch.test.mjs",
+    "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun"
+  }
+}

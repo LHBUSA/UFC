@@ -16,14 +16,11 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
 
-# THE QUEUE PRODUCER IS OFF, IN TWO INDEPENDENT WAYS.
-#
-# This flag is read by src/index.js, and there is no [[queues.producers]] block
-# below, so even flipping the flag cannot enqueue anything: the binding does not
-# exist. Two locks on one door because "detection is proven before anything
-# consumes it" is the entire point of this phase, and a single boolean is the
-# kind of thing that gets changed by accident.
-QUEUE_PRODUCER_ENABLED = "false"
+# THE QUEUE PRODUCER IS ON as of Phase 4. Detection was proven on its own
+# first: 30/30 polls per feed, all circuits closed, sub-90s detection latency,
+# zero duplicates. Only enrichment consumes this queue, and enrichment writes
+# private rows, so the blast radius of a bad message is a review-status article.
+QUEUE_PRODUCER_ENABLED = "true"
 
 # Detection cadence. Every two minutes, which is the part of the
 # detection-to-publish budget this Worker owns.
@@ -38,6 +35,13 @@ crons = ["*/2 * * * *"]
 # Per-feed circuit state, cached validators and latency samples. Volatile
 # operational state, 90-day TTL per record; ufc_news_sources keeps the durable
 # facts.
+# Detected items go straight to the enricher rather than waiting for its cron.
+# The queue is what makes detection-to-article bounded by the model call instead
+# of by a polling interval.
+[[queues.producers]]
+binding = "UFC_NEWS_QUEUE"
+queue = "ufc-news-candidates"
+
 [[kv_namespaces]]
 binding = "UFC_NEWS_KV"
 id = "67bea024456546f1b839856b4152c7ca"
