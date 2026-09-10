@@ -370,6 +370,19 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const rows = (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&slug=eq.${encodeURIComponent(slug)}&limit=1`, [])).data;
   return rows[0] || null;
 }
+/**
+ * Any status, including held. ONLY the token-gated desk preview may call this.
+ *
+ * It is deliberately a separate function rather than a flag on
+ * getArticleBySlug: a boolean parameter can be reached by a default, a typo or
+ * a refactor, and the failure mode is publishing what the gate held. A caller
+ * has to name this function to get an unpublished row.
+ */
+export async function getArticleBySlugAnyStatus(slug: string): Promise<Article | null> {
+  const rows = (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&slug=eq.${encodeURIComponent(slug)}&limit=1`, [], { revalidate: 0 })).data;
+  return rows[0] || null;
+}
+
 export async function getArticlesForEvent(eventId: string, limit = 12): Promise<Article[]> {
   return (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&event_id=eq.${eventId}&order=published_at.desc&limit=${limit}`, [])).data;
 }
@@ -485,4 +498,129 @@ export async function getVideosMentioning(phrase: string, limit = 3): Promise<Of
 }
 export async function getLatestVideos(limit = 6, videoType?: string): Promise<OfficialVideoRow[]> {
   return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}${videoType ? `&video_type=eq.${videoType}` : ""}&limit=${limit}`, [], { revalidate: 600 })).data;
+}
+
+/* ---- the ticker: PropBetEdge first ------------------------------------ */
+
+export type TickerItem = {
+  kind: "article" | "wire";
+  id: string;
+  title: string;
+  href: string;
+  external: boolean;
+  at: string | null;
+  source: string | null;
+  label: string | null;
+  topic_signature?: string | null;
+  supersedes?: number;
+};
+
+/* How much a published PropBetEdge article is worth against a raw wire item,
+ * expressed as time.
+ *
+ * The requirement has two halves that pull against each other: the ticker
+ * should be overwhelmingly ours, AND genuinely breaking external news must not
+ * sit below stale internal analysis. A boolean "internal first" sort satisfies
+ * the first and breaks the second — a three-hour-old piece of ours would bury a
+ * two-minute-old withdrawal report.
+ *
+ * So preference is a HANDICAP rather than a tier: ninety minutes of credit. An
+ * article of ours outranks anything external published within the same
+ * hour-and-a-half, and loses to anything fresher than that. The number is the
+ * policy, and it is one line to change.
+ */
+const TICKER_INTERNAL_BONUS_MS = 90 * 60 * 1000;
+
+/**
+ * One development, one slot — and ours wins it when we have written it.
+ *
+ * Supersession works on two keys because articles arrive by two routes:
+ * news_item_id is exact (this article was written FROM that wire item), and
+ * topic_signature catches the rest (a second outlet reporting the same
+ * development, which is one story and must not appear twice).
+ */
+export async function getTicker(limit = 12): Promise<TickerItem[]> {
+  const since = new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString();
+  const [articles, items] = await Promise.all([
+    rest<Array<{ id: string; slug: string; headline: string; published_at: string | null; topic_signature: string | null; news_item_id: string | null; story_type: string }>>(
+      `ufc_articles?select=id,slug,headline,published_at,topic_signature,news_item_id,story_type&status=eq.published&published_at=gte.${since}&order=published_at.desc&limit=40`,
+      [], { revalidate: 60 },
+    ).then((r) => r.data),
+    rest<NewsItem[]>(
+      `ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)&published_at=gte.${since}&order=published_at.desc.nullslast&limit=60`,
+      [], { revalidate: 60 },
+    ).then((r) => r.data),
+  ]);
+
+  const coveredItemIds = new Set<string>();
+  const coveredSignatures = new Map<string, number>();
+  for (const a of articles) {
+    if (a.news_item_id) coveredItemIds.add(a.news_item_id);
+    if (a.topic_signature) coveredSignatures.set(a.topic_signature, (coveredSignatures.get(a.topic_signature) || 0) + 1);
+  }
+
+  /* A wire item is superseded when we published the article written from it.
+   * Topic-signature supersession needs the item's own signature, which lives on
+   * the item only after enrichment has scored it — so an unscored item is
+   * matched by id alone and stays visible, which is the correct behaviour while
+   * our coverage is still being written. */
+  const out: TickerItem[] = [];
+
+  for (const a of articles) {
+    out.push({
+      kind: "article",
+      id: a.id,
+      title: a.headline,
+      href: `/news/${a.slug}`,
+      external: false,
+      at: a.published_at,
+      source: "PropBetEdge",
+      label: a.story_type === "external" ? null : a.story_type.replace("_", " "),
+      topic_signature: a.topic_signature,
+      supersedes: a.news_item_id ? 1 : 0,
+    });
+  }
+
+  for (const n of items) {
+    if (coveredItemIds.has(n.id)) continue;   /* we published this one */
+    out.push({
+      kind: "wire",
+      id: n.id,
+      title: n.title,
+      href: n.url || "#",
+      external: true,
+      at: n.published_at,
+      source: n.source?.name || "Source",
+      label: n.taxonomy?.labels?.[0] && n.taxonomy.labels[0] !== "other"
+        ? n.taxonomy.labels[0].replace("_", " ") : null,
+    });
+  }
+
+  const score = (t: TickerItem) => {
+    const ms = t.at ? Date.parse(t.at) : 0;
+    return (Number.isFinite(ms) ? ms : 0) + (t.external ? 0 : TICKER_INTERNAL_BONUS_MS);
+  };
+  out.sort((a, b) => score(b) - score(a));
+
+  /* Never let one development occupy two slots even when the second copy came
+   * from a different outlet. Titles are compared on distinctive tokens, the
+   * same shape the enrich worker's clone guard uses. */
+  const seenTokens: Array<Set<string>> = [];
+  const tokens = (s: string) => new Set(
+    s.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter((w) => w.length > 3),
+  );
+  const deduped: TickerItem[] = [];
+  for (const t of out) {
+    const tk = tokens(t.title);
+    const dupe = seenTokens.some((prev) => {
+      let shared = 0;
+      for (const w of tk) if (prev.has(w)) shared += 1;
+      return shared >= 3;
+    });
+    if (dupe) continue;
+    seenTokens.push(tk);
+    deduped.push(t);
+    if (deduped.length >= limit) break;
+  }
+  return deduped;
 }

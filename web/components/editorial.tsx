@@ -32,16 +32,21 @@ const num = (v: number | null | undefined, d = 2) => (v == null ? "—" : Number
 const pct = (v: number | null | undefined) => (v == null ? "—" : `${Math.round(v <= 1 ? v * 100 : v)}%`);
 
 export function BettorsEdge({ angle }: { angle: BettorAngle }) {
+  /* An impact meter reading 0/5 is a claim: it tells the reader the desk judged
+   * this story unimportant. Articles from ufc-news-enrich do not produce an
+   * impact score at all, and rendering their absence as a zero would be the
+   * renderer inventing an editorial judgement. No score, no meter. */
+  const hasScore = Number.isFinite(Number(angle.impact_score)) && Number(angle.impact_score) > 0;
   const score = Math.max(0, Math.min(5, Math.round(angle.impact_score || 0)));
   return (
     <aside className="bedge" aria-label="Bettor's Edge analysis">
       <div className="bedge-head">
         <div className="bedge-label"><Mark size={22} /><span>Bettor's Edge</span><small>Analysis · from the verified fact block</small></div>
-        <div className="bedge-impact" title="Editorial impact score, 1–5. Analysis, not a price.">
+        {hasScore && <div className="bedge-impact" title="Editorial impact score, 1–5. Analysis, not a price.">
           <span className="k">Impact</span>
           <span className="pips" aria-label={`Impact ${score} of 5`}>{[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= score ? "on" : ""} />)}</span>
           <b>{score}/5</b>
-        </div>
+        </div>}
       </div>
       {angle.summary && <p className="bedge-summary">{angle.summary}</p>}
       {angle.markets && angle.markets.length > 0 && (

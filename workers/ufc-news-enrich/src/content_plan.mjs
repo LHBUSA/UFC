@@ -83,21 +83,41 @@ function buildCharts(packet, dna) {
     });
   }
 
-  /* 2. Grappling. Percentages are stored 0-100 in ufc_fighters. */
+  /* 2. Grappling, as TWO charts rather than one.
+   *
+   * takedowns per 15 minutes lives on a 0-5 scale and accuracy/defence live on
+   * 0-100. Putting them on one axis is a dual-scale chart wearing a disguise:
+   * the volume bars would be invisible slivers beside the percentages, and any
+   * reader comparing bar heights across the two would be comparing nothing.
+   * One axis per chart, always. */
   if (o && (has(p?.career?.takedowns_per_15min) || has(o?.career?.takedowns_per_15min))) {
     charts.push({
-      id: 'grappling_profile',
-      type: 'grouped_bar',
-      title: 'Grappling profile',
+      id: 'grappling_volume',
+      type: 'bar',
+      title: 'Takedown volume',
+      unit: 'takedowns / 15 min',
       source: 'ufc_fighters career averages',
       series: [
-        { label: p.name, takedowns_per_15: r2(p.career.takedowns_per_15min), td_accuracy_pct: p.career.takedown_accuracy_pct, td_defence_pct: p.career.takedown_defence_pct },
-        { label: o.name, takedowns_per_15: r2(o.career.takedowns_per_15min), td_accuracy_pct: o.career.takedown_accuracy_pct, td_defence_pct: o.career.takedown_defence_pct },
+        { label: p.name, value: r2(p.career.takedowns_per_15min) },
+        { label: o.name, value: r2(o.career.takedowns_per_15min) },
       ],
-      legend: ['takedowns_per_15', 'td_accuracy_pct', 'td_defence_pct'],
     });
   }
-
+  if (o && (has(p?.career?.takedown_defence_pct) || has(o?.career?.takedown_defence_pct))) {
+    charts.push({
+      id: 'grappling_rates',
+      type: 'grouped_bar',
+      title: 'Takedown accuracy and defence',
+      unit: '%',
+      max: 100,
+      source: 'ufc_fighters career averages',
+      series: [
+        { label: p.name, accuracy: p.career.takedown_accuracy_pct, defence: p.career.takedown_defence_pct },
+        { label: o.name, accuracy: o.career.takedown_accuracy_pct, defence: o.career.takedown_defence_pct },
+      ],
+      legend: ['accuracy', 'defence'],
+    });
+  }
   /* 3. How this fighter's wins actually end. One fighter is enough here —
    *    it is a composition, not a comparison. */
   const f = p?.form;
@@ -161,32 +181,79 @@ function buildCharts(packet, dna) {
         sample_bouts: a?.sample_bouts ?? b?.sample_bouts ?? null,
       });
     }
+    /* A comparison needs two sides that actually carry values. We may hold a
+     * snapshot for the opponent and still have every trait fall below the
+     * confidence floor, which leaves a column of nulls: a chart captioned
+     * 'head to head' showing one fighter tells the reader the opponent scored
+     * zero, which is a stronger and falser claim than saying nothing. So the
+     * empty column is dropped and the chart re-labels itself honestly. */
+    const opponentHasValue = o && rows.some((r) => r[o.name] !== null && r[o.name] !== undefined);
+    if (o && !opponentHasValue) for (const r of rows) delete r[o.name];
+    const compared = Boolean(o && opponentHasValue);
     if (rows.length >= 2) {
       charts.push({
         id: 'dna_traits',
-        type: o ? 'grouped_bar' : 'bar',
-        title: o ? 'Fight DNA, head to head' : `${p.name}: Fight DNA`,
+        type: compared ? 'grouped_bar' : 'bar',
+        title: compared ? 'Fight DNA, head to head' : `${p.name}: Fight DNA`,
         unit: '%',
+        max: 100,
+        legend: compared ? [p.name, o.name] : [p.name],
+        value_keys: compared ? [p.name, o.name] : [p.name],
+        label_key: 'trait',
         source: `ufc_fighter_dna_snapshots (definition v${pd.definition_version}, as of ${pd.as_of_date})`,
+        note: o && !opponentHasValue
+          ? `no Fight DNA metric for ${o.name} met the confidence floor, so only ${p.name} is plotted`
+          : undefined,
         series: rows,
       });
     }
   }
 
-  /* 6. Odds, only when this exact bout is priced. */
+  /* 6. Odds, only when this exact bout is priced.
+   *
+   * Plotted as IMPLIED PROBABILITY rather than raw American odds. -430 and
+   * +330 are one number line only in the arithmetic sense: as bar lengths they
+   * are meaningless against each other, and a -110 bar would tower over a +900
+   * one while meaning almost the opposite. The conversion is pure arithmetic on
+   * a verified price, so nothing is invented, and the raw price stays on the
+   * label because that is what a bettor actually reads. */
   const prices = packet.market?.odds_status === 'available' ? (packet.market.prices || []) : [];
   const h2h = prices.filter((x) => x.market === 'h2h' && has(x.price));
   if (h2h.length >= 2) {
+    const implied = (american) => {
+      const a = Number(american);
+      return a < 0 ? (-a) / ((-a) + 100) : 100 / (a + 100);
+    };
+    /* One row per outcome, averaged across books: eight books x two fighters is
+     * sixteen bars nobody reads. The spread across books is the interesting
+     * part, so it travels as the range. */
+    const byOutcome = new Map();
+    for (const x of h2h) {
+      if (!byOutcome.has(x.outcome)) byOutcome.set(x.outcome, []);
+      byOutcome.get(x.outcome).push(x);
+    }
+    const series = [...byOutcome.entries()].map(([outcome, rows]) => {
+      const probs = rows.map((r) => implied(r.price));
+      const best = rows.reduce((acc, r) => (implied(r.price) < implied(acc.price) ? r : acc), rows[0]);
+      return {
+        label: outcome,
+        value: Math.round((probs.reduce((a, b) => a + b, 0) / probs.length) * 1000) / 10,
+        best_price: best.price,
+        best_book: best.book,
+        books: rows.length,
+      };
+    });
     charts.push({
-      id: 'market_prices',
+      id: 'market_implied',
       type: 'bar',
-      title: 'Moneyline, by book',
-      unit: 'American odds',
-      source: `ufc_market_observations, observed ${packet.market.observed_at}`,
-      series: h2h.map((x) => ({ label: `${x.outcome} (${x.book})`, price: x.price })),
+      title: 'Implied probability, market consensus',
+      unit: '%',
+      max: 100,
+      source: `ufc_market_observations, ${h2h.length} prices observed ${packet.market.observed_at}`,
+      note: 'implied probability includes the book margin; the best available price is labelled',
+      series,
     });
   }
-
   return charts;
 }
 

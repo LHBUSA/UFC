@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getNewsItems, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries } from "@/lib/db";
+import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { Mark } from "@/components/Brand";
@@ -25,7 +25,7 @@ export const revalidate = 300;
 
 export default async function Home() {
   const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire, allUpcoming, recentAll] = await Promise.all([
-    getNextEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(7), getCounts(), getRankings(), getNewsItems(8),
+    getNextEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(7), getCounts(), getRankings(), getTicker(8),
     getUpcomingEvents(30, { includeContenderSeries: true }), getRecentEvents(20),
   ]);
   const articles = articlesRes.rows;
@@ -176,8 +176,11 @@ export default async function Home() {
             {upcoming.length ? <div className="grid-2">{upcoming.slice(0, 4).map((e) => <EventCard key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} />)}</div> : <Empty title="Schedule loading">Upcoming UFC events are refreshed from the production ingest and appear here as the source tables change.</Empty>}
           </div>
           <div>
-            <SectionHead eyebrow="Around MMA" title="The wire" href="/news?type=external" cta="More" />
-            {wire.length ? <ul className="wire">{wire.map((n) => <li key={n.id}><a href={n.url || "#"} rel="noopener nofollow" target="_blank">{n.title}{n.taxonomy?.labels?.[0] && n.taxonomy.labels[0] !== "other" ? <span className="lab">{n.taxonomy.labels[0].replace("_", " ")}</span> : null}</a><span className="src">{n.source?.name || "Source"} · {relTime(n.published_at)}</span></li>)}</ul> : <Empty title="Wire is quiet">External headlines are ingested on the card-week cadence and attributed to their source.</Empty>}
+            <SectionHead eyebrow="Live" title="The wire" href="/news" cta="More" />
+            {/* PropBetEdge leads. An external headline appears only while our
+                own coverage of that development does not yet exist; once it
+                publishes, ours takes the slot and links inward. */}
+            {wire.length ? <ul className="wire">{wire.map((n) => <li key={n.id} className={n.external ? undefined : "wire-own"}>{n.external ? <a href={n.href} rel="noopener nofollow" target="_blank">{n.title}{n.label ? <span className="lab">{n.label}</span> : null}</a> : <Link href={n.href}>{n.title}{n.label ? <span className="lab">{n.label}</span> : null}</Link>}<span className="src">{n.external ? n.source : <strong>PropBetEdge</strong>} &middot; {relTime(n.at)}</span></li>)}</ul> : <Empty title="Wire is quiet">External headlines are ingested continuously and attributed to their source; PropBetEdge analysis supersedes them as it publishes.</Empty>}
           </div>
         </div>
         <div className="wrap"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={dwcsCounts} freshness={freshness?.finished_at || freshness?.started_at || null} /></div>

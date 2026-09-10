@@ -21,7 +21,14 @@ function table(block: string): string {
   return `<div class="tbl-wrap"><table class="tbl"><thead><tr>${head.map((h) => `<th>${inline(h)}</th>`).join("")}</tr></thead><tbody>${body
     .map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
-export function renderMarkdown(md: string): string {
+/* Block-level HTML, one string per source block, rather than one joined page.
+ *
+ * The article renderer interleaves intelligence modules between paragraphs, and
+ * it can only choose an insertion point it can SEE. Splitting joined HTML back
+ * apart on a delimiter would work until a paragraph legitimately contained one,
+ * so the array is the primitive and the joined string is derived from it.
+ * renderMarkdown stays exactly as it was for every caller that wants a page. */
+export function renderMarkdownBlocks(md: string): string[] {
   const blocks = esc(md || "").replace(/\r\n/g, "\n").split(/\n{2,}/);
   return blocks.map((b) => {
     const t = b.trim();
@@ -36,7 +43,11 @@ export function renderMarkdown(md: string): string {
     if (lines.every((l) => /^[-*] /.test(l))) return `<ul>${lines.map((l) => `<li>${inline(l.slice(2))}</li>`).join("")}</ul>`;
     if (lines.every((l) => /^\d+[.)] /.test(l))) return `<ol>${lines.map((l) => `<li>${inline(l.replace(/^\d+[.)] /, ""))}</li>`).join("")}</ol>`;
     return `<p>${inline(t).replace(/\n/g, "<br>")}</p>`;
-  }).join("\n");
+  }).filter(Boolean);
+}
+
+export function renderMarkdown(md: string): string {
+  return renderMarkdownBlocks(md).join("\n");
 }
 
 /* Plain-text excerpt for meta descriptions and feeds. */

@@ -7,7 +7,7 @@
  * unreachable at render time the rail falls back to the server-side news
  * reader so the shell never blanks — it just cannot map internal links. */
 import "server-only";
-import { getNewsItems } from "@/lib/db";
+import { getNewsItems, getTicker } from "@/lib/db";
 import { SITE } from "@/lib/site";
 
 export type WireItem = {
@@ -57,4 +57,61 @@ export async function getWire(limit = 20): Promise<Wire> {
   }));
   const f = wireFreshness(items);
   return { items, meta: { generated_at: new Date().toISOString(), newest_published_at: f.newest, freshness_minutes: f.minutes, live: f.live, fight_week: false, count: items.length, origin: "fallback" } };
+}
+
+/**
+ * The rail, PropBetEdge-first.
+ *
+ * THE CHANGE IN WHAT THE TICKER IS FOR
+ *
+ * It used to be a radar: attributed headlines from other outlets, newest
+ * first. That is a fine thing to run, and it is somebody else's front page.
+ * The ticker is our distribution layer, so our own published coverage leads it
+ * and an external item is what shows while we have not covered a story yet.
+ *
+ * THE RULES, AND WHY EACH ONE EXISTS
+ *
+ * Our article SUPERSEDES the wire item it was written from, so the same story
+ * never appears twice — once as somebody's headline and once as ours. Internal
+ * items carry a time handicap rather than absolute priority, because a genuinely
+ * breaking external item from four minutes ago has to be able to outrank an
+ * eight-hour-old piece of ours; a ticker that shows stale internal news over
+ * fresh external news is a worse product regardless of whose name is on it.
+ * And nothing is padded: if we have not published, the rail is external, and
+ * the fix for that is publishing, not filler.
+ *
+ * WHY IT READS THE DATABASE RATHER THAN THE PUBLIC WIRE API
+ *
+ * /v1/ufc/wire serves ufc_news_items and knows nothing about which of them we
+ * have since covered. Merging has to happen where both sides are visible. The
+ * API stays exactly as it is for external consumers.
+ */
+export async function getWireFirstParty(limit = 20): Promise<Wire> {
+  const ticker = await getTicker(limit);
+  const items: WireItem[] = ticker.map((t) => ({
+    id: t.id,
+    title: t.title,
+    published_at: t.at,
+    summary: null,
+    taxonomy: t.external ? t.label : "propbetedge",
+    source: { name: t.source, url: null },
+    source_url: t.external ? t.href : null,
+    internal_url: t.external ? null : t.href,
+    fighter_ids: [],
+    event_id: null,
+    bout_id: null,
+  }));
+  const f = wireFreshness(items);
+  return {
+    items,
+    meta: {
+      generated_at: new Date().toISOString(),
+      newest_published_at: f.newest,
+      freshness_minutes: f.minutes,
+      live: f.live,
+      fight_week: false,
+      count: items.length,
+      origin: "api",
+    },
+  };
 }

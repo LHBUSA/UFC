@@ -25,3 +25,10 @@ supabase/.branches/
 .wrangler-dryrun/
 .wrangler/
 .ufc-newsroom-admin-token
+
+# Bearer tokens for the admin endpoints and the desk preview. These are
+# credentials: they belong on the machine that calls the endpoint, never in the
+# tree. NOTE: four .ufc-*-admin-token files are ALREADY TRACKED in this
+# repository and this rule does not untrack them -- see the report.
+*-admin-token
+.desk-preview-token

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getArticles, getArticleTypeCounts, getNewsItems } from "@/lib/db";
+import { getArticles, getArticleTypeCounts, getTicker } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { Empty, PageHead, JsonLd, SectionHead } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
@@ -30,7 +30,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
   const sp = await searchParams;
   const type = sp.type && STORY_TYPE_LABEL[sp.type] ? sp.type : "";
   const page = Math.max(1, Number(sp.page) || 1);
-  const [{ rows, count }, typeCounts, wire] = await Promise.all([getArticles(PAGE, type || undefined, (page - 1) * PAGE), getArticleTypeCounts(), getNewsItems(10)]);
+  const [{ rows, count }, typeCounts, wire] = await Promise.all([getArticles(PAGE, type || undefined, (page - 1) * PAGE), getArticleTypeCounts(), getTicker(12)]);
   const media = await storyMedia(rows);
   const pages = count ? Math.ceil(count / PAGE) : 1;
   const feature = page === 1 && !type ? rows[0] : null;
@@ -71,19 +71,34 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
 
       {wire.length > 0 && (
         <div className="mt-7">
-          <SectionHead eyebrow="Around MMA" title="The wire" />
+          <SectionHead eyebrow="Live" title="The wire" />
+          {/* PropBetEdge first. Where we have published our own coverage the
+              external trigger does not also appear -- one development, one
+              slot -- and the internal entry links inward. External items stay
+              only until our article exists. */}
           <ul className="wire">
             {wire.map((n) => (
-              <li key={n.id}>
-                <a href={n.url || "#"} rel="noopener nofollow" target="_blank">{n.title}{n.taxonomy?.labels?.[0] && n.taxonomy.labels[0] !== "other" ? <span className="lab">{n.taxonomy.labels[0].replace("_", " ")}</span> : null}</a>
-                <span className="src">{n.source?.name || "Source"} · {relTime(n.published_at)}</span>
+              <li key={n.id} className={n.external ? undefined : "wire-own"}>
+                {n.external ? (
+                  <a href={n.href} rel="noopener nofollow" target="_blank">
+                    {n.title}{n.label ? <span className="lab">{n.label}</span> : null}
+                  </a>
+                ) : (
+                  <Link href={n.href}>
+                    {n.title}{n.label ? <span className="lab">{n.label}</span> : null}
+                  </Link>
+                )}
+                <span className="src">
+                  {n.external ? n.source : <strong>PropBetEdge</strong>} &middot; {relTime(n.at)}
+                </span>
               </li>
             ))}
           </ul>
-          <p className="faint label mt-3">Headlines from the sources we monitor, linked to the original. We reproduce at most a phrase and never rewrite someone else's reporting.</p>
+          <p className="faint label mt-3">
+            PropBetEdge analysis leads; external headlines appear until our own coverage publishes, linked to the original and credited in full inside the article.
+          </p>
         </div>
       )}
-
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "CollectionPage",

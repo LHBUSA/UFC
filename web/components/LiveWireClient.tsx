@@ -72,15 +72,19 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
     <ul className="wire-track" aria-hidden={ariaHidden || undefined} style={{ animationDuration: `${duration}s` }}>
       {items.map((it) => {
         const urgent = it.taxonomy && URGENT.has(it.taxonomy);
+        /* Our own coverage is marked, not disguised as another wire item: a
+         * reader deciding whether to click deserves to know whose analysis is
+         * on the other side of the link. */
+        const own = Boolean(it.internal_url);
         const inner = (
           <>
-            <span className={`wire-tag${urgent ? " hot" : ""}`}>{(it.taxonomy || it.source?.name || "wire").replace(/_/g, " ")}</span>
+            <span className={`wire-tag${urgent ? " hot" : ""}${own ? " own" : ""}`}>{own ? "PropBetEdge" : (it.taxonomy || it.source?.name || "wire").replace(/_/g, " ")}</span>
             <span className="wire-title">{it.title}</span>
             <span className="wire-meta">{it.source?.name ? `${it.source.name} · ` : ""}{ago(it.published_at, now)}</span>
           </>
         );
         return (
-          <li key={`${keyPrefix}-${it.id}`}>
+          <li key={`${keyPrefix}-${it.id}`} className={own ? "wire-own" : undefined}>
             {it.internal_url ? <Link href={it.internal_url} tabIndex={ariaHidden ? -1 : 0}>{inner}</Link>
               : it.source_url ? <a href={it.source_url} rel="noopener nofollow" target="_blank" tabIndex={ariaHidden ? -1 : 0}>{inner}</a>
               : <span>{inner}</span>}
