@@ -398,8 +398,36 @@ export async function getArticleTypeCounts(): Promise<Map<string, number>> {
   for (const r of rows) m.set(r.story_type, (m.get(r.story_type) || 0) + 1);
   return m;
 }
+/* WHAT MAY APPEAR ON A PUBLIC UFC SURFACE.
+ *
+ * Three layers, and they are not the same thing:
+ *
+ *   1. THE EXTERNAL WIRE is radar. It ingests broadly on purpose, including
+ *      signals that turn out to be boxing, PFL, BKFC or RIZIN, because a filter
+ *      that only lets through what it already recognises cannot detect anything
+ *      new. Nothing here narrows that ingest.
+ *   2. THE NEWS ENGINE consumes only UFC-eligible signals, and ufc-news-ingest
+ *      has ALREADY made that judgement at insert time: an item its focus filter
+ *      rejects is stored state='skipped' and can never be enriched.
+ *   3. THE TICKER is public distribution, and it is labelled UFC.
+ *
+ * The bug this constant fixes was reading layer 1 and presenting it as layer 3.
+ * The classification already existed and the query simply did not consult it,
+ * so "UFC Live Wire" led with an NBA player boxing in Nigeria. An item already
+ * classified non-UFC must never reach a public UFC surface -- not because the
+ * radar was wrong to ingest it, but because the radar is not the product.
+ *
+ * duplicate is excluded for a different reason: it is a second copy of a story
+ * already on the rail, and one development must not occupy two slots.
+ *
+ * held and new stay: those are UFC-relevant items we have not published on yet,
+ * which is exactly what the rail is for while our coverage is still being
+ * written. Items we HAVE covered are removed by supersession, not by state.
+ */
+const PUBLIC_WIRE_ELIGIBILITY = "&state=not.in.(skipped,duplicate)";
+
 export async function getNewsItems(limit = 12): Promise<NewsItem[]> {
-  return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 600 })).data;
+  return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 600 })).data;
 }
 
 /* Attributed wire items linked to an event or any of the given fighters
@@ -409,7 +437,7 @@ export async function getWireFor(eventId: string | null, fighterIds: string[], l
   if (eventId) ors.push(`event_id.eq.${eventId}`);
   for (const id of fighterIds.slice(0, 6)) ors.push(`fighter_ids.cs.{${id}}`);
   if (!ors.length) return [];
-  return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)&or=(${ors.join(",")})&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 300 })).data;
+  return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&or=(${ors.join(",")})&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 300 })).data;
 }
 
 /* ---- counts for the home strip --------------------------------------- */
@@ -554,7 +582,7 @@ export async function getTicker(limit = 12): Promise<TickerItem[]> {
       [], { revalidate: 60 },
     ).then((r) => r.data),
     rest<NewsItem[]>(
-      `ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)&published_at=gte.${since}&order=published_at.desc.nullslast&limit=60`,
+      `ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&published_at=gte.${since}&order=published_at.desc.nullslast&limit=60`,
       [], { revalidate: 60 },
     ).then((r) => r.data),
   ]);

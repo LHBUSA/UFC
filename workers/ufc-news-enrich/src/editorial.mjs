@@ -268,7 +268,17 @@ export async function callSol(apiKey, { model, input, timeoutMs = CALL_TIMEOUT_M
     if (!res.ok) throw new Error(redactSecrets(`openai ${res.status}: ${JSON.stringify(json).slice(0, 300)}`));
     if (json.status === 'incomplete') throw new Error(`openai incomplete: ${json.incomplete_details?.reason || 'unknown'}`);
     if (json.status === 'failed') throw new Error(redactSecrets(`openai failed: ${JSON.stringify(json.error || {}).slice(0, 240)}`));
-    return { text: extractText(json), model: json.model || model };
+    /* Usage was being discarded. Without it there is no way to answer "what did
+     * this article cost" except by guessing from call counts, and a governor
+     * you cannot measure is a governor you cannot tune. */
+    return {
+      text: extractText(json),
+      model: json.model || model,
+      usage: {
+        input_tokens: Number(json.usage?.input_tokens) || 0,
+        output_tokens: Number(json.usage?.output_tokens) || 0,
+      },
+    };
   } catch (e) {
     if (controller.signal.aborted) throw new Error(`openai timeout after ${timeoutMs}ms`);
     throw e;
@@ -290,6 +300,10 @@ export async function writeArticle(env, packet, { minWords = 500, model = null, 
   const source = JSON.stringify(packet, null, 2);
   let correction = '';
   let last = null;
+  /* First attempt and corrective retry are counted apart: they are different
+   * costs with different fixes. A high first-attempt bill means the packet is
+   * large; a high retry bill means the gate and the prompt disagree. */
+  const cost = { sol_input_tokens: 0, sol_output_tokens: 0, retry_input_tokens: 0, retry_output_tokens: 0, model_calls: 0 };
 
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     const input = `Write the PropBetEdge UFC article for this story.\n\n`
@@ -299,6 +313,14 @@ export async function writeArticle(env, packet, { minWords = 500, model = null, 
       + `\nSOURCE PACKET:\n${source}`;
 
     const envelope = await callSol(env.OPENAI_API_KEY, { model: selected, input, fetchImpl });
+    cost.model_calls += 1;
+    if (attempt === 1) {
+      cost.sol_input_tokens += envelope.usage?.input_tokens || 0;
+      cost.sol_output_tokens += envelope.usage?.output_tokens || 0;
+    } else {
+      cost.retry_input_tokens += envelope.usage?.input_tokens || 0;
+      cost.retry_output_tokens += envelope.usage?.output_tokens || 0;
+    }
     let parsed;
     try { parsed = JSON.parse(envelope.text); }
     catch (e) { last = { failures: [`unparseable output: ${String(e.message).slice(0, 160)}`] }; }
@@ -307,7 +329,7 @@ export async function writeArticle(env, packet, { minWords = 500, model = null, 
       const verdict = validate(parsed, packet, { minWords });
       last = verdict;
       if (verdict.ok) {
-        return { ...parsed, model: envelope.model, attempts: attempt, validation: { ok: true, failures: [] } };
+        return { ...parsed, model: envelope.model, attempts: attempt, cost, validation: { ok: true, failures: [] } };
       }
     }
     correction = `YOUR PREVIOUS DRAFT WAS REJECTED BY THE PUBLICATION GATE for exactly these reasons:\n`
@@ -316,6 +338,7 @@ export async function writeArticle(env, packet, { minWords = 500, model = null, 
   }
 
   const err = new Error(`held after corrective retry: ${last.failures.join('; ').slice(0, 500)}`);
+  err.cost = cost;   /* a failed article still cost money and must still be counted */
   err.validation = { ok: false, failures: last.failures };
   throw err;
 }

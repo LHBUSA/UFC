@@ -183,6 +183,118 @@ const GREEN_MAX_SOURCE_AGE_HOURS = 24;
  * an error - it is an article that goes to review and waits for a human, which
  * is the correct outcome for anything the pipeline cannot fully vouch for.
  */
+/**
+ * The pre-Sol governor: everything we can rule out for free.
+ *
+ * WHY THESE THREE AND NOT MORE
+ *
+ * A check earns a place here only if it is deterministic, reads a column that
+ * already exists at detection time, and mirrors a rule the pipeline enforces
+ * anyway. Anything needing the scorer, the roster resolver or the fetched body
+ * stays downstream where it belongs. This is a cost gate, not an editorial one,
+ * and it must never be the reason a publishable story is dropped.
+ *
+ * MEASURED WASTE THIS RECOVERS (48h of live traffic, 194 Sol calls, 8 published)
+ *   34 calls  stale sources rejected AFTER the article was written
+ *   27 calls  items with no roster fighter linked at detection
+ *   ~11 calls obvious same-subject duplicates
+ */
+/* Published GPT-5.6 Sol pricing, per million tokens. Kept here rather than in a
+ * config so a price change is a reviewed code change: a silently edited
+ * constant would rewrite every historical cost figure in the ledger. */
+export const SOL_USD_PER_MTOK = { input: 1.25, output: 10.00 };
+
+export function estimateCostUsd(c = {}) {
+  const inTok = (c.sol_input_tokens || 0) + (c.retry_input_tokens || 0);
+  const outTok = (c.sol_output_tokens || 0) + (c.retry_output_tokens || 0);
+  return Math.round(((inTok / 1e6) * SOL_USD_PER_MTOK.input + (outTok / 1e6) * SOL_USD_PER_MTOK.output) * 1e6) / 1e6;
+}
+
+/**
+ * One cost record per item, whatever the outcome.
+ *
+ * Written for HELD items too, and that is the point: spend on articles that
+ * never publish is the number worth watching, and a ledger that only records
+ * successes would report a perfect cost per article while the waste stayed
+ * invisible. Rides on ufc_news_pipeline_events, which already exists, so this
+ * needs no migration and no new table to keep in sync.
+ */
+export async function recordCost(sb, item, { stage, outcome, holdReason = null, cost = null, article = null, detectedAt = null, publishedAt = null, solCalls = null }) {
+  const c = cost || {};
+  /* ufc_news_pipeline_events constrains stage and status to a fixed vocabulary,
+   * and 'cost' is not in it -- these inserts were failing silently, swallowed by
+   * the telemetry try/catch that exists so a ledger write can never break an
+   * article. So the record wears an ALLOWED stage and status, and carries
+   * detail.kind='cost' as its own marker. Widening the CHECK would be tidier
+   * and is a migration; this needs none and keeps the constraint meaningful. */
+  const ledgerStage = outcome === 'published' ? 'publish' : outcome === 'rejected_before_model' ? 'skip' : 'hold';
+  const ledgerStatus = outcome === 'published' ? 'ok' : outcome === 'rejected_before_model' ? 'skipped' : 'held';
+  return event(sb, item.id, ledgerStage, ledgerStatus, {
+    kind: 'cost',
+    outcome,
+    stage,
+    article_type: article?.story_type || null,
+    source_count: item.url ? 1 : 0,
+    sol_input_tokens: c.sol_input_tokens || 0,
+    sol_output_tokens: c.sol_output_tokens || 0,
+    retry_input_tokens: c.retry_input_tokens || 0,
+    retry_output_tokens: c.retry_output_tokens || 0,
+    model_calls: solCalls != null ? solCalls : (c.model_calls || 0),
+    estimated_model_cost_usd: estimateCostUsd(c),
+    hold_reason: holdReason ? String(holdReason).slice(0, 240) : null,
+    detected_at: detectedAt || item.detected_at || null,
+    published_at: publishedAt || null,
+  }, {});
+}
+
+export function preflight(item, { now = Date.now() } = {}) {
+  /* 1. THE SOURCE-AGE RULE, MOVED IN FRONT OF THE MODEL.
+   *
+   * greenPath already refuses to auto-publish a story whose source is older
+   * than GREEN_MAX_SOURCE_AGE_HOURS -- but it runs AFTER writeArticle, so a
+   * 108-hour-old backlog row paid for a full Sol generation and a retry before
+   * being told it could never publish. The age is knowable at claim time from
+   * a column, and it cannot improve while the item waits. Same rule, same
+   * constant, evaluated where it is free.
+   *
+   * Backlog is not discarded -- it lands in the same reviewed state it reached
+   * before, just without the bill. */
+  const published = item.published_at ? Date.parse(item.published_at) : NaN;
+  if (Number.isFinite(published)) {
+    const ageH = (now - published) / 3600000;
+    if (ageH > GREEN_MAX_SOURCE_AGE_HOURS) {
+      return {
+        ok: false, state: 'held', saved: 2,
+        reason: `source is ${Math.round(ageH)}h old (> ${GREEN_MAX_SOURCE_AGE_HOURS}h); backlog is reviewed, never auto-published — stopped before any model call`,
+      };
+    }
+  }
+
+  /* 2. NO ROSTER FIGHTER LINKED AT DETECTION.
+   *
+   * ufc-news-ingest resolves fighter_ids when it inserts the row. An empty
+   * array means its resolver found nobody on our roster in the headline or
+   * summary, and resolvePrimary reads the same roster from the same index --
+   * so it is about to reach the same conclusion after a flagship call.
+   *
+   * Measured: 27 of 44 entity holds had an empty array, and NONE of the eight
+   * published articles did. The signal is one-directional, which is what makes
+   * it safe to act on early: an empty array has never produced a publication.
+   *
+   * This is deliberately not a claim that the story is unimportant. It stays on
+   * the external wire, which is exactly what the wire is for. */
+  const linked = Array.isArray(item.fighter_ids) ? item.fighter_ids.filter(Boolean) : [];
+  if (!linked.length) {
+    return {
+      ok: false, state: 'held', saved: 1,
+      reason: 'no roster fighter linked at detection; not enriched — remains external wire coverage',
+      patch: { entity_confidence: 0 },
+    };
+  }
+
+  return { ok: true };
+}
+
 export function greenPath({ env, rel, ent, src, packet, article, hero, item, now = Date.now() }) {
   const blockers = [];
 
@@ -250,6 +362,29 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
   const log = (stage, status, detail, started) => event(sb, item.id, stage, status, detail, { started, detectedAt });
 
   try {
+    /* 0. COST GOVERNOR — DECIDE WHAT WE CAN AFFORD TO THINK ABOUT ------- */
+    /*
+     * Every stage below this one costs money. The relevance scorer runs on
+     * GPT-5.6 Sol because no cheaper model exists on this account, so an item
+     * that reaches stage 1 has already spent a flagship call -- and measured
+     * over 48 hours of live traffic, 92% of Sol calls went to items that never
+     * published. That is not a quality problem and must not be fixed by
+     * lowering quality: it is a SELECTION problem.
+     *
+     * So the cheap deterministic facts are consulted first. Every check here
+     * uses a column ufc-news-ingest already wrote, needs no model, and asks a
+     * question whose answer cannot change later in the pipeline. Nothing here
+     * is a new editorial gate -- each one mirrors a rule that already exists
+     * downstream, moved to where it costs nothing.
+     */
+    const pre = preflight(item, { now });
+    if (!pre.ok) {
+      await log('skip', 'skipped', { gate: 'governor', reason: pre.reason, saved_sol_calls: pre.saved }, Date.now());
+      await settle(sb, item, pre.state, pre.reason, pre.patch || {});
+      await recordCost(sb, item, { stage: 'governor', outcome: 'rejected_before_model', holdReason: pre.reason, solCalls: 0, detectedAt });
+      return { item_id: item.id, status: pre.state, stage: 'governor', reason: pre.reason, sol_calls: 0 };
+    }
+
     /* 1. RELEVANCE ------------------------------------------------------ */
     let t = Date.now();
     const rel = await scoreRelevance(env, item);
@@ -340,6 +475,9 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
       await log('editorial', 'held', { error: redactSecrets(String(e.message)).slice(0, 600), validation: e.validation }, t);
       await settle(sb, item, 'held', redactSecrets(String(e.message)).slice(0, 480),
         { relevance_score: rel.score, primary_fighter_id: ent.primary_fighter_id, topic_signature: signature });
+      /* The most expensive failure in the system: a full generation plus a
+       * corrective retry, thrown away. Counted deliberately. */
+      await recordCost(sb, item, { stage: 'editorial', outcome: 'held', holdReason: e.message, cost: e.cost, detectedAt });
       return { item_id: item.id, status: 'held', stage: 'editorial', reason: redactSecrets(String(e.message)).slice(0, 240) };
     }
     const genMs = Date.now() - t;
@@ -437,8 +575,16 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
         detected_to_public_ms: publishThis && detectedAt ? Date.now() - Date.parse(detectedAt) : null,
         total_ms: Date.now() - t0 }, t0);
 
+    await recordCost(sb, item, {
+      stage: 'publish', outcome: publishThis ? 'published' : 'held',
+      holdReason: publishThis ? null : (green.blockers || []).join('; '),
+      cost: article.cost, article, detectedAt,
+      publishedAt: publishThis ? nowIso(Date.now()) : null,
+    });
+
     return {
       item_id: item.id, status: publishThis ? 'published' : 'written', slug, article_id: saved?.id,
+      cost: article.cost, estimated_model_cost_usd: estimateCostUsd(article.cost),
       green_path: publishThis, blockers: green.blockers,
       detected_to_public_ms: publishThis && detectedAt ? Date.now() - Date.parse(detectedAt) : null,
       headline: article.headline, words: article.body_md.split(/\s+/).length,

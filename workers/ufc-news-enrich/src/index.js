@@ -109,6 +109,61 @@ export default {
       });
     }
 
+    if (url.pathname === '/cost') {
+      /* What the newsroom spent, and on what.
+       *
+       * Unauthenticated on purpose: it reports aggregates over our own
+       * operations and holds nothing sensitive, and a cost report that needs a
+       * token is a cost report nobody reads. The number that matters is not
+       * total spend -- it is the share of spend that bought nothing.
+       */
+      const sb = new Supabase(env);
+      const hours = Math.min(168, Math.max(1, Number(url.searchParams.get('hours')) || 24));
+      const since = new Date(Date.now() - hours * 3600e3).toISOString();
+      const rows = await sb.select('ufc_news_pipeline_events',
+        /* The timestamp column is `at`, not created_at, and cost records are
+         * marked by detail.kind because the stage vocabulary is constrained. */
+        `select=stage,status,detail,at&detail->>kind=eq.cost&at=gte.${encodeURIComponent(since)}`
+        + `&order=at.desc&limit=1000`);
+      const agg = {
+        window_hours: hours, candidates: rows.length,
+        rejected_before_model: 0, sol_calls: 0, published: 0, held: 0,
+        sol_input_tokens: 0, sol_output_tokens: 0, retry_input_tokens: 0, retry_output_tokens: 0,
+        spend_usd: 0, spend_on_published_usd: 0, spend_wasted_usd: 0,
+      };
+      const byStage = {};
+      for (const r of rows) {
+        const d = r.detail || {};
+        const usd = Number(d.estimated_model_cost_usd) || 0;
+        agg.sol_calls += Number(d.model_calls) || 0;
+        agg.sol_input_tokens += Number(d.sol_input_tokens) || 0;
+        agg.sol_output_tokens += Number(d.sol_output_tokens) || 0;
+        agg.retry_input_tokens += Number(d.retry_input_tokens) || 0;
+        agg.retry_output_tokens += Number(d.retry_output_tokens) || 0;
+        agg.spend_usd += usd;
+        if (d.outcome === 'rejected_before_model') agg.rejected_before_model += 1;
+        if (d.outcome === 'published') { agg.published += 1; agg.spend_on_published_usd += usd; }
+        else { agg.held += 1; agg.spend_wasted_usd += usd; }
+        const k = d.stage || 'unknown';
+        byStage[k] = byStage[k] || { items: 0, sol_calls: 0, spend_usd: 0 };
+        byStage[k].items += 1;
+        byStage[k].sol_calls += Number(d.model_calls) || 0;
+        byStage[k].spend_usd = Math.round((byStage[k].spend_usd + usd) * 1e6) / 1e6;
+      }
+      const round = (n) => Math.round(n * 1e6) / 1e6;
+      return json({
+        service: WORKER,
+        ...agg,
+        spend_usd: round(agg.spend_usd),
+        spend_on_published_usd: round(agg.spend_on_published_usd),
+        spend_wasted_usd: round(agg.spend_wasted_usd),
+        /* The two headline numbers. */
+        cost_per_published_article_usd: agg.published ? round(agg.spend_usd / agg.published) : null,
+        wasted_spend_pct: agg.spend_usd > 0 ? Math.round((agg.spend_wasted_usd / agg.spend_usd) * 100) : null,
+        by_stage: byStage,
+      });
+    }
+
     if (req.method !== 'POST') return json({ error: 'not_found' }, 404);
     if (!authorized(req, env)) return json({ error: 'not_found' }, 404);
 
@@ -160,6 +215,48 @@ export default {
         });
       }
       return json({ service: WORKER, replanned: out.length, articles: out });
+    }
+
+    if (url.pathname === '/admin/requeue') {
+      /* Send held items back through the pipeline. UNCHANGED PIPELINE.
+       *
+       * A hold is terminal by design: state='held' is a decision point, and
+       * pickCandidates only claims new/scored, so nothing retries by itself.
+       * That is right when the hold was a judgement about the story, and wrong
+       * when it was our fault -- a credential outage, or a gate defect. Live
+       * traffic produced both: 19 items held during a 90-minute 401 window on
+       * 2026-09-10, and a long tail held because factNumbers could not see
+       * numbers inside packet strings and called a fighter's own record
+       * invented. Those items were correct all along and had no way back.
+       *
+       * This does NOT bypass anything. It resets state to 'new' so the item is
+       * claimed and re-run through the identical gate: same validators, same
+       * provenance classes, same entity thresholds, same freshness rule. An
+       * item that deserved its hold is simply held again, with a fresh reason.
+       *
+       * ?reason= is a required LIKE filter, so a requeue always names the
+       * defect it is recovering from and can never mean "release everything".
+       */
+      const like = url.searchParams.get('reason');
+      if (!like) return json({ error: 'reason_required', hint: 'pass ?reason=<state_reason LIKE pattern> so the requeue names what it is recovering from' }, 400);
+      const n = Math.min(50, Math.max(1, Number(url.searchParams.get('n')) || 10));
+      const maxAgeH = Math.min(72, Math.max(1, Number(url.searchParams.get('max_source_age_h')) || 24));
+      const sb = new Supabase(env);
+      const since = new Date(Date.now() - maxAgeH * 3600e3).toISOString();
+      const rows = await sb.select('ufc_news_items',
+        `select=id,title,state_reason,published_at&state=eq.held`
+        + `&state_reason=like.${encodeURIComponent(like)}`
+        + `&published_at=gte.${since}&order=published_at.desc&limit=${n}`);
+      const out = [];
+      for (const r of rows) {
+        /* Conditional on state, so a concurrent consumer cannot be raced. */
+        await sb.patch('ufc_news_items', `id=eq.${r.id}&state=eq.held`, {
+          state: 'new', state_reason: `requeued after fix (was: ${String(r.state_reason || '').slice(0, 160)})`,
+          state_changed_at: new Date().toISOString(), attempts: 0, lease_token: null, lease_expires_at: null,
+        });
+        out.push({ id: r.id, title: r.title, was: String(r.state_reason || '').slice(0, 100) });
+      }
+      return json({ service: WORKER, requeued: out.length, filter: like, max_source_age_h: maxAgeH, items: out });
     }
 
     if (url.pathname === '/admin/item') {

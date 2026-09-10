@@ -66,14 +66,47 @@ export function numberTokens(text) {
 }
 
 /** Every number the packet contains, with the class that governs its use. */
+/* Keys whose digits are addressing, not facts. A UUID, a URL slug or an image
+ * hash contains long digit runs that mean nothing; admitting them as class A
+ * would let the model quote "469714" from a source URL and call it a statistic.
+ * These are matched by KEY, and by shape below, because both leak. */
+const OPAQUE_KEY = /(^|_)(id|ids|url|href|slug|hash|key|token|image|thumbnail|video_id|channel_id|fingerprint|signature)$/i;
+const UUID_LIKE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const URL_LIKE = /^(https?:)?\/\//i;
+
 export function factNumbers(packet) {
   const out = new Map();
-  const walk = (node) => {
+  const walk = (node, key = '') => {
     if (node === null || node === undefined) return;
-    if (Array.isArray(node)) { node.forEach(walk); return; }
-    if (typeof node === 'object') { Object.values(node).forEach(walk); return; }
+    if (Array.isArray(node)) { node.forEach((v) => walk(v, key)); return; }
+    if (typeof node === 'object') { for (const [k, v] of Object.entries(node)) walk(v, k); return; }
+
     const n = Number(node);
-    if (Number.isFinite(n)) out.set(String(n), 'A');
+    if (Number.isFinite(n) && String(node).trim() !== '') { out.set(String(n), 'A'); return; }
+
+    /* THE STRING CASE, WHICH USED TO BE DROPPED ENTIRELY.
+     *
+     * The packet stores plenty of facts as formatted strings because that is
+     * what the renderer consumes: a record is "28-5-0", a height is 5'11", an
+     * event is "UFC 324", a date is "2026-01-24". Number() returns NaN for all
+     * of them, so every digit inside was invisible here -- while the prose side
+     * tokenises with numberTokens(), which DOES look inside strings.
+     *
+     * The two sides therefore disagreed, and the gate blamed the model for it:
+     * a fighter's own win count came back as "class C number 28 is in no part
+     * of the packet" while 28 sat in the packet. Measured on 48 hours of live
+     * traffic that was the single largest cause of held articles after the
+     * credential outage.
+     *
+     * Both sides now tokenise the same way. This makes the gate more accurate,
+     * not more permissive: a number the model actually invents still appears in
+     * no field and is still class C. */
+    if (typeof node === 'string' && !OPAQUE_KEY.test(key) && !UUID_LIKE.test(node.trim()) && !URL_LIKE.test(node.trim())) {
+      for (const t of numberTokens(node)) {
+        const k = String(Number(t));
+        if (k !== 'NaN' && !out.has(k)) out.set(k, 'A');
+      }
+    }
   };
   walk({ ...packet, source_excerpt: undefined, source: undefined });
   /* Class B: numbers that exist only in the fetched source article. They are
