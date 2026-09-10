@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun"
+    "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun",
+    "test": "node --test test/corrections.test.mjs"
   }
 }

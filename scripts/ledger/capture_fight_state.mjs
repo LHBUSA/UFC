@@ -54,6 +54,98 @@ const pick = (m, keys) => Object.fromEntries(keys.filter((k) => m && m[k]).map((
  * @param {string}   [cfg.eventFilter]  substring match on event name
  * @param {Function} [cfg.fetchImpl]
  */
+/* ------------------------------------------------ append-only corrections
+ *
+ * THE PROBLEM A CORRECTION SOLVES
+ *
+ * This ledger is append-only at the database level: a trigger rejects UPDATE
+ * and DELETE, and that is correct. Its value is that it records state which
+ * cannot be recreated later, and a table you can quietly edit records nothing.
+ *
+ * But "cannot be edited" is not the same as "cannot be wrong". A row can be
+ * written that should never have existed -- a checkpoint captured outside its
+ * window, say -- and with the once-per-(bout, checkpoint) rule, that bad row
+ * then SUPPRESSES the genuine capture forever. The archive would hold a
+ * confident wrong answer and no way to reach the right one.
+ *
+ * So a correction is another row, not an edit. It names the row it invalidates,
+ * says why, and carries its own version. Reading logic then distinguishes the
+ * RAW ledger (everything ever written, for audit) from the EFFECTIVE ledger
+ * (what is authoritative now). Nothing is destroyed and nothing is hidden; the
+ * mistake stays visible beside the record that supersedes it.
+ */
+export const CORRECTION_VERSION = 1;
+
+/** A correction is a metadata record, not a state snapshot. */
+const CORRECTION_MARK = { status: 'correction_record' };
+
+export function buildCorrectionRow(bad, { reason, now = new Date(), correctionVersion = CORRECTION_VERSION } = {}) {
+  const at = new Date(now).toISOString();
+  return {
+    bout_id: bad.bout_id,
+    event_id: bad.event_id,
+    /* ad_hoc, because this row makes no claim about a moment in fight week.
+     * It is exempt from the once-only rule, so a correction can never itself
+     * suppress a genuine capture. */
+    checkpoint: 'ad_hoc',
+    ledger_version: LEDGER_VERSION,
+    captured_at: at,
+    scheduled_start: bad.scheduled_start ?? null,
+    event_date: bad.event_date ?? null,
+    hours_to_start: null,
+    bout_state: CORRECTION_MARK,
+    fighters: CORRECTION_MARK,
+    rankings: CORRECTION_MARK,
+    dna: CORRECTION_MARK,
+    weigh_in: CORRECTION_MARK,
+    wire: CORRECTION_MARK,
+    odds: CORRECTION_MARK,
+    market: CORRECTION_MARK,
+    model: CORRECTION_MARK,
+    result: CORRECTION_MARK,
+    provenance: {
+      builder: BUILDER,
+      record_kind: 'correction',
+      correction: {
+        invalidates_ledger_id: bad.id,
+        invalidates_checkpoint: bad.checkpoint,
+        invalidates_captured_at: bad.captured_at ?? null,
+        reason,
+        corrected_at: at,
+        correction_version: correctionVersion,
+      },
+    },
+  };
+}
+
+/**
+ * Split a raw ledger read into what is authoritative and what is not.
+ *
+ * `effective` is what any product, API or idempotence check should use.
+ * `invalidated` and `corrections` exist so an audit read can show the original
+ * beside the record that superseded it -- which is the entire point of
+ * correcting by appending rather than by editing.
+ */
+export function partitionLedger(rows = []) {
+  const corrections = [];
+  const invalidatedIds = new Set();
+  for (const r of rows) {
+    const c = r?.provenance?.correction;
+    if (c?.invalidates_ledger_id) {
+      corrections.push(r);
+      invalidatedIds.add(String(c.invalidates_ledger_id));
+    }
+  }
+  const effective = [];
+  const invalidated = [];
+  for (const r of rows) {
+    if (r?.provenance?.record_kind === 'correction') continue;   /* not a capture */
+    if (invalidatedIds.has(String(r.id))) invalidated.push(r);
+    else effective.push(r);
+  }
+  return { effective, invalidated, corrections, invalidatedIds };
+}
+
 export async function captureFightState(cfg) {
   const URL_ = String(cfg.supabaseUrl || '').replace(/\/$/, '');
   const KEY = String(cfg.serviceKey || '');
@@ -103,8 +195,16 @@ export async function captureFightState(cfg) {
   const bouts = (await rest(`ufc_bouts?select=*,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(*),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(*)&event_id=in.(${evIds.join(',')})&order=bout_order.desc`)) || [];
   if (!bouts.length) return empty;
   const results = new Map(((await rest(`ufc_bout_results?select=*&bout_id=in.(${bouts.map((b) => b.id).join(',')})`)) || []).map((r) => [r.bout_id, r]));
-  const existing = (await rest(`ufc_fight_state_ledger?select=bout_id,checkpoint,captured_at&event_id=in.(${evIds.join(',')})`)) || [];
-  const have = new Set(existing.map((r) => `${r.bout_id}:${r.checkpoint}`));
+  /* Read id and provenance too: without them a correction cannot be matched to
+   * the row it invalidates, and `have` would keep suppressing a checkpoint that
+   * has been formally withdrawn. */
+  const existingRaw = (await rest(`ufc_fight_state_ledger?select=id,bout_id,checkpoint,captured_at,provenance&event_id=in.(${evIds.join(',')})`)) || [];
+  const ledger = partitionLedger(existingRaw);
+  /* THE EFFECTIVE LEDGER, not the raw one. A row that a later correction
+   * invalidates is not an authoritative capture, so it must not count as
+   * "already captured" -- otherwise correcting a mistake would be impossible by
+   * construction and the bad row would win forever. */
+  const have = new Set(ledger.effective.map((r) => `${r.bout_id}:${r.checkpoint}`));
   const fighterIds = [...new Set(bouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]))];
 
   /* rankings: latest snapshot in the table, else unavailable */
@@ -218,6 +318,55 @@ export async function captureFightState(cfg) {
     checkpoints: rows.reduce((m, r) => ({ ...m, [r.checkpoint]: (m[r.checkpoint] || 0) + 1 }), {}),
     skipped, missed,
   };
+}
+
+/**
+ * Append corrections for ledger rows that should never have been written.
+ *
+ * Selection is explicit -- ids, or a (checkpoint, builder, captured-at window)
+ * triple -- because "correct everything that looks wrong" is not a thing a
+ * ledger tool should be able to do. Already-corrected rows are skipped, so
+ * running this twice appends nothing the second time.
+ */
+export async function correctLedgerRows(cfg) {
+  const URL_ = String(cfg.supabaseUrl || '').replace(/\/$/, '');
+  const KEY = String(cfg.serviceKey || '');
+  if (!URL_ || !KEY) throw new Error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY missing');
+  const f = cfg.fetchImpl || fetch;
+  const H = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'content-type': 'application/json' };
+  const reason = String(cfg.reason || '').trim();
+  if (!reason) throw new Error('a correction must state its reason');
+
+  const filters = [];
+  if (Array.isArray(cfg.ids) && cfg.ids.length) filters.push(`id=in.(${cfg.ids.join(',')})`);
+  if (cfg.checkpoint) filters.push(`checkpoint=eq.${encodeURIComponent(cfg.checkpoint)}`);
+  if (cfg.builder) filters.push(`provenance->>builder=eq.${encodeURIComponent(cfg.builder)}`);
+  if (cfg.capturedFrom) filters.push(`captured_at=gte.${encodeURIComponent(cfg.capturedFrom)}`);
+  if (cfg.capturedTo) filters.push(`captured_at=lte.${encodeURIComponent(cfg.capturedTo)}`);
+  if (!filters.length) throw new Error('a correction must name the rows it invalidates');
+
+  const q = `ufc_fight_state_ledger?select=id,bout_id,event_id,checkpoint,captured_at,scheduled_start,event_date,provenance&${filters.join('&')}`;
+  const res = await f(`${URL_}/rest/v1/${q}`, { headers: H });
+  if (!res.ok) throw new Error(`select -> HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+  const targets = (await res.json()).filter((r) => r?.provenance?.record_kind !== 'correction');
+  if (!targets.length) return { matched: 0, corrected: 0, already: 0, rows: [] };
+
+  /* Which of these are already corrected? Ask the ledger rather than assume. */
+  const evIds = [...new Set(targets.map((r) => r.event_id))];
+  const allRes = await f(`${URL_}/rest/v1/ufc_fight_state_ledger?select=id,bout_id,checkpoint,provenance&event_id=in.(${evIds.join(',')})`, { headers: H });
+  const already = allRes.ok ? partitionLedger(await allRes.json()).invalidatedIds : new Set();
+
+  const todo = targets.filter((r) => !already.has(String(r.id)));
+  if (!todo.length) return { matched: targets.length, corrected: 0, already: targets.length, rows: [] };
+
+  const rows = todo.map((bad) => buildCorrectionRow(bad, { reason, now: cfg.now || new Date() }));
+  if (cfg.dry) return { matched: targets.length, corrected: 0, would_correct: rows.length, already: targets.length - todo.length, rows: todo.map((r) => r.id) };
+
+  const ins = await f(`${URL_}/rest/v1/ufc_fight_state_ledger`, {
+    method: 'POST', headers: { ...H, Prefer: 'return=minimal' }, body: JSON.stringify(rows),
+  });
+  if (!ins.ok) throw new Error(`correction insert -> HTTP ${ins.status} ${(await ins.text()).slice(0, 200)}`);
+  return { matched: targets.length, corrected: rows.length, already: targets.length - todo.length, rows: todo.map((r) => r.id) };
 }
 
 /* CLI ONLY. Importing this module must never read a file or write a row. */

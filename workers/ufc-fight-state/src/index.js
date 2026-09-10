@@ -37,8 +37,13 @@
  *   GET  /health          unauthenticated, no writes
  *   POST /admin/run       capture what is due now      (?dry=true to preview)
  *   POST /admin/replay    one named checkpoint         (?checkpoint=&event=&dry=)
+ *   POST /admin/correct   invalidate rows by appending (?reason=&ids=|&checkpoint=&builder=)
+ *   GET  /ledger          effective ledger             (?event=|?bout=&audit=true)
  */
-import { captureFightState, LEDGER_VERSION, BUILDER, LATE_HOURS } from '../../../scripts/ledger/capture_fight_state.mjs';
+import {
+  captureFightState, correctLedgerRows, partitionLedger,
+  LEDGER_VERSION, BUILDER, LATE_HOURS, CORRECTION_VERSION,
+} from '../../../scripts/ledger/capture_fight_state.mjs';
 
 const WORKER = 'ufc-fight-state';
 const VERSION = 'v0.1.0';
@@ -103,6 +108,11 @@ export default {
         checkpoints: CHECKPOINT_NAMES,
         late_window_hours: LATE_HOURS,
         append_only: true,
+        corrections: {
+          semantics: 'append-only. A row that should not stand is invalidated by a LATER row naming it, never by UPDATE or DELETE (the trigger refuses both).',
+          effective_vs_raw: 'idempotence and every product read use the EFFECTIVE ledger, which excludes invalidated rows; /ledger?audit=true exposes the originals beside the corrections.',
+          correction_version: CORRECTION_VERSION,
+        },
         schedule: 'cloudflare cron 23 * * * *',
         requirements: {
           SUPABASE_URL: Boolean(env.SUPABASE_URL),
@@ -113,10 +123,73 @@ export default {
       });
     }
 
+    if (url.pathname === '/ledger') {
+      /* THE RAW LEDGER AND THE EFFECTIVE ONE, SIDE BY SIDE.
+       *
+       * ?audit=true returns invalidated rows and the corrections that
+       * invalidated them. Without it, callers get only what is authoritative --
+       * which is what a product or API should ever see. Corrections exist to
+       * be auditable, not to quietly rewrite the past, so both views are
+       * reachable and the default is the honest one.
+       */
+      const eventId = url.searchParams.get('event');
+      const boutId = url.searchParams.get('bout');
+      if (!eventId && !boutId) return json({ error: 'event_or_bout_required' }, 400);
+      const audit = url.searchParams.get('audit') === 'true';
+      const filter = boutId ? `bout_id=eq.${boutId}` : `event_id=eq.${eventId}`;
+      const base = String(env.SUPABASE_URL).replace(/[/]+$/, '');
+      const res = await fetch(
+        `${base}/rest/v1/ufc_fight_state_ledger?select=id,bout_id,checkpoint,captured_at,hours_to_start,provenance&${filter}&order=captured_at.asc`,
+        { headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` } },
+      );
+      if (!res.ok) return json({ error: 'ledger_unavailable', status: res.status }, 502);
+      const raw = await res.json();
+      const part = partitionLedger(raw);
+      const slim = (r) => ({
+        id: r.id, bout_id: r.bout_id, checkpoint: r.checkpoint, captured_at: r.captured_at,
+        hours_to_start: r.hours_to_start,
+        ...(r.provenance?.correction ? { correction: r.provenance.correction } : {}),
+      });
+      return json({
+        service: WORKER,
+        raw_rows: raw.length,
+        effective_rows: part.effective.length,
+        invalidated_rows: part.invalidated.length,
+        corrections: part.corrections.length,
+        effective: part.effective.map(slim),
+        ...(audit ? { invalidated: part.invalidated.map(slim), correction_records: part.corrections.map(slim) } : {}),
+      });
+    }
+
     if (req.method !== 'POST') return json({ error: 'not_found' }, 404);
     if (!authorized(req, env)) return json({ error: 'not_found' }, 404);
 
     const dry = url.searchParams.get('dry') === 'true';
+
+    if (url.pathname === '/admin/correct') {
+      /* Invalidate ledger rows BY APPENDING, never by editing. The trigger
+       * would refuse an edit anyway, and it is right to: the record of what we
+       * once believed is part of what the ledger is for. */
+      const reason = url.searchParams.get('reason');
+      if (!reason) return json({ error: 'reason_required', hint: 'a correction must say why the row should not stand' }, 400);
+      const ids = (url.searchParams.get('ids') || '').split(',').map((x) => x.trim()).filter(Boolean);
+      try {
+        const out = await correctLedgerRows({
+          supabaseUrl: env.SUPABASE_URL,
+          serviceKey: env.SUPABASE_SERVICE_ROLE_KEY,
+          reason,
+          ids,
+          checkpoint: url.searchParams.get('checkpoint') || null,
+          builder: url.searchParams.get('builder') || null,
+          capturedFrom: url.searchParams.get('captured_from') || null,
+          capturedTo: url.searchParams.get('captured_to') || null,
+          dry: url.searchParams.get('dry') === 'true',
+        });
+        return json({ service: WORKER, correction_version: CORRECTION_VERSION, ...out });
+      } catch (e) {
+        return json({ service: WORKER, status: 'failed', error: String(e.message).slice(0, 300) }, 400);
+      }
+    }
 
     if (url.pathname === '/admin/run') {
       try { return json({ service: WORKER, dry, ...(await run(env, { auto: true, dry })) }); }
