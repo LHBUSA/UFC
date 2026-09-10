@@ -26,7 +26,16 @@
  * Endpoints
  *   GET  /health        unauthenticated, no side effects
  *   POST /admin/run     run now (?dry=true to parse and link but write nothing)
+ *   POST /admin/dna     Fight DNA now (?fighter=, ?as_of=, ?force=true, ?dry=true)
+ *
+ * Service-binding RPC (not reachable from the internet, so no token):
+ *   DnaTrigger.refreshFightDna({ reason, bouts })
+ *     Called by ufc-stats-ingest after it lands new round rows. Runs the same
+ *     fingerprint-gated build as the 07:17 cron, so it rebuilds only when
+ *     results or round stats actually moved, and fresh rounds stop waiting up
+ *     to a day for Fight DNA to see them.
  */
+import { WorkerEntrypoint } from 'cloudflare:workers';
 import { main as ingestRankings } from '../../../scripts/rankings/ingest_rankings.mjs';
 
 import { buildFightDna } from '../../../scripts/dna/build_fight_dna.mjs';
@@ -158,6 +167,19 @@ export default {
     else ctx.waitUntil(runRankings(env, { invoked: 'cron', cron: event.cron }));
   },
 };
+
+/* Binding-only entrypoint. The DNA owner stays the DNA owner: the caller asks,
+ * this Worker decides (via its own input fingerprint) whether there is work. */
+export class DnaTrigger extends WorkerEntrypoint {
+  async refreshFightDna({ reason = null, bouts = [] } = {}) {
+    const r = await runFightDna(this.env, { invoked: 'binding:ufc-stats-ingest' });
+    console.log(`[${WORKER}] fight_dna trigger reason=${JSON.stringify(reason)} bouts=${Array.isArray(bouts) ? bouts.length : 0} status=${r?.status}`);
+    return {
+      status: r?.status || 'unknown', as_of: r?.as_of ?? null, fingerprint: r?.fingerprint ?? null,
+      snapshots: r?.snapshots ?? null, error: r?.error ?? null,
+    };
+  }
+}
 
 /* ---------------------------------------------------------- fight DNA */
 

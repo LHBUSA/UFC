@@ -62,6 +62,22 @@ export async function selectAll(env, table, query = '', page = 1000) {
   }
 }
 
+/* Exact row count for a filter, read from content-range. Used to state rows
+ * written as an observed before/after difference, never as rows.length — an
+ * idempotent replay must report zero, not a full write. Throws on failure:
+ * a count we could not read is not a count of zero. */
+export async function count(env, table, filter = '') {
+  const base = String(env.SUPABASE_URL || '').replace(/\/$/, '');
+  const res = await fetch(`${base}/rest/v1/${table}?select=*${filter ? `&${filter}` : ''}`, {
+    headers: headersFor(env, { prefer: 'count=exact', range: '0-0' }), cache: 'no-store',
+  });
+  if (!res.ok && res.status !== 206) throw new Error(`supabase_count_${res.status}:${table}`);
+  const cr = res.headers.get('content-range') || '';
+  const n = Number(cr.slice(cr.lastIndexOf('/') + 1));
+  if (!Number.isFinite(n)) throw new Error(`supabase_count_unreadable:${table}`);
+  return n;
+}
+
 export function insert(env, table, rows, { returning = 'representation' } = {}) {
   return request(env, table, {
     method: 'POST',

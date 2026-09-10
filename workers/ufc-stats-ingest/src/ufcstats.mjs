@@ -75,8 +75,17 @@ export function extractId(url) {
 }
 
 export class Fetcher {
-  constructor(env, { minIntervalMs = 1000 } = {}) {
+  constructor(env, { minIntervalMs = 1000, solveGate = true } = {}) {
     this.env = env;
+    /* solveGate=false is the canary posture: report a challenge, never answer
+     * it. The scheduled lane keeps the 2026-09-05 decision (solve the exact
+     * known shape, abort on anything else). */
+    this.solveGate = solveGate;
+    /* Source telemetry, recorded on every run so "is UFC Stats answering us,
+     * and how" has a stored answer instead of an assumption. */
+    this.statuses = {};
+    this.interstitialsSeen = 0;
+    this.lastInterstitialAt = null;
     this.base = String(env.UFCSTATS_BASE || 'http://ufcstats.com').replace(/\/$/, '');
     this.maxDifficulty = Number(env.MAX_POW_DIFFICULTY || 4);
     this.minIntervalMs = minIntervalMs;
@@ -127,6 +136,7 @@ export class Fetcher {
         await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
         continue;
       }
+      this.statuses[res.status] = (this.statuses[res.status] || 0) + 1;
       if ([429, 500, 502, 503, 504].includes(res.status)) {
         console.error(`[fetch] ${url} HTTP ${res.status} attempt=${attempt}`);
         await new Promise((r) => setTimeout(r, 2000 * 2 ** attempt));
@@ -162,6 +172,9 @@ export class Fetcher {
     await this.loadCookie();
     let html = await this.rawGet(url);
     if (!isInterstitial(html)) return html;
+    this.interstitialsSeen += 1;
+    this.lastInterstitialAt = new Date().toISOString();
+    if (!this.solveGate) throw new AccessGateError(url, 'challenge interstitial present (canary does not answer challenges)');
     await this.passGate(html, url);
     html = await this.rawGet(url);
     if (isInterstitial(html)) throw new AccessGateError(url, 'interstitial persisted after solved challenge');
@@ -181,6 +194,14 @@ export class Fetcher {
       await this.env.RAW.put(r2key, html, { httpMetadata: { contentType: 'text/html; charset=utf-8' } });
     }
     return { html, fromCache: false };
+  }
+
+  telemetry() {
+    return {
+      requests: this.subrequests, http_statuses: this.statuses, fetched: this.fetched,
+      interstitials_seen: this.interstitialsSeen, last_interstitial_at: this.lastInterstitialAt,
+      challenges_solved: this.challengesSolved, cookie_present: Boolean(this.cookie),
+    };
   }
 
   url(kind, id) {

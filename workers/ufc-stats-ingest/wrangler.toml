@@ -12,27 +12,41 @@ UFCSTATS_BASE = "http://ufcstats.com"
 # (~1 list + 1 event + ~13 fight pages + ~26 fighter pages + writes per event).
 MAX_EVENTS_PER_RUN = "3"
 # "false" = ESPN-first path only (no ufcstats.com contact).
-# Enabled after the parsers were exercised across a full historical backfill
-# and verified by src/canary.mjs against real completed-event pages: event,
-# bout and fighter identity, results, referee, round rows, idempotency,
-# preview-page rejection, interstitial rejection and fail-closed behaviour on
-# a mutated page. Leaving this off is a silent outage - ESPN keeps writing
-# events and results while no round data lands - so scripts/backfill/
-# ingest_health.mjs now reports the flag state and fails when it is false.
-UFCSTATS_ENABLED = "true"
+# STAGED OFF, 2026-09-10. Production has run with this "false" since the
+# 2026-09-06 deploy, so no Worker has ever written a round row. It is turned
+# on only after POST /admin/canary proves, from Cloudflare egress, that UFC
+# Stats answers without a challenge, that the production parser reproduces the
+# stored round rows column for column, and that identity validation passes.
+# Leaving this off is a silent outage - ESPN keeps writing events and results
+# while no round data lands - which is why every run row states the flag.
+UFCSTATS_ENABLED = "false"
 # Forward maintenance only. Without this the completed-events walk marches
 # backwards through the archive three events at a time and competes with the
 # detached Wayback backfill over the same rows. History belongs to that queue;
 # this worker only stops newly completed events from creating new gaps.
 UFCSTATS_FORWARD_DAYS = "45"
+# Per-run ceiling on UFC Stats fight pages. The lane is bout-driven, so a quiet
+# run fetches nothing; this bounds the worst case (a full card whose stats all
+# post between two runs) to one polite burst at 1 request/second.
+MAX_UFCSTATS_FIGHTS_PER_RUN = "24"
+# After a challenge the fetch layer will not answer, stay off UFC Stats this
+# long. ESPN keeps running. Degrade, never hammer.
+SOURCE_BACKOFF_HOURS = "6"
 # Optional window override for ESPN, e.g. "20251214" or "20251201-20251231".
 # ESPN_DATES = ""
 
-# Fight-week/source-of-truth cadence. Upcoming ESPN cards are re-read on every
-# invocation, so card additions, removals, bout changes and completed results
-# can flow into the canonical tables within one 15-minute window.
+# Cadence. Matches what is deployed (daily 06:00 UTC) until the canary passes;
+# see UFCSTATS_ENABLED above. Cloudflare owns scheduling; GitHub is source only.
 [triggers]
-crons = ["*/15 * * * *"]
+crons = ["0 6 * * *"]
+
+# Fight DNA owner. After new round rows land, ask ufc-intelligence to run its
+# fingerprint-gated build instead of waiting for the 07:17 UTC one. RPC over a
+# service binding: not reachable from the internet, no shared token.
+[[services]]
+binding = "INTELLIGENCE"
+service = "ufc-intelligence"
+entrypoint = "DnaTrigger"
 
 # Raw HTML archive: ufc-raw/{events|fights|fighters}/{id}.html on first fetch.
 # Create the bucket first: wrangler r2 bucket create ufc-raw
@@ -43,7 +57,7 @@ bucket_name = "ufc-raw"
 # Secrets (wrangler secret put):
 #   SUPABASE_SERVICE_ROLE_KEY  - database access
 #   DISCORD_WEBHOOK_URL        - alerts (optional; skipped if unset)
-#   ADMIN_TRIGGER_TOKEN        - unlocks POST /admin/run (optional; 404 if unset)
+#   ADMIN_TRIGGER_TOKEN        - unlocks POST /admin/run and POST /admin/canary (404 if unset)
 
 # Retained logs. Without this there is no record that a cron ever fired.
 [observability]

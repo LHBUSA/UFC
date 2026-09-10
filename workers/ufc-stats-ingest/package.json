@@ -6,7 +6,7 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev --test-scheduled",
-    "test": "node src/normalizers.test.mjs"
+    "test": "node src/lane.test.mjs && node src/ufcstats.test.mjs && node src/parsers.test.mjs && node src/normalizers.test.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.62.0"
