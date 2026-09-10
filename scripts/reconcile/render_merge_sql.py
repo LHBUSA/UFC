@@ -41,6 +41,7 @@ def main():
     ap.add_argument("--plan", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--operator", default="reconcile/render_merge_sql.py")
+    ap.add_argument("--preserve-bouts", help="JSON {bout_ids:[...], round_rows:N}: assert these bouts keep exactly N round rows")
     a = ap.parse_args()
     plan = json.load(open(a.plan, encoding="utf-8"))
     sha = plan["plan_sha256"]
@@ -54,18 +55,40 @@ def main():
 
     out = [f"-- Rendered from plan {sha}", f"-- Eligible bout merges: {len(pairs)}; skipped: {[p['espn_bout_id'] for p in skipped]}",
            "-- Executes nothing by itself. Proof first: BEGIN ... ROLLBACK.", "begin;", ""]
-    # 1. audit
+    # 1. audit. Before-images are captured BY THE DATABASE, inside this
+    # transaction, before any row changes: exact at execution time, and the
+    # SQL stays small. Evidence (checks, DOB disagreement, names) comes from
+    # the reviewed plan.
+    snap = lambda table, where: f"coalesce((select jsonb_agg(to_jsonb(t)) from public.{table} t where {where}), '[]'::jsonb)"
     for p in pairs:
+        B, Bp = p["canonical_bout_id"], p["duplicate_bout_id"]
         ev = {"checks": p["checks"], "dob": p["dob"], "names": p["names"], "ufcstats_fight_id": p["ufcstats_fight_id"]}
-        out.append(f"insert into public.ufc_identity_reconciliations (plan_sha256, kind, canonical_id, duplicate_id, evidence, before_images, operator) values "
-                   f"({lit(sha)}, 'bout_merge', {lit(p['canonical_bout_id'])}, {lit(p['duplicate_bout_id'])}, {lit(ev)}, {lit(p['audit_before_images'])}, {lit(a.operator)});")
+        imgs = ("jsonb_build_object("
+                f"'ufc_bouts', {snap('ufc_bouts', f'id in ({lit(B)}, {lit(Bp)})')}, "
+                f"'ufc_bout_results', {snap('ufc_bout_results', f'bout_id in ({lit(B)}, {lit(Bp)})')}, "
+                f"'ufc_bout_round_stats', {snap('ufc_bout_round_stats', f'bout_id = {lit(Bp)}')}, "
+                f"'ufc_fighter_bout_features', {snap('ufc_fighter_bout_features', f'bout_id = {lit(Bp)}')})")
+        out.append(f"insert into public.ufc_identity_reconciliations (plan_sha256, kind, canonical_id, duplicate_id, evidence, before_images, operator) "
+                   f"select {lit(sha)}, 'bout_merge', {lit(B)}, {lit(Bp)}, {lit(ev)}, {imgs}, {lit(a.operator)};")
     for dup, g in groups.items():
         if not fighter_ok[dup]:
             continue
         last = g[-1]
-        out.append(f"insert into public.ufc_identity_reconciliations (plan_sha256, kind, canonical_id, duplicate_id, evidence, before_images, operator) values "
-                   f"({lit(sha)}, 'fighter_merge', {lit(last['canonical_fighter_id'])}, {lit(dup)}, {lit({'dob': last['dob'], 'names': last['names'], 'pairs': [x['espn_bout_id'] for x in g]})}, "
-                   f"{lit({'ufc_fighters': last['audit_before_images']['ufc_fighters'], 'unique_bouts_repointed': last['audit_before_images'].get('unique_bouts_repointed', []), 'derived_rows_deleted': last['audit_before_images'].get('derived_rows_deleted', {})})}, {lit(a.operator)});")
+        X, Xp = last["canonical_fighter_id"], dup
+        ev = {"dob": last["dob"], "names": last["names"], "pairs": [x["espn_bout_id"] for x in g],
+              "unique_bouts_repointed": last.get("duplicate_fighter_other_bouts", {}).get("unique_repoint", [])}
+        imgs = ("jsonb_build_object("
+                f"'ufc_fighters', {snap('ufc_fighters', f'id in ({lit(X)}, {lit(Xp)})')}, "
+                f"'ufc_fighter_aliases', {snap('ufc_fighter_aliases', f'fighter_id in ({lit(X)}, {lit(Xp)})')}, "
+                f"'ufc_bouts', {snap('ufc_bouts', f'fighter_a_id = {lit(Xp)} or fighter_b_id = {lit(Xp)}')}, "
+                f"'ufc_bout_results_won', {snap('ufc_bout_results', f'winner_id = {lit(Xp)}')}, "
+                f"'ufc_bout_round_stats', {snap('ufc_bout_round_stats', f'fighter_id = {lit(Xp)}')}, "
+                f"'ufc_fighter_dna_snapshots', {snap('ufc_fighter_dna_snapshots', f'fighter_id = {lit(Xp)}')}, "
+                f"'ufc_fighter_stance_splits', {snap('ufc_fighter_stance_splits', f'fighter_id = {lit(Xp)}')}, "
+                f"'ufc_fighter_bout_features', {snap('ufc_fighter_bout_features', f'fighter_id = {lit(Xp)} or opponent_id = {lit(Xp)}')}, "
+                f"'ufc_alias_review_queue', {snap('ufc_alias_review_queue', f'resolved_at is null and {lit(Xp)}::uuid = any(candidate_fighter_ids)')})")
+        out.append(f"insert into public.ufc_identity_reconciliations (plan_sha256, kind, canonical_id, duplicate_id, evidence, before_images, operator) "
+                   f"select {lit(sha)}, 'fighter_merge', {lit(X)}, {lit(Xp)}, {lit(ev)}, {imgs}, {lit(a.operator)};")
     out.append("")
     # 2. bout merges
     for p in pairs:
@@ -88,7 +111,13 @@ def main():
         out.append(f"delete from public.ufc_fighter_bout_features where bout_id = {lit(Bp)};")
         out.append(f"delete from public.ufc_bouts where id = {lit(Bp)};")
         out.append(f"update public.ufc_bouts set ufcstats_id = {lit(F)}, updated_at = now() where id = {lit(B)};")
-        out.append("")
+        out += ["do $g$ begin",
+                f"  if (select count(*) from public.ufc_bout_round_stats where bout_id = {lit(B)}) <> {nrows} then raise exception 'post: canonical bout {B} round rows'; end if;",
+                f"  if exists (select 1 from public.ufc_bouts where id = {lit(Bp)}) then raise exception 'post: duplicate bout {Bp} still present'; end if;",
+                f"  if exists (select 1 from public.ufc_bout_results where bout_id = {lit(Bp)}) then raise exception 'post: duplicate result still present'; end if;",
+                f"  if (select ufcstats_id from public.ufc_bouts where id = {lit(B)}) is distinct from {lit(F)} then raise exception 'post: canonical bout not linked'; end if;",
+                f"  if (select count(distinct fighter_id) from public.ufc_bout_round_stats where bout_id = {lit(B)}) <> 2 then raise exception 'post: canonical bout corners'; end if;",
+                "end $g$;", ""]
     # 3. fighter merges
     for dup, g in groups.items():
         if not fighter_ok[dup]:
@@ -112,13 +141,30 @@ def main():
                 f"delete from public.ufc_fighter_aliases a where a.fighter_id = {lit(Xp)} and exists (select 1 from public.ufc_fighter_aliases b where b.fighter_id = {lit(X)} and b.source = a.source and b.normalized = a.normalized);",
                 f"update public.ufc_fighter_aliases set fighter_id = {lit(X)} where fighter_id = {lit(Xp)};",
                 f"update public.ufc_alias_review_queue set status = 'resolved', resolved_fighter_id = {lit(X)}, resolved_at = now() where resolved_at is null and {lit(Xp)}::uuid = any(candidate_fighter_ids);",
-                f"update public.ufc_images set fighter_id = {lit(X)} where fighter_id = {lit(Xp)};",
-                f"update public.ufc_image_candidates set fighter_id = {lit(X)} where fighter_id = {lit(Xp)};",
+                # The image system is out of scope: a duplicate that carries any
+                # image row aborts the transaction instead of being repointed.
+                "do $g$ begin",
+                f"  if exists (select 1 from public.ufc_images where fighter_id = {lit(Xp)}) or exists (select 1 from public.ufc_image_candidates where fighter_id = {lit(Xp)}) then raise exception 'image rows on duplicate {Xp}: out of scope for this pass'; end if;",
+                "end $g$;",
                 f"delete from public.ufc_fighters where id = {lit(Xp)};",
                 f"update public.ufc_fighters set {', '.join(f'{k} = {lit(v)}' for k, v in fill.items())}, updated_at = now() where id = {lit(X)};",
                 f"insert into public.ufc_fighter_aliases (fighter_id, alias, source, normalized) values ({lit(X)}, {lit(dup_row['name'])}, 'ufcstats', {lit(normalize(dup_row['name']))}) on conflict (fighter_id, source, normalized) do nothing;",
+                "do $g$ begin",
+                f"  if exists (select 1 from public.ufc_fighters where id = {lit(Xp)}) then raise exception 'post: duplicate fighter still present'; end if;",
+                f"  if exists (select 1 from public.ufc_bouts where fighter_a_id = {lit(Xp)} or fighter_b_id = {lit(Xp)}) then raise exception 'post: bouts still reference duplicate'; end if;",
+                f"  if exists (select 1 from public.ufc_bout_round_stats where fighter_id = {lit(Xp)}) then raise exception 'post: round rows still reference duplicate'; end if;",
+                f"  if (select ufcstats_id from public.ufc_fighters where id = {lit(X)}) is distinct from {lit(dup_row['ufcstats_id'])} then raise exception 'post: canonical fighter not linked'; end if;",
+                f"  if (select count(*) from public.ufc_bouts where fighter_a_id = {lit(X)} or fighter_b_id = {lit(X)}) <> {last['resulting_state']['fighter']['bouts_after']} then raise exception 'post: canonical fighter bout count'; end if;",
+                "end $g$;",
                 ""]
-    out.append("commit;")
+    n_audit = len(pairs) + sum(1 for d, ok in fighter_ok.items() if ok)
+    out += ["do $g$ begin",
+            f"  if (select count(*) from public.ufc_identity_reconciliations where plan_sha256 = {lit(sha)}) <> {n_audit} then raise exception 'post: audit rows'; end if;"]
+    if a.preserve_bouts:
+        keep = json.load(open(a.preserve_bouts, encoding="utf-8"))
+        ids = ",".join(lit(b) for b in keep["bout_ids"])
+        out.append(f"  if (select count(*) from public.ufc_bout_round_stats where bout_id in ({ids})) <> {keep['round_rows']} then raise exception 'post: previously repaired bouts changed'; end if;")
+    out += ["end $g$;", "", "commit;"]
     open(a.out, "w", encoding="utf-8", newline="\n").write("\n".join(out) + "\n")
     nb = len(pairs)
     nf = sum(1 for d, ok in fighter_ok.items() if ok)
