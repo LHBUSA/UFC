@@ -54,6 +54,16 @@ values
     'Potential ranking/history reference source. No automated collection until terms/licensing are reviewed.', null),
   ('mma_decisions', 'MMA Decisions', 'reference', 'https://mmadecisions.com/', null, 'review_required', 'unknown', false, false,
     'Potential scorecard reference source. No automated collection until terms/licensing are reviewed.', null),
+  ('fight_forensics', 'Fight Forensics', 'data_provider', 'https://fightforensics.com/', null, 'review_required', 'unknown', false, false,
+    'API terms permit attributed applications but prohibit bulk/systematic dataset extraction and ML-model use. Keep disabled for persisted Career DNA ingestion unless written permission or a suitable agreement is obtained.', null),
+  ('ufcalendar', 'UFCalendar Fight API', 'data_provider', 'https://www.ufcalendar.com/developers', null, 'review_required', 'unknown', false, false,
+    'Paid terms permit commercial display and analysis but limit raw/bulk redistribution below Enterprise. Candidate provider only after the chosen plan/contract is confirmed for persistence and downstream product/API use.', null),
+  ('combat_registry', 'Combat Registry / MixedMartialArts.com', 'reference', 'https://events.mixedmartialarts.com/results', null, 'blocked', 'prohibited', false, false,
+    'ABC official record-keeper value is high, but current site terms prohibit scraping/copying and redistribution without consent. No automated access unless a written data agreement changes this state.', null),
+  ('sportsdataio', 'SportsDataIO MMA', 'data_provider', 'https://sportsdata.io/', null, 'review_required', 'unknown', false, false,
+    'Commercial provider candidate. Enable only after contract scope, storage and redistribution rights are confirmed.', null),
+  ('sportradar', 'Sportradar MMA', 'data_provider', 'https://developer.sportradar.com/mma/', null, 'review_required', 'unknown', false, false,
+    'Commercial provider candidate. Enable only after contract scope, storage and redistribution rights are confirmed.', null),
   ('promotion_official', 'Promotion official source', 'promotion', null, null, 'review_required', 'unknown', false, false,
     'Placeholder for promotion-native adapters. Each promotion should receive its own concrete source row before ingestion.', null)
 on conflict (source_key) do nothing;
