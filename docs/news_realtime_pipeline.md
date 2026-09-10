@@ -250,3 +250,74 @@ Proof required, across multiple real cron cycles rather than one triggered run:
 
 Only after A and B are each independently proven may the queue producer be
 considered for enablement. Not before.
+
+---
+
+# Product requirements queued after the media lane
+
+Two, recorded here rather than carried in a conversation.
+
+## 1. Rich articles, not text-only ones
+
+The new Sol articles read better than the old deterministic ones and are
+POORER as a product. The benchmark is the existing deep UFC article: high-level
+analysis, Bettor's Edge, Fight DNA, matchup and fighter data, real charts,
+market context, official video, hero media, recent form, sourcing, and related
+fight/event/news context. Better prose is not permission to regress to prose.
+
+So `ufc-news-enrich` gains a deterministic **content plan** stage after the
+narrative: for each article, decide which modules the evidence can actually
+support, and attach only those.
+
+| module | attach when |
+|---|---|
+| Bettor's Edge | always (it is already in the packet) |
+| fighter stat comparison | an opponent profile exists |
+| Fight DNA evidence | `ufc_fighter_dna_snapshots` covers the fighter |
+| recent-form comparison | both sides have archived bouts |
+| odds / market snapshot | `ufc_market_observations` covers THIS bout |
+| round/style visualisation | round-level rows exist |
+| official video | video-autopilot resolves one confidently |
+| fighter or matchup card | a primary fighter, always |
+| related live wire | topic-signature siblings exist |
+| source + methodology | always |
+
+A contract story may warrant a fighter profile, a video and career context. A
+matchup story may carry three to five modules plus DNA and video. Nothing is
+forced: a module with no evidence is omitted and the omission is recorded, which
+is the same discipline the prose already follows.
+
+**Charts are built from packet fields, never from the model.** GPT-5.6 Sol
+writes narrative; it does not emit chart data or HTML. SLpM, SApM, TD/15, TD
+defence, finish history, round pace, DNA traits, recent-form outcomes and odds
+movement are all deterministic reads of verified columns. A model-invented chart
+is a fabricated number with a picture around it.
+
+**Ownership stays split.** `ufc-news-enrich` owns the article and its content
+plan; `ufc-video-autopilot` owns video discovery, classification and resolution;
+`ufc-media` owns images; the renderer composes those authoritative layers. No
+duplicated video storage, no second monolithic writer.
+
+## 2. The ticker is a distribution layer, not a feed reader
+
+External news is radar. The PropBetEdge newsroom is intelligence. The ticker is
+our distribution, and it is currently dominated by Bloody Elbow, Sherdog, MMA
+Mania and BJPenn — which is sending our own homepage audience to our inputs.
+
+- A live-wire topic we have published on shows OUR article, our headline, an
+  internal link, and the external trigger does not also appear.
+- A detected story we have not yet written may show the external item, with
+  attribution, until our article publishes — then ours supersedes it.
+- Ranking: newest PropBetEdge analysis first, important developing signals
+  second, unmatched external wire last.
+- Target roughly 75–85% internal once article volume supports it, with no
+  filler manufactured to reach a percentage.
+- Deduplicate on `topic_signature` / `canonical_article_id`: one development,
+  one slot.
+- Attribution is preserved inside the article and its methodology. The source is
+  credited; the audience is simply not sent away from the better product.
+- Breaking-news exception: an external signal may appear instantly while
+  enrichment runs, and the ticker destination swaps to our canonical article the
+  moment it clears the green path.
+- Freshness still wins. An older internal article must not outrank genuinely
+  breaking external news merely for being ours.
