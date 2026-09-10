@@ -1,0 +1,285 @@
+/* Matchup DNA paired profile — premium comparison matrix.
+ *
+ * The base .compare rules in globals.css are intentionally generic. This layer
+ * scopes the production polish to #dna-matchup so fighter DNA and other data
+ * surfaces keep their existing contracts. No metric meaning or winner signal
+ * changes here; bars still compare magnitude only.
+ */
+
+#dna-matchup {
+  --pair-surface: rgba(16, 13, 10, .90);
+  --pair-surface-alt: rgba(255, 255, 255, .018);
+  --pair-line: rgba(255, 245, 220, .075);
+  --pair-line-strong: rgba(255, 245, 220, .14);
+  --pair-track: rgba(255, 245, 220, .10);
+  --pair-muted-fill: rgba(184, 179, 168, .38);
+}
+
+/* Give the paired comparison its own visual frame without changing the JSX
+ * contract. :has() is supported by the browsers this product targets. */
+#dna-matchup .dna-card:has(> .compare) {
+  overflow: hidden;
+  padding: 0;
+  border-color: rgba(212, 175, 55, .22);
+  background:
+    radial-gradient(900px 260px at 50% -90px, rgba(212, 175, 55, .075), transparent 72%),
+    var(--pair-surface);
+  box-shadow:
+    0 24px 56px -46px rgba(0, 0, 0, .98),
+    inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+#dna-matchup .dna-card:has(> .compare)::before {
+  content: "";
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 6%, rgba(212, 175, 55, .62) 50%, transparent 94%);
+}
+
+#dna-matchup .dna-card:has(> .compare) > .dna-card-head {
+  margin: 0;
+  padding: 20px 22px 18px;
+  border-bottom: 1px solid var(--pair-line-strong);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .018), transparent);
+}
+
+#dna-matchup .dna-card:has(> .compare) > .dna-card-head .dna-fam h4 {
+  font-size: 20px;
+  line-height: 1.05;
+}
+
+#dna-matchup .dna-card:has(> .compare) > .dna-card-head .dna-sub {
+  max-width: 68ch;
+  margin-top: 7px;
+  color: var(--pbe-dim);
+  line-height: 1.45;
+}
+
+#dna-matchup .dna-card:has(> .compare) > .dna-card-head > .label {
+  align-self: center;
+  max-width: 340px;
+  padding: 7px 10px;
+  border: 1px solid var(--pair-line);
+  border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, .18);
+  color: var(--pbe-dim);
+  font: 600 10px/1.25 var(--pbe-font-data);
+  letter-spacing: .025em;
+  text-align: right;
+  white-space: normal;
+}
+
+/* The old matrix used 64px value columns and a 130px metric label, which made
+ * long labels and confidence pills fight for the same pixels. Values now get
+ * a stable column and the metric name becomes the visual spine. */
+#dna-matchup .compare {
+  display: grid;
+  gap: 0;
+}
+
+#dna-matchup .compare .cr {
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    minmax(92px, 112px)
+    minmax(110px, 1fr)
+    minmax(170px, 220px)
+    minmax(110px, 1fr)
+    minmax(92px, 112px);
+  gap: 15px;
+  align-items: center;
+  min-height: 58px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--pair-line);
+  background: transparent;
+  transition: background .15s ease, border-color .15s ease;
+}
+
+#dna-matchup .compare .cr:nth-child(even) {
+  background: var(--pair-surface-alt);
+}
+
+#dna-matchup .compare .cr:last-child {
+  border-bottom: 0;
+}
+
+#dna-matchup .compare .cr:hover {
+  background: rgba(212, 175, 55, .038);
+  border-bottom-color: rgba(212, 175, 55, .14);
+}
+
+/* Values read first. Confidence is secondary evidence instead of sharing the
+ * same optical weight with the number. */
+#dna-matchup .compare .cr .v {
+  min-width: 0;
+  color: var(--pbe-paper);
+  font: 750 13.5px/1.15 var(--pbe-font-data);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+
+#dna-matchup .compare .cr .v.b {
+  text-align: right;
+}
+
+#dna-matchup .compare .cr .cs {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 6px;
+  opacity: .88;
+}
+
+#dna-matchup .compare .cr .v.b .cs {
+  margin-right: 6px;
+  margin-left: 0;
+}
+
+#dna-matchup .compare .cr .cs .conf {
+  padding: 2px 4px;
+  font-size: 8px;
+  letter-spacing: .06em;
+}
+
+/* Human-readable metric labels replace the previous compressed all-caps wall.
+ * The info trigger remains beside the label and retains its existing behavior. */
+#dna-matchup .compare .cr .k {
+  position: relative;
+  min-width: 0;
+  padding: 0 12px;
+  color: var(--pbe-paper-2);
+  font: 650 11.5px/1.28 var(--pbe-font-ui);
+  letter-spacing: .015em;
+  text-transform: none;
+  text-align: center;
+  text-wrap: balance;
+}
+
+#dna-matchup .compare .cr .k::before,
+#dna-matchup .compare .cr .k::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 20px;
+  background: linear-gradient(180deg, transparent, var(--pair-line-strong), transparent);
+  transform: translateY(-50%);
+}
+
+#dna-matchup .compare .cr .k::before { left: 0; }
+#dna-matchup .compare .cr .k::after { right: 0; }
+
+/* Bars stay subordinate to the actual values. A thin internal highlight makes
+ * them feel deliberate without turning the matrix into a dashboard lightshow. */
+#dna-matchup .compare .cr .bar {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--pair-track);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .28);
+  overflow: hidden;
+}
+
+#dna-matchup .compare .cr .bar i {
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(212, 175, 55, .72), var(--pbe-gold));
+  box-shadow: 0 0 12px rgba(212, 175, 55, .10);
+  opacity: 1;
+}
+
+#dna-matchup .compare .cr .bar.a i {
+  background: linear-gradient(90deg, var(--pbe-gold), rgba(212, 175, 55, .72));
+}
+
+#dna-matchup .compare .cr .bar.lose i {
+  background: var(--pair-muted-fill);
+  box-shadow: none;
+}
+
+/* Laptop: keep the visual comparison intact but stop the metric spine from
+ * squeezing the actual measurements. */
+@media (max-width: 960px) {
+  #dna-matchup .compare .cr {
+    grid-template-columns:
+      86px
+      minmax(80px, 1fr)
+      minmax(145px, 180px)
+      minmax(80px, 1fr)
+      86px;
+    gap: 10px;
+    padding-inline: 14px;
+  }
+
+  #dna-matchup .compare .cr .v {
+    font-size: 12.5px;
+  }
+
+  #dna-matchup .compare .cr .k {
+    padding-inline: 8px;
+    font-size: 11px;
+  }
+}
+
+/* Mobile becomes a clean three-column comparison: left value / metric / right
+ * value. The bars disappear before they can become visual noise; the numbers
+ * and confidence remain fully available. */
+@media (max-width: 680px) {
+  #dna-matchup .dna-card:has(> .compare) > .dna-card-head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 17px 16px 15px;
+  }
+
+  #dna-matchup .dna-card:has(> .compare) > .dna-card-head > .label {
+    justify-self: start;
+    max-width: none;
+    text-align: left;
+  }
+
+  #dna-matchup .compare .cr {
+    grid-template-columns: minmax(78px, .9fr) minmax(112px, 1.25fr) minmax(78px, .9fr);
+    gap: 8px;
+    min-height: 64px;
+    padding: 9px 12px;
+  }
+
+  #dna-matchup .compare .cr .bar {
+    display: none;
+  }
+
+  #dna-matchup .compare .cr .v {
+    font-size: 12px;
+    white-space: normal;
+  }
+
+  #dna-matchup .compare .cr .k {
+    padding-inline: 7px;
+    font-size: 10.5px;
+  }
+
+  #dna-matchup .compare .cr .cs {
+    display: flex;
+    width: fit-content;
+    margin: 4px 0 0;
+  }
+
+  #dna-matchup .compare .cr .v.b .cs {
+    margin: 4px 0 0 auto;
+  }
+}
+
+@media (max-width: 420px) {
+  #dna-matchup .compare .cr {
+    grid-template-columns: minmax(70px, .85fr) minmax(104px, 1.3fr) minmax(70px, .85fr);
+    gap: 6px;
+    padding-inline: 9px;
+  }
+
+  #dna-matchup .compare .cr .k {
+    padding-inline: 5px;
+    font-size: 10px;
+  }
+
+  #dna-matchup .compare .cr .v {
+    font-size: 11.5px;
+  }
+}
