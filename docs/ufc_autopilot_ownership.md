@@ -111,3 +111,21 @@ real `t_minus_24h` capture remains eligible.
 
 All remaining workflows are push- or dispatch-triggered (deploys, canaries, QA).
 None schedules production ingestion or orchestration.
+
+---
+
+## Backlog
+
+Not implemented. Recorded here so it is not rediscovered the hard way a second
+time.
+
+**Add immutable article revision history / pre-edit snapshots so every editorial
+mutation can be rolled back and audited.**
+
+Why it is on this list: on 2026-09-10 the editorial desk rewrote a published
+article it did not own -- new prose, new headline, model_version stamped over --
+and the change could not be reverted, because `ufc_articles` keeps no prior
+version. The ownership boundary that allowed it is fixed. The inability to undo
+an editorial mutation is not, and it is the more general problem: the fight-state
+ledger can be corrected because it is append-only and versioned, and articles
+cannot.
