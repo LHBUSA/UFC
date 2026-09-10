@@ -13,10 +13,14 @@
  * recorded as such and left without rows; absence stays absence.
  */
 
-/* Dana White's Contender Series runs inside ESPN's UFC feed but is not on UFC
- * Stats: the completed-events list carries no Contender Series card at all
- * (live capture 2026-09-06). Asking the source for them every run would be a
- * request that can only miss. */
+/* Dana White's Contender Series runs inside ESPN's UFC feed. UFC Stats DOES
+ * host those cards ("DWCS 9.2" etc.) with full per-round tables, but its
+ * completed-events list omits them, and that list is the lane's only way to
+ * find an event it has not linked. Corrected 2026-09-10: this used to say UFC
+ * Stats does not list them at all, which filed 465 recoverable bouts as source
+ * gaps. They are reachable only through a fighter's history page, which needs
+ * both fighters identity-linked first, so the lane still skips them; the
+ * validated repair for linked pairs is a separate, manual tool. */
 export function isContenderSeries(name) {
   return /contender series|dana white'?s contender/i.test(String(name || ''));
 }
