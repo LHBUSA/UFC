@@ -298,6 +298,13 @@ function espnDisplayPortrait(fighter: Pick<Fighter, "id" | "espn_athlete_id">): 
   };
 }
 
+/* Catalog images that stay in ufc_images but are never picked as a fighter's
+ * primary portrait. Listed by image id, one reason each; the fighter falls
+ * through to the next rule (another stored image, else the display fallback). */
+const NOT_PRIMARY_PORTRAIT = new Set<string>([
+  "73077eea-6c1e-4f3b-88e4-c23a412c11d8", // Petr Yan: Kremlin award ceremony handshake, not a portrait
+]);
+
 export async function getImagesForFighters(ids: string[]): Promise<Map<string, PortraitSet>> {
   const m = new Map<string, PortraitSet>();
   const chosen = new Map<string, FighterImage>();
@@ -307,7 +314,7 @@ export async function getImagesForFighters(ids: string[]): Promise<Map<string, P
     const chunk = uniq.slice(i, i + 150);
     const rows = (await rest<FighterImage[]>(`ufc_images?select=${select}&fighter_id=in.(${chunk.join(",")})&order=created_at.desc`, [], { revalidate: 300 })).data;
     for (const r of rows) {
-      if (!r.fighter_id) continue;
+      if (!r.fighter_id || NOT_PRIMARY_PORTRAIT.has(r.id)) continue;
       if (r.rights_expires_at && Date.parse(r.rights_expires_at) <= Date.now()) continue;
       const prev = chosen.get(r.fighter_id);
       if (!prev || imagePriority(r) > imagePriority(prev)) chosen.set(r.fighter_id, r);
