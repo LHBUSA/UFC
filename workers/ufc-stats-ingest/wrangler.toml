@@ -32,6 +32,11 @@ MAX_UFCSTATS_FIGHTS_PER_RUN = "24"
 # After a challenge the fetch layer will not answer, stay off UFC Stats this
 # long. ESPN keeps running. Degrade, never hammer.
 SOURCE_BACKOFF_HOURS = "6"
+# A UFC Stats challenge is NOT answered. The pass aborts, the source is
+# recorded as challenged (source, timestamp, retry_after) and the lane stays
+# off it for SOURCE_BACKOFF_HOURS. "true" re-enables the proof-of-work solver
+# in ufcstats.mjs for the exact 2026-09-05 shape; that is an operator decision.
+UFCSTATS_SOLVE_CHALLENGE = "false"
 # Optional window override for ESPN, e.g. "20251214" or "20251201-20251231".
 # ESPN_DATES = ""
 

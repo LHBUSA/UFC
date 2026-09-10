@@ -27,10 +27,11 @@
  *      windows; Discord one-liner on success, loud on SchemaAssertionError /
  *      AccessGateError (which abort the run).
  *
- * Source health: a challenge the fetch layer will not answer (shape change,
- * difficulty over the limit, failed solve) is stored in R2 and keeps the lane
- * off UFC Stats for SOURCE_BACKOFF_HOURS. ESPN keeps running. Degrade, never
- * guess, never hammer.
+ * Source health: any UFC Stats challenge fails the pass closed (the lane does
+ * not answer challenges unless UFCSTATS_SOLVE_CHALLENGE="true"). It is stored
+ * in R2 as challenged/source/at/retry_after and keeps the lane off UFC Stats
+ * for SOURCE_BACKOFF_HOURS. ESPN keeps running. Degrade, never guess, never
+ * hammer.
  *
  * Latency: recorded as a window (last look that found nothing, first look that
  * found rows) against the first run that saw ESPN report the bout final. At a
@@ -51,7 +52,7 @@ import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_re
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked } from './lane.mjs';
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.3.0';
+const VERSION = 'v0.4.0';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -86,6 +87,18 @@ async function putState(env, key, value) {
     console.error(`[${SERVICE}] state write failed ${key}: ${String(e?.message || e).slice(0, 100)}`);
   }
 }
+/* The one shape a challenge is remembered in: what, where, when, and when the
+ * lane may look again. Health, the canary and the run row all report this. */
+function challengedState(env, { detail, url, telemetry, via }) {
+  const at = nowIso();
+  const backoffHours = Number(env.SOURCE_BACKOFF_HOURS || 6);
+  return {
+    status: 'challenged', challenged: true, source: 'ufcstats.com', at, detail, url, via,
+    backoff_hours: backoffHours, retry_after: new Date(Date.parse(at) + backoffHours * 3600000).toISOString(),
+    telemetry,
+  };
+}
+
 async function mergeState(env, key, patchObj, { onlyIfAbsent = [] } = {}) {
   const cur = (await getState(env, key)) || {};
   const next = { ...cur };
@@ -101,10 +114,15 @@ export default {
   async fetch(req, env) {
     const url = new URL(req.url);
     if (url.pathname === '/health') {
-      let lastSuccess = null; let lastRoundWrite = null;
+      let lastSuccess = null; let lastRoundWrite = null; let lastResultWrite = null; let lastWorkerRoundWrite = null;
       try {
         lastSuccess = (await select(env, 'ufc_ingest_runs', `select=started_at,finished_at,status,notes&worker=eq.${SERVICE}&status=eq.success&order=started_at.desc&limit=1`))?.[0] || null;
         lastRoundWrite = (await select(env, 'ufc_bout_round_stats', 'select=captured_at,source_url&order=captured_at.desc&limit=1'))?.[0] || null;
+        lastResultWrite = (await select(env, 'ufc_bout_results', 'select=captured_at,result_source&order=captured_at.desc&limit=1'))?.[0] || null;
+        /* Round rows carry no writer column, so "did THIS Worker ever write
+         * one" is answered from its own run ledger, not from the table. */
+        const runs = await select(env, 'ufc_ingest_runs', `select=id,started_at,round_rows:notes->round_rows_written&worker=eq.${SERVICE}&order=started_at.desc&limit=500`);
+        lastWorkerRoundWrite = (runs || []).find((r) => Number(r.round_rows) > 0) || null;
       } catch (_) { /* reported as null */ }
       return json({
         service: SERVICE, version: VERSION, ...health,
@@ -113,6 +131,9 @@ export default {
         source_health: await getState(env, STATE.health),
         last_success: lastSuccess ? { started_at: lastSuccess.started_at, finished_at: lastSuccess.finished_at, round_rows: lastSuccess.notes?.round_rows ?? null, ufcstats_pass: lastSuccess.notes?.ufcstats_pass ?? null } : null,
         last_round_write: lastRoundWrite,
+        last_worker_round_write: lastWorkerRoundWrite,
+        last_result_write: lastResultWrite,
+        challenge_policy: String(env.UFCSTATS_SOLVE_CHALLENGE || 'false') === 'true' ? 'solve_known_shape' : 'fail_closed',
         requirements: {
           SUPABASE_URL: Boolean(env.SUPABASE_URL),
           SUPABASE_SERVICE_ROLE_KEY: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
@@ -153,7 +174,12 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
   const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, assertion_failures: [], notes: { invoked, cron, version: VERSION } };
   let runId = null;
   let status = 'success';
-  const fetcher = new Fetcher(env);
+  /* Challenge policy (2026-09-10, data-integrity pass): the lane does NOT
+   * answer a UFC Stats challenge. Seeing one aborts the pass, is recorded as
+   * challenged, and keeps the lane off the source for SOURCE_BACKOFF_HOURS.
+   * The proof-of-work solver stays in ufcstats.mjs, reachable only through an
+   * explicit UFCSTATS_SOLVE_CHALLENGE="true", which is an operator decision. */
+  const fetcher = new Fetcher(env, { solveGate: String(env.UFCSTATS_SOLVE_CHALLENGE || 'false') === 'true' });
   const espn = new Espn();
   try {
     const created = await insert(env, 'ufc_ingest_runs', { worker: SERVICE, status: 'running', notes: { invoked, cron, version: VERSION } });
@@ -181,7 +207,10 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
       run.notes.health_warning = `UFC STATS CHALLENGED: ${sourceHealth.detail}. Round stats paused, ESPN continues.`;
     } else {
       await ufcstatsPass(env, fetcher, ctx, run, { onlyBout, force });
-      await putState(env, STATE.health, { status: 'ok', at: nowIso(), telemetry: fetcher.telemetry() });
+      /* "ok" means the source actually answered this run. A pass with no
+       * candidates made no request and proves nothing about the source, so it
+       * leaves the stored health as it was. */
+      if (fetcher.subrequests > 0) await putState(env, STATE.health, { status: 'ok', challenged: false, source: 'ufcstats.com', at: nowIso(), telemetry: fetcher.telemetry(), via: invoked });
     }
 
     run.notes.espn_subrequests = espn.subrequests;
@@ -204,8 +233,10 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
     if (e instanceof AccessGateError) {
       /* Fail closed and remember it, so the next runs stay away instead of
        * probing a source that has just changed its answer to automation. */
-      await putState(env, STATE.health, { status: 'challenged', at: nowIso(), detail, url: e?.url || null, telemetry: fetcher.telemetry() });
+      const state = challengedState(env, { detail, url: e?.url || null, telemetry: fetcher.telemetry(), via: invoked });
+      await putState(env, STATE.health, state);
       run.notes.ufcstats_pass = 'aborted (access gate)';
+      run.notes.source_health = state;
     }
     const loud = e instanceof SchemaAssertionError || e instanceof AccessGateError;
     await discord(env, `**${SERVICE} ${loud ? 'STOPPED' : 'CRASHED'}** ${cls}\n\`${detail}\`\n${e?.url || ''}`, { loud: true });
@@ -714,9 +745,12 @@ async function runCanary(env, { n = 3 } = {}) {
     report.source = fetcher.telemetry();
     report.verdict = e instanceof AccessGateError ? 'challenged' : 'error';
     report.error = { class: e?.name || 'Error', detail: String(e?.message || e).slice(0, 300), url: e?.url || null };
-    if (e instanceof AccessGateError) await putState(env, STATE.health, { status: 'challenged', at: nowIso(), detail: report.error.detail, url: report.error.url, telemetry: report.source, via: 'canary' });
+    if (e instanceof AccessGateError) {
+      report.source_health = challengedState(env, { detail: report.error.detail, url: report.error.url, telemetry: report.source, via: 'canary' });
+      await putState(env, STATE.health, report.source_health);
+    }
   }
-  if (report.verdict === 'clean') await putState(env, STATE.health, { status: 'ok', at: nowIso(), telemetry: report.source, via: 'canary' });
+  if (report.verdict === 'clean') await putState(env, STATE.health, { status: 'ok', challenged: false, source: 'ufcstats.com', at: nowIso(), telemetry: report.source, via: 'canary' });
   if (runId) {
     try {
       await patch(env, 'ufc_ingest_runs', `id=eq.${runId}`, { finished_at: nowIso(), status: report.verdict === 'clean' ? 'success' : 'failed', notes: { mode: 'canary', version: VERSION, ...report } });
