@@ -102,7 +102,7 @@ const ORG = {
       name: SITE.name,
       alternateName: "PropBetEdge UFC Fight Intelligence",
       description: DESCRIPTION,
-      publisher: { "@id": `${SITE.parent}/#org` },
+      publisher: { "@id": `${SITE.url}/#desk` },
       creator: { "@id": `${SITE.url}/#desk` },
       inLanguage: "en-US",
       isPartOf: { "@type": "WebSite", "@id": `${SITE.parent}/#site`, name: "PropBetEdge", url: SITE.parent },
