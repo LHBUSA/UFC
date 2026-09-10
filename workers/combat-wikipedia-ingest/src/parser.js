@@ -143,6 +143,17 @@ function infoboxDob($) {
   return raw && /^\d{4}-\d{2}-\d{2}/.test(raw) ? raw.slice(0, 10) : null;
 }
 
+function mmaSectionCandidate($) {
+  for (const heading of $('h2,h3,h4').toArray()) {
+    if (!normalizeName(clean($, heading)).includes('mixed martial arts record')) continue;
+    const table = $(heading).nextAll('table').first().get(0) || $(heading).nextAll().find('table').first().get(0);
+    if (!table) continue;
+    const h = headerMap($, table);
+    if (h) return { table, ...h, size: $(table).find('tr').length };
+  }
+  return null;
+}
+
 export function parseMmaRecord(html) {
   const $ = cheerio.load(html || '');
   const candidates = [];
@@ -152,7 +163,8 @@ export function parseMmaRecord(html) {
   }
   if (!candidates.length) return { dob: infoboxDob($), rows: [], table_count: 0 };
   candidates.sort((a, b) => b.size - a.size);
-  const { table, map, tr: headerRow } = candidates[0];
+  const selected = mmaSectionCandidate($) || candidates[0];
+  const { table, map, tr: headerRow } = selected;
   const rows = [];
   let started = false;
   let rowIndex = 0;
