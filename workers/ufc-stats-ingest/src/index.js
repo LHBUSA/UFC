@@ -56,7 +56,7 @@ import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_re
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.4.0';
+const VERSION = 'v0.5.0';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
