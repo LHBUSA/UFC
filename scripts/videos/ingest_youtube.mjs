@@ -28,15 +28,21 @@ import { detectLanguage,
   classifyVideo, loadEventContext, linkVideo, sleep,
 } from './lib.mjs';
 
-const args = process.argv.slice(2);
-const DRY = args.includes('--dry-run');
-const RELINK = args.includes('--relink');
-const SINCE_DAYS = Number(args[args.indexOf('--since-days') + 1] || 30) || 30;
-const ONLY_CHANNEL = args.includes('--channel') ? args[args.indexOf('--channel') + 1] : null;
 const MAX_DESCRIPTION = 6000;
 
-const now = new Date();
-const since = new Date(now.getTime() - SINCE_DAYS * 86400e3);
+/* Options are an argument, not module-scope argv, and the time window is
+ * computed PER RUN. The Worker imports this module once per isolate and
+ * calls main() many times; a `since` frozen at import would keep querying
+ * the window that was current when the isolate started, which on a
+ * long-lived isolate silently stops finding new uploads. */
+export function parseCliOptions(argv = []) {
+  return {
+    dry: argv.includes('--dry-run'),
+    relink: argv.includes('--relink'),
+    sinceDays: Number(argv[argv.indexOf('--since-days') + 1] || 30) || 30,
+    onlyChannel: argv.includes('--channel') ? argv[argv.indexOf('--channel') + 1] : null,
+  };
+}
 
 function isoOrNull(s) {
   if (!s) return null;
@@ -91,7 +97,10 @@ function applyLinks(row, entry, index, ctx, existing) {
   return row;
 }
 
-function toDbRow(row, entry, existing) {
+/* `now` is a PARAMETER, not a closed-over module value. It used to be computed
+ * at import, which froze the timestamp for the life of a Node process and, in
+ * a Worker isolate, for the life of the isolate. */
+function toDbRow(row, entry, existing, now) {
   const prev = existing?.source_metadata || {};
   const lang = detectLanguage(row.channel_name, entry.title, entry.description);
   const source_metadata = {
@@ -138,9 +147,15 @@ function changed(dbRow, existing) {
 
 function bump(map, key) { map[key] = (map[key] || 0) + 1; }
 
-async function main() {
-  const env = loadEnv();
+export async function main(injectedEnv, options = {}) {
+  const env = injectedEnv || loadEnv();
   const sb = new Supabase(env);
+  const DRY = Boolean(options.dry);
+  const RELINK = Boolean(options.relink);
+  const SINCE_DAYS = Number(options.sinceDays) || 30;
+  const ONLY_CHANNEL = options.onlyChannel || null;
+  const now = options.now ? new Date(options.now) : new Date();
+  const since = new Date(now.getTime() - SINCE_DAYS * 86400e3);
   const apiKey = env.YOUTUBE_API_KEY || '';
   const discovery = apiKey ? 'youtube_data_api_v3' : 'atom_feed';
 
@@ -211,7 +226,7 @@ async function main() {
       const row = baseRow(entry, channel, channelDiscovery || existing?.source_metadata?.discovery || discovery);
       applyClassification(row, entry);
       applyLinks(row, entry, index, ctx, existing);
-      const dbRow = toDbRow(row, entry, existing);
+      const dbRow = toDbRow(row, entry, existing, now);
       const isNew = !existing;
       const isChanged = changed(dbRow, existing);
       if (isNew) totals.new += 1; else if (isChanged) totals.updated += 1; else totals.unchanged += 1;
@@ -243,6 +258,11 @@ async function main() {
   console.log(`  by confidence: ${['high', 'medium', 'low', 'none'].map((k) => `${k}=${byConfidence[k] || 0}`).join(', ')}`);
   console.log(`  review: ${totals.review}`);
   if (DRY && plan.length) console.log(`  plan: ${plan.filter((p) => p.action === 'insert').length} inserts, ${plan.filter((p) => p.action === 'update').length} updates, ${plan.filter((p) => p.action === 'unchanged').length} unchanged`);
+
+  /* Returned rather than logged-and-grepped, so a Worker can ledger it. */
+  return { discovery, channels: channels.length, totals, by_type: byType, by_confidence: byConfidence, dry: DRY, relink: RELINK, since: since.toISOString() };
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+/* CLI ONLY. Importing this module must never call YouTube or write a row. */
+const isCli = typeof process !== 'undefined' && process.argv?.[1]?.endsWith('ingest_youtube.mjs');
+if (isCli) main(undefined, parseCliOptions(process.argv.slice(2))).catch((e) => { console.error(e); process.exit(1); });

@@ -1,0 +1,2 @@
+{ "name": "ufc-video-autopilot", "private": true, "type": "module",
+  "scripts": { "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun" } }
