@@ -20,22 +20,29 @@
 //          [--limit N] [--force] [--dry-run] [--fighter <uuid>]
 //          [--missing-only] [--no-priority]
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, '..', '..');
-const require = createRequire(import.meta.url);
-const sharp = require(path.join(ROOT, 'web', 'node_modules', 'sharp'));
+/* PORTABILITY NOTE.
+ *
+ * This module runs in two places: the CLI (Node, sharp, a .env file, a
+ * lookup cache on disk) and the ufc-media Worker (workerd, Cloudflare image
+ * transformations, KV). Everything that DIFFERS between them is injected
+ * through the context object below; everything that MATTERS -- the Wikidata
+ * identity resolution, the Commons license allowlist, the candidate scoring,
+ * the name lock -- is shared, unchanged, and has exactly one implementation.
+ *
+ * Nothing is read from process.argv, process.env or the filesystem at module
+ * scope. argv is empty in workerd, so an option read at import is frozen for
+ * the life of the isolate, and node:fs paths built from import.meta.url throw
+ * the Worker's startup before any handler runs.
+ */
+/* Set once per invocation by main(). Every invocation in a given isolate
+ * carries the same bindings, so this is stable rather than shared mutable
+ * state in the dangerous sense; it is still the only module-scope value that
+ * changes, and it is set before any other function is called. */
+let CTX = null;
 
 // ---------------------------------------------------------------- config
 const USER_AGENT = 'PropBetEdgeUFC/1.1 (https://ufc.propbetedge.ai; sales@localhomebuyersusa.com)';
 const BUCKET = 'ufc-media';
-const CACHE_DIR = path.join(__dirname, 'cache');
-const CACHE_FILE = path.join(CACHE_DIR, 'lookups.json');
-const OVERRIDES_FILE = path.join(__dirname, 'commons_overrides.json');
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const WIKI_MIN_INTERVAL_MS = 500; // ~2 req/s to Wikimedia
 const MMA_DESC = /mixed martial art|\bMMA\b|fighter/i;
@@ -44,37 +51,23 @@ const MIN_SOURCE_EDGE = 420;
 // Allowlist. Anything that does not match is rejected (fair use, NC, ND, GFDL-only, ...).
 const LICENSE_OK = /^(CC0(\s*1\.0)?|Public domain|CC BY \d(\.\d)?|CC BY-SA \d(\.\d)?)$/i;
 
-// ---------------------------------------------------------------- args
-const argv = process.argv.slice(2);
-const flag = (n) => argv.includes(n);
-const opt = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
-const LIMIT = opt('--limit') ? Number(opt('--limit')) : Infinity;
-const FORCE = flag('--force');
-const DRY = flag('--dry-run');
-const ONLY_FIGHTER = opt('--fighter');
-// A reviewed list of names to work through, so a surface that needs pictures
-// — the TUF archive, the Contender Series roster — can be filled without
-// walking all 2,500 fighters. Names are resolved against ufc_fighters and
-// anything that does not resolve is reported rather than guessed at; the
-// license gate and the identity lock below are unchanged.
-const NAMES_FILE = opt('--names');
-const MISSING_ONLY = flag('--missing-only');
-const PRIORITY = !flag('--no-priority'); // --priority is the default
-
-// ---------------------------------------------------------------- env
-function loadEnv() {
-  const p = path.join(ROOT, '.env');
-  if (!fs.existsSync(p)) return;
-  for (const line of fs.readFileSync(p, 'utf8').split(/\r?\n/)) {
-    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-    if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
-  }
+/* CLI flags -> an options object. The Worker passes its own.
+ * `missingOnly` defaults TRUE: a run must not re-examine fighters that
+ * already have a good stored portrait, and `force` is the deliberate
+ * override rather than the default posture. */
+export function parseCliOptions(argv = []) {
+  const flag = (n) => argv.includes(n);
+  const opt = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
+  return {
+    limit: opt('--limit') ? Number(opt('--limit')) : Infinity,
+    force: flag('--force'),
+    dry: flag('--dry-run'),
+    onlyFighter: opt('--fighter') || null,
+    namesFile: opt('--names') || null,
+    missingOnly: flag('--no-missing-only') ? false : true,
+    priority: !flag('--no-priority'),
+  };
 }
-loadEnv();
-const SUPABASE_URL = process.env.SUPABASE_URL?.replace(/\/$/, '');
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!SUPABASE_URL || !SERVICE_KEY) { console.error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY missing (.env)'); process.exit(2); }
-const SB_HEADERS = { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` };
 
 // ---------------------------------------------------------------- helpers
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -87,7 +80,7 @@ async function wikiFetch(url, asJson = true) {
     const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT, Accept: asJson ? 'application/json' : '*/*' } });
     if (res.status === 429 || res.status >= 500) { await sleep(2000 * (attempt + 1)); continue; }
     if (!res.ok) throw new Error(`${res.status} ${url}`);
-    return asJson ? res.json() : Buffer.from(await res.arrayBuffer());
+    return asJson ? res.json() : new Uint8Array(await res.arrayBuffer());
   }
   throw new Error(`gave up on ${url}`);
 }
@@ -116,23 +109,52 @@ function nameSignal(fighterName, text) {
   return hay.includes(` ${parts[0]} `) && hay.includes(` ${parts[parts.length - 1]} `);
 }
 
-function loadOverrides() {
-  try {
-    const raw = JSON.parse(fs.readFileSync(OVERRIDES_FILE, 'utf8'));
-    return raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
-  } catch (e) {
-    if (e?.code === 'ENOENT') return {};
-    throw new Error(`invalid ${path.basename(OVERRIDES_FILE)}: ${e.message}`);
+/**
+ * The first and last name tokens ADJACENT to each other, not merely both
+ * present somewhere.
+ *
+ * nameSignal() above asks only whether both tokens appear in the evidence
+ * anywhere, which its own comment justifies as conservative enough WHEN the
+ * candidate came from a category already linked to the fighter's verified
+ * Wikidata entity. On the text-search fallback that premise does not hold, and
+ * on 2026-09-10 it accepted a US Navy carpentry photo for the middleweight
+ * Aaron Jeffery: the caption reads "Cmdr. Jeffery P. Eaton saws a baseboard
+ * while Aviation Structural Mechanic 2nd Class Aaron Sieg watches". Two
+ * different men, neither of them the fighter, and both tokens present.
+ *
+ * Up to two intervening tokens are allowed so that middle names and patronyms
+ * still match ("Antonio Rodrigo Nogueira", "Israel Adesanya" written with a
+ * nickname between).
+ */
+export function nameAdjacent(fighterName, text) {
+  const parts = norm(fighterName).split(/\s+/).filter(Boolean);
+  if (parts.length < 2) return nameSignal(fighterName, text);
+  const first = parts[0];
+  const last = parts[parts.length - 1];
+  /* Token walk rather than a built regex. norm() has already reduced both
+   * sides to [a-z0-9 ], so there is no metacharacter left to escape and an
+   * escaping step here would be dead code dressed as a safety measure. */
+  const tokens = norm(text).split(' ').filter(Boolean);
+  for (let i = 0; i < tokens.length; i += 1) {
+    if (tokens[i] !== first) continue;
+    for (let gap = 1; gap <= 3; gap += 1) {
+      if (tokens[i + gap] === last) return true;
+    }
   }
+  return false;
 }
-const COMMONS_OVERRIDES = loadOverrides();
+
+/* Curated Commons files for fighters whose Wikidata entity lacks a usable
+ * image link. Reviewed by hand, and still license-checked and name-locked at
+ * runtime below -- an override chooses a CANDIDATE, it never bypasses a gate. */
+const overrides = () => CTX.overrides || {};
 
 async function sbSelectAll(table, query) {
   const out = [];
   const page = 1000;
   for (let from = 0; ; from += page) {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
-      headers: { ...SB_HEADERS, Range: `${from}-${from + page - 1}`, 'Range-Unit': 'items' },
+    const res = await fetch(`${CTX.supabaseUrl}/rest/v1/${table}?${query}`, {
+      headers: { ...CTX.headers, Range: `${from}-${from + page - 1}`, 'Range-Unit': 'items' },
     });
     if (res.status === 416) break;
     if (!res.ok) throw new Error(`PostgREST ${res.status}: ${await res.text()}`);
@@ -144,30 +166,28 @@ async function sbSelectAll(table, query) {
 }
 
 async function sbUpsertImage(row) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/ufc_images?on_conflict=r2_key`, {
+  const res = await fetch(`${CTX.supabaseUrl}/rest/v1/ufc_images?on_conflict=r2_key`, {
     method: 'POST',
-    headers: { ...SB_HEADERS, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
+    headers: { ...CTX.headers, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
     body: JSON.stringify(row),
   });
   if (!res.ok) throw new Error(`upsert ufc_images ${res.status}: ${await res.text()}`);
 }
 
 async function storageUpload(key, buf, contentType) {
-  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${key}`, {
+  const res = await fetch(`${CTX.supabaseUrl}/storage/v1/object/${BUCKET}/${key}`, {
     method: 'POST',
-    headers: { ...SB_HEADERS, 'Content-Type': contentType, 'x-upsert': 'true' },
+    headers: { ...CTX.headers, 'Content-Type': contentType, 'x-upsert': 'true' },
     body: buf,
   });
   if (!res.ok) throw new Error(`storage upload ${key} ${res.status}: ${await res.text()}`);
 }
 
-function loadCache() {
-  try { return JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')); } catch { return {}; }
-}
-function saveCache(cache) {
-  fs.mkdirSync(CACHE_DIR, { recursive: true });
-  fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 1));
-}
+/* The lookup cache is 30-day memory of 'we already asked Wikidata about this
+ * fighter'. On disk for the CLI, in KV for the Worker; the shape is the same
+ * and neither knows about the other. */
+const cacheGet = () => CTX.cache.load();
+const cacheSet = (c) => CTX.cache.save(c);
 
 // ---------------------------------------------------------------- wikidata
 function p569Date(entity) {
@@ -257,7 +277,9 @@ function imageCandidateScore(fighter, info) {
   if ((info.width || 0) < MIN_SOURCE_EDGE || (info.height || 0) < MIN_SOURCE_EDGE) return -Infinity;
 
   const evidence = `${info.filename || ''} ${info.description || ''} ${info.categories || ''}`;
-  if (!nameSignal(fighter.name, evidence)) return -Infinity;
+  /* The hard gate. Adjacency, not co-occurrence: this is the line between
+   * 'a file that mentions both names' and 'a file about this person'. */
+  if (!nameAdjacent(fighter.name, evidence)) return -Infinity;
 
   const aspect = info.width / Math.max(1, info.height);
   // Reject panoramic/banner-like files; we are selecting a person portrait.
@@ -291,21 +313,19 @@ async function findCommonsCategoryFallback(fighter, entity) {
 }
 
 // ---------------------------------------------------------------- images
-const JPEG = { quality: 84, mozjpeg: true };
-async function deriveAndUpload(fighterId, srcBuf) {
-  const base = sharp(srcBuf, { failOn: 'none' }).rotate();
-  // portrait: preserve the original composition; it is the lossless visual
-  // source used for article heroes and any future focal-point reprocessing.
-  const portrait = await base.clone().resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true }).jpeg(JPEG).toBuffer();
-  // card/thumb: Sharp attention keeps the salient subject but does not replace
-  // frontend art direction. The UI must not hard-pin these crops to y=0.
-  const card = await base.clone().resize(800, 1000, { fit: 'cover', position: sharp.strategy.attention }).jpeg(JPEG).toBuffer();
-  const thumb = await base.clone().resize(320, 400, { fit: 'cover', position: sharp.strategy.attention }).jpeg(JPEG).toBuffer();
-  const prefix = `fighters/${fighterId}`;
-  await storageUpload(`${prefix}/portrait.jpg`, portrait, 'image/jpeg');
-  await storageUpload(`${prefix}/card.jpg`, card, 'image/jpeg');
-  await storageUpload(`${prefix}/thumb.jpg`, thumb, 'image/jpeg');
-  return [portrait.length, card.length, thumb.length].map((n) => `${Math.round(n / 1024)}k`).join('/');
+/* portrait / card / thumb, produced by whichever engine the host has.
+ *
+ * CLI: sharp, with strategy.attention for the salient crop.
+ * Worker: Cloudflare image transformations, gravity auto, with the output
+ *         dimensions parsed back out of the returned bytes -- an unavailable
+ *         transformer returns the ORIGINAL silently, and uploading a 2000px
+ *         original as card.jpg would stay invisible until someone looked.
+ *
+ * Both write the same three keys, because ufc-api and web/lib/db.ts build the
+ * card and thumb URLs by string substitution on r2_key, so a missing
+ * derivative is a 404 where a fighter's face should be. */
+async function deriveAndUpload(fighterId, srcUrl) {
+  return CTX.derive({ fighterId, srcUrl, storageUpload, prefix: `fighters/${fighterId}` });
 }
 
 async function finalizeImage(f, info, { qid = null, source }) {
@@ -315,20 +335,32 @@ async function finalizeImage(f, info, { qid = null, source }) {
   }
   if (!/^image\//i.test(info.mime || '')) return { status: 'no_image', qid, note: `not an image MIME: ${info.mime || '?'} <- ${source}` };
 
+  /* THE REPLACEMENT GATE. A stored portrait is never overwritten by a worse
+   * one, and the trap is that a pipeline treats its newest answer as its best
+   * one. It is not: Wikidata gets edited, a category gains a badly-cropped
+   * file, a good image is superseded by a group shot that scores adequately.
+   * The host decides, because only it knows what is already stored. */
+  if (CTX.gate) {
+    const verdict = await CTX.gate({ fighter: f, info });
+    if (verdict && verdict.allow === false) {
+      return { status: 'kept_existing', qid, note: verdict.why || 'existing image is not beaten by this candidate' };
+    }
+  }
+
   const r2_key = `fighters/${f.id}/portrait.jpg`;
+
   const row = { kind: 'wikimedia', r2_key, license: info.license, author: info.author, source_url: info.descriptionurl, fighter_id: f.id };
-  if (DRY) return { status: 'ok', qid, note: `DRY ${info.license} by ${info.author ?? '?'} <- ${source}`, row };
+  if (CTX.dry) return { status: 'ok', qid, note: `DRY ${info.license} by ${info.author ?? '?'} <- ${source}`, row };
 
   const srcUrl = info.thumburl && info.width > 1200 ? info.thumburl : info.url;
-  const buf = await wikiFetch(srcUrl, false);
-  const sizes = await deriveAndUpload(f.id, buf);
+  const sizes = await deriveAndUpload(f.id, srcUrl);
   await sbUpsertImage(row);
   return { status: 'ok', qid, note: `${info.license} by ${info.author ?? '?'} (${sizes}) <- ${source}`, row };
 }
 
 // ---------------------------------------------------------------- per fighter
 async function processFighter(f) {
-  const manual = COMMONS_OVERRIDES[f.id];
+  const manual = overrides()[f.id];
   if (manual) {
     if (!manual.name || norm(manual.name) !== norm(f.name)) {
       return { status: 'error', note: `curated override name mismatch: ${manual.name || '(missing)'} != ${f.name}` };
@@ -336,7 +368,7 @@ async function processFighter(f) {
     if (!manual.file) return { status: 'error', note: 'curated override missing file' };
     const info = await commonsImageInfo(manual.file);
     const evidence = `${info?.filename || ''} ${info?.description || ''} ${info?.categories || ''}`;
-    if (!info || !nameSignal(f.name, evidence)) {
+    if (!info || !nameAdjacent(f.name, evidence)) {
       return { status: 'error', note: `curated Commons file no longer carries identity evidence for ${f.name}: ${manual.file}` };
     }
     return finalizeImage(f, info, { source: `CURATED:${manual.file}` });
@@ -448,18 +480,43 @@ async function findCommonsSearchFallback(f) {
 }
 
 // ---------------------------------------------------------------- main
-async function main() {
+export async function main(injectedEnv, options = {}) {
+  const env = injectedEnv || {};
+  const supabaseUrl = String(env.SUPABASE_URL || '').replace(/\/+$/, '');
+  const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceKey) throw new Error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are required');
+
+  const o = {
+    limit: options.limit ?? Infinity,
+    force: Boolean(options.force),
+    dry: Boolean(options.dry),
+    onlyFighter: options.onlyFighter || null,
+    names: options.names || null,
+    missingOnly: options.missingOnly !== false,
+    priority: options.priority !== false,
+  };
+  CTX = {
+    supabaseUrl,
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+    overrides: options.overrides || {},
+    cache: options.cache || { load: async () => ({}), save: async () => {} },
+    derive: options.derive,
+    dry: o.dry,
+  };
+  if (!CTX.derive) throw new Error('a derive() implementation is required');
+
   const today = new Date().toISOString().slice(0, 10);
-  let fighters = ONLY_FIGHTER
-    ? await sbSelectAll('ufc_fighters', `select=id,name,nickname,dob&id=eq.${ONLY_FIGHTER}`)
+
+  let fighters = o.onlyFighter
+    ? await sbSelectAll('ufc_fighters', `select=id,name,nickname,dob&id=eq.${o.onlyFighter}`)
     : await sbSelectAll('ufc_fighters', 'select=id,name,nickname,dob&order=name.asc');
-  if (ONLY_FIGHTER && fighters.length === 0) { console.error(`fighter ${ONLY_FIGHTER} not found`); process.exit(1); }
+  if (o.onlyFighter && fighters.length === 0) throw new Error(`fighter ${o.onlyFighter} not found`);
   /* The full roster, captured before any filtering, so a name-list report can
    * tell "not in ufc_fighters at all" from "filtered out for another reason". */
   const allNames = new Set(fighters.map((f) => String(f.name)));
 
-  if (NAMES_FILE) {
-    const wanted = JSON.parse(fs.readFileSync(NAMES_FILE, 'utf8'));
+  if (o.names) {
+    const wanted = o.names;
     /* Accent-folded, because the archive spells names as its sources do
      * ("Alejandro Pérez", "Antônio Rodrigo Nogueira") and ufc_fighters
      * generally does not. Folding is only for MATCHING; the stored row keeps
@@ -484,29 +541,29 @@ async function main() {
     if (absent.length) console.log(`  no fighter row, left alone: ${absent.length} — ${absent.slice(0, 10).join(', ')}${absent.length > 10 ? ` … +${absent.length - 10}` : ''}`);
   }
 
-  if (MISSING_ONLY && !ONLY_FIGHTER) {
+  if (o.missingOnly && !o.onlyFighter) {
     const existing = await sbSelectAll('ufc_images', 'select=fighter_id&kind=eq.wikimedia&fighter_id=not.is.null');
     const pictured = new Set(existing.map((r) => r.fighter_id).filter(Boolean));
     fighters = fighters.filter((f) => !pictured.has(f.id));
   }
 
   const prioritySet = new Set();
-  if (PRIORITY && !ONLY_FIGHTER && !NAMES_FILE) {
+  if (o.priority && !o.onlyFighter && !o.names) {
     const bouts = await sbSelectAll('ufc_bouts', `select=fighter_a_id,fighter_b_id,ufc_events!inner(event_date)&ufc_events.event_date=gte.${today}`);
     for (const b of bouts) { prioritySet.add(b.fighter_a_id); prioritySet.add(b.fighter_b_id); }
     fighters.sort((a, b) => (prioritySet.has(b.id) - prioritySet.has(a.id)) || a.name.localeCompare(b.name));
   }
 
-  const cache = loadCache();
-  const counts = { ok: 0, no_entity: 0, no_image: 0, license_rejected: 0, ambiguous: 0, error: 0, skipped: 0 };
-  console.log(`${fighters.length} fighters selected${MISSING_ONLY ? ' without stored media' : ' from ufc_fighters'}, ${prioritySet.size} on upcoming cards, ${Object.keys(COMMONS_OVERRIDES).length} curated override(s)${DRY ? ' [DRY RUN]' : ''}${FORCE ? ' [FORCE]' : ''}`);
+  const cache = await cacheGet();
+  const counts = { ok: 0, no_entity: 0, no_image: 0, license_rejected: 0, ambiguous: 0, error: 0, skipped: 0, kept_existing: 0 };
+  console.log(`${fighters.length} fighters selected${o.missingOnly ? ' without stored media' : ' from ufc_fighters'}, ${prioritySet.size} on upcoming cards, ${Object.keys(overrides()).length} curated override(s)${o.dry ? ' [DRY RUN]' : ''}${o.force ? ' [FORCE]' : ''}`);
 
   let processed = 0;
   for (const f of fighters) {
-    if (processed >= LIMIT) break;
+    if (processed >= o.limit) break;
     const c = cache[f.id];
     const fresh = c && Date.now() - Date.parse(c.checked_at) < CACHE_TTL_MS;
-    if (fresh && !FORCE && !ONLY_FIGHTER) { counts.skipped++; continue; }
+    if (fresh && !o.force && !o.onlyFighter) { counts.skipped++; continue; }
     processed++;
     const tag = prioritySet.has(f.id) ? '*' : ' ';
     let r;
@@ -514,20 +571,67 @@ async function main() {
     catch (e) { r = { status: 'error', note: e.message }; }
     counts[r.status] = (counts[r.status] ?? 0) + 1;
     console.log(`${tag} ${f.id}  ${f.name.padEnd(28)} ${r.status.padEnd(17)} ${r.note ?? ''}`);
-    if (!DRY && r.status !== 'error') {
+    if (!o.dry && r.status !== 'error') {
       cache[f.id] = { status: r.status, checked_at: new Date().toISOString(), name: f.name, qid: r.qid ?? null, license: r.row?.license ?? null };
-      saveCache(cache);
+      await cacheSet(cache);
     }
   }
 
   console.log('\nsummary');
-  console.log(`  ok               ${counts.ok}`);
-  console.log(`  no entity        ${counts.no_entity}`);
-  console.log(`  no image         ${counts.no_image}`);
-  console.log(`  rejected         ${counts.license_rejected}`);
-  console.log(`  ambiguous        ${counts.ambiguous}`);
-  console.log(`  error (retry)    ${counts.error}`);
-  console.log(`  skipped (cached) ${counts.skipped}`);
+  for (const [k, v] of Object.entries(counts)) console.log(`  ${k.padEnd(17)} ${v}`);
+
+  /* Returned rather than logged-and-grepped, so a Worker can ledger it. */
+  return { counts, selected: fighters.length, processed, priority: prioritySet.size, dry: o.dry };
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+/* CLI ONLY. Importing this module must never fetch, derive or upload: the
+ * previous version ran main() at module scope, so loading the file WAS the
+ * pipeline. sharp, node:fs and the .env reader are pulled in here and nowhere
+ * else, which is what keeps the module loadable inside workerd at all. */
+const isCli = typeof process !== 'undefined' && process.argv?.[1]?.endsWith('fetch_fighter_portraits.mjs');
+if (isCli) {
+  const { createRequire } = await import('node:module');
+  const fsMod = await import('node:fs');
+  const pathMod = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const dir = pathMod.dirname(fileURLToPath(import.meta.url));
+  const root = pathMod.resolve(dir, '..', '..');
+  const req = createRequire(import.meta.url);
+  const sharp = req(pathMod.join(root, 'web', 'node_modules', 'sharp'));
+  const JPEG = { quality: 84, mozjpeg: true };
+
+  const envFile = {};
+  const envPath = pathMod.join(root, '.env');
+  if (fsMod.existsSync(envPath)) {
+    for (const line of fsMod.readFileSync(envPath, 'utf8').split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+      if (m) envFile[m[1]] = m[2].replace(/^["']|["']$/g, '');
+    }
+  }
+  const env = { ...envFile, ...process.env };
+  const opts = parseCliOptions(process.argv.slice(2));
+  const cacheFile = pathMod.join(dir, 'cache', 'lookups.json');
+  const overridesFile = pathMod.join(dir, 'commons_overrides.json');
+
+  main(env, {
+    ...opts,
+    names: opts.namesFile ? JSON.parse(fsMod.readFileSync(opts.namesFile, 'utf8')) : null,
+    overrides: fsMod.existsSync(overridesFile) ? JSON.parse(fsMod.readFileSync(overridesFile, 'utf8')) : {},
+    cache: {
+      load: async () => { try { return JSON.parse(fsMod.readFileSync(cacheFile, 'utf8')); } catch { return {}; } },
+      save: async (c) => { fsMod.mkdirSync(pathMod.dirname(cacheFile), { recursive: true }); fsMod.writeFileSync(cacheFile, JSON.stringify(c, null, 1)); },
+    },
+    derive: async ({ srcUrl, storageUpload: up, prefix }) => {
+      const res = await fetch(srcUrl, { headers: { 'User-Agent': USER_AGENT } });
+      const buf = Buffer.from(await res.arrayBuffer());
+      const base = sharp(buf, { failOn: 'none' }).rotate();
+      const portrait = await base.clone().resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true }).jpeg(JPEG).toBuffer();
+      const card = await base.clone().resize(800, 1000, { fit: 'cover', position: sharp.strategy.attention }).jpeg(JPEG).toBuffer();
+      const thumb = await base.clone().resize(320, 400, { fit: 'cover', position: sharp.strategy.attention }).jpeg(JPEG).toBuffer();
+      await up(`${prefix}/portrait.jpg`, portrait, 'image/jpeg');
+      await up(`${prefix}/card.jpg`, card, 'image/jpeg');
+      await up(`${prefix}/thumb.jpg`, thumb, 'image/jpeg');
+      return [portrait.length, card.length, thumb.length].map((n) => `${Math.round(n / 1024)}k`).join('/');
+    },
+  }).catch((e) => { console.error(`portraits FAILED: ${e.message}`); process.exitCode = 1; });
+}

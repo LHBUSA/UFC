@@ -60,7 +60,7 @@ export const imageSize = (bytes) => jpegSize(bytes) || pngSize(bytes);
  *
  * @returns {{ok, bytes, width, height, reason}}
  */
-export async function derive(srcUrl, { width, height, quality = 82, fetchImpl = fetch } = {}) {
+export async function derive(srcUrl, { width, height, quality = 82, fit = 'cover', requireExact = true, fetchImpl = fetch } = {}) {
   let res;
   try {
     res = await fetchImpl(srcUrl, {
@@ -68,7 +68,7 @@ export async function derive(srcUrl, { width, height, quality = 82, fetchImpl = 
       cf: {
         image: {
           width, height,
-          fit: 'cover',
+          fit,
           gravity: 'auto',      /* saliency crop; sharp's attention strategy */
           format: 'jpeg',
           quality,
@@ -88,6 +88,20 @@ export async function derive(srcUrl, { width, height, quality = 82, fetchImpl = 
   /* The check that matters. An untransformed pass-through arrives with the
    * ORIGINAL dimensions, which is exactly what a working transform must not
    * return. One pixel of tolerance for rounding. */
+  /* A cover crop has an exact contract: it must come back at the size asked
+   * for. A scale-down does not — it fits INSIDE the box and preserves aspect,
+   * so the test is that it is no larger than requested and actually changed if
+   * the original was bigger. Applying the exact test to a bounded transform
+   * would reject every correct result. */
+  if (!requireExact) {
+    const within = size.width <= width + 1 && size.height <= height + 1;
+    if (!within) {
+      return { ok: false, width: size.width, height: size.height,
+        reason: `bounded transform did not apply: asked to fit within ${width}x${height}, received ${size.width}x${size.height}` };
+    }
+    return { ok: true, bytes, width: size.width, height: size.height, content_type: res.headers.get('content-type') || 'image/jpeg' };
+  }
+
   const okW = Math.abs(size.width - width) <= 1;
   const okH = Math.abs(size.height - height) <= 1;
   if (!okW || !okH) {

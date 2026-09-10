@@ -4,8 +4,30 @@ compatibility_date = "2026-09-10"
 account_id = "fd3a233edadd0a60916413c1199f71ee"
 workers_dev = true
 
+# scripts/images/fetch_fighter_portraits.mjs is imported for its Wikidata
+# identity resolution, Commons license allowlist and candidate scoring. The
+# module is now inert on import — sharp, node:fs and the .env reader live behind
+# a CLI guard — but it still resolves node builtins at parse time.
+compatibility_flags = ["nodejs_compat"]
+
 [vars]
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+
+# Wikimedia is rate-limited to ~2 req/s by the pipeline itself and a fighter can
+# cost several lookups, so a run is bounded by wall clock rather than CPU.
+[limits]
+cpu_ms = 120000
+
+# Replaces newsroom.yml's "5 9 * * *". Offset so it does not collide with the
+# rankings lane at 25 past.
+[triggers]
+crons = ["40 9 * * *"]
+
+# The 30-day Wikidata lookup memory and the curated Commons override map. Both
+# were files on the runner's disk; neither exists in workerd.
+[[kv_namespaces]]
+binding = "UFC_MEDIA_KV"
+id = "837a9a8f4f9c4e46a429a1c6a4464adf"
 
 [observability]
 enabled = true
