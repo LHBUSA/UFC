@@ -42,10 +42,11 @@ on conflict (source_key) do update set
 
 -- UFCalendar publicly describes itself as sourcing UFC data from UFCStats and
 -- other promotion data from Wikipedia. It is therefore not an upstream source
--- for this product and is deliberately disabled.
+-- for this product and is deliberately disabled. `rights_state=unknown` is
+-- intentional: blocked here means product policy, not a legal conclusion.
 update public.combat_sources
 set access_mode = 'blocked',
-    rights_state = 'prohibited',
+    rights_state = 'unknown',
     redistribution_allowed = false,
     enabled = false,
     rights_note = 'Not used. Downstream aggregation of sources PropBetEdge can ingest directly (UFCStats/Wikipedia).',
@@ -58,7 +59,7 @@ where source_key = 'ufcalendar';
 -- explicit rather than silently introducing a vendor dependency.
 update public.combat_sources
 set access_mode = 'blocked',
-    rights_state = 'prohibited',
+    rights_state = 'unknown',
     redistribution_allowed = false,
     enabled = false,
     rights_note = 'Disabled for the direct-source strategy. Re-enable only through an explicit future source-policy migration.',
