@@ -33,6 +33,8 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
+const DAY: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", year: "numeric" };
+
 function boutHref(b: RoundIndexBout) {
   return `/fights/${matchupSlug(b.fighterA, b.fighterB, { name: b.eventName, event_date: b.eventDate })}`;
 }
@@ -70,8 +72,12 @@ function Card({ b }: { b: RoundIndexBout }) {
 export default async function RoundByRoundIndex() {
   const index = await getRoundIndex();
   const sections = buildSections(index);
-  const t = index.totals;
-  const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t.byRounds[n] || 0 }));
+  const ok = index.status === "ok" ? index : null;
+  const t = ok?.totals;
+  /* Observed length only. "N rounds of recorded data" is how long the stored
+   * record runs, which is not how long the fight was scheduled for. */
+  const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t?.byObservedRounds[n] || 0 }));
+  const recent = ok?.shelves.recent || [];
 
   return (
     <div className="wrap page rbi">
@@ -82,7 +88,16 @@ export default async function RoundByRoundIndex() {
         lede="Fight progression reconstructed from verified round-level observations. Striking, grappling, control and target distribution for each completed round, compared against the previous round and against each fighter's historical Fight DNA."
       />
 
-      {t.eligible === 0 ? (
+      {!ok || !t ? (
+        /* A failed read is reported as a failed read. It is never rendered as
+         * an empty archive or as a smaller one. */
+        <section className="segment">
+          <div className="card rbi-empty" role="status">
+            <div className="rbi-empty-k">Round index temporarily unavailable</div>
+            <p>The round-level archive could not be read just now, so no counts or fight lists are shown rather than incomplete ones. Individual fight pages are unaffected. Try again shortly.</p>
+          </div>
+        </section>
+      ) : t.eligible === 0 ? (
         <section className="segment">
           <div className="card rbi-empty">
             <div className="rbi-empty-k">No round data loaded yet</div>
@@ -94,10 +109,15 @@ export default async function RoundByRoundIndex() {
           <section className="segment rbi-stats" aria-label="Coverage">
             <div className="rbi-stat"><b>{t.eligible.toLocaleString()}</b><span>fights with round data</span></div>
             <div className="rbi-stat"><b>{t.bothCorners.toLocaleString()}</b><span>with both corners in every round</span></div>
+            <div className="rbi-stat"><b>{t.scheduledFiveRound.toLocaleString()}</b><span>scheduled for five rounds</span></div>
             {rounds.filter((r) => r.count > 0).map((r) => (
-              <div className="rbi-stat" key={r.n}><b>{r.count.toLocaleString()}</b><span>{`${r.n}-round fights`}</span></div>
+              <div className="rbi-stat" key={r.n}><b>{r.count.toLocaleString()}</b><span>{`with ${r.n} round${r.n === 1 ? "" : "s"} of recorded data`}</span></div>
             ))}
           </section>
+          <p className="rbi-fresh">
+            {t.firstEventDate && t.lastEventDate ? <>Coverage {fmtDate(t.firstEventDate, DAY)} to {fmtDate(t.lastEventDate, DAY)}. </> : null}
+            {ok.freshness.lastRoundCaptureAt ? <>Round data last captured {fmtDate(ok.freshness.lastRoundCaptureAt, DAY)}.</> : null}
+          </p>
 
           {sections.map((s) => (
             <section className="segment" key={s.key} id={s.key}>
@@ -131,8 +151,8 @@ export default async function RoundByRoundIndex() {
           isPartOf: { "@id": `${SITE.url}/#site` },
           mainEntity: {
             "@type": "ItemList",
-            numberOfItems: Math.min(24, index.bouts.length),
-            itemListElement: index.bouts.slice(0, 24).map((b, i) => ({
+            numberOfItems: recent.length,
+            itemListElement: recent.map((b, i) => ({
               "@type": "ListItem",
               position: i + 1,
               name: `${b.fighterA.name} vs ${b.fighterB.name}`,
