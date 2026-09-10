@@ -17,6 +17,7 @@ import "./tuf.css";
 import "./store.css";
 import "./store-commerce.css";
 import "./model.css";
+import "./fighter-dna-polish.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";

@@ -22,8 +22,13 @@ function commonsRedirect(sourceUrl: string, width: number): string | null {
   }
 }
 
-/* No third-party fallback: a fighter without a rights-cleared image has no
- * image, and callers render the branded initials. See getImagesForFighters. */
+function espnMmaHeadshot(fighter: Fighter | null | undefined): string | null {
+  const id = String(fighter?.espn_athlete_id || "").trim();
+  if (!/^\d+$/.test(id)) return null;
+  // Display-only fallback. Never insert this URL into ufc_images: ESPN media
+  // must not enter the PropBetEdge redistributable media catalog by accident.
+  return `https://a.espncdn.com/i/headshots/mma/players/full/${id}.png`;
+}
 
 export function primaryFighterImage(fighter: Fighter | null | undefined): ImageRef | null {
   const images = fighter?.images || [];
@@ -37,7 +42,7 @@ export function fighterImageUrl(fighter: Fighter | null | undefined, width = 720
   const image = primaryFighterImage(fighter);
   if (image?.image_url) return image.image_url;
   if (image?.kind === "wikimedia" && image.source_url) return commonsRedirect(image.source_url, width);
-  return null;
+  return espnMmaHeadshot(fighter);
 }
 
 export function fighterImageCredit(fighter: Fighter | null | undefined): string | null {
@@ -47,7 +52,7 @@ export function fighterImageCredit(fighter: Fighter | null | undefined): string 
     if (parts.length) return parts.join(" · ");
     if (image.kind === "wikimedia") return "Wikimedia Commons";
   }
-  return null;
+  return espnMmaHeadshot(fighter) ? "ESPN · display fallback" : null;
 }
 
 export function fighterMedia(fighter: Fighter | null | undefined, width = 720): FighterMedia {
