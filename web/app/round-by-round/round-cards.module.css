@@ -1,0 +1,107 @@
+.visualCard {
+  min-height: 360px;
+  background:
+    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--pbe-gold) 8%, transparent), transparent 38%),
+    linear-gradient(145deg, color-mix(in srgb, var(--pbe-ink) 94%, #000), color-mix(in srgb, var(--pbe-ink) 72%, transparent));
+}
+
+.recentCard {
+  border-color: color-mix(in srgb, var(--pbe-gold) 24%, var(--pbe-line-faint));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--pbe-gold) 8%, transparent);
+}
+
+.matchupVisual {
+  grid-template-columns: minmax(0, 1fr) 38px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 4px 0 2px;
+}
+
+.fighterVisual {
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.fighterVisual:last-child {
+  align-items: flex-end;
+}
+
+.fighterFace {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roundAvatar {
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--pbe-paper) 15%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pbe-ink) 86%, #000);
+  box-shadow: 0 10px 28px rgb(0 0 0 / .32), inset 0 0 0 1px color-mix(in srgb, var(--pbe-paper) 3%, transparent);
+}
+
+.roundAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.winnerVisual .roundAvatar {
+  border-color: color-mix(in srgb, var(--pbe-gold) 72%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pbe-gold) 8%, transparent), 0 12px 30px rgb(0 0 0 / .34);
+}
+
+.winBadge {
+  position: absolute;
+  right: -7px;
+  bottom: 2px;
+  z-index: 2;
+  padding: 4px 6px;
+  border: 1px solid color-mix(in srgb, var(--pbe-gold) 70%, transparent);
+  border-radius: 999px;
+  background: var(--pbe-ink);
+  color: var(--pbe-gold);
+  font: 800 8px/1 var(--pbe-font-data);
+  letter-spacing: .1em;
+  font-style: normal;
+  box-shadow: 0 4px 12px rgb(0 0 0 / .32);
+}
+
+.fighterVisual:last-child .winBadge {
+  right: auto;
+  left: -7px;
+}
+
+.fighterVisual > b {
+  max-width: 140px;
+  font-size: clamp(18px, 1.8vw, 24px);
+  line-height: 1.02;
+}
+
+.vsVisual {
+  margin-top: 18px;
+  width: 38px;
+  height: 38px;
+  border-color: color-mix(in srgb, var(--pbe-gold) 20%, var(--pbe-line-faint));
+  background: color-mix(in srgb, var(--pbe-ink) 88%, transparent);
+  color: color-mix(in srgb, var(--pbe-paper) 60%, var(--pbe-faint));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pbe-paper) 2%, transparent);
+}
+
+@media (max-width: 760px) {
+  .visualCard { min-height: 350px; }
+  .matchupVisual { grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr); }
+  .vsVisual { width: 34px; height: 34px; }
+  .fighterVisual > b { max-width: 150px; }
+}
+
+@media (max-width: 460px) {
+  .visualCard { min-height: 330px; }
+  .matchupVisual { grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr); gap: 8px; }
+  .roundAvatar { width: 58px !important; height: 58px !important; }
+  .vsVisual { width: 30px; height: 30px; margin-top: 14px; }
+  .fighterVisual > b { max-width: 120px; font-size: 18px; }
+}
