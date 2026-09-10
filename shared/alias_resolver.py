@@ -13,6 +13,10 @@ Match order for any external name (kickoff brief, "Alias resolution"):
      -> matched.
   4. Otherwise -> review row for ufc_alias_review_queue.
 
+With event_scope (bout/event evidence), a unique name match among the scoped
+fighters is the identity even when birth dates disagree between sources; the
+disagreement is recorded (dob_conflict), never a reason to create a duplicate.
+
 Never auto-merge on name alone. UFC Stats carries several "Bruno Silva"s.
 
 No third-party dependencies. The similarity measure is the Indel-normalised
@@ -31,6 +35,16 @@ FUZZY_THRESHOLD = 90
 REVIEW_FLOOR = 80  # candidates at/above this are listed in the review row
 
 _DROP = re.compile(r"['’.`]")      # apostrophes and periods vanish: O'Malley -> omalley, St. Pierre -> st pierre
+
+# Latin letters that Unicode decomposition (NFKD) does not reduce to ASCII, so
+# stripping combining marks alone deletes them: "Syguła" became "sygu a" and
+# never matched "Sygula". Transliterated after lower-casing. Kept identical to
+# TRANSLIT in alias_resolver.mjs; shared/tests pins both.
+TRANSLIT = {
+    "ł": "l", "ø": "o", "đ": "d", "ð": "d", "þ": "th", "ß": "ss", "æ": "ae", "œ": "oe",
+    "ı": "i", "ŋ": "n", "ħ": "h", "ŧ": "t", "ĸ": "k", "ſ": "s",
+}
+_TRANSLIT_RE = re.compile("|".join(map(re.escape, TRANSLIT)))
 _NON_ALNUM = re.compile(r"[^a-z0-9]+")
 _WS = re.compile(r"\s+")
 
@@ -48,6 +62,7 @@ def normalize(name: Optional[str]) -> str:
     s = unicodedata.normalize("NFKD", str(name))
     s = "".join(ch for ch in s if not unicodedata.combining(ch))
     s = s.lower()
+    s = _TRANSLIT_RE.sub(lambda m: TRANSLIT[m.group(0)], s)
     s = _DROP.sub("", s)
     s = _NON_ALNUM.sub(" ", s)
     return _WS.sub(" ", s).strip()
@@ -112,6 +127,9 @@ class ResolveResult:
     score: Optional[float] = None
     candidates: list = field(default_factory=list)
     review_row: Optional[dict] = None
+    # True when a name candidate was vetoed only by a birth-date disagreement.
+    # Callers must not create a second fighter automatically in that state.
+    dob_conflict: bool = False
 
 
 def _norm_record(rec: Optional[str]) -> Optional[str]:
@@ -192,7 +210,13 @@ class AliasResolver:
     # -- public -------------------------------------------------------------
     def resolve(self, raw_name: str, source: str, *, ufcstats_id: Optional[str] = None,
                 weight_class: Optional[str] = None, dob: Optional[str] = None,
-                record: Optional[str] = None, context: Optional[dict] = None) -> ResolveResult:
+                record: Optional[str] = None, context: Optional[dict] = None,
+                event_scope: Optional[list] = None) -> ResolveResult:
+        """event_scope: our fighter ids that bout/event evidence places in this
+        slot (the corners of the bout being linked, or the fighters on the same
+        card). When exactly one of them carries the name, that is the identity:
+        a birth-date disagreement between sources is recorded as a conflict, not
+        allowed to veto it and spawn a duplicate fighter."""
         # 1. hard link
         if ufcstats_id and ufcstats_id in self.by_ufcstats:
             fid = self.by_ufcstats[ufcstats_id]
@@ -201,6 +225,24 @@ class AliasResolver:
         n = normalize(raw_name)
         if not n:
             return ResolveResult("unmatched")
+
+        # 1b. bout/event-scoped identity
+        if event_scope:
+            scoped: list[Candidate] = []
+            for fid in dict.fromkeys(event_scope):
+                f = self.by_id.get(fid)
+                if f is None:
+                    continue
+                if ufcstats_id and f.ufcstats_id and f.ufcstats_id != ufcstats_id:
+                    continue   # already a different UFC Stats fighter
+                norms = self._norms.get(fid, set())
+                best = 100.0 if n in norms else max((token_sort_ratio(n, a) for a in norms), default=0.0)
+                if best >= self.threshold:
+                    agree, disagree = self._second_key_agreement(f, weight_class, dob, record)
+                    scoped.append(Candidate(fid, best, ["event_scoped", *agree, *[f"!{d}" for d in disagree]]))
+            if len(scoped) == 1:
+                c = scoped[0]
+                return ResolveResult("matched", c.fighter_id, "event_scoped_name", c.score, scoped, dob_conflict="!dob" in c.reasons)
 
         # 2. exact normalized + corroborating key
         exact_ids = sorted(self.by_norm.get(n, ()))
@@ -229,6 +271,7 @@ class AliasResolver:
         if not listed:
             return ResolveResult("unmatched", candidates=candidates)
         reason = "ambiguous" if len(listed) > 1 else "no_second_key"
+        dob_conflict = any("!dob" in c.reasons for c in listed if c.score >= self.threshold)
         row = {
             "raw_name": raw_name,
             "source": source,
@@ -240,10 +283,11 @@ class AliasResolver:
                 "dob": dob,
                 "record": record,
                 "candidates": [{"fighter_id": c.fighter_id, "score": round(c.score, 1), "reasons": c.reasons} for c in listed],
+                "dob_conflict": dob_conflict,
                 **(context or {}),
             },
         }
-        return ResolveResult("review", candidates=candidates, review_row=row)
+        return ResolveResult("review", candidates=candidates, review_row=row, dob_conflict=dob_conflict)
 
     def _fuzzy_candidates(self, n: str, exclude: set) -> list[tuple[str, float]]:
         """Blocked fuzzy search: only fighters sharing at least one name token."""

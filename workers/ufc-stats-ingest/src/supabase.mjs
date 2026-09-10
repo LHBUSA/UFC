@@ -102,6 +102,32 @@ export async function upsert(env, table, rows, onConflict, { returning = 'minima
   return out;
 }
 
+/* Insert rows that do not exist yet (conflict target named explicitly, see
+ * postgrest upsert note) and return ONLY the rows actually inserted. */
+export async function insertIgnore(env, table, rows, onConflict) {
+  const list = Array.isArray(rows) ? rows : [rows];
+  let out = [];
+  for (let i = 0; i < list.length; i += 500) {
+    const r = await request(env, `${table}?on_conflict=${encodeURIComponent(onConflict)}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', prefer: 'resolution=ignore-duplicates,return=representation' },
+      body: JSON.stringify(list.slice(i, i + 500)),
+    });
+    if (Array.isArray(r)) out = out.concat(r);
+  }
+  return out;
+}
+
+/* PATCH and report how many rows it changed (observed, not assumed). */
+export async function patchCount(env, table, filter, values) {
+  const r = await request(env, `${table}?${filter}`, {
+    method: 'PATCH',
+    headers: { 'content-type': 'application/json', prefer: 'return=representation' },
+    body: JSON.stringify(values),
+  });
+  return Array.isArray(r) ? r.length : 0;
+}
+
 export function patch(env, table, filter, values) {
   return request(env, `${table}?${filter}`, {
     method: 'PATCH',

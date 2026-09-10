@@ -52,6 +52,14 @@ check(ta.name === 'Tom Aaron' && ta.nickname === null && ta.height_in === null &
 const ss = P.parseFighterPage(load('fighter_0d8011111be000b2_next_row.html'), 'http://ufcstats.com/fighter-details/0d8011111be000b2');
 check(ss.upcoming_rows === 1 && ss.fight_history_count >= 10, `next-row fighter ${ss.name} hist=${ss.fight_history_count} upcoming=${ss.upcoming_rows}`);
 
+/* History rows carry what list-independent discovery needs. */
+const vh = P.parseFighterHistory(load('fighter_18d01f7f8338ae72.html'), 'http://ufcstats.com/fighter-details/18d01f7f8338ae72');
+check(vh.length === vo.fight_history_count && vh[0].fight_id === 'fb4b1754d510b0d0' && vh[0].opponent_ufcstats_id === 'bc711b6dd95c1af6'
+  && vh[0].opponent_name === 'Mario Bautista' && vh[0].event_ufcstats_id === 'c337c3c85b1871e0' && vh[0].event_date === '2026-02-07'
+  && vh[0].result_flag === 'LOSS' && vh.every((r) => r.self_ufcstats_id === '18d01f7f8338ae72'), `history ${JSON.stringify(vh[0])}`);
+const sh = P.parseFighterHistory(load('fighter_0d8011111be000b2_next_row.html'), 'http://ufcstats.com/fighter-details/0d8011111be000b2');
+check(sh.length === ss.fight_history_count && sh.every((r) => /^\d{4}-\d{2}-\d{2}$/.test(r.event_date)), `next-row history ${sh.length}`);
+
 try { P.parseFightPage(load('fight_fb4b1754d510b0d0.html').replace('Sub. att', 'Submission attempts'), 'test://mutated'); check(false, 'mutated header did not throw'); } catch (e2) { check(e2 instanceof SchemaAssertionError, `wrong error ${e2}`); }
 
 console.log('parsers.mjs:', failures === 0 ? 'OK' : `${failures} FAILURES`);

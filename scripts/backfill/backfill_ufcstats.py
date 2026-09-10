@@ -50,6 +50,7 @@ import normalizers  # noqa: E402  (imported for the capability guard in main())
 from alias_resolver import AliasResolver, FighterRef, alias_rows_for_fighter, normalize  # noqa: E402
 
 WORKER = "backfill_ufcstats"
+DEFERRED = object()   # identity deferred: do not create a fighter, do not write the bout
 FIGHTER_COLS = "id,ufcstats_id,espn_athlete_id,name,nickname,dob,record_w,record_l,record_d"
 RESULT_COLS = "bout_id,winner_id,method,round,time_sec,result_source,has_stats,referee,scorecards,finish_detail,time_format"
 
@@ -202,7 +203,9 @@ class Backfill:
                 alias_rows += alias_rows_for_fighter(fid, r["name"], r.get("nickname"))
         self.db.upsert("ufc_fighter_aliases", alias_rows, on_conflict="fighter_id,source,normalized")
 
-    def _ingest_fighter(self, fighter_id: str) -> dict | None:
+    def _ingest_fighter(self, fighter_id: str, event_scope: list | None = None):
+        """Row, None (no page), or DEFERRED (identity blocked only by a DOB
+        disagreement: never a reason to create a second fighter)."""
         known = self.fighter_by_ufcstats.get(fighter_id)
         if known and known.get("dob") is not None and not self.args.force:
             return known
@@ -219,14 +222,24 @@ class Backfill:
         target = known
         if target is None:
             record = f"{p['record_w']}-{p['record_l']}-{p['record_d']}"
-            res = self.resolver.resolve(p["name"], "ufcstats", dob=p["dob"], record=record)
+            res = self.resolver.resolve(p["name"], "ufcstats", ufcstats_id=fighter_id, dob=p["dob"], record=record,
+                                        event_scope=event_scope)
             target = self.fighters.get(res.fighter_id) if res.status == "matched" else None
             if res.status == "matched":
-                self.log.event("fighter_linked", ufcstats_id=fighter_id, fighter_id=res.fighter_id, method=res.method, name=p["name"])
+                self.log.event("fighter_linked", ufcstats_id=fighter_id, fighter_id=res.fighter_id, method=res.method, name=p["name"],
+                               dob_conflict=res.dob_conflict, ufcstats_dob=p["dob"], stored_dob=(target or {}).get("dob"))
+                if res.dob_conflict:
+                    self.log.bump("dob_conflicts_linked_on_bout_evidence")
             if res.status == "review" and res.review_row:
                 res.review_row["context"].update({"ufcstats_id": fighter_id, "url": url})
-                self.db.insert("ufc_alias_review_queue", [res.review_row])
-                self.log.bump("review_queued")
+                self._queue_review_once(res.review_row)
+                if res.dob_conflict:
+                    # ESPN and UFC Stats disagree on the birth date of a fighter
+                    # the name already matches. Creating a second row here is how
+                    # the duplicate fighters (and then duplicate bouts) were made.
+                    self.log.event("fighter_deferred_dob_conflict", ufcstats_id=fighter_id, name=p["name"], dob=p["dob"])
+                    self.log.bump("fighters_deferred_dob_conflict")
+                    return DEFERRED
         if self.args.dry_run:
             self.log.event("dry_run_fighter", id=fighter_id, action="link" if target else "insert", name=p["name"])
             row = target or {"id": f"dry-{fighter_id}", "ufcstats_id": fighter_id, "name": p["name"], "dob": p["dob"],
@@ -253,16 +266,26 @@ class Backfill:
         self.log.bump("fighters_touched")
         return row
 
-    def _stub_fighter(self, fighter_id: str, name: str, from_url: str) -> dict:
+    def _stub_fighter(self, fighter_id: str, name: str, from_url: str, event_scope: list | None = None) -> dict:
         """The fighter page has no archived capture. Create a ufcstats-keyed row from the
-        event page (name only) so the bout can exist. NEVER merged by name: a same-name
-        row without a ufcstats_id goes to the review queue instead, and the stub stays
-        separate until a human (or a later page capture with DOB) resolves it."""
-        res = self.resolver.resolve(name, "ufcstats")
+        event page (name only) so the bout can exist. NEVER merged by name alone: a
+        same-name row without a ufcstats_id goes to the review queue instead, and the stub
+        stays separate until a human (or a later page capture with DOB) resolves it.
+        The exception is bout evidence: exactly one fighter on this card carries the
+        name, which is identity, so that row is linked instead of stubbing a duplicate."""
+        res = self.resolver.resolve(name, "ufcstats", ufcstats_id=fighter_id, event_scope=event_scope)
+        if res.status == "matched" and res.method == "event_scoped_name":
+            target = self.fighters[res.fighter_id]
+            if not self.args.dry_run:
+                self.db.patch("ufc_fighters", f"id=eq.{target['id']}", {"ufcstats_id": fighter_id, "updated_at": now_iso()})
+            target["ufcstats_id"] = fighter_id
+            self.fighter_by_ufcstats[fighter_id] = target
+            self.log.event("fighter_linked", ufcstats_id=fighter_id, fighter_id=target["id"], method=res.method, name=name, stub=True)
+            self.log.bump("fighters_linked")
+            return target
         if res.status == "review" and res.review_row:
             res.review_row["context"].update({"ufcstats_id": fighter_id, "url": from_url, "reason": "stub_without_page"})
-            self.db.insert("ufc_alias_review_queue", [res.review_row])
-            self.log.bump("review_queued")
+            self._queue_review_once(res.review_row)
         row = {"ufcstats_id": fighter_id, "name": name, "source_url": from_url, "captured_at": now_iso(), "updated_at": now_iso()}
         if self.args.dry_run:
             row = {**row, "id": f"dry-{fighter_id}"}
@@ -273,6 +296,29 @@ class Backfill:
         self.log.bump("fighters_stubbed")
         self.log.event("fighter_stub", ufcstats_id=fighter_id, name=name, review=res.status == "review")
         return row
+
+    def _queue_review_once(self, row: dict):
+        """One open review item per (name, source): re-runs must not bury the
+        queue in copies of one question."""
+        if self.args.dry_run or not self.cfg.supabase_key:
+            self.log.bump("review_queued")
+            return
+        from urllib.parse import quote
+        existing = self.db.select_all("ufc_alias_review_queue", "id",
+                                      f"raw_name=eq.{quote(row['raw_name'])}&source=eq.{quote(row['source'])}&resolved_at=is.null")
+        if existing:
+            self.log.bump("review_deduplicated")
+            return
+        self.db.insert("ufc_alias_review_queue", [row])
+        self.log.bump("review_queued")
+
+    def _corner(self, fighter_id: str, name: str, url: str, scope: list):
+        """Our fighter row for one corner of a UFC Stats bout, or None when identity
+        is deferred (the bout is then skipped, not written against a duplicate)."""
+        row = self._ingest_fighter(fighter_id, event_scope=scope)
+        if row is DEFERRED:
+            return None
+        return row or self._stub_fighter(fighter_id, name, url, event_scope=scope)
 
     # -- events -------------------------------------------------------------
     def phase_events(self):
@@ -357,12 +403,20 @@ class Backfill:
             self.log.bump("events_skipped_enriched")
             return
         event_bouts = [b for b in self.bouts if b["event_id"] == ev["id"]]
+        # Bout evidence for identity: the fighters already on this card (ESPN-first
+        # rows). A UFC Stats fighter whose name matches exactly one of them IS that
+        # fighter, whatever the two sources say about a birth date.
+        scope = sorted({fid for x in event_bouts for fid in (x["fighter_a_id"], x["fighter_b_id"]) if fid})
         new_rows, linked = [], 0
         for b in bouts:
             if b.get("ufcstats_id") in self.bout_by_ufcstats and not self.args.force:
                 continue
-            fa = self._ingest_fighter(b["fighter_a_ufcstats_id"]) or self._stub_fighter(b["fighter_a_ufcstats_id"], b["fighter_a_name"], url)
-            fb = self._ingest_fighter(b["fighter_b_ufcstats_id"]) or self._stub_fighter(b["fighter_b_ufcstats_id"], b["fighter_b_name"], url)
+            fa = self._corner(b["fighter_a_ufcstats_id"], b["fighter_a_name"], url, scope)
+            fb = self._corner(b["fighter_b_ufcstats_id"], b["fighter_b_name"], url, scope)
+            if fa is None or fb is None:
+                self.log.bump("bouts_deferred_identity")
+                self.log.event("bout_deferred_identity", ufcstats_id=b.get("ufcstats_id"), fighters=[b["fighter_a_name"], b["fighter_b_name"]])
+                continue
             wc = parsers.normalize_weight_class(b["weight_class_raw"], url)
             existing = next((x for x in event_bouts if not x.get("ufcstats_id") and {x["fighter_a_id"], x["fighter_b_id"]} == {fa["id"], fb["id"]}), None)
             if existing:

@@ -47,6 +47,43 @@ Open item: the cookie name/lifetime set by `/__c` has not been observed yet
 (no live solve has been run). The first Worker run will record it in the
 run notes.
 
+## 2026-09-10 — source status, canary, and the discovery model
+
+**Observed.**
+
+| When (UTC) | Egress | Request | Result |
+|---|---|---|---|
+| 2026-09-06 16:26–16:41 | home IP, Python `--source live` | 763 pages | HTTP 200, real pages, `challenges_solved: 0`. The Python fetcher cannot solve; it aborts on the interstitial, so none was served. |
+| 2026-09-10 15:05 | home IP | 1 × `/statistics/events/completed?page=all` | JS proof-of-work interstitial |
+| 2026-09-10 15:59:40 | Cloudflare remote preview, colo DTW, IPv6 | 1 × `/fight-details/802c0e4e228996ac` | HTTP 200 **interstitial**, difficulty 2, `POST /__c`; the 2026-09-05 pinned regexes still match. The canary stopped after the one request and did not answer it. |
+
+The challenge comes and goes, and on 2026-09-10 Cloudflare egress got it too.
+**Decision (Justin, 2026-09-10): fail closed. The lane does not solve the
+challenge** (`UFCSTATS_SOLVE_CHALLENGE="false"`), does not retry, stores the
+challenge in R2 and backs off `SOURCE_BACKOFF_HOURS`; ESPN continues. This
+supersedes the 2026-09-05 "solve the PoW" decision for the scheduled lane.
+State: *live ingestion architecture is ready and fail-closed; source access is
+currently challenged.*
+
+**Contender Series is on UFC Stats.** Fighter histories link DWCS events (e.g.
+`66e981516e2476d1`, "DWCS 6.7"); only the completed-events list omits them.
+Absence from that list is not source unavailability.
+
+**Discovery model (ufc-stats-ingest v0.4.0).** Eligibility no longer comes from
+the completed-events list. Every bout our own record calls final (a stored
+result) without round rows is enqueued in `ufc_round_stat_queue`. Identity is
+resolved from stored ids, then the event's UFC Stats page, then either
+fighter's UFC Stats history (which reaches Contender Series), with the list
+only as a cross-check for unlinked non-DWCS cards. Fetching happens only when
+source access is allowed; otherwise the item waits in `awaiting_source` with
+the reason. Every outcome is a queue state with its reason.
+
+**Identity.** A birth-date disagreement between ESPN and UFC Stats no longer
+creates a second fighter: with bout/card evidence (exactly one fighter on the
+card carries the name) it links and records `dob_conflict`; without it the bout
+is deferred and queued for review once. `normalize()` transliterates letters
+NFKD leaves alone (ł ø đ ð þ ß æ œ ı ŋ ħ ŧ ĸ ſ), so "Syguła" matches "Sygula".
+
 ## Internet Archive (backfill source)
 
 Snapshots exist for every page family. Availability API answers observed:

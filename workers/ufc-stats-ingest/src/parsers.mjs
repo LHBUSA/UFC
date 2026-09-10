@@ -244,6 +244,50 @@ export function parseFightPage(html, url) {
   };
 }
 
+const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, sept: 9, oct: 10, nov: 11, dec: 12 };
+function historyDate(s, url) {
+  const m = /^([A-Za-z]{3,9})\.?\s+(\d{1,2}),\s*(\d{4})$/.exec(String(s || '').trim());
+  const mo = m ? MONTHS[m[1].slice(0, 4).toLowerCase()] || MONTHS[m[1].slice(0, 3).toLowerCase()] : null;
+  if (!m || !mo) throw new SchemaAssertionError(url, `history date ${JSON.stringify(s)} unparseable`);
+  return `${m[3]}-${String(mo).padStart(2, '0')}-${String(Number(m[2])).padStart(2, '0')}`;
+}
+
+/* Fight-history rows with the identifiers needed to resolve a bout WITHOUT the
+ * completed-events list: fight id, both fighter ids, event id, name and date.
+ * This is how cards the list omits (Contender Series) are reached. Upcoming
+ * ("next") rows are skipped. Additive: parseFighterPage is unchanged. */
+export function parseFighterHistory(html, url) {
+  const $ = cheerio.load(html);
+  const table = $('table.b-fight-details__table_type_event-details').first();
+  if (!table.length) throw new SchemaAssertionError(url, 'fighter history table missing');
+  assertHeaders($, table, H_FIGHTER_HISTORY, url, 'fighter history');
+  const self = id(url, url);
+  const rows = [];
+  table.find('tbody tr').each((_, tr) => {
+    const tds = $(tr).find('td');
+    if (!tds.length) return;
+    const flag = (ps($, tds[0])[0] || '').trim().toLowerCase();
+    if (flag === 'next') return;
+    const link = $(tr).attr('data-link');
+    if (!link) { if (t($, tr)) throw new SchemaAssertionError(url, `history row without data-link: ${t($, tr).slice(0, 60)}`); return; }
+    const fighters = $(tds[1]).find("a[href*='fighter-details']").toArray();
+    if (fighters.length !== 2) throw new SchemaAssertionError(url, `history row has ${fighters.length} fighter links`);
+    const ids = fighters.map((a) => id($(a).attr('href'), url));
+    const opp = ids[0] === self ? 1 : ids[1] === self ? 0 : -1;
+    if (opp < 0) throw new SchemaAssertionError(url, 'history row does not include the page fighter');
+    const ev = $(tds[6]).find("a[href*='event-details']").first();
+    if (!ev.length) throw new SchemaAssertionError(url, 'history row without event link');
+    const evText = ps($, tds[6]);
+    rows.push({
+      fight_id: id(link, url), self_ufcstats_id: self,
+      opponent_ufcstats_id: ids[opp], opponent_name: t($, fighters[opp]),
+      event_ufcstats_id: id(ev.attr('href'), url), event_name: t($, ev), event_date: historyDate(evText[evText.length - 1], url),
+      result_flag: RESULT_FLAG[flag] ?? null,
+    });
+  });
+  return rows;
+}
+
 export function parseFighterPage(html, url) {
   const $ = cheerio.load(html);
   const name = t($, $('h2 .b-content__title-highlight').first());

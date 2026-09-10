@@ -10,10 +10,24 @@
  *   3. fuzzy >= 90 + dob|record    -> matched
  *   4. otherwise                   -> review row for ufc_alias_review_queue
  * Never auto-merge on name alone.
+ *
+ * With event_scope (bout/event evidence), a unique name match among the scoped
+ * fighters is the identity even when birth dates disagree between sources; the
+ * disagreement is recorded (dob_conflict), never a reason to create a duplicate.
  */
 
 export const FUZZY_THRESHOLD = 90;
 export const REVIEW_FLOOR = 80;
+
+/* Latin letters that NFKD does not reduce to ASCII, so stripping combining
+ * marks alone deleted them ("Syguła" -> "sygu a", never matching "Sygula").
+ * Transliterated after lower-casing. Identical to TRANSLIT in
+ * alias_resolver.py; shared/tests pins both. */
+export const TRANSLIT = {
+  'ł': 'l', 'ø': 'o', 'đ': 'd', 'ð': 'd', 'þ': 'th', 'ß': 'ss', 'æ': 'ae', 'œ': 'oe',
+  'ı': 'i', 'ŋ': 'n', 'ħ': 'h', 'ŧ': 't', 'ĸ': 'k', 'ſ': 's',
+};
+const TRANSLIT_RE = new RegExp(Object.keys(TRANSLIT).join('|'), 'g');
 
 export function normalize(name) {
   if (!name) return '';
@@ -21,6 +35,7 @@ export function normalize(name) {
     .normalize('NFKD')
     .replace(/[̀-ͯ]/g, '')
     .toLowerCase()
+    .replace(TRANSLIT_RE, (c) => TRANSLIT[c])
     .replace(/['’.`]/g, '')   /* apostrophes and periods vanish: O'Malley -> omalley */
     .replace(/[^a-z0-9]+/g, ' ')
     .replace(/\s+/g, ' ')
@@ -128,14 +143,36 @@ export class AliasResolver {
     return { agree, disagree };
   }
 
-  resolve(rawName, source, { ufcstats_id = null, weight_class = null, dob = null, record = null, context = {} } = {}) {
+  /* event_scope: our fighter ids that bout/event evidence places in this slot.
+   * Mirrors resolve() in alias_resolver.py. */
+  resolve(rawName, source, { ufcstats_id = null, weight_class = null, dob = null, record = null, context = {}, event_scope = null } = {}) {
     if (ufcstats_id && this.byUfcstats.has(ufcstats_id)) {
       const fid = this.byUfcstats.get(ufcstats_id);
       return { status: 'matched', fighter_id: fid, method: 'ufcstats_id', score: 100,
-        candidates: [{ fighter_id: fid, score: 100, reasons: ['ufcstats_id'] }] };
+        candidates: [{ fighter_id: fid, score: 100, reasons: ['ufcstats_id'] }], dob_conflict: false };
     }
     const n = normalize(rawName);
-    if (!n) return { status: 'unmatched', candidates: [] };
+    if (!n) return { status: 'unmatched', candidates: [], dob_conflict: false };
+
+    if (event_scope && event_scope.length) {
+      const scoped = [];
+      for (const fid of new Set(event_scope)) {
+        const f = this.byId.get(fid);
+        if (!f) continue;
+        if (ufcstats_id && f.ufcstats_id && f.ufcstats_id !== ufcstats_id) continue;   // already a different UFC Stats fighter
+        const norms = this.norms.get(fid) || new Set();
+        let best = norms.has(n) ? 100 : 0;
+        if (best < 100) for (const a of norms) best = Math.max(best, tokenSortRatio(n, a));
+        if (best >= this.threshold) {
+          const { agree, disagree } = this.secondKeyAgreement(f, weight_class, dob, record);
+          scoped.push({ fighter_id: fid, score: best, reasons: ['event_scoped', ...agree, ...disagree.map((d) => `!${d}`)] });
+        }
+      }
+      if (scoped.length === 1) {
+        return { status: 'matched', fighter_id: scoped[0].fighter_id, method: 'event_scoped_name', score: scoped[0].score,
+          candidates: scoped, dob_conflict: scoped[0].reasons.includes('!dob') };
+      }
+    }
 
     const exactIds = [...(this.byNorm.get(n) || [])].sort();
     const candidates = [];
@@ -145,7 +182,7 @@ export class AliasResolver {
     }
     const agreeing = candidates.filter((c) => keysAgree(c.reasons, true));
     if (agreeing.length === 1) {
-      return { status: 'matched', fighter_id: agreeing[0].fighter_id, method: 'exact_normalized', score: 100, candidates };
+      return { status: 'matched', fighter_id: agreeing[0].fighter_id, method: 'exact_normalized', score: 100, candidates, dob_conflict: false };
     }
 
     const exclude = new Set(exactIds);
@@ -155,12 +192,13 @@ export class AliasResolver {
     }
     const strong = candidates.filter((c) => c.reasons.includes('fuzzy') && c.score >= this.threshold && keysAgree(c.reasons, false));
     if (strong.length === 1 && agreeing.length === 0) {
-      return { status: 'matched', fighter_id: strong[0].fighter_id, method: 'fuzzy_second_key', score: strong[0].score, candidates };
+      return { status: 'matched', fighter_id: strong[0].fighter_id, method: 'fuzzy_second_key', score: strong[0].score, candidates, dob_conflict: false };
     }
 
     candidates.sort((a, b) => (b.score - a.score) || (a.fighter_id < b.fighter_id ? -1 : 1));
     const listed = candidates.filter((c) => c.score >= REVIEW_FLOOR).slice(0, 5);
-    if (!listed.length) return { status: 'unmatched', candidates };
+    if (!listed.length) return { status: 'unmatched', candidates, dob_conflict: false };
+    const dobConflict = listed.some((c) => c.score >= this.threshold && c.reasons.includes('!dob'));
     const review_row = {
       raw_name: rawName,
       source,
@@ -169,10 +207,11 @@ export class AliasResolver {
         reason: listed.length > 1 ? 'ambiguous' : 'no_second_key',
         normalized: n, weight_class, dob, record,
         candidates: listed.map((c) => ({ fighter_id: c.fighter_id, score: Math.round(c.score * 10) / 10, reasons: c.reasons })),
+        dob_conflict: dobConflict,
         ...context,
       },
     };
-    return { status: 'review', candidates, review_row };
+    return { status: 'review', candidates, review_row, dob_conflict: dobConflict };
   }
 
   fuzzyCandidates(n, exclude) {

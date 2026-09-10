@@ -52,7 +52,7 @@ Two rules govern everything below.
 | ufc-news-enrich | `*/5 * * * *` | ingest, stats, DNA, market, video, media | site, API, ticker |
 | ufc-event-editorial | `15 */2 * * *`, `20 10 * * *` | stats, events, DNA | site, API |
 | ufc-newsroom | `*/30 * * * *`, `15 */2 * * *`, `20 10 * * *` | run ledger | operators |
-| ufc-stats-ingest | `*/15 * * * *` | UFCStats, ESPN | DNA, fight-state, enrich |
+| ufc-stats-ingest | `*/15 * * * *` declared; **deployed `0 6 * * *`** (see exceptions) | UFCStats, ESPN | DNA, fight-state, enrich |
 | ufc-fight-state | `23 * * * *` | events, bouts, results, DNA, rankings | DNA trigger |
 | ufc-intelligence | `25 11 * * *` (rankings), `17 7 * * *` (Fight DNA) | stats, results | enrich, site, fight-state |
 | ufc-video-autopilot | `13,43 * * * *` | official YouTube channels | enrich |
@@ -61,6 +61,16 @@ Two rules govern everything below.
 | propbetedge-ufc-api | none (request-driven) | all tables | site, external consumers |
 
 ## Known exceptions — stated, not hidden
+
+**ufc-stats-ingest is not running what this table declares (measured
+2026-09-10).** The deployed version (2026-09-06, `bfc01d22`) runs `0 6 * * *`
+with `UFCSTATS_ENABLED=false`: ESPN schedule/results flow daily, and no Worker
+has ever written a round-stat row (all 41,542 came from the Python backfill).
+UFC Stats was serving its JS challenge to Cloudflare egress on 2026-09-10 and
+the lane is fail-closed by decision, so round stats are not live-ingested. The
+replacement (queue-driven lane, v0.4.0) is on branch
+`ufc-round-integrity-v1`, awaiting approval to deploy. See
+docs/scraper_notes.md, "2026-09-10".
 
 **History repair execution is manual.** `ufc-history-watchdog` detects gaps and
 **cannot fix one**. Repair is `.github/workflows/history-gap-repair.yml`, manual

@@ -40,6 +40,42 @@
     [
       null,
       ""
+    ],
+    [
+      "Klaudia Syguła",
+      "klaudia sygula"
+    ],
+    [
+      "Michał Wikłacz",
+      "michal wiklacz"
+    ],
+    [
+      "Mateusz Rębecki",
+      "mateusz rebecki"
+    ],
+    [
+      "Łukasz Brzeski",
+      "lukasz brzeski"
+    ],
+    [
+      "Søren Ødegård",
+      "soren odegard"
+    ],
+    [
+      "Đorđe Đurić",
+      "dorde duric"
+    ],
+    [
+      "Hans Straße",
+      "hans strasse"
+    ],
+    [
+      "Ægir Þórsson",
+      "aegir thorsson"
+    ],
+    [
+      "Kılıç Œuvre",
+      "kilic oeuvre"
     ]
   ],
   "token_sort_ratio": [
@@ -77,6 +113,16 @@
       "Bruno Silva",
       "Bruno Blindado Silva",
       70.96774193548387
+    ],
+    [
+      "Klaudia Syguła",
+      "Klaudia Sygula",
+      100
+    ],
+    [
+      "Wikłacz Michał",
+      "Michal Wiklacz",
+      100
     ]
   ],
   "fighters": [
@@ -181,6 +227,59 @@
       "weight_classes": [
         "LIGHT_HEAVYWEIGHT"
       ]
+    },
+    {
+      "id": "f-ks",
+      "ufcstats_id": null,
+      "name": "Klaudia Sygula",
+      "nickname": null,
+      "dob": "1994-05-10",
+      "record": "7-1-0",
+      "weight_classes": [
+        "FLYWEIGHT"
+      ]
+    },
+    {
+      "id": "f-mr",
+      "ufcstats_id": null,
+      "name": "Mateusz Rebecki",
+      "nickname": null,
+      "dob": "1989-10-26",
+      "record": "20-2-0",
+      "weight_classes": [
+        "LIGHTWEIGHT"
+      ]
+    },
+    {
+      "id": "f-opp",
+      "ufcstats_id": "aaaaaaaaaaaaaab0",
+      "name": "Sam Opponent",
+      "nickname": null,
+      "dob": "1990-01-01",
+      "record": "10-5-0",
+      "weight_classes": [
+        "LIGHTWEIGHT"
+      ]
+    },
+    {
+      "id": "f-cr1",
+      "ufcstats_id": "aaaaaaaaaaaaaab1",
+      "name": "Carlos Ruiz",
+      "nickname": null,
+      "dob": "1991-02-02",
+      "record": "12-3-0",
+      "weight_classes": [
+        "WELTERWEIGHT"
+      ]
+    },
+    {
+      "id": "f-cr2",
+      "ufcstats_id": null,
+      "name": "Carlos Ruiz",
+      "nickname": null,
+      "dob": null,
+      "record": null,
+      "weight_classes": []
     }
   ],
   "resolve": [
@@ -432,11 +531,141 @@
       "expect": {
         "status": "unmatched"
       }
+    },
+    {
+      "name": "DOB disagreement, no bout evidence -> review flagged dob_conflict (callers must not create a duplicate)",
+      "args": [
+        "Mateusz Rebecki",
+        "ufcstats",
+        {
+          "dob": "1989-10-29",
+          "record": "20-2-0"
+        }
+      ],
+      "expect": {
+        "status": "review",
+        "n_candidates": 1,
+        "dob_conflict": true
+      }
+    },
+    {
+      "name": "same DOB disagreement with bout evidence -> matched event_scoped_name, conflict recorded",
+      "args": [
+        "Mateusz Rebecki",
+        "ufcstats",
+        {
+          "dob": "1989-10-29",
+          "event_scope": [
+            "f-mr",
+            "f-opp"
+          ]
+        }
+      ],
+      "expect": {
+        "status": "matched",
+        "fighter_id": "f-mr",
+        "method": "event_scoped_name",
+        "dob_conflict": true
+      }
+    },
+    {
+      "name": "Unicode UFC Stats spelling + bout evidence -> matched despite DOB drift",
+      "args": [
+        "Klaudia Syguła",
+        "ufcstats",
+        {
+          "dob": "1994-05-12",
+          "event_scope": [
+            "f-ks",
+            "f-opp"
+          ]
+        }
+      ],
+      "expect": {
+        "status": "matched",
+        "fighter_id": "f-ks",
+        "method": "event_scoped_name",
+        "dob_conflict": true
+      }
+    },
+    {
+      "name": "Unicode UFC Stats spelling + agreeing DOB -> exact match, no conflict",
+      "args": [
+        "Klaudia Syguła",
+        "ufcstats",
+        {
+          "dob": "1994-05-10"
+        }
+      ],
+      "expect": {
+        "status": "matched",
+        "fighter_id": "f-ks",
+        "method": "exact_normalized",
+        "dob_conflict": false
+      }
+    },
+    {
+      "name": "scope skips a fighter already linked to a different UFC Stats id",
+      "args": [
+        "Carlos Ruiz",
+        "ufcstats",
+        {
+          "ufcstats_id": "cccccccccccccccc",
+          "event_scope": [
+            "f-cr1",
+            "f-cr2"
+          ]
+        }
+      ],
+      "expect": {
+        "status": "matched",
+        "fighter_id": "f-cr2",
+        "method": "event_scoped_name",
+        "dob_conflict": false
+      }
+    },
+    {
+      "name": "scope with several name matches is not identity -> ordinary ambiguity",
+      "args": [
+        "Bruno Silva",
+        "espn",
+        {
+          "event_scope": [
+            "f-bs1",
+            "f-bs2",
+            "f-bs3"
+          ]
+        }
+      ],
+      "expect": {
+        "status": "review",
+        "n_candidates": 3,
+        "reason": "ambiguous"
+      }
+    },
+    {
+      "name": "scope without a name match changes nothing",
+      "args": [
+        "Jose Aldo",
+        "espn",
+        {
+          "event_scope": [
+            "f-opp"
+          ]
+        }
+      ],
+      "expect": {
+        "status": "review",
+        "n_candidates": 1,
+        "reason": "no_second_key",
+        "dob_conflict": false
+      }
     }
   ],
   "internal_duplicates": {
     "expect_kinds": {
       "same_name": 1,
+      "same_name_same_dob": 1,
       "near_duplicate": 1
     },
     "expect_near_pair": [
