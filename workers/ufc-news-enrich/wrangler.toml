@@ -21,15 +21,25 @@ UFC_EDITORIAL_OPENAI_MODEL = "gpt-5.6-sol"
 # article, so the trade is not close.
 UFC_RELEVANCE_MODEL = "gpt-5.6-sol"
 
-# PUBLICATION IS OFF.
+# PUBLICATION IS ON, FOR THE GREEN PATH ONLY.
 #
-# Every article this Worker writes lands at status='review', which the site
-# (web/lib/db.ts) and the API (workers/ufc-api) already filter out. The pipeline
-# runs to its last step so the output can be judged on real articles instead of
-# promises; flipping this to "true" is the only change needed to go live, and it
-# is deliberately a config change with an obvious blast radius rather than code
-# written in a hurry.
-PUBLISH_ENABLED = "false"
+# This flag is ONE of the conditions in greenPath(), not the decision. An
+# article publishes itself only when every one of these holds: relevance >= 3
+# from a scorer that was actually working, a resolved primary fighter above the
+# confidence threshold, a source we FETCHED with a usable body, a built packet,
+# a completed GPT-5.6 Sol call, deterministic validators passing first time,
+# provenance-safe numbers, dedupe clear, a correctly credited hero or an honest
+# absence, and a source published within 24 hours.
+#
+# Anything else is status='review' with the blockers recorded verbatim. A 403 or
+# a thin source is a review article, always: an accurate piece written from our
+# own tables alone still rests on a news peg we did not verify, and that
+# condition is the one most likely to be quietly relaxed to raise volume.
+#
+# The 24-hour rule exists because the 217-item backlog was ingested in one burst
+# from a 14-day window and every row in it looks freshly DETECTED. Going live
+# must not mean dumping a fortnight of archive onto the front page.
+PUBLISH_ENABLED = "true"
 
 # CPU. The editorial call is the long pole: GPT-5.6 Sol at medium reasoning over
 # a full intelligence packet routinely runs 30-60s of wall clock, and a

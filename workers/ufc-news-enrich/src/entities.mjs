@@ -33,13 +33,30 @@ async function index(sb, { now = Date.now() } = {}) {
   return cached;
 }
 
-/** Resolve a plain name to a fighter id via the alias resolver. */
+/**
+ * Resolve a plain name to a fighter id via the alias resolver.
+ *
+ * Tries the name as written, then with an embedded nickname removed. MMA
+ * coverage routinely writes a fighter as Michael "Venom" Page or Israel
+ * 'The Last Stylebender' Adesanya, and the resolver matches on the roster form
+ * -- so the quoted middle blocks an otherwise exact match. That is not a
+ * harmless miss: an unresolved name is treated as "the story is about someone
+ * we do not have" and HOLDS the article, so a punctuation convention was
+ * costing us real stories.
+ */
 function resolveName(idx, name) {
   if (!name) return null;
-  const r = idx.resolver.resolve(name, 'news');
-  if (r.status === 'matched') return r.fighter_id;
-  const exact = (r.candidates || []).filter((c) => c.reasons.includes('exact_normalized'));
-  return exact.length === 1 ? exact[0].fighter_id : null;
+  const forms = [String(name)];
+  const stripped = String(name).replace(/\s*["'‘’“”][^"'‘’“”]+["'‘’“”]\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  if (stripped && stripped !== forms[0]) forms.push(stripped);
+
+  for (const form of forms) {
+    const r = idx.resolver.resolve(form, 'news');
+    if (r.status === 'matched') return r.fighter_id;
+    const exact = (r.candidates || []).filter((c) => c.reasons.includes('exact_normalized'));
+    if (exact.length === 1) return exact[0].fighter_id;
+  }
+  return null;
 }
 
 /**

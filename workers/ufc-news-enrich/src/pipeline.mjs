@@ -102,7 +102,12 @@ export async function pickCandidates(sb, { limit = 5 } = {}) {
   return sb.select('ufc_news_items',
     `select=id,title,url,summary,published_at,detected_at,taxonomy,fighter_ids,bout_id,event_id,`
     + `state,attempts,relevance_score,primary_fighter_id,source_id,source:ufc_news_sources(name,url)`
-    + `&state=in.(new,scored)&attempts=lt.${MAX_ATTEMPTS}&order=detected_at.desc&limit=${limit}`);
+    + `&state=in.(new,scored)&attempts=lt.${MAX_ATTEMPTS}`
+    /* Newest by PUBLISHER time, not by detection time. The 14-day backfill was
+     * all detected in one burst and shares a single detected_at, so ordering by
+     * detection puts two hundred historical rows level with live news.
+     * published_at is what actually separates them. */
+    + `&order=published_at.desc.nullslast,detected_at.desc&limit=${limit}`);
 }
 
 /** Items whose consumer died mid-flight. */
@@ -121,6 +126,65 @@ export async function reclaimStalled(sb, { now = Date.now() } = {}) {
   }
   return rows.length;
 }
+
+
+/* How old a story may be and still publish itself.
+ *
+ * The 217-item backlog was ingested in one burst from a 14-day window, so every
+ * row in it looks freshly DETECTED. Publisher time is the only field that tells
+ * a live development from a fortnight-old one, and going live must not mean
+ * dumping a fortnight of archive onto the front page at once. */
+const GREEN_MAX_SOURCE_AGE_HOURS = 24;
+
+/**
+ * Does this article publish itself?
+ *
+ * Every condition is ANDed and every failure is named, because "held" without a
+ * reason is the failure mode this project exists to remove. A false here is not
+ * an error - it is an article that goes to review and waits for a human, which
+ * is the correct outcome for anything the pipeline cannot fully vouch for.
+ */
+export function greenPath({ env, rel, ent, src, packet, article, hero, item, now = Date.now() }) {
+  const blockers = [];
+
+  if (!publishEnabledFor(env)) blockers.push('PUBLISH_ENABLED is false');
+  if (!(rel.score >= RELEVANCE_GATE)) blockers.push(`relevance ${rel.score} < ${RELEVANCE_GATE}`);
+  if (rel.degraded) blockers.push('relevance scorer was degraded; the score is a default, not a judgement');
+  if (!ent.primary_fighter_id) blockers.push('no primary fighter');
+  if (!(ent.confidence >= ENTITY_CONFIDENCE_GATE)) blockers.push(`entity confidence ${ent.confidence} < ${ENTITY_CONFIDENCE_GATE}`);
+
+  /* A blocked or thin source is a REVIEW article, always. An article written
+   * from first-party data alone can be accurate and still be the wrong thing to
+   * publish automatically: the news peg itself is unverified by us. This is the
+   * condition most likely to be quietly relaxed to raise volume, so it is
+   * stated as its own blocker rather than folded into a score. */
+  if (!src.ok) blockers.push(`source not fetched (${src.status_class}${src.status ? ` ${src.status}` : ''})`);
+  else if (!src.text || src.text.length < 600) blockers.push(`source body too thin (${src.text?.length || 0} chars)`);
+
+  if (!packet?.primary) blockers.push('packet has no primary profile');
+  if (!article?.validation?.ok) blockers.push('deterministic validators did not pass');
+  if (article?.attempts > 1) blockers.push('passed only after a corrective retry; a human should see it once');
+
+  /* Hero is valid or deliberately absent. Never wrong: pickHero keys on
+   * primary_fighter_id and refuses incomplete credit, so a present hero is
+   * correct by construction and a null one is an honest omission. */
+  if (hero && !(hero.credit?.author && hero.credit?.license && hero.credit?.source_url)) {
+    blockers.push('hero image lacks complete credit');
+  }
+
+  const publishedAt = item.published_at ? Date.parse(item.published_at) : null;
+  if (!publishedAt) blockers.push('source carries no publication timestamp, so its age cannot be established');
+  else {
+    const ageH = (now - publishedAt) / 3600e3;
+    if (ageH > GREEN_MAX_SOURCE_AGE_HOURS) {
+      blockers.push(`source is ${Math.round(ageH)}h old (> ${GREEN_MAX_SOURCE_AGE_HOURS}h); backlog is reviewed, never auto-published`);
+    }
+  }
+
+  return { publish: blockers.length === 0, blockers };
+}
+
+const publishEnabledFor = (env) => String(env.PUBLISH_ENABLED || 'false').toLowerCase() === 'true';
 
 /**
  * Run one item end to end.
@@ -240,6 +304,14 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
     await log('media', hero ? 'ok' : 'skipped', hero || { reason: 'no rights-cleared portrait for the primary subject' }, t);
 
     /* 8. WRITE, PRIVATE -------------------------------------------------- */
+    /* THE GREEN PATH. Publication is decided per article, from what actually
+     * happened to it, not from a global switch. The switch is one of the
+     * conditions. */
+    const green = greenPath({ env, rel, ent, src, packet, article, hero, item, now });
+    const publishThis = green.publish;
+    await log('validate', green.publish ? 'ok' : 'held',
+      { green_path: green.publish, blockers: green.blockers });
+
     const slug = slugify(article.headline);
     const row = {
       slug,
@@ -248,9 +320,9 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
       body_md: article.body_md,
       story_type: 'external',
       /* The whole point. Publication is a separate, later decision. */
-      status: publish ? 'published' : 'review',
-      needs_human: !publish,
-      hold_reason: publish ? null : 'publication disabled in this build; awaiting quality sign-off',
+      status: publishThis ? 'published' : 'review',
+      needs_human: !publishThis,
+      hold_reason: publishThis ? null : green.blockers.join('; ').slice(0, 480),
       fact_block: { ...packet, bettor_angle: article.bettor_angle },
       sources: [{ kind: 'news_item', id: item.id, url: item.url },
         { kind: 'packet', version: packet.version, families }],
@@ -262,12 +334,12 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
       relevance_score: rel.score,
       topic_signature: signature,
       source_body_hash: src.hash || null,
-      validation: { ok: true, failures: [], gate: DESK_VERSION },
+      validation: { ok: true, failures: [], gate: DESK_VERSION, green_path: green.publish, blockers: green.blockers },
       model_version: `openai:${article.model}/${DESK_VERSION}`,
       hero_image_ref: hero?.id || null,
       hero_credit: hero?.credit || null,
-      published_at: publish ? nowIso(Date.now()) : null,
-      first_published_at: publish ? nowIso(Date.now()) : null,
+      published_at: publishThis ? nowIso(Date.now()) : null,
+      first_published_at: publishThis ? nowIso(Date.now()) : null,
       updated_at: nowIso(Date.now()),
     };
 
@@ -280,8 +352,8 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
       return { item_id: item.id, status: 'duplicate', reason: 'unique index rejected a second article' };
     }
 
-    await settle(sb, item, publish ? 'published' : 'held',
-      publish ? null : 'article written and privately staged for review',
+    await settle(sb, item, publishThis ? 'published' : 'held',
+      publishThis ? null : green.blockers.join('; ').slice(0, 480),
       {
         article_id: saved?.id || null, relevance_score: rel.score, relevance_reason: rel.reason,
         story_kind: rel.story_kind, primary_fighter_id: ent.primary_fighter_id,
@@ -290,13 +362,17 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
         source_fetch_status: src.status_class, source_body_hash: src.hash || null,
         source_body: src.ok ? src.text.slice(0, 60000) : null,
         source_fetched_at: src.ok ? nowIso(Date.now()) : null,
-        first_published_at: publish ? nowIso(Date.now()) : null,
+        first_published_at: publishThis ? nowIso(Date.now()) : null,
       });
-    await log('publish', publish ? 'ok' : 'held',
-      { slug, status: row.status, article_id: saved?.id, total_ms: Date.now() - t0 }, t0);
+    await log('publish', publishThis ? 'ok' : 'held',
+      { slug, status: row.status, article_id: saved?.id, blockers: green.blockers,
+        detected_to_public_ms: publishThis && detectedAt ? Date.now() - Date.parse(detectedAt) : null,
+        total_ms: Date.now() - t0 }, t0);
 
     return {
-      item_id: item.id, status: 'written', slug, article_id: saved?.id,
+      item_id: item.id, status: publishThis ? 'published' : 'written', slug, article_id: saved?.id,
+      green_path: publishThis, blockers: green.blockers,
+      detected_to_public_ms: publishThis && detectedAt ? Date.now() - Date.parse(detectedAt) : null,
       headline: article.headline, words: article.body_md.split(/\s+/).length,
       model: article.model, attempts: article.attempts,
       primary: packet.primary?.name, source: item.source?.name,
