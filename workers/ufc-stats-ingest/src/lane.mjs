@@ -13,10 +13,13 @@
  * recorded as such and left without rows; absence stays absence.
  */
 
-/* Dana White's Contender Series runs inside ESPN's UFC feed but is not on UFC
- * Stats: the completed-events list carries no Contender Series card at all
- * (live capture 2026-09-06). Asking the source for them every run would be a
- * request that can only miss. */
+/* Dana White's Contender Series runs inside ESPN's UFC feed. UFC Stats DOES
+ * carry those cards (fighter histories link events such as 66e981516e2476d1,
+ * "DWCS 6.7"), but its completed-events list does not include them, and this
+ * lane finds a card only through that list or an id already stored on the
+ * event. So Contender Series bouts are counted as not discoverable here, not
+ * as unavailable at source; recovering them needs a separate, validated
+ * discovery path (fighter-history links), recorded in the run notes as such. */
 export function isContenderSeries(name) {
   return /contender series|dana white'?s contender/i.test(String(name || ''));
 }
@@ -39,7 +42,7 @@ const DAY = 86400000;
 export function selectCandidates({ bouts, events, results, withRows, now, forwardDays = 45, confirmGraceDays = 7 }) {
   const cutoff = new Date(now - forwardDays * DAY).toISOString().slice(0, 10);
   const today = new Date(now + DAY).toISOString().slice(0, 10);   // UTC card dates run ahead of US evenings
-  const skipped = { outside_window: 0, has_rows: 0, no_result: 0, contender_series: 0, source_confirmed_no_stats: 0, cancelled: 0 };
+  const skipped = { outside_window: 0, has_rows: 0, no_result: 0, contender_series_not_discoverable: 0, source_confirmed_no_stats: 0, cancelled: 0 };
   const candidates = [];
   for (const b of bouts) {
     const ev = events.get(b.event_id);
@@ -50,7 +53,7 @@ export function selectCandidates({ bouts, events, results, withRows, now, forwar
     /* The authoritative "this fight is over" is a stored result. A bout ESPN
      * still shows as scheduled cannot have round stats to fetch. */
     if (!r) { skipped.no_result += 1; continue; }
-    if (isContenderSeries(ev.name)) { skipped.contender_series += 1; continue; }
+    if (isContenderSeries(ev.name)) { skipped.contender_series_not_discoverable += 1; continue; }
     if (r.stats_captured_at && r.has_stats === false) {
       const age = now - Date.parse(`${ev.event_date}T00:00:00Z`);
       if (age > confirmGraceDays * DAY) { skipped.source_confirmed_no_stats += 1; continue; }
@@ -118,9 +121,10 @@ export function latencySummary(rec) {
   };
 }
 
-/* Should a remembered challenge keep the lane off? After a gate change or a
- * failed solve we stay away for `backoffHours` rather than probing a source
- * that has just told us it does not want automated reads. */
+/* Should a remembered challenge keep the lane off? After any challenge the
+ * lane did not answer (the default), a gate change, or a failed solve, we stay
+ * away for `backoffHours` rather than probing a source that has just told us
+ * it does not want automated reads. */
 export function sourceBlocked(health, now, backoffHours = 6) {
   if (!health || health.status !== 'challenged' || !health.at) return false;
   return now - Date.parse(health.at) < backoffHours * 3600000;

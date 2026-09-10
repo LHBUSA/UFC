@@ -19,7 +19,7 @@ const bouts = [
   bout('has', 'recent'),              // finished, rows present       -> skip
   bout('pending', 'recent'),          // no result yet                -> skip
   bout('history', 'old'),             // outside the forward window   -> skip
-  bout('contender', 'dwcs'),          // not on UFC Stats             -> skip
+  bout('contender', 'dwcs'),          // not discoverable via the list -> skip
   bout('upcoming', 'future'),         // not yet fought               -> skip
   bout('cancel', 'recent', 'cancelled'),
   bout('confirmed', 'old'),
@@ -30,7 +30,7 @@ const results = new Map([
 ]);
 const { candidates, skipped } = selectCandidates({ bouts, events, results, withRows: new Set(['has']), now: NOW });
 check(candidates.map((c) => c.bout.id).join() === 'needs', `only the finished, unrowed, in-window UFC bout is a candidate: ${candidates.map((c) => c.bout.id)}`);
-check(skipped.has_rows === 1 && skipped.no_result === 1 && skipped.contender_series === 1 && skipped.cancelled === 1, `skip reasons ${JSON.stringify(skipped)}`);
+check(skipped.has_rows === 1 && skipped.no_result === 1 && skipped.contender_series_not_discoverable === 1 && skipped.cancelled === 1, `skip reasons ${JSON.stringify(skipped)}`);
 
 /* A linked-in-advance card must still be picked up once it completes — the
  * failure the old event-driven pass had. */

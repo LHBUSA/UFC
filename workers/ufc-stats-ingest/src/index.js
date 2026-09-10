@@ -2,7 +2,8 @@
  *
  * Sources (decision 2026-09-05):
  *   ESPN core API  -> events, bouts, results, fighter identity + physicals.
- *   ufcstats.com   -> per-round stats only (fight pages).
+ *   ufcstats.com   -> per-round stats only (fight pages). Fails closed on its
+ *                     JS challenge unless UFCSTATS_SOLVE_CHALLENGE="true".
  *
  * Run shape:
  *   1. ESPN: events for this year (and last year in January). Upsert every
@@ -153,7 +154,12 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
   const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, assertion_failures: [], notes: { invoked, cron, version: VERSION } };
   let runId = null;
   let status = 'success';
-  const fetcher = new Fetcher(env);
+  /* Challenges are answered only when UFCSTATS_SOLVE_CHALLENGE="true". The
+   * default is to fail closed: a challenge is recorded, the lane backs off,
+   * ESPN continues, and nothing is presented as live. Solving the known
+   * proof-of-work shape (decision 2026-09-05) is an explicit operator choice,
+   * not something the lane does on its own. */
+  const fetcher = new Fetcher(env, { solveGate: String(env.UFCSTATS_SOLVE_CHALLENGE || 'false') === 'true' });
   const espn = new Espn();
   try {
     const created = await insert(env, 'ufc_ingest_runs', { worker: SERVICE, status: 'running', notes: { invoked, cron, version: VERSION } });

@@ -25,6 +25,12 @@ UFCSTATS_ENABLED = "false"
 # detached Wayback backfill over the same rows. History belongs to that queue;
 # this worker only stops newly completed events from creating new gaps.
 UFCSTATS_FORWARD_DAYS = "45"
+# "true" lets the fetch layer answer the known JS proof-of-work shape (the
+# 2026-09-05 decision). Default "false": a challenge fails the lane closed,
+# is stored in R2, and backs off SOURCE_BACKOFF_HOURS. On 2026-09-10 15:05 UTC
+# ufcstats.com was serving that challenge (difficulty 2, POST /__c, same shape
+# as 2026-09-05); whether to answer it is an operator decision, not a default.
+UFCSTATS_SOLVE_CHALLENGE = "false"
 # Per-run ceiling on UFC Stats fight pages. The lane is bout-driven, so a quiet
 # run fetches nothing; this bounds the worst case (a full card whose stats all
 # post between two runs) to one polite burst at 1 request/second.
