@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageHead, JsonLd } from "@/components/ui";
+import { Breadcrumbs, JsonLd } from "@/components/ui";
 import { buildSections, getRoundIndex, type RoundIndexBout } from "@/lib/roundIndex";
 import { fmtDate, METHOD_SHORT, weightClassLabel } from "@/lib/format";
 import { matchupSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
+import styles from "./round-by-round.module.css";
 
-/* /round-by-round — discovery for the round-level archive.
- *
- * Every fight listed here has stored round observations, so every card on the
- * page opens onto something real. Nothing is listed speculatively and no
- * category is shown empty, because the value of this surface is that it only
- * promises what the archive can actually deliver. */
+/* /round-by-round is the discovery surface for the verified round archive.
+ * Nothing on this page is inferred. Every fight shown here has stored round
+ * observations behind it, and every coverage number comes from the same read
+ * model that powers the fight links. */
 export const revalidate = 300;
 
 const TITLE = "UFC Round-by-Round Analysis | PropBetEdge";
@@ -39,106 +38,209 @@ function boutHref(b: RoundIndexBout) {
   return `/fights/${matchupSlug(b.fighterA, b.fighterB, { name: b.eventName, event_date: b.eventDate })}`;
 }
 
-function Card({ b }: { b: RoundIndexBout }) {
+function pct(value: number, total: number) {
+  return total > 0 ? Math.round((value / total) * 1000) / 10 : 0;
+}
+
+function FightCard({ b }: { b: RoundIndexBout }) {
   const wc = weightClassLabel(b.weightClass, b.isWomens);
   const winner = b.winnerId === b.fighterA.id ? "a" : b.winnerId === b.fighterB.id ? "b" : null;
+  const finish = b.method ? `${METHOD_SHORT[b.method] || b.method}${b.finishRound ? ` · R${b.finishRound}` : ""}` : null;
+
   return (
-    <Link href={boutHref(b)} className="rbi-card">
-      <span className="rbi-card-top">
-        <span className="rbi-event">{b.eventName}</span>
-        <span className="rbi-date">{b.eventDate ? fmtDate(b.eventDate) : "Date unrecorded"}</span>
+    <Link href={boutHref(b)} className={styles.fightCard}>
+      <span className={styles.cardTop}>
+        <span className={styles.event}>{b.eventName}</span>
+        <span className={styles.date}>{b.eventDate ? fmtDate(b.eventDate, DAY) : "Date unrecorded"}</span>
       </span>
-      <span className="rbi-names">
-        <span className={`rbi-n${winner === "a" ? " w" : ""}`}>{b.fighterA.name}</span>
-        <em>vs</em>
-        <span className={`rbi-n${winner === "b" ? " w" : ""}`}>{b.fighterB.name}</span>
+
+      <span className={styles.matchup}>
+        <span className={`${styles.fighter}${winner === "a" ? ` ${styles.winner}` : ""}`}>
+          <span className={styles.corner}>A</span>
+          <b>{b.fighterA.name}</b>
+          {winner === "a" ? <i>WIN</i> : null}
+        </span>
+        <span className={styles.versus}>VS</span>
+        <span className={`${styles.fighter}${winner === "b" ? ` ${styles.winner}` : ""}`}>
+          <span className={styles.corner}>B</span>
+          <b>{b.fighterB.name}</b>
+          {winner === "b" ? <i>WIN</i> : null}
+        </span>
       </span>
-      <span className="rbi-meta">
-        {wc ? <span className="rbi-tag">{wc}</span> : null}
-        {b.isTitle ? <span className="rbi-tag gold">Title</span> : null}
-        {b.method ? <span className="rbi-tag">{METHOD_SHORT[b.method] || b.method}{b.finishRound ? ` R${b.finishRound}` : ""}</span> : null}
+
+      <span className={styles.cardMeta}>
+        {wc ? <span>{wc}</span> : null}
+        {b.isTitle ? <span className={styles.goldTag}>Championship</span> : null}
+        {finish ? <span>{finish}</span> : null}
+        {b.scheduledRounds ? <span>{b.scheduledRounds}R scheduled</span> : null}
       </span>
-      <span className="rbi-cover">
-        {/* Coverage is stated, never implied. A three-round fight with two
-            rounds stored says so rather than looking complete. */}
-        <b>{b.roundsCovered}</b> round{b.roundsCovered === 1 ? "" : "s"} of data
-        {b.bothCorners ? <i className="ok"> · both corners</i> : <i className="part"> · one corner only</i>}
+
+      <span className={styles.coverageRow}>
+        <span className={styles.roundSignal} aria-label={`${b.roundsCovered} rounds of recorded data`}>
+          {Array.from({ length: Math.max(1, b.roundsCovered) }, (_, i) => <i key={i} />)}
+        </span>
+        <span className={styles.coverageCopy}>
+          <b>{b.roundsCovered} round{b.roundsCovered === 1 ? "" : "s"}</b> recorded
+          <em className={b.bothCorners ? styles.verified : styles.partial}>
+            {b.bothCorners ? "Both corners verified" : "One-corner coverage"}
+          </em>
+        </span>
       </span>
-      <span className="rbi-cta">View round-by-round →</span>
+
+      <span className={styles.cardCta}>Open round intelligence <b>→</b></span>
     </Link>
   );
 }
 
 export default async function RoundByRoundIndex() {
   const index = await getRoundIndex();
-  const sections = buildSections(index);
   const ok = index.status === "ok" ? index : null;
   const t = ok?.totals;
-  /* Observed length only. "N rounds of recorded data" is how long the stored
-   * record runs, which is not how long the fight was scheduled for. */
-  const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t?.byObservedRounds[n] || 0 }));
+  const sections = buildSections(index);
   const recent = ok?.shelves.recent || [];
+  const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t?.byObservedRounds[n] || 0 }));
+  const maxRoundBucket = Math.max(1, ...rounds.map((r) => r.count));
+  const completeCoverage = t ? pct(t.bothCorners, t.eligible) : 0;
 
   return (
-    <div className="wrap page rbi">
-      <PageHead
-        crumbs={[{ name: "Round-by-Round" }]}
-        eyebrow="Round-level fight intelligence"
-        title="Round-by-Round Analysis"
-        lede="Fight progression reconstructed from verified round-level observations. Striking, grappling, control and target distribution for each completed round, compared against the previous round and against each fighter's historical Fight DNA."
-      />
+    <div className={`wrap page ${styles.page}`}>
+      <Breadcrumbs items={[{ name: "Round-by-Round" }]} />
+
+      <header className={styles.hero}>
+        <div className={styles.heroGrid} aria-hidden="true" />
+        <div className={styles.heroCopy}>
+          <div className={styles.kicker}>
+            <span className={styles.pulse} />
+            PropBetEdge fight intelligence
+          </div>
+          <h1>Every round tells a different fight.</h1>
+          <p>
+            Verified round-level observations across the UFC archive. Read the shifts in striking,
+            grappling, control and target selection that final results flatten into a single line.
+          </p>
+          {ok?.freshness.lastRoundCaptureAt ? (
+            <div className={styles.freshness}>
+              <span>Archive refreshed</span>
+              <b>{fmtDate(ok.freshness.lastRoundCaptureAt.slice(0, 10), DAY)}</b>
+              <i />
+              <span>Source rows</span>
+              <b>{ok.freshness.roundRows.toLocaleString()}</b>
+            </div>
+          ) : null}
+        </div>
+
+        {t ? (
+          <div className={styles.heroProof}>
+            <span className={styles.proofLabel}>Verified archive</span>
+            <strong>{t.eligible.toLocaleString()}</strong>
+            <span>fights with round data</span>
+            <div className={styles.proofMeter}><i style={{ width: `${completeCoverage}%` }} /></div>
+            <div className={styles.proofFoot}>
+              <b>{completeCoverage}%</b>
+              <span>both-corner coverage</span>
+            </div>
+          </div>
+        ) : null}
+      </header>
 
       {!ok || !t ? (
-        /* A failed read is reported as a failed read. It is never rendered as
-         * an empty archive or as a smaller one. */
-        <section className="segment">
-          <div className="card rbi-empty" role="status">
-            <div className="rbi-empty-k">Round index temporarily unavailable</div>
-            <p>The round-level archive could not be read just now, so no counts or fight lists are shown rather than incomplete ones. Individual fight pages are unaffected. Try again shortly.</p>
+        <section className={styles.stateCard} role="status">
+          <div className={styles.stateMark}>!</div>
+          <div>
+            <div className={styles.stateKicker}>Round index temporarily unavailable</div>
+            <h2>We will not fake an archive state.</h2>
+            <p>The round-level read could not be completed, so counts and fight lists are withheld rather than shown as partial data. Individual fight pages are unaffected.</p>
           </div>
         </section>
       ) : t.eligible === 0 ? (
-        <section className="segment">
-          <div className="card rbi-empty">
-            <div className="rbi-empty-k">No round data loaded yet</div>
-            <p>Round-level observations have not been loaded into the canonical database. Nothing is estimated in the meantime.</p>
+        <section className={styles.stateCard}>
+          <div className={styles.stateMark}>0</div>
+          <div>
+            <div className={styles.stateKicker}>Archive empty</div>
+            <h2>No round observations loaded yet.</h2>
+            <p>Nothing is estimated in the meantime.</p>
           </div>
         </section>
       ) : (
         <>
-          <section className="segment rbi-stats" aria-label="Coverage">
-            <div className="rbi-stat"><b>{t.eligible.toLocaleString()}</b><span>fights with round data</span></div>
-            <div className="rbi-stat"><b>{t.bothCorners.toLocaleString()}</b><span>with both corners in every round</span></div>
-            <div className="rbi-stat"><b>{t.scheduledFiveRound.toLocaleString()}</b><span>scheduled for five rounds</span></div>
-            {rounds.filter((r) => r.count > 0).map((r) => (
-              <div className="rbi-stat" key={r.n}><b>{r.count.toLocaleString()}</b><span>{`with ${r.n} round${r.n === 1 ? "" : "s"} of recorded data`}</span></div>
-            ))}
-            <p className="rbi-fresh">
-              {t.firstEventDate && t.lastEventDate ? <>Coverage {fmtDate(t.firstEventDate, DAY)} to {fmtDate(t.lastEventDate, DAY)}. </> : null}
-              {ok.freshness.lastRoundCaptureAt ? <>Round data last captured {fmtDate(ok.freshness.lastRoundCaptureAt, DAY)}.</> : null}
-            </p>
+          <section className={styles.commandDeck} aria-label="Round archive coverage">
+            <div className={styles.deckIntro}>
+              <span>Archive coverage</span>
+              <h2>Round data at a glance</h2>
+              <p>
+                Coverage spans {t.firstEventDate ? fmtDate(t.firstEventDate, DAY) : "the earliest loaded event"} through {t.lastEventDate ? fmtDate(t.lastEventDate, DAY) : "the latest loaded event"}.
+              </p>
+            </div>
+
+            <div className={styles.kpis}>
+              <div className={styles.kpi}><span>Fights</span><b>{t.eligible.toLocaleString()}</b><small>with round observations</small></div>
+              <div className={styles.kpi}><span>Both corners</span><b>{t.bothCorners.toLocaleString()}</b><small>{completeCoverage}% complete coverage</small></div>
+              <div className={styles.kpi}><span>Five-round fights</span><b>{t.scheduledFiveRound.toLocaleString()}</b><small>scheduled distance</small></div>
+              <div className={styles.kpi}><span>Five rounds recorded</span><b>{t.fiveRoundsRecorded.toLocaleString()}</b><small>observed through round 5</small></div>
+            </div>
+
+            <div className={styles.distribution}>
+              <div className={styles.distributionHead}>
+                <span>Observed fight length</span>
+                <small>distinct rounds with stored data</small>
+              </div>
+              <div className={styles.bars}>
+                {rounds.map((r) => (
+                  <div className={styles.barRow} key={r.n}>
+                    <span>R{r.n}</span>
+                    <i><b style={{ width: `${(r.count / maxRoundBucket) * 100}%` }} /></i>
+                    <strong>{r.count.toLocaleString()}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
           </section>
 
-          {sections.map((s) => (
-            <section className="segment" key={s.key} id={s.key}>
-              <div className="rbi-head">
-                <h2>{s.title}</h2>
-                <p>{s.blurb}</p>
+          <nav className={styles.shelfNav} aria-label="Round archive collections">
+            <span>Jump to</span>
+            {sections.map((s) => <a href={`#${s.key}`} key={s.key}>{s.title}</a>)}
+          </nav>
+
+          {sections.map((s, sectionIndex) => (
+            <section className={styles.shelf} key={s.key} id={s.key}>
+              <div className={styles.shelfHead}>
+                <div>
+                  <span className={styles.shelfNumber}>{String(sectionIndex + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h2>{s.title}</h2>
+                    <p>{s.blurb}</p>
+                  </div>
+                </div>
+                <span className={styles.shelfCount}>{s.bouts.length} fights loaded</span>
               </div>
-              <div className="rbi-grid">{s.bouts.map((b) => <Card b={b} key={`${s.key}-${b.boutId}`} />)}</div>
+              <div className={styles.fightGrid}>
+                {s.bouts.map((b) => <FightCard b={b} key={`${s.key}-${b.boutId}`} />)}
+              </div>
             </section>
           ))}
         </>
       )}
 
-      <section className="segment">
-        <div className="card rbi-note">
-          <h2 className="rbi-note-h">What this is, and is not</h2>
-          <p>Every number comes from stored round-level observations of a completed fight. A missing observation is shown as unavailable rather than as zero, and a round the source never recorded is left out rather than inferred.</p>
-          <p>Round signals describe what the numbers show: more output, more control, a shift in targeting. They are not judge scores and they do not say who won a round. PropBetEdge has no scoring source and does not invent one.</p>
-          <p>PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group or ESPN.</p>
+      <section className={styles.methodology}>
+        <div>
+          <span className={styles.methodKicker}>Data discipline</span>
+          <h2>Observed. Attributed. Never invented.</h2>
+        </div>
+        <div className={styles.methodCopy}>
+          <p>Every number comes from stored round-level observations of a completed fight. Missing observations stay unavailable rather than becoming zero, and unrecorded rounds are never inferred.</p>
+          <p>Round signals describe measurable changes in output, control and targeting. They are not judge scores and do not claim who won a round.</p>
+          {ok ? (
+            <div className={styles.archiveStamp}>
+              <span>Archive build</span>
+              <b>{fmtDate(ok.generatedAt.slice(0, 10), DAY)}</b>
+              <span>·</span>
+              <b>{ok.freshness.roundRows.toLocaleString()} round observations</b>
+            </div>
+          ) : null}
         </div>
       </section>
+
+      <p className={styles.disclaimer}>PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group or ESPN.</p>
 
       <JsonLd
         data={{
