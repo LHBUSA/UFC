@@ -71,7 +71,6 @@ jobs:
 
       - name: Configure production secrets
         if: ${{ steps.preflight.outputs.ready == 'true' }}
-        id: secrets
         working-directory: workers/combat-wikipedia-ingest
         shell: bash
         run: |
@@ -80,7 +79,7 @@ jobs:
           echo "::add-mask::$admin_token"
           printf '%s' "$SUPABASE_SERVICE_ROLE_KEY" | npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
           printf '%s' "$admin_token" | npx wrangler secret put ADMIN_TRIGGER_TOKEN
-          echo "admin_token=$admin_token" >> "$GITHUB_OUTPUT"
+          echo "ADMIN_TRIGGER_TOKEN=$admin_token" >> "$GITHUB_ENV"
 
       - name: Verify Worker health
         if: ${{ steps.preflight.outputs.ready == 'true' }}
@@ -104,7 +103,6 @@ jobs:
         shell: bash
         env:
           WORKER_URL: ${{ steps.deploy.outputs.worker_url }}
-          ADMIN_TRIGGER_TOKEN: ${{ steps.secrets.outputs.admin_token }}
         run: |
           set -euo pipefail
           curl --fail --silent --show-error \
