@@ -76,12 +76,18 @@ ufc-newsroom's `sources` phase reconciles the feed registry on its daily slot.
 ufc-news-ingest can also write it, but only through `POST /admin/verify?apply`,
 which is operator-triggered. One schedule, one owner.
 
-**ufc-event-editorial is dormant until `OPENAI_API_KEY` is set on it.** The
-shared writer falls back to a deterministic template when no model is
-configured, and for these story types templates *publish* — unlike external
-drafts, which are held private. Rather than replace Sol-written previews with
-template prose, the lane refuses to write and reports
-`status: no_editorial_provider`. Set the secret to activate it.
+**ufc-event-editorial is ACTIVE.** `OPENAI_API_KEY` is configured on it, and
+the lane owns `fight_preview`, `results`, `card_change` and `rankings`. Verified
+on activation 2026-09-10: health 200, both crons attached, and a `fight_preview`
+written by `openai:gpt-5.6-sol/editorial-desk-openai-v1` — not the deterministic
+template.
+
+The fail-closed guard remains in place and is why this entry sat under known
+exceptions before activation: the shared writer falls back to a deterministic
+template when no model is configured, and for these story types templates
+*publish*, unlike external drafts which are held private. If the key is ever
+removed the lane refuses to write and reports `status: no_editorial_provider`
+rather than quietly publishing template prose.
 
 ## Fight-state ledger corrections
 
