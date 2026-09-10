@@ -531,6 +531,13 @@ export type TickerItem = {
  */
 const TICKER_INTERNAL_BONUS_MS = 90 * 60 * 1000;
 
+/* How much of the rail is reserved for our own published articles when we have
+ * them. Below the 75-85% product target on purpose: the target assumes we are
+ * covering most of what matters, and reserving more slots than we have earned
+ * coverage for would mean showing week-old analysis beside breaking news. This
+ * rises by publishing more, not by changing this number. */
+const TICKER_INTERNAL_SHARE = 0.6;
+
 /**
  * One development, one slot — and ours wins it when we have written it.
  *
@@ -620,7 +627,29 @@ export async function getTicker(limit = 12): Promise<TickerItem[]> {
     if (dupe) continue;
     seenTokens.push(tk);
     deduped.push(t);
-    if (deduped.length >= limit) break;
   }
-  return deduped;
+
+  /* RESERVE SLOTS FOR OUR OWN COVERAGE.
+   *
+   * Ranking by recency alone is arithmetically correct and produces the wrong
+   * product. We publish around a dozen articles in the time the wire produces
+   * three hundred items, so within an hour of publishing, every one of our
+   * stories is pushed off a twenty-slot rail by fresher external headlines --
+   * a distribution layer that distributes none of our work.
+   *
+   * So a share of the rail is reserved for published PropBetEdge articles. This
+   * is NOT padding: only real published articles are eligible, the reserve is
+   * capped by how many actually exist, and if we have published nothing the
+   * rail is entirely external, exactly as before.
+   *
+   * The freshest item overall still leads regardless of who wrote it, so a
+   * genuinely breaking external story is never buried by an older piece of
+   * ours -- the reserve decides who is PRESENT, recency still decides who is
+   * FIRST. */
+  const internal = deduped.filter((t) => !t.external);
+  const external = deduped.filter((t) => t.external);
+  const wantInternal = Math.min(internal.length, Math.round(limit * TICKER_INTERNAL_SHARE));
+  const chosen = [...internal.slice(0, wantInternal), ...external.slice(0, limit - wantInternal)];
+  chosen.sort((a, b) => score(b) - score(a));
+  return chosen.slice(0, limit);
 }

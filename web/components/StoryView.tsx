@@ -64,6 +64,27 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
   const mm = !plan && fb.matchup?.a && fb.matchup?.b ? fb.matchup : null;
   const mmImgs = mm ? await getImagesForFighters([mm.a.fighter_id, mm.b.fighter_id]) : new Map();
   const dna = bout && a.story_type === "fight_preview" ? await getMatchupDna(bout.fighter_a.id, bout.fighter_b.id) : null;
+  /* Structured data must describe the page, not the database.
+   *
+   * The legacy rail showed up to four videos: the story's own, then the bout's,
+   * then the event's. The content plan is stricter -- it serves only clips that
+   * matched this story's own subject at a known tier -- so on a plan article the
+   * page now shows two where JSON-LD still advertised four, including two
+   * VideoObjects for videos that are nowhere on the page. That is exactly the
+   * mismatch structured-data validators exist to catch, and it is a regression
+   * introduced by making the on-page selection stricter without following
+   * through to the markup. So when a plan owns the video, it owns the markup. */
+  const planVideos = plan ? (moduleOf<{ videos?: any[] }>(plan, "official_video")?.data.videos || []) : null;
+  const jsonLdVideos = planVideos
+    ? planVideos
+        .filter((v) => v.embeddable && v.video_id)
+        .map((v) => ({
+          title: v.title, description: v.title, thumbnail_url: v.thumbnail_url,
+          published_at: v.published_at, duration_sec: v.duration_sec,
+          provider_video_id: v.video_id, url: v.url, channel_name: v.publisher,
+          source_metadata: v.language ? { language: v.language } : null,
+        }))
+    : videos;
   const updated = materiallyUpdated(a.published_at, a.updated_at);
   const articleUrl = `${SITE.url}/news/${a.slug}`;
   const keywords = [...new Set(["UFC", "MMA", label, event?.name, ...fighters.map((f) => f.name), "PropBetEdge UFC", "Fight Intelligence"].filter(Boolean))];
@@ -241,7 +262,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
         ],
         mentions: fighters.map((f) => ({ "@type": "Person", name: f.name, url: `${SITE.url}/fighters/${fighterSlug(f)}` })),
         speakable: { "@type": "SpeakableSpecification", cssSelector: [".article h1", ".article .dek"] },
-        video: videos.length ? videoJsonLd(videos) : undefined,
+        video: jsonLdVideos.length ? videoJsonLd(jsonLdVideos as never) : undefined,
       }} />
     </article>
   );
