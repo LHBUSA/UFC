@@ -1,7 +1,21 @@
 /* PBE Fight State Ledger — append-only fight-week snapshots per bout.
  *
- *   node scripts/ledger/capture_fight_state.mjs --auto            # capture every checkpoint that is due now
+ * PRODUCTION OWNER IS THE CLOUDFLARE WORKER workers/ufc-fight-state.
+ * This module holds the logic; the Worker holds the schedule. The CLI entry at
+ * the foot of the file is for local inspection and bounded replay only.
+ *
+ *   node scripts/ledger/capture_fight_state.mjs --auto
  *   node scripts/ledger/capture_fight_state.mjs --checkpoint ad_hoc [--event <substring>] [--dry-run] [--json]
+ *
+ * WHY THIS IS ONE MODULE AND NOT TWO
+ *
+ * The obvious way to move a scheduled script onto Workers is to write a Worker
+ * that does the same thing. Then there are two implementations of "what is the
+ * state of this fight", they drift, and the ledger -- whose entire value is that
+ * it records state that cannot be recreated later -- ends up holding rows built
+ * by two different definitions. So the logic is exported once and injected with
+ * its dependencies. Nothing here reads the filesystem, argv or process at module
+ * scope, because in workerd those are absent, frozen or meaningless.
  *
  * Checkpoints (relative to the ESPN scheduled start of the event; when the
  * start is unknown the event date at 22:00 UTC is assumed and recorded in
@@ -13,75 +27,81 @@
  * [checkpoint_time, checkpoint_time + LATE_HOURS]. Missed windows are never
  * back-filled: the point of the ledger is state that cannot be recreated.
  * Rows are inserted, never updated (the table trigger enforces it). */
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const LEDGER_VERSION = 1;
-const BUILDER = 'scripts/ledger/capture_fight_state.mjs@1';
-const LATE_HOURS = 12;
+export const LEDGER_VERSION = 1;
+export const BUILDER = 'ufc-fight-state@1';
+export const LATE_HOURS = 12;
 const ASSUMED_START_UTC = 'T22:00:00Z';
 const CHECKPOINTS = [
   ['t_minus_7d', 168], ['t_minus_72h', 72], ['post_weigh_in', 26], ['t_minus_24h', 24], ['t_minus_3h', 3], ['close', 1],
 ];
 
-const env = {};
-for (const line of readFileSync(join(ROOT, '.env'), 'utf8').split(/\r?\n/)) { const m = line.match(/^([A-Z0-9_]+)=(.*)$/); if (m) env[m[1]] = m[2].trim(); }
-const URL_ = (process.env.SUPABASE_URL || env.SUPABASE_URL || '').replace(/\/$/, '');
-const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SERVICE_ROLE_KEY || '';
-if (!URL_ || !KEY) { console.error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY missing'); process.exit(2); }
-const H = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'content-type': 'application/json' };
-const args = process.argv.slice(2);
-const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
-const AUTO = args.includes('--auto');
-const CHECKPOINT = opt('--checkpoint', AUTO ? null : 'ad_hoc');
-const DRY = args.includes('--dry-run');
-const EVENT_FILTER = (opt('--event', '') || '').toLowerCase();
-const JSON_OUT = args.includes('--json');
-const NOW = new Date();
-const log = (...a) => { if (!JSON_OUT) console.log(...a); };
-
-async function rest(path) {
-  const out = []; let off = 0;
-  for (;;) {
-    const res = await fetch(`${URL_}/rest/v1/${path}${path.includes('?') ? '&' : '?'}offset=${off}&limit=1000`, { headers: H });
-    if (res.status === 404) return null;
-    if (!res.ok) throw new Error(`${path.split('?')[0]} -> HTTP ${res.status} ${await res.text()}`);
-    const rows = await res.json(); out.push(...rows);
-    if (rows.length < 1000) return out; off += 1000;
-  }
-}
-async function insert(rows) {
-  if (DRY || !rows.length) return rows.length;
-  const res = await fetch(`${URL_}/rest/v1/ufc_fight_state_ledger`, { method: 'POST', headers: { ...H, Prefer: 'return=minimal' }, body: JSON.stringify(rows) });
-  if (!res.ok) throw new Error(`ledger insert -> HTTP ${res.status} ${await res.text()}`);
-  return rows.length;
-}
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
-async function espnStart(espnEventId) {
-  if (!espnEventId) return null;
-  try {
-    const res = await fetch(`https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/${espnEventId}?lang=en&region=us`, { headers: { 'user-agent': UA, accept: 'application/json' } });
-    if (!res.ok) return null;
-    const j = await res.json();
-    return j?.date ? new Date(j.date).toISOString() : null;
-  } catch { return null; }
-}
-const iso = (d) => new Date(d).toISOString();
 const hours = (a, b) => (new Date(a).getTime() - new Date(b).getTime()) / 3600e3;
 const compactFighter = (f, rank) => ({ id: f.id, name: f.name, nickname: f.nickname, stance: f.stance, slug_id: f.espn_athlete_id || f.ufcstats_id || null, record: { w: f.record_w, l: f.record_l, d: f.record_d, nc: f.record_nc }, dob: f.dob, height_in: f.height_in, reach_in: f.reach_in, weight_lbs: f.weight_lbs, is_active: f.is_active, updated_at: f.updated_at, rankings: rank });
 const pick = (m, keys) => Object.fromEntries(keys.filter((k) => m && m[k]).map((k) => [k, m[k]]));
 
-async function main() {
+/**
+ * Capture every fight-state checkpoint that is due.
+ *
+ * @param {object}   cfg
+ * @param {string}   cfg.supabaseUrl
+ * @param {string}   cfg.serviceKey
+ * @param {Date}     [cfg.now]          evaluated per run, never at import
+ * @param {boolean}  [cfg.auto]         capture whatever is due now
+ * @param {string}   [cfg.checkpoint]   capture one named checkpoint instead
+ * @param {boolean}  [cfg.dry]          build rows, write nothing
+ * @param {string}   [cfg.eventFilter]  substring match on event name
+ * @param {Function} [cfg.fetchImpl]
+ */
+export async function captureFightState(cfg) {
+  const URL_ = String(cfg.supabaseUrl || '').replace(/\/$/, '');
+  const KEY = String(cfg.serviceKey || '');
+  if (!URL_ || !KEY) throw new Error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY missing');
+  const f = cfg.fetchImpl || fetch;
+  const H = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'content-type': 'application/json' };
+  const NOW = cfg.now ? new Date(cfg.now) : new Date();
+  const AUTO = Boolean(cfg.auto);
+  const CHECKPOINT = cfg.checkpoint || (AUTO ? null : 'ad_hoc');
+  const DRY = Boolean(cfg.dry);
+  const EVENT_FILTER = String(cfg.eventFilter || '').toLowerCase();
+
+  async function rest(path) {
+    const out = []; let off = 0;
+    for (;;) {
+      const res = await f(`${URL_}/rest/v1/${path}${path.includes('?') ? '&' : '?'}offset=${off}&limit=1000`, { headers: H });
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error(`${path.split('?')[0]} -> HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+      const rows = await res.json(); out.push(...rows);
+      if (rows.length < 1000) return out; off += 1000;
+    }
+  }
+  async function insert(rows) {
+    if (DRY || !rows.length) return rows.length;
+    const res = await f(`${URL_}/rest/v1/ufc_fight_state_ledger`, { method: 'POST', headers: { ...H, Prefer: 'return=minimal' }, body: JSON.stringify(rows) });
+    if (!res.ok) throw new Error(`ledger insert -> HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+    return rows.length;
+  }
+  async function espnStart(espnEventId) {
+    if (!espnEventId) return null;
+    try {
+      const res = await f(`https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/${espnEventId}?lang=en&region=us`, { headers: { 'user-agent': UA, accept: 'application/json' } });
+      if (!res.ok) return null;
+      const j = await res.json();
+      return j?.date ? new Date(j.date).toISOString() : null;
+    } catch { return null; }
+  }
+
   const today = NOW.toISOString().slice(0, 10);
   const from = new Date(NOW.getTime() - 3 * 86400e3).toISOString().slice(0, 10);
   const to = new Date(NOW.getTime() + 9 * 86400e3).toISOString().slice(0, 10);
   const events = (await rest(`ufc_events?select=id,name,event_date,espn_event_id,ufcstats_id,venue,city,region,country,card_status,updated_at&event_date=gte.${from}&event_date=lte.${to}&order=event_date.asc`)) || [];
   const evs = events.filter((e) => !EVENT_FILTER || e.name.toLowerCase().includes(EVENT_FILTER));
-  if (!evs.length) { log('[ledger] no events in window'); return finish({ events: 0 }); }
+  const empty = { events: evs.length, bouts: 0, inserted: 0, skipped_existing: 0, missed_windows: 0, checkpoints: {}, skipped: [], missed: [] };
+  if (!evs.length) return { ...empty, events: 0 };
   const evIds = evs.map((e) => e.id);
   const bouts = (await rest(`ufc_bouts?select=*,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(*),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(*)&event_id=in.(${evIds.join(',')})&order=bout_order.desc`)) || [];
+  if (!bouts.length) return empty;
   const results = new Map(((await rest(`ufc_bout_results?select=*&bout_id=in.(${bouts.map((b) => b.id).join(',')})`)) || []).map((r) => [r.bout_id, r]));
   const existing = (await rest(`ufc_fight_state_ledger?select=bout_id,checkpoint,captured_at&event_id=in.(${evIds.join(',')})`)) || [];
   const have = new Set(existing.map((r) => `${r.bout_id}:${r.checkpoint}`));
@@ -109,6 +129,11 @@ async function main() {
     const startIso = start || `${e.event_date}${ASSUMED_START_UTC}`;
     const basis = start ? 'espn_event_start' : 'event_date_22z_assumed';
     for (const b of bouts.filter((x) => x.event_id === e.id)) {
+      /* FAIL CLOSED ON UNCERTAIN IDENTITY. A ledger row is a permanent claim
+       * about who was booked, and it can never be corrected by a later run.
+       * Without both fighters resolved it would record a fight we cannot name,
+       * which is worse than recording nothing at all. */
+      if (!b.fighter_a || !b.fighter_b) { skipped.push({ bout: b.id, reason: 'unresolved_fighter_identity' }); continue; }
       const res = results.get(b.id) || null;
       const due = [];
       if (AUTO) {
@@ -122,12 +147,33 @@ async function main() {
         }
         if (res && !have.has(`${b.id}:post_result`)) due.push('post_result');
       } else if (CHECKPOINT) {
-        if (CHECKPOINT !== 'ad_hoc' && have.has(`${b.id}:${CHECKPOINT}`)) { skipped.push({ bout: b.id, checkpoint: CHECKPOINT }); } else due.push(CHECKPOINT);
+        /* A NAMED CHECKPOINT MUST STILL BE INSIDE ITS WINDOW.
+         *
+         * Replay used to bypass the window entirely, which sounds like a
+         * convenience and is a way to permanently corrupt an append-only
+         * ledger. Capturing 't_minus_24h' 52 hours before the fight writes a
+         * row labelled with a moment that has not happened, and -- because a
+         * captured (bout, checkpoint) pair is never captured twice -- it also
+         * suppresses the real one when the window finally opens. The ledger
+         * then holds a confident, permanent, wrong answer. I did exactly this
+         * to one event before adding this guard.
+         *
+         * ad_hoc is exempt because it claims nothing about timing: it means
+         * "state as at captured_at", and hours_to_start is recorded alongside.
+         */
+        const spec = CHECKPOINTS.find(([name]) => name === CHECKPOINT);
+        if (spec) {
+          const at = new Date(new Date(startIso).getTime() - spec[1] * 3600e3);
+          const age = hours(NOW, at);
+          if (age < 0) { skipped.push({ bout: b.id, checkpoint: CHECKPOINT, reason: `window opens in ${Math.abs(Math.round(age))}h` }); continue; }
+          if (age > LATE_HOURS) { skipped.push({ bout: b.id, checkpoint: CHECKPOINT, reason: `window closed ${Math.round(age)}h ago; never back-filled` }); continue; }
+        }
+        if (CHECKPOINT !== 'ad_hoc' && have.has(`${b.id}:${CHECKPOINT}`)) { skipped.push({ bout: b.id, checkpoint: CHECKPOINT, reason: 'already captured' }); } else due.push(CHECKPOINT);
       }
       for (const cp of due) {
         const fa = b.fighter_a, fb = b.fighter_b;
-        const dna = (f, opp) => {
-          const s = dnaBy.get(f.id);
+        const dna = (fx, opp) => {
+          const s = dnaBy.get(fx.id);
           if (!s) return { status: 'unavailable', reason: 'no_snapshot' };
           const oppStance = opp.stance || 'UNKNOWN';
           return {
@@ -165,10 +211,44 @@ async function main() {
     }
   }
   const n = await insert(rows);
-  return finish({ events: evs.length, bouts: bouts.length, inserted: DRY ? 0 : n, would_insert: DRY ? n : undefined, skipped_existing: skipped.length, missed_windows: missed.length, checkpoints: rows.reduce((m, r) => ({ ...m, [r.checkpoint]: (m[r.checkpoint] || 0) + 1 }), {}), missed });
+  return {
+    events: evs.length, bouts: bouts.length,
+    inserted: DRY ? 0 : n, would_insert: DRY ? n : undefined,
+    skipped_existing: skipped.length, missed_windows: missed.length,
+    checkpoints: rows.reduce((m, r) => ({ ...m, [r.checkpoint]: (m[r.checkpoint] || 0) + 1 }), {}),
+    skipped, missed,
+  };
 }
-function finish(summary) {
-  if (JSON_OUT) console.log(JSON.stringify(summary, null, 2)); else console.log(`[ledger] ${JSON.stringify({ ...summary, missed: undefined })}${summary.missed?.length ? ` missed=${summary.missed.length} (windows older than ${LATE_HOURS}h are never back-filled)` : ''}`);
-  return summary;
+
+/* CLI ONLY. Importing this module must never read a file or write a row. */
+const isCli = typeof process !== 'undefined'
+  && process.argv?.[1]?.replace(/\\/g, '/').endsWith('scripts/ledger/capture_fight_state.mjs');
+if (isCli) {
+  const { readFileSync } = await import('node:fs');
+  const { dirname, join } = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+  const fileEnv = {};
+  try {
+    for (const line of readFileSync(join(ROOT, '.env'), 'utf8').split(/\r?\n/)) {
+      const m = line.match(/^([A-Z0-9_]+)=(.*)$/); if (m) fileEnv[m[1]] = m[2].trim();
+    }
+  } catch { /* the environment may supply these instead of a file */ }
+  const args = process.argv.slice(2);
+  const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
+  try {
+    const summary = await captureFightState({
+      supabaseUrl: process.env.SUPABASE_URL || fileEnv.SUPABASE_URL,
+      serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY || fileEnv.SUPABASE_SERVICE_ROLE_KEY,
+      auto: args.includes('--auto'),
+      checkpoint: opt('--checkpoint', null),
+      dry: args.includes('--dry-run'),
+      eventFilter: opt('--event', ''),
+    });
+    if (args.includes('--json')) console.log(JSON.stringify(summary, null, 2));
+    else console.log(`[ledger] ${JSON.stringify({ ...summary, missed: undefined, skipped: undefined })}${summary.missed?.length ? ` missed=${summary.missed.length} (windows older than ${LATE_HOURS}h are never back-filled)` : ''}`);
+  } catch (e) {
+    console.error('[ledger] FAILED', e.message);
+    process.exit(1);
+  }
 }
-main().catch((e) => { console.error('[ledger] FAILED', e.message); process.exit(1); });

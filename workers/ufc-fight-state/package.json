@@ -1,0 +1,8 @@
+{
+  "name": "ufc-fight-state",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun"
+  }
+}

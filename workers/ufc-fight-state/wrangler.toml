@@ -1,0 +1,25 @@
+name = "ufc-fight-state"
+main = "src/index.js"
+compatibility_date = "2026-09-09"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# The capture module is plain ESM and touches no Node built-in at module scope,
+# but its CLI tail dynamically imports node:fs behind an argv check that is
+# false in workerd. nodejs_compat keeps that import resolvable to the bundler
+# even though it can never execute here.
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+
+# Hourly at :23, matching the schedule this lane has always run on. The minute
+# is kept deliberately: checkpoint windows are twelve hours wide, so moving the
+# offset would not lose a capture, but keeping it makes the migration a change
+# of OWNER and nothing else -- which is what the parity proof needs to compare.
+[triggers]
+crons = ["23 * * * *"]
+
+# Secrets, set with `wrangler secret put`, never in this file:
+#   SUPABASE_SERVICE_ROLE_KEY   ledger writes
+#   ADMIN_TRIGGER_TOKEN         required to expose any POST route at all
