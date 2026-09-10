@@ -96,10 +96,25 @@ function writerOptions(env, now) {
   return {
     llm: anthropicConfigured(env),
     now,
-    /* `external` matches what has been deployed since 2026-09-09T21:26:47Z.
-     * Carried here so the containment deploy changes exactly one behaviour --
-     * external drafts becoming private -- and not two. */
-    types: 'preview,results,external,card_change',
+    /* NO `external`. ONE OWNER PER WRITE RESPONSIBILITY.
+     *
+     * ufc-news-enrich owns news articles written from wire items: relevance,
+     * entity resolution, a first-party packet, GPT-5.6 Sol, the two-class
+     * number gate and the green path. This Worker was still producing its own
+     * `external` articles beside them -- 21 in three days, none of them
+     * published, all of them the deterministic template, because the writer
+     * falls back to the template whenever the rewrite provider is unavailable
+     * and ANTHROPIC_API_KEY is not set here.
+     *
+     * Two writers of one story type is the condition the architecture forbids,
+     * and template externals are the thin articles that are not to be
+     * published at all. Removing the type costs nothing: not one of them ever
+     * reached a reader.
+     *
+     * preview, results and card_change stay. Those are event-level coverage
+     * that enrich does not write, so they are this Worker's own responsibility
+     * rather than a second copy of somebody else's. */
+    types: 'preview,results,card_change',
   };
 }
 
