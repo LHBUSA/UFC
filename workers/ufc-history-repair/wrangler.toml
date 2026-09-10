@@ -1,0 +1,29 @@
+name = "ufc-history-repair"
+main = "src/index.js"
+compatibility_date = "2026-09-10"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+
+# Nightly at 07:20, the slot the GitHub workflow used. Repair detection is not a
+# live request path and does not need to be frequent; it needs to be reliable
+# and to leave a record, which is exactly what GitHub Actions scheduling did not
+# provide -- its runs drifted by hours.
+[triggers]
+crons = ["20 7 * * *"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Secrets, set with wrangler secret put, never in this file:
+#   SUPABASE_SERVICE_ROLE_KEY   reads ufc_events/ufc_bouts, writes ufc_ingest_runs
+#   ADMIN_TRIGGER_TOKEN         required to expose any POST route at all
+
+# Resumable scan cursor. Losing it costs a restart from the oldest event, never
+# a missed gap -- the sweep wraps and re-checks the whole archive anyway.
+[[kv_namespaces]]
+binding = "REPAIR_STATE"
+id = "2ec2289bee4d476281c9b70f242485d5"

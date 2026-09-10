@@ -6,8 +6,19 @@ on:
     paths:
       - ".github/workflows/history-gap-repair.yml"
       - "scripts/backfill/backfill_missing_events.py"
-  schedule:
-    - cron: "20 7 * * *"   # nightly bounded repair: oldest completed UFCStats-linked events with zero bout rows
+  # NO SCHEDULE. GitHub is source control, not the scheduler.
+  #
+  # The nightly cron that used to live here now runs on Cloudflare as
+  # workers/ufc-history-repair, which owns the bounded batching, the resumable
+  # cursor, the counts and the run ledger.
+  #
+  # The workflow itself is deliberately KEPT, on manual dispatch only, because
+  # it is the validated repair EXECUTION: 2,585 lines of Python parsers that
+  # write into the same canonical event/bout/result/round tables as the live
+  # ingest. The Cloudflare lane detects gaps and reports the exact events; an
+  # operator runs this to fix them. Reimplementing those parsers in JavaScript
+  # to move a cron would put a second, unvalidated parser in front of the
+  # canonical history of the sport.
   workflow_dispatch:
     inputs:
       source:
