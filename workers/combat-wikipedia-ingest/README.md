@@ -75,14 +75,23 @@ Authorization: Bearer <ADMIN_TRIGGER_TOKEN>
 
 With no fighter query, the canary checks:
 
-- Kayla Harrison — UFC + PFL career
-- Patricio Pitbull — UFC + Bellator/PFL career
-- Salahdine Parnasse — one-UFC-bout identity path plus KSW career
+- Kayla Harrison — positive UFC + PFL multi-promotion case.
+- Patricio Pitbull — positive UFC + Bellator/PFL/Rizin-style history case.
+- Salahdine Parnasse — deliberate one-completed-UFC-bout freshness case plus KSW history.
 
-The response must show each Wikipedia page's parsed career rows and the identity
-proof against the existing canonical UFC graph. A multi-UFC-fight page needs at
-least two exact opponent+date overlaps and zero unexplained UFC rows. A one-UFC-
-bout fighter requires matching DOB plus the exact UFC bout.
+The identity checksum uses **completed UFC bouts only**. Announced/upcoming bouts
+must never make a valid career page fail verification merely because Wikipedia
+does not list a fight that has not happened yet.
+
+Kayla and Patricio should normally be positive controls when their Wikipedia
+records are current. Parnasse is intentionally useful as a fail-closed control:
+if Wikipedia has not yet added his completed UFC bout, the correct canary result
+is `unverified` / identity review. That proves freshness cannot be forced through
+the identity gate.
+
+A multi-UFC-fight page needs at least two exact opponent+date overlaps and zero
+unexplained Wikipedia UFC rows. A one-completed-UFC-bout fighter requires
+matching DOB plus the exact completed UFC bout.
 
 No database writes occur on `/admin/canary`, regardless of `WRITE_ENABLED`.
 
@@ -115,7 +124,8 @@ If either is missing, no Career DNA write occurs.
 1. Deploy with both flags false.
 2. Run `/admin/canary` and inspect identity/coverage output.
 3. Run a 5–10 fighter manual audit.
-4. Only after the canary is clean, set `WRITE_ENABLED="true"` and redeploy.
+4. Only after the positive controls pass and any fail-closed cases make sense,
+   set `WRITE_ENABLED="true"` and redeploy.
 5. Run one explicit `/admin/run?limit=5&write=1`.
 6. Verify `combat_*` counts, review queue, idempotency and UFC-only DNA regression.
 7. Then set `SCHEDULE_ENABLED="true"` and redeploy.
@@ -139,8 +149,12 @@ For a verified fighter page, the write lane may create/update:
 - `combat_identity_review_queue`
 
 It does **not** write Wikipedia UFC rows into `combat_bouts`; those rows are used
-only to prove page identity against `combat_career_bouts` where
+only to prove page identity against completed `combat_career_bouts` rows where
 `source_scope='ufc'`.
+
+The same external fight seen from both fighters is deduped by event + unordered
+fighter pair, and conflicting result claims go to review rather than silently
+overwriting the stored result.
 
 Unrecognized promotions, missing dates, missing stable opponent links, identity
 collisions and result conflicts fail closed or enter review rather than being
