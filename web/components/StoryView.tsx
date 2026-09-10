@@ -175,7 +175,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
             * a new chart kind would be computed, stored and silently invisible. */}
           {plan && <ChartSet charts={charts.filter((c) => !CLAIMED_CHARTS.has(c.id))} title="Also measured" />}
           {a.story_type === "fight_preview" && !angle && <div style={{ maxWidth: "72ch" }}><ProLock /></div>}
-          {plan ? <MethodologyModule plan={plan} updated={a.updated_at} /> : fb.version ? <Methodology fb={fb} updated={a.updated_at} /> : (
+          {plan ? <MethodologyModule plan={plan} updated={a.updated_at} corroborating={(fb as { corroboration?: { publisher: string; url: string }[] }).corroboration} /> : fb.version ? <Methodology fb={fb} updated={a.updated_at} /> : (
             <p className="faint label mt-6">Written by the {SITE.desk} from PropBetEdge's own fight tables and a stored fact block. Read the <Link href="/about" className="dim">editorial policy</Link>.</p>
           )}
         </div>

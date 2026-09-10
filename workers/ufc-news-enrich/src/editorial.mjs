@@ -247,7 +247,7 @@ function extractText(json) {
   return joined;
 }
 
-export async function callSol(apiKey, { model, input, timeoutMs = CALL_TIMEOUT_MS, fetchImpl = fetch }) {
+export async function callSol(apiKey, { model, input, timeoutMs = CALL_TIMEOUT_MS, fetchImpl = fetch, schema = SCHEMA, schemaName = 'ufc_article' }) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -261,7 +261,7 @@ export async function callSol(apiKey, { model, input, timeoutMs = CALL_TIMEOUT_M
         instructions: SYSTEM,
         input,
         max_output_tokens: 20000,
-        text: { format: { type: 'json_schema', name: 'ufc_article', strict: true, schema: SCHEMA } },
+        text: { format: { type: 'json_schema', name: schemaName, strict: true, schema } },
       }),
     });
     const json = await res.json().catch(() => ({}));
@@ -285,6 +285,119 @@ export async function callSol(apiKey, { model, input, timeoutMs = CALL_TIMEOUT_M
   } finally {
     clearTimeout(timer);
   }
+}
+
+/* ---------------------------------------------------- targeted repair */
+
+const REPAIR_SCHEMA = {
+  type: 'object', additionalProperties: false,
+  required: ['repairs'],
+  properties: {
+    repairs: {
+      type: 'array',
+      items: {
+        type: 'object', additionalProperties: false,
+        required: ['index', 'replacement'],
+        properties: { index: { type: 'integer' }, replacement: { type: 'string' } },
+      },
+    },
+  },
+};
+
+/**
+ * Failures that name the sentence they are about.
+ *
+ * Only the two number-gate failures do -- they append: In: "<sentence>". Those
+ * are also the failure that actually happens: over 48 hours of live traffic
+ * they were 20 of the held articles, more than every structural failure
+ * combined. Everything else (word count, missing sections, headline not naming
+ * the subject) is a property of the whole document and cannot be repaired by
+ * replacing a sentence.
+ */
+export function sentenceScopedForTest(failures) { return sentenceScoped(failures); }
+
+function sentenceScoped(failures) {
+  const out = [];
+  for (const f of failures) {
+    const m = String(f).match(/In: "([\s\S]+)"\s*$/);
+    if (!m) return null;                 /* one document-level failure disqualifies the whole set */
+    out.push({ reason: String(f).replace(/\s*In: "[\s\S]+"\s*$/, ''), sentence: m[1].trim() });
+  }
+  return out.length ? out : null;
+}
+
+/**
+ * Repair the failing sentences instead of rewriting the article.
+ *
+ * WHY THIS IS WORTH DOING
+ *
+ * A corrective retry used to regenerate the entire piece: the full packet went
+ * back up, a full article came back down, and a thousand good words were thrown
+ * away to fix one bad clause. It also meant every retry risked LOSING prose
+ * that had already passed -- the second draft is a different article, and it
+ * can be worse in ways the gate does not measure.
+ *
+ * Repairing in place keeps the draft that was mostly right and sends only the
+ * offending sentences. The saving is large because the packet dominates the
+ * input tokens and the article dominates the output tokens; neither is resent.
+ *
+ * WHY IT CANNOT WEAKEN THE GATE
+ *
+ * The repaired article is re-validated in full by the same validate() call that
+ * rejected it -- not just the replaced sentences. A repair that fixes one
+ * failure and introduces another is rejected exactly as a fresh draft would be,
+ * and falls through to full regeneration.
+ */
+async function repairSentences(env, packet, article, scoped, { selected, fetchImpl, cost }) {
+  const numbered = scoped.map((s, i) => `[${i}] REASON: ${s.reason}
+    SENTENCE: ${s.sentence}`).join('\n\n');
+  const input = `Some sentences in a published-ready UFC article failed the publication gate.
+`
+    + `Rewrite ONLY those sentences. Keep every other word of the article untouched.
+
+`
+    + `RULES
+`
+    + `  - Return one replacement per index, in the same order.
+`
+    + `  - A replacement must carry the same editorial point as the original.
+`
+    + `  - Do NOT introduce any number, price or claim that is not in the packet below.
+`
+    + `  - If a number cannot be justified from the packet, remove the number rather than the point.
+`
+    + `  - Plain prose. No markdown headings. Keep it one sentence unless the original was longer.
+
+`
+    + `FAILING SENTENCES
+${numbered}
+
+VERIFIED PACKET
+${JSON.stringify(packet)}`;
+
+  const envelope = await callSol(env.OPENAI_API_KEY, {
+    model: selected, input, fetchImpl, schema: REPAIR_SCHEMA, schemaName: 'ufc_article_repair',
+  });
+  cost.model_calls += 1;
+  cost.retry_input_tokens += envelope.usage?.input_tokens || 0;
+  cost.retry_output_tokens += envelope.usage?.output_tokens || 0;
+
+  let parsed;
+  try { parsed = JSON.parse(envelope.text); } catch { return null; }
+  const repairs = Array.isArray(parsed?.repairs) ? parsed.repairs : [];
+  if (repairs.length !== scoped.length) return null;
+
+  let body = article.body_md;
+  for (const r of repairs) {
+    const target = scoped[r.index];
+    const replacement = String(r.replacement || '').trim();
+    /* A repair that cannot be located, or that is empty, is not applied -- and
+     * an unapplied repair leaves the original failing sentence in place, so the
+     * re-validation below will reject the article rather than publish it. */
+    if (!target || !replacement || !body.includes(target.sentence)) return null;
+    body = body.replace(target.sentence, replacement);
+  }
+  return { ...article, body_md: body, model: envelope.model };
 }
 
 /**
@@ -330,6 +443,28 @@ export async function writeArticle(env, packet, { minWords = 500, model = null, 
       last = verdict;
       if (verdict.ok) {
         return { ...parsed, model: envelope.model, attempts: attempt, cost, validation: { ok: true, failures: [] } };
+      }
+
+      /* TRY REPAIRING BEFORE REWRITING.
+       *
+       * When every failure names its own sentence, the draft is not wrong -- a
+       * few clauses in it are. Replacing those costs a fraction of a second
+       * article and, more importantly, keeps the prose that already passed.
+       * Only attempted on the first draft: if a repair has already failed, the
+       * disagreement is not local and a genuine rewrite is the right move. */
+      const scoped = attempt === 1 ? sentenceScoped(verdict.failures) : null;
+      if (scoped) {
+        const repaired = await repairSentences(env, packet, parsed, scoped, { selected, fetchImpl, cost })
+          .catch(() => null);
+        if (repaired) {
+          /* Re-validated IN FULL, not just the replaced sentences: a repair that
+           * fixes one failure and introduces another must be caught here. */
+          const after = validate(repaired, packet, { minWords });
+          if (after.ok) {
+            return { ...repaired, attempts: attempt, cost, repaired_sentences: scoped.length, validation: { ok: true, failures: [] } };
+          }
+          last = after;
+        }
       }
     }
     correction = `YOUR PREVIOUS DRAFT WAS REJECTED BY THE PUBLICATION GATE for exactly these reasons:\n`

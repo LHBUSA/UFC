@@ -85,3 +85,14 @@ head_sampling_rate = 1
 #   SUPABASE_SERVICE_ROLE_KEY  required
 #   OPENAI_API_KEY             required; GPT-5.6 Sol writes, sol-mini scores
 #   ADMIN_TRIGGER_TOKEN        required to expose any POST route at all
+
+# Packet cache. Multiple outlets report the same development within minutes --
+# five Gaethje items in one hour is a normal Tuesday -- and each one rebuilt the
+# identical intelligence packet from scratch: fighter core, recent form, round
+# stats, rankings, DNA and market, every time. The packet is a pure function of
+# the entities involved, so it is cached by those entities for a short window.
+# Deliberately short: a stale packet is a wrong article, and the point is to
+# collapse a burst, not to keep data overnight.
+[[kv_namespaces]]
+binding = "PACKET_CACHE"
+id = "ba7e1cd0e86344d78a50df20f94ef38e"

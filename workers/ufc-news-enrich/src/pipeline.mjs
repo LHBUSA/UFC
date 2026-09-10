@@ -14,7 +14,7 @@
  * and stops. Underneath that, ufc_articles_news_item_uniq permits at most one
  * article per wire item, which holds even if a consumer misbehaves.
  */
-import { buildPacket } from './packet.mjs';
+import { buildPacket, buildCachedPacket } from './packet.mjs';
 import { writeArticle, isConfigured, DESK_VERSION, redactSecrets } from './editorial.mjs';
 import { scoreRelevance } from './relevance.mjs';
 import { resolvePrimary } from './entities.mjs';
@@ -247,6 +247,41 @@ export async function recordCost(sb, item, { stage, outcome, holdReason = null, 
   }, {});
 }
 
+/**
+ * Record that another outlet reported the same development.
+ *
+ * Stored on the canonical article so the page can say "also reported by", and
+ * so a reader can see that a claim rests on more than one newsroom. Capped and
+ * deduplicated by URL: this is corroboration, not a link farm, and the same
+ * outlet republishing its own story must not count twice.
+ *
+ * Never throws. A failure to record corroboration must not turn a correctly
+ * deduplicated item into an error.
+ */
+export async function addCorroboration(sb, canonical, item) {
+  const fb = canonical.fact_block || {};
+  const existing = Array.isArray(fb.corroboration) ? fb.corroboration : [];
+  const url = String(item.url || '').trim();
+  if (!url) return existing.length + 1;
+  const already = existing.some((c) => c.url === url)
+    || String(fb.source?.url || '') === url;
+  if (already || existing.length >= 6) return existing.length + 1;
+
+  const entry = {
+    publisher: item.source?.name || domainOf(url) || 'another outlet',
+    url,
+    title: String(item.title || '').slice(0, 200),
+    published_at: item.published_at || null,
+  };
+  try {
+    await sb.patch('ufc_articles', `id=eq.${canonical.id}`, {
+      fact_block: { ...fb, corroboration: [...existing, entry] },
+      updated_at: new Date().toISOString(),
+    });
+  } catch { /* corroboration is additive context, never a reason to fail */ }
+  return existing.length + 2;   /* the original report plus what is now stored */
+}
+
 export function preflight(item, { now = Date.now() } = {}) {
   /* 1. THE SOURCE-AGE RULE, MOVED IN FRONT OF THE MODEL.
    *
@@ -418,7 +453,7 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
     /* 4. UFC INTELLIGENCE PACKET ----------------------------------------- */
     t = Date.now();
     const enriched = { ...item, primary_fighter_id: ent.primary_fighter_id, relevance_score: rel.score, story_kind: rel.story_kind };
-    const packet = await buildPacket(sb, enriched, {
+    const { packet, cached: packetCached, age_ms: packetAgeMs } = await buildCachedPacket(sb, env, enriched, {
       now,
       sourceExcerpt: src.ok ? src.text : null,
       sourceMeta: src.ok
@@ -434,7 +469,7 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
     const families = ['primary', packet.opponent && 'opponent', packet.bout && 'bout',
       packet.primary?.round_data && 'round_data', packet.primary?.rankings && 'rankings',
       packet.market?.odds_status === 'available' && 'market', packet.source && 'source'].filter(Boolean);
-    await log('packet', 'ok', { families, edges: packet.edges.length, odds: packet.market?.odds_status }, t);
+    await log('packet', 'ok', { families, edges: packet.edges.length, odds: packet.market?.odds_status, cached: packetCached, cache_age_ms: packetAgeMs ?? null }, t);
 
     /* Thin evidence is a reason to stop, not a reason to pad. Without a fetched
      * source AND without round-level data there is nothing here that a database
@@ -451,14 +486,28 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
     const signature = `ufc:${rel.story_kind}:${ent.primary_fighter_id}`;
     const since = nowIso(now - 24 * 3600 * 1000);
     const canon = await sb.select('ufc_articles',
-      `select=id,slug,headline,published_at&topic_signature=eq.${encodeURIComponent(signature)}`
+      `select=id,slug,headline,published_at,fact_block&topic_signature=eq.${encodeURIComponent(signature)}`
       + `&created_at=gte.${encodeURIComponent(since)}&limit=1`);
     if (canon.length) {
-      await log('dedupe', 'skipped', { signature, canonical: canon[0].slug }, t);
-      await settle(sb, item, 'duplicate', `same topic as ${canon[0].slug} within 24h`,
+      /* A SECOND REPORT STRENGTHENS THE STORY RATHER THAN DISAPPEARING.
+       *
+       * Five outlets covering one development used to produce one article and
+       * four rows marked 'duplicate', and the corroboration -- genuinely useful
+       * information, since independent reports of the same development is
+       * exactly what makes a story solid -- was thrown away.
+       *
+       * The canonical article now records who else reported it. This costs no
+       * model call and creates no near-duplicate article, which is the point:
+       * updating what we already published is better than writing it again,
+       * and far better than discarding the evidence. The prose is untouched;
+       * only the attribution list grows. */
+      const corroborated = await addCorroboration(sb, canon[0], item);
+      await log('dedupe', 'skipped', { signature, canonical: canon[0].slug, corroborating_sources: corroborated }, t);
+      await settle(sb, item, 'duplicate', `corroborates ${canon[0].slug} (now ${corroborated} independent reports)`,
         { topic_signature: signature, canonical_article_id: canon[0].id,
           relevance_score: rel.score, primary_fighter_id: ent.primary_fighter_id });
-      return { item_id: item.id, status: 'duplicate', canonical: canon[0].slug };
+      await recordCost(sb, item, { stage: 'dedupe', outcome: 'held', holdReason: `corroborates ${canon[0].slug}`, solCalls: 1, detectedAt });
+      return { item_id: item.id, status: 'duplicate', canonical: canon[0].slug, corroborating_sources: corroborated };
     }
     await log('dedupe', 'ok', { signature }, t);
 

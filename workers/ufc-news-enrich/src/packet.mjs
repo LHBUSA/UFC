@@ -288,6 +288,76 @@ async function market(sb, boutId) {
  * not guess identity, because guessing identity is how a comparison fighter
  * becomes the hero image.
  */
+/* Bump when anything about how a packet is BUILT changes. A cached packet from
+ * an older builder must never be reused, and a version in the key is the only
+ * invalidation that cannot be forgotten. */
+export const PACKET_BUILDER_VERSION = 'v2';
+
+/* Twenty minutes. Long enough to collapse a burst of reports about one
+ * development, which is the actual pattern; short enough that a bout being
+ * rebooked, a rankings update or a fresh price is never more than twenty
+ * minutes from reaching an article. A packet is the factual basis of a
+ * published piece, so the cache is a cost optimisation that must never become
+ * a staleness source. */
+const PACKET_TTL_MS = 20 * 60 * 1000;
+
+async function fingerprint(parts) {
+  const data = new TextEncoder().encode(parts.join('|'));
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return [...new Uint8Array(digest)].slice(0, 16).map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * The packet, cached on the entities it is a function of.
+ *
+ * WHAT THE KEY CONTAINS, AND WHY
+ *
+ * A packet is derived entirely from the primary fighter, the opponent, the
+ * bout and the event -- so those, plus the builder version, are the key. The
+ * SOURCE is deliberately NOT in the key and not in the cached value: the source
+ * excerpt differs per report and is merged in after the cache, so two outlets
+ * covering one development share the expensive first-party half while each
+ * keeps its own attribution and its own class-B numbers.
+ *
+ * WHAT IT WILL NOT DO
+ *
+ * It will not serve anything older than PACKET_TTL_MS, it will not survive a
+ * builder change, and any failure -- KV unavailable, malformed JSON, a miss --
+ * falls straight through to building the packet properly. A cache that can
+ * fail closed into "no article" would be a worse trade than the cost it saves.
+ */
+export async function buildCachedPacket(sb, env, item, opts = {}) {
+  const { sourceExcerpt = null, sourceMeta = null, now = Date.now() } = opts;
+  const kv = env?.PACKET_CACHE;
+  if (!kv || !item.primary_fighter_id) {
+    return { packet: await buildPacket(sb, item, opts), cached: false };
+  }
+  const key = `packet:${PACKET_BUILDER_VERSION}:${await fingerprint([
+    item.primary_fighter_id, item.bout_id || '-', item.event_id || '-', item.story_kind || '-',
+  ])}`;
+  try {
+    const hit = await kv.get(key, 'json');
+    if (hit && Number.isFinite(hit.built_at) && now - hit.built_at < PACKET_TTL_MS && hit.packet?.primary) {
+      /* The first-party half is reused; this report's own source is layered on
+       * top, so attribution and class-B provenance are never shared between
+       * two different outlets' stories. */
+      const packet = { ...hit.packet };
+      packet.source = sourceMeta ? { ...sourceMeta, excerpt: sourceExcerpt } : null;
+      packet.built_at = new Date(now).toISOString();
+      return { packet, cached: true, age_ms: now - hit.built_at };
+    }
+  } catch { /* a cache read must never be the reason an article fails */ }
+
+  const packet = await buildPacket(sb, item, opts);
+  try {
+    const storable = { ...packet, source: null };
+    await kv.put(key, JSON.stringify({ built_at: now, packet: storable }), {
+      expirationTtl: Math.ceil(PACKET_TTL_MS / 1000) * 2,
+    });
+  } catch { /* likewise a cache write */ }
+  return { packet, cached: false };
+}
+
 export async function buildPacket(sb, item, { now = Date.now(), sourceExcerpt = null, sourceMeta = null } = {}) {
   const today = new Date(now).toISOString().slice(0, 10);
   const primaryId = item.primary_fighter_id;

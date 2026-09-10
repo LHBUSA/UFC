@@ -579,12 +579,13 @@ type Methodology = {
  * different thing from independently confirming that the event occurred. The
  * copy now says what actually happened.
  */
-export function MethodologyModule({ plan, updated }: { plan: ContentPlan | null; omitted?: { id: string; reason: string }[]; updated?: string }) {
+export function MethodologyModule({ plan, updated, corroborating }: { plan: ContentPlan | null; updated?: string; corroborating?: { publisher: string; url: string }[] }) {
   const m = moduleOf<Methodology>(plan, "source_methodology");
   if (!m?.data) return null;
   const d = m.data;
   const families = readableFamilies(d.first_party_tables);
   const familySentence = familiesSentence(d.first_party_tables);
+  const corroboration = (corroborating || []).filter((c) => c?.url && c?.publisher).slice(0, 6);
   const oddsConnected = d.odds_status === "available";
   return (
     <Module eyebrow="Sources and method" className="method">
@@ -599,6 +600,20 @@ export function MethodologyModule({ plan, updated }: { plan: ContentPlan | null;
         PropBetEdge read that report and analysed the development against its own UFC records
         {familySentence ? <> — {familySentence}</> : null}.
       </p>
+
+      {corroboration.length > 0 && (
+        <p className="method-lede">
+          {/* Independent reports of the same development are the strongest
+            * signal a story is solid, so they are shown rather than counted. */}
+          Also reported by{" "}
+          {corroboration.map((c, i) => (
+            <span key={c.url}>
+              {i > 0 ? (i === corroboration.length - 1 ? " and " : ", ") : ""}
+              <a href={c.url} rel="noopener nofollow" target="_blank">{c.publisher}</a>
+            </span>
+          ))}.
+        </p>
+      )}
 
       {families.length > 0 && (
         <div className="method-row">
