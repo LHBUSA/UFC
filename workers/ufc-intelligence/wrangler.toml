@@ -20,7 +20,7 @@ CRON_DESCRIPTION = "25 11 * * * (daily)"
 # a day when nothing changed costs one page fetch and writes an identical row.
 # A missed Tuesday used to mean waiting a week.
 [triggers]
-crons = ["25 11 * * *"]
+crons = ["25 11 * * *", "17 7 * * *"]
 
 [observability]
 enabled = true
@@ -31,3 +31,11 @@ head_sampling_rate = 1
 #   ADMIN_TRIGGER_TOKEN        required to expose POST /admin/run at all
 #
 # No model credential. This lane computes and scrapes; it never writes prose.
+
+# Fight DNA input watermark. DNA is a pure function of completed bouts and their
+# round statistics; when neither has moved, a rebuild recomputes identical rows
+# and changes nothing but generated_at. The last successful build fingerprint
+# lives here so a repeat build within a day is skipped rather than performed.
+[[kv_namespaces]]
+binding = "INTEL_STATE"
+id = "272c5d46557e4b378991b7e95e9bf28f"

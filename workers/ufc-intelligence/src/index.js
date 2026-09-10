@@ -29,9 +29,12 @@
  */
 import { main as ingestRankings } from '../../../scripts/rankings/ingest_rankings.mjs';
 
+import { buildFightDna } from '../../../scripts/dna/build_fight_dna.mjs';
+
+const DNA_CRON = '17 7 * * *';
 const WORKER = 'ufc-intelligence';
 const VERSION = 'v0.1.0';
-const LANES = ['rankings'];
+const LANES = ['rankings', 'fight_dna'];
 
 const health = { last_run_at: null, last_status: null, last_lane: null, last_result: null, last_error: null };
 
@@ -113,7 +116,14 @@ export default {
           SUPABASE_SERVICE_ROLE_KEY: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
           ADMIN_TRIGGER_TOKEN: Boolean(env.ADMIN_TRIGGER_TOKEN),
         },
-        writes: 'ufc_rankings, the ufc-media storage bucket (rankings/*.json), ufc_ingest_runs. Nothing else.',
+        writes: 'ufc_rankings, ufc_fighter_dna_snapshots, ufc_fighter_bout_features, ufc_fighter_stance_splits, ufc_dna_build_runs, the ufc-media storage bucket (rankings/*.json), ufc_ingest_runs.',
+        crons: { rankings: env.CRON_DESCRIPTION || '25 11 * * *', fight_dna: DNA_CRON },
+        fight_dna: {
+          replaces: 'fight-dna-build.yml cron "17 7 * * *", previously run on a GitHub runner',
+          skips_when_inputs_unchanged: Boolean(env.INTEL_STATE),
+          definition_versioned: true,
+          historical_snapshots_preserved: true,
+        },
       });
     }
 
@@ -124,13 +134,141 @@ export default {
       const dry = url.searchParams.get('dry') === 'true';
       return json({ service: WORKER, version: VERSION, ...(await runRankings(env, { dry, invoked: 'manual' })) });
     }
+
+    if (url.pathname === '/admin/dna') {
+      const dry = url.searchParams.get('dry') === 'true';
+      return json({
+        service: WORKER, version: VERSION,
+        ...(await runFightDna(env, {
+          dry, invoked: 'manual',
+          asOf: url.searchParams.get('as_of'),
+          fighterId: url.searchParams.get('fighter'),
+          force: url.searchParams.get('force') === 'true',
+        })),
+      });
+    }
     return json({ error: 'not_found', service: WORKER, version: VERSION }, 404);
   },
 
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(runRankings(env, { invoked: 'cron', cron: event.cron }));
+    /* Two lanes, two crons, one owner. Rankings at 11:25 and Fight DNA at
+     * 07:17 -- the hour the GitHub workflow used, kept deliberately so the DNA
+     * build still lands after the 06:00 stats ingest it depends on. */
+    if (event.cron === DNA_CRON) ctx.waitUntil(runFightDna(env, { invoked: 'cron' }));
+    else ctx.waitUntil(runRankings(env, { invoked: 'cron', cron: event.cron }));
   },
 };
+
+/* ---------------------------------------------------------- fight DNA */
+
+/**
+ * The watermark that decides whether a rebuild is worth doing.
+ *
+ * Fight DNA is a pure function of completed bouts and their round statistics.
+ * If neither has changed since the last successful build, a rebuild recomputes
+ * identical snapshots and writes identical rows -- work whose only effect is a
+ * new generated_at. So the inputs are fingerprinted: the newest result capture
+ * plus the row counts of results and round stats. A count is included because a
+ * correction that replaces a row without advancing a timestamp still changes
+ * the answer, and a max() alone would miss it.
+ *
+ * Deliberately NOT in the fingerprint: the as-of date. A new day genuinely
+ * produces a different snapshot -- bouts age out of windows -- so the daily
+ * build is legitimate work even when no fight happened. The fingerprint
+ * suppresses repeat builds WITHIN a day, which is what event-driven triggering
+ * would otherwise create.
+ */
+async function dnaInputFingerprint(env) {
+  const newest = await sb(env, 'GET',
+    'ufc_bout_results?select=captured_at&order=captured_at.desc.nullslast&limit=1').catch(() => null);
+  const [rc, roc] = await Promise.all([
+    sbCount(env, 'ufc_bout_results'),
+    sbCount(env, 'ufc_bout_round_stats'),
+  ]);
+  return [newest?.[0]?.captured_at || 'none', String(rc), String(roc)].join('|');
+}
+
+/** Exact row count via PostgREST's content-range, without pulling the table. */
+async function sbCount(env, table) {
+  try {
+    const base = String(env.SUPABASE_URL).replace(/[/]+$/, '');
+    /* select=* rather than a named column. Asking for select=id returned
+     * PostgREST 42703 (undefined column) on ufc_bout_results, whose key is
+     * bout_id -- and the failure was swallowed into '?', which silently
+     * degraded the fingerprint to a timestamp alone. A count needs no
+     * particular column, so it should not name one. */
+    const res = await fetch(`${base}/rest/v1/${table}?select=*`, {
+      headers: {
+        apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+        Prefer: 'count=exact',
+        Range: '0-0',
+      },
+    });
+    const cr = res.headers.get('content-range') || '';
+    const slash = cr.lastIndexOf('/');
+    const total = slash >= 0 ? Number(cr.slice(slash + 1)) : NaN;
+    return Number.isFinite(total) ? total : '?';
+  } catch { return '?'; }
+}
+
+/**
+ * Build Fight DNA, skipping the work when nothing it depends on has moved.
+ *
+ * Reacts to authoritative state rather than only to the clock: ufc-fight-state
+ * records a bout reaching post_result, ufc-stats-ingest lands the round rows,
+ * and the fingerprint above notices. A completed bout therefore refreshes the
+ * fighters involved on the next tick instead of waiting for a calendar day.
+ *
+ * Historical snapshots are preserved. The builder upserts on the versioned key
+ * (fighter, as-of date, definition version), so rebuilding today can never
+ * touch yesterday's row, and a definition change writes a new row beside the
+ * old one rather than silently restating history under a new meaning.
+ */
+async function runFightDna(env, { dry = false, invoked = 'cron', asOf = null, fighterId = null, force = false } = {}) {
+  health.last_run_at = new Date().toISOString();
+  health.last_lane = 'fight_dna';
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    health.last_status = 'misconfigured';
+    return { lane: 'fight_dna', status: 'misconfigured' };
+  }
+
+  const fingerprint = await dnaInputFingerprint(env).catch(() => null);
+  const today = asOf || new Date().toISOString().slice(0, 10);
+  const stateKey = `dna:last_build:${today}`;
+  let previous = null;
+  try { previous = env.INTEL_STATE ? await env.INTEL_STATE.get(stateKey) : null; } catch { /* treated as a miss */ }
+
+  if (!force && !fighterId && fingerprint && previous === fingerprint) {
+    health.last_status = 'skipped_unchanged';
+    console.log(`[${WORKER}] fight_dna skipped: inputs unchanged for ${today}`);
+    return { lane: 'fight_dna', status: 'skipped_unchanged', as_of: today, fingerprint, invoked };
+  }
+
+  try {
+    const summary = await buildFightDna({
+      supabaseUrl: env.SUPABASE_URL,
+      serviceKey: env.SUPABASE_SERVICE_ROLE_KEY,
+      asOf: asOf || undefined,
+      fighterId: fighterId || undefined,
+      dry,
+    });
+    if (!dry && fingerprint && env.INTEL_STATE) {
+      /* Written only after a successful build, so a crash mid-run leaves the
+       * next tick to retry rather than marking the day done. */
+      try { await env.INTEL_STATE.put(stateKey, fingerprint, { expirationTtl: 172800 }); } catch { /* best effort */ }
+    }
+    health.last_status = summary && summary.ok === false ? 'skipped' : 'ok';
+    health.last_error = null;
+    console.log(`[${WORKER}] fight_dna ${JSON.stringify({ as_of: summary && summary.as_of, snapshots: summary && summary.snapshots })}`);
+    return { lane: 'fight_dna', status: 'ok', dry, invoked, fingerprint, ...summary };
+  } catch (e) {
+    health.last_status = 'failed';
+    health.last_error = String((e && e.message) || e).slice(0, 300);
+    console.error(`[${WORKER}] fight_dna failed: ${health.last_error}`);
+    return { lane: 'fight_dna', status: 'failed', error: health.last_error };
+  }
+}
 
 async function runRankings(env, { dry = false, invoked = 'cron', cron = null } = {}) {
   health.last_run_at = new Date().toISOString();

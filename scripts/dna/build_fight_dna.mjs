@@ -24,45 +24,66 @@
 //   node scripts/dna/build_fight_dna.mjs --fighter <uuid>
 //   node scripts/dna/build_fight_dna.mjs --dry-run
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, '..', '..');
-const BUILDER = 'scripts/dna/build_fight_dna.mjs@v1.1';
+/* CONFIGURATION IS INJECTED, NOT READ FROM THE PROCESS.
+ *
+ * The production owner of this builder is the Cloudflare Worker
+ * workers/ufc-intelligence. In workerd there is no argv, no process.env of the
+ * shape a CLI expects, and no .env on disk -- and every one of those was read
+ * at MODULE SCOPE here, which means importing this file at all used to be a
+ * side effect that could not succeed. So the settings live in module-level
+ * bindings assigned by buildFightDna() at the start of a run, and the Node
+ * imports moved into the CLI guard at the foot of the file where they can
+ * still be used for local rebuilds.
+ *
+ * The 700 lines of DNA logic below are untouched: they read these bindings by
+ * name exactly as before. Rewriting the builder to move a schedule would risk
+ * changing what a metric MEANS, and every historical snapshot was computed by
+ * the current definition. */
+const BUILDER = 'ufc-intelligence/build_fight_dna@v1.1';
 const DEFINITION_VERSION = 1;
 const FEATURE_VERSION = 1;
 
-const argv = process.argv.slice(2);
-const flag = (x) => argv.includes(x);
-const opt = (x) => { const i = argv.indexOf(x); return i >= 0 ? argv[i + 1] : undefined; };
-const AS_OF = opt('--as-of') || new Date().toISOString().slice(0, 10);
-const ONLY_FIGHTER = opt('--fighter') || null;
-const DRY_RUN = flag('--dry-run');
+let AS_OF = new Date().toISOString().slice(0, 10);
+let ONLY_FIGHTER = null;
+let DRY_RUN = false;
+let SUPABASE_URL = null;
+let SERVICE_KEY = null;
+let HEADERS = {};
 
-if (!/^\d{4}-\d{2}-\d{2}$/.test(AS_OF)) {
-  console.error('--as-of must be YYYY-MM-DD');
-  process.exit(2);
-}
+/* One build at a time per isolate. The bindings above are module-level, so two
+ * concurrent runs would read each other's as-of date and write snapshots
+ * stamped with the wrong day. A cron and a manual admin run overlapping is not
+ * hypothetical -- it is the normal way this gets triggered twice. */
+let inFlight = null;
 
-function loadEnv() {
-  const p = path.join(ROOT, '.env');
-  if (!fs.existsSync(p)) return;
-  for (const line of fs.readFileSync(p, 'utf8').split(/\r?\n/)) {
-    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-    if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
-  }
-}
-loadEnv();
+/**
+ * Build Fight DNA. Deterministic, idempotent, versioned.
+ *
+ * @param {object} cfg
+ * @param {string} cfg.supabaseUrl
+ * @param {string} cfg.serviceKey
+ * @param {string} [cfg.asOf]       YYYY-MM-DD, defaults to today UTC
+ * @param {string} [cfg.fighterId]  rebuild one fighter only
+ * @param {boolean}[cfg.dry]
+ */
+export async function buildFightDna(cfg = {}) {
+  if (inFlight) return { ok: false, skipped: 'a build is already running in this isolate' };
+  const asOf = cfg.asOf || new Date().toISOString().slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) throw new Error('asOf must be YYYY-MM-DD');
+  const url = String(cfg.supabaseUrl || '').replace(/\/$/, '');
+  const key = String(cfg.serviceKey || '');
+  if (!url || !key) throw new Error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY missing');
 
-const SUPABASE_URL = process.env.SUPABASE_URL?.replace(/\/$/, '');
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY missing');
-  process.exit(2);
+  AS_OF = asOf;
+  ONLY_FIGHTER = cfg.fighterId || null;
+  DRY_RUN = Boolean(cfg.dry);
+  SUPABASE_URL = url;
+  SERVICE_KEY = key;
+  HEADERS = { apikey: key, Authorization: `Bearer ${key}` };
+
+  inFlight = main();
+  try { return await inFlight; } finally { inFlight = null; }
 }
-const HEADERS = { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` };
 
 const ROUND_KEYS = [
   'kd', 'sig_str_landed', 'sig_str_att', 'total_str_landed', 'total_str_att',
@@ -542,12 +563,27 @@ async function main() {
   const started = Date.now();
   console.log(`Fight DNA builder ${BUILDER} as_of=${AS_OF}${ONLY_FIGHTER ? ` fighter=${ONLY_FIGHTER}` : ''}${DRY_RUN ? ' [DRY]' : ''}`);
 
+  /* NO ROW CAPS, AND AN EXPLICIT ORDER.
+   *
+   * These three queries carried `limit=5000`, `limit=5000` and `limit=10000`
+   * while the tables hold 9,348 completed bouts, 9,344 results and 41,542 round
+   * rows. selectAll pages with Range headers, but a limit in the query string
+   * caps the TOTAL, so paging stopped at the cap: Fight DNA was being computed
+   * from roughly a quarter of the round archive. That is the reason so many
+   * snapshots report low coverage on small samples.
+   *
+   * Worse, there was no ORDER BY. Which rows survived a cap was whatever the
+   * planner returned, so the build was not deterministic either -- two runs
+   * over identical data could disagree. The order clauses are here for that
+   * reason as much as for the paging: a stable sort is what makes Range paging
+   * correct in the first place.
+   */
   const [fighters, events, bouts, results, roundStats] = await Promise.all([
     selectAll('ufc_fighters', 'select=id,name,stance&order=name.asc'),
     selectAll('ufc_events', `select=id,name,event_date&event_date=lte.${AS_OF}&order=event_date.asc`),
-    selectAll('ufc_bouts', 'select=id,ufcstats_id,espn_competition_id,event_id,fighter_a_id,fighter_b_id,scheduled_rounds,is_title,card_position,bout_order,status,short_notice_days,captured_at,updated_at&status=eq.complete&limit=5000'),
-    selectAll('ufc_bout_results', 'select=bout_id,winner_id,method,method_raw,round,time_sec,time_format,result_source,has_stats,source_url,captured_at,stats_source_url,stats_captured_at&limit=5000'),
-    selectAll('ufc_bout_round_stats', `select=bout_id,fighter_id,round,${ROUND_KEYS.join(',')},source_url,captured_at&limit=10000`),
+    selectAll('ufc_bouts', 'select=id,ufcstats_id,espn_competition_id,event_id,fighter_a_id,fighter_b_id,scheduled_rounds,is_title,card_position,bout_order,status,short_notice_days,captured_at,updated_at&status=eq.complete&order=id'),
+    selectAll('ufc_bout_results', 'select=bout_id,winner_id,method,method_raw,round,time_sec,time_format,result_source,has_stats,source_url,captured_at,stats_source_url,stats_captured_at&order=bout_id'),
+    selectAll('ufc_bout_round_stats', `select=bout_id,fighter_id,round,${ROUND_KEYS.join(',')},source_url,captured_at&order=bout_id,fighter_id,round`),
   ]);
 
   const eventMap = new Map(events.map((e) => [e.id, e]));
@@ -733,15 +769,45 @@ async function main() {
       elapsed_ms: Date.now() - started,
     };
     await finishRun(runId, 'success', output);
-    console.log(JSON.stringify({ ok: true, build_run_id: runId, as_of: AS_OF, ...output }, null, 2));
+    const summary = { ok: true, build_run_id: runId, as_of: AS_OF, ...output };
+    console.log(JSON.stringify(summary, null, 2));
+    return summary;
   } catch (error) {
     console.error(error);
+    /* The run row is closed as failed before rethrowing, so a crashed build is
+     * visible in ufc_dna_build_runs rather than leaving a row open forever. */
     try { await finishRun(runId, 'failed', {}, [], [String(error?.stack || error)]); } catch (e) { console.error(`failed to close build run: ${e.message}`); }
-    process.exit(1);
+    throw error;
   }
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+/* CLI ONLY. Importing this module must never read a file or build anything. */
+const isCli = typeof process !== 'undefined'
+  && process.argv?.[1]?.replace(/\\/g, '/').endsWith('scripts/dna/build_fight_dna.mjs');
+if (isCli) {
+  const fs = (await import('node:fs')).default;
+  const path = (await import('node:path')).default;
+  const { fileURLToPath } = await import('node:url');
+  const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+  const envPath = path.join(ROOT, '.env');
+  if (fs.existsSync(envPath)) {
+    for (const line of fs.readFileSync(envPath, 'utf8').split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+      if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+    }
+  }
+  const argv = process.argv.slice(2);
+  const opt = (x) => { const i = argv.indexOf(x); return i >= 0 ? argv[i + 1] : undefined; };
+  try {
+    await buildFightDna({
+      supabaseUrl: process.env.SUPABASE_URL,
+      serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+      asOf: opt('--as-of'),
+      fighterId: opt('--fighter'),
+      dry: argv.includes('--dry-run'),
+    });
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
