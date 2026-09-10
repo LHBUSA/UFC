@@ -24,17 +24,33 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { normalize } from '../../shared/alias_resolver.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+/* Computed LAZILY, and only on the CLI path.
+ *
+ * At module scope this threw the Worker's startup: workerd leaves
+ * import.meta.url undefined, so fileURLToPath(undefined) raises before any
+ * handler runs and the deploy fails with a bare validation error. A repo-root
+ * path is a Node concept and a Worker has no use for one, so it must not be
+ * computed merely by loading the file. */
+function repoRoot() {
+  return join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+}
 const SOURCE_URL = 'https://www.ufc.com/rankings';
 const BUCKET = 'ufc-media';
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
 
-const args = process.argv.slice(2);
-const DRY_RUN = args.includes('--dry-run');
-const opt = (flag, dflt = null) => {
-  const i = args.indexOf(flag);
-  return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : dflt;
-};
+/* Options are an ARGUMENT, not module-scope state read from argv at import.
+ * The Worker imports this module once per isolate and calls main() many times;
+ * anything decided at import is decided for the life of the isolate, and
+ * process.argv is empty in workerd regardless. This is the same refactor
+ * ingest_news.mjs already carries. */
+export function parseCliOptions(argv = []) {
+  const at = (flag) => {
+    const i = argv.indexOf(flag);
+    return i >= 0 && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : null;
+  };
+  return { dry: argv.includes('--dry-run'), html: at('--html') };
+}
+
 
 // ---------------------------------------------------------------------------
 // Division catalogue. Order here is the order of `divisions` in the snapshot.
@@ -215,9 +231,16 @@ export function parseRankings(html, { warnings = [] } = {}) {
 // ---------------------------------------------------------------------------
 // Supabase (PostgREST + Storage) via fetch with the service role.
 // ---------------------------------------------------------------------------
-function loadEnv() {
+/* `injected` is the Worker's env. When present the filesystem is never
+ * touched: a Worker has no .env and no process.env, and reaching for either
+ * is how a module stops being portable. */
+function loadEnv(injected) {
+  if (injected && injected.SUPABASE_URL) {
+    return { ...injected, SUPABASE_URL: String(injected.SUPABASE_URL).replace(/\/+$/, '') };
+  }
   const env = {};
-  const p = join(ROOT, '.env');
+
+  const p = join(repoRoot(), '.env');
   if (existsSync(p)) {
     for (const line of readFileSync(p, 'utf8').split(/\r?\n/)) {
       if (line.trim().startsWith('#')) continue;
@@ -333,14 +356,16 @@ function tableRows(snapshot) {
 }
 
 // ---------------------------------------------------------------------------
-async function main() {
-  const env = loadEnv();
+export async function main(injectedEnv, options = {}) {
+  const opts = { dry: Boolean(options.dry), html: options.html || null };
+  const env = loadEnv(injectedEnv);
   const warnings = [];
 
+
   let html;
-  const localHtml = opt('--html');
+  const localHtml = opts.html;
   if (localHtml) {
-    html = readFileSync(localHtml, 'utf8');
+    html = readFileSync(localHtml, 'utf8');   /* CLI only; a Worker never sets this */
   } else {
     const res = await fetch(SOURCE_URL, {
       headers: { 'User-Agent': USER_AGENT, Accept: 'text/html,application/xhtml+xml', 'Accept-Language': 'en-US,en;q=0.9' },
@@ -382,7 +407,7 @@ async function main() {
 
   let storage = 'dry-run';
   let table = 'dry-run';
-  if (!DRY_RUN) {
+  if (!opts.dry) {
     if (!haveCreds) throw new Error('SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are required for a real run');
     const body = JSON.stringify(snapshot);
     await uploadJson(env, 'rankings/latest.json', body);
@@ -392,12 +417,36 @@ async function main() {
   }
 
   console.log(
-    `[rankings] ${DRY_RUN ? 'DRY-RUN ' : ''}snapshot=${snapshot.snapshot_date} divisions=${divisions.length} champions=${champions} entries=${entries} ` +
+    `[rankings] ${opts.dry ? 'DRY-RUN ' : ''}snapshot=${snapshot.snapshot_date} divisions=${divisions.length} champions=${champions} entries=${entries} ` +
       `linked=${stats.linked}/${people.length} ambiguous=${stats.ambiguous} unmatched=${stats.unmatched} warnings=${warnings.length} storage=${storage} table=${table}`,
   );
+
+  /* Returned rather than logged-and-grepped. The GitHub job parsed counters
+   * out of stdout and read zero whenever a line moved. */
+  return {
+    snapshot_date: snapshot.snapshot_date,
+    divisions: divisions.length,
+    champions,
+    entries,
+    linked: stats.linked,
+    people: people.length,
+    ambiguous: stats.ambiguous,
+    unmatched: stats.unmatched,
+    warnings,
+    storage,
+    table,
+    dry: opts.dry,
+  };
 }
 
-main().catch((err) => {
-  console.error(`[rankings] FAILED: ${err.message}`);
-  process.exitCode = 1; // not process.exit(): Node on Windows trips a libuv assertion tearing down a live fetch handle
-});
+/* CLI ONLY. Importing this module must never ingest: the previous version
+ * called main() at module scope with no guard, so merely loading the file -
+ * which is exactly what a Worker does - fetched ufc.com, uploaded a snapshot
+ * and upserted ufc_rankings as a side effect of the import. */
+const isCli = typeof process !== 'undefined' && process.argv?.[1]?.endsWith('ingest_rankings.mjs');
+if (isCli) {
+  main(undefined, parseCliOptions(process.argv.slice(2))).catch((err) => {
+    console.error(`[rankings] FAILED: ${err.message}`);
+    process.exitCode = 1;
+  });
+}

@@ -1,0 +1,33 @@
+name = "ufc-intelligence"
+main = "src/index.js"
+compatibility_date = "2026-09-10"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# scripts/rankings/ingest_rankings.mjs imports shared/alias_resolver.mjs and
+# touches node:fs inside a guarded branch that only the CLI reaches. The logic
+# is reused verbatim; this is a change of execution ownership, not a rewrite.
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+CRON_DESCRIPTION = "25 11 * * * (daily)"
+
+# Replaces newsroom.yml's "41 11 * * 2,3".
+#
+# Daily rather than Tuesday/Wednesday: the old schedule encoded an assumption
+# about when UFC.com updates, and the ingest is idempotent per snapshot_date, so
+# a day when nothing changed costs one page fetch and writes an identical row.
+# A missed Tuesday used to mean waiting a week.
+[triggers]
+crons = ["25 11 * * *"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Secrets:
+#   SUPABASE_SERVICE_ROLE_KEY  required
+#   ADMIN_TRIGGER_TOKEN        required to expose POST /admin/run at all
+#
+# No model credential. This lane computes and scrapes; it never writes prose.

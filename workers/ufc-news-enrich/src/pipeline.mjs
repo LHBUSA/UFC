@@ -163,7 +163,16 @@ export function greenPath({ env, rel, ent, src, packet, article, hero, item, now
 
   if (!packet?.primary) blockers.push('packet has no primary profile');
   if (!article?.validation?.ok) blockers.push('deterministic validators did not pass');
-  if (article?.attempts > 1) blockers.push('passed only after a corrective retry; a human should see it once');
+  /* A corrective retry is NOT a blocker.
+   *
+   * It was one briefly, on the reasoning that a gate having something to say
+   * deserved a human glance. That was wrong in a way worth naming: the retry
+   * exists precisely to fix a gate failure, and attempt two is held to every
+   * identical check that attempt one failed - the same validators, the same
+   * provenance rules, the same freshness and dedupe and entity thresholds.
+   * Holding a clean article because an earlier draft was not clean punishes the
+   * mechanism for working. The fact is recorded instead, so the rate stays
+   * visible and a rising one can be investigated. */
 
   /* Hero is valid or deliberately absent. Never wrong: pickHero keys on
    * primary_fighter_id and refuses incomplete credit, so a present hero is
@@ -181,7 +190,7 @@ export function greenPath({ env, rel, ent, src, packet, article, hero, item, now
     }
   }
 
-  return { publish: blockers.length === 0, blockers };
+  return { publish: blockers.length === 0, blockers, corrective_retry: (article?.attempts || 1) > 1 };
 }
 
 const publishEnabledFor = (env) => String(env.PUBLISH_ENABLED || 'false').toLowerCase() === 'true';
@@ -310,7 +319,7 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
     const green = greenPath({ env, rel, ent, src, packet, article, hero, item, now });
     const publishThis = green.publish;
     await log('validate', green.publish ? 'ok' : 'held',
-      { green_path: green.publish, blockers: green.blockers });
+      { green_path: green.publish, blockers: green.blockers, corrective_retry: green.corrective_retry });
 
     const slug = slugify(article.headline);
     const row = {
@@ -334,7 +343,7 @@ export async function processItem(sb, env, itemId, { now = Date.now(), publish =
       relevance_score: rel.score,
       topic_signature: signature,
       source_body_hash: src.hash || null,
-      validation: { ok: true, failures: [], gate: DESK_VERSION, green_path: green.publish, blockers: green.blockers },
+      validation: { ok: true, failures: [], gate: DESK_VERSION, green_path: green.publish, blockers: green.blockers, corrective_retry: green.corrective_retry },
       model_version: `openai:${article.model}/${DESK_VERSION}`,
       hero_image_ref: hero?.id || null,
       hero_credit: hero?.credit || null,
