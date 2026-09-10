@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { resolveFight } from "@/lib/resolve";
-import { getImagesForFighters } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { ogFonts, OG_SIZE } from "@/lib/og";
 import { OgFrame, OgFace } from "@/components/og";
 import { fmtDate, fmtRecord, fmtHeight, fmtReach, weightClassLabel, winnerOf, METHOD_LABEL, cardPositionLabel } from "@/lib/format";
@@ -14,7 +14,7 @@ export const contentType = "image/png";
 export default async function OG({ params }: { params: Promise<{ slug: string }> }) {
   const [fonts, hit] = await Promise.all([ogFonts(), resolveFight((await params).slug)]);
   const b = hit?.b, e = hit?.e;
-  const imgs = b ? await getImagesForFighters([b.fighter_a.id, b.fighter_b.id]) : new Map();
+  const imgs = b ? await resolveFighterPortraits([b.fighter_a.id, b.fighter_b.id], { surface: "high_visibility" }) : new Map();
   const w = b ? winnerOf(b) : null;
   const rows: Array<[string, string, string]> = b ? [
     [fmtRecord(b.fighter_a), "RECORD", fmtRecord(b.fighter_b)],

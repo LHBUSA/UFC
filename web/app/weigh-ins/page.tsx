@@ -5,7 +5,7 @@ import {
   getUpcomingEvents, getFightersByIds,
   type Fighter, type PortraitSet,
 } from "@/lib/db";
-import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import {
   getWeighIns, getWeighInSummary, getWeighInHistory, getWeighInEvents, pickDeskEvent,
   RESULT_LABEL, RESULT_TONE, SOURCE_KIND_LABEL,
@@ -157,7 +157,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
   const fighterIds = [...new Set(table.map((r) => r.fighter_id).filter(Boolean))];
   const [fighters, images] = await Promise.all([
     getFightersByIds(fighterIds).catch(() => []),
-    getVerifiedDisplayImagesForFighters(fighterIds).catch(() => new Map<string, PortraitSet>()),
+    resolveFighterPortraits(fighterIds, { surface: "high_visibility" }).catch(() => new Map<string, PortraitSet>()),
   ]);
   const fighterMap = new Map(fighters.map((f) => [f.id, f]));
   const boutGroups = groupByBout(table);

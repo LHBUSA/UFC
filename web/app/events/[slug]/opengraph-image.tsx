@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { resolveEvent } from "@/lib/resolve";
-import { getEventBouts, getImagesForFighters } from "@/lib/db";
+import { getEventBouts } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { ogFonts, OG_SIZE } from "@/lib/og";
 import { OgFrame, OgFace } from "@/components/og";
 import { fmtDate, fmtRecord, locationLine, weightClassLabel, winnerOf, METHOD_LABEL } from "@/lib/format";
@@ -15,7 +16,7 @@ export default async function OG({ params }: { params: Promise<{ slug: string }>
   const [fonts, e] = await Promise.all([ogFonts(), resolveEvent((await params).slug)]);
   const bouts = e ? await getEventBouts(e.id) : [];
   const main = bouts.find((b) => b.status !== "cancelled") || null;
-  const imgs = main ? await getImagesForFighters([main.fighter_a.id, main.fighter_b.id]) : new Map();
+  const imgs = main ? await resolveFighterPortraits([main.fighter_a.id, main.fighter_b.id], { surface: "high_visibility" }) : new Map();
   const w = main ? winnerOf(main) : null;
   return new ImageResponse(
     (

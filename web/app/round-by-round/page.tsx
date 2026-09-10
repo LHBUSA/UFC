@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Avatar, Breadcrumbs, JsonLd } from "@/components/ui";
 import type { PortraitSet } from "@/lib/db";
-import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { buildSections, getRoundIndex, type RoundIndexBout } from "@/lib/roundIndex";
 import { fmtDate, METHOD_SHORT, weightClassLabel } from "@/lib/format";
 import { matchupSlug } from "@/lib/slug";
@@ -111,7 +111,7 @@ export default async function RoundByRoundIndex() {
   const sections = buildSections(index);
   const recent = ok?.shelves.recent || [];
   const visibleFighterIds = [...new Set(sections.flatMap((section) => section.bouts.flatMap((b) => [b.fighterA.id, b.fighterB.id])))];
-  const images = await getVerifiedDisplayImagesForFighters(visibleFighterIds);
+  const images = await resolveFighterPortraits(visibleFighterIds, { surface: "standard" });
   const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t?.byObservedRounds[n] || 0 }));
   const maxRoundBucket = Math.max(1, ...rounds.map((r) => r.count));
   const completeCoverage = t ? pct(t.bothCorners, t.eligible) : 0;

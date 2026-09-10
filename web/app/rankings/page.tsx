@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getRankings, getFightersByIds, getImagesForFighters } from "@/lib/db";
+import { getRankings, getFightersByIds } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { Empty, PageHead, JsonLd, Portrait, Avatar, Change, Octagon } from "@/components/ui";
 import { ChampionshipBelt } from "@/components/ChampionshipBelt";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
@@ -26,7 +27,7 @@ export default async function RankingsPage() {
   const divisions = snap?.divisions || [];
   const ids = divisions.flatMap((d) => [d.champion?.fighter_id, ...d.entries.map((e) => e.fighter_id)]).filter(Boolean) as string[];
   const uniq = [...new Set(ids)];
-  const [fighters, imgs] = await Promise.all([getFightersByIds(uniq), getImagesForFighters(uniq)]);
+  const [fighters, imgs] = await Promise.all([getFightersByIds(uniq), resolveFighterPortraits(uniq, { surface: "high_visibility" })]);
   const byId = new Map(fighters.map((f) => [f.id, f]));
   const movers = divisions.flatMap((d) => d.entries.filter((e) => e.is_new || (e.change && e.change !== 0)).map((e) => ({ ...e, division: d.label })));
   const weight = divisions.filter((d) => !d.is_p4p);

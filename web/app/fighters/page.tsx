@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getFighters, getImagesForFighters, getBookedFighterIds, getFightersByIds, getRankings } from "@/lib/db";
+import { getFighters, getBookedFighterIds, getFightersByIds, getRankings } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { Empty, FighterCard, PageHead, SectionHead, JsonLd } from "@/components/ui";
 import { fighterSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
@@ -28,7 +29,7 @@ export default async function FightersPage({ searchParams }: { searchParams: Pro
     const [bookedIds, rankings] = await Promise.all([getBookedFighterIds(), getRankings()]);
     const champIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion?.fighter_id).map((x) => x.champion!.fighter_id!);
     const [booked, champs] = await Promise.all([getFightersByIds(bookedIds), getFightersByIds(champIds)]);
-    const imgs = await getImagesForFighters([...booked, ...champs].map((f) => f.id));
+    const imgs = await resolveFighterPortraits([...booked, ...champs].map((f) => f.id), { surface: "high_visibility" });
     const withPhoto = booked.filter((f) => imgs.has(f.id));
     const withoutPhoto = booked.filter((f) => !imgs.has(f.id));
     const roster = [...withPhoto, ...withoutPhoto].sort((a, b) => Number(imgs.has(b.id)) - Number(imgs.has(a.id)) || a.name.localeCompare(b.name));
@@ -53,7 +54,7 @@ export default async function FightersPage({ searchParams }: { searchParams: Pro
   }
 
   const { rows, count } = await getFighters(q, PAGE, (page - 1) * PAGE, { letter: letter || undefined });
-  const imgs = await getImagesForFighters(rows.map((f) => f.id));
+  const imgs = await resolveFighterPortraits(rows.map((f) => f.id), { surface: "standard" });
   const pages = count ? Math.ceil(count / PAGE) : 1;
   const base = `/fighters?${q ? `q=${encodeURIComponent(q)}&` : ""}${letter ? `letter=${letter}&` : ""}`;
   return (

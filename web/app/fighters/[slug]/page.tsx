@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getFighterBouts, getImagesForFighters, getArticlesForFighter, getFighterRoundStats, getRankings } from "@/lib/db";
+import { getFighterBouts, getArticlesForFighter, getFighterRoundStats, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { getFighterDna } from "@/lib/dna";
 import { FightDnaSection, FightDnaEmpty } from "@/components/dna";
 import { resolveFighter } from "@/lib/resolve";
@@ -43,7 +44,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
   const roundCoverage = await getRoundCoverageFor(bouts.map((b) => b.id));
   const history = bouts.filter((b) => !upcoming.includes(b) && b.event?.event_date && b.event.event_date < today);
   const opponents = bouts.map((b) => (b.fighter_a.id === f.id ? b.fighter_b : b.fighter_a));
-  const imgs = await getImagesForFighters([f.id, ...opponents.map((o) => o.id)]);
+  const imgs = await resolveFighterPortraits([f.id, ...opponents.map((o) => o.id)], { surface: "high_visibility" });
   const img = imgs.get(f.id) || null;
   const media = await storyMedia(articles);
   const sum = archiveSummary(f.id, history);

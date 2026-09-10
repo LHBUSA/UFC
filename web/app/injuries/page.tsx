@@ -7,9 +7,10 @@ import {
   type StatusEvent, type StatusState,
 } from "@/lib/status";
 import {
-  getFightersByIds, getImagesForFighters,
+  getFightersByIds,
   type Fighter, type PortraitSet,
 } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { fighterSlug, eventSlug } from "@/lib/slug";
 import { fmtDate, fmtHeight, fmtReach, fmtRecord, stanceLabel } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -123,7 +124,7 @@ export default async function InjuriesPage({ searchParams }: { searchParams: Pro
   const fighterIds = [...new Set(rows.map((r) => r.fighter_id).filter(Boolean))];
   const [fighters, images] = await Promise.all([
     getFightersByIds(fighterIds).catch(() => []),
-    getImagesForFighters(fighterIds).catch(() => new Map<string, PortraitSet>()),
+    resolveFighterPortraits(fighterIds, { surface: "standard" }).catch(() => new Map<string, PortraitSet>()),
   ]);
   const fighterMap = new Map(fighters.map((f) => [f.id, f]));
 

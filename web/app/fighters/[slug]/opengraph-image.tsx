@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { resolveFighter } from "@/lib/resolve";
-import { getImagesForFighters, getFighterBouts } from "@/lib/db";
+import { getFighterBouts } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { ogFonts, OG_SIZE } from "@/lib/og";
 import { OgFrame, OgFace } from "@/components/og";
 import { fmtHeight, fmtReach, fmtRecord, stanceLabel, age, archiveSummary } from "@/lib/format";
@@ -13,7 +14,7 @@ export const contentType = "image/png";
 
 export default async function OG({ params }: { params: Promise<{ slug: string }> }) {
   const [fonts, f] = await Promise.all([ogFonts(), resolveFighter((await params).slug)]);
-  const [imgs, bouts] = f ? await Promise.all([getImagesForFighters([f.id]), getFighterBouts(f.id)]) : [new Map(), []];
+  const [imgs, bouts] = f ? await Promise.all([resolveFighterPortraits([f.id], { surface: "high_visibility" }), getFighterBouts(f.id)]) : [new Map(), []];
   const img = f ? imgs.get(f.id) : null;
   const s = f ? archiveSummary(f.id, bouts) : null;
   const stats: Array<[string, string]> = f ? [
@@ -36,7 +37,7 @@ export default async function OG({ params }: { params: Promise<{ slug: string }>
                 </div>
               ))}
             </div>
-            {img?.author && <div style={{ fontSize: 14, color: DIM, fontFamily: "Mono, monospace", marginTop: 8 }}>{`Photo: ${img.author}${img.license ? ` · ${img.license}` : ""} · Wikimedia Commons`}</div>}
+            {img?.author && <div style={{ fontSize: 14, color: DIM, fontFamily: "Mono, monospace", marginTop: 8 }}>{`Photo: ${img.author}${img.license ? ` · ${img.license}` : ""} · ${img.source_name || "Wikimedia Commons"}`}</div>}
           </div>
         </div>
       </OgFrame>

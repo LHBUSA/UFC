@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { type Article, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor, getVideosForArticle, getVideosForBout, getVideosForEvent } from "@/lib/db";
+import { type Article, getFightersByIds, getEventById, getArticles, getBoutById, getWireFor, getVideosForArticle, getVideosForBout, getVideosForEvent } from "@/lib/db";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
 import { JsonLd, ProLock, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
@@ -8,6 +8,7 @@ import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
 import { fmtDateTime, fmtDate, eventStatusLabel, locationLine, relTime } from "@/lib/format";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
 import { storyMedia } from "@/lib/faces";
+import { resolveFighterPortraits, resolveArticleHero } from "@/lib/fighterMedia";
 import { getMatchupDna } from "@/lib/dna";
 import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
@@ -36,13 +37,13 @@ function materiallyUpdated(published: string | null, updated: string): boolean {
  */
 export async function StoryView({ a, preview = false }: { a: Article; preview?: boolean }) {
   const [hero, fighters, event, bout, moreRes] = await Promise.all([
-    a.hero_image_ref ? getImageById(a.hero_image_ref) : null,
+    a.hero_image_ref ? resolveArticleHero(a.hero_image_ref, { surface: "high_visibility" }) : null,
     getFightersByIds(a.fighter_ids || []),
     a.event_id ? getEventById(a.event_id) : null,
     a.bout_id ? getBoutById(a.bout_id) : null,
     getArticles(4),
   ]);
-  const [imgs, wire, vidArticle, vidBout, vidEvent] = await Promise.all([getImagesForFighters(fighters.map((f) => f.id)), getWireFor(a.event_id, a.fighter_ids || []), getVideosForArticle(a.id).catch(() => []), a.bout_id ? getVideosForBout(a.bout_id).catch(() => []) : Promise.resolve([]), a.event_id ? getVideosForEvent(a.event_id, 3).catch(() => []) : Promise.resolve([])]);
+  const [imgs, wire, vidArticle, vidBout, vidEvent] = await Promise.all([resolveFighterPortraits(fighters.map((f) => f.id), { surface: "high_visibility" }), getWireFor(a.event_id, a.fighter_ids || []), getVideosForArticle(a.id).catch(() => []), a.bout_id ? getVideosForBout(a.bout_id).catch(() => []) : Promise.resolve([]), a.event_id ? getVideosForEvent(a.event_id, 3).catch(() => []) : Promise.resolve([])]);
   const seen = new Set<string>();
   const videos = [...vidArticle, ...vidBout, ...vidEvent].filter((v) => (seen.has(v.id) ? false : (seen.add(v.id), true))).slice(0, 4);
   const more = moreRes.rows.filter((x) => x.id !== a.id).slice(0, 3);
@@ -62,7 +63,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
   const legacyAngle = fb.bettor_angle && (fb.bettor_angle.summary || fb.bettor_angle.markets?.length) ? fb.bettor_angle : null;
   const angle = plan ? planAngle(plan) : legacyAngle;
   const mm = !plan && fb.matchup?.a && fb.matchup?.b ? fb.matchup : null;
-  const mmImgs = mm ? await getImagesForFighters([mm.a.fighter_id, mm.b.fighter_id]) : new Map();
+  const mmImgs = mm ? await resolveFighterPortraits([mm.a.fighter_id, mm.b.fighter_id], { surface: "high_visibility" }) : new Map();
   const dna = bout && a.story_type === "fight_preview" ? await getMatchupDna(bout.fighter_a.id, bout.fighter_b.id) : null;
   /* Structured data must describe the page, not the database.
    *
@@ -134,7 +135,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
         )}
       </div>
       {hero && (
-        <div className="credit mb-5">Photo: {hero.source_url ? <a href={hero.source_url} rel="noopener nofollow" target="_blank">{hero.author || a.hero_credit?.author || "Wikimedia Commons"}</a> : hero.author}{hero.license ? ` · ${hero.license}` : ""} · via Wikimedia Commons</div>
+        <div className="credit mb-5">Photo: {hero.source_url ? <a href={hero.source_url} rel="noopener nofollow" target="_blank">{hero.author || a.hero_credit?.author || hero.source_name || "Wikimedia Commons"}</a> : hero.author}{hero.license ? ` · ${hero.license}` : ""} · via {hero.source_name || "Wikimedia Commons"}</div>
       )}
 
       {angle && <BettorsEdge angle={angle} />}

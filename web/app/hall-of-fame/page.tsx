@@ -5,7 +5,8 @@ import { ChampionshipBelt } from "@/components/ChampionshipBelt";
 import { JsonLd } from "@/components/ui";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
-import { getFighters, getFightersByIds, getImagesForFighters, getLatestVideos, type Fighter, type PortraitSet } from "@/lib/db";
+import { getFighters, getFightersByIds, getLatestVideos, type Fighter, type PortraitSet } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { FightWingCard, HofFace } from "@/components/HofBits";
 import { fightWing } from "@/lib/enrichment";
 import { HOF_FIGHTS, LEGACY_LENSES, UFC_OFFICIAL } from "@/lib/heritage";
@@ -38,7 +39,7 @@ async function archiveMatches(): Promise<Map<string, { f: Fighter; img: Portrait
     const f = rows.find((r) => r.name.toLowerCase() === clean.toLowerCase());
     if (f) found.push([h.slug, f]);
   }));
-  const imgs = found.length ? await getImagesForFighters(found.map(([, f]) => f.id)).catch(() => new Map<string, PortraitSet>()) : new Map<string, PortraitSet>();
+  const imgs = found.length ? await resolveFighterPortraits(found.map(([, f]) => f.id), { surface: "standard" }).catch(() => new Map<string, PortraitSet>()) : new Map<string, PortraitSet>();
   for (const [slug, f] of found) out.set(slug, { f, img: imgs.get(f.id) || null });
   return out;
 }

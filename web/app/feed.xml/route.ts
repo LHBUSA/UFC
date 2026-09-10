@@ -1,4 +1,5 @@
-import { getArticles, getImageById } from "@/lib/db";
+import { getArticles } from "@/lib/db";
+import { resolveArticleHero } from "@/lib/fighterMedia";
 import { renderMarkdown, excerpt } from "@/lib/markdown";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
 
@@ -10,7 +11,7 @@ export async function GET() {
   const { rows } = await getArticles(50);
   const items = await Promise.all(rows.map(async (a) => {
     const url = `${SITE.url}/news/${a.slug}`;
-    const hero = a.hero_image_ref ? await getImageById(a.hero_image_ref) : null;
+    const hero = a.hero_image_ref ? await resolveArticleHero(a.hero_image_ref, { surface: "high_visibility" }) : null;
     const img = hero ? hero.card : `${SITE.url}/news/${a.slug}/opengraph-image`;
     return `
     <item>

@@ -71,7 +71,10 @@ const pct = (v: number) => `${Math.round(Math.max(0, Math.min(1, v)) * 1000) / 1
 
 export function pickVariant(img: PortraitSet | null | undefined, slot: ArtSlot, framing?: Framing | null): Variant | null {
   if (!img) return null;
-  const displayOnly = img.kind === "display_fallback" || img.stored_first_party === false;
+  /* Staged as a badge: ESPN headshots (transparent studio PNGs). A reviewed
+   * Commons photo that is hotlinked rather than stored is still a photograph
+   * and is cropped like one. */
+  const displayOnly = img.kind === "display_fallback" || img.source_family === "espn";
   const attribution = img.attribution_text || (img.author ? `${img.author}${img.license ? ` · ${img.license}` : ""}` : null);
   const base = { slot, source_url: img.source_url, attribution, license: img.license, verified_at: framing?.framing_at || null };
 

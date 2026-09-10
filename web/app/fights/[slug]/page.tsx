@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getImagesForFighters, getRoundStats, getArticlesForBout, getFighterBouts } from "@/lib/db";
+import { getRoundStats, getArticlesForBout, getFighterBouts } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { storyMedia } from "@/lib/faces";
 import { getFighterDna, getMatchupDna } from "@/lib/dna";
 import { RoundAnalysis } from "@/components/RoundAnalysis";
@@ -44,7 +45,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   if (!hit) notFound();
   const { e, b, bouts } = hit;
   const [imgs, rounds, articles, histA, histB, statusByBout, weighInsByBout] = await Promise.all([
-    getImagesForFighters([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
+    resolveFighterPortraits([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])], { surface: "high_visibility" }), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
     getBoutStatusEvents([b.id]).catch(() => new Map()),
     getWeighInsForBouts([b.id]).catch(() => new Map()),
   ]);

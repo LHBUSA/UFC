@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
-import { getArticleBySlug, getImageById, getFightersByIds, getImagesForFighters, getBoutById } from "@/lib/db";
+import { getArticleBySlug, getFightersByIds, getBoutById } from "@/lib/db";
+import { resolveFighterPortraits, resolveArticleHero } from "@/lib/fighterMedia";
 import { ogFonts, OG_SIZE } from "@/lib/og";
 import { OgFrame, OgFace } from "@/components/og";
 import { fmtDateTime } from "@/lib/format";
@@ -12,10 +13,10 @@ export const contentType = "image/png";
 
 export default async function OG({ params }: { params: Promise<{ slug: string }> }) {
   const [fonts, a] = await Promise.all([ogFonts(), getArticleBySlug((await params).slug)]);
-  const hero = a?.hero_image_ref ? await getImageById(a.hero_image_ref) : null;
+  const hero = a?.hero_image_ref ? await resolveArticleHero(a.hero_image_ref, { surface: "high_visibility" }) : null;
   const bout = a?.bout_id ? await getBoutById(a.bout_id) : null;
   const fighters = bout ? [bout.fighter_a, bout.fighter_b] : a ? (await getFightersByIds(a.fighter_ids || [])).slice(0, 2) : [];
-  const imgs = await getImagesForFighters(fighters.map((f) => f.id));
+  const imgs = await resolveFighterPortraits(fighters.map((f) => f.id), { surface: "high_visibility" });
   const label = a ? STORY_TYPE_LABEL[a.story_type] || a.story_type : "Story";
   const long = (a?.headline.length || 0) > 70;
   return new ImageResponse(

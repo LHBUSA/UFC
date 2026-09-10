@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
+import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { Mark } from "@/components/Brand";
@@ -18,6 +18,7 @@ import { fmtDate, daysUntil, locationLine, eventBrand, eventHeadline, fmtRecord,
 import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { storyMedia } from "@/lib/faces";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { Voices } from "@/components/Voices";
 import { ApiCta } from "@/components/ApiCta";
 
@@ -42,11 +43,11 @@ export default async function Home() {
   const mains = await getMainEvents([...upcoming, ...recent, ...[dwcsNext, dwcsLast].filter(Boolean).map((e) => e!)].map((e) => e.id));
   const champIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion?.fighter_id).map((x) => x.champion!.fighter_id!);
   const [imgs, briefs, media, champs, contenders, dwcsCounts, freshness, videos] = await Promise.all([
-    getImagesForFighters([
+    resolveFighterPortraits([
       ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
       ...[...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
       ...champIds, ...contenderIds,
-    ]),
+    ], { surface: "high_visibility" }),
     next && live.length ? buildDeskBriefs(next, live, 1).catch(() => []) : Promise.resolve([]),
     storyMedia(articles),
     getFightersByIds(champIds),

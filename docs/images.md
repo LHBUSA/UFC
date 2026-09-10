@@ -1,5 +1,10 @@
 # Fighter portraits
 
+**What public pages render** is decided by the reviewed pipeline in
+[fighter_media_pipeline.md](fighter_media_pipeline.md): only an approved, identity-verified
+`ufc_fighter_media_assets` row reaches a page, and there is no ESPN fallback. `ufc_images` below is the ingest
+store that feeds the review queue; a row there is a candidate, not a published photo.
+
 **Licensing rule.** Never UFC/Zuffa/Getty/ESPN/Sherdog imagery, never an AI-generated likeness. Automated portrait
 acquisition uses Wikimedia Commons, and only files whose `LicenseShortName` is CC0, Public domain, CC BY x.x or
 CC BY-SA x.x. Fair use, NC, ND and GFDL-only files are rejected. Every stored image carries `license`, `author` and
@@ -25,7 +30,8 @@ CC BY-SA x.x. Fair use, NC, ND and GFDL-only files are rejected. Every stored im
    crop) and `thumb.jpg` (320x400 attention crop).
 6. Upload to the public Supabase Storage bucket `ufc-media`, then upsert one `ufc_images` row per fighter
    (`kind='wikimedia'`, `r2_key='fighters/<fighter_id>/portrait.jpg'`, upsert on `r2_key`).
-7. Fighters with no identity-safe, acceptable image get NO row; the site renders the branded fallback card.
+7. Fighters with no identity-safe, acceptable image get NO row. A stored row is then queued for review by
+   `scripts/media/fighter_portrait_queue.mjs`; until a reviewer approves it the site renders the branded fallback card.
 
 ## Storage layout
 

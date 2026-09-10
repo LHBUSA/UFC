@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs, JsonLd } from "@/components/ui";
 import { ChampionshipBelt } from "@/components/ChampionshipBelt";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
-import { getFighters, getImagesForFighters, type Fighter, type PortraitSet } from "@/lib/db";
+import { getFighters, type Fighter, type PortraitSet } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { fighterSlug, slugify } from "@/lib/slug";
 import { fmtDate, fmtRecord } from "@/lib/format";
 import { HOF_FIGHTS, UFC_OFFICIAL } from "@/lib/heritage";
@@ -26,7 +27,7 @@ async function archiveMatch(name: string): Promise<{ f: Fighter; img: PortraitSe
   const { rows } = await getFighters(clean, 5).catch(() => ({ rows: [] as Fighter[], count: null }));
   const f = rows.find((r) => r.name.toLowerCase() === clean.toLowerCase()) || null;
   if (!f) return null;
-  const imgs = await getImagesForFighters([f.id]).catch(() => new Map<string, PortraitSet>());
+  const imgs = await resolveFighterPortraits([f.id], { surface: "standard" }).catch(() => new Map<string, PortraitSet>());
   return { f, img: imgs.get(f.id) || null };
 }
 

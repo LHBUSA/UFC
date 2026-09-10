@@ -19,7 +19,8 @@
  * licence to count something.
  */
 import "server-only";
-import { getImagesForFighters, type PortraitSet } from "@/lib/db";
+import type { PortraitSet } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import inventory from "@/data/tuf/seasons.json";
 import { TUF_DETAILS } from "@/data/tuf/details.generated";
 
@@ -333,7 +334,7 @@ export type LinkedFighter = { id: string; name: string; espn_athlete_id: string 
 export async function portraitsFor(linked: Map<string, LinkedFighter>) {
   const ids = [...linked.values()].map((f) => f.id);
   if (!ids.length) return new Map<string, PortraitSet>();
-  const byId = await getImagesForFighters(ids);
+  const byId = await resolveFighterPortraits(ids, { surface: "standard" });
   /* Keyed by the name the archive uses, so a page does not have to carry the
    * id around just to draw a face. */
   const byName = new Map<string, PortraitSet>();

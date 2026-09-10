@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getUpcomingEvents, getEventsInYear, getEventYears, getMainEvents, getImagesForFighters, getBoutCounts, isContenderSeries, type Event, type Bout, type PortraitSet } from "@/lib/db";
+import { getUpcomingEvents, getEventsInYear, getEventYears, getMainEvents, getBoutCounts, isContenderSeries, type Event, type Bout, type PortraitSet } from "@/lib/db";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { getArchiveCoverage, getArchiveYearCoverage, getIngestFreshness } from "@/lib/archive";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { Avatar, Empty, EventCard, EventRow, PageHead, SectionHead, JsonLd } from "@/components/ui";
@@ -51,7 +52,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   const dwcs = upcoming.filter((e) => isDanaWhiteContenderSeries(e.name));
   const ids = [...ufcUpcoming, ...dwcs, ...past.slice(0, 80)].map((e) => e.id);
   const [mains, counts] = await Promise.all([getMainEvents(ids), getBoutCounts(ids)]);
-  const imgs = await getImagesForFighters([...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
+  const imgs = await resolveFighterPortraits([...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]), { surface: "high_visibility" });
   const next = ufcUpcoming[0] || null;
   const ufc1Ready = Boolean(coverage.ufc1Event && coverage.ufc1Bouts > 0);
   const yc = yearCoverage.find((y) => y.year === year);

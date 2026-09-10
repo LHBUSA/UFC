@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent, getImageFraming, sortVideosTimeline, getRankings } from "@/lib/db";
+import { getEventBouts, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent, getImageFraming, sortVideosTimeline, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
+import { resolveFighterPortraits } from "@/lib/fighterMedia";
 import { resolveEvent } from "@/lib/resolve";
 import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
@@ -51,7 +52,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     getWeighIns(e.id).catch(() => []),
   ]);
   const videos = sortVideosTimeline(videosRaw);
-  const imgs = await getImagesForFighters(bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
+  const imgs = await resolveFighterPortraits(bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]), { surface: "high_visibility" });
   const framing = await getImageFraming(bouts.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]);
   const media = await storyMedia(articles);
   const d = daysUntil(e.event_date);
