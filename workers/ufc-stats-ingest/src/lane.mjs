@@ -1,3 +1,5 @@
+import { normalize, tokenSortRatio } from './shared/alias_resolver.mjs';
+
 /* Round-stat lane — the pure decisions, kept apart from I/O so they can be
  * tested without a network, a database or a Worker runtime.
  *
@@ -14,13 +16,10 @@
  */
 
 /* Dana White's Contender Series runs inside ESPN's UFC feed. UFC Stats DOES
- * host those cards ("DWCS 9.2" etc.) with full per-round tables, but its
- * completed-events list omits them, and that list is the lane's only way to
- * find an event it has not linked. Corrected 2026-09-10: this used to say UFC
- * Stats does not list them at all, which filed 465 recoverable bouts as source
- * gaps. They are reachable only through a fighter's history page, which needs
- * both fighters identity-linked first, so the lane still skips them; the
- * validated repair for linked pairs is a separate, manual tool. */
+ * carry those cards (fighter histories link events such as 66e981516e2476d1,
+ * "DWCS 6.7"), but its completed-events list omits them. They are eligible
+ * like any other final bout; this only routes their identity resolution away
+ * from the list (to stored ids and fighter histories). */
 export function isContenderSeries(name) {
   return /contender series|dana white'?s contender/i.test(String(name || ''));
 }
@@ -43,7 +42,7 @@ const DAY = 86400000;
 export function selectCandidates({ bouts, events, results, withRows, now, forwardDays = 45, confirmGraceDays = 7 }) {
   const cutoff = new Date(now - forwardDays * DAY).toISOString().slice(0, 10);
   const today = new Date(now + DAY).toISOString().slice(0, 10);   // UTC card dates run ahead of US evenings
-  const skipped = { outside_window: 0, has_rows: 0, no_result: 0, contender_series: 0, source_confirmed_no_stats: 0, cancelled: 0 };
+  const skipped = { outside_window: 0, has_rows: 0, no_result: 0, source_confirmed_no_stats: 0, cancelled: 0 };
   const candidates = [];
   for (const b of bouts) {
     const ev = events.get(b.event_id);
@@ -54,7 +53,6 @@ export function selectCandidates({ bouts, events, results, withRows, now, forwar
     /* The authoritative "this fight is over" is a stored result. A bout ESPN
      * still shows as scheduled cannot have round stats to fetch. */
     if (!r) { skipped.no_result += 1; continue; }
-    if (isContenderSeries(ev.name)) { skipped.contender_series += 1; continue; }
     if (r.stats_captured_at && r.has_stats === false) {
       const age = now - Date.parse(`${ev.event_date}T00:00:00Z`);
       if (age > confirmGraceDays * DAY) { skipped.source_confirmed_no_stats += 1; continue; }
@@ -65,6 +63,37 @@ export function selectCandidates({ bouts, events, results, withRows, now, forwar
    * ended, and a per-run cap should spend itself there. */
   candidates.sort((x, y) => String(y.event.event_date).localeCompare(String(x.event.event_date)));
   return { candidates, skipped };
+}
+
+/* Find our bout in one fighter's UFC Stats fight history, without the
+ * completed-events list. A row qualifies when its event date is within a day
+ * of ours (UFC Stats prints US-local dates, often a day earlier for Contender
+ * Series) AND its opponent is our other corner: by UFC Stats id when we hold
+ * one, otherwise by name (normalized equality, or token-sort >= 90). Exactly
+ * one qualifying row is identity; none or several is not. */
+export function matchHistoryRow(rows, { eventDate, other }) {
+  const dd = (a, b) => Math.abs((Date.parse(a) - Date.parse(b)) / DAY);
+  const inDate = (rows || []).filter((r) => r.event_date && eventDate && dd(r.event_date, eventDate) <= 1);
+  let by = null;
+  let hits = [];
+  if (other?.ufcstats_id) {
+    hits = inDate.filter((r) => r.opponent_ufcstats_id === other.ufcstats_id);
+    by = 'opponent_ufcstats_id';
+  } else if (other?.name) {
+    const n = normalize(other.name);
+    hits = inDate.filter((r) => normalize(r.opponent_name) === n || tokenSortRatio(r.opponent_name, other.name) >= 90);
+    by = 'opponent_name';
+  }
+  if (hits.length !== 1) return { row: null, candidates: hits.length, in_date: inDate.length };
+  const r = hits[0];
+  return { row: r, evidence: { by, date_delta_days: dd(r.event_date, eventDate), history_event: r.event_name, opponent_name: r.opponent_name } };
+}
+
+/* When to look again. The lane runs every cron tick, so these are floors. */
+export function nextAttempt(state, now) {
+  const H = 3600000;
+  const wait = { not_yet_published: 0.25 * H, awaiting_source: 0, queued: 0, no_round_detail: 24 * H, validation_failed: 24 * H, identity_review: 24 * H }[state];
+  return wait == null ? null : new Date(now + wait).toISOString();
 }
 
 /* Everything that must be true before a parsed fight page may be written
@@ -122,9 +151,10 @@ export function latencySummary(rec) {
   };
 }
 
-/* Should a remembered challenge keep the lane off? After a gate change or a
- * failed solve we stay away for `backoffHours` rather than probing a source
- * that has just told us it does not want automated reads. */
+/* Should a remembered challenge keep the lane off? After any challenge the
+ * lane did not answer (the default), a gate change, or a failed solve, we stay
+ * away for `backoffHours` rather than probing a source that has just told us
+ * it does not want automated reads. */
 export function sourceBlocked(health, now, backoffHours = 6) {
   if (!health || health.status !== 'challenged' || !health.at) return false;
   return now - Date.parse(health.at) < backoffHours * 3600000;

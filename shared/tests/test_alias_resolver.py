@@ -43,6 +43,8 @@ for case in FX["resolve"]:
     if "n_candidates" in exp:
         n = len(res.review_row["candidate_fighter_ids"]) if res.review_row else 0
         check(n == exp["n_candidates"], f"[{case['name']}] n_candidates={n} expected {exp['n_candidates']}")
+    if "dob_conflict" in exp:
+        check(res.dob_conflict == exp["dob_conflict"], f"[{case['name']}] dob_conflict={res.dob_conflict} expected {exp['dob_conflict']}")
     if "reason" in exp:
         got = res.review_row["context"]["reason"] if res.review_row else None
         check(got == exp["reason"], f"[{case['name']}] reason={got} expected {exp['reason']}")

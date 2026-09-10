@@ -1,6 +1,6 @@
 /* Run: node workers/ufc-stats-ingest/src/lane.test.mjs
  * The round-stat lane's decisions, with no network and no database. */
-import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, isContenderSeries } from './lane.mjs';
+import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, isContenderSeries, matchHistoryRow, nextAttempt } from './lane.mjs';
 
 let failures = 0;
 const check = (c, m) => { if (!c) { failures += 1; console.log('FAIL:', m); } };
@@ -19,7 +19,7 @@ const bouts = [
   bout('has', 'recent'),              // finished, rows present       -> skip
   bout('pending', 'recent'),          // no result yet                -> skip
   bout('history', 'old'),             // outside the forward window   -> skip
-  bout('contender', 'dwcs'),          // not on UFC Stats             -> skip
+  bout('contender', 'dwcs'),          // Contender Series final, no rows -> candidate
   bout('upcoming', 'future'),         // not yet fought               -> skip
   bout('cancel', 'recent', 'cancelled'),
   bout('confirmed', 'old'),
@@ -29,8 +29,8 @@ const results = new Map([
   ['contender', { has_stats: false }], ['cancel', { has_stats: false }],
 ]);
 const { candidates, skipped } = selectCandidates({ bouts, events, results, withRows: new Set(['has']), now: NOW });
-check(candidates.map((c) => c.bout.id).join() === 'needs', `only the finished, unrowed, in-window UFC bout is a candidate: ${candidates.map((c) => c.bout.id)}`);
-check(skipped.has_rows === 1 && skipped.no_result === 1 && skipped.contender_series === 1 && skipped.cancelled === 1, `skip reasons ${JSON.stringify(skipped)}`);
+check(candidates.map((c) => c.bout.id).sort().join() === 'contender,needs', `finished, unrowed, in-window bouts (Contender Series included) are candidates: ${candidates.map((c) => c.bout.id)}`);
+check(skipped.has_rows === 1 && skipped.no_result === 1 && skipped.cancelled === 1, `skip reasons ${JSON.stringify(skipped)}`);
 
 /* A linked-in-advance card must still be picked up once it completes — the
  * failure the old event-driven pass had. */
@@ -74,6 +74,20 @@ check(latencySummary({ round_rows_captured_at: '2026-09-06T03:30:00Z' }).source_
 check(sourceBlocked({ status: 'challenged', at: '2026-09-10T12:00:00Z' }, NOW, 6) === true, 'recent challenge blocks');
 check(sourceBlocked({ status: 'challenged', at: '2026-09-10T08:00:00Z' }, NOW, 6) === false, 'old challenge expires');
 check(sourceBlocked({ status: 'ok', at: '2026-09-10T14:00:00Z' }, NOW, 6) === false, 'ok never blocks');
+
+/* list-independent identity via fighter history */
+const hist = [
+  { fight_id: 'f1', opponent_ufcstats_id: 'bbbbbbbbbbbbbbbb', opponent_name: 'Bravo Kane', event_ufcstats_id: 'e1', event_name: 'DWCS 6.7', event_date: '2026-08-25' },
+  { fight_id: 'f0', opponent_ufcstats_id: 'cccccccccccccccc', opponent_name: 'Somebody Else', event_ufcstats_id: 'e0', event_name: 'DWCS 5.1', event_date: '2025-08-05' },
+];
+const byId = matchHistoryRow(hist, { eventDate: '2026-08-26', other: { ufcstats_id: 'bbbbbbbbbbbbbbbb', name: 'Bravo Kane' } });
+check(byId.row?.fight_id === 'f1' && byId.evidence.by === 'opponent_ufcstats_id' && byId.evidence.date_delta_days === 1, `history match by id ${JSON.stringify(byId)}`);
+const byName = matchHistoryRow(hist, { eventDate: '2026-08-25', other: { ufcstats_id: null, name: 'Bravo  Kane' } });
+check(byName.row?.fight_id === 'f1' && byName.evidence.by === 'opponent_name', 'history match by name when the other corner is unlinked');
+check(matchHistoryRow(hist, { eventDate: '2026-08-29', other: { ufcstats_id: 'bbbbbbbbbbbbbbbb' } }).row === null, 'dates more than a day apart never match');
+check(matchHistoryRow(hist, { eventDate: '2026-08-25', other: { ufcstats_id: 'dddddddddddddddd', name: 'Bravo Kane' } }).row === null, 'a linked opponent id is decisive: a name hit with a different id is not identity');
+check(matchHistoryRow([...hist, { ...hist[0], fight_id: 'f2' }], { eventDate: '2026-08-25', other: { ufcstats_id: 'bbbbbbbbbbbbbbbb' } }).candidates === 2, 'two qualifying rows are not identity');
+check(nextAttempt('written', NOW) === null && nextAttempt('awaiting_source', NOW) === new Date(NOW).toISOString(), 'next attempt floors');
 
 console.log('lane.mjs:', failures === 0 ? 'OK' : `${failures} FAILURES`);
 process.exit(failures ? 1 : 0);

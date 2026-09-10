@@ -29,6 +29,9 @@ UFCSTATS_FORWARD_DAYS = "45"
 # run fetches nothing; this bounds the worst case (a full card whose stats all
 # post between two runs) to one polite burst at 1 request/second.
 MAX_UFCSTATS_FIGHTS_PER_RUN = "24"
+# Hard ceiling on UFC Stats requests of any kind per run (event pages, fighter
+# histories, fight pages). Identity resolution stops for the run at this cap.
+MAX_UFCSTATS_REQUESTS_PER_RUN = "60"
 # After a challenge the fetch layer will not answer, stay off UFC Stats this
 # long. ESPN keeps running. Degrade, never hammer.
 SOURCE_BACKOFF_HOURS = "6"

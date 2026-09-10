@@ -30,6 +30,7 @@ for (const c of FX.resolve) {
     const n = res.review_row ? res.review_row.candidate_fighter_ids.length : 0;
     check(n === exp.n_candidates, `[${c.name}] n_candidates=${n} expected ${exp.n_candidates}`);
   }
+  if (exp.dob_conflict !== undefined) check(res.dob_conflict === exp.dob_conflict, `[${c.name}] dob_conflict=${res.dob_conflict} expected ${exp.dob_conflict}`);
   if (exp.reason) {
     const got = res.review_row ? res.review_row.context.reason : null;
     check(got === exp.reason, `[${c.name}] reason=${got} expected ${exp.reason}`);
