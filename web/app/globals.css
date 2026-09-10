@@ -14,6 +14,11 @@
   --pbe-font-data: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
   --fs-display: clamp(34px, 5vw, 64px); --fs-h1: clamp(28px, 3.4vw, 44px); --fs-h2: clamp(22px, 2.6vw, 30px); --fs-h3: 17px;
   --fs-body: 15px; --fs-sm: 13px; --fs-label: 11px; --fs-micro: 10px;
+  /* Aliases onto the scale above, not new sizes. These three names were used in
+     24 declarations without ever being defined, so each silently inherited its
+     parent's size. The design system has no xs/md/lg step; they map to the
+     nearest canonical role: secondary copy, body copy, card title. */
+  --fs-xs: var(--fs-sm); --fs-md: var(--fs-body); --fs-lg: var(--fs-h3);
   --ls-label: .14em; --ls-micro: .16em; --ls-tight: -.015em;
   --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-pill: 999px;
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
