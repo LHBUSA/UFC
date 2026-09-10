@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Avatar, Breadcrumbs, JsonLd } from "@/components/ui";
-import { getImagesForFighters, type PortraitSet } from "@/lib/db";
+import type { PortraitSet } from "@/lib/db";
+import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import { buildSections, getRoundIndex, type RoundIndexBout } from "@/lib/roundIndex";
 import { fmtDate, METHOD_SHORT, weightClassLabel } from "@/lib/format";
 import { matchupSlug } from "@/lib/slug";
@@ -12,8 +13,8 @@ import cardStyles from "./round-cards.module.css";
 /* /round-by-round is the discovery surface for the verified round archive.
  * Nothing on this page is inferred. Every fight shown here has stored round
  * observations behind it, and every coverage number comes from the same read
- * model that powers the fight links. Fighter imagery is resolved through the
- * same centralized portrait contract used by the rest of the UFC product. */
+ * model that powers the fight links. Fighter imagery uses the shared verified
+ * display resolver: stored assets first, ESPN for coverage, bad mappings out. */
 export const revalidate = 300;
 
 const TITLE = "UFC Round-by-Round Analysis | PropBetEdge";
@@ -110,7 +111,7 @@ export default async function RoundByRoundIndex() {
   const sections = buildSections(index);
   const recent = ok?.shelves.recent || [];
   const visibleFighterIds = [...new Set(sections.flatMap((section) => section.bouts.flatMap((b) => [b.fighterA.id, b.fighterB.id])))];
-  const images = await getImagesForFighters(visibleFighterIds);
+  const images = await getVerifiedDisplayImagesForFighters(visibleFighterIds);
   const rounds = [1, 2, 3, 4, 5].map((n) => ({ n, count: t?.byObservedRounds[n] || 0 }));
   const maxRoundBucket = Math.max(1, ...rounds.map((r) => r.count));
   const completeCoverage = t ? pct(t.bothCorners, t.eligible) : 0;
