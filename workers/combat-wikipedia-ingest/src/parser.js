@@ -143,10 +143,32 @@ function infoboxDob($) {
   return raw && /^\d{4}-\d{2}-\d{2}/.test(raw) ? raw.slice(0, 10) : null;
 }
 
+function firstFollowingTable($, anchor) {
+  // Wikimedia's action=parse output commonly wraps headings in
+  // <div class="mw-heading"><h2>...</h2></div>. Prefer the wrapper as the
+  // section boundary when present, while keeping support for plain legacy h2s.
+  const heading = $(anchor);
+  const wrapper = heading.closest('.mw-heading, .mw-heading2, .mw-heading3, .mw-heading4');
+  const start = wrapper.length ? wrapper.first() : heading;
+
+  // Walk siblings rather than unbounded nextAll('table') so a missing MMA
+  // table cannot accidentally jump across the next section into boxing or
+  // kickboxing and validate that as MMA.
+  let node = start.next();
+  while (node.length) {
+    if (node.is('h2,h3,h4,.mw-heading,.mw-heading2,.mw-heading3,.mw-heading4')) break;
+    if (node.is('table')) return node.get(0);
+    const nested = node.find('table').first();
+    if (nested.length) return nested.get(0);
+    node = node.next();
+  }
+  return null;
+}
+
 function mmaSectionCandidate($) {
   for (const heading of $('h2,h3,h4').toArray()) {
     if (!normalizeName(clean($, heading)).includes('mixed martial arts record')) continue;
-    const table = $(heading).nextAll('table').first().get(0) || $(heading).nextAll().find('table').first().get(0);
+    const table = firstFollowingTable($, heading);
     if (!table) continue;
     const h = headerMap($, table);
     if (h) return { table, ...h, size: $(table).find('tr').length };
