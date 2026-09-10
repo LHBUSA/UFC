@@ -279,6 +279,7 @@ export async function runOpenAIEditorial(env, sb, {
   force = false,
   model = null,
   maxPolish = DEFAULT_MAX_POLISH_PER_RUN,
+  storyTypes = null,
   callTimeoutMs = DEFAULT_CALL_TIMEOUT_MS,
   fetchImpl = fetch,
 } = {}) {
@@ -292,9 +293,23 @@ export async function runOpenAIEditorial(env, sb, {
   const selectedModel = model || env.UFC_EDITORIAL_OPENAI_MODEL || DEFAULT_MODEL;
   const since = new Date(now - safeHours * 3600 * 1000).toISOString();
 
+  /* THE DESK MAY ONLY EDIT WHAT ITS CALLER OWNS.
+   *
+   * This query had no story_type filter, so it selected every published
+   * article -- and when the event-editorial lane ran it, the desk rewrote a
+   * story_type=external piece belonging to ufc-news-enrich: new prose, new
+   * headline, and its model_version stamped over. Good prose, wrong owner, and
+   * edited outside the two-class number gate that protects external articles
+   * specifically because their numbers come from somebody else's reporting.
+   *
+   * storyTypes is therefore not optional in practice: a caller states what it
+   * owns, and the desk cannot reach past it. */
+  const typeFilter = Array.isArray(storyTypes) && storyTypes.length
+    ? `&story_type=in.(${storyTypes.map((t) => encodeURIComponent(t)).join(',')})`
+    : '';
   const rows = await sb.select(
     'ufc_articles',
-    `select=id,slug,headline,dek,body_md,story_type,status,fact_block,sources,model_version,updated_at&status=eq.published&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.desc&limit=${safeLimit}`,
+    `select=id,slug,headline,dek,body_md,story_type,status,fact_block,sources,model_version,updated_at&status=eq.published${typeFilter}&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.desc&limit=${safeLimit}`,
   );
 
   let passed = 0;

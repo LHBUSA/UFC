@@ -39,6 +39,8 @@
 import { main as writeArticles } from '../../../scripts/news/write_articles.mjs';
 import { main as writeFeatures } from '../../../scripts/news/write_features.mjs';
 import { main as polishArticles } from '../../../scripts/news/polish_world_class.mjs';
+import { runOpenAIEditorial, isConfigured as openaiConfigured } from '../../ufc-newsroom/src/openai_editorial.mjs';
+import { Supabase } from '../../ufc-newsroom/src/supabase.mjs';
 
 const WORKER = 'ufc-event-editorial';
 const VERSION = 'v0.1.0';
@@ -46,6 +48,12 @@ const VERSION = 'v0.1.0';
 /* The story types this Worker owns. `external` is deliberately absent and must
  * stay absent: it is ufc-news-enrich's, and this list is the enforcement. */
 const OWNED_TYPES = 'preview,results,card_change';
+
+/* The same ownership, as the story_type values that actually appear in the
+ * table. OWNED_TYPES is the WRITER's vocabulary ('preview'); the column stores
+ * 'fight_preview'. Passing the writer's words to a column filter would silently
+ * match nothing, which is the quiet way an ownership guard stops guarding. */
+const OWNED_DESK_TYPES = ['fight_preview', 'results', 'card_change', 'rankings'];
 
 const health = { last_run_at: null, last_status: null, last_created: null, last_error: null, runs: 0 };
 
@@ -115,6 +123,10 @@ async function runWrite(env, { dry = false, invoked = 'cron' } = {}) {
     const opts = { now: Date.now(), types: OWNED_TYPES, dry };
     const articles = await writeArticles(env, opts);
     const features = await writeFeatures(env, { now: Date.now() });
+    /* Upgrade what was just written. The shared writer emits a deterministic
+     * article and the desk raises it; running the write without the desk would
+     * leave template prose published until the next daily slot. */
+    const desk = dry ? { status: 'skipped_dry' } : await runPolish(env, { limit: 12, recentHours: 6, invoked: 'post_write' });
     const after = await articleCount(env);
     health.last_status = 'ok';
     health.last_created = before != null && after != null ? Math.max(0, after - before) : null;
@@ -129,6 +141,7 @@ async function runWrite(env, { dry = false, invoked = 'cron' } = {}) {
         candidates: features?.candidates ?? 0, created: features?.created ?? 0,
         refreshed: features?.refreshed ?? 0, held: features?.held ?? 0,
       },
+      desk,
     };
   } catch (e) {
     health.last_status = 'failed';
@@ -138,12 +151,59 @@ async function runWrite(env, { dry = false, invoked = 'cron' } = {}) {
   }
 }
 
+/**
+ * The editorial pass. OpenAI first, the Anthropic desk as fallback.
+ *
+ * TWO DESKS, NOT ONE, AND THEY ARE NOT INTERCHANGEABLE.
+ *
+ * polish_world_class is the ANTHROPIC/Copilot desk; runOpenAIEditorial is the
+ * OpenAI one, and it is the path that produced every editorial-desk-openai-v1
+ * article this lane inherited. Wiring only the former -- which is what I did
+ * first -- means a Worker holding a valid OPENAI_API_KEY reports `no_provider`
+ * and never upgrades anything, so the deterministic template it just wrote
+ * stays a deterministic template. That is precisely the thin-article outcome
+ * the write guard exists to prevent, arriving through the other door.
+ *
+ * Order matters: OpenAI is tried first because it is the model the rest of the
+ * newsroom writes with, so a preview and a wire article are edited to the same
+ * standard rather than by whichever provider happened to be configured.
+ */
 async function runPolish(env, { limit = 12, recentHours = 72, force = false, invoked = 'cron' } = {}) {
   health.last_run_at = new Date().toISOString();
+  const attempts = [];
+
+  if (openaiConfigured(env)) {
+    try {
+      const sb = new Supabase(env);
+      /* Scoped to this lane's own story types. Without this the desk selects
+       * every published article and will edit ufc-news-enrich's external
+       * stories -- which it did, once, before this argument existed. */
+      const desk = await runOpenAIEditorial(env, sb, {
+        now: Date.now(), limit, recentHours, force, maxPolish: 1,
+        storyTypes: OWNED_DESK_TYPES,
+      });
+      health.last_status = 'ok'; health.last_error = null;
+      return { status: 'ok', invoked, desk: 'openai', ...desk };
+    } catch (e) {
+      /* A desk that HELD everything is not an outage: it is the gate working.
+       * The error carries the desk result in that case, and it is reported as
+       * such rather than as a failure to reach a provider. */
+      if (e && e.deskResult) {
+        health.last_status = 'held';
+        return { status: 'all_held', invoked, desk: 'openai', ...e.deskResult, error: String(e.message).slice(0, 200) };
+      }
+      attempts.push(`openai: ${String(e?.message || e).slice(0, 160)}`);
+      console.warn(`[${WORKER}] OpenAI desk unavailable, trying Anthropic: ${attempts[0]}`);
+    }
+  } else {
+    attempts.push('openai: not configured');
+  }
+
   try {
     const desk = await polishArticles(env, { limit, recentHours, force, maxPolish: 1 });
-    health.last_status = 'ok'; health.last_error = null;
-    return { status: 'ok', invoked, ...desk };
+    health.last_status = desk?.status === 'no_provider' ? 'no_provider' : 'ok';
+    health.last_error = null;
+    return { status: desk?.status === 'no_provider' ? 'no_provider' : 'ok', invoked, desk: 'anthropic', attempts, ...desk };
   } catch (e) {
     /* The polish layer is not on the publication path: an article publishes
      * without it. So a provider outage here degrades quality, never
@@ -151,7 +211,7 @@ async function runPolish(env, { limit = 12, recentHours = 72, force = false, inv
     health.last_status = 'degraded';
     health.last_error = String(e?.message || e).slice(0, 300);
     console.warn(`[${WORKER}] polish unavailable: ${health.last_error}`);
-    return { status: 'degraded', error: health.last_error };
+    return { status: 'degraded', invoked, attempts, error: health.last_error };
   }
 }
 
