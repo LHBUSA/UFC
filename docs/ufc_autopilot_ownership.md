@@ -52,7 +52,7 @@ Two rules govern everything below.
 | ufc-news-enrich | `*/5 * * * *` | ingest, stats, DNA, market, video, media | site, API, ticker |
 | ufc-event-editorial | `15 */2 * * *`, `20 10 * * *` | stats, events, DNA | site, API |
 | ufc-newsroom | `*/30 * * * *`, `15 */2 * * *`, `20 10 * * *` | run ledger | operators |
-| ufc-stats-ingest | `*/15 * * * *` | UFCStats, ESPN | DNA, fight-state, enrich |
+| ufc-stats-ingest | `0 6 * * *` (round-stat lane OFF, see below) | ESPN; UFCStats when enabled | DNA (DnaTrigger RPC), fight-state, enrich |
 | ufc-fight-state | `23 * * * *` | events, bouts, results, DNA, rankings | DNA trigger |
 | ufc-intelligence | `25 11 * * *` (rankings), `17 7 * * *` (Fight DNA) | stats, results | enrich, site, fight-state |
 | ufc-video-autopilot | `13,43 * * * *` | official YouTube channels | enrich |
@@ -61,6 +61,29 @@ Two rules govern everything below.
 | propbetedge-ufc-api | none (request-driven) | all tables | site, external consumers |
 
 ## Known exceptions — stated, not hidden
+
+**The round-stat lane is deployed and fail-closed, and currently OFF.**
+ufc-stats-ingest v0.4.0 (2026-09-10) carries the bout-driven round-stat lane:
+finished bout + stored result + no round rows -> UFC Stats fight page ->
+identity/result/round-shape validation -> upsert -> Fight DNA refresh over the
+`INTELLIGENCE` binding (`ufc-intelligence#DnaTrigger`). It does not answer a
+UFC Stats challenge (`UFCSTATS_SOLVE_CHALLENGE="false"`); a challenge is
+recorded in R2 `ufc-raw/_state/source_health.json` with `retry_after`, and the
+lane backs off `SOURCE_BACKOFF_HOURS`. On 2026-09-10 the one bounded canary
+from Cloudflare egress (colo DTW, 16:57Z) was served the challenge, as was the
+operator IP (15:50Z). `UFCSTATS_ENABLED` therefore stays `"false"` and the
+cron stays daily; ESPN events/results keep flowing. **No Worker writes round
+rows today.** Turning the lane on is: canary clean -> `UFCSTATS_ENABLED="true"`
+and `*/15` in wrangler.toml -> deploy. `GET /health` states the flag, the
+challenge policy, the stored source health and the last round row this Worker
+itself wrote.
+
+**Contender Series round stats are a manual repair.** UFC Stats hosts DWCS
+cards with full round tables but omits them from its completed-events list,
+so the lane cannot discover them. `scripts/backfill/dwcs_round_repair.mjs`
+repairs only bouts whose two fighters are already UFC Stats-linked, from
+Wayback captures, and appends its own `ufc_ingest_runs` row
+(worker `dwcs_round_repair`).
 
 **History repair execution is manual.** `ufc-history-watchdog` detects gaps and
 **cannot fix one**. Repair is `.github/workflows/history-gap-repair.yml`, manual
