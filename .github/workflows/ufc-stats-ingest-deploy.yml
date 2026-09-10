@@ -2,7 +2,7 @@ name: Deploy UFC stats ingest
 
 on:
   push:
-    branches: [main, ufc-fight-dna-v1]
+    branches: [ufc-fight-dna-v1]
     paths:
       - ".github/workflows/ufc-stats-ingest-deploy.yml"
       - "workers/ufc-stats-ingest/**"
