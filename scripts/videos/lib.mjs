@@ -67,17 +67,69 @@ export function parseYoutubeFeed(xml) {
 }
 
 /* oEmbed answers 200 for embeddable public videos; 401 (embedding disabled),
- * 403 (private) and 400/404 (unavailable) all mean "do not render a player". */
+ * 403 (private) and 400/404 (unavailable) all mean "do not render a player".
+ *
+ * WHAT A 200 DOES NOT MEAN. It proves the embed page exists. It says nothing
+ * about the viewer's country: UFC Brasil's XMK-nCzDxGo answered 200 and does
+ * not play in the U.S. (GitHub issue #19). The check therefore records
+ * `proves: 'embed_page_exists'` and never sets region knowledge; see
+ * videoAvailability() below. */
 export async function checkEmbeddable(videoId) {
   const url = `https://www.youtube.com/oembed?url=${encodeURIComponent(watchUrl(videoId))}&format=json`;
   try {
     const r = await fetchText(url, { timeoutMs: 15000, attempts: 2 });
     let author = null;
     if (r.ok) { try { author = JSON.parse(r.body).author_name || null; } catch { /* ignore */ } }
-    return { embeddable: r.ok, status: r.status, author_name: author };
+    return { embeddable: r.ok, status: r.status, author_name: author, proves: r.ok ? 'embed_page_exists' : 'not_embeddable' };
   } catch (e) {
     return { embeddable: null, status: null, error: e.message };
   }
+}
+
+/* --------------------------------------------------- availability policy */
+
+/* The region the site is evaluated for. Mirrored by web/lib/videoPolicy.ts
+ * POLICY_REGION; the two must agree or the resolver and the page will
+ * disagree about which videos exist. */
+export const POLICY_REGION = 'US';
+
+/* Regional UFC channels publish for a country audience and are the ones that
+ * region-lock uploads. Never assume their clips play everywhere. */
+export const REGIONAL_CHANNEL = /brasil|espa[nñ]ol|latino|eurasia|japan|quebec/i;
+
+/**
+ * Can a reader in `region` play this video, as far as we KNOW?
+ *
+ *   unembeddable  embeddable === false (embedding disabled / private / gone)
+ *   blocked       Data API regionRestriction excludes the region, or a
+ *                 recorded observation (source_metadata.observed_region_block)
+ *                 says the player refused it there
+ *   playable      embeddable === true AND the Data API answered the region
+ *                 question (region_check.method = youtube_data_api)
+ *   unverified    everything else -- including every oEmbed-only row. Offered
+ *                 poster-first; the page's player falls back at runtime.
+ *
+ * `row` is a ufc_videos row (embeddable + source_metadata).
+ */
+export function videoAvailability(row, region = POLICY_REGION) {
+  if (!row || row.embeddable === false) return 'unembeddable';
+  const sm = row.source_metadata || {};
+  const rr = sm.region_restriction;
+  const blockedByApi = rr && ((Array.isArray(rr.blocked) && rr.blocked.includes(region))
+    || (Array.isArray(rr.allowed) && rr.allowed.length > 0 && !rr.allowed.includes(region)));
+  const observed = Array.isArray(sm.observed_region_block?.regions) && sm.observed_region_block.regions.includes(region);
+  if (blockedByApi || observed) return 'blocked';
+  const verified = sm.region_check?.method === 'youtube_data_api' || sm.discovery === 'youtube_data_api_v3';
+  return row.embeddable === true && verified ? 'playable' : 'unverified';
+}
+
+/* Resolver order inside one relevance tier: proven-playable first, then
+ * unverified clips from global channels, then unverified regional clips. */
+export function availabilityRank(row, region = POLICY_REGION) {
+  const a = videoAvailability(row, region);
+  if (a === 'playable') return 0;
+  if (a === 'unverified') return REGIONAL_CHANNEL.test(row.channel_name || '') ? 2 : 1;
+  return 9;
 }
 
 /* --------------------------------------------- discovery: Data API v3 */
@@ -101,7 +153,7 @@ export function isoDurationToSec(s) {
 /* channels.list -> uploads playlist -> playlistItems.list (newest first, stop
  * once a page is entirely older than `since`) -> videos.list for duration,
  * status.embeddable, privacy and live state. Quota: 1 unit per call. */
-export async function discoverViaDataApi(channelId, { key, since }) {
+export async function discoverViaDataApi(channelId, { key, since, now = new Date() }) {
   const ch = await apiGet('channels', { part: 'contentDetails,snippet', id: channelId }, key);
   const item = (ch.items || [])[0];
   if (!item) throw new Error(`channels.list returned nothing for ${channelId}`);
@@ -147,6 +199,10 @@ export async function discoverViaDataApi(channelId, { key, since }) {
         embeddable: it.status?.embeddable == null ? null : Boolean(it.status.embeddable),
         /* contentDetails.regionRestriction: { allowed: [...] } or { blocked: [...] } when YouTube limits playback by country. */
         region_restriction: it.contentDetails?.regionRestriction ? { allowed: it.contentDetails.regionRestriction.allowed || null, blocked: it.contentDetails.regionRestriction.blocked || null } : null,
+        /* The API answered the region question for this video, whether or not
+         * it named a restriction. This -- not oEmbed -- is what makes a row
+         * "playable" rather than "unverified" (videoAvailability). */
+        region_check: it.contentDetails ? { method: 'youtube_data_api', checked_at: new Date(now).toISOString() } : null,
         privacy_status: it.status?.privacyStatus || null,
         live_broadcast_state: live,
       });

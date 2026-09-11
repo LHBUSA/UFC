@@ -16,6 +16,7 @@
     "test:judges": "node --experimental-strip-types --test lib/judgeScoring.test.mjs lib/judgeSchema.test.mjs",
     "test:model": "node --experimental-strip-types --test lib/model.test.mjs",
     "test:round-index": "node --experimental-strip-types --test lib/roundIndex.test.mjs",
+    "test:story-media": "node --experimental-strip-types --test lib/storyImages.test.ts lib/videoPolicy.test.ts",
     "check:css-tokens": "node scripts/check-css-tokens.mjs"
   },
   "dependencies": {

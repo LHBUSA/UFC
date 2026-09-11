@@ -71,6 +71,14 @@ oEmbed (`https://www.youtube.com/oembed?url=...watch?v=<id>&format=json`): 200
 retried on the next run. `duration_sec` and `live_broadcast_state` stay `null`
 on this path; `source_metadata.is_short` comes from the `/shorts/` link.
 
+**oEmbed 200 is not playability.** It proves the embed page exists, nothing
+about the viewer's country: UFC Brasil's `XMK-nCzDxGo` answered 200 and does not
+play in the U.S. (GitHub issue #19). `embed_check.proves` records
+`embed_page_exists`; region knowledge comes only from the Data API
+(`source_metadata.region_check.method = youtube_data_api`) or a recorded
+observation (below). As of 2026-09-11 production has no `YOUTUBE_API_KEY`, so
+every feed-path row is `unverified`.
+
 Rows carry the canonical `https://www.youtube.com/watch?v=<id>` in `url`; the
 feed's own link (watch or shorts) is kept in `source_metadata.feed_link`.
 
@@ -229,6 +237,31 @@ Embed fallback: the player is created with `enablejsapi=1`; if YouTube reports e
 100/101/150 (removed, embedding disabled, region-restricted) the card keeps its poster,
 shows "Not available for embedded playback in your region." and a Watch on YouTube CTA.
 Rows with a recorded US block never start as a player.
+
+### Availability policy (issue #19)
+
+Evaluated for `US` (`POLICY_REGION` in `scripts/videos/lib.mjs` and
+`web/lib/videoPolicy.ts`; the two must agree).
+
+| availability | when | served by `/resolve` | rendered | JSON-LD |
+|---|---|---|---|---|
+| `playable` | `embeddable=true` and the Data API answered the region question and it allows US | yes, first in its tier | player | yes |
+| `unverified` | no region answer (every oEmbed-only row) | yes, after proven clips; regional channels (Brasil / Espanol / Latino / Eurasia / Japan / Quebec) last | poster-first player with runtime fallback | yes |
+| `blocked` | `region_restriction` excludes US, or `source_metadata.observed_region_block.regions` contains `US` | no | no | no |
+| `unembeddable` | `embeddable=false` | no | no | no |
+
+`observed_region_block` (`{ regions, method, observed_at, note }`) records a
+player refusal seen in a region. It is separate from `region_restriction` so a
+later Data API read never silently erases it, and the ingest carries it forward
+untouched.
+
+Content-plan articles store a copy of the resolver's answer. The page overlays
+the live `ufc_videos` row on that copy (`renderablePlanVideos`): a later block,
+`embeddable=false` or `link_status=rejected` suppresses the clip on already
+published articles without rewriting them, and the stricter of copy and live
+state wins. The VideoObject JSON-LD is built from the same filtered list, so
+structured data never advertises a suppressed video. Official clips are never
+swapped for unofficial mirrors.
 
 ## Surfaces
 

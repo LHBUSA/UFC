@@ -28,9 +28,10 @@
  *   POST /admin/run       run discovery now (?dry=true, ?since=N, ?relink=true)
  */
 import { main as ingestYoutube } from '../../../scripts/videos/ingest_youtube.mjs';
+import { videoAvailability, availabilityRank, POLICY_REGION } from '../../../scripts/videos/lib.mjs';
 
 const WORKER = 'ufc-video-autopilot';
-const VERSION = 'v0.1.0';
+const VERSION = 'v0.2.0';
 const PROVIDER = 'youtube';
 
 const health = { last_run_at: null, last_status: null, last_result: null, last_error: null };
@@ -74,13 +75,24 @@ const VIDEO_COLS = 'id,provider,provider_video_id,channel_id,channel_name,channe
 /**
  * Videos that confidently belong to a subject.
  *
- * FOUR CONDITIONS, ALL REQUIRED, and each one is a way a page gets a video it
+ * FIVE CONDITIONS, ALL REQUIRED, and each one is a way a page gets a video it
  * should not have:
  *
  *   resolver_confidence = high   the linker was sure, not merely willing
  *   link_status != rejected      a human's rejection is final
  *   embeddable = true            an unembeddable video renders as a dead box
+ *   not known region-blocked     for POLICY_REGION (US): Data API
+ *                                regionRestriction or a recorded
+ *                                observed_region_block (issue #19)
  *   the subject actually matches  fighter/bout/event/article, not "related"
+ *
+ * embeddable=true is NOT proof of playability. On the feed path it comes from
+ * oEmbed, which answered 200 for UFC Brasil's XMK-nCzDxGo although the video
+ * does not play in the U.S. So every served video carries `availability`:
+ * 'playable' only when the Data API answered the region question, otherwise
+ * 'unverified' -- and inside a tier, unverified clips from regional channels
+ * (UFC Brasil / UFC Espanol / ...) rank after everything else. The page
+ * re-checks live state and its player falls back at runtime.
  *
  * Ordering prefers a bout link over an event link over a fighter link, because
  * a video about THIS fight beats a video about the card it is on, which beats a
@@ -114,14 +126,25 @@ export async function resolveVideos(env, { fighterId, boutId, eventId, articleId
   if (fighterId) tiers.push({ tier: 4, name: 'fighter', filter: `fighter_ids=cs.{${fighterId}}` });
 
   const seen = new Map();
+  const suppressed = new Map();
   let matchedTier = null;
   for (const t of tiers) {
+    /* Over-fetch so a region-blocked clip does not cost the tier its slot. */
     const rows = await sb(env, 'GET',
       `ufc_videos?select=${VIDEO_COLS}&${t.filter}&provider=eq.${PROVIDER}`
       + `&resolver_confidence=eq.high&link_status=neq.rejected&embeddable=is.true`
-      + `&order=published_at.desc&limit=${limit}`);
+      + `&order=published_at.desc&limit=${Math.min(20, limit * 4)}`);
+    const usable = [];
     for (const v of rows || []) {
-      if (!seen.has(v.id)) { seen.set(v.id, { ...v, _tier: t.tier, _tier_name: t.name }); }
+      const availability = videoAvailability(v, POLICY_REGION);
+      if (availability === 'playable' || availability === 'unverified') usable.push({ v, availability });
+      else suppressed.set(v.provider_video_id, availability);
+    }
+    /* Stable sort: published_at desc survives inside each availability rank. */
+    usable.sort((x, y) => availabilityRank(x.v, POLICY_REGION) - availabilityRank(y.v, POLICY_REGION));
+    for (const { v, availability } of usable) {
+      if (seen.size >= limit) break;
+      if (!seen.has(v.id)) { seen.set(v.id, { ...v, _tier: t.tier, _tier_name: t.name, _availability: availability }); }
     }
     if (seen.size) { matchedTier = matchedTier ?? t.tier; }
     if (seen.size >= limit) break;
@@ -147,6 +170,13 @@ export async function resolveVideos(env, { fighterId, boutId, eventId, articleId
     language: v.source_metadata?.language ?? null,
     video_type: v.video_type,
     embeddable: v.embeddable,
+    /* Availability travels with the copy the article stores, so the page
+     * never has to trust `embeddable` as proof of playability. */
+    availability: v._availability,
+    policy_region: POLICY_REGION,
+    region_verified: v._availability === 'playable',
+    region_restriction: v.source_metadata?.region_restriction ?? null,
+    observed_region_block: v.source_metadata?.observed_region_block ?? null,
     matched_tier: v._tier,
     matched_on: v._tier_name,
     resolver_confidence: v.resolver_confidence,
@@ -155,8 +185,11 @@ export async function resolveVideos(env, { fighterId, boutId, eventId, articleId
   return {
     videos,
     tier: matchedTier,
+    suppressed_by_policy: [...suppressed].map(([video_id, availability]) => ({ video_id, availability, region: POLICY_REGION })),
     reason: videos.length ? null
-      : 'no high-confidence embeddable video involves this story subject (tier 5: none)',
+      : suppressed.size
+        ? `no high-confidence video involving this story subject is playable in ${POLICY_REGION} (${suppressed.size} suppressed by availability policy)`
+        : 'no high-confidence embeddable video involves this story subject (tier 5: none)',
   };
 }
 
@@ -240,6 +273,10 @@ export default {
         policy: {
           channels: 'official/approved only; verified AND enabled in ufc_video_channels',
           embeddable: 'required — an unembeddable video renders as a dead box',
+          availability: `oEmbed 200 proves an embed page exists, NOT playability in ${POLICY_REGION}. `
+            + 'playable = Data API region answer allows it; unverified = no region answer (served, ranked after proven clips, regional channels last; the page player falls back at runtime); '
+            + 'blocked = Data API regionRestriction or source_metadata.observed_region_block (never served)',
+          region_proof: env.YOUTUBE_API_KEY ? 'youtube_data_api_v3 contentDetails.regionRestriction' : 'NONE — no YOUTUBE_API_KEY, every feed-path row is unverified',
           attach_rule: 'resolver_confidence=high only; a page with no video is correct when none confidently belongs',
         },
         requirements: {

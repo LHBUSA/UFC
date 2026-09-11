@@ -26,6 +26,8 @@ import { Chart, ChartSet, type ChartSpec } from "@/components/charts";
 import { fmtDate } from "@/lib/format";
 import { readableFamilies, familiesSentence } from "@/lib/provenance";
 import { renderMarkdownBlocks } from "@/lib/markdown";
+import { OfficialVideo } from "@/components/OfficialVideo";
+import { renderablePlanVideos, type PlanVideo, type RenderablePlanVideo } from "@/lib/videoPolicy";
 
 export type PlanModule = { id: string; title?: string; note?: string; data: unknown };
 export type ContentPlan = {
@@ -496,8 +498,6 @@ export function MarketModule({ plan, charts }: { plan: ContentPlan | null; chart
   );
 }
 
-type Video = { id: string; url: string; title: string; publisher?: string; video_id?: string; thumbnail_url?: string; embeddable?: boolean; video_type?: string; published_at?: string; language?: string; matched_on?: string; matched_tier?: number };
-
 const TIER_WHY: Record<number, string> = {
   1: "matched to this exact story",
   2: "matched to this exact bout and this fighter",
@@ -505,40 +505,37 @@ const TIER_WHY: Record<number, string> = {
   4: "an official video featuring this fighter",
 };
 
-export function OfficialVideoModule({ plan }: { plan: ContentPlan | null }) {
-  const m = moduleOf<{ tier?: number; videos?: Video[] }>(plan, "official_video");
-  const videos = (m?.data?.videos || []).filter((v) => v.embeddable && v.video_id);
-  if (!videos.length) return null;
-  const tier = m!.data.tier;
+/* The plan's clips play through the same hardened player as every rail
+ * (components/OfficialVideo): poster first, and a removed, private,
+ * embed-refused or region-blocked video falls back to its poster with a
+ * Watch-on-YouTube link instead of a dead YouTube box. Videos the policy
+ * already knows cannot play here are never handed to the player at all
+ * (lib/videoPolicy renderablePlanVideos). `videos` is that filtered list,
+ * computed once by StoryView so the JSON-LD describes the same set. */
+export function OfficialVideoModule({ plan, videos }: { plan: ContentPlan | null; videos?: RenderablePlanVideo[] }) {
+  const m = moduleOf<{ tier?: number; videos?: PlanVideo[] }>(plan, "official_video");
+  if (!m) return null;
+  const list = videos ?? renderablePlanVideos(m.data?.videos || []);
+  if (!list.length) return null;
+  const tier = m.data.tier;
   return (
-    <Module eyebrow="Official video" title={m!.title === "Official video" ? undefined : m!.title} className="vid">
+    <Module eyebrow="Official video" title={m.title === "Official video" ? undefined : m.title} className="vid">
       <p className="module-note">
         {tier && TIER_WHY[tier] ? `Every clip here is ${TIER_WHY[tier]}. ` : ""}
         Published by the UFC's own channels and played from them — we do not host, re-upload or re-encode it.
       </p>
       <div className="vid-grid">
-        {videos.map((v) => (
-          <figure key={v.id} className="vid-item">
-            <div className="vid-frame">
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${v.video_id}`}
-                title={v.title}
-                loading="lazy"
-                allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                allowFullScreen
-                referrerPolicy="strict-origin-when-cross-origin"
-              />
-            </div>
-            <figcaption>
-              <a href={v.url} rel="noopener nofollow" target="_blank">{v.title}</a>
-              <span className="src">
-                {v.publisher}
-                {v.video_type && v.video_type !== "other" ? ` · ${titleCase(v.video_type)}` : ""}
-                {v.published_at ? ` · ${fmtDate(v.published_at)}` : ""}
-                {v.language && v.language !== "en" ? ` · ${v.language.toUpperCase()}` : ""}
-              </span>
-            </figcaption>
-          </figure>
+        {list.map((v) => (
+          <div key={v.id} className="vid-item" data-video-id={v.video_id} data-playability={v.playability} data-matched-tier={v.matched_tier ?? undefined} data-matched-on={v.matched_on || undefined}>
+            <OfficialVideo
+              lang={v.lang}
+              video={{
+                provider_video_id: v.video_id, title: v.title, channel_name: v.publisher || "UFC", url: v.url,
+                thumbnail_url: v.thumbnail_url || null, published_at: v.published_at || null,
+                video_type: v.video_type || null, duration_sec: v.duration_sec ?? null,
+              }}
+            />
+          </div>
         ))}
       </div>
     </Module>

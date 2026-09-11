@@ -9,6 +9,7 @@ import { ChampionshipBelt } from "@/components/ChampionshipBelt";
 import { FightWeekPage } from "@/components/FightWeek";
 import { assemblePacket } from "@/lib/fightweek";
 import { eventSlug } from "@/lib/slug";
+import { OfficialVideoModule, type ContentPlan } from "@/components/plan";
 
 /* Development-only visual QA fixtures for data-driven modules. This route
  * returns 404 on production and on any Vercel deployment; it exists so the
@@ -62,6 +63,12 @@ export default async function QaPreview() {
   const dwcsLast: Event = { ...dwcsNext, id: "dw-0", name: "Dana White's Contender Series Season 10 Week 5", event_date: "2026-09-08", card_status: "complete" };
   const mains = new Map<string, Bout>([["dw-1", bout("db-1", e1, f1, 1, { event_id: "dw-1" })], ["dw-0", bout("db-0", c, dd, 1, { event_id: "dw-0", result: { bout_id: "db-0", winner_id: c.id, method: "KO_TKO", method_raw: "KO", round: 2, time_sec: 143, time_format: null, referee: null, finish_detail: null, result_source: "espn", has_stats: false, scorecards: null, judge_1: null, judge_2: null, judge_3: null, source_url: null } })]]);
   const packet = assemblePacket({ event, bouts, live: bouts, briefs, imgs: fixtureImgs, framing: new Map(), videos, done: false, roundCoverage: new Map(), updated: new Date().toISOString(), rankingsDate: rankings.snapshot_date, sources: ["UFC Stats career averages (fixture)", `Official rankings snapshot ${rankings.snapshot_date} (fixture)`, "Fight DNA not available for the fixture pairing", "Archived results (fixture)", "Event card as published (fixture)"] });
+  /* Content-plan video module as the Silva/Delgado story stored it BEFORE the
+   * issue #19 hotfix: both UFC Brasil clips oEmbed-verified, neither
+   * region-verified. XMK-nCzDxGo does not play in the U.S.; clicking it here
+   * must end on the poster fallback, never a dead YouTube box. */
+  const brasil = (id: string, uuid: string, title: string, published_at: string) => ({ id: uuid, url: `https://www.youtube.com/watch?v=${id}`, title, language: "pt", provider: "youtube", video_id: id, publisher: "UFC Brasil", embeddable: true, matched_on: "bout+fighter", video_type: "other", matched_tier: 2, published_at, thumbnail_url: `https://i1.ytimg.com/vi/${id}/hqdefault.jpg` });
+  const planFixture: ContentPlan = { modules: [{ id: "official_video", title: "Official video", data: { tier: 2, videos: [brasil("H3CPKzY34CY", "qa-v1", "O MELHOR DE JEAN SILVA E JOSE MIGUEL DELGADO | Noche UFC", "2026-09-11T15:00:07Z"), brasil("XMK-nCzDxGo", "qa-v2", "Aquecimento Noche UFC: Silva x Delgado | Maratona de Lutas Completas", "2026-09-10T20:48:26Z")] } }] };
   return (
     <div className="wrap page">
       <div className="eyebrow mb-4">QA fixtures · synthetic names · development only</div>
@@ -74,6 +81,7 @@ export default async function QaPreview() {
       <section id="qa-video-desk" className="mb-7"><VideoRail variant="desk" videos={videos} title="Inside fight week" eyebrow="Video desk · latest official video" /></section>
       <section id="qa-video-timeline" className="mb-7"><VideoRail variant="timeline" videos={videos} title="Fight-week video" eyebrow="Official channels · event relevance first" /></section>
       <section id="qa-video-rail" className="mb-7"><VideoRail videos={videos.slice(0, 3)} title="Alpha Silva · official video" eyebrow="Official channels · attached by fighter identity" max={3} /></section>
+      <section id="qa-plan-video" className="mb-7" style={{ maxWidth: 760 }}><OfficialVideoModule plan={planFixture} /></section>
       <section id="qa-champions" className="mb-7"><ChampionsShowcase rankings={rankings} fighters={new Map(champs.map((f) => [f.id, f]))} imgs={new Map()} /></section>
       <section id="qa-dwcs" className="mb-7"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={new Map([["dw-1", 5], ["dw-0", 5]])} freshness={new Date().toISOString()} /></section>
       <section id="qa-belts" className="mb-7" style={{ display: "flex", gap: 40, alignItems: "end", flexWrap: "wrap" }}><ChampionshipBelt size="hero" label="Hero" /><ChampionshipBelt size="card" label="Card" /><ChampionshipBelt size="mini" label="Mini" /></section>
