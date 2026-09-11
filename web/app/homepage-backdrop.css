@@ -1,0 +1,193 @@
+/* Homepage fight-night backdrop selector.
+ *
+ * This layer belongs to the full landing hero, not the Fight Week poster.
+ * The real generated arena images stay atmospheric behind the entire hero while
+ * the existing event card remains a separate foreground product surface.
+ */
+.hero.home-scene-enabled {
+  isolation: isolate;
+  min-height: 640px;
+  background: #0d0b08;
+}
+
+.home-scene-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-position: center 46%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: .52;
+  transform: scale(1.018);
+  filter: saturate(.9) contrast(1.08) brightness(.7);
+  transition: opacity .28s ease, filter .28s ease;
+}
+
+/* Keep the image unmistakably present without letting it destroy headline,
+ * stat or fight-card contrast. The left side is darker for the editorial copy;
+ * the image opens up through the center/right where the arena reads best. */
+.hero.home-scene-enabled::before {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(8,7,6,.93) 0%, rgba(8,7,6,.72) 37%, rgba(8,7,6,.39) 68%, rgba(8,7,6,.58) 100%),
+    linear-gradient(180deg, rgba(8,7,6,.38) 0%, rgba(8,7,6,.13) 45%, rgba(8,7,6,.9) 100%),
+    radial-gradient(760px 360px at 68% 20%, rgba(193,39,61,.12), transparent 68%),
+    radial-gradient(760px 380px at 42% 8%, rgba(212,175,55,.10), transparent 68%);
+}
+
+.hero.home-scene-enabled .hero-oct {
+  z-index: 2;
+  opacity: .08;
+}
+
+.hero.home-scene-enabled .hero-in {
+  z-index: 3;
+}
+
+.home-scene-picker {
+  position: absolute;
+  top: 16px;
+  right: max(14px, calc((100vw - 1280px) / 2));
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px;
+  border: 1px solid rgba(255,245,220,.13);
+  border-radius: 11px;
+  background: rgba(9,8,7,.72);
+  box-shadow: 0 12px 32px rgba(0,0,0,.34);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.home-scene-label {
+  padding-left: 5px;
+  color: rgba(255,245,220,.52);
+  font: 700 9px/1 var(--pbe-font-data);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.home-scene-options {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.home-scene-option {
+  appearance: none;
+  position: relative;
+  display: block;
+  width: 54px;
+  height: 34px;
+  padding: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255,245,220,.14);
+  border-radius: 7px;
+  background: #0d0b08;
+  cursor: pointer;
+  box-shadow: none;
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+.home-scene-thumb {
+  position: absolute;
+  inset: 2px;
+  display: block;
+  border-radius: 4px;
+  background-position: center;
+  background-size: cover;
+  filter: saturate(.84) brightness(.78);
+  transition: filter .16s ease;
+}
+
+.home-scene-name {
+  position: absolute;
+  inset: auto 3px 3px;
+  z-index: 2;
+  overflow: hidden;
+  color: rgba(255,255,255,.86);
+  font: 700 7px/1 var(--pbe-font-data);
+  letter-spacing: .03em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px #000;
+  opacity: 0;
+  transition: opacity .16s ease;
+}
+
+.home-scene-option:hover,
+.home-scene-option:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(212,175,55,.72);
+  outline: none;
+}
+
+.home-scene-option:hover .home-scene-thumb,
+.home-scene-option:focus-visible .home-scene-thumb,
+.home-scene-option.active .home-scene-thumb {
+  filter: saturate(1.03) brightness(.94);
+}
+
+.home-scene-option:hover .home-scene-name,
+.home-scene-option:focus-visible .home-scene-name {
+  opacity: 1;
+}
+
+.home-scene-option.active {
+  border-color: var(--pbe-gold);
+  box-shadow: 0 0 0 1px rgba(212,175,55,.24), 0 5px 15px rgba(0,0,0,.34);
+}
+
+@media (max-width: 960px) {
+  .hero.home-scene-enabled {
+    min-height: 0;
+  }
+  .home-scene-stage {
+    background-position: center top;
+    opacity: .42;
+  }
+  .hero.home-scene-enabled::before {
+    background:
+      linear-gradient(180deg, rgba(8,7,6,.78) 0%, rgba(8,7,6,.48) 35%, rgba(8,7,6,.86) 100%),
+      linear-gradient(90deg, rgba(8,7,6,.74), rgba(8,7,6,.42));
+  }
+  .home-scene-picker {
+    top: 10px;
+    right: 10px;
+  }
+  .home-scene-label {
+    display: none;
+  }
+  .home-scene-option {
+    width: 43px;
+    height: 29px;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-scene-picker {
+    top: 8px;
+    right: 8px;
+    gap: 3px;
+    padding: 4px;
+  }
+  .home-scene-options {
+    gap: 3px;
+  }
+  .home-scene-option {
+    width: 34px;
+    height: 25px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-scene-stage,
+  .home-scene-option,
+  .home-scene-thumb,
+  .home-scene-name {
+    transition: none;
+  }
+}
