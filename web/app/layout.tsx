@@ -20,6 +20,7 @@ import "./model.css";
 import "./fighter-dna-polish.css";
 import "./matchup-dna-polish.css";
 import "./fightweek-roster-polish.css";
+import "./home-fightweek-poster.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";
