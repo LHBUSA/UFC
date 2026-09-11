@@ -12,7 +12,9 @@ export class PostgrestClient {
   constructor({ url, key, fetchImpl = fetch }) {
     this.url = String(url || '').replace(/\/+$/, '');
     this.key = key || '';
-    this.fetch = fetchImpl;
+    /* Never call the global fetch as a method of this object: Workers throw
+     * "Illegal invocation" when fetch runs with a foreign `this`. */
+    this.fetch = (...args) => fetchImpl(...args);
     if (!this.url || !this.key) throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required');
   }
 
