@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-const STORAGE_KEY = "pbe:ufc:homepage-backdrop:v2";
+const STORAGE_KEY = "pbe:ufc:homepage-backdrop:v3";
 
 const BACKDROPS = [
   { id: "fight-night", label: "Fight night", src: "/media/home-bg-fight-night.webp" },
@@ -17,25 +16,10 @@ type BackdropId = (typeof BACKDROPS)[number]["id"];
 
 export function HomepageBackdropSwitcher() {
   const pathname = usePathname();
-  const [hero, setHero] = useState<HTMLElement | null>(null);
   const [activeId, setActiveId] = useState<BackdropId>("fight-night");
 
-  const active = useMemo(
-    () => BACKDROPS.find((item) => item.id === activeId) ?? BACKDROPS[0],
-    [activeId],
-  );
-
   useEffect(() => {
-    if (pathname !== "/") {
-      setHero(null);
-      return;
-    }
-
-    const heroEl = document.querySelector<HTMLElement>(".hero");
-    if (!heroEl) return;
-
-    heroEl.classList.add("home-scene-enabled");
-    setHero(heroEl);
+    if (pathname !== "/") return;
 
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -43,40 +27,40 @@ export function HomepageBackdropSwitcher() {
         setActiveId(stored as BackdropId);
       }
     } catch {
-      // Storage is optional; the default image remains deterministic.
+      // Storage is a convenience only; the default scene still renders.
     }
 
+    // Warm all four real image assets after hydration so switching is instant.
     for (const item of BACKDROPS) {
       const img = new Image();
       img.decoding = "async";
       img.src = item.src;
     }
-
-    return () => {
-      heroEl.classList.remove("home-scene-enabled");
-    };
   }, [pathname]);
+
+  if (pathname !== "/") return null;
+
+  const active = BACKDROPS.find((item) => item.id === activeId) ?? BACKDROPS[0];
 
   const choose = (id: BackdropId) => {
     setActiveId(id);
     try {
       window.localStorage.setItem(STORAGE_KEY, id);
     } catch {
-      // Private browsing/storage restrictions should not break the control.
+      // Storage restrictions must never block the control itself.
     }
   };
 
-  if (!hero || pathname !== "/") return null;
-
-  return createPortal(
+  return (
     <>
       <div
         className="home-scene-stage"
         aria-hidden="true"
         style={{ backgroundImage: `url("${active.src}")` }}
       />
-      <div className="home-scene-picker" role="group" aria-label="Choose homepage fight-night background">
-        <span className="home-scene-label">Scene</span>
+
+      <div className="home-scene-picker" role="group" aria-label="Choose homepage background">
+        <span className="home-scene-label">Background</span>
         <div className="home-scene-options">
           {BACKDROPS.map((item) => {
             const selected = item.id === active.id;
@@ -90,14 +74,17 @@ export function HomepageBackdropSwitcher() {
                 title={item.label}
                 onClick={() => choose(item.id)}
               >
-                <span className="home-scene-thumb" aria-hidden="true" style={{ backgroundImage: `url("${item.src}")` }} />
+                <span
+                  className="home-scene-thumb"
+                  aria-hidden="true"
+                  style={{ backgroundImage: `url("${item.src}")` }}
+                />
                 <span className="home-scene-name">{item.label}</span>
               </button>
             );
           })}
         </div>
       </div>
-    </>,
-    hero,
+    </>
   );
 }
