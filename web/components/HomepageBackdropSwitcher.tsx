@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const STORAGE_KEY = "pbe:ufc:homepage-background:v3";
 
@@ -22,9 +23,12 @@ const BACKDROPS = [
 type BackdropId = (typeof BACKDROPS)[number]["id"];
 
 export function HomepageBackdropSwitcher() {
+  const pathname = usePathname();
   const [activeId, setActiveId] = useState<BackdropId>("arena");
 
   useEffect(() => {
+    if (pathname !== "/") return;
+
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (stored && BACKDROPS.some((item) => item.id === stored)) {
@@ -39,9 +43,11 @@ export function HomepageBackdropSwitcher() {
       img.decoding = "async";
       img.src = item.src;
     }
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
+    if (pathname !== "/") return;
+
     const active = BACKDROPS.find((item) => item.id === activeId) ?? BACKDROPS[0];
     const body = document.body;
 
@@ -54,7 +60,9 @@ export function HomepageBackdropSwitcher() {
       body.style.removeProperty("--home-background-image");
       body.style.removeProperty("--home-background-position");
     };
-  }, [activeId]);
+  }, [activeId, pathname]);
+
+  if (pathname !== "/") return null;
 
   const choose = (id: BackdropId) => {
     setActiveId(id);
@@ -66,30 +74,32 @@ export function HomepageBackdropSwitcher() {
   };
 
   return (
-    <div className="home-scene-picker" role="group" aria-label="Choose homepage background">
-      <span className="home-scene-label">Background</span>
-      <div className="home-scene-options">
-        {BACKDROPS.map((item) => {
-          const selected = item.id === activeId;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              className={`home-scene-option${selected ? " active" : ""}`}
-              aria-label={`Use ${item.label} homepage background`}
-              aria-pressed={selected}
-              title={item.label}
-              onClick={() => choose(item.id)}
-            >
-              <span
-                className="home-scene-thumb"
-                aria-hidden="true"
-                style={{ backgroundImage: `url("${item.src}")`, backgroundPosition: item.position }}
-              />
-              <span className="home-scene-name">{item.label}</span>
-            </button>
-          );
-        })}
+    <div className="home-scene-control-slot" aria-label="Homepage background controls">
+      <div className="home-scene-picker" role="group" aria-label="Choose homepage background">
+        <span className="home-scene-label">Background</span>
+        <div className="home-scene-options">
+          {BACKDROPS.map((item) => {
+            const selected = item.id === activeId;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`home-scene-option${selected ? " active" : ""}`}
+                aria-label={`Use ${item.label} homepage background`}
+                aria-pressed={selected}
+                title={item.label}
+                onClick={() => choose(item.id)}
+              >
+                <span
+                  className="home-scene-thumb"
+                  aria-hidden="true"
+                  style={{ backgroundImage: `url("${item.src}")`, backgroundPosition: item.position }}
+                />
+                <span className="home-scene-name">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
