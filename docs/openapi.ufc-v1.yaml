@@ -315,6 +315,73 @@ paths:
       responses:
         '200': { $ref: '#/components/responses/Success' }
         '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/weigh-ins:
+    get:
+      summary: Official weigh-in readings, current reading per fighter per event
+      description: >-
+        Read-only rows of `ufc_weigh_in_current`: the latest reading per fighter
+        per event after supersession, ordered by bout (main event first) then
+        fighter name. Alias: `/v1/weigh-ins`.
+
+        NULL LIMITS ARE NOT INFERRED. `contracted_limit_lbs`,
+        `applicable_limit_lbs` and `over_by_lbs` are null whenever the
+        contracted figure was not published; a null never means the division
+        default applies. `limit_basis` says which case holds, and every
+        response restates this in `meta.contract`.
+
+        CONFIRMATION IS NOT CORRECTION. When a higher-authority source (UFC.com)
+        supersedes an earlier reading at the SAME weight, `is_confirmation` is
+        true and `is_correction` is false. `is_correction` is true only when the
+        superseding source changed the weight. `superseded_weight_lbs`,
+        `superseded_source_kind` and `superseded_source_name` describe the
+        reading that was replaced. Every source row is kept; see
+        `/v1/ufc/events/{id}/weigh-ins?include=history`.
+      parameters:
+        - { name: event_id, in: query, schema: { type: string } }
+        - { name: fighter_id, in: query, schema: { type: string } }
+        - { name: status, in: query, description: "Filters on `result`.", schema: { type: string, enum: [pending, made, missed, cancelled, withdrawn] } }
+        - { name: since, in: query, description: "ISO 8601; filters on when PropBetEdge detected the reading (`detected_at`), not the source's publication time.", schema: { type: string, format: date-time } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 60 } }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+  /v1/weigh-ins:
+    get:
+      summary: Alias of /v1/ufc/weigh-ins
+      description: Same handler, parameters and response as `/v1/ufc/weigh-ins`.
+      parameters:
+        - { name: event_id, in: query, schema: { type: string } }
+        - { name: fighter_id, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string, enum: [pending, made, missed, cancelled, withdrawn] } }
+        - { name: since, in: query, schema: { type: string, format: date-time } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 60 } }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+  /v1/ufc/events/{id}/weigh-ins:
+    get:
+      summary: One event's weigh-ins with coverage state, and optionally the full source history
+      description: >-
+        `data.coverage` is the row of `ufc_weigh_in_event_summary` plus
+        `state` (`live` while any reading is pending, otherwise `final`), or
+        `{ state: no_data }` when the card has no readings, so "nobody has
+        weighed in yet" is distinguishable from "not covered".
+        `coverage.confirmations` counts readings an official source verified at
+        the same weight; `coverage.corrections` counts readings whose weight a
+        later source changed. `data.results` are the current readings (same
+        fields as /v1/ufc/weigh-ins). With `include=history`, `data.history` is
+        every stored reading newest first, superseded ones included, each with
+        `supersession_kind` (`confirmation`, `correction` or null for an
+        original reading) and `superseded_weight_lbs`. Also served at
+        `/v1/events/{id}/weigh-ins`.
+      parameters:
+        - { name: id, in: path, required: true, description: "Event UUID, UFC Stats event id or ESPN event id", schema: { type: string } }
+        - { name: include, in: query, schema: { type: string, enum: [history] } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/search:
     get:
       summary: Search fighters (with primary_image + slug_id), events, and articles (with hero media)
