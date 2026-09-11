@@ -1,0 +1,32 @@
+/* Keep the six-sport PropBetEdge network rail balanced as the network grows. */
+.net {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.net a {
+  min-width: 0;
+  min-height: 112px;
+  align-content: center;
+}
+
+.net a span,
+.net a small {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .net {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .net {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .net a {
+    min-height: 0;
+  }
+}
