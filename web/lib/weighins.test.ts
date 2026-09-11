@@ -103,6 +103,15 @@ test("a catchweight is named explicitly, never left as a bare class", () => {
   assert.equal(classCell(row({ weight_class: "BANTAMWEIGHT", is_womens: true, is_title: true })), "Women's Bantamweight title");
 });
 
+test("confirmation and correction are different timeline kinds", () => {
+  /* UFC.com verifying the wire's number is a confirmation, never a correction
+   * (Noche UFC 2026-09-12: 26 confirmations, 0 corrections). */
+  assert.equal(timelineKind(row({ is_correction: false, is_confirmation: true, supersedes_id: "p" })), "OFFICIAL CONFIRMATION");
+  assert.equal(timelineKind(row({ is_correction: true, is_confirmation: false, supersedes_id: "p" })), "OFFICIAL CORRECTION");
+  assert.equal(timelineKind(row({ is_correction: true, source_kind: "commission", supersedes_id: "p" })), "COMMISSION CORRECTION");
+  assert.equal(timelineKind(row({ is_correction: false, is_confirmation: false })), "WEIGHED IN");
+});
+
 test("a correction is visible in the timeline kind", () => {
   assert.equal(timelineKind(row({ is_correction: true })), "OFFICIAL CORRECTION");
   assert.equal(timelineKind(row({ attempt_number: 2, result: "made" })), "SECOND ATTEMPT");

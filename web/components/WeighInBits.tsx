@@ -63,7 +63,8 @@ export function EventWeighInPanel({
         <p className={styles.panelNote}>
           Official readings for {eventName}. Last source update: {freshness(summary.last_source_update)}.
           {summary.limit_unsupported > 0 && ` ${summary.limit_unsupported} bout(s) have no published contracted limit, so no delta is shown for them.`}
-          {summary.corrections > 0 && ` ${summary.corrections} reading(s) were later corrected; the desk shows the latest and keeps the earlier one.`}
+          {(summary.confirmations ?? 0) > 0 && ` ${summary.confirmations} reported weight(s) were confirmed by the official result; both readings stay in the trail.`}
+          {summary.corrections > 0 && ` ${summary.corrections} reading(s) were changed by a later official source; the desk shows the latest and keeps the earlier one.`}
         </p>
       </div>
     </section>
@@ -128,7 +129,7 @@ export function BoutWeighIns({
               <a className={styles.fcSrc} href={w.source_url} target="_blank" rel="noopener noreferrer nofollow">
                 {SOURCE_KIND_LABEL[w.source_kind]}
                 {clockTime(w.source_published_at) ? ` · ${clockTime(w.source_published_at)}` : ""}
-                {w.is_correction ? " · corrected" : ""} ↗
+                {w.is_correction ? " · corrected" : w.is_confirmation ? " · confirmed" : ""} ↗
               </a>
             </div>
           );
