@@ -1,0 +1,9 @@
+{
+  "name": "ufc-weigh-ins",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test ../../scripts/weighins/lib/worker_path.test.mjs ../../scripts/weighins/lib/pass.test.mjs ../../scripts/weighins/lib/weights.test.mjs",
+    "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun"
+  }
+}

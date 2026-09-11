@@ -1,0 +1,36 @@
+name = "ufc-weigh-ins"
+main = "src/index.js"
+compatibility_date = "2026-09-08"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# The single production owner of weigh-in collection.
+#   Cloudflare Cron -> ufc-weigh-ins -> Supabase
+# No nodejs_compat: the pass core (scripts/weighins/lib/pass_core.mjs) and its
+# whole import graph are plain ES modules with no node: imports; hashing is the
+# pure-JS sha256.mjs so fingerprints match the CLI byte for byte.
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+
+# Its own single-flight identity: LOCK_ID = 'weigh-ins', never the newsroom's.
+[[durable_objects.bindings]]
+name = "WEIGH_IN_LOCK"
+class_name = "WeighInLock"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["WeighInLock"]
+
+# Fires every minute. The pass decides whether work is due (lib/window.mjs):
+# live weigh-in window every 3 min, fight-week watch every 30 min, idle = one
+# indexed query and no source fetch.
+[triggers]
+crons = ["* * * * *"]
+
+[observability]
+enabled = true
+
+# Secrets (wrangler secret put):
+#   SUPABASE_SERVICE_ROLE_KEY   service role for ufc_weigh_in_results / status events / run ledger
+#   ADMIN_TOKEN                 bearer for POST /run
