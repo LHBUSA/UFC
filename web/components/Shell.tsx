@@ -4,6 +4,7 @@ import { MobileNav } from "./MobileNav";
 import { Logo, Mark } from "./Brand";
 import { StoreCartButton } from "./store/StoreCartButton";
 import { SITE } from "@/lib/site";
+import { CURRENT_SPORT, NETWORK } from "@/lib/network";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getNextEvent } from "@/lib/db";
 import { getCurrentAccount } from "@/lib/auth";
@@ -69,6 +70,12 @@ export function Footer() {
             </p>
           </div>
           <div className="col">
+            <h4>PropBetEdge</h4>
+            <a href={NETWORK.news.href}>{NETWORK.news.label}</a>
+            <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>
+            {NETWORK.discord && <a href={NETWORK.discord} target="_blank" rel="noopener">Discord ↗</a>}
+          </div>
+          <div className="col">
             <h4>Fight Intelligence</h4>
             <Link href="/events">Schedule &amp; results</Link>
             <Link href="/contender-series">Contender Series</Link>
@@ -86,7 +93,6 @@ export function Footer() {
             <Link href="/methodology">Editorial &amp; Data Methodology</Link>
             <a href="/feed.xml">RSS feed</a>
             <Link href="/pro">UFC Pro</Link>
-            <Link href="/store">PropBetEdge Store</Link>
             <a href={`mailto:${SITE.contact}`}>Contact the desk</a>
           </div>
           <div className="col">
@@ -105,11 +111,11 @@ export function Footer() {
             <a href={UFC_OFFICIAL.store} target="_blank" rel="noopener">Official UFC Store ↗</a>
           </div>
         </div>
-        <div className="net">
-          <a href={SITE.network.mlb}><b>MLB</b><span>Baseball Intelligence</span><small>Live markets, model research, archives</small></a>
-          <a href={SITE.network.nfl}><b>NFL</b><span>Football Intelligence</span><small>Prop board, Model Lab, Player DNA</small></a>
-          <Link href="/" className="here"><b>UFC</b><span>Fight Intelligence</span><small>Cards, fighters, rankings, history, newsroom</small></Link>
-        </div>
+        <nav className="net" aria-label="PropBetEdge sports">
+          {NETWORK.sports.map((s) => s.key === CURRENT_SPORT
+            ? <Link key={s.key} href={s.href} className="here"><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></Link>
+            : <a key={s.key} href={s.href}><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></a>)}
+        </nav>
         <p className="disclaimer">
           PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook. Links labeled Official UFC go directly to UFC-owned destinations so readers can verify the official record, watch licensed programming and shop official merchandise.
           Rights-cleared fighter media carries source/license provenance. Nothing on this site is betting advice. Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.

@@ -517,8 +517,9 @@ main { flex: 1; }
 
 /* ---- footer ---- */
 .ftr { border-top: 1px solid var(--pbe-line); background: var(--pbe-ink-4); margin-top: var(--s-8); padding: var(--s-7) 0 var(--s-5); }
-.ftr-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr)); gap: var(--s-6); }
+.ftr-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(5, minmax(0, 1fr)); gap: var(--s-5); }
 .ftr .ftr-note { color: var(--pbe-faint); font-size: var(--fs-xs); line-height: 1.5; margin-top: var(--s-2); max-width: 24ch; }
+@media (max-width: 1100px) { .ftr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6) var(--s-5); } }
 @media (max-width: 900px) { .ftr-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 @media (max-width: 560px) { .ftr-grid { grid-template-columns: minmax(0, 1fr); } }
 .ftr h4 { font: 600 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); margin-bottom: var(--s-3); }
@@ -528,8 +529,9 @@ main { flex: 1; }
 .ftr .brand-blurb em { font-family: var(--pbe-font-display); color: var(--pbe-paper); }
 .ftr-rail { display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; margin-top: var(--s-6); padding-top: var(--s-4); border-top: 1px solid var(--pbe-line-faint); font: 500 var(--fs-label)/1.6 var(--pbe-font-data); color: var(--pbe-faint); }
 .ftr-rail a:hover { color: var(--pbe-gold); }
-.net { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); margin-top: var(--s-6); }
-@media (max-width: 800px) { .net { grid-template-columns: minmax(0, 1fr); } }
+.net { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s-3); margin-top: var(--s-6); }
+@media (max-width: 1000px) { .net { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .net { grid-template-columns: minmax(0, 1fr); } }
 .net a { background: var(--pbe-ink-2); border: 1px solid var(--pbe-line); border-radius: var(--r-md); padding: var(--s-4); display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; }
 .net a:hover { border-color: var(--pbe-gold); }
 .net a b { grid-row: span 3; font: 800 16px/1 var(--pbe-font-data); color: var(--pbe-gold); width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--pbe-gold-soft); border-radius: var(--r-sm); background: var(--pbe-gold-wash); }

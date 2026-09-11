@@ -78,6 +78,11 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
   { href: "/judges", label: "Judges & Scorecards", place: "more", group: "Intelligence" },
   { href: "/#notable-voices", label: "Notable Voices", place: "more", group: "Intelligence" },
   { href: "/learn/fight-dna", label: "How Fight DNA works", place: "more", group: "Intelligence" },
+  /* The parent network, last and alone. Kept out of the primary bar on
+   * purpose: "News" there is the UFC newsroom, and a second news link beside it
+   * would read as a duplicate. Same-tab: propbetedge.ai is first-party.
+   * Literal (not NETWORK.news.href) so scripts/preservation-diff.mjs sees it. */
+  { href: "https://propbetedge.ai/", label: "Sports News", place: "more", group: "PropBetEdge" },
   { href: "/pro", label: "Pro", place: "cta" },
 ] as const;
 
