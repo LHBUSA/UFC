@@ -39,9 +39,14 @@ export function WeighInAutoRefresh({ seconds, enabled }: { seconds: number; enab
     const start = () => { if (!timer) timer = setInterval(tick, ms); };
     const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
 
+    /* One named listener, removed on cleanup: an anonymous one leaked a
+     * listener (and a restarted interval) every time `enabled` flipped. */
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") { tick(); start(); } else stop();
+    };
     start();
-    document.addEventListener("visibilitychange", () => (document.visibilityState === "visible" ? start() : stop()));
-    return () => { stop(); };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => { stop(); document.removeEventListener("visibilitychange", onVisibility); };
   }, [router, seconds, enabled]);
 
   return null;

@@ -204,6 +204,85 @@ export function isLive(summary: WeighInSummary | null): boolean {
   return Boolean(summary && summary.pending > 0);
 }
 
+/*
+ * The weigh-in desk window, the same arithmetic the collector uses
+ * (scripts/weighins/lib/window.mjs): the session is "live" from 40 h to 2 h
+ * before the event date's midnight UTC. The DESK opens with it and stays on
+ * the card until 36 h after that midnight, so the upcoming card is the desk
+ * during weigh-in morning even before a single reading exists — the zero-row
+ * dead zone the old "only when covered" rule created.
+ */
+export const DESK_WINDOW = { opensHoursBefore: 40, sessionClosesHoursBefore: 2, closesHoursAfter: 36 };
+
+export type DeskWindow = { open: boolean; sessionLive: boolean; sessionFinished: boolean };
+
+export function deskWindow(eventDate: string | null, now: number = Date.now()): DeskWindow {
+  const midnight = eventDate ? Date.parse(`${String(eventDate).slice(0, 10)}T00:00:00Z`) : NaN;
+  if (!Number.isFinite(midnight)) return { open: false, sessionLive: false, sessionFinished: false };
+  const h = (midnight - now) / 3600e3;
+  const open = h <= DESK_WINDOW.opensHoursBefore && h > -DESK_WINDOW.closesHoursAfter;
+  const sessionLive = h <= DESK_WINDOW.opensHoursBefore && h > DESK_WINDOW.sessionClosesHoursBefore;
+  return { open, sessionLive, sessionFinished: open && !sessionLive };
+}
+
+/**
+ * Coverage against the BOOKED card, not against the rows we happen to have.
+ * The summary view counts current readings, so before the first reading it
+ * says "0 expected" — true of the table, false of the card.
+ */
+export function bookedCoverage(bookedFighterIds: string[], rows: Array<Pick<WeighIn, "fighter_id" | "result">>) {
+  const byFighter = new Map(rows.map((r) => [r.fighter_id, r]));
+  const expected = bookedFighterIds.length;
+  const sourced = bookedFighterIds.filter((id) => byFighter.has(id) && byFighter.get(id)!.result !== "pending");
+  const pendingIds = bookedFighterIds.filter((id) => !byFighter.has(id) || byFighter.get(id)!.result === "pending");
+  return { expected, sourced: sourced.length, pendingIds };
+}
+
+/**
+ * Keep polling while the desk is open and anything can still change: a
+ * booked fighter without a sourced result, or the weigh-in session still in
+ * progress (a correction can land after the last reading). Once every
+ * expected fighter is sourced AND the session is over, stop.
+ */
+export function shouldPoll(win: DeskWindow, coverage: { expected: number; pendingIds: string[] }, summaryPending = 0): boolean {
+  if (!win.open) return summaryPending > 0;
+  if (coverage.expected === 0) return win.sessionLive;
+  return coverage.pendingIds.length > 0 || win.sessionLive;
+}
+
+/**
+ * Pick the desk event. Order:
+ *   1. an upcoming card inside its weigh-in desk window — even with zero rows;
+ *   2. the next upcoming card that already has readings;
+ *   3. the most recent covered card (archive).
+ */
+export function pickDesk(
+  upcoming: Array<{ id: string; name: string; event_date: string | null }>,
+  covered: Array<Pick<WeighInSummary, "event_id" | "event_name" | "event_date">>,
+  now: number = Date.now(),
+): { eventId: string; eventName: string; eventDate: string | null; state: "upcoming" | "recent" } | null {
+  const inWindow = upcoming.find((e) => deskWindow(e.event_date, now).open);
+  if (inWindow) return { eventId: inWindow.id, eventName: inWindow.name, eventDate: inWindow.event_date, state: "upcoming" };
+  const coveredIds = new Set(covered.map((c) => c.event_id));
+  const next = upcoming.find((e) => coveredIds.has(e.id));
+  if (next) return { eventId: next.id, eventName: next.name, eventDate: next.event_date, state: "upcoming" };
+  const recent = covered[0];
+  if (recent) return { eventId: recent.event_id, eventName: recent.event_name, eventDate: recent.event_date, state: "recent" };
+  return null;
+}
+
+/**
+ * Badge for a reading that superseded another. Same weight from a higher
+ * authority is a CONFIRMATION (the wire had it right); a different weight is
+ * a CORRECTION. Both keep the earlier row in the trail.
+ */
+export function supersessionLabel(currentWeight: number | null, priorWeight: number | null | undefined, sourceKind: SourceKind): string | null {
+  if (priorWeight === undefined) return null;
+  const same = (currentWeight == null ? null : Number(currentWeight)) === (priorWeight == null ? null : Number(priorWeight));
+  if (same) return sourceKind === "official" ? "Confirmed · official" : sourceKind === "commission" ? "Confirmed · commission" : "Confirmed";
+  return "Corrected";
+}
+
 /**
  * How stale the desk is, in words.
  *

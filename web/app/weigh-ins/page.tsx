@@ -7,7 +7,8 @@ import {
 } from "@/lib/db";
 import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import {
-  getWeighIns, getWeighInSummary, getWeighInHistory, getWeighInEvents, pickDeskEvent,
+  getWeighIns, getWeighInSummary, getWeighInHistory, getWeighInEvents, pickDeskEvent, getBookedCard,
+  deskWindow, bookedCoverage, shouldPoll, supersessionLabel,
   RESULT_LABEL, RESULT_TONE, SOURCE_KIND_LABEL,
   weightCell, limitCell, deltaCell, classCell, sortForTable, isLive, freshness,
   updateLine, timelineKind, clockTime, WEIGHIN_REVALIDATE,
@@ -47,7 +48,7 @@ function profileValue(value: string) {
   return value === "—" ? "Not on file" : value;
 }
 
-function FighterReading({ w, fighter, img }: { w: WeighIn; fighter: Fighter | null; img?: PortraitSet | null }) {
+function FighterReading({ w, fighter, img, superLabel }: { w: WeighIn; fighter: Fighter | null; img?: PortraitSet | null; superLabel?: string | null }) {
   const weight = weightCell(w);
   const limit = limitCell(w);
   const delta = deltaCell(w);
@@ -64,7 +65,7 @@ function FighterReading({ w, fighter, img }: { w: WeighIn; fighter: Fighter | nu
         <div className={styles.fighterIdentity}>
           <div className={styles.statusLine}>
             <span className={styles.badge} data-tone={tone}>{RESULT_LABEL[w.result]}</span>
-            {w.is_correction && <span className={styles.corrected}>Corrected</span>}
+            {w.is_correction && <span className={styles.corrected}>{superLabel || "Corrected"}</span>}
             {w.attempt_number > 1 && <span className={styles.attempt}>Attempt {w.attempt_number}</span>}
           </div>
           <h3><Link href={href}>{w.fighter_name}</Link></h3>
@@ -105,7 +106,7 @@ function FighterReading({ w, fighter, img }: { w: WeighIn; fighter: Fighter | nu
   );
 }
 
-function BoutCard({ group, fighters, images }: { group: BoutGroup; fighters: Map<string, Fighter>; images: Map<string, PortraitSet> }) {
+function BoutCard({ group, fighters, images, labels }: { group: BoutGroup; fighters: Map<string, Fighter>; images: Map<string, PortraitSet>; labels: Map<string, string | null> }) {
   const first = group.rows[0];
   return (
     <article className={styles.boutCard} id={group.boutId ? `bout-${group.boutId}` : undefined}>
@@ -121,7 +122,7 @@ function BoutCard({ group, fighters, images }: { group: BoutGroup; fighters: Map
       </header>
       <div className={styles.readings}>
         {group.rows.map((w) => (
-          <FighterReading key={w.id} w={w} fighter={fighters.get(w.fighter_id) || null} img={images.get(w.fighter_id)} />
+          <FighterReading key={w.id} w={w} fighter={fighters.get(w.fighter_id) || null} img={images.get(w.fighter_id)} superLabel={labels.get(w.id)} />
         ))}
       </div>
     </article>
@@ -145,23 +146,45 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
       }
     : pickDeskEvent(upcomingDesk, covered);
 
-  const [rows, summary, history] = desk
+  const [rows, summary, fullHistory, booked] = desk
     ? await Promise.all([
         getWeighIns(desk.eventId).catch(() => []),
         getWeighInSummary(desk.eventId).catch(() => null),
-        getWeighInHistory(desk.eventId, 18).catch(() => []),
+        getWeighInHistory(desk.eventId, 400).catch(() => []),
+        getBookedCard(desk.eventId).catch(() => []),
       ])
-    : [[], null, []];
+    : [[], null, [], []];
+  const history = fullHistory.slice(0, 18);
 
   const table = sortForTable(rows);
-  const fighterIds = [...new Set(table.map((r) => r.fighter_id).filter(Boolean))];
+  /* Coverage is measured against the booked card: before the first reading
+   * the summary view has no row at all, and "0 expected" would be a lie. */
+  const bookedIds = [...new Set(booked.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]).filter((x): x is string => Boolean(x)))];
+  const coverage = bookedCoverage(bookedIds, rows);
+  const win = desk?.state === "upcoming" ? deskWindow(desk.eventDate) : { open: false, sessionLive: false, sessionFinished: false };
+  const poll = shouldPoll(win, coverage, summary?.pending ?? 0);
+  /* Confirmation vs correction: compare against the reading it superseded. */
+  const priorWeight = new Map(fullHistory.map((h) => [h.id, h.official_weight_lbs]));
+  const labels = new Map(rows.map((w) => [w.id, w.supersedes_id ? supersessionLabel(w.official_weight_lbs, priorWeight.get(w.supersedes_id), w.source_kind) : null]));
+  const historyKind = (h: (typeof history)[number]) => {
+    if (h.supersedes_id && priorWeight.has(h.supersedes_id) && Number(priorWeight.get(h.supersedes_id)) === Number(h.official_weight_lbs)) {
+      return `${h.source_kind === "official" ? "OFFICIAL" : h.source_kind.toUpperCase()} CONFIRMATION`;
+    }
+    return timelineKind({ ...(h as unknown as WeighIn), is_correction: Boolean(h.supersedes_id) });
+  };
+
+  const fighterIds = [...new Set([...table.map((r) => r.fighter_id), ...bookedIds].filter(Boolean))];
   const [fighters, images] = await Promise.all([
     getFightersByIds(fighterIds).catch(() => []),
     getVerifiedDisplayImagesForFighters(fighterIds).catch(() => new Map<string, PortraitSet>()),
   ]);
   const fighterMap = new Map(fighters.map((f) => [f.id, f]));
   const boutGroups = groupByBout(table);
-  const live = isLive(summary);
+  const live = poll || isLive(summary);
+  const expectedCount = coverage.expected || summary?.expected || 0;
+  const weighedCount = summary?.weighed ?? 0;
+  const pendingCount = coverage.expected ? coverage.pendingIds.length : (summary?.pending ?? 0);
+  const pendingNames = coverage.pendingIds.map((id) => fighterMap.get(id)?.name).filter(Boolean) as string[];
   const missed = table.filter((r) => r.result === "missed");
   const cutoff = new Date(Date.now() - 21 * 86400e3).toISOString().slice(0, 10);
   const recentCovered = covered.filter((e) => e.event_date && e.event_date >= cutoff);
@@ -171,7 +194,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
   return (
     <div className="wrap page">
       <Breadcrumbs items={[{ name: "Weigh-Ins" }]} />
-      <WeighInAutoRefresh seconds={WEIGHIN_REVALIDATE} enabled={live} />
+      <WeighInAutoRefresh seconds={WEIGHIN_REVALIDATE} enabled={poll} />
 
       <section className={styles.hero}>
         <div className={styles.heroMain}>
@@ -187,6 +210,13 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
               {desk.state === "recent" && <span className={styles.eventNote}> · covered archive</span>}
             </p>
           ) : <p className={styles.event}>No card on file</p>}
+          {desk && expectedCount > 0 && (
+            <p className={styles.freshness} data-testid="weighin-coverage">
+              <strong>{weighedCount} weighed / {expectedCount} expected</strong>
+              {pendingCount > 0 && <span className={styles.freshNote}> · {pendingCount} awaiting a sourced reading</span>}
+              {poll && <span className={styles.freshNote}> · checking every {WEIGHIN_REVALIDATE}s</span>}
+            </p>
+          )}
           <p className={styles.freshness}>
             {sourceStampIsPublisher ? "Latest source publication" : "Latest verified capture"}: <strong>{freshness(sourceStamp)}</strong>
             <span className={styles.freshNote}>
@@ -197,11 +227,11 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
 
         <aside className={styles.counters} aria-label="Weigh-in coverage">
           {[
-            { n: summary?.expected ?? 0, l: "expected" },
-            { n: summary?.weighed ?? 0, l: "weighed" },
+            { n: expectedCount, l: "expected" },
+            { n: weighedCount, l: "weighed" },
             { n: summary?.made ?? 0, l: "made", tone: "ok" },
             { n: summary?.missed ?? 0, l: "missed", tone: summary?.missed ? "alert" : undefined },
-            { n: summary?.pending ?? 0, l: "pending", tone: "neutral" },
+            { n: pendingCount, l: "pending", tone: "neutral" },
           ].map((c) => <div key={c.l} className={styles.counter} data-tone={c.tone}><b>{c.n}</b><span>{c.l}</span></div>)}
         </aside>
       </section>
@@ -216,7 +246,10 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
       {table.length ? (
         <div className={styles.layout}>
           <section className={styles.boutList} aria-label="Weigh-in results by bout">
-            {boutGroups.map((group) => <BoutCard key={group.key} group={group} fighters={fighterMap} images={images} />)}
+            {win.open && pendingNames.length > 0 && (
+              <p className={styles.panelNote} data-testid="weighin-pending">Awaiting a sourced reading: {pendingNames.join(", ")}</p>
+            )}
+            {boutGroups.map((group) => <BoutCard key={group.key} group={group} fighters={fighterMap} images={images} labels={labels} />)}
           </section>
 
           <aside className={styles.timeline} aria-label="Weigh-in timeline">
@@ -228,7 +261,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
               <ol>
                 {history.map((h) => (
                   <li key={h.id} data-kind={h.result}>
-                    <span className={styles.tKind}>{timelineKind({ ...(h as unknown as WeighIn), is_correction: Boolean(h.supersedes_id) })}</span>
+                    <span className={styles.tKind}>{historyKind(h)}</span>
                     <span className={styles.tLine}>{updateLine({ ...(h as unknown as WeighIn), fighter_name: h.fighter_name })}</span>
                     <span className={styles.tMeta}>
                       {clockTime(h.occurred_at) ?? "time not published"} ·{" "}
@@ -241,6 +274,11 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
             ) : <p className={styles.tEmpty}>No readings recorded yet.</p>}
           </aside>
         </div>
+      ) : win.open && expectedCount > 0 ? (
+        <Empty title="Waiting for verified scale readings">
+          <p data-testid="weighin-waiting">{weighedCount} weighed / {expectedCount} expected. Readings appear here as soon as a verified source reports them — this page checks every {WEIGHIN_REVALIDATE} seconds, no refresh needed. No weight or contractual limit is ever guessed.</p>
+          {pendingNames.length > 0 && <p className={styles.panelNote}>On the scale: {pendingNames.join(", ")}</p>}
+        </Empty>
       ) : (
         <Empty title="Official weigh-in result not recorded yet">
           <p>No sourced scale readings are on file for this card yet. The desk stays empty rather than guessing a weight or contractual limit.</p>
