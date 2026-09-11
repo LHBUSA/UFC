@@ -56,7 +56,13 @@ export type WeighIn = {
   last_seen_at: string;
   raw_text: string | null;
   supersedes_id: string | null;
+  /** Superseded an earlier reading AND changed the weight. */
   is_correction: boolean;
+  /** Superseded an earlier reading at the SAME weight: a higher-authority source verified it. */
+  is_confirmation?: boolean;
+  superseded_weight_lbs?: number | null;
+  superseded_source_kind?: SourceKind | null;
+  superseded_source_name?: string | null;
 };
 
 export type WeighInSummary = {
@@ -71,7 +77,10 @@ export type WeighInSummary = {
   withdrawn: number;
   cancelled: number;
   catchweights: number;
+  /** Current readings whose superseding source changed the stored weight. */
   corrections: number;
+  /** Current readings an official source verified at the same weight. Optional until the view migration is applied everywhere. */
+  confirmations?: number;
   limit_unsupported: number;
   last_source_update: string | null;
   newest_source_published_at: string | null;
@@ -352,9 +361,12 @@ export function updateLine(w: WeighIn): string {
   }
 }
 
+const SUPERSEDING_WORD: Partial<Record<SourceKind, string>> = { official: "OFFICIAL", commission: "COMMISSION", news: "REPORTED", manual: "DESK" };
+
 /** The timeline kind for one reading, used for the live feed's eyebrow. */
 export function timelineKind(w: WeighIn): string {
-  if (w.is_correction) return "OFFICIAL CORRECTION";
+  if (w.is_correction) return `${SUPERSEDING_WORD[w.source_kind] || "OFFICIAL"} CORRECTION`;
+  if (w.is_confirmation) return `${SUPERSEDING_WORD[w.source_kind] || "OFFICIAL"} CONFIRMATION`;
   if (w.result === "withdrawn") return "WITHDRAWAL";
   if (w.result === "cancelled") return "BOUT CANCELLED";
   if (w.catchweight_lbs != null) return "CATCHWEIGHT AGREED";

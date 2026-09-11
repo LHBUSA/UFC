@@ -40,9 +40,21 @@ compute a delta, so a page can never produce a figure the database refused.
 
 Priority order is official → commission → news, and `SOURCE_RANK` in
 `weights.mjs` uses it to resolve two sources disagreeing at the same attempt.
-Both readings are kept either way; the loser is `superseded_at`, and the row is
-marked `is_correction` so the desk can say a correction happened rather than
-silently swapping a number.
+Both readings are kept either way; the loser is `superseded_at`, and the new
+row carries `supersedes_id`, so the desk can say what happened rather than
+silently swapping a number. What happened is one of two different things:
+
+- **official confirmation** (`is_confirmation`): a higher-authority source
+  verified the stored weight. The wire said 145.5, UFC.com says 145.5.
+- **correction** (`is_correction`): the superseding source changed the stored
+  weight. The wire said 145.5, UFC.com says 145. `null` → number counts.
+
+The views derive both from the superseded row (migration
+`20260911200000_ufc_weigh_in_confirmation_semantics.sql`);
+`ufc_weigh_in_event_summary` reports `confirmations` and `corrections`
+separately and `ufc_weigh_in_history.supersession_kind` labels the trail.
+Before that migration every same-weight supersession counted as a correction
+(Noche UFC, 2026-09-12, showed 26 corrections that were 26 confirmations).
 
 | # | adapter | kind | what it is | realistic source→page latency |
 |---|---|---|---|---|
@@ -53,8 +65,9 @@ silently swapping a number.
 **In practice the wire wins the race and the official source wins the record.**
 A miss usually appears on MMA Fighting or MMA Junkie within a few minutes and on
 UFC.com a quarter of an hour later with the exact figure; the desk shows the
-wire reading first and replaces it with the official one as a visible
-correction. That is the intended behaviour, not a defect.
+wire reading first and replaces it with the official one: a visible
+confirmation when the number matches, a visible correction when it does not.
+That is the intended behaviour, not a defect.
 
 ### What is implemented, and what is not
 
@@ -161,3 +174,20 @@ Read-only; every non-GET method is refused. `?since` filters on **our**
 `detected_at`, not the publisher's timestamp, so a source that back-dates
 cannot hide a change from a poller. Every response carries a `contract` note
 stating that a null limit means unpublished, not a division default.
+
+## Acceptance still pending a real event
+
+These are implemented and unit-tested but have **not** been exercised by a
+live card yet. They stay open until a real event produces them; nothing is
+fabricated to close them.
+
+- [ ] An actual wire → official weight **correction** (a different number).
+      Noche UFC 2026-09-12 produced 26 confirmations and 0 corrections.
+- [ ] A **missed weight** propagating into `ufc_fighter_status_events`
+      (`weight_miss`) from a live pass.
+- [ ] **Incremental live capture**: readings appearing on the desk one by one
+      while the scale is running, rather than in a single post-session pass.
+
+The commission adapter (`commission-results`) stays inert. No verified
+official Arizona (or other jurisdiction) results URL is on file, and it will
+not be pointed at a guessed PDF location.

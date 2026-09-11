@@ -79,6 +79,9 @@ export type WeighInHistoryRow = {
   correction_reason: string | null;
   raw_text: string | null;
   occurred_at: string;
+  /** 'confirmation' = superseded at the same weight, 'correction' = weight changed, null = original reading. */
+  supersession_kind?: "confirmation" | "correction" | null;
+  superseded_weight_lbs?: number | null;
 };
 
 /** Current readings for one event, corrections applied. */
