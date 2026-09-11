@@ -67,7 +67,7 @@ export async function runWeighInPass({ sb, log = console }, options = {}) {
   if (plan.mode === 'idle' && !opts.force) {
     log.log?.(`[weigh-ins] idle: ${plan.reason} — no source fetched`);
     const result = { status: 'idle', plan, event, fetched: 0, readings: [], counters: zero(), duration_ms: Date.now() - started };
-    await closeRun(sb, runId, result);
+    await closeRun(sb, runId, opts, result);
     return result;
   }
 
@@ -103,7 +103,7 @@ export async function runWeighInPass({ sb, log = console }, options = {}) {
 
     if (!opts.write) {
       const result = { status: 'dry_run', plan, event, coverage, sources, readings, counters, duration_ms: Date.now() - started };
-      await closeRun(sb, runId, result);
+      await closeRun(sb, runId, opts, result);
       return result;
     }
 
@@ -111,10 +111,10 @@ export async function runWeighInPass({ sb, log = console }, options = {}) {
     Object.assign(counters, write.counters);
     log.log?.(`[weigh-ins] ${plan.mode}: ${event.name} offered=${counters.offered} inserted=${counters.inserted} duplicate_noop=${counters.duplicate_noop} corrections=${counters.corrections} confirmations=${counters.confirmations} status_events=${counters.status_events}`);
     const result = { status: counters.rejected ? 'partial' : 'ok', plan, event, coverage, sources, readings: readings.length, counters, duration_ms: Date.now() - started };
-    await closeRun(sb, runId, result);
+    await closeRun(sb, runId, opts, result);
     return result;
   } catch (e) {
-    await closeRun(sb, runId, { status: 'failed', error: String(e?.message || e).slice(0, 300), plan, event });
+    await closeRun(sb, runId, opts, { status: 'failed', error: String(e?.message || e).slice(0, 300), plan, event });
     throw e;
   }
 }
@@ -334,7 +334,7 @@ async function openRun(sb, opts, plan, event) {
   }
 }
 
-async function closeRun(sb, runId, result) {
+async function closeRun(sb, runId, opts, result) {
   if (!runId) return;
   const status = result.status === 'failed' ? 'failed' : result.status === 'partial' ? 'partial' : 'success';
   try {
@@ -342,6 +342,7 @@ async function closeRun(sb, runId, result) {
       finished_at: new Date().toISOString(),
       status,
       notes: {
+        trigger: opts.trigger, write: opts.write, force: opts.force,
         outcome: result.status, mode: result.plan?.mode, reason: result.plan?.reason, event: result.event?.name ?? null,
         counters: result.counters ?? null, coverage: result.coverage ?? null,
         sources: result.sources ? { official: result.sources.official, wire: result.sources.wire, trail: result.sources.trail } : null,

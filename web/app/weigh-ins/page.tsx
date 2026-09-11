@@ -165,6 +165,15 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
   const poll = shouldPoll(win, coverage, summary?.pending ?? 0);
   /* Confirmation vs correction: compare against the reading it superseded. */
   const priorWeight = new Map(fullHistory.map((h) => [h.id, h.official_weight_lbs]));
+  /* The reading that replaced each superseded row: a same-weight replacement
+   * is a confirmation, and the trail must not call it a correction. */
+  const replacedBy = new Map(fullHistory.filter((h) => h.supersedes_id).map((h) => [h.supersedes_id as string, h]));
+  const supersededNote = (h: (typeof history)[number]) => {
+    const by = replacedBy.get(h.id);
+    if (by && Number(by.official_weight_lbs) === Number(h.official_weight_lbs)) return ` · confirmed by ${by.source_name}`;
+    if (by) return ` · corrected by ${by.source_name}`;
+    return " · later corrected";
+  };
   const labels = new Map(rows.map((w) => [w.id, w.supersedes_id ? supersessionLabel(w.official_weight_lbs, priorWeight.get(w.supersedes_id), w.source_kind) : null]));
   const historyKind = (h: (typeof history)[number]) => {
     if (h.supersedes_id && priorWeight.has(h.supersedes_id) && Number(priorWeight.get(h.supersedes_id)) === Number(h.official_weight_lbs)) {
@@ -266,7 +275,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
                     <span className={styles.tMeta}>
                       {clockTime(h.occurred_at) ?? "time not published"} ·{" "}
                       <a href={h.source_url} target="_blank" rel="noopener noreferrer nofollow">{h.source_name}</a>
-                      {h.superseded_at && <em> · later corrected</em>}
+                      {h.superseded_at && <em>{supersededNote(h)}</em>}
                     </span>
                   </li>
                 ))}
