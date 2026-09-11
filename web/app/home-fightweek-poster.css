@@ -1,0 +1,37 @@
+/* Homepage Fight Week poster — arena-first background treatment.
+ *
+ * Keep the live fighter portraits, event copy and countdown dynamic. The only
+ * thing this layer changes is the stage behind them: use the dedicated cage /
+ * arena asset instead of the generic fence texture so the card reads as an
+ * actual UFC fight-night environment rather than an ambiguous grappling image.
+ */
+.hero .poster {
+  background:
+    linear-gradient(180deg, rgba(13,11,8,.10) 0%, rgba(13,11,8,.28) 42%, rgba(13,11,8,.94) 100%),
+    radial-gradient(720px 340px at 50% 26%, rgba(193,39,61,.10), transparent 70%),
+    url("/media/ufc-cage-bg-1600.webp") center 44% / cover no-repeat;
+  border-color: rgba(255,245,220,.18);
+  box-shadow:
+    0 0 0 1px rgba(212,175,55,.10),
+    0 28px 72px rgba(0,0,0,.58);
+}
+
+/* Preserve the gold fight-week glow, but let the cage/arena remain visible. */
+.hero .poster::before {
+  background:
+    radial-gradient(620px 280px at 50% 100%, rgba(212,175,55,.20), transparent 72%),
+    linear-gradient(90deg, rgba(8,7,6,.14), transparent 24%, transparent 76%, rgba(8,7,6,.14));
+}
+
+/* A little more separation at the bottom where the live event copy sits. */
+.hero .poster-foot {
+  background: linear-gradient(180deg, rgba(13,11,8,.68), rgba(13,11,8,.94));
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+@media (max-width: 720px) {
+  .hero .poster {
+    background-position: center 38%;
+  }
+}
