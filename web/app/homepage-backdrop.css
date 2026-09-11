@@ -14,13 +14,20 @@ body.home-background-active::before {
   filter: grayscale(22%) brightness(.9) contrast(1.08) saturate(.92);
 }
 
-/* The control is rendered directly by the homepage hero. It never overlays or
- * wraps the Fight Week card and changing it cannot trigger navigation. */
+/* RootLayout already places this component directly after the live wire and
+ * immediately before <main>. A zero-height slot anchors the control at the top
+ * of the homepage without querying or portaling into streamed page markup. */
+.home-scene-control-slot {
+  position: relative;
+  z-index: 45;
+  height: 0;
+  pointer-events: none;
+}
+
 .home-scene-picker {
   position: absolute;
   top: 14px;
   right: max(24px, calc((100vw - var(--max)) / 2 + 24px));
-  z-index: 8;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -31,6 +38,7 @@ body.home-background-active::before {
   box-shadow: 0 12px 32px rgba(0,0,0,.34);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 .home-scene-label {
@@ -131,7 +139,7 @@ body.home-background-active::before {
     height: 32px;
   }
 
-  .home-scene-picker ~ .hero-in {
+  body.home-background-active .hero-in {
     padding-top: 56px;
   }
 }
