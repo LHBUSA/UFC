@@ -1,7 +1,7 @@
 /* node --test scripts/videos/lib.test.mjs */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyVideo, expandHashtags, eventKeys, linkEvent, linkFighters, linkBout, linkVideo, isoDurationToSec, parseYoutubeFeed } from './lib.mjs';
+import { classifyVideo, expandHashtags, eventKeys, linkEvent, linkFighters, linkBout, linkVideo, isoDurationToSec, parseYoutubeFeed, videoAvailability, availabilityRank } from './lib.mjs';
 
 const events = [
   { id: 'e331', name: 'UFC 331: Van vs. Pantoja 2', event_date: '2026-09-19', city: 'Los Angeles' },
@@ -139,4 +139,39 @@ test('feed parsing and ISO durations', () => {
   assert.equal(isoDurationToSec('PT1H2M3S'), 3723);
   assert.equal(isoDurationToSec('PT45S'), 45);
   assert.equal(isoDurationToSec('garbage'), null);
+});
+
+/* ---- availability policy (GitHub issue #19) ---------------------------- */
+
+const feedRow = (over = {}) => ({ channel_name: 'UFC Brasil', embeddable: true, source_metadata: { discovery: 'atom_feed', region_restriction: null, embed_check: { method: 'oembed', status: 200 } }, ...over });
+
+test('availability: oEmbed 200 is unverified, not playable (XMK-nCzDxGo)', () => {
+  assert.equal(videoAvailability(feedRow()), 'unverified');
+});
+
+test('availability: Data API region answer decides playable vs blocked', () => {
+  const api = (rr) => feedRow({ source_metadata: { discovery: 'youtube_data_api_v3', region_check: { method: 'youtube_data_api' }, region_restriction: rr } });
+  assert.equal(videoAvailability(api(null)), 'playable');
+  assert.equal(videoAvailability(api({ allowed: ['BR', 'PT'], blocked: null })), 'blocked');
+  assert.equal(videoAvailability(api({ allowed: null, blocked: ['US'] })), 'blocked');
+  assert.equal(videoAvailability(api({ allowed: ['BR', 'PT'], blocked: null }), 'BR'), 'playable');
+});
+
+test('availability: a recorded observed_region_block is honoured and region-specific', () => {
+  const r = feedRow({ source_metadata: { discovery: 'atom_feed', observed_region_block: { regions: ['US'] } } });
+  assert.equal(videoAvailability(r), 'blocked');
+  assert.equal(videoAvailability(r, 'BR'), 'unverified');
+});
+
+test('availability: embeddable=false is unembeddable whatever else is known', () => {
+  assert.equal(videoAvailability(feedRow({ embeddable: false })), 'unembeddable');
+  assert.equal(videoAvailability(feedRow({ embeddable: null })), 'unverified');
+});
+
+test('availability rank: proven first, unverified global next, unverified regional last', () => {
+  const proven = feedRow({ channel_name: 'UFC Brasil', source_metadata: { region_check: { method: 'youtube_data_api' } } });
+  const globalUnverified = feedRow({ channel_name: 'UFC' });
+  const regionalUnverified = feedRow({ channel_name: 'UFC Espanol' });
+  const order = [regionalUnverified, globalUnverified, proven].sort((a, b) => availabilityRank(a) - availabilityRank(b));
+  assert.deepEqual(order, [proven, globalUnverified, regionalUnverified]);
 });

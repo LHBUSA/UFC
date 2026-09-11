@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { type Article, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor, getVideosForArticle, getVideosForBout, getVideosForEvent } from "@/lib/db";
+import { type Article, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor, getVideosForArticle, getVideosForBout, getVideosForEvent, getVideoStates } from "@/lib/db";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
+import { storyImageIds, storyFaces, storySubject, sameFighterName, loadStoryImages } from "@/lib/storyImages";
+import { renderablePlanVideos, railInitialSelection, isViewable, type PlanVideo } from "@/lib/videoPolicy";
 import { JsonLd, ProLock, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { renderMarkdown, renderMarkdownBlocks, excerpt, readingMinutes } from "@/lib/markdown";
@@ -42,14 +44,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
     a.bout_id ? getBoutById(a.bout_id) : null,
     getArticles(4),
   ]);
-  const [imgs, wire, vidArticle, vidBout, vidEvent] = await Promise.all([getImagesForFighters(fighters.map((f) => f.id)), getWireFor(a.event_id, a.fighter_ids || []), getVideosForArticle(a.id).catch(() => []), a.bout_id ? getVideosForBout(a.bout_id).catch(() => []) : Promise.resolve([]), a.event_id ? getVideosForEvent(a.event_id, 3).catch(() => []) : Promise.resolve([])]);
-  const seen = new Set<string>();
-  const videos = [...vidArticle, ...vidBout, ...vidEvent].filter((v) => (seen.has(v.id) ? false : (seen.add(v.id), true))).slice(0, 4);
-  const more = moreRes.rows.filter((x) => x.id !== a.id).slice(0, 3);
-  const moreMedia = await storyMedia(more);
-  const faces = bout ? [bout.fighter_a, bout.fighter_b] : fighters.slice(0, 2);
-  const label = STORY_TYPE_LABEL[a.story_type] || a.story_type;
-  const fb = (a.fact_block || {}) as FactBlock & { content_plan?: ContentPlan; primary?: { name?: string }; opponent?: { name?: string } };
+  const fb = (a.fact_block || {}) as FactBlock & { content_plan?: ContentPlan; primary?: { name?: string; fighter_id?: string }; opponent?: { name?: string; fighter_id?: string } };
   /* Two article generations live in this table at once. Articles written by
    * ufc-news-enrich carry a deterministic content_plan; everything written
    * before it carries the v2 fact block the legacy modules were built for.
@@ -57,12 +52,34 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
    * that fell back from one to the other would show a reader a module built
    * from a DIFFERENT packet than the sentence beside it. */
   const plan = (fb.content_plan && Array.isArray(fb.content_plan.modules) ? fb.content_plan : null) as ContentPlan | null;
+  const mm = !plan && fb.matchup?.a && fb.matchup?.b ? fb.matchup : null;
+  const planVideoCopies = plan ? (moduleOf<{ videos?: PlanVideo[] }>(plan, "official_video")?.data.videos || []) : null;
+  /* Every face this page can draw -- article fighters, BOTH sides of the
+   * linked bout, the legacy matchup pair -- in one image request (issue #19:
+   * the opponent used to be drawn from a map that never requested them). */
+  const imageIds = storyImageIds(a.fighter_ids, bout, mm ? [mm.a.fighter_id, mm.b.fighter_id] : []);
+  const [imgs, wire, vidArticle, vidBout, vidEvent, liveVideoState] = await Promise.all([loadStoryImages(imageIds, getImagesForFighters), getWireFor(a.event_id, a.fighter_ids || []), getVideosForArticle(a.id).catch(() => []), a.bout_id ? getVideosForBout(a.bout_id).catch(() => []) : Promise.resolve([]), a.event_id ? getVideosForEvent(a.event_id, 3).catch(() => []) : Promise.resolve([]), planVideoCopies?.length ? getVideoStates(planVideoCopies.map((v) => String(v.video_id || ""))).catch(() => new Map()) : Promise.resolve(new Map())]);
+  const seen = new Set<string>();
+  const videos = [...vidArticle, ...vidBout, ...vidEvent].filter((v) => (seen.has(v.id) ? false : (seen.add(v.id), true))).slice(0, 4);
+  const more = moreRes.rows.filter((x) => x.id !== a.id).slice(0, 3);
+  const moreMedia = await storyMedia(more);
+  const faces = storyFaces(bout, fighters);
+  /* The subject card and the hero photo are about the story's PRIMARY
+   * fighter, who is bout.fighter_b as often as fighter_a. Resolve by id;
+   * faces[0] would put the opponent's photo on the subject's card now that
+   * the opponent's image is in the map. */
+  const people = [...fighters, ...(bout ? [bout.fighter_a, bout.fighter_b] : [])];
+  const subject = storySubject(fb.primary?.fighter_id, a.fighter_ids, people);
+  const cardName = plan ? moduleOf<{ name?: string }>(plan, "fighter_card")?.data?.name : null;
+  /* The card is built for fact_block.primary; an id match is proof, a subject
+   * found by fallback must at least carry the card's name. */
+  const cardFighter = subject && (subject.id === fb.primary?.fighter_id || sameFighterName(subject.name, cardName)) ? subject : null;
+  const heroName = hero?.fighter_id ? people.find((f) => f.id === hero.fighter_id)?.name : subject?.name;
+  const label = STORY_TYPE_LABEL[a.story_type] || a.story_type;
   const charts = chartsOf(plan);
-  const planNames = { a: fb.primary?.name || faces[0]?.name, b: fb.opponent?.name };
+  const planNames = { a: fb.primary?.name || subject?.name, b: fb.opponent?.name };
   const legacyAngle = fb.bettor_angle && (fb.bettor_angle.summary || fb.bettor_angle.markets?.length) ? fb.bettor_angle : null;
   const angle = plan ? planAngle(plan) : legacyAngle;
-  const mm = !plan && fb.matchup?.a && fb.matchup?.b ? fb.matchup : null;
-  const mmImgs = mm ? await getImagesForFighters([mm.a.fighter_id, mm.b.fighter_id]) : new Map();
   const dna = bout && a.story_type === "fight_preview" ? await getMatchupDna(bout.fighter_a.id, bout.fighter_b.id) : null;
   /* Structured data must describe the page, not the database.
    *
@@ -73,18 +90,21 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
    * VideoObjects for videos that are nowhere on the page. That is exactly the
    * mismatch structured-data validators exist to catch, and it is a regression
    * introduced by making the on-page selection stricter without following
-   * through to the markup. So when a plan owns the video, it owns the markup. */
-  const planVideos = plan ? (moduleOf<{ videos?: any[] }>(plan, "official_video")?.data.videos || []) : null;
+   * through to the markup. So when a plan owns the video, it owns the markup.
+   *
+   * Same rule for availability (issue #19): the JSON-LD list IS the rendered
+   * list. A video the policy suppressed (known region block, embed disabled,
+   * rejected) is on neither; a legacy rail's region-blocked fallback card is
+   * rendered but cannot play, so it is not advertised either. */
+  const planVideos = planVideoCopies ? renderablePlanVideos(planVideoCopies, liveVideoState) : null;
   const jsonLdVideos = planVideos
-    ? planVideos
-        .filter((v) => v.embeddable && v.video_id)
-        .map((v) => ({
-          title: v.title, description: v.title, thumbnail_url: v.thumbnail_url,
-          published_at: v.published_at, duration_sec: v.duration_sec,
-          provider_video_id: v.video_id, url: v.url, channel_name: v.publisher,
-          source_metadata: v.language ? { language: v.language } : null,
-        }))
-    : videos;
+    ? planVideos.map((v) => ({
+        title: v.title, description: v.title, thumbnail_url: v.thumbnail_url,
+        published_at: v.published_at, duration_sec: v.duration_sec,
+        provider_video_id: v.video_id, url: v.url, channel_name: v.publisher,
+        source_metadata: v.language ? { language: v.language } : null,
+      }))
+    : railInitialSelection(videos, 3).filter((v) => isViewable(v));
   const updated = materiallyUpdated(a.published_at, a.updated_at);
   const articleUrl = `${SITE.url}/news/${a.slug}`;
   const keywords = [...new Set(["UFC", "MMA", label, event?.name, ...fighters.map((f) => f.name), "PropBetEdge UFC", "Fight Intelligence"].filter(Boolean))];
@@ -118,7 +138,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
         {hero ? (
           <>
             <img className="article-hero-bg" src={hero.card} alt="" aria-hidden="true" width={800} height={1000} decoding="async" />
-            <img className="article-hero-subject" src={hero.portrait} alt={faces[0]?.name || a.headline} width={1200} height={1500} fetchPriority="high" decoding="async" />
+            <img className="article-hero-subject" src={hero.portrait} alt={heroName || a.headline} width={1200} height={1500} fetchPriority="high" decoding="async" />
           </>
         ) : (
           <div className="gen">
@@ -139,7 +159,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
 
       {angle && <BettorsEdge angle={angle} />}
       {!plan && dna && dna.status === "ok" && <DnaEvidence dna={dna.data} />}
-      {mm && <MatchupModule a={mm.a} b={mm.b} imgs={mmImgs} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
+      {mm && <MatchupModule a={mm.a} b={mm.b} imgs={imgs} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
       {/* The plan owns video when it has one: it resolved the clips against
         * this story's own subject and knows at which tier they matched, which
         * the generic rail cannot. The rail stays for legacy articles. */}
@@ -157,10 +177,10 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
                  * because every number in it has something to be measured against,
                  * so the card yields rather than repeat itself two modules later. */
                 moduleOf(plan, "fighter_comparison") ? null : (
-                  <FighterCardModule key="fcard" plan={plan} href={faces[0] ? `/fighters/${fighterSlug(faces[0])}` : null} portrait={faces[0] ? imgs.get(faces[0].id)?.thumb : null} />
+                  <FighterCardModule key="fcard" plan={plan} href={cardFighter ? `/fighters/${fighterSlug(cardFighter)}` : null} portrait={cardFighter ? imgs.get(cardFighter.id)?.thumb : null} />
                 ),
                 <ComparisonModule key="cmp" plan={plan} charts={charts} />,
-                <OfficialVideoModule key="vid" plan={plan} />,
+                <OfficialVideoModule key="vid" plan={plan} videos={planVideos || []} />,
                 <DnaModule key="dna" plan={plan} charts={charts} />,
                 <RecentFormModule key="form" plan={plan} charts={charts} names={planNames} />,
                 <RoundStyleModule key="rounds" plan={plan} names={planNames} />,

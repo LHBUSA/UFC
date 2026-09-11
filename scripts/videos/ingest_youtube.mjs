@@ -109,6 +109,11 @@ function toDbRow(row, entry, existing, now) {
     language: lang.language,
     language_method: lang.method,
     region_restriction: entry.region_restriction === undefined ? (prev.region_restriction ?? null) : entry.region_restriction,
+    /* Region knowledge is only as good as its source (issue #19): the Data API
+     * answer is proof, oEmbed is not. region_check says which one we have;
+     * observed_region_block (a recorded player refusal) rides along in ...prev
+     * and is never cleared by discovery. */
+    region_check: entry.region_check || prev.region_check || null,
     feed_link: entry.link || prev.feed_link || null,
     is_short: entry.is_short ?? prev.is_short ?? null,
     feed_updated: entry.updated || prev.feed_updated || null,
@@ -137,6 +142,7 @@ function changed(dbRow, existing) {
   if (sm.discovery !== dbRow.source_metadata.discovery) return true;
   if (sm.language !== dbRow.source_metadata.language) return true;
   if (JSON.stringify(sm.region_restriction || null) !== JSON.stringify(dbRow.source_metadata.region_restriction || null)) return true;
+  if ((sm.region_check?.method || null) !== (dbRow.source_metadata.region_check?.method || null)) return true;
   if ((sm.review_reason || null) !== (dbRow.source_metadata.review_reason || null)) return true;
   /* jsonb reorders object keys, so compare canonical (sorted-key) forms. */
   if (canonicalJson(sm.classification?.evidence || null) !== canonicalJson(dbRow.source_metadata.classification?.evidence || null)) return true;
@@ -188,7 +194,7 @@ export async function main(injectedEnv, options = {}) {
     } else {
       try {
         if (apiKey) {
-          const d = await discoverViaDataApi(channel.channel_id, { key: apiKey, since });
+          const d = await discoverViaDataApi(channel.channel_id, { key: apiKey, since, now });
           entries = d.entries;
         } else {
           const r = await fetchText(feedUrl(channel.channel_id));
@@ -217,7 +223,7 @@ export async function main(injectedEnv, options = {}) {
         const chk = await checkEmbeddable(entry.video_id);
         totals.embed_checks += 1;
         entry.embeddable = chk.embeddable;
-        entry.embed_check = { method: 'oembed', status: chk.status, author_name: chk.author_name || null, checked_at: now.toISOString() };
+        entry.embed_check = { method: 'oembed', status: chk.status, proves: chk.proves || null, author_name: chk.author_name || null, checked_at: now.toISOString() };
         await sleep(150);
       } else if (!RELINK && !apiKey && existing) {
         entry.embeddable = existing.embeddable;

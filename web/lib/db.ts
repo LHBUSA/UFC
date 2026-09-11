@@ -1,4 +1,4 @@
-import { rankVideos, videoLanguage } from "@/lib/videoPolicy";
+import { rankVideos, videoLanguage, type LiveVideoState } from "@/lib/videoPolicy";
 /* Server-only data access. PostgREST over fetch with the service-role key
  * (RLS has no anon policies by design). Every reader is wrapped so that a
  * missing env var, a table that does not exist yet, or a network failure
@@ -221,6 +221,8 @@ export function mediaUrl(key: string): string {
 export type PortraitSet = {
   portrait: string; card: string; thumb: string; license: string | null; author: string | null; source_url: string | null; id: string;
   kind: string; source_family?: string | null; rights_label?: string | null; attribution_text?: string | null; stored_first_party?: boolean | null;
+  /* Whose image this is, so a caption or alt text can name the right person. */
+  fighter_id?: string | null;
 };
 
 const IMAGE_KIND_PRIORITY: Record<string, number> = {
@@ -257,6 +259,7 @@ export function portraitSet(img: FighterImage): PortraitSet {
     rights_label: img.rights_label,
     attribution_text: img.attribution_text,
     stored_first_party: img.stored_first_party,
+    fighter_id: img.fighter_id ?? null,
   };
 }
 
@@ -295,6 +298,7 @@ function espnDisplayPortrait(fighter: Pick<Fighter, "id" | "espn_athlete_id">): 
     rights_label: "display_only",
     attribution_text: "ESPN · display fallback",
     stored_first_party: false,
+    fighter_id: fighter.id,
   };
 }
 
@@ -504,6 +508,14 @@ export async function getVideosForBout(boutId: string, limit = 4): Promise<Offic
 }
 export async function getVideosForArticle(articleId: string, limit = 3): Promise<OfficialVideoRow[]> {
   return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&article_id=eq.${articleId}&limit=${limit}`, [], { revalidate: 300 })).data;
+}
+/* Live availability for videos an article carries a stored copy of (content
+ * plan). Keyed by provider id; a video missing here keeps its plan copy. */
+export async function getVideoStates(providerIds: string[]): Promise<Map<string, LiveVideoState>> {
+  const uniq = [...new Set(providerIds.filter((id) => /^[A-Za-z0-9_-]{6,20}$/.test(id)))];
+  if (!uniq.length) return new Map();
+  const rows = (await rest<LiveVideoState[]>(`ufc_videos?select=provider_video_id,channel_name,embeddable,link_status,source_metadata&provider=eq.youtube&provider_video_id=in.(${uniq.map((id) => `"${id}"`).join(",")})`, [], { revalidate: 300 })).data;
+  return new Map(rows.map((r) => [r.provider_video_id, r]));
 }
 export async function getVideosForFighters(ids: string[], limit = 6, minConfidence: "high" | "medium" | "low" = "medium"): Promise<OfficialVideoRow[]> {
   const uniq = [...new Set(ids.filter(Boolean))];

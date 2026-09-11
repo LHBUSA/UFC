@@ -56,19 +56,32 @@ export function OfficialVideo({ video, feature = false, lang = "unknown", blocke
 
   useEffect(() => {
     if (!open) return;
+    let t = 0;
     const onMessage = (e: MessageEvent) => {
-      if (!/youtube(-nocookie)?\.com$/.test(new URL(e.origin).hostname)) return;
+      /* Only this card's own player. Other frames (other cards, extensions,
+       * sandboxed "null" origins) post here too; a bad origin must never throw. */
+      if (e.source !== frame.current?.contentWindow) return;
+      let host = "";
+      try { host = new URL(e.origin).hostname; } catch { return; }
+      if (!/(^|\.)youtube(-nocookie)?\.com$/.test(host)) return;
       let data: { event?: string; info?: unknown } | null = null;
       try { data = typeof e.data === "string" ? JSON.parse(e.data) : e.data; } catch { return; }
-      if (!data || data.event !== "onError") return;
+      if (!data || typeof data !== "object") return;
+      /* The player is talking: the handshake landed, stop repeating it. */
+      window.clearInterval(t);
+      if (data.event !== "onError") return;
       const code = Number(data.info);
       setFailed(BLOCKED_CODES.has(code) ? "blocked" : "unavailable");
       setOpen(false);
     };
     window.addEventListener("message", onMessage);
-    /* Handshake so the player starts posting events (IFrame API protocol). */
-    const t = window.setInterval(() => frame.current?.contentWindow?.postMessage(JSON.stringify({ event: "listening", id: video.provider_video_id, channel: "widget" }), "*"), 500);
-    const stop = window.setTimeout(() => window.clearInterval(t), 6000);
+    /* Handshake so the player starts posting events (IFrame API protocol).
+     * Repeated until the player answers: a slow player that loads after the
+     * handshake stopped would otherwise never report its error, and a refused
+     * embed would stay on screen as a dead box. */
+    const send = () => frame.current?.contentWindow?.postMessage(JSON.stringify({ event: "listening", id: video.provider_video_id, channel: "widget" }), "*");
+    t = window.setInterval(send, 400);
+    const stop = window.setTimeout(() => window.clearInterval(t), 20000);
     return () => { window.removeEventListener("message", onMessage); window.clearInterval(t); window.clearTimeout(stop); };
   }, [open, video.provider_video_id]);
 
@@ -83,6 +96,7 @@ export function OfficialVideo({ video, feature = false, lang = "unknown", blocke
             loading="lazy"
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; autoplay"
             allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
           />
         ) : failed ? (
           <div className="official-video-fallback" role="status">
@@ -106,7 +120,7 @@ export function OfficialVideo({ video, feature = false, lang = "unknown", blocke
         )}
       </div>
       <div className="official-video-copy">
-        <span className="official-video-meta"><b>{label}</b>{when ? <> · <time dateTime={video.published_at || undefined}>{when}</time></> : null} · {video.channel_name} · <span className={`official-video-langtag ${lang}`}>{LANG_LABEL[lang]}</span></span>
+        <span className="official-video-meta"><b>{label}</b>{when ? <> · <time dateTime={video.published_at || undefined} suppressHydrationWarning>{when}</time></> : null} · {video.channel_name} · <span className={`official-video-langtag ${lang}`}>{LANG_LABEL[lang]}</span></span>
         <h3>{video.title}</h3>
         <a href={video.url} target="_blank" rel="noopener">Watch on YouTube ↗</a>
       </div>
