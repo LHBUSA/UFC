@@ -9,9 +9,10 @@
  *     entry (do not point it at a placeholder) if a product goes dark.
  *   - First-party network links are plain same-tab links: no nofollow, no
  *     target=_blank just because the hostname differs.
- *   - `discord` stays null until a permanent invite exists. Every invite in
- *     use across the network on 2026-09-11 (HPzYDAng, 8rMxrMG5, e9S6pFq9)
- *     returned "Unknown Invite"; a dead link is worse than no link.
+ *   - PROPBETEDGE_DISCORD_URL is the one canonical, non-expiring invite
+ *     (confirmed by the owner 2026-09-11). Every product uses this exact
+ *     value; never mint a per-product invite. Replaced dead codes: HPzYDAng,
+ *     8rMxrMG5, e9S6pFq9, Cn57R2MG, QsBmfgXd, 7AGkr9XG, YfQd2JkQ.
  *   - The store link carries this product's collection context. The UFC app
  *     is the network's only live checkout today, so for UFC that is the local
  *     /store. When propbetedge.ai/store ships on the same commerce engine it
@@ -23,10 +24,12 @@ export type NetworkSport = { key: "mlb" | "nfl" | "ufc" | "nhl" | "nba"; label: 
 
 export const CURRENT_SPORT: NetworkSport["key"] = "ufc";
 
+export const PROPBETEDGE_DISCORD_URL = "https://discord.gg/kb5zCTHbME";
+
 export const NETWORK = {
   news: { label: "Sports News", href: "https://propbetedge.ai/" },
   store: { label: "Store", href: "/store" },
-  discord: null as string | null,
+  discord: PROPBETEDGE_DISCORD_URL as string | null,
   sports: [
     { key: "mlb", label: "MLB", name: "Baseball Intelligence", blurb: "Live markets, model research, archives", href: "https://mlb.propbetedge.ai/" },
     { key: "nfl", label: "NFL", name: "Football Intelligence", blurb: "Prop board, Model Lab, Player DNA", href: "https://nfl.propbetedge.ai/" },

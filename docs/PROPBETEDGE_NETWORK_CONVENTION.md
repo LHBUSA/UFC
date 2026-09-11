@@ -19,7 +19,7 @@ Two network blocks. No more.
 |-------------|--------------------------------------------------------|
 | Sports News | `https://propbetedge.ai/`                              |
 | Store       | the store, in this sport's collection context (§3)     |
-| Discord     | permanent invite — **omitted until one exists** (§5)   |
+| Discord     | `PROPBETEDGE_DISCORD_URL` = `https://discord.gg/kb5zCTHbME` (§5) |
 
 **Sports** rail — one card per sport, in this order: MLB, NFL, UFC, NHL, NBA.
 The current product is styled `here`. A sport appears only while it has a
@@ -111,13 +111,22 @@ Every redirect ships with a test that requests the old URL and asserts the
 status and `Location`. No redirect lands while an order is in flight on the
 old path without that test.
 
-## 5. Open items
+## 5. Discord
 
-- **Discord:** every invite in use across the network on 2026-09-11 returns
-  `Unknown Invite` (`HPzYDAng` on learn.propbetedge.ai, `8rMxrMG5` and
-  `e9S6pFq9` in the propbetedge.ai bundle). The footer omits Discord until a
-  permanent (non-expiring) invite exists; set `NETWORK.discord` then. The
-  learn and news sites are currently linking dead invites.
+One invite for the whole network, owner-confirmed 2026-09-11:
+
+    PROPBETEDGE_DISCORD_URL = https://discord.gg/kb5zCTHbME   (non-expiring)
+
+Every product defines it once, under that name, in its network/config module
+and references the constant everywhere else. Never create a per-product or
+per-campaign invite: seven of them (`HPzYDAng`, `8rMxrMG5`, `e9S6pFq9`,
+`Cn57R2MG`, `QsBmfgXd`, `7AGkr9XG`, `YfQd2JkQ`) had expired independently
+across sites, emails and Workers before this was consolidated. If the invite
+ever changes, grep every PBE repo and Worker for `discord.gg/` and
+`discord.com/invite/`, and check the live bundles, not just the source.
+
+## 6. Open items
+
 - **News-site store branch:** decide before merging `propbetedge-store-v1`
   that its checkout/webhook/orders are dropped in favour of the shared engine.
 
