@@ -20,7 +20,7 @@
  *     resolving (see the convention doc — print, order and checkout paths
  *     are never redirected). */
 
-export type NetworkSport = { key: "mlb" | "nfl" | "ufc" | "nhl" | "nba"; label: string; name: string; blurb: string; href: string };
+export type NetworkSport = { key: "mlb" | "nfl" | "ufc" | "nhl" | "nba" | "wnba"; label: string; name: string; blurb: string; href: string };
 
 export const CURRENT_SPORT: NetworkSport["key"] = "ufc";
 
@@ -36,5 +36,6 @@ export const NETWORK = {
     { key: "ufc", label: "UFC", name: "Fight Intelligence", blurb: "Cards, fighters, rankings, newsroom", href: "/" },
     { key: "nhl", label: "NHL", name: "Hockey Intelligence", blurb: "PBE Cast, goalies, shot maps, props", href: "https://nhl.propbetedge.ai/" },
     { key: "nba", label: "NBA", name: "Basketball Intelligence", blurb: "NBACast, injuries, matchups, props", href: "https://nba.propbetedge.ai/" },
+    { key: "wnba", label: "WNBA", name: "Women's Basketball Intelligence", blurb: "WNBACast, news, matchups, odds", href: "https://wnba.propbetedge.ai/" },
   ] as readonly NetworkSport[],
 } as const;
