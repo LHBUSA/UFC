@@ -1,6 +1,6 @@
 # PropSports UFC API v1
 
-Status: live at `https://ufc-api.propbetedge.ai` (Worker `propbetedge-ufc-api`, `workers/ufc-api`). Contract version `2026-09-06.2` (branch `ufc-production-v3`, Track B). Every change since `2026-09-06` is additive: no field was removed or renamed.
+Status: live at `https://ufc-api.propbetedge.ai` (Worker `propbetedge-ufc-api`, `workers/ufc-api`). Contract version `2026-09-11.1`, deployed 2026-09-11 from `main` (`c2eaa8f`, Cloudflare version `294548b6`). Every change since `2026-09-06` is additive: no field was removed or renamed. The machine-readable contract is `docs/openapi.ufc-v1.yaml`; where this page and the OpenAPI file disagree, the OpenAPI file wins.
 
 ## Architecture
 
@@ -48,6 +48,21 @@ This keeps the website, future PropSports customers, MCP, mobile apps, and inter
 - `GET /v1/ufc/articles/{slug}`
 - `GET /v1/ufc/search?q=&limit=N` — fighters (with `primary_image`, `slug_id`), events, articles (with hero media).
 - `GET /v1/ufc/counts` — adds `images`, `fighters_with_media`, `rounds` (alias of `round_stat_rows`).
+
+Added in `2026-09-06.3` (Fight DNA, video, fight-state ledger; 60 s browser / 300 s edge / 900 s stale):
+
+- `GET /v1/ufc/dna/metrics` — metric registry. `GET /v1/ufc/dna/query?metric=&min=&max=&min_confidence=&as_of=` — screen fighters by one metric.
+- `GET /v1/ufc/fighters/{id}/dna`, `/splits`, `/round-profile`, `/finish-profile`, `/position-profile` — snapshot families; `404 dna_not_available` rather than a synthesized value.
+- `GET /v1/ufc/matchups/{fighterA}/{fighterB}/dna`
+- `GET /v1/ufc/videos`, `/v1/ufc/fighters/{id}/videos`, `/v1/ufc/events/{id}/videos`, `/v1/ufc/bouts/{id}/videos` — official-channel video; `?include=videos` on fighter, event and card.
+- `GET /v1/ufc/bouts/{id}/ledger`, `GET /v1/ufc/events/{id}/intelligence` — append-only fight-state ledger reads.
+
+Added in `2026-09-11.1` (availability and weigh-ins):
+
+- `GET /v1/ufc/injuries?active=&state=&status_type=&fighter_id=&event_id=` — individually sourced availability events; no inferred diagnoses.
+- `GET /v1/ufc/fighters/{id}/status` — `current` is null when nothing is on file (not a medical clearance). `GET /v1/ufc/events/{id}/card-changes`.
+- `GET /v1/ufc/weigh-ins` (alias `/v1/weigh-ins`) `?event_id=&fighter_id=&status=&since=` — current reading per fighter. Null `contracted_limit_lbs` / `over_by_lbs` means the limit was not published, never a division default. `is_confirmation` (an official source verified the same weight) is distinct from `is_correction` (the weight changed).
+- `GET /v1/ufc/events/{id}/weigh-ins?include=history` (also `/v1/events/{id}/weigh-ins`) — coverage with `confirmations` / `corrections`, current results, and the full source trail with `supersession_kind`.
 
 ## Media contract (B1)
 
@@ -248,28 +263,21 @@ The raw customer key is never stored in KV.
 
 ## Deployment gate
 
-Before production promotion (`workers/ufc-api`):
+Production is deployed only from a clean `git archive` of a reviewed `main` SHA, never from a working checkout. (On 2026-09-11 the live Worker turned out to be built from uncommitted files; recovering it took an archival branch and a route-union merge, PR #24.)
 
-1. `npm install`
-2. `npm test` — unit tests drive the Worker end-to-end against a PostgREST/Storage mock (fighter with/without media, rankings from snapshot / table / absent, article with/without hero, includes, bulk media, counts).
-3. `npm run check`
-4. `npx wrangler deploy --dry-run`
-5. `npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY` (already set in production)
-6. `npx wrangler deploy`
-7. `node smoke_live.mjs` — read-only production smoke; proves every new field on real rows (Sean Strickland media, a fighter without media, the next card with `include=stats`, rankings, an article with and without a hero).
-8. Set Vercel server env `UFC_API_BASE_URL` to the deployed worker origin.
-9. If auth is enabled, set Vercel server env `UFC_API_KEY` to the internal key.
-10. Deploy the web branch and verify parity against the current production site.
-11. Only then merge to `main`.
+1. Tests from a FULL checkout of that SHA (`status.test.mjs` reads `supabase/migrations`): `node --test workers/ufc-api/src/*.test.mjs` — index, status, weigh-ins and `route_union.test.mjs`, which fails if any live route is dropped. Zero skipped.
+2. Bump `API_VERSION` in `wrangler.toml` `[vars]` and `info.version` in the OpenAPI file together; never override it in Cloudflare only.
+3. Record the current version (`npx wrangler deployments status`) as the rollback target.
+4. `npx wrangler versions upload` from the export. `workers_dev` and `preview_urls` are off, so there is no preview URL.
+5. `npx wrangler versions deploy <new>@1% <old>@99%`; pin verification requests with `Cloudflare-Workers-Version-Overrides: propbetedge-ufc-api="<new>"` and compare shared-route shapes old vs new (additive only).
+6. `npx wrangler versions deploy <new>@100%`, then re-run the smoke without the override. Rollback: `npx wrangler versions deploy <old>@100%`.
 
-`.github/workflows/ufc-api-live-smoke.yml` runs steps 2–3 and 7 on pushes to `ufc-api-v1` / `ufc-production-v3` that touch `workers/ufc-api/**`, on PRs to `main`, and on manual dispatch.
+`node workers/ufc-api/smoke_live.mjs` is the read-only production smoke. The commercial gateway (`LHBUSA/ufc-api`) proxies this Worker; its upstream contract routes must all answer 200 before promotion.
 
 ## Commercial follow-on
 
 The same contract can later be mounted behind a PropSports API hostname and extended without breaking the website:
 
-- card-change history
-- weigh-ins
 - officials/judges/referees
 - medical suspensions where permitted
 - odds and line movement
