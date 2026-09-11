@@ -4,7 +4,9 @@ export {
   RESULT_LABEL, RESULT_TONE, SOURCE_KIND_LABEL,
   weightCell, limitCell, deltaCell, classCell,
   sortForTable, isLive, freshness, updateLine, timelineKind, clockTime,
+  deskWindow, bookedCoverage, shouldPoll, pickDesk, supersessionLabel, DESK_WINDOW,
 } from "./weighins-display";
+import { pickDesk } from "./weighins-display";
 
 /* Weigh-in read path.
  *
@@ -132,11 +134,9 @@ export async function getWeighInEvents(limit = 8): Promise<WeighInSummary[]> {
 }
 
 /**
- * Which event the desk should show.
- *
- * The next card ONLY when it already has readings; otherwise the most recent
- * covered card. The old fallback returned upcoming[0] even when it had zero
- * readings, which hid a fully populated recent weigh-in behind an empty desk.
+ * Which event the desk should show. See pickDesk: the upcoming card inside
+ * its weigh-in window is the desk even with zero readings; otherwise the next
+ * covered card, otherwise the most recent covered card.
  *
  * `upcoming` comes from the caller so this module does not duplicate the
  * schedule query lib/db.ts already owns.
@@ -144,11 +144,29 @@ export async function getWeighInEvents(limit = 8): Promise<WeighInSummary[]> {
 export function pickDeskEvent(
   upcoming: Array<{ id: string; name: string; event_date: string | null }>,
   covered: WeighInSummary[],
-): { eventId: string; eventName: string; eventDate: string | null; state: "upcoming" | "recent" } | null {
-  const coveredIds = new Set(covered.map((c) => c.event_id));
-  const next = upcoming.find((e) => coveredIds.has(e.id));
-  if (next) return { eventId: next.id, eventName: next.name, eventDate: next.event_date, state: "upcoming" };
-  const recent = covered[0];
-  if (recent) return { eventId: recent.event_id, eventName: recent.event_name, eventDate: recent.event_date, state: "recent" };
-  return null;
+  now: number = Date.now(),
+) {
+  return pickDesk(upcoming, covered, now);
+}
+
+export type BookedBout = {
+  id: string;
+  fighter_a_id: string | null;
+  fighter_b_id: string | null;
+  weight_class: string | null;
+  weight_class_raw: string | null;
+  card_position: string | null;
+  bout_order: number | null;
+  status: string | null;
+};
+
+/** The booked card (cancelled bouts excluded) — what "expected" means before
+ *  the first reading lands. Same 15-second revalidate as the readings: a
+ *  cached answer to "who is on the card" must not outlive the card. */
+export async function getBookedCard(eventId: string): Promise<BookedBout[]> {
+  const bouts = await read<BookedBout[]>(
+    `ufc_bouts?select=id,fighter_a_id,fighter_b_id,weight_class,weight_class_raw,card_position,bout_order,status&event_id=eq.${encodeURIComponent(eventId)}&order=bout_order.desc.nullslast`,
+    [],
+  );
+  return bouts.filter((b) => b.status !== "cancelled");
 }
