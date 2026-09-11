@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: PropSports UFC API
-  version: 2026-09-06.3
+  version: 2026-09-11.1
   description: >-
     Read-only normalized UFC event, fighter, bout, result, round-stat, image,
     rankings and editorial data used by ufc.propbetedge.ai and future PropSports
