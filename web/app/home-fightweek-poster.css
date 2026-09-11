@@ -1,37 +1,170 @@
-/* Homepage Fight Week poster — arena-first background treatment.
+/* Homepage Fight Week poster — custom arena background treatment.
  *
- * Keep the live fighter portraits, event copy and countdown dynamic. The only
- * thing this layer changes is the stage behind them: use the dedicated cage /
- * arena asset instead of the generic fence texture so the card reads as an
- * actual UFC fight-night environment rather than an ambiguous grappling image.
+ * The live fighter portraits, event copy and countdown remain dynamic. This
+ * layer owns only the arena stage behind them plus the non-navigating backdrop
+ * picker mounted as a sibling of the event link.
  */
 .hero .poster {
+  --fw-poster-bg: url("/media/fight-week-walkout.svg");
   background:
-    linear-gradient(180deg, rgba(13,11,8,.10) 0%, rgba(13,11,8,.28) 42%, rgba(13,11,8,.94) 100%),
+    linear-gradient(180deg, rgba(13,11,8,.08) 0%, rgba(13,11,8,.22) 42%, rgba(13,11,8,.94) 100%),
     radial-gradient(720px 340px at 50% 26%, rgba(193,39,61,.10), transparent 70%),
-    url("/media/ufc-cage-bg-1600.webp") center 44% / cover no-repeat;
+    var(--fw-poster-bg) center 44% / cover no-repeat;
   border-color: rgba(255,245,220,.18);
   box-shadow:
     0 0 0 1px rgba(212,175,55,.10),
     0 28px 72px rgba(0,0,0,.58);
+  transition: background-image .22s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
-/* Preserve the gold fight-week glow, but let the cage/arena remain visible. */
+/* Preserve the gold fight-week glow, but let the selected arena stay visible. */
 .hero .poster::before {
   background:
     radial-gradient(620px 280px at 50% 100%, rgba(212,175,55,.20), transparent 72%),
     linear-gradient(90deg, rgba(8,7,6,.14), transparent 24%, transparent 76%, rgba(8,7,6,.14));
 }
 
-/* A little more separation at the bottom where the live event copy sits. */
+/* A little more separation where the live event copy sits. */
 .hero .poster-foot {
-  background: linear-gradient(180deg, rgba(13,11,8,.68), rgba(13,11,8,.94));
+  background: linear-gradient(180deg, rgba(13,11,8,.62), rgba(13,11,8,.94));
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+}
+
+/* The switcher is deliberately outside the <a class="poster"> so changing a
+ * backdrop never triggers navigation to the event. */
+.fw-poster-host {
+  position: relative;
+  padding-bottom: 48px;
+}
+
+.fw-bg-picker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 7px 4px 0;
+  pointer-events: none;
+}
+
+.fw-bg-picker-label {
+  color: var(--pbe-faint);
+  font: 700 9px/1 var(--pbe-font-data);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.fw-bg-options {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.fw-bg-option {
+  appearance: none;
+  display: grid;
+  grid-template-columns: 38px 0fr;
+  align-items: center;
+  gap: 0;
+  min-width: 42px;
+  height: 30px;
+  padding: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255,245,220,.13);
+  border-radius: 7px;
+  background: rgba(13,11,8,.82);
+  color: var(--pbe-dim);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  transition: grid-template-columns .18s ease, border-color .18s ease, background .18s ease, transform .18s ease;
+}
+
+.fw-bg-option > span {
+  display: block;
+  width: 36px;
+  height: 24px;
+  border-radius: 5px;
+  background-position: center;
+  background-size: cover;
+  filter: saturate(.86) contrast(1.04);
+}
+
+.fw-bg-option em {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  padding: 0;
+  font: 700 9px/1 var(--pbe-font-data);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-style: normal;
+  transition: opacity .18s ease, padding .18s ease;
+}
+
+.fw-bg-option:hover,
+.fw-bg-option:focus-visible {
+  grid-template-columns: 38px 1fr;
+  border-color: rgba(212,175,55,.55);
+  background: rgba(29,25,20,.95);
+  transform: translateY(-1px);
+}
+
+.fw-bg-option:hover em,
+.fw-bg-option:focus-visible em {
+  opacity: 1;
+  padding: 0 7px 0 5px;
+}
+
+.fw-bg-option.active {
+  border-color: var(--pbe-gold);
+  box-shadow: 0 0 0 1px rgba(212,175,55,.18), 0 4px 16px rgba(0,0,0,.32);
+}
+
+.fw-bg-option.active > span {
+  filter: saturate(1.02) contrast(1.06);
 }
 
 @media (max-width: 720px) {
   .hero .poster {
     background-position: center 38%;
+  }
+  .fw-poster-host {
+    padding-bottom: 44px;
+  }
+  .fw-bg-picker {
+    justify-content: center;
+  }
+  .fw-bg-picker-label {
+    display: none;
+  }
+  .fw-bg-option,
+  .fw-bg-option:hover,
+  .fw-bg-option:focus-visible {
+    grid-template-columns: 34px 0fr;
+    min-width: 38px;
+    height: 28px;
+  }
+  .fw-bg-option > span {
+    width: 32px;
+    height: 22px;
+  }
+  .fw-bg-option em {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .poster,
+  .fw-bg-option,
+  .fw-bg-option em {
+    transition: none;
   }
 }

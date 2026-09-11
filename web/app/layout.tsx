@@ -25,6 +25,7 @@ import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";
 import { ShareRail } from "@/components/ShareRail";
+import { FightWeekBackdropSwitcher } from "@/components/FightWeekBackdropSwitcher";
 import { JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
 
@@ -127,6 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <LiveWire />
           <ShareRail />
+          <FightWeekBackdropSwitcher />
           <main id="main">{children}</main>
           <Footer />
         </CartProvider>
