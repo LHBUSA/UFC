@@ -19,6 +19,9 @@ import { fmtDate, fmtHeight, fmtReach, fmtRecord, stanceLabel } from "@/lib/form
 import { SITE } from "@/lib/site";
 import { WeighInAutoRefresh } from "@/components/WeighInAutoRefresh";
 import styles from "./weighins.module.css";
+import { getRankingMap } from "@/lib/rankings";
+import { BestRank } from "@/components/RankBadge";
+import type { FighterRankingContext } from "@/lib/rankingContext";
 
 export const revalidate = 15;
 
@@ -48,7 +51,7 @@ function profileValue(value: string) {
   return value === "—" ? "Not on file" : value;
 }
 
-function FighterReading({ w, fighter, img, superLabel }: { w: WeighIn; fighter: Fighter | null; img?: PortraitSet | null; superLabel?: string | null }) {
+function FighterReading({ w, fighter, img, superLabel, rank }: { w: WeighIn; fighter: Fighter | null; img?: PortraitSet | null; superLabel?: string | null; rank?: FighterRankingContext }) {
   const weight = weightCell(w);
   const limit = limitCell(w);
   const delta = deltaCell(w);
@@ -68,7 +71,7 @@ function FighterReading({ w, fighter, img, superLabel }: { w: WeighIn; fighter: 
             {(w.is_correction || w.is_confirmation) && <span className={styles.corrected}>{superLabel || (w.is_confirmation ? "Confirmed" : "Corrected")}</span>}
             {w.attempt_number > 1 && <span className={styles.attempt}>Attempt {w.attempt_number}</span>}
           </div>
-          <h3><Link href={href}>{w.fighter_name}</Link></h3>
+          <h3><BestRank ctx={rank} /><Link href={href}>{w.fighter_name}</Link></h3>
           {fighter?.nickname && <p className={styles.nickname}>“{fighter.nickname}”</p>}
           <div className={styles.profileFacts}>
             <span><small>Record</small><b>{profileValue(fighter ? fmtRecord(fighter) : "—")}</b></span>
@@ -106,7 +109,7 @@ function FighterReading({ w, fighter, img, superLabel }: { w: WeighIn; fighter: 
   );
 }
 
-function BoutCard({ group, fighters, images, labels }: { group: BoutGroup; fighters: Map<string, Fighter>; images: Map<string, PortraitSet>; labels: Map<string, string | null> }) {
+function BoutCard({ group, fighters, images, labels, ranks }: { group: BoutGroup; fighters: Map<string, Fighter>; images: Map<string, PortraitSet>; labels: Map<string, string | null>; ranks?: Map<string, FighterRankingContext> }) {
   const first = group.rows[0];
   return (
     <article className={styles.boutCard} id={group.boutId ? `bout-${group.boutId}` : undefined}>
@@ -122,7 +125,7 @@ function BoutCard({ group, fighters, images, labels }: { group: BoutGroup; fight
       </header>
       <div className={styles.readings}>
         {group.rows.map((w) => (
-          <FighterReading key={w.id} w={w} fighter={fighters.get(w.fighter_id) || null} img={images.get(w.fighter_id)} superLabel={labels.get(w.id)} />
+          <FighterReading key={w.id} w={w} fighter={fighters.get(w.fighter_id) || null} img={images.get(w.fighter_id)} superLabel={labels.get(w.id)} rank={ranks?.get(w.fighter_id)} />
         ))}
       </div>
     </article>
@@ -190,6 +193,8 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
     getVerifiedDisplayImagesForFighters(fighterIds).catch(() => new Map<string, PortraitSet>()),
   ]);
   const fighterMap = new Map(fighters.map((f) => [f.id, f]));
+  /* One snapshot read for the whole weigh-in desk. */
+  const ranks = await getRankingMap();
   const boutGroups = groupByBout(table);
   const live = poll || isLive(summary);
   const expectedCount = coverage.expected || summary?.expected || 0;
@@ -260,7 +265,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
             {win.open && pendingNames.length > 0 && (
               <p className={styles.panelNote} data-testid="weighin-pending">Awaiting a sourced reading: {pendingNames.join(", ")}</p>
             )}
-            {boutGroups.map((group) => <BoutCard key={group.key} group={group} fighters={fighterMap} images={images} labels={labels} />)}
+            {boutGroups.map((group) => <BoutCard key={group.key} group={group} fighters={fighterMap} images={images} labels={labels} ranks={ranks} />)}
           </section>
 
           <aside className={styles.timeline} aria-label="Weigh-in timeline">
