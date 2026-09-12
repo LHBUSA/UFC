@@ -26,7 +26,7 @@ import {
 } from "@/lib/broadcast-display";
 import { LocalTime, Countdown, VerifiedAgo } from "@/components/HowToWatchClient";
 import { RoundLiveRefresh } from "@/components/RoundLiveRefresh";
-import { fmtRecord, METHOD_LABEL, weightClassLabel } from "@/lib/format";
+import { fmtRecord, METHOD_LABEL, weightClassLabel, fmtTime } from "@/lib/format";
 import { matchupSlug } from "@/lib/slug";
 import type { RoundLiveState } from "@/lib/roundLive";
 import { livePollMs } from "@/lib/roundLive";
@@ -59,10 +59,16 @@ export function RoundLiveDeck({ state, now = Date.now() }: { state: RoundLiveSta
             {live && <span className={styles.dot} aria-hidden="true" />}
             {live ? "Event live" : today ? "Event today" : "Next event"}
           </span>
+          {/* Two counts, never merged: results are ESPN, rounds are UFCStats. */}
+          <span className={styles.sigResults}>
+            {state.completedResults.length > 0
+              ? `Results in · ${state.completedResults.length}${state.cardSize ? ` of ${state.cardSize}` : ""} bouts`
+              : "Results · awaiting first completed fight"}
+          </span>
           <span className={styles.sigData}>
-            {state.completed.length > 0
-              ? `Round data · ${state.completed.length}${state.cardSize ? ` of ${state.cardSize}` : ""} bouts`
-              : "Round data · awaiting first completed fight"}
+            {state.roundReady.length > 0
+              ? `Round intelligence · ${state.roundReady.length} bout${state.roundReady.length === 1 ? "" : "s"}`
+              : "Round intelligence · pending"}
           </span>
         </div>
 
@@ -137,24 +143,27 @@ export function RoundLiveDeck({ state, now = Date.now() }: { state: RoundLiveSta
         <div className={styles.tonightHead}>
           <h3>Tonight&rsquo;s completed-fight round intelligence</h3>
           <span>
-            {state.completed.length > 0
-              ? "Newest completed bout first · official round observations"
+            {state.completedResults.length > 0
+              ? "Newest completed bout first · results from ESPN, round observations from UFC Stats"
               : "Updates as official completed-fight data becomes available"}
           </span>
         </div>
 
-        {state.completed.length > 0 ? (
+        {state.completedResults.length > 0 ? (
           <ol className={styles.boutList}>
-            {state.completed.map(({ bout, coverage }, i) => {
+            {state.completedResults.map(({ bout, coverage, roundReady }, i) => {
               const winner = bout.result?.winner_id;
               const wc = weightClassLabel(bout.weight_class, bout.is_womens);
               const method = bout.result?.method ? METHOD_LABEL[bout.result.method] ?? bout.result.method : null;
-              return (
-                <li key={bout.id} className={styles.boutRow} data-newest={i === 0 ? "true" : undefined}>
-                  <Link
-                    href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, { name: b.event_name, event_date: b.event_date })}`}
-                    className={styles.boutLink}
-                  >
+              const finish = bout.result?.round
+                ? `R${bout.result.round}${bout.result.time_sec != null ? ` · ${fmtTime(bout.result.time_sec)}` : ""}`
+                : null;
+              const href = `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, { name: b.event_name, event_date: b.event_date })}`;
+              /* Only round-ready bouts get a link into the round experience.
+               * A bout whose round rows have not landed has nothing to show
+               * there, so it renders as a plain card rather than a dead link. */
+              const inner = (
+                <>
                     {i === 0 && <span className={styles.newest}>Latest</span>}
                     <span className={styles.boutFighters}>
                       <span className={winner === bout.fighter_a.id ? styles.win : undefined}>
@@ -170,24 +179,36 @@ export function RoundLiveDeck({ state, now = Date.now() }: { state: RoundLiveSta
                     <span className={styles.boutMeta}>
                       {wc && <span>{wc}</span>}
                       {bout.is_title && <span className={styles.title}>Title</span>}
-                      {method && (
-                        <span>
-                          {method}
-                          {bout.result?.round ? ` · R${bout.result.round}` : ""}
+                      {method && <span>{method}{finish ? ` · ${finish}` : ""}</span>}
+                      <span className={styles.src}>Source: ESPN</span>
+                    </span>
+                    {/* State B vs state C. No pips, no counts and no link are
+                        rendered for a bout whose round rows have not landed —
+                        the absence is stated in words instead. */}
+                    {roundReady && coverage ? (
+                      <span className={styles.boutRounds}>
+                        <span className={styles.pips} aria-hidden="true">
+                          {Array.from({ length: Math.max(1, coverage.rounds) }, (_, n) => <i key={n} />)}
                         </span>
-                      )}
-                    </span>
-                    <span className={styles.boutRounds}>
-                      <span className={styles.pips} aria-hidden="true">
-                        {Array.from({ length: Math.max(1, coverage.rounds) }, (_, n) => <i key={n} />)}
+                        <b>{coverage.rounds} round{coverage.rounds === 1 ? "" : "s"} recorded</b>
+                        <em>{coverage.bothCorners ? "Both corners verified" : "One-corner coverage"}</em>
                       </span>
-                      <b>
-                        {coverage.rounds} round{coverage.rounds === 1 ? "" : "s"} recorded
-                      </b>
-                      <em>{coverage.bothCorners ? "Both corners verified" : "One-corner coverage"}</em>
-                    </span>
-                    <span className={styles.boutCta}>Open round intelligence →</span>
-                  </Link>
+                    ) : (
+                      <span className={styles.boutPending}>
+                        <b>Round intelligence</b>
+                        <em>Pending official round observations</em>
+                      </span>
+                    )}
+                    {roundReady
+                      ? <span className={styles.boutCta}>Open round intelligence →</span>
+                      : <span className={styles.boutCtaMuted}>Round detail opens when observations land</span>}
+                </>
+              );
+              return (
+                <li key={bout.id} className={styles.boutRow} data-newest={i === 0 ? "true" : undefined} data-pending={roundReady ? undefined : "true"}>
+                  {roundReady
+                    ? <Link href={href} className={styles.boutLink}>{inner}</Link>
+                    : <div className={styles.boutLink}>{inner}</div>}
                 </li>
               );
             })}

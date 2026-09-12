@@ -37,19 +37,28 @@ export async function GET() {
         } : null,
         event_state: s.eventState,
         live: s.isLive,
-        /* Round-data facts — deliberately a separate object. */
+        /* Two counts, because they are two facts with two sources and two
+         * latencies. `completed_results` is ESPN: the bout is final and the
+         * result is stored. `completed_with_rounds` is UFCStats: its round
+         * observations have landed. The second is routinely smaller than the
+         * first for most of a card, and that is correct, not a fault. */
         round_data: {
-          completed_with_rounds: s.completed.length,
+          completed_results: s.completedResults.length,
+          completed_with_rounds: s.roundReady.length,
           card_size: s.cardSize,
-          bouts: s.completed.map(({ bout, coverage }) => ({
+          bouts: s.completedResults.map(({ bout, coverage, roundReady }) => ({
             bout_id: bout.id,
             a: { id: bout.fighter_a.id, name: bout.fighter_a.name, record: fmtRecord(bout.fighter_a) },
             b: { id: bout.fighter_b.id, name: bout.fighter_b.name, record: fmtRecord(bout.fighter_b) },
             winner_id: bout.result?.winner_id ?? null,
             method: bout.result?.method ?? null,
             finish_round: bout.result?.round ?? null,
-            rounds_covered: coverage.rounds,
-            both_corners: coverage.bothCorners,
+            finish_time_sec: bout.result?.time_sec ?? null,
+            /* The bout's own state, so a consumer never has to infer it. */
+            state: roundReady ? "round_data_available" : "round_data_pending",
+            result_source: bout.result?.result_source ?? null,
+            rounds_covered: coverage ? coverage.rounds : null,
+            both_corners: coverage ? coverage.bothCorners : null,
           })),
         },
       },

@@ -46,7 +46,20 @@ UFCSTATS_SOLVE_CHALLENGE = "false"
 # Cadence. Matches what is deployed (daily 06:00 UTC) until the canary passes;
 # see UFCSTATS_ENABLED above. Cloudflare owns scheduling; GitHub is source only.
 [triggers]
-crons = ["0 6 * * *"]
+# Two crons, two jobs — see the `scheduled` handler in src/index.js.
+#
+#   0 6 * * *     daily maintenance. Unchanged: full ESPN window walk, archive
+#                 passes, queue maintenance.
+#   */15 * * * *  FIGHT NIGHT. ESPN marks a bout final within seconds; without
+#                 this the database did not learn it until the next morning.
+#                 The handler resolves the active card from stored broadcast
+#                 times (ufc_event_broadcasts, falling back to ufc_events) and
+#                 returns immediately when none is inside the window — one
+#                 indexed query, no ESPN request, no run row. When a card IS
+#                 live it refreshes ONLY that card, from its own single-day
+#                 ESPN window, with the same identity validation and idempotent
+#                 writes as the daily pass. It runs no archive maintenance.
+crons = ["0 6 * * *", "*/15 * * * *"]
 
 # Fight DNA owner. After new round rows land, ask ufc-intelligence to run its
 # fingerprint-gated build instead of waiting for the 07:17 UTC one. RPC over a

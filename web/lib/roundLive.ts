@@ -28,9 +28,18 @@ import { getNextBroadcast, watchState, type EventBroadcast, type WatchState } fr
  * worst case a reader sees is ~60s-old round coverage. */
 const LIVE_TTL = 60;
 
+/* A completed bout and, SEPARATELY, whether its round observations exist.
+ *
+ * `coverage: null` is the normal mid-card state: ESPN has marked the fight
+ * final and stored the result, and UFCStats has not published its round rows
+ * yet. The two facts have different sources and different latencies, so they
+ * are two fields, never one collapsed "is this fight ready" boolean. */
 export type TonightBout = {
   bout: Bout;
-  coverage: RoundCoverage;
+  /** Round observations, or null when none have landed for this bout yet. */
+  coverage: RoundCoverage | null;
+  /** True only when coverage exists and clears the eligibility rule. */
+  roundReady: boolean;
 };
 
 export type RoundLiveState = {
@@ -42,9 +51,12 @@ export type RoundLiveState = {
   isLive: boolean;
   /* Our own event row, when the broadcast row is matched to one. */
   event: Event | null;
-  /* Bouts from tonight's card that have finished AND have round observations
-   * stored, newest first. Empty is a perfectly normal state early in a card. */
-  completed: TonightBout[];
+  /* Every bout from tonight's card with a STORED RESULT, newest first —
+   * whether or not its round data has landed. This is the ESPN-backed fact. */
+  completedResults: TonightBout[];
+  /* The subset whose round observations have landed. Derived, never a
+   * separate read: `completedResults.filter(b => b.roundReady)`. */
+  roundReady: TonightBout[];
   /* How many bouts are on the card at all, for an honest "3 of 13" line. */
   cardSize: number;
   checkedAt: string;
@@ -52,7 +64,7 @@ export type RoundLiveState = {
 
 const EMPTY: RoundLiveState = {
   broadcast: null, eventState: null, isLive: false, event: null,
-  completed: [], cardSize: 0, checkedAt: new Date(0).toISOString(),
+  completedResults: [], roundReady: [], cardSize: 0, checkedAt: new Date(0).toISOString(),
 };
 
 /**
@@ -77,29 +89,32 @@ export async function getRoundLiveState(now = Date.now()): Promise<RoundLiveStat
 
   /* Only reach for bouts when there is an event row to reach with. An
    * unmatched broadcast row still powers the hero; it just cannot list bouts. */
-  let completed: TonightBout[] = [];
+  let completedResults: TonightBout[] = [];
   let cardSize = 0;
   if (broadcast.event_id) {
     try {
       const bouts = await getEventBouts(broadcast.event_id, LIVE_TTL);
       const live = bouts.filter((b) => b.status !== "cancelled");
       cardSize = live.length;
-      /* A fight counts as "landed" only when it has BOTH a stored result and
-       * round observations. A result with no rounds is a finished fight we
-       * cannot yet analyse, and saying otherwise would put a dead link on the
-       * page. */
+      /* A stored RESULT is enough to list a bout. Round coverage is looked up
+       * alongside it and attached, but its absence no longer hides the fight:
+       * ESPN marks a bout final within seconds and UFCStats publishes its round
+       * rows much later, so requiring both meant the page stayed empty for most
+       * of a card while we already knew who had won. */
       const finished = live.filter((b) => b.result);
       if (finished.length) {
         const cover = await getRoundCoverageFor(finished.map((b) => b.id), LIVE_TTL);
-        completed = finished
-          .map((b) => ({ bout: b, coverage: cover.get(b.id) }))
-          .filter((x): x is TonightBout => isEligible(x.coverage))
+        completedResults = finished
+          .map((b) => {
+            const coverage = cover.get(b.id) ?? null;
+            return { bout: b, coverage, roundReady: isEligible(coverage) };
+          })
           /* Newest first: bout_order descends down the card, so the most
            * recently contested bout is the LOWEST order still completed. */
           .sort((x, y) => (x.bout.bout_order ?? 0) - (y.bout.bout_order ?? 0));
       }
     } catch {
-      completed = [];
+      completedResults = [];
     }
   }
 
@@ -108,7 +123,8 @@ export async function getRoundLiveState(now = Date.now()): Promise<RoundLiveStat
     eventState,
     isLive,
     event: null,
-    completed,
+    completedResults,
+    roundReady: completedResults.filter((b) => b.roundReady),
     cardSize,
     checkedAt: new Date(now).toISOString(),
   };

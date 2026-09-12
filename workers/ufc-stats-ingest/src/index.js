@@ -166,22 +166,114 @@ export default {
       skipEspn: url.searchParams.get('espn') === 'false',
       onlyBout: url.searchParams.get('bout') || null,
       force: url.searchParams.get('force') === 'true',
+      /* ?mode=fightnight exercises the fast lane on demand — the same code the
+       * fast cron runs, so an operator can prove it without waiting for a tick
+       * or guessing from a log line. Default stays the full daily pass. */
+      mode: url.searchParams.get('mode') === 'fightnight' ? 'fightnight' : 'daily',
     });
     return json({ service: SERVICE, version: VERSION, invoked: 'manual', result });
   },
 
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(runIngest(env, { invoked: 'cron', cron: event.cron }));
+    /* Two crons, two jobs.
+     *
+     *   0 6 * * *    daily maintenance. Unchanged: the full ESPN window walk,
+     *                the archive-facing passes, the queue.
+     *   FAST_CRON    fight night. Touches ONE card and only while a card is
+     *                actually running; outside that window it is a single
+     *                indexed query and no network at all.
+     *
+     * Without the fast cron, ESPN knows a bout is final within seconds and our
+     * database does not learn it until the next morning. */
+    const mode = event.cron === DAILY_CRON ? 'daily' : 'fightnight';
+    ctx.waitUntil(runIngest(env, { invoked: 'cron', cron: event.cron, mode }));
   },
 };
 
 /* ------------------------------------------------------------------------ */
+/* Fight-night window                                                        */
+/* ------------------------------------------------------------------------ */
+export const DAILY_CRON = '0 6 * * *';
+export const FAST_CRON = '*/15 * * * *';
+
+/* How wide the fast lane stays open around a card. Opens before the first
+ * published segment so the first prelim result is never missed, and holds past
+ * the main card because ESPN posts the last result after the broadcast ends. */
+export const FAST_WINDOW = { openMinutesBefore: 45, closeHoursAfter: 7 };
+
+/**
+ * The card the fast lane should refresh, or null.
+ *
+ * Derived from stored data, never from a hard-coded event. Preference order:
+ *   1. ufc_event_broadcasts — real published segment times (UFC.com, verified),
+ *      which is the only source precise enough to open 45 minutes before
+ *      prelims rather than at some arbitrary hour.
+ *   2. ufc_events.event_date — a whole-day window, used when a card has no
+ *      broadcast row yet. Coarser, still bounded.
+ *
+ * Returns null far more often than not. That is the point: 96 wakes a day, and
+ * all but a handful must cost one indexed query and zero ESPN requests.
+ */
+export async function activeCard(env, now = Date.now()) {
+  const openMs = FAST_WINDOW.openMinutesBefore * 60000;
+  const closeMs = FAST_WINDOW.closeHoursAfter * 3600e3;
+  const day = (offset) => new Date(now + offset * 86400e3).toISOString().slice(0, 10);
+
+  /* One query, two days, indexed on event_date. */
+  try {
+    const rows = await selectAll(
+      env, 'ufc_event_broadcasts',
+      `select=event_id,event_name,event_date,early_prelims_start_utc,prelims_start_utc,main_card_start_utc`
+      + `&event_date=gte.${day(-1)}&event_date=lte.${day(1)}`,
+    );
+    for (const r of rows) {
+      const first = Date.parse(r.early_prelims_start_utc || r.prelims_start_utc || r.main_card_start_utc || '');
+      const main = Date.parse(r.main_card_start_utc || r.prelims_start_utc || r.early_prelims_start_utc || '');
+      if (!Number.isFinite(first) || !Number.isFinite(main)) continue;
+      if (now >= first - openMs && now <= main + closeMs) {
+        return { source: 'ufc_event_broadcasts', event_id: r.event_id, name: r.event_name, event_date: r.event_date };
+      }
+    }
+  } catch (e) {
+    /* The broadcast table is an optimisation, not a dependency. */
+    console.warn(`[${SERVICE}] activeCard: broadcast lookup failed, falling back to event_date: ${String(e?.message || e).slice(0, 120)}`);
+  }
+
+  /* Fallback: any card dated today or yesterday in UTC. A card that started
+   * 21:00 UTC runs past midnight, so yesterday has to be included. */
+  try {
+    const rows = await selectAll(env, 'ufc_events', `select=id,name,event_date,espn_event_id&event_date=gte.${day(-1)}&event_date=lte.${day(0)}`);
+    if (rows.length) {
+      const r = rows[rows.length - 1];
+      return { source: 'ufc_events', event_id: r.id, name: r.name, event_date: r.event_date };
+    }
+  } catch (e) {
+    console.warn(`[${SERVICE}] activeCard: event lookup failed: ${String(e?.message || e).slice(0, 120)}`);
+  }
+  return null;
+}
+
+/* ------------------------------------------------------------------------ */
 /* Run driver                                                                */
 /* ------------------------------------------------------------------------ */
-async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false, onlyBout = null, force = false } = {}) {
+async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false, onlyBout = null, force = false, mode = 'daily' } = {}) {
   health.last_cron_run = nowIso();
-  console.log(`[${SERVICE}] START ${health.last_cron_run} invoked=${invoked}`);
-  const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, assertion_failures: [], notes: { invoked, cron, version: VERSION } };
+
+  /* ---- fight-night short circuit -------------------------------------
+   * The fast cron fires 96 times a day and must be free on the ~95 of those
+   * when nothing is happening: one indexed query, no ESPN request, no run row
+   * (96 rows a day of "nothing to do" is not a ledger, it is noise). */
+  let card = null;
+  if (mode === 'fightnight') {
+    card = await activeCard(env);
+    if (!card && !force) {
+      health.last_fast_skip = { at: nowIso(), reason: 'no card inside the fight-night window' };
+      return { status: 'skipped', reason: 'no active card', mode };
+    }
+  }
+
+  console.log(`[${SERVICE}] START ${health.last_cron_run} invoked=${invoked} mode=${mode}${card ? ` card=${card.name}` : ''}`);
+  const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, assertion_failures: [], notes: { invoked, cron, mode, version: VERSION, card: card ? { name: card.name, event_date: card.event_date, via: card.source } : null } };
   let runId = null;
   let status = 'success';
   /* Challenges are answered only when UFCSTATS_SOLVE_CHALLENGE="true". The
@@ -196,8 +288,17 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
     runId = created?.[0]?.id || null;
 
     const ctx = await loadContext(env);
-    if (!skipEspn) await espnPass(env, espn, ctx, run);
-    else run.notes.espn_pass = 'skipped (manual espn=false)';
+    if (skipEspn) {
+      run.notes.espn_pass = 'skipped (manual espn=false)';
+    } else if (mode === 'fightnight') {
+      /* ONE card, from its own date. Same pass, same identity validation, same
+       * idempotent upserts — just a one-day ESPN window instead of a yearly
+       * one, so a 15-minute cadence costs a couple of requests rather than a
+       * full archive walk. */
+      await espnPass(env, espn, ctx, run, { dates: [card.event_date.replace(/-/g, '')], scope: 'fight-night' });
+    } else {
+      await espnPass(env, espn, ctx, run);
+    }
     /* The round-stat pass being off is a silent, months-long outage: ESPN
      * keeps writing events and results, so every dashboard looks healthy
      * while no round data lands at all. The flag state is therefore recorded
@@ -353,14 +454,19 @@ async function queueReview(env, ctx, res, rawName, source, extra) {
 /* ------------------------------------------------------------------------ */
 /* ESPN pass                                                                 */
 /* ------------------------------------------------------------------------ */
-async function espnPass(env, espn, ctx, run) {
+async function espnPass(env, espn, ctx, run, { dates: datesOverride = null, scope = 'full' } = {}) {
   const year = new Date().getUTCFullYear();
   /* ESPN_DATES overrides the window: "2025", "20251214", "20251201-20251231".
-   * Default: this year, plus last year during January. */
-  const dates = env.ESPN_DATES ? String(env.ESPN_DATES).split(',') : (new Date().getUTCMonth() === 0 ? [year - 1, year] : [year]);
+   * Default: this year, plus last year during January.
+   * `datesOverride` is the fight-night lane asking for a single day. */
+  const dates = datesOverride
+    ?? (env.ESPN_DATES ? String(env.ESPN_DATES).split(',') : (new Date().getUTCMonth() === 0 ? [year - 1, year] : [year]));
+  run.notes.espn_scope = scope;
   const refs = (await Promise.all(dates.map((d) => espn.eventRefs(String(d).trim())))).flat();
   run.notes.espn_events_listed = refs.length;
-  const maxEvents = Number(env.MAX_EVENTS_PER_RUN || 3);
+  /* The fast lane is already scoped to a single day, so it must never defer
+   * the card it was woken for; the daily lane keeps its subrequest ceiling. */
+  const maxEvents = scope === 'fight-night' ? 99 : Number(env.MAX_EVENTS_PER_RUN || 3);
   const cutoff = new Date(Date.now() - 14 * 86400e3).toISOString().slice(0, 10);
   let fullPasses = 0;
   for (const ref of refs) {
