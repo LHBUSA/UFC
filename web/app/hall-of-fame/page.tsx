@@ -92,6 +92,14 @@ export default async function HallOfFamePage() {
               <div><div className="eyebrow">Official UFC designation</div><h2 id={`wing-${w}-title`}>{HOF_WING_META[w].label}</h2><p>{HOF_WING_META[w].blurb}</p></div>
               <small>{list.length} inductees · open a name for the archive profile</small>
             </div>
+            {/* The Pioneer wing has a written account behind it. */}
+            {w === "pioneer" && (
+              <p className="hof-wing-read">
+                The era that produced this wing is told in full in{" "}
+                <Link href="/history/gracie-influence">The Gracie Influence</Link> — Royce Gracie, Ken Shamrock and Dan
+                Severn, built on the bouts this archive holds.
+              </p>
+            )}
             <div className="hof-cards">{list.map((h) => <Card key={h.slug} h={h} m={matches.get(h.slug)} />)}</div>
           </section>
         );

@@ -21,6 +21,16 @@ import { getRankingMap } from "@/lib/rankings";
 import { bestRank } from "@/lib/rankingContext";
 import { RankStack } from "@/components/RankBadge";
 
+/* Fighters with a written heritage account on the site. Keyed by UFC Stats id
+ * rather than by name, so the link survives a display-name correction. */
+const HERITAGE_FEATURE: Record<string, { href: string; label: string; note: string }> = {
+  "429e7d3725852ce9": {
+    href: "/history/gracie-influence",
+    label: "The Gracie Influence",
+    note: "how jiu-jitsu changed the early UFC, told from the bouts this archive holds.",
+  },
+};
+
 export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -95,6 +105,20 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
           </dl>
         </div>
       </div>
+
+      {/* A written history exists for a small number of fighters. Keyed on the
+          stable UFC Stats id so a rename can never detach the link. */}
+      {HERITAGE_FEATURE[f.ufcstats_id || ""] && (
+        <section className="segment">
+          <div className="card fighter-heritage">
+            <div className="eyebrow">PropBetEdge history</div>
+            <p>
+              Featured in <Link href={HERITAGE_FEATURE[f.ufcstats_id!].href}>{HERITAGE_FEATURE[f.ufcstats_id!].label}</Link>
+              {" — "}{HERITAGE_FEATURE[f.ufcstats_id!].note}
+            </p>
+          </div>
+        </section>
+      )}
 
       <FighterStatusSection events={statusEvents} />
 

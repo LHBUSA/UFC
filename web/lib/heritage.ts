@@ -75,7 +75,7 @@ export const UFC_ERAS: HeritageEra[] = [
     summary:
       "Royce Gracie was the smallest man in most of his brackets and won UFC 1, UFC 2 and UFC 4. Brazilian jiu-jitsu — position, patience and the submission — proved that a fight could be controlled from the ground by someone who never threw the harder punch.",
     whyItMattered:
-      "Before Gracie, most fighters trained one art. After him, grappling literacy became mandatory. Every future champion, whatever their base, had to learn how to stop a takedown, survive on the ground and finish or escape a submission. Mixed martial arts as a single discipline begins here.",
+      "Before Gracie, most fighters trained one art. After him, grappling literacy became mandatory. Every future champion, whatever their base, had to learn how to stop a takedown, survive on the ground and finish or escape a submission. The case for training mixed martial arts as a single discipline begins here.",
     moments: [
       { year: "1994", text: "UFC 2 expands to a 16-man bracket; Gracie wins four fights in one night." },
       { year: "1994", text: "UFC 4: Gracie submits Dan Severn, a decorated wrestler, after being controlled for most of the fight — the reference case for jiu-jitsu from the bottom." },
@@ -253,4 +253,166 @@ export const LEGACY_LENSES = [
   { label: "Technical evolution", body: "The greats do not only win — they introduce problems the next generation has to solve." },
   { label: "Longevity", body: "Elite performance across eras and changing opponent pools is its own historical signal." },
   { label: "Cultural impact", body: "Some fighters permanently change who watches, where the sport travels or what future athletes believe is possible." },
+] as const;
+
+/* ---- The Gracie Influence (deep dive under /history#gracie) ------------- */
+
+/* Editorial standard for this section, stricter than the rest of the file.
+ *
+ * The claim being made is narrow and supportable: Royce Gracie's early
+ * tournament results demonstrated the competitive value of grappling and
+ * changed what serious fighters had to train. Three claims are deliberately
+ * NOT made anywhere below, because the evidence does not carry them:
+ *
+ *   - that the Gracies invented mixed martial arts. Cross-style contests long
+ *     predate 1993; what 1993 supplied was a televised, repeated, public test.
+ *   - that Royce won the UFC 3 tournament. He beat Kimo Leopoldo and withdrew.
+ *     Our archive holds exactly one UFC 3 bout for him, which is consistent.
+ *   - that any of this settles how jiu-jitsu fares in modern MMA. The archive
+ *     also holds UFC 60, where he was stopped by Matt Hughes, and that bout is
+ *     on the page for exactly that reason.
+ *
+ * The other hard constraint is source coverage: the PropBetEdge archive
+ * begins at UFC 2 (1994-03-11). UFC 1 is NOT in it. Every UFC 1 moment below
+ * is therefore marked `archived: false` and carries an official UFC link
+ * instead of an internal one, including Royce vs Ken Shamrock at UFC 1 — a
+ * bout we do not hold. What we hold of that rivalry is the UFC 5 draw. */
+
+export const GRACIE_ARCHIVE_FLOOR = "UFC 2 · March 11, 1994";
+
+export type GracieMoment = {
+  key: string;
+  date: string;
+  event: string;
+  title: string;
+  body: string;
+  /** False where the PropBetEdge archive does not hold the bout. */
+  archived: boolean;
+  /** Official UFC destination, used as the source when archived is false. */
+  official: string;
+};
+
+export const GRACIE_MOMENTS: readonly GracieMoment[] = [
+  {
+    key: "ufc1",
+    date: "November 12, 1993",
+    event: "UFC 1",
+    title: "The question is asked in public",
+    body:
+      "An eight-man, one-night tournament in Denver with no weight classes and no judges. Royce Gracie, the lightest man in the bracket, wins it — including a submission of Ken Shamrock. The result is the first widely seen evidence that a fight can be decided by someone who never lands the harder punch.",
+    archived: false,
+    official: UFC_OFFICIAL.ufc1,
+  },
+  {
+    key: "ufc2",
+    date: "March 11, 1994",
+    event: "UFC 2",
+    title: "Four fights in one night",
+    body:
+      "The bracket expands and Gracie wins it again, finishing all four opponents. Three of the four end in submissions; the final ends in strikes from mount. Our archive holds every one of these bouts.",
+    archived: true,
+    official: UFC_OFFICIAL.history30,
+  },
+  {
+    key: "ufc3",
+    date: "September 9, 1994",
+    event: "UFC 3",
+    title: "A win, then a withdrawal",
+    body:
+      "Gracie submits Kimo Leopoldo from the bottom, then withdraws from the tournament. He did not win UFC 3, and the archive reflects that: one bout, not a run.",
+    archived: true,
+    official: UFC_OFFICIAL.history30,
+  },
+  {
+    key: "ufc4",
+    date: "December 16, 1994",
+    event: "UFC 4",
+    title: "The reference case, from the bottom",
+    body:
+      "In the final, Dan Severn — a decorated wrestler and far the larger man — controls Gracie on the ground for most of a bout that runs nearly sixteen minutes, and loses to a triangle choke from guard. It is the clearest single demonstration of the era that positional disadvantage is not the same as losing.",
+    archived: true,
+    official: UFC_OFFICIAL.history30,
+  },
+  {
+    key: "ufc5",
+    date: "April 7, 1995",
+    event: "UFC 5",
+    title: "The superfight that ran out of time",
+    body:
+      "Gracie and Shamrock meet again in the first 'superfight'. Our archive records the result as a draw, ruled when time expired. The bout is remembered for exposing the limits of fights with no time limit, and the rule changes that followed arrived quickly.",
+    archived: true,
+    official: UFC_OFFICIAL.history30,
+  },
+  {
+    key: "ufc60",
+    date: "May 27, 2006",
+    event: "UFC 60",
+    title: "The bookend",
+    body:
+      "Eleven years later Gracie returns against welterweight champion Matt Hughes and is stopped in the first round. It belongs in this account: the early results show what grappling made possible in 1993, not that any single art stayed ahead of a sport that had spent a decade absorbing it.",
+    archived: true,
+    official: UFC_OFFICIAL.hallOfFame,
+  },
+] as const;
+
+export type GracieFigure = {
+  name: string;
+  role: string;
+  body: string;
+  /** Fighters we hold a licensed portrait and archive record for. */
+  inArchive: boolean;
+  official: string;
+};
+
+export const GRACIE_FIGURES: readonly GracieFigure[] = [
+  {
+    name: "Rorion Gracie",
+    role: "Co-creator of the event",
+    body:
+      "Co-created the UFC concept with Art Davie and helped design a tournament that would test styles against each other. He was a promoter and an interested party, not a neutral observer — his family's art was in the bracket. Saying so is part of reading the results honestly.",
+    inArchive: false,
+    official: UFC_OFFICIAL.ufc1,
+  },
+  {
+    name: "Royce Gracie",
+    role: "Competitor · UFC Hall of Fame, Pioneer Wing",
+    body:
+      "Won the UFC 1, UFC 2 and UFC 4 tournaments, usually as the smallest man in the field. Inducted in the inaugural Hall of Fame class in 2003.",
+    inArchive: true,
+    official: UFC_OFFICIAL.hallOfFame,
+  },
+  {
+    name: "Ken Shamrock",
+    role: "The first rival · Pioneer Wing",
+    body:
+      "Submitted by Gracie at UFC 1, then fought him to a draw in the UFC 5 superfight. A genuine test rather than a foil: Shamrock was a trained submission fighter, which is what made the UFC 1 result legible.",
+    inArchive: true,
+    official: UFC_OFFICIAL.hallOfFame,
+  },
+  {
+    name: "Dan Severn",
+    role: "The wrestler · Pioneer Wing",
+    body:
+      "Controlled Gracie for most of the UFC 4 final and still lost to a triangle from the bottom. The result did more for the argument than a quick finish would have.",
+    inArchive: true,
+    official: UFC_OFFICIAL.hallOfFame,
+  },
+  {
+    name: "Matt Hughes",
+    role: "The counterpoint · Pioneer Wing",
+    body:
+      "Stopped Gracie inside a round at UFC 60 in 2006. He belongs among the key figures precisely because he answers the question these tournaments raise: a decade of the sport absorbing grappling produced champions who could not be solved the way 1993 opponents were.",
+    inArchive: true,
+    official: UFC_OFFICIAL.hallOfFame,
+  },
+] as const;
+
+/* Then and now, stated as rule facts rather than nostalgia. */
+export const GRACIE_RULES_THEN_NOW: readonly { label: string; then: string; now: string }[] = [
+  { label: "Format", then: "One-night, single-elimination tournament", now: "One scheduled bout per fighter per event" },
+  { label: "Weight", then: "No weight classes — open bracket", now: "Twelve divisions with contracted limits" },
+  { label: "Time", then: "No rounds and, at first, no time limit", now: "Three or five rounds of five minutes" },
+  { label: "Officials", then: "No judges in the first events", now: "Three judges scoring every round" },
+  { label: "Gloves", then: "Optional; several fighters competed bare-handed", now: "Mandatory padded gloves" },
+  { label: "Oversight", then: "Largely unsanctioned", now: "Athletic-commission sanctioned under the Unified Rules" },
 ] as const;

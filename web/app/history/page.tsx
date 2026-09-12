@@ -70,6 +70,11 @@ export default async function HistoryPage() {
                   <div className="desk-h">Key figures</div>
                   <div className="chips">{era.figures.map((f) => <span key={f}>{f}</span>)}</div>
                   <div className="era-sources">{era.sources.map((s) => <a key={s.href} href={s.href} target="_blank" rel="noopener">{s.label} ↗</a>)}</div>
+                  {/* One era has a full account behind it; the summary above
+                      stays the index entry. */}
+                  {era.key === "gracie" && (
+                    <Link href="/history/gracie-influence" className="btn gold" style={{ marginTop: 10 }}>Read the full account →</Link>
+                  )}
                 </aside>
               </div>
             </div>
