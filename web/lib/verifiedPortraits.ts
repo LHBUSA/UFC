@@ -6,6 +6,7 @@ import {
   type Fighter,
   type PortraitSet,
 } from "@/lib/db";
+import { normalizedName, sameIdentityName } from "@/lib/portraitIdentity";
 
 /* ESPN is valuable display coverage and stays enabled. The failure mode we
  * are preventing is different: an ESPN CDN slot can resolve successfully and
@@ -17,15 +18,6 @@ const ESPN_DISPLAY_QUARANTINE = new Set<string>([
 ]);
 
 const ESPN_ATHLETE = "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/athletes";
-
-function normalizedName(value: string | null | undefined): string {
-  return String(value || "")
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
 
 type EspnAthletePayload = {
   id?: string | number;
@@ -57,17 +49,23 @@ async function verifyEspnPortrait(fighter: Fighter, image: PortraitSet): Promise
     const athlete = (await res.json()) as EspnAthletePayload;
     if (String(athlete.id || "") !== athleteId) return null;
 
+    /* DOB is resolved BEFORE the name check, because it is what licenses the
+     * generational-suffix tolerance below. A disagreeing DOB still fails
+     * closed, exactly as it did. */
+    const espnDob = athlete.dateOfBirth ? String(athlete.dateOfBirth).slice(0, 10) : "";
+    if (fighter.dob && espnDob && espnDob !== fighter.dob) return null;
+    /* Two independent stable keys agree: the athlete id this record was
+     * fetched by (asserted above) and the date of birth. */
+    const identityConfirmed = Boolean(fighter.dob && espnDob && espnDob === fighter.dob);
+
     const expected = normalizedName(fighter.name);
     const actual = normalizedName(athlete.fullName || athlete.displayName);
-    if (!expected || !actual || expected !== actual) return null;
-
-    if (fighter.dob && athlete.dateOfBirth) {
-      const espnDob = String(athlete.dateOfBirth).slice(0, 10);
-      if (espnDob && espnDob !== fighter.dob) return null;
-    }
+    if (!sameIdentityName(expected, actual, identityConfirmed)) return null;
 
     const headshot = athlete.headshot;
-    if (headshot?.alt && normalizedName(headshot.alt) !== expected) return null;
+    /* The alt text carries the same suffix as the athlete record, so it is
+     * held to the same rule rather than to the stricter one. */
+    if (headshot?.alt && !sameIdentityName(expected, normalizedName(headshot.alt), identityConfirmed)) return null;
 
     /* Prefer ESPN's explicit headshot href over synthesizing a CDN path. If
      * the athlete endpoint does not expose one, retain the already-probed
