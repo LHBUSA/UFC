@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: PropSports UFC API
-  version: 2026-09-11.1
+  version: 2026-09-12.1
   description: >-
     Read-only normalized UFC event, fighter, bout, result, round-stat, image,
     rankings and editorial data used by ufc.propbetedge.ai and future PropSports
@@ -416,14 +416,24 @@ paths:
         '503': { $ref: '#/components/responses/Error' }
   /v1/ufc/dna/query:
     get:
-      summary: Filter current Fight DNA snapshots (or stance splits) by one metric
+      summary: Rank every eligible fighter by one Fight DNA metric
       description: >-
-        North-star filter, e.g. `?metric=pace_retention_r3_vs_r1&min=0.9`. Filters run in PostgREST on the stored
-        MetricObject (`metrics-><key>->value` jsonb ordering, `metrics-><key>->>confidence`); only a fighter's latest
-        snapshot (<= `as_of`) qualifies; the candidate scan is capped at 1000 rows (PostgREST max_rows) (`meta.truncated`). With `stance`
-        the query runs over `ufc_fighter_stance_splits` for that opponent stance and `metric` must be one of
-        finish_rate, ko_rate, sub_rate, sig_diff_per_min, kd_per_15, td_landed_per_15 (registry aliases accepted).
-        Rows are `DnaQueryRow`, sorted by value (`order`, nulls last).
+        North-star filter, e.g. `?metric=pace_retention_r3_vs_r1&min=0.9`. Ranks the full eligible population in SQL:
+        each fighter's latest snapshot at or before `as_of` is resolved first (without regard to the metric filters,
+        so an older passing row never stands in for a newer failing one), then `min_confidence` / `min` / `max` /
+        `active` filtering applies, then ordering, then `limit`. With `stance` the query runs over
+        `ufc_fighter_stance_splits` for that opponent stance and `metric` must be one of finish_rate, ko_rate,
+        sub_rate, sig_diff_per_min, kd_per_15, td_landed_per_15 (registry aliases accepted).
+        Rows are `DnaQueryRow`, sorted by value (`order`), then fighter name, then fighter id. A metric value that is
+        explicitly null stays null and sorts last in both directions; nothing is synthesized or defaulted.
+        `meta.candidates` and `meta.candidates_total` are the eligible population that was ranked (one latest snapshot
+        or stance split per fighter) and are always equal; `meta.matched` is how many passed the filters;
+        `meta.truncated` is always `false`.
+        **Changed 2026-09-12 (results-affecting).** Before this release the endpoint scanned at most 1000 rows ordered
+        by fighter UUID and ranked inside that window, so for a broad query it ranked 122 of the 3161 fighters that
+        have a snapshot and the published order was not the true order. `meta.candidates` previously meant "rows in
+        the capped scan" and `meta.candidates_total` "rows the filter matched across all snapshot history".
+        Field names, types and row shape are unchanged.
       tags: [Fight DNA]
       parameters:
         - { name: metric, in: query, required: true, schema: { type: string, pattern: '^[a-z][a-z0-9_]{1,63}$' } }

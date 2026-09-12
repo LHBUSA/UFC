@@ -64,6 +64,19 @@ Added in `2026-09-11.1` (availability and weigh-ins):
 - `GET /v1/ufc/weigh-ins` (alias `/v1/weigh-ins`) `?event_id=&fighter_id=&status=&since=` — current reading per fighter. Null `contracted_limit_lbs` / `over_by_lbs` means the limit was not published, never a division default. `is_confirmation` (an official source verified the same weight) is distinct from `is_correction` (the weight changed).
 - `GET /v1/ufc/events/{id}/weigh-ins?include=history` (also `/v1/events/{id}/weigh-ins`) — coverage with `confirmations` / `corrections`, current results, and the full source trail with `supersession_kind`.
 
+Changed in `2026-09-12.1` (Fight DNA ranking correctness — **this changes results**):
+
+- `GET /v1/ufc/dna/query` now ranks every eligible fighter. It used to scan at most 1000 rows ordered by fighter UUID
+  and rank inside that window, so a broad query ranked 122 of the 3161 fighters that have a snapshot and the published
+  order was not the true order. Ranking now happens in one SQL function (`public.ufc_dna_metric_ranking`): each
+  fighter's latest snapshot at or before `as_of` is resolved first, without regard to the metric filters; then
+  `min_confidence` (default `low`), `min`, `max` and `active` filtering; then ordering; then `limit`.
+- No parameter, field name, type or row shape changed, and nothing is synthesized: an explicit null value stays null
+  and sorts last in both directions. `as_of` semantics are unchanged.
+- `meta.candidates` and `meta.candidates_total` now both mean the eligible population that was ranked (one latest
+  snapshot or stance split per fighter) and are always equal; they used to mean "rows in the capped scan" and "rows the
+  filter matched across all snapshot history". `meta.truncated` is now always `false` — no scan cap remains.
+
 ## Media contract (B1)
 
 Durable origin: the public Supabase Storage bucket `ufc-media`, configured as `UFC_IMAGE_BASE_URL` in `wrangler.toml`

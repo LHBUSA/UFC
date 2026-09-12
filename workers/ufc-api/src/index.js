@@ -216,6 +216,26 @@ async function sb(env, table, params, { count = false, optional = false } = {}) 
   return { data, count: Number.isFinite(total) ? total : null };
 }
 
+/* Read-only PostgREST RPC. Same auth and error handling as sb(); `optional: true`
+ * returns null when the function does not exist yet (migration pending). */
+async function sbRpc(env, fn, args, { optional = false } = {}) {
+  requireDb(env);
+  const res = await fetch(sbUrl(env, `rpc/${fn}`), {
+    method: "POST",
+    headers: { ...sbHeaders(env), "Content-Type": "application/json" },
+    body: JSON.stringify(args),
+  });
+  if (!res.ok) {
+    const body = (await res.text()).slice(0, 500);
+    /* PostgREST answers 404 PGRST202 when the function is not in the schema cache,
+     * i.e. the migration is pending. Anything else is a real upstream failure. */
+    if (optional && res.status === 404) return null;
+    throw new ApiError(502, "upstream_error", `UFC data source returned HTTP ${res.status}.`, body || null);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
 function identityFilter(id, uuidCol, ufcstatsCol, espnCol) {
   if (UUID_RE.test(id)) return [uuidCol, `eq.${id}`];
   if (UFCSTATS_RE.test(id)) return [ufcstatsCol, `eq.${id}`];
@@ -1555,8 +1575,6 @@ const DNA_SPLIT_COLS = [
 ].join(",");
 const DNA_METRIC_DEF_COLS = "metric_key,definition_version,family,display_name,description,unit,formula,source_families,min_bouts,min_rounds,min_seconds,public,active,updated_at";
 const DNA_FIGHTER_COLS = "id,name,nickname,ufcstats_id,espn_athlete_id,stance,is_active,record_w,record_l,record_d,record_nc";
-// Supabase PostgREST max_rows is 1000: a larger limit is silently clamped, so the cap is declared honestly here and in meta.
-const DNA_QUERY_CANDIDATE_LIMIT = 1000;
 const DNA_SPLIT_METRIC_KEYS = ["finish_rate", "ko_rate", "sub_rate", "sig_diff_per_min", "kd_per_15", "td_landed_per_15"];
 const DNA_SPLIT_METRIC_ALIASES = {
   stance_finish_rate: "finish_rate", stance_ko_rate: "ko_rate", stance_sub_rate: "sub_rate",
@@ -2248,46 +2266,29 @@ async function dnaQuery(env, url) {
     throw new ApiError(400, "invalid_metric", "With ?stance= the metric must be a stance-split metric.", { metric: metricRaw, allowed: [...DNA_SPLIT_METRIC_KEYS, ...Object.keys(DNA_SPLIT_METRIC_ALIASES)] });
   }
   const table = stance ? "ufc_fighter_stance_splits" : "ufc_fighter_dna_snapshots";
-  const baseCols = stance
-    ? "fighter_id,as_of_date,opponent_stance,appearances,wins,losses,draws,no_contests,ko_tko_wins,submission_wins,decision_wins,stat_bouts,stat_rounds,observed_seconds,confidence"
-    : "fighter_id,as_of_date,sample_bouts,sample_completed_bouts,sample_stat_bouts,sample_rounds,sample_seconds,coverage_status";
   const allowedConf = Object.keys(DNA_CONFIDENCE_RANK).filter((k) => DNA_CONFIDENCE_RANK[k] >= DNA_CONFIDENCE_RANK[minConfidence]);
-  const p = new URLSearchParams({
-    select: `${baseCols},metric:metrics->${metric}`,
-    definition_version: `eq.${version}`,
-    order: "fighter_id.asc,as_of_date.desc",
-    limit: String(DNA_QUERY_CANDIDATE_LIMIT),
-  });
-  if (stance) {
-    p.set("opponent_stance", `eq.${stance}`);
-    p.set("appearances", `gte.${minAppearances}`);
-  }
-  if (min !== null) p.append(`metrics->${metric}->value`, `gte.${min}`);
-  if (max !== null) p.append(`metrics->${metric}->value`, `lte.${max}`);
-  p.set(`metrics->${metric}->>confidence`, `in.(${allowedConf.join(",")})`);
-  if (asOf) p.set("as_of_date", `lte.${asOf}`);
-  const res = await sb(env, table, p, { optional: true, count: true });
-  if (res === null) throw dnaSchemaMissing();
-  const candidates = res.data.filter((r) => isMetricObject(r.metric));
-  const truncated = res.count !== null && res.count > res.data.length;
 
-  // Only a fighter's latest row (<= as_of) may qualify: an older snapshot that passes while the latest fails is excluded.
-  const fighterIds = [...new Set(candidates.map((r) => r.fighter_id))];
-  const latestByFighter = new Map();
-  for (let i = 0; i < fighterIds.length; i += 200) {
-    const chunk = fighterIds.slice(i, i + 200);
-    const lp = new URLSearchParams({ select: "fighter_id,as_of_date", fighter_id: `in.(${chunk.join(",")})`, definition_version: `eq.${version}`, order: "as_of_date.desc", limit: "10000" });
-    if (stance) lp.set("opponent_stance", `eq.${stance}`);
-    if (asOf) lp.set("as_of_date", `lte.${asOf}`);
-    for (const row of (await sb(env, table, lp)).data) {
-      const prev = latestByFighter.get(row.fighter_id);
-      if (!prev || String(row.as_of_date) > String(prev)) latestByFighter.set(row.fighter_id, row.as_of_date);
-    }
-  }
-  const seen = new Set();
-  const current = candidates.filter((r) => latestByFighter.get(r.fighter_id) === r.as_of_date && !seen.has(r.fighter_id) && seen.add(r.fighter_id));
+  /* Issue #27. Resolving the latest snapshot per fighter, filtering, ranking and only
+   * then limiting all happen in one SQL function, so the ranking sees every eligible
+   * fighter. It previously saw only the first 1000 rows in fighter-UUID order, which
+   * for the default broad query was 122 of the 3161 fighters that have a snapshot. */
+  const res = await sbRpc(env, "ufc_dna_metric_ranking", {
+    p_metric: metric,
+    p_definition_version: version,
+    p_as_of: asOf,
+    p_min_confidence: minConfidence,
+    p_min: min,
+    p_max: max,
+    p_active: active === "true" ? true : active === "false" ? false : null,
+    p_order: order,
+    p_limit: limit,
+    p_stance: stance,
+    p_min_appearances: stance ? minAppearances : 1,
+  }, { optional: true });
+  if (res === null) throw dnaSchemaMissing();
+  const current = (Array.isArray(res.rows) ? res.rows : []).filter((r) => isMetricObject(r.metric));
   const identities = await dnaFighterIdentities(env, current.map((r) => r.fighter_id));
-  let rows = current.map((r) => {
+  const rows = current.map((r) => {
     const f = identities.get(r.fighter_id) || null;
     const { metric: m, fighter_id, ...rest } = r;
     const out = {
@@ -2307,30 +2308,26 @@ async function dnaQuery(env, url) {
     }
     return out;
   });
-  if (active === "true" || active === "false") rows = rows.filter((r) => r.fighter.is_active === (active === "true"));
-  const val = (r) => numOrNull(r.metric?.value);
-  rows.sort((x, y) => {
-    const a = val(x); const b = val(y);
-    if (a === null && b === null) return String(x.fighter.name || "").localeCompare(String(y.fighter.name || "")) || String(x.fighter.id).localeCompare(String(y.fighter.id));
-    if (a === null) return 1;
-    if (b === null) return -1;
-    return (order === "asc" ? a - b : b - a) || String(x.fighter.name || "").localeCompare(String(y.fighter.name || "")) || String(x.fighter.id).localeCompare(String(y.fighter.id));
-  });
-  const matched = rows.length;
-  rows = rows.slice(0, limit);
+  const candidates = Number.isFinite(Number(res.candidates)) ? Number(res.candidates) : rows.length;
+  const matched = Number.isFinite(Number(res.matched)) ? Number(res.matched) : rows.length;
   return {
     data: rows,
     meta: {
       mode, metric, metric_requested: metricRaw, stance, min, max, min_confidence: minConfidence, min_appearances: stance ? minAppearances : null,
       active: active === "true" || active === "false" ? active === "true" : null, order,
       requested_as_of: asOf, definition_version: version,
-      candidates: res.data.length, candidates_total: res.count, truncated, matched, count: rows.length, limit,
+      /* candidates and candidates_total are both the eligible population that was
+       * ranked: one latest snapshot (or stance split) per fighter at or before as_of.
+       * They are equal because nothing is capped any more, and truncated is therefore
+       * always false. Before 2026-09-12 they meant "rows in the capped scan" and
+       * "rows the filter matched across all history". */
+      candidates, candidates_total: candidates, truncated: false, matched, count: rows.length, limit,
       filter: {
         table,
         value: [min !== null ? `metrics->${metric}->value=gte.${min}` : null, max !== null ? `metrics->${metric}->value=lte.${max}` : null].filter(Boolean),
         confidence: `metrics->${metric}->>confidence=in.(${allowedConf.join(",")})`,
       },
-      note: `Filters run in PostgREST on the stored MetricObject (jsonb ordering on ->value, text match on ->>confidence). Only each fighter's latest ${stance ? "split" : "snapshot"}${asOf ? ` at or before ${asOf}` : ""} qualifies. The candidate scan is capped at ${DNA_QUERY_CANDIDATE_LIMIT} rows; when truncated is true the result set is incomplete. Active filtering happens after the scan.`,
+      note: `Ranked in SQL over every eligible fighter: each fighter's latest ${stance ? "split" : "snapshot"}${asOf ? ` at or before ${asOf}` : ""} is resolved first (without regard to the metric filters), then confidence, min/max and active filtering apply, then ordering, then the limit. candidates and candidates_total are that eligible population (${candidates}); matched is how many passed the filters (${matched}); truncated is always false because no scan cap remains. A metric value that is explicitly null stays null and sorts last in both directions; nothing is synthesized.`,
       as_of_semantics: DNA_AS_OF_NOTE,
       origin: DNA_ORIGIN,
     },
