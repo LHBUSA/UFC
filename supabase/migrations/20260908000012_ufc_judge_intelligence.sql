@@ -135,6 +135,7 @@ insert into _judge_alias_seed (raw_name, canonical_name, kind, card_note) values
   ('Repeated Low Blows by Xiao Mike Bell', 'Michael Bell', 'deduction_annotation', 'Repeated Low Blows by Xiao'),
   ('Technical Decision - Eye Poke Eric Colon', 'Eric Colon', 'deduction_annotation', 'Technical Decision - Eye Poke'),
   ('Technical Decision - Eye Poke by Song Mike Bell', 'Michael Bell', 'deduction_annotation', 'Technical Decision - Eye Poke by Song'),
+  ('Technical Decision Mike Bell', 'Michael Bell', 'deduction_annotation', 'Technical Decision'),
   ('Technical Decision after Headbutt by Abdul-Malik Will Fisher', 'Will Fisher', 'deduction_annotation', 'Technical Decision after Headbutt by Abdul-Malik'),
   ('Technical decision after clash of heads Ben Cartlidge', 'Ben Cartlidge', 'deduction_annotation', 'Technical decision after clash of heads'),
   -- One official licensed under two spellings: Nevada files him as

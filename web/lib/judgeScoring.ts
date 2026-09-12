@@ -85,6 +85,9 @@ export const JUDGE_ALIASES: Readonly<Record<string, JudgeAlias>> = {
   "Repeated Low Blows by Xiao Mike Bell": { canonical: "Michael Bell", kind: "deduction_annotation", cardNote: "Repeated Low Blows by Xiao" },
   "Technical Decision - Eye Poke Eric Colon": { canonical: "Eric Colon", kind: "deduction_annotation", cardNote: "Technical Decision - Eye Poke" },
   "Technical Decision - Eye Poke by Song Mike Bell": { canonical: "Michael Bell", kind: "deduction_annotation", cardNote: "Technical Decision - Eye Poke by Song" },
+  /* DWCS Season 5, Week 1 (UFC Stats card). ESPN's officials for the same
+   * competition name Michael Bell, Adalaide Byrd and Junichiro Kamijo. */
+  "Technical Decision Mike Bell": { canonical: "Michael Bell", kind: "deduction_annotation", cardNote: "Technical Decision" },
   "Technical Decision after Headbutt by Abdul-Malik Will Fisher": { canonical: "Will Fisher", kind: "deduction_annotation", cardNote: "Technical Decision after Headbutt by Abdul-Malik" },
   "Technical decision after clash of heads Ben Cartlidge": { canonical: "Ben Cartlidge", kind: "deduction_annotation", cardNote: "Technical decision after clash of heads" },
   "Mamunah Querido": { canonical: "Maimunah Querido", kind: "spelling_variant", cardNote: null },

@@ -571,6 +571,7 @@ test("Mike Bell resolves to Michael Bell, and the deductions follow", () => {
     "Illegal Strike to Grounded Opponent and Strike After Bell by Kim Mike Bell",
     "Repeated Low Blows by Xiao Mike Bell",
     "Technical Decision - Eye Poke by Song Mike Bell",
+    "Technical Decision Mike Bell",
   ]) {
     const r = J.resolveJudge(raw);
     assert.equal(r.name, "Michael Bell", `${raw} did not follow the merge`);

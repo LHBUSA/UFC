@@ -170,6 +170,12 @@ async function mergeState(env, key, patchObj, { onlyIfAbsent = [] } = {}) {
 /* Exposed for the offline lane tests only. */
 export const __test = { runIngest };
 
+/* The ESPN totals and scorecard lanes, for bounded operator-run repair of
+ * cards the daily pass no longer visits (a completed card is never re-walked).
+ * Exported rather than copied so a backfill cannot drift from the validation
+ * the live lane applies. Not reachable over HTTP. */
+export const espnLanes = { writeFightTotals, reconcileScorecard, fightTotalsIncoherence, JUDGED_METHODS };
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -694,26 +700,12 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
        * reconciled the moment its decisions land. */
       const judged = JUDGED_METHODS.includes(method);
       if (judged && !prior?.judge_1 && run.scorecards_reconciled < SCORECARD_RECONCILE_MAX) {
-        run.scorecards_reconciled += 1;
-        const sc = await espn.scorecards(b.source_url, b.fighters.map((f) => f.espn_athlete_id), officiating.judges);
-        if (sc.cards.length) {
-          resultRow.scorecards = sc.cards;
-          resultRow.judge_1 = sc.cards[0]?.judge ?? null;
-          resultRow.judge_2 = sc.cards[1]?.judge ?? null;
-          resultRow.judge_3 = sc.cards[2]?.judge ?? null;
-          run.scorecards_written += 1;
-          run.scorecard_cards_written += sc.cards.length;
-        }
-        /* A rejected card is a real fact about the source, not a silent skip:
-         * it means ESPN held a score we refused to attribute to a named
-         * official. Surfaced so the count can be checked rather than assumed. */
-        for (const r of sc.rejected) {
-          run.notes.scorecard_rejected = (run.notes.scorecard_rejected || 0) + 1;
-          run.notes.scorecard_rejected_reasons = {
-            ...(run.notes.scorecard_rejected_reasons || {}),
-            [r.reason]: ((run.notes.scorecard_rejected_reasons || {})[r.reason] || 0) + 1,
-          };
-        }
+        const card = await reconcileScorecard(espn, run, {
+          competitionRef: b.source_url,
+          competitorIds: b.fighters.map((f) => f.espn_athlete_id),
+          judges: officiating.judges,
+        });
+        Object.assign(resultRow, card.fields);
       }
 
       await upsert(env, 'ufc_bout_results', resultRow, 'bout_id');
@@ -746,6 +738,40 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
     await patch(env, 'ufc_events', `id=eq.${evRow.id}`, { card_status: 'complete', updated_at: nowIso() });
     evRow.card_status = 'complete';
   }
+}
+
+/**
+ * One judged bout's official card totals, as ufc_bout_results fields.
+ *
+ * Shared by the fight-night pass and the operator-run historical backfill
+ * (scripts/backfill/dwcs_espn_totals_scorecards.mjs) so there is exactly one
+ * definition of a stored card: joined on official.$ref, both corners, a named
+ * official, never a "Judge 1" slot. `fields` is empty when ESPN has no card
+ * we can attribute; the caller then writes nothing.
+ */
+async function reconcileScorecard(espn, run, { competitionRef, competitorIds, judges }) {
+  run.scorecards_reconciled += 1;
+  const sc = await espn.scorecards(competitionRef, competitorIds, judges);
+  const fields = {};
+  if (sc.cards.length) {
+    fields.scorecards = sc.cards;
+    fields.judge_1 = sc.cards[0]?.judge ?? null;
+    fields.judge_2 = sc.cards[1]?.judge ?? null;
+    fields.judge_3 = sc.cards[2]?.judge ?? null;
+    run.scorecards_written += 1;
+    run.scorecard_cards_written += sc.cards.length;
+  }
+  /* A rejected card is a real fact about the source, not a silent skip:
+   * it means ESPN held a score we refused to attribute to a named
+   * official. Surfaced so the count can be checked rather than assumed. */
+  for (const r of sc.rejected) {
+    run.notes.scorecard_rejected = (run.notes.scorecard_rejected || 0) + 1;
+    run.notes.scorecard_rejected_reasons = {
+      ...(run.notes.scorecard_rejected_reasons || {}),
+      [r.reason]: ((run.notes.scorecard_rejected_reasons || {})[r.reason] || 0) + 1,
+    };
+  }
+  return { fields, cards: sc.cards, rejected: sc.rejected };
 }
 
 /**
