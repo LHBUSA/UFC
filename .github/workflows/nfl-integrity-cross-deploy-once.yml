@@ -1,0 +1,76 @@
+name: Deploy NFL Integrity Workers Cross-Repo Once
+
+on:
+  push:
+    branches: [ops/nfl-integrity-cross-deploy-v1]
+    paths:
+      - '.github/workflows/nfl-integrity-cross-deploy-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: LHBUSA/nfl-propbetedge-new
+          ref: main
+          path: nfl
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate production source
+        working-directory: nfl
+        run: |
+          node scripts/check-syntax.mjs \
+            workers/nfl-intel/src/index.js workers/nfl-intel/src/bestline-core.js \
+            workers/nfl-game-picks-orchestrator/src/index.js \
+            workers/nfl-game-grader/src/index.js \
+            workers/nfl-weight-tuner/src/index.js \
+            workers/nfl-picks-engine-shared/pick-math.mjs \
+            workers/nfl-picks-engine-shared/publication.mjs
+          node --test tests/nfl-intel-worker.test.mjs
+          node --test workers/nfl-picks-engine-shared/tests/*.test.mjs
+          node --test tests/pbe-card-v3.test.mjs tests/pbe-picks-runtime.test.mjs
+
+  deploy:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        worker:
+          - nfl-intel
+          - nfl-game-picks-orchestrator
+          - nfl-game-grader
+          - nfl-weight-tuner
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: LHBUSA/nfl-propbetedge-new
+          ref: main
+          path: nfl
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Credential preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo 'CLOUDFLARE_API_TOKEN is not configured in this deployment repository.' >&2
+            exit 1
+          fi
+      - name: Deploy ${{ matrix.worker }}
+        working-directory: nfl
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4 deploy --config "workers/${{ matrix.worker }}/wrangler.toml"
