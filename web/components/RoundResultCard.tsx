@@ -45,9 +45,26 @@ export function RoundResultCard({
   const loser = winner ? (winner.id === a.id ? b : a) : null;
 
   const method = r?.method ? METHOD_LABEL[r.method] ?? r.method : null;
-  const roundLine = r?.round
-    ? `Round ${r.round}${r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}`
-    : null;
+
+  /* "R1 · 4:25" is ambiguous: a reader cannot tell elapsed from remaining.
+   *
+   * ESPN's displayClock — the value behind time_sec — is ELAPSED. Verified
+   * against UFC.com's published results for this card (0:36, 2:46 and 4:25 all
+   * match exactly) and across 34 completed bouts on three prior cards, where
+   * every decision reads exactly 5:00 at the final round; under a remaining
+   * clock a decision would read 0:00. So the number is right and only the
+   * label was unclear.
+   *
+   * A bout that went to the judges did not "finish" at 5:00 — it completed its
+   * scheduled rounds, so it says that instead of implying a stoppage. */
+  const decided = scorecard?.wentToTheJudges ?? false;
+  const roundLine = decided
+    ? (r?.round ? `Completed ${r.round} round${r.round === 1 ? "" : "s"}` : null)
+    : r?.round
+      ? (r.time_sec != null
+        ? `Finish: ${fmtTime(r.time_sec)} of Round ${r.round}`
+        : `Round ${r.round}`)
+      : null;
   const wc = weightClassLabel(bout.weight_class, bout.is_womens);
 
   /* Scorecards only where the bout actually went to the judges AND cards are
@@ -119,8 +136,11 @@ export function RoundResultCard({
           </summary>
 
           <div className={styles.detailIn}>
-            {(r?.referee || r?.finish_detail) && (
+            {(r?.referee || r?.finish_detail || r?.time_format || (!decided && r?.time_sec != null)) && (
               <dl className={styles.facts}>
+                {!decided && r?.time_sec != null && r?.round && (
+                  <><dt>Finish time</dt><dd>{fmtTime(r.time_sec)} elapsed in Round {r.round}</dd></>
+                )}
                 {r?.referee && (<><dt>Referee</dt><dd>{r.referee}</dd></>)}
                 {r?.finish_detail && (<><dt>Finish</dt><dd>{r.finish_detail}</dd></>)}
                 {r?.time_format && (<><dt>Format</dt><dd>{r.time_format}</dd></>)}
