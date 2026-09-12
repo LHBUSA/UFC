@@ -194,7 +194,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
       {/* Official scorecards. Rendered for every completed bout, because the
           absence of a card on a finish is itself the answer and has to be
           stated rather than left as a missing section. */}
-      {r && <OfficialScorecards result={r} a={b.fighter_a} b={b.fighter_b} sourceUrl={resultSourceUrl} />}
+      {r && <OfficialScorecards result={r} a={b.fighter_a} b={b.fighter_b} sourceUrl={resultSourceUrl} eventDate={e.event_date} />}
 
       <MarketSection market={market} state={marketState} nameA={b.fighter_a.name} nameB={b.fighter_b.name} />
 

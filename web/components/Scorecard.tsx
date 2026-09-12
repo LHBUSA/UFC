@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { buildBoutScorecard, DECISION_LABEL, DRAW_LABEL, wentToTheJudges } from "@/lib/judgeScoring";
-import { fmtTime, METHOD_LABEL } from "@/lib/format";
+import { daysUntil, fmtTime, METHOD_LABEL } from "@/lib/format";
 
 /* The Official Scorecards section.
  *
@@ -34,13 +34,28 @@ type ResultLike = {
 
 type FighterLike = { id: string; name: string };
 
-export function OfficialScorecards({ result, a, b, sourceUrl }: { result: ResultLike; a: FighterLike; b: FighterLike; sourceUrl?: string | null }) {
+/* Cards for a card typically land within a day or two of the event. Three days
+ * keeps the "awaiting" claim true across a weekend without letting a genuine
+ * gap hide behind it indefinitely. */
+const PAST_EVENT_GRACE_DAYS = 3;
+
+export function OfficialScorecards({ result, a, b, sourceUrl, eventDate }: { result: ResultLike; a: FighterLike; b: FighterLike; sourceUrl?: string | null; eventDate?: string | null }) {
   const sheet = buildBoutScorecard({
     method: result.method, scorecards: result.scorecards, winnerId: result.winner_id,
     fighterAId: a.id, fighterBId: b.id,
   });
   const judged = wentToTheJudges(result.method);
   const sourceLabel = result.result_source === "espn" ? "ESPN" : "UFC Stats";
+
+  /* A decision whose event is still running or only just finished has no card
+   * yet because the cards have not been published, not because the archive is
+   * missing them. Both render an absence, but they are different claims and
+   * the honest one depends on when the fight happened: the commission posts
+   * scorecards after the event, so "no scorecard on file" is wrong for a bout
+   * that ended an hour ago. PAST_EVENT_GRACE_DAYS is the window in which we
+   * say we are waiting; beyond it the bout really is a coverage gap. */
+  const sinceEvent = daysUntil(eventDate ?? null);
+  const awaitingPublication = sinceEvent != null && sinceEvent >= -PAST_EVENT_GRACE_DAYS;
 
   /* ---- no scorecard exists ---- */
   if (!sheet.hasOfficialScorecard) {
@@ -52,13 +67,27 @@ export function OfficialScorecards({ result, a, b, sourceUrl }: { result: Result
         <div className="sc-none">
           <div className="sc-none-mark" aria-hidden="true">—</div>
           <div>
-            <b>{judged ? "No scorecard on file for this decision" : "No official scorecard exists for this fight"}</b>
+            <b>
+              {judged
+                ? awaitingPublication
+                  ? "Awaiting official scorecard publication"
+                  : "No scorecard on file for this decision"
+                : "No official scorecard exists for this fight"}
+            </b>
             {judged ? (
-              <p>
-                This bout reached the judges — {how} — but the archive holds no judges&rsquo; scores for it. That is a coverage gap,
-                not an absent decision, and it is tracked in the <Link href="/judges#coverage">scorecard coverage register</Link>. No score is
-                estimated here.
-              </p>
+              awaitingPublication ? (
+                <p>
+                  This bout reached the judges — {how} — and the official cards have not been published yet. Scorecards are released by
+                  the athletic commission after the event and ingested once they are, so this panel will fill in on its own. No score is
+                  estimated in the meantime.
+                </p>
+              ) : (
+                <p>
+                  This bout reached the judges — {how} — but the archive holds no judges&rsquo; scores for it. That is a coverage gap,
+                  not an absent decision, and it is tracked in the <Link href="/judges#coverage">scorecard coverage register</Link>. No score is
+                  estimated here.
+                </p>
+              )
             ) : (
               <p>
                 The fight ended by <strong>{how}</strong>{when ? ` in ${when}` : ""}, so it never went to the judges and no scorecard
