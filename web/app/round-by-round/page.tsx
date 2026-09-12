@@ -7,6 +7,8 @@ import { buildSections, getRoundIndex, type RoundIndexBout } from "@/lib/roundIn
 import { fmtDate, METHOD_SHORT, weightClassLabel } from "@/lib/format";
 import { matchupSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
+import { getRoundLiveState } from "@/lib/roundLive";
+import { RoundLiveDeck } from "@/components/RoundLiveDeck";
 import styles from "./round-by-round.module.css";
 import cardStyles from "./round-cards.module.css";
 
@@ -105,7 +107,13 @@ function FightCard({ b, images, highlight = false }: { b: RoundIndexBout; images
 }
 
 export default async function RoundByRoundIndex() {
-  const index = await getRoundIndex();
+  /* Fight-night state and the archive are independent reads. If the broadcast
+   * layer is unavailable the deck simply does not render and the archive page
+   * below is untouched — the two must never be able to break each other. */
+  const [index, liveState] = await Promise.all([
+    getRoundIndex(),
+    getRoundLiveState().catch(() => null),
+  ]);
   const ok = index.status === "ok" ? index : null;
   const t = ok?.totals;
   const sections = buildSections(index);
@@ -119,6 +127,11 @@ export default async function RoundByRoundIndex() {
   return (
     <div className={`wrap page ${styles.page}`}>
       <Breadcrumbs items={[{ name: "Round-by-Round" }]} />
+
+      {/* Band 1 + 2: the live event, then tonight's completed-fight round
+          intelligence. Renders only when there is a card to talk about; the
+          archive below is the page's permanent state. */}
+      {liveState?.broadcast ? <RoundLiveDeck state={liveState} /> : null}
 
       <header className={styles.hero}>
         <div className={styles.heroGrid} aria-hidden="true" />

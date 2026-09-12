@@ -149,8 +149,8 @@ export async function getEventsOnDate(date: string): Promise<Event[]> {
 export async function getEventById(id: string): Promise<Event | null> {
   return (await rest<Event[]>(`ufc_events?select=${EVENT_COLS}&id=eq.${id}&limit=1`, [])).data[0] || null;
 }
-export async function getEventBouts(eventId: string): Promise<Bout[]> {
-  const rows = (await rest<RawBout[]>(`ufc_bouts?select=${BOUT_SELECT}&event_id=eq.${eventId}&order=bout_order.desc`, [])).data;
+export async function getEventBouts(eventId: string, revalidate?: number): Promise<Bout[]> {
+  const rows = (await rest<RawBout[]>(`ufc_bouts?select=${BOUT_SELECT}&event_id=eq.${eventId}&order=bout_order.desc`, [], { revalidate })).data;
   return rows.map(flattenResult);
 }
 /* Bout counts for a list of events (one request). */

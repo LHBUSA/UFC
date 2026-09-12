@@ -38,7 +38,7 @@ type StatRow = { bout_id: string; fighter_id: string; round: number };
 
 /* Paged reader for the per-card coverage lookup below (at most 60 bouts x 10
  * rows per chunk, inside one page). The index page no longer uses it. */
-async function all<T>(path: string, pageSize = 1000): Promise<T[]> {
+async function all<T>(path: string, pageSize = 1000, revalidate = 300): Promise<T[]> {
   if (!URL_ || !KEY) return [];
   const out: T[] = [];
   for (let from = 0; ; from += pageSize) {
@@ -50,7 +50,7 @@ async function all<T>(path: string, pageSize = 1000): Promise<T[]> {
           Accept: "application/json",
           Range: `${from}-${from + pageSize - 1}`,
         },
-        next: { revalidate: 300 },
+        next: { revalidate },
       });
       if (!res.ok) return out;
       const rows = (await res.json()) as T[];
@@ -79,7 +79,13 @@ export function isEligible(c: RoundCoverage | null | undefined): boolean {
 
 /* Coverage for a specific set of bouts. A fight card needs twelve rows, so
  * this asks only for what is on screen rather than for the full archive. */
-export async function getRoundCoverageFor(boutIds: string[]): Promise<Map<string, RoundCoverage>> {
+export async function getRoundCoverageFor(
+  boutIds: string[],
+  /* Fight night passes a short TTL: during a card the whole point is to notice
+   * a bout's rounds landing, and a five-minute cache would hide it for five
+   * minutes. Every other caller keeps the default. */
+  revalidate = 300,
+): Promise<Map<string, RoundCoverage>> {
   const out = new Map<string, RoundCoverage>();
   const ids = [...new Set(boutIds.filter(Boolean))];
   if (!ids.length || !URL_ || !KEY) return out;
@@ -90,7 +96,7 @@ export async function getRoundCoverageFor(boutIds: string[]): Promise<Map<string
   const CHUNK = 60;
   for (let i = 0; i < ids.length; i += CHUNK) {
     const slice = ids.slice(i, i + CHUNK);
-    const rows = await all<StatRow>(`ufc_bout_round_stats?select=bout_id,fighter_id,round&bout_id=in.(${slice.join(",")})`);
+    const rows = await all<StatRow>(`ufc_bout_round_stats?select=bout_id,fighter_id,round&bout_id=in.(${slice.join(",")})`, 1000, revalidate);
     for (const r of rows) {
       let byRound = cover.get(r.bout_id);
       if (!byRound) { byRound = new Map(); cover.set(r.bout_id, byRound); }

@@ -1,0 +1,387 @@
+/* /round-by-round — fight-night command center.
+ *
+ * COLOUR DISCIPLINE
+ * Red is spent on exactly one thing: a genuinely live broadcast. Everything
+ * else — including round-data state, which is a different fact — is gold or
+ * neutral. That is what keeps the two signals readable as two signals.
+ *
+ * The atmosphere is layered gradients over the arena plate already in the
+ * repo. No new asset, one composited element.
+ */
+
+.deck {
+  position: relative;
+  isolation: isolate;
+  margin: 0 0 clamp(28px, 3.4vw, 44px);
+  border: 1px solid rgba(212, 175, 55, .26);
+  border-radius: calc(var(--r-xl) + 2px);
+  overflow: hidden;
+  background: linear-gradient(180deg, #15110c, #0a0907);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .5), 0 40px 90px rgba(0, 0, 0, .55);
+}
+
+/* Arena light. Sits under the content, above the fill. */
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(10, 9, 7, .78) 0%, rgba(10, 9, 7, .9) 62%, rgba(10, 9, 7, .97) 100%),
+    radial-gradient(720px 320px at 12% 0%, rgba(212, 175, 55, .22), transparent 66%),
+    radial-gradient(620px 300px at 88% 6%, rgba(193, 39, 61, .14), transparent 68%),
+    url("/media/home-bg-fight-night.webp") center 34% / cover no-repeat;
+  filter: saturate(.95) contrast(1.06);
+}
+
+.deckIn {
+  position: relative;
+  z-index: 1;
+  padding: clamp(22px, 3vw, 38px) clamp(18px, 2.6vw, 36px) clamp(20px, 2.4vw, 30px);
+}
+
+/* ---- the two signals, kept visibly distinct ---- */
+
+.signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: clamp(14px, 1.8vw, 20px);
+}
+
+.sigLive,
+.sigIdle,
+.sigData {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border-radius: var(--r-pill);
+  font: 800 9.5px/1 var(--pbe-font-data);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Red is ONLY this. */
+.sigLive {
+  border: 1px solid rgba(230, 57, 70, .6);
+  background: rgba(230, 57, 70, .14);
+  color: #ff9098;
+}
+.sigIdle {
+  border: 1px solid var(--pbe-line-strong);
+  background: rgba(255, 255, 255, .03);
+  color: var(--pbe-dim);
+}
+/* Round-data state is a different fact, so it gets a different colour. */
+.sigData {
+  border: 1px solid rgba(212, 175, 55, .38);
+  background: rgba(212, 175, 55, .1);
+  color: var(--pbe-gold-bright);
+  min-width: 0;
+  white-space: normal;
+  letter-spacing: .1em;
+}
+
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--pbe-live);
+  box-shadow: 0 0 0 0 rgba(230, 57, 70, .6);
+  animation: rlPulse 2s infinite;
+}
+@keyframes rlPulse {
+  0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, .55); }
+  70% { box-shadow: 0 0 0 8px rgba(230, 57, 70, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+
+/* ---- identity ---- */
+
+.eventName {
+  margin: 0;
+  font: 900 clamp(28px, 4.4vw, 54px)/1.02 var(--pbe-font-display);
+  letter-spacing: -.03em;
+  color: var(--pbe-paper);
+  text-shadow: 0 2px 26px rgba(0, 0, 0, .75);
+  overflow-wrap: anywhere;
+}
+
+.where {
+  margin: 10px 0 0;
+  color: var(--pbe-gold);
+  font: 650 12px/1.5 var(--pbe-font-data);
+  letter-spacing: .04em;
+  overflow-wrap: anywhere;
+}
+
+.thesis {
+  margin: 14px 0 0;
+  max-width: 62ch;
+  color: var(--pbe-paper-2);
+  font-size: clamp(14px, 1.05vw, 15.5px);
+  line-height: 1.65;
+}
+
+/* ---- clocks ---- */
+
+.clocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 1px;
+  margin-top: clamp(20px, 2.4vw, 28px);
+  padding: 1px;
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-lg);
+  background: var(--pbe-line-faint);
+  overflow: hidden;
+}
+.clock {
+  min-width: 0;
+  padding: 13px 16px 15px;
+  background: linear-gradient(180deg, rgba(22, 18, 13, .82), rgba(10, 9, 7, .88));
+}
+.clock[data-main="true"] { background: linear-gradient(180deg, rgba(212, 175, 55, .12), rgba(10, 9, 7, .88)); }
+.clockLabel {
+  display: block;
+  color: var(--pbe-faint);
+  font: 700 8.5px/1.2 var(--pbe-font-data);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.clockCount {
+  display: block;
+  margin-top: 8px;
+  min-height: 1.15em;
+  color: var(--pbe-gold-bright);
+  font: 800 clamp(15px, 1.5vw, 18px)/1.15 var(--pbe-font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- actions ---- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(18px, 2.2vw, 24px);
+}
+.actionGhost,
+.actionWatch {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 12px 18px;
+  border-radius: var(--r-md);
+  font: 750 13px/1 var(--pbe-font-ui);
+  white-space: nowrap;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+.actionGhost {
+  border: 1px solid var(--pbe-line-strong);
+  background: rgba(12, 10, 8, .6);
+  color: var(--pbe-paper);
+}
+.actionGhost:hover { transform: translateY(-1px); border-color: rgba(212, 175, 55, .6); }
+/* The watch action is useful on fight night but must not outrank the
+   analytical product, so it is lined rather than filled. */
+.actionWatch {
+  border: 1px solid rgba(212, 175, 55, .6);
+  background: linear-gradient(180deg, rgba(212, 175, 55, .2), rgba(212, 175, 55, .07));
+  color: var(--pbe-paper);
+  font-weight: 800;
+}
+.actionWatch:hover { transform: translateY(-1px); border-color: var(--pbe-gold); }
+
+.provenance {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: clamp(16px, 2vw, 22px);
+  padding-top: 14px;
+  border-top: 1px solid var(--pbe-line-faint);
+}
+.alsoOn { color: var(--pbe-faint); font: 650 11.5px/1.4 var(--pbe-font-data); }
+
+/* ---- band 2: tonight ---- */
+
+.tonight {
+  position: relative;
+  z-index: 1;
+  padding: clamp(18px, 2.2vw, 26px) clamp(18px, 2.6vw, 36px) clamp(20px, 2.6vw, 30px);
+  border-top: 1px solid rgba(212, 175, 55, .2);
+  background: linear-gradient(180deg, rgba(212, 175, 55, .045), rgba(8, 7, 6, .6));
+}
+.tonightHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px 20px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.tonightHead h3 {
+  font: 850 clamp(15px, 1.5vw, 19px)/1.2 var(--pbe-font-display);
+  color: var(--pbe-paper);
+}
+.tonightHead span {
+  color: var(--pbe-faint);
+  font: 650 10.5px/1.4 var(--pbe-font-data);
+  letter-spacing: .06em;
+  min-width: 0;
+}
+
+.boutList { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.boutRow { min-width: 0; }
+
+.boutLink {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, .85fr) minmax(0, .95fr) auto;
+  align-items: center;
+  gap: 14px 18px;
+  padding: 15px 18px;
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(26, 21, 16, .8), rgba(12, 10, 8, .86));
+  color: inherit;
+  min-width: 0;
+  transition: border-color .16s ease, transform .16s ease, background .16s ease;
+}
+.boutLink:hover {
+  transform: translateY(-1px);
+  border-color: rgba(212, 175, 55, .55);
+  background: linear-gradient(180deg, rgba(34, 27, 19, .88), rgba(14, 12, 9, .9));
+}
+.boutRow[data-newest="true"] .boutLink {
+  border-color: rgba(212, 175, 55, .46);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, .1), 0 18px 44px rgba(0, 0, 0, .4);
+}
+
+/* In the flow, never over the names. Absolute positioning put it on top of
+   the first fighter's name and clipped it. */
+.newest {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 4px 9px;
+  border-radius: 4px;
+  background: var(--pbe-gold);
+  color: var(--pbe-ink);
+  font: 850 8px/1.3 var(--pbe-font-data);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.boutFighters { display: grid; gap: 4px; min-width: 0; }
+.boutFighters > span {
+  display: block;
+  min-width: 0;
+  color: var(--pbe-paper);
+  font: 800 15px/1.2 var(--pbe-font-display);
+  overflow-wrap: anywhere;
+}
+.boutFighters > span small {
+  display: inline-block;
+  margin-left: 8px;
+  color: var(--pbe-faint);
+  font: 600 10.5px/1 var(--pbe-font-data);
+}
+.boutFighters i {
+  color: var(--pbe-faint);
+  font: 700 9px/1 var(--pbe-font-data);
+  font-style: normal;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.win { color: var(--pbe-gold-bright) !important; }
+.win::after { content: " ✓"; color: var(--pbe-pos); font-size: .78em; }
+
+.boutMeta { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.boutMeta span {
+  padding: 4px 8px;
+  border: 1px solid var(--pbe-line-faint);
+  border-radius: 5px;
+  color: var(--pbe-dim);
+  font: 650 9.5px/1.3 var(--pbe-font-data);
+  letter-spacing: .05em;
+  overflow-wrap: anywhere;
+}
+.boutMeta .title { border-color: rgba(212, 175, 55, .45); color: var(--pbe-gold-bright); }
+
+.boutRounds { min-width: 0; }
+.pips { display: flex; gap: 3px; margin-bottom: 6px; }
+.pips i { width: 16px; height: 4px; border-radius: 2px; background: var(--pbe-gold); opacity: .85; }
+.boutRounds b {
+  display: block;
+  color: var(--pbe-paper);
+  font: 750 11.5px/1.3 var(--pbe-font-data);
+}
+.boutRounds em {
+  display: block;
+  margin-top: 3px;
+  color: var(--pbe-faint);
+  font: 600 10px/1.3 var(--pbe-font-data);
+  font-style: normal;
+}
+
+.boutCta {
+  color: var(--pbe-gold);
+  font: 700 11.5px/1.3 var(--pbe-font-data);
+  white-space: nowrap;
+}
+
+/* ---- the waiting state: designed, not an error ---- */
+
+.waiting {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding: 22px;
+  border: 1px solid rgba(212, 175, 55, .24);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(420px 160px at 12% 0%, rgba(212, 175, 55, .1), transparent 70%),
+    linear-gradient(180deg, rgba(26, 21, 15, .78), rgba(11, 10, 8, .86));
+}
+.waitingMark {
+  width: 12px; height: 12px; margin-top: 5px; border-radius: 50%;
+  background: var(--pbe-gold);
+  box-shadow: 0 0 0 0 rgba(212, 175, 55, .55);
+  animation: rlPulse2 2.6s infinite;
+}
+@keyframes rlPulse2 {
+  0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, .5); }
+  70% { box-shadow: 0 0 0 11px rgba(212, 175, 55, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .waitingMark { animation: none; } }
+.waiting b {
+  display: block;
+  color: var(--pbe-paper);
+  font: 850 16px/1.3 var(--pbe-font-display);
+}
+.waiting p {
+  margin: 7px 0 0;
+  max-width: 64ch;
+  color: var(--pbe-dim);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* ---- responsive ---- */
+
+@media (max-width: 900px) {
+  .boutLink { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .boutCta { grid-column: 1 / -1; }
+}
+
+@media (max-width: 560px) {
+  .deckIn, .tonight { padding-inline: 16px; }
+  .boutLink { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px 15px; }
+  .clocks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .actions { gap: 8px; }
+  .actionGhost, .actionWatch { flex: 1 1 100%; justify-content: center; }
+  .tonightHead { gap: 6px; }
+}
