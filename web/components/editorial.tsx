@@ -16,7 +16,7 @@ export type FighterFacts = {
     last?: Array<{ date: string; opponent: string; opponent_slug?: string | null; result: string; method: string; round?: number | null; event?: string }> } | null;
 };
 import type { EditorialMarket } from "@/lib/editorialMarket";
-import { formatAmerican, describeAge } from "@/lib/market";
+import { formatAmerican, describeAge, movement, type SidePrices, type Movement } from "@/lib/market";
 import { fmtDateTime } from "@/lib/format";
 import { BestRank } from "@/components/RankBadge";
 import type { FighterRankingContext } from "@/lib/rankingContext";
@@ -177,6 +177,79 @@ export function RecentForm({ f }: { f: FighterFacts }) {
  * moneyline and nothing else: saying "not connected" because a method-of-
  * victory price is missing would be false about the moneyline we do hold.
  */
+
+/* One fighter's prices, from the values the full fight-page market model
+ * already carries. Nothing is recomputed here: consensus, best and the first
+ * observation are the same figures /fights renders, so the editorial card is
+ * a shorter view of one market rather than a second opinion about it.
+ *
+ * "Best" is the price most favourable to a bettor; "first seen" is the
+ * earliest price WE recorded, which is deliberately not called an opener,
+ * because we start watching partway through a market's life. Range is the
+ * spread across books right now, shown only when the books actually disagree. */
+function PriceBlock({ name, side }: { name: string; side: SidePrices | null }) {
+  if (!side || side.consensus == null) {
+    return (
+      <div className="mkt-side">
+        <div className="mkt-side-n">{name}</div>
+        <div className="mkt-side-none">No verified price on this side.</div>
+      </div>
+    );
+  }
+  const spread = side.worst != null && side.best != null && side.worst !== side.best;
+  return (
+    <div className="mkt-side">
+      <div className="mkt-side-n">{name}</div>
+      <dl className="mkt-rows">
+        <div><dt>Consensus</dt><dd className="mono strong">{formatAmerican(side.consensus)}</dd></div>
+        {side.best != null && <div><dt>Best</dt><dd className="mono">{formatAmerican(side.best)}</dd></div>}
+        {side.firstObserved && <div><dt>First seen</dt><dd className="mono">{formatAmerican(side.firstObserved.price)}</dd></div>}
+        {spread && (
+          <div className="mkt-range">
+            <dt>Range</dt>
+            <dd className="mono">{formatAmerican(side.worst)} to {formatAmerican(side.best)}</dd>
+          </div>
+        )}
+      </dl>
+    </div>
+  );
+}
+
+/* Which way the market moved, named after the fighter it moved toward.
+ *
+ * Both sides are mirror images of one move, so this reports it once rather
+ * than twice. It uses the shared movement() helper, which compares consensus
+ * to consensus across ingest runs and stays silent after a single run — the
+ * spread inside one run is books disagreeing, not a line moving.
+ *
+ * Never steam, sharp money, public money, value or edge. We observe prices;
+ * we have no source for who is betting or whether a price is wrong. */
+function MovementLine({ ml, nameA, nameB, stale }: { ml: { a: SidePrices | null; b: SidePrices | null }; nameA: string; nameB: string; stale: boolean }) {
+  const mvA = movement(ml.a, "first");
+  const mvB = movement(ml.b, "first");
+  const pick = (m: Movement, n: string) => (m && m.direction !== "unchanged" ? { m, n } : null);
+  /* Prefer the side that shortened, so the sentence reads "moved toward". */
+  const toward = (mvA?.direction === "toward" ? { m: mvA, n: nameA } : null)
+    ?? (mvB?.direction === "toward" ? { m: mvB, n: nameB } : null);
+  const chosen = toward ?? pick(mvA, nameA) ?? pick(mvB, nameB);
+
+  if (!chosen) {
+    if (mvA?.direction === "unchanged" || mvB?.direction === "unchanged") {
+      return <div className="mkt-move" data-dir="unchanged"><span>Unchanged since first observed</span></div>;
+    }
+    return null;
+  }
+  const { m, n } = chosen;
+  const heading = m.direction === "toward" ? `Moved toward ${n}` : `Moved away from ${n}`;
+  return (
+    <div className="mkt-move" data-dir={m.direction}>
+      {/* A stale snapshot describes history, not today's market. */}
+      <span>{stale ? `${n} · first observed to last recorded` : heading}</span>
+      <b className="mono">{formatAmerican(m.from)} <i>→</i> {formatAmerican(m.to)}</b>
+    </div>
+  );
+}
+
 export function MarketWatch({
   mw, em,
 }: {
@@ -215,18 +288,11 @@ export function MarketWatch({
                   but they are never presented as the current market. */}
               <span className={`tag${stale ? "" : " pos"}`}>{stale ? "Not current" : "Current"}</span>
             </div>
-            <table className="mkt-prices">
-              <tbody>
-                <tr>
-                  <th scope="row">{em.fighterA!.name}</th>
-                  <td className="mono">{formatAmerican(ml!.a?.consensus)}</td>
-                </tr>
-                <tr>
-                  <th scope="row">{em.fighterB!.name}</th>
-                  <td className="mono">{formatAmerican(ml!.b?.consensus)}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="mkt-sides">
+              <PriceBlock name={em.fighterA!.name} side={ml!.a} />
+              <PriceBlock name={em.fighterB!.name} side={ml!.b} />
+            </div>
+            <MovementLine ml={ml!} nameA={em.fighterA!.name} nameB={em.fighterB!.name} stale={stale} />
             {/* A price with no provenance is not evidence. */}
             <span className="faint sm mkt-prov">
               Consensus across {ml!.bookCount} book{ml!.bookCount === 1 ? "" : "s"}
