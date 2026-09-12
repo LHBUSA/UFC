@@ -14,6 +14,7 @@ import { getMatchupDna } from "@/lib/dna";
 import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
 import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } from "@/components/editorial";
+import { getEditorialMarket } from "@/lib/editorialMarket";
 import {
   BoutContextModule, ComparisonModule, DnaModule, RecentFormModule, RoundStyleModule,
   MarketModule, OfficialVideoModule, MethodologyModule, FighterCardModule,
@@ -45,6 +46,22 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
     getArticles(4),
   ]);
   const fb = (a.fact_block || {}) as FactBlock & { content_plan?: ContentPlan; primary?: { name?: string; fighter_id?: string }; opponent?: { name?: string; fighter_id?: string } };
+
+  /* Market availability is resolved NOW, from the same tables the fight page
+   * reads — never from the article's stored market_watch.status, which was
+   * written at generation time and said "unavailable" forever. The markets of
+   * interest still come from the article, because which markets matter is
+   * editorial judgement; whether we hold a price for them is not.
+   *
+   * Server-side, inside the existing render. No client polling was added and
+   * the market ingest cadence is untouched. */
+  const editorialMarket = await getEditorialMarket({
+    boutId: a.bout_id,
+    marketsOfInterest: [
+      ...(fb.market_watch?.markets || []),
+      ...(fb.bettor_angle?.markets || []),
+    ],
+  }).catch(() => null);
   /* Two article generations live in this table at once. Articles written by
    * ufc-news-enrich carry a deterministic content_plan; everything written
    * before it carries the v2 fact block the legacy modules were built for.
@@ -157,7 +174,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
         <div className="credit mb-5">Photo: {hero.source_url ? <a href={hero.source_url} rel="noopener nofollow" target="_blank">{hero.author || a.hero_credit?.author || "Wikimedia Commons"}</a> : hero.author}{hero.license ? ` · ${hero.license}` : ""} · via Wikimedia Commons</div>
       )}
 
-      {angle && <BettorsEdge angle={angle} />}
+      {angle && <BettorsEdge em={editorialMarket} angle={angle} />}
       {!plan && dna && dna.status === "ok" && <DnaEvidence dna={dna.data} />}
       {mm && <MatchupModule a={mm.a} b={mm.b} imgs={imgs} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
       {/* The plan owns video when it has one: it resolved the clips against
@@ -190,7 +207,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
           ) : (
             <div className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }} />
           )}
-          {!plan && fb.market_watch && <MarketWatch mw={fb.market_watch} />}
+          {!plan && fb.market_watch && <MarketWatch mw={fb.market_watch} em={editorialMarket} />}
           {/* Anything the plan built that no module above claimed. Without this
             * a new chart kind would be computed, stored and silently invisible. */}
           {plan && <ChartSet charts={charts.filter((c) => !CLAIMED_CHARTS.has(c.id))} title="Also measured" />}

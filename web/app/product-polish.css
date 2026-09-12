@@ -105,3 +105,25 @@
   .share-rail { right: 12px; bottom: 12px; padding: 10px; }
   .share-rail span { display: none; }
 }
+
+/* Market Watch: render-time market state on editorial articles.
+   Prices are never shown without provenance, and availability is stated per
+   market because we ingest moneyline and nothing else. */
+.mkt-line { display: flex; align-items: center; gap: 10px; }
+.mkt-line .k { color: var(--pbe-gold); font: 700 10px/1.3 var(--pbe-font-data); letter-spacing: .12em; text-transform: uppercase; }
+
+.mkt-prices { width: 100%; border-collapse: collapse; }
+.mkt-prices th { text-align: left; padding: 7px 0; color: var(--pbe-paper); font: 700 14px/1.3 var(--pbe-font-ui); border-bottom: 1px solid var(--pbe-line-faint); overflow-wrap: anywhere; }
+.mkt-prices td { text-align: right; padding: 7px 0; color: var(--pbe-paper); font: 800 15px/1.3 var(--pbe-font-data); font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--pbe-line-faint); white-space: nowrap; }
+.mkt-prov { display: block; line-height: 1.55; overflow-wrap: anywhere; }
+
+.mkt-avail { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+.mkt-avail li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; min-width: 0; padding: 6px 0; border-top: 1px solid var(--pbe-line-faint); }
+.mkt-avail li span { color: var(--pbe-paper-2); font: 650 12.5px/1.4 var(--pbe-font-data); overflow-wrap: anywhere; }
+.mkt-avail li em { color: var(--pbe-faint); font: 600 11.5px/1.4 var(--pbe-font-data); font-style: normal; text-align: right; overflow-wrap: anywhere; }
+.mkt-avail li[data-ok="true"] em { color: var(--pbe-pos); }
+
+@media (max-width: 560px) {
+  .mkt-avail li { flex-direction: column; gap: 2px; }
+  .mkt-avail li em { text-align: left; }
+}

@@ -391,7 +391,12 @@ function previewAngle(fb) {
       impact_score: score, markets: orderedMarkets, summary: previewSummary(fb, { reach, pace, td, finishers, orderedMarkets, both, any }),
       supporting_facts: supporting, risks, watch_items: watch, odds_status: 'unavailable', model_status: 'unavailable', rules_applied: rules,
     },
-    market_watch: { status: 'unavailable', markets: watchMarkets.length ? watchMarkets : ['fight_goes_distance', 'total_rounds'], note: ODDS_NOTE },
+    /* Markets of INTEREST only — no `status`, no availability `note`. A value
+     * written here freezes at generation time and cannot describe what the
+     * market layer holds when the page is actually read; it said "unavailable"
+     * forever while the fight page showed verified prices for the same bout.
+     * Availability is resolved at render time (web/lib/editorialMarket.ts). */
+    market_watch: { markets: watchMarkets.length ? watchMarkets : ['fight_goes_distance', 'total_rounds'] },
   };
 }
 
@@ -901,7 +906,12 @@ function resultsAngle(fb) {
   const watchMarkets = orderedMarkets.filter((k) => k !== 'moneyline').slice(0, 3);
   return {
     angle: { impact_score: score, markets: orderedMarkets, summary: resultsSummary(fb, orderedMarkets), supporting_facts: supporting, risks, watch_items: watch, odds_status: 'unavailable', model_status: 'unavailable', rules_applied: rules },
-    market_watch: { status: 'unavailable', markets: watchMarkets.length ? watchMarkets : ['fight_goes_distance', 'method_of_victory'], note: ODDS_NOTE },
+    /* Markets of INTEREST only — no `status`, no availability `note`. A value
+     * written here freezes at generation time and cannot describe what the
+     * market layer holds when the page is actually read; it said "unavailable"
+     * forever while the fight page showed verified prices for the same bout.
+     * Availability is resolved at render time (web/lib/editorialMarket.ts). */
+    market_watch: { markets: watchMarkets.length ? watchMarkets : ['fight_goes_distance', 'method_of_victory'] },
   };
 }
 
@@ -1119,7 +1129,12 @@ function externalAngle(fb) {
       watch_items: ['Schedule-table update for the bout named in the report.', 'A replacement booking, which changes the tale of the tape entirely.'],
       odds_status: 'unavailable', model_status: 'unavailable', rules_applied: [`${score === 2 ? '2: booking-affecting label on a scheduled bout' : '1: wire item without a scheduled bout'}`],
     },
-    market_watch: { status: 'unavailable', markets: [], note: ODDS_NOTE },
+    /* Markets of INTEREST only — no `status`, no availability `note`. A value
+     * written here freezes at generation time and cannot describe what the
+     * market layer holds when the page is actually read; it said "unavailable"
+     * forever while the fight page showed verified prices for the same bout.
+     * Availability is resolved at render time (web/lib/editorialMarket.ts). */
+    market_watch: { markets: [] },
   };
 }
 
@@ -1263,7 +1278,8 @@ function generateCardChanges(world, today) {
         watch_items: ['A rebooked opponent or a further status change in the schedule tables.', 'Weigh-in for any short-notice replacement.'],
         odds_status: 'unavailable', model_status: 'unavailable', rules_applied: [replacement ? (replacement.short_notice_days != null && replacement.short_notice_days <= 14 ? '3: replacement at <= 14 days notice' : '2: replacement booked') : '2: bout off, no replacement'],
       };
-      fb.market_watch = { status: 'unavailable', markets: replacement ? ['moneyline'] : [], note: ODDS_NOTE };
+      /* Markets of interest only; availability is a render-time fact. */
+      fb.market_watch = { markets: replacement ? ['moneyline'] : [] };
       fb.depth = { class: 'card_change', target: DEPTH.card_change, short: true, short_reason: 'status change recorded without a reason; no odds to compare' };
       const slug = `${slugify(a.name)}-vs-${slugify(b.name)}-off-${fb.event.slug}`;
       const headline = replacement && replacement.incoming ? `${replacement.incoming} steps in against ${replacement.stays} at ${fb.event.short_name}: what changed` : `${a.name} vs ${b.name} off ${fb.event.short_name}`;

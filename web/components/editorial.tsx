@@ -15,6 +15,10 @@ export type FighterFacts = {
   archive?: { fights?: number; w?: number; l?: number; d?: number; nc?: number; ko?: number; sub?: number; dec?: number; finish_rate?: number | null; rounds_with_stats?: number; days_since_last?: number | null;
     last?: Array<{ date: string; opponent: string; opponent_slug?: string | null; result: string; method: string; round?: number | null; event?: string }> } | null;
 };
+import type { EditorialMarket } from "@/lib/editorialMarket";
+import { formatAmerican, describeAge } from "@/lib/market";
+import { fmtDateTime } from "@/lib/format";
+
 export type BettorAngle = { impact_score?: number; markets?: string[]; summary?: string; supporting_facts?: string[]; risks?: string[]; watch_items?: string[]; odds_status?: string; model_status?: string };
 export type FactBlock = {
   version?: number; story_class?: string; generated_at?: string; sources?: { families?: string[]; news_item_ids?: string[] };
@@ -31,7 +35,14 @@ const rec = (f: FighterFacts) => (f.record ? `${f.record.w}-${f.record.l}-${f.re
 const num = (v: number | null | undefined, d = 2) => (v == null ? "—" : Number(v).toFixed(d));
 const pct = (v: number | null | undefined) => (v == null ? "—" : `${Math.round(v <= 1 ? v * 100 : v)}%`);
 
-export function BettorsEdge({ angle }: { angle: BettorAngle }) {
+export function BettorsEdge({ angle, em }: { angle: BettorAngle; em?: EditorialMarket | null }) {
+
+  /* Live market state wins over the stored flag; the stored flag only ever
+     described the moment the article was generated. */
+  const oddsLive = em ? em.hasPrices : false;
+  const oddsLabel = em
+    ? (em.hasPrices ? (em.moneyline?.stale ? "verified snapshot" : "verified market") : "no verified snapshot")
+    : (angle.odds_status === "live" ? "live" : angle.odds_status === "snapshot" ? "snapshot" : "no verified snapshot");
   /* An impact meter reading 0/5 is a claim: it tells the reader the desk judged
    * this story unimportant. Articles from ufc-news-enrich do not produce an
    * impact score at all, and rendering their absence as a zero would be the
@@ -64,7 +75,12 @@ export function BettorsEdge({ angle }: { angle: BettorAngle }) {
         )}
       </div>
       <div className="bedge-foot">
-        <span className={`tag${angle.odds_status && angle.odds_status !== "unavailable" ? " pos" : ""}`}>Odds · {angle.odds_status === "live" ? "live" : angle.odds_status === "snapshot" ? "snapshot" : "not connected"}</span>
+        {/* Was "Odds · not connected", read off a generation-time flag. That
+            claimed the market SYSTEM was missing when in fact we held verified
+            prices for the bout. It now reflects the live read when one is
+            passed, and otherwise states an absence of data rather than an
+            absence of infrastructure. */}
+        <span className={`tag${oddsLive ? " pos" : ""}`}>Odds · {oddsLabel}</span>
         <span className={`tag${angle.model_status === "priced" ? " model" : ""}`}>Model · {angle.model_status === "priced" ? "priced" : "not yet produced"}</span>
         <span className="faint label">No pick, price or probability is shown unless it exists in verified data.</span>
       </div>
@@ -147,14 +163,95 @@ export function RecentForm({ f }: { f: FighterFacts }) {
   );
 }
 
-export function MarketWatch({ mw }: { mw: NonNullable<FactBlock["market_watch"]> }) {
-  const live = mw.status && mw.status !== "unavailable";
+/* Market Watch, resolved at render time.
+ *
+ * `mw` is the article's stored fact block and contributes ONE thing: which
+ * markets the desk flagged as worth watching. Its legacy `status` is
+ * deliberately ignored — it was written at generation time and said
+ * "unavailable" forever, even while the fight page showed real prices for the
+ * same bout from the same table.
+ *
+ * `em` is the live read. Availability is per market, because we ingest
+ * moneyline and nothing else: saying "not connected" because a method-of-
+ * victory price is missing would be false about the moneyline we do hold.
+ */
+export function MarketWatch({
+  mw, em,
+}: {
+  mw: NonNullable<FactBlock["market_watch"]>;
+  em?: EditorialMarket | null;
+}) {
+  /* No live read available (older render path): fall back to the chips and an
+   * honest sentence. Never the old "not connected" claim. */
+  if (!em) {
+    return (
+      <div className="mkt">
+        <div className="eyebrow">Market watch</div>
+        <div className="mkt-body">
+          <span className="dim sm">No verified market snapshot is currently available.</span>
+          {mw.markets && mw.markets.length > 0 && (
+            <div className="chips"><span className="faint label" style={{ alignSelf: "center" }}>Watch:</span>{mw.markets.map((m) => <span key={m} className="tag">{marketLabel(m)}</span>)}</div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const ml = em.moneyline;
+  const showPrices = em.hasPrices && ml && em.fighterA && em.fighterB;
+  const stale = Boolean(ml?.stale);
+
   return (
-    <div className={`mkt${live ? " live" : ""}`}>
-      <div className="eyebrow">{live ? "Market watch" : "Market data not yet connected"}</div>
+    <div className={`mkt${showPrices ? " live" : ""}`}>
+      <div className="eyebrow">Market watch</div>
       <div className="mkt-body">
-        <span className="dim sm">{mw.note || "Current market price not yet available in PropBetEdge data."}</span>
-        {mw.markets && mw.markets.length > 0 && <div className="chips"><span className="faint label" style={{ alignSelf: "center" }}>Watch:</span>{mw.markets.map((m) => <span key={m} className="tag">{marketLabel(m)}</span>)}</div>}
+        {showPrices ? (
+          <>
+            <div className="mkt-line">
+              <span className="k">Moneyline</span>
+              {/* Stale prices are still shown - they were genuinely observed -
+                  but they are never presented as the current market. */}
+              <span className={`tag${stale ? "" : " pos"}`}>{stale ? "Not current" : "Current"}</span>
+            </div>
+            <table className="mkt-prices">
+              <tbody>
+                <tr>
+                  <th scope="row">{em.fighterA!.name}</th>
+                  <td className="mono">{formatAmerican(ml!.a?.consensus)}</td>
+                </tr>
+                <tr>
+                  <th scope="row">{em.fighterB!.name}</th>
+                  <td className="mono">{formatAmerican(ml!.b?.consensus)}</td>
+                </tr>
+              </tbody>
+            </table>
+            {/* A price with no provenance is not evidence. */}
+            <span className="faint sm mkt-prov">
+              Consensus across {ml!.bookCount} book{ml!.bookCount === 1 ? "" : "s"}
+              {ml!.lastUpdated ? <> · observed <time dateTime={ml!.lastUpdated}>{fmtDateTime(ml!.lastUpdated)}</time></> : null}
+              {ml!.ageMinutes != null ? ` · ${describeAge(ml!.ageMinutes)}` : ""}
+            </span>
+          </>
+        ) : (
+          <span className="dim sm">No verified market snapshot is currently available.</span>
+        )}
+
+        {/* Per-market availability. This is the granularity the single frozen
+            flag could never express. */}
+        {em.markets.length > 0 && (
+          <ul className="mkt-avail">
+            {em.markets.map((m) => (
+              <li key={m.key} data-ok={m.available ? "true" : undefined}>
+                <span>{m.label}</span>
+                <em>{m.available ? "Verified market available" : m.note}</em>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {mw.markets && mw.markets.length > 0 && (
+          <div className="chips"><span className="faint label" style={{ alignSelf: "center" }}>Watch:</span>{mw.markets.map((m) => <span key={m} className="tag">{marketLabel(m)}</span>)}</div>
+        )}
       </div>
     </div>
   );

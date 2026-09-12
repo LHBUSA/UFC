@@ -179,7 +179,14 @@ function buildGuide(eventId, previews, existing, now) {
     event,
     feature: { kind: 'card_bettor_guide', source_articles: sourceRefs, signals },
     bettor_angle: angle,
-    market_watch: { status: 'unavailable', markets: markets.slice(0, 5), note: 'Current verified market prices are not yet stored in PropBetEdge data for this card.' },
+    /* Markets of INTEREST only. This block deliberately no longer carries a
+     * `status` or an availability `note`: a value written here is frozen at
+     * generation time and cannot describe what the market layer holds when a
+     * reader loads the page months later. It previously said "unavailable"
+     * forever while the fight page showed real verified prices for the same
+     * bouts. Availability is resolved at render time by
+     * web/lib/editorialMarket.ts. */
+    market_watch: { markets: markets.slice(0, 5) },
     depth: { class: GUIDE_CLASS, target: [700, 1400], short: false, short_reason: null },
   };
   const body = guideBody(event, signals, angle);
