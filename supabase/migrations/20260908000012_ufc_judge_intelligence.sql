@@ -111,13 +111,13 @@ insert into _judge_alias_seed (raw_name, canonical_name, kind, card_note) values
   ('Illegal Kick by Galera Ben Cartlidge', 'Ben Cartlidge', 'deduction_annotation', 'Illegal Kick by Galera'),
   ('Illegal Kick by Thomas Cecil Peoples', 'Cecil Peoples', 'deduction_annotation', 'Illegal Kick by Thomas'),
   ('Illegal Knee and Strike to Back of Head by Marquardt Nelson Hamilton', 'Nelson Hamilton', 'deduction_annotation', 'Illegal Knee and Strike to Back of Head by Marquardt'),
-  ('Illegal Knee by Jouban Mike Bell', 'Mike Bell', 'deduction_annotation', 'Illegal Knee by Jouban'),
+  ('Illegal Knee by Jouban Mike Bell', 'Michael Bell', 'deduction_annotation', 'Illegal Knee by Jouban'),
   ('Illegal Knee by Lindland Nelson Hamilton', 'Nelson Hamilton', 'deduction_annotation', 'Illegal Knee by Lindland'),
   ('Illegal Knee by Menne Tony Weeks', 'Tony Weeks', 'deduction_annotation', 'Illegal Knee by Menne'),
   ('Illegal Knee by Papazian Roy Silbert', 'Roy Silbert', 'deduction_annotation', 'Illegal Knee by Papazian'),
   ('Illegal Knee by Silverio Richard Bertrand', 'Richard Bertrand', 'deduction_annotation', 'Illegal Knee by Silverio'),
   ('Illegal Knee by Tickle Sal D''amato', 'Sal D''amato', 'deduction_annotation', 'Illegal Knee by Tickle'),
-  ('Illegal Strike to Grounded Opponent and Strike After Bell by Kim Mike Bell', 'Mike Bell', 'deduction_annotation', 'Illegal Strike to Grounded Opponent and Strike After Bell by Kim'),
+  ('Illegal Strike to Grounded Opponent and Strike After Bell by Kim Mike Bell', 'Michael Bell', 'deduction_annotation', 'Illegal Strike to Grounded Opponent and Strike After Bell by Kim'),
   ('Illegal Strike to Grounded Opponent by Jones Sal D''amato', 'Sal D''amato', 'deduction_annotation', 'Illegal Strike to Grounded Opponent by Jones'),
   ('Illegal Strikes by Each Fighter Cecil Peoples', 'Cecil Peoples', 'deduction_annotation', 'Illegal Strikes by Each Fighter'),
   ('Kicks on Ground by Camoes Patricia Morse-Jarman', 'Patricia Morse-Jarman', 'deduction_annotation', 'Kicks on Ground by Camoes'),
@@ -132,11 +132,19 @@ insert into _judge_alias_seed (raw_name, canonical_name, kind, card_note) values
   ('Low Blows by Prangley Cecil Peoples', 'Cecil Peoples', 'deduction_annotation', 'Low Blows by Prangley'),
   ('Low Blows by Zhang Eric Colon', 'Eric Colon', 'deduction_annotation', 'Low Blows by Zhang'),
   ('Passivity by Maia Marco Borges', 'Marco Borges', 'deduction_annotation', 'Passivity by Maia'),
-  ('Repeated Low Blows by Xiao Mike Bell', 'Mike Bell', 'deduction_annotation', 'Repeated Low Blows by Xiao'),
+  ('Repeated Low Blows by Xiao Mike Bell', 'Michael Bell', 'deduction_annotation', 'Repeated Low Blows by Xiao'),
   ('Technical Decision - Eye Poke Eric Colon', 'Eric Colon', 'deduction_annotation', 'Technical Decision - Eye Poke'),
-  ('Technical Decision - Eye Poke by Song Mike Bell', 'Mike Bell', 'deduction_annotation', 'Technical Decision - Eye Poke by Song'),
+  ('Technical Decision - Eye Poke by Song Mike Bell', 'Michael Bell', 'deduction_annotation', 'Technical Decision - Eye Poke by Song'),
   ('Technical Decision after Headbutt by Abdul-Malik Will Fisher', 'Will Fisher', 'deduction_annotation', 'Technical Decision after Headbutt by Abdul-Malik'),
-  ('Technical decision after clash of heads Ben Cartlidge', 'Ben Cartlidge', 'deduction_annotation', 'Technical decision after clash of heads');
+  ('Technical decision after clash of heads Ben Cartlidge', 'Ben Cartlidge', 'deduction_annotation', 'Technical decision after clash of heads'),
+  -- One official licensed under two spellings: Nevada files him as
+  -- "Mike Bell", California as "Michael Bell", ABC training records as
+  -- "David Michael Bell". The archive rules out two people: the spellings
+  -- never share a bout, a date or an event, and "Michael Bell" appears
+  -- only from 2026-09-12, when a second source began naming judges.
+  ('Mike Bell', 'Michael Bell', 'spelling_variant', null),
+  -- Forward protection only: no card is filed under this spelling today.
+  ('David Michael Bell', 'Michael Bell', 'spelling_variant', null);
 
 -- Spelling variants.
 --

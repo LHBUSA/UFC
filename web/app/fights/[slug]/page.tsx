@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getImagesForFighters, getRoundStats, getArticlesForBout, getFighterBouts } from "@/lib/db";
+import { getImagesForFighters, getRoundStats, getFightTotals, getArticlesForBout, getFighterBouts } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { getFighterDna, getMatchupDna } from "@/lib/dna";
 import { RoundAnalysis } from "@/components/RoundAnalysis";
@@ -23,6 +23,7 @@ import { cardPositionLabel, fmtDate, fmtRecord, fmtTime, METHOD_LABEL, weightCla
 import { SITE } from "@/lib/site";
 import { getRankingMap } from "@/lib/rankings";
 import { FighterRank } from "@/components/RankBadge";
+import { FightTotalsSection } from "@/components/FightTotals";
 
 export const revalidate = 300;
 
@@ -45,10 +46,11 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   const hit = await resolveFight((await params).slug);
   if (!hit) notFound();
   const { e, b, bouts } = hit;
-  const [imgs, rounds, articles, histA, histB, statusByBout, weighInsByBout] = await Promise.all([
+  const [imgs, rounds, articles, histA, histB, statusByBout, weighInsByBout, fightTotals] = await Promise.all([
     getImagesForFighters([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
     getBoutStatusEvents([b.id]).catch(() => new Map()),
     getWeighInsForBouts([b.id]).catch(() => new Map()),
+    getFightTotals(b.id).catch(() => []),
   ]);
   const boutStatus = statusByBout.get(b.id) || [];
   const boutWeighIns = weighInsByBout.get(b.id) || [];
@@ -204,6 +206,18 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
       {r && <OfficialScorecards result={r} a={b.fighter_a} b={b.fighter_b} sourceUrl={resultSourceUrl} eventDate={e.event_date} />}
 
       <MarketSection market={market} state={marketState} nameA={b.fighter_a.name} nameB={b.fighter_b.name} />
+
+      {/* Two datasets, two sections, never blurred: ESPN publishes verified
+          whole-fight totals with no round dimension, UFC Stats publishes the
+          round decomposition. Round intelligence sits directly below and says
+          for itself when its observations are still pending. */}
+      <FightTotalsSection
+        totals={fightTotals}
+        fighterAId={b.fighter_a.id}
+        fighterBId={b.fighter_b.id}
+        nameA={b.fighter_a.name}
+        nameB={b.fighter_b.name}
+      />
 
       <RoundAnalysis
         state={rbaState}

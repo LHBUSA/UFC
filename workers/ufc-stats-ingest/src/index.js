@@ -55,6 +55,49 @@ import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec } f
 import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_resolver.mjs';
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
 
+/* Per-run ceiling on fight-total lookups, same idea as the scorecard cap:
+ * a daily year-walk must not turn into an unbounded backfill. Each bout costs
+ * two statistics calls. */
+const FIGHT_TOTALS_RECONCILE_MAX = 40;
+
+/**
+ * Is this fight-total row internally coherent?
+ *
+ * ESPN is a good source and this still gets checked, because the failure we
+ * are guarding against is not a bad source, it is a silently WRONG number
+ * reaching a page that presents it as verified. Landed above attempted, or a
+ * 3x3 breakdown that does not add up to the total it decomposes, means we did
+ * not understand the payload — and the right response to not understanding a
+ * payload is to store nothing, not to store most of it.
+ *
+ * Returns a list of failures; empty means coherent.
+ */
+function fightTotalsIncoherence(row) {
+  const bad = [];
+  const le = (a, b, label) => {
+    if (row[a] != null && row[b] != null && row[a] > row[b]) bad.push(`${label} (${row[a]} > ${row[b]})`);
+  };
+  le('sig_str_landed', 'sig_str_att', 'sig landed > attempted');
+  le('total_str_landed', 'total_str_att', 'total landed > attempted');
+  le('td_landed', 'td_att', 'takedowns landed > attempted');
+  le('sig_str_landed', 'total_str_landed', 'sig landed > total landed');
+
+  /* The 3x3 significant-strike matrix decomposes ONE quantity two ways, so
+   * both axes must reproduce it exactly. */
+  for (const [suffix, whole] of [['landed', 'sig_str_landed'], ['att', 'sig_str_att']]) {
+    for (const [axis, parts] of [
+      ['target', ['head', 'body', 'leg']],
+      ['position', ['distance', 'clinch', 'ground']],
+    ]) {
+      const cols = parts.map((k) => `${k}_${suffix}`);
+      if (cols.some((c) => row[c] == null) || row[whole] == null) continue;
+      const total = cols.reduce((acc, c) => acc + row[c], 0);
+      if (total !== row[whole]) bad.push(`${axis} ${suffix} sums to ${total}, ${whole} is ${row[whole]}`);
+    }
+  }
+  return bad;
+}
+
 /* Bouts that reached the judges. Mirrors JUDGED_METHODS in
  * web/lib/judgeScoring.ts — the two must agree about what a scored bout is. */
 const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
@@ -283,7 +326,7 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
   }
 
   console.log(`[${SERVICE}] START ${health.last_cron_run} invoked=${invoked} mode=${mode}${card ? ` card=${card.name}` : ''}`);
-  const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, scorecards_reconciled: 0, scorecards_written: 0, scorecard_cards_written: 0, assertion_failures: [], notes: { invoked, cron, mode, version: VERSION, card: card ? { name: card.name, event_date: card.event_date, via: card.source } : null } };
+  const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, scorecards_reconciled: 0, scorecards_written: 0, scorecard_cards_written: 0, totals_reconciled: 0, totals_bouts_written: 0, totals_rows_written: 0, assertion_failures: [], notes: { invoked, cron, mode, version: VERSION, card: card ? { name: card.name, event_date: card.event_date, via: card.source } : null } };
   let runId = null;
   let status = 'success';
   /* Challenges are answered only when UFCSTATS_SOLVE_CHALLENGE="true". The
@@ -363,6 +406,11 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
   } finally {
     /* ufc_ingest_runs has no scorecard columns, so the counters ride in notes
      * (jsonb) rather than silently vanishing from the ledger. */
+    if (run.totals_reconciled) {
+      run.notes.fight_totals_looked_up = run.totals_reconciled;
+      run.notes.fight_totals_bouts_written = run.totals_bouts_written;
+      run.notes.fight_totals_rows_written = run.totals_rows_written;
+    }
     if (run.scorecards_reconciled) {
       run.notes.scorecards_looked_up = run.scorecards_reconciled;
       run.notes.scorecards_written = run.scorecards_written;
@@ -382,7 +430,7 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
     if (status === 'success') {
       const n = run.notes;
       await discord(env, `${SERVICE} ok: events_new=${run.events_new} bouts_new=${run.bouts_new} fighters=${run.fighters_touched}`
-        + ` rounds=${n.round_rows_written || 0}${n.scorecards_written ? ` scorecards=${n.scorecards_written}` : ''}${n.review_queued ? ` review=${n.review_queued}` : ''}`
+        + ` rounds=${n.round_rows_written || 0}${n.scorecards_written ? ` scorecards=${n.scorecards_written}` : ''}${n.fight_totals_bouts_written ? ` totals=${n.fight_totals_bouts_written}` : ''}${n.review_queued ? ` review=${n.review_queued}` : ''}`
         + `${run.assertion_failures.length ? ` notes=${run.assertion_failures.length}` : ''}`);
     }
     console.log(`[${SERVICE}] END status=${status} events_new=${run.events_new} bouts_new=${run.bouts_new} round_rows_written=${run.notes.round_rows_written || 0}`);
@@ -593,6 +641,7 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
   const bouts = await espn.bouts(ev);
   if (ev.skipped?.length) run.notes.placeholder_competitions = (run.notes.placeholder_competitions || 0) + ev.skipped.length;
   const seen = new Set();
+  const totalsCandidates = [];
   let allResults = bouts.length > 0;
   for (const b of bouts) {
     const wc = normWeightClass(b.weight_class_raw, b.source_url);
@@ -670,10 +719,24 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
       await upsert(env, 'ufc_bout_results', resultRow, 'bout_id');
       ctx.resultsByBout.set(saved.id, { ...(prior || {}), bout_id: saved.id, has_stats: prior?.has_stats || false,
         winner_id: winnerRow?.id || null, round: b.result.round, judge_1: resultRow.judge_1 ?? prior?.judge_1 ?? null });
+
+      /* Fight totals are gathered here and written after the loop, so one
+       * scoped existence query covers the whole card instead of one per bout. */
+      totalsCandidates.push({
+        boutId: saved.id,
+        competitionRef: b.source_url,
+        espnCompetitionId: b.espn_competition_id,
+        corners: [
+          { espnAthleteId: b.fighters[0].espn_athlete_id, fighterId: fa.id },
+          { espnAthleteId: b.fighters[1].espn_athlete_id, fighterId: fb.id },
+        ],
+      });
     } else if (!cancelled) {
       allResults = false;
     }
   }
+  await writeFightTotals(env, espn, run, totalsCandidates);
+
   for (const b of ctx.bouts) {
     if (b.event_id === evRow.id && b.espn_competition_id && !seen.has(b.espn_competition_id) && b.status === 'announced') {
       run.assertion_failures.push({ class: 'AnnouncedBoutVanished', url: ev.url, detail: `competition ${b.espn_competition_id} no longer on ESPN card`, at: nowIso() });
@@ -682,6 +745,105 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
   if (allResults && evRow.card_status !== 'complete') {
     await patch(env, 'ufc_events', `id=eq.${evRow.id}`, { card_status: 'complete', updated_at: nowIso() });
     evRow.card_status = 'complete';
+  }
+}
+
+/**
+ * ESPN whole-fight totals for bouts that have just gone final.
+ *
+ * FIGHT TOTALS ONLY. These rows go to ufc_bout_fight_stats and never to
+ * ufc_bout_round_stats: ESPN reports splits.type "total" with no round
+ * dimension, so there is no round number to write and inventing one — say,
+ * the round the fight ended in — would file a whole-fight figure as a
+ * per-round observation.
+ *
+ * Deliberately NOT a live lane. ESPN does update these numbers during a fight,
+ * but a running total is not a result, so nothing is written until the bout is
+ * final and both corners agree. The existing 15-minute fight-night cadence is
+ * the only thing that drives this.
+ *
+ * Both corners or nothing. A bout showing one fighter's totals reads as a
+ * complete record of a fight where the other man threw nothing.
+ */
+async function writeFightTotals(env, espn, run, candidates) {
+  if (!candidates.length) return;
+
+  /* One scoped existence query for the whole card, rather than a per-bout
+   * check or a walk of the entire table. */
+  const ids = candidates.map((c) => c.boutId);
+  let have = new Set();
+  try {
+    const rows = await select(env, 'ufc_bout_fight_stats', `select=bout_id&bout_id=in.(${ids.join(',')})`);
+    have = new Set((rows || []).map((r) => r.bout_id));
+  } catch (_) {
+    /* If we cannot tell what exists, do nothing rather than risk rewriting
+     * rows we already trust. */
+    return;
+  }
+
+  for (const c of candidates) {
+    if (have.has(c.boutId)) continue;
+    if (run.totals_reconciled >= FIGHT_TOTALS_RECONCILE_MAX) {
+      run.notes.fight_totals_capped = true;
+      return;
+    }
+    run.totals_reconciled += 1;
+
+    let corners;
+    try {
+      corners = await Promise.all(c.corners.map((x) => espn.fightTotals(c.competitionRef, x.espnAthleteId)));
+    } catch (e) {
+      /* A changed payload shape is an assertion, not a silent skip. */
+      run.assertion_failures.push({ class: e?.name || 'FightTotalsError', url: c.competitionRef, detail: String(e?.message || e).slice(0, 200), at: nowIso() });
+      continue;
+    }
+    /* Both corners required before publishing anything for this bout. */
+    if (corners.some((x) => !x)) {
+      run.notes.fight_totals_incomplete = (run.notes.fight_totals_incomplete || 0) + 1;
+      continue;
+    }
+
+    const rows = corners.map((t, i) => ({
+      bout_id: c.boutId,
+      fighter_id: c.corners[i].fighterId,
+      kd: t.kd,
+      sig_str_landed: t.sig_str_landed, sig_str_att: t.sig_str_att,
+      total_str_landed: t.total_str_landed, total_str_att: t.total_str_att,
+      td_landed: t.td_landed, td_att: t.td_att,
+      ctrl_sec: t.ctrl_sec, rev: t.rev,
+      head_landed: t.head_landed, head_att: t.head_att,
+      body_landed: t.body_landed, body_att: t.body_att,
+      leg_landed: t.leg_landed, leg_att: t.leg_att,
+      distance_landed: t.distance_landed, distance_att: t.distance_att,
+      clinch_landed: t.clinch_landed, clinch_att: t.clinch_att,
+      ground_landed: t.ground_landed, ground_att: t.ground_att,
+      source_family: 'espn',
+      source_url: t.source_url,
+      source_competition_id: c.espnCompetitionId || null,
+      source_updated_at: t.source_updated_at,
+      captured_at: nowIso(),
+    }));
+
+    /* Identity: the athlete ESPN answered for must be the athlete we asked
+     * about, or the row would be the wrong fighter's fight. */
+    const identityOk = corners.every((t, i) => String(t.espn_athlete_id) === String(c.corners[i].espnAthleteId));
+    if (!identityOk) {
+      run.assertion_failures.push({ class: 'FightTotalsIdentityMismatch', url: c.competitionRef, detail: `competitor ids did not round-trip for bout ${c.boutId}`, at: nowIso() });
+      continue;
+    }
+
+    const problems = rows.flatMap((r, i) => fightTotalsIncoherence(r).map((p) => `${c.corners[i].espnAthleteId}: ${p}`));
+    if (problems.length) {
+      /* Store nothing for the bout. A contradictory row is worse than no row,
+       * because the page presents whatever is stored as verified. */
+      run.notes.fight_totals_incoherent = (run.notes.fight_totals_incoherent || 0) + 1;
+      run.assertion_failures.push({ class: 'FightTotalsIncoherent', url: c.competitionRef, detail: problems.join('; ').slice(0, 300), at: nowIso() });
+      continue;
+    }
+
+    await upsert(env, 'ufc_bout_fight_stats', rows, 'bout_id,fighter_id');
+    run.totals_bouts_written += 1;
+    run.totals_rows_written += rows.length;
   }
 }
 

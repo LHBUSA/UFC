@@ -229,6 +229,73 @@ export class Espn {
     return { cards, rejected, scoredJudges: byOfficial.size };
   }
 
+  /* Whole-fight statistics for one competitor. FIGHT TOTALS ONLY.
+   *
+   * ESPN labels this document itself: splits.type is "total" for every event
+   * we have checked, back to 2019, and the endpoint ignores every attempt to
+   * address a round. This method ASSERTS that label rather than trusting it,
+   * so the day ESPN introduces a real split it fails loudly instead of
+   * silently writing a partial figure into a total.
+   *
+   * Returns null — never a half-row — when the payload cannot be trusted. */
+  async fightTotals(competitionRef, competitorId) {
+    const base = String(competitionRef).split('?')[0].replace(/^http:/, 'https:');
+    if (!/\/competitions\/\d+$/.test(base) || !/^\d+$/.test(String(competitorId))) return null;
+    const url = `${base}/competitors/${competitorId}/statistics`;
+    const j = await this.json(url);
+    const splits = j?.splits;
+    if (!splits) return null;
+    /* The one assumption this whole table rests on. */
+    if (splits.type !== 'total') {
+      throw new SchemaAssertionError(url, `expected splits.type "total", got ${JSON.stringify(splits.type)}`);
+    }
+    const stats = splits.categories?.[0]?.stats;
+    if (!Array.isArray(stats) || !stats.length) return null;
+
+    const by = new Map(stats.map((x) => [x.name, x]));
+    const n = (name) => {
+      const v = by.get(name)?.value;
+      return Number.isFinite(v) ? Math.round(v) : null;
+    };
+    /* Sum one axis of the 3x3 significant-strike matrix. Returns null if ANY
+     * component is missing, because a partial sum reads as a real total. */
+    const sum = (names) => {
+      let acc = 0;
+      for (const name of names) {
+        const v = n(name);
+        if (v === null) return null;
+        acc += v;
+      }
+      return acc;
+    };
+    const POS = ['Distance', 'Clinch', 'Ground'];
+    const TGT = ['Head', 'Body', 'Leg'];
+    const target = (t, suffix) => sum(POS.map((p) => `sig${p}${t}Strikes${suffix}`));
+    const position = (p, suffix) => sum(TGT.map((t) => `sig${p}${t}Strikes${suffix}`));
+
+    /* ESPN's wallclock is when the SOURCE last updated the numbers. */
+    const wall = by.get('wallclock')?.value;
+    const sourceUpdatedAt = Number.isFinite(wall) && wall > 0 ? new Date(wall * 1000).toISOString() : null;
+
+    return {
+      espn_athlete_id: String(competitorId),
+      kd: n('knockDowns'),
+      sig_str_landed: n('sigStrikesLanded'), sig_str_att: n('sigStrikesAttempted'),
+      total_str_landed: n('totalStrikesLanded'), total_str_att: n('totalStrikesAttempted'),
+      td_landed: n('takedownsLanded'), td_att: n('takedownsAttempted'),
+      ctrl_sec: n('timeInControl'),
+      rev: n('reversals'),
+      head_landed: target('Head', 'Landed'), head_att: target('Head', 'Attempted'),
+      body_landed: target('Body', 'Landed'), body_att: target('Body', 'Attempted'),
+      leg_landed: target('Leg', 'Landed'), leg_att: target('Leg', 'Attempted'),
+      distance_landed: position('Distance', 'Landed'), distance_att: position('Distance', 'Attempted'),
+      clinch_landed: position('Clinch', 'Landed'), clinch_att: position('Clinch', 'Attempted'),
+      ground_landed: position('Ground', 'Landed'), ground_att: position('Ground', 'Attempted'),
+      source_updated_at: sourceUpdatedAt,
+      source_url: url,
+    };
+  }
+
   /* Athlete identity + physicals. */
   async athlete(refOrId) {
     const url = String(refOrId).startsWith('http') ? refOrId : `${CORE}/athletes/${refOrId}?lang=en&region=us`;

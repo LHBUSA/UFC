@@ -224,7 +224,8 @@ test("an unparsable or unnamed card is dropped, not rendered as a zero", () => {
     winnerId: A, fighterAId: A, fighterBId: B,
   });
   assert.equal(s.cardCount, 1);
-  assert.equal(s.cards[0].judge, "Mike Bell");
+  /* Resolves through the Mike Bell -> Michael Bell merge. */
+  assert.equal(s.cards[0].judge, "Michael Bell");
 });
 
 test("a deduction annotation on a card survives into the rendered card", () => {
@@ -412,7 +413,7 @@ test("an unconfirmed near-name never combines samples", () => {
   assert.equal(bySlug.get("chris-lee"), 1, "Chris Lee's card did not stay on his own record");
   assert.equal(bySlug.get("chris-leben"), 1, "Chris Leben's card did not stay on his own record");
   assert.equal(bySlug.get("chris-le"), 1, "an unseen near-name was folded into an existing judge");
-  assert.equal(bySlug.get("mike-bell"), 3, "a judge who really did work all three bouts should accumulate");
+  assert.equal(bySlug.get("michael-bell"), 3, "a judge who really did work all three bouts should accumulate");
   assert.equal(bySlug.size, 5, "expected five distinct judges across the three bouts");
 });
 
@@ -548,4 +549,58 @@ test("a placeholder official would be visible if one ever reached the archive", 
   });
   assert.equal(sheet.cards[0].judge, "Judge 1");
   assert.equal(J.resolveJudge("Judge 1").name, "Judge 1");
+});
+
+/* ---- Michael Bell identity --------------------------------------------- */
+
+test("Mike Bell resolves to Michael Bell, and the deductions follow", () => {
+  /* The commissions license one official under two spellings, and the archive
+     rules out two people: the spellings never share a bout, a date or an
+     event, and "Michael Bell" appears only from the day a second source began
+     naming judges. Canonical is the MINORITY archive spelling (3 cards against
+     568) because the licensing records decide the name, not the row count. */
+  assert.equal(J.resolveJudge("Mike Bell").name, "Michael Bell");
+  assert.equal(J.resolveJudge("David Michael Bell").name, "Michael Bell");
+  assert.equal(J.resolveJudge("Michael Bell").name, "Michael Bell", "the canonical name must not itself be aliased away");
+  assert.ok(!J.JUDGE_ALIASES["Michael Bell"], "canonical direction is reversed");
+
+  /* resolveJudge does ONE lookup, so a deduction annotation still pointing at
+     the retired spelling would quietly open a third profile. */
+  for (const raw of [
+    "Illegal Knee by Jouban Mike Bell",
+    "Illegal Strike to Grounded Opponent and Strike After Bell by Kim Mike Bell",
+    "Repeated Low Blows by Xiao Mike Bell",
+    "Technical Decision - Eye Poke by Song Mike Bell",
+  ]) {
+    const r = J.resolveJudge(raw);
+    assert.equal(r.name, "Michael Bell", `${raw} did not follow the merge`);
+    assert.ok(r.cardNote, "the deduction note is still preserved on the card");
+  }
+});
+
+test("every Bell card lands on one record, old and new spellings alike", () => {
+  /* 2013-2026 archive cards and the 2026 ESPN cards must pool, not split. */
+  const bySlug = new Map();
+  for (const judge of ["Mike Bell", "Michael Bell", "Illegal Knee by Jouban Mike Bell"]) {
+    const sheet = J.buildBoutScorecard({
+      method: "DEC_U", scorecards: [card(judge, "27-30")], winnerId: B, fighterAId: A, fighterBId: B,
+    });
+    for (const c of sheet.cards) bySlug.set(c.judgeSlug, (bySlug.get(c.judgeSlug) || 0) + 1);
+  }
+  assert.equal(bySlug.size, 1, "the Bell cards split across more than one profile");
+  assert.equal(bySlug.get("michael-bell"), 3);
+  /* And the retired URL still points somewhere real. */
+  assert.equal(J.judgeSlug("Mike Bell"), "mike-bell");
+  assert.equal(J.judgeSlug("Michael Bell"), "michael-bell");
+});
+
+test("Andrew Topps is his own official, not a spelling variant", () => {
+  /* External records confirm a real MMA official. Our archive found no alias
+     for him, so he stays a canonical identity of his own — being new is not
+     evidence of being a variant of someone else. */
+  assert.equal(J.resolveJudge("Andrew Topps").name, "Andrew Topps");
+  assert.ok(!J.JUDGE_ALIASES["Andrew Topps"], "Andrew Topps must not be aliased away");
+  const asTarget = Object.entries(J.JUDGE_ALIASES).find(([, a]) => a.canonical === "Andrew Topps");
+  assert.ok(!asTarget, "nothing should be merged INTO Andrew Topps without archive evidence");
+  assert.equal(J.judgeSlug("Andrew Topps"), "andrew-topps");
 });

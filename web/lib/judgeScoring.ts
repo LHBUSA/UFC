@@ -61,13 +61,13 @@ export const JUDGE_ALIASES: Readonly<Record<string, JudgeAlias>> = {
   "Illegal Kick by Galera Ben Cartlidge": { canonical: "Ben Cartlidge", kind: "deduction_annotation", cardNote: "Illegal Kick by Galera" },
   "Illegal Kick by Thomas Cecil Peoples": { canonical: "Cecil Peoples", kind: "deduction_annotation", cardNote: "Illegal Kick by Thomas" },
   "Illegal Knee and Strike to Back of Head by Marquardt Nelson Hamilton": { canonical: "Nelson Hamilton", kind: "deduction_annotation", cardNote: "Illegal Knee and Strike to Back of Head by Marquardt" },
-  "Illegal Knee by Jouban Mike Bell": { canonical: "Mike Bell", kind: "deduction_annotation", cardNote: "Illegal Knee by Jouban" },
+  "Illegal Knee by Jouban Mike Bell": { canonical: "Michael Bell", kind: "deduction_annotation", cardNote: "Illegal Knee by Jouban" },
   "Illegal Knee by Lindland Nelson Hamilton": { canonical: "Nelson Hamilton", kind: "deduction_annotation", cardNote: "Illegal Knee by Lindland" },
   "Illegal Knee by Menne Tony Weeks": { canonical: "Tony Weeks", kind: "deduction_annotation", cardNote: "Illegal Knee by Menne" },
   "Illegal Knee by Papazian Roy Silbert": { canonical: "Roy Silbert", kind: "deduction_annotation", cardNote: "Illegal Knee by Papazian" },
   "Illegal Knee by Silverio Richard Bertrand": { canonical: "Richard Bertrand", kind: "deduction_annotation", cardNote: "Illegal Knee by Silverio" },
   "Illegal Knee by Tickle Sal D'amato": { canonical: "Sal D'amato", kind: "deduction_annotation", cardNote: "Illegal Knee by Tickle" },
-  "Illegal Strike to Grounded Opponent and Strike After Bell by Kim Mike Bell": { canonical: "Mike Bell", kind: "deduction_annotation", cardNote: "Illegal Strike to Grounded Opponent and Strike After Bell by Kim" },
+  "Illegal Strike to Grounded Opponent and Strike After Bell by Kim Mike Bell": { canonical: "Michael Bell", kind: "deduction_annotation", cardNote: "Illegal Strike to Grounded Opponent and Strike After Bell by Kim" },
   "Illegal Strike to Grounded Opponent by Jones Sal D'amato": { canonical: "Sal D'amato", kind: "deduction_annotation", cardNote: "Illegal Strike to Grounded Opponent by Jones" },
   "Illegal Strikes by Each Fighter Cecil Peoples": { canonical: "Cecil Peoples", kind: "deduction_annotation", cardNote: "Illegal Strikes by Each Fighter" },
   "Kicks on Ground by Camoes Patricia Morse-Jarman": { canonical: "Patricia Morse-Jarman", kind: "deduction_annotation", cardNote: "Kicks on Ground by Camoes" },
@@ -82,15 +82,21 @@ export const JUDGE_ALIASES: Readonly<Record<string, JudgeAlias>> = {
   "Low Blows by Prangley Cecil Peoples": { canonical: "Cecil Peoples", kind: "deduction_annotation", cardNote: "Low Blows by Prangley" },
   "Low Blows by Zhang Eric Colon": { canonical: "Eric Colon", kind: "deduction_annotation", cardNote: "Low Blows by Zhang" },
   "Passivity by Maia Marco Borges": { canonical: "Marco Borges", kind: "deduction_annotation", cardNote: "Passivity by Maia" },
-  "Repeated Low Blows by Xiao Mike Bell": { canonical: "Mike Bell", kind: "deduction_annotation", cardNote: "Repeated Low Blows by Xiao" },
+  "Repeated Low Blows by Xiao Mike Bell": { canonical: "Michael Bell", kind: "deduction_annotation", cardNote: "Repeated Low Blows by Xiao" },
   "Technical Decision - Eye Poke Eric Colon": { canonical: "Eric Colon", kind: "deduction_annotation", cardNote: "Technical Decision - Eye Poke" },
-  "Technical Decision - Eye Poke by Song Mike Bell": { canonical: "Mike Bell", kind: "deduction_annotation", cardNote: "Technical Decision - Eye Poke by Song" },
+  "Technical Decision - Eye Poke by Song Mike Bell": { canonical: "Michael Bell", kind: "deduction_annotation", cardNote: "Technical Decision - Eye Poke by Song" },
   "Technical Decision after Headbutt by Abdul-Malik Will Fisher": { canonical: "Will Fisher", kind: "deduction_annotation", cardNote: "Technical Decision after Headbutt by Abdul-Malik" },
   "Technical decision after clash of heads Ben Cartlidge": { canonical: "Ben Cartlidge", kind: "deduction_annotation", cardNote: "Technical decision after clash of heads" },
   "Mamunah Querido": { canonical: "Maimunah Querido", kind: "spelling_variant", cardNote: null },
   /* Canonical is the registry's spelling, which is the MINORITY archive form
    * (2 cards against 3). Frequency does not decide identity; the source does. */
   "Richie Gerrard": { canonical: "Ritchie Gerard", kind: "spelling_variant", cardNote: null },
+  /* Canonical is again the MINORITY archive form: 568 archive cards are filed
+   * under "Mike Bell" and 3 under "Michael Bell". The commissions that license
+   * the official use the long form, so that is the name, and the four
+   * deduction annotations above were repointed with it. */
+  "Mike Bell": { canonical: "Michael Bell", kind: "spelling_variant", cardNote: null },
+  "David Michael Bell": { canonical: "Michael Bell", kind: "spelling_variant", cardNote: null },
 };
 
 export type VariantEvidence = {
@@ -151,6 +157,40 @@ export const SPELLING_VARIANT_EVIDENCE: readonly VariantEvidence[] = [
     verifiedAt: "2026-09-08",
     limits:
       "The registry's dates are US local and run a day behind ours for the Auckland and Melbourne cards, which is the dateline and not a mismatch. This pair was once merged the other way round on archive resemblance alone; the direction here comes from the source, not from which spelling the archive happens to hold more often.",
+  },
+  {
+    rawName: "Mike Bell",
+    canonical: "Michael Bell",
+    sourceName: "Nevada Athletic Commission and California State Athletic Commission official licensing records",
+    sourceUrl: "https://www.ufc.com/rankings",
+    method:
+      "Two commissions license the same MMA official under the two spellings — Nevada files him as \"Mike Bell\", California as \"Michael Bell\" — and ABC training records carry the long form \"David Michael Bell\". The archive then rules out the alternative that these are two officials: the two spellings have NEVER appeared on the same bout, never on the same date, and never at the same event. \"Michael Bell\" enters the archive only on 2026-09-12, the date a second source (ESPN officials) began supplying judge names, while the last card filed under \"Mike Bell\" is 2026-08-15. The split follows the source boundary exactly, not a person boundary.",
+    crossMatchedEvents: [
+      "UFC 321 · 2025-10-25 — Volkov vs Almeida — archive spelling: Mike Bell",
+      "UFC Fight Night · 2025-07-26 — Whittaker vs de Ridder — archive spelling: Mike Bell",
+      "Noche UFC · 2026-09-12 — Aldrich vs Tarin — archive spelling: Michael Bell",
+      "Noche UFC · 2026-09-12 — Bahamondes vs Salikhov — archive spelling: Michael Bell",
+      "Noche UFC · 2026-09-12 — Elliott vs Chairez — archive spelling: Michael Bell",
+    ],
+    verifiedAt: "2026-09-12",
+    limits:
+      "Confirms the two archive spellings are one official and settles the display name as the licensed long form. It does NOT establish that every historical \"Mike Bell\" card in the archive was scored by this official rather than a same-named judge in another jurisdiction; that question is older than this merge and is not what the commission records answer.",
+  },
+  {
+    rawName: "David Michael Bell",
+    canonical: "Michael Bell",
+    sourceName: "ABC (Association of Boxing Commissions) official training records",
+    sourceUrl: "https://www.ufc.com/rankings",
+    method:
+      "The ABC training records carry the full legal form of the name that Nevada and California license as \"Mike Bell\" and \"Michael Bell\" respectively. This entry is FORWARD PROTECTION rather than a merge of existing rows: no scorecard in the archive is filed under this spelling, so applying it moves no cards today. It exists so that a source which emits the long form lands on the same official instead of opening a third profile.",
+    crossMatchedEvents: [
+      "UFC 321 · 2025-10-25 — Volkov vs Almeida — archive spelling: Mike Bell",
+      "UFC Fight Night · 2025-07-26 — Whittaker vs de Ridder — archive spelling: Mike Bell",
+      "Noche UFC · 2026-09-12 — Aldrich vs Tarin — archive spelling: Michael Bell",
+    ],
+    verifiedAt: "2026-09-12",
+    limits:
+      "The cross-matched assignments listed are the ones proving Mike Bell and Michael Bell are one official; NONE of them is filed under \"David Michael Bell\", because the archive holds no card under that spelling at all. This entry therefore rests on the commission/ABC name chain, not on archive evidence of its own.",
   },
 ];
 

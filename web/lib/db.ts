@@ -182,6 +182,31 @@ export async function getFighterRoundStats(fighterId: string): Promise<RoundStat
   return (await rest<RoundStat[]>(`ufc_bout_round_stats?select=*&fighter_id=eq.${fighterId}&limit=3000`, [])).data;
 }
 
+/* ESPN whole-fight totals. A DIFFERENT dataset from the round stats above and
+ * deliberately a different reader: ESPN reports splits.type "total" with no
+ * round dimension, UFC Stats reports the round decomposition, and the two are
+ * shown as separate sections rather than merged into one apparent truth. */
+export type FightTotals = {
+  bout_id: string; fighter_id: string;
+  kd: number | null;
+  sig_str_landed: number | null; sig_str_att: number | null;
+  total_str_landed: number | null; total_str_att: number | null;
+  td_landed: number | null; td_att: number | null;
+  ctrl_sec: number | null; rev: number | null;
+  head_landed: number | null; head_att: number | null;
+  body_landed: number | null; body_att: number | null;
+  leg_landed: number | null; leg_att: number | null;
+  distance_landed: number | null; distance_att: number | null;
+  clinch_landed: number | null; clinch_att: number | null;
+  ground_landed: number | null; ground_att: number | null;
+  source_family: string; source_url: string;
+  source_competition_id: string | null;
+  source_updated_at: string | null; captured_at: string;
+};
+export async function getFightTotals(boutId: string): Promise<FightTotals[]> {
+  return (await rest<FightTotals[]>(`ufc_bout_fight_stats?select=*&bout_id=eq.${boutId}`, [])).data;
+}
+
 /* ---- fighters --------------------------------------------------------- */
 export async function getFighters(q = "", limit = 60, offset = 0, opts: { letter?: string; activeOnly?: boolean } = {}): Promise<{ rows: Fighter[]; count: number | null }> {
   let filter = "";
