@@ -25,6 +25,48 @@ import { WatchStrip } from "@/components/HowToWatch";
 
 export const revalidate = 300;
 
+/* The four live archive counts, with their glyphs. A table rather than four
+ * near-identical JSX blocks: adding a fifth stat is one row, and the icon and
+ * the count can never drift apart. Keys are the fields getCounts() returns. */
+const HERO_STATS = [
+  {
+    key: "events" as const,
+    label: "All indexed events",
+    icon: (
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="12" height="11" rx="2" /><path d="M2 6.5h12M5.5 1.8v2.4M10.5 1.8v2.4" />
+      </svg>
+    ),
+  },
+  {
+    key: "fighters" as const,
+    label: "Fighters",
+    icon: (
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="8" cy="5.2" r="2.6" /><path d="M2.8 13.6c.7-2.7 2.7-4.1 5.2-4.1s4.5 1.4 5.2 4.1" />
+      </svg>
+    ),
+  },
+  {
+    key: "results" as const,
+    label: "Results loaded",
+    icon: (
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2.6 13.4V8.2M6.9 13.4V3.6M11.2 13.4v-6" /><path d="M1.4 13.4h13.2" />
+      </svg>
+    ),
+  },
+  {
+    key: "rounds" as const,
+    label: "Round-stat rows",
+    icon: (
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2.6" y="2" width="10.8" height="12" rx="1.8" /><path d="M5.4 5.4h5.2M5.4 8h5.2M5.4 10.6h3.1" />
+      </svg>
+    ),
+  },
+];
+
 export default async function Home() {
   const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire, allUpcoming, recentAll] = await Promise.all([
     getNextEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(7), getCounts(), getRankings(), getTicker(8),
@@ -66,29 +108,65 @@ export default async function Home() {
 
   return (
     <>
-      <section className="hero">
+      {/* ONE deliberate arena treatment, server-rendered.
+          There is no switcher, no rotation, no timer and no post-hydration
+          swap: the image is in the first byte of HTML and never changes. The
+          background-selection system that used to own this was removed — it
+          applied the backdrop from a root-layout effect that raced the page,
+          so the hero usually rendered flat. */}
+      <section className="hero hero-cinematic">
+        <div
+          className="hero-stage"
+          aria-hidden="true"
+          style={{ backgroundImage: 'url("/media/home-bg-fight-night.webp")' }}
+        />
         <Octagon className="hero-oct" />
         <div className="wrap hero-in">
-          <div>
+          <div className="hero-editorial">
+            <div className="hero-copy">
             <div className="hero-net"><Mark size={32} /><span className="eyebrow">PropBetEdge Sports Network · Fight Intelligence</span></div>
             <h1 aria-label="Every card. Every fighter. Every round.">Every card. Every f{"‌"}ighter. <em>Every round.</em></h1>
             <p className="lede">
               Live UFC fight-week intelligence from first announcement to final result: full cards, the Pregame Desk, fighter dossiers, Fight DNA,
               official rankings, championship context, seven eras of history, source-linked media and a newsroom that only writes what its evidence can support.
             </p>
+            {/* Three visibly different weights: one filled control, one
+                outlined, one quiet. The primary is the only gold fill in the
+                hero, so there is never a question which action is the action. */}
             <div className="hero-actions">
-              <Link href={next ? `/events/${eventSlug(next)}` : "/events"} className="btn gold lg">{next ? "Enter fight week" : "UFC schedule"}</Link>
-              <Link href="/events" className="btn lg">Schedule & results</Link>
-              <Link href="/history" className="btn lg hide-m">History</Link>
+              <Link href={next ? `/events/${eventSlug(next)}` : "/events"} className="hero-cta-primary">
+                {next ? "Enter fight week" : "UFC schedule"}
+                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+                  <path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+              <Link href="/events" className="hero-cta-secondary">Schedule &amp; results</Link>
+              <Link href="/history" className="hero-cta-tertiary">History</Link>
             </div>
+            </div>
+
+            {/* Same four live counts, presented as information blocks rather
+                than four loose numbers. Icons are inline SVG: no request, no
+                icon font, no layout cost. */}
+            <div className="hero-stats-block">
             <div className="hero-stats">
-              <div className="stat"><b>{counts.events?.toLocaleString() ?? "—"}</b><span>All indexed events</span></div>
-              <div className="stat"><b>{counts.fighters?.toLocaleString() ?? "—"}</b><span>Fighters</span></div>
-              <div className="stat"><b>{counts.results?.toLocaleString() ?? "—"}</b><span>Results loaded</span></div>
-              <div className="stat"><b>{counts.rounds?.toLocaleString() ?? "—"}</b><span>Round-stat rows</span></div>
+              {HERO_STATS.map((stat) => (
+                <div className="stat" key={stat.label}>
+                  <span className="stat-ico" aria-hidden="true">{stat.icon}</span>
+                  <span className="stat-val">
+                    <b>{counts[stat.key]?.toLocaleString() ?? "—"}</b>
+                    <span>{stat.label}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
             </div>
           </div>
-          <div>
+          <div className="hero-feature-col">
+            {/* Card and broadcast panel share ONE frame, one border and one
+                shadow, so the times read as the bottom third of the featured
+                event rather than as a tray bolted underneath it. */}
+            <div className="hero-feature">
             {next ? (
               <Link href={`/events/${eventSlug(next)}`} className="poster" aria-label={`${next.name}: full card`}>
                 <div className="poster-top">
@@ -134,7 +212,12 @@ export default async function Home() {
                 the visitor's own timezone, the carrier, and a live countdown.
                 Rendered from data the page already has, so it cannot shift the
                 poster when it "loads" — there is nothing to load. */}
-            {next && broadcast && <div className="mt-4"><WatchStrip b={broadcast} href={`/events/${eventSlug(next)}`} /></div>}
+            {next && broadcast && (
+              <div className="hero-watch">
+                <WatchStrip b={broadcast} variant="hero" />
+              </div>
+            )}
+            </div>
           </div>
         </div>
       </section>

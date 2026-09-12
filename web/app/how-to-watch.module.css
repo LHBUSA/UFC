@@ -392,3 +392,74 @@
   }
   .carrier { padding: 14px 16px 15px 18px; }
 }
+
+/* ---- hero variant: the base of the homepage featured-event card ----
+ *
+ * Same strip, but living inside .hero-feature, so it drops its own border and
+ * radius and lets the frame own them. This is what turns "a panel under the
+ * card" into "the bottom third of the card".
+ */
+.stripHero {
+  gap: 14px;
+  padding: 16px 20px 18px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(180deg, rgba(212, 175, 55, .05), rgba(8, 7, 6, .5));
+}
+.stripHero .stripEyebrow { font-size: 10px; }
+.stripHero .stripSlot b { font-size: 17px; }
+
+.stripCta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 13px;
+  border-top: 1px solid var(--pbe-line-faint);
+  min-width: 0;
+}
+
+/* The broadcaster as a real primary action. Gold-lined rather than gold-filled:
+   the filled control in this hero is "Enter fight week", and two filled gold
+   buttons on one screen is two primary actions, which is none. */
+.watchBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 11px 17px;
+  border: 1px solid rgba(212, 175, 55, .62);
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, rgba(212, 175, 55, .2), rgba(212, 175, 55, .07));
+  color: var(--pbe-paper);
+  font: 800 13.5px/1 var(--pbe-font-ui);
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 245, 220, .12), 0 6px 18px rgba(0, 0, 0, .34);
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+.watchBtn svg { flex: none; transition: transform .16s ease; }
+.watchBtn:hover {
+  transform: translateY(-1px);
+  border-color: var(--pbe-gold);
+  background: linear-gradient(180deg, rgba(212, 175, 55, .3), rgba(212, 175, 55, .12));
+}
+.watchBtn:hover svg { transform: translateX(2px); }
+
+.stripSource {
+  min-width: 0;
+  color: var(--pbe-faint);
+  font: 650 11px/1.45 var(--pbe-font-data);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 560px) {
+  .stripHero { padding: 14px 16px 16px; }
+  .stripCta { gap: 10px; }
+  /* Full-width so the broadcaster is a real target, not a pill in a corner. */
+  .watchBtn { flex: 1 1 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .watchBtn, .watchBtn svg { transition: none; }
+}
