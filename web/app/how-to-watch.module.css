@@ -15,41 +15,53 @@
  */
 
 .panel {
-  border: 1px solid var(--pbe-line);
+  position: relative;
+  border: 1px solid rgba(212, 175, 55, .24);
   border-radius: var(--r-xl);
   background:
-    radial-gradient(circle at 50% -30%, rgba(212, 175, 55, .08), transparent 42%),
-    linear-gradient(180deg, #17130e, #0b0a07);
-  box-shadow: var(--sh-2);
+    radial-gradient(circle at 82% -12%, rgba(212, 175, 55, .13), transparent 34%),
+    radial-gradient(circle at 12% 112%, rgba(255, 255, 255, .035), transparent 30%),
+    linear-gradient(180deg, #17130e 0%, #0d0b08 48%, #080706 100%);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .32), inset 0 1px 0 rgba(255, 255, 255, .025);
   overflow: hidden;
+}
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, .5), transparent);
+  pointer-events: none;
 }
 
 .head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s-3);
   flex-wrap: wrap;
   padding: 18px 22px 14px;
   border-bottom: 1px solid var(--pbe-line-faint);
-  background: rgba(0, 0, 0, .22);
+  background: linear-gradient(180deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .08));
 }
 .head h2 {
-  font: 600 var(--fs-label)/1.3 var(--pbe-font-data);
-  letter-spacing: var(--ls-label);
+  font: 700 var(--fs-label)/1.3 var(--pbe-font-data);
+  letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--pbe-gold);
+  color: var(--pbe-gold-bright);
 }
 .eventName {
   margin: 0;
-  padding: 16px 22px 2px;
-  font: 850 clamp(19px, 2.3vw, 26px)/1.15 var(--pbe-font-display);
+  padding: 18px 22px 3px;
+  font: 900 clamp(20px, 2.5vw, 29px)/1.12 var(--pbe-font-display);
   letter-spacing: var(--ls-tight);
   color: var(--pbe-paper);
   overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 .eventMeta {
-  padding: 0 22px 16px;
+  padding: 0 22px 18px;
   color: var(--pbe-dim);
   font-size: var(--fs-sm);
   line-height: 1.5;
@@ -67,10 +79,12 @@
 }
 .slot {
   min-width: 0;
-  padding: 15px 22px 17px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .012), transparent);
+  padding: 16px 22px 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .018), transparent);
 }
-.slot[data-main="true"] { background: linear-gradient(180deg, var(--pbe-gold-wash), transparent); }
+.slot[data-main="true"] {
+  background: linear-gradient(180deg, rgba(212, 175, 55, .115), rgba(212, 175, 55, .025));
+}
 .slotLabel {
   display: block;
   color: var(--pbe-faint);
@@ -81,10 +95,9 @@
 .slotTime {
   display: block;
   margin-top: 7px;
-  /* Reserving the line box keeps the local-time swap from moving anything. */
   min-height: 1.15em;
   color: var(--pbe-paper);
-  font: 800 clamp(19px, 2.1vw, 23px)/1.15 var(--pbe-font-data);
+  font: 850 clamp(20px, 2.1vw, 24px)/1.15 var(--pbe-font-data);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -100,56 +113,122 @@
 
 /* ---- carriers ---- */
 
-.watch { padding: 18px 22px 20px; }
+.watch {
+  padding: 20px 22px 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .01), rgba(0, 0, 0, .08));
+}
+.watchHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+}
 .watchLabel {
-  color: var(--pbe-faint);
-  font: 700 9px/1.2 var(--pbe-font-data);
+  color: var(--pbe-gold);
+  font: 800 9px/1.2 var(--pbe-font-data);
   text-transform: uppercase;
-  letter-spacing: .12em;
+  letter-spacing: .15em;
+}
+.watchHint {
+  color: var(--pbe-subtle);
+  font: 600 10.5px/1.35 var(--pbe-font-data);
 }
 .providers {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
   gap: 10px;
-  margin-top: 11px;
+  margin-top: 12px;
+}
+.cta,
+.carrier {
+  min-width: 0;
+  max-width: 100%;
+  border-radius: calc(var(--r-md) + 2px);
 }
 .cta {
-  display: inline-flex;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 16px 15px 18px;
+  border: 1px solid rgba(212, 175, 55, .48);
+  background:
+    linear-gradient(110deg, rgba(212, 175, 55, .19), rgba(212, 175, 55, .055) 54%, rgba(255, 255, 255, .025)),
+    rgba(0, 0, 0, .18);
+  color: var(--pbe-paper);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .035), 0 8px 28px rgba(0, 0, 0, .16);
+  transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+  overflow: hidden;
+}
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--pbe-gold-bright), var(--pbe-gold));
+}
+.cta:hover {
+  border-color: rgba(212, 175, 55, .85);
+  background:
+    linear-gradient(110deg, rgba(212, 175, 55, .27), rgba(212, 175, 55, .08) 54%, rgba(255, 255, 255, .035)),
+    rgba(0, 0, 0, .2);
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045), 0 12px 34px rgba(0, 0, 0, .23);
+}
+.cta:focus-visible {
+  outline: 2px solid var(--pbe-gold-bright);
+  outline-offset: 3px;
+}
+.ctaCopy {
+  display: flex;
   flex-direction: column;
   gap: 3px;
   min-width: 0;
-  max-width: 100%;
-  padding: 11px 17px;
-  border: 1px solid rgba(212, 175, 55, .42);
-  border-radius: var(--r-md);
-  background: linear-gradient(180deg, rgba(212, 175, 55, .14), rgba(212, 175, 55, .04));
-  color: var(--pbe-paper);
 }
-.cta:hover { border-color: var(--pbe-gold); background: linear-gradient(180deg, rgba(212, 175, 55, .22), rgba(212, 175, 55, .07)); }
-.cta b {
-  font: 800 13.5px/1.25 var(--pbe-font-ui);
-  letter-spacing: .01em;
+.ctaKicker {
+  color: var(--pbe-faint);
+  font: 750 8.5px/1.2 var(--pbe-font-data);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.cta b,
+.carrier b {
+  font: 850 16px/1.15 var(--pbe-font-ui);
+  letter-spacing: -.01em;
   overflow-wrap: anywhere;
 }
-.cta small {
+.cta small,
+.carrier small {
   color: var(--pbe-faint);
-  font: 650 9px/1.2 var(--pbe-font-data);
+  font: 650 9px/1.25 var(--pbe-font-data);
   text-transform: uppercase;
   letter-spacing: .09em;
 }
-/* A carrier UFC.com names but gives no destination for: stated, never linked,
-   and visibly not a button. */
-.carrier {
+.ctaAction {
   display: inline-flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 11px 17px;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  padding: 9px 12px;
+  border: 1px solid rgba(212, 175, 55, .3);
+  border-radius: var(--r-pill);
+  background: rgba(212, 175, 55, .12);
+  color: var(--pbe-gold-bright);
+  font: 800 10.5px/1 var(--pbe-font-data);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.carrier {
+  display: flex;
+  align-items: center;
+  padding: 15px 18px;
   border: 1px dashed var(--pbe-line-strong);
-  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, .012);
   color: var(--pbe-dim);
 }
-.carrier b { font: 750 13.5px/1.25 var(--pbe-font-ui); overflow-wrap: anywhere; }
-.carrier small { color: var(--pbe-subtle); font: 650 9px/1.2 var(--pbe-font-data); text-transform: uppercase; letter-spacing: .09em; }
 
 /* ---- status strip ---- */
 
@@ -161,7 +240,7 @@
   flex-wrap: wrap;
   padding: 12px 22px 14px;
   border-top: 1px solid var(--pbe-line-faint);
-  background: rgba(0, 0, 0, .2);
+  background: rgba(0, 0, 0, .24);
 }
 .verified {
   display: inline-flex;
@@ -169,8 +248,6 @@
   gap: 7px;
   min-width: 0;
   color: var(--pbe-dim);
-  /* Explicitly NOT micro type: the provenance line is the product's claim to
-     authority and has to be readable, not a legal footnote. */
   font: 600 12px/1.45 var(--pbe-font-data);
   overflow-wrap: anywhere;
 }
@@ -188,9 +265,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
-  border: 1px solid rgba(212, 175, 55, .35);
+  padding: 7px 12px;
+  border: 1px solid rgba(212, 175, 55, .38);
   border-radius: var(--r-pill);
+  background: rgba(212, 175, 55, .055);
   color: var(--pbe-gold-bright);
   font: 800 11.5px/1 var(--pbe-font-data);
   letter-spacing: .05em;
@@ -203,7 +281,9 @@
   color: #ff8a93;
 }
 .liveDot {
-  width: 7px; height: 7px; border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
   background: var(--pbe-live);
   box-shadow: 0 0 0 0 rgba(230, 57, 70, .6);
   animation: htwPulse 2s infinite;
@@ -213,7 +293,11 @@
   70% { box-shadow: 0 0 0 8px rgba(230, 57, 70, 0); }
   100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
 }
-@media (prefers-reduced-motion: reduce) { .liveDot { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .liveDot { animation: none; }
+  .cta { transition: none; }
+  .cta:hover { transform: none; }
+}
 
 /* An honest empty: a card whose times UFC.com has not published yet. */
 .pending {
@@ -229,9 +313,11 @@
   display: grid;
   gap: 12px;
   padding: 14px 16px;
-  border: 1px solid var(--pbe-line);
+  border: 1px solid rgba(212, 175, 55, .2);
   border-radius: var(--r-lg);
-  background: linear-gradient(180deg, rgba(212, 175, 55, .06), rgba(0, 0, 0, .22));
+  background:
+    radial-gradient(circle at 100% 0, rgba(212, 175, 55, .08), transparent 35%),
+    linear-gradient(180deg, rgba(212, 175, 55, .055), rgba(0, 0, 0, .22));
 }
 .stripTop {
   display: flex;
@@ -242,7 +328,7 @@
 }
 .stripEyebrow {
   color: var(--pbe-gold);
-  font: 700 9.5px/1.2 var(--pbe-font-data);
+  font: 750 9.5px/1.2 var(--pbe-font-data);
   text-transform: uppercase;
   letter-spacing: .14em;
   min-width: 0;
@@ -291,8 +377,18 @@
   .times { grid-template-columns: repeat(auto-fit, minmax(124px, 1fr)); }
   .status { gap: 8px 12px; }
   .official { white-space: normal; }
-  /* Full-bleed CTAs read as buttons on a phone; a row of half-width pills does
-     not. */
-  .providers { gap: 8px; }
-  .cta, .carrier { flex: 1 1 100%; }
+  .watchHeading { align-items: flex-start; }
+  .providers { grid-template-columns: 1fr; gap: 8px; }
+  .cta {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 13px;
+    padding: 15px 16px 16px 18px;
+  }
+  .ctaAction {
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 12px;
+  }
+  .carrier { padding: 14px 16px 15px 18px; }
 }
