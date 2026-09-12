@@ -1,8 +1,22 @@
 import type { NextConfig } from "next";
+import { JUDGE_ALIASES, judgeSlug } from "./lib/judgeScoring";
 
 const supabaseHost = (() => {
   try { return new URL(process.env.SUPABASE_URL || "https://tkmlnhmylqnttmnsnief.supabase.co").hostname; } catch { return "tkmlnhmylqnttmnsnief.supabase.co"; }
 })();
+
+/* One entry per merged spelling whose slug differs from its canonical. */
+function retiredJudgeSlugRedirects() {
+  const out = [];
+  for (const [raw, alias] of Object.entries(JUDGE_ALIASES)) {
+    if (alias.kind !== "spelling_variant") continue;
+    const from = judgeSlug(raw);
+    const to = judgeSlug(alias.canonical);
+    if (!from || !to || from === to) continue;
+    out.push({ source: `/judges/${from}`, destination: `/judges/${to}`, permanent: true });
+  }
+  return out;
+}
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -39,6 +53,14 @@ const nextConfig: NextConfig = {
       // redirect rather than a second route, so there is one canonical URL and
       // the alias never competes with it in search.
       { source: "/picks", destination: "/model", permanent: true },
+      /* Retired judge profile URLs.
+       *
+       * Merging two spellings into one official retires a slug that was a live,
+       * linkable page. The page component also redirects, but that path only
+       * runs after a profile lookup misses, and a config redirect is the one
+       * mechanism that cannot be reached too late. Derived from the alias table
+       * itself so the list cannot drift away from the merges it represents. */
+      ...retiredJudgeSlugRedirects(),
     ];
   },
 };
