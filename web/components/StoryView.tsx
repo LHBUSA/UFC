@@ -15,6 +15,7 @@ import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
 import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } from "@/components/editorial";
 import { getEditorialMarket } from "@/lib/editorialMarket";
+import { getRankingMap } from "@/lib/rankings";
 import {
   BoutContextModule, ComparisonModule, DnaModule, RecentFormModule, RoundStyleModule,
   MarketModule, OfficialVideoModule, MethodologyModule, FighterCardModule,
@@ -55,6 +56,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
    *
    * Server-side, inside the existing render. No client polling was added and
    * the market ingest cadence is untouched. */
+  const ranks = await getRankingMap();
   const editorialMarket = await getEditorialMarket({
     boutId: a.bout_id,
     marketsOfInterest: [
@@ -176,7 +178,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
 
       {angle && <BettorsEdge em={editorialMarket} angle={angle} />}
       {!plan && dna && dna.status === "ok" && <DnaEvidence dna={dna.data} />}
-      {mm && <MatchupModule a={mm.a} b={mm.b} imgs={imgs} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
+      {mm && <MatchupModule a={mm.a} b={mm.b} imgs={imgs} ranks={ranks} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
       {/* The plan owns video when it has one: it resolved the clips against
         * this story's own subject and knows at which tier they matched, which
         * the generic rail cannot. The rail stays for legacy articles. */}

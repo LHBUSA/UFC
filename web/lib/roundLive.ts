@@ -23,6 +23,8 @@ import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import { buildBoutScorecard, type BoutScorecard } from "@/lib/judgeScoring";
 import { getRoundCoverageFor, isEligible, type RoundCoverage } from "@/lib/roundIndex";
 import { getNextBroadcast, watchState, type EventBroadcast, type WatchState } from "@/lib/broadcast";
+import { getRankingMap } from "@/lib/rankings";
+import type { FighterRankingContext } from "@/lib/rankingContext";
 
 /* Fight-night cache TTL. Short enough that a completed bout surfaces on the
  * next poll, long enough that traffic during a card costs one read a minute
@@ -57,6 +59,10 @@ export type RoundLiveState = {
   eventState: WatchState | null;
   /* True only while the broadcast window is open. */
   isLive: boolean;
+  /* Ranking identity for every fighter on the card, resolved ONCE here from
+   * the official snapshot. Attached to the state so the deck renders a rank
+   * without any card reaching for rankings on its own. */
+  ranks: Map<string, FighterRankingContext>;
   /* Our own event row, when the broadcast row is matched to one. */
   event: Event | null;
   /* Every bout from tonight's card with a STORED RESULT, newest first —
@@ -76,7 +82,7 @@ export type RoundLiveState = {
 
 const EMPTY: RoundLiveState = {
   broadcast: null, eventState: null, isLive: false, event: null,
-  completedResults: [], roundReady: [], images: new Map(), cardSize: 0, checkedAt: new Date(0).toISOString(),
+  completedResults: [], roundReady: [], images: new Map(), ranks: new Map(), cardSize: 0, checkedAt: new Date(0).toISOString(),
 };
 
 /**
@@ -153,10 +159,14 @@ export async function getRoundLiveState(now = Date.now()): Promise<RoundLiveStat
     }
   }
 
+  /* One snapshot read for the whole card, like the image batch above. */
+  const ranks = await getRankingMap().catch(() => new Map<string, FighterRankingContext>());
+
   return {
     broadcast,
     eventState,
     isLive,
+    ranks,
     event: null,
     completedResults,
     images,

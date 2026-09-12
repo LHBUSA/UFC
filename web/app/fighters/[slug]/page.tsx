@@ -17,6 +17,9 @@ import { age, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, METHOD_LABEL, st
 import { TufOnFighter } from "@/components/TufOnFighter";
 import { SITE } from "@/lib/site";
 import { getRoundCoverageFor, isEligible } from "@/lib/roundIndex";
+import { getRankingMap } from "@/lib/rankings";
+import { bestRank } from "@/lib/rankingContext";
+import { RankStack } from "@/components/RankBadge";
 
 export const revalidate = 300;
 
@@ -49,11 +52,13 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
   const sum = archiveSummary(f.id, history);
   const t = totals(rounds);
   const statsFights = new Set(rounds.map((r) => r.bout_id)).size;
-  const ranked = (rankings?.divisions || []).flatMap((dv) => [
-    ...(dv.champion?.fighter_id === f.id ? [{ label: dv.label, rank: 0 }] : []),
-    ...dv.entries.filter((en) => en.fighter_id === f.id).map((en) => ({ label: dv.label, rank: en.rank })),
-  ]);
-  const primaryRank = ranked.find((r) => !/pound/i.test(r.label)) || ranked[0];
+  /* Ranking identity comes from the one shared resolver, not from a second
+   * reading of the snapshot. This page used to derive it here — champion as
+   * "rank 0", pound-for-pound detected by matching the word "pound" in a
+   * label — which is precisely how two surfaces drift apart about the same
+   * official fact. */
+  const rankCtx = (await getRankingMap()).get(f.id) ?? null;
+  const primaryRank = bestRank(rankCtx);
   const lastWc = bouts.find((b) => b.weight_class)?.weight_class || null;
   const lastWomens = bouts.find((b) => b.weight_class)?.is_womens || false;
   const a = age(f.dob);
@@ -67,7 +72,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
           <div className="mt-2"><Credit img={img} /></div>
         </div>
         <div>
-          <div className="eyebrow">{primaryRank ? (primaryRank.rank === 0 ? `${primaryRank.label} champion` : `#${primaryRank.rank} ${primaryRank.label}`) : lastWc ? weightClassLabel(lastWc, lastWomens) : "Fighter"}{f.is_active === false ? " · Inactive" : ""}</div>
+          <div className="eyebrow">{primaryRank ? primaryRank.full : lastWc ? weightClassLabel(lastWc, lastWomens) : "Fighter"}{f.is_active === false ? " · Inactive" : ""}</div>
           <h1 className="serif" style={{ fontSize: "var(--fs-display)", lineHeight: 1, letterSpacing: "-.025em", margin: "8px 0 4px" }}>{f.name}</h1>
           {f.nickname && <div className="serif" style={{ color: "var(--pbe-gold)", fontStyle: "italic", fontSize: 22 }}>“{f.nickname}”</div>}
           <div className="tiles mt-5">
@@ -76,6 +81,10 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
             <div className="tile"><b>{sum.finishRate != null ? <>{sum.finishRate}<small>%</small></> : "—"}</b><span>Finish rate</span></div>
             <div className="tile"><b>{a ?? "—"}</b><span>Age</span></div>
           </div>
+          {/* The richest ranking presentation on the site: every current
+              identity this fighter holds, each with its division named, and
+              the snapshot date so "currently #4" is never undated. */}
+          <div className="mt-5"><RankStack ctx={rankCtx} /></div>
           <dl className="kv mt-5" style={{ gridTemplateColumns: "auto 1fr auto 1fr" }}>
             <dt>Height</dt><dd>{fmtHeight(f.height_in)}</dd>
             <dt>Reach</dt><dd>{fmtReach(f.reach_in)}</dd>
@@ -84,7 +93,6 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
             <dt>Born</dt><dd>{f.dob ? fmtDate(f.dob, { month: "short", day: "numeric", year: "numeric" }) : "—"}</dd>
             <dt>KO / Sub / Dec</dt><dd>{sum.fights ? `${sum.ko} / ${sum.sub} / ${sum.dec}` : "—"}</dd>
           </dl>
-          {ranked.length > 1 && <div className="tags mt-4">{ranked.map((r) => <span key={r.label} className="tag gold">{r.rank === 0 ? "C" : `#${r.rank}`} {r.label}</span>)}</div>}
         </div>
       </div>
 

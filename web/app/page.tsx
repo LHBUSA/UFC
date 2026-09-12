@@ -22,6 +22,7 @@ import { Voices } from "@/components/Voices";
 import { ApiCta } from "@/components/ApiCta";
 import { getBroadcastForEvent } from "@/lib/broadcast";
 import { WatchStrip } from "@/components/HowToWatch";
+import { getRankingMap } from "@/lib/rankings";
 
 export const revalidate = 300;
 
@@ -88,6 +89,8 @@ export default async function Home() {
   const contenderIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion).flatMap((x) => x.entries.slice(0, 3).map((e) => e.fighter_id)).filter(Boolean) as string[];
   const mains = await getMainEvents([...upcoming, ...recent, ...[dwcsNext, dwcsLast].filter(Boolean).map((e) => e!)].map((e) => e.id));
   const champIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion?.fighter_id).map((x) => x.champion!.fighter_id!);
+  /* Same official snapshot the homepage already loaded, indexed by fighter. */
+  const ranks = await getRankingMap();
   const [imgs, briefs, media, champs, contenders, dwcsCounts, freshness, videos] = await Promise.all([
     getImagesForFighters([
       ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
@@ -231,7 +234,7 @@ export default async function Home() {
       <section className="sec">
         <div className="wrap">
           <SectionHead eyebrow={next ? `${fmtDate(next.event_date)} · ${locationLine(next) || "Venue TBA"}` : "Upcoming"} title={next ? next.name : "Upcoming card"} href={next ? `/events/${eventSlug(next)}` : "/events"} cta="Full card & matchups" />
-          {bouts.length ? <CardSegments bouts={bouts} e={next!} imgs={imgs} /> : <Empty title="No bouts announced yet" cta={{ href: "/events", label: "See the schedule" }}>Bouts appear here the moment the card is published. Nothing is shown that has not been announced.</Empty>}
+          {bouts.length ? <CardSegments bouts={bouts} e={next!} imgs={imgs} ranks={ranks} /> : <Empty title="No bouts announced yet" cta={{ href: "/events", label: "See the schedule" }}>Bouts appear here the moment the card is published. Nothing is shown that has not been announced.</Empty>}
         </div>
       </section>
 
@@ -241,7 +244,7 @@ export default async function Home() {
 
       {headline.length > 0 && (
         <section className="sec">
-          <div className="wrap"><SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" /><div className="grid-3">{headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} />)}</div></div>
+          <div className="wrap"><SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" /><div className="grid-3">{headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} ranks={ranks} />)}</div></div>
         </section>
       )}
 

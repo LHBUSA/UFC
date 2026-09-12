@@ -155,6 +155,7 @@ export function RoundLiveDeck({ state, now = Date.now() }: { state: RoundLiveSta
                 key={entry.bout.id}
                 entry={entry}
                 images={state.images}
+                ranks={state.ranks}
                 eventName={b.event_name}
                 eventDate={b.event_date}
                 latest={i === 0}

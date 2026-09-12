@@ -4,6 +4,7 @@ import { getFighters, getImagesForFighters, getBookedFighterIds, getFightersById
 import { Empty, FighterCard, PageHead, SectionHead, JsonLd } from "@/components/ui";
 import { fighterSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
+import { getRankingMap } from "@/lib/rankings";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default async function FightersPage({ searchParams }: { searchParams: Pro
     const [bookedIds, rankings] = await Promise.all([getBookedFighterIds(), getRankings()]);
     const champIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion?.fighter_id).map((x) => x.champion!.fighter_id!);
     const [booked, champs] = await Promise.all([getFightersByIds(bookedIds), getFightersByIds(champIds)]);
-    const imgs = await getImagesForFighters([...booked, ...champs].map((f) => f.id));
+    const [imgs, ranks] = await Promise.all([getImagesForFighters([...booked, ...champs].map((f) => f.id)), getRankingMap()]);
     const withPhoto = booked.filter((f) => imgs.has(f.id));
     const withoutPhoto = booked.filter((f) => !imgs.has(f.id));
     const roster = [...withPhoto, ...withoutPhoto].sort((a, b) => Number(imgs.has(b.id)) - Number(imgs.has(a.id)) || a.name.localeCompare(b.name));
@@ -41,11 +42,11 @@ export default async function FightersPage({ searchParams }: { searchParams: Pro
         {champs.length > 0 && (
           <>
             <SectionHead eyebrow="Official rankings" title="Champions" href="/rankings" cta="Full rankings" />
-            <div className="fgrid mb-6">{champs.map((f) => <FighterCard key={f.id} f={f} img={imgs.get(f.id)} meta={(rankings?.divisions || []).find((x) => x.champion?.fighter_id === f.id)?.label + " champion"} />)}</div>
+            <div className="fgrid mb-6">{champs.map((f) => <FighterCard key={f.id} f={f} img={imgs.get(f.id)} ranks={ranks} meta={(rankings?.divisions || []).find((x) => x.champion?.fighter_id === f.id)?.label + " champion"} />)}</div>
           </>
         )}
         <SectionHead eyebrow={`${roster.length} booked`} title="On the next cards" href="/events" cta="Schedule" />
-        {roster.length ? <div className="fgrid">{roster.map((f) => <FighterCard key={f.id} f={f} img={imgs.get(f.id)} />)}</div>
+        {roster.length ? <div className="fgrid">{roster.map((f) => <FighterCard key={f.id} f={f} img={imgs.get(f.id)} ranks={ranks} />)}</div>
           : <Empty title="No fighters booked yet">Fighters appear here as soon as bouts are announced for the next cards. Use search or the A–Z index for the archive.</Empty>}
         <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "UFC fighters", url: `${SITE.url}/fighters`, isPartOf: { "@id": `${SITE.url}/#site` } }} />
       </div>
@@ -53,7 +54,7 @@ export default async function FightersPage({ searchParams }: { searchParams: Pro
   }
 
   const { rows, count } = await getFighters(q, PAGE, (page - 1) * PAGE, { letter: letter || undefined });
-  const imgs = await getImagesForFighters(rows.map((f) => f.id));
+  const [imgs, ranks] = await Promise.all([getImagesForFighters(rows.map((f) => f.id)), getRankingMap()]);
   const pages = count ? Math.ceil(count / PAGE) : 1;
   const base = `/fighters?${q ? `q=${encodeURIComponent(q)}&` : ""}${letter ? `letter=${letter}&` : ""}`;
   return (
@@ -64,7 +65,7 @@ export default async function FightersPage({ searchParams }: { searchParams: Pro
       </PageHead>
       {rows.length ? (
         <>
-          <div className="fgrid">{rows.map((f) => <FighterCard key={f.id} f={f} img={imgs.get(f.id)} />)}</div>
+          <div className="fgrid">{rows.map((f) => <FighterCard key={f.id} f={f} img={imgs.get(f.id)} ranks={ranks} />)}</div>
           {pages > 1 && (
             <nav className="pager" aria-label="Pagination">
               {page > 1 && <Link href={`${base}page=${page - 1}`} className="btn">← Previous</Link>}

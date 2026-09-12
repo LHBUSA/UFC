@@ -6,6 +6,8 @@ import {
 } from "@/lib/weighins-display";
 import { fmtDate } from "@/lib/format";
 import styles from "@/app/weigh-ins/weighins.module.css";
+import { FighterRank } from "@/components/RankBadge";
+import type { FighterRankingContext } from "@/lib/rankingContext";
 
 /* The weigh-in desk's two satellite surfaces.
  *
@@ -80,11 +82,13 @@ export function EventWeighInPanel({
  * being broken.
  */
 export function BoutWeighIns({
-  weighIns, cornerA, cornerB,
+  weighIns, cornerA, cornerB, ranks, division,
 }: {
   weighIns: WeighIn[];
   cornerA: { id: string; name: string };
   cornerB: { id: string; name: string };
+  ranks?: Map<string, FighterRankingContext>;
+  division?: { key: string | null; isWomens: boolean };
 }) {
   const find = (id: string) => weighIns.find((w) => w.fighter_id === id) || null;
   const rows: Array<[{ id: string; name: string }, WeighIn | null]> = [
@@ -107,7 +111,7 @@ export function BoutWeighIns({
           if (!w) {
             return (
               <div key={corner.id} className={styles.fightCorner}>
-                <span className={styles.fcName}>{corner.name}</span>
+                <span className={styles.fcName}><FighterRank ctx={ranks?.get(corner.id)} division={division ?? { key: null, isWomens: false }} />{corner.name}</span>
                 <span className={styles.fcWeightUnknown}>Official weigh-in result not recorded yet.</span>
               </div>
             );
@@ -118,7 +122,7 @@ export function BoutWeighIns({
           const tone = RESULT_TONE[w.result];
           return (
             <div key={corner.id} className={styles.fightCorner} data-tone={tone}>
-              <span className={styles.fcName}>{corner.name}</span>
+              <span className={styles.fcName}><FighterRank ctx={ranks?.get(corner.id)} division={division ?? { key: null, isWomens: false }} />{corner.name}</span>
               <span className={weight.known ? styles.fcWeight : styles.fcWeightUnknown}>{weight.text}</span>
               <span className={styles.fcMeta}>
                 {limit.known ? `Limit ${limit.text}` : limit.text}

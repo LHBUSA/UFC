@@ -25,6 +25,7 @@ import { EventWeighInPanel } from "@/components/WeighInBits";
 import { EventCardChanges } from "@/components/StatusBits";
 import { getBroadcastForEvent } from "@/lib/broadcast";
 import { HowToWatchPanel } from "@/components/HowToWatch";
+import { getRankingMap } from "@/lib/rankings";
 
 export const revalidate = 300;
 
@@ -57,7 +58,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     getBroadcastForEvent(e).catch(() => null),
   ]);
   const videos = sortVideosTimeline(videosRaw);
-  const imgs = await getImagesForFighters(bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
+  /* One ranking read for the whole card: 13 bouts, 26 fighters, one map. */
+  const [imgs, ranks] = await Promise.all([
+    getImagesForFighters(bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id])),
+    getRankingMap(),
+  ]);
   const framing = await getImageFraming(bouts.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]);
   const media = await storyMedia(articles);
   const d = daysUntil(e.event_date);
@@ -130,8 +135,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       {bouts.length ? (
         <>
-          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={providerLive && !done ? marketMap : undefined} unresolved={unresolved} />
-          {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} />)}</div></section>}
+          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={providerLive && !done ? marketMap : undefined} unresolved={unresolved} ranks={ranks} />
+          {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} ranks={ranks} />)}</div></section>}
         </>
       ) : historical ? (
         <div className="mt-6"><Empty title="Historical card not yet loaded" cta={{ href: "/history#archive", label: "Archive coverage" }}>This event exists in the canonical schedule, but its bouts and results have not been backfilled yet. PropBetEdge fills the archive year by year from archived UFC Stats captures and shows this state instead of inventing a card. The official record is at <a href={UFC_OFFICIAL.events} target="_blank" rel="noopener">UFC.com events</a>.</Empty></div>

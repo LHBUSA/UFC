@@ -7,10 +7,17 @@ import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, daysUntil, eventBrand, eventHeadline, eventStatusLabel, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, initials, locationLine, METHOD_LABEL, METHOD_SHORT, weightClassLabel, age, stanceLabel, cityLine, winnerOf } from "@/lib/format";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
 import { OCTAGON } from "./Brand";
+import { FighterRank, BestRank } from "@/components/RankBadge";
+import type { FighterRankingContext } from "@/lib/rankingContext";
 
 export type Portraits = Map<string, PortraitSet>;
 
 /* ---- structured data --------------------------------------------------- */
+/* Ranking identity is resolved ONCE per page (lib/rankings.getRankingIndex)
+ * and threaded down as a map. No component here reads rankings itself: 26
+ * fighters on an event page cost one snapshot read and 26 lookups. */
+export type Ranks = Map<string, FighterRankingContext>;
+
 export function JsonLd({ data }: { data: object }) {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }} />;
 }
@@ -154,8 +161,11 @@ export function EventRow({ e, main, bouts }: { e: Event; main?: Bout | null; bou
 }
 
 /* ---- bouts ------------------------------------------------------------- */
-export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState }: { b: Bout; e: Event; imgs?: Portraits; isMain?: boolean; roundCoverage?: { rounds: number; bothCorners: boolean } | null; market?: BoutMarket; marketState?: MarketState }) {
+export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState, ranks }: { b: Bout; e: Event; imgs?: Portraits; isMain?: boolean; roundCoverage?: { rounds: number; bothCorners: boolean } | null; market?: BoutMarket; marketState?: MarketState; ranks?: Ranks }) {
   const r = b.result;
+  /* The bout's own division decides the badge, so a champion fighting up is
+   * not labelled champion in a fight that is not for that belt. */
+  const div = { key: b.weight_class, isWomens: b.is_womens };
   const wA = r?.winner_id === b.fighter_a.id;
   const wB = r?.winner_id === b.fighter_b.id;
   const off = b.status === "cancelled";
@@ -164,7 +174,7 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState
       <div className="f a">
         <Avatar f={b.fighter_a} img={imgs?.get(b.fighter_a.id)} />
         <div className="t">
-          <div className="n">{b.fighter_a.name}{wA && <span className="w">WIN</span>}</div>
+          <div className="n"><FighterRank ctx={ranks?.get(b.fighter_a.id)} division={div} />{b.fighter_a.name}{wA && <span className="w">WIN</span>}</div>
           <div className="r">{fmtRecord(b.fighter_a)}{b.fighter_a.nickname ? <> · <em>{b.fighter_a.nickname}</em></> : null}</div>
         </div>
       </div>
@@ -186,14 +196,14 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState
       <div className="f b">
         <Avatar f={b.fighter_b} img={imgs?.get(b.fighter_b.id)} />
         <div className="t">
-          <div className="n">{wB && <span className="w">WIN</span>}{b.fighter_b.name}</div>
+          <div className="n">{wB && <span className="w">WIN</span>}{b.fighter_b.name}<FighterRank ctx={ranks?.get(b.fighter_b.id)} division={div} /></div>
           <div className="r">{fmtRecord(b.fighter_b)}{b.fighter_b.nickname ? <> · <em>{b.fighter_b.nickname}</em></> : null}</div>
         </div>
       </div>
     </Link>
   );
 }
-export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolved }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }>; markets?: Map<string, BoutMarket>; unresolved?: Set<string> }) {
+export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolved, ranks }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }>; markets?: Map<string, BoutMarket>; unresolved?: Set<string>; ranks?: Ranks }) {
   const order = ["main", "prelim", "early", null] as const;
   const groups = order.map((p) => ({ p, rows: bouts.filter((b) => (b.card_position || null) === p) })).filter((g) => g.rows.length);
   const mainId = bouts[0]?.id;
@@ -203,7 +213,7 @@ export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolve
         <section className="segment" key={String(g.p)}>
           <h3>{g.p ? cardPositionLabel(g.p) : e.card_status === "complete" ? "Results" : "Announced bouts"} <small>{g.rows.length} bouts</small></h3>
           <div className="bouts">
-            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} market={markets?.get(b.id)} marketState={markets ? marketStateFor(markets.get(b.id), { eventDate: e.event_date, hasResult: Boolean(b.result), unresolved: unresolved?.has(b.id) }) : undefined} />)}
+            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} market={markets?.get(b.id)} marketState={markets ? marketStateFor(markets.get(b.id), { eventDate: e.event_date, hasResult: Boolean(b.result), unresolved: unresolved?.has(b.id) }) : undefined} ranks={ranks} />)}
           </div>
         </section>
       ))}
@@ -244,9 +254,10 @@ export function TaleOfTheTape({ a, b, at }: { a: Fighter; b: Fighter; at?: strin
     </div>
   );
 }
-export function MatchupCard({ b, e, imgs }: { b: Bout; e: Event; imgs?: Portraits }) {
+export function MatchupCard({ b, e, imgs, ranks }: { b: Bout; e: Event; imgs?: Portraits; ranks?: Ranks }) {
   const r = b.result;
   const w = winnerOf(b);
+  const div = { key: b.weight_class, isWomens: b.is_womens };
   return (
     <div className="matchup">
       <div className="top">
@@ -256,14 +267,14 @@ export function MatchupCard({ b, e, imgs }: { b: Bout; e: Event; imgs?: Portrait
       <div className="tape">
         <Link href={`/fighters/${fighterSlug(b.fighter_a)}`} className="side">
           <Avatar f={b.fighter_a} img={imgs?.get(b.fighter_a.id)} size={84} />
-          <div className="name">{b.fighter_a.name}</div>
+          <div className="name"><FighterRank ctx={ranks?.get(b.fighter_a.id)} division={div} showSecondary />{b.fighter_a.name}</div>
           {b.fighter_a.nickname && <div className="nick">“{b.fighter_a.nickname}”</div>}
           <div className="rec">{fmtRecord(b.fighter_a)}</div>
         </Link>
         <div className="vs">vs</div>
         <Link href={`/fighters/${fighterSlug(b.fighter_b)}`} className="side">
           <Avatar f={b.fighter_b} img={imgs?.get(b.fighter_b.id)} size={84} />
-          <div className="name">{b.fighter_b.name}</div>
+          <div className="name"><FighterRank ctx={ranks?.get(b.fighter_b.id)} division={div} showSecondary />{b.fighter_b.name}</div>
           {b.fighter_b.nickname && <div className="nick">“{b.fighter_b.nickname}”</div>}
           <div className="rec">{fmtRecord(b.fighter_b)}</div>
         </Link>
@@ -298,12 +309,12 @@ export function ProLock() {
 }
 
 /* ---- fighters ---------------------------------------------------------- */
-export function FighterCard({ f, img, meta }: { f: Fighter; img?: PortraitSet | null; meta?: string }) {
+export function FighterCard({ f, img, meta, ranks }: { f: Fighter; img?: PortraitSet | null; meta?: string; ranks?: Ranks }) {
   return (
     <Link href={`/fighters/${fighterSlug(f)}`} className="fcard">
       <Portrait f={f} img={img} sizes="(max-width: 680px) 45vw, 220px" />
       <div className="body">
-        <div className="n">{f.name}</div>
+        <div className="n"><BestRank ctx={ranks?.get(f.id)} />{f.name}</div>
         {f.nickname ? <div className="nick">“{f.nickname}”</div> : null}
         <div className="m"><b>{fmtRecord(f)}</b>{meta ? ` · ${meta}` : ` · ${fmtHeight(f.height_in)} · ${fmtReach(f.reach_in)} reach`}</div>
       </div>

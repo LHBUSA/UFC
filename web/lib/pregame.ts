@@ -2,6 +2,7 @@ import "server-only";
 import { getFighterBouts, getRankings, type Bout, type Event, type Fighter, type RankingsSnapshot } from "@/lib/db";
 import { getMatchupDna, type Insight, type MatchupDna } from "@/lib/dna";
 import { archiveSummary, fmtRecord, weightClassLabel, METHOD_SHORT } from "@/lib/format";
+import { buildRankingIndex, bestRank, rankForDivision, type RankingIndex } from "@/lib/rankingContext";
 
 /* Pregame Desk brief builder.
  *
@@ -47,16 +48,19 @@ const pct = (v: number | null | undefined) => (v == null ? null : `${Math.round(
 const first = (f: Fighter) => f.name.split(" ").slice(-1)[0] || f.name;
 const hasCareer = (f: Fighter) => f.career_slpm != null || f.career_td_avg != null || f.career_str_acc != null;
 
-function rankLabel(f: Fighter, snap: RankingsSnapshot | null, bout: Bout): string | null {
-  if (!snap) return null;
-  for (const d of snap.divisions) {
-    if (d.is_p4p) continue;
-    if (d.champion?.fighter_id === f.id) return `${d.label} champion`;
-    const e = d.entries.find((x) => x.fighter_id === f.id);
-    if (e) return `#${e.rank} ${d.label}`;
-  }
-  void bout;
-  return null;
+/* One ranking interpretation, shared with every other surface.
+ *
+ * This used to walk the snapshot itself and skip pound-for-pound entirely,
+ * which meant the desk packet could call a fighter unranked while a badge two
+ * pages away showed their P4P standing. It now asks the same resolver, about
+ * the bout's own division, and a P4P standing arrives already labelled so it
+ * can never read as a division rank in prose. */
+function rankLabel(f: Fighter, index: RankingIndex | null, bout: Bout): string | null {
+  const ctx = index?.byFighter.get(f.id);
+  if (!ctx) return null;
+  const { primary, secondary } = rankForDivision(ctx, { key: bout.weight_class, isWomens: bout.is_womens });
+  const chosen = primary ?? secondary ?? bestRank(ctx);
+  return chosen ? chosen.full : null;
 }
 
 function profileLines(f: Fighter): string[] {
@@ -193,7 +197,7 @@ function mainTake(A: DeskSide, B: DeskSide, bout: Bout): string[] {
   return [lead, second];
 }
 
-async function side(f: Fighter, snap: RankingsSnapshot | null, bout: Bout, asOf: string | null = null): Promise<DeskSide> {
+async function side(f: Fighter, index: RankingIndex | null, bout: Bout, asOf: string | null = null): Promise<DeskSide> {
   const bouts = await getFighterBouts(f.id).catch(() => [] as Awaited<ReturnType<typeof getFighterBouts>>);
   /* asOf: for an archived pregame page, form is limited to results before the event date. */
   const done = bouts.filter((x) => x.result && x.id !== bout.id && (!asOf || (x.event?.event_date && x.event.event_date < asOf)));
@@ -212,7 +216,7 @@ async function side(f: Fighter, snap: RankingsSnapshot | null, bout: Bout, asOf:
     else if (streak.kind === k) streak.n += 1;
     else break;
   }
-  const s: DeskSide = { fighter: f, rank: rankLabel(f, snap, bout), profile: profileLines(f), form: [], keys: [], archive, lastResults, streak, fiveRoundBouts: done.filter((x) => x.scheduled_rounds === 5 || x.is_title).length };
+  const s: DeskSide = { fighter: f, rank: rankLabel(f, index, bout), profile: profileLines(f), form: [], keys: [], archive, lastResults, streak, fiveRoundBouts: done.filter((x) => x.scheduled_rounds === 5 || x.is_title).length };
   s.form = formLines(s);
   return s;
 }
@@ -223,8 +227,10 @@ export async function buildDeskBriefs(event: Event, bouts: Bout[], limit = 3, op
   const live = bouts.filter((b) => b.status !== "cancelled" && (opts.includeCompleted || !b.result)).slice(0, limit);
   if (!live.length) return [];
   const snap = await getRankings().catch(() => null);
+  /* Indexed ONCE for the whole packet, then shared by every side. */
+  const rankIndex = buildRankingIndex(snap);
   return Promise.all(live.map(async (bout, index) => {
-    const [A, B, dnaRes] = await Promise.all([side(bout.fighter_a, snap, bout, opts.asOf || null), side(bout.fighter_b, snap, bout, opts.asOf || null), index === 0 ? getMatchupDna(bout.fighter_a.id, bout.fighter_b.id, opts.asOf || null).catch(() => null) : Promise.resolve(null)]);
+    const [A, B, dnaRes] = await Promise.all([side(bout.fighter_a, rankIndex, bout, opts.asOf || null), side(bout.fighter_b, rankIndex, bout, opts.asOf || null), index === 0 ? getMatchupDna(bout.fighter_a.id, bout.fighter_b.id, opts.asOf || null).catch(() => null) : Promise.resolve(null)]);
     const dna = dnaRes && dnaRes.status === "ok" ? dnaRes.data : null;
     A.keys = keysFor(A, B); B.keys = keysFor(B, A);
     const thin = (!hasCareer(bout.fighter_a) && A.archive.fights < 2) || (!hasCareer(bout.fighter_b) && B.archive.fights < 2);

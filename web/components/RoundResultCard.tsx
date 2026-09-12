@@ -26,12 +26,15 @@ import { matchupSlug } from "@/lib/slug";
 import type { PortraitSet } from "@/lib/db";
 import type { TonightBout } from "@/lib/roundLive";
 import styles from "@/app/round-by-round/round-live.module.css";
+import { FighterRank } from "@/components/RankBadge";
+import type { FighterRankingContext } from "@/lib/rankingContext";
 
 export function RoundResultCard({
-  entry, images, eventName, eventDate, latest = false,
+  entry, images, ranks, eventName, eventDate, latest = false,
 }: {
   entry: TonightBout;
   images: Map<string, PortraitSet>;
+  ranks?: Map<string, FighterRankingContext>;
   eventName: string;
   eventDate: string | null;
   latest?: boolean;
@@ -78,6 +81,10 @@ export function RoundResultCard({
 
   const href = `/fights/${matchupSlug(a, b, { name: eventName, event_date: eventDate })}`;
 
+  /* Rank enhances identity; it never competes with the result. The winner
+   * tick and the winner styling stay the loudest thing on the card, and an
+   * unranked fighter renders no chip at all rather than an empty slot. */
+  const division = { key: bout.weight_class, isWomens: bout.is_womens };
   const corner = (f: typeof a, isWinner: boolean) => {
     const img = images.get(f.id);
     return (
@@ -86,7 +93,7 @@ export function RoundResultCard({
           <Avatar f={f} img={img} size={72} className={styles.cornerAvatar} />
         </span>
         <span className={styles.cornerName}>
-          <b>{f.name}{isWinner ? <i className={styles.tick} aria-label="winner"> ✓</i> : null}</b>
+          <b><FighterRank ctx={ranks?.get(f.id)} division={division} />{f.name}{isWinner ? <i className={styles.tick} aria-label="winner"> ✓</i> : null}</b>
           <small>{fmtRecord(f)}</small>
         </span>
       </div>

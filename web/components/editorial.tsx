@@ -18,6 +18,8 @@ export type FighterFacts = {
 import type { EditorialMarket } from "@/lib/editorialMarket";
 import { formatAmerican, describeAge } from "@/lib/market";
 import { fmtDateTime } from "@/lib/format";
+import { BestRank } from "@/components/RankBadge";
+import type { FighterRankingContext } from "@/lib/rankingContext";
 
 export type BettorAngle = { impact_score?: number; markets?: string[]; summary?: string; supporting_facts?: string[]; risks?: string[]; watch_items?: string[]; odds_status?: string; model_status?: string };
 export type FactBlock = {
@@ -88,7 +90,7 @@ export function BettorsEdge({ angle, em }: { angle: BettorAngle; em?: EditorialM
   );
 }
 
-export function MatchupModule({ a, b, imgs, edges, href }: { a: FighterFacts; b: FighterFacts; imgs: Map<string, PortraitSet>; edges?: FactBlock["matchup"] extends infer M ? (M extends { edges?: infer E } ? E : never) : never; href?: string | null }) {
+export function MatchupModule({ a, b, imgs, edges, href, ranks }: { a: FighterFacts; b: FighterFacts; imgs: Map<string, PortraitSet>; ranks?: Map<string, FighterRankingContext>; edges?: FactBlock["matchup"] extends infer M ? (M extends { edges?: infer E } ? E : never) : never; href?: string | null }) {
   const rows: Array<[string, string, string, "a" | "b" | null]> = [
     ["Record", rec(a), rec(b), null],
     ["Age", a.age?.toString() || "—", b.age?.toString() || "—", null],
@@ -107,9 +109,9 @@ export function MatchupModule({ a, b, imgs, edges, href }: { a: FighterFacts; b:
   return (
     <div className="mm">
       <div className="mm-head">
-        <Side f={a} img={imgs.get(a.fighter_id)} side="a" />
+        <Side f={a} img={imgs.get(a.fighter_id)} side="a" rank={ranks?.get(a.fighter_id)} />
         <div className="mm-vs">vs</div>
-        <Side f={b} img={imgs.get(b.fighter_id)} side="b" />
+        <Side f={b} img={imgs.get(b.fighter_id)} side="b" rank={ranks?.get(b.fighter_id)} />
       </div>
       <div className="tape-rows">
         {rows.map(([k, l, r]) => {
@@ -129,12 +131,12 @@ export function MatchupModule({ a, b, imgs, edges, href }: { a: FighterFacts; b:
   );
 }
 
-function Side({ f, img, side }: { f: FighterFacts; img?: PortraitSet | null; side: "a" | "b" }) {
+function Side({ f, img, side, rank }: { f: FighterFacts; img?: PortraitSet | null; side: "a" | "b"; rank?: FighterRankingContext }) {
   const inner = (
     <>
       <Avatar f={{ name: f.name }} img={img} size={64} />
       <div>
-        <div className="n">{f.name}</div>
+        <div className="n"><BestRank ctx={rank} />{f.name}</div>
         {f.nickname && <div className="nick">“{f.nickname}”</div>}
         <div className="r">{rec(f)}{f.archive?.days_since_last != null ? ` · ${f.archive.days_since_last}d since last fight` : ""}</div>
       </div>

@@ -21,6 +21,8 @@ import { buildBoutScorecard } from "@/lib/judgeScoring";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, fmtDate, fmtRecord, fmtTime, METHOD_LABEL, weightClassLabel, totals, pct, archiveSummary, winnerOf, loserOf, daysUntil, locationLine, plural, METHOD_SHORT, eventBrand } from "@/lib/format";
 import { SITE } from "@/lib/site";
+import { getRankingMap } from "@/lib/rankings";
+import { FighterRank } from "@/components/RankBadge";
 
 export const revalidate = 300;
 
@@ -116,6 +118,11 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
     ? buildBoutScorecard({ method: r.method, scorecards: r.scorecards, winnerId: r.winner_id, fighterAId: b.fighter_a.id, fighterBId: b.fighter_b.id }).cards
     : [];
   const resultSourceUrl = r?.source_url || null;
+  /* Ranking identity for the two corners, from the one shared resolver. The
+   * badge answers for THIS bout's division, so a champion fighting outside
+   * their weight is not labelled champion in a fight that is not for it. */
+  const ranks = await getRankingMap();
+  const boutDivision = { key: b.weight_class, isWomens: b.is_womens };
 
   return (
     <div className="wrap page">
@@ -129,7 +136,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
         <Link href={`/fighters/${fighterSlug(b.fighter_a)}`} className="side a">
           <Portrait f={b.fighter_a} img={imgs.get(b.fighter_a.id)} priority />
           <div>
-            <div className="name">{b.fighter_a.name}{w?.id === b.fighter_a.id && <span className="tag fill" style={{ marginLeft: 10, verticalAlign: "middle" }}>Winner</span>}</div>
+            <div className="name"><FighterRank ctx={ranks.get(b.fighter_a.id)} division={boutDivision} showSecondary />{b.fighter_a.name}{w?.id === b.fighter_a.id && <span className="tag fill" style={{ marginLeft: 10, verticalAlign: "middle" }}>Winner</span>}</div>
             {b.fighter_a.nickname && <div className="nick">“{b.fighter_a.nickname}”</div>}
             <div className="rec">{fmtRecord(b.fighter_a)}</div>
           </div>
@@ -138,7 +145,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
         <Link href={`/fighters/${fighterSlug(b.fighter_b)}`} className="side b">
           <Portrait f={b.fighter_b} img={imgs.get(b.fighter_b.id)} priority />
           <div>
-            <div className="name">{w?.id === b.fighter_b.id && <span className="tag fill" style={{ marginRight: 10, verticalAlign: "middle" }}>Winner</span>}{b.fighter_b.name}</div>
+            <div className="name">{w?.id === b.fighter_b.id && <span className="tag fill" style={{ marginRight: 10, verticalAlign: "middle" }}>Winner</span>}{b.fighter_b.name}<FighterRank ctx={ranks.get(b.fighter_b.id)} division={boutDivision} showSecondary /></div>
             {b.fighter_b.nickname && <div className="nick">“{b.fighter_b.nickname}”</div>}
             <div className="rec">{fmtRecord(b.fighter_b)}</div>
           </div>
@@ -151,7 +158,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
 
       <BoutStatusAlert events={boutStatus} settled={Boolean(r)} />
 
-      {!r && <BoutWeighIns weighIns={boutWeighIns} cornerA={{ id: b.fighter_a.id, name: b.fighter_a.name }} cornerB={{ id: b.fighter_b.id, name: b.fighter_b.name }} />}
+      {!r && <BoutWeighIns weighIns={boutWeighIns} cornerA={{ id: b.fighter_a.id, name: b.fighter_a.name }} cornerB={{ id: b.fighter_b.id, name: b.fighter_b.name }} ranks={ranks} division={boutDivision} />}
 
       <div className="card mt-5">
         <div className="between">

@@ -18,7 +18,8 @@
     "test:round-index": "node --experimental-strip-types --test lib/roundIndex.test.mjs",
     "test:story-media": "node --experimental-strip-types --test lib/storyImages.test.ts lib/videoPolicy.test.ts",
     "test:portrait": "node --experimental-strip-types --test lib/portraitIdentity.test.ts",
-    "check:css-tokens": "node scripts/check-css-tokens.mjs"
+    "check:css-tokens": "node scripts/check-css-tokens.mjs",
+    "test:rankings": "node --experimental-strip-types --test lib/rankingContext.test.ts"
   },
   "dependencies": {
     "next": "^15.5.25",
