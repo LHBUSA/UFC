@@ -1,0 +1,9 @@
+{
+  "name": "ufc-broadcast-schedule",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test ../../scripts/broadcast/lib/parse.test.mjs ../../scripts/broadcast/lib/normalize.test.mjs ../../scripts/broadcast/lib/window.test.mjs ../../scripts/broadcast/lib/pass.test.mjs",
+    "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun"
+  }
+}

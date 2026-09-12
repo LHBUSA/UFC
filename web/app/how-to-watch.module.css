@@ -1,0 +1,298 @@
+/* HOW TO WATCH — the broadcast block.
+ *
+ * Two surfaces share these tokens: the full panel on an event page and the
+ * compact strip on the homepage / next-event card.
+ *
+ * Layout rules this file exists to hold:
+ *  - the times grid is `auto-fit, minmax(...)`, so one, two or three published
+ *    segments all look deliberate rather than like a row with a hole in it;
+ *  - every cell is `min-width:0` and every provider name wraps, because a
+ *    carrier is an arbitrary string and "Paramount+" is not the longest one
+ *    the promotion will ever sign;
+ *  - the time value is tabular and reserves its own line height, so swapping
+ *    the server's ET render for the visitor's local render on hydration
+ *    changes glyphs and never geometry. No layout shift.
+ */
+
+.panel {
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 50% -30%, rgba(212, 175, 55, .08), transparent 42%),
+    linear-gradient(180deg, #17130e, #0b0a07);
+  box-shadow: var(--sh-2);
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--pbe-line-faint);
+  background: rgba(0, 0, 0, .22);
+}
+.head h2 {
+  font: 600 var(--fs-label)/1.3 var(--pbe-font-data);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--pbe-gold);
+}
+.eventName {
+  margin: 0;
+  padding: 16px 22px 2px;
+  font: 850 clamp(19px, 2.3vw, 26px)/1.15 var(--pbe-font-display);
+  letter-spacing: var(--ls-tight);
+  color: var(--pbe-paper);
+  overflow-wrap: anywhere;
+}
+.eventMeta {
+  padding: 0 22px 16px;
+  color: var(--pbe-dim);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* ---- start times ---- */
+
+.times {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--pbe-line-faint);
+  border-block: 1px solid var(--pbe-line-faint);
+}
+.slot {
+  min-width: 0;
+  padding: 15px 22px 17px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .012), transparent);
+}
+.slot[data-main="true"] { background: linear-gradient(180deg, var(--pbe-gold-wash), transparent); }
+.slotLabel {
+  display: block;
+  color: var(--pbe-faint);
+  font: 700 9px/1.2 var(--pbe-font-data);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+.slotTime {
+  display: block;
+  margin-top: 7px;
+  /* Reserving the line box keeps the local-time swap from moving anything. */
+  min-height: 1.15em;
+  color: var(--pbe-paper);
+  font: 800 clamp(19px, 2.1vw, 23px)/1.15 var(--pbe-font-data);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.slot[data-main="true"] .slotTime { color: var(--pbe-gold-bright); }
+.slotZone {
+  display: block;
+  margin-top: 4px;
+  min-height: 1.2em;
+  color: var(--pbe-faint);
+  font: 650 10px/1.2 var(--pbe-font-data);
+  letter-spacing: .06em;
+}
+
+/* ---- carriers ---- */
+
+.watch { padding: 18px 22px 20px; }
+.watchLabel {
+  color: var(--pbe-faint);
+  font: 700 9px/1.2 var(--pbe-font-data);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+.providers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 11px;
+}
+.cta {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 11px 17px;
+  border: 1px solid rgba(212, 175, 55, .42);
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, rgba(212, 175, 55, .14), rgba(212, 175, 55, .04));
+  color: var(--pbe-paper);
+}
+.cta:hover { border-color: var(--pbe-gold); background: linear-gradient(180deg, rgba(212, 175, 55, .22), rgba(212, 175, 55, .07)); }
+.cta b {
+  font: 800 13.5px/1.25 var(--pbe-font-ui);
+  letter-spacing: .01em;
+  overflow-wrap: anywhere;
+}
+.cta small {
+  color: var(--pbe-faint);
+  font: 650 9px/1.2 var(--pbe-font-data);
+  text-transform: uppercase;
+  letter-spacing: .09em;
+}
+/* A carrier UFC.com names but gives no destination for: stated, never linked,
+   and visibly not a button. */
+.carrier {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 17px;
+  border: 1px dashed var(--pbe-line-strong);
+  border-radius: var(--r-md);
+  color: var(--pbe-dim);
+}
+.carrier b { font: 750 13.5px/1.25 var(--pbe-font-ui); overflow-wrap: anywhere; }
+.carrier small { color: var(--pbe-subtle); font: 650 9px/1.2 var(--pbe-font-data); text-transform: uppercase; letter-spacing: .09em; }
+
+/* ---- status strip ---- */
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-4);
+  flex-wrap: wrap;
+  padding: 12px 22px 14px;
+  border-top: 1px solid var(--pbe-line-faint);
+  background: rgba(0, 0, 0, .2);
+}
+.verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: var(--pbe-dim);
+  /* Explicitly NOT micro type: the provenance line is the product's claim to
+     authority and has to be readable, not a legal footnote. */
+  font: 600 12px/1.45 var(--pbe-font-data);
+  overflow-wrap: anywhere;
+}
+.tick { color: var(--pbe-pos); font-weight: 800; }
+.verified[data-stale="true"] { color: var(--pbe-faint); }
+.verified[data-stale="true"] .tick { color: var(--pbe-gold); }
+.official {
+  color: var(--pbe-gold);
+  font: 700 12px/1.45 var(--pbe-font-data);
+  white-space: nowrap;
+}
+.official:hover { color: var(--pbe-gold-bright); }
+
+.countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid rgba(212, 175, 55, .35);
+  border-radius: var(--r-pill);
+  color: var(--pbe-gold-bright);
+  font: 800 11.5px/1 var(--pbe-font-data);
+  letter-spacing: .05em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.countdown[data-live="true"] {
+  border-color: rgba(230, 57, 70, .55);
+  background: rgba(230, 57, 70, .12);
+  color: #ff8a93;
+}
+.liveDot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--pbe-live);
+  box-shadow: 0 0 0 0 rgba(230, 57, 70, .6);
+  animation: htwPulse 2s infinite;
+}
+@keyframes htwPulse {
+  0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, .55); }
+  70% { box-shadow: 0 0 0 8px rgba(230, 57, 70, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .liveDot { animation: none; } }
+
+/* An honest empty: a card whose times UFC.com has not published yet. */
+.pending {
+  padding: 16px 22px 20px;
+  color: var(--pbe-dim);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+/* ---- compact strip (homepage / next-event card) ---- */
+
+.strip {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(212, 175, 55, .06), rgba(0, 0, 0, .22));
+}
+.stripTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.stripEyebrow {
+  color: var(--pbe-gold);
+  font: 700 9.5px/1.2 var(--pbe-font-data);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.stripTimes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  gap: 10px;
+}
+.stripSlot { min-width: 0; }
+.stripSlot span {
+  display: block;
+  color: var(--pbe-faint);
+  font: 700 8.5px/1.2 var(--pbe-font-data);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.stripSlot b {
+  display: block;
+  margin-top: 4px;
+  min-height: 1.15em;
+  color: var(--pbe-paper);
+  font: 800 15px/1.15 var(--pbe-font-data);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.stripWatch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 11px;
+  border-top: 1px solid var(--pbe-line-faint);
+  color: var(--pbe-dim);
+  font: 650 11.5px/1.4 var(--pbe-font-data);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.stripWatch b { color: var(--pbe-paper); font-weight: 800; }
+
+@media (max-width: 640px) {
+  .head, .eventName, .eventMeta, .watch, .status, .pending { padding-inline: 16px; }
+  .slot { padding-inline: 16px; }
+  .times { grid-template-columns: repeat(auto-fit, minmax(124px, 1fr)); }
+  .status { gap: 8px 12px; }
+  .official { white-space: normal; }
+  /* Full-bleed CTAs read as buttons on a phone; a row of half-width pills does
+     not. */
+  .providers { gap: 8px; }
+  .cta, .carrier { flex: 1 1 100%; }
+}

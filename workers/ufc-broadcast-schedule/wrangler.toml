@@ -1,0 +1,45 @@
+name = "ufc-broadcast-schedule"
+main = "src/index.js"
+compatibility_date = "2026-09-08"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# The single production owner of UFC start times and broadcast carriers.
+#   Cloudflare Cron -> ufc-broadcast-schedule -> UFC.com -> Supabase
+#
+# NO GitHub Actions anywhere in this lane. Scheduling is the [triggers] block
+# below and nothing else.
+#
+# No nodejs_compat: the pass core (scripts/broadcast/lib/pass_core.mjs) and its
+# whole import graph are plain ES modules with no node: imports; the digest is
+# the weigh-in desk's pure-JS sha256.mjs so fingerprints match the CLI byte for
+# byte.
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+
+# Its own single-flight identity, LOCK_ID = 'broadcast-schedule'. Never the
+# weigh-in desk's lock and never the newsroom's: a duplicated or overlapping
+# invocation must be stopped without any of the three silencing the others.
+[[durable_objects.bindings]]
+name = "BROADCAST_LOCK"
+class_name = "BroadcastLock"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["BroadcastLock"]
+
+# Fires every 30 minutes. The pass decides whether work is due
+# (scripts/broadcast/lib/window.mjs): 30 min inside the broadcast window and
+# under 6 hours out, 60 min under 24 hours, 6 h during fight week, 12 h
+# otherwise. An idle wake is two indexed queries and no upstream fetch.
+[triggers]
+crons = ["*/30 * * * *"]
+
+[observability]
+enabled = true
+
+# Secrets (wrangler secret put):
+#   SUPABASE_SERVICE_ROLE_KEY   service role for ufc_event_broadcasts,
+#                               ufc_event_broadcast_changes and the run ledger
+#   ADMIN_TOKEN                 bearer for POST /run
