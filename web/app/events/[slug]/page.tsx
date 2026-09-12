@@ -23,6 +23,8 @@ import { getEventCardChanges } from "@/lib/status";
 import { getWeighInSummary, getWeighIns } from "@/lib/weighins";
 import { EventWeighInPanel } from "@/components/WeighInBits";
 import { EventCardChanges } from "@/components/StatusBits";
+import { getBroadcastForEvent } from "@/lib/broadcast";
+import { HowToWatchPanel } from "@/components/HowToWatch";
 
 export const revalidate = 300;
 
@@ -46,9 +48,13 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const e = await resolveEvent((await params).slug);
   if (!e) notFound();
   const [bouts, articles, videosRaw, cardChanges] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, 24).catch(() => []), getEventCardChanges(e.id).catch(() => [])]);
-  const [weighInSummary, weighIns] = await Promise.all([
+  const [weighInSummary, weighIns, broadcast] = await Promise.all([
     getWeighInSummary(e.id).catch(() => null),
     getWeighIns(e.id).catch(() => []),
+    /* The verified start times and carriers for this card. Read from our own
+     * table — the page never waits on UFC.com. A failure yields null and the
+     * How to Watch block simply does not render. */
+    getBroadcastForEvent(e).catch(() => null),
   ]);
   const videos = sortVideosTimeline(videosRaw);
   const imgs = await getImagesForFighters(bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
@@ -116,6 +122,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         </div>
       </div>
 
+      <HowToWatchPanel b={broadcast} />
+
       <div className="mt-4"><OfficialDestinations compact keys={["home", "fightpass", "store"]} /></div>
 
       {live.length > 0 && !historical && <div className="mt-6"><PregameDesk event={e} briefs={briefs} imgs={imgs} framing={framing} mode="cta" meta={{ fights: live.length, updated: intelligenceUpdated(ingest, rankings, videos), href: `/pregame/${eventSlug(e)}`, done, hub: isCurrent }} /></div>}
@@ -141,7 +149,19 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       {others.length > 0 && <section className="segment"><h3>{done || historical ? "More recent cards" : "Also coming up"}</h3><div className="elist">{others.map((x) => <EventRow key={x.id} e={x} />)}</div></section>}
 
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: e.event_date, endDate: e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: done ? "https://schema.org/EventCompleted" : "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, video: videos.length ? videoJsonLd(videos) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
+      {/* Structured data. `startDate` is upgraded from a bare date to the
+          verified main-card INSTANT when UFC.com has published one — that is a
+          legitimate schema.org value and a materially better one, since a date
+          alone cannot say when the event begins. `endDate` is dropped in that
+          case rather than invented: we do not know when a card ends, and a
+          fabricated end time would be invalid data dressed as precision.
+
+          Broadcaster is deliberately NOT published here. schema.org models a
+          broadcast as a BroadcastEvent over a BroadcastService, which asserts
+          considerably more than "UFC.com listed this carrier on the US events
+          page" — so we link the official page instead and claim nothing we
+          have not verified. */}
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: broadcast?.main_card_start_utc || e.event_date, endDate: broadcast?.main_card_start_utc ? undefined : e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: done ? "https://schema.org/EventCompleted" : "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, video: videos.length ? videoJsonLd(videos) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: broadcast?.main_card_start_utc || e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
     </div>
   );
 }

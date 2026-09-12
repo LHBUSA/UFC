@@ -20,6 +20,8 @@ import { UFC_OFFICIAL } from "@/lib/heritage";
 import { storyMedia } from "@/lib/faces";
 import { Voices } from "@/components/Voices";
 import { ApiCta } from "@/components/ApiCta";
+import { getBroadcastForEvent } from "@/lib/broadcast";
+import { WatchStrip } from "@/components/HowToWatch";
 
 export const revalidate = 300;
 
@@ -31,6 +33,9 @@ export default async function Home() {
   const articles = articlesRes.rows;
   const upcoming = upcomingRaw.filter((e) => e.id !== next?.id && !isContenderSeries(e.name)).slice(0, 6);
   const bouts = next ? await getEventBouts(next.id) : [];
+  /* Verified start times and carriers for the next card, from our own table.
+   * The homepage never waits on UFC.com; a failure renders no strip. */
+  const broadcast = next ? await getBroadcastForEvent(next).catch(() => null) : null;
   const live = bouts.filter((b) => b.status !== "cancelled");
   const mainEvent = live[0] || null;
   const headline = live.slice(0, 3);
@@ -125,6 +130,11 @@ export default async function Home() {
             ) : (
               <div className="poster empty-poster"><div><Octagon className="" /><h2 className="serif" style={{ fontSize: 24, margin: "12px 0 8px" }}>Next card loading</h2><p className="dim sm">The schedule refreshes from the production ingest. When the next UFC event is published it appears here, main card to early prelims.</p></div></div>
             )}
+            {/* Fight-day / next-event treatment: prelim and main-card times in
+                the visitor's own timezone, the carrier, and a live countdown.
+                Rendered from data the page already has, so it cannot shift the
+                poster when it "loads" — there is nothing to load. */}
+            {next && broadcast && <div className="mt-4"><WatchStrip b={broadcast} href={`/events/${eventSlug(next)}`} /></div>}
           </div>
         </div>
       </section>
