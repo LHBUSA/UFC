@@ -155,12 +155,26 @@ export function HowToWatchPanel({ b, now = Date.now() }: { b: EventBroadcast | n
 /**
  * The compact strip: homepage next-event card, fight-day experience.
  *
- * Shows the two times a reader actually plans around, the carrier, and the
- * countdown. No CTA here — the CTA belongs on the event page, where the reader
- * has the context to act on it, and a second competing button inside a card
- * that is already a link is a worse card.
+ * Two variants:
+ *
+ *   default  the whole strip is one link to the event page. No watch CTA — a
+ *            second competing button inside a card that is already a link is a
+ *            worse card, and an <a> inside an <a> is invalid markup.
+ *   hero     the strip is the base of the homepage feature card, so the
+ *            broadcaster becomes a REAL primary action. Nothing wraps it, so
+ *            the watch anchor is a top-level link and the markup stays valid.
+ *
+ * The hero variant is what makes the broadcast panel read as part of the
+ * featured event rather than a tray bolted underneath it.
  */
-export function WatchStrip({ b, now = Date.now(), href }: { b: EventBroadcast | null; now?: number; href?: string }) {
+export function WatchStrip({
+  b, now = Date.now(), href, variant = "default",
+}: {
+  b: EventBroadcast | null;
+  now?: number;
+  href?: string;
+  variant?: "default" | "hero";
+}) {
   if (!b) return null;
   const lines = startLines(b);
   const state = watchState(b, now, SERVER_ZONE);
@@ -169,9 +183,19 @@ export function WatchStrip({ b, now = Date.now(), href }: { b: EventBroadcast | 
 
   const eyebrow = state === "live" ? "Live now" : state === "today" ? "Today" : "How to watch";
   const providers = providerList(b.broadcasts ?? []);
+  const hero = variant === "hero";
+  /* The one carrier we promote to a button. Multiple carriers still all get
+   * named in the line beneath it, so nothing is hidden by the shortcut. */
+  const primary = hero ? linkableBroadcasts(b)[0] ?? null : null;
+  /* Everyone else, named properly from the array rather than by cutting the
+   * primary's name back out of a joined sentence. Nothing is hidden by
+   * promoting one carrier to a button. */
+  const secondary = primary
+    ? providerList((b.broadcasts ?? []).filter((x) => x.provider !== primary.provider))
+    : "";
 
   const body = (
-    <div className={styles.strip}>
+    <div className={hero ? `${styles.strip} ${styles.stripHero}` : styles.strip}>
       <div className={styles.stripTop}>
         <span className={styles.stripEyebrow}>{eyebrow} · {b.event_name}</span>
         <Countdown event={b} initialState={state} initialLabel={serverLabel(b, now)} />
@@ -188,12 +212,28 @@ export function WatchStrip({ b, now = Date.now(), href }: { b: EventBroadcast | 
         </div>
       )}
 
-      <div className={styles.stripWatch}>
-        <span>{providers ? <>Watch on <b>{providers}</b></> : "Broadcaster not yet published"}</span>
-        <span>✓ UFC.com · {verifiedAgo(b.verified_at, now)}</span>
-      </div>
+      {primary ? (
+        <div className={styles.stripCta}>
+          <a className={styles.watchBtn} href={primary.watch_url!} target="_blank" rel="noopener noreferrer">
+            <span>Watch on {primary.provider}</span>
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" focusable="false">
+              <path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+          <span className={styles.stripSource}>
+            {secondary ? <>Also on {secondary} · </> : null}
+            ✓ UFC.com · {verifiedAgo(b.verified_at, now)}
+          </span>
+        </div>
+      ) : (
+        <div className={styles.stripWatch}>
+          <span>{providers ? <>Watch on <b>{providers}</b></> : "Broadcaster not yet published"}</span>
+          <span>✓ UFC.com · {verifiedAgo(b.verified_at, now)}</span>
+        </div>
+      )}
     </div>
   );
 
-  return href ? <Link href={href} aria-label={`${b.event_name}: how to watch`}>{body}</Link> : body;
+  /* Never wrap the hero variant: it contains its own outbound anchor. */
+  return href && !hero ? <Link href={href} aria-label={`${b.event_name}: how to watch`}>{body}</Link> : body;
 }

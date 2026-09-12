@@ -22,6 +22,7 @@ import "./matchup-dna-polish.css";
 import "./fightweek-roster-polish.css";
 import "./home-fightweek-poster.css";
 import "./homepage-backdrop.css";
+import "./hero-premium.css";
 import "./footer-network-polish.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
