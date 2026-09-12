@@ -17,6 +17,18 @@ import ENUMS from './shared/enums.json' with { type: 'json' };
 const CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
 
+/* ESPN publishes slot rows named "Judge 1", "Judge 2" for bouts whose
+ * officials have not been filed yet. Observed on this card's three finishes,
+ * which carry no linescore at all, and on one decision before ESPN filled the
+ * real names in. A slot is not an official and must never become a stored
+ * judge identity or a /judges profile. */
+const PLACEHOLDER_OFFICIAL = /^judge\s*\d+$/i;
+
+function officialIdFromRef(ref) {
+  const m = /\/officials\/(\d+)/.exec(String(ref || ''));
+  return m ? m[1] : null;
+}
+
 export class Espn {
   constructor({ minIntervalMs = 250 } = {}) {
     this.minIntervalMs = minIntervalMs;
@@ -135,12 +147,86 @@ export class Espn {
     return out;
   }
 
-  /* Referee name for a competition, or null. */
-  async referee(officialsRef) {
-    if (!officialsRef) return null;
+  /* Referee and judges for a competition, from the single officials call.
+   *
+   * ESPN files an official's role in position.name ('Referee' | 'Judge').
+   * Judges keep ESPN's own `order`, which is what makes judge_1/2/3 stable
+   * across runs: the source decides the ordering, not the order two linescore
+   * responses happened to arrive in. */
+  async officiating(officialsRef) {
+    if (!officialsRef) return { referee: null, judges: [] };
     const j = await this.json(officialsRef);
-    const ref = (j?.items || []).find((o) => o?.position?.name === 'Referee');
-    return ref ? `${ref.firstName || ''} ${ref.lastName || ''}`.trim() || null : null;
+    const items = Array.isArray(j?.items) ? j.items : [];
+    const nameOf = (o) => `${o?.firstName || ''} ${o?.lastName || ''}`.trim();
+    const ref = items.find((o) => o?.position?.name === 'Referee');
+    const judges = items
+      .filter((o) => o?.position?.name === 'Judge')
+      .map((o) => ({ id: String(o.id), name: nameOf(o), order: Number.isFinite(Number(o.order)) ? Number(o.order) : 99 }))
+      .sort((a, b) => a.order - b.order);
+    return { referee: ref ? nameOf(ref) || null : null, judges };
+  }
+
+  /* Official judge card TOTALS for a judged bout.
+   *
+   * These are final card totals and nothing else. ESPN reports every judge
+   * linescore at period 0 — there is no per-round judge score anywhere in the
+   * public graph — so this must never be presented, stored or reshaped as a
+   * round-by-round card. Verified across the 2019, 2023, 2024 and 2026
+   * archives: period is 0 in every linescore returned.
+   *
+   * A card is only emitted when BOTH corners carry a score from the SAME
+   * official. The join is on official.$ref, not on display order, because the
+   * two linescore responses are per competitor and ESPN's per-response
+   * ordering is not guaranteed to agree.
+   *
+   * The pair is written in ESPN's competitor order, consistently for every
+   * card of the bout. It is deliberately NOT pre-oriented to fighter_a: the
+   * archive stores a bare pair and lib/judgeScoring.ts derives orientation
+   * from the recorded winner and the bout's full tally. Feeding that resolver
+   * a consistent pair is what keeps one scorecard model instead of two. */
+  async scorecards(competitionRef, competitorIds, judges) {
+    const base = String(competitionRef).split('?')[0].replace(/^http:/, 'https:');
+    if (!/\/competitions\/\d+$/.test(base) || competitorIds.length !== 2) {
+      return { cards: [], rejected: [], scoredJudges: 0 };
+    }
+    const judgeById = new Map(judges.map((x) => [x.id, x]));
+    const byOfficial = new Map();
+    for (const cid of competitorIds) {
+      const j = await this.json(`${base}/competitors/${cid}/linescores`);
+      for (const item of (j?.items || [])) {
+        for (const ls of (item?.linescores || [])) {
+          const oid = officialIdFromRef(ls?.official?.$ref);
+          const value = Number(ls?.value);
+          if (!oid || !Number.isInteger(value)) continue;
+          if (!byOfficial.has(oid)) byOfficial.set(oid, {});
+          byOfficial.get(oid)[cid] = value;
+        }
+      }
+    }
+
+    const cards = [];
+    const rejected = [];
+    const ordered = [...byOfficial.keys()]
+      .sort((a, b) => (judgeById.get(a)?.order ?? 99) - (judgeById.get(b)?.order ?? 99));
+    for (const oid of ordered) {
+      const pair = byOfficial.get(oid);
+      const first = pair[competitorIds[0]];
+      const second = pair[competitorIds[1]];
+      /* Half a card is not a card. */
+      if (!Number.isInteger(first) || !Number.isInteger(second)) {
+        rejected.push({ official_id: oid, name: judgeById.get(oid)?.name || null, reason: 'one_sided_linescore' });
+        continue;
+      }
+      const name = judgeById.get(oid)?.name || '';
+      /* ESPN publishes "Judge 1"/"Judge 2" placeholder officials on bouts
+       * whose officials have not been filed. Those are slots, not people, and
+       * storing one would invent a judge identity and a /judges profile for
+       * somebody who does not exist. Drop the card and report it. */
+      if (!name) { rejected.push({ official_id: oid, name: null, reason: 'unnamed_official' }); continue; }
+      if (PLACEHOLDER_OFFICIAL.test(name)) { rejected.push({ official_id: oid, name, reason: 'placeholder_official' }); continue; }
+      cards.push({ judge: name, score: `${first}-${second}` });
+    }
+    return { cards, rejected, scoredJudges: byOfficial.size };
   }
 
   /* Athlete identity + physicals. */

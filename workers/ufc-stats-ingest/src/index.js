@@ -55,6 +55,16 @@ import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec } f
 import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_resolver.mjs';
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
 
+/* Bouts that reached the judges. Mirrors JUDGED_METHODS in
+ * web/lib/judgeScoring.ts — the two must agree about what a scored bout is. */
+const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
+
+/* How many un-carded decisions one run will look up. Each costs two linescore
+ * calls on top of the officials call the referee already needed, so this is
+ * the knob that keeps a daily year-walk from turning into a scorecard
+ * backfill nobody asked for. The fight-night path is far below it. */
+const SCORECARD_RECONCILE_MAX = 40;
+
 const SERVICE = 'ufc-stats-ingest';
 const VERSION = 'v0.5.0';
 
@@ -273,7 +283,7 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
   }
 
   console.log(`[${SERVICE}] START ${health.last_cron_run} invoked=${invoked} mode=${mode}${card ? ` card=${card.name}` : ''}`);
-  const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, assertion_failures: [], notes: { invoked, cron, mode, version: VERSION, card: card ? { name: card.name, event_date: card.event_date, via: card.source } : null } };
+  const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, scorecards_reconciled: 0, scorecards_written: 0, scorecard_cards_written: 0, assertion_failures: [], notes: { invoked, cron, mode, version: VERSION, card: card ? { name: card.name, event_date: card.event_date, via: card.source } : null } };
   let runId = null;
   let status = 'success';
   /* Challenges are answered only when UFCSTATS_SOLVE_CHALLENGE="true". The
@@ -351,6 +361,14 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
     const loud = e instanceof SchemaAssertionError || e instanceof AccessGateError;
     await discord(env, `**${SERVICE} ${loud ? 'STOPPED' : 'CRASHED'}** ${cls}\n\`${detail}\`\n${e?.url || ''}`, { loud: true });
   } finally {
+    /* ufc_ingest_runs has no scorecard columns, so the counters ride in notes
+     * (jsonb) rather than silently vanishing from the ledger. */
+    if (run.scorecards_reconciled) {
+      run.notes.scorecards_looked_up = run.scorecards_reconciled;
+      run.notes.scorecards_written = run.scorecards_written;
+      run.notes.scorecard_cards_written = run.scorecard_cards_written;
+      run.notes.scorecard_reconcile_capped = run.scorecards_reconciled >= SCORECARD_RECONCILE_MAX;
+    }
     if (runId) {
       try {
         await patch(env, 'ufc_ingest_runs', `id=eq.${runId}`, {
@@ -364,7 +382,7 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
     if (status === 'success') {
       const n = run.notes;
       await discord(env, `${SERVICE} ok: events_new=${run.events_new} bouts_new=${run.bouts_new} fighters=${run.fighters_touched}`
-        + ` rounds=${n.round_rows_written || 0}${n.review_queued ? ` review=${n.review_queued}` : ''}`
+        + ` rounds=${n.round_rows_written || 0}${n.scorecards_written ? ` scorecards=${n.scorecards_written}` : ''}${n.review_queued ? ` review=${n.review_queued}` : ''}`
         + `${run.assertion_failures.length ? ` notes=${run.assertion_failures.length}` : ''}`);
     }
     console.log(`[${SERVICE}] END status=${status} events_new=${run.events_new} bouts_new=${run.bouts_new} round_rows_written=${run.notes.round_rows_written || 0}`);
@@ -418,7 +436,7 @@ async function loadContext(env) {
   const byEspnAthlete = new Map(fighters.filter((f) => f.espn_athlete_id).map((f) => [f.espn_athlete_id, f]));
   const byUfcstatsFighter = new Map(fighters.filter((f) => f.ufcstats_id).map((f) => [f.ufcstats_id, f]));
   const events = await selectAll(env, 'ufc_events', 'select=id,ufcstats_id,espn_event_id,name,event_date,card_status');
-  const results = await selectAll(env, 'ufc_bout_results', 'select=bout_id,has_stats,winner_id,round,referee,finish_detail,time_format,stats_captured_at');
+  const results = await selectAll(env, 'ufc_bout_results', 'select=bout_id,has_stats,winner_id,round,referee,finish_detail,time_format,stats_captured_at,judge_1');
   return {
     resolver, byEspnAthlete, byUfcstatsFighter,
     fightersById: new Map(fighters.map((f) => [f.id, f])),
@@ -607,16 +625,51 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
          * start of the latency window the round-stat lane later closes. */
         await mergeState(env, STATE.latency(saved.id), { bout_id: saved.id, espn_final_first_seen_at: nowIso() }, { onlyIfAbsent: ['espn_final_first_seen_at'] });
       }
-      const referee = await espn.referee(b.officials_ref);
-      await upsert(env, 'ufc_bout_results', {
+      const officiating = await espn.officiating(b.officials_ref);
+      const resultRow = {
         bout_id: saved.id, winner_id: winnerRow?.id || null, method, method_raw: b.result.method_raw,
         round: b.result.round, time_sec: b.result.time ? mmssToSec(b.result.time, b.source_url) : null,
-        time_format: b.time_format, referee, finish_detail: b.result.finish_detail,
+        time_format: b.time_format, referee: officiating.referee, finish_detail: b.result.finish_detail,
         has_stats: prior?.has_stats || false, result_source: prior?.has_stats ? 'ufcstats' : 'espn',
         source_url: b.source_url, captured_at: nowIso(),
-      }, 'bout_id');
+      };
+
+      /* Official scorecards, for bouts that actually reached the judges.
+       *
+       * Three gates, and each one removes work rather than adding it:
+       * a finish never had a card, a bout that already holds judge_1 has been
+       * carded (by UFC Stats or by an earlier run of this lane) and is never
+       * overwritten, and SCORECARD_RECONCILE_MAX bounds what one daily run
+       * will go looking for. On the fight-night path the cap never binds —
+       * one card is at most ~14 bouts — so the current event is always fully
+       * reconciled the moment its decisions land. */
+      const judged = JUDGED_METHODS.includes(method);
+      if (judged && !prior?.judge_1 && run.scorecards_reconciled < SCORECARD_RECONCILE_MAX) {
+        run.scorecards_reconciled += 1;
+        const sc = await espn.scorecards(b.source_url, b.fighters.map((f) => f.espn_athlete_id), officiating.judges);
+        if (sc.cards.length) {
+          resultRow.scorecards = sc.cards;
+          resultRow.judge_1 = sc.cards[0]?.judge ?? null;
+          resultRow.judge_2 = sc.cards[1]?.judge ?? null;
+          resultRow.judge_3 = sc.cards[2]?.judge ?? null;
+          run.scorecards_written += 1;
+          run.scorecard_cards_written += sc.cards.length;
+        }
+        /* A rejected card is a real fact about the source, not a silent skip:
+         * it means ESPN held a score we refused to attribute to a named
+         * official. Surfaced so the count can be checked rather than assumed. */
+        for (const r of sc.rejected) {
+          run.notes.scorecard_rejected = (run.notes.scorecard_rejected || 0) + 1;
+          run.notes.scorecard_rejected_reasons = {
+            ...(run.notes.scorecard_rejected_reasons || {}),
+            [r.reason]: ((run.notes.scorecard_rejected_reasons || {})[r.reason] || 0) + 1,
+          };
+        }
+      }
+
+      await upsert(env, 'ufc_bout_results', resultRow, 'bout_id');
       ctx.resultsByBout.set(saved.id, { ...(prior || {}), bout_id: saved.id, has_stats: prior?.has_stats || false,
-        winner_id: winnerRow?.id || null, round: b.result.round });
+        winner_id: winnerRow?.id || null, round: b.result.round, judge_1: resultRow.judge_1 ?? prior?.judge_1 ?? null });
     } else if (!cancelled) {
       allResults = false;
     }

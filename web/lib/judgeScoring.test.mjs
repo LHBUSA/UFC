@@ -473,3 +473,79 @@ test("a merged spelling's old profile URL still resolves somewhere", () => {
     assert.ok(from && to, "both slugs must be non-empty");
   }
 });
+
+/* ---- ESPN-sourced cards ------------------------------------------------ */
+
+/* The Worker writes ESPN judge cards as a bare pair in ESPN's own competitor
+ * order, exactly like the UFC Stats rows, and lets this module decide which
+ * number belongs to which fighter. These cases are tonight's real cards; they
+ * exist so that "reuse the existing scorecard model" stays a fact rather than
+ * an intention. */
+
+test("an ESPN card in competitor order orients from the winner, either way round", () => {
+  /* Aldrich vs Tarin: ESPN order [Aldrich, Tarin], Tarin won a unanimous
+   * decision, so position 2 is the winner's and fighter B is Tarin. */
+  const tarin = J.buildBoutScorecard({
+    method: "DEC_U", winnerId: B, fighterAId: A, fighterBId: B,
+    scorecards: [card("Ron McCarthy", "28-29"), card("Chris Flores", "28-29"), card("Michael Bell", "28-29")],
+  });
+  assert.equal(tarin.orientationBasis, "derived_from_result");
+  assert.deepEqual(tarin.cards.map((c) => [c.fighterAScore, c.fighterBScore]), [[28, 29], [28, 29], [28, 29]]);
+  assert.equal(tarin.fighterATotal, 84);
+  assert.equal(tarin.fighterBTotal, 87);
+  assert.equal(tarin.cardShapeMatchesMethod, true);
+
+  /* Bahamondes vs Salikhov: ESPN order puts the WINNER first, so the same
+   * code has to read position 1 as the winner's without being told. */
+  const bahamondes = J.buildBoutScorecard({
+    method: "DEC_U", winnerId: A, fighterAId: A, fighterBId: B,
+    scorecards: [card("Sal D'amato", "30-27"), card("Felicia Oh", "29-28"), card("Michael Bell", "30-27")],
+  });
+  assert.equal(bahamondes.orientationBasis, "derived_from_result");
+  assert.deepEqual(bahamondes.cards.map((c) => [c.fighterAScore, c.fighterBScore]), [[30, 27], [29, 28], [30, 27]]);
+  assert.equal(bahamondes.fighterATotal, 89);
+  assert.equal(bahamondes.fighterBTotal, 82);
+  assert.equal(bahamondes.dissentCards, 0);
+});
+
+test("an ESPN judge our directory has never seen keeps their card and gets a profile", () => {
+  /* The failure this guards against: a real, verified official disappearing
+   * from a bout purely because the archive has not met that spelling yet. */
+  const sheet = J.buildBoutScorecard({
+    method: "DEC_U", winnerId: B, fighterAId: A, fighterBId: B,
+    scorecards: [card("Andrew Topps", "28-29"), card("Eric Colon", "28-29"), card("Ron McCarthy", "28-29")],
+  });
+  assert.equal(sheet.hasOfficialScorecard, true);
+  assert.equal(sheet.cardCount, 3);
+  assert.deepEqual(sheet.cards.map((c) => c.judge), ["Andrew Topps", "Eric Colon", "Ron McCarthy"]);
+  assert.deepEqual(sheet.cards.map((c) => c.judgeSlug), ["andrew-topps", "eric-colon", "ron-mccarthy"]);
+  for (const c of sheet.cards) assert.equal(c.cardNote, null);
+});
+
+test("ESPN card totals are never reshaped into round scores", () => {
+  /* ESPN reports every judge linescore at period 0. A 29-28 is the whole card
+   * and the model holds exactly that — no per-round breakdown is derived, and
+   * the only numbers on a card are the two totals it came with. */
+  const sheet = J.buildBoutScorecard({
+    method: "DEC_U", winnerId: B, fighterAId: A, fighterBId: B,
+    scorecards: [card("Ron McCarthy", "29-28"), card("Felicia Oh", "29-28"), card("Michael Bell", "29-28")],
+  });
+  for (const c of sheet.cards) {
+    assert.equal(c.rawScore, "29-28");
+    assert.equal(c.scoreMargin, 1);
+    assert.equal(Object.keys(c).some((k) => /round/i.test(k)), false);
+  }
+});
+
+test("a placeholder official would be visible if one ever reached the archive", () => {
+  /* The Worker rejects "Judge 1" before it is written, so this asserts the
+   * contract from the other side: nothing in this module launders a
+   * placeholder into a real identity, so a regression upstream stays legible
+   * rather than becoming a plausible-looking judge profile. */
+  const sheet = J.buildBoutScorecard({
+    method: "DEC_U", winnerId: B, fighterAId: A, fighterBId: B,
+    scorecards: [card("Judge 1", "28-29")],
+  });
+  assert.equal(sheet.cards[0].judge, "Judge 1");
+  assert.equal(J.resolveJudge("Judge 1").name, "Judge 1");
+});
