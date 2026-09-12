@@ -41,8 +41,15 @@ function installStub() {
   const seen = [];
   globalThis.fetch = async (input, init = {}) => {
     const url = new URL(typeof input === "string" ? input : input.url);
-    if (init.method && init.method !== "GET" && init.method !== "HEAD") {
+    /* PostgREST RPC is POSTed but is still a read: the function is declared stable and
+     * granted to the service role only. Anything else that writes is a bug. */
+    const rpc = url.pathname.match(/^\/rest\/v1\/(rpc\/[a-z_0-9]+)$/);
+    if (init.method && init.method !== "GET" && init.method !== "HEAD" && !(rpc && init.method === "POST")) {
       throw new Error(`stub: the read API must never write (${init.method} ${url.pathname})`);
+    }
+    if (rpc) {
+      seen.push(rpc[1]);
+      return new Response(JSON.stringify({ rows: [], candidates: 0, matched: 0 }), { status: 200, headers: { "Content-Type": "application/json" } });
     }
     const m = url.pathname.match(/^\/rest\/v1\/([a-z_]+)$/);
     if (!m) return new Response(JSON.stringify({ statusCode: "404" }), { status: 404 });
@@ -73,7 +80,7 @@ const call = async (path, method = "GET") => {
 const DNA_EMPTY = ["dna_not_available"];
 const LOST_BY_MAIN = [
   ["/v1/ufc/dna/metrics", "ufc_dna_metric_definitions"],
-  ["/v1/ufc/dna/query?metric=sig_landed_per_min&min_confidence=insufficient", "ufc_fighter_dna_snapshots", ["unknown_metric", "dna_not_available"]],
+  ["/v1/ufc/dna/query?metric=sig_landed_per_min&min_confidence=insufficient", "rpc/ufc_dna_metric_ranking", ["unknown_metric", "dna_not_available"]],
   ["/v1/ufc/videos", "ufc_videos"],
   [`/v1/ufc/bouts/${BOUT}/ledger`, "ufc_fight_state_ledger"],
   [`/v1/ufc/bouts/${BOUT}/videos`, "ufc_videos"],

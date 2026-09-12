@@ -297,6 +297,62 @@ function applyParams(rows, params) {
   return { rows: out.slice(offset, offset + limit).map((r) => projectSelect(r, select)), total: out.length };
 }
 
+/* Mock of the ufc_dna_metric_ranking SQL function (migration 20260912000000):
+ * resolve the latest row per fighter first, then filter, then rank the whole matched
+ * population, then limit. Deliberately literal, so the Worker's ranking and metadata
+ * contract is exercised without a database. */
+const CONF_RANK = { insufficient: 0, low: 1, medium: 2, high: 3 };
+function dnaMetricRanking(tables, a) {
+  const stance = a.p_stance ?? null;
+  const table = stance ? "ufc_fighter_stance_splits" : "ufc_fighter_dna_snapshots";
+  const fighters = new Map((tables.ufc_fighters || []).map((f) => [f.id, f]));
+  const source = (tables[table] || []).filter((r) =>
+    r.definition_version === a.p_definition_version
+    && (!stance || r.opponent_stance === stance)
+    && (a.p_as_of === null || String(r.as_of_date) <= String(a.p_as_of))
+    && fighters.has(r.fighter_id));
+
+  const latest = new Map();
+  for (const r of source) {
+    const prev = latest.get(r.fighter_id);
+    if (!prev || String(r.as_of_date) > String(prev.as_of_date)) latest.set(r.fighter_id, r);
+  }
+  const eligible = [...latest.values()].filter((r) => !stance || (r.appearances ?? 0) >= a.p_min_appearances);
+
+  const floor = CONF_RANK[a.p_min_confidence];
+  const value = (r) => { const v = (r.metrics || {})[a.p_metric]?.value; return typeof v === "number" ? v : null; };
+  const matched = eligible.filter((r) => {
+    const m = (r.metrics || {})[a.p_metric];
+    if (!m || typeof m !== "object" || Array.isArray(m) || !("value" in m)) return false;
+    if (!(CONF_RANK[m.confidence] >= floor)) return false;
+    const v = value(r);
+    if (a.p_min !== null && !(v !== null && v >= a.p_min)) return false;
+    if (a.p_max !== null && !(v !== null && v <= a.p_max)) return false;
+    if (a.p_active !== null && (fighters.get(r.fighter_id).is_active ?? null) !== a.p_active) return false;
+    return true;
+  });
+
+  const name = (r) => String(fighters.get(r.fighter_id).name || "");
+  const ranked = [...matched].sort((x, y) => {
+    const vx = value(x); const vy = value(y);
+    if (vx === null && vy !== null) return 1;
+    if (vy === null && vx !== null) return -1;
+    const byValue = vx === null || vy === null ? 0 : (a.p_order === "asc" ? vx - vy : vy - vx);
+    return byValue || name(x).localeCompare(name(y)) || String(x.fighter_id).localeCompare(String(y.fighter_id));
+  });
+
+  const cols = stance
+    ? ["opponent_stance", "appearances", "wins", "losses", "draws", "no_contests", "ko_tko_wins", "submission_wins", "decision_wins", "stat_bouts", "stat_rounds", "observed_seconds", "confidence"]
+    : ["sample_bouts", "sample_completed_bouts", "sample_stat_bouts", "sample_rounds", "sample_seconds", "coverage_status"];
+  const rows = ranked.slice(0, Math.max(a.p_limit, 0)).map((r) => ({
+    ...Object.fromEntries(cols.map((c) => [c, r[c]])),
+    fighter_id: r.fighter_id,
+    as_of_date: r.as_of_date,
+    metric: (r.metrics || {})[a.p_metric],
+  }));
+  return { rows, candidates: eligible.length, matched: matched.length };
+}
+
 function installMock({ tables, storage = {}, missingTables = [] }) {
   const calls = [];
   globalThis.fetch = async (input, init = {}) => {
@@ -307,6 +363,16 @@ function installMock({ tables, storage = {}, missingTables = [] }) {
       const key = href.startsWith(`${MEDIA_BASE}/`) ? href.slice(MEDIA_BASE.length + 1) : url.pathname.replace("/storage/v1/object/public/ufc-media/", "");
       if (key in storage) return new Response(JSON.stringify(storage[key]), { status: 200, headers: { "Content-Type": "application/json" } });
       return new Response(JSON.stringify({ statusCode: "404", error: "not_found" }), { status: 400 });
+    }
+    const fn = url.pathname.match(/^\/rest\/v1\/rpc\/([a-z_0-9]+)$/);
+    if (fn) {
+      assert.equal(init.method, "POST", "mock: rpc must be POSTed");
+      assert.equal(init.headers?.apikey, "service-key", "mock: service key must be sent");
+      const needs = { ufc_dna_metric_ranking: ["ufc_fighter_dna_snapshots", "ufc_fighter_stance_splits"] }[fn[1]];
+      if (!needs || needs.some((t) => missingTables.includes(t) || !(t in tables))) {
+        return new Response(JSON.stringify({ code: "PGRST202", message: `Could not find the function public.${fn[1]}` }), { status: 404 });
+      }
+      return new Response(JSON.stringify(dnaMetricRanking(tables, JSON.parse(init.body))), { status: 200, headers: { "Content-Type": "application/json" } });
     }
     const m = url.pathname.match(/^\/rest\/v1\/([a-z_]+)$/);
     if (!m) return new Response("nope", { status: 404 });
@@ -1523,11 +1589,13 @@ test("dna query filters current snapshots by a metric value and confidence; olde
   assert.equal(row.metric.confidence, "medium");
   assert.equal(row.metric_key, "pace_retention_r3_vs_r1");
   assert.equal(row.sample.coverage_status, "high");
-  assert.equal(body.meta.candidates, 4, "four snapshot rows pass the raw filter before the latest-per-fighter rule");
+  assert.equal(body.meta.candidates, 3, "candidates is the eligible population: one latest snapshot per fighter");
+  assert.equal(body.meta.candidates_total, body.meta.candidates, "no scan cap remains, so the two are equal");
   assert.equal(body.meta.matched, 1);
   assert.equal(body.meta.truncated, false);
   assert.deepEqual(body.meta.filter.value, ["metrics->pace_retention_r3_vs_r1->value=gte.0.9"]);
-  assert.ok(body.meta.note.includes("capped at 1000"));
+  assert.ok(body.meta.note.includes("Ranked in SQL over every eligible fighter"));
+  assert.ok(!body.meta.note.includes("capped"), "the 1000-row candidate cap is gone (issue #27)");
 
   const older = await call("/v1/ufc/dna/query?metric=pace_retention_r3_vs_r1&min=0.9&as_of=2025-06-01");
   assert.deepEqual(older.body.data.map((r) => [r.fighter.id, r.as_of_date]), [[F_OPP, "2025-01-01"], [F_MEDIA, "2025-04-14"]], "as_of makes the 2025-01-01 opponent snapshot current; sorted by value desc");
@@ -1576,6 +1644,105 @@ test("dna query with ?stance= runs over stance splits (fighters with >= N appear
   assert.equal(bad.status, 400);
   assert.equal(bad.body.error.code, "invalid_metric");
   assert.ok(bad.body.error.detail.allowed.includes("ko_rate"));
+});
+
+/* Issue #27. Before the SQL ranking, dna/query scanned at most 1000 rows ordered by
+ * fighter UUID and ranked inside that window, so a fighter sorting late by UUID could
+ * never appear however good the metric was. This fixture puts the best value on the
+ * last fighter by UUID and the worst on the first. */
+const RANK_POP = 1200;
+const rankUuid = (i) => `${String(i).padStart(8, "0")}-0000-4000-8000-000000000000`;
+const rankTables = () => {
+  const fighters = [];
+  const snapshots = [];
+  for (let i = 0; i < RANK_POP; i += 1) {
+    const id = rankUuid(i);
+    fighters.push({ id, name: `Fighter ${String(i).padStart(4, "0")}`, nickname: null, ufcstats_id: null, espn_athlete_id: String(900000 + i), stance: "ORTHODOX", is_active: i % 2 === 0, record_w: 1, record_l: 0, record_d: 0, record_nc: 0 });
+    /* Value climbs with the UUID, so the true top-50 is the tail the old window missed.
+     * The last three carry an explicit null value: matched, but ranked last either way. */
+    const value = i >= RANK_POP - 3 ? null : i / 100;
+    snapshots.push({
+      fighter_id: id, as_of_date: "2026-09-06", definition_version: 1,
+      sample_bouts: 8, sample_completed_bouts: 8, sample_stat_bouts: 8, sample_rounds: 24, sample_seconds: 7200, coverage_status: "high",
+      metrics: { sig_landed_per_min: { value, confidence: "high", sample_bouts: 8 } },
+    });
+    /* A superseded 2024 row with an unbeatable value: it must never stand in for the
+     * current one, at any population size. */
+    snapshots.push({
+      fighter_id: id, as_of_date: "2024-01-01", definition_version: 1,
+      sample_bouts: 4, sample_completed_bouts: 4, sample_stat_bouts: 4, sample_rounds: 12, sample_seconds: 3600, coverage_status: "medium",
+      metrics: { sig_landed_per_min: { value: 999, confidence: "high", sample_bouts: 4 } },
+    });
+  }
+  return { ufc_fighters: fighters, ufc_fighter_dna_snapshots: snapshots, ufc_fighter_stance_splits: [] };
+};
+
+test("dna query ranks the whole eligible population, not the first 1000 rows by fighter UUID (#27)", async () => {
+  const tables = rankTables();
+  const calls = installMock({ tables });
+  const { body } = await call("/v1/ufc/dna/query?metric=sig_landed_per_min");
+
+  assert.equal(body.meta.candidates, RANK_POP, "one latest snapshot per fighter is the eligible population");
+  assert.equal(body.meta.candidates_total, RANK_POP);
+  assert.equal(body.meta.matched, RANK_POP, "every fighter has the metric at high confidence, explicit nulls included");
+  assert.equal(body.meta.truncated, false);
+  assert.equal(body.meta.count, 50);
+  assert.equal(body.data.length, 50);
+
+  /* The old implementation could only ever return fighters 0..499 (1000 rows / 2 per
+   * fighter). The correct top-50 is entirely outside that window. */
+  assert.equal(body.data[0].fighter.id, rankUuid(RANK_POP - 4), "highest non-null value ranks first");
+  assert.equal(body.data[0].metric.value, (RANK_POP - 4) / 100);
+  assert.ok(body.data.every((r) => Number(r.fighter.id.slice(0, 8)) >= 1000), "no result comes from the old UUID window");
+  assert.equal(body.data.at(-1).metric.value, (RANK_POP - 53) / 100, "ranking happens before the limit, so the 50th is the 50th best");
+  assert.ok(body.data.every((r) => r.as_of_date === "2026-09-06"), "the superseded 2024 rows never stand in");
+  assert.ok(body.data.every((r) => r.metric.value !== 999));
+
+  const asc = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&order=asc");
+  assert.equal(asc.body.data[0].fighter.id, rankUuid(0), "asc starts at the lowest value");
+  assert.equal(asc.body.data[0].metric.value, 0);
+
+  const active = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&active=true");
+  assert.equal(active.body.meta.matched, RANK_POP / 2, "active is filtered before ranking, not after the scan");
+  assert.ok(active.body.data.every((r) => r.fighter.is_active === true));
+  assert.equal(active.body.data[0].fighter.id, rankUuid(RANK_POP - 4), "1196 is active and still the best");
+
+  const asOf = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&as_of=2025-01-01");
+  assert.equal(asOf.body.meta.candidates, RANK_POP);
+  assert.ok(asOf.body.data.every((r) => r.as_of_date === "2024-01-01" && r.metric.value === 999), "as_of resolves to the 2024 row for every fighter");
+  assert.equal(asOf.body.data[0].fighter.name, "Fighter 0000", "values tie at 999, so the name tie-break decides");
+
+  const ranking = calls.filter((c) => c.startsWith("/rest/v1/rpc/ufc_dna_metric_ranking"));
+  assert.equal(ranking.length, 4, "one ranking call per request, no per-fighter follow-up scans");
+  assert.equal(calls.filter((c) => c.startsWith("/rest/v1/ufc_fighter_dna_snapshots")).length, 0, "the Worker no longer scans the snapshot table itself");
+});
+
+test("dna query keeps an explicit null explicit: it is matched, sorts last in both directions, and satisfies no bound (#27)", async () => {
+  const ids = [0, 1, 2, 3, 4].map(rankUuid);
+  const values = [2.5, null, 7.1, null, 0.4];
+  const tables = {
+    ufc_fighters: ids.map((id, i) => ({ id, name: `Fighter ${i}`, nickname: null, ufcstats_id: null, espn_athlete_id: String(910000 + i), stance: "ORTHODOX", is_active: true, record_w: 1, record_l: 0, record_d: 0, record_nc: 0 })),
+    ufc_fighter_dna_snapshots: ids.map((id, i) => ({
+      fighter_id: id, as_of_date: "2026-09-06", definition_version: 1,
+      sample_bouts: 6, sample_completed_bouts: 6, sample_stat_bouts: 6, sample_rounds: 18, sample_seconds: 5400, coverage_status: "high",
+      metrics: { sig_landed_per_min: { value: values[i], confidence: "high", sample_bouts: 6 } },
+    })),
+    ufc_fighter_stance_splits: [],
+  };
+  installMock({ tables });
+
+  const desc = await call("/v1/ufc/dna/query?metric=sig_landed_per_min");
+  assert.equal(desc.body.meta.matched, 5, "an explicit null is a real MetricObject and still matches");
+  assert.deepEqual(desc.body.data.map((r) => r.metric.value), [7.1, 2.5, 0.4, null, null]);
+  assert.deepEqual(desc.body.data.slice(3).map((r) => r.fighter.name), ["Fighter 1", "Fighter 3"], "tied nulls break on name");
+
+  const asc = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&order=asc");
+  assert.deepEqual(asc.body.data.map((r) => r.metric.value), [0.4, 2.5, 7.1, null, null], "nulls stay last when the order flips");
+
+  const bounded = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&min=0");
+  assert.deepEqual(bounded.body.data.map((r) => r.metric.value), [7.1, 2.5, 0.4], "a null value satisfies no bound");
+  assert.equal(bounded.body.meta.candidates, 5, "candidates stays the eligible population, not the matched count");
+  assert.equal(bounded.body.meta.matched, 3);
 });
 
 test("index advertises every Fight DNA route", async () => {
