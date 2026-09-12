@@ -65,7 +65,7 @@ function FighterReading({ w, fighter, img, superLabel }: { w: WeighIn; fighter: 
         <div className={styles.fighterIdentity}>
           <div className={styles.statusLine}>
             <span className={styles.badge} data-tone={tone}>{RESULT_LABEL[w.result]}</span>
-            {w.is_correction && <span className={styles.corrected}>{superLabel || "Corrected"}</span>}
+            {(w.is_correction || w.is_confirmation) && <span className={styles.corrected}>{superLabel || (w.is_confirmation ? "Confirmed" : "Corrected")}</span>}
             {w.attempt_number > 1 && <span className={styles.attempt}>Attempt {w.attempt_number}</span>}
           </div>
           <h3><Link href={href}>{w.fighter_name}</Link></h3>
@@ -175,11 +175,13 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
     return " · later corrected";
   };
   const labels = new Map(rows.map((w) => [w.id, w.supersedes_id ? supersessionLabel(w.official_weight_lbs, priorWeight.get(w.supersedes_id), w.source_kind) : null]));
+  /* The view says which kind each supersession was; the weight comparison is
+   * the fallback for a reading whose prior row fell outside this window. */
   const historyKind = (h: (typeof history)[number]) => {
-    if (h.supersedes_id && priorWeight.has(h.supersedes_id) && Number(priorWeight.get(h.supersedes_id)) === Number(h.official_weight_lbs)) {
-      return `${h.source_kind === "official" ? "OFFICIAL" : h.source_kind.toUpperCase()} CONFIRMATION`;
-    }
-    return timelineKind({ ...(h as unknown as WeighIn), is_correction: Boolean(h.supersedes_id) });
+    const kind = h.supersession_kind ?? (h.supersedes_id
+      ? (priorWeight.has(h.supersedes_id) && Number(priorWeight.get(h.supersedes_id)) === Number(h.official_weight_lbs) ? "confirmation" : "correction")
+      : null);
+    return timelineKind({ ...(h as unknown as WeighIn), is_correction: kind === "correction", is_confirmation: kind === "confirmation" });
   };
 
   const fighterIds = [...new Set([...table.map((r) => r.fighter_id), ...bookedIds].filter(Boolean))];
@@ -201,7 +203,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
   const sourceStampIsPublisher = Boolean(summary?.newest_source_published_at);
 
   return (
-    <div className="wrap page">
+    <div className={`wrap page ${styles.desk}`}>
       <Breadcrumbs items={[{ name: "Weigh-Ins" }]} />
       <WeighInAutoRefresh seconds={WEIGHIN_REVALIDATE} enabled={poll} />
 
@@ -327,7 +329,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
           <p><strong>Official sources first.</strong> Promotion results, athletic commissions, then established reporting.</p>
           <p><strong>Class is not the limit.</strong> Title, non-title allowance and catchweight contracts remain distinct.</p>
           <p><strong>No scale-photo inference.</strong> If a source reports a miss without a number, the number stays empty.</p>
-          <p><strong>Corrections stay visible.</strong> Revised readings append to the trail instead of overwriting history.</p>
+          <p><strong>Confirmations and corrections stay visible.</strong> An official source that verifies a reported weight is a confirmation; one that changes it is a correction. Both append to the trail instead of overwriting history.</p>
         </div>
       </section>
 

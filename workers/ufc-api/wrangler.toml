@@ -10,7 +10,7 @@ custom_domain = true
 
 [vars]
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
-API_VERSION = "2026-09-06.2"
+API_VERSION = "2026-09-11.1"
 REQUIRE_API_KEY = "false"
 # Durable first-party media origin: public Supabase Storage bucket `ufc-media`.
 # ufc_images.r2_key ("fighters/<id>/portrait.jpg") resolves to {base}/{r2_key};

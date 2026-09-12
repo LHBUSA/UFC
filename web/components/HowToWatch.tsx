@@ -61,7 +61,10 @@ function Carriers({ b }: { b: EventBroadcast }) {
 
   return (
     <div className={styles.watch}>
-      <span className={styles.watchLabel}>Watch on</span>
+      <div className={styles.watchHeading}>
+        <span className={styles.watchLabel}>Official broadcast</span>
+        <span className={styles.watchHint}>Open the official provider to watch</span>
+      </div>
       <div className={styles.providers}>
         {linkable.map((x) => (
           <a
@@ -70,15 +73,23 @@ function Carriers({ b }: { b: EventBroadcast }) {
             href={x.watch_url!}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`Watch ${b.event_name} on ${x.provider}`}
           >
-            <b>{x.provider}</b>
-            {segmentSummary(x) && <small>{segmentSummary(x)}</small>}
+            <span className={styles.ctaCopy}>
+              <span className={styles.ctaKicker}>Watch on</span>
+              <b>{x.provider}</b>
+              {segmentSummary(x) && <small>{segmentSummary(x)}</small>}
+            </span>
+            <span className={styles.ctaAction}>Watch live <span aria-hidden="true">↗</span></span>
           </a>
         ))}
         {unlinked.map((x) => (
           <span key={x.provider} className={styles.carrier}>
-            <b>{x.provider}</b>
-            <small>{segmentSummary(x) || "No official link published"}</small>
+            <span className={styles.ctaCopy}>
+              <span className={styles.ctaKicker}>Broadcast on</span>
+              <b>{x.provider}</b>
+              <small>{segmentSummary(x) || "Official link not yet published"}</small>
+            </span>
           </span>
         ))}
       </div>

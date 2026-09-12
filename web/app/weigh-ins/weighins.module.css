@@ -1,5 +1,11 @@
 /* Fighter-first weigh-in desk. No nested scroll areas: every bout and every
  * source receipt participates in the page flow, including on mobile. */
+/* Side gutter. The global `.page` padding shorthand zeroes `.wrap`'s side
+ * padding, which is invisible on desktop (the wrap is centred at --max) but
+ * pins every block of this desk to the viewport edge on a phone. Restored
+ * here only below --max + two gutters, so the desktop layout is unchanged. */
+@media(max-width:1247px){.desk:global(.page){padding-inline:var(--s-5)}}
+@media(max-width:640px){.desk:global(.page){padding-inline:var(--s-4)}}
 .hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:30px;align-items:end;padding:38px 0 24px}
 .heroMain{min-width:0}
 .eyebrow{display:flex;align-items:center;gap:8px;color:var(--pbe-gold);font:800 9.5px/1 var(--pbe-font-data);text-transform:uppercase;letter-spacing:.16em}

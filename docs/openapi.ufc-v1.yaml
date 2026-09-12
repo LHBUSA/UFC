@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: PropSports UFC API
-  version: 2026-09-06.2
+  version: 2026-09-11.1
   description: >-
     Read-only normalized UFC event, fighter, bout, result, round-stat, image,
     rankings and editorial data used by ufc.propbetedge.ai and future PropSports
@@ -315,6 +315,73 @@ paths:
       responses:
         '200': { $ref: '#/components/responses/Success' }
         '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/weigh-ins:
+    get:
+      summary: Official weigh-in readings, current reading per fighter per event
+      description: >-
+        Read-only rows of `ufc_weigh_in_current`: the latest reading per fighter
+        per event after supersession, ordered by bout (main event first) then
+        fighter name. Alias: `/v1/weigh-ins`.
+
+        NULL LIMITS ARE NOT INFERRED. `contracted_limit_lbs`,
+        `applicable_limit_lbs` and `over_by_lbs` are null whenever the
+        contracted figure was not published; a null never means the division
+        default applies. `limit_basis` says which case holds, and every
+        response restates this in `meta.contract`.
+
+        CONFIRMATION IS NOT CORRECTION. When a higher-authority source (UFC.com)
+        supersedes an earlier reading at the SAME weight, `is_confirmation` is
+        true and `is_correction` is false. `is_correction` is true only when the
+        superseding source changed the weight. `superseded_weight_lbs`,
+        `superseded_source_kind` and `superseded_source_name` describe the
+        reading that was replaced. Every source row is kept; see
+        `/v1/ufc/events/{id}/weigh-ins?include=history`.
+      parameters:
+        - { name: event_id, in: query, schema: { type: string } }
+        - { name: fighter_id, in: query, schema: { type: string } }
+        - { name: status, in: query, description: "Filters on `result`.", schema: { type: string, enum: [pending, made, missed, cancelled, withdrawn] } }
+        - { name: since, in: query, description: "ISO 8601; filters on when PropBetEdge detected the reading (`detected_at`), not the source's publication time.", schema: { type: string, format: date-time } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 60 } }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+  /v1/weigh-ins:
+    get:
+      summary: Alias of /v1/ufc/weigh-ins
+      description: Same handler, parameters and response as `/v1/ufc/weigh-ins`.
+      parameters:
+        - { name: event_id, in: query, schema: { type: string } }
+        - { name: fighter_id, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string, enum: [pending, made, missed, cancelled, withdrawn] } }
+        - { name: since, in: query, schema: { type: string, format: date-time } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 60 } }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+  /v1/ufc/events/{id}/weigh-ins:
+    get:
+      summary: One event's weigh-ins with coverage state, and optionally the full source history
+      description: >-
+        `data.coverage` is the row of `ufc_weigh_in_event_summary` plus
+        `state` (`live` while any reading is pending, otherwise `final`), or
+        `{ state: no_data }` when the card has no readings, so "nobody has
+        weighed in yet" is distinguishable from "not covered".
+        `coverage.confirmations` counts readings an official source verified at
+        the same weight; `coverage.corrections` counts readings whose weight a
+        later source changed. `data.results` are the current readings (same
+        fields as /v1/ufc/weigh-ins). With `include=history`, `data.history` is
+        every stored reading newest first, superseded ones included, each with
+        `supersession_kind` (`confirmation`, `correction` or null for an
+        original reading) and `superseded_weight_lbs`. Also served at
+        `/v1/events/{id}/weigh-ins`.
+      parameters:
+        - { name: id, in: path, required: true, description: "Event UUID, UFC Stats event id or ESPN event id", schema: { type: string } }
+        - { name: include, in: query, schema: { type: string, enum: [history] } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/search:
     get:
       summary: Search fighters (with primary_image + slug_id), events, and articles (with hero media)
@@ -332,6 +399,243 @@ paths:
       summary: Dataset counts (fighters, events, bouts, results, round_stat_rows/rounds, articles, images, fighters_with_media)
       responses:
         '200': { $ref: '#/components/responses/Success' }
+  /v1/ufc/dna/metrics:
+    get:
+      summary: Fight DNA metric registry (active, public rows grouped by family)
+      description: >-
+        `data.metrics[]` and `data.families{}` are `MetricDefinition` rows from `ufc_dna_metric_definitions`
+        (`active=true`, `public=true`, requested `definition_version`), plus `origin_labels`, `confidence_tiers` and
+        `as_of_semantics`. Every Fight DNA route shares the cache policy
+        `public, max-age=60, s-maxage=300, stale-while-revalidate=900`. `503 dna_not_available` while migration 004 is
+        not applied (`error.detail.reason = schema_not_applied`).
+      tags: [Fight DNA]
+      parameters:
+        - $ref: '#/components/parameters/DefinitionVersion'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/dna/query:
+    get:
+      summary: Filter current Fight DNA snapshots (or stance splits) by one metric
+      description: >-
+        North-star filter, e.g. `?metric=pace_retention_r3_vs_r1&min=0.9`. Filters run in PostgREST on the stored
+        MetricObject (`metrics-><key>->value` jsonb ordering, `metrics-><key>->>confidence`); only a fighter's latest
+        snapshot (<= `as_of`) qualifies; the candidate scan is capped at 1000 rows (PostgREST max_rows) (`meta.truncated`). With `stance`
+        the query runs over `ufc_fighter_stance_splits` for that opponent stance and `metric` must be one of
+        finish_rate, ko_rate, sub_rate, sig_diff_per_min, kd_per_15, td_landed_per_15 (registry aliases accepted).
+        Rows are `DnaQueryRow`, sorted by value (`order`, nulls last).
+      tags: [Fight DNA]
+      parameters:
+        - { name: metric, in: query, required: true, schema: { type: string, pattern: '^[a-z][a-z0-9_]{1,63}$' } }
+        - { name: min, in: query, schema: { type: number } }
+        - { name: max, in: query, schema: { type: number } }
+        - { name: stance, in: query, schema: { type: string, enum: [ORTHODOX, SOUTHPAW, SWITCH, OPEN_STANCE, SIDEWAYS, UNKNOWN] } }
+        - { name: min_confidence, in: query, schema: { type: string, enum: [insufficient, low, medium, high], default: low } }
+        - { name: min_appearances, in: query, description: Stance-split mode only., schema: { type: integer, minimum: 0, default: 1 } }
+        - { name: active, in: query, schema: { type: boolean } }
+        - { name: order, in: query, schema: { type: string, enum: [asc, desc], default: desc } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 50 } }
+        - $ref: '#/components/parameters/AsOf'
+        - $ref: '#/components/parameters/DefinitionVersion'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/dna:
+    get:
+      summary: Fighter Fight DNA snapshot (latest, or latest at/before as_of)
+      description: >-
+        `data.fighter` (compact, with `primary_image`, `stance`, `is_active`) plus `data.snapshot` (`DnaSnapshot`).
+        `as_of_date` is exclusive: the snapshot dated D contains bouts with event_date < D, so a bout fought on D is
+        excluded by the snapshot dated D; `?as_of=D` resolves to the latest snapshot with `as_of_date <= D`
+        (`meta.requested_as_of`, `meta.resolved_as_of`). `404 dna_not_available` with `data:null` when no snapshot
+        exists (`detail.reason = no_snapshot | no_snapshot_at_or_before_as_of`); `503 dna_not_available` while the
+        schema is not applied. Nothing is synthesized.
+      tags: [Fight DNA]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/AsOf'
+        - $ref: '#/components/parameters/DefinitionVersion'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/splits:
+    get:
+      summary: Fighter stance splits (record / finish profile by opponent listed stance)
+      description: >-
+        `data.splits[]` are `StanceSplitRow` rows from `ufc_fighter_stance_splits` for the latest `as_of_date`
+        (or latest <= `as_of`), ordered ORTHODOX, SOUTHPAW, SWITCH, OPEN_STANCE, SIDEWAYS, UNKNOWN. With
+        `opponent_stance`, `data.split` is the row or an explicit null. Unknown stance values are `400 invalid_stance`.
+      tags: [Fight DNA]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - { name: opponent_stance, in: query, schema: { type: string, enum: [ORTHODOX, SOUTHPAW, SWITCH, OPEN_STANCE, SIDEWAYS, UNKNOWN] } }
+        - $ref: '#/components/parameters/AsOf'
+        - $ref: '#/components/parameters/DefinitionVersion'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/round-profile:
+    get:
+      summary: Snapshot round_profile family with sample context
+      description: '`DnaFamilyResponse` with `round_profile`; `status: insufficient_coverage` and `round_profile: null` when the family is empty.'
+      tags: [Fight DNA]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/AsOf'
+        - $ref: '#/components/parameters/DefinitionVersion'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/finish-profile:
+    get:
+      summary: Snapshot finish_profile family with sample context
+      description: '`DnaFamilyResponse` with `finish_profile`; `status: insufficient_coverage` and `finish_profile: null` when the family is empty.'
+      tags: [Fight DNA]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/AsOf'
+        - $ref: '#/components/parameters/DefinitionVersion'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/position-profile:
+    get:
+      summary: Snapshot position_profile family (licensed data; explicit unavailable shape until it exists)
+      description: >-
+        `DnaFamilyResponse` with `position_profile`. While no licensed position source exists the family is `{}` and
+        the response is `status: licensed_data_not_available`, `available: false`, `position_profile: null` with a
+        note; nothing is synthesized from UFC Stats control time. When populated `origin` is `licensed`.
+      tags: [Fight DNA]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - $ref: '#/components/parameters/AsOf'
+        - $ref: '#/components/parameters/DefinitionVersion'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/matchups/{fighterA}/{fighterB}/dna:
+    get:
+      summary: Matchup Fight DNA (paired comparisons, stance context, threshold-gated insights, Bettor's Edge evidence)
+      description: >-
+        `MatchupDna`. Each side resolves its own snapshot (`meta.resolved_as_of: {a,b}`). `insights[]` are emitted only
+        when the thresholds in `meta.insight_rules` are met (documented in docs/fight_dna_api.md); otherwise the
+        missing sample is named in `warnings[]`. Never from `insufficient` metrics. `bettors_edge_evidence[]` mirrors
+        the insights one-to-one and is evidence only, never a pick. `404 dna_not_available` when neither fighter has
+        a snapshot; `400 invalid_matchup` for identical ids.
+      tags: [Fight DNA]
+      parameters:
+        - { name: fighterA, in: path, required: true, schema: { type: string }, description: 'UUID, UFCStats id, or ESPN athlete id.' }
+        - { name: fighterB, in: path, required: true, schema: { type: string } }
+        - $ref: '#/components/parameters/AsOf'
+        - $ref: '#/components/parameters/DefinitionVersion'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/videos:
+    get:
+      summary: Published official videos (allowlisted channels), newest first
+      description: >-
+        Rows are `Video` (metadata only; `embed_url` is built at render time from the provider id on the
+        privacy-enhanced YouTube domain, nothing is rehosted). Only `link_status = published` rows are ever returned;
+        review / rejected links never leave the database. `fighter_id` must be a UUID; `event_id` / `bout_id` accept
+        UUID, UFCStats or ESPN ids. `503 videos_not_available` while migration 006 is not applied.
+      tags: [Video]
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: type, in: query, schema: { $ref: '#/components/schemas/VideoType' } }
+        - { name: fighter_id, in: query, schema: { type: string, format: uuid } }
+        - { name: event_id, in: query, schema: { type: string } }
+        - { name: bout_id, in: query, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/videos:
+    get:
+      summary: Published official videos linked to a fighter, newest first
+      description: '`{ fighter: compact (with primary_image), videos: Video[] }`.'
+      tags: [Video]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: type, in: query, schema: { $ref: '#/components/schemas/VideoType' } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/events/{id}/videos:
+    get:
+      summary: Fight-week video rail for an event (chronological, grouped by video_type)
+      description: >-
+        `{ event: compact, videos: Video[] (chronological), groups: [ { video_type, label, count, first_published_at,
+        last_published_at, videos } ] }` with groups in the fight-week order given by `meta.timeline_order`
+        (fight_preview, countdown, embedded_episode, interview, analysis, press_conference, media_day, weigh_in, faceoff,
+        full_fight, highlights, post_fight, other).
+      tags: [Video]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 100 } }
+        - { name: type, in: query, schema: { $ref: '#/components/schemas/VideoType' } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/bouts/{id}/videos:
+    get:
+      summary: Published official videos linked to one bout, newest first
+      description: '`{ bout: compact (event, fighter_a, fighter_b), videos: Video[] }`. Event-wide fight-week videos live on /events/{id}/videos.'
+      tags: [Video]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+        - { name: type, in: query, schema: { $ref: '#/components/schemas/VideoType' } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/bouts/{id}/ledger:
+    get:
+      summary: Fight State Ledger snapshots for a bout, newest first, with deterministic diffs
+      description: >-
+        `data.snapshots[]` are `LedgerSnapshot` rows (every block) from the append-only `ufc_fight_state_ledger`;
+        `data.diffs[]` are `LedgerDiff` objects for consecutive snapshots (shallow, interpretation-free; see
+        `meta.diff_rules`). `data.card_shock` is the stable `{status: not_computed}` placeholder. A bout with no rows is
+        `200` with empty arrays; `503 ledger_not_available` while migration 005 is not applied.
+      tags: [Fight State Ledger]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 25 } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /v1/ufc/events/{id}/intelligence:
+    get:
+      summary: Card intelligence, latest ledger checkpoint per bout with diff summary and source availability
+      description: >-
+        One `IntelligenceBout` per bout on the card (main event first) from the latest ledger checkpoint:
+        `hours_to_start`, bout state, fighters, `has_dna` per side, `wire_count`, `result.status`, source statuses and
+        the diff versus the previous checkpoint. `meta.checkpoints` counts rows per checkpoint and
+        `meta.unavailable_sources` lists weigh_in/odds/market/model sources unavailable on every bout.
+        `card_shock` is `{status: not_computed, reason: card_shock_engine_not_built}` until the engine exists.
+      tags: [Fight State Ledger]
+      parameters:
+        - $ref: '#/components/parameters/EntityId'
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -352,15 +656,29 @@ components:
       description: Comma-separated additive blocks. Unknown values return 400 invalid_include.
       schema:
         type: string
-        example: media,ranking,next,history,stats
+        example: media,ranking,next,history,stats,videos
     CardInclude:
       name: include
       in: query
       required: false
-      description: Comma-separated additive blocks. Unknown values return 400 invalid_include.
+      description: Comma-separated additive blocks (`videos` adds the latest 6 published official videos, or null while migration 006 is unapplied). Unknown values return 400 invalid_include.
       schema:
         type: string
-        example: media,results,stats
+        example: media,results,stats,videos
+    AsOf:
+      name: as_of
+      in: query
+      required: false
+      description: >-
+        Calendar date (YYYY-MM-DD). Resolves to the latest snapshot with as_of_date <= as_of. Snapshot dates are
+        exclusive (a snapshot dated D contains bouts with event_date < D). Invalid dates are 400 invalid_as_of.
+      schema: { type: string, format: date }
+    DefinitionVersion:
+      name: version
+      in: query
+      required: false
+      description: Fight DNA definition_version (default 1).
+      schema: { type: integer, minimum: 1, maximum: 99, default: 1 }
   schemas:
     PrimaryImage:
       type: object
@@ -374,7 +692,9 @@ components:
         author: { type: [string, 'null'] }
         license: { type: [string, 'null'] }
         source_url: { type: [string, 'null'], format: uri, description: Wikimedia Commons file page; render as the credit link. }
-        kind: { type: [string, 'null'], enum: [wikimedia, statcard, null] }
+        kind: { type: [string, 'null'], enum: [wikimedia, statcard, public_domain, licensed_editorial, official_press, null] }
+        attribution_text: { type: [string, 'null'], description: Rendered credit line from the 006 media registry; null when not recorded. }
+        rights_label: { type: [string, 'null'], description: 'e.g. "CC BY-SA 4.0", "Public domain", "Licensed (contract #)"; null when not recorded.' }
     ImageRef:
       allOf:
         - $ref: '#/components/schemas/PrimaryImage'
@@ -687,6 +1007,377 @@ components:
         fight_week: { type: boolean, description: True when a non-Contender-Series UFC event is within the next 6 days or the last 1 day. }
         fight_week_events: { type: array, items: { type: object, properties: { id: { type: string }, name: { type: string }, event_date: { type: [string, 'null'] } } } }
         linked: { type: integer, description: Items with a non-null internal_url. }
+    Confidence:
+      type: string
+      enum: [insufficient, low, medium, high]
+      description: >-
+        insufficient = below the registry minimum (min_bouts/min_rounds/min_seconds); low = minimum met but
+        sample_bouts < 3 (result metrics) or sample_seconds < 1800 (rate metrics); medium = < 8 bouts / < 5400 s; high above.
+    DnaOrigin:
+      type: string
+      enum: [pbe_derived, source, licensed, model]
+      description: 'UI labels: PBE DERIVED, SOURCE, LICENSED, MODEL. Snapshot tables are always pbe_derived.'
+    MetricObject:
+      type: object
+      description: Every derived number. Sample context is never stripped; value is null when there is no denominator.
+      required: [metric_key, value, unit, sample_bouts, sample_rounds, sample_seconds, confidence, coverage_status, definition_version, origin]
+      properties:
+        metric_key: { type: string }
+        value: { type: [number, object, 'null'], description: 'number, or a record/distribution object for those units' }
+        unit: { type: string, enum: [ratio, per_min, per_15, seconds, seconds_per_td, record, count, distribution] }
+        numerator: { type: [number, 'null'] }
+        denominator: { type: [number, 'null'] }
+        sample_bouts: { type: integer }
+        sample_rounds: { type: integer }
+        sample_seconds: { type: integer }
+        confidence: { $ref: '#/components/schemas/Confidence' }
+        coverage_status: { $ref: '#/components/schemas/Confidence' }
+        definition_version: { type: integer }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+        source_families: { type: array, items: { type: string } }
+        as_of_date: { type: string, format: date }
+    MetricDefinition:
+      type: object
+      description: Registry row from ufc_dna_metric_definitions plus origin.
+      required: [metric_key, definition_version, family, display_name, description, formula, min_bouts, min_rounds, min_seconds, public, active]
+      properties:
+        metric_key: { type: string }
+        definition_version: { type: integer }
+        family: { type: string, enum: [stance, striking, pace, grappling, finish, context, position, composite, opponent_adjusted] }
+        display_name: { type: string }
+        description: { type: string }
+        unit: { type: [string, 'null'] }
+        formula: { type: string }
+        source_families: { type: array, items: { type: string } }
+        min_bouts: { type: integer }
+        min_rounds: { type: integer }
+        min_seconds: { type: integer }
+        public: { type: boolean }
+        active: { type: boolean }
+        updated_at: { type: [string, 'null'], format: date-time }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+    Record:
+      type: object
+      required: [w, l, d, nc, appearances]
+      properties:
+        w: { type: integer }
+        l: { type: integer }
+        d: { type: integer }
+        nc: { type: integer }
+        appearances: { type: integer }
+    StanceSplit:
+      type: object
+      description: Snapshot stance_splits entry (keyed by opponent listed stance, plus `open` / `same`).
+      required: [record, ko_tko_wins, submission_wins, decision_wins, confidence]
+      properties:
+        record: { $ref: '#/components/schemas/Record' }
+        ko_tko_wins: { type: integer }
+        submission_wins: { type: integer }
+        decision_wins: { type: integer }
+        finish_rate: { $ref: '#/components/schemas/MetricObject' }
+        ko_rate: { $ref: '#/components/schemas/MetricObject' }
+        sub_rate: { $ref: '#/components/schemas/MetricObject' }
+        sig_diff_per_min: { $ref: '#/components/schemas/MetricObject' }
+        kd_per_15: { $ref: '#/components/schemas/MetricObject' }
+        td_landed_per_15: { $ref: '#/components/schemas/MetricObject' }
+        stat_bouts: { type: integer }
+        stat_rounds: { type: integer }
+        observed_seconds: { type: integer }
+        confidence: { $ref: '#/components/schemas/Confidence' }
+    StanceSplitRow:
+      type: object
+      description: Row from ufc_fighter_stance_splits plus record and origin (served by /fighters/{id}/splits).
+      required: [fighter_id, as_of_date, opponent_stance, definition_version, appearances, wins, losses, draws, no_contests, ko_tko_wins, submission_wins, decision_wins, stat_bouts, stat_rounds, observed_seconds, metrics, confidence, record, origin]
+      properties:
+        fighter_id: { type: string, format: uuid }
+        as_of_date: { type: string, format: date }
+        opponent_stance: { type: string, enum: [ORTHODOX, SOUTHPAW, SWITCH, OPEN_STANCE, SIDEWAYS, UNKNOWN] }
+        definition_version: { type: integer }
+        appearances: { type: integer }
+        wins: { type: integer }
+        losses: { type: integer }
+        draws: { type: integer }
+        no_contests: { type: integer }
+        ko_tko_wins: { type: integer }
+        submission_wins: { type: integer }
+        decision_wins: { type: integer }
+        stat_bouts: { type: integer }
+        stat_rounds: { type: integer }
+        observed_seconds: { type: integer }
+        metrics: { type: object, additionalProperties: { $ref: '#/components/schemas/MetricObject' }, description: finish_rate, ko_rate, sub_rate, sig_diff_per_min, kd_per_15, td_landed_per_15 }
+        confidence: { $ref: '#/components/schemas/Confidence' }
+        provenance: { type: object }
+        generated_at: { type: [string, 'null'], format: date-time }
+        record: { $ref: '#/components/schemas/Record' }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+    DnaFighter:
+      type: object
+      description: Compact fighter used by DNA routes (compact identity + primary_image + stance + is_active).
+      required: [id, name, slug_id, primary_image, stance, is_active]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        nickname: { type: [string, 'null'] }
+        ufcstats_id: { type: [string, 'null'] }
+        espn_athlete_id: { type: [string, 'null'] }
+        slug_id: { type: [string, 'null'] }
+        record_w: { type: [integer, 'null'] }
+        record_l: { type: [integer, 'null'] }
+        record_d: { type: [integer, 'null'] }
+        record_nc: { type: [integer, 'null'] }
+        primary_image: { oneOf: [{ $ref: '#/components/schemas/PrimaryImage' }, { type: 'null' }] }
+        stance: { type: [string, 'null'] }
+        is_active: { type: [boolean, 'null'] }
+    DnaSnapshot:
+      type: object
+      description: One ufc_fighter_dna_snapshots row as served. as_of_date is exclusive.
+      required: [as_of_date, definition_version, sample_bouts, sample_completed_bouts, sample_stat_bouts, sample_rounds, sample_seconds, coverage_status, metrics, stance_splits, round_profile, finish_profile, context_splits, position_profile, provenance, origin]
+      properties:
+        as_of_date: { type: string, format: date }
+        definition_version: { type: integer }
+        sample_bouts: { type: integer }
+        sample_completed_bouts: { type: integer }
+        sample_stat_bouts: { type: integer }
+        sample_rounds: { type: integer }
+        sample_seconds: { type: integer }
+        coverage_status: { $ref: '#/components/schemas/Confidence' }
+        metrics: { type: object, additionalProperties: { $ref: '#/components/schemas/MetricObject' } }
+        stance_splits: { type: object, additionalProperties: { $ref: '#/components/schemas/StanceSplit' } }
+        round_profile: { type: object, description: 'rounds{1..5}, pace_retention_r2_vs_r1, pace_retention_r3_vs_r1, championship_round_delta, defensive_drift_r3_vs_r1 (MetricObjects); {} when no stat coverage' }
+        finish_profile: { type: object, description: 'finish_rate, ko_finish_rate, submission_finish_rate, finish_round_distribution, finish_time_median_sec (MetricObjects), finished_by {ko_tko, submission}' }
+        context_splits: { type: object }
+        position_profile: { type: object, description: '{} until licensed data exists; never synthesized' }
+        archetype: { type: [object, 'null'] }
+        provenance: { type: object }
+        generated_at: { type: [string, 'null'], format: date-time }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+    DnaFamilyResponse:
+      type: object
+      description: /round-profile, /finish-profile, /position-profile payload.
+      required: [fighter, as_of_date, definition_version, origin, sample, available, status]
+      properties:
+        fighter: { $ref: '#/components/schemas/DnaFighter' }
+        as_of_date: { type: string, format: date }
+        definition_version: { type: integer }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+        sample:
+          type: object
+          properties:
+            sample_bouts: { type: integer }
+            sample_completed_bouts: { type: integer }
+            sample_stat_bouts: { type: integer }
+            sample_rounds: { type: integer }
+            sample_seconds: { type: integer }
+            sample_minutes: { type: number }
+            coverage_status: { $ref: '#/components/schemas/Confidence' }
+        available: { type: boolean }
+        status: { type: string, enum: [ok, insufficient_coverage, licensed_data_not_available] }
+        round_profile: { type: [object, 'null'] }
+        finish_profile: { type: [object, 'null'] }
+        position_profile: { type: [object, 'null'] }
+        note: { type: string }
+    DnaComparison:
+      type: object
+      required: [key, label, unit, family, higher_is_better, a, b, delta, direction, comparable, min_confidence]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        unit: { type: string }
+        family: { type: string }
+        higher_is_better: { type: [boolean, 'null'], description: null for contextual shares/rates }
+        mismatch: { type: [string, 'null'], description: insight family this comparison can feed }
+        min_abs_delta: { type: [number, 'null'] }
+        a: { oneOf: [{ $ref: '#/components/schemas/MetricObject' }, { type: 'null' }] }
+        b: { oneOf: [{ $ref: '#/components/schemas/MetricObject' }, { type: 'null' }] }
+        delta: { type: [number, 'null'], description: 'a - b, 4 dp; null unless both sides are numeric' }
+        direction: { type: [string, 'null'], enum: [a, b, even, null], description: side with the higher value }
+        comparable: { type: boolean }
+        min_confidence: { $ref: '#/components/schemas/Confidence' }
+    Insight:
+      type: object
+      description: Emitted only when the documented thresholds are met; never from insufficient metrics.
+      required: [key, label, value, unit, sample_bouts, confidence, direction, side, explanation, origin]
+      properties:
+        key: { type: string, example: a_vs_southpaw_finish_rate }
+        label: { type: string }
+        value: { type: [number, 'null'] }
+        unit: { type: string }
+        record: { $ref: '#/components/schemas/Record' }
+        a_value: { type: number }
+        b_value: { type: number }
+        sample_bouts: { type: [integer, 'null'] }
+        sample_rounds: { type: [integer, 'null'] }
+        sample_seconds: { type: [integer, 'null'] }
+        samples: { type: object, description: per-side samples on two-sided insights }
+        confidence: { $ref: '#/components/schemas/Confidence' }
+        direction: { type: string, enum: [contextual, a, b] }
+        side: { type: [string, 'null'], enum: [a, b, null] }
+        metric_keys: { type: array, items: { type: string } }
+        explanation: { type: string, description: Deterministic template naming the sample and as-of date. }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+    BettorsEdgeEvidence:
+      type: object
+      description: One-to-one projection of insights for the Bettor's Edge module. Evidence only, never a pick.
+      required: [key, label, value, unit, side, direction, sample, confidence, origin, origin_label, explanation]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        value: { type: [number, 'null'] }
+        unit: { type: string }
+        side: { type: [string, 'null'] }
+        direction: { type: string }
+        sample: { type: string, example: 5 bouts / 13 rounds / 62.0 min }
+        sample_bouts: { type: [integer, 'null'] }
+        sample_rounds: { type: [integer, 'null'] }
+        sample_seconds: { type: [integer, 'null'] }
+        confidence: { $ref: '#/components/schemas/Confidence' }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+        origin_label: { type: string, const: PBE DERIVED }
+        explanation: { type: string }
+    MatchupDna:
+      type: object
+      required: [fighters, a, b, comparisons, stance_context, insights, warnings, bettors_edge_evidence, origin, note]
+      properties:
+        fighters: { type: array, minItems: 2, maxItems: 2, items: { $ref: '#/components/schemas/DnaFighter' } }
+        a: { type: [object, 'null'], description: 'DnaSnapshot subset (as_of_date, definition_version, sample_*, coverage_status, metrics, stance_splits, round_profile, finish_profile) or null' }
+        b: { type: [object, 'null'] }
+        comparisons: { type: array, items: { $ref: '#/components/schemas/DnaComparison' } }
+        stance_context:
+          type: object
+          properties:
+            a_stance: { type: [string, 'null'] }
+            b_stance: { type: [string, 'null'] }
+            context: { type: string, enum: [same, open, switch_involved, unknown] }
+            a_vs_b_stance: { type: object, description: 'A split vs B listed stance: {side, fighter_id, opponent_stance, split, appearances, confidence, meets_threshold}' }
+            b_vs_a_stance: { type: object }
+            a_context_split: { oneOf: [{ $ref: '#/components/schemas/StanceSplit' }, { type: 'null' }] }
+            b_context_split: { oneOf: [{ $ref: '#/components/schemas/StanceSplit' }, { type: 'null' }] }
+        insights: { type: array, items: { $ref: '#/components/schemas/Insight' } }
+        warnings: { type: array, items: { type: string }, description: Every threshold not met, naming the missing sample. }
+        bettors_edge_evidence: { type: array, items: { $ref: '#/components/schemas/BettorsEdgeEvidence' } }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+        note: { type: string }
+    DnaQueryRow:
+      type: object
+      required: [fighter, as_of_date, metric_key, metric, sample, origin]
+      properties:
+        fighter:
+          type: object
+          properties:
+            id: { type: string, format: uuid }
+            name: { type: [string, 'null'] }
+            nickname: { type: [string, 'null'] }
+            slug_id: { type: [string, 'null'] }
+            stance: { type: [string, 'null'] }
+            is_active: { type: [boolean, 'null'] }
+        as_of_date: { type: string, format: date }
+        metric_key: { type: string }
+        metric: { $ref: '#/components/schemas/MetricObject' }
+        sample: { type: object }
+        opponent_stance: { type: string, description: stance-split mode only }
+        record: { $ref: '#/components/schemas/Record' }
+        origin: { $ref: '#/components/schemas/DnaOrigin' }
+    VideoType:
+      type: string
+      enum: [embedded_episode, countdown, fight_preview, full_fight, highlights, interview, press_conference, media_day, weigh_in, faceoff, post_fight, analysis, other]
+    Video:
+      type: object
+      description: Official video metadata from an allowlisted channel. Published rows only; playback stays on the provider.
+      required: [id, provider, provider_video_id, url, embed_url, thumbnail_url, title, published_at, duration_sec, embeddable, video_type, channel, links, resolver_confidence, attribution]
+      properties:
+        id: { type: string, format: uuid }
+        provider: { type: string, example: youtube }
+        provider_video_id: { type: string }
+        url: { type: string, format: uri, description: Provider watch URL. }
+        embed_url: { type: [string, 'null'], format: uri, description: 'https://www.youtube-nocookie.com/embed/<provider_video_id>; null for non-YouTube providers.' }
+        thumbnail_url: { type: [string, 'null'], format: uri }
+        title: { type: string }
+        published_at: { type: [string, 'null'], format: date-time }
+        duration_sec: { type: [integer, 'null'], description: null when unknown }
+        embeddable: { type: [boolean, 'null'], description: null when not yet checked }
+        live_broadcast_state: { type: [string, 'null'] }
+        video_type: { $ref: '#/components/schemas/VideoType' }
+        video_type_label: { type: string }
+        channel:
+          type: object
+          required: [id, name, verified]
+          properties:
+            id: { type: [string, 'null'] }
+            name: { type: [string, 'null'] }
+            verified: { type: boolean, description: channel_verified_source at capture }
+        links:
+          type: object
+          required: [event_id, bout_id, article_id, fighter_ids]
+          properties:
+            event_id: { type: [string, 'null'], format: uuid }
+            bout_id: { type: [string, 'null'], format: uuid }
+            article_id: { type: [string, 'null'], format: uuid }
+            fighter_ids: { type: array, items: { type: string, format: uuid } }
+        resolver_confidence: { type: string, enum: [none, low, medium, high] }
+        attribution: { type: string, example: 'YouTube · UFC', description: Render verbatim as the credit. }
+        captured_at: { type: [string, 'null'], format: date-time }
+        updated_at: { type: [string, 'null'], format: date-time }
+    LedgerSnapshot:
+      type: object
+      description: 'One append-only ufc_fight_state_ledger row. Blocks without a source are explicit {status: unavailable, reason} objects.'
+      required: [id, bout_id, event_id, checkpoint, ledger_version, captured_at, bout_state, fighters, rankings, dna, weigh_in, wire, odds, market, model, result, provenance]
+      properties:
+        id: { type: string, format: uuid }
+        bout_id: { type: string, format: uuid }
+        event_id: { type: string, format: uuid }
+        checkpoint: { type: string, enum: [t_minus_7d, t_minus_72h, t_minus_24h, post_weigh_in, t_minus_3h, close, post_result, ad_hoc] }
+        ledger_version: { type: integer }
+        captured_at: { type: string, format: date-time }
+        scheduled_start: { type: [string, 'null'], format: date-time }
+        event_date: { type: [string, 'null'], format: date }
+        hours_to_start: { type: [number, 'null'] }
+        bout_state: { type: object }
+        fighters: { type: object, description: '{a, b, stance_context}' }
+        rankings: { type: object }
+        dna: { type: object, description: '{a, b}: latest snapshot in force per fighter, or {status: unavailable}' }
+        weigh_in: { type: object }
+        wire: { type: object, description: '{status, count, items[], articles[]}' }
+        odds: { type: object }
+        market: { type: object }
+        model: { type: object }
+        result: { type: object, description: '{status: pending | final, winner_id, method, round, time_sec, ...}' }
+        provenance: { type: object }
+    LedgerDiff:
+      type: object
+      description: Deterministic shallow diff between consecutive snapshots (newer vs older); no interpretation.
+      required: [newer, older, hours_between, changed, changes]
+      properties:
+        newer: { type: object, properties: { id: { type: string }, checkpoint: { type: string }, captured_at: { type: string } } }
+        older: { type: object, properties: { id: { type: string }, checkpoint: { type: string }, captured_at: { type: string } } }
+        hours_between: { type: [number, 'null'] }
+        changed: { type: array, items: { type: string }, example: [fighters.a.stance, fighters.stance_context, wire.count] }
+        changes: { type: array, items: { type: object, required: [path, from, to], properties: { path: { type: string }, from: {}, to: {} } } }
+    CardShock:
+      type: object
+      description: Stable placeholder until the Card Shock engine exists. No score is computed.
+      required: [status, reason]
+      properties:
+        status: { type: string, const: not_computed }
+        reason: { type: string, const: card_shock_engine_not_built }
+    IntelligenceBout:
+      type: object
+      required: [bout, ledger_status, latest, hours_to_start, checkpoints, snapshots, has_dna, wire_count, result, sources, diff, card_shock]
+      properties:
+        bout: { type: object }
+        ledger_status: { type: string, enum: [ok, no_checkpoint] }
+        latest: { type: [object, 'null'], description: '{id, checkpoint, captured_at, ledger_version, scheduled_start, hours_to_start_at_capture}' }
+        hours_to_start: { type: [number, 'null'], description: 'scheduled_start minus meta.generated_at, in hours' }
+        checkpoints: { type: array, items: { type: string } }
+        snapshots: { type: integer }
+        bout_state: { type: [object, 'null'] }
+        fighters: { type: [object, 'null'] }
+        has_dna: { type: object, properties: { a: { type: [boolean, 'null'] }, b: { type: [boolean, 'null'] } } }
+        dna: { type: [object, 'null'] }
+        wire_count: { type: [integer, 'null'] }
+        result: { type: [object, 'null'] }
+        sources: { type: [object, 'null'], description: '{weigh_in, odds, market, model} status strings' }
+        diff: { oneOf: [{ $ref: '#/components/schemas/LedgerDiff' }, { type: 'null' }] }
+        card_shock: { $ref: '#/components/schemas/CardShock' }
     SuccessEnvelope:
       type: object
       required: [ok, data, meta]
