@@ -440,3 +440,190 @@
 
 /* Provenance on every completed bout, so "who says so" is never ambiguous. */
 .src { border-color: rgba(255, 245, 220, .14) !important; color: var(--pbe-faint) !important; }
+
+/* ============================================================
+   COMPLETED-FIGHT RESULT CARDS
+   Premium result wall. Portraits come from the page's existing approved
+   resolver; no new imagery class is introduced here.
+   ============================================================ */
+
+.resultList { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+
+.resultCard {
+  position: relative;
+  min-width: 0;
+  padding: 16px 18px 14px;
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(26, 21, 16, .82), rgba(12, 10, 8, .88));
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .3);
+}
+/* A result we cannot analyse yet reads as complete but quieter. */
+.resultCard[data-pending="true"] { background: linear-gradient(180deg, rgba(22, 18, 14, .7), rgba(11, 10, 8, .8)); }
+.resultCard[data-latest="true"] {
+  border-color: rgba(212, 175, 55, .46);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, .1), 0 20px 46px rgba(0, 0, 0, .44);
+}
+
+/* ---- status chips: truthful, never "live round data" ---- */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chips > span {
+  padding: 4px 9px;
+  border: 1px solid var(--pbe-line-faint);
+  border-radius: 5px;
+  color: var(--pbe-faint);
+  font: 750 8.5px/1.35 var(--pbe-font-data);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.chipLatest { border-color: transparent !important; background: var(--pbe-gold); color: var(--pbe-ink) !important; font-weight: 850 !important; }
+.chipOfficial { border-color: rgba(255, 245, 220, .2) !important; color: var(--pbe-paper-2) !important; }
+.chipCards { border-color: rgba(122, 169, 255, .4) !important; color: #a9c6ff !important; }
+.chipReady { border-color: rgba(212, 175, 55, .45) !important; color: var(--pbe-gold-bright) !important; }
+.chipPending { border-color: var(--pbe-line-faint) !important; color: var(--pbe-subtle) !important; }
+.chipTitle { border-color: rgba(212, 175, 55, .45) !important; color: var(--pbe-gold-bright) !important; }
+
+/* ---- the bout: corner / verdict / corner ---- */
+.bout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.corner { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 11px; min-width: 0; }
+.corner:last-of-type { direction: rtl; }
+.corner:last-of-type > * { direction: ltr; }
+.corner:last-of-type .cornerName { text-align: right; }
+
+.cornerPortrait {
+  display: block;
+  flex: none;
+  border-radius: 50%;
+  padding: 2px;
+  border: 1px solid var(--pbe-line-strong);
+  background: rgba(0, 0, 0, .3);
+}
+.cornerAvatar { border-radius: 50%; overflow: hidden; }
+/* Winner: gold ring and a warm lift. Loser stays fully readable - quieter,
+   never greyed into illegibility. */
+.corner[data-win="true"] .cornerPortrait {
+  border-color: rgba(212, 175, 55, .75);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, .25), 0 0 22px rgba(212, 175, 55, .22);
+}
+.corner:not([data-win="true"]) .cornerPortrait { opacity: .82; }
+
+.cornerName { min-width: 0; }
+.cornerName b {
+  display: block;
+  color: var(--pbe-paper);
+  font: 800 15px/1.2 var(--pbe-font-display);
+  overflow-wrap: anywhere;
+}
+.corner[data-win="true"] .cornerName b { color: var(--pbe-gold-bright); }
+.cornerName small { display: block; margin-top: 3px; color: var(--pbe-faint); font: 600 10.5px/1 var(--pbe-font-data); }
+.tick { color: var(--pbe-pos); font-style: normal; }
+
+/* ---- verdict column ---- */
+.verdict { min-width: 0; text-align: center; padding-inline: 4px; }
+.decision { margin: 0; min-width: 0; }
+.decision b {
+  display: block;
+  color: var(--pbe-paper);
+  font: 850 14px/1.25 var(--pbe-font-display);
+  overflow-wrap: anywhere;
+}
+.decision span {
+  display: block;
+  margin-top: 2px;
+  color: var(--pbe-faint);
+  font: 600 11px/1.3 var(--pbe-font-data);
+  overflow-wrap: anywhere;
+}
+.method {
+  margin: 9px 0 0;
+  color: var(--pbe-gold);
+  font: 800 11px/1.3 var(--pbe-font-data);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.clock { margin: 4px 0 0; color: var(--pbe-paper-2); font: 700 12px/1.3 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.source { margin: 7px 0 0; color: var(--pbe-subtle); font: 650 9.5px/1.3 var(--pbe-font-data); letter-spacing: .08em; }
+
+/* ---- progressive disclosure ---- */
+.detail { margin-top: 13px; border-top: 1px solid var(--pbe-line-faint); }
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 2px 0;
+  min-height: 44px;
+  color: var(--pbe-dim);
+  font: 750 10.5px/1 var(--pbe-font-data);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+}
+.summary::-webkit-details-marker { display: none; }
+.summary:hover { color: var(--pbe-gold); }
+.summary svg { transition: transform .18s ease; }
+.detail[open] .summary svg { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .summary svg { transition: none; } }
+
+.detailIn { display: grid; gap: 14px; padding: 13px 0 4px; }
+
+.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; margin: 0; }
+.facts dt { color: var(--pbe-faint); font: 700 9px/1.5 var(--pbe-font-data); letter-spacing: .11em; text-transform: uppercase; }
+.facts dd { margin: 0; color: var(--pbe-paper-2); font: 650 12.5px/1.5 var(--pbe-font-data); overflow-wrap: anywhere; }
+
+/* Scorecards read as an official document: ruled rows, mono, tabular. */
+.cards {
+  padding: 13px 15px;
+  border: 1px solid rgba(122, 169, 255, .22);
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, rgba(122, 169, 255, .05), rgba(0, 0, 0, .22));
+}
+.cardsHead { display: block; color: #a9c6ff; font: 800 9px/1.3 var(--pbe-font-data); letter-spacing: .14em; text-transform: uppercase; }
+.cards ul { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 1px; background: var(--pbe-line-faint); }
+.cards li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  padding: 8px 2px;
+  background: rgba(10, 9, 7, .72);
+  min-width: 0;
+}
+.cards li > :first-child { color: var(--pbe-paper-2); font: 650 12.5px/1.4 var(--pbe-font-data); overflow-wrap: anywhere; }
+.cards li a:hover { color: var(--pbe-gold); text-decoration: underline; }
+.cards li b { color: var(--pbe-paper); font: 800 13px/1.4 var(--pbe-font-data); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cardsFoot { display: block; margin-top: 9px; color: var(--pbe-faint); font: 650 9.5px/1.3 var(--pbe-font-data); text-transform: capitalize; }
+
+.roundBlock { display: grid; gap: 5px; min-width: 0; }
+.roundHead { color: var(--pbe-gold-bright); font: 800 9px/1.3 var(--pbe-font-data); letter-spacing: .14em; text-transform: uppercase; }
+.roundBlock[data-pending="true"] .roundHead { color: var(--pbe-faint); }
+.roundBlock b { color: var(--pbe-paper); font: 750 12px/1.4 var(--pbe-font-data); }
+.roundBlock em { color: var(--pbe-faint); font: 600 11px/1.45 var(--pbe-font-data); font-style: normal; }
+.roundLink { margin-top: 4px; color: var(--pbe-gold); font: 750 11.5px/1.4 var(--pbe-font-data); }
+.roundLink:hover { color: var(--pbe-gold-bright); }
+
+.pendingFoot { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--pbe-line-faint); }
+.pendingFoot b { display: block; color: var(--pbe-dim); font: 750 11px/1.3 var(--pbe-font-data); letter-spacing: .1em; text-transform: uppercase; }
+.pendingFoot em { display: block; margin-top: 3px; color: var(--pbe-faint); font: 600 11px/1.45 var(--pbe-font-data); font-style: normal; }
+
+/* ---- mobile: portraits must not crush the result ---- */
+@media (max-width: 720px) {
+  .bout { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  /* Verdict first: on a phone the result is the thing to understand. */
+  .verdict { order: -1; text-align: left; padding-inline: 0; }
+  .corner:last-of-type { direction: ltr; }
+  .corner:last-of-type .cornerName { text-align: left; }
+  .resultCard { padding: 14px 15px 12px; }
+}
+@media (max-width: 560px) {
+  .cornerName b { font-size: 14.5px; }
+  .cards li { flex-wrap: wrap; gap: 4px 12px; }
+}

@@ -18,7 +18,9 @@ import "server-only";
  * can truthfully say during a card is: the event is live, and here are the
  * fights from it whose round observations have landed so far.
  */
-import { getEventBouts, type Bout, type Event } from "@/lib/db";
+import { getEventBouts, type Bout, type Event, type PortraitSet } from "@/lib/db";
+import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
+import { buildBoutScorecard, type BoutScorecard } from "@/lib/judgeScoring";
 import { getRoundCoverageFor, isEligible, type RoundCoverage } from "@/lib/roundIndex";
 import { getNextBroadcast, watchState, type EventBroadcast, type WatchState } from "@/lib/broadcast";
 
@@ -40,6 +42,12 @@ export type TonightBout = {
   coverage: RoundCoverage | null;
   /** True only when coverage exists and clears the eligibility rule. */
   roundReady: boolean;
+  /* The official scorecard read, built by the SAME function the fight page
+   * uses (lib/judgeScoring). There is deliberately one scorecard
+   * interpretation in this codebase; this surface consumes it rather than
+   * re-deriving orientation or totals of its own. Null for anything that did
+   * not go to the judges. */
+  scorecard: BoutScorecard | null;
 };
 
 export type RoundLiveState = {
@@ -57,6 +65,10 @@ export type RoundLiveState = {
   /* The subset whose round observations have landed. Derived, never a
    * separate read: `completedResults.filter(b => b.roundReady)`. */
   roundReady: TonightBout[];
+  /* Portraits for every fighter on a completed bout, fetched in ONE batched
+   * call for the whole set rather than per card. Empty map when the resolver
+   * has nothing approved; the cards fall back to the branded Avatar. */
+  images: Map<string, PortraitSet>;
   /* How many bouts are on the card at all, for an honest "3 of 13" line. */
   cardSize: number;
   checkedAt: string;
@@ -64,7 +76,7 @@ export type RoundLiveState = {
 
 const EMPTY: RoundLiveState = {
   broadcast: null, eventState: null, isLive: false, event: null,
-  completedResults: [], roundReady: [], cardSize: 0, checkedAt: new Date(0).toISOString(),
+  completedResults: [], roundReady: [], images: new Map(), cardSize: 0, checkedAt: new Date(0).toISOString(),
 };
 
 /**
@@ -107,7 +119,17 @@ export async function getRoundLiveState(now = Date.now()): Promise<RoundLiveStat
         completedResults = finished
           .map((b) => {
             const coverage = cover.get(b.id) ?? null;
-            return { bout: b, coverage, roundReady: isEligible(coverage) };
+            const r = b.result;
+            /* Scorecards only where the bout actually went to the judges. A
+             * KO has no card to show, and rendering an empty one would imply
+             * we lost something we never had. */
+            const scorecard = r
+              ? buildBoutScorecard({
+                method: r.method, scorecards: r.scorecards, winnerId: r.winner_id,
+                fighterAId: b.fighter_a.id, fighterBId: b.fighter_b.id,
+              })
+              : null;
+            return { bout: b, coverage, roundReady: isEligible(coverage), scorecard };
           })
           /* Newest first: bout_order descends down the card, so the most
            * recently contested bout is the LOWEST order still completed. */
@@ -118,12 +140,26 @@ export async function getRoundLiveState(now = Date.now()): Promise<RoundLiveStat
     }
   }
 
+  /* ONE image read for every fighter on every completed bout. Per-card reads
+   * would be an N+1 against a table this page hits on a 90-second refresh. */
+  let images = new Map<string, PortraitSet>();
+  if (completedResults.length) {
+    try {
+      images = await getVerifiedDisplayImagesForFighters(
+        [...new Set(completedResults.flatMap((x) => [x.bout.fighter_a.id, x.bout.fighter_b.id]))],
+      );
+    } catch {
+      images = new Map();
+    }
+  }
+
   return {
     broadcast,
     eventState,
     isLive,
     event: null,
     completedResults,
+    images,
     roundReady: completedResults.filter((b) => b.roundReady),
     cardSize,
     checkedAt: new Date(now).toISOString(),
