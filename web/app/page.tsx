@@ -108,23 +108,18 @@ export default async function Home() {
 
   return (
     <>
-      {/* The arena is SERVER-rendered. It used to be added by the scene switcher
-          in an effect, so the hero painted flat and jumped to cinematic a beat
-          after hydration. `home-scene-enabled` and the stage are now in the
-          first byte of HTML; the switcher only swaps the image afterwards. */}
-      <section className="hero home-scene-enabled">
+      {/* ONE deliberate arena treatment, server-rendered.
+          There is no switcher, no rotation, no timer and no post-hydration
+          swap: the image is in the first byte of HTML and never changes. The
+          background-selection system that used to own this was removed — it
+          applied the backdrop from a root-layout effect that raced the page,
+          so the hero usually rendered flat. */}
+      <section className="hero hero-cinematic">
         <div
-          className="home-scene-stage"
+          className="hero-stage"
           aria-hidden="true"
-          data-home-scene-stage=""
           style={{ backgroundImage: 'url("/media/home-bg-fight-night.webp")' }}
         />
-        {/* Mount point for the fight-night scene picker. The switcher used to
-            portal straight into `.hero`, which React owns and re-renders — so
-            its control could be reconciled away and the picker vanished
-            intermittently. A dedicated empty slot React never renders children
-            into is stable. */}
-        <div className="home-scene-picker-slot" data-home-scene-picker-slot="" />
         <Octagon className="hero-oct" />
         <div className="wrap hero-in">
           <div className="hero-editorial">

@@ -21,14 +21,12 @@ import "./fighter-dna-polish.css";
 import "./matchup-dna-polish.css";
 import "./fightweek-roster-polish.css";
 import "./home-fightweek-poster.css";
-import "./homepage-backdrop.css";
 import "./hero-premium.css";
 import "./footer-network-polish.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";
 import { ShareRail } from "@/components/ShareRail";
-import { HomepageBackdropSwitcher } from "@/components/HomepageBackdropSwitcher";
 import { JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
 
@@ -131,7 +129,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <LiveWire />
           <ShareRail />
-          <HomepageBackdropSwitcher />
           <main id="main">{children}</main>
           <Footer />
         </CartProvider>
