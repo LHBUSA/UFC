@@ -11,7 +11,7 @@
  * stops otherwise, so between cards this endpoint is not called at all.
  */
 import { NextResponse } from "next/server";
-import { getRoundLiveState, livePollMs } from "@/lib/roundLive";
+import { getRoundForRoundState, livePollMs } from "@/lib/roundLive";
 import { fmtRecord } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -19,11 +19,34 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const now = Date.now();
-    const s = await getRoundLiveState(now);
+    const s = await getRoundForRoundState(now);
     return NextResponse.json({
       ok: true,
       data: {
-        /* Broadcast facts. */
+        /* Which card owns the deck: "live", "latest_completed", or null. The
+         * next card is carried separately and is never the focus. */
+        focus: s.focus ? {
+          kind: s.focus.kind,
+          event_id: s.focus.eventId,
+          name: s.focus.name,
+          event_date: s.focus.eventDate,
+          coverage: {
+            phase: s.focus.coverage.phase,
+            card_size: s.focus.coverage.cardSize,
+            results: s.focus.coverage.results,
+            round_ready: s.focus.coverage.roundReady,
+            round_pending: s.focus.coverage.roundPending,
+            no_round_detail: s.focus.coverage.noRoundDetail,
+          },
+        } : null,
+        next_event: s.next ? {
+          event_id: s.next.eventId,
+          name: s.next.name,
+          event_date: s.next.eventDate,
+          main_card_start_utc: s.next.broadcast.main_card_start_utc,
+          event_state: s.next.eventState,
+        } : null,
+        /* Broadcast facts for the focus card. */
         event: s.broadcast ? {
           name: s.broadcast.event_name,
           slug: s.broadcast.ufc_slug,
@@ -46,7 +69,7 @@ export async function GET() {
           completed_results: s.completedResults.length,
           completed_with_rounds: s.roundReady.length,
           card_size: s.cardSize,
-          bouts: s.completedResults.map(({ bout, coverage, roundReady }) => ({
+          bouts: s.completedResults.map(({ bout, coverage, roundReady, noRoundDetail }) => ({
             bout_id: bout.id,
             a: { id: bout.fighter_a.id, name: bout.fighter_a.name, record: fmtRecord(bout.fighter_a) },
             b: { id: bout.fighter_b.id, name: bout.fighter_b.name, record: fmtRecord(bout.fighter_b) },
@@ -55,7 +78,7 @@ export async function GET() {
             finish_round: bout.result?.round ?? null,
             finish_time_sec: bout.result?.time_sec ?? null,
             /* The bout's own state, so a consumer never has to infer it. */
-            state: roundReady ? "round_data_available" : "round_data_pending",
+            state: roundReady ? "round_data_available" : noRoundDetail ? "no_round_detail" : "round_data_pending",
             result_source: bout.result?.result_source ?? null,
             rounds_covered: coverage ? coverage.rounds : null,
             both_corners: coverage ? coverage.bothCorners : null,

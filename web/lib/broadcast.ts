@@ -96,6 +96,17 @@ export async function getBroadcastForEvent(event: { id: string; event_date: stri
   return hit.length === 1 ? hit[0] : null;
 }
 
+/** Every stored card dated on or after `fromDate` (or undated), soonest first.
+ * Round-for-Round needs the just-finished card as well as the upcoming ones, so
+ * it reads a date window instead of "the first N rows of the whole table". */
+export async function getBroadcastsSince(fromDate: string, revalidate?: number): Promise<EventBroadcast[]> {
+  return rest<EventBroadcast[]>(
+    `ufc_event_broadcasts?select=${COLS}&or=(event_date.gte.${fromDate},event_date.is.null)&order=main_card_start_utc.asc.nullslast&limit=40`,
+    [],
+    revalidate,
+  );
+}
+
 /** The soonest card that has not finished its broadcast window. */
 export async function getNextBroadcast(now = Date.now(), revalidate?: number): Promise<EventBroadcast | null> {
   const rows = await getBroadcastSchedule(12, revalidate);
