@@ -1,5 +1,5 @@
 {
- "_about": "READ-ONLY discovery inventory of athletic-commission TUF result documents, 2026-09-13. Nothing here has been ingested; only TUF 2 is applied (web/data/tuf/commission_records.json). Found through the Wayback Machine CDX index of boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/ and the live results pages; every document below was fetched from the live site, hashed and text-profiled. Documents are not redistributed.",
+ "_about": "READ-ONLY discovery inventory of athletic-commission TUF result documents, 2026-09-13. Discovery facts are as found at scout time. Operational state is in summary.applied_so_far and summary.audited_not_applied. Found through the Wayback Machine CDX index of boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/ and the live results pages; every document below was fetched from the live site, hashed and text-profiled. Documents are not redistributed.",
  "method": {
   "index": "http://web.archive.org/cdx/search/cdx?url=boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/*",
   "live_pages": "https://boxing.nv.gov/results/<year>_Results/",
@@ -16,6 +16,7 @@
   "bouts_listed_in_entry_round_documents": 204,
   "archive_house_bouts_in_covered_seasons": 520,
   "applied_so_far": [
+   "tuf-1",
    "tuf-2"
   ],
   "not_found": [
@@ -24,7 +25,12 @@
    "tuf-30",
    "tuf-34",
    "tuf-1..33 international editions other than brazil-4 and latam-2 (filmed outside Nevada or under another commission)"
-  ]
+  ],
+  "audited_not_applied": [
+   "tuf-3",
+   "tuf-4"
+  ],
+  "operational_state_updated": "2026-09-13: TUF 1 applied (PR #38) and TUF 2 applied (PR #34) through web/data/tuf/commission_records.json; TUF 3 and TUF 4 audited only (scripts/tuf/evidence/nsac_tuf3_tuf4_audit_2026-09-13.json). Discovery facts are as found at scout time and are not rewritten."
  },
  "seasons": [
   {

@@ -157,7 +157,10 @@ export type CommissionDocument = {
   identity_disagreements?: Array<{ fighter: string; fighter_id: string; field: "dob"; printed: string; canonical: string; record_ids: string[]; action: "recorded_only" }>;
 };
 export type CommissionRecord = {
-  id: string; document_id: string; date: string; stage_label: string | null;
+  /** `date` is the interpreted ISO date. `date_printed` keeps the document's own
+   * rendering where it could not be read as a date as printed (a missing
+   * separator, say), so the machine value never passes for the source text. */
+  id: string; document_id: string; date: string; date_printed?: string; stage_label: string | null;
   corners: Array<{ printed: string; hometown?: string; dob?: string; weight_lbs?: number }>;
   bout: { weight_class: string; stage: string; a: string; b: string };
   winner: string; result_text: string; method: string; round: number | null; time: string | null; scheduled_rounds?: number;

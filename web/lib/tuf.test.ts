@@ -1295,3 +1295,157 @@ test("a season with no bracket to load is not filed as missing data", () => {
     );
   }
 });
+
+/* ---- TUF 3 + TUF 4: Nevada State Athletic Commission reconciliation ---------- */
+
+type NsacBout = {
+  a: string; b: string; winner: string | null; method: string | null; round: number | null; time: string | null; episode: number | null;
+  stage: string; weight_class: string; on_finale_card?: boolean; classification: string; classification_source?: string | null;
+  commission_record_id?: string; fight_date?: string; fight_date_source?: { document_id: string; record_id: string };
+  result_sources?: Array<{ family: string; evidence_level: string; record_id?: string; winner?: string; source_type?: string; document_id?: string }>;
+  superseded_result_sources?: Array<{ family: string; superseded_by?: string }>;
+  classification_basis?: { affirmative: Array<{ family: string; evidence_level: string; record_id?: string }>; corroborating: Array<{ kind?: string; former_authority?: boolean }> };
+  method_detail?: { value: string; relation: string; source: { family: string; evidence_level: string; quote?: string; note?: string } };
+  corrections?: Array<{ field: string; kind?: string; old: unknown; new: unknown; detail?: string; batch?: string }>;
+  a_fighter_id?: string; b_fighter_id?: string;
+};
+const nsac34Audit = JSON.parse(readFileSync(new URL("../../scripts/tuf/evidence/nsac_tuf3_tuf4_audit_2026-09-13.json", import.meta.url), "utf8")) as {
+  seasons: Record<string, { document: { id: string; sha256: string }; bouts: Array<{ bout: string; record_id: string; canonical: { time: string | null } }> }>;
+};
+type Ledger34 = {
+  documents: Array<{ id: string; sha256: string; classification_language: { quote: string }; identity_disagreements?: Array<{ fighter: string; action: string; printed: string; canonical: string }> }>;
+  records: Array<{ id: string; document_id: string; date: string; date_printed?: string; winner: string; method: string; round: number; time: string | null; scheduled_rounds?: number; scorecards: unknown; referee?: string; corners: Array<{ weight_lbs?: number }>; remarks: unknown[] }>;
+};
+const ledger34 = () => JSON.parse(readFileSync(new URL("../data/tuf/commission_records.json", import.meta.url), "utf8")) as Ledger34;
+const bouts34 = (slug: string) => ((DETAIL_BY_SLUG[slug] as unknown as { bracket: Array<{ weight_class: string; stages: Array<{ stage: string; bouts: NsacBout[] }> }> }).bracket)
+  .flatMap((wc) => wc.stages.flatMap((st) => st.bouts.map((b) => ({ ...b, stage: st.stage, weight_class: wc.weight_class }))));
+const house34 = (slug: string) => bouts34(slug).filter((b) => !b.on_finale_card);
+const DOC34: Record<string, string> = { "tuf-3": "nsac-2006-tuf-season-3", "tuf-4": "nsac-2006-tuf-season-4" };
+
+test("TUF 3 + TUF 4: 24/24 house bouts match exactly one commission record each", () => {
+  const ledger = ledger34();
+  for (const slug of ["tuf-3", "tuf-4"]) {
+    const doc = ledger.documents.find((d) => d.id === DOC34[slug])!;
+    assert.equal(doc.sha256, nsac34Audit.seasons[slug].document.sha256);
+    const recs = ledger.records.filter((r) => r.document_id === doc.id);
+    const house = house34(slug);
+    assert.equal(recs.length, 12);
+    assert.equal(house.length, 12);
+    assert.equal(new Set(house.map((b) => b.commission_record_id)).size, 12, `${slug}: every record used once`);
+    for (const b of house) {
+      const rec = recs.find((r) => r.id === b.commission_record_id)!;
+      assert.ok(rec, `${slug} ${b.a} vs ${b.b}`);
+      assert.equal(rec.winner, b.winner);
+      assert.ok(nsac34Audit.seasons[slug].bouts.some((x) => x.bout === `${b.a} vs ${b.b}` && x.record_id === rec.id), `${slug} ${b.a} vs ${b.b}: the audited match`);
+    }
+  }
+});
+
+test("TUF 3 + TUF 4: 24/24 house results verified from the commission and 24/24 exhibitions commission-backed", () => {
+  for (const slug of ["tuf-3", "tuf-4"]) for (const b of house34(slug)) {
+    const label = `${slug} ${b.a} vs ${b.b}`;
+    assert.equal(resultState(b as never), "verified", label);
+    assert.deepEqual(b.result_sources!.map((s) => [s.family, s.evidence_level, s.record_id]), [["athletic_commission", "commission_record", b.commission_record_id]]);
+    assert.ok(b.superseded_result_sources?.every((s) => s.family === "wikipedia" && s.superseded_by === b.commission_record_id), `${label}: the draft stays as history`);
+    assert.equal(classState(b as never), "exhibition", label);
+    assert.deepEqual(b.classification_basis!.affirmative.map((s) => [s.family, s.evidence_level, s.record_id]), [["athletic_commission", "commission_record", b.commission_record_id]]);
+    const former = b.classification_basis!.corroborating.filter((c) => c.former_authority);
+    assert.equal(former.length, 1, `${label}: the former absence basis is kept as corroboration`);
+    assert.equal(former[0].kind, "record_absence");
+  }
+  const ledger = ledger34();
+  assert.match(ledger.documents.find((d) => d.id === DOC34["tuf-3"])!.classification_language.quote, /EXHIBITION RESULTS/);
+  assert.equal(ledger.documents.find((d) => d.id === DOC34["tuf-4"])!.classification_language.quote, "Exhibition Results");
+});
+
+test("TUF 3 + TUF 4: every commission time applied, the draft times kept", () => {
+  const cases: Array<[string, number]> = [["tuf-3", 9], ["tuf-4", 4]];
+  for (const [slug, expected] of cases) {
+    const times = house34(slug).flatMap((b) => (b.corrections ?? []).filter((c) => c.field === "time").map((c) => ({ bout: `${b.a} vs ${b.b}`, ...c })));
+    assert.equal(times.length, expected, slug);
+    for (const c of times) {
+      assert.equal(c.old, nsac34Audit.seasons[slug].bouts.find((x) => x.bout === c.bout)!.canonical.time, `${slug} ${c.bout}: draft time kept`);
+      assert.equal(c.kind, "commission_correction");
+    }
+    for (const b of house34(slug)) assert.equal(b.time, ledger34().records.find((r) => r.id === b.commission_record_id)!.time, `${slug} ${b.a} vs ${b.b}`);
+  }
+  const added = house34("tuf-3").find((b) => b.a === "Ross Pointon" && b.b === "Michael Bisping")!;
+  assert.deepEqual([added.time, added.corrections!.find((c) => c.field === "time")!.old], ["2:12", null], "the time the draft lacked is added");
+});
+
+test("TUF 3: commission method categories win; compatible mechanism survives only as secondary detail", () => {
+  const get = (a: string, b: string) => house34("tuf-3").find((x) => x.a === a && x.b === b)!;
+  const cases: Array<[string, string, string, string, string]> = [
+    ["Kalib Starnes", "Mike Stine", "KO (punches)", "punches", "commission_correction"],
+    ["Solomon Hutcherson", "Rory Singer", "KO (head kick and punches)", "head kick and punches", "commission_correction"],
+    ["Kalib Starnes", "Kendall Grove", "Verbal submission (rib injury)", "rib injury", "commission_correction"],
+    ["Kristian Rothaermel", "Michael Bisping", "TKO (strikes)", "strikes", "method_normalization"],
+  ];
+  for (const [a, b, draft, detail, kind] of cases) {
+    const x = get(a, b);
+    assert.equal(x.method, "TKO", `${a} vs ${b}: official category`);
+    const c = x.corrections!.filter((q) => q.field === "method");
+    assert.deepEqual(c.map((q) => [q.old, q.new, q.kind]), [[draft, "TKO", kind]]);
+    assert.equal(x.method_detail!.value, detail);
+    assert.equal(x.method_detail!.relation, "compatible_detail");
+    assert.deepEqual([x.method_detail!.source.family, x.method_detail!.source.evidence_level], ["wikipedia", "secondary_draft"]);
+    assert.doesNotMatch(x.method_detail!.value, /\bKO\b|verbal|submission/i, "no contradicted category survives as detail");
+  }
+  assert.match(String(get("Kalib Starnes", "Kendall Grove").method_detail!.source.quote), /rib injury/, "the injury is stated by the draft");
+  assert.match(String(get("Kalib Starnes", "Kendall Grove").method_detail!.source.note), /not kept/);
+  assert.equal(house34("tuf-3").filter((x) => x.method_detail).length, 4);
+});
+
+test("TUF 4: sudden-victory decisions carry the commission's wording, with no invented scorecards", () => {
+  const sv = house34("tuf-4").filter((b) => /sudden victory/i.test(String(b.method)));
+  assert.deepEqual(sv.map((b) => `${b.a} vs ${b.b}`).sort(), ["Charles McCarthy vs Pete Sell", "Gideon Ray vs Edwin DeWees"]);
+  for (const b of sv) {
+    assert.equal(b.method, "Decision (unanimous, sudden victory round)");
+    assert.equal(b.round, 3);
+    const rec = ledger34().records.find((r) => r.id === b.commission_record_id)!;
+    assert.equal(rec.scorecards, null, "the document prints no cards for these, so none exist");
+    assert.equal(rec.scheduled_rounds, 2);
+    assert.equal(b.method_detail, undefined, "primary detail, not secondary");
+  }
+  assert.equal(house34("tuf-4").filter((b) => b.method_detail).length, 0);
+});
+
+test("TUF 3: the misprinted commission date keeps its printed form beside the interpreted date", () => {
+  const rec = ledger34().records.find((r) => r.id === "nsac-2006-tuf3-05")!;
+  assert.equal(rec.date, "2006-02-07");
+  assert.equal(rec.date_printed, "02/0706");
+  const bout = house34("tuf-3").find((b) => b.commission_record_id === rec.id)!;
+  assert.equal(bout.fight_date, "2006-02-07");
+  assert.match(String((DETAIL_BY_SLUG["tuf-3"] as unknown as { _provenance: { note: string } })._provenance.note), /02\/0706.*separator between day and year is missing/);
+  assert.equal(ledger34().records.filter((r) => r.date_printed).length, 1, "no other record claims a misprint");
+});
+
+test("TUF 3 + TUF 4: referees, cards and weights applied; DOBs recorded only; identities, finals and conflicts untouched", () => {
+  const ledger = ledger34();
+  for (const slug of ["tuf-3", "tuf-4"]) {
+    const recs = ledger.records.filter((r) => r.document_id === DOC34[slug]);
+    assert.equal(recs.filter((r) => r.referee).length, 12);
+    assert.equal(recs.reduce((n, r) => n + r.corners.filter((c) => typeof c.weight_lbs === "number").length, 0), 24);
+    assert.equal(recs.reduce((n, r) => n + r.remarks.length, 0), 0);
+    for (const b of house34(slug)) assert.deepEqual(b.fight_date_source, { document_id: DOC34[slug], record_id: b.commission_record_id });
+    assert.ok(!JSON.stringify(DETAIL_BY_SLUG[slug]).includes("\"dob\""), `${slug}: no DOB written into the season`);
+    for (const f of bouts34(slug).filter((b) => b.on_finale_card)) {
+      assert.equal(f.classification, "professional");
+      assert.equal(f.commission_record_id, undefined, "finals untouched");
+    }
+  }
+  assert.equal(ledger.records.filter((r) => r.document_id === DOC34["tuf-3"] && r.scorecards).length, 2);
+  assert.equal(ledger.records.filter((r) => r.document_id === DOC34["tuf-4"] && r.scorecards).length, 6);
+  assert.deepEqual(ledger.documents.find((d) => d.id === DOC34["tuf-3"])!.identity_disagreements!.map((d) => [d.fighter, d.action]), [["Ross Pointon", "recorded_only"], ["Solomon Hutcherson", "recorded_only"]]);
+  assert.deepEqual(ledger.documents.find((d) => d.id === DOC34["tuf-4"])!.identity_disagreements!.map((d) => [d.fighter, d.action]), [["Mikey Burnett", "recorded_only"], ["Pete Sell", "recorded_only"]]);
+  const t3 = house34("tuf-3");
+  for (const name of ["Mike Stine", "Noah Inhofer", "Tait Fletcher"]) {
+    const b = t3.find((x) => x.a === name || x.b === name)!;
+    assert.equal(b.a === name ? b.a_fighter_id : b.b_fighter_id, undefined, `${name} stays without a canonical identity`);
+  }
+  const conflicts = (slug: string) => (DETAIL_BY_SLUG[slug] as unknown as { _conflicts: Array<{ field: string }> })._conflicts.map((c) => c.field);
+  assert.deepEqual(conflicts("tuf-3"), ["Light Heavyweight_semi_final"], "the LHW semi-final entry stays open");
+  assert.deepEqual(conflicts("tuf-4"), ["Welterweight_quarter_final"], "Spratt's second quarter-final stays open");
+  assert.equal(ledger.records.filter((r) => r.document_id === "nsac-2004-tuf-season-1").length, 10, "TUF 1 ledger untouched");
+  assert.equal(ledger.records.filter((r) => r.document_id === "nsac-2005-tuf-season-2").length, 12, "TUF 2 ledger untouched");
+});

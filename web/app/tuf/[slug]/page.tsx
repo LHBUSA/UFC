@@ -215,7 +215,7 @@ function CommissionDetail({ b }: { b: TufBout }) {
   }
   return (
     <span className="tuf-evidence">
-      <span><b>Fought</b> {displayDate(record.date)}</span>
+      <span><b>Fought</b> {displayDate(record.date)}{record.date_printed ? <em>{` (printed "${record.date_printed}")`}</em> : null}</span>
       {weights.length ? <span><b>Commission weights</b> {weights.map((w) => `${w.name} ${w.lbs} lb`).join(" · ")}</span> : null}
       {cards ? <span><b>Judges</b> {cards}</span> : null}
       {record.referee ? <span><b>Referee</b> {record.referee}</span> : null}
