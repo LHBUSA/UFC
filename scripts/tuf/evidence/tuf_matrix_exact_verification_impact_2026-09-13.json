@@ -1,0 +1,652 @@
+{
+ "_about": "READ-ONLY impact audit of the exact result-verification rule (scripts/tuf/audit_matrix_exact_verification.mjs). No season data changed.",
+ "old_rule": "dbVerified = any ufc_bouts row between the two fighter ids with the archive winner, applied to every TUF bout (house or final); classificationRepairable and professional_final_linked used the same pair-level test.",
+ "new_rule": "House bouts: only commission record, official repair covering the winner, or official recap for the same pairing. Finale-card finals additionally: the exact finale row (ufc_bout_id, else the single bout between the ids on the recorded finale date and event). Classification repair and professional_final_linked use the exact row only.",
+ "old_matrix": "scripts/tuf/evidence/tuf_completeness_2026-09-13.after_tuf3_tuf4_nsac.json",
+ "new_matrix": "scripts/tuf/evidence/tuf_completeness_2026-09-13.after_exact_verification.json",
+ "false_positive_db_verifications": 11,
+ "false_positive_house_bouts": 9,
+ "false_positive_finals": 2,
+ "results_changed": 9,
+ "false_positives": [
+  {
+   "season": "tuf-5",
+   "stage": "semi_final",
+   "on_finale_card": false,
+   "pairing": "Nate Diaz vs Gray Maynard",
+   "tuf_winner": "Nate Diaz",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "868820d3-f69d-4cfb-ac5d-0be1eb03c369",
+     "event": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
+     "date": "2013-11-30",
+     "professional_winner": "Nate Diaz"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [
+    {
+     "ufc_bout_id": "683dfa4b-f7b3-4c4b-8151-8a2e8664d86e",
+     "event": "UFC Fight Night: Maynard vs Diaz",
+     "date": "2010-01-11",
+     "winner_is_archive_winner": false
+    }
+   ],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2013-11-30), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "on_finale_card": false,
+   "pairing": "Dan Barrera vs Ben Saunders",
+   "tuf_winner": "Ben Saunders",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "70a3ef04-253a-4d13-97f1-fd007e364574",
+     "event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
+     "date": "2007-12-08",
+     "professional_winner": "Ben Saunders"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2007-12-08), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  },
+  {
+   "season": "tuf-7",
+   "stage": "semi_final",
+   "on_finale_card": false,
+   "pairing": "Amir Sadollah vs C. B. Dollaway",
+   "tuf_winner": "Amir Sadollah",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "21bdd837-d7cb-4c4b-8d0b-668a6cd4d4c4",
+     "event": "The Ultimate Fighter: Team Rampage vs Team Forrest Finale",
+     "date": "2008-06-21",
+     "professional_winner": "Amir Sadollah"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2008-06-21), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  },
+  {
+   "season": "tuf-11",
+   "stage": "round_of_16",
+   "on_finale_card": false,
+   "pairing": "Court McGee vs Nick Ring",
+   "tuf_winner": "Nick Ring",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "2db46009-af04-46df-babd-c41ef7d281fe",
+     "event": "UFC 149: Faber vs Barao",
+     "date": "2012-07-21",
+     "professional_winner": "Nick Ring"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2012-07-21), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "verified",
+   "evidence_after": [
+    "official_recap"
+   ],
+   "verdict": "still verified: its own evidence (official_recap) verifies it"
+  },
+  {
+   "season": "tuf-11",
+   "stage": "quarter_final",
+   "on_finale_card": false,
+   "pairing": "Brad Tavares vs Seth Baczynski",
+   "tuf_winner": "Brad Tavares",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "9b703460-fe98-419c-87a5-218cc817c8ac",
+     "event": "The Ultimate Fighter: Team Liddell vs Team Ortiz Finale",
+     "date": "2010-06-19",
+     "professional_winner": "Brad Tavares"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2010-06-19), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "verified",
+   "evidence_after": [
+    "official_recap"
+   ],
+   "verdict": "still verified: its own evidence (official_recap) verifies it"
+  },
+  {
+   "season": "tuf-24",
+   "stage": "elimination",
+   "on_finale_card": false,
+   "pairing": "Alexandre Pantoja vs Kai Kara-France",
+   "tuf_winner": "Alexandre Pantoja",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "ca2ac578-6ceb-42ed-a9e3-05975d9ffac7",
+     "event": "UFC 317: Topuria vs. Oliveira",
+     "date": "2025-06-28",
+     "professional_winner": "Alexandre Pantoja"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2025-06-28), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  },
+  {
+   "season": "tuf-24",
+   "stage": "round_of_16",
+   "on_finale_card": false,
+   "pairing": "Alexandre Pantoja vs Brandon Moreno",
+   "tuf_winner": "Alexandre Pantoja",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "e3f32807-87a7-4740-81ff-18dd9a127c85",
+     "event": "UFC Fight Night: Maia vs. Usman",
+     "date": "2018-05-19",
+     "professional_winner": "Alexandre Pantoja"
+    },
+    {
+     "ufc_bout_id": "eefd181c-c3cc-47cf-a5c5-b137ccbcc9bf",
+     "event": "UFC 290: Volkanovski vs. Rodriguez",
+     "date": "2023-07-08",
+     "professional_winner": "Alexandre Pantoja"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2018-05-19, 2023-07-08), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  },
+  {
+   "season": "tuf-24",
+   "stage": "quarter_final",
+   "on_finale_card": false,
+   "pairing": "Alexandre Pantoja vs Kai Kara France",
+   "tuf_winner": "Alexandre Pantoja",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "ca2ac578-6ceb-42ed-a9e3-05975d9ffac7",
+     "event": "UFC 317: Topuria vs. Oliveira",
+     "date": "2025-06-28",
+     "professional_winner": "Alexandre Pantoja"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2025-06-28), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  },
+  {
+   "season": "tuf-26",
+   "stage": "semi_final",
+   "on_finale_card": false,
+   "pairing": "Roxanne Modafferi vs Sijara Eubanks",
+   "tuf_winner": "Sijara Eubanks",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "4992c0b7-366e-4858-bf0d-9bb7c19292ce",
+     "event": "UFC 230: Cormier vs. Lewis",
+     "date": "2018-11-03",
+     "professional_winner": "Sijara Eubanks"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a house exhibition; the professional bout(s) above are different fights between the same two people (2018-11-03), and a professional result says nothing about who won the TUF house bout",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  },
+  {
+   "season": "tuf-33",
+   "stage": "final",
+   "on_finale_card": true,
+   "pairing": "Daniil Donchenko vs Rodrigo Sezinando",
+   "tuf_winner": "Daniil Donchenko",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "94616427-2d11-4216-b248-bc57e3ab83e2",
+     "event": "UFC Fight Night: Lopes vs. Silva",
+     "date": "2025-09-13",
+     "professional_winner": "Daniil Donchenko"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a finale-card final with no ufc_bout_id and no recorded finale date or event (no explicit bout link and no recorded finale date or event); the old rule accepted any bout between the pair, so the result row was never shown to be THIS final",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  },
+  {
+   "season": "tuf-33",
+   "stage": "final",
+   "on_finale_card": true,
+   "pairing": "Joseph Morales vs Alibi Idiris",
+   "tuf_winner": "Joseph Morales",
+   "professional_bouts_used_by_old_rule": [
+    {
+     "ufc_bout_id": "aa7c0491-43f3-4c90-a668-10ccbdc118ac",
+     "event": "UFC 319: Du Plessis vs. Chimaev",
+     "date": "2025-08-16",
+     "professional_winner": "Joseph Morales"
+    }
+   ],
+   "other_professional_bouts_between_the_pair": [],
+   "why_wrong": "a finale-card final with no ufc_bout_id and no recorded finale date or event (no explicit bout link and no recorded finale date or event); the old rule accepted any bout between the pair, so the result row was never shown to be THIS final",
+   "result_before": "verified",
+   "result_after": "partial",
+   "evidence_after": [],
+   "verdict": "verified -> partial"
+  }
+ ],
+ "seasons": {
+  "tuf-1": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 90,
+    "depth_score": 100,
+    "results_verified": 12,
+    "bouts": 12,
+    "house_secondary_only": 0,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 2
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 90,
+    "depth_score": 100,
+    "results_verified": 12,
+    "bouts": 12,
+    "house_secondary_only": 0,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 2
+   },
+   "changed": false
+  },
+  "tuf-2": {
+   "before": {
+    "status": "COMPLETE",
+    "score": 89,
+    "depth_score": 98,
+    "results_verified": 14,
+    "bouts": 14,
+    "house_secondary_only": 0,
+    "blockers": [],
+    "structure": "complete",
+    "professional_final_linked": 2
+   },
+   "after": {
+    "status": "COMPLETE",
+    "score": 89,
+    "depth_score": 98,
+    "results_verified": 14,
+    "bouts": 14,
+    "house_secondary_only": 0,
+    "blockers": [],
+    "structure": "complete",
+    "professional_final_linked": 2
+   },
+   "changed": false
+  },
+  "tuf-3": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 88,
+    "depth_score": 95,
+    "results_verified": 14,
+    "bouts": 14,
+    "house_secondary_only": 0,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 2
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 88,
+    "depth_score": 95,
+    "results_verified": 14,
+    "bouts": 14,
+    "house_secondary_only": 0,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 2
+   },
+   "changed": false
+  },
+  "tuf-4": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 90,
+    "depth_score": 100,
+    "results_verified": 14,
+    "bouts": 14,
+    "house_secondary_only": 0,
+    "blockers": [
+     "ROSTER_MISSING",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 2
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 90,
+    "depth_score": 100,
+    "results_verified": 14,
+    "bouts": 14,
+    "house_secondary_only": 0,
+    "blockers": [
+     "ROSTER_MISSING",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 2
+   },
+   "changed": false
+  },
+  "tuf-5": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 71,
+    "depth_score": 65,
+    "results_verified": 2,
+    "bouts": 15,
+    "house_secondary_only": 13,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 70,
+    "depth_score": 63,
+    "results_verified": 1,
+    "bouts": 15,
+    "house_secondary_only": 14,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "changed": true
+  },
+  "tuf-6": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 70,
+    "depth_score": 52,
+    "results_verified": 2,
+    "bouts": 15,
+    "house_secondary_only": 13,
+    "blockers": [
+     "ROSTER_MISSING",
+     "CLASSIFICATION_UNRESOLVED",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 69,
+    "depth_score": 51,
+    "results_verified": 1,
+    "bouts": 15,
+    "house_secondary_only": 14,
+    "blockers": [
+     "ROSTER_MISSING",
+     "CLASSIFICATION_UNRESOLVED",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "changed": true
+  },
+  "tuf-7": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 66,
+    "depth_score": 58,
+    "results_verified": 2,
+    "bouts": 31,
+    "house_secondary_only": 29,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 65,
+    "depth_score": 58,
+    "results_verified": 1,
+    "bouts": 31,
+    "house_secondary_only": 30,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "changed": true
+  },
+  "tuf-11": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 91,
+    "depth_score": 72,
+    "results_verified": 27,
+    "bouts": 29,
+    "house_secondary_only": 2,
+    "blockers": [
+     "ROSTER_MISSING",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 91,
+    "depth_score": 72,
+    "results_verified": 27,
+    "bouts": 29,
+    "house_secondary_only": 2,
+    "blockers": [
+     "ROSTER_MISSING",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "changed": false
+  },
+  "tuf-24": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 67,
+    "depth_score": 44,
+    "results_verified": 3,
+    "bouts": 17,
+    "house_secondary_only": 13,
+    "blockers": [
+     "ROSTER_MISSING",
+     "FINAL_NOT_VERIFIED",
+     "PROFESSIONAL_FINAL_NOT_LINKED",
+     "CLASSIFICATION_UNRESOLVED",
+     "FINALIST_IDENTITY_UNRESOLVED",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 0
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 63,
+    "depth_score": 41,
+    "results_verified": 0,
+    "bouts": 17,
+    "house_secondary_only": 16,
+    "blockers": [
+     "ROSTER_MISSING",
+     "FINAL_NOT_VERIFIED",
+     "PROFESSIONAL_FINAL_NOT_LINKED",
+     "CLASSIFICATION_UNRESOLVED",
+     "FINALIST_IDENTITY_UNRESOLVED",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 0
+   },
+   "changed": true
+  },
+  "tuf-26": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 71,
+    "depth_score": 67,
+    "results_verified": 2,
+    "bouts": 16,
+    "house_secondary_only": 14,
+    "blockers": [
+     "CLASSIFICATION_UNRESOLVED",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 70,
+    "depth_score": 66,
+    "results_verified": 1,
+    "bouts": 16,
+    "house_secondary_only": 15,
+    "blockers": [
+     "CLASSIFICATION_UNRESOLVED",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 1
+   },
+   "changed": true
+  },
+  "tuf-33": {
+   "before": {
+    "status": "PARTIAL",
+    "score": 58,
+    "depth_score": 48,
+    "results_verified": 11,
+    "bouts": 14,
+    "house_secondary_only": 3,
+    "blockers": [
+     "SPELLING_SPLIT_IDENTITY",
+     "WINNER_UNRESOLVED",
+     "PROFESSIONAL_FINAL_NOT_LINKED",
+     "CLASSIFICATION_UNRESOLVED",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 0
+   },
+   "after": {
+    "status": "PARTIAL",
+    "score": 55,
+    "depth_score": 48,
+    "results_verified": 9,
+    "bouts": 14,
+    "house_secondary_only": 3,
+    "blockers": [
+     "SPELLING_SPLIT_IDENTITY",
+     "FINAL_NOT_VERIFIED",
+     "WINNER_UNRESOLVED",
+     "PROFESSIONAL_FINAL_NOT_LINKED",
+     "CLASSIFICATION_UNRESOLVED",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "structure": "complete",
+    "professional_final_linked": 0
+   },
+   "changed": true
+  }
+ },
+ "seasons_outside_this_list_unchanged": true,
+ "totals": {
+  "before": {
+   "complete": 1,
+   "partial": 43,
+   "blocked": 0,
+   "result_verified": 206,
+   "result_partial": 547,
+   "finals_verified": 65,
+   "finale_links_verified": 63,
+   "structure_complete": 44,
+   "structure_partial": 0
+  },
+  "after": {
+   "complete": 1,
+   "partial": 43,
+   "blocked": 0,
+   "result_verified": 197,
+   "result_partial": 556,
+   "finals_verified": 63,
+   "finale_links_verified": 63,
+   "structure_complete": 44,
+   "structure_partial": 0
+  }
+ }
+}

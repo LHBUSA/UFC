@@ -1,0 +1,181 @@
+{
+ "_about": "Read-only snapshot (2026-09-13) of every ufc_bouts row between the two fighter ids of each TUF 1-4 bout that has any such row, in the shape completeness_matrix.mjs selects (id, status, fighter ids, event, result winner). Includes the later rematches (Griffin vs Bonnar at UFC 62, Serra vs Lytle at UFC 119) and the unrelated professional fights between house-bout pairs (Sanchez vs Koscheck UFC 69, Carter vs Serra UFC 31). Fixture for scripts/tuf/lib/boutVerification.test.mjs.",
+ "pairs": {
+  "6fee988e-909c-47cd-9ef4-10e40c4e307c|a356d7e5-5b86-42c7-8794-5a2bc3b81c2d": [
+   {
+    "id": "cdc04f51-80fd-4aa1-94a8-ce85326f6b52",
+    "status": "complete",
+    "fighter_a_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+    "fighter_b_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
+    "event": {
+     "name": "UFC 62: Liddell vs Sobral",
+     "event_date": "2006-08-26"
+    },
+    "result": {
+     "winner_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d"
+    }
+   },
+   {
+    "id": "65856c98-1421-4859-8e62-4eb651fdc221",
+    "status": "complete",
+    "fighter_a_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+    "fighter_b_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
+    "event": {
+     "name": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
+     "event_date": "2005-04-09"
+    },
+    "result": {
+     "winner_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d"
+    }
+   }
+  ],
+  "69133a27-6504-4af9-90c0-d8ea99568ef9|9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1": [
+   {
+    "id": "927bd672-37e0-44e1-975d-fcf01df574f8",
+    "status": "complete",
+    "fighter_a_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
+    "fighter_b_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1",
+    "event": {
+     "name": "UFC 69: Shootout",
+     "event_date": "2007-04-07"
+    },
+    "result": {
+     "winner_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1"
+    }
+   }
+  ],
+  "69133a27-6504-4af9-90c0-d8ea99568ef9|c709633d-c726-475e-8b5c-57eee382f8ba": [
+   {
+    "id": "45c3c849-90b4-47ec-a891-76e7a1effa5f",
+    "status": "complete",
+    "fighter_a_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
+    "fighter_b_id": "c709633d-c726-475e-8b5c-57eee382f8ba",
+    "event": {
+     "name": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
+     "event_date": "2005-04-09"
+    },
+    "result": {
+     "winner_id": "69133a27-6504-4af9-90c0-d8ea99568ef9"
+    }
+   }
+  ],
+  "046fbca6-d803-4bc8-a3c9-d2d45144fc5e|e76e4a06-7d74-4ecb-a0dc-7d07234e3f64": [
+   {
+    "id": "1027f33c-bd93-46f3-a424-277a6927c822",
+    "status": "complete",
+    "fighter_a_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64",
+    "fighter_b_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e",
+    "event": {
+     "name": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
+     "event_date": "2005-11-05"
+    },
+    "result": {
+     "winner_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e"
+    }
+   }
+  ],
+  "492896ac-287f-44c2-93d1-ea86443c9b1a|b65310ab-e8fa-40ab-875a-aaa383ece4e5": [
+   {
+    "id": "efdfe676-6d25-4f2e-b8fe-e31bb368e99b",
+    "status": "complete",
+    "fighter_a_id": "492896ac-287f-44c2-93d1-ea86443c9b1a",
+    "fighter_b_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+    "event": {
+     "name": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
+     "event_date": "2005-11-05"
+    },
+    "result": {
+     "winner_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5"
+    }
+   }
+  ],
+  "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a|e5e4a741-21c8-41de-a581-c14c0be0ffb6": [
+   {
+    "id": "05693ec4-34b1-45d4-86ce-820b9a176153",
+    "status": "complete",
+    "fighter_a_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6",
+    "fighter_b_id": "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a",
+    "event": {
+     "name": "The Ultimate Fighter: Team Ortiz vs. Team Shamrock Finale",
+     "event_date": "2006-06-24"
+    },
+    "result": {
+     "winner_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
+    }
+   }
+  ],
+  "50e2576e-e89f-4f99-8020-3b95d8a3094f|8540fb3a-4db2-4691-8e54-a46067d079d0": [
+   {
+    "id": "8d907e3a-9371-40bd-96eb-e8a0b3121458",
+    "status": "complete",
+    "fighter_a_id": "8540fb3a-4db2-4691-8e54-a46067d079d0",
+    "fighter_b_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f",
+    "event": {
+     "name": "The Ultimate Fighter: Team Ortiz vs. Team Shamrock Finale",
+     "event_date": "2006-06-24"
+    },
+    "result": {
+     "winner_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f"
+    }
+   }
+  ],
+  "1605cde2-d2e5-40b3-a428-f74644052b84|32f4cac6-4424-4c96-ba2b-4828542c673c": [
+   {
+    "id": "819cb6b6-eaf9-46ab-bd8d-7d13759cc248",
+    "status": "complete",
+    "fighter_a_id": "32f4cac6-4424-4c96-ba2b-4828542c673c",
+    "fighter_b_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
+    "event": {
+     "name": "UFC 31: Locked and Loaded",
+     "event_date": "2001-05-04"
+    },
+    "result": {
+     "winner_id": "32f4cac6-4424-4c96-ba2b-4828542c673c"
+    }
+   }
+  ],
+  "1605cde2-d2e5-40b3-a428-f74644052b84|3be9b895-b4f9-4320-b25b-27d5ab056977": [
+   {
+    "id": "ae6b2728-31c7-407e-8904-43a6e3f0a216",
+    "status": "complete",
+    "fighter_a_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
+    "fighter_b_id": "3be9b895-b4f9-4320-b25b-27d5ab056977",
+    "event": {
+     "name": "UFC 119: Mir vs Cro Cop",
+     "event_date": "2010-09-25"
+    },
+    "result": {
+     "winner_id": "3be9b895-b4f9-4320-b25b-27d5ab056977"
+    }
+   },
+   {
+    "id": "ba067d26-0058-4b30-b6a4-7e76044a060a",
+    "status": "complete",
+    "fighter_a_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
+    "fighter_b_id": "3be9b895-b4f9-4320-b25b-27d5ab056977",
+    "event": {
+     "name": "The Ultimate Fighter: The Comeback Finale",
+     "event_date": "2006-11-11"
+    },
+    "result": {
+     "winner_id": "1605cde2-d2e5-40b3-a428-f74644052b84"
+    }
+   }
+  ],
+  "68662bbe-e979-48af-9c82-b6336c25f2f1|a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe": [
+   {
+    "id": "e1984ee3-09d8-4770-935c-7456b7a46122",
+    "status": "complete",
+    "fighter_a_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe",
+    "fighter_b_id": "68662bbe-e979-48af-9c82-b6336c25f2f1",
+    "event": {
+     "name": "The Ultimate Fighter: The Comeback Finale",
+     "event_date": "2006-11-11"
+    },
+    "result": {
+     "winner_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe"
+    }
+   }
+  ]
+ }
+}

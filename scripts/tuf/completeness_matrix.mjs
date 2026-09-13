@@ -8,18 +8,23 @@
  * Reproducible from committed source data plus read-only database selects:
  *   web/data/tuf/seasons.json, seasons/*.json, episodes/*.json, identity.json,
  *   scripts/tuf/evidence/paramount_plus.json
- *   ufc_bouts / ufc_bout_results / ufc_events  (finale linkage, by fighter id)
+ *   ufc_bouts / ufc_bout_results / ufc_events  (exact finale linkage; other bouts between the ids are listed only)
  *   ufc_images                                  (licensed portrait coverage)
  *
  * A file existing is never "complete". Every status below is computed from
  * explicit rules, and each season lists the blockers that keep it from the bar.
  *
  * RESULT VERIFICATION (per bout) — kept separate from classification:
- *   verified   the winner is attested by a source other than the Wikipedia
- *              draft: a professional result row (classification verified
- *              against ufc_bouts), an official source repair that covers the
- *              winner, or an official recap result in the episode layer for the
- *              same pairing with the same winner and no contradiction
+ *   verified   the winner is attested by evidence tied to THIS bout
+ *              (scripts/tuf/lib/boutVerification.mjs):
+ *              house bout — an explicit athletic commission record, an official
+ *              source repair that covers the winner, or an official recap result
+ *              for the same pairing with the same winner and no contradiction;
+ *              professional final — additionally, the result row of the exact
+ *              finale-card bout (ufc_bout_id, else the single bout between the
+ *              two ids on the recorded finale date and event). A professional
+ *              fight between the same two fighters at any other time never
+ *              verifies a TUF bout, and never repairs a final's classification.
  *   partial    a winner is recorded, but only the Wikipedia draft states it
  *   scheduled  a tournament final whose exact finalist pairing is an announced,
  *              not-yet-fought bout in ufc_bouts (a future fact, not a gap)
@@ -32,8 +37,8 @@
  *   season completed · roster present · every expected quarter/semi/final bout
  *   present · every present bout has a winner · every final result verified ·
  *   one resolved winner per weight class, each linked to a canonical fighter ·
- *   the professional final linked by exact fighter ids where the final was on
- *   a finale card · zero unresolved classifications · no open source conflict ·
+ *   the professional final linked to its exact finale-card bout where the final
+ *   was on a finale card · zero unresolved classifications · no open source conflict ·
  *   every winner and finalist identity resolved · no unflagged spelling split
  * BLOCKED: a critical blocker that no loaded source can clear (an open source
  *   conflict on a final, or no bracket at all for a bracket season).
@@ -66,6 +71,7 @@ import { fileURLToPath } from 'node:url';
 import { expectedBouts } from '../../web/lib/tufFormat.ts';
 import { buildEpisodeViews, timelineCounts } from '../../web/lib/tufTimeline.ts';
 import { hasCommissionResult } from '../../web/lib/tufBoutState.ts';
+import { verifyBout } from './lib/boutVerification.mjs';
 import { fingerprint, structureOf } from '../../web/lib/tufStatus.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -110,7 +116,6 @@ function lev(a, b) {
   for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
   return d[m][n];
 }
-const pairKey = (a, b) => [norm(a), norm(b)].sort().join('|');
 const idPair = (a, b) => [a, b].sort().join('|');
 
 const STAGE_ORDER = ['elimination', 'round_of_16', 'quarter_final', 'semi_final', 'final'];
@@ -134,7 +139,6 @@ for (let i = 0; i < ids.length; i += 60) {
   }
   for (const im of await q(`ufc_images?select=fighter_id&fighter_id=in.(${chunk})&order=fighter_id.asc`)) portraitIds.add(im.fighter_id);
 }
-const one = (v) => (Array.isArray(v) ? v[0] : v);
 
 /* ---- per season ---------------------------------------------------------- */
 const seasons = [];
@@ -198,38 +202,13 @@ for (const row of inventory.seasons) {
   /* bouts */
   const today = AS_OF;
   const boutRows = bouts.map((b) => {
-    const officialWinner = (b.sources || []).some((s) => s.family !== 'wikipedia' && s.fields.includes('winner'));
-    const recapResult = (eps?.episodes || []).flatMap((e) => e.bouts || [])
-      .find((eb) => pairKey(eb.bracket?.a || eb.a, eb.bracket?.b || eb.b) === pairKey(b.a, b.b) && eb.result?.winner);
-    const recapAgrees = recapResult && !recapResult.result.contradiction && norm(recapResult.result.winner) === norm(b.winner);
-    let dbPair = null;
-    /* The winner's id: the corner whose printed name matches, else the season's
-     * linked winner for this weight class when that id is one of the corners.
-     * A winner printed differently from both corners is a data defect either way. */
+    /* A winner printed differently from both corners is a data defect. */
     const winnerNameIsCorner = !b.winner || norm(b.winner) === norm(b.a) || norm(b.winner) === norm(b.b);
-    const seasonWinnerId = (row.winners || []).find((w) => norm(w.weight_class) === norm(b.weight_class) || (row.winners || []).length === 1)?.fighter_id;
-    const winnerId = !b.winner ? null
-      : norm(b.winner) === norm(b.a) ? b.a_fighter_id
-        : norm(b.winner) === norm(b.b) ? b.b_fighter_id
-          : b.stage === 'final' && seasonWinnerId && [b.a_fighter_id, b.b_fighter_id].includes(seasonWinnerId) ? seasonWinnerId : null;
-    if (b.a_fighter_id && b.b_fighter_id) dbPair = (boutsByPair.get(idPair(b.a_fighter_id, b.b_fighter_id)) || []).map((x) => ({
-      status: x.status, event: one(x.event)?.name, date: one(x.event)?.event_date, has_result: Boolean(one(x.result)),
-      winner_matches_archive: Boolean(one(x.result)?.winner_id) && one(x.result).winner_id === winnerId,
-    }));
-    /* A professional bout is verified by its result row: the stored winner id
-     * must be the archive winner's id, not merely a bout between the two. */
-    const dbVerified = (dbPair || []).some((x) => x.winner_matches_archive);
-    /* A result row between exactly these ids, on the finale card, while the
-     * archive still says 'unverified': the classification can be repaired. */
-    const classificationRepairable = b.classification === 'unverified' && b.stage === 'final' && dbVerified;
-    const scheduled = b.stage === 'final' && !b.winner && (dbPair || []).some((x) => !x.has_result && x.status !== 'cancelled' && String(x.date) >= today);
-    let result;
-    /* A primary athletic-commission record verifies a house result only through an
-     * explicit record cited by document and bout (web/data/tuf/commission_records.json). */
-    if (b.winner && (dbVerified || officialWinner || recapAgrees || hasCommissionResult(b))) result = 'verified';
-    else if (b.winner) result = 'partial';
-    else if (scheduled) result = 'scheduled';
-    else result = 'unknown';
+    /* Verification is exact (scripts/tuf/lib/boutVerification.mjs): a house bout
+     * only by evidence tied to that bout; a professional final only by its own
+     * finale-card row. Other fights between the same ids are listed, never used. */
+    const v = verifyBout({ bout: b, seasonRow: row, episodes: eps, pairRows: b.a_fighter_id && b.b_fighter_id ? boutsByPair.get(idPair(b.a_fighter_id, b.b_fighter_id)) || [] : [], today });
+    const { result, classificationRepairable } = v;
     const cls = b.classification === 'unverified' ? 'unresolved' : b.classification;
     const blockersForBout = [];
     if (result === 'partial') blockersForBout.push('NO_PRIMARY_SOURCE');
@@ -243,8 +222,10 @@ for (const row of inventory.seasons) {
     return {
       weight_class: b.weight_class, stage: b.stage, a: b.a, b: b.b, winner: b.winner, method: b.method, round: b.round, time: b.time, episode: b.episode,
       a_fighter_id: b.a_fighter_id || null, b_fighter_id: b.b_fighter_id || null,
-      result_verification: result, classification: cls, classification_basis: b.classification_source || null,
-      on_finale_card: Boolean(b.on_finale_card), db_pairing: dbPair, blockers: blockersForBout,
+      result_verification: result, result_evidence: v.evidence, classification: cls, classification_basis: b.classification_source || null,
+      on_finale_card: Boolean(b.on_finale_card), db_finale_bout: v.actualFinaleDbBout, db_finale_verified: v.dbFinaleVerified,
+      ...(b.on_finale_card && !v.actualFinaleDbBout ? { db_finale_unlinked_reason: v.finaleLinkReason } : {}),
+      db_pair_matches: v.dbPairMatches, blockers: blockersForBout,
     };
   });
 
@@ -278,7 +259,7 @@ for (const row of inventory.seasons) {
 
   /* finale linkage by exact ids */
   const finaleExpected = finals.filter((f) => f.on_finale_card).length;
-  const finaleProfessionalLinked = finals.filter((f) => f.on_finale_card && f.classification === 'professional' && (f.db_pairing || []).some((x) => x.winner_matches_archive)).length;
+  const finaleProfessionalLinked = finals.filter((f) => f.on_finale_card && f.classification === 'professional' && f.db_finale_verified).length;
   const finaleScheduled = finals.filter((f) => f.result_verification === 'scheduled').length;
 
   /* product depth — reported beside the status, never folded into it */
@@ -392,7 +373,7 @@ for (const row of inventory.seasons) {
     finale: {
       expected: finaleExpected, event_linked: Boolean(row.finale_event), finale_event: row.finale_event, finale_date: row.finale_date,
       professional_final_linked: finaleProfessionalLinked, scheduled: finaleScheduled,
-      finals: finals.map((f) => ({ weight_class: f.weight_class, a: f.a, b: f.b, winner: f.winner, result_verification: f.result_verification, classification: f.classification, db_pairing: f.db_pairing })),
+      finals: finals.map((f) => ({ weight_class: f.weight_class, a: f.a, b: f.b, winner: f.winner, result_verification: f.result_verification, classification: f.classification, db_finale_bout: f.db_finale_bout, db_finale_verified: f.db_finale_verified, db_pair_matches: f.db_pair_matches })),
     },
     weigh_ins: { present: epRows.reduce((n, e) => n + e.weigh_ins, 0), weight_misses: epRows.reduce((n, e) => n + e.weight_misses, 0) },
     conflicts: { open: openConflicts, disputed_bouts: Object.values(byStage).reduce((n, s) => n + s.disputed, 0), recap_contradictions: (eps?.episodes || []).flatMap((e) => e.bouts || []).filter((b) => b.result?.contradiction).length },
