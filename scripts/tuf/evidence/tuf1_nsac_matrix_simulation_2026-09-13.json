@@ -1,0 +1,43 @@
+{
+ "_about": "Measured simulation, not applied. A temporary copy of the repository TUF data had the proposal from tuf1_nsac_audit_2026-09-13.json applied to its tuf-1.json (commission result_sources, commission classification basis with ESPN and record absence as corroboration, fight_date, commission method/time); scripts/tuf/completeness_matrix.mjs then ran against that copy with read-only database selects. The repository data was not changed.",
+ "as_of": "2026-09-13",
+ "baseline": "scripts/tuf/evidence/tuf_completeness_2026-09-13.after_hub_status.json",
+ "tuf1_before": {
+  "status": "PARTIAL",
+  "blockers": [
+   "OPEN_SOURCE_CONFLICT",
+   "HOUSE_RESULTS_SECONDARY_ONLY"
+  ]
+ },
+ "tuf1_if_applied": {
+  "status": "PARTIAL",
+  "blockers": [
+   "OPEN_SOURCE_CONFLICT"
+  ],
+  "structure": "complete",
+  "result_verified": 12,
+  "result_partial": 0,
+  "house_bouts_commission_verified": 10,
+  "exhibition_commission_backed": 10,
+  "exhibition_with_affirmative_basis": 10,
+  "depth_parts": {
+   "episodes_with_facts": 1,
+   "house_bouts_placed_in_episodes": 1,
+   "house_results_verified": 1,
+   "classification_affirmative": 1,
+   "identity_coverage": 1,
+   "finale_integration": 1
+  }
+ },
+ "other_seasons_changed": 0,
+ "totals_if_applied": {
+  "complete": 1,
+  "partial": 43,
+  "blocked": 0
+ },
+ "remaining_blocker": {
+  "code": "OPEN_SOURCE_CONFLICT",
+  "conflict": "timeline:josh_rafferty_trade_episode",
+  "rule": "completeness_matrix.mjs counts every entry in a season _conflicts list as an open source conflict, including a timeline episode-placement conflict that touches no result or classification. Under the current bar TUF 1 therefore stays PARTIAL and the hub stays Format complete + Research gaps. Treating placement conflicts as non-blocking would be a change to the generic bar, out of scope here."
+ }
+}

@@ -32,6 +32,92 @@
         "ringside_doctors": ["William Berliner", "Al Capanna", "Jeff Davidson", "James Game", "Margaret Goodman", "David Watson"]
       },
       "classification_history": "The season source (Wikipedia, citing this document) says the commission long treated Season 2's bouts as professional and later reclassified them as exhibitions. The current document prints 'Exhibition Results'; older third-party records may still show them as professional."
+    },
+    {
+      "id": "nsac-2004-tuf-season-1",
+      "source_family": "athletic_commission",
+      "source_type": "commission_result_record",
+      "commission": "Nevada State Athletic Commission",
+      "jurisdiction": "Nevada",
+      "document": "Mixed Martial Arts Exhibition Results (TUF Season 1 results record)",
+      "seasons": [
+        "tuf-1"
+      ],
+      "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+      "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+      "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+      "pages": 2,
+      "retrieved": "2026-09-13",
+      "live_matches_archive": true,
+      "title_quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+      "location": "UFC Training Center, Las Vegas",
+      "promoter": "Zuffa, LLC",
+      "executive_director": "Marc Ratner",
+      "classification_language": {
+        "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+        "where": "document title, page 1; the page 1 results column is headed \"Exhibition Results\" and page 2 continues the same table under \"Results\""
+      },
+      "officials": {
+        "referees": [
+          "Steve Mazzagatti"
+        ],
+        "visiting_referees": [
+          "Herb Dean",
+          "John McCarthy"
+        ],
+        "judges": [
+          "Dalby Shirley",
+          "Glenn Trowbridge",
+          "Tony Weeks"
+        ],
+        "visiting_judges": [
+          "Abe Belardo",
+          "Nelson Hamilton",
+          "Cecil Peoples",
+          "Marcos Rosales"
+        ],
+        "timekeepers": [
+          "Jane Broadfoot",
+          "James Cavin"
+        ],
+        "ringside_doctors": [
+          "William Berliner",
+          "Al Capanna",
+          "Jeff Davidson",
+          "James Game",
+          "Margaret Goodman",
+          "David Watson"
+        ]
+      },
+      "season_identity": {
+        "printed": false,
+        "basis": "The document prints no season number or show name. Season 1 identity rests on: the file name TUFSEASON1.pdf in the commission 2005_Results directory; location \"UFC Training Center, Las Vegas\"; show dates 2004-10-01..2004-11-03 inside the season filming window (UFC.com: late 2004); and all 10 pairings and winners matching the 10 TUF 1 house bouts exactly, with 11 of 13 printed dates of birth equal to the canonical fighters'."
+      },
+      "identity_disagreements": [
+        {
+          "fighter": "Forrest Griffin",
+          "fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+          "field": "dob",
+          "printed": "1977-11-26",
+          "canonical": "1979-03-16",
+          "record_ids": [
+            "nsac-2004-tuf1-06",
+            "nsac-2004-tuf1-10"
+          ],
+          "action": "recorded_only"
+        },
+        {
+          "fighter": "Alex Schoenauer",
+          "fighter_id": "604ffb5b-aa8b-480e-bfd8-42d77fed28ed",
+          "field": "dob",
+          "printed": "1976-05-12",
+          "canonical": "1976-05-05",
+          "record_ids": [
+            "nsac-2004-tuf1-06"
+          ],
+          "action": "recorded_only"
+        }
+      ]
     }
   ],
   "records": [
@@ -105,6 +191,413 @@
       "corners": [{ "printed": "JOE C STEVENSON", "hometown": "Las Vegas, NV", "dob": "1982-06-15", "weight_lbs": 170 }, { "printed": "JASON LEE VON FLUE", "hometown": "San Luis Obispo, CA", "dob": "1975-08-01", "weight_lbs": 170.5 }],
       "bout": { "weight_class": "Welterweight", "stage": "semi_final", "a": "Joe Stevenson", "b": "Jason Von Flue" },
       "winner": "Joe Stevenson", "result_text": "Stevenson won by tap out 4:49 of the 1st round – arm bar.", "method": "Submission (armbar)", "round": 1, "time": "4:49", "scheduled_rounds": 3,
-      "scorecards": null, "referee": "Steve Mazzagatti", "remarks": [] }
+      "scorecards": null, "referee": "Steve Mazzagatti", "remarks": [] },
+    {
+      "id": "nsac-2004-tuf1-01",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-10-01",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "BOBBY M. SOUTHWORTH",
+          "hometown": "San Jose, CA",
+          "dob": "1969-12-16",
+          "weight_lbs": 206
+        },
+        {
+          "printed": "LODUNE KI SINCAID",
+          "hometown": "North Hollywood, CA",
+          "dob": "1973-05-07",
+          "weight_lbs": 202.5
+        }
+      ],
+      "bout": {
+        "weight_class": "Light Heavyweight",
+        "stage": "elimination",
+        "a": "Bobby Southworth",
+        "b": "Lodune Sincaid"
+      },
+      "winner": "Bobby Southworth",
+      "result_text": "Southworth won by TKO 0:14 of the 2nd round.",
+      "method": "TKO",
+      "round": 2,
+      "time": "0:14",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-02",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-10-05",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "DIEGO J. SANCHEZ",
+          "hometown": "Albuquerque, NM",
+          "dob": "1981-12-31",
+          "weight_lbs": 183
+        },
+        {
+          "printed": "ALEXANDER KARALEXIS",
+          "hometown": "Las Vegas, NV",
+          "dob": "1977-09-20",
+          "weight_lbs": 185
+        }
+      ],
+      "bout": {
+        "weight_class": "Middleweight",
+        "stage": "elimination",
+        "a": "Diego Sanchez",
+        "b": "Alex Karalexis"
+      },
+      "winner": "Diego Sanchez",
+      "result_text": "Sanchez won by tap out 1:46 of the 1st round – rear naked choke.",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:46",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-03",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-10-13",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "JOSH D. KOSCHECK",
+          "hometown": "Tonawanda, NY",
+          "dob": "1977-11-30",
+          "weight_lbs": 185
+        },
+        {
+          "printed": "CHRIS LEBEN",
+          "hometown": "Portland, OR",
+          "dob": "1980-07-21",
+          "weight_lbs": 186
+        }
+      ],
+      "bout": {
+        "weight_class": "Middleweight",
+        "stage": "elimination",
+        "a": "Josh Koscheck",
+        "b": "Chris Leben"
+      },
+      "winner": "Josh Koscheck",
+      "result_text": "Koscheck won by unanimous decision.",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "scheduled_rounds": 2,
+      "scorecards": {
+        "order": [
+          "Koscheck",
+          "Leben"
+        ],
+        "cards": [
+          {
+            "judge": "Glenn Trowbridge",
+            "score": "20-18"
+          },
+          {
+            "judge": "Tony Weeks",
+            "score": "20-18"
+          },
+          {
+            "judge": "Nelson Hamilton",
+            "score": "20-18"
+          }
+        ]
+      },
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-04",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-10-17",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "BOBBY M. SOUTHWORTH",
+          "hometown": "San Jose, CA",
+          "dob": "1969-12-16",
+          "weight_lbs": 205
+        },
+        {
+          "printed": "STEPHAN P. BONNAR",
+          "hometown": "Chicago, IL",
+          "dob": "1977-04-04",
+          "weight_lbs": 206
+        }
+      ],
+      "bout": {
+        "weight_class": "Light Heavyweight",
+        "stage": "elimination",
+        "a": "Stephan Bonnar",
+        "b": "Bobby Southworth"
+      },
+      "winner": "Stephan Bonnar",
+      "result_text": "Bonnar won by split decision.",
+      "method": "Decision (split)",
+      "round": 2,
+      "time": null,
+      "scheduled_rounds": 2,
+      "scorecards": {
+        "order": [
+          "Southworth",
+          "Bonnar"
+        ],
+        "cards": [
+          {
+            "judge": "Dalby Shirley",
+            "score": "18-20"
+          },
+          {
+            "judge": "Tony Weeks",
+            "score": "20-18"
+          },
+          {
+            "judge": "Abe Belardo",
+            "score": "18-20"
+          }
+        ]
+      },
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-05",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-10-20",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "DIEGO J. SANCHEZ",
+          "hometown": "Albuquerque, NM",
+          "dob": "1981-12-31",
+          "weight_lbs": 183.5
+        },
+        {
+          "printed": "JOSH M. RAFFERTY",
+          "hometown": "Cleveland, OH",
+          "dob": "1981-01-06",
+          "weight_lbs": 184.25
+        }
+      ],
+      "bout": {
+        "weight_class": "Middleweight",
+        "stage": "elimination",
+        "a": "Diego Sanchez",
+        "b": "Josh Rafferty"
+      },
+      "winner": "Diego Sanchez",
+      "result_text": "Sanchez won by tap out 1:49 of the 1st round – rear naked choke.",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:49",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-06",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-10-25",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "FORREST GRIFFIN",
+          "hometown": "Martinez. CA",
+          "dob": "1977-11-26",
+          "weight_lbs": 205
+        },
+        {
+          "printed": "ALEX SCHOENAUER",
+          "hometown": "Las Vegas, NV",
+          "dob": "1976-05-12",
+          "weight_lbs": 205
+        }
+      ],
+      "bout": {
+        "weight_class": "Light Heavyweight",
+        "stage": "elimination",
+        "a": "Forrest Griffin",
+        "b": "Alex Schoenauer"
+      },
+      "winner": "Forrest Griffin",
+      "result_text": "Griffin won by tap out at 1:22 of the 1st round – strikes.",
+      "method": "Submission (strikes)",
+      "round": 1,
+      "time": "1:22",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-07",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-10-28",
+      "stage_label": "MIDDLEWEIGHT SEMI-FINAL BOUT",
+      "corners": [
+        {
+          "printed": "CHRIS LEBEN",
+          "hometown": "Portland, OR",
+          "dob": "1980-07-21",
+          "weight_lbs": 186
+        },
+        {
+          "printed": "KENNETH ALAN FLORIAN",
+          "hometown": "Dover, MA",
+          "dob": "1976-05-26",
+          "weight_lbs": 182
+        }
+      ],
+      "bout": {
+        "weight_class": "Middleweight",
+        "stage": "semi_final",
+        "a": "Kenny Florian",
+        "b": "Chris Leben"
+      },
+      "winner": "Kenny Florian",
+      "result_text": "Florian won by TKO 3:10 of the 2nd round.",
+      "method": "TKO",
+      "round": 2,
+      "time": "3:10",
+      "scheduled_rounds": 3,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-08",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-10-30",
+      "stage_label": "MIDDLEWEIGHT SEMI-FINAL BOUT",
+      "corners": [
+        {
+          "printed": "DIEGO J. SANCHEZ",
+          "hometown": "Albuquerque, NM",
+          "dob": "1981-12-31",
+          "weight_lbs": 183.5
+        },
+        {
+          "printed": "JOSH D. KOSCHECK",
+          "hometown": "Tonawanda, NY",
+          "dob": "1977-11-30",
+          "weight_lbs": 185.5
+        }
+      ],
+      "bout": {
+        "weight_class": "Middleweight",
+        "stage": "semi_final",
+        "a": "Diego Sanchez",
+        "b": "Josh Koscheck"
+      },
+      "winner": "Diego Sanchez",
+      "result_text": "Sanchez won by split decision.",
+      "method": "Decision (split)",
+      "round": 3,
+      "time": null,
+      "scheduled_rounds": 3,
+      "scorecards": {
+        "order": [
+          "Sanchez",
+          "Koscheck"
+        ],
+        "cards": [
+          {
+            "judge": "Tony Weeks",
+            "score": "29-28"
+          },
+          {
+            "judge": "Glenn Trowbridge",
+            "score": "27-30"
+          },
+          {
+            "judge": "Cecil Peoples",
+            "score": "29-28"
+          }
+        ]
+      },
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-09",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-11-02",
+      "stage_label": "LIGHT HEAVYWEIGHT SEMI-FINAL BOUT",
+      "corners": [
+        {
+          "printed": "MIKE SWICK",
+          "hometown": "San Jose, CA",
+          "dob": "1979-06-19",
+          "weight_lbs": 192
+        },
+        {
+          "printed": "STEPHAN P. BONNAR",
+          "hometown": "Chicago, IL",
+          "dob": "1977-04-04",
+          "weight_lbs": 204.5
+        }
+      ],
+      "bout": {
+        "weight_class": "Light Heavyweight",
+        "stage": "semi_final",
+        "a": "Stephan Bonnar",
+        "b": "Mike Swick"
+      },
+      "winner": "Stephan Bonnar",
+      "result_text": "Bonnar won by tap out 4:58 of the 1st round – arm bar.",
+      "method": "Submission (armbar)",
+      "round": 1,
+      "time": "4:58",
+      "scheduled_rounds": 3,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2004-tuf1-10",
+      "document_id": "nsac-2004-tuf-season-1",
+      "date": "2004-11-03",
+      "stage_label": "LIGHT HEAVYWEIGHT SEMI-FINAL BOUT",
+      "corners": [
+        {
+          "printed": "SAMUEL EARL HOGER",
+          "hometown": "Eagle River, AK",
+          "dob": "1980-06-28",
+          "weight_lbs": 205
+        },
+        {
+          "printed": "FORREST GRIFFIN",
+          "hometown": "Martinez. CA",
+          "dob": "1977-11-26",
+          "weight_lbs": 206
+        }
+      ],
+      "bout": {
+        "weight_class": "Light Heavyweight",
+        "stage": "semi_final",
+        "a": "Forrest Griffin",
+        "b": "Sam Hoger"
+      },
+      "winner": "Forrest Griffin",
+      "result_text": "Griffin won by TKO 1:08 of the 2nd round.",
+      "method": "TKO",
+      "round": 2,
+      "time": "1:08",
+      "scheduled_rounds": 3,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    }
   ]
 }

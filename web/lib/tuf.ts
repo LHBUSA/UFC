@@ -150,6 +150,11 @@ export type CommissionDocument = {
   location?: string; promoter?: string;
   classification_language?: { quote: string; where: string };
   classification_history?: string;
+  /** How the document is tied to a season when it prints no season name. */
+  season_identity?: { printed: boolean; basis: string };
+  /** Where a printed identity fact (a date of birth) differs from the canonical
+   * fighter. Recorded, never written: the canonical value is not changed. */
+  identity_disagreements?: Array<{ fighter: string; fighter_id: string; field: "dob"; printed: string; canonical: string; record_ids: string[]; action: "recorded_only" }>;
 };
 export type CommissionRecord = {
   id: string; document_id: string; date: string; stage_label: string | null;
@@ -166,8 +171,23 @@ export function commissionRecord(id: string | undefined | null): { record: Commi
   return record && document ? { record, document } : null;
 }
 
-/** A correction an authoritative source made to a drafted value. */
-export type FieldCorrection = { field: string; old: unknown; new: unknown; source: { document_id?: string; record_id?: string }; reason: string; batch?: string };
+/** A correction an authoritative source made to a drafted value.
+ * `commission_correction`: the primary record states a different value.
+ * `method_normalization`: the primary record states the method less
+ * specifically; the canonical method becomes its wording and the draft's
+ * compatible extra detail moves to the bout's `method_detail` — the draft is
+ * not shown to be wrong. */
+export type FieldCorrection = {
+  field: string; old: unknown; new: unknown; source: { document_id?: string; record_id?: string }; reason: string; batch?: string;
+  kind?: "commission_correction" | "method_normalization";
+  /** For a method normalization: the compatible detail kept in method_detail. */
+  detail?: string;
+};
+
+/** A detail a secondary source adds to a method a primary record states less
+ * specifically ("doctor stoppage" under a commission's "TKO"). It carries its
+ * own source and is never part of the verified result. */
+export type MethodDetail = { value: string; relation: "compatible_detail"; source: EvidenceSource };
 
 /** Why a bout has the classification it has. `affirmative` is the authority;
  * `corroborating` supports it and can never stand in for it. */
@@ -317,6 +337,8 @@ export type TufBout = {
   b_fighter_id?: string;
   wildcard?: boolean;
   result_note?: string;
+  /** Secondary detail beside a primary record's less specific method; see MethodDetail. */
+  method_detail?: MethodDetail;
   sources?: FieldSource[];
   /** Set, with `scheduled`, only while the bout is announced and unfought. */
   result_state?: "scheduled";
@@ -326,6 +348,9 @@ export type TufBout = {
   /** What places the bout in its episode, and what states its result. */
   episode_sources?: EvidenceSource[];
   result_sources?: EvidenceSource[];
+  /** Sources that stated the result before a primary record replaced them.
+   * History only: never read to verify a result. */
+  superseded_result_sources?: EvidenceSource[];
   classification_basis?: ClassificationBasis;
   /** The professional bout this row is, for a final on a sanctioned card. */
   ufc_bout_id?: string;

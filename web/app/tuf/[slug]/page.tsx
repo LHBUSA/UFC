@@ -29,7 +29,7 @@ import {
 } from "@/lib/tuf";
 import { classState, displayDate, recapWinners, resultState, summarizeBouts, summaryPhrases, type ClassState, type ResultState } from "@/lib/tufBoutState";
 import { stageLabel } from "@/lib/tufFormat";
-import { buildEpisodeViews, rosterMarks, sourceLabels, type AiredBout } from "@/lib/tufTimeline";
+import { buildEpisodeViews, rosterMarks, sourceLabel, sourceLabels, type AiredBout } from "@/lib/tufTimeline";
 import type { ShapedBout } from "@/lib/tufFinaleShape";
 
 /* /tuf/[slug] — one season.
@@ -176,6 +176,20 @@ function Evidence({ b }: { b: TufBout }) {
   );
 }
 
+/* Secondary detail beside a primary record's less specific method ("doctor
+ * stoppage" under a commission's "TKO"). Kept off the result line and carrying
+ * its own source, so it never reads as part of the verified result. */
+function MethodDetailNote({ b }: { b: TufBout }) {
+  const d = b.method_detail;
+  if (!d) return null;
+  const primary = b.result_sources?.some((x) => x.family === "athletic_commission") ? "the commission record" : "the primary record";
+  return (
+    <span className="tuf-bout-note tuf-method-detail">
+      Secondary detail: {d.value} <em>· {sourceLabel(d.source)}; not stated in {primary}</em>
+    </span>
+  );
+}
+
 const foldName = (x: string) => x.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
 
 /* What the commission record adds to a house bout. The record is the source;
@@ -184,6 +198,9 @@ function CommissionDetail({ b }: { b: TufBout }) {
   const hit = commissionRecord(b.commission_record_id);
   if (!hit) return null;
   const { record } = hit;
+  /* A normalization is not a correction: the draft's detail was not shown to be wrong. */
+  const corrections = (b.corrections ?? []).filter((c) => c.kind !== "method_normalization");
+  const normalized = (b.corrections ?? []).filter((c) => c.kind === "method_normalization");
   const loser = b.winner === b.a ? b.b : b.a;
   let cards: string | null = null;
   if (record.scorecards) {
@@ -200,8 +217,11 @@ function CommissionDetail({ b }: { b: TufBout }) {
       {cards ? <span><b>Judges</b> {cards}</span> : null}
       {record.referee ? <span><b>Referee</b> {record.referee}</span> : null}
       {record.remarks.map((r, i) => <span key={i}><b>Commission remark</b> {r.quote}</span>)}
-      {b.corrections?.length ? (
-        <span><b>Corrected by the commission record</b> {b.corrections.map((c) => `${c.field} ${c.old ?? "—"} → ${c.new ?? "—"}`).join("; ")}</span>
+      {corrections.length ? (
+        <span><b>Corrected by the commission record</b> {corrections.map((c) => `${c.field} ${c.old ?? "—"} → ${c.new ?? "—"}`).join("; ")}</span>
+      ) : null}
+      {normalized.length ? (
+        <span><b>Method as the commission prints it</b> {normalized.map((c) => `${c.new ?? "—"} (draft: ${c.old ?? "—"})`).join("; ")}</span>
       ) : null}
     </span>
   );
@@ -251,6 +271,7 @@ function BoutRow({
           {b.replacement}
         </span>
       )}
+      <MethodDetailNote b={b} />
       {showEvidence ? <Evidence b={b} /> : null}
       {showEvidence ? <CommissionDetail b={b} /> : null}
       {b.sources?.length ? (
@@ -330,6 +351,7 @@ function EpisodeBoutLine({ x, linked, recaps }: { x: AiredBout; linked: Map<stri
         <span className="tuf-ep">{x.weight_class} · {x.stage_label}</span>
         {b.fight_date ? <span className="tuf-ep">Fought {displayDate(b.fight_date)}</span> : null}
       </span>
+      <MethodDetailNote b={b} />
       {x.recap?.weigh_ins.length ? (
         <span className="tuf-weighins">
           {x.recap.weigh_ins.map((w, j) => (

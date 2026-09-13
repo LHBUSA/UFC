@@ -40,9 +40,9 @@ test("TUF 1: format complete with research gaps, never verified yet", () => {
   assert.equal(st.state, "format_complete");
   assert.equal(labels("tuf-1"), "FORMAT COMPLETE + RESEARCH GAPS");
   assert.notEqual(st.evidence?.evidence, "verified");
-  /* Ten house results still rest on the draft and one placement conflict is open. */
-  assert.ok(st.evidence!.reasons.includes("HOUSE_RESULTS_SECONDARY_ONLY"));
-  assert.ok(st.evidence!.reasons.includes("OPEN_SOURCE_CONFLICT"));
+  /* The house results are commission-verified now; the open Rafferty episode-placement
+   * conflict is the one thing the matrix bar still counts against the season. */
+  assert.deepEqual(st.evidence!.reasons, ["OPEN_SOURCE_CONFLICT"]);
 });
 
 test("TUF 2: verified complete", () => {

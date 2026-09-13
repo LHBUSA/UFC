@@ -853,31 +853,143 @@ test("an elimination-format season with a loser reappearing and no sourced retur
   assert.deepEqual(problems.map((p) => p.fighter), ["Chris Leben"], "Leben lost in episode 6; only his sourced return makes his semi-final valid");
 });
 
-test("TUF 1 house results stay reported: exhibition classification never upgrades a result", () => {
-  assert.equal(t1House.length, 10);
-  for (const b of t1House) {
-    assert.equal(resultState(b as never), "reported", `${b.a} vs ${b.b}`);
-    assert.ok(b.result_sources?.length && b.result_sources.every((s) => s.family === "wikipedia" && s.evidence_level === "secondary_draft"));
+/* ---- TUF 1: Nevada State Athletic Commission reconciliation ---------------- */
+
+type T1Source = { family: string; evidence_level: string; source_type?: string; document_id?: string; record_id?: string; winner?: string; former_authority?: boolean; superseded_by?: string; quote?: string };
+type T1Nsac = T1Bout & {
+  fight_date?: string; fight_date_source?: { document_id: string; record_id: string }; commission_record_id?: string;
+  superseded_result_sources?: T1Source[]; method_detail?: { value: string; relation: string; source: T1Source };
+  corrections?: Array<{ field: string; kind?: string; old: unknown; new: unknown; detail?: string; batch?: string }>;
+  a_fighter_id?: string; b_fighter_id?: string;
+};
+const T1_DOC = "nsac-2004-tuf-season-1";
+const t1Audit = JSON.parse(readFileSync(new URL("../../scripts/tuf/evidence/tuf1_nsac_audit_2026-09-13.json", import.meta.url), "utf8")) as {
+  document: { sha256: string }; summary: { matched: number; unmatched: number; ambiguous: number };
+  bouts: Array<{ bout: string; match: string; record_id: string; ids: [string, string]; canonical: { method: string; time: string | null } }>;
+};
+const t1Ledger = () => JSON.parse(readFileSync(new URL("../data/tuf/commission_records.json", import.meta.url), "utf8")) as {
+  documents: Array<{ id: string; sha256: string; classification_language: { quote: string }; identity_disagreements?: Array<{ fighter: string; field: string; printed: string; canonical: string; action: string }> }>;
+  records: Array<{ id: string; document_id: string; date: string; winner: string; method: string; round: number; time: string | null; referee?: string; scorecards: unknown; corners: Array<{ weight_lbs?: number }>; remarks: unknown[] }>;
+};
+const t1N = t1House as unknown as T1Nsac[];
+
+test("TUF 1: 10/10 house bouts match exactly one commission record, deterministically", () => {
+  assert.deepEqual([t1Audit.summary.matched, t1Audit.summary.unmatched, t1Audit.summary.ambiguous], [10, 0, 0]);
+  const ledger = t1Ledger();
+  const doc = ledger.documents.find((d) => d.id === T1_DOC)!;
+  assert.equal(doc.sha256, t1Audit.document.sha256);
+  const recs = ledger.records.filter((r) => r.document_id === T1_DOC);
+  assert.equal(recs.length, 10);
+  assert.equal(new Set(t1N.map((b) => b.commission_record_id)).size, 10, "every record used once");
+  for (const b of t1N) {
+    const rec = recs.find((r) => r.id === b.commission_record_id)!;
+    assert.ok(rec, `${b.a} vs ${b.b}: no record`);
+    assert.equal(rec.winner, b.winner);
+    assert.equal(t1Audit.bouts.find((x) => x.bout === `${b.a} vs ${b.b}`)?.record_id, rec.id, "the audited match");
   }
 });
 
-test("TUF 1 house classifications are exhibitions on affirmative ESPN evidence, never on database absence", () => {
-  for (const b of t1House) {
+test("TUF 1: 10/10 house results verified from the commission; Wikipedia is history, not authority", () => {
+  assert.equal(t1N.length, 10);
+  for (const b of t1N) {
+    assert.equal(resultState(b as never), "verified", `${b.a} vs ${b.b}`);
+    assert.ok(b.result_sources?.length === 1 && b.result_sources[0].family === "athletic_commission" && b.result_sources[0].evidence_level === "commission_record");
+    assert.ok(!(b.result_sources as T1Source[]).some((x) => x.family === "wikipedia"), "Wikipedia no longer states the canonical result");
+    assert.ok(b.superseded_result_sources?.length && b.superseded_result_sources.every((x) => x.family === "wikipedia" && x.superseded_by === b.commission_record_id), "the draft source is preserved as history");
+    const rec = t1Ledger().records.find((r) => r.id === b.commission_record_id)!;
+    assert.deepEqual([b.round, b.time], [rec.round, rec.time], "round and time are the commission's");
+  }
+});
+
+test("TUF 1: 10/10 exhibitions backed by the commission; ESPN and record absence are corroboration only", () => {
+  const quote = t1Ledger().documents.find((d) => d.id === T1_DOC)!.classification_language.quote;
+  assert.match(quote, /EXHIBITION/);
+  for (const b of t1N) {
     assert.equal(classState(b as never), "exhibition", `${b.a} vs ${b.b}`);
-    const basis = b.classification_basis!;
+    const basis = b.classification_basis as unknown as { affirmative: T1Source[]; corroborating: Array<T1Source & { kind?: string }>; authority: string };
     assert.equal(basis.authority, "affirmative");
     assert.equal(basis.affirmative.length, 1);
-    assert.equal(basis.affirmative[0].family, "espn_retrospective");
-    assert.equal(basis.affirmative[0].evidence_level, "secondary_affirmative");
-    assert.match(String(basis.affirmative[0].quote), /Nevada State Athletic Commission/);
-    const absence = basis.corroborating.filter((c) => c.kind === "record_absence");
-    assert.equal(absence.length, 1);
-    assert.equal(absence[0].evidence_level, "corroboration_only");
-    assert.ok(!basis.affirmative.some((a) => a.family === "our_records"), "absence is never the affirmative basis");
-    assert.doesNotMatch(String(b.classification_source), /record verified/i, "never claims the commission record itself");
-    assert.match(String(b.classification_source), /not the commission record/);
-    assert.match(String(b.classification_source), /2004/, "the corroboration is argued from the year the show was filmed");
+    assert.deepEqual([basis.affirmative[0].family, basis.affirmative[0].evidence_level, basis.affirmative[0].record_id], ["athletic_commission", "commission_record", b.commission_record_id]);
+    const espn = basis.corroborating.filter((x) => x.family === "espn_retrospective");
+    assert.equal(espn.length, 1, "the ESPN retrospective is kept");
+    assert.equal(espn[0].former_authority, true, "and marked as the former authority");
+    assert.ok(!basis.affirmative.some((x) => x.family === "espn_retrospective" || x.family === "our_records"));
+    assert.equal(basis.corroborating.filter((x) => x.kind === "record_absence").length, 1, "the 2004 absence is kept as corroboration");
+    assert.match(String(b.classification_source), /Nevada State Athletic Commission/);
   }
+});
+
+test("TUF 1: six commission time corrections and one real method contradiction, old values kept", () => {
+  const byKind = (kind: string, field: string) => t1N.flatMap((b) => (b.corrections ?? []).filter((c) => c.kind === kind && c.field === field).map((c) => ({ bout: `${b.a} vs ${b.b}`, ...c })));
+  const times = byKind("commission_correction", "time");
+  assert.equal(times.length, 6);
+  for (const c of times) assert.equal(c.old, t1Audit.bouts.find((x) => x.bout === c.bout)!.canonical.time, `${c.bout}: the draft time is kept`);
+  const methods = byKind("commission_correction", "method");
+  assert.deepEqual(methods.map((c) => [c.bout, c.old, c.new]), [["Bobby Southworth vs Lodune Sincaid", "KO (strikes)", "TKO"]]);
+  const southworth = t1N.find((b) => b.b === "Lodune Sincaid")!;
+  assert.deepEqual([southworth.method, southworth.round, southworth.time], ["TKO", 2, "0:14"]);
+  assert.equal(southworth.method_detail, undefined, "the contradicted KO label is not carried forward as detail");
+  assert.ok(t1N.every((b) => (b.corrections ?? []).every((c) => c.field !== "round")), "no round changed");
+});
+
+test("TUF 1: three compatible method details are kept apart from the official commission method", () => {
+  const expected: Array<[string, string, string, string]> = [
+    ["Forrest Griffin vs Sam Hoger", "TKO", "strikes", "TKO (strikes)"],
+    ["Stephan Bonnar vs Mike Swick", "Submission (armbar)", "triangle armbar", "Submission (triangle armbar)"],
+    ["Kenny Florian vs Chris Leben", "TKO", "doctor stoppage", "TKO (doctor stoppage)"],
+  ];
+  const withDetail = t1N.filter((b) => b.method_detail).map((b) => `${b.a} vs ${b.b}`).sort();
+  assert.deepEqual(withDetail, expected.map((e) => e[0]).sort());
+  for (const [bout, official, detail, draft] of expected) {
+    const b = t1N.find((x) => `${x.a} vs ${x.b}` === bout)!;
+    assert.equal(b.method, official, `${bout}: the official method is the commission's wording`);
+    assert.ok(!String(b.method).includes(detail), "the secondary detail is not merged into the canonical method");
+    assert.equal(b.method_detail!.value, detail);
+    assert.equal(b.method_detail!.relation, "compatible_detail");
+    assert.deepEqual([b.method_detail!.source.family, b.method_detail!.source.evidence_level], ["wikipedia", "secondary_draft"], "the detail carries its own secondary source");
+    const norm = (b.corrections ?? []).filter((c) => c.kind === "method_normalization");
+    assert.deepEqual(norm.map((c) => [c.old, c.new, c.detail]), [[draft, official, detail]], "recorded as a normalization, not as a draft shown wrong");
+    assert.equal(resultState(b as never), "verified", "the verified state belongs to the commission result");
+  }
+});
+
+test("TUF 1: fight dates are the commission's show dates and stay apart from episode air dates", () => {
+  const ep = EPISODES["tuf-1"] as unknown as { episodes: Array<{ episode_number: number; air_date: string | null }> };
+  for (const b of t1N) {
+    const rec = t1Ledger().records.find((r) => r.id === b.commission_record_id)!;
+    assert.equal(b.fight_date, rec.date);
+    assert.deepEqual(b.fight_date_source, { document_id: T1_DOC, record_id: rec.id });
+    assert.match(String(b.fight_date), /^2004-(10|11)-/, "fought in late 2004");
+    const aired = ep.episodes.find((e) => e.episode_number === b.episode)!.air_date;
+    assert.ok(aired && aired.startsWith("2005-") && aired !== b.fight_date, `${b.a} vs ${b.b}: episode ${b.episode} aired ${aired}, a separate fact`);
+  }
+  const ledger = t1Ledger();
+  const recs = ledger.records.filter((r) => r.document_id === T1_DOC);
+  assert.equal(recs.filter((r) => r.referee).length, 10, "a referee for every bout");
+  assert.equal(recs.filter((r) => r.scorecards).length, 3, "cards for the three decisions");
+  assert.equal(recs.reduce((n, r) => n + r.corners.filter((c) => typeof c.weight_lbs === "number").length, 0), 20, "20/20 weights");
+  assert.equal(recs.reduce((n, r) => n + r.remarks.length, 0), 0, "no remarks invented");
+});
+
+test("TUF 1: the Rafferty placement conflict stays open, and identities, DOBs and finals are untouched", () => {
+  assert.ok(t1._conflicts.some((c) => c.field === "timeline:josh_rafferty_trade_episode"), "the commission does not settle the trade episode");
+  assert.equal(t1.timeline_events.find((e) => e.id === "tuf1-rafferty-trade")!.episode, null);
+  for (const b of t1N) {
+    const audited = t1Audit.bouts.find((x) => x.bout === `${b.a} vs ${b.b}`)!;
+    assert.deepEqual([b.a_fighter_id, b.b_fighter_id], audited.ids, `${b.a} vs ${b.b}: identities unchanged`);
+  }
+  const finals = t1Bouts.filter((b) => b.stage === "final").map((f) => [f.winner, f.method, f.round, f.time, f.ufc_bout_id, f.classification]);
+  assert.deepEqual(finals, [
+    ["Forrest Griffin", "Decision (unanimous)", 3, "5:00", "65856c98-1421-4859-8e62-4eb651fdc221", "professional"],
+    ["Diego Sanchez", "TKO (punches)", 1, "2:49", "45c3c849-90b4-47ec-a891-76e7a1effa5f", "professional"],
+  ], "finale professional results unchanged");
+  assert.ok(t1Bouts.filter((b) => b.stage === "final").every((f) => !(f as T1Nsac).commission_record_id), "no commission evidence on the finals");
+  const disagreements = t1Ledger().documents.find((d) => d.id === T1_DOC)!.identity_disagreements!;
+  assert.deepEqual(disagreements.map((d) => [d.fighter, d.field, d.printed, d.canonical, d.action]), [
+    ["Forrest Griffin", "dob", "1977-11-26", "1979-03-16", "recorded_only"],
+    ["Alex Schoenauer", "dob", "1976-05-12", "1976-05-05", "recorded_only"],
+  ]);
+  assert.ok(!JSON.stringify(DETAIL_BY_SLUG["tuf-1"]).includes("\"dob\""), "no DOB written into the season");
 });
 
 test("TUF 1 finals remain verified professional bouts, linked by exact bout id", () => {

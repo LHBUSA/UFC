@@ -11,7 +11,7 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
     "retrieved": "2026-09-07",
-    "note": "The finale card now holds nine bouts — backfill window B-2005 loaded them — so BOTH finals are VERIFIED against our own ufc_bout_results rows rather than sourced. Our records and the season source agree exactly on both: Griffin over Bonnar by unanimous decision in round three, and Sanchez over Florian by TKO in round one at 2:49. Nothing is imported; the card's bouts live on the event page and are linked, not restated."
+    "note": "The finale card now holds nine bouts — backfill window B-2005 loaded them — so BOTH finals are VERIFIED against our own ufc_bout_results rows rather than sourced. Our records and the season source agree exactly on both: Griffin over Bonnar by unanimous decision in round three, and Sanchez over Florian by TKO in round one at 2:49. Nothing is imported; the card's bouts live on the event page and are linked, not restated. House results, fight dates and classification are from the Nevada State Athletic Commission's Season 1 results record (tuf1-nsac-reconciliation). The draft's differing values are kept in each bout's corrections; its compatible extra method detail is kept as secondary detail."
   },
   "_conflicts": [
     {
@@ -246,12 +246,12 @@
               "a": "Bobby Southworth",
               "b": "Lodune Sincaid",
               "winner": "Bobby Southworth",
-              "method": "KO (strikes)",
+              "method": "TKO",
               "round": 2,
-              "time": "0:12",
+              "time": "0:14",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 3, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-10-01 and aired in episode 3; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622",
               "b_fighter_id": "20626c40-82a5-47f0-b8dd-3ed5d0fbfef9",
               "episode_sources": [
@@ -275,15 +275,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-01",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Bobby Southworth defeated Lodune Sincaid by KO (strikes) at 0:12 of the second round."
+                  "winner": "Bobby Southworth",
+                  "quote": "Southworth won by TKO 0:14 of the 2nd round."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-01",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -293,10 +318,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-01"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -323,8 +348,50 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
-              }
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "KO (strikes)",
+                  "new": "TKO",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-01"
+                  },
+                  "reason": "the commission record states method as \"TKO\" (\"Southworth won by TKO 0:14 of the 2nd round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf1-nsac-reconciliation"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "0:12",
+                  "new": "0:14",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-01"
+                  },
+                  "reason": "the commission record states time as \"0:14\" (\"Southworth won by TKO 0:14 of the 2nd round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf1-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2004-10-01",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-01"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Bobby Southworth defeated Lodune Sincaid by KO (strikes) at 0:12 of the second round.",
+                  "superseded_by": "nsac-2004-tuf1-01"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-01"
             },
             {
               "a": "Stephan Bonnar",
@@ -335,7 +402,7 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 7, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-10-17 and aired in episode 7; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
               "b_fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622",
               "episode_sources": [
@@ -359,15 +426,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-04",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Stephan Bonnar defeated Bobby Southworth by split decision after 2 rounds."
+                  "winner": "Stephan Bonnar",
+                  "quote": "Bonnar won by split decision."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-04",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -377,10 +469,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-04"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -398,8 +490,24 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
-              }
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "fight_date": "2004-10-17",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-04"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Stephan Bonnar defeated Bobby Southworth by split decision after 2 rounds.",
+                  "superseded_by": "nsac-2004-tuf1-04"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-04"
             },
             {
               "a": "Forrest Griffin",
@@ -407,10 +515,10 @@
               "winner": "Forrest Griffin",
               "method": "Submission (strikes)",
               "round": 1,
-              "time": "1:20",
+              "time": "1:22",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 9, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-10-25 and aired in episode 9; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
               "b_fighter_id": "604ffb5b-aa8b-480e-bfd8-42d77fed28ed",
               "episode_sources": [
@@ -434,16 +542,41 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-06",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Forrest Griffin defeated Alex Schoenauer by submission (strikes) at 1:20 of the first round."
+                  "winner": "Forrest Griffin",
+                  "quote": "Griffin won by tap out at 1:22 of the 1st round – strikes."
                 }
               ],
               "result_note": "The same article's finale section says Griffin beat Schoenauer 'by TKO'; the episode wording is kept.",
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-06",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -453,10 +586,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-06"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -474,8 +607,38 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
-              }
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "1:20",
+                  "new": "1:22",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-06"
+                  },
+                  "reason": "the commission record states time as \"1:22\" (\"Griffin won by tap out at 1:22 of the 1st round – strikes.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf1-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2004-10-25",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-06"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Forrest Griffin defeated Alex Schoenauer by submission (strikes) at 1:20 of the first round.",
+                  "superseded_by": "nsac-2004-tuf1-06"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-06"
             }
           ]
         },
@@ -487,12 +650,12 @@
               "a": "Forrest Griffin",
               "b": "Sam Hoger",
               "winner": "Forrest Griffin",
-              "method": "TKO (strikes)",
+              "method": "TKO",
               "round": 2,
-              "time": "1:05",
+              "time": "1:08",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 12, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-11-03 and aired in episode 12; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
               "b_fighter_id": "190cb5c6-91eb-4f62-a4ce-1eae9c7c4550",
               "episode_sources": [
@@ -526,15 +689,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-10",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Forrest Griffin defeated Sam Hoger by TKO (strikes) at 1:05 of the second round."
+                  "winner": "Forrest Griffin",
+                  "quote": "Griffin won by TKO 1:08 of the 2nd round."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-10",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -544,10 +732,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-10"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -565,19 +753,75 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "method_normalization",
+                  "old": "TKO (strikes)",
+                  "new": "TKO",
+                  "detail": "strikes",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-10"
+                  },
+                  "reason": "the commission record prints the method as \"TKO\" (\"Griffin won by TKO 1:08 of the 2nd round.\"), less specific than the draft; the official method takes the commission wording and the draft's compatible detail \"strikes\" is kept as secondary detail, not shown to be wrong",
+                  "batch": "tuf1-nsac-reconciliation"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "1:05",
+                  "new": "1:08",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-10"
+                  },
+                  "reason": "the commission record states time as \"1:08\" (\"Griffin won by TKO 1:08 of the 2nd round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf1-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2004-11-03",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-10"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Forrest Griffin defeated Sam Hoger by TKO (strikes) at 1:05 of the second round.",
+                  "superseded_by": "nsac-2004-tuf1-10"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-10",
+              "method_detail": {
+                "value": "strikes",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Forrest Griffin defeated Sam Hoger by TKO (strikes) at 1:05 of the second round.",
+                  "superseded_by": "nsac-2004-tuf1-10",
+                  "note": "secondary detail; the commission record does not print it"
+                }
               }
             },
             {
               "a": "Stephan Bonnar",
               "b": "Mike Swick",
               "winner": "Stephan Bonnar",
-              "method": "Submission (triangle armbar)",
+              "method": "Submission (armbar)",
               "round": 1,
               "time": "4:58",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 12, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-11-02 and aired in episode 12; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
               "b_fighter_id": "86d108cd-fdf9-4ba6-bd7a-e0572a2e10c0",
               "episode_sources": [
@@ -611,15 +855,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-09",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Stephan Bonnar defeated Mike Swick by submission (triangle armbar) at 4:58 of the first round."
+                  "winner": "Stephan Bonnar",
+                  "quote": "Bonnar won by tap out 4:58 of the 1st round – arm bar."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-09",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -629,10 +898,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-09"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -650,7 +919,51 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "method_normalization",
+                  "old": "Submission (triangle armbar)",
+                  "new": "Submission (armbar)",
+                  "detail": "triangle armbar",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-09"
+                  },
+                  "reason": "the commission record prints the method as \"Submission (armbar)\" (\"Bonnar won by tap out 4:58 of the 1st round – arm bar.\"), less specific than the draft; the official method takes the commission wording and the draft's compatible detail \"triangle armbar\" is kept as secondary detail, not shown to be wrong",
+                  "batch": "tuf1-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2004-11-02",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-09"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Stephan Bonnar defeated Mike Swick by submission (triangle armbar) at 4:58 of the first round.",
+                  "superseded_by": "nsac-2004-tuf1-09"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-09",
+              "method_detail": {
+                "value": "triangle armbar",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Stephan Bonnar defeated Mike Swick by submission (triangle armbar) at 4:58 of the first round.",
+                  "superseded_by": "nsac-2004-tuf1-09",
+                  "note": "secondary detail; the commission record does not print it"
+                }
               }
             }
           ]
@@ -703,10 +1016,10 @@
               "winner": "Diego Sanchez",
               "method": "Submission (rear naked choke)",
               "round": 1,
-              "time": "1:47",
+              "time": "1:46",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 4, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-10-05 and aired in episode 4; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
               "b_fighter_id": "f45ce067-f3a8-41d1-a889-1401d4fc35ac",
               "episode_sources": [
@@ -730,15 +1043,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-02",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Diego Sanchez defeated Alex Karalexis by submission (rear naked choke) at 1:47 of the first round."
+                  "winner": "Diego Sanchez",
+                  "quote": "Sanchez won by tap out 1:46 of the 1st round – rear naked choke."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-02",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -748,10 +1086,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-02"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -769,8 +1107,38 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
-              }
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "1:47",
+                  "new": "1:46",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-02"
+                  },
+                  "reason": "the commission record states time as \"1:46\" (\"Sanchez won by tap out 1:46 of the 1st round – rear naked choke.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf1-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2004-10-05",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-02"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Alex Karalexis by submission (rear naked choke) at 1:47 of the first round.",
+                  "superseded_by": "nsac-2004-tuf1-02"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-02"
             },
             {
               "a": "Josh Koscheck",
@@ -781,7 +1149,7 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 6, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-10-13 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1",
               "b_fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590",
               "episode_sources": [
@@ -814,15 +1182,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-03",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Josh Koscheck defeated Chris Leben by unanimous decision after two rounds."
+                  "winner": "Josh Koscheck",
+                  "quote": "Koscheck won by unanimous decision."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-03",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -832,10 +1225,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-03"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -853,8 +1246,24 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
-              }
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "fight_date": "2004-10-13",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-03"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Josh Koscheck defeated Chris Leben by unanimous decision after two rounds.",
+                  "superseded_by": "nsac-2004-tuf1-03"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-03"
             },
             {
               "a": "Diego Sanchez",
@@ -862,10 +1271,10 @@
               "winner": "Diego Sanchez",
               "method": "Submission (rear naked choke)",
               "round": 1,
-              "time": "1:48",
+              "time": "1:49",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 8, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-10-20 and aired in episode 8; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
               "b_fighter_id": "a4dd7ce2-b633-429b-adaf-a37b7cb7c46c",
               "episode_sources": [
@@ -879,15 +1288,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-05",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Diego Sanchez defeated Josh Rafferty by submission (rear naked choke) at 1:48 of the first round."
+                  "winner": "Diego Sanchez",
+                  "quote": "Sanchez won by tap out 1:49 of the 1st round – rear naked choke."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-05",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -897,10 +1331,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-05"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -918,8 +1352,38 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
-              }
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "1:48",
+                  "new": "1:49",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-05"
+                  },
+                  "reason": "the commission record states time as \"1:49\" (\"Sanchez won by tap out 1:49 of the 1st round – rear naked choke.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf1-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2004-10-20",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-05"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Josh Rafferty by submission (rear naked choke) at 1:48 of the first round.",
+                  "superseded_by": "nsac-2004-tuf1-05"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-05"
             }
           ]
         },
@@ -931,12 +1395,12 @@
               "a": "Kenny Florian",
               "b": "Chris Leben",
               "winner": "Kenny Florian",
-              "method": "TKO (doctor stoppage)",
+              "method": "TKO",
               "round": 2,
-              "time": "3:11",
+              "time": "3:10",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 10, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-10-28 and aired in episode 10; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "replacement": "Chris Leben replaced Nathan Quarry, who withdrew with an ankle injury",
               "a_fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba",
               "b_fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590",
@@ -961,15 +1425,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-07",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Kenny Florian defeated Chris Leben by TKO (doctor stoppage) at 3:11 of the second round."
+                  "winner": "Kenny Florian",
+                  "quote": "Florian won by TKO 3:10 of the 2nd round."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-07",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -979,10 +1468,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-07"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -1000,7 +1489,63 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "method_normalization",
+                  "old": "TKO (doctor stoppage)",
+                  "new": "TKO",
+                  "detail": "doctor stoppage",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-07"
+                  },
+                  "reason": "the commission record prints the method as \"TKO\" (\"Florian won by TKO 3:10 of the 2nd round.\"), less specific than the draft; the official method takes the commission wording and the draft's compatible detail \"doctor stoppage\" is kept as secondary detail, not shown to be wrong",
+                  "batch": "tuf1-nsac-reconciliation"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "3:11",
+                  "new": "3:10",
+                  "source": {
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-07"
+                  },
+                  "reason": "the commission record states time as \"3:10\" (\"Florian won by TKO 3:10 of the 2nd round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf1-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2004-10-28",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-07"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Kenny Florian defeated Chris Leben by TKO (doctor stoppage) at 3:11 of the second round.",
+                  "superseded_by": "nsac-2004-tuf1-07"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-07",
+              "method_detail": {
+                "value": "doctor stoppage",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Kenny Florian defeated Chris Leben by TKO (doctor stoppage) at 3:11 of the second round.",
+                  "superseded_by": "nsac-2004-tuf1-07",
+                  "note": "secondary detail; the commission record does not print it"
+                }
               }
             },
             {
@@ -1012,7 +1557,7 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 11, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2004-10-30 and aired in episode 11; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. ESPN's 2020 retrospective and absence from our complete 2004 records are corroboration only.",
               "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
               "b_fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1",
               "episode_sources": [
@@ -1036,15 +1581,40 @@
               ],
               "result_sources": [
                 {
-                  "family": "wikipedia",
-                  "evidence_level": "secondary_draft",
-                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2004-tuf-season-1",
+                  "record_id": "nsac-2004-tuf1-08",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                  "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
                   "retrieved": "2026-09-13",
-                  "quote": "Diego Sanchez defeated Josh Koscheck by split decision after 3 rounds"
+                  "winner": "Diego Sanchez",
+                  "quote": "Sanchez won by split decision."
                 }
               ],
               "classification_basis": {
                 "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2004-tuf-season-1",
+                    "record_id": "nsac-2004-tuf1-08",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+                    "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed in the commission's \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" record"
+                  }
+                ],
+                "corroborating": [
                   {
                     "family": "espn_retrospective",
                     "evidence_level": "secondary_affirmative",
@@ -1054,10 +1624,10 @@
                     "retrieved": "2026-09-13",
                     "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
                     "scope": "every TUF 1 fight before the live finale",
-                    "not": "not the commission record itself; reopen if a commission record contradicts it"
-                  }
-                ],
-                "corroborating": [
+                    "not": "not the commission record itself; reopen if a commission record contradicts it",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2004-tuf1-08"
+                  },
                   {
                     "kind": "record_absence",
                     "family": "our_records",
@@ -1075,8 +1645,24 @@
                   }
                 ],
                 "authority": "affirmative",
-                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
-              }
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "fight_date": "2004-10-30",
+              "fight_date_source": {
+                "document_id": "nsac-2004-tuf-season-1",
+                "record_id": "nsac-2004-tuf1-08"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Josh Koscheck by split decision after 3 rounds",
+                  "superseded_by": "nsac-2004-tuf1-08"
+                }
+              ],
+              "commission_record_id": "nsac-2004-tuf1-08"
             }
           ]
         },
@@ -1693,6 +2279,44 @@
           "retrieved": "2026-09-13",
           "quote": "Spike TV",
           "note": "the article's infobox network field"
+        }
+      ]
+    },
+    "fight_window": {
+      "start": "2004-10-01",
+      "end": "2004-11-03",
+      "value": "Oct 1 – Nov 3, 2004",
+      "basis": "house fight dates in the Nevada State Athletic Commission record",
+      "sources": [
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2004-tuf-season-1",
+          "record_id": "nsac-2004-tuf1-01",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+          "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+          "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+          "retrieved": "2026-09-13",
+          "quote": "DATE OF SHOW: 10/01/04",
+          "note": "first house bout"
+        },
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2004-tuf-season-1",
+          "record_id": "nsac-2004-tuf1-10",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+          "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+          "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+          "retrieved": "2026-09-13",
+          "quote": "DATE OF SHOW: 11/03/04",
+          "note": "last house bout"
         }
       ]
     }
