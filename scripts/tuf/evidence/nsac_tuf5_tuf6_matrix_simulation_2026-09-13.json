@@ -1,0 +1,135 @@
+{
+ "_about": "Corrected TUF 5/6 pre-apply simulation evidence after the completeness-matrix exact-verification repair. No canonical season data was applied. The prior BEFORE counts were contaminated because a later professional rematch between the same fighter ids could verify a house bout. Under the repaired verifier, house bouts use only bout-specific commission / applied official repair / same-bout official-network recap evidence; professional finals use only the exact linked finale DB bout. The commission-apply side remains 15/15 verified because those 14 house bouts would then have their own commission evidence.",
+ "as_of": "2026-09-13",
+ "baseline": "scripts/tuf/evidence/tuf_completeness_2026-09-13.after_tuf3_tuf4_nsac.json",
+ "matrix_rule": "scripts/tuf/completeness_matrix.mjs on tuf-matrix-exact-verification-v1",
+ "canonical_apply": false,
+ "applied_to_copy": {
+  "tuf-5": {
+   "bouts": 14,
+   "winner": 1,
+   "method": 3,
+   "round": 0,
+   "time": 8
+  },
+  "tuf-6": {
+   "bouts": 14,
+   "winner": 0,
+   "method": 7,
+   "round": 0,
+   "time": 10
+  }
+ },
+ "seasons": {
+  "tuf-5": {
+   "before_corrected": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "critical_blockers": [],
+    "score": 70,
+    "result_verified": 1,
+    "bouts": 15,
+    "secondary_only": 14,
+    "house_commission_verified": 0,
+    "exhibitions_commission_backed": 0,
+    "exhibitions": 14,
+    "classification_unresolved": 0,
+    "house_bouts_with_fight_date": 0,
+    "false_db_pair_verification_removed": "Nate Diaz vs Gray Maynard house semi-final; old rule borrowed Nate Diaz's 2013 professional rematch win"
+   },
+   "if_commission_apply_later": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT"
+    ],
+    "critical_blockers": [],
+    "score": 88,
+    "result_verified": 15,
+    "bouts": 15,
+    "secondary_only": 0,
+    "house_commission_verified": 14,
+    "exhibitions_commission_backed": 14,
+    "exhibitions": 14,
+    "classification_unresolved": 0,
+    "house_bouts_with_fight_date": 14,
+    "verification_note": "The formerly false-positive Diaz/Maynard house result would become legitimately verified by its own NSAC record, not by any professional rematch."
+   }
+  },
+  "tuf-6": {
+   "before_corrected": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "blockers": [
+     "ROSTER_MISSING",
+     "CLASSIFICATION_UNRESOLVED",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "critical_blockers": [],
+    "score": 69,
+    "result_verified": 1,
+    "bouts": 15,
+    "secondary_only": 14,
+    "house_commission_verified": 0,
+    "exhibitions_commission_backed": 0,
+    "exhibitions": 13,
+    "classification_unresolved": 1,
+    "house_bouts_with_fight_date": 0,
+    "false_db_pair_verification_removed": "Dan Barrera vs Ben Saunders house bout; old rule borrowed Ben Saunders's separate professional finale win"
+   },
+   "if_commission_apply_later": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "blockers": [
+     "ROSTER_MISSING",
+     "BRACKET_NAME_NOT_IN_ROSTER"
+    ],
+    "critical_blockers": [],
+    "score": 88,
+    "result_verified": 15,
+    "bouts": 15,
+    "secondary_only": 0,
+    "house_commission_verified": 14,
+    "exhibitions_commission_backed": 14,
+    "exhibitions": 14,
+    "classification_unresolved": 0,
+    "house_bouts_with_fight_date": 14,
+    "verification_note": "The formerly false-positive Barrera/Saunders house result would become legitimately verified by its own NSAC record, not by the professional finale bout."
+   }
+  }
+ },
+ "matrix_impact": {
+  "strict_verified_before_all_seasons": 206,
+  "strict_verified_after_all_seasons": 197,
+  "false_house_verifications_removed": 9,
+  "affected_seasons": ["tuf-5", "tuf-6", "tuf-7", "tuf-11", "tuf-24", "tuf-26"],
+  "tuf_1_to_4_false_positive_regression": false,
+  "hub_structure_counts_before": {"complete": 43, "ongoing": 1, "partial": 0, "verified": 1, "total": 44},
+  "hub_structure_counts_after": {"complete": 43, "ongoing": 1, "partial": 0, "verified": 1, "total": 44},
+  "status_generated_projection": "unchanged: all affected seasons remain PARTIAL with the same blocker arrays/fingerprints; TUF 2 remains the sole matrix COMPLETE / hub Verified season"
+ },
+ "false_positive_house_bouts": [
+  {"season":"tuf-5","pairing":"Nate Diaz vs Gray Maynard","tuf_winner":"Nate Diaz","professional_db_bouts":[{"id":"868820d3-f69d-4cfb-ac5d-0be1eb03c369","event":"The Ultimate Fighter: Team Rousey vs. Team Tate Finale","date":"2013-11-30","winner":"Nate Diaz"}],"why_old_rule_wrong":"same canonical fighter-id pair + same winner was accepted even though this is a later professional rematch, not the TUF 5 house semi-final"},
+  {"season":"tuf-6","pairing":"Dan Barrera vs Ben Saunders","tuf_winner":"Ben Saunders","professional_db_bouts":[{"id":"70a3ef04-253a-4d13-97f1-fd007e364574","event":"The Ultimate Fighter: Team Hughes vs. Team Serra Finale","date":"2007-12-08","winner":"Ben Saunders"}],"why_old_rule_wrong":"same pair + same winner on a separate professional finale bout was treated as evidence for the earlier house bout"},
+  {"season":"tuf-7","pairing":"Amir Sadollah vs C. B. Dollaway","tuf_winner":"Amir Sadollah","professional_db_bouts":[{"id":"21bdd837-d7cb-4c4b-8d0b-668a6cd4d4c4","event":"The Ultimate Fighter: Team Rampage vs Team Forrest Finale","date":"2008-06-21","winner":"Amir Sadollah"}],"why_old_rule_wrong":"professional finale rematch was not the TUF 7 house bout"},
+  {"season":"tuf-11","pairing":"Court McGee vs Nick Ring","tuf_winner":"Nick Ring","professional_db_bouts":[{"id":"2db46009-af04-46df-babd-c41ef7d281fe","event":"UFC 149: Faber vs Barao","date":"2012-07-21","winner":"Nick Ring"}],"why_old_rule_wrong":"a 2012 professional fight cannot verify the 2010 TUF 11 house result"},
+  {"season":"tuf-11","pairing":"Brad Tavares vs Seth Baczynski","tuf_winner":"Brad Tavares","professional_db_bouts":[{"id":"9b703460-fe98-419c-87a5-218cc817c8ac","event":"The Ultimate Fighter: Team Liddell vs Team Ortiz Finale","date":"2010-06-19","winner":"Brad Tavares"}],"why_old_rule_wrong":"a separate professional finale bout was accepted solely because pair and winner matched"},
+  {"season":"tuf-24","pairing":"Alexandre Pantoja vs Kai Kara-France (house meeting 1)","tuf_winner":"Alexandre Pantoja","professional_db_bouts":[{"id":"ca2ac578-6ceb-42ed-a9e3-05975d9ffac7","event":"UFC 317: Topuria vs. Oliveira","date":"2025-06-28","winner":"Alexandre Pantoja"}],"why_old_rule_wrong":"a 2025 professional bout cannot verify a 2016 TUF 24 house result"},
+  {"season":"tuf-24","pairing":"Alexandre Pantoja vs Brandon Moreno","tuf_winner":"Alexandre Pantoja","professional_db_bouts":[{"id":"e3f32807-87a7-4740-81ff-18dd9a127c85","event":"UFC Fight Night: Maia vs. Usman","date":"2018-05-19","winner":"Alexandre Pantoja"},{"id":"eefd181c-c3cc-47cf-a5c5-b137ccbcc9bf","event":"UFC 290: Volkanovski vs. Rodriguez","date":"2023-07-08","winner":"Alexandre Pantoja"}],"why_old_rule_wrong":"either later professional bout satisfied the pair-level .some() predicate even though neither is the TUF 24 house bout"},
+  {"season":"tuf-24","pairing":"Alexandre Pantoja vs Kai Kara France (house meeting 2)","tuf_winner":"Alexandre Pantoja","professional_db_bouts":[{"id":"ca2ac578-6ceb-42ed-a9e3-05975d9ffac7","event":"UFC 317: Topuria vs. Oliveira","date":"2025-06-28","winner":"Alexandre Pantoja"}],"why_old_rule_wrong":"the same later professional bout was incorrectly able to verify a second distinct TUF house meeting"},
+  {"season":"tuf-26","pairing":"Roxanne Modafferi vs Sijara Eubanks","tuf_winner":"Sijara Eubanks","professional_db_bouts":[{"id":"4992c0b7-366e-4858-bf0d-9bb7c19292ce","event":"UFC 230: Cormier vs. Lewis","date":"2018-11-03","winner":"Sijara Eubanks"}],"why_old_rule_wrong":"the later UFC 230 professional result was unrelated to the earlier TUF 26 house bout"}
+ ],
+ "season_before_after": {
+  "tuf-5":{"before":{"verified":2,"secondary_only":13,"score":71,"status":"PARTIAL"},"after":{"verified":1,"secondary_only":14,"score":70,"status":"PARTIAL"}},
+  "tuf-6":{"before":{"verified":2,"secondary_only":13,"score":70,"status":"PARTIAL"},"after":{"verified":1,"secondary_only":14,"score":69,"status":"PARTIAL"}},
+  "tuf-7":{"before":{"verified":2,"secondary_only":29,"score":66,"status":"PARTIAL"},"after":{"verified":1,"secondary_only":30,"score":65,"status":"PARTIAL"}},
+  "tuf-11":{"before":{"verified":27,"secondary_only":2,"score":91,"status":"PARTIAL"},"after":{"verified":25,"secondary_only":4,"score":90,"status":"PARTIAL"}},
+  "tuf-24":{"before":{"verified":3,"secondary_only":14,"score":67,"status":"PARTIAL"},"after":{"verified":0,"secondary_only":17,"score":63,"status":"PARTIAL"}},
+  "tuf-26":{"before":{"verified":2,"secondary_only":14,"score":71,"status":"PARTIAL"},"after":{"verified":1,"secondary_only":15,"score":70,"status":"PARTIAL"}}
+ }
+}
