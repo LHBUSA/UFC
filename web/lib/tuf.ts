@@ -100,6 +100,29 @@ export type SeasonWinner = { weight_class: string; fighter: string; fighter_id?:
 export type FieldSource = {
   repair: string; fields: string[]; url: string; family: string;
   published_on_site?: string; published_note?: string; retrieved: string; quote: string; corroboration?: string[];
+  /** The broadcaster's listing item, for listing-sourced fields. */
+  content_id?: string;
+  /** Recorded on sources that attest a pairing but never a result, so no
+   * reader can mistake one for result evidence. */
+  states_winner?: false;
+  /** Archive name -> the name this source printed, where they differ. */
+  printed_names?: Record<string, string>;
+};
+
+/** A bout on an announced card that has not been fought. Linked by the exact
+ * finalist-versus-finalist bout id; the result, when it exists, is read from
+ * that row and never written here in advance. */
+export type ScheduledBout = { event: string; date: string; event_id: string; ufc_bout_id: string; verified_against: string };
+
+/** A printed name the archive replaced, and why. `spelling_variant` keeps the
+ * old spelling as a misprint of the same name; `source_correction` replaces a
+ * draft name no first-party source attests, which is not an alias. */
+export type NameCorrection = {
+  draft_name: string; name: string; fighter_id: string;
+  kind: "spelling_variant" | "source_correction";
+  official_alias?: false; basis: string; batch: string;
+  sources: Array<{ family: string; url: string; retrieved: string; content_id?: string }>;
+  applied: { bout_corners: number; bout_winners: number; roster: number };
 };
 
 export type SeasonRow = {
@@ -128,6 +151,8 @@ export type SeasonRow = {
     weight_class: string; a: string; b: string; winner?: string;
     method?: string | null; round?: number | null;
     event: string; date: string; verified_against?: string;
+    /** Present only for an announced final not yet fought. */
+    status?: "scheduled"; ufc_bout_id?: string;
   }>;
   /** A link we withdrew or could not establish, with what blocks it. Kept so
    * the gap is actionable rather than invisible. */
@@ -179,6 +204,11 @@ export type TufBout = {
   wildcard?: boolean;
   result_note?: string;
   sources?: FieldSource[];
+  /** Set, with `scheduled`, only while the bout is announced and unfought. */
+  result_state?: "scheduled";
+  scheduled?: ScheduledBout;
+  /** Why `episode` is null, where that was checked against the listing. */
+  episode_blocker?: string;
 };
 
 export type Stage = {
@@ -203,6 +233,7 @@ export type SeasonDetail = SeasonRow & {
   }>;
   draft?: { first_selection?: string; first_fight_pick?: string; basis?: string; fight_pick_rule?: string; source?: string };
   _resolved_conflicts?: Array<{ field: string; detail: string; resolved_by: string; resolved_with: string; resolution: string }>;
+  name_corrections?: NameCorrection[];
   bracket?: Array<{ weight_class: string; stages: Stage[] }>;
   /** Seasons decided by points between two gyms rather than by a bracket.
    * Season 21 is the only one so far. Its standings are read from the source
@@ -411,6 +442,32 @@ export async function linkedFinale(name: string | null, date: string | null): Pr
   const q = `ufc_events?select=id,name,event_date&name=eq.${encodeURIComponent(name)}${date ? `&event_date=eq.${date}` : ""}&limit=1`;
   const rows = await rest<LinkedEvent[]>(q, []);
   return rows[0] ?? null;
+}
+
+export type ScheduledBoutNow = { status: string; has_result: boolean };
+
+/**
+ * What our records say NOW about bouts the archive lists as scheduled.
+ *
+ * The archive's "scheduled" is a fact with an expiry date, so the page never
+ * trusts it alone: once the result row exists, or the bout is cancelled, the
+ * page says so instead of showing a fight that already happened as upcoming.
+ * A bout missing from the answer (no database, or a failed read) is reported
+ * as unknown by the caller, not as still scheduled.
+ */
+export async function scheduledBoutsNow(boutIds: string[]): Promise<Map<string, ScheduledBoutNow>> {
+  const ids = [...new Set(boutIds.filter((id) => /^[0-9a-f-]{36}$/.test(id)))];
+  const out = new Map<string, ScheduledBoutNow>();
+  if (!ids.length) return out;
+  const rows = await rest<Array<{ id: string; status: string; result: unknown }>>(
+    `ufc_bouts?select=id,status,result:ufc_bout_results(winner_id)&id=in.(${ids.join(",")})`,
+    [],
+  );
+  for (const r of rows) {
+    const result = Array.isArray(r.result) ? r.result[0] : r.result;
+    out.set(r.id, { status: r.status, has_result: Boolean(result) });
+  }
+  return out;
 }
 
 export type LinkedFighter = { id: string; name: string; espn_athlete_id: string | null; ufcstats_id: string | null };

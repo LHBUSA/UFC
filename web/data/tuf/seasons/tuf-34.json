@@ -13,18 +13,7 @@
     "retrieved": "2026-09-08",
     "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
   },
-  "_conflicts": [
-    {
-      "field": "Bantamweight_final",
-      "detail": "For Mehemedeli Osmanli versus Ilimbek Akylbek Uulu, the source marks neither fighter as the winner, and no episode summary settles it. Recorded with no winner.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Women's Strawweight_final",
-      "detail": "For Melissa Amaya versus Valesca Machado, the source marks neither fighter as the winner, and no episode summary settles it. Recorded with no winner.",
-      "retrieved": "2026-09-08"
-    }
-  ],
+  "_conflicts": [],
   "coaches": [
     {
       "team": "Team Cormier",
@@ -89,21 +78,23 @@
       "roster": [
         {
           "name": "Xavier Franklin",
-          "weight_class": "Men's Bantameight",
+          "weight_class": "Men's Bantamweight",
           "fighter_id": "33d214fa-053f-47e9-b7a1-ac2c443b79c9"
         },
         {
           "name": "Mehemmedeli Osmanli",
-          "weight_class": "Men's Bantameight",
+          "weight_class": "Men's Bantamweight",
           "fighter_id": "13dd06fe-1f79-401b-9a8a-23c61a907745"
         },
         {
-          "name": "Illimbek Akylbek Uulu",
-          "weight_class": "Men's Bantameight"
+          "name": "Ilimbek Akylbek Uulu",
+          "weight_class": "Men's Bantamweight",
+          "printed_as": "Illimbek Akylbek Uulu",
+          "fighter_id": "70116fec-53b8-4a05-8684-4415498f4889"
         },
         {
           "name": "Marlon Jones",
-          "weight_class": "Men's Bantameight"
+          "weight_class": "Men's Bantamweight"
         },
         {
           "name": "Anna Melisano",
@@ -111,8 +102,9 @@
           "fighter_id": "65527918-fc5e-42bc-b271-fdf7ad3f8350"
         },
         {
-          "name": "Giovanna Canuto",
-          "weight_class": "Women's Strawweight"
+          "name": "Gigi Canuto",
+          "weight_class": "Women's Strawweight",
+          "fighter_id": "b4028b75-c0ad-4087-b91f-4ed24306eeb6"
         },
         {
           "name": "Mackenzie Stiller",
@@ -142,18 +134,34 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "episode_blocker": "SOURCE_AMBIGUOUS: the listing's episode 2 describes \"Britain versus the US in the first bantamweight fight\" without naming anyone, and the archive records no nationality to attach it by."
             },
             {
               "a": "Artem Belakh",
-              "b": "Mehemedeli Osmanli",
-              "winner": "Mehemedeli Osmanli",
+              "b": "Mehemmedeli Osmanli",
+              "winner": "Mehemmedeli Osmanli",
               "method": "Submission",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 4,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-4",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KVV07SHDEYPVNF2KQP92RQ1X",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "Artem of Kazakhstan takes on Mehemmedeli of Azerbaijan, with the second spot in the bantamweight semifinals at stake",
+                  "states_winner": false
+                }
+              ],
+              "b_fighter_id": "13dd06fe-1f79-401b-9a8a-23c61a907745"
             },
             {
               "a": "Sean Mora",
@@ -162,10 +170,24 @@
               "method": "Decision (split)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 6,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889"
+              "b_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889",
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-6",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KWZ01MRSESEAS9JE5YFDGCGX",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "the two bantamweights face off in a much-anticipated fight for a spot in the bantamweight semifinals",
+                  "states_winner": false
+                }
+              ]
             },
             {
               "a": "Micaias Ureña",
@@ -174,10 +196,24 @@
               "method": "KO",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 8,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "33d214fa-053f-47e9-b7a1-ac2c443b79c9"
+              "b_fighter_id": "33d214fa-053f-47e9-b7a1-ac2c443b79c9",
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-8",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KXEG676DE9N8NRH2PKEJF246",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "he and Micaias face off in the last quarterfinal fight",
+                  "states_winner": false
+                }
+              ]
             }
           ]
         },
@@ -187,14 +223,29 @@
           "bouts": [
             {
               "a": "Christian Strong",
-              "b": "Mehemedeli Osmanli",
-              "winner": "Mehemedeli Osmanli",
+              "b": "Mehemmedeli Osmanli",
+              "winner": "Mehemmedeli Osmanli",
               "method": "Submission",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 12,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-12",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KXEGE369ESES24FF74YSXA0V",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "Mehemmedeli Osmanli and Christian Strong comes to a head when they fight for the last spot in the bantamweight finals",
+                  "states_winner": false
+                }
+              ],
+              "b_fighter_id": "13dd06fe-1f79-401b-9a8a-23c61a907745"
             },
             {
               "a": "Ilimbek Akylbek Uulu",
@@ -203,11 +254,25 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 10,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889",
-              "b_fighter_id": "33d214fa-053f-47e9-b7a1-ac2c443b79c9"
+              "b_fighter_id": "33d214fa-053f-47e9-b7a1-ac2c443b79c9",
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-10",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KXEG9H3GE1XBPFBZG5A850XW",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "Xavier Franklin and Ilimbek Akylbek Uulu put their friendship aside and take to the Octagon, looking to secure the first spot in the bantamweight live finale",
+                  "states_winner": false
+                }
+              ]
             }
           ]
         },
@@ -216,18 +281,27 @@
           "label": "Tournament final",
           "bouts": [
             {
-              "a": "Mehemedeli Osmanli",
+              "a": "Mehemmedeli Osmanli",
               "b": "Ilimbek Akylbek Uulu",
               "winner": null,
               "method": null,
               "round": null,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "classification": "professional",
+              "classification_source": "scheduled on a sanctioned UFC card, not yet contested: UFC Fight Night: Rosas Jr. vs. Barcelos, 2026-09-26; ufc_bouts 48c61e02-40c8-4ed3-9e77-96c3fa09755f — exact finalist-versus-finalist matchup, status announced, no result row (checked 2026-09-13)",
               "on_finale_card": true,
               "tournament_deciding": true,
-              "b_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889"
+              "b_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889",
+              "result_state": "scheduled",
+              "scheduled": {
+                "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+                "date": "2026-09-26",
+                "event_id": "1f2531bd-70d4-494f-84c0-9587f9496796",
+                "ufc_bout_id": "48c61e02-40c8-4ed3-9e77-96c3fa09755f",
+                "verified_against": "ufc_bouts 48c61e02-40c8-4ed3-9e77-96c3fa09755f — exact finalist-versus-finalist matchup, status announced, no result row (checked 2026-09-13)"
+              },
+              "a_fighter_id": "13dd06fe-1f79-401b-9a8a-23c61a907745"
             }
           ]
         }
@@ -251,18 +325,34 @@
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d",
-              "b_fighter_id": "65527918-fc5e-42bc-b271-fdf7ad3f8350"
+              "b_fighter_id": "65527918-fc5e-42bc-b271-fdf7ad3f8350",
+              "episode_blocker": "EPISODE_NOT_AVAILABLE: no episode in the official listing names this pairing."
             },
             {
               "a": "Anita Karim",
-              "b": "Giovanna Canuto",
-              "winner": "Giovanna Canuto",
+              "b": "Gigi Canuto",
+              "winner": "Gigi Canuto",
               "method": "TKO",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 3,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-3",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KV8XD7RZEDT8N54BHEEJ5PNH",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "Gigi Canuto of Brazil takes on Anita Karim of Pakistan, with the second spot in the strawweight semifinals on the line",
+                  "states_winner": false
+                }
+              ],
+              "b_fighter_id": "b4028b75-c0ad-4087-b91f-4ed24306eeb6"
             },
             {
               "a": "Valesca Machado",
@@ -271,10 +361,27 @@
               "method": "TKO",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 5,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8"
+              "a_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8",
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-5",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KWCRZFNQECKRE6V46REJE3J0",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "Brazilians Tina and Natália face off in a strawweight battle, with the second spot in the semifinals at stake",
+                  "states_winner": false,
+                  "printed_names": {
+                    "Valesca Machado": "Tina Black"
+                  }
+                }
+              ]
             },
             {
               "a": "Delphine Benouaich",
@@ -283,10 +390,24 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 7,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "a223c4bc-17b9-4d57-9d8e-7f54dbd668a8"
+              "a_fighter_id": "a223c4bc-17b9-4d57-9d8e-7f54dbd668a8",
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-7",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KXEG01FXE2H95S8A306TXNB1",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "Delphine Benouaich of Team Cormier takes on Stiller, with a coveted spot in the strawweight semifinals on the line",
+                  "states_winner": false
+                }
+              ]
             }
           ]
         },
@@ -296,15 +417,30 @@
           "bouts": [
             {
               "a": "Melissa Amaya",
-              "b": "Giovanna Canuto",
+              "b": "Gigi Canuto",
               "winner": "Melissa Amaya",
               "method": "TKO",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 9,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d"
+              "a_fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d",
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-9",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KXEG7ZZ8E3KSN3EQTKZSW2D8",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "in the first strawweight semifinal fight, American Amaya takes on Gigi Canuto of Brazil, with a coveted spot in the live finale on the line",
+                  "states_winner": false
+                }
+              ],
+              "b_fighter_id": "b4028b75-c0ad-4087-b91f-4ed24306eeb6"
             },
             {
               "a": "Valesca Machado",
@@ -313,11 +449,28 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 11,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8",
-              "b_fighter_id": "a223c4bc-17b9-4d57-9d8e-7f54dbd668a8"
+              "b_fighter_id": "a223c4bc-17b9-4d57-9d8e-7f54dbd668a8",
+              "sources": [
+                {
+                  "repair": "tuf34-batch1-episode-11",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+                  "family": "paramount_plus_episode_metadata",
+                  "content_id": "ALVE01KXEGBKDYEHWTG3VVFP579T3G",
+                  "retrieved": "2026-09-13T12:25:27Z",
+                  "quote": "Tina Black and Delphine Benouaich, battle to determine the last spot in the strawweight finale",
+                  "states_winner": false,
+                  "printed_names": {
+                    "Valesca Machado": "Tina Black"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -333,16 +486,127 @@
               "round": null,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "classification": "professional",
+              "classification_source": "scheduled on a sanctioned UFC card, not yet contested: UFC Fight Night: Rosas Jr. vs. Barcelos, 2026-09-26; ufc_bouts c632d30e-d28a-41c5-88ce-f82c50e04334 — exact finalist-versus-finalist matchup, status announced, no result row (checked 2026-09-13)",
               "on_finale_card": true,
               "tournament_deciding": true,
               "a_fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d",
-              "b_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8"
+              "b_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8",
+              "result_state": "scheduled",
+              "scheduled": {
+                "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+                "date": "2026-09-26",
+                "event_id": "1f2531bd-70d4-494f-84c0-9587f9496796",
+                "ufc_bout_id": "c632d30e-d28a-41c5-88ce-f82c50e04334",
+                "verified_against": "ufc_bouts c632d30e-d28a-41c5-88ce-f82c50e04334 — exact finalist-versus-finalist matchup, status announced, no result row (checked 2026-09-13)"
+              }
             }
           ]
         }
       ]
+    }
+  ],
+  "name_corrections": [
+    {
+      "draft_name": "Mehemedeli Osmanli",
+      "name": "Mehemmedeli Osmanli",
+      "fighter_id": "13dd06fe-1f79-401b-9a8a-23c61a907745",
+      "kind": "spelling_variant",
+      "basis": "ESPN athlete 5345640 and the official episode listing both spell Mehemmedeli; the draft bracket dropped one letter. The same finalist's announced finale bout against Ilimbek Akylbek Uulu is stored by exact id.",
+      "sources": [
+        {
+          "family": "espn_core_api",
+          "url": "https://sports.core.api.espn.com/v2/sports/mma/athletes/5345640",
+          "retrieved": "2026-09-13T12:25:27Z"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+          "retrieved": "2026-09-13T12:25:27Z",
+          "content_id": "ALVE01KXEGE369ESES24FF74YSXA0V"
+        }
+      ],
+      "batch": "tuf34-batch1",
+      "applied": {
+        "bout_corners": 3,
+        "bout_winners": 2,
+        "roster": 0
+      }
+    },
+    {
+      "draft_name": "Illimbek Akylbek Uulu",
+      "name": "Ilimbek Akylbek Uulu",
+      "fighter_id": "70116fec-53b8-4a05-8684-4415498f4889",
+      "kind": "spelling_variant",
+      "basis": "ESPN athlete 5345639 and the official episode listing both spell Ilimbek; the draft roster doubled the l. The bracket already used the correct spelling.",
+      "sources": [
+        {
+          "family": "espn_core_api",
+          "url": "https://sports.core.api.espn.com/v2/sports/mma/athletes/5345639",
+          "retrieved": "2026-09-13T12:25:27Z"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+          "retrieved": "2026-09-13T12:25:27Z",
+          "content_id": "ALVE01KXEG9H3GE1XBPFBZG5A850XW"
+        }
+      ],
+      "batch": "tuf34-batch1",
+      "applied": {
+        "bout_corners": 0,
+        "bout_winners": 0,
+        "roster": 1
+      }
+    },
+    {
+      "draft_name": "Giovanna Canuto",
+      "name": "Gigi Canuto",
+      "fighter_id": "b4028b75-c0ad-4087-b91f-4ed24306eeb6",
+      "kind": "source_correction",
+      "official_alias": false,
+      "basis": "ESPN athlete 5097909 is Gigi Canuto of Brazil, the only Canuto in ufc_fighters. The official episode listing independently names \"Gigi Canuto of Brazil\" in exactly the two bouts the draft gave to Giovanna Canuto: episode 3 against Anita Karim and episode 9 against Melissa Amaya. \"Giovanna\" appears only in the Wikipedia draft and no first-party source attests it, so it is kept here as the superseded draft spelling and is not an alias.",
+      "sources": [
+        {
+          "family": "espn_core_api",
+          "url": "https://sports.core.api.espn.com/v2/sports/mma/athletes/5097909",
+          "retrieved": "2026-09-13T12:25:27Z"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+          "retrieved": "2026-09-13T12:25:27Z",
+          "content_id": "ALVE01KV8XD7RZEDT8N54BHEEJ5PNH"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+          "retrieved": "2026-09-13T12:25:27Z",
+          "content_id": "ALVE01KXEG7ZZ8E3KSN3EQTKZSW2D8"
+        }
+      ],
+      "batch": "tuf34-batch1",
+      "applied": {
+        "bout_corners": 2,
+        "bout_winners": 1,
+        "roster": 1
+      }
+    }
+  ],
+  "_resolved_conflicts": [
+    {
+      "field": "Bantamweight_final",
+      "detail": "For Mehemedeli Osmanli versus Ilimbek Akylbek Uulu, the source marks neither fighter as the winner, and no episode summary settles it. Recorded with no winner.",
+      "resolved_by": "tuf34-batch1",
+      "resolved_with": "ufc_bouts 48c61e02-40c8-4ed3-9e77-96c3fa09755f — exact finalist-versus-finalist matchup, status announced, no result row (checked 2026-09-13)",
+      "resolution": "Not a source conflict. The draft was taken before the final was fought, so no source could name a winner. The bout is scheduled for 2026-09-26 on UFC Fight Night: Rosas Jr. vs. Barcelos; no winner is recorded until its result row exists."
+    },
+    {
+      "field": "Women's Strawweight_final",
+      "detail": "For Melissa Amaya versus Valesca Machado, the source marks neither fighter as the winner, and no episode summary settles it. Recorded with no winner.",
+      "resolved_by": "tuf34-batch1",
+      "resolved_with": "ufc_bouts c632d30e-d28a-41c5-88ce-f82c50e04334 — exact finalist-versus-finalist matchup, status announced, no result row (checked 2026-09-13)",
+      "resolution": "Not a source conflict. The draft was taken before the final was fought, so no source could name a winner. The bout is scheduled for 2026-09-26 on UFC Fight Night: Rosas Jr. vs. Barcelos; no winner is recorded until its result row exists."
     }
   ]
 }

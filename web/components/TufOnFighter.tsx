@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { nonProfessionalAppearances, tufSeasonsForFighter, type TufRole } from "@/lib/tuf";
+import { classState } from "@/lib/tufBoutState";
 
 /* The Ultimate Fighter on a fighter profile.
  *
@@ -61,7 +62,7 @@ export function TufOnFighter({ fighterId }: { fighterId: string }) {
           <p className="tuf-fighter-note">
             <b>Not part of the professional record.</b> These bouts were contested inside the TUF house rather than on a
             sanctioned card, so they are shown here and excluded from the record and every stat aggregate above. Where a
-            bout&rsquo;s status could not be established it is marked unverified, and unverified is excluded too.
+            bout&rsquo;s status could not be established its classification is marked unresolved, and it is excluded too.
           </p>
           <ul className="tuf-bouts">
             {appearances.map(({ season, bout, side }, i) => {
@@ -82,8 +83,8 @@ export function TufOnFighter({ fighterId }: { fighterId: string }) {
                       {bout.method || "Method unavailable"}
                       {bout.round ? ` · R${bout.round}` : ""}
                     </span>
-                    <span className={`tuf-class tuf-class-${bout.classification}`}>
-                      {bout.classification === "exhibition" ? "Exhibition" : "Unverified"}
+                    <span className={`tuf-class tuf-class-${classState(bout)}`}>
+                      {classState(bout) === "exhibition" ? "Exhibition" : "Classification unresolved"}
                     </span>
                     <Link className="tuf-ep" href={`/tuf/${season.slug}`}>
                       S{season.number} · {bout.stage.replace(/_/g, " ")}
