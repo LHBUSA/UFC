@@ -1,39 +1,41 @@
 import "server-only";
 import { getAllEvents, getBoutCounts, getMainEvents, type Event, type Bout } from "@/lib/db";
+import { contenderIdentity, isDanaWhiteContenderSeries, type ContenderIdentity } from "@/lib/contenderIdentity";
 
-export type ContenderEvent = Event & { season: number; week: number | null };
+export { contenderIdentity, isDanaWhiteContenderSeries, type ContenderIdentity };
+
+export type ContenderEvent = Event & { identity: ContenderIdentity; season: number; week: number | null };
 export type ContenderSeason = { season: number; year: number | null; events: ContenderEvent[] };
+/* Contender Series Brazil is its own series. Its three ESPN episodes are not
+ * weeks of numbered Season 2, even though they aired in the same summer. */
+export type ContenderSpinoff = { key: "brazil"; label: string; year: number | null; events: ContenderEvent[] };
 export type IngestFreshness = { worker: string; started_at: string | null; finished_at: string | null; status: string | null } | null;
 
 const URL = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
-export function isDanaWhiteContenderSeries(name: string | null | undefined): boolean {
-  return /dana white(?:'s|’s)? contender series|contender series/i.test(String(name || "")) && !/road to ufc/i.test(String(name || ""));
-}
-
+/* Kept for callers that only need a season number. Brazil episodes have none. */
 export function contenderSeason(name: string, eventDate?: string | null): number | null {
-  const direct = name.match(/season\s*(\d{1,2})/i);
-  if (direct) return Number(direct[1]);
-  const year = eventDate ? Number(eventDate.slice(0, 4)) : NaN;
-  /* DWCS Season 1 began in 2017 and has run one numbered season per year. */
-  if (Number.isFinite(year) && year >= 2017 && year <= 2035) return year - 2016;
-  return null;
+  return contenderIdentity(name, eventDate).season;
 }
 
 export function contenderWeek(name: string): number | null {
-  const hit = name.match(/week\s*(\d{1,2})/i);
-  return hit ? Number(hit[1]) : null;
+  return contenderIdentity(name).week;
+}
+
+async function contenderEvents(): Promise<ContenderEvent[]> {
+  const all = await getAllEvents();
+  return all
+    .filter((e) => isDanaWhiteContenderSeries(e.name))
+    .map((e) => {
+      const identity = contenderIdentity(e.name, e.event_date);
+      return { ...e, identity, season: identity.season || 0, week: identity.week };
+    })
+    .sort((a, b) => String(a.event_date || "").localeCompare(String(b.event_date || "")));
 }
 
 export async function getContenderSeries(): Promise<ContenderSeason[]> {
-  const all = await getAllEvents();
-  const rows: ContenderEvent[] = all
-    .filter((e) => isDanaWhiteContenderSeries(e.name))
-    .map((e) => ({ ...e, season: contenderSeason(e.name, e.event_date) || 0, week: contenderWeek(e.name) }))
-    .filter((e) => e.season > 0)
-    .sort((a, b) => String(a.event_date || "").localeCompare(String(b.event_date || "")));
-
+  const rows = (await contenderEvents()).filter((e) => e.identity.series === "dwcs" && e.season > 0);
   const grouped = new Map<number, ContenderEvent[]>();
   for (const event of rows) {
     const list = grouped.get(event.season) || [];
@@ -43,6 +45,12 @@ export async function getContenderSeries(): Promise<ContenderSeason[]> {
   return [...grouped.entries()]
     .map(([season, events]) => ({ season, year: events[0]?.event_date ? Number(events[0].event_date.slice(0, 4)) : null, events }))
     .sort((a, b) => b.season - a.season);
+}
+
+export async function getContenderSpinoffs(): Promise<ContenderSpinoff[]> {
+  const events = (await contenderEvents()).filter((e) => e.identity.series === "brazil");
+  if (!events.length) return [];
+  return [{ key: "brazil", label: "Contender Series Brazil", year: events[0]?.event_date ? Number(events[0].event_date.slice(0, 4)) : null, events }];
 }
 
 export async function getContenderEventContext(events: ContenderEvent[]): Promise<{ counts: Map<string, number>; mains: Map<string, Bout> }> {

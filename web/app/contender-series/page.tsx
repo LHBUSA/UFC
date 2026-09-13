@@ -3,7 +3,12 @@ import Link from "next/link";
 import { JsonLd } from "@/components/ui";
 import { getVoice } from "@/lib/voices";
 import { Mark } from "@/components/Brand";
-import { getContenderSeries, getContenderEventContext, getContenderFreshness, expectedContenderSeasons } from "@/lib/contender";
+import { getContenderSeries, getContenderSpinoffs, getContenderEventContext, getContenderFreshness, expectedContenderSeasons } from "@/lib/contender";
+import { getDwcsGraph } from "@/lib/dwcsGraph";
+import { getRankingIndex } from "@/lib/rankings";
+import { isRanked } from "@/lib/rankingContext";
+import { VideoRail } from "@/components/VideoRail";
+import { getVideosForEvent, sortVideosTimeline } from "@/lib/db";
 import { eventSlug } from "@/lib/slug";
 import { eventStatusLabel, fmtDate, fmtDateTime, locationLine, METHOD_SHORT, winnerOf } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -12,8 +17,8 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Dana White's Contender Series — Every Season, Week, Fight & Result",
-  description: "Dana White's Contender Series schedule and results by season and week, with fighter matchups, bout counts and live source freshness from the PropBetEdge UFC data layer.",
-  keywords: ["Dana White Contender Series", "DWCS", "Contender Series schedule", "Contender Series results", "DWCS fighters", "DWCS season", "UFC Contender Series"],
+  description: "Dana White's Contender Series schedule and results by season and week, fight totals and judges' cards, and where every DWCS fighter went next in the UFC.",
+  keywords: ["Dana White Contender Series", "DWCS", "Contender Series schedule", "Contender Series results", "DWCS fighters", "DWCS season", "UFC Contender Series", "DWCS alumni"],
   alternates: { canonical: "/contender-series" },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
   openGraph: {
@@ -30,14 +35,16 @@ export const metadata: Metadata = {
  * reads that record rather than holding a second copy of the asset. */
 const DANA = getVoice("dana-white");
 
-export default async function ContenderSeriesPage({ searchParams }: { searchParams: Promise<{ season?: string }> }) {
+export default async function ContenderSeriesPage({ searchParams }: { searchParams: Promise<{ season?: string; series?: string }> }) {
   const sp = await searchParams;
-  const [seasons, freshness] = await Promise.all([getContenderSeries(), getContenderFreshness()]);
+  const [seasons, spinoffs, freshness, graph, rankIndex] = await Promise.all([getContenderSeries(), getContenderSpinoffs(), getContenderFreshness(), getDwcsGraph(), getRankingIndex()]);
+  const brazil = spinoffs.find((s) => s.key === "brazil") || null;
+  const showBrazil = sp.series === "brazil" && Boolean(brazil);
   const latestLoaded = seasons[0]?.season || Math.max(...expectedContenderSeasons());
   const requested = Number(sp.season);
   const seasonNo = Number.isInteger(requested) && requested > 0 ? requested : latestLoaded;
-  const selected = seasons.find((s) => s.season === seasonNo) || null;
-  const events = selected?.events || [];
+  const selected = showBrazil ? null : seasons.find((s) => s.season === seasonNo) || null;
+  const events = showBrazil ? brazil!.events : selected?.events || [];
   const { counts, mains } = await getContenderEventContext(events);
   const expected = expectedContenderSeasons();
   const loaded = new Set(seasons.map((s) => s.season));
@@ -46,18 +53,29 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
   const completed = events.filter((e) => e.card_status === "complete").length;
   const upcoming = events.length - completed;
   const latestSync = freshness?.finished_at || freshness?.started_at || null;
+  const reachedUfc = graph ? graph.alumni.filter((a) => a.reachedUfc).length : null;
+  const rankedAlumni = graph && rankIndex ? graph.alumni.filter((a) => isRanked(rankIndex.byFighter.get(a.fighter.id))).length : null;
+  /* Official video already attached to the latest completed week of the
+   * selected season by the existing video resolver. No second video system. */
+  const latestDone = [...events].reverse().find((e) => e.card_status === "complete") || null;
+  const videos = latestDone ? sortVideosTimeline(await getVideosForEvent(latestDone.id, 8).catch(() => [])) : [];
+  const unitLabel = showBrazil ? "episodes" : "weeks";
 
   return (
     <div className="wrap page dwcs-page">
       <section className="dwcs-hero">
         <div className="row"><Mark size={38} /><div className="eyebrow">PropBetEdge source of truth</div></div>
         <h1>Dana White's Contender Series</h1>
-        <p className="lede">Season by season. Week by week. Current cards, completed results and matchup context from the same canonical fight database that powers PropBetEdge UFC.</p>
+        <p className="lede">Season by season. Week by week. Results, fight totals and judges&apos; cards from the same canonical fight database that powers PropBetEdge UFC — and where every fighter went next.</p>
         <div className="dwcs-proof">
-          <div><b>{seasons.length}</b><span>seasons loaded</span></div>
+          <div><b>{seasons.length}</b><span>numbered seasons</span></div>
           <div><b>{loadedEvents}</b><span>weeks indexed</span></div>
-          <div><b>{events.length}</b><span>weeks in Season {seasonNo}</span></div>
-          <div><b>{completed}</b><span>completed · {upcoming} upcoming</span></div>
+          {graph ? <div><b>{graph.alumni.length.toLocaleString()}</b><span>fighters tracked</span></div> : null}
+          {reachedUfc != null ? <div><b>{reachedUfc.toLocaleString()}</b><span>reached a UFC card</span></div> : null}
+          {rankedAlumni != null ? <div><b>{rankedAlumni}</b><span>alumni ranked now</span></div> : null}
+        </div>
+        <div className="row mt-5" style={{ gap: 10, flexWrap: "wrap" }}>
+          <Link href="/contender-series/alumni" className="btn gold">DWCS Alumni →</Link>
         </div>
         <div className="dwcs-fresh"><i />{latestSync ? <>Data sync: <time dateTime={latestSync}>{fmtDateTime(latestSync)}</time></> : <>Live database · freshness timestamp unavailable</>}</div>
         {DANA?.image && (
@@ -88,16 +106,19 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
 
       <nav className="dwcs-season-nav" aria-label="Contender Series seasons">
         {expected.map((season) => (
-          <Link key={season} href={`/contender-series?season=${season}`} aria-current={season === seasonNo ? "true" : undefined} title={loaded.has(season) ? `Season ${season}` : `Season ${season} historical backfill pending`}>
+          <Link key={season} href={`/contender-series?season=${season}`} aria-current={!showBrazil && season === seasonNo ? "true" : undefined} title={loaded.has(season) ? `Season ${season}` : `Season ${season} historical backfill pending`}>
             S{season}{!loaded.has(season) ? " · loading" : ""}
           </Link>
         ))}
+        {/* A separate series, so a separate tab: never a week of Season 2. */}
+        {brazil ? <Link href="/contender-series?series=brazil" aria-current={showBrazil ? "true" : undefined} title="Contender Series Brazil">Brazil</Link> : null}
       </nav>
 
       <div className="between mb-5">
         <div>
-          <div className="eyebrow">Season {seasonNo}{selected?.year ? ` · ${selected.year}` : ""}</div>
-          <h2 className="serif" style={{ fontSize: "clamp(26px,3vw,38px)", marginTop: 6 }}>{events.length ? `${events.length} weeks in the database` : "Historical season ingestion pending"}</h2>
+          <div className="eyebrow">{showBrazil ? `Contender Series Brazil${brazil?.year ? ` · ${brazil.year}` : ""}` : `Season ${seasonNo}${selected?.year ? ` · ${selected.year}` : ""}`}</div>
+          <h2 className="serif" style={{ fontSize: "clamp(26px,3vw,38px)", marginTop: 6 }}>{events.length ? `${events.length} ${unitLabel} in the database` : "Historical season ingestion pending"}</h2>
+          {events.length ? <div className="dim sm mt-2">{completed} completed · {upcoming} upcoming</div> : null}
         </div>
         <Link href="/events" className="btn">UFC schedule →</Link>
       </div>
@@ -112,7 +133,7 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
             return (
               <Link key={event.id} href={`/events/${eventSlug(event)}`} className="dwcs-week">
                 <div className="dwcs-week-date">
-                  {event.week ? `Week ${event.week}` : "Episode"}
+                  {event.identity.series === "brazil" ? (event.identity.episode ? `Episode ${event.identity.episode}` : "Episode") : event.week ? `Week ${event.week}` : "Episode"}
                   <small>{fmtDate(event.event_date, { month: "short", day: "numeric", year: "numeric" })}</small>
                 </div>
                 <div>
@@ -132,12 +153,16 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
         <div className="card hi">
           <div className="eyebrow">Historical backfill</div>
           <h3 className="serif" style={{ fontSize: 24, margin: "8px 0" }}>Season {seasonNo} is not in the canonical database yet.</h3>
-          <p className="dim">We show missing coverage explicitly rather than manufacture a season archive. The historical ESPN/UFC Stats backfill is being wired into the same event, bout and result tables used by current DWCS cards; this page will fill automatically as those rows land.</p>
+          <p className="dim">We show missing coverage explicitly rather than manufacture a season archive. This page fills automatically as the canonical event, bout and result rows land.</p>
         </div>
       )}
 
+      {latestDone && videos.length > 0 && (
+        <VideoRail videos={videos} title={`Official video · ${latestDone.identity.label}`} eyebrow="Official channels · attached to this week by the video resolver" note="Embedded from YouTube, not hosted by PropBetEdge" max={4} />
+      )}
+
       <section className="dwcs-source">
-        <b>Source &amp; freshness.</b> ESPN's UFC league feed is the primary schedule, bout, result and fighter-identity source in the production ingest. UFC Stats is the round-stat source where a fight can be linked and verified. Current cards are read directly from the canonical PropBetEdge UFC tables; no season or week is hard-coded into this page. {missing.length ? `Historical seasons still missing from production: ${missing.map((s) => `S${s}`).join(", ")}.` : "All expected numbered seasons are loaded."}
+        <b>Source &amp; freshness.</b> ESPN's UFC league feed is the primary schedule, bout, result, fight-total, judges&apos; card and fighter-identity source in the production ingest. UFC Stats is the round-stat source where a fight can be linked and verified. Contender Series Brazil (2018) is listed as its own series, not as weeks of Season 2. Current cards are read directly from the canonical PropBetEdge UFC tables; no season or week is hard-coded into this page. {missing.length ? `Historical seasons still missing from production: ${missing.map((s) => `S${s}`).join(", ")}.` : "All expected numbered seasons are loaded."}
       </section>
 
       <JsonLd data={{
@@ -149,9 +174,10 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
         description: "Dana White's Contender Series season archive and current schedule from the PropBetEdge UFC data layer.",
         isPartOf: { "@id": `${SITE.url}/#site` },
         dateModified: latestSync || undefined,
+        hasPart: { "@type": "CollectionPage", name: "DWCS Alumni", url: `${SITE.url}/contender-series/alumni` },
         mainEntity: {
           "@type": "ItemList",
-          name: `Dana White's Contender Series Season ${seasonNo}`,
+          name: showBrazil ? "Contender Series Brazil" : `Dana White's Contender Series Season ${seasonNo}`,
           numberOfItems: events.length,
           itemListElement: events.map((event, index) => ({
             "@type": "ListItem",

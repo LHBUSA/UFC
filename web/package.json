@@ -21,7 +21,8 @@
     "check:css-tokens": "node scripts/check-css-tokens.mjs",
     "test:rankings": "node --experimental-strip-types --test lib/rankingContext.test.ts",
     "test:gracie": "node --experimental-strip-types --test lib/gracieInfluence.test.ts",
-    "test:display-portrait": "node --experimental-strip-types --test lib/displayPortraitPolicy.test.ts"
+    "test:display-portrait": "node --experimental-strip-types --test lib/displayPortraitPolicy.test.ts",
+    "test:dwcs": "node --experimental-strip-types --test lib/contenderIdentity.test.ts lib/dwcsAlumni.test.ts"
   },
   "dependencies": {
     "next": "^15.5.25",

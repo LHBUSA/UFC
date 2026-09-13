@@ -208,6 +208,16 @@ export type FightTotals = {
 export async function getFightTotals(boutId: string): Promise<FightTotals[]> {
   return (await rest<FightTotals[]>(`ufc_bout_fight_stats?select=*&bout_id=eq.${boutId}`, [])).data;
 }
+/* One read for a whole card. Two rows per bout, so a 15-bout card is 30 rows. */
+export async function getFightTotalsForBouts(boutIds: string[]): Promise<Map<string, FightTotals[]>> {
+  const m = new Map<string, FightTotals[]>();
+  const ids = [...new Set(boutIds.filter(Boolean))];
+  for (let i = 0; i < ids.length; i += 100) {
+    const rows = (await rest<FightTotals[]>(`ufc_bout_fight_stats?select=*&bout_id=in.(${ids.slice(i, i + 100).join(",")})&limit=1000`, [])).data;
+    for (const r of rows) m.set(r.bout_id, [...(m.get(r.bout_id) || []), r]);
+  }
+  return m;
+}
 
 /* ---- fighters --------------------------------------------------------- */
 export async function getFighters(q = "", limit = 60, offset = 0, opts: { letter?: string; activeOnly?: boolean } = {}): Promise<{ rows: Fighter[]; count: number | null }> {

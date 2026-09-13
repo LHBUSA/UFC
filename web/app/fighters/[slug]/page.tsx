@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { getDwcsGraph, getOutcomeClaims } from "@/lib/dwcsGraph";
+import { DwcsLineage } from "@/components/Dwcs";
 import { getFighterBouts, getImagesForFighters, getArticlesForFighter, getFighterRoundStats, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { getFighterDna } from "@/lib/dna";
@@ -47,9 +49,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function FighterPage({ params }: { params: Promise<{ slug: string }> }) {
-  const f = await resolveFighter((await params).slug);
+  const slug = (await params).slug;
+  const f = await resolveFighter(slug);
   if (!f) notFound();
-  const [bouts, articles, rounds, rankings, dna, videos, statusEvents] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => [])]);
+  /* One fighter, one URL. A slug carrying a source id that now belongs to a
+   * merged canonical record (a retired UFC Stats-keyed URL after an identity
+   * merge), or a stale name, resolves to the same fighter and redirects to the
+   * canonical slug instead of serving a duplicate page. */
+  if (slug !== fighterSlug(f)) permanentRedirect(`/fighters/${fighterSlug(f)}`);
+  const [bouts, articles, rounds, rankings, dna, videos, statusEvents, dwcsGraph, dwcsClaims] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => []), getDwcsGraph(), getOutcomeClaims()]);
+  const dwcsAlum = dwcsGraph?.byFighter.get(f.id) || null;
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
   /* Coverage for this fighter's completed bouts, same rule as the index. */
@@ -148,6 +157,8 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
           );
         }) : <Empty title="No bout scheduled">When a bout is announced it appears here with the tale of the tape, and Pro members get the alert the moment it changes.</Empty>}
       </section>
+
+      {dwcsAlum && dwcsGraph && <DwcsLineage alum={dwcsAlum} ctx={rankCtx} opponents={dwcsGraph.fighters} claims={dwcsClaims.get(f.id)} />}
 
       {rounds.length > 0 && (
         <section className="segment">

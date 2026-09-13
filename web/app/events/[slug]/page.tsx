@@ -26,6 +26,11 @@ import { EventCardChanges } from "@/components/StatusBits";
 import { getBroadcastForEvent } from "@/lib/broadcast";
 import { HowToWatchPanel } from "@/components/HowToWatch";
 import { getRankingMap } from "@/lib/rankings";
+import { getFightTotalsForBouts } from "@/lib/db";
+import { getDwcsGraph } from "@/lib/dwcsGraph";
+import { CardIntelligence } from "@/components/CardIntelligence";
+import { WhereTheyWent } from "@/components/Dwcs";
+import { contenderIdentity } from "@/lib/contenderIdentity";
 
 export const revalidate = 300;
 
@@ -93,10 +98,22 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const isCurrent = !done && nearby[0]?.id === e.id;
   const others = nearby.filter((x) => x.id !== e.id).slice(0, 3);
   const dwcs = isDanaWhiteContenderSeries(e.name);
+  /* Completed cards: the stored ESPN totals and judges' cards for every bout in
+   * one read. DWCS weeks also read the alumni graph for where the card went. */
+  const [cardTotals, dwcsGraph] = await Promise.all([
+    done ? getFightTotalsForBouts(live.map((b) => b.id)).catch(() => new Map()) : Promise.resolve(new Map()),
+    dwcs ? getDwcsGraph() : Promise.resolve(null),
+  ]);
 
   return (
     <div className="wrap page">
-      <Breadcrumbs items={[{ name: dwcs ? "Contender Series" : "Schedule", href: dwcs ? "/contender-series" : "/events" }, { name: e.name }]} />
+      <Breadcrumbs items={dwcs ? (() => {
+        const id = contenderIdentity(e.name, e.event_date);
+        const group = id.series === "brazil"
+          ? { name: "Contender Series Brazil", href: "/contender-series?series=brazil" }
+          : { name: id.season ? `Season ${id.season}` : "Seasons", href: id.season ? `/contender-series?season=${id.season}` : "/contender-series" };
+        return [{ name: "Contender Series", href: "/contender-series" }, group, { name: e.name }];
+      })() : [{ name: "Schedule", href: "/events" }, { name: e.name }]} />
       <div className="poster" style={{ minHeight: 0 }}>
         <div className="poster-top">
           <span className="eyebrow">{eventBrand(e.name)}{e.is_ppv ? " · Pay-per-view" : ""}</span>
@@ -136,6 +153,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       {bouts.length ? (
         <>
           <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={providerLive && !done ? marketMap : undefined} unresolved={unresolved} ranks={ranks} />
+          {done && <CardIntelligence bouts={live} e={e} totals={cardTotals} />}
+          {dwcs && dwcsGraph && <WhereTheyWent alumni={dwcsGraph.alumni} imgs={imgs} ranks={ranks} eventId={e.id} />}
           {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} ranks={ranks} />)}</div></section>}
         </>
       ) : historical ? (

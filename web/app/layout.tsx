@@ -25,6 +25,7 @@ import "./hero-premium.css";
 import "./footer-network-polish.css";
 import "./rank-identity.css";
 import "./fight-totals.css";
+import "./dwcs-alumni.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";
