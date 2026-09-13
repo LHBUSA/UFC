@@ -17,15 +17,19 @@
  * that covers the winner, or an official recap result for the same pairing with
  * the same winner and no contradiction.
  *
- * PROFESSIONAL FINALS (on_finale_card) link to the database exactly:
- *   1. the bout carries ufc_bout_id (or scheduled.ufc_bout_id): the row with that
- *      id, and only if it is between the bout's two fighter ids;
+ * PROFESSIONAL FINALS (stage final AND on_finale_card) link to the database exactly:
+ *   1. an explicit recorded link — ufc_bout_id, scheduled.ufc_bout_id, or a
+ *      verified_against of the exact form "ufc_bouts:<uuid>": the row with that
+ *      id, and only if it is between the bout's two fighter ids. Explicit links
+ *      that disagree fail closed; an explicit link is never overridden by the
+ *      fallback;
  *   2. otherwise the season's recorded finale for that bout: the single row
- *      between the two ids whose event date equals the recorded date
- *      (final_bouts[].date for the weight class, else the season finale_date),
- *      whose event name equals the recorded event name when one is recorded, and
- *      whose date equals the bout's own fight_date when it has one.
- *   Anything else — no recorded date, several candidates, a mismatch — is null.
+ *      between the two ids whose event name equals the recorded event name
+ *      exactly and whose event date equals the recorded date (final_bouts[] for
+ *      the weight class, else the season finale_event / finale_date), and whose
+ *      date equals the bout's own fight_date when it has one. Both a recorded
+ *      event and a recorded date are required.
+ *   Anything else — nothing recorded, several candidates, a mismatch — is null.
  */
 import { hasCommissionResult } from '../../../web/lib/tufBoutState.ts';
 
@@ -54,21 +58,28 @@ export function recordedFinale(bout, seasonRow) {
   return { date: f?.date ?? seasonRow?.finale_date ?? null, event: f?.event ?? seasonRow?.finale_event ?? null };
 }
 
+/** Every explicit bout-id link recorded on a final, deduplicated. */
+export function explicitFinaleBoutIds(bout) {
+  const va = /^ufc_bouts:([0-9a-f-]{36})$/i.exec(String(bout.verified_against ?? '').trim());
+  return [...new Set([bout.ufc_bout_id, bout.scheduled?.ufc_bout_id, va?.[1]].filter(Boolean).map((x) => String(x).toLowerCase()))];
+}
+
 /** The one database row that is this final on its finale card, or null with the reason. */
 export function actualFinaleDbBout(bout, seasonRow, pairRows) {
-  if (!bout.on_finale_card) return { row: null, linked_by: null, reason: 'not a finale-card bout' };
+  if (!(bout.stage === 'final' && bout.on_finale_card)) return { row: null, linked_by: null, reason: 'not a finale-card final' };
   if (!bout.a_fighter_id || !bout.b_fighter_id) return { row: null, linked_by: null, reason: 'finalist identity unresolved' };
   const rows = (pairRows || []).filter((r) => samePair(r, bout.a_fighter_id, bout.b_fighter_id));
-  const id = bout.ufc_bout_id ?? bout.scheduled?.ufc_bout_id ?? null;
-  if (id) {
-    const hit = rows.filter((r) => r.id === id);
-    return hit.length === 1 ? { row: hit[0], linked_by: 'ufc_bout_id', reason: null } : { row: null, linked_by: null, reason: `ufc_bout_id ${id} is not a bout between these fighter ids` };
+  const ids = explicitFinaleBoutIds(bout);
+  if (ids.length > 1) return { row: null, linked_by: null, reason: `conflicting explicit bout links ${ids.join(', ')}` };
+  if (ids.length === 1) {
+    const hit = rows.filter((r) => String(r.id).toLowerCase() === ids[0]);
+    return hit.length === 1 ? { row: hit[0], linked_by: 'explicit_bout_id', reason: null } : { row: null, linked_by: null, reason: `explicit bout link ${ids[0]} is not a bout between these fighter ids` };
   }
   const rec = recordedFinale(bout, seasonRow);
-  if (!rec.date) return { row: null, linked_by: null, reason: 'no ufc_bout_id and no recorded finale date' };
+  if (!rec.date || !rec.event) return { row: null, linked_by: null, reason: `no explicit bout link and no recorded finale ${!rec.date && !rec.event ? 'date or event' : !rec.date ? 'date' : 'event'}` };
   if (bout.fight_date && bout.fight_date !== rec.date) return { row: null, linked_by: null, reason: `fight_date ${bout.fight_date} differs from the recorded finale date ${rec.date}` };
-  const hits = rows.filter((r) => one(r.event)?.event_date === rec.date && (!rec.event || norm(one(r.event)?.name) === norm(rec.event)));
-  if (hits.length !== 1) return { row: null, linked_by: null, reason: `${hits.length} bouts between these ids on ${rec.date}${rec.event ? ` at "${rec.event}"` : ''}` };
+  const hits = rows.filter((r) => one(r.event)?.event_date === rec.date && String(one(r.event)?.name ?? '').trim() === String(rec.event).trim());
+  if (hits.length !== 1) return { row: null, linked_by: null, reason: `${hits.length} bouts between these ids on ${rec.date} at "${rec.event}"` };
   return { row: hits[0], linked_by: 'recorded_finale_event_date_pair', reason: null };
 }
 
@@ -82,7 +93,8 @@ export function actualFinaleDbBout(bout, seasonRow, pairRows) {
  */
 export function verifyBout({ bout, seasonRow, episodes, pairRows, today }) {
   const winnerId = winnerIdOf(bout, seasonRow);
-  const officialWinner = (bout.sources || []).some((s) => s.family !== 'wikipedia' && (s.fields || []).includes('winner'));
+  /* An applied official repair: it names its repair and covers the winner field. */
+  const officialWinner = (bout.sources || []).some((s) => Boolean(s.repair) && s.family !== 'wikipedia' && (s.fields || []).includes('winner'));
   const recapResult = (episodes?.episodes || []).flatMap((e) => e.bouts || [])
     .find((eb) => pairKey(eb.bracket?.a || eb.a, eb.bracket?.b || eb.b) === pairKey(bout.a, bout.b) && eb.result?.winner);
   const recapAgrees = Boolean(recapResult) && !recapResult.result.contradiction && norm(recapResult.result.winner) === norm(bout.winner);
