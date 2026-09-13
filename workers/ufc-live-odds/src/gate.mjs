@@ -44,6 +44,11 @@ export function readConfig(env) {
     eventWindowMinutes: num(env.LIVE_ODDS_EVENT_WINDOW_MINUTES, 45),
     closeHoursAfter: num(env.LIVE_ODDS_CLOSE_HOURS_AFTER, 7),
     minSecondsBetweenCalls: num(env.LIVE_ODDS_MIN_SECONDS_BETWEEN_CALLS, 55),
+    /* A quota reading older than this cannot authorise spending. The value we
+     * hold is from the last metered response; days later it describes a
+     * different month's allowance. */
+    quotaMaxAgeMinutes: num(env.LIVE_ODDS_QUOTA_MAX_AGE_MINUTES, 180),
+    providerTimeoutMs: num(env.LIVE_ODDS_PROVIDER_TIMEOUT_MS, 8000),
     hasKey: Boolean(env.ODDS_API_KEY),
   };
 }
@@ -84,17 +89,29 @@ export function shouldPoll({ now, cfg, cardStartsAt, boutStatuses, quota, cardSp
    * an evening: fights end, the next walkout has not begun. No spend. */
   if (!active.length && !imminent.length) return { poll: false, reason: 'no_active_or_imminent_bout' };
 
-  /* Quota is MEASURED, never estimated. If the provider has not told us what
-   * remains, we do not guess our way into spending. */
-  if (quota && Number.isFinite(quota.remaining)) {
-    if (quota.remaining <= cfg.minRemaining) {
-      return { poll: false, reason: 'quota_reserve_reached', remaining: quota.remaining };
-    }
-  } else if (quota && quota.known === false) {
+  /* Quota is MEASURED, never estimated, and never stale. An unknown reading
+   * and an old one are both refusals: the first because we would be guessing,
+   * the second because a figure from a previous card describes an allowance
+   * that has since been spent by something else. */
+  if (!quota || quota.known !== true || !Number.isFinite(quota.remaining)) {
     return { poll: false, reason: 'quota_unknown' };
   }
+  if (quota.measuredAt) {
+    const ageMin = (now - Date.parse(quota.measuredAt)) / 60000;
+    if (!Number.isFinite(ageMin) || ageMin > cfg.quotaMaxAgeMinutes) {
+      return { poll: false, reason: 'quota_stale', quotaAgeMinutes: Math.round(ageMin) };
+    }
+  } else {
+    return { poll: false, reason: 'quota_age_unknown' };
+  }
+  if (quota.remaining <= cfg.minRemaining) {
+    return { poll: false, reason: 'quota_reserve_reached', remaining: quota.remaining };
+  }
 
-  if (Number.isFinite(cardSpend) && cardSpend >= cfg.maxCardCost) {
+  /* Card spend arrives from the run ledger. `null` means we could not read it,
+   * and an unreadable budget is not an empty one. */
+  if (!Number.isFinite(cardSpend)) return { poll: false, reason: 'card_spend_unknown' };
+  if (cardSpend >= cfg.maxCardCost) {
     return { poll: false, reason: 'card_budget_exhausted', cardSpend };
   }
 

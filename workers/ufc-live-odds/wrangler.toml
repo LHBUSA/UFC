@@ -25,7 +25,16 @@ LIVE_ODDS_MIN_REMAINING = "5000"
 
 # Ceiling for one card. A stuck state or an unusually long event cannot run
 # away with the month.
-LIVE_ODDS_MAX_CARD_COST = "250"
+# Computed from the real card, not guessed. UFC 331 is 13 bouts: 11 x 3-round
+# and 2 x 5-round. Worst case with every bout going the distance:
+#   11 x (15 min fight + 2 breaks + ~4 min walkout/intro) = 231 min
+#    2 x (25 min fight + 4 breaks + ~6 min walkout/intro) =  70 min
+#                                                   total ~301 min
+# At the 55s minimum spacing that is ~301 paid calls, so 250 would have run
+# dry mid-card. 400 covers the worst case with about a third spare for
+# imminent states between fights and overrun, and is still 0.4% of the
+# 100,000 monthly allowance with MIN_REMAINING as the hard floor beneath it.
+LIVE_ODDS_MAX_CARD_COST = "400"
 
 # The window around a card's first scheduled bout in which the Worker will
 # look at ESPN at all. Outside it, a tick costs one indexed query.
@@ -35,6 +44,14 @@ LIVE_ODDS_CLOSE_HOURS_AFTER = "7"
 # Minimum spacing between paid calls. The cron firing is not a reason to buy
 # the same snapshot twice; the provider does not reprice faster than this.
 LIVE_ODDS_MIN_SECONDS_BETWEEN_CALLS = "55"
+
+# A quota reading older than this cannot authorise spending: a figure from a
+# previous card describes an allowance something else has since spent.
+LIVE_ODDS_QUOTA_MAX_AGE_MINUTES = "180"
+
+# A hanging provider must not hold the isolate. On timeout the run finalizes
+# as failed and the cron simply tries again a minute later.
+LIVE_ODDS_PROVIDER_TIMEOUT_MS = "8000"
 
 # Every minute. Waking is free: the gate in src/gate.mjs decides whether a tick
 # may spend, and outside an event window it never reaches ESPN or the provider.

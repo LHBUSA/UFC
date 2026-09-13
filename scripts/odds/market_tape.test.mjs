@@ -6,7 +6,7 @@
  * pre-fight close from a post-start reading, no movement invented between a
  * checkpoint and a gap.
  */
-import { buildMarketTape, priceReading, nearestReading, movementPts } from './market_tape.mjs';
+import { buildMarketTape, priceReading, nearestReading, movementPts, MAX_ROUND_BOUNDARY_SECONDS } from './market_tape.mjs';
 
 let failures = 0;
 const fail = (m) => { failures += 1; console.log(`FAIL ${m}`); };
@@ -27,6 +27,7 @@ const BELL = '2026-09-19T23:00:00.000Z'; // first seen in progress
 const T2 = '2026-09-19T23:01:30.000Z';   // during round 1
 const R1 = '2026-09-19T23:05:00.000Z';   // first seen at end of round 1
 const T3 = '2026-09-19T23:05:23.000Z';   // 23s after that
+const R1_PLUS = (sec) => new Date(Date.parse(R1) + sec * 1000).toISOString();
 
 const OBS = [...reading(T0, -130, 110), ...reading(T1, -118, 102), ...reading(T2, -150, 130), ...reading(T3, -165, 140)];
 const TRANS = [
@@ -122,6 +123,18 @@ const TRANS = [
   eq(r.books, 3, 'book count is the distinct books in the reading');
   eq(r.overround > 1, true, 'the margin is exposed rather than silently removed');
   eq(r.a.best !== null, true, 'best available is carried alongside consensus');
+}
+
+/* ---- the 120-second round window --------------------------------------- */
+{
+  eq(MAX_ROUND_BOUNDARY_SECONDS, 120, 'the default boundary window is two polls, not ten minutes');
+  /* 119s after the horn: still this round's market. */
+  const t1 = buildMarketTape({ observations: reading(R1_PLUS(119), -170, 145), fighterAId: A, fighterBId: B, transitions: TRANS });
+  eq(t1.checkpoints.find((c) => c.key === 'round_1').secondsFromBoundary, 119, 'inside the window it is used');
+  /* 121s after: that is the next round forming, not this round closing. */
+  const t2 = buildMarketTape({ observations: reading(R1_PLUS(121), -170, 145), fighterAId: A, fighterBId: B, transitions: TRANS });
+  eq(t2.checkpoints.find((c) => c.key === 'round_1').unavailable, true,
+    'past the window the checkpoint is unavailable rather than mislabelled');
 }
 
 console.log(failures === 0 ? 'market_tape.mjs: OK' : `market_tape.mjs: ${failures} FAILURE(S)`);

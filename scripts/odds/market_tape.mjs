@@ -114,7 +114,13 @@ export function movementPts(from, to, side = 'a') {
  * carried through to every checkpoint so the UI never implies precision the
  * source did not give us.
  */
-export function buildMarketTape({ observations, fighterAId, fighterBId, transitions = [], maxSecondsFromBoundary = 600 }) {
+/* 120 seconds. At roughly one poll per minute a genuine round-end reading is
+ * within two ticks; anything further is the NEXT round's market wearing this
+ * round's label. A gap is reported as unavailable rather than filled from
+ * deep inside the following round merely to populate a UI. */
+export const MAX_ROUND_BOUNDARY_SECONDS = 120;
+
+export function buildMarketTape({ observations, fighterAId, fighterBId, transitions = [], maxSecondsFromBoundary = MAX_ROUND_BOUNDARY_SECONDS }) {
   const rows = (observations || []).filter((r) => r.outcome_fighter_id && r.observed_at);
   const checkpoints = [];
   const stamps = [...new Set(rows.map((r) => r.observed_at))].sort();

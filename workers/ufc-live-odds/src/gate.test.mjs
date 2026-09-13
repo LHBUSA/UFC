@@ -16,7 +16,9 @@ const CFG = readConfig({
 });
 const START = Date.parse('2026-09-19T22:00:00Z');
 const LIVE = [{ competitionId: '1', status: 'STATUS_IN_PROGRESS_2' }];
-const QUOTA = { known: true, remaining: 90000, used: 10000, last: 1 };
+/* Quota now carries WHEN it was measured: a reading with no age, or an old
+ * one, cannot authorise spending. */
+const QUOTA = { known: true, remaining: 90000, used: 10000, last: 1, measuredAt: '2026-09-19T21:50:00Z' };
 const base = { now: START + 60_000, cfg: CFG, cardStartsAt: '2026-09-19T22:00:00Z', boutStatuses: LIVE, quota: QUOTA, cardSpend: 0, lastCallAt: null };
 
 /* ---- the one case that spends ------------------------------------------ */
@@ -65,16 +67,24 @@ const base = { now: START + 60_000, cfg: CFG, cardStartsAt: '2026-09-19T22:00:00
 
 /* ---- quota: measured, never estimated ----------------------------------- */
 {
-  eq(shouldPoll({ ...base, quota: { known: true, remaining: 5000 } }).reason, 'quota_reserve_reached',
+  eq(shouldPoll({ ...base, quota: { known: true, remaining: 5000, measuredAt: '2026-09-19T21:50:00Z' } }).reason, 'quota_reserve_reached',
     'at the reserve exactly, stop');
-  eq(shouldPoll({ ...base, quota: { known: true, remaining: 4999 } }).reason, 'quota_reserve_reached', 'below it, stop');
-  eq(shouldPoll({ ...base, quota: { known: true, remaining: 5001 } }).poll, true, 'above it, proceed');
+  eq(shouldPoll({ ...base, quota: { known: true, remaining: 4999, measuredAt: '2026-09-19T21:50:00Z' } }).reason, 'quota_reserve_reached', 'below it, stop');
+  eq(shouldPoll({ ...base, quota: { known: true, remaining: 5001, measuredAt: '2026-09-19T21:50:00Z' } }).poll, true, 'above it, proceed');
   eq(shouldPoll({ ...base, quota: { known: false } }).reason, 'quota_unknown',
     'an unreadable quota is not permission to spend');
+  /* A figure from a previous card describes an allowance something else has
+   * since spent. Age is part of whether a measurement is usable. */
+  eq(shouldPoll({ ...base, quota: { ...QUOTA, measuredAt: '2026-09-08T12:25:00Z' } }).reason, 'quota_stale',
+    'an eleven-day-old quota cannot authorise a paid call');
+  eq(shouldPoll({ ...base, quota: { ...QUOTA, measuredAt: null } }).reason, 'quota_age_unknown',
+    'a quota with no measurement time is unverified, not fresh');
 }
 
 /* ---- card budget -------------------------------------------------------- */
 {
+  eq(shouldPoll({ ...base, cardSpend: null }).reason, 'card_spend_unknown',
+    'an unreadable card budget is not an empty one');
   eq(shouldPoll({ ...base, cardSpend: 250 }).reason, 'card_budget_exhausted', 'one card cannot run away with the month');
   eq(shouldPoll({ ...base, cardSpend: 249 }).poll, true, 'under budget still polls');
 }

@@ -33,7 +33,8 @@
  *   GET  /health      unauthenticated, no writes, no paid calls
  *   POST /admin/tick  run one cycle now (?dry=true never spends)
  */
-import { OBS_CONFLICT, observationKey, normName, stripNickname, buildIndex, resolveOutcome, matchBout } from '../../../scripts/odds/market_match.mjs';
+import { OBS_CONFLICT } from '../../../scripts/odds/market_match.mjs';
+import { normalizePayload, snapshotRows, observationRows } from './capture.mjs';
 import { readConfig, shouldPoll, readQuotaHeaders, isActive, isImminent, roundFromStatus } from './gate.mjs';
 
 const WORKER = 'ufc-live-odds';
@@ -129,7 +130,7 @@ async function boutStatuses(espnEventId) {
  * broadcast clock. Provenance says exactly that, so nothing downstream can
  * present it as the moment the round ended.
  */
-async function recordTransitions(env, card, statuses, now) {
+async function recordTransitions(env, card, statuses, now, { strict = false } = {}) {
   const rows = [];
   for (const s of statuses) {
     const kind = isActive(s.status) && s.round === null && s.status !== 'STATUS_END_OF_ROUND' ? 'in_progress'
@@ -150,12 +151,78 @@ async function recordTransitions(env, card, statuses, now) {
   /* Append-only and first-seen-wins: the unique target means a state we have
    * already recorded is a database no-op rather than a newer timestamp
    * overwriting the moment we actually first saw it. */
-  await rest(env, `ufc_market_state_transitions?on_conflict=espn_competition_id,kind,round`, {
+  /* Canonical bout by ESPN competition id. Never by fighter name. */
+  const ids = [...new Set(rows.map((r) => r.espn_competition_id))];
+  const boutRows = await rest(env,
+    `ufc_bouts?select=id,espn_competition_id&espn_competition_id=in.(${ids.map((x) => `"${x}"`).join(',')})`).catch(() => []);
+  const boutByComp = new Map((boutRows || []).map((b) => [String(b.espn_competition_id), b.id]));
+  for (const r of rows) r.bout_id = boutByComp.get(r.espn_competition_id) ?? null;
+
+  /* The unique index is FUNCTIONAL over coalesce(round, 0), so there is no
+   * named constraint for PostgREST to target. A plain insert is used and a
+   * unique violation is the expected, wanted outcome for a state we have
+   * already recorded: first-seen-wins. */
+  const send = () => rest(env, 'ufc_market_state_transitions', {
     method: 'POST',
-    headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
+    headers: { Prefer: 'return=minimal' },
     body: JSON.stringify(rows),
-  }).catch(() => null);
+  });
+  try {
+    await send();
+  } catch (e) {
+    const dup = /duplicate key|unique|23505/i.test(String(e?.message || ''));
+    if (dup) {
+      /* Some rows are new and some already exist. Retry individually so a
+       * genuinely new boundary is not lost behind an already-seen one. */
+      for (const r of rows) {
+        await rest(env, 'ufc_market_state_transitions', {
+          method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify([r]),
+        }).catch(() => null);
+      }
+    } else if (strict) {
+      /* Live: a boundary we cannot persist makes the snapshot uninterpretable,
+       * so the failure is raised rather than swallowed and no credit is spent. */
+      throw e;
+    }
+  }
   return rows.length;
+}
+
+
+/* ---- durable state ------------------------------------------------------
+ * Cloudflare may discard an isolate between any two invocations, so isolate
+ * memory is diagnostic ONLY. Every value that can authorise or forbid spending
+ * is read back from persisted rows on each tick: the spacing between paid
+ * calls, how much this card has already cost, and the last MEASURED quota.
+ * A value we cannot read is a refusal, never a default. */
+async function durableState(env, eventId) {
+  /* Last paid call and the newest measured quota, from the run ledger. */
+  const lastLive = (await rest(env,
+    'ufc_market_runs?select=started_at,finished_at,quota_used,quota_remaining,last_cost'
+    + '&capture_mode=eq.live&quota_remaining=not.is.null&order=started_at.desc&limit=1').catch(() => null))?.[0] || null;
+  const lastAny = (await rest(env,
+    'ufc_market_runs?select=started_at,quota_used,quota_remaining,last_cost'
+    + '&quota_remaining=not.is.null&order=started_at.desc&limit=1').catch(() => null))?.[0] || null;
+  const lastCall = (await rest(env,
+    'ufc_market_runs?select=started_at&capture_mode=eq.live&order=started_at.desc&limit=1').catch(() => null))?.[0] || null;
+
+  const src = lastLive || lastAny;
+  const quota = src && Number.isFinite(Number(src.quota_remaining))
+    ? { known: true, remaining: Number(src.quota_remaining), used: Number(src.quota_used), last: Number(src.last_cost), measuredAt: src.finished_at || src.started_at }
+    : { known: false, remaining: null, measuredAt: null };
+
+  /* Card spend: the measured cost of every live run already charged to this
+   * card. Summed from rows, so a fresh isolate knows exactly what a previous
+   * one spent. */
+  let cardSpend = null;
+  if (eventId) {
+    const rows = await rest(env,
+      `ufc_market_runs?select=last_cost&capture_mode=eq.live&event_id=eq.${eventId}`).catch(() => null);
+    if (Array.isArray(rows)) cardSpend = rows.reduce((n, r) => n + (Number(r.last_cost) || 0), 0);
+  } else {
+    cardSpend = 0;
+  }
+  return { quota, cardSpend, lastCallAt: lastCall?.started_at || null };
 }
 
 /* ---- the tick ----------------------------------------------------------- */
@@ -166,32 +233,32 @@ async function tick(env, { dry = false } = {}) {
 
   const card = await activeCard(env, cfg, now).catch(() => null);
   if (!card) {
-    const decision = { poll: false, reason: 'no_card_in_window', paid_calls: 0 };
-    health.last_decision = decision;
-    return decision;
+    const d = { poll: false, reason: 'no_card_in_window', paid_calls: 0 };
+    health.last_decision = d;
+    return d;
+  }
+
+  /* The ESPN bridge is deterministic: broadcast row -> canonical event ->
+   * espn_event_id. Never resolved by name. Without it there is no live state
+   * to gate on, so the lane refuses to spend rather than polling blind. */
+  if (!card.espn_event_id) {
+    const d = { poll: false, reason: 'no_espn_event_id', paid_calls: 0, card: { name: card.event_name, event_id: card.event_id } };
+    health.last_decision = d;
+    return d;
   }
 
   const statuses = await boutStatuses(card.espn_event_id).catch(() => []);
-  if (!dry) await recordTransitions(env, card, statuses, now).catch(() => 0);
+  const { quota, cardSpend, lastCallAt } = await durableState(env, card.event_id);
 
-  /* Quota is read from the last metered response we stored, never guessed. */
-  const lastRun = (await rest(env, 'ufc_market_runs?select=started_at,quota_remaining,quota_used,last_cost&order=started_at.desc&limit=1').catch(() => []))?.[0] || null;
-  const quota = lastRun && Number.isFinite(Number(lastRun.quota_remaining))
-    ? { known: true, remaining: Number(lastRun.quota_remaining), used: Number(lastRun.quota_used), last: Number(lastRun.last_cost) }
-    : { known: false, remaining: null };
+  const decision = shouldPoll({ now, cfg, cardStartsAt: card.startsAt, boutStatuses: statuses, quota, cardSpend, lastCallAt });
+  health.last_decision = { ...decision, card: card.event_name, statuses: statuses.length, cardSpend };
 
-  const decision = shouldPoll({
-    now, cfg, cardStartsAt: card.startsAt, boutStatuses: statuses,
-    quota, cardSpend: 0, lastCallAt: health.last_paid_call_at,
-  });
-  health.last_decision = { ...decision, card: card.event_name, statuses: statuses.length };
   if (!decision.poll || dry) {
+    /* State transitions are recorded even when we do not spend: observing a
+     * boundary costs nothing and the evidence is not recoverable later. */
+    const transitions = await recordTransitions(env, card, statuses, now, { strict: false }).catch(() => 0);
     return {
-      ...decision,
-      dry,
-      paid_calls: 0,
-      observations_written: 0,
-      quota_consumed: 0,
+      ...decision, dry, paid_calls: 0, observations_written: 0, snapshot_rows: 0, quota_consumed: 0,
       card: { name: card.event_name, ufc_slug: card.ufc_slug, starts_at: card.startsAt, espn_event_id: card.espn_event_id },
       espn_state: {
         bouts: statuses.length,
@@ -199,29 +266,137 @@ async function tick(env, { dry = false } = {}) {
         imminent: statuses.filter((x) => isImminent(x.status)).map((x) => ({ id: x.competitionId, status: x.status })),
         sample: statuses.slice(0, 5).map((x) => `${x.competitionId}:${x.status}`),
       },
-      /* The request this lane WOULD make, with the key redacted. Showing the
-       * shape is the point; showing the key would defeat it. */
+      transitions_recorded: transitions,
       intended_request: `GET ${ODDS_BASE}/sports/${SPORT}/odds?regions=us&markets=h2h&oddsFormat=american&apiKey=***REDACTED***`,
-      quota_source: quota.known ? { known: true, remaining: quota.remaining, from: 'last recorded metered response' } : { known: false },
+      durable: { card_spend: cardSpend, last_call_at: lastCallAt, quota_known: quota.known, quota_remaining: quota.remaining, quota_measured_at: quota.measuredAt },
     };
   }
 
-  /* Everything above this line is free. Past it, a credit is spent. */
-  const url = `${ODDS_BASE}/sports/${SPORT}/odds?regions=us&markets=h2h&oddsFormat=american&apiKey=${env.ODDS_API_KEY}`;
-  const res = await fetch(url);
+  /* Past this line a credit is spent. The state boundary is persisted FIRST
+   * and strictly: buying a snapshot whose temporal context we failed to record
+   * is buying a price nobody can interpret. */
+  try {
+    await recordTransitions(env, card, statuses, now, { strict: true });
+  } catch (e) {
+    const d = { poll: false, reason: 'transition_write_failed', error: String(e?.message || e).slice(0, 200), paid_calls: 0 };
+    health.last_decision = d;
+    health.last_error = d.error;
+    return d;
+  }
+
+  /* One run row per paid call, opened BEFORE the request so a call that fails
+   * still leaves the evidence that it was made and charged. */
+  const created = await rest(env, 'ufc_market_runs', {
+    method: 'POST', headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({ status: 'running', sport_key: SPORT, markets: 'h2h', event_id: card.event_id, capture_mode: 'live' }),
+  }).catch(() => null);
+  const runId = created?.[0]?.id ?? null;
+  const finalize = (patch) => (runId
+    ? rest(env, `ufc_market_runs?id=eq.${runId}`, { method: 'PATCH', body: JSON.stringify({ finished_at: new Date().toISOString(), ...patch }) }).catch(() => null)
+    : Promise.resolve(null));
+
+  /* ONE timestamp for the whole snapshot, taken around the fetch. */
+  const observedAt = new Date().toISOString();
+  let res;
+  try {
+    res = await fetch(
+      `${ODDS_BASE}/sports/${SPORT}/odds?regions=us&markets=h2h&oddsFormat=american&apiKey=${env.ODDS_API_KEY}`,
+      { signal: AbortSignal.timeout(cfg.providerTimeoutMs) },
+    );
+  } catch (e) {
+    /* A hang must not hold the isolate, and must not retry inside this
+     * invocation: the cron comes round again in a minute. */
+    health.last_paid_call_at = observedAt;
+    health.paid_calls += 1;
+    await finalize({ status: 'failed', error: `provider request failed: ${String(e?.message || e).slice(0, 200)}` });
+    return { ...decision, paid_calls: 1, run_id: runId, error: 'provider_timeout_or_network', observations_written: 0, snapshot_rows: 0 };
+  }
+
   const q = readQuotaHeaders(res.headers);
-  health.last_paid_call_at = new Date().toISOString();
+  health.last_paid_call_at = observedAt;
   health.paid_calls += 1;
   if (!res.ok) {
-    health.last_error = `provider ${res.status}`;
-    return { ...decision, paid_calls: 1, provider_status: res.status, quota: q, observations_written: 0 };
+    await finalize({ status: 'failed', error: `provider HTTP ${res.status}`, quota_used: q.used, quota_remaining: q.remaining, last_cost: q.last });
+    return { ...decision, paid_calls: 1, run_id: runId, provider_status: res.status, quota: q, observations_written: 0, snapshot_rows: 0 };
   }
-  const payload = await res.json();
-  void { OBS_CONFLICT, observationKey, normName, stripNickname, buildIndex, resolveOutcome, matchBout, isImminent };
-  /* Resolution and writing land in the next commit of this lane; nothing is
-   * written from an unverified path. The paid call and its measured cost are
-   * still recorded so the run ledger reflects what was actually spent. */
-  return { ...decision, paid_calls: 1, source_events: Array.isArray(payload) ? payload.length : 0, quota: q, observations_written: 0 };
+
+  const payload = await res.json().catch(() => null);
+  /* Resolution inputs, scoped to this card: a price is never attached to a
+   * bout on another event. */
+  const [boutRows, fighterRows, aliasRows] = await Promise.all([
+    rest(env, `ufc_bouts?select=id,event_id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events(id,event_date)&event_id=eq.${card.event_id}`).catch(() => []),
+    rest(env, 'ufc_fighters?select=id,name&limit=6000').catch(() => []),
+    rest(env, 'ufc_fighter_aliases?select=fighter_id,alias,normalized').catch(() => []),
+  ]);
+  const bouts = (boutRows || []).map((b) => ({ id: b.id, a: b.fighter_a, b: b.fighter_b, eventDate: b.event?.event_date || null }));
+
+  const norm = normalizePayload({
+    payload, bouts, fighters: fighterRows || [], aliases: aliasRows || [],
+    observedAt, eventId: card.event_id,
+  });
+
+  /* SNAPSHOT layer: every quote in this fetch, sharing one observed_at. */
+  let snapshotWritten = 0;
+  if (runId && norm.quotes.length) {
+    await rest(env, 'ufc_market_run_quotes?on_conflict=run_id,bout_id,bookmaker_key,market_key,outcome_name', {
+      method: 'POST', headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify(snapshotRows(norm.quotes, runId)),
+    }).catch(() => null);
+    snapshotWritten = norm.quotes.length;
+  }
+
+  /* CHANGE layer: the database's existing idempotency decides what is new. */
+  let observationsWritten = 0;
+  if (norm.quotes.length) {
+    const before = await countRows(env, 'ufc_market_observations');
+    await rest(env, `ufc_market_observations?on_conflict=${encodeURIComponent(OBS_CONFLICT)}`, {
+      method: 'POST', headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify(observationRows(norm.quotes)),
+    }).catch(() => null);
+    const after = await countRows(env, 'ufc_market_observations');
+    observationsWritten = Math.max(0, after - before);
+  }
+
+  /* Unmatched is a landing zone, not a failure: a source event with no
+   * canonical bout is kept so it can be read, never guessed at. */
+  if (norm.unmatched.length) {
+    await rest(env, 'ufc_market_unmatched?on_conflict=source_event_id,reason', {
+      method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(norm.unmatched.map((u) => ({ ...u, last_seen_at: observedAt }))),
+    }).catch(() => null);
+  }
+
+  await finalize({
+    status: 'success',
+    source_events: Array.isArray(payload) ? payload.length : 0,
+    matched_bouts: norm.matchedBouts,
+    unmatched_events: norm.unmatched.length,
+    observations_written: observationsWritten,
+    books_seen: norm.books,
+    quota_used: q.used, quota_remaining: q.remaining, last_cost: q.last,
+    notes: { snapshot_rows: snapshotWritten, ambiguous: norm.ambiguous, quotes_normalized: norm.quotes.length },
+  });
+  health.observations_written += observationsWritten;
+
+  return {
+    ...decision, paid_calls: 1, run_id: runId, quota: q,
+    source_events: Array.isArray(payload) ? payload.length : 0,
+    matched_bouts: norm.matchedBouts, unmatched: norm.unmatched.length, ambiguous: norm.ambiguous,
+    quotes_normalized: norm.quotes.length, snapshot_rows: snapshotWritten,
+    observations_written: observationsWritten,
+    duplicates_skipped: norm.quotes.length - observationsWritten,
+  };
+}
+
+/** Exact row count, so a run reports what landed rather than what was sent. */
+async function countRows(env, table) {
+  const { url, key } = sb(env);
+  const r = await fetch(`${url}/rest/v1/${table}?select=id`, {
+    headers: { apikey: key, Authorization: `Bearer ${key}`, Prefer: 'count=exact', Range: '0-0' },
+  }).catch(() => null);
+  if (!r || !r.ok) return 0;
+  const n = Number((r.headers.get('content-range') || '/0').split('/')[1]);
+  return Number.isFinite(n) ? n : 0;
 }
 
 export default {
