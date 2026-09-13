@@ -46,8 +46,25 @@ const BUCKET = 'ufc-media';
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const WIKI_MIN_INTERVAL_MS = 500; // ~2 req/s to Wikimedia
 const MMA_DESC = /mixed martial art|\bMMA\b|fighter/i;
+/* The short description is written by whoever last edited the item, and it
+ * is often not about MMA at all: Ross Pearson's reads "English martial
+ * artist". Requiring the keyword there left 24 identity-provable TUF alumni
+ * with no entity (scout 2026-09-12). The structured claims are the better
+ * evidence, so an item also qualifies when it states the occupation or the
+ * sport, or carries a UFC / Sherdog / Tapology / ESPN fighter identifier. The
+ * DOB check below is unchanged. */
+const MMA_OCCUPATION = 'Q11607585';
+const MMA_SPORT = 'Q114466';
+const MMA_ID_PROPS = ['P9722', 'P2818', 'P9728', 'P10073'];
 const CATEGORY_CANDIDATE_LIMIT = 12;
+/* Two floors. The free-text search route keeps 420px: there the file is all
+ * the evidence there is. A file reached through the fighter's own verified
+ * item (its P18, its linked Commons category, or a curated file whose item
+ * or structured "depicts" names the fighter) needs only to be usable, and 420
+ * rejected genuine portraits such as the 480x360 UFC 100 Fan Expo photographs
+ * of Forrest Griffin and Diego Sanchez. */
 const MIN_SOURCE_EDGE = 420;
+const MIN_VERIFIED_EDGE = 260;
 // Allowlist. Anything that does not match is rejected (fair use, NC, ND, GFDL-only, ...).
 const LICENSE_OK = /^(CC0(\s*1\.0)?|Public domain|CC BY \d(\.\d)?|CC BY-SA \d(\.\d)?)$/i;
 
@@ -215,12 +232,26 @@ async function getEntity(qid) {
   return j.entities?.[qid];
 }
 
+const claimIds = (entity, prop) => (entity?.claims?.[prop] || []).map((c) => c?.mainsnak?.datavalue?.value?.id || c?.mainsnak?.datavalue?.value).filter(Boolean);
+
+/** Does the item itself say this is a mixed martial artist? */
+export function isMmaEntity(entity) {
+  if (!entity) return false;
+  if (claimIds(entity, 'P106').includes(MMA_OCCUPATION)) return true;
+  if (claimIds(entity, 'P641').includes(MMA_SPORT)) return true;
+  return MMA_ID_PROPS.some((p) => claimIds(entity, p).length > 0);
+}
+
 /** Returns {status:'ok', qid, entity} | {status:'no_entity'|'ambiguous', note} */
 async function resolveEntity(fighter) {
   const q = encodeURIComponent(fighter.name);
   const j = await wikiFetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=5&search=${q}`);
-  const cands = (j.search ?? []).filter((s) => MMA_DESC.test(s.description ?? ''));
-  if (cands.length === 0) return { status: 'no_entity', note: 'no MMA candidate on Wikidata' };
+  const cands = [];
+  for (const s of j.search ?? []) {
+    if (MMA_DESC.test(s.description ?? '')) { cands.push(s); continue; }
+    if (isMmaEntity(await getEntity(s.id))) cands.push(s);
+  }
+  if (cands.length === 0) return { status: 'no_entity', note: 'no MMA candidate on Wikidata (description or occupation/sport/fighter-id claims)' };
 
   if (fighter.dob) {
     const unverifiable = [];
@@ -265,6 +296,25 @@ async function commonsImageInfo(filename) {
   };
 }
 
+const fileKey = (name) => String(name || '').replace(/^File:/i, '').replace(/_/g, ' ').trim().replace(/^./, (c) => c.toUpperCase());
+
+/**
+ * Proof that a Commons file depicts the fighter behind a Wikidata item, or
+ * null. The item must itself be a mixed martial artist (isMmaEntity), and then
+ * either its P18 image is this file, or the file's structured data carries
+ * depicts (P180) = the item.
+ */
+async function entityProvesFile(qid, filename) {
+  const entity = await getEntity(qid);
+  if (!isMmaEntity(entity)) return null;
+  const want = fileKey(filename);
+  if ((entity?.claims?.P18 || []).some((c) => fileKey(c?.mainsnak?.datavalue?.value) === want)) return `${qid} P18`;
+  const j = await wikiFetch(`https://commons.wikimedia.org/w/api.php?action=wbgetentities&format=json&sites=commonswiki&titles=${encodeURIComponent(`File:${want}`)}`);
+  const media = Object.values(j?.entities || {})[0];
+  const depicts = (media?.statements?.P180 || []).map((s) => s?.mainsnak?.datavalue?.value?.id);
+  return depicts.includes(qid) ? `depicts ${qid}` : null;
+}
+
 async function commonsCategoryFiles(category) {
   const title = encodeURIComponent(`Category:${category}`);
   const j = await wikiFetch(`https://commons.wikimedia.org/w/api.php?action=query&format=json&list=categorymembers&cmtitle=${title}&cmnamespace=6&cmtype=file&cmlimit=${CATEGORY_CANDIDATE_LIMIT}`);
@@ -274,7 +324,8 @@ async function commonsCategoryFiles(category) {
 function imageCandidateScore(fighter, info) {
   if (!info?.url || !LICENSE_OK.test(info.license || '')) return -Infinity;
   if (!/^image\//i.test(info.mime || '')) return -Infinity;
-  if ((info.width || 0) < MIN_SOURCE_EDGE || (info.height || 0) < MIN_SOURCE_EDGE) return -Infinity;
+  /* Category route only: the category is linked from the verified item. */
+  if ((info.width || 0) < MIN_VERIFIED_EDGE || (info.height || 0) < MIN_VERIFIED_EDGE) return -Infinity;
 
   const evidence = `${info.filename || ''} ${info.description || ''} ${info.categories || ''}`;
   /* The hard gate. Adjacency, not co-occurrence: this is the line between
@@ -368,10 +419,21 @@ async function processFighter(f) {
     if (!manual.file) return { status: 'error', note: 'curated override missing file' };
     const info = await commonsImageInfo(manual.file);
     const evidence = `${info?.filename || ''} ${info?.description || ''} ${info?.categories || ''}`;
-    if (!info || !nameAdjacent(f.name, evidence)) {
+    /* Identity is re-proved at runtime, never trusted from the override: the
+     * file text names the fighter, or the override's Wikidata item is an MMA
+     * fighter whose P18 is this file or whom the file's structured "depicts"
+     * statement names. A filename like "Swick.png" carries no name but is
+     * Mike Swick's item's own image. */
+    const proof = !info ? null
+      : nameAdjacent(f.name, evidence) ? 'file text names the fighter'
+        : manual.qid ? await entityProvesFile(manual.qid, manual.file) : null;
+    if (!proof) {
       return { status: 'error', note: `curated Commons file no longer carries identity evidence for ${f.name}: ${manual.file}` };
     }
-    return finalizeImage(f, info, { source: `CURATED:${manual.file}` });
+    if (Math.min(info.width || 0, info.height || 0) < MIN_VERIFIED_EDGE) {
+      return { status: 'no_image', note: `curated file below ${MIN_VERIFIED_EDGE}px: ${manual.file} (${info.width}x${info.height})` };
+    }
+    return finalizeImage(f, info, { qid: manual.qid || null, source: `CURATED:${manual.file} (${proof})` });
   }
 
   const ent = await resolveEntity(f);
