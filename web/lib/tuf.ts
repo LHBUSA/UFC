@@ -24,6 +24,62 @@ import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import inventory from "@/data/tuf/seasons.json";
 import identityIndex from "@/data/tuf/identity.index.json";
 import { TUF_DETAILS } from "@/data/tuf/details.generated";
+import { TUF_EPISODES } from "@/data/tuf/episodes.generated";
+
+/* ---- episodes ------------------------------------------------------------- */
+
+export type EpisodeWeighIn = {
+  fighter: string; fighter_id?: string; weight_lbs: number | null; weight_text?: string;
+  missed_weight: boolean; limit_lbs: number | null; made_weight_on_retry?: boolean;
+  episode_number: number; source_url: string;
+};
+export type EpisodeBout = {
+  a: string; b: string; a_fighter_id?: string; b_fighter_id?: string;
+  weight_class: string | null; stage: string | null;
+  bracket: { weight_class: string; stage: string; a: string; b: string } | null;
+  result: { winner: string | null; winner_fighter_id?: string; method: string | null; round: number | null; time: string | null; contradiction?: string } | null;
+  weigh_ins: EpisodeWeighIn[];
+  fight_pick: { chosen_by: string } | null;
+  caption_filming_dates: string[];
+};
+export type Episode = {
+  episode_number: number;
+  title: string | null;
+  title_source: "paramount_plus" | null;
+  /** Always null: no source states a broadcast date. */
+  air_date: null;
+  /** The Paramount+ listing's own date. Not a broadcast date. */
+  listing_date: string | null;
+  recap_url: string | null;
+  recap_published: string | null;
+  recap_byline_date: string | null;
+  bouts?: EpisodeBout[];
+  fight_pick_control?: string | null;
+  events?: Array<{ type: string; text: string; fighters: string[]; fighter_ids: Array<string | null> }>;
+};
+export type SeasonEpisodes = {
+  slug: string;
+  sources: { titles: string | null; recaps: string | null };
+  finale_broadcast?: { title: string; listing_date: string | null };
+  missing_recaps?: Array<{ episode_number: number; why: string }>;
+  episodes: Episode[];
+};
+
+/** The episode layer for a season, or null where none is recorded. */
+export function episodesFor(slug: string): SeasonEpisodes | null {
+  return (TUF_EPISODES[slug] as SeasonEpisodes | undefined) ?? null;
+}
+
+/** Every in-house weigh-in the recaps record for a fighter, by canonical id. */
+export function tufWeighInsForFighter(fighterId: string): Array<EpisodeWeighIn & { slug: string; opponent: string }> {
+  const out: Array<EpisodeWeighIn & { slug: string; opponent: string }> = [];
+  for (const [slug, file] of Object.entries(TUF_EPISODES) as Array<[string, SeasonEpisodes]>) {
+    for (const e of file.episodes) for (const b of e.bouts ?? []) for (const w of b.weigh_ins) {
+      if (w.fighter_id === fighterId) out.push({ ...w, slug, opponent: w.fighter === b.a ? b.b : b.a });
+    }
+  }
+  return out;
+}
 
 /* Detail files are imported rather than read from disk so they are bundled
  * with the deployment. A season with no detail file yet renders from its

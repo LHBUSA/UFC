@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { PageHead, JsonLd, Avatar } from "@/components/ui";
 import { eventSlug, fighterSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
-import type { PortraitSet } from "@/lib/db";
+import { getFightersByIds, type PortraitSet } from "@/lib/db";
 import {
   allBouts,
   countsTowardsRecord,
@@ -13,6 +13,7 @@ import {
   portraitsFor,
   seasonBySlug,
   seasons,
+  episodesFor,
   type LinkedFighter,
   type SeasonDetail,
   type TufBout,
@@ -51,6 +52,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 const STAFF_ORDER: Record<string, number> = { head: 0, assistant: 1, guest: 2, other: 3 };
 const STAFF_LABEL: Record<string, string> = { head: "head coach", assistant: "assistant coach", guest: "guest coach", other: "staff" };
+
+const STAGE_LABEL: Record<string, string> = { elimination: "Elimination", round_of_16: "Opening round", quarter_final: "Quarterfinal", semi_final: "Semifinal", final: "Final" };
+/* Tournament-relevant events only. The recaps also describe life in the house;
+ * the archive does not turn that into data. */
+const SHOWN_EVENTS = new Set(["replacement", "withdrawal", "injury", "wildcard", "missed_weight", "medical_postponement", "catchweight", "coin_toss", "coach_challenge"]);
+const EVENT_LABEL: Record<string, string> = {
+  replacement: "Replacement", withdrawal: "Withdrawal", injury: "Injury", wildcard: "Wild card", missed_weight: "Missed weight",
+  medical_postponement: "Medical postponement", catchweight: "Catchweight", coin_toss: "Coin toss", coach_challenge: "Coaches challenge",
+};
 
 const CLASS_LABEL: Record<TufBout["classification"], string> = {
   professional: "Professional",
@@ -158,6 +168,15 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
   ];
   const [linked, finale] = await Promise.all([linkSeasonNames(season.slug, names), linkedFinale(season.finale_event, season.finale_date)]);
   const faces = await portraitsFor(linked);
+  /* Recaps spell castmates their own way, so episode rows link by the ids the
+   * episode file carries, not by printed name. */
+  const eps = episodesFor(season.slug);
+  const epIds = [...new Set((eps?.episodes ?? []).flatMap((e) => (e.bouts ?? []).flatMap((b) => [b.a_fighter_id, b.b_fighter_id])).filter(Boolean))] as string[];
+  const linkedById = new Map([...linked.values()].map((f) => [f.id, f]));
+  const missingIds = epIds.filter((id) => !linkedById.has(id));
+  if (missingIds.length) {
+    for (const f of await getFightersByIds(missingIds).catch(() => [])) linkedById.set(f.id, f);
+  }
 
   const proCount = bouts.filter(countsTowardsRecord).length;
   const exCount = bouts.length - proCount;
@@ -401,6 +420,83 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                 ) : null}
               </div>
             </div>
+          ) : null}
+        </section>
+      ) : null}
+
+      {/* ---- episodes ---- */}
+      {eps?.episodes.length ? (
+        <section className="wrap tuf-section" id="episodes">
+          <div className="tuf-section-head">
+            <h2>Episodes</h2>
+            <p>
+              Episode numbers and titles from the network listing{eps.sources.recaps?.startsWith("scripts/tuf/evidence/recaps") ? "; matchups, results, in-house weigh-ins and bracket events from UFC.com's official recaps" : ""}.
+              An episode is where a bout aired, not when it was fought, and no air date is shown because no source states one.
+            </p>
+          </div>
+          <ol className="tuf-episodes">
+            {eps.episodes.map((e) => (
+              <li key={e.episode_number} className="tuf-episode">
+                <details>
+                  <summary>
+                    <span className="tuf-ep-num">Ep {e.episode_number}</span>
+                    <span className="tuf-ep-title">{e.title ?? <em className="tuf-none">Title not listed</em>}</span>
+                    {e.bouts?.length ? (
+                      <span className="tuf-ep-sum">
+                        {e.bouts.map((b) => (b.result?.winner ? `${b.result.winner} def. ${b.result.winner === b.a ? b.b : b.a}` : `${b.a} vs ${b.b}`)).join(" · ")}
+                      </span>
+                    ) : null}
+                  </summary>
+                  <div className="tuf-ep-body">
+                    {(e.bouts ?? []).map((b, i) => {
+                      const aF = b.a_fighter_id ? linkedById.get(b.a_fighter_id) : undefined;
+                      const bF = b.b_fighter_id ? linkedById.get(b.b_fighter_id) : undefined;
+                      const nameOf = (printed: string, f?: LinkedFighter) => (f ? <Link className="tuf-name is-linked" href={`/fighters/${fighterSlug(f)}`}>{printed}</Link> : <span className="tuf-name">{printed}</span>);
+                      return (
+                        <div key={i} className="tuf-ep-bout">
+                          <span className="tuf-bout-names">{nameOf(b.a, aF)}<em>vs</em>{nameOf(b.b, bF)}</span>
+                          <span className="tuf-bout-meta">
+                            {b.result?.winner ? (
+                              <span className="tuf-res"><b>{b.result.winner}</b>{b.result.method ? ` · ${b.result.method}` : ""}{b.result.round ? ` · R${b.result.round}` : ""}{b.result.time ? ` ${b.result.time}` : ""}</span>
+                            ) : <span className="tuf-res tuf-none">Result not stated in the recap</span>}
+                            {b.bracket ? <span className="tuf-ep">{STAGE_LABEL[b.bracket.stage] ?? b.bracket.stage}</span> : null}
+                            {b.fight_pick ? <span className="tuf-ep">Picked by {b.fight_pick.chosen_by}</span> : null}
+                          </span>
+                          {b.weigh_ins.length ? (
+                            <span className="tuf-weighins">
+                              {b.weigh_ins.map((w, j) => (
+                                <span key={j} className={`tuf-weighin${w.missed_weight ? " is-miss" : ""}`}>
+                                  {w.fighter} <b>{w.weight_lbs != null ? `${w.weight_lbs} lb` : w.weight_text ?? "weight not stated"}</b>
+                                  {w.missed_weight ? <em>{w.made_weight_on_retry ? "missed, made it on the retry" : "missed weight"}</em> : null}
+                                </span>
+                              ))}
+                            </span>
+                          ) : null}
+                          {b.result?.contradiction ? <span className="tuf-bout-note">The recap contradicts itself here: {b.result.contradiction}</span> : null}
+                        </div>
+                      );
+                    })}
+                    {(e.events ?? []).some((x) => SHOWN_EVENTS.has(x.type)) ? (
+                      <ul className="tuf-ep-events">
+                        {(e.events ?? []).filter((x) => SHOWN_EVENTS.has(x.type)).map((x, j) => (
+                          <li key={j}><b>{EVENT_LABEL[x.type] ?? x.type}</b> {x.text}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {e.recap_url ? (
+                      <a className="tuf-ep-src" href={e.recap_url} rel="nofollow noopener" target="_blank">
+                        Official recap on UFC.com{e.recap_byline_date ? ` · ${e.recap_byline_date}` : ""}
+                      </a>
+                    ) : !e.bouts?.length ? <span className="tuf-fine">No official recap found for this episode.</span> : null}
+                  </div>
+                </details>
+              </li>
+            ))}
+          </ol>
+          {eps.missing_recaps?.length ? (
+            <p className="tuf-fine">
+              {eps.missing_recaps.map((m) => `UFC.com published no recap for episode ${m.episode_number}; its bouts appear in the bracket only.`).join(" ")}
+            </p>
           ) : null}
         </section>
       ) : null}
