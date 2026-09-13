@@ -1,0 +1,105 @@
+{
+ "migration_sha256": "7c52b542e0090b6f59083a6107ea0b10d15a9e468293b1e2d94ccffb4c218d59",
+ "mode": "apply",
+ "apply_response": [],
+ "result": [
+  {
+   "proof": {
+    "failed": 0,
+    "passed": 16,
+    "assertions": [
+     {
+      "ok": true,
+      "name": "ufc_* tables audited",
+      "detail": "52"
+     },
+     {
+      "ok": true,
+      "name": "anon INSERT/UPDATE/DELETE/TRUNCATE on every ufc_* table = 0",
+      "detail": "0"
+     },
+     {
+      "ok": true,
+      "name": "authenticated INSERT/UPDATE/DELETE/TRUNCATE on every ufc_* table = 0",
+      "detail": "0"
+     },
+     {
+      "ok": true,
+      "name": "every other ACL entry (SELECT, REFERENCES, TRIGGER, MAINTAIN, all service_role) unchanged",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "RLS flags and policy counts unchanged",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "table set unchanged",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "default ACL (postgres, public, tables) has no anon/authenticated writes",
+      "detail": "postgres:INSERT,postgres:SELECT,postgres:UPDATE,postgres:DELETE,postgres:TRUNCATE,postgres:REFERENCES,postgres:TRIGGER,postgres:MAINTAIN,anon:SELECT,anon:REFERENCES,anon:TRIGGER,anon:MAINTAIN,authenticated:SELECT,authenticated:REFERENCES,authenticated:TRIGGER,authenticated:MAINTAIN,service_role:INSERT,service_role:SELECT,service_role:UPDATE,service_role:DELETE,service_role:TRUNCATE,service_role:REFERENCES,service_role:TRIGGER,service_role:MAINTAIN"
+     },
+     {
+      "ok": true,
+      "name": "migration role is the ufc_* table owner (default ACL targets the creating role)",
+      "detail": "postgres"
+     },
+     {
+      "ok": true,
+      "name": "throwaway table owner = migration role",
+      "detail": "postgres"
+     },
+     {
+      "ok": true,
+      "name": "throwaway table: anon/authenticated inherit NO write grant",
+      "detail": "postgres:INSERT,postgres:SELECT,postgres:UPDATE,postgres:DELETE,postgres:TRUNCATE,postgres:REFERENCES,postgres:TRIGGER,postgres:MAINTAIN,anon:SELECT,anon:REFERENCES,anon:TRIGGER,anon:MAINTAIN,authenticated:SELECT,authenticated:REFERENCES,authenticated:TRIGGER,authenticated:MAINTAIN,service_role:INSERT,service_role:SELECT,service_role:UPDATE,service_role:DELETE,service_role:TRUNCATE,service_role:REFERENCES,service_role:TRIGGER,service_role:MAINTAIN"
+     },
+     {
+      "ok": true,
+      "name": "throwaway table: service_role still born with full DML",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "throwaway table: anon/authenticated SELECT default unchanged (still granted; RLS governs rows)",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "service_role insert/update/select still work",
+      "detail": "events visible=898"
+     },
+     {
+      "ok": true,
+      "name": "anon SELECT still allowed; RLS returns zero rows",
+      "detail": "rows=0"
+     },
+     {
+      "ok": true,
+      "name": "anon INSERT refused by privilege",
+      "detail": "42501 permission denied for table ufc_ingest_runs"
+     },
+     {
+      "ok": true,
+      "name": "authenticated DELETE refused by privilege",
+      "detail": "42501 permission denied for table ufc_ingest_runs"
+     }
+    ]
+   }
+  }
+ ],
+ "post_fresh_session": [
+  {
+   "post": {
+    "probe_table_left": false,
+    "anon_write_grants_live": 0,
+    "proof_ingest_rows_left": 0,
+    "default_acl_postgres_public_r": "anon:SELECT,anon:REFERENCES,anon:TRIGGER,anon:MAINTAIN,authenticated:SELECT,authenticated:REFERENCES,authenticated:TRIGGER,authenticated:MAINTAIN"
+   }
+  }
+ ]
+}

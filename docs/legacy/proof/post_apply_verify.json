@@ -1,0 +1,444 @@
+{
+ "checks": [
+  {
+   "detail": "981f8e29584c9541e5c3f4ad38b025a2 -> 981f8e29584c9541e5c3f4ad38b025a2",
+   "name": "raw unchanged: results_raw_md5",
+   "ok": true
+  },
+  {
+   "detail": "9348 -> 9348",
+   "name": "raw unchanged: results_n_excl_ufc1",
+   "ok": true
+  },
+  {
+   "detail": "494487cd94c13310740214333417b3a2 -> 494487cd94c13310740214333417b3a2",
+   "name": "raw unchanged: bouts_raw_md5",
+   "ok": true
+  },
+  {
+   "detail": "304c9af19b458992e90b5f6574633099 -> 304c9af19b458992e90b5f6574633099",
+   "name": "raw unchanged: events_raw_md5_excl_espn_id",
+   "ok": true
+  },
+  {
+   "detail": "e26750793b4fdf23e7c4fe350609fefe -> e26750793b4fdf23e7c4fe350609fefe",
+   "name": "raw unchanged: round_stats_md5",
+   "ok": true
+  },
+  {
+   "detail": "6a3622c3a642a5b3ae43feccddb76a96 -> 6a3622c3a642a5b3ae43feccddb76a96",
+   "name": "raw unchanged: videos_md5",
+   "ok": true
+  },
+  {
+   "detail": "c792205268d286afe5d1dc256fb74ce2 -> c792205268d286afe5d1dc256fb74ce2",
+   "name": "raw unchanged: dwcs_claims_md5",
+   "ok": true
+  },
+  {
+   "detail": "d41d8cd98f00b204e9800998ecf8427e -> d41d8cd98f00b204e9800998ecf8427e",
+   "name": "raw unchanged: dwcs_resolutions_md5",
+   "ok": true
+  },
+  {
+   "detail": "71bde03b5958eabce6ea5e89a6002913 -> 71bde03b5958eabce6ea5e89a6002913",
+   "name": "raw unchanged: fighters_md5_existing",
+   "ok": true
+  },
+  {
+   "detail": "{\"combat_ingest_packets\": [0, 12], \"combat_sources\": [17, 20], \"ufc_alias_review_queue\": [190, 193], \"ufc_bout_results\": [9348, 9356], \"ufc_bouts\": [9417, 9425], \"ufc_event_fact_claims\": [null, 69], \"ufc_event_fact_keys\": [null, 21], \"ufc_event_fact_resolutions\": [null, 0], \"ufc_events\": [898, 899], \"ufc_fighters\": [3175, 3178], \"ufc_legacy_repair_ledger\": [null, 514], \"ufc_tournament_advancements\": [null, 0], \"ufc_tournament_entries\": [null, 0], \"ufc_tournaments\": [null, 0]}",
+   "name": "table row-count deltas are exactly the approved inserts",
+   "ok": true
+  },
+  {
+   "detail": "{\"ufc_tournaments\": true, \"ufc_event_fact_keys\": true, \"ufc_event_fact_claims\": true, \"ufc_tournament_entries\": true, \"ufc_legacy_repair_ledger\": true, \"ufc_event_fact_resolutions\": true, \"ufc_tournament_advancements\": true}",
+   "name": "all Origins tables present",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "both views + parser present",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "result columns 6 / bout columns 10 / ruleset FK",
+   "ok": true
+  },
+  {
+   "detail": "21",
+   "name": "fact keys seeded (21)",
+   "ok": true
+  },
+  {
+   "detail": "{\"nsac\": {\"enabled\": true, \"access_mode\": \"approved_ingest\"}, \"nj_sacb\": {\"enabled\": false, \"access_mode\": \"review_required\"}, \"ufc_official\": {\"enabled\": false, \"access_mode\": \"review_required\"}, \"pbe_legacy_curated\": {\"enabled\": true, \"access_mode\": \"approved_ingest\"}}",
+   "name": "sources: nsac approved, nj_sacb disabled, curated internal, UFC.com still disabled",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "video_type check widened",
+   "ok": true
+  },
+  {
+   "detail": "[\"ufc_event_fact_claims_guard\", \"ufc_event_fact_resolutions_guard\", \"ufc_tournament_advancements_guard\"]",
+   "name": "guard triggers present (3)",
+   "ok": true
+  },
+  {
+   "detail": "0",
+   "name": "new Origins objects: zero anon/authenticated privileges",
+   "ok": true
+  },
+  {
+   "detail": "{\"ufc_tournaments\": [\"INSERT\", \"SELECT\", \"UPDATE\"], \"ufc_event_fact_keys\": [\"SELECT\"], \"ufc_event_fact_claims\": [\"INSERT\", \"SELECT\", \"UPDATE\"], \"ufc_tournament_entries\": [\"INSERT\", \"SELECT\", \"UPDATE\"], \"ufc_legacy_repair_ledger\": [\"INSERT\", \"SELECT\"], \"ufc_event_fact_resolutions\": [\"INSERT\", \"SELECT\", \"UPDATE\"], \"ufc_tournament_advancements\": [\"INSERT\", \"SELECT\", \"UPDATE\"]}",
+   "name": "new Origins tables: service_role has no DELETE/TRUNCATE",
+   "ok": true
+  },
+  {
+   "detail": "0",
+   "name": "all ufc_* tables: zero anon/authenticated write grants (022 holds)",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "RLS enabled on every ufc_* table",
+   "ok": true
+  },
+  {
+   "detail": "{\"bouts\": 8, \"venue\": null, \"events\": 1, \"packets\": 12, \"results\": 8, \"review_rows\": [{\"name\": \"Art Jimmerson\", \"status\": \"resolved\", \"resolved_to\": \"d1239ab3-7e95-47ba-8995-cf4f51d2c7b4\"}, {\"name\": \"Gerard Gordeau\", \"status\": \"resolved\", \"resolved_to\": \"6d2d610f-9ba3-4794-8bc5-00d7cdd5f241\"}, {\"name\": \"Teila Tuli\", \"status\": \"resolved\", \"resolved_to\": \"42d87164-e4b3-4edd-b598-648757e53f28\"}], \"new_fighters\": [{\"id\": \"d1239ab3-7e95-47ba-8995-cf4f51d2c7b4\", \"dob\": null, \"name\": \"Art Jimmerson\", \"ufcstats_id\": \"a5c53b3ddb31cc7d\", \"espn_athlete_id\": \"2335638\"}, {\"id\": \"6d2d610f-9ba3-4794-8bc5-00d7cdd5f241\", \"dob\": null, \"name\": \"Gerard Gordeau\", \"ufcstats_id\": \"279093302a6f44b3\", \"espn_athlete_id\": \"2335738\"}, {\"id\": \"42d87164-e4b3-4edd-b598-648757e53f28\", \"dob\": null, \"name\": \"Teila Tuli\", \"ufcstats_id\": \"96eff1a628adcc7f\", \"espn_athlete_id\": \"2504081\"}], \"referee_claims\": {\"espn:none\": 4, \"espn:open\": 4, \"curated_secondary:none\": 4, \"curated_secondary:open\": 4}, \"referee_non_null\": 0, \"referee_resolutions\": 0, \"results_whole_fight\": 8}",
+   "name": "UFC 1: 1 event, 8 bouts, 8 whole-fight results",
+   "ok": true
+  },
+  {
+   "detail": "{\"espn:none\": 4, \"espn:open\": 4, \"curated_secondary:none\": 4, \"curated_secondary:open\": 4}",
+   "name": "UFC 1: canonical referee NULL, no resolution",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "UFC 1: canonical venue NULL",
+   "ok": true
+  },
+  {
+   "detail": "[{\"id\": \"d1239ab3-7e95-47ba-8995-cf4f51d2c7b4\", \"dob\": null, \"name\": \"Art Jimmerson\", \"ufcstats_id\": \"a5c53b3ddb31cc7d\", \"espn_athlete_id\": \"2335638\"}, {\"id\": \"6d2d610f-9ba3-4794-8bc5-00d7cdd5f241\", \"dob\": null, \"name\": \"Gerard Gordeau\", \"ufcstats_id\": \"279093302a6f44b3\", \"espn_athlete_id\": \"2335738\"}, {\"id\": \"42d87164-e4b3-4edd-b598-648757e53f28\", \"dob\": null, \"name\": \"Teila Tuli\", \"ufcstats_id\": \"96eff1a628adcc7f\", \"espn_athlete_id\": \"2504081\"}]",
+   "name": "UFC 1: 3 new fighters, DOB NULL",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "UFC 1: review rows resolved to the new fighters",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "UFC 1: 12 packets",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "duplicate identities: 0",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "duplicate ESPN event ids: 0",
+   "ok": true
+  },
+  {
+   "detail": "{\"rounds/round\": 239, \"untimed/whole_fight\": 31, \"regulation_overtime/overtime\": 29, \"single_period/regulation_period\": 53, \"regulation_overtime/regulation_period\": 88}",
+   "name": "semantics: 31/53/88/29/239 on the 440 pre-existing legacy results",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "semantics: none left null pre-2005, none written post-2004",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "ESPN event ids: 55 legacy events carry one (54 filled + UFC 1)",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "canonical venue writes: 0",
+   "ok": true
+  },
+  {
+   "detail": "53",
+   "name": "venue claims: 53",
+   "ok": true
+  },
+  {
+   "detail": "69",
+   "name": "claims total: 69 (16 referee + 53 venue)",
+   "ok": true
+  },
+  {
+   "detail": null,
+   "name": "no tournaments or resolutions written yet",
+   "ok": true
+  }
+ ],
+ "counts": {
+  "combat_awards": 0,
+  "combat_bout_officials": 0,
+  "combat_bout_results": 0,
+  "combat_bouts": 0,
+  "combat_events": 0,
+  "combat_fighter_aliases": 5314,
+  "combat_fighter_identities": 4080,
+  "combat_fighters": 3178,
+  "combat_identity_review_queue": 0,
+  "combat_import_runs": 0,
+  "combat_ingest_packets": 12,
+  "combat_official_identities": 0,
+  "combat_officials": 0,
+  "combat_promotions": 1,
+  "combat_rankings": 0,
+  "combat_round_stats": 0,
+  "combat_rulesets": 0,
+  "combat_scorecards": 0,
+  "combat_source_claims": 0,
+  "combat_sources": 20,
+  "combat_status_events": 0,
+  "combat_title_bouts": 0,
+  "combat_titles": 0,
+  "combat_weigh_ins": 0,
+  "ufc_accounts": 2,
+  "ufc_action_events": 0,
+  "ufc_alias_review_queue": 193,
+  "ufc_articles": 147,
+  "ufc_bout_fight_stats": 956,
+  "ufc_bout_finish_enrichment": 0,
+  "ufc_bout_position_stats": 0,
+  "ufc_bout_results": 9356,
+  "ufc_bout_round_stats": 41930,
+  "ufc_bouts": 9425,
+  "ufc_dna_build_runs": 24,
+  "ufc_dna_metric_definitions": 60,
+  "ufc_dwcs_outcome_claims": 270,
+  "ufc_dwcs_outcome_resolutions": 0,
+  "ufc_event_broadcast_changes": 0,
+  "ufc_event_broadcasts": 2,
+  "ufc_event_fact_claims": 69,
+  "ufc_event_fact_keys": 21,
+  "ufc_event_fact_resolutions": 0,
+  "ufc_events": 899,
+  "ufc_fight_state_ledger": 187,
+  "ufc_fighter_aliases": 6793,
+  "ufc_fighter_bout_features": 18678,
+  "ufc_fighter_dna_snapshots": 26460,
+  "ufc_fighter_stance_splits": 44136,
+  "ufc_fighter_status_events": 6,
+  "ufc_fighters": 3178,
+  "ufc_identity_reconciliations": 18,
+  "ufc_image_candidates": 372,
+  "ufc_images": 557,
+  "ufc_ingest_runs": 867,
+  "ufc_judge_aliases": 45,
+  "ufc_judge_profiles": 467,
+  "ufc_legacy_repair_ledger": 514,
+  "ufc_login_tokens": 4,
+  "ufc_market_observations": 352,
+  "ufc_market_run_quotes": 0,
+  "ufc_market_runs": 4,
+  "ufc_market_state_transitions": 0,
+  "ufc_market_unmatched": 23,
+  "ufc_model_backtest_predictions": 0,
+  "ufc_model_backtest_runs": 0,
+  "ufc_model_prediction_grades": 0,
+  "ufc_model_predictions": 0,
+  "ufc_model_versions": 0,
+  "ufc_news_items": 831,
+  "ufc_news_pipeline_events": 2605,
+  "ufc_news_sources": 14,
+  "ufc_rankings": 824,
+  "ufc_referee_aliases": 6,
+  "ufc_referee_profiles": 246,
+  "ufc_round_stat_queue": 41,
+  "ufc_sessions": 1,
+  "ufc_tournament_advancements": 0,
+  "ufc_tournament_entries": 0,
+  "ufc_tournaments": 0,
+  "ufc_video_channels": 8,
+  "ufc_videos": 249,
+  "ufc_weigh_in_results": 142
+ },
+ "fingerprint": {
+  "bouts_raw_md5": "494487cd94c13310740214333417b3a2",
+  "dwcs_claims_md5": "c792205268d286afe5d1dc256fb74ce2",
+  "dwcs_resolutions_md5": "d41d8cd98f00b204e9800998ecf8427e",
+  "events_raw_md5_excl_espn_id": "304c9af19b458992e90b5f6574633099",
+  "fighters_md5_existing": "71bde03b5958eabce6ea5e89a6002913",
+  "fighters_n": 3178,
+  "legacy_espn_ids": 55,
+  "legacy_venues_non_null": 0,
+  "results_n_excl_ufc1": 9348,
+  "results_raw_md5": "981f8e29584c9541e5c3f4ad38b025a2",
+  "round_stats_md5": "e26750793b4fdf23e7c4fe350609fefe",
+  "videos_md5": "6a3622c3a642a5b3ae43feccddb76a96"
+ },
+ "post": {
+  "bout_columns": 10,
+  "claims_total": 69,
+  "duplicate_espn_event_ids": 0,
+  "duplicate_fighter_names_ufc1": 0,
+  "duplicate_ids": 0,
+  "fact_keys": 21,
+  "function": true,
+  "ledger": {
+   "event_ids_venue:ufc_events:update": 54,
+   "period_semantics:ufc_bout_results:update": 440,
+   "ufc1_ingest:ufc_bout_results:insert": 8,
+   "ufc1_ingest:ufc_bouts:insert": 8,
+   "ufc1_ingest:ufc_events:insert": 1,
+   "ufc1_ingest:ufc_fighters:insert": 3
+  },
+  "new_objects_anon_auth_privileges": 0,
+  "new_tables_service_role": {
+   "ufc_event_fact_claims": [
+    "INSERT",
+    "SELECT",
+    "UPDATE"
+   ],
+   "ufc_event_fact_keys": [
+    "SELECT"
+   ],
+   "ufc_event_fact_resolutions": [
+    "INSERT",
+    "SELECT",
+    "UPDATE"
+   ],
+   "ufc_legacy_repair_ledger": [
+    "INSERT",
+    "SELECT"
+   ],
+   "ufc_tournament_advancements": [
+    "INSERT",
+    "SELECT",
+    "UPDATE"
+   ],
+   "ufc_tournament_entries": [
+    "INSERT",
+    "SELECT",
+    "UPDATE"
+   ],
+   "ufc_tournaments": [
+    "INSERT",
+    "SELECT",
+    "UPDATE"
+   ]
+  },
+  "resolutions": 0,
+  "result_columns": 6,
+  "rls_disabled_ufc": 0,
+  "ruleset_fk": 1,
+  "semantics": {
+   "regulation_overtime/overtime": 29,
+   "regulation_overtime/regulation_period": 88,
+   "rounds/round": 239,
+   "single_period/regulation_period": 53,
+   "untimed/whole_fight": 31
+  },
+  "semantics_null_pre2005": 0,
+  "semantics_post2004": 0,
+  "sources": {
+   "nj_sacb": {
+    "access_mode": "review_required",
+    "enabled": false
+   },
+   "nsac": {
+    "access_mode": "approved_ingest",
+    "enabled": true
+   },
+   "pbe_legacy_curated": {
+    "access_mode": "approved_ingest",
+    "enabled": true
+   },
+   "ufc_official": {
+    "access_mode": "review_required",
+    "enabled": false
+   }
+  },
+  "tables": {
+   "ufc_event_fact_claims": true,
+   "ufc_event_fact_keys": true,
+   "ufc_event_fact_resolutions": true,
+   "ufc_legacy_repair_ledger": true,
+   "ufc_tournament_advancements": true,
+   "ufc_tournament_entries": true,
+   "ufc_tournaments": true
+  },
+  "tournaments": 0,
+  "triggers": [
+   "ufc_event_fact_claims_guard",
+   "ufc_event_fact_resolutions_guard",
+   "ufc_tournament_advancements_guard"
+  ],
+  "ufc1": {
+   "bouts": 8,
+   "events": 1,
+   "new_fighters": [
+    {
+     "dob": null,
+     "espn_athlete_id": "2335638",
+     "id": "d1239ab3-7e95-47ba-8995-cf4f51d2c7b4",
+     "name": "Art Jimmerson",
+     "ufcstats_id": "a5c53b3ddb31cc7d"
+    },
+    {
+     "dob": null,
+     "espn_athlete_id": "2335738",
+     "id": "6d2d610f-9ba3-4794-8bc5-00d7cdd5f241",
+     "name": "Gerard Gordeau",
+     "ufcstats_id": "279093302a6f44b3"
+    },
+    {
+     "dob": null,
+     "espn_athlete_id": "2504081",
+     "id": "42d87164-e4b3-4edd-b598-648757e53f28",
+     "name": "Teila Tuli",
+     "ufcstats_id": "96eff1a628adcc7f"
+    }
+   ],
+   "packets": 12,
+   "referee_claims": {
+    "curated_secondary:none": 4,
+    "curated_secondary:open": 4,
+    "espn:none": 4,
+    "espn:open": 4
+   },
+   "referee_non_null": 0,
+   "referee_resolutions": 0,
+   "results": 8,
+   "results_whole_fight": 8,
+   "review_rows": [
+    {
+     "name": "Art Jimmerson",
+     "resolved_to": "d1239ab3-7e95-47ba-8995-cf4f51d2c7b4",
+     "status": "resolved"
+    },
+    {
+     "name": "Gerard Gordeau",
+     "resolved_to": "6d2d610f-9ba3-4794-8bc5-00d7cdd5f241",
+     "status": "resolved"
+    },
+    {
+     "name": "Teila Tuli",
+     "resolved_to": "42d87164-e4b3-4edd-b598-648757e53f28",
+     "status": "resolved"
+    }
+   ],
+   "venue": null
+  },
+  "ufc_anon_auth_write_grants": 0,
+  "venue_claims_espn": 53,
+  "video_check_event_replay": true,
+  "views": {
+   "ufc_bout_round_stats_periods": true,
+   "ufc_event_fact_display": true
+  }
+ }
+}

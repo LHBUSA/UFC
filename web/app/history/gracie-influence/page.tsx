@@ -17,9 +17,10 @@ import { SITE } from "@/lib/site";
  *
  * Built on our own archive rather than on assertion: every bout on this page
  * is a row in ufc_bouts with a stored result, and each one links to the fight
- * page holding it. That is also why the page states a boundary out loud —
- * the archive begins at UFC 2, so UFC 1 is marked as a coverage gap and sent
- * to UFC.com instead of to an internal page we do not have.
+ * page holding it. That is also why the page states its boundary out loud:
+ * the archive begins at UFC 1 (added 2026-09-13 from ESPN's record,
+ * cross-checked against the UFC Stats capture), and anything it does not hold
+ * is sent to UFC.com instead of to an internal page we do not have.
  *
  * The argument is deliberately narrow: early tournament results demonstrated
  * the competitive value of grappling and changed what fighters had to train.
@@ -35,7 +36,7 @@ const ROYCE_SLUG = "royce-gracie-429e7d3725852ce9";
 
 const TITLE = "The Gracie Influence — Royce Gracie and the Early UFC";
 const DEK =
-  "How jiu-jitsu changed the early UFC, told from the bouts PropBetEdge actually holds: eight tournament wins, the finishes that produced them, and the limits of what those results prove.";
+  "How jiu-jitsu changed the early UFC, told from the bouts PropBetEdge actually holds: the early tournament wins, the finishes that produced them, and the limits of what those results prove.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DEK, images: [`${SITE.url}/opengraph-image`] },
 };
 
-const EARLY_EVENTS = ["UFC 2", "UFC 3", "UFC 4", "UFC 5"];
+const EARLY_EVENTS = ["UFC 1", "UFC 2", "UFC 3", "UFC 4", "UFC 5"];
 const secs = (n: number) => `${Math.floor(n / 60)}:${String(n % 60).padStart(2, "0")}`;
 
 export default async function GracieInfluencePage() {
@@ -119,9 +120,10 @@ export default async function GracieInfluencePage() {
           <b>What this page is built on.</b>
           <p>
             Every bout below is a row in the PropBetEdge archive with a stored result, and each links to the fight page
-            holding it. That archive begins at <strong>{GRACIE_ARCHIVE_FLOOR}</strong>. <strong>UFC 1 is not in it</strong>,
-            so UFC 1 moments — including Royce Gracie vs Ken Shamrock — are sent to the official UFC record instead of to a
-            page of ours. We hold the UFC 5 draw between those two men. We do not hold their UFC 1 meeting.
+            holding it. That archive begins at <strong>{GRACIE_ARCHIVE_FLOOR}</strong>, the first event, so both meetings
+            between Royce Gracie and Ken Shamrock are on file: the UFC 1 submission and the UFC 5 draw. The early cards are
+            recorded as their own rules had them — UFC 1 had no time limit — and where sources disagree, as they do on who
+            refereed which UFC 1 bout, we leave the field unresolved rather than pick one.
           </p>
         </div>
       </section>

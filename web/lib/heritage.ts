@@ -55,7 +55,7 @@ export const UFC_ERAS: HeritageEra[] = [
     eyebrow: "The beginning",
     title: "UFC 1 asks the original question",
     summary:
-      "On November 12, 1993 in Denver, an eight-man, single-night tournament put fighters from different martial arts into one cage with no weight classes, no judges, no rounds and a rule set that was sparse rather than literally rule-free. The premise was simple and provocative: which style actually works when the other side is not playing your game?",
+      "On November 12, 1993 in Denver, an eight-man, single-night tournament put fighters from different martial arts into one cage with no weight classes, no judges, no time limit and a rule set that was sparse rather than literally rule-free. The premise was simple and provocative: which style actually works when the other side is not playing your game?",
     whyItMattered:
       "The event was built as a spectacle, but it functioned as an experiment. Every assumption about fighting — that size decides, that striking beats grappling, that a single discipline is enough — was tested in public in one evening. The answers reorganized the sport.",
     moments: [
@@ -278,7 +278,7 @@ export const LEGACY_LENSES = [
  * instead of an internal one, including Royce vs Ken Shamrock at UFC 1 — a
  * bout we do not hold. What we hold of that rivalry is the UFC 5 draw. */
 
-export const GRACIE_ARCHIVE_FLOOR = "UFC 2 · March 11, 1994";
+export const GRACIE_ARCHIVE_FLOOR = "UFC 1 · November 12, 1993";
 
 export type GracieMoment = {
   key: string;
@@ -299,8 +299,8 @@ export const GRACIE_MOMENTS: readonly GracieMoment[] = [
     event: "UFC 1",
     title: "The question is asked in public",
     body:
-      "An eight-man, one-night tournament in Denver with no weight classes and no judges. Royce Gracie, the lightest man in the bracket, wins it — including a submission of Ken Shamrock. The result is the first widely seen evidence that a fight can be decided by someone who never lands the harder punch.",
-    archived: false,
+      "An eight-man, one-night tournament in Denver with no weight classes and no judges. Royce Gracie, the lightest man in the bracket, wins it — including a submission of Ken Shamrock. The result is the first widely seen evidence that a fight can be decided by someone who never lands the harder punch. Our archive holds all eight bouts of the night.",
+    archived: true,
     official: UFC_OFFICIAL.ufc1,
   },
   {
@@ -411,7 +411,7 @@ export const GRACIE_FIGURES: readonly GracieFigure[] = [
 export const GRACIE_RULES_THEN_NOW: readonly { label: string; then: string; now: string }[] = [
   { label: "Format", then: "One-night, single-elimination tournament", now: "One scheduled bout per fighter per event" },
   { label: "Weight", then: "No weight classes — open bracket", now: "Twelve divisions with contracted limits" },
-  { label: "Time", then: "No rounds and, at first, no time limit", now: "Three or five rounds of five minutes" },
+  { label: "Time", then: "No time limit through UFC 4; one timed period, later with overtime, from UFC 5; five-minute rounds from UFC 21", now: "Three or five rounds of five minutes" },
   { label: "Officials", then: "No judges in the first events", now: "Three judges scoring every round" },
   { label: "Gloves", then: "Optional; several fighters competed bare-handed", now: "Mandatory padded gloves" },
   { label: "Oversight", then: "Largely unsanctioned", now: "Athletic-commission sanctioned under the Unified Rules" },
