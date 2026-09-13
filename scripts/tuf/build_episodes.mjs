@@ -40,6 +40,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nameMatch, pairMatch } from './lib/names.mjs';
+import { resolveAirDate } from './lib/airDates.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const DATA = path.join(ROOT, 'web', 'data', 'tuf');
@@ -104,6 +105,20 @@ const pp = readJson(path.join(EVIDENCE, 'paramount_plus.json')).seasons;
 const recapUrls = readJson(path.join(EVIDENCE, 'recap_urls.json')).seasons;
 const recapDir = path.join(EVIDENCE, 'recaps');
 const recaps = Object.fromEntries(fs.readdirSync(recapDir).filter((f) => f.endsWith('.json')).map((f) => [f.replace('.json', ''), readJson(path.join(recapDir, f))]));
+/* Air dates follow the two-source rule (lib/airDates.mjs): a season with no
+ * captured independent source keeps air_date null exactly as before. */
+const airDateEvidence = readJson(path.join(EVIDENCE, 'air_dates.json')).seasons;
+function airDateFor(slug, key, listingDate) {
+  const ev = airDateEvidence[slug];
+  if (!ev) return { air_date: null };
+  const r = resolveAirDate({
+    listing_date: listingDate,
+    display_date: ev.network?.display_dates?.[key] ?? null,
+    network: ev.network ? { family: ev.network.family, url: ev.network.url, retrieved: ev.network.retrieved } : null,
+    independent: ev.independent ? { date: ev.independent.dates?.[key] ?? null, family: ev.independent.family, url: ev.independent.url, retrieved: ev.independent.retrieved, cites: ev.independent.cites } : null,
+  });
+  return r.air_date_resolution ? r : { air_date: null };
+}
 
 const METHOD_FAMILY = (m) => {
   const s = String(m || '').toLowerCase();
@@ -223,7 +238,7 @@ for (const row of inventory.seasons) {
       episode_number: n,
       title: t?.title ?? null,
       title_source: t ? 'paramount_plus' : null,
-      air_date: null,
+      ...airDateFor(slug, String(n), t?.listing_date ?? null),
       listing_date: t?.listing_date ?? null,
       recap_url: f?.recap_url || urls[String(n)] || null,
       recap_published: f?.recap_published ? f.recap_published.replace(/([+-]\d{2})(\d{2})$/, '$1:$2') : null,
@@ -333,14 +348,18 @@ for (const row of inventory.seasons) {
     episodes.push(ep);
   }
   const file = path.join(OUT_DIR, `${slug}.json`);
+  const datesResolved = episodes.some((e) => e.air_date);
   const doc = {
     slug,
-    _about: 'Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.',
+    _about: datesResolved
+      ? 'Episode layer for this season. episode_number is where a bout aired; air_date is set only where the network listing date and an independent source agree (air_date_resolution records both, and any display-date offset); listing_date alone is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.'
+      : 'Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.',
     sources: {
       titles: titles.length ? 'scripts/tuf/evidence/paramount_plus.json' : null,
       recaps: facts ? `scripts/tuf/evidence/recaps/${slug}.json` : Object.keys(urls).length ? 'scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)' : null,
     },
-    ...(finale ? { finale_broadcast: { title: finale.title, listing_date: finale.listing_date } } : {}),
+    ...(finale ? { finale_broadcast: { title: finale.title, listing_date: finale.listing_date, ...(airDateEvidence[slug] ? airDateFor(slug, 'finale', finale.listing_date) : {}) } } : {}),
+    ...(airDateEvidence[slug]?.source_defects?.length ? { source_defects: airDateEvidence[slug].source_defects } : {}),
     ...(facts?.missing_episodes?.length ? { missing_recaps: facts.missing_episodes.map((m) => ({ episode_number: m.episode_number, why: m.why })) } : {}),
     episodes,
   };

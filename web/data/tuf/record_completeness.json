@@ -2,8 +2,23 @@
   "_note": "Per-year completeness of our own fight records, used to decide whether a bout's ABSENCE from them carries any weight. A year counts as complete only when every event in it holds bouts and every one of those bouts holds a result. For such a year, a professional bout that happened would be in our records, so a TUF bout that is not there was not contested on a sanctioned card that year. For any other year the argument is not available and the bouts stay unverified.",
   "_method": "For each year: every ufc_events row in range, then every ufc_bouts row on those events, then whether each carries a ufc_bout_results row. No sampling.",
   "_generated_at": "2026-09-08T12:21:38.882Z",
+  "_partial_updates": [
+    {
+      "years": [
+        2004
+      ],
+      "at": "2026-09-13T13:43:26.087Z"
+    }
+  ],
   "_generated_by": "scripts/tuf/record_completeness.mjs",
   "years": {
+    "2004": {
+      "events": 5,
+      "events_without_bouts": 0,
+      "bouts": 39,
+      "bouts_with_result": 39,
+      "complete": true
+    },
     "2005": {
       "events": 10,
       "events_without_bouts": 0,

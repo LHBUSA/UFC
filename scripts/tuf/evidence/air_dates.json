@@ -1,0 +1,38 @@
+{
+  "_about": "Inputs to the two-source air-date rule (scripts/tuf/lib/airDates.mjs), read by scripts/tuf/build_episodes.mjs. A season appears here only when an independent source for its broadcast dates has been captured. The network listing date itself comes from scripts/tuf/evidence/paramount_plus.json; the display date recorded here is the listing's separate human-readable date, kept as evidence. Never infer a season's dates from another season's agreement.",
+  "rule": "air_date is resolved only when the network listing date exists and an independent source gives the same calendar date; otherwise null with the reason.",
+  "seasons": {
+    "tuf-1": {
+      "network": {
+        "family": "paramount_plus_episode_metadata",
+        "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+        "retrieved": "2026-09-13",
+        "display_note": "airdate is rendered as the next calendar day because airdate_iso is 19:00 Pacific (e.g. 2005-01-17T19:00:00-08:00 displays as Jan 18, 2005)",
+        "display_dates": { "1": "2005-01-18", "2": "2005-01-25", "3": "2005-02-01", "4": "2005-02-08", "5": "2005-02-15", "6": "2005-02-22", "7": "2005-03-01", "8": "2005-03-08", "9": "2005-03-15", "10": "2005-03-22", "11": "2005-03-29", "12": "2005-04-05", "finale": "2005-04-10" }
+      },
+      "independent": {
+        "family": "wikipedia",
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+        "retrieved": "2026-09-13",
+        "cites": "IMDb episode list (tt0445912), as cited by the article",
+        "dates": { "1": "2005-01-17", "2": "2005-01-24", "3": "2005-01-31", "4": "2005-02-07", "5": "2005-02-14", "6": "2005-02-21", "7": "2005-02-28", "8": "2005-03-07", "9": "2005-03-14", "10": "2005-03-21", "11": "2005-03-28", "12": "2005-04-04", "finale": "2005-04-09" }
+      },
+      "source_defects": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "episodes": [11, 12],
+          "defect": "descriptions_swapped",
+          "detail": "The listing's titles for episodes 11 (Middleweight Semi-Final #2) and 12 (Light Heavyweight Semi-Finals) agree with every other source, but its two descriptions are swapped: item 11 describes the light heavyweight semi-finals and item 12 the last middleweight final spot. Titles are used; those descriptions are used only for pairings, never for placing a fact in an episode.",
+          "retrieved": "2026-09-13"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "episodes": "all",
+          "defect": "display_date_offset",
+          "detail": "The display date is one day after the listing date for every item (19:00 Pacific rendered as the next UTC day). The listing date is the one compared.",
+          "retrieved": "2026-09-13"
+        }
+      ]
+    }
+  }
+}

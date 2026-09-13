@@ -22,6 +22,7 @@
     "test:rankings": "node --experimental-strip-types --test lib/rankingContext.test.ts",
     "test:gracie": "node --experimental-strip-types --test lib/gracieInfluence.test.ts",
     "test:display-portrait": "node --experimental-strip-types --test lib/displayPortraitPolicy.test.ts",
+    "test:tuf": "node --experimental-strip-types --test lib/tuf.test.ts lib/tufBoutState.test.ts lib/tufFinaleShape.test.ts lib/retiredFighterSlugs.test.ts ../scripts/tuf/lib/airDates.test.mjs ../scripts/tuf/lib/espnFinaleIdentity.test.mjs ../scripts/tuf/lib/names.test.mjs",
     "test:dwcs": "node --experimental-strip-types --test lib/contenderIdentity.test.ts lib/dwcsAlumni.test.ts lib/retiredFighterSlugs.test.ts lib/outcomeResolution.test.ts lib/dobEvidence.test.ts"
   },
   "dependencies": {

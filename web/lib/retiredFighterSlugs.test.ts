@@ -24,7 +24,18 @@ test("an id that merely contains the retired id is not captured", () => {
 
 test("one permanent redirect per retired fighter, never Joey Gomez", () => {
   const r = retiredFighterSlugRedirects();
-  assert.equal(r.length, 2);
+  assert.equal(r.length, 18, "2 DWCS merges + 16 TUF 1 ESPN-id attachments");
+  assert.equal(new Set(RETIRED_FIGHTER_SLUGS.map((x) => x.retiredSourceId)).size, r.length, "one entry per retired id");
   assert.ok(r.every((x) => x.permanent));
   assert.ok(!JSON.stringify(r).includes("0778f94eb5d588a5") && !JSON.stringify(r).includes("4357555"));
+});
+
+test("a TUF 1 contestant's old UFC Stats URL lands on the ESPN-keyed profile", () => {
+  const griffin = RETIRED_FIGHTER_SLUGS.find((x) => x.canonicalSlug === "forrest-griffin-2335522");
+  assert.ok(griffin, "Forrest Griffin is redirected");
+  assert.equal(griffin!.retiredSourceId, "fcffee71cff5530e");
+  assert.ok(matches(griffin!.retiredSourceId, "forrest-griffin-fcffee71cff5530e"));
+  const quarry = RETIRED_FIGHTER_SLUGS.find((x) => x.retiredSourceId === "52cae54377b433b7");
+  assert.equal(quarry?.canonicalSlug, "nate-quarry-2335773", "the canonical row's own name, not the season's printed Nathan");
+  assert.equal(RETIRED_FIGHTER_SLUGS.filter((x) => x.reconciliation === "tuf1-espn-athlete-ids-2026-09-13").length, 16);
 });

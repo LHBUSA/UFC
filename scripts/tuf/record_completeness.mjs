@@ -34,9 +34,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT = path.join(ROOT, 'web', 'data', 'tuf', 'record_completeness.json');
 
-const KNOWN_FLAGS = new Set(['--write']);
+const KNOWN_FLAGS = new Set(['--write', '--years']);
 {
-  const unknown = process.argv.slice(2).filter((a) => !KNOWN_FLAGS.has(a));
+  const unknown = process.argv.slice(2).filter((a, i, all) => !KNOWN_FLAGS.has(a) && all[i - 1] !== '--years');
   if (unknown.length) {
     console.error(`unknown option(s): ${unknown.join(' ')}`);
     console.error(`supported: ${[...KNOWN_FLAGS].join(', ')}`);
@@ -44,6 +44,9 @@ const KNOWN_FLAGS = new Set(['--write']);
   }
 }
 const WRITE = process.argv.includes('--write');
+/* --years 2004,2005 measures only those years and MERGES them into the existing
+ * file, leaving every other year exactly as it was recorded. */
+const ONLY = (() => { const i = process.argv.indexOf('--years'); return i >= 0 ? process.argv[i + 1].split(',').map(Number) : null; })();
 
 for (const f of ['.env', '.env.local', path.join('web', '.env.local')]) {
   const file = path.join(ROOT, f);
@@ -70,7 +73,7 @@ const LAST = new Date().getUTCFullYear();
 
 const main = async () => {
   const years = {};
-  for (let y = FIRST; y <= LAST; y += 1) {
+  for (const y of ONLY ?? Array.from({ length: LAST - FIRST + 1 }, (_, k) => FIRST + k)) {
     const events = await rest(`ufc_events?select=id&event_date=gte.${y}-01-01&event_date=lte.${y}-12-31`);
     let eventsWithoutBouts = 0;
     let bouts = 0;
@@ -98,9 +101,10 @@ const main = async () => {
   const payload = {
     _note: 'Per-year completeness of our own fight records, used to decide whether a bout\'s ABSENCE from them carries any weight. A year counts as complete only when every event in it holds bouts and every one of those bouts holds a result. For such a year, a professional bout that happened would be in our records, so a TUF bout that is not there was not contested on a sanctioned card that year. For any other year the argument is not available and the bouts stay unverified.',
     _method: 'For each year: every ufc_events row in range, then every ufc_bouts row on those events, then whether each carries a ufc_bout_results row. No sampling.',
-    _generated_at: new Date().toISOString(),
+    _generated_at: ONLY && fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8'))._generated_at : new Date().toISOString(),
+    ...(ONLY ? { _partial_updates: [...((fs.existsSync(OUT) && JSON.parse(fs.readFileSync(OUT, 'utf8'))._partial_updates) || []), { years: ONLY, at: new Date().toISOString() }] } : {}),
     _generated_by: 'scripts/tuf/record_completeness.mjs',
-    years,
+    years: ONLY && fs.existsSync(OUT) ? { ...JSON.parse(fs.readFileSync(OUT, 'utf8')).years, ...years } : years,
   };
 
   if (!WRITE) { console.log(`\n(dry run — pass --write to save ${path.relative(ROOT, OUT)})`); return; }

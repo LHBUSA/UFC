@@ -15,19 +15,32 @@
   },
   "_conflicts": [
     {
-      "field": "light_heavyweight_quarter_finals",
-      "detail": "The source lists Bobby Southworth as both a quarter-final winner (over Lodune Sincaid) and a quarter-final loser (to Stephan Bonnar) in the same round, and asserts Sam Hoger reached the semi-finals without naming a bout. The three stated bouts are recorded; the round is marked partial rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-07"
-    },
-    {
-      "field": "middleweight_quarter_finals",
-      "detail": "Diego Sanchez is listed twice in the quarter-finals, against Alex Karalexis and against Josh Rafferty, and Kenny Florian is placed in the semi-finals without a stated bout. Recorded as given, marked partial.",
-      "retrieved": "2026-09-07"
-    },
-    {
-      "field": "assistant_coaches",
-      "detail": "Marc Laimon, Ganyao Fairtex and Peter Welch are listed as assistant coaches for the season without being assigned to a team. Recorded without a team rather than guessed onto one.",
-      "retrieved": "2026-09-07"
+      "field": "timeline:josh_rafferty_trade_episode",
+      "kind": "episode_placement",
+      "detail": "Josh Rafferty's move to Team Couture is placed in episode 7 by the season source's episode bullets and in episode 8 by the season draft imported on 2026-09-07. The network listing does not mention the trade. Left unresolved.",
+      "candidates": [
+        {
+          "episode": 7,
+          "source": {
+            "family": "wikipedia",
+            "evidence_level": "secondary_draft",
+            "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+            "retrieved": "2026-09-13",
+            "quote": "Josh Rafferty is traded to Team Couture in another team reshuffle."
+          }
+        },
+        {
+          "episode": 8,
+          "source": {
+            "family": "wikipedia",
+            "evidence_level": "secondary_draft",
+            "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+            "retrieved": "2026-09-07",
+            "note": "season draft import (scripts/tuf/import_season.mjs), team-changes listing"
+          }
+        }
+      ],
+      "retrieved": "2026-09-13"
     }
   ],
   "coaches": [
@@ -49,33 +62,66 @@
       "team": null,
       "name": "Marc Laimon",
       "role": "assistant",
-      "role_basis": "listed on a team staff with no head-coach designation"
+      "role_basis": "named in the season source's cast list as the season's grappling coach, with no team (Wikipedia, secondary)",
+      "discipline": "Grappling",
+      "role_sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Marc Laimon, grappling coach"
+        }
+      ]
     },
     {
       "team": null,
       "name": "Ganyao Fairtex",
       "role": "assistant",
-      "role_basis": "listed on a team staff with no head-coach designation"
+      "role_basis": "named in the season source's cast list as the season's muay thai coach, with no team (Wikipedia, secondary)",
+      "discipline": "Muay Thai",
+      "role_sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Ganyao Fairtex, Muay Thai coach"
+        }
+      ]
     },
     {
       "team": null,
       "name": "Peter Welch",
       "role": "assistant",
-      "role_basis": "listed on a team staff with no head-coach designation"
-    }
-  ],
-  "coaching_changes": [
-    {
-      "episode": 4,
-      "change": "Alex Schoenauer traded to Team Couture"
+      "role_basis": "named in the season source's cast list as the season's boxing coach, with no team (Wikipedia, secondary)",
+      "discipline": "Boxing",
+      "role_sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Peter Welch, boxing coach"
+        }
+      ]
     },
     {
-      "episode": 8,
-      "change": "Josh Rafferty traded to Team Couture"
-    },
-    {
-      "episode": 9,
-      "change": "Kenny Florian traded to Team Couture"
+      "team": null,
+      "name": "Nathan Quarry",
+      "role": "assistant",
+      "from_episode": 8,
+      "role_basis": "asked by Dana White to stay on as an assistant coach after withdrawing injured in episode 8 (Wikipedia, secondary); no team is stated",
+      "role_sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "White asks Quarry to stay on as an assistant coach, and he agrees."
+        }
+      ],
+      "fighter_id": "e8999544-0e72-4010-9d05-d4325b552f45"
     }
   ],
   "teams": [
@@ -85,95 +131,107 @@
         {
           "name": "Bobby Southworth",
           "weight_class": "Light Heavyweight",
-          "fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622"
-        },
-        {
-          "name": "Sam Hoger",
-          "weight_class": "Light Heavyweight",
-          "fighter_id": "190cb5c6-91eb-4f62-a4ce-1eae9c7c4550"
-        },
-        {
-          "name": "Forrest Griffin",
-          "weight_class": "Light Heavyweight",
-          "fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d"
-        },
-        {
-          "name": "Alex Schoenauer",
-          "weight_class": "Light Heavyweight",
-          "note": "Traded to Team Couture in episode 4.",
-          "fighter_id": "604ffb5b-aa8b-480e-bfd8-42d77fed28ed"
+          "fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622",
+          "pick": 1
         },
         {
           "name": "Josh Koscheck",
           "weight_class": "Middleweight",
-          "fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1"
+          "fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1",
+          "pick": 2
         },
         {
           "name": "Diego Sanchez",
           "weight_class": "Middleweight",
-          "fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9"
+          "fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
+          "pick": 3
+        },
+        {
+          "name": "Sam Hoger",
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "190cb5c6-91eb-4f62-a4ce-1eae9c7c4550",
+          "pick": 4
+        },
+        {
+          "name": "Forrest Griffin",
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+          "pick": 5
         },
         {
           "name": "Kenny Florian",
           "weight_class": "Middleweight",
-          "note": "Traded to Team Couture in episode 9.",
-          "fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba"
+          "fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba",
+          "pick": 6
+        },
+        {
+          "name": "Alex Schoenauer",
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "604ffb5b-aa8b-480e-bfd8-42d77fed28ed",
+          "pick": 7
         },
         {
           "name": "Josh Rafferty",
           "weight_class": "Middleweight",
-          "note": "Traded to Team Couture in episode 8.",
-          "fighter_id": "a4dd7ce2-b633-429b-adaf-a37b7cb7c46c"
+          "fighter_id": "a4dd7ce2-b633-429b-adaf-a37b7cb7c46c",
+          "pick": 8
         }
-      ]
+      ],
+      "pick_basis": "Draft order from the season source's episode 1 team-selection table (Wikipedia, secondary). Rosters are as originally assigned; moves are timeline events."
     },
     {
       "name": "Team Couture",
       "roster": [
         {
-          "name": "Stephan Bonnar",
-          "weight_class": "Light Heavyweight",
-          "fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c"
-        },
-        {
-          "name": "Mike Swick",
-          "weight_class": "Light Heavyweight",
-          "fighter_id": "86d108cd-fdf9-4ba6-bd7a-e0572a2e10c0"
-        },
-        {
-          "name": "Lodune Sincaid",
-          "weight_class": "Light Heavyweight",
-          "fighter_id": "20626c40-82a5-47f0-b8dd-3ed5d0fbfef9"
-        },
-        {
-          "name": "Jason Thacker",
-          "weight_class": "Light Heavyweight",
-          "note": "Eliminated in episode 2.",
-          "fighter_id": "de37d9ab-7795-438e-b7fc-7479f9f4bbef"
-        },
-        {
           "name": "Nathan Quarry",
           "weight_class": "Middleweight",
-          "note": "Withdrew in episode 8 with an ankle injury."
+          "pick": 1,
+          "fighter_id": "e8999544-0e72-4010-9d05-d4325b552f45"
         },
         {
           "name": "Chris Leben",
           "weight_class": "Middleweight",
-          "note": "Brought back into the tournament to replace Nathan Quarry.",
-          "fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590"
+          "fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590",
+          "pick": 2
+        },
+        {
+          "name": "Stephan Bonnar",
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
+          "pick": 3
+        },
+        {
+          "name": "Mike Swick",
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "86d108cd-fdf9-4ba6-bd7a-e0572a2e10c0",
+          "pick": 4
+        },
+        {
+          "name": "Lodune Sincaid",
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "20626c40-82a5-47f0-b8dd-3ed5d0fbfef9",
+          "pick": 5
         },
         {
           "name": "Alex Karalexis",
           "weight_class": "Middleweight",
-          "fighter_id": "f45ce067-f3a8-41d1-a889-1401d4fc35ac"
+          "fighter_id": "f45ce067-f3a8-41d1-a889-1401d4fc35ac",
+          "pick": 6
         },
         {
           "name": "Chris Sanford",
           "weight_class": "Middleweight",
-          "note": "Eliminated in episode 2.",
-          "fighter_id": "5876c5f7-eca1-4d00-bee4-e4d018134d56"
+          "fighter_id": "5876c5f7-eca1-4d00-bee4-e4d018134d56",
+          "pick": 7
+        },
+        {
+          "name": "Jason Thacker",
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "de37d9ab-7795-438e-b7fc-7479f9f4bbef",
+          "pick": 8
         }
-      ]
+      ],
+      "pick_basis": "Draft order from the season source's episode 1 team-selection table (Wikipedia, secondary). Rosters are as originally assigned; moves are timeline events."
     }
   ],
   "bracket": [
@@ -181,10 +239,8 @@
       "weight_class": "Light Heavyweight",
       "stages": [
         {
-          "stage": "quarter_final",
-          "label": "Quarter-finals",
-          "status": "unverified",
-          "note": "Partial. Sam Hoger is described as reaching the semi-finals without a stated bout, and Bobby Southworth appears as both a winner and a loser in this round. See conflicts.",
+          "stage": "elimination",
+          "label": "Elimination fights",
           "bouts": [
             {
               "a": "Bobby Southworth",
@@ -195,22 +251,80 @@
               "time": "0:12",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 3, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "a_fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622",
-              "b_fighter_id": "20626c40-82a5-47f0-b8dd-3ed5d0fbfef9"
-            },
-            {
-              "a": "Forrest Griffin",
-              "b": "Alex Schoenauer",
-              "winner": "Forrest Griffin",
-              "method": "Submission (strikes)",
-              "round": 1,
-              "time": "1:20",
-              "episode": null,
-              "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
-              "b_fighter_id": "604ffb5b-aa8b-480e-bfd8-42d77fed28ed"
+              "b_fighter_id": "20626c40-82a5-47f0-b8dd-3ed5d0fbfef9",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Bobby Southworth defeated Lodune Sincaid by KO (strikes) at 0:12 of the second round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "ikGbywWpCajQDB90W53YGcmGZ9_l_Jzk",
+                  "listing_item": 3,
+                  "retrieved": "2026-09-13",
+                  "quote": "Two fighters christen the Octagon'",
+                  "note": "names no fighter; the first fight of the season aired here"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Bobby Southworth defeated Lodune Sincaid by KO (strikes) at 0:12 of the second round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  },
+                  {
+                    "kind": "commission_oversight",
+                    "family": "wikipedia",
+                    "evidence_level": "secondary_draft",
+                    "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                    "retrieved": "2026-09-13",
+                    "quote": "the Nevada State Athletic Commission gives Southworth 2 hours to cut 2 pounds",
+                    "note": "shows the commission overseeing this house bout's weigh-in; corroborates regulation, not the exhibition label by itself"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             },
             {
               "a": "Stephan Bonnar",
@@ -219,11 +333,149 @@
               "method": "Decision (split)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 7,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 7, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "a_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
-              "b_fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622"
+              "b_fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Stephan Bonnar defeated Bobby Southworth by split decision after 2 rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "GDzsFvzKw1wXYtf0NjnEMj9qzy4sHBWS",
+                  "listing_item": 7,
+                  "retrieved": "2026-09-13",
+                  "quote": "The Light Heavyweights have a match up that pits two of the strongest fighters against each other.",
+                  "note": "names no fighter"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Stephan Bonnar defeated Bobby Southworth by split decision after 2 rounds."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
+            },
+            {
+              "a": "Forrest Griffin",
+              "b": "Alex Schoenauer",
+              "winner": "Forrest Griffin",
+              "method": "Submission (strikes)",
+              "round": 1,
+              "time": "1:20",
+              "episode": 9,
+              "classification": "exhibition",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 9, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
+              "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+              "b_fighter_id": "604ffb5b-aa8b-480e-bfd8-42d77fed28ed",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Forrest Griffin defeated Alex Schoenauer by submission (strikes) at 1:20 of the first round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "xSil9csBKcjEmYmibordYZ0fkv1Vetf2",
+                  "listing_item": 9,
+                  "retrieved": "2026-09-13",
+                  "quote": "The Light Heavyweights compete in the challenge, and controversy arises during the fighter selection.",
+                  "note": "names no fighter"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Forrest Griffin defeated Alex Schoenauer by submission (strikes) at 1:20 of the first round."
+                }
+              ],
+              "result_note": "The same article's finale section says Griffin beat Schoenauer 'by TKO'; the episode wording is kept.",
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             }
           ]
         },
@@ -240,9 +492,81 @@
               "time": "1:05",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 12, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
-              "b_fighter_id": "190cb5c6-91eb-4f62-a4ce-1eae9c7c4550"
+              "b_fighter_id": "190cb5c6-91eb-4f62-a4ce-1eae9c7c4550",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Forrest Griffin defeated Sam Hoger by TKO (strikes) at 1:05 of the second round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "WWsGd_YF0JBJ9i3hzHVhlM7G379ojqoz",
+                  "listing_item": 12,
+                  "retrieved": "2026-09-13",
+                  "quote": "Light Heavyweight Semi-Finals",
+                  "note": "listing title"
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "GNQbFUSqbuIOaOeVwMDAdMrbWLXZ_bcJ",
+                  "listing_item": 11,
+                  "retrieved": "2026-09-13",
+                  "quote": "Forrest Griffin finds out if his cut has healed enough to fight Sam Hoger",
+                  "note": "names the pairing, in the swapped item-11 description; used for the pairing only"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Forrest Griffin defeated Sam Hoger by TKO (strikes) at 1:05 of the second round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             },
             {
               "a": "Stephan Bonnar",
@@ -253,16 +577,87 @@
               "time": "4:58",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 12, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "a_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
-              "b_fighter_id": "86d108cd-fdf9-4ba6-bd7a-e0572a2e10c0"
+              "b_fighter_id": "86d108cd-fdf9-4ba6-bd7a-e0572a2e10c0",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Stephan Bonnar defeated Mike Swick by submission (triangle armbar) at 4:58 of the first round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "WWsGd_YF0JBJ9i3hzHVhlM7G379ojqoz",
+                  "listing_item": 12,
+                  "retrieved": "2026-09-13",
+                  "quote": "Light Heavyweight Semi-Finals",
+                  "note": "listing title"
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "GNQbFUSqbuIOaOeVwMDAdMrbWLXZ_bcJ",
+                  "listing_item": 11,
+                  "retrieved": "2026-09-13",
+                  "quote": "Stephan Bonnar fights his close friend and training partner Mike Swick",
+                  "note": "names the pairing, in the swapped item-11 description; used for the pairing only"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Stephan Bonnar defeated Mike Swick by submission (triangle armbar) at 4:58 of the first round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             }
           ]
         },
         {
           "stage": "final",
           "label": "Tournament final",
-          "note": "The bout credited with changing the sport's commercial trajectory. Contested on the sanctioned finale card, so it counts as a professional bout.",
           "bouts": [
             {
               "a": "Forrest Griffin",
@@ -276,9 +671,20 @@
               "classification_source": "contested on a sanctioned UFC card; VERIFIED against our own ufc_bout_results row (ufcstats: Decision - Unanimous, round 3, 300s, Light Heavyweight)",
               "on_finale_card": true,
               "tournament_deciding": true,
-              "scorecards": "29-28, 29-28, 29-28",
               "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
-              "b_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c"
+              "b_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
+              "ufc_bout_id": "65856c98-1421-4859-8e62-4eb651fdc221",
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "our_records",
+                    "evidence_level": "canonical",
+                    "what": "ufc_bouts 65856c98-1421-4859-8e62-4eb651fdc221 + ufc_bout_results on The Ultimate Fighter: Team Couture vs. Team Liddell Finale, 2005-04-09",
+                    "note": "contested on the sanctioned finale card; the result row names the tournament winner"
+                  }
+                ],
+                "corroborating": []
+              }
             }
           ]
         }
@@ -288,10 +694,8 @@
       "weight_class": "Middleweight",
       "stages": [
         {
-          "stage": "quarter_final",
-          "label": "Quarter-finals",
-          "status": "unverified",
-          "note": "Partial. Diego Sanchez is listed twice in this round and Kenny Florian is placed in the semi-finals without a stated bout. See conflicts.",
+          "stage": "elimination",
+          "label": "Elimination fights",
           "bouts": [
             {
               "a": "Diego Sanchez",
@@ -302,9 +706,71 @@
               "time": "1:47",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 4, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
-              "b_fighter_id": "f45ce067-f3a8-41d1-a889-1401d4fc35ac"
+              "b_fighter_id": "f45ce067-f3a8-41d1-a889-1401d4fc35ac",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Alex Karalexis by submission (rear naked choke) at 1:47 of the first round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "ITewzu08Ny7kRkNRpIgG6jhRt3h67wid",
+                  "listing_item": 4,
+                  "retrieved": "2026-09-13",
+                  "quote": "two Middle Weights face off in the Octagon'",
+                  "note": "names no fighter"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Alex Karalexis by submission (rear naked choke) at 1:47 of the first round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             },
             {
               "a": "Josh Koscheck",
@@ -313,11 +779,82 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 6,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 6, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "a_fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1",
-              "b_fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590"
+              "b_fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Josh Koscheck defeated Chris Leben by unanimous decision after two rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "GDzsFvzKw1wXYtf0NjnEMj9qzy4sHBWS",
+                  "listing_item": 7,
+                  "retrieved": "2026-09-13",
+                  "quote": "After the much-anticipated Leben vs Koscheck fight",
+                  "note": "the next episode opens after this pairing"
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "FNQYXSgrM6B_YjTAOCAyLcO83_g8pvmc",
+                  "listing_item": 6,
+                  "retrieved": "2026-09-13",
+                  "quote": "the emotional conflict is settled in the Octagon'"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Josh Koscheck defeated Chris Leben by unanimous decision after two rounds."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             },
             {
               "a": "Diego Sanchez",
@@ -328,16 +865,67 @@
               "time": "1:48",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 8, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
-              "b_fighter_id": "a4dd7ce2-b633-429b-adaf-a37b7cb7c46c"
+              "b_fighter_id": "a4dd7ce2-b633-429b-adaf-a37b7cb7c46c",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Josh Rafferty by submission (rear naked choke) at 1:48 of the first round."
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Josh Rafferty by submission (rear naked choke) at 1:48 of the first round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             }
           ]
         },
         {
           "stage": "semi_final",
           "label": "Semi-finals",
-          "note": "Chris Leben returned to the tournament here after Nathan Quarry withdrew with an ankle injury.",
           "bouts": [
             {
               "a": "Kenny Florian",
@@ -348,10 +936,72 @@
               "time": "3:11",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 10, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "replacement": "Chris Leben replaced Nathan Quarry, who withdrew with an ankle injury",
               "a_fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba",
-              "b_fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590"
+              "b_fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Kenny Florian defeated Chris Leben by TKO (doctor stoppage) at 3:11 of the second round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "YA5TIwXDGp2sJHrrnlP41IyzxnzI4cYp",
+                  "listing_item": 10,
+                  "retrieved": "2026-09-13",
+                  "quote": "Middleweight Semi-Final #1",
+                  "note": "listing title"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Kenny Florian defeated Chris Leben by TKO (doctor stoppage) at 3:11 of the second round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             },
             {
               "a": "Diego Sanchez",
@@ -362,9 +1012,71 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought in the house before the live finale and aired in episode 11, not contested on a sanctioned card. Affirmative basis: ESPN's 2020 retrospective reports that Lorenzo Fertitta worked with the Nevada State Athletic Commission to designate fights before the live finale as exhibitions (secondary_affirmative; not the commission record). Absence from our complete 2004 records is corroboration only.",
               "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
-              "b_fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1"
+              "b_fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1",
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Josh Koscheck by split decision after 3 rounds"
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+                  "content_id": "GNQbFUSqbuIOaOeVwMDAdMrbWLXZ_bcJ",
+                  "listing_item": 11,
+                  "retrieved": "2026-09-13",
+                  "quote": "Middleweight Semi-Final #2",
+                  "note": "listing title; this item's description is swapped with item 12 (see source_defects)"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+                  "retrieved": "2026-09-13",
+                  "quote": "Diego Sanchez defeated Josh Koscheck by split decision after 3 rounds"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "espn_retrospective",
+                    "evidence_level": "secondary_affirmative",
+                    "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+                    "author": "Michael Rothstein",
+                    "published": "2020-04-09",
+                    "retrieved": "2026-09-13",
+                    "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions",
+                    "scope": "every TUF 1 fight before the live finale",
+                    "not": "not the commission record itself; reopen if a commission record contradicts it"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2004,
+                    "note": "no bout between these two fighters in our records for 2004 (complete: 5 events, 39 bouts, every one with a result) or 2005; the season was filmed in late 2004",
+                    "filming_source": {
+                      "family": "ufc.com",
+                      "evidence_level": "official",
+                      "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+                      "published": "2015-04-14",
+                      "retrieved": "2026-09-13",
+                      "quote": "Filming for the show started in late 2004"
+                    }
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a Nevada State Athletic Commission record contradicts the ESPN account"
+              }
             }
           ]
         },
@@ -385,7 +1097,19 @@
               "on_finale_card": true,
               "tournament_deciding": true,
               "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
-              "b_fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba"
+              "b_fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba",
+              "ufc_bout_id": "45c3c849-90b4-47ec-a891-76e7a1effa5f",
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "our_records",
+                    "evidence_level": "canonical",
+                    "what": "ufc_bouts 45c3c849-90b4-47ec-a891-76e7a1effa5f + ufc_bout_results on The Ultimate Fighter: Team Couture vs. Team Liddell Finale, 2005-04-09",
+                    "note": "contested on the sanctioned finale card; the result row names the tournament winner"
+                  }
+                ],
+                "corroborating": []
+              }
             }
           ]
         }
@@ -427,5 +1151,550 @@
       "verified_against": "ufc_bout_results — Diego Sanchez def. Kenny Florian, KO/TKO, round 1, 169s, 2005-04-09",
       "fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9"
     }
-  ]
+  ],
+  "competition_format": {
+    "kind": "elimination_then_semifinals",
+    "label": "Elimination fights, then semi-finals, then live finals",
+    "applies_to": "each weight class",
+    "phases": [
+      {
+        "stage": "elimination",
+        "label": "Elimination fights",
+        "expected_bouts": null,
+        "advances": 4,
+        "rule": "Team challenges decided which team chose the next matchup, and the loser of each fight left the competition. Early challenges also eliminated fighters without a fight. A fighter could fight more than once, and a fighter could reach the last four without a house fight."
+      },
+      {
+        "stage": "semi_final",
+        "label": "Semi-finals",
+        "expected_bouts": 2
+      },
+      {
+        "stage": "final",
+        "label": "Final",
+        "expected_bouts": 1,
+        "contested": "on the live finale card"
+      }
+    ],
+    "sources": [
+      {
+        "family": "wikipedia",
+        "evidence_level": "secondary_draft",
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+        "retrieved": "2026-09-13",
+        "quote": "to determine which had the right to pair one of their fighters against an opponent of their choice"
+      },
+      {
+        "family": "wikipedia",
+        "evidence_level": "secondary_draft",
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter",
+        "retrieved": "2026-09-13",
+        "quote": "These challenges resulted in eliminations of fighters who hadn't fought"
+      },
+      {
+        "family": "wikipedia",
+        "evidence_level": "secondary_draft",
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter",
+        "retrieved": "2026-09-13",
+        "quote": "fighters would also leave the house for good upon losing"
+      },
+      {
+        "family": "paramount_plus_episode_metadata",
+        "evidence_level": "network_listing",
+        "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+        "content_id": "BoArfPQnMrsDrVTV6kXyLPso9Xt3rRbX",
+        "listing_item": 2,
+        "retrieved": "2026-09-13",
+        "quote": "two fighters are eliminated and sent home"
+      }
+    ]
+  },
+  "_resolved_conflicts": [
+    {
+      "field": "light_heavyweight_quarter_finals",
+      "detail": "The source lists Bobby Southworth as both a quarter-final winner (over Lodune Sincaid) and a quarter-final loser (to Stephan Bonnar) in the same round, and asserts Sam Hoger reached the semi-finals without naming a bout. The three stated bouts are recorded; the round is marked partial rather than reordered into something the source does not say.",
+      "resolved_by": "tuf1-gold-standard",
+      "resolved_with": "competition_format",
+      "resolution": "Not a source conflict. Season 1 had an elimination phase, not quarter-finals: the loser of each house fight left, so a fighter could fight twice and others reached the last four without a house fight. Every bout fits that format and none is missing (see competition_format)."
+    },
+    {
+      "field": "middleweight_quarter_finals",
+      "detail": "Diego Sanchez is listed twice in the quarter-finals, against Alex Karalexis and against Josh Rafferty, and Kenny Florian is placed in the semi-finals without a stated bout. Recorded as given, marked partial.",
+      "resolved_by": "tuf1-gold-standard",
+      "resolved_with": "competition_format",
+      "resolution": "Not a source conflict. Season 1 had an elimination phase, not quarter-finals: the loser of each house fight left, so a fighter could fight twice and others reached the last four without a house fight. Every bout fits that format and none is missing (see competition_format)."
+    },
+    {
+      "field": "assistant_coaches",
+      "detail": "Marc Laimon, Ganyao Fairtex and Peter Welch are listed as assistant coaches for the season without being assigned to a team. Recorded without a team rather than guessed onto one.",
+      "resolved_by": "tuf1-gold-standard",
+      "resolved_with": "wikipedia cast list (discipline coaches)",
+      "resolution": "Not a gap to guess at. The season source names them as the grappling, Muay Thai and boxing coaches of the season, with no team; they are recorded with their discipline and team left empty."
+    }
+  ],
+  "timeline_events": [
+    {
+      "id": "tuf1-draft",
+      "episode": 1,
+      "type": "team_selection",
+      "fighters": [],
+      "detail": "Coaches Chuck Liddell and Randy Couture drafted their teams. First picks: Bobby Southworth (Liddell) and Nate Quarry (Couture).",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Light heavyweight and middleweight teams are chosen by coaches Liddell and Couture"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "spUhuYW6QdsZ7uX8u25WyTpmuOZY9k3u",
+          "listing_item": 1,
+          "retrieved": "2026-09-13",
+          "quote": "Sixteen Mixed Martial Artist fighters begin their journey"
+        }
+      ]
+    },
+    {
+      "id": "tuf1-thacker-out",
+      "episode": 2,
+      "type": "elimination_without_fight",
+      "fighters": [
+        "Jason Thacker"
+      ],
+      "team": "Team Couture",
+      "detail": "Sent home by Couture without a fight.",
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "BoArfPQnMrsDrVTV6kXyLPso9Xt3rRbX",
+          "listing_item": 2,
+          "retrieved": "2026-09-13",
+          "quote": "two fighters are eliminated and sent home",
+          "note": "names neither fighter"
+        },
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Jason Thacker is sent home by Couture."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-sanford-out",
+      "episode": 2,
+      "type": "elimination_without_fight",
+      "fighters": [
+        "Chris Sanford"
+      ],
+      "team": "Team Couture",
+      "detail": "Sent home by Couture without a fight.",
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "BoArfPQnMrsDrVTV6kXyLPso9Xt3rRbX",
+          "listing_item": 2,
+          "retrieved": "2026-09-13",
+          "quote": "two fighters are eliminated and sent home",
+          "note": "names neither fighter"
+        },
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Chris Sanford is sent home by Couture."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-southworth-weight",
+      "episode": 3,
+      "type": "weight_issue",
+      "fighters": [
+        "Bobby Southworth"
+      ],
+      "detail": "Cut about 20 lb in 24 hours; weighed 208 lb, was given 2 hours by the Nevada State Athletic Commission, and made 206 lb.",
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "ikGbywWpCajQDB90W53YGcmGZ9_l_Jzk",
+          "listing_item": 3,
+          "retrieved": "2026-09-13",
+          "quote": "a top contender struggles to lose 20 lbs in 24 hours, or face elimination",
+          "note": "names no fighter"
+        },
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "the Nevada State Athletic Commission gives Southworth 2 hours to cut 2 pounds"
+        }
+      ]
+    },
+    {
+      "id": "tuf1-schoenauer-trade",
+      "episode": 4,
+      "type": "trade",
+      "fighters": [
+        "Alex Schoenauer"
+      ],
+      "from_team": "Team Liddell",
+      "to_team": "Team Couture",
+      "detail": "Moved to Team Couture in a team reshuffle.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Alex Schoenauer is traded to Team Couture as part of a team reshuffle."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-quarry-injury",
+      "episode": 5,
+      "type": "injury",
+      "fighters": [
+        "Nathan Quarry"
+      ],
+      "detail": "Injured his ankle in practice.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Nate Quarry injures his ankle after Couture lands on his ankle during a takedown in practice."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-leben-injury",
+      "episode": 5,
+      "type": "injury",
+      "fighters": [
+        "Chris Leben"
+      ],
+      "detail": "Cut his hand punching a door window during a house incident.",
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "Wihp2LD6hEdtskUWUezTvYOsGy153ZAc",
+          "listing_item": 5,
+          "retrieved": "2026-09-13",
+          "quote": "A night on the town for the team members turns violent.",
+          "note": "names no fighter"
+        },
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "punching the front door window with his left hand"
+        }
+      ]
+    },
+    {
+      "id": "tuf1-koscheck-leben-ordered",
+      "episode": 5,
+      "type": "matchup_ordered",
+      "fighters": [
+        "Josh Koscheck",
+        "Chris Leben"
+      ],
+      "detail": "Dana White ordered Koscheck vs Leben to settle the incident, with no challenge.",
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "Wihp2LD6hEdtskUWUezTvYOsGy153ZAc",
+          "listing_item": 5,
+          "retrieved": "2026-09-13",
+          "quote": "Dana White and his coaches wrestle with how to settle the conflict.",
+          "note": "names no fighter"
+        },
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "the only fair way to resolve the situation is for Koscheck and Leben to fight"
+        }
+      ]
+    },
+    {
+      "id": "tuf1-rafferty-trade",
+      "episode": null,
+      "episode_candidates": [
+        7,
+        8
+      ],
+      "conflict": "timeline:josh_rafferty_trade_episode",
+      "type": "trade",
+      "fighters": [
+        "Josh Rafferty"
+      ],
+      "from_team": "Team Liddell",
+      "to_team": "Team Couture",
+      "detail": "Moved to Team Couture. Episode unresolved: 7 or 8.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Josh Rafferty is traded to Team Couture in another team reshuffle."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-quarry-withdrawal",
+      "episode": 8,
+      "type": "withdrawal",
+      "fighters": [
+        "Nathan Quarry"
+      ],
+      "detail": "Left the competition because of the ankle injury.",
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "yXh34gY8fl9J_EeArDBZatvU25USf_Kh",
+          "listing_item": 8,
+          "retrieved": "2026-09-13",
+          "quote": "Nate discovers his fate in the game"
+        },
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Nate Quarry is eliminated from the show due to his ankle injury."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-leben-return",
+      "episode": 8,
+      "type": "replacement_return",
+      "fighters": [
+        "Chris Leben"
+      ],
+      "replaces": "Nathan Quarry",
+      "detail": "Returned to the competition in place of Quarry, who chose him from the eliminated fighters.",
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "yXh34gY8fl9J_EeArDBZatvU25USf_Kh",
+          "listing_item": 8,
+          "retrieved": "2026-09-13",
+          "quote": "a previously eliminated fighter gets another shot at the contract",
+          "note": "names no fighter"
+        },
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Quarry gets to choose his replacement from the loser's lounge, and he chooses Chris Leben."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-quarry-assistant",
+      "episode": 8,
+      "type": "staff_change",
+      "fighters": [
+        "Nathan Quarry"
+      ],
+      "detail": "Stayed on as an assistant coach. No team is stated.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "White asks Quarry to stay on as an assistant coach, and he agrees."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-florian-trade",
+      "episode": 9,
+      "type": "trade",
+      "fighters": [
+        "Kenny Florian"
+      ],
+      "from_team": "Team Liddell",
+      "to_team": "Team Couture",
+      "detail": "Moved to Team Couture in a team reshuffle.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Kenny Florian is traded to Team Couture in another team reshuffle."
+        }
+      ]
+    },
+    {
+      "id": "tuf1-griffin-cut",
+      "episode": 9,
+      "type": "injury",
+      "fighters": [
+        "Forrest Griffin"
+      ],
+      "detail": "Cut above the left eye in the Schoenauer fight, feared serious enough to stop him fighting on.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Griffin receives a cut above his left eye"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "YA5TIwXDGp2sJHrrnlP41IyzxnzI4cYp",
+          "listing_item": 10,
+          "retrieved": "2026-09-13",
+          "quote": "Forrest's cut puts his dream for the contract in jeopardy.",
+          "note": "next episode"
+        }
+      ]
+    },
+    {
+      "id": "tuf1-southworth-alternate",
+      "episode": 10,
+      "type": "alternate_named",
+      "fighters": [
+        "Bobby Southworth"
+      ],
+      "replaces": "Forrest Griffin",
+      "detail": "Named by Griffin as his alternate. Griffin was cleared, and Southworth did not fight.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "He chooses Bobby Southworth, who is not given the chance to fight"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "GNQbFUSqbuIOaOeVwMDAdMrbWLXZ_bcJ",
+          "listing_item": 11,
+          "retrieved": "2026-09-13",
+          "quote": "give up his chance for the contract to alternate Bobby Southworth",
+          "note": "swapped item-11 description; names the alternate"
+        }
+      ]
+    },
+    {
+      "id": "tuf1-semis-announced",
+      "episode": 10,
+      "type": "semi_final_matchups_announced",
+      "fighters": [],
+      "detail": "Dana White announced how the semi-final opponents would be decided. The content of the announcement is not stated.",
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "YA5TIwXDGp2sJHrrnlP41IyzxnzI4cYp",
+          "listing_item": 10,
+          "retrieved": "2026-09-13",
+          "quote": "a surprising announcement from Dana that effect who they will fight to get into the finals"
+        }
+      ]
+    }
+  ],
+  "overview": {
+    "format": {
+      "value": "Elimination fights, then semi-finals, then live finals",
+      "basis": "competition_format"
+    },
+    "premiere": {
+      "date": "2005-01-17",
+      "basis": "episode 1 air date (network listing + independent source agree)"
+    },
+    "finale": {
+      "date": "2005-04-09",
+      "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
+      "basis": "our records (ufc_events)"
+    },
+    "filming": {
+      "value": "Late 2004",
+      "sources": [
+        {
+          "family": "ufc.com",
+          "evidence_level": "official",
+          "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1",
+          "published": "2015-04-14",
+          "retrieved": "2026-09-13",
+          "quote": "Filming for the show started in late 2004"
+        },
+        {
+          "family": "espn_retrospective",
+          "evidence_level": "secondary",
+          "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago",
+          "published": "2020-04-09",
+          "retrieved": "2026-09-13",
+          "quote": "The 16 fighters all lived in the same house for 54 days"
+        }
+      ]
+    },
+    "cast_size": {
+      "value": 16,
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/",
+          "content_id": "spUhuYW6QdsZ7uX8u25WyTpmuOZY9k3u",
+          "listing_item": 1,
+          "retrieved": "2026-09-13",
+          "quote": "Sixteen Mixed Martial Artist fighters begin their journey"
+        }
+      ]
+    },
+    "network": {
+      "value": "Spike TV",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1",
+          "retrieved": "2026-09-13",
+          "quote": "Spike TV",
+          "note": "the article's infobox network field"
+        }
+      ]
+    }
+  }
 }
