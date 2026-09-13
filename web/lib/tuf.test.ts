@@ -16,6 +16,7 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import completenessJson from "../data/tuf/record_completeness.json" with { type: "json" };
 import inventoryJson from "../data/tuf/seasons.json" with { type: "json" };
@@ -1417,7 +1418,7 @@ test("TUF 3: the misprinted commission date keeps its printed form beside the in
   const bout = house34("tuf-3").find((b) => b.commission_record_id === rec.id)!;
   assert.equal(bout.fight_date, "2006-02-07");
   assert.match(String((DETAIL_BY_SLUG["tuf-3"] as unknown as { _provenance: { note: string } })._provenance.note), /02\/0706.*separator between day and year is missing/);
-  assert.equal(ledger34().records.filter((r) => r.date_printed).length, 1, "no other record claims a misprint");
+  assert.equal(ledger34().records.filter((r) => Object.values(DOC34).includes(r.document_id) && r.date_printed).length, 1, "no other TUF 3/4 record claims a misprint");
 });
 
 test("TUF 3 + TUF 4: referees, cards and weights applied; DOBs recorded only; identities, finals and conflicts untouched", () => {
@@ -1448,4 +1449,180 @@ test("TUF 3 + TUF 4: referees, cards and weights applied; DOBs recorded only; id
   assert.deepEqual(conflicts("tuf-4"), ["Welterweight_quarter_final"], "Spratt's second quarter-final stays open");
   assert.equal(ledger.records.filter((r) => r.document_id === "nsac-2004-tuf-season-1").length, 10, "TUF 1 ledger untouched");
   assert.equal(ledger.records.filter((r) => r.document_id === "nsac-2005-tuf-season-2").length, 12, "TUF 2 ledger untouched");
+});
+
+/* ---- TUF 5 + TUF 6: Nevada State Athletic Commission reconciliation ---------- */
+
+const DOC56: Record<string, string> = { "tuf-5": "nsac-2007-tuf-season-5", "tuf-6": "nsac-2007-tuf-season-6" };
+const BATCH56 = "tuf5-tuf6-nsac-reconciliation";
+type Bout56 = Omit<NsacBout, "corrections" | "superseded_result_sources"> & {
+  corrections?: Array<{ field: string; kind?: string; old: unknown; new: unknown; batch?: string; source?: { document_id?: string; record_id?: string }; reason?: string }>;
+  superseded_result_sources?: Array<{ family: string; superseded_by?: string; note?: string }>;
+};
+const bouts56 = (slug: string) => bouts34(slug) as unknown as Bout56[];
+const house56 = (slug: string) => bouts56(slug).filter((b) => !b.on_finale_card);
+const main56 = (slug: string) => JSON.parse(readFileSync(new URL(`../data/tuf/seasons/${slug}.json`, import.meta.url), "utf8"));
+const nsac56Audit = JSON.parse(readFileSync(new URL("../../scripts/tuf/evidence/nsac_tuf5_tuf6_audit_2026-09-13.json", import.meta.url), "utf8")) as {
+  seasons: Record<string, { document: { id: string; sha256: string }; bouts: Array<{ bout: string; stage: string; record_id: string; canonical: { winner: string; method: string; round: number; time: string | null } }> }>;
+};
+type Record56 = { id: string; document_id: string; date: string; date_printed?: string; winner: string; method: string; round: number; time: string | null; scheduled_rounds?: number; referee?: string; result_text?: string; remarks: Array<{ fighter: string; quote: string }> };
+const records56 = () => ledger34().records as unknown as Record56[];
+
+test("TUF 5 + TUF 6: 28/28 house bouts match exactly one audited commission record, verified and commission-backed", () => {
+  const ledger = ledger34();
+  for (const slug of ["tuf-5", "tuf-6"]) {
+    const doc = ledger.documents.find((d) => d.id === DOC56[slug])!;
+    assert.equal(doc.sha256, nsac56Audit.seasons[slug].document.sha256);
+    const recs = records56().filter((r) => r.document_id === doc.id);
+    const house = house56(slug);
+    assert.equal(recs.length, 14);
+    assert.equal(house.length, 14);
+    assert.equal(new Set(house.map((b) => b.commission_record_id)).size, 14, `${slug}: every record used once`);
+    for (const b of house) {
+      const label = `${slug} ${b.a} vs ${b.b} (${b.stage})`;
+      const rec = recs.find((r) => r.id === b.commission_record_id)!;
+      assert.ok(nsac56Audit.seasons[slug].bouts.some((x) => x.bout === `${b.a} vs ${b.b}` && x.stage === b.stage && x.record_id === rec.id), `${label}: the audited match`);
+      assert.deepEqual([b.winner, b.method, b.round, b.time, b.fight_date], [rec.winner, rec.method, rec.round, rec.time, rec.date], label);
+      assert.equal(resultState(b as never), "verified", label);
+      assert.equal(classState(b as never), "exhibition", label);
+      assert.deepEqual(b.classification_basis!.affirmative.map((s) => [s.family, s.evidence_level, s.record_id]), [["athletic_commission", "commission_record", rec.id]]);
+      assert.ok(b.superseded_result_sources?.every((s) => s.family === "wikipedia" && s.superseded_by === rec.id), `${label}: the draft stays as history`);
+      for (const c of b.corrections ?? []) {
+        assert.equal(c.batch, BATCH56, label);
+        assert.deepEqual(c.source, { document_id: doc.id, record_id: rec.id }, `${label}: ${c.field} cites the exact record`);
+        assert.ok(c.kind && c.reason && "old" in c && "new" in c, `${label}: ${c.field} carries kind, old, new and reason`);
+      }
+    }
+  }
+});
+
+test("TUF 5: Gray Maynard is the corrected quarter-final winner over Brandon Melendez; nothing else about the bout moves", () => {
+  const qf = house56("tuf-5").find((b) => b.stage === "quarter_final" && b.a === "Brandon Melendez" && b.b === "Gray Maynard")!;
+  assert.equal(qf.winner, "Gray Maynard");
+  assert.notEqual(qf.winner, "Brandon Melendez");
+  assert.deepEqual([qf.method, qf.round, qf.time], ["Submission (guillotine choke)", 2, "4:07"], "R2 4:07 guillotine unchanged");
+  assert.deepEqual(qf.corrections!.map((c) => [c.field, c.kind, c.old, c.new]), [["winner", "commission_correction", "Brandon Melendez", "Gray Maynard"]], "the winner is the only correction");
+  assert.equal(qf.commission_record_id, "nsac-2007-tuf5-09");
+  assert.match(String(qf.superseded_result_sources![0].note), /stated Brandon Melendez as the winner/);
+  const semi = house56("tuf-5").filter((b) => b.stage === "semi_final" && b.a === "Nate Diaz" && b.b === "Gray Maynard");
+  assert.equal(semi.length, 1, "the Maynard vs Diaz semi-final stays a separate bout");
+  assert.equal(semi[0].commission_record_id, "nsac-2007-tuf5-14");
+  assert.equal(semi[0].winner, "Nate Diaz");
+  const all = [...bouts56("tuf-5"), ...bouts56("tuf-6")];
+  assert.deepEqual(all.flatMap((b) => (b.corrections ?? []).filter((c) => c.field === "winner").map(() => `${b.a} vs ${b.b}`)), ["Brandon Melendez vs Gray Maynard"], "no other winner changes");
+  for (const slug of ["tuf-5", "tuf-6"]) for (const x of nsac56Audit.seasons[slug].bouts) {
+    if (x.bout === "Brandon Melendez vs Gray Maynard") continue;
+    const b = bouts56(slug).find((q) => `${q.a} vs ${q.b}` === x.bout && q.stage === x.stage)!;
+    assert.equal(b.winner, x.canonical.winner, `${slug} ${x.bout}: winner as before`);
+  }
+  const t5 = main56("tuf-5") as { _conflicts: Array<{ field: string }>; _resolved_conflicts: Array<{ field: string; resolved_by: string; resolved_with: string }>; bracket: Array<{ stages: Array<{ stage: string; status?: string }> }> };
+  assert.deepEqual(t5._conflicts.map((c) => c.field), ["early_rounds", "final_method_and_opponent_name", "gamburyan_name", "final_method_wording"], "only quarter_finals closes");
+  const closed = t5._resolved_conflicts.find((c) => c.field === "quarter_finals")!;
+  assert.equal(closed.resolved_by, BATCH56);
+  assert.match(closed.resolved_with, /nsac-2007-tuf5-09/);
+  assert.equal(t5.bracket[0].stages.find((s) => s.stage === "quarter_final")!.status, undefined);
+  assert.equal(t5.bracket[0].stages.find((s) => s.stage === "elimination")!.status, "unverified", "opening-round naming untouched");
+});
+
+test("TUF 5 + TUF 6: re-running the reconciliation is idempotent", () => {
+  const script = decodeURIComponent(new URL("../../scripts/tuf/apply_tuf5_tuf6_nsac.mjs", import.meta.url).pathname).replace(/^\/([A-Za-z]:)/, "$1");
+  const run = spawnSync(process.execPath, [script, "--check"], { encoding: "utf8" });
+  assert.equal(run.status, 0, `${run.stdout}\n${run.stderr}`);
+  assert.match(run.stdout, /idempotent/);
+});
+
+test("TUF 6: the two Danzig vs Kolosci bouts stay distinct, each with its own record, date, referee and time", () => {
+  const pick = (stage: string) => house56("tuf-6").filter((b) => b.stage === stage && b.a === "Mac Danzig" && b.b === "John Kolosci");
+  assert.equal(pick("quarter_final").length, 1);
+  assert.equal(pick("semi_final").length, 1);
+  const [qf] = pick("quarter_final"), [sf] = pick("semi_final");
+  const rq = records56().find((r) => r.id === qf.commission_record_id)!, rs = records56().find((r) => r.id === sf.commission_record_id)!;
+  assert.deepEqual([qf.commission_record_id, qf.fight_date, rq.referee, qf.round, qf.time], ["nsac-2007-tuf6-09", "2007-07-03", "John McCarthy", 1, "3:57"]);
+  assert.deepEqual([sf.commission_record_id, sf.fight_date, rs.referee, sf.round, sf.time], ["nsac-2007-tuf6-13", "2007-07-15", "Steve Mazzagatti", 1, "4:29"]);
+  assert.deepEqual(qf.corrections!.map((c) => [c.field, c.old, c.new]), [["time", "4:28", "3:57"]], "the quarter-final no longer carries the semi-final's time");
+  assert.deepEqual(sf.corrections!.map((c) => [c.field, c.old, c.new]), [["time", "4:28", "4:29"]]);
+});
+
+test("TUF 5 + TUF 6: approved method, time and classification corrections, with detail only where the category agrees", () => {
+  const find = (slug: string, pair: string, stage: string) => house56(slug).find((b) => `${b.a} vs ${b.b}` === pair && b.stage === stage)!;
+  const methods: Array<[string, string, string, string, string, string, string | null]> = [
+    ["tuf-5", "Corey Hill vs Rob Emerson", "elimination", "Decision (unanimous)", "Decision (unanimous, sudden victory round)", "commission_correction", null],
+    ["tuf-5", "Gray Maynard vs Wayne Weems", "elimination", "TKO (punches)", "TKO", "method_normalization", "punches"],
+    ["tuf-5", "Joe Lauzon vs Cole Miller", "quarter_final", "TKO (strikes)", "TKO", "method_normalization", "strikes"],
+    ["tuf-6", "Paul Georgieff vs Troy Mandaloniz", "round_of_16", "KO (punch)", "TKO", "commission_correction", null],
+    ["tuf-6", "Tom Speer vs George Sotiropoulos", "semi_final", "KO (strikes)", "TKO", "commission_correction", null],
+    ["tuf-6", "Tom Speer vs Ben Saunders", "quarter_final", "Decision (unanimous)", "Decision (majority)", "commission_correction", null],
+    ["tuf-6", "Tom Speer vs Jon Koppenhaver", "round_of_16", "Decision", "Decision (unanimous)", "commission_correction", null],
+    ["tuf-6", "Matt Arroyo vs Troy Mandaloniz", "quarter_final", "Submission", "Submission (armbar)", "commission_correction", null],
+    ["tuf-6", "Blake Bowman vs Richie Hightower", "round_of_16", "TKO (strikes)", "TKO", "method_normalization", "strikes"],
+    ["tuf-6", "Jared Rollins vs George Sotiropoulos", "round_of_16", "TKO (strikes)", "TKO", "method_normalization", "strikes"],
+  ];
+  for (const [slug, pair, stage, old, now, kind, detail] of methods) {
+    const b = find(slug, pair, stage);
+    assert.equal(b.method, now, pair);
+    assert.deepEqual(b.corrections!.filter((c) => c.field === "method").map((c) => [c.old, c.new, c.kind]), [[old, now, kind]], pair);
+    if (detail) {
+      assert.equal(b.method_detail!.value, detail);
+      assert.deepEqual([b.method_detail!.source.family, b.method_detail!.source.evidence_level], ["wikipedia", "secondary_draft"], `${pair}: the detail keeps its own secondary source`);
+    } else assert.equal(b.method_detail, undefined, `${pair}: no detail is made to look commission-sourced`);
+  }
+  for (const slug of ["tuf-5", "tuf-6"]) assert.equal(house56(slug).filter((b) => (b.corrections ?? []).some((c) => c.field === "method")).length, methods.filter((m) => m[0] === slug).length, `${slug}: no other method changes`);
+  const hill = find("tuf-5", "Corey Hill vs Rob Emerson", "elimination");
+  assert.deepEqual([hill.round, records56().find((r) => r.id === hill.commission_record_id)!.scheduled_rounds], [3, 2]);
+  const wiman = find("tuf-5", "Matt Wiman vs Marlon Sims", "elimination");
+  assert.equal(wiman.method, "Technical submission (rear naked choke)");
+  assert.match(String((wiman.result_sources![0] as { quote?: string }).quote), /choke out/);
+  const arroyo = find("tuf-6", "Matt Arroyo vs Troy Mandaloniz", "quarter_final");
+  assert.deepEqual([arroyo.time, arroyo.episode, arroyo.classification], ["1:07", null, "exhibition"]);
+  assert.match(String((arroyo.result_sources![0] as { quote?: string }).quote), /verbal tap out/);
+  assert.deepEqual(arroyo.corrections!.filter((c) => c.field !== "method").map((c) => [c.field, c.old, c.new]), [["time", null, "1:07"], ["classification", "unverified", "exhibition"]]);
+  const times = (slug: string) => house56(slug).flatMap((b) => (b.corrections ?? []).filter((c) => c.field === "time"));
+  assert.equal(times("tuf-5").length, 8);
+  assert.equal(times("tuf-6").length, 10);
+  for (const slug of ["tuf-5", "tuf-6"]) for (const b of house56(slug)) for (const c of (b.corrections ?? []).filter((q) => q.field === "time")) {
+    assert.equal(c.old, nsac56Audit.seasons[slug].bouts.find((x) => x.bout === `${b.a} vs ${b.b}` && x.stage === b.stage)!.canonical.time, `${slug} ${b.a} vs ${b.b}: old time kept`);
+  }
+});
+
+test("TUF 6: printed defects keep their printed form beside the reading", () => {
+  const r1 = records56().find((r) => r.id === "nsac-2007-tuf6-01")!;
+  assert.deepEqual([r1.date, r1.date_printed], ["2007-06-11", "0611/07"]);
+  const r7 = records56().find((r) => r.id === "nsac-2007-tuf6-07")!;
+  assert.equal(r7.winner, "George Sotiropoulos");
+  assert.match(String(r7.result_text), /^Sotriopoulos won/);
+  const r11 = records56().find((r) => r.id === "nsac-2007-tuf6-11")!;
+  assert.equal(r11.method, "Submission (kimura)");
+  assert.match(String(r11.result_text), /kumara/);
+  assert.deepEqual(records56().find((r) => r.id === "nsac-2007-tuf6-14")!.remarks.map((x) => x.quote), ["Suspend Sotiropoulos until 09/14/07", "No contact until 08/30/07"]);
+});
+
+test("TUF 6: the page-3 Arroyo/Kolosci note becomes three commission-sourced timeline events with no episode", () => {
+  const t6 = main56("tuf-6") as { timeline_events: Array<{ id: string; type: string; episode: number | null; fighters: string[]; replaces?: string; detail: string; sources: Array<{ family: string; evidence_level: string; document_id?: string; record_id?: string; quote?: string }> }> };
+  assert.deepEqual(t6.timeline_events.map((e) => [e.type, e.fighters, e.replaces ?? null]), [["injury", ["Matt Arroyo"], null], ["withdrawal", ["Matt Arroyo"], null], ["replacement", ["John Kolosci"], "Matt Arroyo"]]);
+  for (const e of t6.timeline_events) {
+    assert.equal(e.episode, null, `${e.id}: episode stays unplaced`);
+    assert.deepEqual(e.sources.map((s) => [s.family, s.evidence_level, s.document_id, s.record_id]), [["athletic_commission", "commission_record", "nsac-2007-tuf-season-6", "nsac-2007-tuf6-13"]]);
+    assert.equal(e.sources[0].quote, "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him.");
+    assert.doesNotMatch(e.detail, /shoulder|knee|hand|broken|fracture|torn|concussion|episode/i, `${e.id}: no unstated diagnosis or episode`);
+  }
+});
+
+test("TUF 5 + TUF 6: identities, DOBs, finals, rosters, episodes and other seasons untouched", () => {
+  const ledger = ledger34();
+  for (const slug of ["tuf-5", "tuf-6"]) {
+    assert.equal(ledger.documents.find((d) => d.id === DOC56[slug])!.identity_disagreements, undefined, `${slug}: DOB differences recorded in the audit only`);
+    assert.ok(!JSON.stringify(main56(slug)).includes("\"dob\""), `${slug}: no DOB written into the season`);
+    for (const f of bouts56(slug).filter((b) => b.on_finale_card)) assert.equal(f.commission_record_id, undefined, "finals untouched");
+  }
+  const t6 = main56("tuf-6") as { teams?: unknown; bracket: Array<{ weight_class: string }> };
+  assert.equal(t6.teams, undefined, "TUF 6 rosters stay unloaded");
+  assert.equal(t6.bracket[0].weight_class, "Tournament");
+  const hightower = house56("tuf-6").find((b) => b.b === "Richie Hightower")!;
+  assert.equal(hightower.b_fighter_id, "7048342e-436f-4e85-a3ac-8f5db2d1dca1", "Hightower identity unchanged");
+  for (const name of ["Joe Scarola", "Blake Bowman", "Jon Koppenhaver"]) {
+    const b = house56("tuf-6").find((x) => x.a === name || x.b === name)!;
+    assert.equal(b.a === name ? b.a_fighter_id : b.b_fighter_id, undefined, `${name} stays unresolved`);
+  }
+  assert.deepEqual(ledger.documents.map((d) => d.id).filter((id) => !/tuf-season-[1-6]$/.test(id)), [], "no other season's commission document");
+  for (const slug of ["tuf-7", "tuf-24", "tuf-33"]) assert.ok(!JSON.stringify(main56(slug)).includes(BATCH56), `${slug} untouched`);
 });

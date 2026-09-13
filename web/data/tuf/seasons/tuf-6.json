@@ -10,7 +10,7 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json. House results, fight dates and classification are from the Nevada State Athletic Commission's Season 6 results record (tuf5-tuf6-nsac-reconciliation, reviewed by Justin Erickson). The draft's differing values are kept in each bout's corrections and superseded_result_sources; compatible method detail survives only where the commission category agrees. Printed readings: Matt Arroyo vs Troy Mandaloniz: the record prints \"verbal tap out ... arm bar\"; canonical method Submission (armbar); \"verbal\" is kept in the printed result text only (approved reading); Richie Hightower vs George Sotiropoulos: the record prints \"kumara\"; read as kimura (print defect, approved reading); Jared Rollins vs George Sotiropoulos: the result line prints the winner as \"Sotriopoulos\"; the record's own corner prints GEORGE SOTIROPOULOS, and the letters are the same name rearranged (print defect, approved reading); Mac Danzig vs Joe Scarola: the record prints the show date as \"0611/07\"; read as 2007-06-11 (print defect, approved reading; kept as date_printed)."
   },
   "coaches": [
     {
@@ -117,11 +117,99 @@
               "winner": "Mac Danzig",
               "method": "Submission (triangle choke)",
               "round": 1,
-              "time": "4:54",
+              "time": "4:55",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-06-11 and aired in episode 1; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
+              "a_fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "4:54",
+                  "new": "4:55",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-01"
+                  },
+                  "reason": "the commission record states the time as \"4:55\" (\"Danzig won by tap out 4:55 of the 1st round – triangle choke.\"); a primary commission record overrides the draft's \"4:54\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-06-11",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-01"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Mac Danzig",
+                    "method": "Submission (triangle choke)",
+                    "round": 1,
+                    "time": "4:54"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-01"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-01",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Mac Danzig",
+                  "quote": "Danzig won by tap out 4:55 of the 1st round – triangle choke.",
+                  "note": "the record prints the show date as \"0611/07\"; read as 2007-06-11 (print defect, approved reading; kept as date_printed)"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-01",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-01",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-01"
             },
             {
               "a": "Billy Miles",
@@ -129,12 +217,99 @@
               "winner": "John Kolosci",
               "method": "Submission (guillotine choke)",
               "round": 1,
-              "time": "2:56",
+              "time": "2:58",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-06-18 and aired in episode 3; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "940cafca-d04f-4082-8ea8-18465cee6a3d",
-              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99"
+              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:56",
+                  "new": "2:58",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-03"
+                  },
+                  "reason": "the commission record states the time as \"2:58\" (\"Kolosci won by tap out 2:58 of the 1st round – guillotine choke.\"); a primary commission record overrides the draft's \"2:56\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-06-18",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-03"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "John Kolosci",
+                    "method": "Submission (guillotine choke)",
+                    "round": 1,
+                    "time": "2:56"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-03"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-03",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "John Kolosci",
+                  "quote": "Kolosci won by tap out 2:58 of the 1st round – guillotine choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-03",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-03",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-03"
             },
             {
               "a": "Dorian Price",
@@ -145,59 +320,539 @@
               "time": "1:48",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-06-14 and aired in episode 1; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "77d803f1-378f-4bdb-b84f-6279428ea097",
-              "b_fighter_id": "e19418e1-e7e9-4eb6-bad5-f85df19d5a82"
+              "b_fighter_id": "e19418e1-e7e9-4eb6-bad5-f85df19d5a82",
+              "fight_date": "2007-06-14",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-02"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2007-tuf6-02"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-02",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Matt Arroyo",
+                  "quote": "Arroyo won by tap out 1:48 of the 1st round – rear naked choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-02",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-02",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-02"
             },
             {
               "a": "Paul Georgieff",
               "b": "Troy Mandaloniz",
               "winner": "Troy Mandaloniz",
-              "method": "KO (punch)",
+              "method": "TKO",
               "round": 1,
-              "time": "2:39",
+              "time": "2:40",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-06-26 and aired in episode 3; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "b2ca40ff-3575-467b-bd08-7f46e61c22c0",
-              "b_fighter_id": "efe0a272-d338-4e40-920c-ca53e306ba79"
+              "b_fighter_id": "efe0a272-d338-4e40-920c-ca53e306ba79",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "KO (punch)",
+                  "new": "TKO",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-05"
+                  },
+                  "reason": "the commission record states \"TKO\" (\"Mandaloniz won by TKO 2:40 of the 1st round.\"), a different category from the draft's \"KO (punch)\"; the commission category is canonical and the draft's detail is not carried forward, because the commission does not print it",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:39",
+                  "new": "2:40",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-05"
+                  },
+                  "reason": "the commission record states the time as \"2:40\" (\"Mandaloniz won by TKO 2:40 of the 1st round.\"); a primary commission record overrides the draft's \"2:39\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-06-26",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-05"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Troy Mandaloniz",
+                    "method": "KO (punch)",
+                    "round": 1,
+                    "time": "2:39"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-05"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-05",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Troy Mandaloniz",
+                  "quote": "Mandaloniz won by TKO 2:40 of the 1st round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-05",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-05",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-05"
             },
             {
               "a": "Blake Bowman",
               "b": "Richie Hightower",
               "winner": "Richie Hightower",
-              "method": "TKO (strikes)",
+              "method": "TKO",
               "round": 1,
-              "time": "0:49",
+              "time": "0:50",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "b_fighter_id": "7048342e-436f-4e85-a3ac-8f5db2d1dca1"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-06-21 and aired in episode 3; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
+              "b_fighter_id": "7048342e-436f-4e85-a3ac-8f5db2d1dca1",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "method_normalization",
+                  "old": "TKO (strikes)",
+                  "new": "TKO",
+                  "detail": "strikes",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-04"
+                  },
+                  "reason": "the commission record prints the method as \"TKO\" (\"Hightower won by TKO 0:50 of the 1st round.\"), the same category as the draft but less specific; the official method takes the commission wording and the draft's compatible detail \"strikes\" is kept as secondary detail with the draft as its source — the commission does not print it",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "0:49",
+                  "new": "0:50",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-04"
+                  },
+                  "reason": "the commission record states the time as \"0:50\" (\"Hightower won by TKO 0:50 of the 1st round.\"); a primary commission record overrides the draft's \"0:49\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-06-21",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-04"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Richie Hightower",
+                    "method": "TKO (strikes)",
+                    "round": 1,
+                    "time": "0:49"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-04"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-04",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Richie Hightower",
+                  "quote": "Hightower won by TKO 0:50 of the 1st round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-04",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-04",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-04",
+              "method_detail": {
+                "value": "strikes",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "quote": "TKO (strikes)",
+                  "note": "secondary detail from the season draft; the commission record does not print it"
+                }
+              }
             },
             {
               "a": "Jared Rollins",
               "b": "George Sotiropoulos",
               "winner": "George Sotiropoulos",
-              "method": "TKO (strikes)",
+              "method": "TKO",
               "round": 1,
-              "time": "3:48",
+              "time": "3:50",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-06-29 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "3e9e45d3-712e-4bbd-be56-808ad953c3ff",
-              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
+              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "method_normalization",
+                  "old": "TKO (strikes)",
+                  "new": "TKO",
+                  "detail": "strikes",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-07"
+                  },
+                  "reason": "the commission record prints the method as \"TKO\" (\"Sotriopoulos won by TKO 3:50 of the 1st round.\"), the same category as the draft but less specific; the official method takes the commission wording and the draft's compatible detail \"strikes\" is kept as secondary detail with the draft as its source — the commission does not print it",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "3:48",
+                  "new": "3:50",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-07"
+                  },
+                  "reason": "the commission record states the time as \"3:50\" (\"Sotriopoulos won by TKO 3:50 of the 1st round.\"); a primary commission record overrides the draft's \"3:48\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-06-29",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-07"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "George Sotiropoulos",
+                    "method": "TKO (strikes)",
+                    "round": 1,
+                    "time": "3:48"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-07"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-07",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "George Sotiropoulos",
+                  "quote": "Sotriopoulos won by TKO 3:50 of the 1st round.",
+                  "note": "the result line prints the winner as \"Sotriopoulos\"; the record's own corner prints GEORGE SOTIROPOULOS, and the letters are the same name rearranged (print defect, approved reading)"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-07",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-07",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-07",
+              "method_detail": {
+                "value": "strikes",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "quote": "TKO (strikes)",
+                  "note": "secondary detail from the season draft; the commission record does not print it"
+                }
+              }
             },
             {
               "a": "Tom Speer",
               "b": "Jon Koppenhaver",
               "winner": "Tom Speer",
-              "method": "Decision",
+              "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "2da2aea2-9090-43cc-9da9-1b288e34a320"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-06-29 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
+              "a_fighter_id": "2da2aea2-9090-43cc-9da9-1b288e34a320",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "Decision",
+                  "new": "Decision (unanimous)",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-08"
+                  },
+                  "reason": "the commission record states the method more specifically (\"Speer won by unanimous decision\"); the commission's wording \"Decision (unanimous)\" is canonical",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-06-29",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-08"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Tom Speer",
+                    "method": "Decision",
+                    "round": 2,
+                    "time": null
+                  },
+                  "superseded_by": "nsac-2007-tuf6-08"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-08",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Tom Speer",
+                  "quote": "Speer won by unanimous decision"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-08",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-08",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-08"
             },
             {
               "a": "Dan Barrera",
@@ -208,9 +863,75 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-06-26 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "8eb3c131-cda2-46d7-8d41-ed822f245af7",
-              "b_fighter_id": "94d262bf-744e-42e8-965b-9e56e52e0d06"
+              "b_fighter_id": "94d262bf-744e-42e8-965b-9e56e52e0d06",
+              "fight_date": "2007-06-26",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-06"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2007-tuf6-06"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-06",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Ben Saunders",
+                  "quote": "Saunders won by majority decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-06",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-06",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-06"
             }
           ]
         },
@@ -224,25 +945,215 @@
               "winner": "Mac Danzig",
               "method": "Submission (rear naked choke)",
               "round": 1,
-              "time": "4:28",
+              "time": "3:57",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-07-03 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee",
-              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99"
+              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "4:28",
+                  "new": "3:57",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-09"
+                  },
+                  "reason": "the commission record states the time as \"3:57\" (\"Danzig won by tap out 3:57 of the 1st round – rear naked choke.\"); a primary commission record overrides the draft's \"4:28\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-07-03",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-09"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Mac Danzig",
+                    "method": "Submission (rear naked choke)",
+                    "round": 1,
+                    "time": "4:28"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-09"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-09",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Mac Danzig",
+                  "quote": "Danzig won by tap out 3:57 of the 1st round – rear naked choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-09",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-09",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-09"
             },
             {
               "a": "Matt Arroyo",
               "b": "Troy Mandaloniz",
               "winner": "Matt Arroyo",
-              "method": "Submission",
+              "method": "Submission (armbar)",
               "round": 1,
-              "time": null,
+              "time": "1:07",
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "classification": "exhibition",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-07-05; not placed in an episode; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout.",
               "a_fighter_id": "e19418e1-e7e9-4eb6-bad5-f85df19d5a82",
-              "b_fighter_id": "efe0a272-d338-4e40-920c-ca53e306ba79"
+              "b_fighter_id": "efe0a272-d338-4e40-920c-ca53e306ba79",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "Submission",
+                  "new": "Submission (armbar)",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-10"
+                  },
+                  "reason": "the commission record states the method more specifically (\"Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.\"); the commission's wording \"Submission (armbar)\" is canonical",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": null,
+                  "new": "1:07",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-10"
+                  },
+                  "reason": "the commission record states the time as \"1:07\" (\"Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.\"); the draft gave none, so it is added as a primary fact",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                },
+                {
+                  "field": "classification",
+                  "kind": "commission_correction",
+                  "old": "unverified",
+                  "new": "exhibition",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-10"
+                  },
+                  "reason": "the commission's Season 6 results record lists this bout under \"Exhibition Results\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-07-05",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-10"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Matt Arroyo",
+                    "method": "Submission",
+                    "round": 1,
+                    "time": null
+                  },
+                  "superseded_by": "nsac-2007-tuf6-10"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-10",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Matt Arroyo",
+                  "quote": "Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.",
+                  "note": "the record prints \"verbal tap out ... arm bar\"; canonical method Submission (armbar); \"verbal\" is kept in the printed result text only (approved reading)"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-10",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-10"
             },
             {
               "a": "Richie Hightower",
@@ -250,25 +1161,200 @@
               "winner": "George Sotiropoulos",
               "method": "Submission (kimura)",
               "round": 1,
-              "time": "4:07",
+              "time": "4:10",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-07-05 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "7048342e-436f-4e85-a3ac-8f5db2d1dca1",
-              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
+              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "4:07",
+                  "new": "4:10",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-11"
+                  },
+                  "reason": "the commission record states the time as \"4:10\" (\"Sotiropoulos won by tap out 4:10 of the 1st round – kumara.\"); a primary commission record overrides the draft's \"4:07\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-07-05",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-11"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "George Sotiropoulos",
+                    "method": "Submission (kimura)",
+                    "round": 1,
+                    "time": "4:07"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-11"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-11",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "George Sotiropoulos",
+                  "quote": "Sotiropoulos won by tap out 4:10 of the 1st round – kumara.",
+                  "note": "the record prints \"kumara\"; read as kimura (print defect, approved reading)"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-11",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-11",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-11"
             },
             {
               "a": "Tom Speer",
               "b": "Ben Saunders",
               "winner": "Tom Speer",
-              "method": "Decision (unanimous)",
+              "method": "Decision (majority)",
               "round": 2,
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-07-09 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "2da2aea2-9090-43cc-9da9-1b288e34a320",
-              "b_fighter_id": "94d262bf-744e-42e8-965b-9e56e52e0d06"
+              "b_fighter_id": "94d262bf-744e-42e8-965b-9e56e52e0d06",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "Decision (unanimous)",
+                  "new": "Decision (majority)",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-12"
+                  },
+                  "reason": "the commission record states a majority decision (\"Speer won by majority decision.\"), contradicting the draft's \"Decision (unanimous)\"; a primary commission record overrides the draft",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-07-09",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-12"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Tom Speer",
+                    "method": "Decision (unanimous)",
+                    "round": 2,
+                    "time": null
+                  },
+                  "superseded_by": "nsac-2007-tuf6-12"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-12",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Tom Speer",
+                  "quote": "Speer won by majority decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-12",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-12",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-12"
             }
           ]
         },
@@ -282,25 +1368,212 @@
               "winner": "Mac Danzig",
               "method": "Submission (rear naked choke)",
               "round": 1,
-              "time": "4:28",
+              "time": "4:29",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-07-15 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee",
-              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99"
+              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "4:28",
+                  "new": "4:29",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-13"
+                  },
+                  "reason": "the commission record states the time as \"4:29\" (\"Danzig won by tap out 4:29 of the 1st round – rear naked choke.\"); a primary commission record overrides the draft's \"4:28\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-07-15",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-13"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Mac Danzig",
+                    "method": "Submission (rear naked choke)",
+                    "round": 1,
+                    "time": "4:28"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-13"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-13",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Mac Danzig",
+                  "quote": "Danzig won by tap out 4:29 of the 1st round – rear naked choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-13",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-13",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-13"
             },
             {
               "a": "Tom Speer",
               "b": "George Sotiropoulos",
               "winner": "Tom Speer",
-              "method": "KO (strikes)",
+              "method": "TKO",
               "round": 1,
-              "time": "2:57",
+              "time": "2:59",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-07-15 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "2da2aea2-9090-43cc-9da9-1b288e34a320",
-              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
+              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "KO (strikes)",
+                  "new": "TKO",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-14"
+                  },
+                  "reason": "the commission record states \"TKO\" (\"Speer won by TKO 2:59 of the 1st round.\"), a different category from the draft's \"KO (strikes)\"; the commission category is canonical and the draft's detail is not carried forward, because the commission does not print it",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:57",
+                  "new": "2:59",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-14"
+                  },
+                  "reason": "the commission record states the time as \"2:59\" (\"Speer won by TKO 2:59 of the 1st round.\"); a primary commission record overrides the draft's \"2:57\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-07-15",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-6",
+                "record_id": "nsac-2007-tuf6-14"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Hughes_vs._Team_Serra",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Tom Speer",
+                    "method": "KO (strikes)",
+                    "round": 1,
+                    "time": "2:57"
+                  },
+                  "superseded_by": "nsac-2007-tuf6-14"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-6",
+                  "record_id": "nsac-2007-tuf6-14",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                  "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Tom Speer",
+                  "quote": "Speer won by TKO 2:59 of the 1st round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-6",
+                    "record_id": "nsac-2007-tuf6-14",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+                    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 6 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf6-14",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf6-14"
             }
           ]
         },
@@ -348,6 +1621,87 @@
       },
       "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
       "fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee"
+    }
+  ],
+  "timeline_events": [
+    {
+      "id": "tuf6-arroyo-injured",
+      "episode": null,
+      "type": "injury",
+      "fighters": [
+        "Matt Arroyo"
+      ],
+      "detail": "Injured; the commission record names no injury.",
+      "sources": [
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2007-tuf-season-6",
+          "record_id": "nsac-2007-tuf6-13",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+          "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+          "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+          "retrieved": "2026-09-13",
+          "quote": "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him.",
+          "note": "printed on page 3 of the document above its semi-final table, outside any record row; it names no injury and no episode"
+        }
+      ]
+    },
+    {
+      "id": "tuf6-arroyo-out-of-semi-final",
+      "episode": null,
+      "type": "withdrawal",
+      "fighters": [
+        "Matt Arroyo"
+      ],
+      "detail": "Could not compete in the semi-finals.",
+      "sources": [
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2007-tuf-season-6",
+          "record_id": "nsac-2007-tuf6-13",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+          "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+          "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+          "retrieved": "2026-09-13",
+          "quote": "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him.",
+          "note": "printed on page 3 of the document above its semi-final table, outside any record row; it names no injury and no episode"
+        }
+      ]
+    },
+    {
+      "id": "tuf6-kolosci-replaces-arroyo",
+      "episode": null,
+      "type": "replacement",
+      "fighters": [
+        "John Kolosci"
+      ],
+      "replaces": "Matt Arroyo",
+      "detail": "Replaced Matt Arroyo in the semi-finals.",
+      "sources": [
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2007-tuf-season-6",
+          "record_id": "nsac-2007-tuf6-13",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+          "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+          "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+          "retrieved": "2026-09-13",
+          "quote": "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him.",
+          "note": "printed on page 3 of the document above its semi-final table, outside any record row; it names no injury and no episode"
+        }
+      ]
     }
   ]
 }

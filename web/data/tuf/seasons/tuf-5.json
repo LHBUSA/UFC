@@ -10,14 +10,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
     "retrieved": "2026-09-07",
-    "note": "The finale card now holds nine bouts — backfill window B-2007 loaded them — so the tournament final is VERIFIED against our own ufc_bout_results row rather than merely sourced. The coaches' bout on the same card is still sourced only: B.J. Penn has no fighter row yet, so there is nothing to verify it against. Nothing is imported; the card's bouts live on the event page and are linked, not restated."
+    "note": "The finale card now holds nine bouts — backfill window B-2007 loaded them — so the tournament final is VERIFIED against our own ufc_bout_results row rather than merely sourced. The coaches' bout on the same card is still sourced only: B.J. Penn has no fighter row yet, so there is nothing to verify it against. Nothing is imported; the card's bouts live on the event page and are linked, not restated. House results, fight dates and classification are from the Nevada State Athletic Commission's Season 5 results record (tuf5-tuf6-nsac-reconciliation, reviewed by Justin Erickson). The draft's differing values are kept in each bout's corrections and superseded_result_sources; compatible method detail survives only where the commission category agrees. Printed readings: Matt Wiman vs Marlon Sims: the record prints \"choke out ... rear naked choke\"; read as Technical submission (rear naked choke) (approved reading)."
   },
   "_conflicts": [
-    {
-      "field": "quarter_finals",
-      "detail": "The source has Brandon Melendez beating Gray Maynard in the quarter-finals and then has Maynard losing to Nate Diaz in the semi-finals. Maynard cannot be eliminated in one round and appear in the next. Both bouts are recorded as the source gives them and the round is marked unverified, rather than dropping one to make the bracket tidy.",
-      "retrieved": "2026-09-07"
-    },
     {
       "field": "early_rounds",
       "detail": "The source labels the opening bouts as an elimination round plus 'Round 2', 'Round 3' and 'Round 4' across episodes 1-7, which does not map cleanly onto a sixteen-fighter bracket. They are recorded together as the opening rounds in the order given, without being renamed into stages the source does not claim.",
@@ -218,12 +213,99 @@
               "winner": "Cole Miller",
               "method": "Submission (triangle choke)",
               "round": 1,
-              "time": "2:33",
+              "time": "2:35",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-01-27 and aired in episode 1; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "539fc170-0d99-471c-b50f-79b9bff89334",
-              "b_fighter_id": "e04eb41c-90f6-40fe-923f-0e105c949673"
+              "b_fighter_id": "e04eb41c-90f6-40fe-923f-0e105c949673",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:33",
+                  "new": "2:35",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-01"
+                  },
+                  "reason": "the commission record states the time as \"2:35\" (\"Miller won by tap out 2:35 of the 1st round – triangle choke\"); a primary commission record overrides the draft's \"2:33\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-01-27",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-01"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Cole Miller",
+                    "method": "Submission (triangle choke)",
+                    "round": 1,
+                    "time": "2:33"
+                  },
+                  "superseded_by": "nsac-2007-tuf5-01"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-01",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Cole Miller",
+                  "quote": "Miller won by tap out 2:35 of the 1st round – triangle choke"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-01",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-01",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-01"
             },
             {
               "a": "Manny Gamburyan",
@@ -231,13 +313,100 @@
               "winner": "Manny Gamburyan",
               "method": "Submission (kimura)",
               "round": 1,
-              "time": "2:09",
+              "time": "2:10",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-01-30 and aired in episode 2; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_in_records": "Manvel Gamburyan",
               "winner_in_records": "Manvel Gamburyan",
-              "a_fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618"
+              "a_fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:09",
+                  "new": "2:10",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-02"
+                  },
+                  "reason": "the commission record states the time as \"2:10\" (\"Gamburyan won by tap out 2:10 of the 1st round – Kimura.\"); a primary commission record overrides the draft's \"2:09\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-01-30",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-02"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Manny Gamburyan",
+                    "method": "Submission (kimura)",
+                    "round": 1,
+                    "time": "2:09"
+                  },
+                  "superseded_by": "nsac-2007-tuf5-02"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-02",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Manny Gamburyan",
+                  "quote": "Gamburyan won by tap out 2:10 of the 1st round – Kimura."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-02",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 2 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-02",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-02"
             },
             {
               "a": "Nate Diaz",
@@ -245,12 +414,99 @@
               "winner": "Nate Diaz",
               "method": "Submission (rear naked choke)",
               "round": 2,
-              "time": "4:45",
+              "time": "4:46",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-02 and aired in episode 3; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
-              "b_fighter_id": "ea654993-adbd-4dc0-a279-6691349a0bdb"
+              "b_fighter_id": "ea654993-adbd-4dc0-a279-6691349a0bdb",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "4:45",
+                  "new": "4:46",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-03"
+                  },
+                  "reason": "the commission record states the time as \"4:46\" (\"Diaz won by tap out 4:46 of the 2nd round – rear naked choke.\"); a primary commission record overrides the draft's \"4:45\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-02-02",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-03"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Nate Diaz",
+                    "method": "Submission (rear naked choke)",
+                    "round": 2,
+                    "time": "4:45"
+                  },
+                  "superseded_by": "nsac-2007-tuf5-03"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-03",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Nate Diaz",
+                  "quote": "Diaz won by tap out 4:46 of the 2nd round – rear naked choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-03",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-03",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-03"
             },
             {
               "a": "Brandon Melendez",
@@ -261,9 +517,75 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-06 and aired in episode 4; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "c1f849a0-829a-4313-84c9-8cb3e7091527",
-              "b_fighter_id": "e4b7ec8f-8169-4d08-bce8-b5b6e6b81f5a"
+              "b_fighter_id": "e4b7ec8f-8169-4d08-bce8-b5b6e6b81f5a",
+              "fight_date": "2007-02-06",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-04"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2007-tuf5-04"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-04",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Brandon Melendez",
+                  "quote": "Melendez won by unanimous decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-04",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 4 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-04",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-04"
             },
             {
               "a": "Joe Lauzon",
@@ -274,35 +596,301 @@
               "time": "1:13",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-12 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "49cfc17e-904a-49ac-8c81-1790f25873a6",
-              "b_fighter_id": "3af95539-21d5-477d-90cf-4d3c6f5b47df"
+              "b_fighter_id": "3af95539-21d5-477d-90cf-4d3c6f5b47df",
+              "fight_date": "2007-02-12",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-06"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2007-tuf5-06"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-06",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Joe Lauzon",
+                  "quote": "Lauzon won by tap out 1:13 of the 1st round – rear naked choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-06",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-06",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-06"
             },
             {
               "a": "Corey Hill",
               "b": "Rob Emerson",
               "winner": "Corey Hill",
-              "method": "Decision (unanimous)",
+              "method": "Decision (unanimous, sudden victory round)",
               "round": 3,
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-12 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "replacement": "Rob Emerson was reinstated after Gabe Ruediger was expelled for missing weight",
               "a_fighter_id": "96098c9a-4ef7-456b-ab39-378438d050b8",
-              "b_fighter_id": "ea654993-adbd-4dc0-a279-6691349a0bdb"
+              "b_fighter_id": "ea654993-adbd-4dc0-a279-6691349a0bdb",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "Decision (unanimous)",
+                  "new": "Decision (unanimous, sudden victory round)",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-05"
+                  },
+                  "reason": "the commission record states the method more specifically (\"Hill won by unanimous decision in the sudden victory round.\"); the commission's wording \"Decision (unanimous, sudden victory round)\" is canonical",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-02-12",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-05"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Corey Hill",
+                    "method": "Decision (unanimous)",
+                    "round": 3,
+                    "time": null
+                  },
+                  "superseded_by": "nsac-2007-tuf5-05"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-05",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Corey Hill",
+                  "quote": "Hill won by unanimous decision in the sudden victory round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-05",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-05",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-05"
             },
             {
               "a": "Gray Maynard",
               "b": "Wayne Weems",
               "winner": "Gray Maynard",
-              "method": "TKO (punches)",
+              "method": "TKO",
               "round": 1,
-              "time": "2:47",
+              "time": "2:48",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-15 and aired in episode 7; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
+              "a_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "method_normalization",
+                  "old": "TKO (punches)",
+                  "new": "TKO",
+                  "detail": "punches",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-07"
+                  },
+                  "reason": "the commission record prints the method as \"TKO\" (\"Maynard won by TKO 2:48 of the 1st round.\"), the same category as the draft but less specific; the official method takes the commission wording and the draft's compatible detail \"punches\" is kept as secondary detail with the draft as its source — the commission does not print it",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:47",
+                  "new": "2:48",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-07"
+                  },
+                  "reason": "the commission record states the time as \"2:48\" (\"Maynard won by TKO 2:48 of the 1st round.\"); a primary commission record overrides the draft's \"2:47\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-02-15",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-07"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Gray Maynard",
+                    "method": "TKO (punches)",
+                    "round": 1,
+                    "time": "2:47"
+                  },
+                  "superseded_by": "nsac-2007-tuf5-07"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-07",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Gray Maynard",
+                  "quote": "Maynard won by TKO 2:48 of the 1st round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-07",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-07",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-07",
+              "method_detail": {
+                "value": "punches",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "quote": "TKO (punches)",
+                  "note": "secondary detail from the season draft; the commission record does not print it"
+                }
+              }
             },
             {
               "a": "Matt Wiman",
@@ -310,45 +898,326 @@
               "winner": "Matt Wiman",
               "method": "Technical submission (rear naked choke)",
               "round": 1,
-              "time": "0:52",
+              "time": "0:50",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "dea61de0-138a-4aac-9c52-68d4d421b66c"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-15 and aired in episode 7; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
+              "a_fighter_id": "dea61de0-138a-4aac-9c52-68d4d421b66c",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "0:52",
+                  "new": "0:50",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-08"
+                  },
+                  "reason": "the commission record states the time as \"0:50\" (\"Wiman won by choke out 0:50 of the 1st round. – rear naked choke.\"); a primary commission record overrides the draft's \"0:52\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-02-15",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-08"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Matt Wiman",
+                    "method": "Technical submission (rear naked choke)",
+                    "round": 1,
+                    "time": "0:52"
+                  },
+                  "superseded_by": "nsac-2007-tuf5-08"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-08",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Matt Wiman",
+                  "quote": "Wiman won by choke out 0:50 of the 1st round. – rear naked choke.",
+                  "note": "the record prints \"choke out ... rear naked choke\"; read as Technical submission (rear naked choke) (approved reading)"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-08",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-08",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-08"
             }
           ]
         },
         {
           "stage": "quarter_final",
           "label": "Quarter-finals",
-          "status": "unverified",
-          "note": "Recorded as the source gives them. See conflicts: Gray Maynard is listed as losing here and also as fighting in the semi-finals.",
+          "note": "Closed against the Nevada State Athletic Commission record: all four quarter-finals are on it, and Gray Maynard beat Brandon Melendez before meeting Nate Diaz in the semi-finals.",
           "bouts": [
             {
               "a": "Joe Lauzon",
               "b": "Cole Miller",
               "winner": "Joe Lauzon",
-              "method": "TKO (strikes)",
+              "method": "TKO",
               "round": 2,
-              "time": "3:58",
+              "time": "3:59",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-21 and aired in episode 8; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "49cfc17e-904a-49ac-8c81-1790f25873a6",
-              "b_fighter_id": "539fc170-0d99-471c-b50f-79b9bff89334"
+              "b_fighter_id": "539fc170-0d99-471c-b50f-79b9bff89334",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "method_normalization",
+                  "old": "TKO (strikes)",
+                  "new": "TKO",
+                  "detail": "strikes",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-10"
+                  },
+                  "reason": "the commission record prints the method as \"TKO\" (\"Lauzon won by TKO 3:59 of the 2nd round.\"), the same category as the draft but less specific; the official method takes the commission wording and the draft's compatible detail \"strikes\" is kept as secondary detail with the draft as its source — the commission does not print it",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "3:58",
+                  "new": "3:59",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-10"
+                  },
+                  "reason": "the commission record states the time as \"3:59\" (\"Lauzon won by TKO 3:59 of the 2nd round.\"); a primary commission record overrides the draft's \"3:58\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-02-21",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-10"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Joe Lauzon",
+                    "method": "TKO (strikes)",
+                    "round": 2,
+                    "time": "3:58"
+                  },
+                  "superseded_by": "nsac-2007-tuf5-10"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-10",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Joe Lauzon",
+                  "quote": "Lauzon won by TKO 3:59 of the 2nd round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-10",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 8 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-10",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-10",
+              "method_detail": {
+                "value": "strikes",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "quote": "TKO (strikes)",
+                  "note": "secondary detail from the season draft; the commission record does not print it"
+                }
+              }
             },
             {
               "a": "Brandon Melendez",
               "b": "Gray Maynard",
-              "winner": "Brandon Melendez",
+              "winner": "Gray Maynard",
               "method": "Submission (guillotine choke)",
               "round": 2,
               "time": "4:07",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-21 and aired in episode 9; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "c1f849a0-829a-4313-84c9-8cb3e7091527",
-              "b_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9"
+              "b_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9",
+              "corrections": [
+                {
+                  "field": "winner",
+                  "kind": "commission_correction",
+                  "old": "Brandon Melendez",
+                  "new": "Gray Maynard",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-09"
+                  },
+                  "reason": "the commission record states \"Maynard won by tap out 4:07 of the 2nd round – guillotine choke\" (2007-02-21, \"Quarter Finals\"); Gray Maynard won the quarter-final, which is why he fights Nate Diaz in the commission's semi-final. Method, round and time already agreed; only the winner was inverted in the draft",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-02-21",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-09"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated Brandon Melendez as the winner (Submission (guillotine choke), round 2, 4:07) before the commission record",
+                  "superseded_by": "nsac-2007-tuf5-09"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-09",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Gray Maynard",
+                  "quote": "Maynard won by tap out 4:07 of the 2nd round – guillotine choke"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-09",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 9 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-09",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-09"
             },
             {
               "a": "Nate Diaz",
@@ -356,12 +1225,99 @@
               "winner": "Nate Diaz",
               "method": "Submission (triangle choke)",
               "round": 1,
-              "time": "3:02",
+              "time": "3:03",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-22 and aired in episode 10; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
-              "b_fighter_id": "96098c9a-4ef7-456b-ab39-378438d050b8"
+              "b_fighter_id": "96098c9a-4ef7-456b-ab39-378438d050b8",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "3:02",
+                  "new": "3:03",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-11"
+                  },
+                  "reason": "the commission record states the time as \"3:03\" (\"Diaz won by tap out 3:03 of the 1st round – triangle choke.\"); a primary commission record overrides the draft's \"3:02\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-02-22",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-11"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Nate Diaz",
+                    "method": "Submission (triangle choke)",
+                    "round": 1,
+                    "time": "3:02"
+                  },
+                  "superseded_by": "nsac-2007-tuf5-11"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-11",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Nate Diaz",
+                  "quote": "Diaz won by tap out 3:03 of the 1st round – triangle choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-11",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-11",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-11"
             },
             {
               "a": "Manny Gamburyan",
@@ -372,11 +1328,93 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-22 and aired in episode 10; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_in_records": "Manvel Gamburyan",
               "winner_in_records": "Manvel Gamburyan",
               "a_fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618",
-              "b_fighter_id": "dea61de0-138a-4aac-9c52-68d4d421b66c"
+              "b_fighter_id": "dea61de0-138a-4aac-9c52-68d4d421b66c",
+              "fight_date": "2007-02-22",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-12"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2007-tuf5-12"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-12",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Manny Gamburyan",
+                  "quote": "Gamburyan won by unanimous decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-12",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-12",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-12"
+            }
+          ],
+          "sources": [
+            {
+              "repair": "tuf5-tuf6-nsac-reconciliation/quarter_final",
+              "fields": [
+                "status",
+                "note"
+              ],
+              "family": "athletic_commission",
+              "evidence_level": "commission_record",
+              "document_id": "nsac-2007-tuf-season-5",
+              "record_id": "nsac-2007-tuf5-09",
+              "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+              "retrieved": "2026-09-13",
+              "quote": "Maynard won by tap out 4:07 of the 2nd round – guillotine choke"
             }
           ]
         },
@@ -393,11 +1431,77 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-28 and aired in episode 11; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_in_records": "Manvel Gamburyan",
               "winner_in_records": "Manvel Gamburyan",
               "a_fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618",
-              "b_fighter_id": "49cfc17e-904a-49ac-8c81-1790f25873a6"
+              "b_fighter_id": "49cfc17e-904a-49ac-8c81-1790f25873a6",
+              "fight_date": "2007-02-28",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-13"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2007-tuf5-13"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-13",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Manny Gamburyan",
+                  "quote": "Gamburyan won by unanimous decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-13",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 11 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-13",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-13"
             },
             {
               "a": "Nate Diaz",
@@ -405,12 +1509,99 @@
               "winner": "Nate Diaz",
               "method": "Submission (guillotine choke)",
               "round": 2,
-              "time": "1:17",
+              "time": "1:20",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2007-02-28 and aired in episode 12; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2007 records is corroboration only.",
               "a_fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
-              "b_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9"
+              "b_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "1:17",
+                  "new": "1:20",
+                  "source": {
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-14"
+                  },
+                  "reason": "the commission record states the time as \"1:20\" (\"Diaz won by tap out 1:20 of the 2nd round – Guillotine choke\"); a primary commission record overrides the draft's \"1:17\"",
+                  "batch": "tuf5-tuf6-nsac-reconciliation",
+                  "reviewer": "Justin Erickson"
+                }
+              ],
+              "fight_date": "2007-02-28",
+              "fight_date_source": {
+                "document_id": "nsac-2007-tuf-season-5",
+                "record_id": "nsac-2007-tuf5-14"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_5",
+                  "retrieved": "2026-09-07",
+                  "note": "season draft import; stated this result before the commission record",
+                  "stated": {
+                    "winner": "Nate Diaz",
+                    "method": "Submission (guillotine choke)",
+                    "round": 2,
+                    "time": "1:17"
+                  },
+                  "superseded_by": "nsac-2007-tuf5-14"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2007-tuf-season-5",
+                  "record_id": "nsac-2007-tuf5-14",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                  "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                  "retrieved": "2026-09-13",
+                  "winner": "Nate Diaz",
+                  "quote": "Diaz won by tap out 1:20 of the 2nd round – Guillotine choke"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2007-tuf-season-5",
+                    "record_id": "nsac-2007-tuf5-14",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+                    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 5 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2007,
+                    "quote": "broadcast in episode 12 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2007-tuf5-14",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2007-tuf5-14"
             }
           ]
         },
@@ -477,6 +1668,17 @@
       },
       "verified_against": "ufc_bout_results — Nate Diaz def. Manvel Gamburyan, Submission, round 2, 20s, at The Ultimate Fighter: Team Pulver vs. Team Penn Finale, 2007-06-23",
       "fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb"
+    }
+  ],
+  "_resolved_conflicts": [
+    {
+      "field": "quarter_finals",
+      "detail": "The source has Brandon Melendez beating Gray Maynard in the quarter-finals and then has Maynard losing to Nate Diaz in the semi-finals. Maynard cannot be eliminated in one round and appear in the next. Both bouts are recorded as the source gives them and the round is marked unverified, rather than dropping one to make the bracket tidy.",
+      "retrieved": "2026-09-07",
+      "resolved_by": "tuf5-tuf6-nsac-reconciliation",
+      "resolved_with": "Nevada State Athletic Commission, Mixed Martial Arts Results — Season 5, The Ultimate Fighter — record nsac-2007-tuf5-09 (2007-02-21, \"Quarter Finals\") and nsac-2007-tuf5-14 (2007-02-28, \"SEMI-FINAL BOUT\")",
+      "resolution": "Not two contradictory results: the draft inverted the winner. The commission records \"Maynard won by tap out 4:07 of the 2nd round – guillotine choke\", then Maynard in the semi-final against Nate Diaz (\"Diaz won by tap out 1:20 of the 2nd round – Guillotine choke\"). Winner corrected to Gray Maynard; method, round and time were already right.",
+      "reviewer": "Justin Erickson"
     }
   ]
 }
