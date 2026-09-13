@@ -1,0 +1,252 @@
+{
+ "_about": "TUF 34 Phase 2 evidence, captured 2026-09-13 for the season audit. Short factual quotes only; full descriptions are not stored. No source below states a house-bout winner, method, round or time.",
+ "season": "tuf-34",
+ "official_broadcaster_episode_claims": [
+  {
+   "episode": 3,
+   "stage": "quarter_final",
+   "weight_class": "Women's Strawweight",
+   "pairing": [
+    "Gigi Canuto",
+    "Anita Karim"
+   ],
+   "quote": "Gigi Canuto of Brazil takes on Anita Karim of Pakistan, with the second spot in the strawweight semifinals on the line",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KV8XD7RZEDT8N54BHEEJ5PNH",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 4,
+   "stage": "quarter_final",
+   "weight_class": "Bantamweight",
+   "pairing": [
+    "Artem Belakh",
+    "Mehemmedeli Osmanli"
+   ],
+   "quote": "Artem of Kazakhstan takes on Mehemmedeli of Azerbaijan, with the second spot in the bantamweight semifinals at stake",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KVV07SHDEYPVNF2KQP92RQ1X",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 5,
+   "stage": "quarter_final",
+   "weight_class": "Women's Strawweight",
+   "pairing": [
+    "Tina Black",
+    "Natália Alves"
+   ],
+   "quote": "Brazilians Tina and Natália face off in a strawweight battle, with the second spot in the semifinals at stake",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KWCRZFNQECKRE6V46REJE3J0",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 6,
+   "stage": "quarter_final",
+   "weight_class": "Bantamweight",
+   "pairing": [
+    "Sean Mora",
+    "Ilimbek Akylbek Uulu"
+   ],
+   "quote": "the two bantamweights face off in a much-anticipated fight for a spot in the bantamweight semifinals",
+   "context": "Sean Mora threw a punch during tryouts that cut Ilimbek Akylbek Uulu’s eye",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KWZ01MRSESEAS9JE5YFDGCGX",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 7,
+   "stage": "quarter_final",
+   "weight_class": "Women's Strawweight",
+   "pairing": [
+    "Delphine Benouaich",
+    "Mackenzie Stiller"
+   ],
+   "quote": "Delphine Benouaich of Team Cormier takes on Stiller, with a coveted spot in the strawweight semifinals on the line",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KXEG01FXE2H95S8A306TXNB1",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 8,
+   "stage": "quarter_final",
+   "weight_class": "Bantamweight",
+   "pairing": [
+    "Xavier Franklin",
+    "Micaias Ureña"
+   ],
+   "quote": "he and Micaias face off in the last quarterfinal fight",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KXEG676DE9N8NRH2PKEJF246",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 9,
+   "stage": "semi_final",
+   "weight_class": "Women's Strawweight",
+   "pairing": [
+    "Melissa Amaya",
+    "Gigi Canuto"
+   ],
+   "quote": "in the first strawweight semifinal fight, American Amaya takes on Gigi Canuto of Brazil, with a coveted spot in the live finale on the line",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KXEG7ZZ8E3KSN3EQTKZSW2D8",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 10,
+   "stage": "semi_final",
+   "weight_class": "Bantamweight",
+   "pairing": [
+    "Xavier Franklin",
+    "Ilimbek Akylbek Uulu"
+   ],
+   "quote": "Xavier Franklin and Ilimbek Akylbek Uulu put their friendship aside and take to the Octagon, looking to secure the first spot in the bantamweight live finale",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KXEG9H3GE1XBPFBZG5A850XW",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 11,
+   "stage": "semi_final",
+   "weight_class": "Women's Strawweight",
+   "pairing": [
+    "Tina Black",
+    "Delphine Benouaich"
+   ],
+   "quote": "Tina Black and Delphine Benouaich, battle to determine the last spot in the strawweight finale",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KXEGBKDYEHWTG3VVFP579T3G",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  },
+  {
+   "episode": 12,
+   "stage": "semi_final",
+   "weight_class": "Bantamweight",
+   "pairing": [
+    "Mehemmedeli Osmanli",
+    "Christian Strong"
+   ],
+   "quote": "Mehemmedeli Osmanli and Christian Strong comes to a head when they fight for the last spot in the bantamweight finals",
+   "source_family": "paramount_plus_episode_metadata",
+   "source_tier": 4,
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/34/",
+   "content_id": "ALVE01KXEGE369ESES24FF74YSXA0V",
+   "retrieved": "2026-09-13T12:25:27Z",
+   "states_winner": false
+  }
+ ],
+ "not_usable_as_result_evidence": [
+  {
+   "episode": 2,
+   "claim": "first bantamweight fight of the competition, Britain versus the US",
+   "why": "SOURCE_AMBIGUOUS: names no fighter; nationality is not recorded in the archive, so the pairing cannot be attached without inference",
+   "quote": "it’s Britain versus the US in the first bantamweight fight of the competition"
+  },
+  {
+   "episode": 3,
+   "claim": "Team Bisping had lost twice at the start of episode 3",
+   "why": "team-level context only; does not name the bout or the winner, and cannot establish a result",
+   "quote": "On the heels of their second loss in a row to start the competition"
+  },
+  {
+   "episode": 4,
+   "claim": "Bisping had his first win of the competition before episode 4",
+   "why": "team-level context only; the episode-3 winner's team is not stated in the source, so no result follows",
+   "quote": "On the heels of his first win of the competition"
+  }
+ ],
+ "identity_evidence": [
+  {
+   "printed_as": "Tina Black",
+   "resolves_to": "Valesca Machado",
+   "fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8",
+   "basis": "ESPN athlete 4836549 fullName Valesca Machado, nickname Tina Black; ufc_fighter_aliases carries Tina Black under espn_nickname and ufcstats_nickname",
+   "source_family": "espn_core_api",
+   "url": "https://sports.core.api.espn.com/v2/sports/mma/athletes/4836549",
+   "retrieved": "2026-09-13T12:25:27Z"
+  },
+  {
+   "printed_as": "Gigi Canuto",
+   "archive_name": "Giovanna Canuto",
+   "candidate_fighter_id": "b4028b75-c0ad-4087-b91f-4ed24306eeb6",
+   "basis": "ESPN athlete 5097909 fullName Gigi Canuto (Brazil); the official episode listing names Gigi Canuto of Brazil in exactly the two bouts the archive assigns to Giovanna Canuto (E3 vs Anita Karim, E9 vs Melissa Amaya). Not yet linked: the archive spelling Giovanna is not attested by a first-party source.",
+   "source_family": "espn_core_api + paramount_plus_episode_metadata",
+   "url": "https://sports.core.api.espn.com/v2/sports/mma/athletes/5097909",
+   "retrieved": "2026-09-13T12:25:27Z"
+  },
+  {
+   "printed_as": "Mehemedeli Osmanli / Mehemmedeli Osmanli",
+   "resolves_to": "Mehemmedeli Osmanli",
+   "fighter_id": "13dd06fe-1f79-401b-9a8a-23c61a907745",
+   "basis": "ESPN athlete 5345640 fullName Mehemmedeli Osmanli; official listing spells Mehemmedeli; the bracket's Mehemedeli is a one-letter misspelling of the same finalist, whose finale pairing with Ilimbek Akylbek Uulu is a stored announced bout by id",
+   "source_family": "espn_core_api + paramount_plus_episode_metadata + ufc_bouts",
+   "retrieved": "2026-09-13T12:25:27Z"
+  },
+  {
+   "printed_as": "Illimbek Akylbek Uulu / Ilimbek Akylbek Uulu",
+   "resolves_to": "Ilimbek Akylbek Uulu",
+   "fighter_id": "70116fec-53b8-4a05-8684-4415498f4889",
+   "basis": "ESPN athlete 5345639 fullName Ilimbek Akylbek Uulu; official listing spells Ilimbek; the roster's Illimbek is a misspelling",
+   "source_family": "espn_core_api + paramount_plus_episode_metadata",
+   "retrieved": "2026-09-13T12:25:27Z"
+  }
+ ],
+ "finale_evidence": [
+  {
+   "weight_class": "Bantamweight",
+   "a_fighter_id": "13dd06fe-1f79-401b-9a8a-23c61a907745",
+   "b_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889",
+   "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+   "event_date": "2026-09-26",
+   "status": "announced",
+   "result": null,
+   "source_family": "ufc_bouts",
+   "retrieved": "2026-09-13T12:25:27Z"
+  },
+  {
+   "weight_class": "Women's Strawweight",
+   "a_fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d",
+   "b_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8",
+   "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+   "event_date": "2026-09-26",
+   "status": "announced",
+   "result": null,
+   "source_family": "ufc_bouts",
+   "retrieved": "2026-09-13T12:25:27Z"
+  }
+ ],
+ "espn_tuf34_events": {
+  "checked": "ESPN core events dates=2026, names matching Ultimate Fighter/TUF",
+  "found": 0,
+  "retrieved": "2026-09-13T12:25:27Z"
+ }
+}
