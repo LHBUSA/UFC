@@ -29,7 +29,7 @@
       "key": "us",
       "name": "The Ultimate Fighter",
       "short": "TUF",
-      "blurb": "The original series. Contestants live together, fight through a bracket, and the winner takes a UFC contract."
+      "blurb": "The original series. Contestants live and train together through season-specific competition formats, with tournament winners earning a UFC contract."
     },
     {
       "key": "brazil",
@@ -91,7 +91,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
       "finale_date": "2005-04-09",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "detail": "tuf-1",
       "final_bouts": [
@@ -151,7 +150,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
       "finale_date": "2005-11-05",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -211,7 +209,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Ortiz vs. Team Shamrock Finale",
       "finale_date": "2006-06-24",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -269,7 +266,6 @@
       ],
       "finale_event": "The Ultimate Fighter: The Comeback Finale",
       "finale_date": "2006-11-11",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -319,7 +315,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale",
       "finale_date": "2007-06-23",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "detail": "tuf-5",
       "final_bouts": [
@@ -362,7 +357,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
       "finale_date": "2007-12-08",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -405,7 +399,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Rampage vs Team Forrest Finale",
       "finale_date": "2008-06-21",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -454,7 +447,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Nogueira vs. Team Mir Finale",
       "finale_date": "2008-12-13",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -503,7 +495,6 @@
       ],
       "finale_event": "The Ultimate Fighter: United States vs. United Kingdom Finale",
       "finale_date": "2009-06-20",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -557,7 +548,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Heavyweights Finale",
       "finale_date": "2009-12-05",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -601,7 +591,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Liddell vs Team Ortiz Finale",
       "finale_date": "2010-06-19",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -644,7 +633,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team GSP vs Team Koscheck Finale",
       "finale_date": "2010-12-04",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -687,7 +675,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Lesnar vs Team dos Santos Finale",
       "finale_date": "2011-06-04",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -736,7 +723,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Bisping vs Team Miller Finale",
       "finale_date": "2011-12-03",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -779,7 +765,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Live Finale",
       "finale_date": "2012-06-01",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -822,7 +807,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Carwin vs. Team Nelson Finale",
       "finale_date": "2012-12-15",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -865,7 +849,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Jones vs. Team Sonnen Finale",
       "finale_date": "2013-04-13",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -914,7 +897,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
       "finale_date": "2013-11-30",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -963,7 +945,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
       "finale_date": "2014-07-06",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1018,7 +999,6 @@
       "winner_note": "The winner received the inaugural UFC Women's Strawweight Championship rather than only a contract.",
       "finale_event": "The Ultimate Fighter: A Champion Will Be Crowned Finale",
       "finale_date": "2014-12-12",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "detail": "tuf-20",
       "final_bouts": [
@@ -1062,7 +1042,6 @@
       ],
       "finale_event": "The Ultimate Fighter: American Top Team vs. Blackzilians Finale",
       "finale_date": "2015-07-12",
-      "coverage": "format_complete",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1102,7 +1081,6 @@
       "finale_event": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale",
       "finale_date": "2015-12-11",
       "detail": "tuf-22",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1150,7 +1128,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale",
       "finale_date": "2016-07-08",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1205,7 +1182,6 @@
       "format_note": "Every contestant entered as a champion of another promotion; the winner earned a title shot rather than only a contract.",
       "finale_event": "The Ultimate Fighter: Tournament of Champions Finale",
       "finale_date": "2016-12-03",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "champion_verification_blocked": {
         "fighter": "Tim Elliott",
@@ -1244,7 +1220,6 @@
       "format_note": "A cast of returning former contestants.",
       "finale_event": "The Ultimate Fighter: Redemption Finale",
       "finale_date": "2017-07-07",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1288,7 +1263,6 @@
       "winner_note": "The winner received the inaugural UFC Women's Flyweight Championship.",
       "finale_event": "The Ultimate Fighter: A New World Champion Finale",
       "finale_date": "2017-12-01",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1338,7 +1312,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Undefeated Finale",
       "finale_date": "2018-07-06",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1398,7 +1371,6 @@
       ],
       "finale_event": "The Ultimate Fighter: Heavy Hitters Finale",
       "finale_date": "2018-11-30",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1458,7 +1430,6 @@
       ],
       "finale_event": "UFC Fight Night: Barboza vs. Chikadze",
       "finale_date": "2021-08-28",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Ricky Turcios def. Brady Hiestand (Decision - Split, R3); Bryan Battle def. Gilbert Urbina (Submission, R2) on UFC Fight Night: Barboza vs. Chikadze, 2021-08-28.",
       "final_bouts": [
@@ -1519,7 +1490,6 @@
       ],
       "finale_event": "UFC Fight Night: Santos vs. Hill",
       "finale_date": "2022-08-06",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Mohammed Usman def. Zac Pauga (KO/TKO, R2); Juliana Miller def. Brogan Walker (KO/TKO, R3) on UFC Fight Night: Santos vs. Hill, 2022-08-06.",
       "final_bouts": [
@@ -1581,7 +1551,6 @@
       "winner_note": "Brad Katona became the first two-time tournament winner, having also won season 27.",
       "finale_event": "UFC 292: Sterling vs. O'Malley",
       "finale_date": "2023-08-19",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Brad Katona def. Cody Gibson (Decision - Unanimous, R3); Kurt Holobaugh def. Austin Hubbard (Submission, R2) on UFC 292: Sterling vs. O'Malley, 2023-08-19.",
       "final_bouts": [
@@ -1642,7 +1611,6 @@
       ],
       "finale_event": "UFC Fight Night: Cannonier vs. Borralho",
       "finale_date": "2024-08-24",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Mairon Santos def. Kaan Ofli (KO/TKO, R2); Ryan Loder def. Robert Valentin (KO/TKO, R2) on UFC Fight Night: Cannonier vs. Borralho, 2024-08-24.",
       "final_bouts": [
@@ -1718,7 +1686,6 @@
       "completion_unverified": true,
       "finale_event": null,
       "finale_date": null,
-      "coverage": "bracket_full",
       "season_state": "completed",
       "detail": "tuf-33",
       "coach_fighter_ids": [
@@ -1743,7 +1710,6 @@
       "winners": [],
       "finale_event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
       "finale_date": "2026-09-26",
-      "coverage": "bracket_partial",
       "season_state": "ongoing",
       "detail": "tuf-34",
       "coach_fighter_ids": [
@@ -1802,7 +1768,6 @@
       ],
       "finale_event": "UFC 147: Silva vs Franklin 2",
       "finale_date": "2012-06-23",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1857,7 +1822,6 @@
       ],
       "finale_event": "UFC on FUEL TV: Nogueira vs. Werdum",
       "finale_date": "2013-06-08",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1908,7 +1872,6 @@
       ],
       "finale_event": "UFC Fight Night: Miocic vs Maldonado",
       "finale_date": "2014-05-31",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -1970,7 +1933,6 @@
       ],
       "finale_event": "UFC 190: Rousey vs Correia",
       "finale_date": "2015-08-01",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -2032,7 +1994,6 @@
       ],
       "finale_event": "UFC 180: Werdum vs Hunt",
       "finale_date": "2014-11-15",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "finale_link_basis": "Verified by the exact final matchup in our own records, not by a champion appearing on the card: Alejandro Pérez def. Jose Quinonez (Decision - Unanimous, R3); Yair Rodríguez def. Leonardo Morales (Decision - Unanimous, R3) on UFC 180: Werdum vs Hunt, 2014-11-15.",
       "final_bouts": [
@@ -2093,7 +2054,6 @@
       ],
       "finale_event": "UFC Fight Night: Magny vs Gastelum",
       "finale_date": "2015-11-21",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -2149,7 +2109,6 @@
       ],
       "finale_event": "UFC Fight Night: Dos Anjos vs. Ferguson",
       "finale_date": "2016-11-05",
-      "coverage": "bracket_full",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -2204,7 +2163,6 @@
       ],
       "finale_event": "UFC Fight Night: Kim vs Hathaway",
       "finale_date": "2014-03-01",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "detail": "tuf-china-1",
       "finale_note": "This season’s two finals were contested five months apart on different cards: the welterweight final on 2014-03-01, the featherweight final on 2014-08-23. Each final carries its own event and date.",
@@ -2265,7 +2223,6 @@
       ],
       "finale_event": "UFC Fight Night: Bisping vs Kennedy",
       "finale_date": "2014-04-16",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "detail": "tuf-nations-1",
       "final_bouts": [
@@ -2326,7 +2283,6 @@
       ],
       "finale_event": "UFC on FX: Sotiropoulos vs Pearson",
       "finale_date": "2012-12-14",
-      "coverage": "bracket_partial",
       "season_state": "completed",
       "final_bouts": [
         {
@@ -2360,16 +2316,11 @@
       ]
     }
   ],
-  "_coverage_model": {
-    "buckets": {
-      "bracket_full": "every documented round loaded, no unresolved dispute",
-      "bracket_partial": "some rounds loaded, or a dispute is still open",
-      "metadata_only": "season facts only; no tournament bouts loaded",
-      "format_complete": "a season with no tournament bracket, recorded fully in the format it actually used"
-    },
-    "rule": "The three buckets are mutually exclusive and every season is in exactly one, so they sum to the season count.",
+  "_status_model": {
+    "rule": "No stored coverage label. Each season carries two derived states, kept apart: STRUCTURE (is the competition the season actually ran represented, measured against its own format) from web/lib/tufStatus.ts, and EVIDENCE (does it clear the completeness bar) from scripts/tuf/completeness_matrix.mjs, exported to web/data/tuf/status.generated.json.",
+    "structure_note": "Structure is never lowered by evidence quality: a secondary-only result, an unresolved identity, an open source conflict or an unresolved classification is a research gap, not a missing bout.",
     "finale_note": "finale_linked is tracked separately and is NOT coverage. Holding a finale card means we hold a UFC event; it says nothing about whether the tournament that led to it is in the archive.",
     "state_note": "season_state (completed | ongoing) is a fact about the season, not about us.",
-    "format_note": "format_complete is not a lesser kind of coverage. Season 21 had no bracket to load: two gyms fought a scored series. Filing it as partial counted the absence of a structure it never had as missing data, which is a statement about our template rather than about the season."
+    "format_note": "Seasons are not all brackets. TUF 1 and 2 declare an elimination format; season 21 was two gyms scored on points. Each is measured against the format it actually used."
   }
 }

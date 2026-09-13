@@ -126,10 +126,6 @@ export function applyRepairsToSeason(season, inventoryRow, ledger) {
           log.push(`${r.id}: closed ${ref.stage}`);
         }
       }
-      if (r.set_coverage && inventoryRow && inventoryRow.coverage !== r.set_coverage) {
-        log.push(`${r.id}: coverage ${inventoryRow.coverage} -> ${r.set_coverage}`);
-        inventoryRow.coverage = r.set_coverage;
-      }
     } else if (r.op === 'set_team_rosters') {
       const want = r.teams.map((t) => ({ name: t.name, roster: t.roster.map((p) => ({ ...p })) }));
       const current = season.teams || [];

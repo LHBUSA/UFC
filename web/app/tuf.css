@@ -155,6 +155,11 @@
 .tuf-pill-live { border-color: rgba(230,57,70,.5); color: var(--tuf-live); }
 /* Thin coverage reads as quieter through colour and a dashed edge, not opacity, which took it below AA. */
 .tuf-pill-thin { color: var(--tuf-text-4); border-style: dashed; }
+/* Hub status: one pill, and at most one quieter evidence state under it. */
+.tuf-status { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; text-align: right; }
+.tuf-status .tuf-pill { margin-left: 0; }
+.tuf-status-sub { font-family: var(--pbe-font-ui); font-size: var(--tuf-fs-meta); letter-spacing: .06em; text-transform: uppercase; color: var(--tuf-text-3); white-space: nowrap; }
+.tuf-status-sub.is-ok { color: var(--pbe-gold); }
 
 .tuf-card-name {
   font-family: var(--pbe-font-display);

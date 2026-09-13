@@ -26,6 +26,7 @@ import tuf5Json from "../data/tuf/seasons/tuf-5.json" with { type: "json" };
 import { advancementProblems, expectedBouts } from "./tufFormat.ts";
 import { buildEpisodeViews, rosterMarks, timelineCounts } from "./tufTimeline.ts";
 import { classState, resultState } from "./tufBoutState.ts";
+import { structureOf } from "./tufStatus.ts";
 
 type Bout = {
   a: string; b: string; winner: string | null; method: string | null;
@@ -35,7 +36,7 @@ type Bout = {
 };
 type Stage = { stage: string; label: string; status?: string; note?: string; bouts: Bout[]; disputed?: Bout[] };
 type Season = Record<string, unknown> & {
-  slug: string; coverage: string; season_state: string; detail?: string; year: number;
+  slug: string; season_state: "completed" | "ongoing"; detail?: string; year: number; weight_classes: string[];
   winners: Array<{ weight_class: string; fighter: string }>;
   finalists?: Array<{ weight_class: string; fighters: string[] }>;
   finale_event: string | null; finale_date: string | null; edition: string;
@@ -45,7 +46,7 @@ const inventory = inventoryJson as unknown as {
   editions: Array<{ key: string }>;
   seasons: Season[];
   _conflicts: Array<{ scope: string; field: string }>;
-  _coverage_model: { buckets: Record<string, string> };
+  _status_model: Record<string, string>;
 };
 const tuf22 = tuf22Json as unknown as {
   bracket: Array<{ weight_class: string; stages: Stage[] }>;
@@ -77,66 +78,37 @@ const bouts = stages.flatMap((st) => st.bouts);
 /** Mirrors lib/tuf.ts. Professional AND sourced. */
 const counts = (b: Bout) => b.classification === "professional" && Boolean(b.classification_source);
 
-/* ---- coverage model ------------------------------------------------------ */
+/* ---- status model -------------------------------------------------------- */
 
-test("coverage buckets are mutually exclusive and sum to the season count", () => {
-  const buckets = Object.keys(inventory._coverage_model.buckets);
-  const tally = new Map(buckets.map((b) => [b, 0]));
-  for (const s of seasons) {
-    assert.ok(tally.has(s.coverage), `${s.slug}: coverage "${s.coverage}" is not a declared bucket`);
-    tally.set(s.coverage, tally.get(s.coverage)! + 1);
-  }
-  const sum = [...tally.values()].reduce((a, b) => a + b, 0);
-  assert.equal(sum, seasons.length, "every season must be in exactly one bucket");
+test("no stored coverage label remains: status is derived, not maintained", () => {
+  for (const x of seasons) assert.ok(!("coverage" in x), `${x.slug}: the legacy coverage label must be gone`);
+  assert.ok(!("_coverage_model" in inventory), "the legacy bucket model must be gone");
+  assert.ok(inventory._status_model?.rule, "the derived status model is documented instead");
 });
 
-test("season state is a separate axis from coverage", () => {
-  for (const s of seasons) {
-    assert.ok(["completed", "ongoing"].includes(s.season_state), `${s.slug}: bad season_state`);
-    /* An ongoing season can still have a loaded bracket, and a finished one
-     * can be entirely unloaded — the two axes must not be entangled. */
-    assert.ok(!("status" in s), `${s.slug}: the old conflated 'status' field must be gone`);
+test("season state is a separate axis from structure", () => {
+  for (const x of seasons) {
+    assert.ok(["completed", "ongoing"].includes(x.season_state), `${x.slug}: bad season_state`);
+    assert.ok(!("status" in x), `${x.slug}: the old conflated 'status' field must be gone`);
   }
 });
 
-test("a finale we hold is not counted as tournament coverage", () => {
-  /* Originally this checked that some season naming a finale was still
-   * metadata_only — a proxy for "coverage is not just mirroring finale_event",
-   * and one that only worked while most of the archive was unloaded. Now that
-   * every season carries a bracket the proxy is vacuous, so the property it
-   * stood for is asserted directly, in both directions: coverage is a claim
-   * about the bracket and about nothing else. */
-  const withFinale = seasons.filter((s) => s.finale_event);
+test("a finale we hold is not structure: structure needs competition bouts", () => {
+  const withFinale = seasons.filter((x) => x.finale_event);
   assert.ok(withFinale.length > 1, "several seasons name a finale");
-
-  for (const s of seasons) {
-    const bracket = DETAIL_BY_SLUG[s.slug]?.bracket ?? [];
-    const hasBouts = bracket.some((d) => d.stages.some((st) => st.bouts.length));
-    if (s.coverage === "metadata_only") {
-      assert.ok(
-        !hasBouts,
-        `${s.slug}: has a bracket with bouts but is filed as metadata_only`,
-      );
-    } else {
-      assert.ok(
-        hasBouts,
-        `${s.slug}: claims ${s.coverage} without a bracket holding any bout — a named finale is not tournament coverage`,
-      );
-    }
+  for (const x of seasons) {
+    const d = DETAIL_BY_SLUG[x.slug];
+    const hasBouts = (d?.bracket ?? []).some((wc) => wc.stages.some((st) => st.bouts.length));
+    if (structureOf(x, d).structure === "complete") assert.ok(hasBouts || (d as { team_competition?: unknown })?.team_competition, `${x.slug}: complete structure without competition bouts`);
   }
+  const named = withFinale[0];
+  assert.equal(structureOf(named, null).structure, "partial", "a named finale with no season data is not structure");
 });
 
-test("only a season with a bracket claims bracket coverage", () => {
-  for (const s of seasons) {
-    if (s.coverage === "metadata_only") continue;
-    assert.ok(s.detail, `${s.slug} claims bracket coverage but has no detail file`);
-  }
-});
-
-test("TUF 22 is partial while its opening round is disputed", () => {
-  const t22 = seasons.find((s) => s.slug === "tuf-22")!;
-  assert.equal(t22.coverage, "bracket_partial");
-  assert.ok(tuf22._conflicts.some((c) => c.field === "round_of_16"), "and the reason is recorded");
+test("TUF 22's disputed opening round is a research gap, not missing structure", () => {
+  const t22 = seasons.find((x) => x.slug === "tuf-22")!;
+  assert.ok(tuf22._conflicts.some((c) => c.field === "round_of_16"), "the dispute is still recorded");
+  assert.equal(structureOf(t22, DETAIL_BY_SLUG["tuf-22"]).structure, "complete");
 });
 
 /* ---- classification ------------------------------------------------------ */
@@ -343,18 +315,19 @@ test("a champion who won a title rather than a contract records both facts disti
   assert.match(String(c.verified_against), /ufc_bout_results/);
 });
 
-test("a season claiming full bracket coverage has no unverified round and no dispute", () => {
-  const full = seasons.filter((s) => s.coverage === "bracket_full");
-  assert.ok(full.length > 0, "at least one season should be fully loaded by now");
+test("a season the matrix verifies has no unverified round and no dispute", () => {
+  const status = JSON.parse(readFileSync(new URL("../data/tuf/status.generated.json", import.meta.url), "utf8")) as { seasons: Record<string, { matrix_status: string }> };
+  const full = seasons.filter((s) => status.seasons[s.slug]?.matrix_status === "COMPLETE");
+  assert.ok(full.length > 0, "at least one season should be verified by now");
   for (const s of full) {
     const detail = DETAIL_BY_SLUG[s.slug];
-    assert.ok(detail, `${s.slug}: claims full coverage but has no detail file`);
-    assert.ok(detail.bracket?.length, `${s.slug}: claims full coverage but its detail file has no bracket`);
+    assert.ok(detail, `${s.slug}: verified but has no detail file`);
+    assert.ok(detail.bracket?.length, `${s.slug}: verified but its detail file has no competition bouts`);
     for (const wc of detail.bracket!) {
       for (const st of wc.stages) {
-        assert.notEqual(st.status, "unverified", `${s.slug}/${st.stage}: full coverage cannot contain an unverified round`);
-        assert.ok(!st.disputed?.length, `${s.slug}/${st.stage}: full coverage cannot contain a disputed bout`);
-        assert.ok(st.bouts.length > 0, `${s.slug}/${st.stage}: a stage in a full bracket must have bouts`);
+        assert.notEqual(st.status, "unverified", `${s.slug}/${st.stage}: a verified season cannot contain an unverified round`);
+        assert.ok(!st.disputed?.length, `${s.slug}/${st.stage}: a verified season cannot contain a disputed bout`);
+        assert.ok(st.bouts.length > 0, `${s.slug}/${st.stage}: a stage in a verified season must have bouts`);
       }
     }
   }
@@ -1195,13 +1168,14 @@ function countsTowardsRecordShape(b: Bout) {
 }
 
 test("a season with no bracket to load is not filed as missing data", () => {
-  const fc = seasons.filter((s) => s.coverage === "format_complete");
+  const fc = seasons.filter((s) => structureOf(s, DETAIL_BY_SLUG[s.slug]).basis === "team_points_format");
   assert.equal(fc.length, 1, "season 21 is the only season with no tournament bracket");
   for (const s of fc) {
+    assert.equal(structureOf(s, DETAIL_BY_SLUG[s.slug]).structure, "complete", `${s.slug}: complete in its own format`);
     const d = DETAIL_BY_SLUG[s.slug] as {
       team_competition?: { standings?: unknown[]; concluding_bout?: { winner?: string | null } };
     };
-    assert.ok(d?.team_competition, `${s.slug}: format_complete requires the format to be recorded`);
+    assert.ok(d?.team_competition, `${s.slug}: a points season requires the format to be recorded`);
     assert.ok(d.team_competition!.standings?.length, `${s.slug}: a scored season needs its standings`);
     assert.ok(
       d.team_competition!.concluding_bout?.winner,
