@@ -117,6 +117,16 @@ export const APPLIED = new Set([
   // unchanged at 352 throughout. Confirmed absent after the rollback, then
   // applied. Additive; no Worker writes to it yet (LIVE_ODDS_ENABLED=false).
   '20260913000002_ufc_market_state_transitions.sql',
+
+  // Applied 2026-09-13 after a BEGIN..ROLLBACK proof. Fixes the NULL-uniqueness
+  // hole in the previous migration (a plain UNIQUE let a second "first"
+  // in_progress through), and adds the snapshot layer the market tape needs.
+  '20260913000003_ufc_market_live_capture.sql',
+
+  // Applied 2026-09-13 after a BEGIN..ROLLBACK proof. Additive: how a round
+  // boundary was evidenced, so a period-transition inference is never shown
+  // with the same precision as a directly observed end-of-round state.
+  '20260913000004_ufc_market_boundary_basis.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))

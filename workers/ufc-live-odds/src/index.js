@@ -35,6 +35,7 @@
  */
 import { OBS_CONFLICT } from '../../../scripts/odds/market_match.mjs';
 import { normalizePayload, snapshotRows, observationRows } from './capture.mjs';
+import { boundariesFrom, dedupeBoundaries } from './boundaries.mjs';
 import { readConfig, shouldPoll, readQuotaHeaders, isActive, isImminent, roundFromStatus } from './gate.mjs';
 
 const WORKER = 'ufc-live-odds';
@@ -131,26 +132,40 @@ async function boutStatuses(espnEventId) {
  * present it as the moment the round ended.
  */
 async function recordTransitions(env, card, statuses, now, { strict = false } = {}) {
+  const observedAt = new Date(now).toISOString();
   const rows = [];
+
+  /* in_progress: the first time we see a bout being contested. One per bout,
+   * enforced by the functional unique index. */
   for (const s of statuses) {
-    const kind = isActive(s.status) && s.round === null && s.status !== 'STATUS_END_OF_ROUND' ? 'in_progress'
-      : s.status === 'STATUS_END_OF_ROUND' && s.round ? 'round_end'
-        : isActive(s.status) ? 'in_progress' : null;
-    if (!kind) continue;
+    if (!isActive(s.status)) continue;
     rows.push({
       espn_competition_id: s.competitionId,
       event_id: card.event_id ?? null,
-      kind,
-      round: kind === 'round_end' ? s.round : null,
+      kind: 'in_progress',
+      round: null,
       espn_status: s.status,
-      observed_at: new Date(now).toISOString(),
-      provenance: `ESPN status first observed as ${s.status}${s.round ? ` period ${s.round}` : ''} by ${WORKER}`,
+      observed_at: observedAt,
+      provenance: `ESPN status first observed as ${s.status} by ${WORKER}`,
     });
   }
+
+  /* Round boundaries, from BOTH evidence paths. The previous sighting comes
+   * from the transitions we have already stored, so a fresh isolate still
+   * knows what period a bout was in last time. */
+  const seen = await lastSeenPeriods(env, statuses.map((s) => s.competitionId)).catch(() => new Map());
+  let boundaries = [];
+  for (const s of statuses) {
+    boundaries = dedupeBoundaries(boundaries, boundariesFrom({
+      status: s,
+      previous: seen.get(String(s.competitionId)) || null,
+      observedAt,
+      scheduledRounds: s.scheduledRounds ?? null,
+    }));
+  }
+  for (const b of boundaries) rows.push({ ...b, event_id: card.event_id ?? null });
+
   if (!rows.length) return 0;
-  /* Append-only and first-seen-wins: the unique target means a state we have
-   * already recorded is a database no-op rather than a newer timestamp
-   * overwriting the moment we actually first saw it. */
   /* Canonical bout by ESPN competition id. Never by fighter name. */
   const ids = [...new Set(rows.map((r) => r.espn_competition_id))];
   const boutRows = await rest(env,
@@ -223,6 +238,31 @@ async function durableState(env, eventId) {
     cardSpend = 0;
   }
   return { quota, cardSpend, lastCallAt: lastCall?.started_at || null };
+}
+
+
+/**
+ * The period each bout was last seen in, from the transitions already stored.
+ *
+ * Read from the database rather than kept in memory so the period-transition
+ * fallback survives a fresh isolate — the whole point of the fallback is to
+ * catch a boundary between two polls, which may well be two isolates.
+ */
+async function lastSeenPeriods(env, competitionIds) {
+  const ids = [...new Set(competitionIds.filter(Boolean))];
+  if (!ids.length) return new Map();
+  const rows = await rest(env,
+    `ufc_market_state_transitions?select=espn_competition_id,round,observed_at,kind`
+    + `&espn_competition_id=in.(${ids.map((x) => `"${x}"`).join(',')})&kind=eq.round_end&order=round.desc`).catch(() => []);
+  const out = new Map();
+  for (const r of rows || []) {
+    const id = String(r.espn_competition_id);
+    const prev = out.get(id);
+    /* The highest round we have already recorded implies the bout was at least
+     * in the following period when we saw it. */
+    if (!prev || (r.round ?? 0) > prev.period - 1) out.set(id, { period: (r.round ?? 0) + 1, seenAt: r.observed_at });
+  }
+  return out;
 }
 
 /* ---- the tick ----------------------------------------------------------- */

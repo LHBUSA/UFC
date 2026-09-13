@@ -6,7 +6,7 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev --test-scheduled",
-    "test": "node src/gate.test.mjs && node src/capture.test.mjs && node ../../scripts/odds/market_match.test.mjs && node ../../scripts/odds/market_tape.test.mjs"
+    "test": "node src/gate.test.mjs && node src/capture.test.mjs && node src/boundaries.test.mjs && node ../../scripts/odds/market_match.test.mjs && node ../../scripts/odds/market_tape.test.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.62.0"
