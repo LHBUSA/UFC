@@ -278,6 +278,8 @@
 .tuf-ep { font-family: var(--pbe-font-data); font-size: var(--tuf-fs-meta); color: var(--tuf-text-3); }
 .tuf-bout-note { flex-basis: 100%; color: var(--tuf-text-3); font-size: var(--fs-sm); line-height: 1.5; }
 .tuf-bout-note b { color: var(--pbe-gold); }
+.tuf-method-detail { color: var(--tuf-text-3); }
+.tuf-method-detail em { font-style: normal; color: var(--tuf-text-3); }
 .tuf-bout-src { flex-basis: 100%; font-family: var(--pbe-font-data); font-size: var(--tuf-fs-meta); letter-spacing: .04em; }
 .tuf-bout-src a { color: var(--tuf-text-3); text-decoration: underline; text-underline-offset: 2px; }
 .tuf-bout-src a + a { margin-left: var(--s-3); }
