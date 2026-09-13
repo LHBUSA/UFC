@@ -1,6 +1,6 @@
 # TUF 5 / TUF 6 matrix verifier correction — 2026-09-13
 
-This supersedes only the **matrix simulation / generic verifier observation** in `nsac_tuf5_tuf6_reconciliation_audit_2026-09-13.md`. The commission evidence audit itself is unchanged. No TUF 5 or TUF 6 canonical changes are applied here.
+Audit baseline: `a9bcf2ca65278f0eb7f60116f36e29b49b7f8e46`. This report supersedes only that audit's **matrix simulation / generic verifier observation**. The commission evidence audit itself is unchanged. No TUF 5 or TUF 6 canonical changes are applied here.
 
 ## Root cause
 
