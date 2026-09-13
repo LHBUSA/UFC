@@ -1,0 +1,488 @@
+{
+ "plan_sha256": "2b6a372cbb9151c464c87860cfb4190570bd02f55a13a9f82eb7c2aa74ccd581",
+ "migration": "20260913140000_ufc_legacy_origins.sql",
+ "migration_sha256": "c6e3162d81642901d069f5345a698451d48bcf4f2011eed825643eb50cdd9f84",
+ "proof": [
+  {
+   "proof": {
+    "failed": 0,
+    "passed": 91,
+    "assertions": [
+     {
+      "ok": true,
+      "name": "new tables exist (7)",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "new result columns exist (6)",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "new bout columns exist (10)",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "parser: 'No Time Limit' -> untimed",
+      "detail": "untimed - ot=0"
+     },
+     {
+      "ok": true,
+      "name": "parser: '1 Rnd (20)' -> single_period",
+      "detail": "single_period {1200} ot=0"
+     },
+     {
+      "ok": true,
+      "name": "parser: '1 Rnd + OT (12-3)' -> regulation_overtime",
+      "detail": "regulation_overtime {720,180} ot=1"
+     },
+     {
+      "ok": true,
+      "name": "parser: '1 Rnd + 2OT (15-3-3)' -> regulation_overtime",
+      "detail": "regulation_overtime {900,180,180} ot=2"
+     },
+     {
+      "ok": true,
+      "name": "parser: '1 Rnd + OT (31-5)' -> regulation_overtime",
+      "detail": "regulation_overtime {1860,300} ot=1"
+     },
+     {
+      "ok": true,
+      "name": "parser: '2 Rnd (5-5)' -> rounds",
+      "detail": "rounds {300,300} ot=0"
+     },
+     {
+      "ok": true,
+      "name": "parser: '3 Rnd (5-5-5)' -> rounds",
+      "detail": "rounds {300,300,300} ot=0"
+     },
+     {
+      "ok": true,
+      "name": "parser: '5 Rnd (5-5-5-5-5)' -> rounds",
+      "detail": "rounds {300,300,300,300,300} ot=0"
+     },
+     {
+      "ok": true,
+      "name": "parser: '3 Rnd + OT (5-5-5-5)' -> unparsed",
+      "detail": "unparsed - ot=-"
+     },
+     {
+      "ok": true,
+      "name": "parser: 'Round 1' -> unparsed",
+      "detail": "unparsed - ot=-"
+     },
+     {
+      "ok": true,
+      "name": "parser: '' -> unparsed",
+      "detail": "unparsed - ot=-"
+     },
+     {
+      "ok": true,
+      "name": "anon has no privilege on ufc_event_fact_keys",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "service_role cannot delete/truncate ufc_event_fact_keys",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "anon has no privilege on ufc_event_fact_claims",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "service_role cannot delete/truncate ufc_event_fact_claims",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "anon has no privilege on ufc_event_fact_resolutions",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "service_role cannot delete/truncate ufc_event_fact_resolutions",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "anon has no privilege on ufc_tournaments",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "service_role cannot delete/truncate ufc_tournaments",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "anon has no privilege on ufc_tournament_entries",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "service_role cannot delete/truncate ufc_tournament_entries",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "anon has no privilege on ufc_tournament_advancements",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "service_role cannot delete/truncate ufc_tournament_advancements",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "anon has no privilege on ufc_legacy_repair_ledger",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "service_role cannot delete/truncate ufc_legacy_repair_ledger",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "view ufc_bout_round_stats_periods is security_invoker and closed to anon",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "view ufc_event_fact_display is security_invoker and closed to anon",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "ufc_bout_results raw columns unchanged for every pre-existing row",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "ufc_bouts raw columns unchanged for every pre-existing row",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "ufc_events raw columns unchanged except espn_event_id null fills",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "ufc_bout_round_stats unchanged",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "ufc_videos rows unchanged",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "UFC 1: exactly one event row",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "UFC 1: 8 bouts and 8 results",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "UFC 1: every winner is one of the two corners",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "UFC 1: fighter appearances match the bracket (Gracie 3, Gordeau 3, Shamrock 2, Rosier 2, others 1)",
+      "detail": "Art Jimmerson=1, Gerard Gordeau=3, Jason DeLucia=1, Ken Shamrock=2, Kevin Rosier=2, Patrick Smith=1, Royce Gracie=3, Teila Tuli=1, Trent Jenkins=1, Zane Frazier=1"
+     },
+     {
+      "ok": true,
+      "name": "UFC 1: Royce Gracie wins the final (highest bout_order) by submission at 1:44",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "UFC 1: no result presented as a round (all untimed/whole_fight)",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "UFC 1: referee withheld (conflict open, 8 ESPN claims)",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "fighters: exactly 3 new rows",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "no duplicate canonical fighter: Gerard Gordeau",
+      "detail": "ae09c960-ec74-44aa-bf3d-dfd9525c7107"
+     },
+     {
+      "ok": true,
+      "name": "no duplicate canonical fighter: Teila Tuli",
+      "detail": "d3ba25c6-521b-4522-86b1-3b219b2c7926"
+     },
+     {
+      "ok": true,
+      "name": "no duplicate canonical fighter: Art Jimmerson",
+      "detail": "4e22f1d1-895f-49a8-82df-802a4b0e8c73"
+     },
+     {
+      "ok": true,
+      "name": "no duplicate espn_athlete_id / ufcstats_id anywhere",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "review queue: 3 rows created and resolved to the minted fighters",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "packets: 12 validated legacy-origins packets",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "matched UFC 1 corners reuse existing canonical ids",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "semantics: 440 legacy rows updated, equal to the plan row by row",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "semantics: the SQL parser agrees with the Python plan on every legacy row",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "semantics: every pre-2005 result is interpreted (none left null)",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "semantics: no post-2004 row touched",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "semantics: 'No Time Limit' is never a round",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "semantics: overtime-format raw round 2/3 reads as overtime 1/2",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "round-stat view: legacy rows labelled; 'Round n' only where the result has rounds",
+      "detail": "regulation_period=302, overtime=66, round=1018, (uninterpreted)=40486, whole_fight=58"
+     },
+     {
+      "ok": true,
+      "name": "round-stat view row count equals base table",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "ledger: 440 period_semantics updates with before images",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "ESPN event ids: 54 null fills, all unique",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "every legacy event now carries an ESPN id",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "ufc_events.venue untouched (claims only)",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "venue claims: 53 ESPN tier-2 claims",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "no claim from promotion material",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "judge fields: every polluted legacy judge string resolves through ufc_judge_aliases",
+      "detail": "Illegal Knee by Lindland Nelson Hamilton -> Nelson Hamilton; Illegal Kick by Thomas Cecil Peoples -> Cecil Peoples; Illegal Knee by Menne Tony Weeks -> Tony Weeks"
+     },
+     {
+      "ok": true,
+      "name": "view ufc_bout_scorecards still selects",
+      "detail": "before=12433 after=12433"
+     },
+     {
+      "ok": true,
+      "name": "view ufc_judge_bouts still selects",
+      "detail": "before=12433 after=12433"
+     },
+     {
+      "ok": true,
+      "name": "view ufc_judge_stats still selects",
+      "detail": "before=470 after=470"
+     },
+     {
+      "ok": true,
+      "name": "view ufc_scorecard_coverage still selects",
+      "detail": "before=1 after=1"
+     },
+     {
+      "ok": true,
+      "name": "view ufc_scorecard_gaps still selects",
+      "detail": "before=151 after=151"
+     },
+     {
+      "ok": true,
+      "name": "view ufc_weigh_in_current still selects",
+      "detail": "before=116 after=116"
+     },
+     {
+      "ok": true,
+      "name": "view ufc_referee_bouts still selects",
+      "detail": "before=9327 after=9327"
+     },
+     {
+      "ok": true,
+      "name": "view ufc_referee_stats still selects",
+      "detail": "before=248 after=248"
+     },
+     {
+      "ok": true,
+      "name": "view combat_career_bouts still selects",
+      "detail": "before=9417 after=9421"
+     },
+     {
+      "ok": true,
+      "name": "web RESULT_COLS select still valid",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "guard: claim delete refused",
+      "detail": "ufc_event_fact_claims is append-only: claim a3c21147-d2f4-4eff-9abc-8a0afe4c6237 cannot be deleted (reject it instead)"
+     },
+     {
+      "ok": true,
+      "name": "guard: claim raw_value is immutable",
+      "detail": "ufc_event_fact_claims: claim a3c21147-d2f4-4eff-9abc-8a0afe4c6237 is immutable evidence; only verification_status, conflict_*, notes may change"
+     },
+     {
+      "ok": true,
+      "name": "guard: claim review state may change",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "guard: promotion claim cannot win against a disagreeing claim",
+      "detail": "promotion_official claim a3c21147-d2f4-4eff-9abc-8a0afe4c6237 conflicts with 1 other claim(s); only an operator_decision may select it"
+     },
+     {
+      "ok": true,
+      "name": "guard: resolution must select a claim for the same fact",
+      "detail": "insert or update on table \"ufc_event_fact_resolutions\" violates foreign key constraint \"ufc_event_fact_resolutions_claim_fkey\""
+     },
+     {
+      "ok": true,
+      "name": "guard: promotion material cannot be tier 2",
+      "detail": "new row for relation \"ufc_event_fact_claims\" violates check constraint \"ufc_event_fact_claims_promotion_tier\""
+     },
+     {
+      "ok": true,
+      "name": "guard: a bye cannot carry a bout",
+      "detail": "new row for relation \"ufc_tournament_advancements\" violates check constraint \"ufc_tournament_advancements_bout_rule\""
+     },
+     {
+      "ok": true,
+      "name": "guard: a bye with no bout is accepted",
+      "detail": null
+     },
+     {
+      "ok": true,
+      "name": "guard: a bout_win must name its bout",
+      "detail": "new row for relation \"ufc_tournament_advancements\" violates check constraint \"ufc_tournament_advancements_bout_rule\""
+     },
+     {
+      "ok": true,
+      "name": "guard: advancement bout must be on the tournament event",
+      "detail": "advancement bout 71113b6d-f141-41ae-80bb-4b855979b1b8 is not on the tournament event"
+     },
+     {
+      "ok": true,
+      "name": "guard: a replacement must name who it replaces",
+      "detail": "new row for relation \"ufc_tournament_advancements\" violates check constraint \"ufc_tournament_advancements_replacement_rule\""
+     },
+     {
+      "ok": true,
+      "name": "guard: an entry needs a canonical fighter or a review row",
+      "detail": "new row for relation \"ufc_tournament_entries\" violates check constraint \"ufc_tournament_entries_identity\""
+     },
+     {
+      "ok": true,
+      "name": "guard: an untimed result cannot be relabelled a round",
+      "detail": "new row for relation \"ufc_bout_results\" violates check constraint \"ufc_bout_results_period_semantics_coherent\""
+     },
+     {
+      "ok": true,
+      "name": "guard: an interpretation cannot be half-filled (NULL kind)",
+      "detail": "new row for relation \"ufc_bout_results\" violates check constraint \"ufc_bout_results_period_semantics_coherent\""
+     },
+     {
+      "ok": true,
+      "name": "guard: regulation is period 1 only",
+      "detail": "new row for relation \"ufc_bout_results\" violates check constraint \"ufc_bout_results_period_semantics_coherent\""
+     },
+     {
+      "ok": true,
+      "name": "guard: a normalized weight limit needs a stated basis",
+      "detail": "new row for relation \"ufc_bouts\" violates check constraint \"ufc_bouts_historical_limit_needs_basis\""
+     }
+    ],
+    "lock_wait_ms": null
+   }
+  }
+ ],
+ "post_rollback": [
+  {
+   "post_rollback": {
+    "views_left": 0,
+    "tables_left": 0,
+    "packets_left": 0,
+    "function_left": false,
+    "ufc1_event_left": 0,
+    "review_rows_left": 0,
+    "source_rows_left": 0,
+    "bout_columns_left": 0,
+    "result_columns_left": 0,
+    "legacy_events_with_espn_id": 0,
+    "video_type_check_has_event_replay": false
+   }
+  }
+ ]
+}
