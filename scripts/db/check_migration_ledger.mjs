@@ -111,6 +111,10 @@ export const APPLIED = new Set([
   // RLS on. Additive.
   '20260913000001_ufc_dwcs_outcome_claims.sql',
 
+  // Applied 2026-09-13 after a chained BEGIN..ROLLBACK proof with its test
+  // (migrations/tests/023) and a failing negative control. Creates no resolution.
+  '20260913000006_ufc_dwcs_outcome_resolutions.sql',
+
   // Applied 2026-09-13 after a BEGIN..ROLLBACK proof that also exercised the
   // behaviour: first-seen-wins on a repeat state, UPDATE and DELETE both
   // refused, the round-shape CHECK enforced, and ufc_market_observations

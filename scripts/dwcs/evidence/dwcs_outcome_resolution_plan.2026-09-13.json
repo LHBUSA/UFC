@@ -1,0 +1,3182 @@
+{
+ "generated_at": "2026-09-13T02:18:38.329Z",
+ "approves_nothing": true,
+ "apply_with": "node scripts/dwcs/resolve_outcome.mjs --claim <proposed_claim_id> --by \"<operator name>\" [--notes \"...\"] --apply",
+ "counts": {
+  "evidence_rows": 270,
+  "candidates": 114,
+  "candidates_espn_corroborated": 37,
+  "by_type": {
+   "contract_awarded": 112,
+   "developmental_deal": 2
+  },
+  "excluded_rows": 144,
+  "already_resolved": 0
+ },
+ "candidates": [
+  {
+   "proposed_claim_id": "acef7e68-436f-f254-fb82-ffd56d313793",
+   "fighter": "Boston Salmon",
+   "fighter_id": "24a7908c-da89-4038-b386-ac638ad1cc5f",
+   "event": "Dana White's Contender Series: Season 1, Week 1",
+   "event_date": "2017-07-11",
+   "event_id": "dd4bf721-ca46-4ddc-b864-a2d9a7f43797",
+   "bout_id": "3cb6ecb8-091f-444a-be60-89a3681e26fa",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-1-recap",
+   "source_date": "2021-08-10",
+   "excerpt": "Only Holobaugh and Salmon were awarded contracts after the event.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "df61b62a-aaa0-f860-18ec-e68f5646c86c",
+   "fighter": "Sean O'Malley",
+   "fighter_id": "f4b2ffbe-1603-4213-962d-056a0cd35c0f",
+   "event": "Dana White's Contender Series: Season 1, Week 2",
+   "event_date": "2017-07-19",
+   "event_id": "153c5ec4-9a04-4241-b37d-b5966605ffd3",
+   "bout_id": "2adcb109-548f-4851-888f-44ec558f3776",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dwtncs-w2-recap-welcome-sugar-show",
+   "source_date": "2017-07-18",
+   "excerpt": "…ngside an elite crew including UFC fighters Drakkar Klose and Bryan Barberena , O'Malley gets plenty of good work in the gym, and with his performance on Tuesday night, “Sugar” earned the opportunity…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "b7383638-8d12-cd08-f60f-c435baa8f0f4"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "e67e2ee4-09ee-8589-d7d1-f2a934bf25ed",
+   "fighter": "Geoff Neal",
+   "fighter_id": "74c6b7de-ece6-435f-a4cf-df8d39601c34",
+   "event": "Dana White's Contender Series: Season 1, Week 3",
+   "event_date": "2017-07-25",
+   "event_id": "b5c9e1db-6a9f-4faa-8048-97b9a0988425",
+   "bout_id": "1d4b2a62-870f-4c62-a70b-f830c5704f39",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-1-recap",
+   "source_date": "2021-08-10",
+   "excerpt": "White decided to award Roberson and Neal with UFC contracts for their performances.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "0c219ef8-71db-5e20-0c69-a8b828d45dff",
+   "fighter": "Karl Roberson",
+   "fighter_id": "6d134f14-b561-447d-9588-ca666bd0b27f",
+   "event": "Dana White's Contender Series: Season 1, Week 3",
+   "event_date": "2017-07-25",
+   "event_id": "b5c9e1db-6a9f-4faa-8048-97b9a0988425",
+   "bout_id": "ae45b27e-c443-48c0-b751-357054d6f865",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-1-recap",
+   "source_date": "2021-08-10",
+   "excerpt": "White decided to award Roberson and Neal with UFC contracts for their performances.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "a03a010e-ea78-05f3-f7c9-0e61e809362d",
+   "fighter": "Brandon Davis",
+   "fighter_id": "d8c075be-2b27-457c-81e1-6e16247ddcf7",
+   "event": "Dana White's Contender Series: Season 1, Week 4",
+   "event_date": "2017-08-01",
+   "event_id": "3e61e116-0ffc-4d36-bc4d-f641f67a3d1d",
+   "bout_id": "451c1d2a-be35-40e0-a631-1139ed38b68a",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-1-recap",
+   "source_date": "2021-08-10",
+   "excerpt": "Davis' impressive performance earned him a contract.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "d19f3279-a1a8-8094-b4ce-748cee3a4b81",
+   "fighter": "Julian Marquez",
+   "fighter_id": "93c4dd89-9178-4528-bba4-af64d4eea4bb",
+   "event": "Dana White's Contender Series: Season 1, Week 4",
+   "event_date": "2017-08-01",
+   "event_id": "3e61e116-0ffc-4d36-bc4d-f641f67a3d1d",
+   "bout_id": "fc1922c1-63b8-4b2c-aedf-76fbe2ee0ac1",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-1-recap",
+   "source_date": "2021-08-10",
+   "excerpt": "The highlight reel KO earned Kansas City's Marquez a contract.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "acafb0b7-edc4-106f-79d6-46513d9e4964",
+   "fighter": "Charles Byrd",
+   "fighter_id": "1f2f41ce-656f-4408-a4d9-9fad8b82de58",
+   "event": "Dana White's Contender Series: Season 1, Week 6",
+   "event_date": "2017-08-16",
+   "event_id": "ae381b36-88b7-40e9-8f6d-1f751e1dfc85",
+   "bout_id": "2e7ca321-8615-4c18-8263-420d13515a81",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-1-recap",
+   "source_date": "2021-08-10",
+   "excerpt": "The sixth week of DWCS belonged to the submission specialists, as Charles Byrd and Grant Dawson both earned contracts by securing second-round rear naked choke wins.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "05bf5db5-2a4a-72db-b39a-812e4e0978be",
+   "fighter": "Grant Dawson",
+   "fighter_id": "d5da02f7-7cbe-4274-be51-5a5c375992e3",
+   "event": "Dana White's Contender Series: Season 1, Week 6",
+   "event_date": "2017-08-16",
+   "event_id": "ae381b36-88b7-40e9-8f6d-1f751e1dfc85",
+   "bout_id": "f38647b7-c092-4634-91a2-3d6c0f83f327",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-1-recap",
+   "source_date": "2021-08-10",
+   "excerpt": "The sixth week of DWCS belonged to the submission specialists, as Charles Byrd and Grant Dawson both earned contracts by securing second-round rear naked choke wins.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "8e505095-8dd2-8aef-6d4d-761f65bbe5b2",
+   "fighter": "Allen Crowder",
+   "fighter_id": "6efabef9-dd58-4ac8-a96d-649ed28f2b56",
+   "event": "Dana White's Contender Series: Season 1, Week 8",
+   "event_date": "2017-08-30",
+   "event_id": "c61fcff0-9245-46ca-95a0-bc87a3591631",
+   "bout_id": "f0e9d459-b45d-4758-9af3-21a3dad86d6f",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dwtncs-week-8-three-contracts-plenty-praise-handed-out-finale",
+   "source_date": "2017-08-29",
+   "excerpt": "In a surprise ending to the season, UFC President Dana White handed out a trio of contracts, inking Allen Crowder , Lauren Mueller and Matt Frevola to contracts",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "2e116680-d50c-328f-33ec-a1c09c91171b",
+   "fighter": "Bevon Lewis",
+   "fighter_id": "333c9bd4-3c39-4932-b12b-9d4d56cbd15a",
+   "event": "Dana White's Contender Series: Season 1, Week 8",
+   "event_date": "2017-08-30",
+   "event_id": "c61fcff0-9245-46ca-95a0-bc87a3591631",
+   "bout_id": "17855201-e635-4c2e-b539-e18b4ee660e8",
+   "claim_type": "developmental_deal",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-1-recap",
+   "source_date": "2021-08-10",
+   "excerpt": "In addition, Bevon Lewis was given a developmental contract.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "32cf9df4-164d-8dc5-b7e8-cb5ca04e683c",
+   "fighter": "Lauren Mueller",
+   "fighter_id": "22607654-1622-4ff6-b91a-34de7a19629f",
+   "event": "Dana White's Contender Series: Season 1, Week 8",
+   "event_date": "2017-08-30",
+   "event_id": "c61fcff0-9245-46ca-95a0-bc87a3591631",
+   "bout_id": "fd56acfe-7799-4520-a355-f4b1341c8509",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dwtncs-week-8-three-contracts-plenty-praise-handed-out-finale",
+   "source_date": "2017-08-29",
+   "excerpt": "In a surprise ending to the season, UFC President Dana White handed out a trio of contracts, inking Allen Crowder , Lauren Mueller and Matt Frevola to contracts",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "8593469d-3329-abf5-0878-5f6d7108519c",
+   "fighter": "Matt Frevola",
+   "fighter_id": "1f63bcf0-a057-4413-b52e-58fa494564f7",
+   "event": "Dana White's Contender Series: Season 1, Week 8",
+   "event_date": "2017-08-30",
+   "event_id": "c61fcff0-9245-46ca-95a0-bc87a3591631",
+   "bout_id": "df242bca-1774-4b92-b0aa-094b2ab48f5b",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dwtncs-week-8-three-contracts-plenty-praise-handed-out-finale",
+   "source_date": "2017-08-29",
+   "excerpt": "In a surprise ending to the season, UFC President Dana White handed out a trio of contracts, inking Allen Crowder , Lauren Mueller and Matt Frevola to contracts",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "7425e9ab-d6d5-e3cf-25a0-461fc5765dd4",
+   "fighter": "Alonzo Menifield",
+   "fighter_id": "56d25ae7-51f1-4b51-b853-ddc0c7ae0f6d",
+   "event": "Dana White's Contender Series: Season 2, Week 1",
+   "event_date": "2018-06-13",
+   "event_id": "bbd32718-c133-4b04-960d-788364889194",
+   "bout_id": "3597285a-608d-4e9b-b041-11ba39e9ee54",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/menifield-hardy-earn-contracts-first-week-dwtncs",
+   "source_date": "2018-06-12",
+   "excerpt": "…out of the gates hot last summer, it was more of the same as Season 2 kicked off on Tuesday night with the UFC President handing out contracts to first-round finishers Alonzo Menifield and Greg Hardy.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "ead8792d-3459-abcf-f619-3f093f4b009e",
+   "fighter": "Greg Hardy",
+   "fighter_id": "36769d3d-bfdc-42b1-969e-fa8efa83f349",
+   "event": "Dana White's Contender Series: Season 2, Week 1",
+   "event_date": "2018-06-13",
+   "event_id": "bbd32718-c133-4b04-960d-788364889194",
+   "bout_id": "c9fd7837-aad5-4b8f-ab54-16f18b7a23f6",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/menifield-hardy-earn-contracts-first-week-dwtncs",
+   "source_date": "2018-06-12",
+   "excerpt": "…out of the gates hot last summer, it was more of the same as Season 2 kicked off on Tuesday night with the UFC President handing out contracts to first-round finishers Alonzo Menifield and Greg Hardy.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "dc5e3882-24c1-13f6-f570-68cdaa343765",
+   "fighter": "Dwight Grant",
+   "fighter_id": "f49baf0e-b902-4095-8125-6024564cda36",
+   "event": "Dana White's Contender Series: Season 2, Week 2",
+   "event_date": "2018-06-20",
+   "event_id": "ab9834da-b423-4a85-b599-a2ee97253238",
+   "bout_id": "220e28c2-93d6-455c-a273-2d3d35d62a3d",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "A quartet of fighters earned contracts for their work in week two – Matt Sayles, Anthony Hernandez, Ryan Spann and Dwight Grant – on a night in which every fight ended via finish.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "20cfe900-39bd-1585-4812-189dff6bebe9",
+   "fighter": "Matt Sayles",
+   "fighter_id": "b6384f07-5fde-44eb-a911-bab38709dc26",
+   "event": "Dana White's Contender Series: Season 2, Week 2",
+   "event_date": "2018-06-20",
+   "event_id": "ab9834da-b423-4a85-b599-a2ee97253238",
+   "bout_id": "ab55fb68-bc86-4979-9297-835924f86713",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "A quartet of fighters earned contracts for their work in week two – Matt Sayles, Anthony Hernandez, Ryan Spann and Dwight Grant – on a night in which every fight ended via finish.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "063018ef-ae0b-cbfc-fa57-70a3b8af2ccd",
+   "fighter": "Ryan Spann",
+   "fighter_id": "7752c8fc-23f6-4d72-9a46-8ff1b8d149cf",
+   "event": "Dana White's Contender Series: Season 2, Week 2",
+   "event_date": "2018-06-20",
+   "event_id": "ab9834da-b423-4a85-b599-a2ee97253238",
+   "bout_id": "92d2ee73-7269-4c8d-9984-c23278d29853",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "A quartet of fighters earned contracts for their work in week two – Matt Sayles, Anthony Hernandez, Ryan Spann and Dwight Grant – on a night in which every fight ended via finish.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "3571ac0a-5007-2785-f1f7-f5706c87ab06",
+   "fighter": "Antonina Shevchenko",
+   "fighter_id": "3945c495-ed73-4d81-9c9f-2104433deb2f",
+   "event": "Dana White's Contender Series: Season 2, Week 3",
+   "event_date": "2018-06-27",
+   "event_id": "366e03f8-03d7-45f1-b51e-93aa1d034c59",
+   "bout_id": "146fb0bd-9bdb-49d7-891b-58715f58aaf3",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/shevchenko-sisters-make-history-dwtncs-week-3",
+   "source_date": "2018-06-26",
+   "excerpt": "…ance and White handed out two contracts, adding lightweight Te Edwards and flyweight Antonina Shevchenko to the class of competitors graduating from the Contenders Series to the UFC roster this season",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "131bd6e4-3310-9454-5b1a-3f7909ff18be"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "6fcddf1c-df0a-8cca-b7f4-9369ed4b2cbd",
+   "fighter": "Te Edwards",
+   "fighter_id": "01e180db-707c-4092-8dfd-3b94cf35855d",
+   "event": "Dana White's Contender Series: Season 2, Week 3",
+   "event_date": "2018-06-27",
+   "event_id": "366e03f8-03d7-45f1-b51e-93aa1d034c59",
+   "bout_id": "5f72d27a-0020-4771-a827-8be7ec69bda4",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/shevchenko-sisters-make-history-dwtncs-week-3",
+   "source_date": "2018-06-26",
+   "excerpt": "…d inside the distance and White handed out two contracts, adding lightweight Te Edwards and flyweight Antonina Shevchenko to the class of competitors graduating from the Contenders Series to the UFC r…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "59e88fdb-16fe-7993-d288-98b0cb6ab2bd",
+   "fighter": "Domingo Pilarte",
+   "fighter_id": "b665a887-e667-4995-b231-1ea915ae91d4",
+   "event": "Dana White's Contender Series: Season 2, Week 5",
+   "event_date": "2018-07-18",
+   "event_id": "512f472d-0567-4a2e-987e-b4d1adb095a9",
+   "bout_id": "34c76c6c-3940-4de4-85a2-1a0d2d84d122",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "Domingo Pilarte also earned a contract for his second-round submission win.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "c9fe1158-29df-2a6c-4c0d-8d2c1b4b427f",
+   "fighter": "Jeff Hughes",
+   "fighter_id": "f4f056dd-70fd-4a16-950c-b49eff5f1ce8",
+   "event": "Dana White's Contender Series: Season 2, Week 6",
+   "event_date": "2018-07-25",
+   "event_id": "4f2e9234-4447-49cf-8c1a-34d3cf382be7",
+   "bout_id": "06545b13-1804-4fa3-bc8c-5746bbcae958",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "Jeff Hughes also received a contract for his work, getting the job done in the first round.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "80dc5122-1db2-f87d-92f1-5d52df206248",
+   "fighter": "Sodiq Yusuff",
+   "fighter_id": "8977f698-e391-40cb-96af-856cf6016f01",
+   "event": "Dana White's Contender Series: Season 2, Week 6",
+   "event_date": "2018-07-25",
+   "event_id": "4f2e9234-4447-49cf-8c1a-34d3cf382be7",
+   "bout_id": "b5179d13-674f-46f7-9350-6dfdc550dc5f",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "However, Yusuff's calculated and entertaining striking style shone through en route to his decision win and UFC contract.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "dd857f17-6867-7190-90c9-9a841097a072",
+   "fighter": "Ian Heinisch",
+   "fighter_id": "db3464c5-8cf5-4355-bab5-d7849c45dd1e",
+   "event": "Dana White's Contender Series: Season 2, Week 7",
+   "event_date": "2018-08-01",
+   "event_id": "bb7f9880-83af-42a6-81a8-f1ced2e09644",
+   "bout_id": "ffced68e-57d3-4a00-bb8d-cf68a3ca0a41",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "…oosevelt Roberts submitted his way to a UFC contract in the featured bout, and Ian Heinisch, Jordan Griffin and Juan Adams all locked up contracts as well after they each tallied first-round finishes.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "bf01dc85-8ce6-65bb-e6cd-6701794031ac",
+   "fighter": "Jordan Griffin",
+   "fighter_id": "7385dc89-d978-4202-9808-d79d0f272766",
+   "event": "Dana White's Contender Series: Season 2, Week 7",
+   "event_date": "2018-08-01",
+   "event_id": "bb7f9880-83af-42a6-81a8-f1ced2e09644",
+   "bout_id": "9fee05c1-ed72-4508-b7c1-2b7b54ed06b7",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "…oosevelt Roberts submitted his way to a UFC contract in the featured bout, and Ian Heinisch, Jordan Griffin and Juan Adams all locked up contracts as well after they each tallied first-round finishes.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "9837c41a-2a3a-0524-86bf-c05b39f27614",
+   "fighter": "Juan Adams",
+   "fighter_id": "acc93d3d-50fa-48d1-96ed-dad6405e5513",
+   "event": "Dana White's Contender Series: Season 2, Week 7",
+   "event_date": "2018-08-01",
+   "event_id": "bb7f9880-83af-42a6-81a8-f1ced2e09644",
+   "bout_id": "67532e94-64ee-42a7-afc7-d1de478d9590",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "…oosevelt Roberts submitted his way to a UFC contract in the featured bout, and Ian Heinisch, Jordan Griffin and Juan Adams all locked up contracts as well after they each tallied first-round finishes.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "7a19a956-89b6-79aa-fa0e-f5555af50436",
+   "fighter": "Roosevelt Roberts",
+   "fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
+   "event": "Dana White's Contender Series: Season 2, Week 7",
+   "event_date": "2018-08-01",
+   "event_id": "bb7f9880-83af-42a6-81a8-f1ced2e09644",
+   "bout_id": "e81533ea-ebb8-4b55-8e56-ad3d69f81f65",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "Roosevelt Roberts submitted his way to a UFC contract in the featured bout, and Ian Heinisch, Jordan Griffin and Juan Adams all locked up contracts as well after they each tallied first-round finishes…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "b79edf2b-9349-e9bb-700a-1700879c58c0",
+   "fighter": "Bobby Moffett",
+   "fighter_id": "d6461ffc-0d30-4e41-aef2-606a275e40e1",
+   "event": "Dana White's Contender Series: Season 2, Week 8",
+   "event_date": "2018-08-08",
+   "event_id": "dac1fada-c845-47e4-bec7-80b2f293eb00",
+   "bout_id": "7e9f6c13-e4df-4433-8347-ba901a058abf",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "Bobby Moffett earned his contract with his second-round submission effort and provided a memorable moment in the Octagon with his Fight of the Night effort against Bryce Mitchell.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "fcceb71e-33be-8079-c4c3-a324604ffa89",
+   "fighter": "Kennedy Nzechukwu",
+   "fighter_id": "d683d8d3-a0d0-4ebf-be75-a6c4ada781db",
+   "event": "Dana White's Contender Series: Season 2, Week 8",
+   "event_date": "2018-08-08",
+   "event_id": "dac1fada-c845-47e4-bec7-80b2f293eb00",
+   "bout_id": "4d2c4bac-7045-4819-a557-4d378c183313",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-2-recap",
+   "source_date": "2021-08-11",
+   "excerpt": "He and Kennedy Nzechukwu notched first-round knockouts as well as UFC contracts.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "cdd1304b-3615-5040-2e97-b9a7de6eab4b",
+   "fighter": "Punahele Soriano",
+   "fighter_id": "1859d7c4-45a8-4cd5-9988-f9c867a9774f",
+   "event": "Dana White's Contender Series: Season 3, Week 1",
+   "event_date": "2019-06-19",
+   "event_id": "324cec23-3e7b-43c5-8f3b-b62c65037cc0",
+   "bout_id": "f6e1a429-3f07-46ee-a3a8-5212a0318d32",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/results-dana-whites-contender-series-season-3-episode-1",
+   "source_date": "2019-06-18",
+   "excerpt": "…e inside the Octagon, as heavyweight Yorgan De Castro and middleweight Punahele Soriano impressed UFC President Dana White enough to become the first two competitors to graduate to the biggest stage i…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "f0c3f9f9-667c-b9e2-e039-4f1661f25e72"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "ea6097e2-315a-0f08-474b-73fd815898df",
+   "fighter": "Yorgan De Castro",
+   "fighter_id": "bae9a77f-a47a-428d-859b-3e4cb3175210",
+   "event": "Dana White's Contender Series: Season 3, Week 1",
+   "event_date": "2019-06-19",
+   "event_id": "324cec23-3e7b-43c5-8f3b-b62c65037cc0",
+   "bout_id": "95f8adf5-c54a-4309-8915-d5e305d4a662",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/results-dana-whites-contender-series-season-3-episode-1",
+   "source_date": "2019-06-18",
+   "excerpt": "…victors earning a shot to compete inside the Octagon, as heavyweight Yorgan De Castro and middleweight Punahele Soriano impressed UFC President Dana White enough to become the first two competitors t…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "d42582ed-df7b-a24e-77e9-708a8fdddff7",
+   "fighter": "Miguel Baeza",
+   "fighter_id": "e4fd3f88-150b-491b-8975-f5c27b43c443",
+   "event": "Dana White's Contender Series: Season 3, Week 2",
+   "event_date": "2019-06-26",
+   "event_id": "cb3bab83-e776-4180-a237-369971fd4493",
+   "bout_id": "b70c9b24-4baa-4b21-91c3-30e005a5b232",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/results-dana-whites-contender-series-season-3-episode-2",
+   "source_date": "2019-06-25",
+   "excerpt": "after impressive performances in victory, Miguel Baeza and Miles Johns were awarded UFC contracts.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "11ea3bcc-f69c-13b9-6723-b79c2d9928fe"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "2b03f1b4-eeb1-3c34-c638-c8aa76df51e0",
+   "fighter": "Miles Johns",
+   "fighter_id": "e26ff240-70d0-4549-b1f2-8fa648176c43",
+   "event": "Dana White's Contender Series: Season 3, Week 2",
+   "event_date": "2019-06-26",
+   "event_id": "cb3bab83-e776-4180-a237-369971fd4493",
+   "bout_id": "a36b43cc-a062-4f5d-a682-3b708273da91",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/results-dana-whites-contender-series-season-3-episode-2",
+   "source_date": "2019-06-25",
+   "excerpt": "after impressive performances in victory, Miguel Baeza and Miles Johns were awarded UFC contracts.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "f8b6ad23-be17-fa99-b792-88eef5f1c1e3"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "2253fc97-7d1f-2e6f-793f-f45749b4c3e5",
+   "fighter": "Aalon Cruz",
+   "fighter_id": "ee9f5175-164c-4432-b40e-2fbd758f0cf2",
+   "event": "Dana White's Contender Series: Season 3, Week 6",
+   "event_date": "2019-07-31",
+   "event_id": "f9af1831-4d17-45e4-8791-d7ab5e5891b5",
+   "bout_id": "db0661fe-6b19-4f9b-9b8e-8baa3bfcfa5e",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-3-recap-dwcs",
+   "source_date": "2021-08-12",
+   "excerpt": "…al three fights of the night delivered in big ways, with flyweight Tracy Cortez, featherweight Aalon Cruz and light heavyweight Aleksa Camur all coming away from their performances with UFC contracts.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "ee06b4b6-211a-48c3-e3e6-5f91cecae58d",
+   "fighter": "Aleksa Camur",
+   "fighter_id": "445199e2-482f-483c-bebb-17f0fe5d7146",
+   "event": "Dana White's Contender Series: Season 3, Week 6",
+   "event_date": "2019-07-31",
+   "event_id": "f9af1831-4d17-45e4-8791-d7ab5e5891b5",
+   "bout_id": "82d5f479-7eac-424f-a2e1-3d52595d59d8",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-3-recap-dwcs",
+   "source_date": "2021-08-12",
+   "excerpt": "…al three fights of the night delivered in big ways, with flyweight Tracy Cortez, featherweight Aalon Cruz and light heavyweight Aleksa Camur all coming away from their performances with UFC contracts.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "c83c460c-fcaa-cb38-f1f4-e2003f58834a",
+   "fighter": "Tracy Cortez",
+   "fighter_id": "7757ac44-3ded-4440-b444-01cdad3bf7d1",
+   "event": "Dana White's Contender Series: Season 3, Week 6",
+   "event_date": "2019-07-31",
+   "event_id": "f9af1831-4d17-45e4-8791-d7ab5e5891b5",
+   "bout_id": "349e7561-bce9-4385-9a97-a1098236cc34",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-3-recap-dwcs",
+   "source_date": "2021-08-12",
+   "excerpt": "The final three fights of the night delivered in big ways, with flyweight Tracy Cortez, featherweight Aalon Cruz and light heavyweight Aleksa Camur all coming away from their performances with UFC con…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "a6976506-8bec-2f43-bb7d-58fc9ada05f0",
+   "fighter": "William Knight",
+   "fighter_id": "0ba8c677-8b23-47f2-9c3b-729f068b9488",
+   "event": "Dana White's Contender Series: Season 3, Week 8",
+   "event_date": "2019-08-14",
+   "event_id": "2a31686f-bca6-4e93-977e-3e8dca093c16",
+   "bout_id": "6544e01e-52b9-47f6-89a8-d0a8e7ca9a0c",
+   "claim_type": "developmental_deal",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-3-recap-dwcs",
+   "source_date": "2021-08-12",
+   "excerpt": "**William Knight was awarded a developmental league contract",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "5b3c0019-a5ce-1eac-45c1-5061b3c79d6c",
+   "fighter": "Phil Rowe",
+   "fighter_id": "bdca21ee-7a30-49d1-a456-0f4f3518e496",
+   "event": "Dana White's Contender Series: Season 3, Week 9",
+   "event_date": "2019-08-21",
+   "event_id": "c6282ec0-706b-4de5-9ce3-504b436d119b",
+   "bout_id": "bb4ad99c-f6af-49cf-8a65-5018f96e3975",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-3-recap-dwcs",
+   "source_date": "2021-08-12",
+   "excerpt": "Only one performance in episode nine did enough for Dana to award a contract, and it was Phil Rowe who got to sign his name on the dotted line to secure his spot in the UFC.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "27705f9f-9c48-0542-6be1-70ffe36d4c2c",
+   "fighter": "Adrian Yañez",
+   "fighter_id": "4d7e4012-3fe6-4f54-90a8-3e4816fcaea8",
+   "event": "Dana White's Contender Series: Season 4, Week 2",
+   "event_date": "2020-08-12",
+   "event_id": "1eb4eb34-dd25-4449-bd19-82700e1aebbe",
+   "bout_id": "4d27697a-86cc-4279-baa5-64336b115c76",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-white-contender-series-season-4-recap",
+   "source_date": "2021-08-16",
+   "excerpt": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "06290237-c12b-62cb-56b6-9b9cadd533b6",
+   "fighter": "Cory McKenna",
+   "fighter_id": "d1ba51da-02e6-4306-89ba-58dccf53e7f0",
+   "event": "Dana White's Contender Series: Season 4, Week 2",
+   "event_date": "2020-08-12",
+   "event_id": "1eb4eb34-dd25-4449-bd19-82700e1aebbe",
+   "bout_id": "4c87886f-4441-49d8-8cc4-546899819487",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-white-contender-series-season-4-recap",
+   "source_date": "2021-08-16",
+   "excerpt": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "18b909ac-4b0b-a90a-a465-73f679f2a908",
+   "fighter": "Dustin Stoltzfus",
+   "fighter_id": "382fad9f-cfb1-4162-ae4b-68f9ce28984f",
+   "event": "Dana White's Contender Series: Season 4, Week 2",
+   "event_date": "2020-08-12",
+   "event_id": "1eb4eb34-dd25-4449-bd19-82700e1aebbe",
+   "bout_id": "35bc22c1-e214-4aba-a238-ac1a7a48b2d0",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-white-contender-series-season-4-recap",
+   "source_date": "2021-08-16",
+   "excerpt": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "386d5196-3912-ead8-1b62-083800e570d4",
+   "fighter": "Impa Kasanganay",
+   "fighter_id": "0adf323a-e811-4838-ab72-3ef36b9e7d04",
+   "event": "Dana White's Contender Series: Season 4, Week 2",
+   "event_date": "2020-08-12",
+   "event_id": "1eb4eb34-dd25-4449-bd19-82700e1aebbe",
+   "bout_id": "2d0019bc-f7c2-4097-af0d-d5c4fdd99640",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-white-contender-series-season-4-recap",
+   "source_date": "2021-08-16",
+   "excerpt": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "b3063e58-2ad4-cf59-0f36-38a20551519c",
+   "fighter": "TJ Laramie",
+   "fighter_id": "1b39b29d-0e62-4b11-b8c3-8d9dce9a4326",
+   "event": "Dana White's Contender Series: Season 4, Week 2",
+   "event_date": "2020-08-12",
+   "event_id": "1eb4eb34-dd25-4449-bd19-82700e1aebbe",
+   "bout_id": "dc382911-b68b-4742-8058-6e90fed2313e",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-white-contender-series-season-4-recap",
+   "source_date": "2021-08-16",
+   "excerpt": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "e3e159d4-35d3-2c48-ae75-4439908723ea",
+   "fighter": "Josh Parisian",
+   "fighter_id": "c20e9a5c-b4b4-4816-b9ed-dd229a408142",
+   "event": "Dana White's Contender Series: Season 4, Week 3",
+   "event_date": "2020-08-19",
+   "event_id": "fc8b3bb5-56d9-4f1b-9fb2-0613b1e702c8",
+   "bout_id": "08f40601-2392-42d3-9052-6c8114efe370",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-results-season-4-episode-3",
+   "source_date": "2020-08-17",
+   "excerpt": "…aight week, White handed out a bushel of contracts, welcoming both Louis and Orion Cosce, Josh Parisian, and Cheyanne Buys to the UFC, bringing the Season 4 total to an even dozen through three weeks.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "a7930d2a-fbe4-d1db-d03f-29db24618a9d",
+   "fighter": "Orion Cosce",
+   "fighter_id": "423a73df-1600-40f0-885a-6ae1eb2f15f1",
+   "event": "Dana White's Contender Series: Season 4, Week 3",
+   "event_date": "2020-08-19",
+   "event_id": "fc8b3bb5-56d9-4f1b-9fb2-0613b1e702c8",
+   "bout_id": "43d78db7-c808-4e17-95c6-2466c1cc5d89",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-results-season-4-episode-3",
+   "source_date": "2020-08-17",
+   "excerpt": "…aight week, White handed out a bushel of contracts, welcoming both Louis and Orion Cosce, Josh Parisian, and Cheyanne Buys to the UFC, bringing the Season 4 total to an even dozen through three weeks.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "87bba3da-36b4-dded-342b-6379d0ae54be",
+   "fighter": "Aliaskhab Khizriev",
+   "fighter_id": "c6041095-41cf-4e62-a73f-2da22bd7c312",
+   "event": "Dana White's Contender Series: Season 4, Week 6",
+   "event_date": "2020-09-09",
+   "event_id": "dcac7175-95b3-41e2-8d45-07eef5760adb",
+   "bout_id": "9e869d6a-727d-46a2-bc11-9e0583ec025a",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-white-contender-series-season-4-recap",
+   "source_date": "2021-08-16",
+   "excerpt": "Drako Rodriguez and Aliaskhab Khizriev used their submission skills to get them a UFC deal.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "3eddb8b3-db86-7770-e4f6-926bf0d43e73",
+   "fighter": "Drako Rodriguez",
+   "fighter_id": "9a6e563e-0c56-4434-8051-6ea201618ad4",
+   "event": "Dana White's Contender Series: Season 4, Week 6",
+   "event_date": "2020-09-09",
+   "event_id": "dcac7175-95b3-41e2-8d45-07eef5760adb",
+   "bout_id": "e6eb0593-fe03-4f81-8328-18d12a7e3c26",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-white-contender-series-season-4-recap",
+   "source_date": "2021-08-16",
+   "excerpt": "Drako Rodriguez and Aliaskhab Khizriev used their submission skills to get them a UFC deal.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "d6985b1f-00bd-7337-1180-3db45cee8884",
+   "fighter": "Carlos Ulberg",
+   "fighter_id": "329ef6dc-151c-4b47-9a1d-52552c862f94",
+   "event": "Dana White's Contender Series: Season 4, Week 8",
+   "event_date": "2020-11-05",
+   "event_id": "bc04423e-d45d-4587-8431-ec631af5a97e",
+   "bout_id": "1e7c4f80-9c52-47ae-bbf1-f73f855477e9",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-results-dwcs-season-4-week-8",
+   "source_date": "2020-11-03",
+   "excerpt": "…aters, Ignacio Bahamondes matriculates to the welterweight division, and Carlos Ulberg claims a place in the light heavyweight division, bringing the total number of contracts handed out this season t…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "da61f564-a7f8-49ea-d229-8de9455102d7",
+   "fighter": "Ignacio Bahamondes",
+   "fighter_id": "2650d370-e47d-4b07-b4cb-35c4ecf6168b",
+   "event": "Dana White's Contender Series: Season 4, Week 8",
+   "event_date": "2020-11-05",
+   "event_id": "bc04423e-d45d-4587-8431-ec631af5a97e",
+   "bout_id": "5455430e-0a08-4284-bef2-dc223262798c",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-results-dwcs-season-4-week-8",
+   "source_date": "2020-11-03",
+   "excerpt": "…ht ranks, Luis Saldana jumps into the talent-rich featherweight waters, Ignacio Bahamondes matriculates to the welterweight division, and Carlos Ulberg claims a place in the light heavyweight division…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "e37c9b4c-f65f-1756-4e83-32be9aa8aadf",
+   "fighter": "Jared Vanderaa",
+   "fighter_id": "402ee8e2-4fd6-4430-b18e-d5ff1d485ae6",
+   "event": "Dana White's Contender Series: Season 4, Week 8",
+   "event_date": "2020-11-05",
+   "event_id": "bc04423e-d45d-4587-8431-ec631af5a97e",
+   "bout_id": "e8501181-6291-4a4b-82c9-f49aaa51b0f4",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-results-dwcs-season-4-week-8",
+   "source_date": "2020-11-03",
+   "excerpt": "Jared Vanderaa joins the heavyweight ranks, Luis Saldana jumps into the talent-rich featherweight waters, Ignacio Bahamondes matriculates to the welterweight division, and Carlos Ulberg claims a place…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "66c74053-8d4b-9781-61a2-4be20b030afc",
+   "fighter": "Luis Saldana",
+   "fighter_id": "2142bb0f-2d56-405f-9e7b-6a336c42f23f",
+   "event": "Dana White's Contender Series: Season 4, Week 8",
+   "event_date": "2020-11-05",
+   "event_id": "bc04423e-d45d-4587-8431-ec631af5a97e",
+   "bout_id": "a6e446f0-fc4f-47af-9a75-a9541d58742f",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-results-dwcs-season-4-week-8",
+   "source_date": "2020-11-03",
+   "excerpt": "Jared Vanderaa joins the heavyweight ranks, Luis Saldana jumps into the talent-rich featherweight waters, Ignacio Bahamondes matriculates to the welterweight division, and Carlos Ulberg claims a place…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "b4043672-1380-92b4-155f-da5e46adb464",
+   "fighter": "Gloria de Paula",
+   "fighter_id": "40f44630-04cf-4e02-9973-94d8ae333b79",
+   "event": "Dana White's Contender Series: Season 4, Week 10",
+   "event_date": "2020-11-18",
+   "event_id": "07a18f4c-ea7b-42b7-8081-f13c229c0c18",
+   "bout_id": "f839efe7-0267-4fd2-8bbe-f0b67447a1ab",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-4-week-10-results",
+   "source_date": "2020-11-17",
+   "excerpt": "…to the UFC flyweight division, Tucker Lutz to the lightweight ranks, Gloria de Paula to the strawweight division, and JP Buys to the flyweight class, bringing the total number of contracts awarded on…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "1d05de82-e4e9-5a4a-dcfc-51bf997fc338"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "ed2d6258-0343-c844-ed8b-cdc7f0fbe451",
+   "fighter": "JP Buys",
+   "fighter_id": "84ab12d6-f960-4225-bdc0-bb7febe07c30",
+   "event": "Dana White's Contender Series: Season 4, Week 10",
+   "event_date": "2020-11-18",
+   "event_id": "07a18f4c-ea7b-42b7-8081-f13c229c0c18",
+   "bout_id": "592139eb-707f-4023-b353-ee44fc440b2c",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-4-week-10-results",
+   "source_date": "2020-11-17",
+   "excerpt": "…ht division, Tucker Lutz to the lightweight ranks, Gloria de Paula to the strawweight division, and JP Buys to the flyweight class, bringing the total number of contracts awarded on Season Four to 37.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "6c1fd4fb-99c4-fdb6-ce00-caa25b9d569b",
+   "fighter": "Tucker Lutz",
+   "fighter_id": "4b693681-ceb0-4a63-b5c0-8b5a483cb86a",
+   "event": "Dana White's Contender Series: Season 4, Week 10",
+   "event_date": "2020-11-18",
+   "event_id": "07a18f4c-ea7b-42b7-8081-f13c229c0c18",
+   "bout_id": "98a9c534-6108-4022-a1c4-2b0233edae20",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-4-week-10-results",
+   "source_date": "2020-11-17",
+   "excerpt": "…on, Dana White welcomed Victoria Leonardo to the UFC flyweight division, Tucker Lutz to the lightweight ranks, Gloria de Paula to the strawweight division, and JP Buys to the flyweight class, bringing…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "54180dff-62eb-b538-f39e-dea5872cfbfe"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "38b3d7b1-e456-a882-8cd1-2712562e2c41",
+   "fighter": "Victoria Leonardo",
+   "fighter_id": "b872418a-a978-4576-86e2-286a63895d18",
+   "event": "Dana White's Contender Series: Season 4, Week 10",
+   "event_date": "2020-11-18",
+   "event_id": "07a18f4c-ea7b-42b7-8081-f13c229c0c18",
+   "bout_id": "49e00532-0d92-4998-a449-dfa69c0b41fc",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-4-week-10-results",
+   "source_date": "2020-11-17",
+   "excerpt": "To wrap up the season, Dana White welcomed Victoria Leonardo to the UFC flyweight division, Tucker Lutz to the lightweight ranks, Gloria de Paula to the strawweight division, and JP Buys to the flywei…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "b79592b7-765a-1a43-c221-8674f68440c0",
+   "fighter": "AJ Fletcher",
+   "fighter_id": "12f6a866-f388-4dd8-9f0f-7e61b0619c23",
+   "event": "Dana White's Contender Series: Season 5, Week 1",
+   "event_date": "2021-09-01",
+   "event_id": "f0bcb421-28ef-447f-a28d-8425a6c6222f",
+   "bout_id": "5b6da3d9-aa72-4e84-97b9-167a873b2b22",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…ddition to the flyweight combatants, White handed contracts to each of the three additional winners — welterweight AJ Fletcher, featherweight Joanderson Brito, and light heavyweight Azamat Murzakanov.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "abe53958-b201-a5b3-5592-ced11f52468e",
+   "fighter": "Azamat Murzakanov",
+   "fighter_id": "c5e031ec-2bc3-4572-b743-ac427dc75926",
+   "event": "Dana White's Contender Series: Season 5, Week 1",
+   "event_date": "2021-09-01",
+   "event_id": "f0bcb421-28ef-447f-a28d-8425a6c6222f",
+   "bout_id": "c38bd4ef-25e9-4137-8006-a243463cac83",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…ddition to the flyweight combatants, White handed contracts to each of the three additional winners — welterweight AJ Fletcher, featherweight Joanderson Brito, and light heavyweight Azamat Murzakanov.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "3ed913f9-c0a4-8dd1-a388-1b1f6f61b596",
+   "fighter": "Joanderson Brito",
+   "fighter_id": "374474de-be75-4e2e-b934-acaa83caa433",
+   "event": "Dana White's Contender Series: Season 5, Week 1",
+   "event_date": "2021-09-01",
+   "event_id": "f0bcb421-28ef-447f-a28d-8425a6c6222f",
+   "bout_id": "1b599a4c-9255-4f1b-addf-b073f5958122",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…ddition to the flyweight combatants, White handed contracts to each of the three additional winners — welterweight AJ Fletcher, featherweight Joanderson Brito, and light heavyweight Azamat Murzakanov.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "9c4b8fcb-b6e4-a2fa-4bef-fbaa93a17f90",
+   "fighter": "Daniel Zellhuber",
+   "fighter_id": "66b0789e-7003-4880-a510-524519a93309",
+   "event": "Dana White's Contender Series: Season 5, Week 5",
+   "event_date": "2021-09-29",
+   "event_id": "afc16211-7881-42b8-8ed8-d3f514af4d24",
+   "bout_id": "ec3b6660-81ae-488e-a389-852466fa45f8",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…ced a couple more additions to the UFC roster, as undefeated lightweight Daniel Zellhuber and light heavyweight underdog Ihor Potieria got the call to the Octagon, bringing the total number of contrac…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "52995b3c-089e-1016-67b3-86b2c690d228",
+   "fighter": "Ihor Potieria",
+   "fighter_id": "77d1dbb3-d285-4395-9756-c71da24d7021",
+   "event": "Dana White's Contender Series: Season 5, Week 5",
+   "event_date": "2021-09-29",
+   "event_id": "afc16211-7881-42b8-8ed8-d3f514af4d24",
+   "bout_id": "61d9da10-725c-46b8-8daa-4e244b5225c5",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…FC roster, as undefeated lightweight Daniel Zellhuber and light heavyweight underdog Ihor Potieria got the call to the Octagon, bringing the total number of contracts awarded so far this season to 21.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "a3b59b4b-b813-5bf2-44c2-ebdced0bd333",
+   "fighter": "Carlos Hernandez",
+   "fighter_id": "0bdea352-1b0c-4d96-aab4-58e6f5e831dc",
+   "event": "Dana White's Contender Series: Season 5, Week 6",
+   "event_date": "2021-10-06",
+   "event_id": "f7317991-5e38-4702-b300-e64665a83dcc",
+   "bout_id": "4d3376ed-a2dd-48ac-9d28-08bbffaf711f",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…m for the majority of the last two-plus seasons, as the UFC President doled out four more contracts, bringing lightweight Genaro Valdez, Fernie Garcia, Carlos Hernandez, and Mike Malott into the fold.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "b2a65706-5d4c-4a28-19c0-6b0f92e138f6",
+   "fighter": "Fernie Garcia",
+   "fighter_id": "2658c612-3163-4e80-9e32-cf7ba22241e3",
+   "event": "Dana White's Contender Series: Season 5, Week 6",
+   "event_date": "2021-10-06",
+   "event_id": "f7317991-5e38-4702-b300-e64665a83dcc",
+   "bout_id": "cb923025-4b3a-4dc0-9a81-0b49e8895d3f",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…m for the majority of the last two-plus seasons, as the UFC President doled out four more contracts, bringing lightweight Genaro Valdez, Fernie Garcia, Carlos Hernandez, and Mike Malott into the fold.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "8cd5c97a-bf7f-85d3-950e-860d6c21c00f",
+   "fighter": "Genaro Valdez",
+   "fighter_id": "9b745a37-8e03-4a50-9bc8-66a2c410b50b",
+   "event": "Dana White's Contender Series: Season 5, Week 6",
+   "event_date": "2021-10-06",
+   "event_id": "f7317991-5e38-4702-b300-e64665a83dcc",
+   "bout_id": "896a565d-1112-4b7a-a310-d71d615f8a71",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…m for the majority of the last two-plus seasons, as the UFC President doled out four more contracts, bringing lightweight Genaro Valdez, Fernie Garcia, Carlos Hernandez, and Mike Malott into the fold.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "24ea4224-d07c-431b-5a8c-5850612c9297",
+   "fighter": "Mike Malott",
+   "fighter_id": "1be8b4c9-3ccb-42e5-aa9b-a8c4d9b22bc1",
+   "event": "Dana White's Contender Series: Season 5, Week 6",
+   "event_date": "2021-10-06",
+   "event_id": "f7317991-5e38-4702-b300-e64665a83dcc",
+   "bout_id": "eacd86b4-d952-4721-8bf3-9724aeef6852",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-5-results-and-scorecards-dwcs",
+   "source_date": "2021-08-31",
+   "excerpt": "…m for the majority of the last two-plus seasons, as the UFC President doled out four more contracts, bringing lightweight Genaro Valdez, Fernie Garcia, Carlos Hernandez, and Mike Malott into the fold.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "66aa05da-9fd2-326c-2a1e-0ba7df70655d",
+   "fighter": "Clayton Carpenter",
+   "fighter_id": "35b10179-165a-4f91-8512-7bd09456035e",
+   "event": "Dana White's Contender Series: Season 6, Week 3",
+   "event_date": "2022-08-10",
+   "event_id": "9a633353-e5a9-4bba-8c78-28cba87e96a6",
+   "bout_id": "2153cd86-80b4-44a8-9c41-28c4e9f51839",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-3-results-dana-whites-contender-series",
+   "source_date": "2022-08-09",
+   "excerpt": "When the night was over, three more fighters joined the UFC roster, as Clayton Carpenter, Erik Silva, and Jamal Pogues were all awarded contracts.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "17413ef0-7264-a4e3-4190-b9f81bac6a19",
+   "fighter": "Erik Silva",
+   "fighter_id": "2b8863f4-e483-4677-9db8-5628e34d9fb5",
+   "event": "Dana White's Contender Series: Season 6, Week 3",
+   "event_date": "2022-08-10",
+   "event_id": "9a633353-e5a9-4bba-8c78-28cba87e96a6",
+   "bout_id": "81970beb-af45-4992-a7b3-9a53e679bfb0",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-3-results-dana-whites-contender-series",
+   "source_date": "2022-08-09",
+   "excerpt": "When the night was over, three more fighters joined the UFC roster, as Clayton Carpenter, Erik Silva, and Jamal Pogues were all awarded contracts.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "256e35ce-66f9-6dcf-9819-4351f8f5a8a7",
+   "fighter": "Jamal Pogues",
+   "fighter_id": "8df29460-d48a-4543-b25b-af3d806aabaf",
+   "event": "Dana White's Contender Series: Season 6, Week 3",
+   "event_date": "2022-08-10",
+   "event_id": "9a633353-e5a9-4bba-8c78-28cba87e96a6",
+   "bout_id": "4b8a1661-9bc6-405f-8cff-bf10ff06814f",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-3-results-dana-whites-contender-series",
+   "source_date": "2022-08-09",
+   "excerpt": "When the night was over, three more fighters joined the UFC roster, as Clayton Carpenter, Erik Silva, and Jamal Pogues were all awarded contracts.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "2f122cf1-783b-5d06-e9a6-b5b5ab7f72bf",
+   "fighter": "Cameron Saaiman",
+   "fighter_id": "927730a4-e72d-46b4-92da-986a60bba4d0",
+   "event": "Dana White's Contender Series: Season 6, Week 5",
+   "event_date": "2022-08-24",
+   "event_id": "621cb305-c844-47c1-a531-288fb0c26671",
+   "bout_id": "212b9b6f-98e9-4475-bb55-811090c53827",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-5-results-dana-whites-contender-series",
+   "source_date": "2022-08-23",
+   "excerpt": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "e6d75853-9ad2-586b-6b0c-6d3441f7edec",
+   "fighter": "Darrius Flowers",
+   "fighter_id": "7d8b4fef-3695-407e-af49-18daed786aa7",
+   "event": "Dana White's Contender Series: Season 6, Week 5",
+   "event_date": "2022-08-24",
+   "event_id": "621cb305-c844-47c1-a531-288fb0c26671",
+   "bout_id": "4eb30f0b-9a92-4e6e-8bcd-12faffb8fc6c",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-5-results-dana-whites-contender-series",
+   "source_date": "2022-08-23",
+   "excerpt": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "cf4b8c57-7058-f942-92b4-745e0a700b7b",
+   "fighter": "Denise Gomes",
+   "fighter_id": "b5d9799b-8be1-4f25-904c-3a7a10aa98c3",
+   "event": "Dana White's Contender Series: Season 6, Week 5",
+   "event_date": "2022-08-24",
+   "event_id": "621cb305-c844-47c1-a531-288fb0c26671",
+   "bout_id": "509bf19b-65ea-41ec-97f0-9a9d8c7260c4",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-5-results-dana-whites-contender-series",
+   "source_date": "2022-08-23",
+   "excerpt": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "0512832b-e875-c336-aa4a-7ecf93c262bc",
+   "fighter": "Jesus Aguilar",
+   "fighter_id": "c11ba78a-697c-451f-9596-b655293ab685",
+   "event": "Dana White's Contender Series: Season 6, Week 5",
+   "event_date": "2022-08-24",
+   "event_id": "621cb305-c844-47c1-a531-288fb0c26671",
+   "bout_id": "8ab53778-c8a5-49df-9a86-ca2b2296713c",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-5-results-dana-whites-contender-series",
+   "source_date": "2022-08-23",
+   "excerpt": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "5e3d7074-4c10-08c9-807b-f3364fa50c53",
+   "fighter": "Mick Parkin",
+   "fighter_id": "2c11e8ff-9b92-4395-bf90-64e8d0f55bca",
+   "event": "Dana White's Contender Series: Season 6, Week 5",
+   "event_date": "2022-08-24",
+   "event_id": "621cb305-c844-47c1-a531-288fb0c26671",
+   "bout_id": "d992d7b4-3ee5-4673-8447-23a1d501e3b8",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-5-results-dana-whites-contender-series",
+   "source_date": "2022-08-23",
+   "excerpt": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "c5ca75a9-2ac6-c51b-aea4-933385afaf5b",
+   "fighter": "Karl Williams",
+   "fighter_id": "3bb3b799-b850-499f-85f8-5f821bb1e120",
+   "event": "Dana White's Contender Series: Season 6, Week 7",
+   "event_date": "2022-09-07",
+   "event_id": "3d332760-0878-4a5e-9c1e-3e8209a55f86",
+   "bout_id": "be5159c6-a62d-45e8-8c18-a23df294e47e",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-7-results-and-scorecards-dana-whites-contender-series",
+   "source_date": "2022-09-06",
+   "excerpt": "Virgin Islands' Karl Williams joining a trio of Brazilians on the roster, as Vitor Petrino and the Bonfim brothers, Ismael and Gabriel, all secured deals after impressive wins.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "4853d3ce-03dd-9774-6372-1e40745d56cf",
+   "fighter": "Vitor Petrino",
+   "fighter_id": "7c7b5a44-21e1-4d64-83bc-947fad4d259a",
+   "event": "Dana White's Contender Series: Season 6, Week 7",
+   "event_date": "2022-09-07",
+   "event_id": "3d332760-0878-4a5e-9c1e-3e8209a55f86",
+   "bout_id": "21360d7a-a105-4bbb-89aa-9cafdd383ab7",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-6-week-7-results-and-scorecards-dana-whites-contender-series",
+   "source_date": "2022-09-06",
+   "excerpt": "Virgin Islands' Karl Williams joining a trio of Brazilians on the roster, as Vitor Petrino and the Bonfim brothers, Ismael and Gabriel, all secured deals after impressive wins.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "e8c3e6a8-f940-3731-bfd6-7f5fb13731ac",
+   "fighter": "Tom Nolan",
+   "fighter_id": "7217b6c6-54f7-4406-8d46-1feace582fcc",
+   "event": "Dana White's Contender Series: Season 7, Week 1",
+   "event_date": "2023-08-08",
+   "event_id": "547f7117-742f-4c57-9277-fa68b12f0ee8",
+   "bout_id": "d1220b2d-e57f-4410-8821-873f9fd6e239",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-7-week-1-results-dana-whites-contender-series",
+   "source_date": "2023-08-08",
+   "excerpt": "After three straight decisions to start the show, Nolan set off some fireworks to secure the victory and a place on the UFC roster later this evening when Dana White hands out contracts.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "385296c6-acd2-9426-e478-bfb67738a59e",
+   "fighter": "Abdul-Kareem Al-Selwady",
+   "fighter_id": "90888795-a8a2-409f-8f61-a0cb9935b572",
+   "event": "Dana White's Contender Series: Season 7, Week 2",
+   "event_date": "2023-08-15",
+   "event_id": "57774b93-77c3-48f4-80db-095e0d851beb",
+   "bout_id": "508d18a4-9a82-4793-b92a-ab23390775a3",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-7-week-2-results-scorecards-dana-whites-contender-series",
+   "source_date": "2023-08-15",
+   "excerpt": "…e winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavyweight, and Abdul-Kerim Al-Selwady at lightweight.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "da47f7dc-e9d2-e023-f4b3-2a7b21746fc2",
+   "fighter": "Charalampos Grigoriou",
+   "fighter_id": "355b3100-125a-4a49-8d56-657ff92c24dd",
+   "event": "Dana White's Contender Series: Season 7, Week 2",
+   "event_date": "2023-08-15",
+   "event_id": "57774b93-77c3-48f4-80db-095e0d851beb",
+   "bout_id": "8f72af08-ce01-4621-a54c-ba765116b836",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-7-week-2-results-scorecards-dana-whites-contender-series",
+   "source_date": "2023-08-15",
+   "excerpt": "…in a giving mood, handing out contracts to all five winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavy…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "f2b06604-30fa-3988-ebb6-fa23a7d988f6",
+   "fighter": "Eduarda Moura",
+   "fighter_id": "21ee70b8-ce4e-43a0-8113-628b3a626753",
+   "event": "Dana White's Contender Series: Season 7, Week 2",
+   "event_date": "2023-08-15",
+   "event_id": "57774b93-77c3-48f4-80db-095e0d851beb",
+   "bout_id": "e756e0b6-2421-4f87-90b4-1407d2535b11",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-7-week-2-results-scorecards-dana-whites-contender-series",
+   "source_date": "2023-08-15",
+   "excerpt": "…l five winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavyweight, and Abdul-Kerim Al-Selwady at lightwe…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "2b43c256-a194-b0c0-aba3-49707de12ae3",
+   "fighter": "Hyder Amil",
+   "fighter_id": "103b3d08-5726-44fb-b715-f76ff6d4a070",
+   "event": "Dana White's Contender Series: Season 7, Week 2",
+   "event_date": "2023-08-15",
+   "event_id": "57774b93-77c3-48f4-80db-095e0d851beb",
+   "bout_id": "cedee450-c62f-40dd-b816-9032c6474c41",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-7-week-2-results-scorecards-dana-whites-contender-series",
+   "source_date": "2023-08-15",
+   "excerpt": "…e winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavyweight, and Abdul-Kerim Al-Selwady at lightweight.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "5897581b-e97f-cd02-4b03-08cc44fa4b03",
+   "fighter": "Ibo Aslan",
+   "fighter_id": "ef6a0bc7-ee22-4bbe-8f62-8fb48a446cb0",
+   "event": "Dana White's Contender Series: Season 7, Week 2",
+   "event_date": "2023-08-15",
+   "event_id": "57774b93-77c3-48f4-80db-095e0d851beb",
+   "bout_id": "f3fafd34-d402-49e2-8072-ccdd33b08c81",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-7-week-2-results-scorecards-dana-whites-contender-series",
+   "source_date": "2023-08-15",
+   "excerpt": "…e winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavyweight, and Abdul-Kerim Al-Selwady at lightweight.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "ebf68d06-9ecb-7b66-e094-8312151cae8a",
+   "fighter": "Luis Pajuelo",
+   "fighter_id": "a56ac7e3-51e9-49b6-a7d6-64d27f1c4bb9",
+   "event": "Dana White's Contender Series: Season 7, Week 3",
+   "event_date": "2023-08-23",
+   "event_id": "1fa9c4de-67f6-4120-9b36-8c4e89e18cce",
+   "bout_id": "d327b89d-854c-4bcc-999d-ad9aba090dfe",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-7-week-3-results-scorecards-dana-whites-contender-series",
+   "source_date": "2023-08-22",
+   "excerpt": "This week, we saw just four fights and only three athletes awarded contracts, as Luis Pajuelo, Oban Elliott, and Zachary Reese all punched their ticket to the UFC",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "14f57010-dfef-46ee-5f6a-7072fc2b3a7e",
+   "fighter": "Oban Elliott",
+   "fighter_id": "fa0eae53-853f-49a1-a1bd-1a5b6efb91af",
+   "event": "Dana White's Contender Series: Season 7, Week 3",
+   "event_date": "2023-08-23",
+   "event_id": "1fa9c4de-67f6-4120-9b36-8c4e89e18cce",
+   "bout_id": "14da66f3-f0f2-4aa4-86b3-ae94c12018de",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/season-7-week-3-results-scorecards-dana-whites-contender-series",
+   "source_date": "2023-08-22",
+   "excerpt": "This week, we saw just four fights and only three athletes awarded contracts, as Luis Pajuelo, Oban Elliott, and Zachary Reese all punched their ticket to the UFC",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "b3558386-7cc4-725c-085a-660986755178",
+   "fighter": "Brendson Ribeiro",
+   "fighter_id": "bb93bbe1-bb63-4a3d-8cbc-718de2cc87c7",
+   "event": "Dana White's Contender Series: Season 7, Week 5",
+   "event_date": "2023-09-06",
+   "event_id": "570281ce-b909-436f-a909-84d0bef9fa50",
+   "bout_id": "5d18d3c0-c62e-4e55-9155-cd98daddaa03",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-5-results-scorecards-dana-whites-contender-series-season-7",
+   "source_date": "2023-09-05",
+   "excerpt": "…amweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Brazilian light heavyweight Brendson Ribeiro all earning contracts.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "78ea1135-3f70-1fa2-cebb-5082fdab3e70",
+   "fighter": "Dione Barbosa",
+   "fighter_id": "fc334d70-351b-4def-a505-de5b06656298",
+   "event": "Dana White's Contender Series: Season 7, Week 5",
+   "event_date": "2023-09-06",
+   "event_id": "570281ce-b909-436f-a909-84d0bef9fa50",
+   "bout_id": "4bb7584d-5b53-4fd7-a943-9897b5161715",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-5-results-scorecards-dana-whites-contender-series-season-7",
+   "source_date": "2023-09-05",
+   "excerpt": "…ore athletes were added to the UFC roster, with short-notice bantamweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Br…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "cbc7e34d-9ccc-883f-526e-c1221c20988e",
+   "fighter": "Dylan Budka",
+   "fighter_id": "8675055f-b30f-4121-aae3-9bbf74a6bce0",
+   "event": "Dana White's Contender Series: Season 7, Week 5",
+   "event_date": "2023-09-06",
+   "event_id": "570281ce-b909-436f-a909-84d0bef9fa50",
+   "bout_id": "809e69c9-aa34-4fc8-b18a-12e5b68753a3",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-5-results-scorecards-dana-whites-contender-series-season-7",
+   "source_date": "2023-09-05",
+   "excerpt": "…amweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Brazilian light heavyweight Brendson Ribeiro all earning contracts.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "a3c0ff8b-78f6-e7a0-8eed-3ed6a79dddfd",
+   "fighter": "Jean Silva",
+   "fighter_id": "eed368a5-484b-412f-9d2c-a4fd6d24d019",
+   "event": "Dana White's Contender Series: Season 7, Week 5",
+   "event_date": "2023-09-06",
+   "event_id": "570281ce-b909-436f-a909-84d0bef9fa50",
+   "bout_id": "0c6b4447-7de6-4e96-b276-a1eacef2feec",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-5-results-scorecards-dana-whites-contender-series-season-7",
+   "source_date": "2023-09-05",
+   "excerpt": "…ith short-notice bantamweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Brazilian light heavyweight Brendson Ribeiro a…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "b55c94d8-61f8-87d3-2c9b-ea0d9b9e72f9",
+   "fighter": "Serhiy Sidey",
+   "fighter_id": "ec9cae22-47a5-423a-95bf-9b45fc024d6e",
+   "event": "Dana White's Contender Series: Season 7, Week 5",
+   "event_date": "2023-09-06",
+   "event_id": "570281ce-b909-436f-a909-84d0bef9fa50",
+   "bout_id": "630028a2-585d-4f48-b5e6-bdf39a40203e",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-5-results-scorecards-dana-whites-contender-series-season-7",
+   "source_date": "2023-09-05",
+   "excerpt": "…amweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Brazilian light heavyweight Brendson Ribeiro all earning contracts.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "249eda75-ba55-e533-c58c-54924b673a98",
+   "fighter": "Tallison Teixeira",
+   "fighter_id": "af5446a9-2bde-46e9-a23c-cdacc02cc536",
+   "event": "Dana White's Contender Series: Season 8, Week 6",
+   "event_date": "2024-09-18",
+   "event_id": "9998743a-9463-4027-be08-5ab22da1f8f3",
+   "bout_id": "978bb002-1e6b-4095-aa9f-b229c5c5ea66",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-8-review",
+   "source_date": "2024-12-26",
+   "excerpt": "Heavyweights Danylo Voievodkin, Talisson Teixeira, and Mario Pinto all earned contracts this season",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "6db05cd4-a4ff-05ac-5567-13f3950376fd",
+   "fighter": "Alexia Thainara",
+   "fighter_id": "21bc1b30-720d-4978-915b-1317603704c0",
+   "event": "Dana White's Contender Series: Season 8, Week 7",
+   "event_date": "2024-09-25",
+   "event_id": "2bf85580-e840-4d80-9362-f8128475feda",
+   "bout_id": "07764a6d-222e-4783-893d-be1eb2fe3ba6",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-7-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-09-24",
+   "excerpt": "…age, UFC CEO Dana White handed out contracts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time thi…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "2edb4c66-6ac7-0f0a-2efa-3ef562d85b91",
+   "fighter": "Daniel Frunza",
+   "fighter_id": "235bdbad-1f3e-4b7e-8ee4-6bdc94290d36",
+   "event": "Dana White's Contender Series: Season 8, Week 7",
+   "event_date": "2024-09-25",
+   "event_id": "2bf85580-e840-4d80-9362-f8128475feda",
+   "bout_id": "cb32d1ea-b11b-4072-a71d-baf4ebd53ad8",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-7-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-09-24",
+   "excerpt": "…ts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time this season that five contracts were awarded.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "c26c8ebe-68d8-080d-91d6-e1829540483a",
+   "fighter": "Danylo Voievodkin",
+   "fighter_id": "5d4b5ec4-9c1a-4040-9daf-21f032b20725",
+   "event": "Dana White's Contender Series: Season 8, Week 7",
+   "event_date": "2024-09-25",
+   "event_id": "2bf85580-e840-4d80-9362-f8128475feda",
+   "bout_id": "a034069f-8e77-49de-8d61-ebb3dd915c65",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-7-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-09-24",
+   "excerpt": "…ts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time this season that five contracts were awarded.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [
+    "998aaba9-57f9-44b5-f933-b0324ac45ed2"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "268fef27-5a79-ba00-4232-41747e1bd15e",
+   "fighter": "Kevin Christian",
+   "fighter_id": "25a9970d-b6a0-4a29-bff2-11b185bdafa9",
+   "event": "Dana White's Contender Series: Season 8, Week 7",
+   "event_date": "2024-09-25",
+   "event_id": "2bf85580-e840-4d80-9362-f8128475feda",
+   "bout_id": "72d91264-5b06-4a5f-a8c1-cd17c01cf09e",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-7-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-09-24",
+   "excerpt": "…ut contracts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time this season that five contracts wer…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "3a700510-7645-bda9-c205-68505bc23ea4",
+   "fighter": "Kevin Vallejos",
+   "fighter_id": "f3a73e34-6846-4af2-a8cd-262562e5af8c",
+   "event": "Dana White's Contender Series: Season 8, Week 7",
+   "event_date": "2024-09-25",
+   "event_id": "2bf85580-e840-4d80-9362-f8128475feda",
+   "bout_id": "393f5dad-0a51-4bfc-b9b0-9225a1450a7a",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-7-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-09-24",
+   "excerpt": "…a White handed out contracts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time this season that fi…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "34fe52d8-7bdb-632b-99ca-f05840208df4",
+   "fighter": "Torrez Finney",
+   "fighter_id": "b1dfb604-acfd-4d28-8f11-0db8c83432e3",
+   "event": "Dana White's Contender Series: Season 8, Week 8",
+   "event_date": "2024-10-02",
+   "event_id": "3eda31f0-1c49-4fcc-b434-b066d1a64d9b",
+   "bout_id": "90ba2479-b882-461c-b124-d71d1c14104c",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-8-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-10-01",
+   "excerpt": "For the second straight week, all five victorious fighters were awarded contracts, including Finney, whose second victory of the season and third DWCS win finally punched his ticket to the UFC.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "8b859a2c-aba0-1279-a7fb-9a6e529f35c2",
+   "fighter": "Mario Pinto",
+   "fighter_id": "bc6d359a-c6e7-40f3-8398-8ec723105090",
+   "event": "Dana White's Contender Series: Season 8, Week 9",
+   "event_date": "2024-10-09",
+   "event_id": "24a18fd3-a388-4592-ba7b-dc09e5077546",
+   "bout_id": "9c45e93f-3bdf-4814-9ba8-047d25c8128d",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-8-review",
+   "source_date": "2024-12-26",
+   "excerpt": "Heavyweights Danylo Voievodkin, Talisson Teixeira, and Mario Pinto all earned contracts this season",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "0e45b957-aba3-d0ef-5901-f69fd852c3a7",
+   "fighter": "Jonathan Micallef",
+   "fighter_id": "3d44f111-1b8f-4bd1-9464-bf07b28e4d21",
+   "event": "Dana White's Contender Series: Season 8, Week 10",
+   "event_date": "2024-10-16",
+   "event_id": "ec1266f4-3cd8-4340-aec8-89fbc0930deb",
+   "bout_id": "cd2e51b3-fbb4-45c8-87af-964b64fd279c",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-10-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-10-15",
+   "excerpt": "…ious fighters on Tuesday's fight card earned contracts, as Australia's Jonathan Micallef, Cuba's Yadier DelValle, and Americans Luis Gurule and Nick Klein were invited to join the UFC roster, bringing…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "015753ad-db2e-6a6a-1776-151258908e45",
+   "fighter": "Luis Gurule",
+   "fighter_id": "7da286ee-2dd2-43b2-9e25-12ec1c2588a3",
+   "event": "Dana White's Contender Series: Season 8, Week 10",
+   "event_date": "2024-10-16",
+   "event_id": "ec1266f4-3cd8-4340-aec8-89fbc0930deb",
+   "bout_id": "27fd7bfc-2ae2-4f05-8dfb-44bffbe3d505",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-10-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-10-15",
+   "excerpt": "…s, as Australia's Jonathan Micallef, Cuba's Yadier DelValle, and Americans Luis Gurule and Nick Klein were invited to join the UFC roster, bringing the total number of fighters moving forward this sea…",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "8f6f689a-b1ca-6310-413c-10fede3690aa",
+   "fighter": "Nick Klein",
+   "fighter_id": "86d40914-f61c-448b-81d7-5bf704b852d9",
+   "event": "Dana White's Contender Series: Season 8, Week 10",
+   "event_date": "2024-10-16",
+   "event_id": "ec1266f4-3cd8-4340-aec8-89fbc0930deb",
+   "bout_id": "af944ab5-f10d-4a5a-ad4d-da7d2105bf57",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-10-results-scorecards-dana-whites-contender-series-season-8",
+   "source_date": "2024-10-15",
+   "excerpt": "…ralia's Jonathan Micallef, Cuba's Yadier DelValle, and Americans Luis Gurule and Nick Klein were invited to join the UFC roster, bringing the total number of fighters moving forward this season to 42.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "2667aeff-7a5a-d44a-3f65-f061508e0d03",
+   "fighter": "Cody Chovancek",
+   "fighter_id": "55e258ae-ebc3-4507-ab2a-df11afbe82c9",
+   "event": "Dana White's Contender Series: Season 9, Week 6",
+   "event_date": "2025-09-17",
+   "event_id": "0e6682f8-9575-4536-a22a-0ff019ac5016",
+   "bout_id": "ff91422e-5fd0-48fa-9f25-049423d1dced",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-6-results-scorecards-fight-recaps-contract-winners-interviews-dana-whites-contender-series-season-9",
+   "source_date": "2025-09-16",
+   "excerpt": "Chovancek, Gantt, Baraniewski and Sosa all impressed White, joining their names to the growing Class of '25 graduates joining the UFC roster so far this season.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "e943cd24-506c-d7c7-63ee-f476eef55c29",
+   "fighter": "Hecher Sosa",
+   "fighter_id": "e66839e9-367d-4998-af85-67e20a4f1b3b",
+   "event": "Dana White's Contender Series: Season 9, Week 6",
+   "event_date": "2025-09-17",
+   "event_id": "0e6682f8-9575-4536-a22a-0ff019ac5016",
+   "bout_id": "56e349db-b5c7-4fec-926c-a395f74c20a3",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-6-results-scorecards-fight-recaps-contract-winners-interviews-dana-whites-contender-series-season-9",
+   "source_date": "2025-09-16",
+   "excerpt": "Chovancek, Gantt, Baraniewski and Sosa all impressed White, joining their names to the growing Class of '25 graduates joining the UFC roster so far this season.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "6af919ed-2b14-733b-c1bd-4875d63a143f",
+   "fighter": "Iwo Baraniewski",
+   "fighter_id": "1dc22472-74cb-4398-b2f2-b022da6fc0a2",
+   "event": "Dana White's Contender Series: Season 9, Week 6",
+   "event_date": "2025-09-17",
+   "event_id": "0e6682f8-9575-4536-a22a-0ff019ac5016",
+   "bout_id": "2132171b-c9a8-4f28-b826-d5193d9b27ed",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-6-results-scorecards-fight-recaps-contract-winners-interviews-dana-whites-contender-series-season-9",
+   "source_date": "2025-09-16",
+   "excerpt": "Chovancek, Gantt, Baraniewski and Sosa all impressed White, joining their names to the growing Class of '25 graduates joining the UFC roster so far this season.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "116ad610-d898-30dd-2447-af24c35c7e96",
+   "fighter": "Tommy Gantt",
+   "fighter_id": "08e58845-4ba5-4fcf-982f-2b47171d4dce",
+   "event": "Dana White's Contender Series: Season 9, Week 6",
+   "event_date": "2025-09-17",
+   "event_id": "0e6682f8-9575-4536-a22a-0ff019ac5016",
+   "bout_id": "6942bc4c-08c7-4eec-9464-626f7507af45",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/week-6-results-scorecards-fight-recaps-contract-winners-interviews-dana-whites-contender-series-season-9",
+   "source_date": "2025-09-16",
+   "excerpt": "Chovancek, Gantt, Baraniewski and Sosa all impressed White, joining their names to the growing Class of '25 graduates joining the UFC roster so far this season.",
+   "espn_corroborated": true,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "8bf019fa-a3e9-c226-6085-e4526c5e1df0",
+   "fighter": "Joe Kropschot",
+   "fighter_id": "da090de0-d5a1-4fa4-a45a-6cf53a69c482",
+   "event": "Dana White's Contender Series: Season 10, Week 1",
+   "event_date": "2026-08-11",
+   "event_id": "831a7c36-8d80-4c72-a09a-d8a6bfaaf0a0",
+   "bout_id": "657fb71b-a3f3-4b7d-a5ac-2015ee555007",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/welcome-ufc-dwcs-week-1-season-10",
+   "source_date": "2026-08-12",
+   "excerpt": "Kropschot got the nod via unanimous decision, and then got the nod from White, who said “The Land Animal's” desire to push for the finish in the final round proved the deciding factor when assessing w…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "59d97bb9-89cb-9fbf-189d-f298da47ddb1",
+   "fighter": "Trent Miller",
+   "fighter_id": "bd9e6610-764f-42e8-bb6c-abf31553d5fd",
+   "event": "Dana White's Contender Series: Season 10, Week 2",
+   "event_date": "2026-08-18",
+   "event_id": "ec88ca9f-03d5-49ef-8374-7559b0026dba",
+   "bout_id": "54e1a464-e12c-4dc7-a332-9e635bc845e1",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/welcome-ufc-dwcs-season-10-week-2",
+   "source_date": "2026-08-19",
+   "excerpt": "Upon landing, Miller found himself in the perfect position to apply the rarely-seen technique, and rendered his man unconscious to claim a UFC contract from White, who praised the underdog for throwin…",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "c23d3a17-fb9e-2f37-b370-7db9efab037b",
+   "fighter": "Alex Apodaca",
+   "fighter_id": "90e254d6-4bb6-47de-b690-008bbaa26b9d",
+   "event": "Dana White's Contender Series: Season 10, Week 3",
+   "event_date": "2026-08-25",
+   "event_id": "291d5001-16c0-4483-9953-b22a1739721a",
+   "bout_id": "2d8a5b21-a9d4-47c5-88b9-d30c32274101",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/welcome-ufc-dwcs-season-10-week-3",
+   "source_date": "2026-08-26",
+   "excerpt": "And as Apodaca revisited with Laura Sanko after confirmation of her UFC contract, she admitted it's going to take some time for the reality of it all to set in.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "ebd0a42a-c379-813e-6b87-c441c674dd03",
+   "fighter": "Guilherme Uriel",
+   "fighter_id": "30d7f9db-3609-48db-b8a4-215deca1808c",
+   "event": "Dana White's Contender Series: Season 10, Week 3",
+   "event_date": "2026-08-25",
+   "event_id": "291d5001-16c0-4483-9953-b22a1739721a",
+   "bout_id": "51b70ace-e421-4527-a876-9a252086802e",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-10-week-3-results",
+   "source_date": "2026-08-25",
+   "excerpt": "Joining Apocada on the UFC roster are fellow victors Nick Galanti, Ronald Humphrey, Sean Clancy Jr. and Guilherme Uriel, with each of that quartet earning their respective contracts with big finishes.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "9899f4ed-e6e8-bcae-d8aa-7f0a01adccf2",
+   "fighter": "Nick Galanti",
+   "fighter_id": "1c6eed05-614a-42e4-8158-a7dcc64e38b1",
+   "event": "Dana White's Contender Series: Season 10, Week 3",
+   "event_date": "2026-08-25",
+   "event_id": "291d5001-16c0-4483-9953-b22a1739721a",
+   "bout_id": "4e976ca4-c964-4cae-9807-cc80f3159101",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-10-week-3-results",
+   "source_date": "2026-08-25",
+   "excerpt": "Joining Apocada on the UFC roster are fellow victors Nick Galanti, Ronald Humphrey, Sean Clancy Jr. and Guilherme Uriel, with each of that quartet earning their respective contracts with big finishes.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "ce36389a-ff27-c73e-c80f-e14d07576262",
+   "fighter": "Ronald Humphrey",
+   "fighter_id": "9b9ce5a4-8e86-4b53-a977-bd9c83ffe821",
+   "event": "Dana White's Contender Series: Season 10, Week 3",
+   "event_date": "2026-08-25",
+   "event_id": "291d5001-16c0-4483-9953-b22a1739721a",
+   "bout_id": "c302db06-0af7-4236-af5c-32a6f5f99e8d",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-10-week-3-results",
+   "source_date": "2026-08-25",
+   "excerpt": "Joining Apocada on the UFC roster are fellow victors Nick Galanti, Ronald Humphrey, Sean Clancy Jr. and Guilherme Uriel, with each of that quartet earning their respective contracts with big finishes.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "32b5d8df-8c96-42e2-39c7-c9993a81b898",
+   "fighter": "Sean Clancy Jr.",
+   "fighter_id": "3ec4df0b-4502-43ee-8a7a-6f10290cb868",
+   "event": "Dana White's Contender Series: Season 10, Week 3",
+   "event_date": "2026-08-25",
+   "event_id": "291d5001-16c0-4483-9953-b22a1739721a",
+   "bout_id": "d24b6a4c-e734-4e31-8081-c4c8396d6883",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-10-week-3-results",
+   "source_date": "2026-08-25",
+   "excerpt": "Joining Apocada on the UFC roster are fellow victors Nick Galanti, Ronald Humphrey, Sean Clancy Jr. and Guilherme Uriel, with each of that quartet earning their respective contracts with big finishes.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "9b8ff891-7916-0674-8b04-3c6273a718d2",
+   "fighter": "Adam Darby",
+   "fighter_id": "e7f3a5d5-1441-4f2f-a7a2-b5efde3dd752",
+   "event": "Dana White's Contender Series: Season 10, Week 4",
+   "event_date": "2026-09-01",
+   "event_id": "440cc1f3-2be5-4597-afd4-255857033dd9",
+   "bout_id": "0d860a3e-c7bd-4856-9f89-06c172048dcc",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/welcome-ufc-dwcs-season-10-week-4",
+   "source_date": "2026-09-02",
+   "excerpt": "It was a virtually punch-perfect performance from Darby, who ended the night celebrating a UFC contract as he heard those famous four words, “Welcome to the UFC!”",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "0a8e7452-b68e-1f5f-354d-59a593a96b0e",
+   "fighter": "Silvestre Sanchez",
+   "fighter_id": "145c3230-eca1-47d4-9acd-11cc2cdc91cf",
+   "event": "Dana White's Contender Series: Season 10, Week 4",
+   "event_date": "2026-09-01",
+   "event_id": "440cc1f3-2be5-4597-afd4-255857033dd9",
+   "bout_id": "8e6f43b2-3da8-4501-8c23-f42dd9976b61",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/welcome-ufc-dwcs-season-10-week-4",
+   "source_date": "2026-09-02",
+   "excerpt": "And, after his contract was confirmed, Sanchez recounted his conversation with White, where the UFC boss told him something pretty similar.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "c095a0f5-5f29-23bd-76d6-a9518a214e52",
+   "fighter": "Christian Natividad",
+   "fighter_id": "e3131307-a3d1-46ca-9945-0ebb4d963d01",
+   "event": "Dana White's Contender Series: Season 10, Week 5",
+   "event_date": "2026-09-08",
+   "event_id": "187505ab-636d-4f90-8d5f-d98ebfd1cd7c",
+   "bout_id": "618f386b-0594-43c3-8b06-b14dd09dcf66",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-10-week-5-results",
+   "source_date": "2026-09-08",
+   "excerpt": "…ve winners earned UFC deals from UFC President and CEO Dana White, as Christian Natividad, Martin Kozak, Isaac Moreno, and Quentin Pasley all impressed with their respective performances in Las Vegas.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "13a06a72-f526-5cb3-c3d4-165d8b6f0752"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "00f479d7-bcbd-b267-be99-85e2104ed98c",
+   "fighter": "Isaac Moreno",
+   "fighter_id": "3fc5c4a1-69e8-46dd-9338-ede9921c999b",
+   "event": "Dana White's Contender Series: Season 10, Week 5",
+   "event_date": "2026-09-08",
+   "event_id": "187505ab-636d-4f90-8d5f-d98ebfd1cd7c",
+   "bout_id": "a5900e5b-6e9d-4eea-9721-730f92f6bd99",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-10-week-5-results",
+   "source_date": "2026-09-08",
+   "excerpt": "…ve winners earned UFC deals from UFC President and CEO Dana White, as Christian Natividad, Martin Kozak, Isaac Moreno, and Quentin Pasley all impressed with their respective performances in Las Vegas.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "c9b8da75-3caf-66b3-2782-bf675c65a4d3"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "1cb3a7eb-c80c-ad55-f773-4c2d012ada20",
+   "fighter": "Martin Kozák",
+   "fighter_id": "04541f5c-7cee-4fea-a918-08ee0a1bed10",
+   "event": "Dana White's Contender Series: Season 10, Week 5",
+   "event_date": "2026-09-08",
+   "event_id": "187505ab-636d-4f90-8d5f-d98ebfd1cd7c",
+   "bout_id": "dfc2881c-1446-4243-9e2c-1fdb7a97f0a6",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-10-week-5-results",
+   "source_date": "2026-09-08",
+   "excerpt": "…ve winners earned UFC deals from UFC President and CEO Dana White, as Christian Natividad, Martin Kozak, Isaac Moreno, and Quentin Pasley all impressed with their respective performances in Las Vegas.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "3af32df8-3c4e-1ce6-8f66-0f985a798d5d"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  },
+  {
+   "proposed_claim_id": "c163b2d7-3bf1-14ea-a00e-6b47cd57e33a",
+   "fighter": "Quentin Pasley",
+   "fighter_id": "7d82db4a-06c2-4479-bc6d-8f6c4e302c0d",
+   "event": "Dana White's Contender Series: Season 10, Week 5",
+   "event_date": "2026-09-08",
+   "event_id": "187505ab-636d-4f90-8d5f-d98ebfd1cd7c",
+   "bout_id": "9a4aa314-d5b0-4f5f-839d-4ed7aac6b61f",
+   "claim_type": "contract_awarded",
+   "source_url": "https://www.ufc.com/news/dana-whites-contender-series-season-10-week-5-results",
+   "source_date": "2026-09-08",
+   "excerpt": "…ve winners earned UFC deals from UFC President and CEO Dana White, as Christian Natividad, Martin Kozak, Isaac Moreno, and Quentin Pasley all impressed with their respective performances in Las Vegas.",
+   "espn_corroborated": false,
+   "supporting_claim_ids": [
+    "988326f5-b3aa-a13d-48c8-16b162ff2cac"
+   ],
+   "decision": "PENDING OPERATOR REVIEW"
+  }
+ ],
+ "excluded": [
+  {
+   "claim_id": "02769408-f0cd-d4f2-c2be-182fe62880ff",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "02dcf2d8-d93f-5d9d-bae9-1d2d7f053139",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "040f0504-780b-903f-733e-2b958369ae3d",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "04af8573-d9b7-5ea5-a0ed-7f4f9a4eea0e",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "087c0854-bdc9-1703-9a8f-3d99247ae247",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "09f2b3bd-6087-3ccb-462d-977624cc0524",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "0a1e02ba-d2f3-30be-9373-52c06b3b5eef",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "0aec3423-f519-ee01-bc42-c79781d40adc",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "0bc42577-03f7-0eb4-136e-9359a51d3581",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "0d3eab26-feee-a9d0-7ee4-21e5d4223442",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "116973e2-3a36-d675-3a4d-4b472a9a2773",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "11be5233-4dd9-c9ae-0901-017753e28864",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "11ee9951-2bb5-c0d7-0390-b24a2762d367",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "13cf0a13-c0fe-5446-c817-fb4ed9b06226",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "14b9e4e6-e73a-c56e-5399-92321459e208",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "14df8d0a-927a-9bd2-dd3a-4388b1b9664c",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "15691acf-c0c1-e312-cdc9-3b37e700d091",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "1b1f2164-c166-9843-75a7-265148513b22",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "1b7b6a5a-0634-560c-303b-1bc0c1dcae60",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "20ee14d3-c656-6c13-156a-bf6a52b9b2a4",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "2293c1b6-9143-d613-634d-f30af3ffc81d",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "2885acce-2004-6f07-03a7-27288d22dc8c",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "2afa17fd-8dce-57d1-95be-193a721cd3dd",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "2c874beb-35d4-f153-e84a-1818ab7b8dc8",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "2d883d76-a4fa-1b68-1b4a-0e82c4db2d9b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "2f532047-cde2-13d3-44ae-0f3bfd7f3d71",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "2f610a7e-cddc-e8f8-93e5-42e3cb8dfde8",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "2ff63fd9-d39e-fac4-f45b-d788b98b5f55",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "31472da8-4469-067e-9ea2-c68b6d5468bf",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "31fc84ea-dc3c-93ae-0d0f-778ef2a6d71d",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "33329a34-115b-4e0f-97a1-719bb801e84b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "335b87b5-7613-c123-6c80-358e2579c2b4",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "33e3a813-675c-2bc4-dfaf-1cd65c2a0c45",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "361c5666-a66e-9e0c-394e-c841cbe956ba",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "384a0585-9cc5-a2f1-bae1-6b25198ad8be",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "3c83c385-6cbb-9c1f-90fc-678558ba141a",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "3d0ff945-17ad-beeb-48b9-0abf691362ca",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "4019a6d2-d861-f188-7fe0-13714f09b4bc",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "407ae62f-08b8-30c4-a339-e222c0c98757",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "47b2405b-fae5-3f22-f768-92ada419af3b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "47d8baf8-4a02-9966-642e-13b82b8385ec",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "49e5c1cf-ad65-383a-c120-b473a369669b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "49f749d3-6683-9783-f733-16f02a4d9e5f",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "4c02b2de-84f5-b538-ae02-72a337c88998",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "4c1b5882-e18c-a1cb-e107-b9707e47eab2",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "52407270-9e6c-1990-135a-561f8116434b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "52fe17c9-2eb8-f457-dd93-2059f6315bdb",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "53c2e4fb-0a82-e64a-672d-18fbc841ae6b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "54455d61-020f-50f4-0725-7ffd5d612fab",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "56b6c04e-47d6-3b8e-fb01-13a14699ad45",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "5e164f3d-4614-cd9a-b777-19ebb06577a6",
+   "claim_status": "review",
+   "source_family": "ufc.com",
+   "reasons": [
+    "triage review",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "5e7b6d6b-384d-cbd1-bbdb-6f6afd54383c",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "5f4f57f4-b5d7-f83e-4d2e-39ae9fe407ba",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "61a891bf-bc82-2571-fcf4-001a14a39434",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "626751f1-2a60-b313-2236-e95e8480719f",
+   "claim_status": "conflicted",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage conflicted",
+    "stored result does not record this fighter as the winner",
+    "a conflicting claim for this fighter and outcome is unresolved"
+   ]
+  },
+  {
+   "claim_id": "62b52e14-0f52-8ee6-5ff6-36cc7cd3ef53",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "62cff807-b51b-8acc-7c9d-cbe265cdc1ea",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "63501394-47e7-edfb-c362-66195031222a",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "644f3862-4190-79e8-35ba-e53b26a42a75",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "662c4cbe-21a7-ae80-03d4-604b6788a507",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "66d163fd-c9fa-e6d8-1095-d3ca546d0a54",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "6909b6b7-09c5-5df3-7dc4-9744e2dee784",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "69181e07-2c0e-b449-6fc2-f0a8728235d8",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "6a79bc92-8266-00d8-5a2f-566466e86e5d",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "6e734a09-b00d-7fc1-e6f1-a053f4e4cc98",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "6f5218c6-41f1-aab0-d08b-3288ce4b7b24",
+   "claim_status": "review",
+   "source_family": "ufc.com",
+   "reasons": [
+    "triage review",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "713e2842-7266-f810-3c49-4610e49a20ad",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "738ae25d-7b4c-7432-ed5b-5b8e52d7522d",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "73ce58e0-f09c-afef-2f4c-7117c70c3cc8",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "7540292c-35b6-2752-20d6-ceed8a6273ff",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "75d71c60-0eaa-cf2c-9351-d0a624d8aa40",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "75df728e-ad42-ecf2-ec04-b5dd1f71059b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "7a8d6455-9934-1264-3a7e-19dc265e0613",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "7aaf7c64-53e0-2f0a-f5a1-4979718a3e29",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "7bda3f45-6d63-11a4-3d74-29856c968fd0",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "7d16aeef-c31c-05b9-59dc-3171bec00c94",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "7d44f7f6-7c39-2777-e69d-19843f436cb7",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "7f3a3f6c-7879-3ab4-8e27-05e689b03269",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "7f762052-9777-d9aa-4c55-c7adf271fd87",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "82263418-f77f-6680-96e2-036fe89b23d1",
+   "claim_status": "review",
+   "source_family": "ufc.com",
+   "reasons": [
+    "triage review",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "830b0fb0-77bf-2301-d901-0557a0ca8958",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "83ad7d2f-e5e8-5be6-7deb-778cbce41ca4",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "83aed317-86da-b7f9-1dd5-3cf174561b26",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "85df5f3b-e6c8-482e-4ef9-417d9ac10fa5",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "8a91d1ba-57e6-b0a0-bdbc-794a27d4b577",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "8ce649d7-125b-030d-aff3-c96551e85dbd",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "8dff9665-9d00-769d-3f84-308531944422",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "8eb719af-4a7c-999d-9eae-fddb2a73c2c1",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "8efbdf6c-693c-6f72-15b9-8f33256045a8",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "915c6bb2-680b-fb6d-5f8d-ce8001160aee",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "91b2583f-6f09-ae14-88ac-7e6891998a08",
+   "claim_status": "review",
+   "source_family": "ufc.com",
+   "reasons": [
+    "triage review",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "9620b5e5-48c2-5136-1ed3-36859c616bad",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "98980bfb-bfa3-efe6-275e-7bb11f0a37ed",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "9a619fba-e012-4b3e-6c9d-5fa5ddd42a63",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "9acd7eaf-b98f-30a3-e2b4-712e7df712a1",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "9dfda968-ad42-7174-00f6-949a250045fa",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "9f273b2b-e906-e1be-e9ad-532d869f5a90",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "9faf936b-676b-8002-dc96-40328e537704",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "a17c0899-4823-c23d-a4a9-d63c71b969bd",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "a1e61271-dd29-6936-1ad4-1429fd01e922",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "a2e82bbe-131f-cf32-6bda-1586122df85f",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "a323434c-c5fe-82a3-d082-d03500e5e846",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "a4cb5c1a-10a8-4a56-e1cd-552cc6cae597",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "a58fc222-fc7f-bc64-f889-1423b2c74632",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "a7720d5a-adc2-ce76-623b-f992a3430908",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "a853391a-7acb-5098-5cc8-3da447cf403b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "a98f2ea9-f2d0-213a-84d4-5ca9d69160bc",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "adf93c82-4fcb-bc93-2168-59f9a715a12c",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "b0b7b11b-9e2c-5ebe-8b1b-4bb3ccf31d9a",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "b2ed038c-9350-7f1f-34fe-0b388815c8bd",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "b316946e-371f-61ef-bb4a-277ba32c9d6b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "b366a442-adc8-0533-f861-5ae60ca7b7b1",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "b3e40820-087b-2fe1-5d5d-c849cb77b6b5",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "bb15ca86-6c23-5862-3f2c-0b15025db5a6",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "bde164fc-52ca-4d62-1746-9b5ebb3a4a63",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "bef7f431-61fc-d08d-c69b-22e92a58f47c",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "c14d69a8-4a40-6a0e-317e-44d810a4b8f0",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "c6e8f74a-94ea-9caa-038c-161db04dead4",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "c7c1ce52-4334-6faf-d89b-e57017f3e0b4",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "cb5c3fca-9a20-5c7d-d772-df9fb4a7736d",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "cebfb01e-60cc-62e6-8096-6a8d82cd1e3c",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "cfb972a6-48c8-d365-09cb-d19d045f0e52",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "d11cb98c-82af-703d-009c-443e9aa31ea4",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "d12f3029-2650-8d09-0e91-e7bc5ce5ff74",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "d1c2cb36-a9cb-0248-e665-3a2e08d99775",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "d24cdec8-a451-18ed-31b7-103ec121eb3b",
+   "claim_status": "review",
+   "source_family": "ufc.com",
+   "reasons": [
+    "triage review",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "d2e98e71-292c-258f-1f93-63427510c560",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "d55a4014-3a7c-4b81-ca23-aff61888a7ea",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "d78098af-4380-8026-35d8-7fdb415a3a56",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "d7fb2726-5c57-9242-e668-45d2e9403e9b",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "db67a6f8-0279-3866-4e1f-737669c80d25",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "df7d6b9c-fd22-0a94-30dc-eb29baf3e94f",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "e0e2dd6d-e303-bfe4-66bc-ac5080136ef3",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "e52c418e-70bc-f765-1f8e-ed24910a5d4f",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "e6bcac2c-94da-5043-cce4-a3414d109e77",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  },
+  {
+   "claim_id": "e72a9811-b21a-4fec-c212-5646b5c05ec6",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "ed96be18-3fab-82e5-7450-ce5327dec87d",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "f2532a63-c7fa-b7b7-0cd0-3d7516ab6d2e",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "f9b27276-ace3-4400-4ca1-c59f078f2ceb",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "fdaabc03-01db-bb43-1e32-b3afdd39e110",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "fdbef972-2e84-7308-8b2d-b4b8f8552a25",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "fecce59d-01e0-ba19-d6d9-1c6e06a697de",
+   "claim_status": "conflicted",
+   "source_family": "ufc.com",
+   "reasons": [
+    "triage conflicted",
+    "a conflicting claim for this fighter and outcome is unresolved"
+   ]
+  },
+  {
+   "claim_id": "ff0561c6-4331-3a84-c9e7-ba3a19bd0b4f",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only"
+   ]
+  },
+  {
+   "claim_id": "ffd3f7c9-b6d1-16a6-f115-2c8924729648",
+   "claim_status": "secondary_only",
+   "source_family": "espn.com",
+   "reasons": [
+    "source espn.com is not the official source",
+    "triage secondary_only",
+    "stored result does not record this fighter as the winner"
+   ]
+  }
+ ]
+}
