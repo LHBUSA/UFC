@@ -58,10 +58,12 @@ export function Explain({ title, body, unit, caution, formula, rows, learnHref, 
   const pop = useRef<HTMLDivElement>(null);
   const hoverTimer = useRef<number | null>(null);
   const viaKeyboard = useRef(false);
+  /* Clicking a panel that hover opened pins it, so mouse-leave no longer closes it. */
+  const pinned = useRef(false);
 
   useEffect(() => setMounted(true), []);
 
-  const close = useCallback((refocus = false) => { setOpen(false); setPlace(null); if (refocus) btn.current?.focus(); }, []);
+  const close = useCallback((refocus = false) => { pinned.current = false; setOpen(false); setPlace(null); if (refocus) btn.current?.focus(); }, []);
 
   /* Measure from the trigger and keep the whole panel on screen. */
   const position = useCallback(() => {
@@ -93,7 +95,7 @@ export function Explain({ title, body, unit, caution, formula, rows, learnHref, 
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopPropagation(); close(true); } };
     const onDown = (e: PointerEvent) => {
       const t = e.target as Node;
-      if (btn.current?.contains(t) || pop.current?.contains(t)) return;
+      if (btn.current?.contains(t) || pop.current?.contains(t) || (t as Element).classList?.contains("xp-scrim")) return;
       close(false);
     };
     const onMove = () => position();
@@ -116,7 +118,7 @@ export function Explain({ title, body, unit, caution, formula, rows, learnHref, 
 
   const hover = () => typeof window !== "undefined" && window.matchMedia?.("(hover: hover)").matches;
   const hoverIn = () => { if (!hover()) return; if (hoverTimer.current) window.clearTimeout(hoverTimer.current); hoverTimer.current = window.setTimeout(() => setOpen(true), 120); };
-  const hoverOut = () => { if (!hover()) return; if (hoverTimer.current) window.clearTimeout(hoverTimer.current); hoverTimer.current = window.setTimeout(() => close(false), 180); };
+  const hoverOut = () => { if (!hover() || pinned.current) return; if (hoverTimer.current) window.clearTimeout(hoverTimer.current); hoverTimer.current = window.setTimeout(() => close(false), 180); };
   const holdOpen = () => { if (hoverTimer.current) window.clearTimeout(hoverTimer.current); };
 
   const onTriggerKey = (e: React.KeyboardEvent) => {
@@ -198,12 +200,16 @@ export function Explain({ title, body, unit, caution, formula, rows, learnHref, 
         aria-expanded={open}
         aria-controls={`${id}-pop`}
         aria-haspopup="dialog"
-        onClick={() => { if (open) close(false); else setOpen(true); }}
+        onClick={() => {
+          if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+          if (open && !pinned.current && hover()) { pinned.current = true; return; }
+          if (open) close(false); else { pinned.current = hover(); setOpen(true); }
+        }}
         onKeyDown={onTriggerKey}
       >
         <span aria-hidden="true">i</span>
       </button>
-      {mounted && createPortal(<>{open && sheet ? <div className="xp-scrim" aria-hidden="true" /> : null}{panel}</>, document.body)}
+      {mounted && createPortal(<>{open && sheet ? <div className="xp-scrim" aria-hidden="true" onClick={() => close(true)} /> : null}{panel}</>, document.body)}
     </span>
   );
 }

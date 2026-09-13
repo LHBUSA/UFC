@@ -62,7 +62,11 @@
 .xp-pop.sheet .xp-close { display: inline-grid; place-items: center; }
 .xp-pop.sheet .xp-head b { font-size: 15px; padding-top: 2px; }
 .xp-pop.sheet .xp-p { font-size: 15px; }
-.xp-pop.sheet .xp-links a { min-height: 40px; }
+.xp-pop.sheet .xp-unit, .xp-pop.sheet .xp-caution { font-size: 14px; }
+.xp-pop.sheet .xp-dt { font-size: 12.5px; }
+.xp-pop.sheet .xp-dd { font-size: 14.5px; }
+.xp-pop.sheet .xp-formula code { font-size: 13px; }
+.xp-pop.sheet .xp-links a { min-height: 40px; font-size: 14px; }
 @media (max-width: 420px) {
   .xp-rows { grid-template-columns: minmax(0, 1fr); gap: 2px 0; }
   .xp-dd { margin-bottom: 8px; }
