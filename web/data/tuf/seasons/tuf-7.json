@@ -10,7 +10,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Rampage_vs._Team_Forrest",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "_conflicts": [
     {
@@ -22,55 +24,70 @@
   "coaches": [
     {
       "team": "Team Rampage",
-      "name": "Team Rampage",
-      "role": "head"
-    },
-    {
-      "team": "",
-      "name": "Quinton \"Rampage\" Jackson",
+      "name": "Quinton Jackson",
+      "fighter_id": "11141034-95cb-46f1-a030-b816b1f92baf",
       "role": "head",
-      "note": "head coach"
+      "nickname": "Rampage",
+      "note": "head coach",
+      "printed_as": "Quinton \"Rampage\" Jackson",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rampage",
       "name": "Zach Light",
-      "role": "head",
-      "note": "wrestling coach"
+      "fighter_id": "7dae4f3d-603f-44a6-9a9d-db60d5e9bff2",
+      "role": "assistant",
+      "discipline": "wrestling",
+      "note": "wrestling coach",
+      "role_basis": "source note: \"wrestling coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rampage",
       "name": "Juanito Ibarra",
-      "role": "head",
-      "note": "boxing coach"
+      "role": "assistant",
+      "discipline": "boxing",
+      "note": "boxing coach",
+      "role_basis": "source note: \"boxing coach\"",
+      "team_basis": "section order in the season source"
     },
     {
       "team": "Team Forrest",
-      "name": "Team Forrest",
-      "role": "head"
-    },
-    {
-      "team": "",
       "name": "Forrest Griffin",
+      "fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Forrest",
       "name": "Cameron Diffley",
-      "role": "head",
-      "note": "jiu jitsu coach"
+      "role": "assistant",
+      "discipline": "jiu jitsu",
+      "note": "jiu jitsu coach",
+      "role_basis": "source note: \"jiu jitsu coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Forrest",
       "name": "Mark Beecher",
-      "role": "head",
-      "note": "Muay Thai coach"
+      "role": "assistant",
+      "discipline": "Muay Thai",
+      "note": "Muay Thai coach",
+      "role_basis": "source note: \"Muay Thai coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Forrest",
       "name": "Gray Maynard",
-      "role": "head",
-      "note": "wrestling coach"
+      "fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9",
+      "role": "assistant",
+      "discipline": "wrestling",
+      "note": "wrestling coach",
+      "role_basis": "source note: \"wrestling coach\"",
+      "team_basis": "section order in the season source"
     }
   ],
   "teams": [
@@ -78,19 +95,25 @@
       "name": "Team Rampage",
       "roster": [
         {
-          "name": "C. B. Dollaway"
+          "name": "C. B. Dollaway",
+          "fighter_id": "22451147-e20d-42e7-b0d0-6881b35a85d6"
         },
         {
-          "name": "Matt Riddle"
+          "name": "Matt Riddle",
+          "fighter_id": "51b87666-57db-43b7-903b-a2967148c296"
         },
         {
-          "name": "[[Paul Bradley"
+          "name": "Paul Bradley",
+          "printed_as": "[[Paul Bradley",
+          "fighter_id": "99d893ab-cab7-47b3-b2e0-2ee9354fcad3"
         },
         {
-          "name": "Dan Cramer"
+          "name": "Dan Cramer",
+          "fighter_id": "451988bc-e2cc-46d7-ab9a-998529934ca7"
         },
         {
-          "name": "Gerald Harris"
+          "name": "Gerald Harris",
+          "fighter_id": "12429469-abdc-40b4-892c-526c791571e6"
         },
         {
           "name": "Mike Dolce"
@@ -107,28 +130,35 @@
       "name": "Team Forrest",
       "roster": [
         {
-          "name": "Tim Credeur"
+          "name": "Tim Credeur",
+          "fighter_id": "14a98e97-57e6-4cfe-8868-249e6f4a6a67"
         },
         {
-          "name": "Amir Sadollah"
+          "name": "Amir Sadollah",
+          "fighter_id": "5080f074-ab7a-4cc2-9b68-cda8a7b39316"
         },
         {
-          "name": "Jesse Taylor"
+          "name": "Jesse Taylor",
+          "fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1"
         },
         {
-          "name": "Matt Brown"
+          "name": "Matt Brown",
+          "fighter_id": "fd96b49b-7712-45a7-9200-825a7815be52"
         },
         {
-          "name": "Cale Yarbrough"
+          "name": "Cale Yarbrough",
+          "fighter_id": "0db12350-bd58-4094-848e-fff84cb4434d"
         },
         {
-          "name": "Dante Rivera"
+          "name": "Dante Rivera",
+          "fighter_id": "5ad4bc3c-ddc2-4bba-8581-479c3a15a3a9"
         },
         {
           "name": "Nick Klein"
         },
         {
-          "name": "Luke Zachrich"
+          "name": "Luke Zachrich",
+          "fighter_id": "e639b416-ed3d-42fb-9786-5112656a08ab"
         }
       ]
     },
@@ -139,7 +169,8 @@
           "name": "David Baggett"
         },
         {
-          "name": "Steve Byrnes"
+          "name": "Steve Byrnes",
+          "fighter_id": "7bc603ec-c4cb-4e30-8777-b780640c25c5"
         },
         {
           "name": "Erik Charles"
@@ -189,9 +220,8 @@
         "replacement"
       ],
       "fighters": [
-        "[[Paul Bradley",
-        "Patrick Schultz",
-        "Paul Bradley"
+        "Paul Bradley",
+        "Patrick Schultz"
       ],
       "episode": 3,
       "detail": "Bradley is removed from the house because of a contagious skin condition, so Patrick Schultz is brought back as his replacement."
@@ -239,7 +269,8 @@
               "time": "4:02",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0db12350-bd58-4094-848e-fff84cb4434d"
             },
             {
               "a": "Amir Sadollah",
@@ -250,7 +281,9 @@
               "time": "2:22",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5080f074-ab7a-4cc2-9b68-cda8a7b39316",
+              "b_fighter_id": "7bc603ec-c4cb-4e30-8777-b780640c25c5"
             },
             {
               "a": "Jeremy May",
@@ -272,7 +305,8 @@
               "time": "1:29",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "22451147-e20d-42e7-b0d0-6881b35a85d6"
             },
             {
               "a": "Dante Rivera",
@@ -283,7 +317,8 @@
               "time": "0:58",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5ad4bc3c-ddc2-4bba-8581-479c3a15a3a9"
             },
             {
               "a": "Nick Klein",
@@ -305,7 +340,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "51b87666-57db-43b7-903b-a2967148c296"
             },
             {
               "a": "Luke Zachrich",
@@ -316,7 +352,8 @@
               "time": "2:29",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e639b416-ed3d-42fb-9786-5112656a08ab"
             },
             {
               "a": "Tim Credeur",
@@ -327,7 +364,8 @@
               "time": "1:00",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "14a98e97-57e6-4cfe-8868-249e6f4a6a67"
             },
             {
               "a": "Jesse Taylor",
@@ -338,7 +376,8 @@
               "time": "1:50",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1"
             },
             {
               "a": "Matt Brown",
@@ -349,7 +388,8 @@
               "time": "4:57",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "fd96b49b-7712-45a7-9200-825a7815be52"
             },
             {
               "a": "Brandon Sene",
@@ -371,7 +411,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "12429469-abdc-40b4-892c-526c791571e6"
             },
             {
               "a": "Dan Cramer",
@@ -382,7 +423,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "451988bc-e2cc-46d7-ab9a-998529934ca7"
             },
             {
               "a": "C. B. Dollaway",
@@ -393,7 +435,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "22451147-e20d-42e7-b0d0-6881b35a85d6",
+              "b_fighter_id": "14a98e97-57e6-4cfe-8868-249e6f4a6a67"
             }
           ]
         },
@@ -410,7 +454,8 @@
               "time": "1:47",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1"
             },
             {
               "a": "Dante Rivera",
@@ -421,7 +466,8 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5ad4bc3c-ddc2-4bba-8581-479c3a15a3a9"
             },
             {
               "a": "Luke Zachrich",
@@ -432,7 +478,9 @@
               "time": "1:49",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e639b416-ed3d-42fb-9786-5112656a08ab",
+              "b_fighter_id": "451988bc-e2cc-46d7-ab9a-998529934ca7"
             },
             {
               "a": "Tim Credeur",
@@ -443,7 +491,9 @@
               "time": "4:06",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "14a98e97-57e6-4cfe-8868-249e6f4a6a67",
+              "b_fighter_id": "51b87666-57db-43b7-903b-a2967148c296"
             },
             {
               "a": "Amir Sadollah",
@@ -454,7 +504,9 @@
               "time": "2:36",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5080f074-ab7a-4cc2-9b68-cda8a7b39316",
+              "b_fighter_id": "12429469-abdc-40b4-892c-526c791571e6"
             },
             {
               "a": "Matt Brown",
@@ -465,7 +517,8 @@
               "time": "3:35",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "fd96b49b-7712-45a7-9200-825a7815be52"
             },
             {
               "a": "Nick Klein",
@@ -476,7 +529,8 @@
               "time": "2:41",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "22451147-e20d-42e7-b0d0-6881b35a85d6"
             },
             {
               "a": "Cale Yarbrough",
@@ -487,7 +541,8 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0db12350-bd58-4094-848e-fff84cb4434d"
             }
           ]
         },
@@ -504,7 +559,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1",
+              "b_fighter_id": "5ad4bc3c-ddc2-4bba-8581-479c3a15a3a9"
             },
             {
               "a": "Dan Cramer",
@@ -515,7 +572,9 @@
               "time": "2:10",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "451988bc-e2cc-46d7-ab9a-998529934ca7",
+              "b_fighter_id": "14a98e97-57e6-4cfe-8868-249e6f4a6a67"
             },
             {
               "a": "Amir Sadollah",
@@ -526,7 +585,9 @@
               "time": "4:09",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5080f074-ab7a-4cc2-9b68-cda8a7b39316",
+              "b_fighter_id": "fd96b49b-7712-45a7-9200-825a7815be52"
             },
             {
               "a": "C. B. Dollaway",
@@ -537,7 +598,9 @@
               "time": "2:43",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "22451147-e20d-42e7-b0d0-6881b35a85d6",
+              "b_fighter_id": "0db12350-bd58-4094-848e-fff84cb4434d"
             }
           ]
         },
@@ -554,7 +617,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1",
+              "b_fighter_id": "14a98e97-57e6-4cfe-8868-249e6f4a6a67"
             },
             {
               "a": "Amir Sadollah",
@@ -565,7 +630,9 @@
               "time": "2:50",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2008, which are complete for that year — 20 events, 201 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5080f074-ab7a-4cc2-9b68-cda8a7b39316",
+              "b_fighter_id": "22451147-e20d-42e7-b0d0-6881b35a85d6"
             }
           ]
         },
@@ -585,7 +652,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "22451147-e20d-42e7-b0d0-6881b35a85d6",
+              "b_fighter_id": "5080f074-ab7a-4cc2-9b68-cda8a7b39316"
             }
           ]
         }
@@ -609,7 +678,8 @@
         "event": "The Ultimate Fighter: Team Rampage vs Team Forrest Finale",
         "date": "2008-06-21"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "5080f074-ab7a-4cc2-9b68-cda8a7b39316"
     }
   ]
 }

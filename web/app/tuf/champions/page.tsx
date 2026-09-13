@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageHead, JsonLd } from "@/components/ui";
 import { eventSlug, fighterSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
-import { editions, linkFighters, linkedFinale, seasonBySlug, seasons } from "@/lib/tuf";
+import { editions, linkNames, linkedFinale, seasonBySlug, seasons } from "@/lib/tuf";
 
 /* /tuf/champions — every tournament winner, by edition, season and division.
  *
@@ -46,7 +46,7 @@ export default async function TufChampions() {
   });
 
   const [linked, finales] = await Promise.all([
-    linkFighters(champs.map((c) => c.fighter)),
+    linkNames(champs.map((c) => [c.season.slug, c.fighter] as const)),
     Promise.all(
       rows.map(async (s) => [s.slug, await linkedFinale(s.finale_event, s.finale_date)] as const),
     ).then((pairs) => new Map(pairs)),
@@ -104,7 +104,7 @@ export default async function TufChampions() {
                 <span role="columnheader">Decided at</span>
               </div>
               {list.map((c) => {
-                const f = linked.get(c.fighter);
+                const f = linked.get(`${c.season.slug}|${c.fighter}`);
                 const finale = finales.get(c.season.slug) ?? null;
                 return (
                   <div className="tuf-champ-row" role="row" key={`${c.season.slug}-${c.weight_class}`}>

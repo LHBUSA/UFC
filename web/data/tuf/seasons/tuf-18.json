@@ -17,83 +17,110 @@
     {
       "team": "Team Rousey",
       "name": "Ronda Rousey",
+      "fighter_id": "6875fd04-7728-4f59-b477-26ff3e9985f5",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Andy Dermenjian",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Manny Gamburyan",
-      "role": "head",
-      "note": "grappling coach"
+      "fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618",
+      "role": "assistant",
+      "discipline": "grappling",
+      "note": "grappling coach",
+      "role_basis": "source note: \"grappling coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Marina Shafir",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Edmond Tarverdyan",
-      "role": "head",
-      "note": "striking coach"
+      "role": "assistant",
+      "discipline": "striking",
+      "note": "striking coach",
+      "role_basis": "source note: \"striking coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Nate Diaz",
-      "role": "head",
-      "note": "guest coach"
+      "fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+      "role": "guest",
+      "note": "guest coach",
+      "role_basis": "source note: \"guest coach\""
     },
     {
       "team": "Team Tate",
       "name": "Miesha Tate",
+      "fighter_id": "41746330-33bd-4070-9dfc-0affe3e9201d",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
-      "name": "Thonglor \"Master Thong\" Armatsena",
-      "role": "head",
-      "note": "Muay Thai coach"
+      "team": null,
+      "name": "Thonglor Armatsena",
+      "role": "assistant",
+      "nickname": "Master Thong",
+      "discipline": "Muay Thai",
+      "note": "Muay Thai coach",
+      "printed_as": "Thonglor \"Master Thong\" Armatsena",
+      "role_basis": "source note: \"Muay Thai coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Ricky Lundell",
-      "role": "head",
-      "note": "wrestling coach"
+      "role": "assistant",
+      "discipline": "wrestling",
+      "note": "wrestling coach",
+      "role_basis": "source note: \"wrestling coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Bryan Caraway",
-      "role": "head",
-      "note": "jiu jitsu coach"
+      "fighter_id": "8b076470-9afd-49fd-8f11-12b3f6932929",
+      "role": "assistant",
+      "discipline": "jiu jitsu",
+      "note": "jiu jitsu coach",
+      "role_basis": "source note: \"jiu jitsu coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Shaine Jaime",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jack Anderson",
-      "role": "head",
-      "note": "wrestling/submission wrestling coach"
+      "role": "assistant",
+      "discipline": "wrestling/submission wrestling",
+      "note": "wrestling/submission wrestling coach",
+      "role_basis": "source note: \"wrestling/submission wrestling coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Eric Triliegi",
-      "role": "head",
-      "note": "nutritionist"
+      "role": "other",
+      "note": "nutritionist",
+      "role_basis": "source note: \"nutritionist\" (staff, not a coach)"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Melchor Menor",
-      "role": "head",
-      "note": "guest coach"
+      "role": "guest",
+      "note": "guest coach",
+      "role_basis": "source note: \"guest coach\""
     }
   ],
   "teams": [
@@ -102,27 +129,33 @@
       "roster": [
         {
           "name": "Shayna Baszler",
-          "weight_class": "Female fighter"
+          "weight_class": "Female fighter",
+          "fighter_id": "c5ec4a6c-3eaf-45e4-9b39-8ca62571fa82"
         },
         {
           "name": "Jessamyn Duke",
-          "weight_class": "Female fighter"
+          "weight_class": "Female fighter",
+          "fighter_id": "9a43ee7f-10c5-40c9-ad1e-92c115c8c9bd"
         },
         {
           "name": "Peggy Morgan",
-          "weight_class": "Female fighter"
+          "weight_class": "Female fighter",
+          "fighter_id": "0b562bbe-77bc-43b6-be1e-85669c221f99"
         },
         {
           "name": "Jessica Rakoczy",
-          "weight_class": "Female fighter"
+          "weight_class": "Female fighter",
+          "fighter_id": "78e83779-8244-443d-91d4-a1379d3d9fec"
         },
         {
           "name": "Chris Beal",
-          "weight_class": "Male Fighter"
+          "weight_class": "Male Fighter",
+          "fighter_id": "9205ccd7-7f7a-4e34-af38-89f0ba392685"
         },
         {
           "name": "Davey Grant",
-          "weight_class": "Male Fighter"
+          "weight_class": "Male Fighter",
+          "fighter_id": "dfcb0627-3f36-4be3-9443-a032ab813859"
         },
         {
           "name": "Anthony Gutierrez",
@@ -139,19 +172,23 @@
       "roster": [
         {
           "name": "Julianna Peña",
-          "weight_class": "Female fighter"
+          "weight_class": "Female fighter",
+          "fighter_id": "dabc8833-d2fc-4a5b-bf67-1bf69c8a98ce"
         },
         {
           "name": "Sarah Moras",
-          "weight_class": "Female fighter"
+          "weight_class": "Female fighter",
+          "fighter_id": "8b766521-b7f3-483e-af59-0bde1982b0e2"
         },
         {
           "name": "Raquel Pennington",
-          "weight_class": "Female fighter"
+          "weight_class": "Female fighter",
+          "fighter_id": "618e8bfe-7de4-4a30-99ed-71da8195c3fe"
         },
         {
           "name": "Roxanne Modafferi",
-          "weight_class": "Female fighter"
+          "weight_class": "Female fighter",
+          "fighter_id": "4405dee6-e224-4b05-aae6-3ec885dc8166"
         },
         {
           "name": "Cody Bollinger",
@@ -159,7 +196,8 @@
         },
         {
           "name": "Chris Holdsworth",
-          "weight_class": "Male Fighter"
+          "weight_class": "Male Fighter",
+          "fighter_id": "91a3912f-2172-425e-b66f-de625a1c34b0"
         },
         {
           "name": "Josh Hill",
@@ -167,7 +205,8 @@
         },
         {
           "name": "Tim Gorman",
-          "weight_class": "Male Fighter"
+          "weight_class": "Male Fighter",
+          "fighter_id": "f55a0683-3320-4396-bfad-1a06aeea0af9"
         }
       ]
     }
@@ -248,7 +287,9 @@
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "2 vs 1"
+              "seeds": "2 vs 1",
+              "a_fighter_id": "c5ec4a6c-3eaf-45e4-9b39-8ca62571fa82",
+              "b_fighter_id": "dabc8833-d2fc-4a5b-bf67-1bf69c8a98ce"
             },
             {
               "a": "Peggy Morgan",
@@ -260,7 +301,9 @@
               "episode": 9,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 3"
+              "seeds": "6 vs 3",
+              "a_fighter_id": "0b562bbe-77bc-43b6-be1e-85669c221f99",
+              "b_fighter_id": "8b766521-b7f3-483e-af59-0bde1982b0e2"
             },
             {
               "a": "Jessamyn Duke",
@@ -272,7 +315,9 @@
               "episode": 6,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "4 vs 5"
+              "seeds": "4 vs 5",
+              "a_fighter_id": "9a43ee7f-10c5-40c9-ad1e-92c115c8c9bd",
+              "b_fighter_id": "618e8bfe-7de4-4a30-99ed-71da8195c3fe"
             },
             {
               "a": "Jessica Rakoczy",
@@ -284,7 +329,9 @@
               "episode": 4,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "8 vs 7"
+              "seeds": "8 vs 7",
+              "a_fighter_id": "78e83779-8244-443d-91d4-a1379d3d9fec",
+              "b_fighter_id": "4405dee6-e224-4b05-aae6-3ec885dc8166"
             }
           ]
         },
@@ -302,7 +349,9 @@
               "episode": 11,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 3"
+              "seeds": "1 vs 3",
+              "a_fighter_id": "dabc8833-d2fc-4a5b-bf67-1bf69c8a98ce",
+              "b_fighter_id": "8b766521-b7f3-483e-af59-0bde1982b0e2"
             },
             {
               "a": "Raquel Pennington",
@@ -314,7 +363,9 @@
               "episode": 13,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 13 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "5 vs 8"
+              "seeds": "5 vs 8",
+              "a_fighter_id": "618e8bfe-7de4-4a30-99ed-71da8195c3fe",
+              "b_fighter_id": "78e83779-8244-443d-91d4-a1379d3d9fec"
             }
           ]
         },
@@ -334,7 +385,9 @@
               "classification_source": null,
               "seeds": "1 vs 8",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "dabc8833-d2fc-4a5b-bf67-1bf69c8a98ce",
+              "b_fighter_id": "78e83779-8244-443d-91d4-a1379d3d9fec"
             }
           ]
         }
@@ -357,7 +410,9 @@
               "episode": 3,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "2 vs 3"
+              "seeds": "2 vs 3",
+              "a_fighter_id": "9205ccd7-7f7a-4e34-af38-89f0ba392685",
+              "b_fighter_id": "91a3912f-2172-425e-b66f-de625a1c34b0"
             },
             {
               "a": "Michael Wootten",
@@ -381,7 +436,8 @@
               "episode": 5,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "4 vs 7"
+              "seeds": "4 vs 7",
+              "a_fighter_id": "dfcb0627-3f36-4be3-9443-a032ab813859"
             },
             {
               "a": "Anthony Gutierrez",
@@ -411,7 +467,8 @@
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "3 vs 8"
+              "seeds": "3 vs 8",
+              "a_fighter_id": "91a3912f-2172-425e-b66f-de625a1c34b0"
             },
             {
               "a": "Davey Grant",
@@ -423,7 +480,8 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null,
-              "seeds": "4 vs 6"
+              "seeds": "4 vs 6",
+              "a_fighter_id": "dfcb0627-3f36-4be3-9443-a032ab813859"
             }
           ]
         },
@@ -443,7 +501,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "91a3912f-2172-425e-b66f-de625a1c34b0",
+              "b_fighter_id": "dfcb0627-3f36-4be3-9443-a032ab813859"
             }
           ]
         }
@@ -467,13 +527,15 @@
         "event": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
         "date": "2013-11-30"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "91a3912f-2172-425e-b66f-de625a1c34b0"
     },
     {
       "weight_class": "Women's Bantamweight",
       "fighter": "Julianna Peña",
       "won_tournament": true,
-      "received_contract": true
+      "received_contract": true,
+      "fighter_id": "dabc8833-d2fc-4a5b-bf67-1bf69c8a98ce"
     }
   ]
 }

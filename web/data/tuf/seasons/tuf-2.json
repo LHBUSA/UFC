@@ -17,14 +17,16 @@
     {
       "team": "Team Hughes",
       "name": "Matt Hughes",
+      "fighter_id": "a143202d-2906-4fb8-a91b-5165db04b5cf",
       "role": "head",
-      "team_in_source": "Blue"
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Franklin",
       "name": "Rich Franklin",
+      "fighter_id": "1eebf87a-9a1e-42ee-a43b-9facfda71466",
       "role": "head",
-      "team_in_source": "Green"
+      "role_basis": "named as a coach of the season in the inventory"
     }
   ],
   "teams": [
@@ -33,35 +35,43 @@
       "roster": [
         {
           "name": "Jorge Gurgel",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "99da2e8b-a053-4440-8560-07b296f61b42"
         },
         {
           "name": "Marcus Davis",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "8e03c8d3-5971-4c46-a77d-c18651e9061a"
         },
         {
           "name": "Anthony Torres",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "cdabf7fb-a3a3-4564-be38-268dec345f04"
         },
         {
           "name": "Melvin Guillard",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "7b2bb20e-a01d-47b7-94d1-10460104487a"
         },
         {
           "name": "Keith Jardine",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "fb171a51-59a5-4648-8279-76dbfdd1a83a"
         },
         {
           "name": "Seth Petruzelli",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "0a0158b7-cd3f-4b2b-99fa-48a80aed9361"
         },
         {
           "name": "Rashad Evans",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5"
         },
         {
           "name": "Brad Imes",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a"
         }
       ]
     },
@@ -70,7 +80,8 @@
       "roster": [
         {
           "name": "Joe Stevenson",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e"
         },
         {
           "name": "Josh Burkman",
@@ -79,31 +90,38 @@
         {
           "name": "Jason Von Flue",
           "weight_class": "Welterweight",
-          "note": "Named by the source as Josh Burkman's replacement."
+          "note": "Named by the source as Josh Burkman's replacement.",
+          "fighter_id": "747dedd4-f653-4925-a083-3005cd8152f0"
         },
         {
           "name": "Sammy Morgan",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "aec0fc0e-6465-43bf-a8f8-958b6e75f37f"
         },
         {
           "name": "Luke Cummo",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64"
         },
         {
           "name": "Mike Whitehead",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "b8ca30d0-c51c-40d8-8978-75cde3c4128d"
         },
         {
           "name": "Dan Christison",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "6a132fd0-a875-4609-86c1-5b22f3f8818d"
         },
         {
           "name": "Rob MacDonald",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "5b55dc89-220b-41dc-8185-36e7a422d34c"
         },
         {
           "name": "Tom Murphy",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "4c4842b8-5ce8-4f81-b47e-9d9281998eda"
         }
       ]
     },
@@ -114,7 +132,8 @@
           "name": "Kenny Stevens"
         },
         {
-          "name": "Kerry Schall"
+          "name": "Kerry Schall",
+          "fighter_id": "6514832c-6208-44d9-a8e0-b81f9853a196"
         },
         {
           "name": "Eli Joslin"
@@ -185,7 +204,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "7b2bb20e-a01d-47b7-94d1-10460104487a"
             },
             {
               "a": "Joe Stevenson",
@@ -196,7 +216,9 @@
               "time": "4:10",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e",
+              "b_fighter_id": "8e03c8d3-5971-4c46-a77d-c18651e9061a"
             },
             {
               "a": "Jason Von Flue",
@@ -207,7 +229,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "747dedd4-f653-4925-a083-3005cd8152f0",
+              "b_fighter_id": "99da2e8b-a053-4440-8560-07b296f61b42"
             },
             {
               "a": "Luke Cummo",
@@ -218,7 +242,9 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64",
+              "b_fighter_id": "cdabf7fb-a3a3-4564-be38-268dec345f04"
             }
           ]
         },
@@ -235,7 +261,9 @@
               "time": "2:05",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64",
+              "b_fighter_id": "aec0fc0e-6465-43bf-a8f8-958b6e75f37f"
             },
             {
               "a": "Joe Stevenson",
@@ -246,7 +274,9 @@
               "time": "4:46",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e",
+              "b_fighter_id": "747dedd4-f653-4925-a083-3005cd8152f0"
             }
           ]
         },
@@ -266,7 +296,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64",
+              "b_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e"
             }
           ]
         }
@@ -289,7 +321,9 @@
               "time": "4:07",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a",
+              "b_fighter_id": "5b55dc89-220b-41dc-8185-36e7a422d34c"
             },
             {
               "a": "Rashad Evans",
@@ -300,7 +334,9 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+              "b_fighter_id": "4c4842b8-5ce8-4f81-b47e-9d9281998eda"
             },
             {
               "a": "Seth Petruzelli",
@@ -311,7 +347,9 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0a0158b7-cd3f-4b2b-99fa-48a80aed9361",
+              "b_fighter_id": "6a132fd0-a875-4609-86c1-5b22f3f8818d"
             },
             {
               "a": "Rashad Evans",
@@ -322,7 +360,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+              "b_fighter_id": "b8ca30d0-c51c-40d8-8978-75cde3c4128d"
             }
           ]
         },
@@ -339,7 +379,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a",
+              "b_fighter_id": "0a0158b7-cd3f-4b2b-99fa-48a80aed9361"
             },
             {
               "a": "Rashad Evans",
@@ -350,7 +392,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+              "b_fighter_id": "fb171a51-59a5-4648-8279-76dbfdd1a83a"
             }
           ]
         },
@@ -370,7 +414,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a",
+              "b_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5"
             }
           ]
         }
@@ -394,7 +440,8 @@
         "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
         "date": "2005-11-05"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e"
     },
     {
       "weight_class": "Heavyweight",
@@ -407,7 +454,8 @@
         "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
         "date": "2005-11-05"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5"
     }
   ]
 }

@@ -17,49 +17,64 @@
     {
       "team": "Team Velasquez (Mexico)",
       "name": "Cain Velasquez",
+      "fighter_id": "fbf45e55-002e-4482-b414-80769739ea72",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
-      "name": "Daniel \"DC\" Cormier",
-      "role": "head"
+      "team": null,
+      "name": "Daniel Cormier",
+      "fighter_id": "189dbb32-67d4-42b7-b098-81be761d4146",
+      "role": "assistant",
+      "nickname": "DC",
+      "printed_as": "Daniel \"DC\" Cormier",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Leandro Vieira",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Javier Mendez",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Luke Rockhold",
-      "role": "head"
+      "fighter_id": "6ba6df48-7a79-4c90-9aa8-98fc101c8f4e",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Werdum (Latin America)",
       "name": "Fabrício Werdum",
+      "fighter_id": "21660e67-082c-4a9e-b1f7-beb718ac5706",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rafael Cordeiro",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Victor Davila",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Kenny Johnson",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -72,31 +87,38 @@
         },
         {
           "name": "José Alberto Quiñónez",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "716794a0-2355-4a31-a20b-29f2b0077e42"
         },
         {
           "name": "Alejandro Pérez",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "ec3d4777-bd57-4e6c-8519-50a4350e92ca"
         },
         {
           "name": "Marco Beltrán",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "1c347ba7-cb26-41f7-b56b-daca14f7205f"
         },
         {
           "name": "Gabriel Benítez",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "f0fe047a-674e-46b4-af1d-cd4ba472e7b9"
         },
         {
           "name": "Yair Rodríguez",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "6d6398b3-4276-47e1-8430-6df94365feb9"
         },
         {
           "name": "Rodolfo Rubio",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "c218074a-cac6-4026-bd8f-d0aa7fc27c21"
         },
         {
           "name": "Masio Fullen",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "66d09c2a-1a8c-40ff-93bc-1b73b20f886f"
         }
       ]
     },
@@ -105,35 +127,43 @@
       "roster": [
         {
           "name": "Marlon Vera",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "fd4763bb-e3a0-4fbe-8279-92e5b459920c"
         },
         {
           "name": "Bentley Syler",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "a6169e17-eb29-4e93-a543-6c27dbbf3916"
         },
         {
           "name": "Guido Cannetti",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "77a68ed1-03fa-499c-9554-8ea42b64ff0b"
         },
         {
           "name": "Fredy Serrano",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "c8da8a2e-19bf-4ac6-9b54-f1db5ebf8dfe"
         },
         {
           "name": "Alexander Torres",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "37c00d5c-1472-48d2-bf6f-e974ad1b1b15"
         },
         {
           "name": "Diego Rivas",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "19447e23-46be-4f5f-92f6-9f1a0d0afa23"
         },
         {
           "name": "Leonardo Morales",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "c5152da4-8d4f-4196-bacf-d9dd0d5a224a"
         },
         {
           "name": "Humberto Brown",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "ef08c9f7-ff05-4bf7-b56d-944d819a8657"
         }
       ]
     }
@@ -178,7 +208,9 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ec3d4777-bd57-4e6c-8519-50a4350e92ca",
+              "b_fighter_id": "c8da8a2e-19bf-4ac6-9b54-f1db5ebf8dfe"
             },
             {
               "a": "Enrique Briones",
@@ -189,7 +221,8 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "fd4763bb-e3a0-4fbe-8279-92e5b459920c"
             },
             {
               "a": "José Alberto Quiñónez",
@@ -200,7 +233,9 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "716794a0-2355-4a31-a20b-29f2b0077e42",
+              "b_fighter_id": "a6169e17-eb29-4e93-a543-6c27dbbf3916"
             },
             {
               "a": "Marco Beltrán",
@@ -211,7 +246,9 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "1c347ba7-cb26-41f7-b56b-daca14f7205f",
+              "b_fighter_id": "77a68ed1-03fa-499c-9554-8ea42b64ff0b"
             }
           ]
         },
@@ -228,7 +265,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ec3d4777-bd57-4e6c-8519-50a4350e92ca",
+              "b_fighter_id": "77a68ed1-03fa-499c-9554-8ea42b64ff0b"
             },
             {
               "a": "José Alberto Quiñónez",
@@ -239,7 +278,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "716794a0-2355-4a31-a20b-29f2b0077e42",
+              "b_fighter_id": "1c347ba7-cb26-41f7-b56b-daca14f7205f"
             }
           ],
           "format_exceptions": [
@@ -269,7 +310,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "ec3d4777-bd57-4e6c-8519-50a4350e92ca",
+              "b_fighter_id": "716794a0-2355-4a31-a20b-29f2b0077e42"
             }
           ]
         }
@@ -291,7 +334,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c218074a-cac6-4026-bd8f-d0aa7fc27c21",
+              "b_fighter_id": "37c00d5c-1472-48d2-bf6f-e974ad1b1b15"
             },
             {
               "a": "Yair Rodríguez",
@@ -302,7 +347,9 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "6d6398b3-4276-47e1-8430-6df94365feb9",
+              "b_fighter_id": "ef08c9f7-ff05-4bf7-b56d-944d819a8657"
             },
             {
               "a": "Gabriel Benítez",
@@ -313,7 +360,9 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f0fe047a-674e-46b4-af1d-cd4ba472e7b9",
+              "b_fighter_id": "19447e23-46be-4f5f-92f6-9f1a0d0afa23"
             },
             {
               "a": "Masiosare Fullen",
@@ -324,7 +373,8 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "c5152da4-8d4f-4196-bacf-d9dd0d5a224a"
             }
           ]
         },
@@ -341,7 +391,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c218074a-cac6-4026-bd8f-d0aa7fc27c21",
+              "b_fighter_id": "6d6398b3-4276-47e1-8430-6df94365feb9"
             },
             {
               "a": "Gabriel Benítez",
@@ -352,7 +404,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f0fe047a-674e-46b4-af1d-cd4ba472e7b9",
+              "b_fighter_id": "c5152da4-8d4f-4196-bacf-d9dd0d5a224a"
             }
           ]
         },
@@ -372,7 +426,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "6d6398b3-4276-47e1-8430-6df94365feb9",
+              "b_fighter_id": "c5152da4-8d4f-4196-bacf-d9dd0d5a224a"
             }
           ]
         }
@@ -396,7 +452,8 @@
         "event": "UFC 180: Werdum vs Hunt",
         "date": "2014-11-15"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+      "fighter_id": "ec3d4777-bd57-4e6c-8519-50a4350e92ca"
     },
     {
       "weight_class": "Featherweight",
@@ -409,7 +466,8 @@
         "event": "UFC 180: Werdum vs Hunt",
         "date": "2014-11-15"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+      "fighter_id": "6d6398b3-4276-47e1-8430-6df94365feb9"
     }
   ]
 }

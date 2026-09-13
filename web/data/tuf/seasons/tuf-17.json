@@ -23,71 +23,93 @@
     {
       "team": "Team Jones",
       "name": "Jon Jones",
+      "fighter_id": "36301c52-a4b8-458d-a72c-427765c3865e",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Stonehorse Goeman",
-      "role": "head",
-      "note": "Muay Thai Coach"
+      "role": "assistant",
+      "discipline": "Muay Thai",
+      "note": "Muay Thai Coach",
+      "role_basis": "source note: \"Muay Thai Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Frank Mir",
-      "role": "head",
-      "note": "jiu jitsu coach"
+      "fighter_id": "2ead1b91-43e9-4adc-a338-af81cf091bd3",
+      "role": "assistant",
+      "discipline": "jiu jitsu",
+      "note": "jiu jitsu coach",
+      "role_basis": "source note: \"jiu jitsu coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Bubba Jenkins",
-      "role": "head",
-      "note": "wrestling coach"
+      "role": "assistant",
+      "discipline": "wrestling",
+      "note": "wrestling coach",
+      "role_basis": "source note: \"wrestling coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "John Woods",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Ricky Lundell",
-      "role": "head",
-      "note": "wrestling/grappling Coach"
+      "role": "assistant",
+      "discipline": "wrestling/grappling",
+      "note": "wrestling/grappling Coach",
+      "role_basis": "source note: \"wrestling/grappling Coach\""
     },
     {
       "team": "Team Sonnen",
       "name": "Chael Sonnen",
+      "fighter_id": "8882ac21-d5cf-4449-97bd-57bd5c51e07d",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Vinny Magalhães",
-      "role": "head",
-      "note": "jiu jitsu coach"
+      "fighter_id": "6fff6e25-d6af-4993-b033-f57f420b6cd9",
+      "role": "assistant",
+      "discipline": "jiu jitsu",
+      "note": "jiu jitsu coach",
+      "role_basis": "source note: \"jiu jitsu coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Clayton Hires",
-      "role": "head",
-      "note": "boxing coach"
+      "role": "assistant",
+      "discipline": "boxing",
+      "note": "boxing coach",
+      "role_basis": "source note: \"boxing coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Scott McQuary",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jamie Huey",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Mike Dolce",
-      "role": "head",
-      "note": "nutritionist"
+      "role": "other",
+      "note": "nutritionist",
+      "role_basis": "source note: \"nutritionist\" (staff, not a coach)"
     }
   ],
   "teams": [
@@ -95,25 +117,32 @@
       "name": "Team Sonnen",
       "roster": [
         {
-          "name": "Luke Barnatt"
+          "name": "Luke Barnatt",
+          "fighter_id": "5c7e4e34-9e6f-45b8-8d50-37b5591b69fe"
         },
         {
-          "name": "Uriah Hall"
+          "name": "Uriah Hall",
+          "fighter_id": "fa98ea40-9af7-4502-ae72-a3a69b6737f5"
         },
         {
-          "name": "Zak Cummings"
+          "name": "Zak Cummings",
+          "fighter_id": "9837daad-a207-472d-bd25-9a60912f119d"
         },
         {
-          "name": "Tor Troéng"
+          "name": "Tor Troéng",
+          "fighter_id": "788af872-f281-4577-9e2d-ecf889fcab31"
         },
         {
-          "name": "Jimmy Quinlan"
+          "name": "Jimmy Quinlan",
+          "fighter_id": "2ad76481-2892-4453-84f4-c5b5c62bd4aa"
         },
         {
-          "name": "Kevin Casey"
+          "name": "Kevin Casey",
+          "fighter_id": "ecb6f2e8-ac55-4ac6-a211-5d5684887515"
         },
         {
-          "name": "Kelvin Gastelum"
+          "name": "Kelvin Gastelum",
+          "fighter_id": "498b0036-6dc0-491a-8e36-f4ec466a6c35"
         }
       ]
     },
@@ -121,25 +150,32 @@
       "name": "Team Jones",
       "roster": [
         {
-          "name": "Clint Hester"
+          "name": "Clint Hester",
+          "fighter_id": "2063b097-bbb3-46da-8374-7f805abb28db"
         },
         {
-          "name": "Josh Samman"
+          "name": "Josh Samman",
+          "fighter_id": "fcb2618c-de12-437d-8075-8437564e1400"
         },
         {
-          "name": "Robert \"Bubba\" McDaniel"
+          "name": "Robert \"Bubba\" McDaniel",
+          "fighter_id": "ba315a41-4d29-4623-853a-ba3098c4b99e"
         },
         {
-          "name": "Gilbert Smith"
+          "name": "Gilbert Smith",
+          "fighter_id": "a51da90a-d0f9-43ee-8c20-2e6994bbd065"
         },
         {
-          "name": "Collin Hart"
+          "name": "Collin Hart",
+          "fighter_id": "b1da8e7c-9ddc-4c63-87d9-48f464711409"
         },
         {
-          "name": "Adam Cella"
+          "name": "Adam Cella",
+          "fighter_id": "f34411ea-8088-49ef-97bc-108bc02a96ee"
         },
         {
-          "name": "Dylan Andrews"
+          "name": "Dylan Andrews",
+          "fighter_id": "9d4289b5-d73d-4869-9c7a-9ad1b6d7af89"
         }
       ]
     }
@@ -185,7 +221,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "ecb6f2e8-ac55-4ac6-a211-5d5684887515"
             },
             {
               "a": "Bubba McDaniel",
@@ -196,7 +233,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "498b0036-6dc0-491a-8e36-f4ec466a6c35"
             },
             {
               "a": "Josh Samman",
@@ -207,7 +245,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "fcb2618c-de12-437d-8075-8437564e1400",
+              "b_fighter_id": "788af872-f281-4577-9e2d-ecf889fcab31"
             },
             {
               "a": "Clint Hester",
@@ -218,7 +258,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "2063b097-bbb3-46da-8374-7f805abb28db",
+              "b_fighter_id": "2ad76481-2892-4453-84f4-c5b5c62bd4aa"
             },
             {
               "a": "Dylan Andrews",
@@ -229,7 +271,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "9d4289b5-d73d-4869-9c7a-9ad1b6d7af89",
+              "b_fighter_id": "9837daad-a207-472d-bd25-9a60912f119d"
             },
             {
               "a": "Gilbert Smith Jr.",
@@ -240,7 +284,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "a51da90a-d0f9-43ee-8c20-2e6994bbd065",
+              "b_fighter_id": "5c7e4e34-9e6f-45b8-8d50-37b5591b69fe"
             },
             {
               "a": "Bubba McDaniel",
@@ -251,7 +297,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "ecb6f2e8-ac55-4ac6-a211-5d5684887515"
             },
             {
               "a": "Adam Cella",
@@ -262,7 +309,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "f34411ea-8088-49ef-97bc-108bc02a96ee",
+              "b_fighter_id": "fa98ea40-9af7-4502-ae72-a3a69b6737f5"
             }
           ],
           "status": "unverified",
@@ -281,7 +330,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "498b0036-6dc0-491a-8e36-f4ec466a6c35"
             },
             {
               "a": "Josh Samman",
@@ -292,7 +342,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "fcb2618c-de12-437d-8075-8437564e1400",
+              "b_fighter_id": "2ad76481-2892-4453-84f4-c5b5c62bd4aa"
             },
             {
               "a": "Dylan Andrews",
@@ -303,7 +355,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "9d4289b5-d73d-4869-9c7a-9ad1b6d7af89",
+              "b_fighter_id": "5c7e4e34-9e6f-45b8-8d50-37b5591b69fe"
             },
             {
               "a": "Bubba McDaniel",
@@ -314,7 +368,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "fa98ea40-9af7-4502-ae72-a3a69b6737f5"
             }
           ]
         },
@@ -331,7 +386,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "498b0036-6dc0-491a-8e36-f4ec466a6c35",
+              "b_fighter_id": "fcb2618c-de12-437d-8075-8437564e1400"
             },
             {
               "a": "Dylan Andrews",
@@ -342,7 +399,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "9d4289b5-d73d-4869-9c7a-9ad1b6d7af89",
+              "b_fighter_id": "fa98ea40-9af7-4502-ae72-a3a69b6737f5"
             }
           ]
         },
@@ -362,7 +421,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "498b0036-6dc0-491a-8e36-f4ec466a6c35",
+              "b_fighter_id": "fa98ea40-9af7-4502-ae72-a3a69b6737f5"
             }
           ]
         }
@@ -386,7 +447,8 @@
         "event": "The Ultimate Fighter: Team Jones vs. Team Sonnen Finale",
         "date": "2013-04-13"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "498b0036-6dc0-491a-8e36-f4ec466a6c35"
     }
   ]
 }

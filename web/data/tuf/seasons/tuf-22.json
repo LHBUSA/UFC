@@ -28,54 +28,69 @@
     {
       "team": "Team McGregor",
       "name": "Conor McGregor",
+      "fighter_id": "8f4b27fb-34af-46cf-83a5-2cd3e5c1ffcc",
       "role": "head",
-      "region": "Europe"
+      "region": "Europe",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team McGregor",
       "name": "Owen Roddy",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team McGregor",
       "name": "Sergey Pikulskiy",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team McGregor",
       "name": "Tom Egan",
-      "role": "assistant"
+      "fighter_id": "4a534adc-8ee0-43ee-8e5f-cfb660ce50de",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team McGregor",
       "name": "Arkadiusz Sternalski",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Faber",
       "name": "Urijah Faber",
+      "fighter_id": "96fceb90-0bf8-4a2c-ab81-ffe2b5b6ed8b",
       "role": "head",
-      "region": "United States"
+      "region": "United States",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Faber",
       "name": "Andre Fili",
-      "role": "assistant"
+      "fighter_id": "4ffcddc4-66f3-4bca-9612-2209ca981bd9",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Faber",
       "name": "Cody Garbrandt",
-      "role": "assistant"
+      "fighter_id": "8194f109-c951-455f-a4bc-055250d027fb",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Faber",
       "name": "Lance Palmer",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Faber",
       "name": "Fabio Prado",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -85,11 +100,13 @@
       "roster": [
         {
           "name": "Abner Lloveras",
-          "country": "Spain"
+          "country": "Spain",
+          "fighter_id": "7b07391e-cc12-40d7-a91e-b5d7c143596f"
         },
         {
           "name": "David Teymur",
-          "country": "Sweden"
+          "country": "Sweden",
+          "fighter_id": "50d06716-5f9f-435a-bf5b-120331b6f9ac"
         },
         {
           "name": "Frantz Slioa",
@@ -97,16 +114,19 @@
         },
         {
           "name": "Marcin Wrzosek",
-          "country": "Poland"
+          "country": "Poland",
+          "fighter_id": "7f0bc882-a104-44a1-a86c-c5e68d71da4c"
         },
         {
           "name": "Martin Svensson",
           "country": "Sweden",
-          "note": "Withdrew from the tournament with a broken elbow."
+          "note": "Withdrew from the tournament with a broken elbow.",
+          "fighter_id": "b04718ab-1011-45e4-91d3-b67963058337"
         },
         {
           "name": "Mehdi Baghdad",
-          "country": "France"
+          "country": "France",
+          "fighter_id": "4ccaaf23-bed5-45fa-9d5f-042a891dfebc"
         },
         {
           "name": "Sascha Sharma",
@@ -120,7 +140,8 @@
         {
           "name": "Artem Lobov",
           "country": "Ireland",
-          "note": "Lost his entry bout to Mehdi Baghdad and was brought back into the tournament."
+          "note": "Lost his entry bout to Mehdi Baghdad and was brought back into the tournament.",
+          "fighter_id": "54e8bc6a-ac20-47e3-87a8-a7f3567613ed"
         }
       ]
     },
@@ -129,30 +150,37 @@
       "region": "United States",
       "roster": [
         {
-          "name": "Billy Quarantillo"
+          "name": "Billy Quarantillo",
+          "fighter_id": "e8a1b3e6-6e7a-40fc-88fd-9b0e3f277a77"
         },
         {
           "name": "Chris Gruetzemacher",
-          "note": "Entered the quarter-finals as a replacement for Martin Svensson."
+          "note": "Entered the quarter-finals as a replacement for Martin Svensson.",
+          "fighter_id": "0b874f93-eb36-4285-a93c-7eda3d11985f"
         },
         {
           "name": "James Jenkins"
         },
         {
-          "name": "Jason Gonzaléz"
+          "name": "Jason Gonzaléz",
+          "fighter_id": "c8e4fe29-81ca-4f0c-8fa8-f80e24a79913"
         },
         {
-          "name": "Julian Erosa"
+          "name": "Julian Erosa",
+          "fighter_id": "38e5e57e-1217-4f3d-8eb0-b809e3f8aec1"
         },
         {
           "name": "Ryan Hall",
-          "note": "Lost in the quarter-finals, then replaced Saul Rogers in the final and won the tournament."
+          "note": "Lost in the quarter-finals, then replaced Saul Rogers in the final and won the tournament.",
+          "fighter_id": "9d052359-53ae-4d2a-b766-a1409be54a60"
         },
         {
-          "name": "Thanh Le"
+          "name": "Thanh Le",
+          "fighter_id": "9041e1f2-5616-4274-889f-9d81490c88ce"
         },
         {
-          "name": "Tom Gallicchio"
+          "name": "Tom Gallicchio",
+          "fighter_id": "0c5e7f09-5732-4a2e-bebf-c163f14b8803"
         },
         {
           "name": "Johnny Nuñez",
@@ -179,7 +207,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "9d052359-53ae-4d2a-b766-a1409be54a60"
             },
             {
               "a": "David Teymur",
@@ -190,7 +219,9 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "50d06716-5f9f-435a-bf5b-120331b6f9ac",
+              "b_fighter_id": "9a55eef6-6066-45d6-a1e1-9e9066115ba9"
             },
             {
               "a": "Thanh Le",
@@ -201,7 +232,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "9041e1f2-5616-4274-889f-9d81490c88ce"
             },
             {
               "a": "Mehdi Baghdad",
@@ -212,7 +244,9 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4ccaaf23-bed5-45fa-9d5f-042a891dfebc",
+              "b_fighter_id": "54e8bc6a-ac20-47e3-87a8-a7f3567613ed"
             },
             {
               "a": "Julian Erosa",
@@ -223,7 +257,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "38e5e57e-1217-4f3d-8eb0-b809e3f8aec1"
             },
             {
               "a": "Saul Rogers",
@@ -245,7 +280,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e8a1b3e6-6e7a-40fc-88fd-9b0e3f277a77"
             },
             {
               "a": "Frantz Slioa",
@@ -267,7 +303,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c8e4fe29-81ca-4f0c-8fa8-f80e24a79913"
             },
             {
               "a": "Abner Lloveras",
@@ -278,7 +315,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7b07391e-cc12-40d7-a91e-b5d7c143596f"
             },
             {
               "a": "Tom Gallicchio",
@@ -289,7 +327,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0c5e7f09-5732-4a2e-bebf-c163f14b8803"
             },
             {
               "a": "Martin Svensson",
@@ -300,7 +339,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b04718ab-1011-45e4-91d3-b67963058337"
             },
             {
               "a": "Marcin Wrzosek",
@@ -311,7 +351,8 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7f0bc882-a104-44a1-a86c-c5e68d71da4c"
             },
             {
               "a": "Sascha Sharma",
@@ -333,7 +374,9 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0b874f93-eb36-4285-a93c-7eda3d11985f",
+              "b_fighter_id": "7c406dbc-d192-4c61-8a6d-0e3f037eafa2"
             },
             {
               "a": "James Jenkins",
@@ -362,7 +405,8 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0b874f93-eb36-4285-a93c-7eda3d11985f"
             },
             {
               "a": "Tom Gallicchio",
@@ -373,7 +417,9 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0c5e7f09-5732-4a2e-bebf-c163f14b8803",
+              "b_fighter_id": "7f0bc882-a104-44a1-a86c-c5e68d71da4c"
             },
             {
               "a": "Saul Rogers",
@@ -384,7 +430,8 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "e8a1b3e6-6e7a-40fc-88fd-9b0e3f277a77"
             },
             {
               "a": "Julian Erosa",
@@ -395,7 +442,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "38e5e57e-1217-4f3d-8eb0-b809e3f8aec1",
+              "b_fighter_id": "4ccaaf23-bed5-45fa-9d5f-042a891dfebc"
             },
             {
               "a": "Thanh Le",
@@ -406,7 +455,9 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "9041e1f2-5616-4274-889f-9d81490c88ce",
+              "b_fighter_id": "b04718ab-1011-45e4-91d3-b67963058337"
             },
             {
               "a": "James Jenkins",
@@ -417,7 +468,8 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "54e8bc6a-ac20-47e3-87a8-a7f3567613ed"
             },
             {
               "a": "Johnny Nuñez",
@@ -428,7 +480,8 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "50d06716-5f9f-435a-bf5b-120331b6f9ac"
             },
             {
               "a": "Jason Gonzaléz",
@@ -439,7 +492,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c8e4fe29-81ca-4f0c-8fa8-f80e24a79913",
+              "b_fighter_id": "7b07391e-cc12-40d7-a91e-b5d7c143596f"
             }
           ],
           "disputed": [
@@ -472,7 +527,9 @@
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "replacement": "Chris Gruetzemacher replaced Martin Svensson, who withdrew with a broken elbow"
+              "replacement": "Chris Gruetzemacher replaced Martin Svensson, who withdrew with a broken elbow",
+              "a_fighter_id": "54e8bc6a-ac20-47e3-87a8-a7f3567613ed",
+              "b_fighter_id": "0b874f93-eb36-4285-a93c-7eda3d11985f"
             },
             {
               "a": "Saul Rogers",
@@ -483,7 +540,8 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "9d052359-53ae-4d2a-b766-a1409be54a60"
             },
             {
               "a": "Marcin Wrzosek",
@@ -494,7 +552,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7f0bc882-a104-44a1-a86c-c5e68d71da4c",
+              "b_fighter_id": "50d06716-5f9f-435a-bf5b-120331b6f9ac"
             },
             {
               "a": "Julian Erosa",
@@ -505,7 +565,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "38e5e57e-1217-4f3d-8eb0-b809e3f8aec1",
+              "b_fighter_id": "7b07391e-cc12-40d7-a91e-b5d7c143596f"
             }
           ]
         },
@@ -522,7 +584,8 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "7f0bc882-a104-44a1-a86c-c5e68d71da4c"
             },
             {
               "a": "Artem Lobov",
@@ -533,7 +596,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "54e8bc6a-ac20-47e3-87a8-a7f3567613ed",
+              "b_fighter_id": "38e5e57e-1217-4f3d-8eb0-b809e3f8aec1"
             }
           ]
         },
@@ -554,7 +619,9 @@
               "classification_source": "contested on a sanctioned UFC card; verified against our own ufc_bout_results row (ufcstats: DEC_U, round 3, 300s, Lightweight)",
               "on_finale_card": true,
               "tournament_deciding": true,
-              "replacement": "Ryan Hall replaced Saul Rogers"
+              "replacement": "Ryan Hall replaced Saul Rogers",
+              "a_fighter_id": "9d052359-53ae-4d2a-b766-a1409be54a60",
+              "b_fighter_id": "54e8bc6a-ac20-47e3-87a8-a7f3567613ed"
             }
           ]
         }
@@ -580,7 +647,8 @@
         "b": "Artem Lobov",
         "event": "The Ultimate Fighter: Team McGregor vs. Team Faber Finale",
         "date": "2015-12-11"
-      }
+      },
+      "fighter_id": "9d052359-53ae-4d2a-b766-a1409be54a60"
     }
   ]
 }

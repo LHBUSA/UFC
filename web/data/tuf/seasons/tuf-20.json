@@ -28,52 +28,67 @@
     {
       "team": "Team Pettis",
       "name": "Anthony Pettis",
-      "role": "head"
+      "fighter_id": "52ba153f-d083-423e-8a76-e7524b337e01",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Pettis",
       "name": "Duke Roufus",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Pettis",
       "name": "Daniel Wanderley",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Pettis",
       "name": "Sergio Pettis",
-      "role": "assistant"
+      "fighter_id": "83cdcddf-2733-42f9-bddc-5f3494def7ae",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Pettis",
       "name": "Scott Cushman",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Melendez",
       "name": "Gilbert Melendez",
-      "role": "head"
+      "fighter_id": "ff07b3f8-8a86-4e43-896c-844703675442",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Melendez",
       "name": "Jake Shields",
-      "role": "assistant"
+      "fighter_id": "831e9532-bd01-4388-ba5e-90ff4b709483",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Melendez",
       "name": "Anucha Chayaisen",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Melendez",
       "name": "Nate Diaz",
-      "role": "assistant"
+      "fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Melendez",
       "name": "Josh Berkovic",
-      "role": "assistant"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "coaching_changes": [
@@ -88,7 +103,8 @@
       "roster": [
         {
           "name": "Carla Esparza",
-          "seed": 1
+          "seed": 1,
+          "fighter_id": "ac7fb578-6cd7-4248-93ba-280766c503a7"
         },
         {
           "name": "Joanne Calderwood",
@@ -96,28 +112,34 @@
         },
         {
           "name": "Jessica Penne",
-          "seed": 4
+          "seed": 4,
+          "fighter_id": "de1420d2-bd7d-49be-949b-08708bbf2749"
         },
         {
           "name": "Aisling Daly",
-          "seed": 5
+          "seed": 5,
+          "fighter_id": "fd87a74e-5d0f-402d-8422-804751d92e61"
         },
         {
           "name": "Felice Herrig",
-          "seed": 6
+          "seed": 6,
+          "fighter_id": "71e87b45-4691-40dc-b2f3-4988d305523a"
         },
         {
           "name": "Justine Kish",
           "seed": 9,
-          "note": "Withdrew with a torn ACL."
+          "note": "Withdrew with a torn ACL.",
+          "fighter_id": "c7f5aa7b-43b5-48eb-a0f8-164dea621e39"
         },
         {
           "name": "Alex Chambers",
-          "seed": 10
+          "seed": 10,
+          "fighter_id": "d86471ef-60c2-4b42-b7d8-aaa695064d55"
         },
         {
           "name": "Randa Markos",
-          "seed": 14
+          "seed": 14,
+          "fighter_id": "da6e09d7-84bd-415a-86ad-2444eeba41ec"
         },
         {
           "name": "Tecia Torres",
@@ -131,31 +153,38 @@
       "roster": [
         {
           "name": "Rose Namajunas",
-          "seed": 7
+          "seed": 7,
+          "fighter_id": "fc84c7be-0db5-44a6-88da-c4f74af0e86c"
         },
         {
           "name": "Bec Rawlings",
-          "seed": 8
+          "seed": 8,
+          "fighter_id": "080f0d42-597b-4717-b2fe-18b84dd0d139"
         },
         {
           "name": "Heather Jo Clark",
-          "seed": 11
+          "seed": 11,
+          "fighter_id": "7dc2ff1b-0ca0-4c8b-b93f-e56cfe6aac3b"
         },
         {
           "name": "Angela Magaña",
-          "seed": 12
+          "seed": 12,
+          "fighter_id": "f6070999-44a1-436d-994c-0857afd5e6cb"
         },
         {
           "name": "Lisa Ellis",
-          "seed": 13
+          "seed": 13,
+          "fighter_id": "bc199eb5-0aa2-4ce7-ad1d-ac6082608c9e"
         },
         {
           "name": "Emily Kagan",
-          "seed": 15
+          "seed": 15,
+          "fighter_id": "03ddfe81-7504-4216-8cc0-e8b8b8b35404"
         },
         {
           "name": "Angela Hill",
-          "seed": 16
+          "seed": 16,
+          "fighter_id": "8818c2eb-73cb-42e2-9e59-2e48286b7280"
         },
         {
           "name": "Seohee Ham",
@@ -183,7 +212,8 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "3 vs 14"
+              "seeds": "3 vs 14",
+              "b_fighter_id": "da6e09d7-84bd-415a-86ad-2444eeba41ec"
             },
             {
               "a": "Joanne Calderwood",
@@ -195,7 +225,8 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "2 vs 15"
+              "seeds": "2 vs 15",
+              "b_fighter_id": "03ddfe81-7504-4216-8cc0-e8b8b8b35404"
             },
             {
               "a": "Jessica Penne",
@@ -207,7 +238,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "4 vs 13"
+              "seeds": "4 vs 13",
+              "a_fighter_id": "de1420d2-bd7d-49be-949b-08708bbf2749",
+              "b_fighter_id": "bc199eb5-0aa2-4ce7-ad1d-ac6082608c9e"
             },
             {
               "a": "Carla Esparza",
@@ -219,7 +252,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 16"
+              "seeds": "1 vs 16",
+              "a_fighter_id": "ac7fb578-6cd7-4248-93ba-280766c503a7",
+              "b_fighter_id": "8818c2eb-73cb-42e2-9e59-2e48286b7280"
             },
             {
               "a": "Felice Herrig",
@@ -231,7 +266,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 11"
+              "seeds": "6 vs 11",
+              "a_fighter_id": "71e87b45-4691-40dc-b2f3-4988d305523a",
+              "b_fighter_id": "7dc2ff1b-0ca0-4c8b-b93f-e56cfe6aac3b"
             },
             {
               "a": "Aisling Daly",
@@ -243,7 +280,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "5 vs 12"
+              "seeds": "5 vs 12",
+              "a_fighter_id": "fd87a74e-5d0f-402d-8422-804751d92e61",
+              "b_fighter_id": "f6070999-44a1-436d-994c-0857afd5e6cb"
             },
             {
               "a": "Tecia Torres",
@@ -256,7 +295,8 @@
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "seeds": "3 vs 8",
-              "replacement": "Torres returned after her first-round loss, taking the place of Justine Kish, who withdrew with a torn ACL"
+              "replacement": "Torres returned after her first-round loss, taking the place of Justine Kish, who withdrew with a torn ACL",
+              "b_fighter_id": "080f0d42-597b-4717-b2fe-18b84dd0d139"
             },
             {
               "a": "Rose Namajunas",
@@ -268,7 +308,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "7 vs 10"
+              "seeds": "7 vs 10",
+              "a_fighter_id": "fc84c7be-0db5-44a6-88da-c4f74af0e86c",
+              "b_fighter_id": "d86471ef-60c2-4b42-b7d8-aaa695064d55"
             }
           ]
         },
@@ -286,7 +328,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 14"
+              "seeds": "6 vs 14",
+              "a_fighter_id": "71e87b45-4691-40dc-b2f3-4988d305523a",
+              "b_fighter_id": "da6e09d7-84bd-415a-86ad-2444eeba41ec"
             },
             {
               "a": "Aisling Daly",
@@ -298,7 +342,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "5 vs 4"
+              "seeds": "5 vs 4",
+              "a_fighter_id": "fd87a74e-5d0f-402d-8422-804751d92e61",
+              "b_fighter_id": "de1420d2-bd7d-49be-949b-08708bbf2749"
             },
             {
               "a": "Carla Esparza",
@@ -310,7 +356,8 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 3"
+              "seeds": "1 vs 3",
+              "a_fighter_id": "ac7fb578-6cd7-4248-93ba-280766c503a7"
             },
             {
               "a": "Rose Namajunas",
@@ -322,7 +369,8 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "7 vs 2"
+              "seeds": "7 vs 2",
+              "a_fighter_id": "fc84c7be-0db5-44a6-88da-c4f74af0e86c"
             }
           ]
         },
@@ -340,7 +388,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 4"
+              "seeds": "1 vs 4",
+              "a_fighter_id": "ac7fb578-6cd7-4248-93ba-280766c503a7",
+              "b_fighter_id": "de1420d2-bd7d-49be-949b-08708bbf2749"
             },
             {
               "a": "Rose Namajunas",
@@ -352,7 +402,9 @@
               "episode": null,
               "classification": "exhibition",
               "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "7 vs 14"
+              "seeds": "7 vs 14",
+              "a_fighter_id": "fc84c7be-0db5-44a6-88da-c4f74af0e86c",
+              "b_fighter_id": "da6e09d7-84bd-415a-86ad-2444eeba41ec"
             }
           ]
         },
@@ -373,7 +425,9 @@
               "classification_source": "contested on a sanctioned UFC card; verified against our own ufc_bout_results row (ufcstats: Submission, round 3, 86s, Women's Strawweight)",
               "on_finale_card": true,
               "tournament_deciding": true,
-              "seeds": "1 vs 7"
+              "seeds": "1 vs 7",
+              "a_fighter_id": "ac7fb578-6cd7-4248-93ba-280766c503a7",
+              "b_fighter_id": "fc84c7be-0db5-44a6-88da-c4f74af0e86c"
             }
           ]
         }
@@ -400,7 +454,8 @@
         "b": "Rose Namajunas",
         "event": "The Ultimate Fighter: A Champion Will Be Crowned Finale",
         "date": "2014-12-12"
-      }
+      },
+      "fighter_id": "ac7fb578-6cd7-4248-93ba-280766c503a7"
     }
   ]
 }

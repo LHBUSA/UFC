@@ -28,61 +28,77 @@
   "coaches": [
     {
       "team": "Team United States",
-      "name": "Team United States",
-      "role": "head"
-    },
-    {
-      "team": "",
       "name": "Dan Henderson",
+      "fighter_id": "a25eda97-6518-4b19-8984-280afd20059b",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team United States",
       "name": "Cyrille Diabaté",
-      "role": "head",
-      "note": "Muay Thai instructor"
+      "fighter_id": "d2dd9fb3-e617-4e74-9761-53d22eab4d03",
+      "role": "assistant",
+      "discipline": "Muay Thai",
+      "note": "Muay Thai instructor",
+      "role_basis": "source note: \"Muay Thai instructor\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team United States",
       "name": "Ricardo Feliciano",
-      "role": "head",
-      "note": "Jiu-Jitsu instructor"
+      "role": "assistant",
+      "discipline": "Jiu-Jitsu",
+      "note": "Jiu-Jitsu instructor",
+      "role_basis": "source note: \"Jiu-Jitsu instructor\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team United States",
       "name": "Gustavo Pugliese",
-      "role": "head",
-      "note": "Boxing instructor"
+      "role": "assistant",
+      "discipline": "Boxing",
+      "note": "Boxing instructor",
+      "role_basis": "source note: \"Boxing instructor\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team United States",
       "name": "Heath Sims",
-      "role": "head",
-      "note": "Wrestling instructor"
+      "role": "assistant",
+      "discipline": "Wrestling",
+      "note": "Wrestling instructor",
+      "role_basis": "source note: \"Wrestling instructor\"",
+      "team_basis": "section order in the season source"
     },
     {
       "team": "Team United Kingdom",
-      "name": "Team United Kingdom",
-      "role": "head"
-    },
-    {
-      "team": "",
       "name": "Michael Bisping",
+      "fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team United Kingdom",
       "name": "Dave Jackson",
-      "role": "head",
-      "note": "Thai Boxing instructor"
+      "role": "assistant",
+      "discipline": "Thai Boxing",
+      "note": "Thai Boxing instructor",
+      "role_basis": "source note: \"Thai Boxing instructor\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team United Kingdom",
       "name": "Mario Neto",
-      "role": "head",
-      "note": "Brazilian jiu-jitsu instructor"
+      "fighter_id": "4ef03188-bba4-431b-aa9a-f4ddd19a25a4",
+      "role": "assistant",
+      "discipline": "Brazilian jiu-jitsu",
+      "note": "Brazilian jiu-jitsu instructor",
+      "role_basis": "source note: \"Brazilian jiu-jitsu instructor\"",
+      "team_basis": "section order in the season source"
     }
   ],
   "teams": [
@@ -95,11 +111,13 @@
         },
         {
           "name": "Jason Dent",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "d7ebe101-9f3f-490e-8bfe-d05cff1b3fe6"
         },
         {
           "name": "Cameron Dollar",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "a2361f8b-c9b1-4743-8c3f-66d5baec4145"
         },
         {
           "name": "Richie Whitson",
@@ -107,11 +125,13 @@
         },
         {
           "name": "DaMarques Johnson",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "3e80610c-d08f-4cff-8cab-7b9c83b37a2a"
         },
         {
           "name": "Frank Lester",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "f8dba41b-bf48-4f37-bd5d-cf5524b3950c"
         },
         {
           "name": "Mark Miller",
@@ -132,7 +152,8 @@
         },
         {
           "name": "Ross Pearson",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "7b5900dc-3959-424a-9589-3ba7b3fa3baf"
         },
         {
           "name": "Martin Stapleton",
@@ -140,7 +161,8 @@
         },
         {
           "name": "Andre Winner",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "a94a3e30-399a-4f37-8563-914453f0d02c"
         },
         {
           "name": "Dean Amasinger",
@@ -152,11 +174,13 @@
         },
         {
           "name": "Nick Osipczak",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "c752c423-24bb-42eb-af01-e85ebad9da9a"
         },
         {
           "name": "James Wilks",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "a7a74b93-d5fe-4994-8b35-b361dd5e9ba2"
         }
       ]
     },
@@ -173,11 +197,13 @@
         },
         {
           "name": "Tommy Hayden",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "3e570699-7a23-4fab-893b-05c09badd0e7"
         },
         {
           "name": "Waylon Lowe",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "f1cc01b1-3c73-497b-8fac-121eba919e48"
         },
         {
           "name": "Rob Browning",
@@ -185,7 +211,8 @@
         },
         {
           "name": "Steve Berger",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "50c98b67-0915-46d3-b799-17be3120a89c"
         },
         {
           "name": "Ray Elbe",
@@ -242,7 +269,8 @@
         },
         {
           "name": "Che Mills",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "5c5b779d-2f41-433a-8cee-4d9e49b010ff"
         },
         {
           "name": "Alex Reid",
@@ -302,7 +330,8 @@
               "time": "0:45",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "f1cc01b1-3c73-497b-8fac-121eba919e48"
             },
             {
               "a": "Andre Winner",
@@ -313,7 +342,8 @@
               "time": "1:48",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a94a3e30-399a-4f37-8563-914453f0d02c"
             },
             {
               "a": "Cameron Dollar",
@@ -324,7 +354,9 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a2361f8b-c9b1-4743-8c3f-66d5baec4145",
+              "b_fighter_id": "3e570699-7a23-4fab-893b-05c09badd0e7"
             },
             {
               "a": "Martin Stapleton",
@@ -357,7 +389,8 @@
               "time": "0:21",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7b5900dc-3959-424a-9589-3ba7b3fa3baf"
             },
             {
               "a": "Jason Dent",
@@ -368,7 +401,8 @@
               "time": "3:36",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "d7ebe101-9f3f-490e-8bfe-d05cff1b3fe6"
             },
             {
               "a": "Jeff Lawson",
@@ -396,7 +430,8 @@
               "time": "3:49",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "a94a3e30-399a-4f37-8563-914453f0d02c"
             },
             {
               "a": "Cameron Dollar",
@@ -407,7 +442,8 @@
               "time": "1:34",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a2361f8b-c9b1-4743-8c3f-66d5baec4145"
             },
             {
               "a": "Richie Whitson",
@@ -418,7 +454,8 @@
               "time": "3:40",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "7b5900dc-3959-424a-9589-3ba7b3fa3baf"
             },
             {
               "a": "Jason Dent",
@@ -429,7 +466,8 @@
               "time": "2:22",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "d7ebe101-9f3f-490e-8bfe-d05cff1b3fe6"
             }
           ]
         },
@@ -446,7 +484,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a94a3e30-399a-4f37-8563-914453f0d02c",
+              "b_fighter_id": "a2361f8b-c9b1-4743-8c3f-66d5baec4145"
             },
             {
               "a": "Ross Pearson",
@@ -457,7 +497,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7b5900dc-3959-424a-9589-3ba7b3fa3baf",
+              "b_fighter_id": "d7ebe101-9f3f-490e-8bfe-d05cff1b3fe6"
             }
           ]
         },
@@ -477,7 +519,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "a94a3e30-399a-4f37-8563-914453f0d02c",
+              "b_fighter_id": "7b5900dc-3959-424a-9589-3ba7b3fa3baf"
             }
           ]
         }
@@ -510,7 +554,8 @@
               "time": "4:08",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c752c423-24bb-42eb-af01-e85ebad9da9a"
             },
             {
               "a": "DaMarques Johnson",
@@ -521,7 +566,8 @@
               "time": "3:10",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "3e80610c-d08f-4cff-8cab-7b9c83b37a2a"
             },
             {
               "a": "Dean Amasinger",
@@ -543,7 +589,8 @@
               "time": "3:16",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f8dba41b-bf48-4f37-bd5d-cf5524b3950c"
             },
             {
               "a": "James Wilks",
@@ -554,7 +601,9 @@
               "time": "0:30",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a7a74b93-d5fe-4994-8b35-b361dd5e9ba2",
+              "b_fighter_id": "5c5b779d-2f41-433a-8cee-4d9e49b010ff"
             },
             {
               "a": "Jason Pierce",
@@ -565,7 +614,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "50c98b67-0915-46d3-b799-17be3120a89c"
             },
             {
               "a": "David Faulkner",
@@ -593,7 +643,8 @@
               "time": "3:54",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "c752c423-24bb-42eb-af01-e85ebad9da9a"
             },
             {
               "a": "DaMarques Johnson",
@@ -604,7 +655,8 @@
               "time": "1:40",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "3e80610c-d08f-4cff-8cab-7b9c83b37a2a"
             },
             {
               "a": "Frank Lester",
@@ -615,7 +667,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f8dba41b-bf48-4f37-bd5d-cf5524b3950c",
+              "b_fighter_id": "a7a74b93-d5fe-4994-8b35-b361dd5e9ba2"
             },
             {
               "a": "Frank Lester",
@@ -626,7 +680,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "f8dba41b-bf48-4f37-bd5d-cf5524b3950c"
             }
           ],
           "status": "unverified",
@@ -645,7 +700,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c752c423-24bb-42eb-af01-e85ebad9da9a",
+              "b_fighter_id": "3e80610c-d08f-4cff-8cab-7b9c83b37a2a"
             },
             {
               "a": "James Wilks",
@@ -656,7 +713,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a7a74b93-d5fe-4994-8b35-b361dd5e9ba2",
+              "b_fighter_id": "f8dba41b-bf48-4f37-bd5d-cf5524b3950c"
             }
           ]
         },
@@ -676,7 +735,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "3e80610c-d08f-4cff-8cab-7b9c83b37a2a",
+              "b_fighter_id": "a7a74b93-d5fe-4994-8b35-b361dd5e9ba2"
             }
           ]
         }
@@ -700,7 +761,8 @@
         "event": "The Ultimate Fighter: United States vs. United Kingdom Finale",
         "date": "2009-06-20"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "7b5900dc-3959-424a-9589-3ba7b3fa3baf"
     },
     {
       "weight_class": "Welterweight",
@@ -713,7 +775,8 @@
         "event": "The Ultimate Fighter: United States vs. United Kingdom Finale",
         "date": "2009-06-20"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "a7a74b93-d5fe-4994-8b35-b361dd5e9ba2"
     }
   ]
 }

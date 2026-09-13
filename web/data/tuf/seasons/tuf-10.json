@@ -17,61 +17,77 @@
   "coaches": [
     {
       "team": "Team Rampage",
-      "name": "; Team Rampage",
-      "role": "head"
-    },
-    {
-      "team": "",
-      "name": "Quinton \"Rampage\" Jackson",
+      "name": "Quinton Jackson",
+      "fighter_id": "11141034-95cb-46f1-a030-b816b1f92baf",
       "role": "head",
-      "note": "head coach"
+      "nickname": "Rampage",
+      "note": "head coach",
+      "printed_as": "Quinton \"Rampage\" Jackson",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rampage",
       "name": "Tom Blackledge",
-      "role": "head"
+      "fighter_id": "8a1000a4-5cae-49dd-9406-64e37653aed5",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rampage",
       "name": "Tiki Ghosn",
-      "role": "head"
+      "fighter_id": "0cc27210-e4b3-4a53-afed-e11ddb38823c",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rampage",
       "name": "Mike Dolce",
-      "role": "head",
-      "note": "nutritionist"
+      "role": "other",
+      "note": "nutritionist",
+      "role_basis": "source note: \"nutritionist\" (staff, not a coach)",
+      "team_basis": "section order in the season source"
     },
     {
       "team": "Team Rashad",
-      "name": "; Team Rashad",
-      "role": "head"
-    },
-    {
-      "team": "",
       "name": "Rashad Evans",
+      "fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rashad",
       "name": "Greg Jackson",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rashad",
       "name": "Trevor Wittman",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rashad",
       "name": "Mike Van Arsdale",
-      "role": "head"
+      "fighter_id": "2f857e60-5e45-42e1-9b0d-c10de2164254",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Rashad",
       "name": "Rolles Gracie",
-      "role": "head"
+      "fighter_id": "08cb85eb-70f3-44ea-8dd8-23bc7b8db1dd",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     }
   ],
   "teams": [
@@ -79,28 +95,36 @@
       "name": "Team Rashad",
       "roster": [
         {
-          "name": "James McSweeney"
+          "name": "James McSweeney",
+          "fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07"
         },
         {
-          "name": "Brendan Schaub"
+          "name": "Brendan Schaub",
+          "fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d"
         },
         {
-          "name": "Justin Wren"
+          "name": "Justin Wren",
+          "fighter_id": "3e09de20-7b0e-4cf0-b771-e980cae691f8"
         },
         {
-          "name": "Jon Madsen"
+          "name": "Jon Madsen",
+          "fighter_id": "718e8e97-aaa7-4368-abf0-1acbd4eb22f0"
         },
         {
-          "name": "Roy Nelson"
+          "name": "Roy Nelson",
+          "fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723"
         },
         {
-          "name": "Darrill “Titties” Schoonover"
+          "name": "Darrill “Titties” Schoonover",
+          "fighter_id": "22a44527-2ecc-4598-b88b-a7a15dd695bb"
         },
         {
-          "name": "Matt Mitrione"
+          "name": "Matt Mitrione",
+          "fighter_id": "26c6119c-9d02-47f9-acee-bbfa6cabe420"
         },
         {
-          "name": "Mike Wessel"
+          "name": "Mike Wessel",
+          "fighter_id": "d6250ab7-2743-4e88-9f8c-f0382c6dbba0"
         }
       ]
     },
@@ -108,7 +132,8 @@
       "name": "Team Rampage",
       "roster": [
         {
-          "name": "Kevin \"Kimbo Slice\" Ferguson"
+          "name": "Kevin \"Kimbo Slice\" Ferguson",
+          "fighter_id": "9f88ffd1-0509-4770-87e1-4a4463ec411b"
         },
         {
           "name": "Abe Wagner"
@@ -117,16 +142,19 @@
           "name": "Demico Rogers"
         },
         {
-          "name": "Wes Sims"
+          "name": "Wes Sims",
+          "fighter_id": "2f20ca74-3e76-4f14-b504-3c1389b90ea0"
         },
         {
-          "name": "Scott Junk"
+          "name": "Scott Junk",
+          "fighter_id": "2d85bf00-7286-4879-9642-2c39dc49b240"
         },
         {
           "name": "Wes Shivers"
         },
         {
-          "name": "Marcus Jones"
+          "name": "Marcus Jones",
+          "fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80"
         },
         {
           "name": "Zak Jensen"
@@ -183,7 +211,8 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "718e8e97-aaa7-4368-abf0-1acbd4eb22f0"
             },
             {
               "a": "Demico Rogers",
@@ -194,7 +223,8 @@
               "time": "3:17",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d"
             },
             {
               "a": "Zak Jensen",
@@ -205,7 +235,8 @@
               "time": "2:29",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "22a44527-2ecc-4598-b88b-a7a15dd695bb"
             },
             {
               "a": "Marcus Jones",
@@ -216,7 +247,9 @@
               "time": "0:50",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80",
+              "b_fighter_id": "d6250ab7-2743-4e88-9f8c-f0382c6dbba0"
             },
             {
               "a": "Wes Shivers",
@@ -227,7 +260,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07"
             },
             {
               "a": "Scott Junk",
@@ -238,7 +272,9 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2d85bf00-7286-4879-9642-2c39dc49b240",
+              "b_fighter_id": "26c6119c-9d02-47f9-acee-bbfa6cabe420"
             },
             {
               "a": "Kimbo Slice",
@@ -249,7 +285,9 @@
               "time": "2:01",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+              "a_fighter_id": "9f88ffd1-0509-4770-87e1-4a4463ec411b"
             },
             {
               "a": "Wes Sims",
@@ -260,7 +298,9 @@
               "time": "1:34",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2f20ca74-3e76-4f14-b504-3c1389b90ea0",
+              "b_fighter_id": "3e09de20-7b0e-4cf0-b771-e980cae691f8"
             }
           ]
         },
@@ -277,7 +317,9 @@
               "time": "1:39",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "718e8e97-aaa7-4368-abf0-1acbd4eb22f0",
+              "b_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d"
             },
             {
               "a": "Darrill Schoonover",
@@ -288,7 +330,9 @@
               "time": "2:37",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "22a44527-2ecc-4598-b88b-a7a15dd695bb",
+              "b_fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80"
             },
             {
               "a": "James McSweeney",
@@ -299,7 +343,9 @@
               "time": "3:38",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+              "b_fighter_id": "26c6119c-9d02-47f9-acee-bbfa6cabe420"
             },
             {
               "a": "Roy Nelson",
@@ -310,7 +356,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+              "b_fighter_id": "3e09de20-7b0e-4cf0-b771-e980cae691f8"
             }
           ]
         },
@@ -342,7 +390,9 @@
                   "quote": "Marcus Jones 2-1 - Eliminated in the semifinals (episode 12) by Brendan Schaub",
                   "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
                 }
-              ]
+              ],
+              "a_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+              "b_fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80"
             },
             {
               "a": "James McSweeney",
@@ -368,7 +418,9 @@
                   "quote": "James McSweeney 2-1 - Eliminated in the semifinals (episode 12) by Roy Nelson",
                   "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
                 }
-              ]
+              ],
+              "a_fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+              "b_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723"
             }
           ]
         },
@@ -388,7 +440,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+              "b_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723"
             }
           ]
         }
@@ -412,7 +466,8 @@
         "event": "The Ultimate Fighter: Heavyweights Finale",
         "date": "2009-12-05"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723"
     }
   ]
 }

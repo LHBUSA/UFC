@@ -17,67 +17,87 @@
     {
       "team": "Team Bisping",
       "name": "Michael Bisping",
-      "role": "head"
+      "fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Brady Fink",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Tiki Ghosn",
-      "role": "head"
+      "fighter_id": "0cc27210-e4b3-4a53-afed-e11ddb38823c",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rob McCullough",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Zoran Dubaic",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Sean Keefe",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Miller",
       "name": "Jason Miller",
-      "role": "head"
+      "fighter_id": "4c4b4c19-99c0-4ea1-97d2-2cbc226c5018",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Ryan Parsons",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Danny Perez",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Darren Morris",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jake Ellenberger",
-      "role": "head"
+      "fighter_id": "5382397d-bc6e-4bc5-93a9-cf9f3547bb6e",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Melchor Menor",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
-      "name": "Kamaru Usman (wrestling)",
-      "role": "head"
+      "team": null,
+      "name": "Kamaru Usman",
+      "fighter_id": "b7f177f7-04a7-433a-9b04-bb403faa296f",
+      "role": "assistant",
+      "discipline": "wrestling",
+      "printed_as": "Kamaru Usman (wrestling)",
+      "role_basis": "source note: \"wrestling\""
     }
   ],
   "teams": [
@@ -86,35 +106,43 @@
       "roster": [
         {
           "name": "Louis Gaudinot",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "a6b438f2-a83e-46fe-aee1-0c85dcfae2a9"
         },
         {
           "name": "T.J. Dillashaw",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "5b3b8865-f1c3-442f-94d1-7db9c47faa2b"
         },
         {
           "name": "John Albert",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "07ac8ac1-65c1-4e2b-b54d-e98ba9b71954"
         },
         {
           "name": "Josh Ferguson",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "d6384751-2c69-4627-a7b4-966620239c40"
         },
         {
           "name": "Diego Brandão",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "f6152127-61dc-4e19-a319-dbb2d567be73"
         },
         {
           "name": "Akira Corassani",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "22dab1bc-0eb4-4c89-8653-c5294b1ba6b9"
         },
         {
           "name": "Marcus Brimage",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "e367e2a8-bd66-41dc-8754-e3ed2800a375"
         },
         {
           "name": "Stephen Bass",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "5d20fe68-2575-46d8-9391-dad0e6587465"
         }
       ]
     },
@@ -123,35 +151,43 @@
       "roster": [
         {
           "name": "John Dodson",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "408de792-e592-456e-a613-285639b3b89e"
         },
         {
           "name": "Johnny Bedford",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "7ad6d3f5-25d7-400d-b674-38e180287e05"
         },
         {
           "name": "Dustin Pague",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "418a2383-a352-4bb3-a0d9-2a2362a031d5"
         },
         {
           "name": "Roland Delorme",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "c2557f70-746f-42b2-9486-02968d2d00b4"
         },
         {
           "name": "Dennis Bermudez",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "1ae21111-9141-491b-a568-c28a322a9a5d"
         },
         {
           "name": "Bryan Caraway",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "8b076470-9afd-49fd-8f11-12b3f6932929"
         },
         {
           "name": "Dustin Neace",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "4561f8f2-2d12-460f-a671-37eb07257913"
         },
         {
           "name": "Steven Siler",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "c0c43536-17b8-42ae-b227-934ecc173c98"
         }
       ]
     },
@@ -180,7 +216,8 @@
         },
         {
           "name": "Tateki Matsuda",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "08f57000-32ae-4580-a875-79b8cfd9cccc"
         },
         {
           "name": "Matt Jaggers",
@@ -200,7 +237,8 @@
         },
         {
           "name": "Josh Clopton",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "2ed5286c-7776-4238-bb7f-5f1b8a5ce092"
         },
         {
           "name": "Karsten Lenjoint",
@@ -216,7 +254,8 @@
         },
         {
           "name": "Jimmie Rivera",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "6111e213-b2db-4903-8799-f8c0f0fa9525"
         },
         {
           "name": "Jesse Newell",
@@ -266,7 +305,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "c0c43536-17b8-42ae-b227-934ecc173c98"
             },
             {
               "a": "Diego Brandao",
@@ -277,7 +317,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "f6152127-61dc-4e19-a319-dbb2d567be73"
             },
             {
               "a": "Bryan Caraway",
@@ -288,7 +329,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "8b076470-9afd-49fd-8f11-12b3f6932929"
             },
             {
               "a": "Marcus Brimage",
@@ -299,7 +341,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "e367e2a8-bd66-41dc-8754-e3ed2800a375"
             },
             {
               "a": "Dennis Bermudez",
@@ -310,7 +353,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "1ae21111-9141-491b-a568-c28a322a9a5d",
+              "b_fighter_id": "6111e213-b2db-4903-8799-f8c0f0fa9525"
             },
             {
               "a": "Stephen Bass",
@@ -321,7 +366,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "5d20fe68-2575-46d8-9391-dad0e6587465"
             },
             {
               "a": "Dustin Neace",
@@ -332,7 +378,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "4561f8f2-2d12-460f-a671-37eb07257913",
+              "b_fighter_id": "2ed5286c-7776-4238-bb7f-5f1b8a5ce092"
             },
             {
               "a": "Akira Corassani",
@@ -343,7 +391,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "22dab1bc-0eb4-4c89-8653-c5294b1ba6b9"
             }
           ]
         },
@@ -360,7 +409,9 @@
               "time": "0:30",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c0c43536-17b8-42ae-b227-934ecc173c98",
+              "b_fighter_id": "f6152127-61dc-4e19-a319-dbb2d567be73"
             },
             {
               "a": "Bryan Caraway",
@@ -371,7 +422,9 @@
               "time": "2:55",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "8b076470-9afd-49fd-8f11-12b3f6932929",
+              "b_fighter_id": "e367e2a8-bd66-41dc-8754-e3ed2800a375"
             },
             {
               "a": "Dennis Bermudez",
@@ -382,7 +435,9 @@
               "time": "2:58",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "1ae21111-9141-491b-a568-c28a322a9a5d",
+              "b_fighter_id": "5d20fe68-2575-46d8-9391-dad0e6587465"
             },
             {
               "a": "Dustin Neace",
@@ -393,7 +448,9 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4561f8f2-2d12-460f-a671-37eb07257913",
+              "b_fighter_id": "22dab1bc-0eb4-4c89-8653-c5294b1ba6b9"
             }
           ]
         },
@@ -410,7 +467,9 @@
               "time": "4:15",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f6152127-61dc-4e19-a319-dbb2d567be73",
+              "b_fighter_id": "8b076470-9afd-49fd-8f11-12b3f6932929"
             },
             {
               "a": "Dennis Bermudez",
@@ -421,7 +480,9 @@
               "time": "3:12",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "1ae21111-9141-491b-a568-c28a322a9a5d",
+              "b_fighter_id": "22dab1bc-0eb4-4c89-8653-c5294b1ba6b9"
             }
           ]
         },
@@ -440,7 +501,9 @@
               "classification": "unverified",
               "classification_source": null,
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "f6152127-61dc-4e19-a319-dbb2d567be73",
+              "b_fighter_id": "1ae21111-9141-491b-a568-c28a322a9a5d"
             }
           ]
         }
@@ -462,7 +525,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "7ad6d3f5-25d7-400d-b674-38e180287e05"
             },
             {
               "a": "Josh Ferguson",
@@ -473,7 +537,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "d6384751-2c69-4627-a7b4-966620239c40"
             },
             {
               "a": "John Dodson",
@@ -484,7 +549,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "408de792-e592-456e-a613-285639b3b89e"
             },
             {
               "a": "John Albert",
@@ -495,7 +561,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "07ac8ac1-65c1-4e2b-b54d-e98ba9b71954"
             },
             {
               "a": "Dustin Pague",
@@ -506,7 +573,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "418a2383-a352-4bb3-a0d9-2a2362a031d5",
+              "b_fighter_id": "08f57000-32ae-4580-a875-79b8cfd9cccc"
             },
             {
               "a": "Louis Gaudinot",
@@ -517,7 +586,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "a6b438f2-a83e-46fe-aee1-0c85dcfae2a9"
             },
             {
               "a": "Roland Delorme",
@@ -528,7 +598,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "c2557f70-746f-42b2-9486-02968d2d00b4"
             },
             {
               "a": "T.J. Dillashaw",
@@ -539,7 +610,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "5b3b8865-f1c3-442f-94d1-7db9c47faa2b"
             }
           ]
         },
@@ -556,7 +628,9 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7ad6d3f5-25d7-400d-b674-38e180287e05",
+              "b_fighter_id": "d6384751-2c69-4627-a7b4-966620239c40"
             },
             {
               "a": "John Dodson",
@@ -567,7 +641,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "408de792-e592-456e-a613-285639b3b89e",
+              "b_fighter_id": "07ac8ac1-65c1-4e2b-b54d-e98ba9b71954"
             },
             {
               "a": "Dustin Pague",
@@ -578,7 +654,9 @@
               "time": "2:32",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "418a2383-a352-4bb3-a0d9-2a2362a031d5",
+              "b_fighter_id": "a6b438f2-a83e-46fe-aee1-0c85dcfae2a9"
             },
             {
               "a": "Roland Delorme",
@@ -589,7 +667,9 @@
               "time": "1:43",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c2557f70-746f-42b2-9486-02968d2d00b4",
+              "b_fighter_id": "5b3b8865-f1c3-442f-94d1-7db9c47faa2b"
             }
           ]
         },
@@ -606,7 +686,9 @@
               "time": "1:00",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7ad6d3f5-25d7-400d-b674-38e180287e05",
+              "b_fighter_id": "408de792-e592-456e-a613-285639b3b89e"
             },
             {
               "a": "Dustin Pague",
@@ -617,7 +699,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "418a2383-a352-4bb3-a0d9-2a2362a031d5",
+              "b_fighter_id": "5b3b8865-f1c3-442f-94d1-7db9c47faa2b"
             }
           ]
         },
@@ -637,7 +721,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "408de792-e592-456e-a613-285639b3b89e",
+              "b_fighter_id": "5b3b8865-f1c3-442f-94d1-7db9c47faa2b"
             }
           ]
         }
@@ -661,13 +747,15 @@
         "event": "The Ultimate Fighter: Team Bisping vs Team Miller Finale",
         "date": "2011-12-03"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "408de792-e592-456e-a613-285639b3b89e"
     },
     {
       "weight_class": "Featherweight",
       "fighter": "Diego Brandão",
       "won_tournament": true,
-      "received_contract": true
+      "received_contract": true,
+      "fighter_id": "f6152127-61dc-4e19-a319-dbb2d567be73"
     }
   ]
 }

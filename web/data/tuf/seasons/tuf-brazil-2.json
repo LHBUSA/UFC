@@ -10,7 +10,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Brazil_2",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "_conflicts": [
     {
@@ -28,62 +30,97 @@
     {
       "team": "Team Nogueira",
       "name": "Antônio Rodrigo Nogueira",
-      "role": "head"
+      "fighter_id": "263f34d2-b82f-4678-9c98-59e9f6934935",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
-      "name": "Luiz Dorea (boxing)",
-      "role": "head"
+      "team": null,
+      "name": "Luiz Dorea",
+      "role": "assistant",
+      "discipline": "boxing",
+      "printed_as": "Luiz Dorea (boxing)",
+      "role_basis": "source note: \"boxing\""
     },
     {
-      "team": "",
-      "name": "Everaldo Penco (jiu-jitsu)",
-      "role": "head"
+      "team": null,
+      "name": "Everaldo Penco",
+      "role": "assistant",
+      "discipline": "jiu-jitsu",
+      "printed_as": "Everaldo Penco (jiu-jitsu)",
+      "role_basis": "source note: \"jiu-jitsu\""
     },
     {
-      "team": "",
-      "name": "Eric Albarracin (wrestling)",
-      "role": "head"
+      "team": null,
+      "name": "Eric Albarracin",
+      "role": "assistant",
+      "discipline": "wrestling",
+      "printed_as": "Eric Albarracin (wrestling)",
+      "role_basis": "source note: \"wrestling\""
     },
     {
-      "team": "",
-      "name": "Sheymon Moraes (Muay Thai)",
-      "role": "head"
+      "team": null,
+      "name": "Sheymon Moraes",
+      "fighter_id": "9a6c0ba7-90d7-4155-bca9-fd4f3a9cd328",
+      "role": "assistant",
+      "discipline": "Muay Thai",
+      "printed_as": "Sheymon Moraes (Muay Thai)",
+      "role_basis": "source note: \"Muay Thai\""
     },
     {
-      "team": "",
-      "name": "Vitor Miranda (kickboxing)",
-      "role": "head"
+      "team": null,
+      "name": "Vitor Miranda",
+      "fighter_id": "4140e74f-0216-4d0a-9d39-b280beb469c2",
+      "role": "assistant",
+      "discipline": "kickboxing",
+      "printed_as": "Vitor Miranda (kickboxing)",
+      "role_basis": "source note: \"kickboxing\""
     },
     {
       "team": "Team Werdum",
       "name": "Fabrício Werdum",
-      "role": "head"
+      "fighter_id": "21660e67-082c-4a9e-b1f7-beb718ac5706",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Wanderlei Silva",
-      "role": "head"
+      "fighter_id": "dcd7b51c-3599-4cb7-a218-d4b47bc62ce7",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
-      "name": "Rafael Cordeiro (Muay Thai)",
-      "role": "head"
+      "team": null,
+      "name": "Rafael Cordeiro",
+      "role": "assistant",
+      "discipline": "Muay Thai",
+      "printed_as": "Rafael Cordeiro (Muay Thai)",
+      "role_basis": "source note: \"Muay Thai\""
     },
     {
-      "team": "",
-      "name": "Rubens Cobrinha (jiu-jitsu)",
-      "role": "head"
+      "team": null,
+      "name": "Rubens Cobrinha",
+      "role": "assistant",
+      "discipline": "jiu-jitsu",
+      "printed_as": "Rubens Cobrinha (jiu-jitsu)",
+      "role_basis": "source note: \"jiu-jitsu\""
     },
     {
-      "team": "",
-      "name": "Kenny Johnson (wrestling)",
-      "role": "head"
+      "team": null,
+      "name": "Kenny Johnson",
+      "role": "assistant",
+      "discipline": "wrestling",
+      "printed_as": "Kenny Johnson (wrestling)",
+      "role_basis": "source note: \"wrestling\""
     },
     {
-      "team": "",
-      "name": "Felipe Werdum (capoeira)",
-      "role": "head"
+      "team": null,
+      "name": "Felipe Werdum",
+      "role": "assistant",
+      "discipline": "capoeira",
+      "printed_as": "Felipe Werdum (capoeira)",
+      "role_basis": "source note: \"capoeira\""
     }
   ],
   "teams": [
@@ -91,25 +128,74 @@
       "name": "Team Nogueira",
       "roster": [
         {
-          "name": "Luiz Dutra Jr"
+          "name": "Luiz Dutra Jr",
+          "fighter_id": "985b6f04-9089-492f-aa5f-08d3dc79fd68"
         },
         {
-          "name": "Santiago Ponzinibbio"
+          "name": "Santiago Ponzinibbio",
+          "fighter_id": "20d5524a-2afd-417d-be99-1fad84a5aacd"
         },
         {
-          "name": "Leonardo Santos"
+          "name": "Leonardo Santos",
+          "fighter_id": "4eef2d29-b0e9-4418-87ad-1741e91fcc5a"
         },
         {
           "name": "David Vieira"
         },
         {
-          "name": "William Macário"
+          "name": "William Macário",
+          "fighter_id": "491c3905-d166-4d81-8586-02a7e61c39cd"
         },
         {
           "name": "Cleiton Duarte"
         },
         {
-          "name": "Neilson Gomes (Thiago Gonçalves)"
+          "name": "Neilson Gomes",
+          "printed_as": "Neilson Gomes (Thiago Gonçalves)",
+          "status": "withdrawn",
+          "episode": 4,
+          "note": "Withdrew with a knee injury; replaced by Thiago “Jambo” Gonçalves in episode 4.",
+          "sources": [
+            {
+              "repair": "tuf-brazil-2/roster/replacements",
+              "fields": [
+                "status",
+                "episode",
+                "note"
+              ],
+              "url": "https://www.ufc.com/news/tuf-brasil-2-episode-four-recap",
+              "family": "ufc_com_recap",
+              "published_on_site": "2018-09-14T08:36:04-04:00",
+              "retrieved": "2026-09-12",
+              "quote": "Jambo had returned as a substitute for Neilson Gomes, who, with a knee injury, had to withdraw from the competition. ... In its place came Daniel “Gelo” who, like Jambo, had been cut in the first round.",
+              "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+            }
+          ]
+        },
+        {
+          "name": "Thiago Goncalves",
+          "status": "replacement",
+          "replacement_for": "Neilson Gomes",
+          "episode": 4,
+          "note": "Returned after losing in the elimination round, as the substitute for Neilson Gomes.",
+          "sources": [
+            {
+              "repair": "tuf-brazil-2/roster/replacements",
+              "fields": [
+                "name",
+                "status",
+                "replacement_for",
+                "episode",
+                "note"
+              ],
+              "url": "https://www.ufc.com/news/tuf-brasil-2-episode-four-recap",
+              "family": "ufc_com_recap",
+              "published_on_site": "2018-09-14T08:36:04-04:00",
+              "retrieved": "2026-09-12",
+              "quote": "Jambo had returned as a substitute for Neilson Gomes, who, with a knee injury, had to withdraw from the competition. ... In its place came Daniel “Gelo” who, like Jambo, had been cut in the first round.",
+              "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+            }
+          ]
         }
       ]
     },
@@ -123,7 +209,8 @@
           "name": "Tiago Alves"
         },
         {
-          "name": "Viscardi Andrade"
+          "name": "Viscardi Andrade",
+          "fighter_id": "b80532ac-637f-4f00-bbcf-949054b3511a"
         },
         {
           "name": "Marcio Santos"
@@ -132,10 +219,57 @@
           "name": "Juliano Wandalen"
         },
         {
-          "name": "Thiago de Lima Santos"
+          "name": "Thiago de Lima Santos",
+          "fighter_id": "2c9b3354-7563-472e-a3a7-5c49ba31bbec"
         },
         {
-          "name": "Yan Cabral (Daniel Oliveira)"
+          "name": "Yan Cabral",
+          "printed_as": "Yan Cabral (Daniel Oliveira)",
+          "status": "withdrawn",
+          "episode": 4,
+          "note": "Broke his hand winning his opening bout against David Vieira and left the competition; replaced by Daniel “Gelo” Oliveira in episode 4.",
+          "sources": [
+            {
+              "repair": "tuf-brazil-2/roster/replacements-werdum",
+              "fields": [
+                "status",
+                "episode",
+                "note"
+              ],
+              "url": "https://www.ufc.com/news/tuf-brasil-2-episode-four-recap",
+              "family": "ufc_com_recap",
+              "published_on_site": "2018-09-14T08:36:04-04:00",
+              "retrieved": "2026-09-12",
+              "quote": "Another welterweight who prematurely waved goodbye was Yan Cabral, who broke his hand during last week’s bout against David Vieira and had to leave the house. In its place came Daniel “Gelo” who, like Jambo, had been cut in the first round.",
+              "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+            }
+          ],
+          "fighter_id": "8965ad75-a838-4a2d-938d-7150403ccf1b"
+        },
+        {
+          "name": "Daniel Oliveira",
+          "status": "replacement",
+          "replacement_for": "Yan Cabral",
+          "episode": 4,
+          "note": "Returned after losing in the elimination round, as the replacement for Yan Cabral.",
+          "sources": [
+            {
+              "repair": "tuf-brazil-2/roster/replacements-werdum",
+              "fields": [
+                "name",
+                "status",
+                "replacement_for",
+                "episode",
+                "note"
+              ],
+              "url": "https://www.ufc.com/news/tuf-brasil-2-episode-four-recap",
+              "family": "ufc_com_recap",
+              "published_on_site": "2018-09-14T08:36:04-04:00",
+              "retrieved": "2026-09-12",
+              "quote": "Another welterweight who prematurely waved goodbye was Yan Cabral, who broke his hand during last week’s bout against David Vieira and had to leave the house. In its place came Daniel “Gelo” who, like Jambo, had been cut in the first round.",
+              "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+            }
+          ]
         }
       ]
     }
@@ -149,9 +283,8 @@
         "Leonardo Santos",
         "Marcio Santos",
         "Thiago de Lima Santos",
-        "Yan Cabral (Daniel Oliveira)",
-        "Thiago Santos",
-        "Yan Cabral"
+        "Yan Cabral",
+        "Thiago Santos"
       ],
       "episode": 4,
       "detail": "Yan Cabral of Team Werdum is eliminated because of a broken hand and is replaced by Daniel Oliveira, whom Marcio Santos defeated in the elimination round."
@@ -161,7 +294,7 @@
         "replacement"
       ],
       "fighters": [
-        "Neilson Gomes (Thiago Gonçalves)",
+        "Neilson Gomes",
         "Viscardi Andrade",
         "Thiago Goncalves"
       ],
@@ -216,7 +349,8 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "2c9b3354-7563-472e-a3a7-5c49ba31bbec"
             },
             {
               "a": "Juliano Wandalen",
@@ -227,7 +361,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "4eef2d29-b0e9-4418-87ad-1741e91fcc5a"
             },
             {
               "a": "Marcio Santos",
@@ -238,7 +373,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "20d5524a-2afd-417d-be99-1fad84a5aacd"
             },
             {
               "a": "Yan Cabral",
@@ -249,7 +385,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "8965ad75-a838-4a2d-938d-7150403ccf1b"
             },
             {
               "a": "Tiago Alves",
@@ -271,7 +408,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "2c9b3354-7563-472e-a3a7-5c49ba31bbec",
+              "b_fighter_id": "491c3905-d166-4d81-8586-02a7e61c39cd"
             },
             {
               "a": "Viscardi Andrade",
@@ -282,7 +421,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "b80532ac-637f-4f00-bbcf-949054b3511a"
             },
             {
               "a": "Pedro Iriê",
@@ -293,7 +433,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "985b6f04-9089-492f-aa5f-08d3dc79fd68"
             }
           ],
           "status": "unverified",
@@ -312,7 +453,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "2c9b3354-7563-472e-a3a7-5c49ba31bbec",
+              "b_fighter_id": "4eef2d29-b0e9-4418-87ad-1741e91fcc5a"
             },
             {
               "a": "Santiago Ponzinibbio",
@@ -323,7 +466,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "20d5524a-2afd-417d-be99-1fad84a5aacd"
             },
             {
               "a": "Tiago Alves",
@@ -334,7 +478,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "491c3905-d166-4d81-8586-02a7e61c39cd"
             },
             {
               "a": "Viscardi Andrade",
@@ -345,7 +490,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "b80532ac-637f-4f00-bbcf-949054b3511a"
             }
           ],
           "status": "unverified",
@@ -364,7 +510,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4eef2d29-b0e9-4418-87ad-1741e91fcc5a",
+              "b_fighter_id": "20d5524a-2afd-417d-be99-1fad84a5aacd"
             },
             {
               "a": "William Macario",
@@ -375,7 +523,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "491c3905-d166-4d81-8586-02a7e61c39cd",
+              "b_fighter_id": "b80532ac-637f-4f00-bbcf-949054b3511a"
             }
           ]
         },
@@ -395,7 +545,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "4eef2d29-b0e9-4418-87ad-1741e91fcc5a",
+              "b_fighter_id": "491c3905-d166-4d81-8586-02a7e61c39cd"
             }
           ]
         }
@@ -419,7 +571,8 @@
         "event": "UFC on FUEL TV: Nogueira vs. Werdum",
         "date": "2013-06-08"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+      "fighter_id": "4eef2d29-b0e9-4418-87ad-1741e91fcc5a"
     }
   ]
 }

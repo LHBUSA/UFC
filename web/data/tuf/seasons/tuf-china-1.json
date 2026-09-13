@@ -27,64 +27,80 @@
   ],
   "coaches": [
     {
-      "team": "",
+      "team": null,
       "name": "Tiequan Zhang",
       "role": "head",
-      "note": "Head coach"
+      "note": "Head coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Bao Li Gao",
-      "role": "head",
-      "note": "Sanda coach"
+      "role": "assistant",
+      "discipline": "Sanda",
+      "note": "Sanda coach",
+      "role_basis": "source note: \"Sanda coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Vince Soberano",
-      "role": "head",
-      "note": "Muay Thai coach"
+      "role": "assistant",
+      "discipline": "Muay Thai",
+      "note": "Muay Thai coach",
+      "role_basis": "source note: \"Muay Thai coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Flavio Bueno",
-      "role": "head",
-      "note": "jiu jitsu coach"
+      "role": "assistant",
+      "discipline": "jiu jitsu",
+      "note": "jiu jitsu coach",
+      "role_basis": "source note: \"jiu jitsu coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Hailin Ao",
       "role": "head",
-      "note": "head coach (Episodes 1–4)"
+      "note": "head coach (Episodes 1–4)",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "An Hu",
-      "role": "head",
-      "note": "Sanda coach"
+      "role": "assistant",
+      "discipline": "Sanda",
+      "note": "Sanda coach",
+      "role_basis": "source note: \"Sanda coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Marco Machado",
-      "role": "head",
-      "note": "jiu jitsu coach"
+      "role": "assistant",
+      "discipline": "jiu jitsu",
+      "note": "jiu jitsu coach",
+      "role_basis": "source note: \"jiu jitsu coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Fred Thomassen",
       "role": "assistant",
-      "note": "assistant coach"
+      "note": "assistant coach",
+      "role_basis": "source note: \"assistant coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Scott Sheeley",
       "role": "assistant",
-      "note": "assistant coach (Episode 5-)"
+      "note": "assistant coach (Episode 5-)",
+      "role_basis": "source note: \"assistant coach (Episode 5-)\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Alexander Gustafsson",
-      "role": "head",
-      "note": "guest coach"
+      "fighter_id": "7a144c3d-280d-4b14-a8c6-e8759a13d81f",
+      "role": "guest",
+      "note": "guest coach",
+      "role_basis": "source note: \"guest coach\""
     }
   ],
   "teams": [
@@ -93,7 +109,8 @@
       "roster": [
         {
           "name": "Ning Guangyou",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "a50ed456-1084-40d0-8d68-72df3e95db18"
         },
         {
           "name": "Fu Changxin",
@@ -101,7 +118,8 @@
         },
         {
           "name": "Yao Zhikui",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "1367a83a-272f-4abd-947b-89fda1bc9222"
         },
         {
           "name": "He Jianwei",
@@ -109,11 +127,13 @@
         },
         {
           "name": "Zhang Lipeng",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "9e440be3-3bac-48e4-9d0c-f8535dccddcd"
         },
         {
           "name": "Albert Cheng",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "ce0d3f09-19a3-456c-aba4-bef7d3e2afd1"
         },
         {
           "name": "Wu Qize",
@@ -130,11 +150,13 @@
       "roster": [
         {
           "name": "Yang Jianping",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "a20cb7b1-6b56-400d-9903-9b384cdd3037"
         },
         {
           "name": "Rocky Lee",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "9caf3b8c-0554-4c19-a0bd-da5c33fb5447"
         },
         {
           "name": "Allen Chong",
@@ -146,11 +168,13 @@
         },
         {
           "name": "Wang Sai",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "75f2f9e8-cf9b-43e0-8c18-c4870487d62a"
         },
         {
           "name": "Wang Anying",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "5ff394a2-49f0-47da-a9ed-1617aeee9964"
         },
         {
           "name": "Zhu Qingxiang",
@@ -232,7 +256,8 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "75f2f9e8-cf9b-43e0-8c18-c4870487d62a"
             },
             {
               "a": "Fu Ziyi",
@@ -243,7 +268,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "5ff394a2-49f0-47da-a9ed-1617aeee9964"
             },
             {
               "a": "Zhang Lipeng",
@@ -254,7 +280,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "9e440be3-3bac-48e4-9d0c-f8535dccddcd"
             },
             {
               "a": "Albert Cheng",
@@ -265,7 +292,8 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ce0d3f09-19a3-456c-aba4-bef7d3e2afd1"
             }
           ]
         },
@@ -282,7 +310,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "75f2f9e8-cf9b-43e0-8c18-c4870487d62a",
+              "b_fighter_id": "5ff394a2-49f0-47da-a9ed-1617aeee9964"
             },
             {
               "a": "Zhang Lipeng",
@@ -293,7 +323,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "9e440be3-3bac-48e4-9d0c-f8535dccddcd",
+              "b_fighter_id": "ce0d3f09-19a3-456c-aba4-bef7d3e2afd1"
             }
           ],
           "status": "unverified",
@@ -315,7 +347,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "9e440be3-3bac-48e4-9d0c-f8535dccddcd",
+              "b_fighter_id": "75f2f9e8-cf9b-43e0-8c18-c4870487d62a"
             }
           ]
         }
@@ -337,7 +371,8 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "a20cb7b1-6b56-400d-9903-9b384cdd3037"
             },
             {
               "a": "Yao Zhikui",
@@ -348,7 +383,8 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "1367a83a-272f-4abd-947b-89fda1bc9222"
             },
             {
               "a": "Ning Guangyou",
@@ -359,7 +395,8 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a50ed456-1084-40d0-8d68-72df3e95db18"
             },
             {
               "a": "He Jianwei",
@@ -370,7 +407,8 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "9caf3b8c-0554-4c19-a0bd-da5c33fb5447"
             }
           ]
         },
@@ -387,7 +425,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a20cb7b1-6b56-400d-9903-9b384cdd3037",
+              "b_fighter_id": "1367a83a-272f-4abd-947b-89fda1bc9222"
             },
             {
               "a": "Ning Guangyou",
@@ -398,7 +438,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2013, which are complete for that year — 33 events, 386 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a50ed456-1084-40d0-8d68-72df3e95db18",
+              "b_fighter_id": "9caf3b8c-0554-4c19-a0bd-da5c33fb5447"
             }
           ]
         },
@@ -418,7 +460,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "a20cb7b1-6b56-400d-9903-9b384cdd3037",
+              "b_fighter_id": "a50ed456-1084-40d0-8d68-72df3e95db18"
             }
           ]
         }
@@ -442,7 +486,8 @@
         "event": "UFC Fight Night: Bisping vs Le",
         "date": "2014-08-23"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
+      "fighter_id": "a50ed456-1084-40d0-8d68-72df3e95db18"
     },
     {
       "weight_class": "Welterweight",
@@ -455,7 +500,8 @@
         "event": "UFC Fight Night: Kim vs Hathaway",
         "date": "2014-03-01"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
+      "fighter_id": "9e440be3-3bac-48e4-9d0c-f8535dccddcd"
     }
   ]
 }

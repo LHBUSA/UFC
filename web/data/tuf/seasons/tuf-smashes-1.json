@@ -27,56 +27,69 @@
   ],
   "coaches": [
     {
-      "team": "",
+      "team": null,
       "name": "George Sotiropoulos",
+      "fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Nick Kara",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Charles Blanchard",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Leonard Gabriel Jr.",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Nathan Coy",
-      "role": "head"
+      "fighter_id": "f85efb7d-18a6-4d13-9522-f13feca11d27",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Ross Pearson",
+      "fighter_id": "7b5900dc-3959-424a-9589-3ba7b3fa3baf",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Dean Amasinger",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jimmy Harbison",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jason Soares",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Erin Beach",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -93,7 +106,8 @@
           "name": "Manny Rodriguez"
         },
         {
-          "name": "Robert Whittaker"
+          "name": "Robert Whittaker",
+          "fighter_id": "67a8b445-de16-48b4-8cb4-f60d64f5f04d"
         }
       ]
     },
@@ -107,10 +121,12 @@
           "name": "Patrick Iodice"
         },
         {
-          "name": "Richie Vaculik"
+          "name": "Richie Vaculik",
+          "fighter_id": "c2b0570c-92de-4cbb-b42a-9afc40c968bb"
         },
         {
-          "name": "Ben Wall"
+          "name": "Ben Wall",
+          "fighter_id": "736a69f2-f136-46b8-a57e-90482a61f33d"
         }
       ]
     },
@@ -127,7 +143,8 @@
           "name": "Valentino Petrescu"
         },
         {
-          "name": "Brad Scott"
+          "name": "Brad Scott",
+          "fighter_id": "51e985b2-7496-4018-9c18-f2829a93ae9e"
         }
       ]
     },
@@ -135,16 +152,19 @@
       "name": "Lightweights",
       "roster": [
         {
-          "name": "Colin Fletcher"
+          "name": "Colin Fletcher",
+          "fighter_id": "fe421e4e-17b7-4f5f-a531-f4078f3f9517"
         },
         {
-          "name": "Norman Parke"
+          "name": "Norman Parke",
+          "fighter_id": "9167fa2b-bd42-4f34-9488-b90db96ac341"
         },
         {
           "name": "Michael Pastou"
         },
         {
-          "name": "Mike Wilkinson"
+          "name": "Mike Wilkinson",
+          "fighter_id": "f6219737-3ba4-47d4-a228-49c4a941ae7b"
         }
       ]
     }
@@ -212,7 +232,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "67a8b445-de16-48b4-8cb4-f60d64f5f04d"
             },
             {
               "a": "Manny Rodriguez",
@@ -234,7 +255,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "51e985b2-7496-4018-9c18-f2829a93ae9e"
             },
             {
               "a": "Benny Alloway",
@@ -262,7 +284,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "67a8b445-de16-48b4-8cb4-f60d64f5f04d"
             },
             {
               "a": "Brad Scott",
@@ -273,7 +296,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "51e985b2-7496-4018-9c18-f2829a93ae9e"
             }
           ],
           "status": "unverified",
@@ -295,7 +319,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "67a8b445-de16-48b4-8cb4-f60d64f5f04d",
+              "b_fighter_id": "51e985b2-7496-4018-9c18-f2829a93ae9e"
             }
           ]
         }
@@ -317,7 +343,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "c2b0570c-92de-4cbb-b42a-9afc40c968bb",
+              "b_fighter_id": "9167fa2b-bd42-4f34-9488-b90db96ac341"
             },
             {
               "a": "Patrick Iodice",
@@ -328,7 +356,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "06d08d8e-3335-427d-a2b1-688217790791"
             },
             {
               "a": "Ben Wall",
@@ -339,7 +368,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "736a69f2-f136-46b8-a57e-90482a61f33d",
+              "b_fighter_id": "fe421e4e-17b7-4f5f-a531-f4078f3f9517"
             },
             {
               "a": "Grant Blackler",
@@ -350,7 +381,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "f6219737-3ba4-47d4-a228-49c4a941ae7b"
             }
           ]
         },
@@ -367,7 +399,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "9167fa2b-bd42-4f34-9488-b90db96ac341",
+              "b_fighter_id": "06d08d8e-3335-427d-a2b1-688217790791"
             },
             {
               "a": "Colin Fletcher",
@@ -378,7 +412,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "fe421e4e-17b7-4f5f-a531-f4078f3f9517",
+              "b_fighter_id": "c2b0570c-92de-4cbb-b42a-9afc40c968bb"
             }
           ],
           "status": "unverified",
@@ -400,7 +436,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "9167fa2b-bd42-4f34-9488-b90db96ac341",
+              "b_fighter_id": "fe421e4e-17b7-4f5f-a531-f4078f3f9517"
             }
           ]
         }
@@ -424,7 +462,8 @@
         "event": "UFC on FX: Sotiropoulos vs Pearson",
         "date": "2012-12-14"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+      "fighter_id": "9167fa2b-bd42-4f34-9488-b90db96ac341"
     },
     {
       "weight_class": "Welterweight",
@@ -437,7 +476,8 @@
         "event": "UFC on FX: Sotiropoulos vs Pearson",
         "date": "2012-12-14"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+      "fighter_id": "67a8b445-de16-48b4-8cb4-f60d64f5f04d"
     }
   ]
 }

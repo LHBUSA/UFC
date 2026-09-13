@@ -78,7 +78,8 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "2950e135-a66d-44f1-a742-b68693904aec"
             },
             {
               "a": "Ilianovich Chalo",
@@ -111,7 +112,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0b48bd80-fd9a-4d8d-8730-48f9b922a510"
             },
             {
               "a": "Juan Villaseca",
@@ -122,7 +124,8 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "627370cd-3887-4a47-9b3a-521af9d1cfbb"
             },
             {
               "a": "Fabian Quintanar",
@@ -161,7 +164,8 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2950e135-a66d-44f1-a742-b68693904aec"
             },
             {
               "a": "Pablo Sabori",
@@ -172,7 +176,8 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "0b48bd80-fd9a-4d8d-8730-48f9b922a510"
             },
             {
               "a": "Marcelo Rojo",
@@ -183,7 +188,8 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "627370cd-3887-4a47-9b3a-521af9d1cfbb"
             }
           ],
           "format_exceptions": [
@@ -211,7 +217,8 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "2950e135-a66d-44f1-a742-b68693904aec"
             },
             {
               "a": "Claudio Puelles",
@@ -222,7 +229,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+              "b_fighter_id": "627370cd-3887-4a47-9b3a-521af9d1cfbb"
             }
           ]
         },
@@ -242,7 +251,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "2950e135-a66d-44f1-a742-b68693904aec",
+              "b_fighter_id": "0b48bd80-fd9a-4d8d-8730-48f9b922a510"
             }
           ]
         }
@@ -266,7 +277,8 @@
         "event": "UFC Fight Night: Dos Anjos vs. Ferguson",
         "date": "2016-11-05"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+      "fighter_id": "2950e135-a66d-44f1-a742-b68693904aec"
     }
   ]
 }

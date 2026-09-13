@@ -43,63 +43,74 @@
     {
       "team": "Team Penn",
       "name": "B.J. Penn",
-      "role": "head"
+      "fighter_id": "ac97d89c-5662-4416-a2bf-0c77d4ff080e",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Penn",
       "name": "Rudolph Valentino",
       "role": "assistant",
-      "discipline": "kickboxing"
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Penn",
       "name": "Tony DeSouza",
+      "fighter_id": "e3e000c6-9bf7-418d-9f6e-3497a4799002",
       "role": "assistant",
-      "discipline": "wrestling"
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Penn",
       "name": "Reagan Penn",
       "role": "assistant",
-      "discipline": "jiu-jitsu"
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Penn",
       "name": "Randy Couture",
-      "role": "guest"
+      "fighter_id": "e5bc5dd5-58a7-419f-80ad-f97454d9e0ae",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Pulver",
       "name": "Jens Pulver",
-      "role": "head"
+      "fighter_id": "39ded89a-9eb8-42c6-8182-864f10dc8dee",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Pulver",
       "name": "Matt Pena",
       "role": "assistant",
-      "discipline": "boxing"
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Pulver",
       "name": "Taisei Kikuchi",
       "role": "assistant",
-      "discipline": "submissions"
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Pulver",
       "name": "Kirk White",
       "role": "assistant",
-      "discipline": "wrestling"
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Pulver",
       "name": "Matt Hughes",
-      "role": "guest"
+      "fighter_id": "a143202d-2906-4fb8-a91b-5165db04b5cf",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Pulver",
       "name": "Jeremy Horn",
-      "role": "guest"
+      "fighter_id": "3af56941-9071-46cd-92b1-6a771e30657d",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "coaching_changes": [
@@ -117,29 +128,36 @@
       "name": "Team Penn",
       "roster": [
         {
-          "name": "Gray Maynard"
+          "name": "Gray Maynard",
+          "fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9"
         },
         {
-          "name": "Matt Wiman"
+          "name": "Matt Wiman",
+          "fighter_id": "dea61de0-138a-4aac-9c52-68d4d421b66c"
         },
         {
           "name": "Gabe Ruediger",
-          "note": "Expelled in episode 5 for missing weight."
+          "note": "Expelled in episode 5 for missing weight.",
+          "fighter_id": "c2bfae45-3555-4a60-9ed1-c47dd196d438"
         },
         {
-          "name": "Joe Lauzon"
+          "name": "Joe Lauzon",
+          "fighter_id": "49cfc17e-904a-49ac-8c81-1790f25873a6"
         },
         {
           "name": "Rob Emerson",
-          "note": "Reinstated to replace Gabe Ruediger."
+          "note": "Reinstated to replace Gabe Ruediger.",
+          "fighter_id": "ea654993-adbd-4dc0-a279-6691349a0bdb"
         },
         {
           "name": "Andy Wang",
-          "note": "Transferred to Team Pulver in episode 7."
+          "note": "Transferred to Team Pulver in episode 7.",
+          "fighter_id": "e4b7ec8f-8169-4d08-bce8-b5b6e6b81f5a"
         },
         {
           "name": "Allen Berube",
-          "note": "Expelled for instigating a backyard fight."
+          "note": "Expelled for instigating a backyard fight.",
+          "fighter_id": "e04eb41c-90f6-40fe-923f-0e105c949673"
         },
         {
           "name": "Noah Thomas",
@@ -151,26 +169,32 @@
       "name": "Team Pulver",
       "roster": [
         {
-          "name": "Corey Hill"
+          "name": "Corey Hill",
+          "fighter_id": "96098c9a-4ef7-456b-ab39-378438d050b8"
         },
         {
-          "name": "Nate Diaz"
+          "name": "Nate Diaz",
+          "fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb"
         },
         {
-          "name": "Brandon Melendez"
+          "name": "Brandon Melendez",
+          "fighter_id": "c1f849a0-829a-4313-84c9-8cb3e7091527"
         },
         {
           "name": "Marlon Sims",
           "note": "Expelled after a backyard fight."
         },
         {
-          "name": "Manny Gamburyan"
+          "name": "Manny Gamburyan",
+          "fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618"
         },
         {
-          "name": "Cole Miller"
+          "name": "Cole Miller",
+          "fighter_id": "539fc170-0d99-471c-b50f-79b9bff89334"
         },
         {
-          "name": "Brian Geraghty"
+          "name": "Brian Geraghty",
+          "fighter_id": "3af95539-21d5-477d-90cf-4d3c6f5b47df"
         },
         {
           "name": "Wayne Weems"
@@ -197,7 +221,9 @@
               "time": "2:33",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "539fc170-0d99-471c-b50f-79b9bff89334",
+              "b_fighter_id": "e04eb41c-90f6-40fe-923f-0e105c949673"
             },
             {
               "a": "Manny Gamburyan",
@@ -210,7 +236,8 @@
               "classification": "exhibition",
               "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "a_in_records": "Manvel Gamburyan",
-              "winner_in_records": "Manvel Gamburyan"
+              "winner_in_records": "Manvel Gamburyan",
+              "a_fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618"
             },
             {
               "a": "Nate Diaz",
@@ -221,7 +248,9 @@
               "time": "4:45",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+              "b_fighter_id": "ea654993-adbd-4dc0-a279-6691349a0bdb"
             },
             {
               "a": "Brandon Melendez",
@@ -232,7 +261,9 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c1f849a0-829a-4313-84c9-8cb3e7091527",
+              "b_fighter_id": "e4b7ec8f-8169-4d08-bce8-b5b6e6b81f5a"
             },
             {
               "a": "Joe Lauzon",
@@ -243,7 +274,9 @@
               "time": "1:13",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "49cfc17e-904a-49ac-8c81-1790f25873a6",
+              "b_fighter_id": "3af95539-21d5-477d-90cf-4d3c6f5b47df"
             },
             {
               "a": "Corey Hill",
@@ -255,7 +288,9 @@
               "episode": 6,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "replacement": "Rob Emerson was reinstated after Gabe Ruediger was expelled for missing weight"
+              "replacement": "Rob Emerson was reinstated after Gabe Ruediger was expelled for missing weight",
+              "a_fighter_id": "96098c9a-4ef7-456b-ab39-378438d050b8",
+              "b_fighter_id": "ea654993-adbd-4dc0-a279-6691349a0bdb"
             },
             {
               "a": "Gray Maynard",
@@ -266,7 +301,8 @@
               "time": "2:47",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9"
             },
             {
               "a": "Matt Wiman",
@@ -277,7 +313,8 @@
               "time": "0:52",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "dea61de0-138a-4aac-9c52-68d4d421b66c"
             }
           ]
         },
@@ -296,7 +333,9 @@
               "time": "3:58",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "49cfc17e-904a-49ac-8c81-1790f25873a6",
+              "b_fighter_id": "539fc170-0d99-471c-b50f-79b9bff89334"
             },
             {
               "a": "Brandon Melendez",
@@ -307,7 +346,9 @@
               "time": "4:07",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c1f849a0-829a-4313-84c9-8cb3e7091527",
+              "b_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9"
             },
             {
               "a": "Nate Diaz",
@@ -318,7 +359,9 @@
               "time": "3:02",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+              "b_fighter_id": "96098c9a-4ef7-456b-ab39-378438d050b8"
             },
             {
               "a": "Manny Gamburyan",
@@ -331,7 +374,9 @@
               "classification": "exhibition",
               "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "a_in_records": "Manvel Gamburyan",
-              "winner_in_records": "Manvel Gamburyan"
+              "winner_in_records": "Manvel Gamburyan",
+              "a_fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618",
+              "b_fighter_id": "dea61de0-138a-4aac-9c52-68d4d421b66c"
             }
           ]
         },
@@ -350,7 +395,9 @@
               "classification": "exhibition",
               "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "a_in_records": "Manvel Gamburyan",
-              "winner_in_records": "Manvel Gamburyan"
+              "winner_in_records": "Manvel Gamburyan",
+              "a_fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618",
+              "b_fighter_id": "49cfc17e-904a-49ac-8c81-1790f25873a6"
             },
             {
               "a": "Nate Diaz",
@@ -361,7 +408,9 @@
               "time": "1:17",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+              "b_fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9"
             }
           ]
         },
@@ -386,7 +435,9 @@
                 "method": "TKO (shoulder injury)",
                 "opponent": "Manny Gamburyan"
               },
-              "b_in_records": "Manvel Gamburyan"
+              "b_in_records": "Manvel Gamburyan",
+              "a_fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+              "b_fighter_id": "729e5697-25f3-4adb-ad81-8bd466d40618"
             }
           ]
         }
@@ -424,7 +475,8 @@
         "event": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale",
         "date": "2007-06-23"
       },
-      "verified_against": "ufc_bout_results — Nate Diaz def. Manvel Gamburyan, Submission, round 2, 20s, at The Ultimate Fighter: Team Pulver vs. Team Penn Finale, 2007-06-23"
+      "verified_against": "ufc_bout_results — Nate Diaz def. Manvel Gamburyan, Submission, round 2, 20s, at The Ultimate Fighter: Team Pulver vs. Team Penn Finale, 2007-06-23",
+      "fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb"
     }
   ]
 }

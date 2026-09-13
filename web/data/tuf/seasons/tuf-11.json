@@ -17,93 +17,116 @@
   "_conflicts": [],
   "coaches": [
     {
-      "team": "",
-      "name": "; Team Liddell",
-      "role": "head"
-    },
-    {
-      "team": "",
+      "team": "Team Liddell",
       "name": "Chuck Liddell",
+      "fighter_id": "22356d0a-d3df-4100-988e-254ef08da3c5",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
-      "name": "Howard Davis",
-      "role": "head",
-      "note": "Jr., boxing coach"
+      "team": "Team Liddell",
+      "name": "Howard Davis Jr.",
+      "role": "assistant",
+      "discipline": "boxing",
+      "note": "Jr., boxing coach",
+      "printed_as": "Howard Davis",
+      "role_basis": "source note: \"Jr., boxing coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Liddell",
       "name": "Scott Epstein",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Liddell",
       "name": "John Hackleman",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Liddell",
       "name": "Jake Shields",
-      "role": "head"
+      "fighter_id": "831e9532-bd01-4388-ba5e-90ff4b709483",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Liddell",
       "name": "Antonio Banuelos",
-      "role": "head"
+      "fighter_id": "6cd1b264-df86-4942-bbf2-5a635f6d33a3",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
-      "name": "; Team Punishment",
-      "role": "head"
-    },
-    {
-      "team": "",
+      "team": "Team Punishment",
       "name": "Tito Ortiz",
+      "fighter_id": "6c94e303-2ab9-4f5e-8a2b-b8a9a369c360",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Punishment",
       "name": "Cleber Luciano",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Punishment",
       "name": "Rob McCullough",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Punishment",
       "name": "Saul Soliz",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
-      "name": "; Team Franklin",
-      "role": "head"
-    },
-    {
-      "team": "",
+      "team": "Team Franklin",
       "name": "Rich Franklin",
+      "fighter_id": "1eebf87a-9a1e-42ee-a43b-9facfda71466",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "source note: \"head coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Franklin",
       "name": "Forrest Griffin",
-      "role": "head"
+      "fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Franklin",
       "name": "Tyson Griffin",
-      "role": "head"
+      "fighter_id": "a7895876-fccb-43bc-bf46-853e0205dab6",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Franklin",
       "name": "Gray Maynard",
-      "role": "head"
+      "fighter_id": "537117ea-93e1-456b-96a2-3c48d8e600c9",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation",
+      "team_basis": "section order in the season source"
     }
   ],
   "format_exceptions": [
@@ -235,7 +258,8 @@
               "time": "0:26",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "8c6884ea-5c3a-48a9-ab52-1a0949c407f5"
             },
             {
               "a": "Brad Tavares",
@@ -246,7 +270,8 @@
               "time": "0:37",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66"
             },
             {
               "a": "Kris McCray",
@@ -257,7 +282,8 @@
               "time": "0:15",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6"
             },
             {
               "a": "James Hammortree",
@@ -268,7 +294,8 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "bd074f4f-7d69-4388-bc98-e6d7e2dd301f"
             },
             {
               "a": "Nick Ring",
@@ -279,7 +306,8 @@
               "time": "2:42",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "de624e42-ba47-4d46-ae5a-e73b0b1e1a79"
             },
             {
               "a": "Kyle Noke",
@@ -290,7 +318,8 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab"
             },
             {
               "a": "Court McGee",
@@ -301,7 +330,9 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+              "b_fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3"
             },
             {
               "a": "Kyacey Uscola",
@@ -334,7 +365,8 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "6e15ee83-04e1-4360-8886-ca782c745c88"
             },
             {
               "a": "Josh Bryant",
@@ -345,7 +377,9 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+              "b_fighter_id": "f4b01b69-64ed-431d-9745-5d2a6f0f95db"
             },
             {
               "a": "Charles Blanchard",
@@ -402,7 +436,8 @@
                   "quote": "In fight number eight, it was Cincinnati’s Victor O’Donnell squaring off against Lakewood, Colorado’s Chris Camozzi ... leading, not surprisingly, to a draw verdict and a sudden victory round. ... Camozzi broke out in front to take the unanimous decision win.",
                   "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
                 }
-              ]
+              ],
+              "a_fighter_id": "a5071dad-cef0-4ac6-b930-1d04cb7e2eb6"
             }
           ]
         },
@@ -419,7 +454,9 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+              "b_fighter_id": "bd074f4f-7d69-4388-bc98-e6d7e2dd301f"
             },
             {
               "a": "Joseph Henle",
@@ -430,7 +467,8 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3"
             },
             {
               "a": "Rich Attonito",
@@ -441,7 +479,8 @@
               "time": "3:36",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "6e15ee83-04e1-4360-8886-ca782c745c88"
             },
             {
               "a": "Court McGee",
@@ -452,7 +491,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+              "b_fighter_id": "de624e42-ba47-4d46-ae5a-e73b0b1e1a79"
             },
             {
               "a": "Josh Bryant",
@@ -487,7 +528,9 @@
                     "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap"
                   ]
                 }
-              ]
+              ],
+              "a_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+              "b_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6"
             },
             {
               "a": "Charles Blanchard",
@@ -498,7 +541,8 @@
               "time": "1:09",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "8c6884ea-5c3a-48a9-ab52-1a0949c407f5"
             },
             {
               "a": "Kyle Noke",
@@ -509,7 +553,8 @@
               "time": "2:44",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab"
             },
             {
               "a": "Kris McCray",
@@ -535,7 +580,8 @@
                   "quote": "The first Wild Card fight in the history of The Ultimate Fighter is over, and Kris McCray is on his way to the quarterfinals.",
                   "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
                 }
-              ]
+              ],
+              "a_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6"
             }
           ],
           "note": "Closed against the official recaps: the repeat appearances are the season's Wild Card fight (episode 8), and the two quarterfinalists without an opening-round win were injury replacements (episode 8).",
@@ -568,7 +614,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+              "b_fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3"
             },
             {
               "a": "Court McGee",
@@ -594,7 +642,9 @@
                   "quote": "Court McGee – 1-1 - Eliminated on episode six by Nick Ring; returning to replace Attonito. ... James Hammortree 0-2 – Eliminated on episode three by Brad Tavares. Brought back on episode eight after injury to Ring.",
                   "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
                 }
-              ]
+              ],
+              "a_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+              "b_fighter_id": "bd074f4f-7d69-4388-bc98-e6d7e2dd301f"
             },
             {
               "a": "Josh Bryant",
@@ -605,7 +655,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+              "b_fighter_id": "8c6884ea-5c3a-48a9-ab52-1a0949c407f5"
             },
             {
               "a": "Kyle Noke",
@@ -616,7 +668,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab",
+              "b_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6"
             }
           ],
           "format_exceptions": [
@@ -659,7 +713,9 @@
               "time": "4:45",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+              "b_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9"
             },
             {
               "a": "Josh Bryant",
@@ -670,7 +726,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+              "b_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6"
             }
           ]
         },
@@ -690,7 +748,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+              "b_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6"
             }
           ]
         }
@@ -714,7 +774,8 @@
         "event": "The Ultimate Fighter: Team Liddell vs Team Ortiz Finale",
         "date": "2010-06-19"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9"
     }
   ],
   "_resolved_conflicts": [

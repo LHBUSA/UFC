@@ -19,69 +19,87 @@
     {
       "team": "Team Cormier",
       "name": "Daniel Cormier",
+      "fighter_id": "189dbb32-67d4-42b7-b098-81be761d4146",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Tiago Beowulf",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rosendo Sanchez",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Bob Cook",
-      "role": "head"
+      "fighter_id": "2f6a6f19-92c9-4f0b-97e6-40886256fa33",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "John Wood",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Michael Chiesa",
-      "role": "head"
+      "fighter_id": "fbf2c061-ec4d-44df-bde8-99a2b819e7d4",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Julius Creed",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Sonnen",
       "name": "Chael Sonnen",
+      "fighter_id": "8882ac21-d5cf-4449-97bd-57bd5c51e07d",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Clayton Hires",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Stephen Smith",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jamie Huey",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Colby Covington",
-      "role": "head"
+      "fighter_id": "99d56896-ce17-48d2-b291-696d2a186d6c",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Mason Fowler",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -90,7 +108,8 @@
       "roster": [
         {
           "name": "Alibi Idiris",
-          "weight_class": "Flyweight"
+          "weight_class": "Flyweight",
+          "fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
         },
         {
           "name": "Eduardo Henrique",
@@ -98,7 +117,8 @@
         },
         {
           "name": "Imanol Rodriguez",
-          "weight_class": "Flyweight"
+          "weight_class": "Flyweight",
+          "fighter_id": "be1af222-a9ab-41bc-84d1-23f5f5f1100b"
         },
         {
           "name": "Tumelo Manyamala",
@@ -110,7 +130,8 @@
         },
         {
           "name": "Daniil Donchenko",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6"
         },
         {
           "name": "Jeff Creighton",
@@ -118,7 +139,8 @@
         },
         {
           "name": "Rodrigo Sezinando",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf"
         }
       ]
     },
@@ -139,11 +161,13 @@
         },
         {
           "name": "Joseph Morales",
-          "weight_class": "Flyweight"
+          "weight_class": "Flyweight",
+          "fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7"
         },
         {
           "name": "Matt Dixon",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a"
         },
         {
           "name": "Richard Martins",
@@ -188,7 +212,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf"
             },
             {
               "a": "Daniil Donchenko",
@@ -199,7 +224,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6"
             },
             {
               "a": "Alejandro Sanchez",
@@ -210,7 +236,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a"
             }
           ]
         },
@@ -227,7 +254,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf"
             },
             {
               "a": "Daniil Donchenko",
@@ -238,7 +266,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+              "b_fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a"
             }
           ]
         },
@@ -257,7 +287,9 @@
               "classification": "unverified",
               "classification_source": null,
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+              "b_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf"
             }
           ]
         }
@@ -279,7 +311,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7"
             },
             {
               "a": "Imanol Rodriguez",
@@ -290,7 +323,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "be1af222-a9ab-41bc-84d1-23f5f5f1100b"
             },
             {
               "a": "Alibi Idiris",
@@ -301,7 +335,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
             },
             {
               "a": "Tumelo Manyamala",
@@ -312,7 +347,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "ccf42f31-e899-442c-8d45-839607d78122"
             }
           ]
         },
@@ -329,7 +365,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+              "b_fighter_id": "be1af222-a9ab-41bc-84d1-23f5f5f1100b"
             },
             {
               "a": "Alibi Idiris",
@@ -354,7 +392,9 @@
                   "retrieved": "2026-09-12",
                   "quote": "Official Result: Alibi Idiris def. Roybert Echeverria by KO (flying knee) in Round 1"
                 }
-              ]
+              ],
+              "a_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+              "b_fighter_id": "ccf42f31-e899-442c-8d45-839607d78122"
             }
           ]
         },
@@ -373,7 +413,9 @@
               "classification": "unverified",
               "classification_source": null,
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+              "b_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
             }
           ]
         }

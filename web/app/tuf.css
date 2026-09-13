@@ -249,6 +249,10 @@
 .tuf-ep { font-family: var(--pbe-font-data); font-size: var(--fs-micro); color: var(--pbe-subtle); }
 .tuf-bout-note { flex-basis: 100%; color: var(--pbe-faint); font-size: var(--fs-sm); line-height: 1.5; }
 .tuf-bout-note b { color: var(--pbe-gold); }
+.tuf-bout-src { flex-basis: 100%; font-family: var(--pbe-font-data); font-size: var(--fs-micro); letter-spacing: .04em; }
+.tuf-bout-src a { color: var(--pbe-subtle); text-decoration: underline; text-underline-offset: 2px; }
+.tuf-bout-src a + a { margin-left: var(--s-3); }
+.tuf-team li.is-withdrawn .tuf-name { color: var(--pbe-dim); }
 
 .tuf-class {
   padding: 2px var(--s-2);

@@ -34,30 +34,34 @@
     {
       "team": "Team Liddell",
       "name": "Chuck Liddell",
-      "role": "head"
+      "fighter_id": "22356d0a-d3df-4100-988e-254ef08da3c5",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Couture",
       "name": "Randy Couture",
-      "role": "head"
+      "fighter_id": "e5bc5dd5-58a7-419f-80ad-f97454d9e0ae",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Marc Laimon",
       "role": "assistant",
-      "discipline": "grappling"
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Ganyao Fairtex",
       "role": "assistant",
-      "discipline": "Muay Thai"
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Peter Welch",
       "role": "assistant",
-      "discipline": "boxing"
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "coaching_changes": [
@@ -80,38 +84,46 @@
       "roster": [
         {
           "name": "Bobby Southworth",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622"
         },
         {
           "name": "Sam Hoger",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "190cb5c6-91eb-4f62-a4ce-1eae9c7c4550"
         },
         {
           "name": "Forrest Griffin",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d"
         },
         {
           "name": "Alex Schoenauer",
           "weight_class": "Light Heavyweight",
-          "note": "Traded to Team Couture in episode 4."
+          "note": "Traded to Team Couture in episode 4.",
+          "fighter_id": "604ffb5b-aa8b-480e-bfd8-42d77fed28ed"
         },
         {
           "name": "Josh Koscheck",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1"
         },
         {
           "name": "Diego Sanchez",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9"
         },
         {
           "name": "Kenny Florian",
           "weight_class": "Middleweight",
-          "note": "Traded to Team Couture in episode 9."
+          "note": "Traded to Team Couture in episode 9.",
+          "fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba"
         },
         {
           "name": "Josh Rafferty",
           "weight_class": "Middleweight",
-          "note": "Traded to Team Couture in episode 8."
+          "note": "Traded to Team Couture in episode 8.",
+          "fighter_id": "a4dd7ce2-b633-429b-adaf-a37b7cb7c46c"
         }
       ]
     },
@@ -120,20 +132,24 @@
       "roster": [
         {
           "name": "Stephan Bonnar",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c"
         },
         {
           "name": "Mike Swick",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "86d108cd-fdf9-4ba6-bd7a-e0572a2e10c0"
         },
         {
           "name": "Lodune Sincaid",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "20626c40-82a5-47f0-b8dd-3ed5d0fbfef9"
         },
         {
           "name": "Jason Thacker",
           "weight_class": "Light Heavyweight",
-          "note": "Eliminated in episode 2."
+          "note": "Eliminated in episode 2.",
+          "fighter_id": "de37d9ab-7795-438e-b7fc-7479f9f4bbef"
         },
         {
           "name": "Nathan Quarry",
@@ -143,16 +159,19 @@
         {
           "name": "Chris Leben",
           "weight_class": "Middleweight",
-          "note": "Brought back into the tournament to replace Nathan Quarry."
+          "note": "Brought back into the tournament to replace Nathan Quarry.",
+          "fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590"
         },
         {
           "name": "Alex Karalexis",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "f45ce067-f3a8-41d1-a889-1401d4fc35ac"
         },
         {
           "name": "Chris Sanford",
           "weight_class": "Middleweight",
-          "note": "Eliminated in episode 2."
+          "note": "Eliminated in episode 2.",
+          "fighter_id": "5876c5f7-eca1-4d00-bee4-e4d018134d56"
         }
       ]
     }
@@ -176,7 +195,9 @@
               "time": "0:12",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622",
+              "b_fighter_id": "20626c40-82a5-47f0-b8dd-3ed5d0fbfef9"
             },
             {
               "a": "Forrest Griffin",
@@ -187,7 +208,9 @@
               "time": "1:20",
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+              "b_fighter_id": "604ffb5b-aa8b-480e-bfd8-42d77fed28ed"
             },
             {
               "a": "Stephan Bonnar",
@@ -198,7 +221,9 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
+              "b_fighter_id": "8b642ed0-b125-4945-b3d5-b8d07d950622"
             }
           ]
         },
@@ -215,7 +240,9 @@
               "time": "1:05",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+              "b_fighter_id": "190cb5c6-91eb-4f62-a4ce-1eae9c7c4550"
             },
             {
               "a": "Stephan Bonnar",
@@ -226,7 +253,9 @@
               "time": "4:58",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c",
+              "b_fighter_id": "86d108cd-fdf9-4ba6-bd7a-e0572a2e10c0"
             }
           ]
         },
@@ -247,7 +276,9 @@
               "classification_source": "contested on a sanctioned UFC card; VERIFIED against our own ufc_bout_results row (ufcstats: Decision - Unanimous, round 3, 300s, Light Heavyweight)",
               "on_finale_card": true,
               "tournament_deciding": true,
-              "scorecards": "29-28, 29-28, 29-28"
+              "scorecards": "29-28, 29-28, 29-28",
+              "a_fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d",
+              "b_fighter_id": "6fee988e-909c-47cd-9ef4-10e40c4e307c"
             }
           ]
         }
@@ -271,7 +302,9 @@
               "time": "1:47",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
+              "b_fighter_id": "f45ce067-f3a8-41d1-a889-1401d4fc35ac"
             },
             {
               "a": "Josh Koscheck",
@@ -282,7 +315,9 @@
               "time": null,
               "episode": null,
               "classification": "exhibition",
-              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "recorded by the season source as contested inside the competition rather than on a card, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1",
+              "b_fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590"
             },
             {
               "a": "Diego Sanchez",
@@ -293,7 +328,9 @@
               "time": "1:48",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
+              "b_fighter_id": "a4dd7ce2-b633-429b-adaf-a37b7cb7c46c"
             }
           ]
         },
@@ -312,7 +349,9 @@
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "replacement": "Chris Leben replaced Nathan Quarry, who withdrew with an ankle injury"
+              "replacement": "Chris Leben replaced Nathan Quarry, who withdrew with an ankle injury",
+              "a_fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba",
+              "b_fighter_id": "f5a4aee3-dd0a-4375-b1bc-0f5563d16590"
             },
             {
               "a": "Diego Sanchez",
@@ -323,7 +362,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
+              "b_fighter_id": "9dcc87e2-64f1-4ca7-91db-b2c72d3d5df1"
             }
           ]
         },
@@ -342,7 +383,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; VERIFIED against our own ufc_bout_results row (ufcstats: KO/TKO, round 1, 169s = 2:49, matching the source exactly)",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9",
+              "b_fighter_id": "c709633d-c726-475e-8b5c-57eee382f8ba"
             }
           ]
         }
@@ -367,7 +410,8 @@
         "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
         "date": "2005-04-09"
       },
-      "verified_against": "ufc_bout_results — Forrest Griffin def. Stephan Bonnar, Decision - Unanimous, round 3, 300s, 2005-04-09"
+      "verified_against": "ufc_bout_results — Forrest Griffin def. Stephan Bonnar, Decision - Unanimous, round 3, 300s, 2005-04-09",
+      "fighter_id": "a356d7e5-5b86-42c7-8794-5a2bc3b81c2d"
     },
     {
       "weight_class": "Middleweight",
@@ -380,7 +424,8 @@
         "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
         "date": "2005-04-09"
       },
-      "verified_against": "ufc_bout_results — Diego Sanchez def. Kenny Florian, KO/TKO, round 1, 169s, 2005-04-09"
+      "verified_against": "ufc_bout_results — Diego Sanchez def. Kenny Florian, KO/TKO, round 1, 169s, 2005-04-09",
+      "fighter_id": "69133a27-6504-4af9-90c0-d8ea99568ef9"
     }
   ]
 }

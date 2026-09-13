@@ -334,6 +334,250 @@
         "retrieved": "2026-09-12"
       },
       "why": "The winner is unchanged. The draft's two rounds contradict the official account of a third round."
+    },
+    {
+      "id": "tuf-25/rosters/rebuilt",
+      "season": "tuf-25",
+      "op": "set_team_rosters",
+      "kind": "garbage_roster",
+      "expect_debris": "[[",
+      "teams": [
+        {
+          "name": "Team Dillashaw",
+          "roster": [
+            {
+              "name": "James Krause",
+              "pick": 1
+            },
+            {
+              "name": "Jesse Taylor",
+              "pick": 2
+            },
+            {
+              "name": "Ramsey Nijem",
+              "pick": 3
+            },
+            {
+              "name": "Dhiego Lima",
+              "pick": 4
+            },
+            {
+              "name": "Joe Stevenson",
+              "pick": 5
+            },
+            {
+              "name": "Tom Gallicchio",
+              "pick": 6
+            },
+            {
+              "name": "Gilbert Smith",
+              "pick": 7
+            }
+          ]
+        },
+        {
+          "name": "Team Garbrandt",
+          "roster": [
+            {
+              "name": "Seth Baczynski",
+              "pick": 1
+            },
+            {
+              "name": "Mehdi Baghdad",
+              "pick": 2
+            },
+            {
+              "name": "Eddie Gordon",
+              "pick": 3
+            },
+            {
+              "name": "Hector Urbina",
+              "pick": 4,
+              "status": "withdrawn",
+              "note": "Came in more than 20 pounds over the welterweight limit and left the competition in episode 1 without fighting; replaced by Johnny Nunez.",
+              "episode": 1
+            },
+            {
+              "name": "Hayder Hassan",
+              "pick": 5
+            },
+            {
+              "name": "Julian Lane",
+              "pick": 6
+            },
+            {
+              "name": "Justin Edwards",
+              "pick": 7
+            },
+            {
+              "name": "Johnny Nunez",
+              "status": "replacement",
+              "replacement_for": "Hector Urbina",
+              "note": "Selected by Garbrandt in episode 1 to replace Hector Urbina.",
+              "episode": 1
+            }
+          ]
+        }
+      ],
+      "pick_basis": "position in the team list the official episode 1 recap gives under 'here's how the team selections were made'; the same recap calls Seth Baczynski Garbrandt's No. 1 pick and Gilbert Smith Dillashaw's last selection",
+      "draft": {
+        "first_selection": "Team Dillashaw",
+        "first_fight_pick": "Team Garbrandt",
+        "basis": "coin toss won by Dillashaw, who took the first selection",
+        "fight_pick_rule": "fight picks alternated each week regardless of who won the previous bout"
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-redemption-ep-1-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "TEAM DILLASHAW James Krause, Jesse Taylor, Ramsey Nijem, Dhiego Lima, Joe Stevenson, Tom Gallicchio, Gilbert Smith TEAM GARBRANDT Seth Baczynski, Mehdi Baghdad, Eddie Gordon, Hector Urbina, Hayder Hassan, Julian Lane, Justin Edwards. ... With Urbina gone, Garbrandt selected Johnny Nunez ... as his replacement",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "why": "Both rosters in the draft were wiki-link debris (\"Team Ortiz|TUF 11]]), Mehdi Baghdad ([[The Ultimate Fighter: ...\"). The official recap lists both teams in selection order."
+    },
+    {
+      "id": "tuf-30/roster/coates-gallardo",
+      "season": "tuf-30",
+      "op": "patch_roster",
+      "kind": "garbage_roster",
+      "team": "Team Peña",
+      "remove": [
+        "Coates was unable to make weight",
+        "was replaced on episode 4 by Gallardo"
+      ],
+      "annotate": {
+        "Chantel Coates": {
+          "status": "withdrawn",
+          "episode": 4,
+          "note": "Weighed 154.5 lb, 28.5 over the flyweight limit, days before her scheduled bout with Brogan Walker; her coaches pulled her from the competition in episode 4."
+        }
+      },
+      "add": [
+        {
+          "name": "Laura Gallardo",
+          "status": "replacement",
+          "replacement_for": "Chantel Coates",
+          "episode": 4,
+          "note": "Team Peña's alternate, brought in for Chantel Coates in episode 4."
+        }
+      ],
+      "format_exceptions": {
+        "drop": [
+          "Coates was unable to make weight",
+          "was replaced on episode 4 by Gallardo"
+        ]
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-team-pena-vs-team-nunes",
+        "family": "ufc_com_recap",
+        "published_on_site": "2022-05-24T15:35:22-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "comes in at 154.5 pounds, meaning she’s 28.5 pounds above the flyweight limit ... the coaches outline to Coates that they have to pull her from the fight. ... Pena explains that she’s familiar with her alternate, Laura Gallardo"
+      },
+      "why": "Two sentence fragments of the draft's replacement note had become roster members and format-exception fighters."
+    },
+    {
+      "id": "tuf-7/roster/paul-bradley",
+      "season": "tuf-7",
+      "op": "patch_roster",
+      "kind": "markup_debris",
+      "team": "Team Rampage",
+      "rename": {
+        "[[Paul Bradley": "Paul Bradley"
+      },
+      "format_exceptions": {
+        "rename": {
+          "[[Paul Bradley": "Paul Bradley"
+        }
+      },
+      "source": {
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter:_Team_Rampage_vs._Team_Forrest",
+        "family": "wikipedia_markup",
+        "retrieved": "2026-09-12",
+        "quote": "[[Paul Bradley"
+      },
+      "why": "An unclosed wiki link left '[[' in front of the name. The name is otherwise the one the same season's bouts already use."
+    },
+    {
+      "id": "tuf-brazil-2/roster/replacements",
+      "season": "tuf-brazil-2",
+      "op": "patch_roster",
+      "kind": "garbage_roster",
+      "team": "Team Nogueira",
+      "rename": {
+        "Neilson Gomes (Thiago Gonçalves)": "Neilson Gomes"
+      },
+      "annotate": {
+        "Neilson Gomes": {
+          "status": "withdrawn",
+          "episode": 4,
+          "note": "Withdrew with a knee injury; replaced by Thiago “Jambo” Gonçalves in episode 4."
+        }
+      },
+      "add": [
+        {
+          "name": "Thiago Goncalves",
+          "status": "replacement",
+          "replacement_for": "Neilson Gomes",
+          "episode": 4,
+          "note": "Returned after losing in the elimination round, as the substitute for Neilson Gomes."
+        }
+      ],
+      "format_exceptions": {
+        "rename": {
+          "Neilson Gomes (Thiago Gonçalves)": "Neilson Gomes"
+        }
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/tuf-brasil-2-episode-four-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "Jambo had returned as a substitute for Neilson Gomes, who, with a knee injury, had to withdraw from the competition. ... In its place came Daniel “Gelo” who, like Jambo, had been cut in the first round.",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "why": "The draft wrote a replacement as a parenthesis inside one roster name."
+    },
+    {
+      "id": "tuf-brazil-2/roster/replacements-werdum",
+      "season": "tuf-brazil-2",
+      "op": "patch_roster",
+      "kind": "garbage_roster",
+      "team": "Team Werdum",
+      "rename": {
+        "Yan Cabral (Daniel Oliveira)": "Yan Cabral"
+      },
+      "annotate": {
+        "Yan Cabral": {
+          "status": "withdrawn",
+          "episode": 4,
+          "note": "Broke his hand winning his opening bout against David Vieira and left the competition; replaced by Daniel “Gelo” Oliveira in episode 4."
+        }
+      },
+      "add": [
+        {
+          "name": "Daniel Oliveira",
+          "status": "replacement",
+          "replacement_for": "Yan Cabral",
+          "episode": 4,
+          "note": "Returned after losing in the elimination round, as the replacement for Yan Cabral."
+        }
+      ],
+      "format_exceptions": {
+        "rename": {
+          "Yan Cabral (Daniel Oliveira)": "Yan Cabral"
+        }
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/tuf-brasil-2-episode-four-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "Another welterweight who prematurely waved goodbye was Yan Cabral, who broke his hand during last week’s bout against David Vieira and had to leave the house. In its place came Daniel “Gelo” who, like Jambo, had been cut in the first round.",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "why": "Same parenthesis pattern on the other team."
     }
   ]
 }

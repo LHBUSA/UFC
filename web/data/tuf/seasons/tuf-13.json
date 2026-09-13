@@ -26,64 +26,80 @@
   ],
   "coaches": [
     {
-      "team": "",
+      "team": null,
       "name": "Brock Lesnar",
-      "role": "head"
+      "fighter_id": "06a8edc9-6bd2-4400-b580-b5f9ada5b4eb",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Marty Morgan",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Erik Paulson",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rodrigo Medeiros",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Greg Nelson",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Chris Manos",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
-      "name": "Matt Hughes (guest coach)",
-      "role": "head"
+      "team": null,
+      "name": "Matt Hughes",
+      "fighter_id": "a143202d-2906-4fb8-a91b-5165db04b5cf",
+      "role": "guest",
+      "printed_as": "Matt Hughes (guest coach)",
+      "role_basis": "source note: \"guest coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Junior dos Santos",
-      "role": "head"
+      "fighter_id": "d6ccb0a0-95e4-4be8-9066-df48beb77a77",
+      "role": "head",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Antonio Peinado",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Billy Scheibe",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Lew Polley",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Luiz Dorea",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "format_exceptions": [
@@ -189,7 +205,8 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f2602ad7-75ed-4b70-b8fb-6a124a59f3e0"
             },
             {
               "a": "Javier Torres",
@@ -200,7 +217,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "32eaa9ee-07a2-4052-b32f-2eda4a4f4d87"
             },
             {
               "a": "Mick Bowman",
@@ -211,7 +229,8 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "3e82feaa-ec0d-43b9-8911-7b479d5a1957"
             },
             {
               "a": "Ramsey Nijem",
@@ -222,7 +241,8 @@
               "time": "3:31",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "20f60f25-983a-42b6-8796-1a87bee8b0b3"
             },
             {
               "a": "Ryan McGillivray",
@@ -233,7 +253,8 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "150e5464-673c-4f8a-9358-ff65872573be"
             },
             {
               "a": "Justin Edwards",
@@ -244,7 +265,9 @@
               "time": "3:56",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "769dbc02-f5e5-49d3-a7ce-d09f514998b4",
+              "b_fighter_id": "5bdd39aa-953b-4408-b518-67f46f24be6d"
             },
             {
               "a": "Zach Davis",
@@ -255,7 +278,8 @@
               "time": "3:20",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "26f5beff-88df-4da1-b291-0307f8928d71"
             },
             {
               "a": "Javier Torres",
@@ -266,7 +290,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "26f5beff-88df-4da1-b291-0307f8928d71"
             }
           ],
           "status": "unverified",
@@ -285,7 +310,9 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f2602ad7-75ed-4b70-b8fb-6a124a59f3e0",
+              "b_fighter_id": "32eaa9ee-07a2-4052-b32f-2eda4a4f4d87"
             },
             {
               "a": "Clay Harvison",
@@ -296,7 +323,9 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "3e82feaa-ec0d-43b9-8911-7b479d5a1957",
+              "b_fighter_id": "20f60f25-983a-42b6-8796-1a87bee8b0b3"
             },
             {
               "a": "Ryan McGillivray",
@@ -307,7 +336,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "150e5464-673c-4f8a-9358-ff65872573be",
+              "b_fighter_id": "5bdd39aa-953b-4408-b518-67f46f24be6d"
             },
             {
               "a": "Zach Davis",
@@ -318,7 +349,8 @@
               "time": "3:20",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "26f5beff-88df-4da1-b291-0307f8928d71"
             }
           ]
         },
@@ -335,7 +367,9 @@
               "time": "1:49",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "32eaa9ee-07a2-4052-b32f-2eda4a4f4d87",
+              "b_fighter_id": "20f60f25-983a-42b6-8796-1a87bee8b0b3"
             },
             {
               "a": "Tony Ferguson",
@@ -346,7 +380,9 @@
               "time": "3:10",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2011, which are complete for that year — 27 events, 300 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5bdd39aa-953b-4408-b518-67f46f24be6d",
+              "b_fighter_id": "26f5beff-88df-4da1-b291-0307f8928d71"
             }
           ]
         },
@@ -366,7 +402,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "20f60f25-983a-42b6-8796-1a87bee8b0b3",
+              "b_fighter_id": "5bdd39aa-953b-4408-b518-67f46f24be6d"
             }
           ]
         }
@@ -390,7 +428,8 @@
         "event": "The Ultimate Fighter: Team Lesnar vs Team dos Santos Finale",
         "date": "2011-06-04"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "5bdd39aa-953b-4408-b518-67f46f24be6d"
     }
   ]
 }

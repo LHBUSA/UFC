@@ -19,8 +19,10 @@
  * licence to count something.
  */
 import "server-only";
-import { getImagesForFighters, type PortraitSet } from "@/lib/db";
+import type { PortraitSet } from "@/lib/db";
+import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import inventory from "@/data/tuf/seasons.json";
+import identityIndex from "@/data/tuf/identity.index.json";
 import { TUF_DETAILS } from "@/data/tuf/details.generated";
 
 /* Detail files are imported rather than read from disk so they are bundled
@@ -35,7 +37,14 @@ export type Classification = "professional" | "exhibition" | "unverified";
 
 export type Edition = { key: string; name: string; short: string; blurb: string };
 
-export type SeasonWinner = { weight_class: string; fighter: string };
+export type SeasonWinner = { weight_class: string; fighter: string; fighter_id?: string };
+
+/** Where a repaired or added fact came from. Wikipedia drafted the season
+ * files; an official source that states a field overrides it and says so. */
+export type FieldSource = {
+  repair: string; fields: string[]; url: string; family: string;
+  published_on_site?: string; published_note?: string; retrieved: string; quote: string; corroboration?: string[];
+};
 
 export type SeasonRow = {
   slug: string;
@@ -44,10 +53,12 @@ export type SeasonRow = {
   name: string;
   year: number;
   coaches: string[];
+  /** Canonical ids for `coaches`, position for position; null where unresolved. */
+  coach_fighter_ids?: Array<string | null>;
   coaches_note?: string;
   weight_classes: string[];
   winners: SeasonWinner[];
-  finalists?: Array<{ weight_class: string; fighters: string[] }>;
+  finalists?: Array<{ weight_class: string; fighters: string[]; fighter_ids?: Array<string | null> }>;
   winner_note?: string;
   format_note?: string;
   completion_unverified?: boolean;
@@ -104,6 +115,14 @@ export type TufBout = {
    * decided by a bracket. Absent everywhere else, because everywhere else the
    * prize for winning was the next round. */
   points?: number | null;
+  /** Canonical fighter ids for each corner, stamped by
+   * scripts/tuf/resolve_identity.mjs. Absent means the name did not resolve
+   * to a fighter under the identity rules, not that it was not checked. */
+  a_fighter_id?: string;
+  b_fighter_id?: string;
+  wildcard?: boolean;
+  result_note?: string;
+  sources?: FieldSource[];
 };
 
 export type Stage = {
@@ -121,8 +140,13 @@ export type SeasonDetail = SeasonRow & {
   _provenance?: { primary: string; retrieved: string; note?: string };
   _conflicts?: Array<{ field: string; detail: string; retrieved?: string }>;
   classification_policy?: { in_house: string; finale: string; rationale: string };
-  coaches_full?: Array<{ team: string; name: string; role: string; region?: string }>;
-  teams?: Array<{ name: string; region?: string; roster: Array<{ name: string; country?: string; note?: string }> }>;
+  coaches_full?: StaffEntry[];
+  teams?: Array<{
+    name: string; region?: string; pick_basis?: string; sources?: FieldSource[];
+    roster: RosterEntry[];
+  }>;
+  draft?: { first_selection?: string; first_fight_pick?: string; basis?: string; fight_pick_rule?: string; source?: string };
+  _resolved_conflicts?: Array<{ field: string; detail: string; resolved_by: string; resolved_with: string; resolution: string }>;
   bracket?: Array<{ weight_class: string; stages: Stage[] }>;
   /** Seasons decided by points between two gyms rather than by a bracket.
    * Season 21 is the only one so far. Its standings are read from the source
@@ -155,6 +179,18 @@ export type SeasonDetail = SeasonRow & {
     verified_against?: string;
     winning_bout?: { a: string; b: string; event: string; date: string };
   }>;
+};
+
+export type StaffRole = "head" | "assistant" | "guest" | "other";
+export type StaffEntry = {
+  team: string | null; name: string; role: StaffRole; fighter_id?: string;
+  nickname?: string; discipline?: string; region?: string; note?: string; printed_as?: string;
+  role_basis: string; team_basis?: string;
+};
+export type RosterEntry = {
+  name: string; fighter_id?: string; country?: string; note?: string; weight_class?: string;
+  pick?: number; status?: "withdrawn" | "replacement"; replacement_for?: string; episode?: number;
+  printed_as?: string; sources?: FieldSource[];
 };
 
 const INV = inventory as unknown as {
@@ -263,14 +299,16 @@ export function allBouts(season: SeasonDetail): Array<TufBout & { stage: Stage["
 
 /** Exhibition and unverified bouts a fighter appeared in, for their history.
  * Shown separately from the professional record, never merged into it. */
-export function nonProfessionalAppearances(fighterName: string) {
-  const hits: Array<{ season: SeasonRow; bout: TufBout & { stage: Stage["stage"]; weight_class: string } }> = [];
+export function nonProfessionalAppearances(fighterId: string) {
+  const hits: Array<{ season: SeasonRow; bout: TufBout & { stage: Stage["stage"]; weight_class: string }; side: "a" | "b" }> = [];
+  if (!fighterId) return hits;
   for (const row of INV.seasons) {
     const d = seasonBySlug(row.slug);
     if (!d?.bracket) continue;
     for (const b of allBouts(d)) {
       if (countsTowardsRecord(b)) continue;
-      if (b.a === fighterName || b.b === fighterName) hits.push({ season: row, bout: b });
+      if (b.a_fighter_id === fighterId) hits.push({ season: row, bout: b, side: "a" });
+      else if (b.b_fighter_id === fighterId) hits.push({ season: row, bout: b, side: "b" });
     }
   }
   return hits;
@@ -321,6 +359,13 @@ export async function linkedFinale(name: string | null, date: string | null): Pr
 
 export type LinkedFighter = { id: string; name: string; espn_athlete_id: string | null; ufcstats_id: string | null };
 
+const IDENTITY = identityIndex as Record<string, Record<string, string>>;
+
+/** The canonical fighter a printed name in one season resolved to, if any. */
+export function fighterIdFor(slug: string, printed: string): string | null {
+  return IDENTITY[slug]?.[printed] ?? null;
+}
+
 /**
  * Portraits for people named in the archive.
  *
@@ -328,12 +373,15 @@ export type LinkedFighter = { id: string; name: string; espn_athlete_id: string 
  * TUF-specific: the same row, the same derivatives, the same rights trail that
  * a fighter profile uses. The archive owns no imagery of its own, so a
  * portrait can never drift between a season page and the profile it links to,
- * and there is exactly one place where a licence is recorded.
+ * and there is exactly one place where a licence is recorded. The verified
+ * resolver is the one used, because a season page is a high-visibility
+ * surface: a display fallback is accepted only once its athlete identity
+ * checks out.
  */
 export async function portraitsFor(linked: Map<string, LinkedFighter>) {
-  const ids = [...linked.values()].map((f) => f.id);
+  const ids = [...new Set([...linked.values()].map((f) => f.id))];
   if (!ids.length) return new Map<string, PortraitSet>();
-  const byId = await getImagesForFighters(ids);
+  const byId = await getVerifiedDisplayImagesForFighters(ids);
   /* Keyed by the name the archive uses, so a page does not have to carry the
    * id around just to draw a face. */
   const byName = new Map<string, PortraitSet>();
@@ -345,48 +393,79 @@ export async function portraitsFor(linked: Map<string, LinkedFighter>) {
 }
 
 /**
- * Resolve contestant and coach names to canonical fighter rows.
+ * Resolve the names one season prints to canonical fighter rows.
  *
- * Matching only — nothing is inserted, so a TUF contestant who never fought in
- * the UFC simply does not resolve and is shown as an unlinked name rather than
- * becoming a second, thinner profile beside a real one.
+ * By id, never by name. The ids were decided once, with their evidence, by
+ * scripts/tuf/resolve_identity.mjs (web/data/tuf/identity.json), so an accent
+ * no longer decides whether a champion links, and a name that did not resolve
+ * stays a plain name rather than borrowing a namesake's profile. Nothing is
+ * inserted.
  */
-export async function linkFighters(names: string[]): Promise<Map<string, LinkedFighter>> {
-  const out = new Map<string, LinkedFighter>();
-  const unique = [...new Set(names.filter(Boolean))];
-  if (!unique.length) return out;
-  const list = unique.map((n) => `"${n.replace(/"/g, '\\"')}"`).join(",");
-  const rows = await rest<LinkedFighter[]>(
-    `ufc_fighters?select=id,name,espn_athlete_id,ufcstats_id&name=in.(${encodeURIComponent(list)})&limit=200`,
-    [],
-  );
-  for (const r of rows) out.set(r.name, r);
-  return out;
+export async function linkSeasonNames(slug: string, names: string[]): Promise<Map<string, LinkedFighter>> {
+  return linkNames(names.map((n) => [slug, n] as const));
 }
 
 /**
- * Every season a person appears in, as coach, contestant or tournament winner.
- *
- * Name matching only, against committed season data. A person who is not in
- * the archive gets nothing rather than an empty section, so profiles that have
- * no TUF history are untouched.
+ * The same, for names drawn from several seasons at once. Keyed both by the
+ * printed name and by `slug|name`; a caller mixing seasons should use the
+ * latter, because two seasons can print one name for two people.
  */
-export function tufSeasonsFor(name: string): Array<{
+export async function linkNames(pairs: ReadonlyArray<readonly [string, string]>): Promise<Map<string, LinkedFighter>> {
+  const idByKey = new Map<string, string>();
+  for (const [slug, name] of pairs) {
+    const id = fighterIdFor(slug, name);
+    if (id) idByKey.set(`${slug}|${name}`, id);
+  }
+  const ids = [...new Set(idByKey.values())];
+  const out = new Map<string, LinkedFighter>();
+  if (!ids.length) return out;
+  const rows: LinkedFighter[] = [];
+  for (let i = 0; i < ids.length; i += 150) {
+    rows.push(...(await rest<LinkedFighter[]>(`ufc_fighters?select=id,name,espn_athlete_id,ufcstats_id&id=in.(${ids.slice(i, i + 150).join(",")})`, [])));
+  }
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  for (const [key, id] of idByKey) {
+    const f = byId.get(id);
+    if (!f) continue;
+    out.set(key, f);
+    out.set(key.slice(key.indexOf("|") + 1), f);
+  }
+  return out;
+}
+
+export type TufRole = "coach" | "assistant_coach" | "guest_coach" | "contestant" | "champion";
+
+/**
+ * Every season a fighter appears in, and in what capacity.
+ *
+ * By canonical fighter id, against committed season data. An assistant coach
+ * is recorded as one: Frank Mir on TUF 17 was Jon Jones's jiu-jitsu coach, and
+ * a profile that called that "Coach" overstated the archive. Staff who were not
+ * coaching are not listed on a fighter profile at all. A fighter with no TUF
+ * history gets nothing, so other profiles are untouched.
+ */
+export function tufSeasonsForFighter(fighterId: string): Array<{
   season: SeasonRow;
-  role: "coach" | "contestant" | "champion";
+  role: TufRole;
   team?: string;
   weight_class?: string;
+  discipline?: string;
 }> {
-  const out: Array<{ season: SeasonRow; role: "coach" | "contestant" | "champion"; team?: string; weight_class?: string }> = [];
+  const out: Array<{ season: SeasonRow; role: TufRole; team?: string; weight_class?: string; discipline?: string }> = [];
+  if (!fighterId) return out;
   for (const row of INV.seasons) {
     const d = seasonBySlug(row.slug);
-    const won = row.winners.find((w) => w.fighter === name);
+    const won = row.winners.find((w) => w.fighter_id === fighterId);
     if (won) out.push({ season: row, role: "champion", weight_class: won.weight_class });
-    if (row.coaches.includes(name) || d?.coaches_full?.some((c) => c.name === name)) {
-      out.push({ season: row, role: "coach", team: d?.coaches_full?.find((c) => c.name === name)?.team });
-    }
-    const team = d?.teams?.find((t) => t.roster.some((r) => r.name === name));
-    if (team && !won) out.push({ season: row, role: "contestant", team: team.name });
+    const staff = d?.coaches_full?.find((c) => c.fighter_id === fighterId);
+    const head = (row.coach_fighter_ids ?? []).includes(fighterId) || staff?.role === "head";
+    if (head) out.push({ season: row, role: "coach", team: staff?.team ?? undefined });
+    else if (staff?.role === "assistant") out.push({ season: row, role: "assistant_coach", team: staff.team ?? undefined, discipline: staff.discipline });
+    else if (staff?.role === "guest") out.push({ season: row, role: "guest_coach" });
+    if (won) continue;
+    const team = d?.teams?.find((t) => t.roster.some((r) => r.fighter_id === fighterId));
+    const fought = d?.bracket ? allBouts(d).some((b) => b.a_fighter_id === fighterId || b.b_fighter_id === fighterId) : false;
+    if (team || fought) out.push({ season: row, role: "contestant", team: team?.name });
   }
   return out;
 }

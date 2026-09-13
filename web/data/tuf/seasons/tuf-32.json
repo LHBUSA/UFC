@@ -37,80 +37,101 @@
     {
       "team": "Team Grasso",
       "name": "Alexa Grasso",
+      "fighter_id": "1d296292-4969-43a8-9948-cd0a76a642ce",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Diego Lopes",
+      "fighter_id": "803fdd5d-02ce-4064-80f4-12a38e1a8593",
       "role": "assistant",
-      "note": "assistant coach"
+      "note": "assistant coach",
+      "role_basis": "source note: \"assistant coach\""
     },
     {
       "team": "Team Grasso",
       "name": "Francisco Grasso",
       "role": "assistant",
-      "note": "assistant coach"
+      "note": "assistant coach",
+      "role_basis": "source note: \"assistant coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Alessandro Costa",
-      "role": "head",
-      "note": "BJJ coach"
+      "fighter_id": "f4e00092-b080-4e61-a65d-73fa47629f24",
+      "role": "assistant",
+      "discipline": "BJJ",
+      "note": "BJJ coach",
+      "role_basis": "source note: \"BJJ coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Colin Daynes",
-      "role": "head",
-      "note": "wrestling coach"
+      "role": "assistant",
+      "discipline": "wrestling",
+      "note": "wrestling coach",
+      "role_basis": "source note: \"wrestling coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jose Martinez",
-      "role": "head",
-      "note": "striking coach"
+      "role": "assistant",
+      "discipline": "striking",
+      "note": "striking coach",
+      "role_basis": "source note: \"striking coach\""
     },
     {
       "team": "Team Shevchenko",
       "name": "Valentina Shevchenko",
+      "fighter_id": "4008721e-66c0-429e-b904-51d0d0a7e0d0",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Pavel Fedotov",
       "role": "assistant",
-      "note": "assistant coach"
+      "note": "assistant coach",
+      "role_basis": "source note: \"assistant coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jason Andrada",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Miguel Carpinacci",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Richie Van Houten",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Martin Gil",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Louai Kiblawi",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rocky Kiblawi",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -127,11 +148,13 @@
         },
         {
           "name": "Kaan Ofli",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a"
         },
         {
           "name": "Mairon Santos",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d"
         },
         {
           "name": "Omran Chaaban",
@@ -139,7 +162,8 @@
         },
         {
           "name": "Robert Valentin",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca"
         },
         {
           "name": "Thomas Theocharis",
@@ -147,7 +171,8 @@
         },
         {
           "name": "Paddy McCorry",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7"
         }
       ]
     },
@@ -160,11 +185,13 @@
         },
         {
           "name": "Nathan Fletcher",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "02456b1c-b787-4f76-82b6-8bfb1658049e"
         },
         {
           "name": "Žygimantas Ramaška",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "75cddfdf-2c61-4e5b-a8d2-0fafe7b49d7f"
         },
         {
           "name": "Roedie Roets",
@@ -180,7 +207,8 @@
         },
         {
           "name": "Ryan Loder",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2"
         },
         {
           "name": "Giannis Bachar",
@@ -236,7 +264,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+              "b_fighter_id": "02456b1c-b787-4f76-82b6-8bfb1658049e"
             },
             {
               "a": "Bekhzod Usmonov",
@@ -247,7 +277,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "75cddfdf-2c61-4e5b-a8d2-0fafe7b49d7f"
             },
             {
               "a": "Mairon Santos",
@@ -258,7 +289,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d"
             }
           ]
         },
@@ -275,7 +307,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a"
             },
             {
               "a": "Guillermo Torres",
@@ -286,7 +319,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d"
             }
           ],
           "status": "unverified",
@@ -308,7 +342,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+              "b_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d"
             }
           ]
         }
@@ -341,7 +377,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2"
             },
             {
               "a": "Paddy McCorry",
@@ -352,7 +389,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7"
             },
             {
               "a": "Robert Valentin Frey",
@@ -363,7 +401,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca"
             }
           ]
         },
@@ -380,7 +419,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2"
             },
             {
               "a": "Paddy McCorry",
@@ -391,7 +431,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7",
+              "b_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca"
             }
           ]
         },
@@ -411,7 +453,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+              "b_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca"
             }
           ]
         }
@@ -435,7 +479,8 @@
         "event": "UFC Fight Night: Cannonier vs. Borralho",
         "date": "2024-08-24"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+      "fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d"
     },
     {
       "weight_class": "Middleweight",
@@ -448,7 +493,8 @@
         "event": "UFC Fight Night: Cannonier vs. Borralho",
         "date": "2024-08-24"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+      "fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2"
     }
   ]
 }

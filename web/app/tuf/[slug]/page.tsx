@@ -8,7 +8,7 @@ import type { PortraitSet } from "@/lib/db";
 import {
   allBouts,
   countsTowardsRecord,
-  linkFighters,
+  linkSeasonNames,
   linkedFinale,
   portraitsFor,
   seasonBySlug,
@@ -48,6 +48,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     twitter: { card: "summary_large_image", title, description },
   };
 }
+
+const STAFF_ORDER: Record<string, number> = { head: 0, assistant: 1, guest: 2, other: 3 };
+const STAFF_LABEL: Record<string, string> = { head: "head coach", assistant: "assistant coach", guest: "guest coach", other: "staff" };
 
 const CLASS_LABEL: Record<TufBout["classification"], string> = {
   professional: "Professional",
@@ -115,12 +118,23 @@ function BoutRow({ b, linked, faces }: { b: TufBout; linked: Map<string, LinkedF
         {typeof b.points === "number" ? <span className="tuf-ep">{b.points} pts</span> : null}
         {b.episode ? <span className="tuf-ep">Episode {b.episode}</span> : null}
       </span>
-      {(b.replacement || b.tournament_deciding) && (
+      {(b.replacement || b.tournament_deciding || b.wildcard || b.result_note) && (
         <span className="tuf-bout-note">
           {b.tournament_deciding ? <b>Tournament-deciding bout. </b> : null}
+          {b.wildcard ? <b>Wild Card bout. </b> : null}
+          {b.result_note ? `${b.result_note} ` : null}
           {b.replacement}
         </span>
       )}
+      {b.sources?.length ? (
+        <span className="tuf-bout-src">
+          {b.sources.map((src) => (
+            <a key={src.repair} href={src.url} rel="nofollow noopener" target="_blank">
+              Corrected from UFC.com
+            </a>
+          ))}
+        </span>
+      ) : null}
     </li>
   );
 }
@@ -134,12 +148,15 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
   const bouts = allBouts(season);
   const names = [
     ...bouts.flatMap((b) => [b.a, b.b]),
+    ...(season.bracket ?? []).flatMap((wc) => wc.stages.flatMap((st) => (st.disputed ?? []).flatMap((b) => [b.a, b.b]))),
     ...(season.teams ?? []).flatMap((t) => t.roster.map((r) => r.name)),
     ...(season.coaches_full ?? []).map((c) => c.name),
     ...season.coaches,
     ...season.winners.map((w) => w.fighter),
+    ...(season.champions ?? []).map((c) => c.fighter),
+    ...(season.final_bouts ?? []).flatMap((f) => [f.a, f.b]),
   ];
-  const [linked, finale] = await Promise.all([linkFighters(names), linkedFinale(season.finale_event, season.finale_date)]);
+  const [linked, finale] = await Promise.all([linkSeasonNames(season.slug, names), linkedFinale(season.finale_event, season.finale_date)]);
   const faces = await portraitsFor(linked);
 
   const proCount = bouts.filter(countsTowardsRecord).length;
@@ -170,12 +187,19 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
           <h2>Coaches</h2>
           {season.coaches.length ? (
             <ul className="tuf-people">
-              {(season.coaches_full ?? season.coaches.map((name) => ({ name, team: "", role: "head" }))).map((c, i) => (
-                <li key={`${c.name}-${i}`} className={c.role === "head" ? "is-head" : ""}>
-                  <Name name={c.name} linked={linked} faces={faces} size={c.role === "head" ? 56 : 34} />
-                  {c.team ? <small>{c.team}{c.role !== "head" ? " · assistant" : ""}</small> : null}
-                </li>
-              ))}
+              {(season.coaches_full?.length ? season.coaches_full : season.coaches.map((name) => ({ name, team: null, role: "head" as const })))
+                /* Head coaches first, then the staff who coached, then the
+                 * rest; a nutritionist is not listed as a coach. */
+                .filter((c) => c.role !== "other")
+                .sort((x, y) => STAFF_ORDER[x.role] - STAFF_ORDER[y.role])
+                .map((c, i) => (
+                  <li key={`${c.name}-${i}`} className={c.role === "head" ? "is-head" : ""}>
+                    <Name name={c.name} linked={linked} faces={faces} size={c.role === "head" ? 56 : 34} />
+                    <small>
+                      {[c.team, STAFF_LABEL[c.role], "discipline" in c ? c.discipline : null].filter(Boolean).join(" · ")}
+                    </small>
+                  </li>
+                ))}
             </ul>
           ) : (
             <p className="tuf-none">{season.coaches_note || "Coaches unrecorded for this season."}</p>
@@ -306,9 +330,17 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                 </h3>
                 <ul>
                   {t.roster.map((r) => (
-                    <li key={r.name}>
+                    <li key={r.name} className={r.status === "withdrawn" ? "is-withdrawn" : ""}>
                       <Name name={r.name} linked={linked} faces={faces} size={34} />
-                      {r.country ? <small>{r.country}</small> : null}
+                      {r.country || r.pick || r.status ? (
+                        <small>
+                          {[
+                            r.pick ? `Pick ${r.pick}` : null,
+                            r.country,
+                            r.status === "withdrawn" ? "Withdrew" : r.status === "replacement" ? "Replacement" : null,
+                          ].filter(Boolean).join(" · ")}
+                        </small>
+                      ) : null}
                       {r.note ? <em>{r.note}</em> : null}
                     </li>
                   ))}
