@@ -498,12 +498,14 @@
               "round": 1,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified by canonical fighter id against ufc_bouts 7cb907c8-3e85-4c38-add2-993dafee86ad (The Ultimate Fighter: Team Bisping vs Team Miller Finale, 2011-12-03) + ufc_bout_results — the recorded winner is the archive's winner",
               "on_finale_card": true,
               "tournament_deciding": true,
               "a_fighter_id": "f6152127-61dc-4e19-a319-dbb2d567be73",
-              "b_fighter_id": "1ae21111-9141-491b-a568-c28a322a9a5d"
+              "b_fighter_id": "1ae21111-9141-491b-a568-c28a322a9a5d",
+              "fight_date": "2011-12-03",
+              "verified_against": "ufc_bouts:7cb907c8-3e85-4c38-add2-993dafee86ad"
             }
           ]
         }
