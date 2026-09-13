@@ -11,7 +11,7 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json. House results, fight dates and classification are from the Nevada State Athletic Commission's Season 2 results record (tuf2-gold-standard); the draft's differing values are kept in each bout's corrections."
   },
   "coaches": [
     {
@@ -34,46 +34,55 @@
       "name": "Team Franklin",
       "roster": [
         {
-          "name": "Jorge Gurgel",
-          "weight_class": "Welterweight",
-          "fighter_id": "99da2e8b-a053-4440-8560-07b296f61b42"
-        },
-        {
-          "name": "Marcus Davis",
-          "weight_class": "Welterweight",
-          "fighter_id": "8e03c8d3-5971-4c46-a77d-c18651e9061a"
-        },
-        {
-          "name": "Anthony Torres",
-          "weight_class": "Welterweight",
-          "fighter_id": "cdabf7fb-a3a3-4564-be38-268dec345f04"
-        },
-        {
-          "name": "Melvin Guillard",
-          "weight_class": "Welterweight",
-          "fighter_id": "7b2bb20e-a01d-47b7-94d1-10460104487a"
-        },
-        {
           "name": "Keith Jardine",
           "weight_class": "Heavyweight",
-          "fighter_id": "fb171a51-59a5-4648-8279-76dbfdd1a83a"
+          "fighter_id": "fb171a51-59a5-4648-8279-76dbfdd1a83a",
+          "pick": 1
+        },
+        {
+          "name": "Jorge Gurgel",
+          "weight_class": "Welterweight",
+          "fighter_id": "99da2e8b-a053-4440-8560-07b296f61b42",
+          "pick": 2
         },
         {
           "name": "Seth Petruzelli",
           "weight_class": "Heavyweight",
-          "fighter_id": "0a0158b7-cd3f-4b2b-99fa-48a80aed9361"
+          "fighter_id": "0a0158b7-cd3f-4b2b-99fa-48a80aed9361",
+          "pick": 3
+        },
+        {
+          "name": "Marcus Davis",
+          "weight_class": "Welterweight",
+          "fighter_id": "8e03c8d3-5971-4c46-a77d-c18651e9061a",
+          "pick": 4
         },
         {
           "name": "Rashad Evans",
           "weight_class": "Heavyweight",
-          "fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5"
+          "fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+          "pick": 5
+        },
+        {
+          "name": "Anthony Torres",
+          "weight_class": "Welterweight",
+          "fighter_id": "cdabf7fb-a3a3-4564-be38-268dec345f04",
+          "pick": 6
+        },
+        {
+          "name": "Melvin Guillard",
+          "weight_class": "Welterweight",
+          "fighter_id": "7b2bb20e-a01d-47b7-94d1-10460104487a",
+          "pick": 7
         },
         {
           "name": "Brad Imes",
           "weight_class": "Heavyweight",
-          "fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a"
+          "fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a",
+          "pick": 8
         }
-      ]
+      ],
+      "pick_basis": "Draft order from the season source's episode 2 team-selection table (Wikipedia, secondary; it prints 'Rob McDonald'). Rosters are as drafted; moves and exits are timeline events."
     },
     {
       "name": "Team Hughes",
@@ -81,109 +90,63 @@
         {
           "name": "Joe Stevenson",
           "weight_class": "Welterweight",
-          "fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e"
-        },
-        {
-          "name": "Josh Burkman",
-          "weight_class": "Welterweight"
-        },
-        {
-          "name": "Jason Von Flue",
-          "weight_class": "Welterweight",
-          "note": "Named by the source as Josh Burkman's replacement.",
-          "fighter_id": "747dedd4-f653-4925-a083-3005cd8152f0"
-        },
-        {
-          "name": "Sammy Morgan",
-          "weight_class": "Welterweight",
-          "fighter_id": "aec0fc0e-6465-43bf-a8f8-958b6e75f37f"
-        },
-        {
-          "name": "Luke Cummo",
-          "weight_class": "Welterweight",
-          "fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64"
+          "fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e",
+          "pick": 1
         },
         {
           "name": "Mike Whitehead",
           "weight_class": "Heavyweight",
-          "fighter_id": "b8ca30d0-c51c-40d8-8978-75cde3c4128d"
+          "fighter_id": "b8ca30d0-c51c-40d8-8978-75cde3c4128d",
+          "pick": 2
+        },
+        {
+          "name": "Josh Burkman",
+          "weight_class": "Welterweight",
+          "pick": 3,
+          "status": "withdrawn",
+          "episode": 3,
+          "fighter_id": "1f85c086-ece4-46fd-9cb0-cd991a3caaee"
+        },
+        {
+          "name": "Jason Von Flue",
+          "weight_class": "Welterweight",
+          "fighter_id": "747dedd4-f653-4925-a083-3005cd8152f0",
+          "status": "replacement",
+          "replacement_for": "Josh Burkman",
+          "episode": 3
         },
         {
           "name": "Dan Christison",
           "weight_class": "Heavyweight",
-          "fighter_id": "6a132fd0-a875-4609-86c1-5b22f3f8818d"
+          "fighter_id": "6a132fd0-a875-4609-86c1-5b22f3f8818d",
+          "pick": 4
         },
         {
-          "name": "Rob MacDonald",
-          "weight_class": "Heavyweight",
-          "fighter_id": "5b55dc89-220b-41dc-8185-36e7a422d34c"
+          "name": "Sammy Morgan",
+          "weight_class": "Welterweight",
+          "fighter_id": "aec0fc0e-6465-43bf-a8f8-958b6e75f37f",
+          "pick": 5
         },
         {
           "name": "Tom Murphy",
           "weight_class": "Heavyweight",
-          "fighter_id": "4c4842b8-5ce8-4f81-b47e-9d9281998eda"
-        }
-      ]
-    },
-    {
-      "name": "Unassigned",
-      "roster": [
-        {
-          "name": "Kenny Stevens"
+          "fighter_id": "4c4842b8-5ce8-4f81-b47e-9d9281998eda",
+          "pick": 6
         },
         {
-          "name": "Kerry Schall",
-          "fighter_id": "6514832c-6208-44d9-a8e0-b81f9853a196"
+          "name": "Rob MacDonald",
+          "weight_class": "Heavyweight",
+          "fighter_id": "5b55dc89-220b-41dc-8185-36e7a422d34c",
+          "pick": 7
         },
         {
-          "name": "Eli Joslin"
+          "name": "Luke Cummo",
+          "weight_class": "Welterweight",
+          "fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64",
+          "pick": 8
         }
-      ]
-    }
-  ],
-  "format_exceptions": [
-    {
-      "kinds": [
-        "injury"
       ],
-      "fighters": [
-        "Kerry Schall"
-      ],
-      "episode": 1,
-      "detail": "Heavyweight Kerry Schall is eliminated due to a knee injury."
-    },
-    {
-      "kinds": [
-        "replacement",
-        "injury"
-      ],
-      "fighters": [
-        "Dan Christison",
-        "Kerry Schall"
-      ],
-      "episode": 2,
-      "detail": "Dan Christison joins the show to replace the injured Schall."
-    },
-    {
-      "kinds": [
-        "injury"
-      ],
-      "fighters": [
-        "Rob MacDonald"
-      ],
-      "episode": 3,
-      "detail": "Rob MacDonald complains about his shoulder which he claims he injured very badly. His constant complaining upsets Team Hughes, especially Hughes himself."
-    },
-    {
-      "kinds": [
-        "replacement"
-      ],
-      "fighters": [
-        "Josh Burkman",
-        "Jason Von Flue"
-      ],
-      "episode": 3,
-      "detail": "Jason Von Flue joins the show to replace Burkman."
+      "pick_basis": "Draft order from the season source's episode 2 team-selection table (Wikipedia, secondary; it prints 'Rob McDonald'). Rosters are as drafted; moves and exits are timeline events."
     }
   ],
   "bracket": [
@@ -192,8 +155,7 @@
       "stages": [
         {
           "stage": "elimination",
-          "label": "Elimination round",
-          "note": "Bouts the episode summaries record but the source's bracket does not include.",
+          "label": "Elimination fights",
           "bouts": [
             {
               "a": "Josh Burkman",
@@ -204,21 +166,190 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "b_fighter_id": "7b2bb20e-a01d-47b7-94d1-10460104487a"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-06-15 and aired in episode 2; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
+              "b_fighter_id": "7b2bb20e-a01d-47b7-94d1-10460104487a",
+              "fight_date": "2005-06-15",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-01"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-01",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Josh Burkman",
+                  "quote": "Burkman won by unanimous decision."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Josh Burkman defeated Melvin Guillard by unanimous decision after three rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "z9988rJAJ5Xv_cgM0uribFOKhHDk_Wty",
+                  "listing_item": 2,
+                  "retrieved": "2026-09-13",
+                  "quote": "The opening fight of the season is a knock-out brawl between two welterweights.",
+                  "note": "names no fighter"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-01",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-01",
+              "a_fighter_id": "1f85c086-ece4-46fd-9cb0-cd991a3caaee"
             },
             {
               "a": "Joe Stevenson",
               "b": "Marcus Davis",
               "winner": "Joe Stevenson",
-              "method": "Submission (elbows)",
+              "method": "Submission (elbow strikes)",
               "round": 1,
-              "time": "4:10",
+              "time": "4:12",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-06-22 and aired in episode 4; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e",
-              "b_fighter_id": "8e03c8d3-5971-4c46-a77d-c18651e9061a"
+              "b_fighter_id": "8e03c8d3-5971-4c46-a77d-c18651e9061a",
+              "corrections": [
+                {
+                  "field": "method",
+                  "old": "Submission (elbows)",
+                  "new": "Submission (elbow strikes)",
+                  "source": {
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-03"
+                  },
+                  "reason": "the commission record states method as \"Submission (elbow strikes)\" (\"Stevenson won by tap out 4:12 of the 1st round – elbow strikes\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf2-gold-standard"
+                },
+                {
+                  "field": "time",
+                  "old": "4:10",
+                  "new": "4:12",
+                  "source": {
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-03"
+                  },
+                  "reason": "the commission record states time as \"4:12\" (\"Stevenson won by tap out 4:12 of the 1st round – elbow strikes\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf2-gold-standard"
+                }
+              ],
+              "fight_date": "2005-06-22",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-03"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-03",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Joe Stevenson",
+                  "quote": "Stevenson won by tap out 4:12 of the 1st round – elbow strikes"
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Joe Stevenson defeated Marcus Davis by submission (elbows) at 4:10 of the first round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "TkeN2JgHH8XP4odVqqZnkTnwpdmOZbct",
+                  "listing_item": 4,
+                  "retrieved": "2026-09-13",
+                  "quote": "a second welterweight is sent home in brutal fashion",
+                  "note": "names no fighter"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-03",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-03"
             },
             {
               "a": "Jason Von Flue",
@@ -229,9 +360,81 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-06-29 and aired in episode 6; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "747dedd4-f653-4925-a083-3005cd8152f0",
-              "b_fighter_id": "99da2e8b-a053-4440-8560-07b296f61b42"
+              "b_fighter_id": "99da2e8b-a053-4440-8560-07b296f61b42",
+              "fight_date": "2005-06-29",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-05"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-05",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Jason Von Flue",
+                  "quote": "von Flue won by unanimous decision."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Jason Von Flue defeated Jorge Gurgel by unanimous decision after three rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "53HJjoTZCoLiRSTXdF_bOh4iUimpKWQe",
+                  "listing_item": 6,
+                  "retrieved": "2026-09-13",
+                  "quote": "A welterweight suffers a crushing defeat in an all out three round slugfest.",
+                  "note": "names no fighter"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-05",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-05"
             },
             {
               "a": "Luke Cummo",
@@ -242,9 +445,81 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-07-06 and aired in episode 8; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64",
-              "b_fighter_id": "cdabf7fb-a3a3-4564-be38-268dec345f04"
+              "b_fighter_id": "cdabf7fb-a3a3-4564-be38-268dec345f04",
+              "fight_date": "2005-07-06",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-07"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-07",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Luke Cummo",
+                  "quote": "Cummo won by unanimous decision."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Luke Cummo defeated Anthony Torres by unanimous decision after three rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "FQyvIHOlWUhtiarm0JqknLDqi4WVBZmk",
+                  "listing_item": 8,
+                  "retrieved": "2026-09-13",
+                  "quote": "Two welterweights listen to his advice and go to war.",
+                  "note": "names no fighter"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-07",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-07"
             }
           ]
         },
@@ -256,14 +531,120 @@
               "a": "Luke Cummo",
               "b": "Sammy Morgan",
               "winner": "Luke Cummo",
-              "method": "KO (knee)",
+              "method": "TKO",
               "round": 2,
-              "time": "2:05",
+              "time": "2:08",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-07-11 and aired in episode 10; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64",
-              "b_fighter_id": "aec0fc0e-6465-43bf-a8f8-958b6e75f37f"
+              "b_fighter_id": "aec0fc0e-6465-43bf-a8f8-958b6e75f37f",
+              "corrections": [
+                {
+                  "field": "method",
+                  "old": "KO (knee)",
+                  "new": "TKO",
+                  "source": {
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-10"
+                  },
+                  "reason": "the commission record states method as \"TKO\" (\"Cummo won by TKO 2:08 of the 2nd round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf2-gold-standard"
+                },
+                {
+                  "field": "time",
+                  "old": "2:05",
+                  "new": "2:08",
+                  "source": {
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-10"
+                  },
+                  "reason": "the commission record states time as \"2:08\" (\"Cummo won by TKO 2:08 of the 2nd round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf2-gold-standard"
+                }
+              ],
+              "fight_date": "2005-07-11",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-10"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-10",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Luke Cummo",
+                  "quote": "Cummo won by TKO 2:08 of the 2nd round."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Luke Cummo defeated Sammy Morgan by KO (knee) at 2:05 of the second round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "gqP3OZYgcBG0whuR9Rl_BtkzxpReOwQs",
+                  "listing_item": 10,
+                  "retrieved": "2026-09-13",
+                  "quote": "Semi-Final #1 Killer Instinct",
+                  "note": "listing title; this item's description is swapped with item 11 (see source_defects)"
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "r3LUT9PRMeLxkdvj6n3lg3UtrkjhptLn",
+                  "listing_item": 11,
+                  "retrieved": "2026-09-13",
+                  "quote": "a welterweight demonstrates his killer instinct to become the first finalist",
+                  "note": "swapped item-11 description; used for the pairing stage only"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-10",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-10"
             },
             {
               "a": "Joe Stevenson",
@@ -271,12 +652,96 @@
               "winner": "Joe Stevenson",
               "method": "Submission (armbar)",
               "round": 1,
-              "time": "4:46",
+              "time": "4:49",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-07-12 and aired in episode 12; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e",
-              "b_fighter_id": "747dedd4-f653-4925-a083-3005cd8152f0"
+              "b_fighter_id": "747dedd4-f653-4925-a083-3005cd8152f0",
+              "corrections": [
+                {
+                  "field": "time",
+                  "old": "4:46",
+                  "new": "4:49",
+                  "source": {
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-12"
+                  },
+                  "reason": "the commission record states time as \"4:49\" (\"Stevenson won by tap out 4:49 of the 1st round – arm bar.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf2-gold-standard"
+                }
+              ],
+              "fight_date": "2005-07-12",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-12"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-12",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Joe Stevenson",
+                  "quote": "Stevenson won by tap out 4:49 of the 1st round – arm bar."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Joe Stevenson defeated Jason Von Flue by submission (armbar) at 4:46 of the first round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "xxzGTkKb72RKRhmRridUTFdub9VUt0O0",
+                  "listing_item": 12,
+                  "retrieved": "2026-09-13",
+                  "quote": "If he can't, Marcus will take his place and fight Joe in the 2nd welterweight semi-final."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-12",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-12"
             }
           ]
         },
@@ -298,7 +763,19 @@
               "on_finale_card": true,
               "tournament_deciding": true,
               "a_fighter_id": "e76e4a06-7d74-4ecb-a0dc-7d07234e3f64",
-              "b_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e"
+              "b_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e",
+              "ufc_bout_id": "1027f33c-bd93-46f3-a424-277a6927c822",
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "our_records",
+                    "evidence_level": "canonical",
+                    "what": "ufc_bouts 1027f33c-bd93-46f3-a424-277a6927c822 + ufc_bout_results on The Ultimate Fighter: Team Hughes vs. Team Franklin Finale, 2005-11-05",
+                    "note": "contested on the sanctioned finale card; the result row names the tournament winner"
+                  }
+                ],
+                "corroborating": []
+              }
             }
           ]
         }
@@ -309,8 +786,7 @@
       "stages": [
         {
           "stage": "elimination",
-          "label": "Elimination round",
-          "note": "Bouts the episode summaries record but the source's bracket does not include.",
+          "label": "Elimination fights",
           "bouts": [
             {
               "a": "Brad Imes",
@@ -318,12 +794,97 @@
               "winner": "Brad Imes",
               "method": "Submission (triangle choke)",
               "round": 1,
-              "time": "4:07",
+              "time": "4:10",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-06-18 and aired in episode 3; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a",
-              "b_fighter_id": "5b55dc89-220b-41dc-8185-36e7a422d34c"
+              "b_fighter_id": "5b55dc89-220b-41dc-8185-36e7a422d34c",
+              "corrections": [
+                {
+                  "field": "time",
+                  "old": "4:07",
+                  "new": "4:10",
+                  "source": {
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-02"
+                  },
+                  "reason": "the commission record states time as \"4:10\" (\"Imes Smith win by tap out 4:10 of the 1st round – triangle choke.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf2-gold-standard"
+                }
+              ],
+              "fight_date": "2005-06-18",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-02"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-02",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Brad Imes",
+                  "quote": "Imes Smith win by tap out 4:10 of the 1st round – triangle choke."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Brad Imes defeated Rob MacDonald by submission (triangle choke) at 4:07 of the first round."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "D_bzk_SYrUPH7UBQZkPmqS9yLRPHsAtp",
+                  "listing_item": 3,
+                  "retrieved": "2026-09-13",
+                  "quote": "the heavyweights prepare for their first battle in the Octagon'",
+                  "note": "names no fighter"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-02",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-02"
             },
             {
               "a": "Rashad Evans",
@@ -334,9 +895,81 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-06-25 and aired in episode 5; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
-              "b_fighter_id": "4c4842b8-5ce8-4f81-b47e-9d9281998eda"
+              "b_fighter_id": "4c4842b8-5ce8-4f81-b47e-9d9281998eda",
+              "fight_date": "2005-06-25",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-04"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-04",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Rashad Evans",
+                  "quote": "Evans won by unanimous decision."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Rashad Evans defeated Tom Murphy by unanimous decision after three rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "EpJ6fvkZtLIFgEwAxtXmFcAkY4d_ARjJ",
+                  "listing_item": 5,
+                  "retrieved": "2026-09-13",
+                  "quote": "two more heavyweights go toe to toe in the Octagon'",
+                  "note": "names no fighter"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-04",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-04"
             },
             {
               "a": "Seth Petruzelli",
@@ -347,9 +980,81 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-07-02 and aired in episode 7; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "0a0158b7-cd3f-4b2b-99fa-48a80aed9361",
-              "b_fighter_id": "6a132fd0-a875-4609-86c1-5b22f3f8818d"
+              "b_fighter_id": "6a132fd0-a875-4609-86c1-5b22f3f8818d",
+              "fight_date": "2005-07-02",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-06"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-06",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Seth Petruzelli",
+                  "quote": "Petruzelli won by unanimous decision."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Seth Petruzelli defeated Dan Christison by unanimous decision after three rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "GRvyUhCGc4BOAaWbd4JCAq1fyTcq6LZE",
+                  "listing_item": 7,
+                  "retrieved": "2026-09-13",
+                  "quote": "clash of styles in the Octagon' sends another heavyweight home",
+                  "note": "names no fighter"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-06",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-06"
             },
             {
               "a": "Rashad Evans",
@@ -360,9 +1065,81 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-07-08 and aired in episode 9; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
-              "b_fighter_id": "b8ca30d0-c51c-40d8-8978-75cde3c4128d"
+              "b_fighter_id": "b8ca30d0-c51c-40d8-8978-75cde3c4128d",
+              "fight_date": "2005-07-08",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-08"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-08",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Rashad Evans",
+                  "quote": "Evans won by unanimous decision."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Rashad Evans defeats Mike Whitehead by unanimous decision after three rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "JHqCOX89ZDmyzlQcEY3u5DXObd64Fx8W",
+                  "listing_item": 9,
+                  "retrieved": "2026-09-13",
+                  "quote": "a heavyweight must live up to everyone's expectations",
+                  "note": "names no fighter"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-08",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-08"
             }
           ]
         },
@@ -379,9 +1156,80 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-07-12 and aired in episode 12; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a",
-              "b_fighter_id": "0a0158b7-cd3f-4b2b-99fa-48a80aed9361"
+              "b_fighter_id": "0a0158b7-cd3f-4b2b-99fa-48a80aed9361",
+              "fight_date": "2005-07-12",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-11"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-11",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Brad Imes",
+                  "quote": "Smith won by split decision."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Brad Imes defeated Seth Petruzelli by split decision after three rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "xxzGTkKb72RKRhmRridUTFdub9VUt0O0",
+                  "listing_item": 12,
+                  "retrieved": "2026-09-13",
+                  "quote": "In the heavyweight semi-final, Brad and Seth battle for the last spot in the finals."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-11",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-11"
             },
             {
               "a": "Rashad Evans",
@@ -392,9 +1240,91 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2005, which are complete for that year — 10 events, 80 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2005-07-11 and aired in episode 11; the Nevada State Athletic Commission's Season 2 results record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2005 records is corroboration only.",
               "a_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
-              "b_fighter_id": "fb171a51-59a5-4648-8279-76dbfdd1a83a"
+              "b_fighter_id": "fb171a51-59a5-4648-8279-76dbfdd1a83a",
+              "fight_date": "2005-07-11",
+              "fight_date_source": {
+                "document_id": "nsac-2005-tuf-season-2",
+                "record_id": "nsac-2005-tuf2-09"
+              },
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2005-tuf-season-2",
+                  "record_id": "nsac-2005-tuf2-09",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                  "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                  "retrieved": "2026-09-13",
+                  "winner": "Rashad Evans",
+                  "quote": "Evans won by unanimous decision."
+                }
+              ],
+              "episode_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+                  "retrieved": "2026-09-13",
+                  "quote": "Rashad Evans defeated Keith Jardine by unanimous decision after three rounds."
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "r3LUT9PRMeLxkdvj6n3lg3UtrkjhptLn",
+                  "listing_item": 11,
+                  "retrieved": "2026-09-13",
+                  "quote": "Semi-Final #2 Bloody Brawl",
+                  "note": "listing title"
+                },
+                {
+                  "family": "paramount_plus_episode_metadata",
+                  "evidence_level": "network_listing",
+                  "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+                  "content_id": "gqP3OZYgcBG0whuR9Rl_BtkzxpReOwQs",
+                  "listing_item": 10,
+                  "retrieved": "2026-09-13",
+                  "quote": "Rashad Evans takes on Keith Jardine in the first heavyweight semi-final match.",
+                  "note": "swapped item-10 description; names the pairing only"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2005-tuf-season-2",
+                    "record_id": "nsac-2005-tuf2-09",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+                    "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 2 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2005,
+                    "note": "no bout between these two fighters in our records for 2005, which are complete for that year"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "the commission reclassifies the Season 2 bouts again (the season source records one earlier reclassification from professional to exhibition)"
+              },
+              "commission_record_id": "nsac-2005-tuf2-09"
             }
           ]
         },
@@ -416,7 +1346,19 @@
               "on_finale_card": true,
               "tournament_deciding": true,
               "a_fighter_id": "492896ac-287f-44c2-93d1-ea86443c9b1a",
-              "b_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5"
+              "b_fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+              "ufc_bout_id": "efdfe676-6d25-4f2e-b8fe-e31bb368e99b",
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "our_records",
+                    "evidence_level": "canonical",
+                    "what": "ufc_bouts efdfe676-6d25-4f2e-b8fe-e31bb368e99b + ufc_bout_results on The Ultimate Fighter: Team Hughes vs. Team Franklin Finale, 2005-11-05",
+                    "note": "contested on the sanctioned finale card; the result row names the tournament winner"
+                  }
+                ],
+                "corroborating": []
+              }
             }
           ]
         }
@@ -457,5 +1399,687 @@
       "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
       "fighter_id": "b65310ab-e8fa-40ab-875a-aaa383ece4e5"
     }
-  ]
+  ],
+  "competition_format": {
+    "kind": "elimination_then_semifinals",
+    "label": "Pre-draft exits, team draft, elimination fights, semi-finals, live finals",
+    "applies_to": "each weight class",
+    "steps": [
+      {
+        "key": "pre_draft",
+        "label": "Before the draft",
+        "episode": 1,
+        "rule": "Eighteen fighters arrived, nine per division. Before the draft one was injured out, one left the show, and one forfeited his match. None of these was a bout."
+      },
+      {
+        "key": "draft",
+        "label": "Team draft",
+        "episode": 2,
+        "rule": "A coin flip gave Franklin the first pick, and each coach drafted eight fighters, four per division."
+      }
+    ],
+    "phases": [
+      {
+        "stage": "elimination",
+        "label": "Elimination fights",
+        "expected_bouts": null,
+        "advances": 4,
+        "rule": "Team challenges decided which team chose the next matchup, and the loser of each fight left the competition. A fighter could fight more than once, a replacement could take a withdrawn winner's place, and a fighter could reach the last four without a house fight."
+      },
+      {
+        "stage": "semi_final",
+        "label": "Semi-finals",
+        "expected_bouts": 2,
+        "rule": "Dana White, Franklin and Hughes set the semi-final matchups with input from the fighters."
+      },
+      {
+        "stage": "final",
+        "label": "Final",
+        "expected_bouts": 1,
+        "contested": "on the live finale card"
+      }
+    ],
+    "sources": [
+      {
+        "family": "paramount_plus_episode_metadata",
+        "evidence_level": "network_listing",
+        "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+        "content_id": "oy_2Ke1PEZATCGXVddYuK_GE1ylojKnJ",
+        "listing_item": 1,
+        "retrieved": "2026-09-13",
+        "quote": "Eighteen of the world's toughest heavyweights and welterweights compete for two UFC contracts."
+      },
+      {
+        "family": "wikipedia",
+        "evidence_level": "secondary_draft",
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+        "retrieved": "2026-09-13",
+        "quote": "with 9 fighters initially in each division"
+      },
+      {
+        "family": "wikipedia",
+        "evidence_level": "secondary_draft",
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+        "retrieved": "2026-09-13",
+        "quote": "A coin is flipped and Franklin chose to pick the first fighter."
+      },
+      {
+        "family": "wikipedia",
+        "evidence_level": "secondary_draft",
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+        "retrieved": "2026-09-13",
+        "quote": "The rest of the matches are set up by White, Franklin, and Hughes with input from fighters"
+      }
+    ]
+  },
+  "pre_draft_cast": [
+    {
+      "name": "Kerry Schall",
+      "weight_class": "Heavyweight",
+      "exit": "injury",
+      "episode": 1,
+      "timeline_event": "tuf2-schall-out",
+      "fighter_id": "6514832c-6208-44d9-a8e0-b81f9853a196"
+    },
+    {
+      "name": "Eli Joslin",
+      "weight_class": null,
+      "exit": "left_show",
+      "episode": 1,
+      "timeline_event": "tuf2-joslin-leaves",
+      "weight_class_note": "not stated by any captured source",
+      "identity_note": "No canonical fighter. Jeff Joslin in ufc_fighters is a different person: no bout, event or date ties him to this season, and a shared surname is not identity."
+    },
+    {
+      "name": "Kenny Stevens",
+      "weight_class": "Welterweight",
+      "exit": "forfeit",
+      "episode": 1,
+      "timeline_event": "tuf2-stevens-forfeit",
+      "identity_note": "No canonical fighter: he forfeited before the draft and has no UFC bout in our records."
+    }
+  ],
+  "timeline_events": [
+    {
+      "id": "tuf2-schall-out",
+      "episode": 1,
+      "type": "withdrawal",
+      "fighters": [
+        "Kerry Schall"
+      ],
+      "detail": "Left the competition before the draft with a knee injury.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Heavyweight Kerry Schall is eliminated due to a knee injury."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-joslin-leaves",
+      "episode": 1,
+      "type": "withdrawal",
+      "fighters": [
+        "Eli Joslin"
+      ],
+      "detail": "Chose to leave the show before the draft.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Eli Joslin chooses to leave the show"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-stevens-forfeit",
+      "episode": 1,
+      "type": "forfeit",
+      "fighters": [
+        "Kenny Stevens",
+        "Sammy Morgan"
+      ],
+      "detail": "Kenny Stevens, named the weakest welterweight, called out Sammy Morgan and then forfeited the match. No bout took place; Morgan stayed in the competition.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Kenny Stevens is chosen as the weakest welterweight and calls out Sammy Morgan to fight."
+        },
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Stevens forfeits his match saying he will not be able to make weight for the fight."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-stevens-weight",
+      "episode": 1,
+      "type": "weight_issue",
+      "fighters": [
+        "Kenny Stevens"
+      ],
+      "detail": "Said he would not be able to make weight for the fight.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Stevens forfeits his match saying he will not be able to make weight for the fight."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-christison-joins",
+      "episode": 2,
+      "type": "replacement",
+      "fighters": [
+        "Dan Christison"
+      ],
+      "replaces": "Kerry Schall",
+      "detail": "Joined the show in place of the injured Kerry Schall.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Dan Christison joins the show to replace the injured Schall."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-draft",
+      "episode": 2,
+      "type": "team_selection",
+      "fighters": [],
+      "detail": "A coin flip gave Rich Franklin the first pick. First picks: Keith Jardine (Franklin) and Joe Stevenson (Hughes).",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "A coin is flipped and Franklin chose to pick the first fighter."
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "z9988rJAJ5Xv_cgM0uribFOKhHDk_Wty",
+          "listing_item": 2,
+          "retrieved": "2026-09-13",
+          "quote": "The coaches make their choices"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-burkman-injury",
+      "episode": 3,
+      "type": "injury",
+      "fighters": [
+        "Josh Burkman"
+      ],
+      "detail": "Broke his arm in his fight with Melvin Guillard.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Josh Burkman is forced to leave the competition after breaking his arm in the match with Melvin Guillard."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-burkman-withdrawal",
+      "episode": 3,
+      "type": "withdrawal",
+      "fighters": [
+        "Josh Burkman"
+      ],
+      "detail": "Left the competition with the broken arm, after winning his fight.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Josh Burkman is forced to leave the competition after breaking his arm in the match with Melvin Guillard."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-vonflue-joins",
+      "episode": 3,
+      "type": "replacement",
+      "fighters": [
+        "Jason Von Flue"
+      ],
+      "replaces": "Josh Burkman",
+      "detail": "Joined the show in place of Josh Burkman.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Jason Von Flue joins the show to replace Burkman."
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "D_bzk_SYrUPH7UBQZkPmqS9yLRPHsAtp",
+          "listing_item": 3,
+          "retrieved": "2026-09-13",
+          "quote": "A new fighter arrives at the house ruffling some feathers",
+          "note": "names no fighter"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-macdonald-shoulder",
+      "episode": 3,
+      "type": "injury",
+      "fighters": [
+        "Rob MacDonald"
+      ],
+      "detail": "Complained of a shoulder injury.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Rob MacDonald complains about his shoulder which he claims he injured very badly."
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "D_bzk_SYrUPH7UBQZkPmqS9yLRPHsAtp",
+          "listing_item": 3,
+          "retrieved": "2026-09-13",
+          "quote": "Coach Hughes gets annoyed with the constant whining of one of his fighters.",
+          "note": "names no fighter"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-macdonald-medical",
+      "episode": 3,
+      "type": "medical_clearance",
+      "fighters": [
+        "Rob MacDonald"
+      ],
+      "detail": "After his fight, the commission required left bicep and left labrum tears to be cleared by a doctor.",
+      "sources": [
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2005-tuf-season-2",
+          "record_id": "nsac-2005-tuf2-02",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+          "retrieved": "2026-09-13",
+          "quote": "Macdonald must have left bicep and left labrum tears cleared by Dr.",
+          "note": "commission remark attached to the bout result"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-gurgel-medical",
+      "episode": 6,
+      "type": "medical_clearance",
+      "fighters": [
+        "Jorge Gurgel"
+      ],
+      "detail": "After his fight, the commission required a torn left ACL to be cleared by an orthopedic doctor.",
+      "sources": [
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2005-tuf-season-2",
+          "record_id": "nsac-2005-tuf2-05",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+          "retrieved": "2026-09-13",
+          "quote": "Gurgel must have torn left ACL tear cleared by an Orthopedic Dr.",
+          "note": "commission remark attached to the bout result"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-vonflue-move",
+      "episode": 7,
+      "type": "trade",
+      "fighters": [
+        "Jason Von Flue"
+      ],
+      "from_team": "Team Hughes",
+      "to_team": "Team Franklin",
+      "detail": "Sent to Team Franklin in a team reshuffle.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Hughes sends Von Flue over to Team Franklin for reshuffling."
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "GRvyUhCGc4BOAaWbd4JCAq1fyTcq6LZE",
+          "listing_item": 7,
+          "retrieved": "2026-09-13",
+          "quote": "The teams are re-balanced."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-christison-medical",
+      "episode": 7,
+      "type": "medical_clearance",
+      "fighters": [
+        "Dan Christison"
+      ],
+      "detail": "After his fight, the commission required nasal and facial fractures to be cleared by a doctor.",
+      "sources": [
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2005-tuf-season-2",
+          "record_id": "nsac-2005-tuf2-06",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+          "retrieved": "2026-09-13",
+          "quote": "Christison must have nasal and facial fractures cleared by Dr.",
+          "note": "commission remark attached to the bout result"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-imes-move",
+      "episode": 8,
+      "type": "trade",
+      "fighters": [
+        "Brad Imes"
+      ],
+      "from_team": "Team Franklin",
+      "to_team": "Team Hughes",
+      "detail": "Sent to Team Hughes in a team reshuffle.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Franklin sends Brad Imes to Team Hughes for reshuffling."
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "JHqCOX89ZDmyzlQcEY3u5DXObd64Fx8W",
+          "listing_item": 9,
+          "retrieved": "2026-09-13",
+          "quote": "Brad quickly learns how different training is over at Team Hughes.",
+          "note": "next episode"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-imes-cut",
+      "episode": 9,
+      "type": "injury",
+      "fighters": [
+        "Brad Imes"
+      ],
+      "detail": "Passed over for a fight because of a cut over his eye from training; Mike Whitehead fought instead.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Brad Imes is passed over for a fight due to a cut over his eye received in training, so Whitehead is chosen to fight instead."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-vonflue-cut",
+      "episode": 10,
+      "type": "injury",
+      "fighters": [
+        "Jason Von Flue"
+      ],
+      "detail": "Cut between the eyes in practice.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Jason Von Flue sustains a cut between the eyes in practice"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-davis-alternate",
+      "episode": 10,
+      "type": "alternate_named",
+      "fighters": [
+        "Marcus Davis"
+      ],
+      "replaces": "Jason Von Flue",
+      "detail": "Brought back as the alternate in case Von Flue could not fight. Von Flue was cleared, and Davis did not fight.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Marcus Davis is brought back as an alternate in the case of Von Flue being unable to fight."
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "xxzGTkKb72RKRhmRridUTFdub9VUt0O0",
+          "listing_item": 12,
+          "retrieved": "2026-09-13",
+          "quote": "If he can't, Marcus will take his place and fight Joe in the 2nd welterweight semi-final."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-semis-set",
+      "episode": 10,
+      "type": "semi_final_matchups_announced",
+      "fighters": [],
+      "detail": "Dana White, Franklin and Hughes set the semi-finals with input from the fighters: Cummo vs Morgan, Stevenson vs Von Flue, Imes vs Petruzelli, Evans vs Jardine.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "The rest of the matches are set up by White, Franklin, and Hughes with input from fighters"
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "r3LUT9PRMeLxkdvj6n3lg3UtrkjhptLn",
+          "listing_item": 11,
+          "retrieved": "2026-09-13",
+          "quote": "Dana announces the fight match-ups for the semi-finals",
+          "note": "swapped item-11 description"
+        }
+      ]
+    },
+    {
+      "id": "tuf2-vonflue-cleared",
+      "episode": 12,
+      "type": "medical_clearance",
+      "fighters": [
+        "Jason Von Flue"
+      ],
+      "detail": "Cleared by the doctors to fight his semi-final.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Von Flue is cleared by the doctors to fight."
+        },
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "xxzGTkKb72RKRhmRridUTFdub9VUt0O0",
+          "listing_item": 12,
+          "retrieved": "2026-09-13",
+          "quote": "A doctor examines Jason's cut to determine if he can fight."
+        }
+      ]
+    },
+    {
+      "id": "tuf2-petruzelli-ear",
+      "episode": 12,
+      "type": "injury",
+      "fighters": [
+        "Seth Petruzelli"
+      ],
+      "detail": "Suffered damage to his right ear in his semi-final.",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Petruzelli suffers extensive damage to his right ear"
+        }
+      ]
+    }
+  ],
+  "overview": {
+    "format": {
+      "value": "Pre-draft exits, team draft, elimination fights, semi-finals, live finals",
+      "basis": "competition_format"
+    },
+    "premiere": {
+      "date": "2005-08-22",
+      "basis": "episode 1 air date (network listing + independent source agree)"
+    },
+    "finale": {
+      "date": "2005-11-05",
+      "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
+      "basis": "our records (ufc_events)"
+    },
+    "fight_window": {
+      "start": "2005-06-15",
+      "end": "2005-07-12",
+      "value": "Jun 15 – Jul 12, 2005",
+      "basis": "house fight dates in the Nevada State Athletic Commission record",
+      "sources": [
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2005-tuf-season-2",
+          "record_id": "nsac-2005-tuf2-01",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+          "retrieved": "2026-09-13",
+          "quote": "DATE OF SHOW: 06/15/05",
+          "note": "first house bout"
+        },
+        {
+          "family": "athletic_commission",
+          "source_type": "commission_result_record",
+          "evidence_level": "commission_record",
+          "jurisdiction": "Nevada",
+          "commission": "Nevada State Athletic Commission",
+          "document_id": "nsac-2005-tuf-season-2",
+          "record_id": "nsac-2005-tuf2-12",
+          "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+          "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+          "retrieved": "2026-09-13",
+          "quote": "DATE OF SHOW: 07/12/05",
+          "note": "last house bout"
+        }
+      ]
+    },
+    "cast_size": {
+      "value": 18,
+      "sources": [
+        {
+          "family": "paramount_plus_episode_metadata",
+          "evidence_level": "network_listing",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "content_id": "oy_2Ke1PEZATCGXVddYuK_GE1ylojKnJ",
+          "listing_item": 1,
+          "retrieved": "2026-09-13",
+          "quote": "Eighteen of the world's toughest heavyweights and welterweights compete for two UFC contracts."
+        }
+      ]
+    },
+    "network": {
+      "value": "Spike TV",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Spike TV",
+          "note": "the article's infobox network field"
+        }
+      ]
+    },
+    "hosts": {
+      "value": "Dana White; Randy Couture (team challenges)",
+      "sources": [
+        {
+          "family": "wikipedia",
+          "evidence_level": "secondary_draft",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "quote": "Hosts: Dana White, Randy Couture"
+        }
+      ]
+    }
+  }
 }

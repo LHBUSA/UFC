@@ -1,20 +1,88 @@
 {
   "slug": "tuf-2",
-  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is set only where the network listing date and an independent source agree (air_date_resolution records both, and any display-date offset); listing_date alone is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
   "sources": {
     "titles": "scripts/tuf/evidence/paramount_plus.json",
     "recaps": null
   },
   "finale_broadcast": {
     "title": "TUF 2 Finale: Team Hughes vs. Team Franklin",
-    "listing_date": "2005-11-05"
+    "listing_date": "2005-11-05",
+    "air_date": "2005-11-05",
+    "air_date_resolution": {
+      "basis": "network_listing + independent_source",
+      "status": "resolved",
+      "network_listing_date": "2005-11-05",
+      "network_display_date": "2005-11-06",
+      "network_source": {
+        "family": "paramount_plus_episode_metadata",
+        "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+        "retrieved": "2026-09-13"
+      },
+      "independent_date": "2005-11-05",
+      "independent_source": {
+        "family": "wikipedia",
+        "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+        "retrieved": "2026-09-13",
+        "cites": "no citation given for the episode dates"
+      },
+      "date_conflict_note": "network display date is +1 day from its listing date"
+    }
   },
+  "source_defects": [
+    {
+      "family": "paramount_plus_episode_metadata",
+      "episodes": [
+        10,
+        11
+      ],
+      "defect": "descriptions_swapped",
+      "detail": "The listing's titles for episodes 10 (Semi-Final #1 Killer Instinct) and 11 (Semi-Final #2 Bloody Brawl) agree with the season record, but its two descriptions are swapped: item 10 describes Evans vs Jardine and item 11 describes the semi-final draw and the first welterweight finalist. Titles are used; those descriptions are used only for pairings, never for placing a fact in an episode.",
+      "retrieved": "2026-09-13"
+    },
+    {
+      "family": "paramount_plus_episode_metadata",
+      "episodes": [
+        11,
+        12
+      ],
+      "defect": "shared_listing_date",
+      "detail": "Episodes 11 and 12 carry the same listing date (2005-10-31). The independent source dates episode 12 on 2005-11-01, so episode 12 has no resolved air date.",
+      "retrieved": "2026-09-13"
+    },
+    {
+      "family": "paramount_plus_episode_metadata",
+      "episodes": "all",
+      "defect": "display_date_offset",
+      "detail": "The display date is one day after the listing date for every item (19:00 Pacific rendered as the next UTC day). The listing date is the one compared.",
+      "retrieved": "2026-09-13"
+    }
+  ],
   "episodes": [
     {
       "episode_number": 1,
       "title": "A New Crop",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-08-22",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-08-22",
+        "network_display_date": "2005-08-23",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-08-22",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-08-22",
       "recap_url": null,
       "recap_published": null,
@@ -24,7 +92,26 @@
       "episode_number": 2,
       "title": "The Teams Are Picked",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-08-29",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-08-29",
+        "network_display_date": "2005-08-30",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-08-29",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-08-29",
       "recap_url": null,
       "recap_published": null,
@@ -34,7 +121,26 @@
       "episode_number": 3,
       "title": "No Pain, No Gain",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-09-05",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-09-05",
+        "network_display_date": "2005-09-06",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-09-05",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-09-05",
       "recap_url": null,
       "recap_published": null,
@@ -44,7 +150,26 @@
       "episode_number": 4,
       "title": "Strategy",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-09-12",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-09-12",
+        "network_display_date": "2005-09-13",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-09-12",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-09-12",
       "recap_url": null,
       "recap_published": null,
@@ -54,7 +179,26 @@
       "episode_number": 5,
       "title": "Leave it in the Octagon",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-09-19",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-09-19",
+        "network_display_date": "2005-09-20",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-09-19",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-09-19",
       "recap_url": null,
       "recap_published": null,
@@ -64,7 +208,26 @@
       "episode_number": 6,
       "title": "Slugfest",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-09-26",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-09-26",
+        "network_display_date": "2005-09-27",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-09-26",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-09-26",
       "recap_url": null,
       "recap_published": null,
@@ -74,7 +237,26 @@
       "episode_number": 7,
       "title": "No Respect",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-10-03",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-10-03",
+        "network_display_date": "2005-10-04",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-10-03",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-10-03",
       "recap_url": null,
       "recap_published": null,
@@ -84,7 +266,26 @@
       "episode_number": 8,
       "title": "Knees & Elbows",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-10-10",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-10-10",
+        "network_display_date": "2005-10-11",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-10-10",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-10-10",
       "recap_url": null,
       "recap_published": null,
@@ -94,7 +295,26 @@
       "episode_number": 9,
       "title": "Mental Game",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-10-17",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-10-17",
+        "network_display_date": "2005-10-18",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-10-17",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-10-17",
       "recap_url": null,
       "recap_published": null,
@@ -104,7 +324,26 @@
       "episode_number": 10,
       "title": "Semi-Final #1 Killer Instinct",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-10-24",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-10-24",
+        "network_display_date": "2005-10-25",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-10-24",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-10-24",
       "recap_url": null,
       "recap_published": null,
@@ -114,7 +353,26 @@
       "episode_number": 11,
       "title": "Semi-Final #2 Bloody Brawl",
       "title_source": "paramount_plus",
-      "air_date": null,
+      "air_date": "2005-10-31",
+      "air_date_resolution": {
+        "basis": "network_listing + independent_source",
+        "status": "resolved",
+        "network_listing_date": "2005-10-31",
+        "network_display_date": "2005-11-01",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-10-31",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-10-31",
       "recap_url": null,
       "recap_published": null,
@@ -125,6 +383,26 @@
       "title": "Semi-Final #3 & 4: Countdown",
       "title_source": "paramount_plus",
       "air_date": null,
+      "air_date_resolution": {
+        "basis": null,
+        "status": "unresolved",
+        "why": "network listing 2005-10-31 and independent source 2005-11-01 disagree",
+        "network_listing_date": "2005-10-31",
+        "network_display_date": "2005-11-01",
+        "network_source": {
+          "family": "paramount_plus_episode_metadata",
+          "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/",
+          "retrieved": "2026-09-13"
+        },
+        "independent_date": "2005-11-01",
+        "independent_source": {
+          "family": "wikipedia",
+          "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2",
+          "retrieved": "2026-09-13",
+          "cites": "no citation given for the episode dates"
+        },
+        "date_conflict_note": "network display date is +1 day from its listing date"
+      },
       "listing_date": "2005-10-31",
       "recap_url": null,
       "recap_published": null,

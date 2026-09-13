@@ -134,6 +134,7 @@ function references(inventory) {
     for (const f of row.finalists || []) for (const n of f.fighters) add(row.slug, n, 'contestant');
     for (const c of d.coaches || []) add(row.slug, c.name, c.role === 'head' ? 'head_coach' : 'staff');
     for (const t of d.teams || []) for (const p of t.roster) add(row.slug, p.name, 'contestant');
+    for (const p of d.pre_draft_cast || []) add(row.slug, p.name, 'contestant');
     for (const div of d.bracket || []) for (const st of div.stages) for (const b of st.bouts) { add(row.slug, b.a, 'contestant'); add(row.slug, b.b, 'contestant'); }
     for (const ch of d.champions || []) add(row.slug, ch.fighter, 'contestant');
     for (const div of d.bracket || []) for (const st of div.stages) for (const b of st.disputed || []) { add(row.slug, b.a, 'contestant'); add(row.slug, b.b, 'contestant'); }
@@ -289,6 +290,7 @@ async function main() {
     const { d } = seasons.get(ref.season);
     const castPrinted = new Set([
       ...(d.teams || []).flatMap((t) => t.roster.map((p) => p.name)),
+      ...(d.pre_draft_cast || []).map((p) => p.name),
       ...(d.bracket || []).flatMap((div) => div.stages.flatMap((st) => st.bouts.flatMap((b) => [b.a, b.b]))),
     ]);
     castPrinted.delete(ref.printed);
@@ -382,6 +384,7 @@ async function main() {
     if (!fs.existsSync(file)) continue;
     for (const c of d.coaches || []) stamp(c, 'fighter_id', idOf(slug, c.name));
     for (const t of d.teams || []) for (const p of t.roster) stamp(p, 'fighter_id', idOf(slug, p.name));
+    for (const p of d.pre_draft_cast || []) stamp(p, 'fighter_id', idOf(slug, p.name));
     for (const div of d.bracket || []) for (const st of div.stages) for (const b of st.bouts) {
       stamp(b, 'a_fighter_id', idOf(slug, b.a));
       stamp(b, 'b_fighter_id', idOf(slug, b.b));

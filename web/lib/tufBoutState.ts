@@ -32,6 +32,7 @@ type BoutLike = {
   classification_source?: string | null;
   result_state?: "scheduled";
   sources?: Array<Pick<FieldSource, "family" | "fields">>;
+  result_sources?: Array<{ family: string; source_type?: string; evidence_level?: string; document_id?: string; record_id?: string; winner?: string }>;
 };
 type EpisodesLike = {
   episodes: Array<{ bouts?: Array<{ bracket: { a: string; b: string } | null; result: { winner: string | null; contradiction?: string } | null }> }>;
@@ -52,6 +53,19 @@ export function recapWinners(eps: EpisodesLike): Map<string, string> {
   return out;
 }
 
+/**
+ * A primary athletic-commission record for this bout's winner. Only an explicit
+ * commission evidence object counts: it must be typed as a commission result
+ * record, name the document and the bout record it cites, and state the same
+ * winner. A document merely hosted on a government domain is not enough.
+ */
+export function hasCommissionResult(b: Pick<BoutLike, "winner" | "result_sources">): boolean {
+  if (!b.winner) return false;
+  return (b.result_sources ?? []).some((s) =>
+    s.family === "athletic_commission" && s.source_type === "commission_result_record" && s.evidence_level === "commission_record"
+    && Boolean(s.document_id) && Boolean(s.record_id) && Boolean(s.winner) && fold(s.winner) === fold(b.winner));
+}
+
 export function resultState(b: BoutLike, recaps: Map<string, string> = new Map()): ResultState {
   if (!b.winner) return b.result_state === "scheduled" ? "scheduled" : "unknown";
   /* A winner printed as neither corner is a data defect; it is not verified
@@ -61,7 +75,7 @@ export function resultState(b: BoutLike, recaps: Map<string, string> = new Map()
   const recap = recaps.get(pairKey(b.a, b.b));
   const recapAgrees = Boolean(recap) && fold(recap) === fold(b.winner);
   const resultRow = b.classification === "professional" && /ufc_bout_results/.test(b.classification_source ?? "");
-  return official || recapAgrees || resultRow ? "verified" : "reported";
+  return official || recapAgrees || resultRow || hasCommissionResult(b) ? "verified" : "reported";
 }
 
 export function classState(b: Pick<BoutLike, "classification" | "classification_source">): ClassState {
@@ -111,7 +125,8 @@ export function summaryPhrases(s: SeasonBoutSummary): string[] {
   const played = s.professional - s.professional_scheduled;
   if (played) out.push(`Professional: ${played}`);
   if (s.professional_scheduled) out.push(`Professional scheduled: ${s.professional_scheduled}`);
-  if (s.house_reported) out.push(`House results reported: ${s.house_reported}${s.house_verified ? ` (${s.house_verified} verified)` : ""}`);
+  if (s.house_reported && s.house_verified === s.house_reported) out.push(`House results verified: ${s.house_verified}`);
+  else if (s.house_reported) out.push(`House results reported: ${s.house_reported}${s.house_verified ? ` (${s.house_verified} verified)` : ""}`);
   if (s.house_unknown) out.push(`House results not recorded: ${s.house_unknown}`);
   if (s.house_exhibition) out.push(`House exhibitions: ${s.house_exhibition}`);
   if (s.house_unresolved) out.push(`House classifications unresolved: ${s.house_unresolved}`);

@@ -83,8 +83,13 @@ test("the broadcaster's listing attaches episodes and verifies no house result",
     assert.ok(b.episode, `${b.a} vs ${b.b}: an attached listing carries its episode`);
     for (const s of b.sources!.filter((x) => x.family === "paramount_plus_episode_metadata")) {
       assert.ok(!s.fields.includes("winner"), "the listing never states a winner");
-      assert.equal(s.states_winner, false);
+      assert.equal((s as { states_winner?: boolean }).states_winner, false);
     }
     assert.equal(resultState(b), "reported", `${b.a} vs ${b.b}: still reported`);
   }
+});
+
+test("a season whose every house result is verified says so plainly", () => {
+  assert.deepEqual(summaryPhrases({ professional: 2, professional_scheduled: 0, house: 12, house_reported: 12, house_verified: 12, house_unknown: 0, house_exhibition: 12, house_unresolved: 0 }), ["Professional: 2", "House results verified: 12", "House exhibitions: 12"]);
+  assert.deepEqual(summaryPhrases({ professional: 1, professional_scheduled: 0, house: 14, house_reported: 14, house_verified: 3, house_unknown: 0, house_exhibition: 14, house_unresolved: 0 })[1], "House results reported: 14 (3 verified)");
 });

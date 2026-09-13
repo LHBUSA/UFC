@@ -25,6 +25,7 @@ import inventory from "@/data/tuf/seasons.json";
 import identityIndex from "@/data/tuf/identity.index.json";
 import { TUF_DETAILS } from "@/data/tuf/details.generated";
 import { TUF_EPISODES } from "@/data/tuf/episodes.generated";
+import commissionLedger from "@/data/tuf/commission_records.json";
 import { shapeFinale, type FinaleBoutRow, type FinaleIntegration, type RoundRow, type ScorecardRow } from "@/lib/tufFinaleShape";
 
 /* ---- episodes ------------------------------------------------------------- */
@@ -132,7 +133,39 @@ export type EvidenceSource = {
   evidence_level: "canonical" | "official" | "network_listing" | "secondary_affirmative" | "secondary" | "secondary_draft" | "corroboration_only" | string;
   url?: string; retrieved?: string; published?: string; author?: string;
   quote?: string; note?: string; content_id?: string; listing_item?: number; what?: string; kind?: string;
+  /** Set on an athletic commission record, which must name the document and the
+   * bout record it cites; a government URL alone is never a source. */
+  source_type?: "commission_result_record" | string; jurisdiction?: string; commission?: string;
+  document_id?: string; record_id?: string; winner?: string; archive_url?: string; sha256?: string;
 };
+
+/* ---- athletic commission records ------------------------------------------ */
+
+export type CommissionDocument = {
+  id: string; source_family: "athletic_commission"; source_type: "commission_result_record";
+  commission: string; jurisdiction: string; document: string; seasons: string[];
+  url: string; archive_url?: string; sha256?: string; pages?: number; retrieved: string;
+  location?: string; promoter?: string;
+  classification_language?: { quote: string; where: string };
+  classification_history?: string;
+};
+export type CommissionRecord = {
+  id: string; document_id: string; date: string; stage_label: string | null;
+  corners: Array<{ printed: string; hometown?: string; dob?: string; weight_lbs?: number }>;
+  bout: { weight_class: string; stage: string; a: string; b: string };
+  winner: string; result_text: string; method: string; round: number | null; time: string | null; scheduled_rounds?: number;
+  scorecards: { order: [string, string]; cards: Array<{ judge: string; score: string }> } | null;
+  referee?: string; remarks: Array<{ fighter: string; quote: string }>;
+};
+const COMMISSION = commissionLedger as unknown as { documents: CommissionDocument[]; records: CommissionRecord[] };
+export function commissionRecord(id: string | undefined | null): { record: CommissionRecord; document: CommissionDocument } | null {
+  const record = id ? COMMISSION.records.find((r) => r.id === id) : undefined;
+  const document = record ? COMMISSION.documents.find((d) => d.id === record.document_id) : undefined;
+  return record && document ? { record, document } : null;
+}
+
+/** A correction an authoritative source made to a drafted value. */
+export type FieldCorrection = { field: string; old: unknown; new: unknown; source: { document_id?: string; record_id?: string }; reason: string; batch?: string };
 
 /** Why a bout has the classification it has. `affirmative` is the authority;
  * `corroborating` supports it and can never stand in for it. */
@@ -158,6 +191,8 @@ export type CompetitionFormat = {
   kind: string;
   label: string;
   applies_to?: string;
+  /** Steps before any bout: exits, draft. Never bouts. */
+  steps?: Array<{ key: string; label: string; episode?: number; rule: string }>;
   phases: FormatPhase[];
   sources?: EvidenceSource[];
 };
@@ -181,10 +216,18 @@ export type TimelineEvent = {
   sources: EvidenceSource[];
 };
 
-export type OverviewFact = { value?: string | number; date?: string; event?: string; basis?: string; sources?: EvidenceSource[] };
+export type OverviewFact = { value?: string | number; date?: string; start?: string; end?: string; event?: string; basis?: string; sources?: EvidenceSource[] };
 export type SeasonOverview = {
   format?: OverviewFact; premiere?: OverviewFact; finale?: OverviewFact; filming?: OverviewFact;
-  cast_size?: OverviewFact; network?: OverviewFact;
+  /** When the house bouts were fought: never the broadcast window. */
+  fight_window?: OverviewFact;
+  cast_size?: OverviewFact; network?: OverviewFact; hosts?: OverviewFact;
+};
+
+/** Cast who left before the draft. Their exits are timeline events, not bouts. */
+export type PreDraftEntry = {
+  name: string; fighter_id?: string; weight_class: string | null; weight_class_note?: string;
+  exit: "injury" | "left_show" | "forfeit" | string; episode: number; timeline_event: string; identity_note?: string;
 };
 
 /** A bout on an announced card that has not been fought. Linked by the exact
@@ -293,6 +336,9 @@ export type TufBout = {
   classification_basis?: ClassificationBasis;
   /** The professional bout this row is, for a final on a sanctioned card. */
   ufc_bout_id?: string;
+  fight_date_source?: { document_id?: string; record_id?: string };
+  commission_record_id?: string;
+  corrections?: FieldCorrection[];
 };
 
 export type Stage = {
@@ -319,6 +365,7 @@ export type SeasonDetail = SeasonRow & {
   _resolved_conflicts?: Array<{ field: string; detail: string; resolved_by: string; resolved_with: string; resolution: string }>;
   name_corrections?: NameCorrection[];
   competition_format?: CompetitionFormat;
+  pre_draft_cast?: PreDraftEntry[];
   timeline_events?: TimelineEvent[];
   overview?: SeasonOverview;
   bracket?: Array<{ weight_class: string; stages: Stage[] }>;

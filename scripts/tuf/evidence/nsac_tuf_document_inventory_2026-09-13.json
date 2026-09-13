@@ -1,0 +1,1707 @@
+{
+ "_about": "READ-ONLY discovery inventory of athletic-commission TUF result documents, 2026-09-13. Nothing here has been ingested; only TUF 2 is applied (web/data/tuf/commission_records.json). Found through the Wayback Machine CDX index of boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/ and the live results pages; every document below was fetched from the live site, hashed and text-profiled. Documents are not redistributed.",
+ "method": {
+  "index": "http://web.archive.org/cdx/search/cdx?url=boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/*",
+  "live_pages": "https://boxing.nv.gov/results/<year>_Results/",
+  "profile": "pypdf text: bout rows (-- vs --), DATE OF SHOW rows, exhibition language, fields present"
+ },
+ "summary": {
+  "seasons_with_season_documents": 32,
+  "season_documents": 33,
+  "entry_round_documents": 13,
+  "other_tuf_branded_documents": 1,
+  "documents_total": 47,
+  "live": 47,
+  "bouts_listed_in_season_documents": 415,
+  "bouts_listed_in_entry_round_documents": 204,
+  "archive_house_bouts_in_covered_seasons": 520,
+  "applied_so_far": [
+   "tuf-2"
+  ],
+  "not_found": [
+   "tuf-9",
+   "tuf-21",
+   "tuf-30",
+   "tuf-34",
+   "tuf-1..33 international editions other than brazil-4 and latam-2 (filmed outside Nevada or under another commission)"
+  ]
+ },
+ "seasons": [
+  {
+   "season": "tuf-1",
+   "documents": 1,
+   "bouts_listed": 10,
+   "archive_house_bouts": 10,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "EXHIBITION RESULTS; Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-2",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 12,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-3",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "EXHIBITION RESULTS; Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-4",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-5",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 14,
+   "archive_house_results_verified_now": 1,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-6",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 14,
+   "archive_house_results_verified_now": 1,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-7",
+   "documents": 1,
+   "bouts_listed": 15,
+   "archive_house_bouts": 30,
+   "archive_house_results_verified_now": 1,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-8",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 25,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-10",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 14,
+   "archive_house_results_verified_now": 14,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-11",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 28,
+   "archive_house_results_verified_now": 26,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-12",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 28,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-13",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 14,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "none printed (title only)",
+   "redacted": false
+  },
+  {
+   "season": "tuf-14",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 28,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "none printed (title only)",
+   "redacted": false
+  },
+  {
+   "season": "tuf-15",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 30,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "none printed (title only)",
+   "redacted": false
+  },
+  {
+   "season": "tuf-16",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 14,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-17",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 14,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-18",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-19",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-20",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 14,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-22",
+   "documents": 2,
+   "bouts_listed": 15,
+   "archive_house_bouts": 30,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-23",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-24",
+   "documents": 1,
+   "bouts_listed": 15,
+   "archive_house_bouts": 16,
+   "archive_house_results_verified_now": 3,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-25",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 14,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-26",
+   "documents": 1,
+   "bouts_listed": 14,
+   "archive_house_bouts": 15,
+   "archive_house_results_verified_now": 1,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-27",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-28",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-29",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 10,
+   "classification_language": "Exhibition Results",
+   "redacted": true
+  },
+  {
+   "season": "tuf-31",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 12,
+   "classification_language": "Exhibition Results",
+   "redacted": true
+  },
+  {
+   "season": "tuf-32",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 8,
+   "classification_language": "Exhibition Results",
+   "redacted": true
+  },
+  {
+   "season": "tuf-33",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 9,
+   "classification_language": "Exhibition Results",
+   "redacted": true
+  },
+  {
+   "season": "tuf-brazil-4",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  },
+  {
+   "season": "tuf-latam-2",
+   "documents": 1,
+   "bouts_listed": 12,
+   "archive_house_bouts": 12,
+   "archive_house_results_verified_now": 0,
+   "classification_language": "Exhibition Results",
+   "redacted": false
+  }
+ ],
+ "documents": [
+  {
+   "season": "tuf-1",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON1.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+   "year_dir": "2005_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20160304125359/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON1.pdf",
+   "sha256": "56e7f0951afcdc44189935c10eb0bac100527cea0adcf56415ca819568690f5d",
+   "pages": 2,
+   "bouts_listed": 10,
+   "show_date_rows": 10,
+   "classification_language": [
+    "EXHIBITION RESULTS",
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-2",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON2.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+   "year_dir": "2005_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161222141248/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+   "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 12,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-3",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON3.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+   "year_dir": "2006_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+   "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 12,
+   "classification_language": [
+    "EXHIBITION RESULTS",
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-4",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON4.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+   "year_dir": "2006_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+   "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 12,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-5",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON5.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+   "year_dir": "2007_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+   "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 14,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-6",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON6.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+   "year_dir": "2007_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+   "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 14,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-8",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "05-21-08TUF.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2008_Results/05-21-08TUF.pdf",
+   "year_dir": "2008_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161224030344/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2008_Results/05-21-08TUF.pdf",
+   "sha256": "5736fc36f17ac998bd8d12cdd7d22b5583a5093c493c9fe7c8699b21718ed5e2",
+   "pages": 2,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "none printed (title only)"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-7",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON-7-1-27.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2008_Results/TUFSEASON-7-1-27.pdf",
+   "year_dir": "2008_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161212212841/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2008_Results/TUFSEASON-7-1-27.pdf",
+   "sha256": "e240fb9663a61110a208e2f0266ff0d325c852f6b776579fb0c3b8d2a75bb237",
+   "pages": 2,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-7",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON7.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2008_Results/TUFSEASON7.pdf",
+   "year_dir": "2008_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161212212854/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2008_Results/TUFSEASON7.pdf",
+   "sha256": "55a4fda7f20551d37a785e3e93533cdcc77463b95aed094f2a3f109c51067cc6",
+   "pages": 3,
+   "bouts_listed": 15,
+   "show_date_rows": 15,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-8",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON8.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2008_Results/TUFSEASON8.pdf",
+   "year_dir": "2008_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161222141442/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2008_Results/TUFSEASON8.pdf",
+   "sha256": "4f5ef3a941acd24c17e657e9b640f28ca93220ca056e2437061bfb1f2d7402f8",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 12,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-10",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON 10.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2009_Results/TUFSEASON%2010.pdf",
+   "year_dir": "2009_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161203222251/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2009_Results/TUFSEASON%2010.pdf",
+   "sha256": "6e54a8302579c20a69bf4dfdc589bc498a429e5e9938c56c7f434d903202547c",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 14,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-19",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF-SEASON19.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2014_Results/TUF-SEASON19.pdf",
+   "year_dir": "2014_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120222132/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2014_Results/TUF-SEASON19.pdf",
+   "sha256": "4eb86c920ad7842ab36edc2c37128cfc60fd028d77ca559165efa1af27fc24bd",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 9,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-19",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF19-FIGHT-INS.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2014_Results/TUF19-FIGHT-INS.pdf",
+   "year_dir": "2014_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120223710/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2014_Results/TUF19-FIGHT-INS.pdf",
+   "sha256": "6e6ebfcbc7cfc7758aac85a388e99eb0d2a77ba171aa24d75b7de8ef4f92b457",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-20",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_20.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2014_Results/TUF_SEASON_20.pdf",
+   "year_dir": "2014_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120223148/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2014_Results/TUF_SEASON_20.pdf",
+   "sha256": "5676cf0f3a37317f2eb40379937fd4093974b8804e3685b21903d4403739b89d",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 10,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-brazil-4",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_BRASIL4_02-02-15_RESULTS.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_BRASIL4_02-02-15_RESULTS.pdf",
+   "year_dir": "2015_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161129020524/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_BRASIL4_02-02-15_RESULTS.pdf",
+   "sha256": "0eacf6e88c0322d99383a70106766b706de1cad613642526e5d07df171544b14",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "Mandalay Bay Events Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-brazil-4",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_BRASIL4_SEASON_RESULTS.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_BRASIL4_SEASON_RESULTS.pdf",
+   "year_dir": "2015_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161129020556/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_BRASIL4_SEASON_RESULTS.pdf",
+   "sha256": "9c6f211eacf320680b0a63f94ff2579a313634af8c8dbc43db0147cede83ff3d",
+   "pages": 3,
+   "bouts_listed": 12,
+   "show_date_rows": 10,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-latam-2",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_LASEASON_2.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_LASEASON_2.pdf",
+   "year_dir": "2015_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20171006041837/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_LASEASON_2.pdf",
+   "sha256": "271bf21c3835241fe74087f68de915cf76410d080edefa95bd8d725a1e5bddfe",
+   "pages": 3,
+   "bouts_listed": 12,
+   "show_date_rows": 9,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-22",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON22-07-17-15.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON22-07-17-15.pdf",
+   "year_dir": "2015_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161129020653/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON22-07-17-15.pdf",
+   "sha256": "ea0797c25f2587e2bc4abd0c63feec3a2686df2745b7b466c2dfd3298b27c371",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "TU F Gym  Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-22",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON22-07-17-15c.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON22-07-17-15c.pdf",
+   "year_dir": "2015_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20190919001010/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON22-07-17-15c.pdf",
+   "sha256": "a37529ddd8f5bf4d34ada4b9174a00a6c58bcd9f8abce6690ff3429ca4dd9ad5",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "TUF Gym  Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-22",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON22.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON22.pdf",
+   "year_dir": "2015_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161129020712/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON22.pdf",
+   "sha256": "7ff5c17a21e9d3ead26428f70536946a6595516b77d0ee14182f5104b00de1c5",
+   "pages": 3,
+   "bouts_listed": 15,
+   "show_date_rows": 11,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-22",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON22c.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON22c.pdf",
+   "year_dir": "2015_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20190919003632/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON22c.pdf",
+   "sha256": "14efefa5cc146a2f5e830f4e80adfea116977cc92e41384fca0a1f6c889aa6d2",
+   "pages": 3,
+   "bouts_listed": 15,
+   "show_date_rows": 11,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": null,
+   "season_basis": "not a TUF season document by name",
+   "in_archive": false,
+   "kind": "other_tuf_branded",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_ROADtoUFC.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON_ROADtoUFC.pdf",
+   "year_dir": "2015_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161129020744/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2015_Results/TUF_SEASON_ROADtoUFC.pdf",
+   "sha256": "882beb2bada191c4e6ace8753a482fbc1646d1f18bee3b7f09c99eb6152c4e2a",
+   "pages": 2,
+   "bouts_listed": 6,
+   "show_date_rows": 2,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-23",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON23-01-26-16.pdf",
+   "url": "https://boxing.nv.gov/uploadedfiles/boxingnvgov/content/results/2016_Results/TUF_SEASON23-01-26-16.pdf",
+   "year_dir": "2016_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20210515094211/https://boxing.nv.gov/uploadedfiles/boxingnvgov/content/results/2016_Results/TUF_SEASON23-01-26-16.pdf",
+   "sha256": "b0e6c659a219d690ed57eb0cf96e2826916da594508d6e01896a5f2d281ff64b",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-23",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON23.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2016_Results/TUF_SEASON23.pdf",
+   "year_dir": "2016_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161128220157/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2016_Results/TUF_SEASON23.pdf",
+   "sha256": "3ca2996db5b0a17deb2507aeb04c21c0f3ea2b6b76706b192b08d3e10bd7e9f0",
+   "pages": 3,
+   "bouts_listed": 12,
+   "show_date_rows": 9,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-24",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_24.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2016_Results/TUF_SEASON_24.pdf",
+   "year_dir": "2016_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20171006023510/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2016_Results/TUF_SEASON_24.pdf",
+   "sha256": "e9a3e999f6e3fa19b81120a527f03d0f7101401c30e0e9a7805ef442be3dc036",
+   "pages": 3,
+   "bouts_listed": 15,
+   "show_date_rows": 9,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-27",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_27(1).pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2018_Results/TUF_SEASON_27(1).pdf",
+   "year_dir": "2018_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20180714051020/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2018_Results/TUF_SEASON_27(1).pdf",
+   "sha256": "caf4c8c34b8959d677e473dfb50e536a707d8e229314e77ec5f4a558fa555187",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 6,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-28",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_28.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2018_Results/TUF_SEASON_28.pdf",
+   "year_dir": "2018_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20190203030524/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2018_Results/TUF_SEASON_28.pdf",
+   "sha256": "ad3d3188b818076752f1bb618b05b5db641ef6adf046e66e39eac45680c1d2fd",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 4,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-31",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_31_MMA-RESULTS-Redacted.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2023_Results/TUF_SEASON_31_MMA-RESULTS-Redacted.pdf",
+   "year_dir": "2023_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20231128183945/https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2023_Results/TUF_SEASON_31_MMA-RESULTS-Redacted.pdf",
+   "sha256": "5317431fcb73cefdeac7267eaca3009ee7e38a8506f5e8a22811b0f0135c84af",
+   "pages": 3,
+   "bouts_listed": 12,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC APEX ARENA, LAS VEGAS ",
+   "redacted": true,
+   "usable": true
+  },
+  {
+   "season": "tuf-32",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF-Season-32-MMA_Redacted.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2024_Results/TUF-Season-32-MMA_Redacted.pdf",
+   "year_dir": "2024_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20250524201532/https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2024_Results/TUF-Season-32-MMA_Redacted.pdf",
+   "sha256": "46198f0248fe1d0312f6728e8a5bec63bfe06ff389b4960d97de24be3c83c71e",
+   "pages": 3,
+   "bouts_listed": 12,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC APEX ARENA, LAS VEGAS ",
+   "redacted": true,
+   "usable": true
+  },
+  {
+   "season": "tuf-33",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF SEASON 33 MMA-MASTER RESULTS-REDACTED.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2025_Results/TUF%20SEASON%2033%20MMA-MASTER%20RESULTS-REDACTED.pdf",
+   "year_dir": "2025_Results",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20260513192508/https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2025_Results/TUF%20SEASON%2033%20MMA-MASTER%20RESULTS-REDACTED.pdf",
+   "sha256": "7ce68a47a9f8acd2c7f321cb5ea9a72a68ede3430add4f28503ad9a0498119dd",
+   "pages": 3,
+   "bouts_listed": 12,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC APEX ARENA, LAS VEGAS ",
+   "redacted": true,
+   "usable": true
+  },
+  {
+   "season": "tuf-12",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF 12 06-05-10.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2010/TUF%2012%2006-05-10.pdf",
+   "year_dir": "MMA/2010",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161224032624/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2010/TUF%2012%2006-05-10.pdf",
+   "sha256": "fcdbce70ea97384d7144eb7a2dd1fbff9f9b6ef30f80a8f6bd57e85fc7eb34fa",
+   "pages": 2,
+   "bouts_listed": 14,
+   "show_date_rows": 0,
+   "classification_language": [
+    "none printed (title only)"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-11",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF SEASON 11.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2010/TUF%20SEASON%2011.pdf",
+   "year_dir": "MMA/2010",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161222140519/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2010/TUF%20SEASON%2011.pdf",
+   "sha256": "d15d1e1e6a40fa9c91cb94ef02a02fd0fe4a7d45c442ea2d9875414d7110c4fa",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 14,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-12",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF SEASON 12.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2010/TUF%20SEASON%2012.pdf",
+   "year_dir": "MMA/2010",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161224031913/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2010/TUF%20SEASON%2012.pdf",
+   "sha256": "9d30e4829228a40a9a47a31a01b2f4524555de19e292d40ade604ad9e7ee78ce",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 10,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-11",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF11 01-23-10.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2010/TUF11%2001-23-10.pdf",
+   "year_dir": "MMA/2010",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161222135824/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2010/TUF11%2001-23-10.pdf",
+   "sha256": "df76aaf146ca7148253cf72c6e6c24e33b092ed51a1a649be14eee2f4b906dce",
+   "pages": 2,
+   "bouts_listed": 14,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-14",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF-06-07-11-MMA.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2011/TUF-06-07-11-MMA.pdf",
+   "year_dir": "MMA/2011",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20160505145136/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2011/TUF-06-07-11-MMA.pdf",
+   "sha256": "c30b82821098bbf9d4b81a1a647792b2109425879b451503d773c4a5e1b27a7f",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Contestants"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "Mandalay Bay Events Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-13",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF-SEASON-13.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2011/TUF-SEASON-13.pdf",
+   "year_dir": "MMA/2011",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161216081311/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2011/TUF-SEASON-13.pdf",
+   "sha256": "f2d5dfed25950454b42caf88d1986fbcdce70c4bfe9bbeb02f97e662d5ec5ec4",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 11,
+   "classification_language": [
+    "none printed (title only)"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-14",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF-SEASON-14.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2011/TUF-SEASON-14.pdf",
+   "year_dir": "MMA/2011",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20161216081322/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2011/TUF-SEASON-14.pdf",
+   "sha256": "38470126fc1a145f47627967f4a39890b4e992434fa7b9a174bacc8c2dd952a8",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 8,
+   "classification_language": [
+    "none printed (title only)"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-15",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "03-09-12-TUF.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2012/03-09-12-TUF.pdf",
+   "year_dir": "MMA/2012",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120224417/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2012/03-09-12-TUF.pdf",
+   "sha256": "67ac16f86522b1d5960a6840c05a68a26eb9bc58c933973c4502fa8b3c8bac50",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-15",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF SEASON-15(1).pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2012/TUF%20SEASON-15(1).pdf",
+   "year_dir": "MMA/2012",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120222916/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2012/TUF%20SEASON-15(1).pdf",
+   "sha256": "7f78a52fe864acdb8673a40c3675bc285c0d083731c7d85da57823e8eecee99e",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 11,
+   "classification_language": [
+    "none printed (title only)"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-16",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF-07-31-12.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2012/TUF-07-31-12.pdf",
+   "year_dir": "MMA/2012",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120222439/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2012/TUF-07-31-12.pdf",
+   "sha256": "5cb2cb9f1ad629f49ed67c5d63e451f1dea92d7061abac662a209d4748b99862",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "Mandalay Bay Events Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-16",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF-SEASON-16.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2012/TUF-SEASON-16.pdf",
+   "year_dir": "MMA/2012",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120222539/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2012/TUF-SEASON-16.pdf",
+   "sha256": "ef00eb05f4d0df6bfe4b06b24b6feaf805583516fdb65de14334f7f25f6151ad",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 10,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-18",
+   "season_basis": "inferred from the file date — confirm against the season before use",
+   "in_archive": true,
+   "kind": "entry_round",
+   "commission": "Nevada State Athletic Commission",
+   "file": "05-29-13TUF.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2013/05-29-13TUF.pdf",
+   "year_dir": "MMA/2013",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120223211/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2013/05-29-13TUF.pdf",
+   "sha256": "ac895c32fee52c808f2530c7e27ac7cbc44dcb1489b071db0b27b9c3a8252dba",
+   "pages": 3,
+   "bouts_listed": 16,
+   "show_date_rows": 0,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "TUF Gym, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-18",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF-SEASON-18.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2013/TUF-SEASON-18.pdf",
+   "year_dir": "MMA/2013",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120221908/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2013/TUF-SEASON-18.pdf",
+   "sha256": "2d6e94445edfb041400ead0d92e77859d32e3a7d45fc565b1c67e09dbab126fc",
+   "pages": 2,
+   "bouts_listed": 12,
+   "show_date_rows": 10,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-17",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUFSEASON17.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2013/TUFSEASON17.pdf",
+   "year_dir": "MMA/2013",
+   "live": true,
+   "archive_url": "https://web.archive.org/web/20151120224759/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/MMA/2013/TUFSEASON17.pdf",
+   "sha256": "ba0a34bfcd051de00ab2cf77d2411d6ae4d88fad2f8c3d68dba2b95b413c6c8a",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 10,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-25",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_25.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2017_Results/TUF_SEASON_25.pdf",
+   "year_dir": "2017_Results",
+   "live": true,
+   "archive_url": null,
+   "sha256": "1895764150a8ee3956234385599030e35a16ae3b4d1071c975fb1a1c345d2fa9",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 8,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-26",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_26.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2017_Results/TUF_SEASON_26.pdf",
+   "year_dir": "2017_Results",
+   "live": true,
+   "archive_url": null,
+   "sha256": "55dc194df98a16a46f8c483f8e4d1c1fb8a47936ca82812a23893015a576e13f",
+   "pages": 3,
+   "bouts_listed": 14,
+   "show_date_rows": 11,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "date_of_birth",
+    "weight",
+    "referee",
+    "judges_scores",
+    "method_time",
+    "remarks"
+   ],
+   "location": "UFC Training Center, Las Vegas ",
+   "redacted": false,
+   "usable": true
+  },
+  {
+   "season": "tuf-29",
+   "season_basis": "season number in the file name",
+   "in_archive": true,
+   "kind": "season_results",
+   "commission": "Nevada State Athletic Commission",
+   "file": "TUF_SEASON_29_Redacted.pdf",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxing.nv.gov/content/results/2021_Results/TUF_SEASON_29_Redacted.pdf",
+   "year_dir": "2021_Results",
+   "live": true,
+   "archive_url": null,
+   "sha256": "1a85d8c69287c009c48873bf3e442c379123e4e500f36eef95628bb184028a2e",
+   "pages": 3,
+   "bouts_listed": 12,
+   "show_date_rows": null,
+   "classification_language": [
+    "Exhibition Results"
+   ],
+   "fields": [
+    "found on the live 2021 results page; fields not profiled"
+   ],
+   "location": null,
+   "redacted": true,
+   "usable": true
+  }
+ ]
+}

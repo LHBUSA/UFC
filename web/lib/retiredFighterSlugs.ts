@@ -21,6 +21,17 @@ export type RetiredFighterSlug = { retiredSourceId: string; canonicalSlug: strin
 export const RETIRED_FIGHTER_SLUGS: ReadonlyArray<RetiredFighterSlug> = [
   { retiredSourceId: "1eff7bc0f815b270", canonicalSlug: "yorgan-de-castro-4423213", reconciliation: "dwcs-split-identities-2026-09-13" },
   { retiredSourceId: "e530df53922f413e", canonicalSlug: "luis-pajuelo-5144312", reconciliation: "dwcs-split-identities-2026-09-13" },
+  /* TUF 2 contestants: ESPN athlete ids attached through their exact finale bouts (no merge). */
+  { retiredSourceId: "79899ecf62020f6d", canonicalSlug: "joe-stevenson-2335672", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "6da99156486ed6c2", canonicalSlug: "joshua-burkman-2354104", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "4908c5ee68a50ee5", canonicalSlug: "brad-imes-2335606", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "030f08370fd1c2bb", canonicalSlug: "kerry-schall-2354537", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "ccd1299e0345e0ce", canonicalSlug: "melvin-guillard-2335800", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "b7d524c77c27389b", canonicalSlug: "marcus-davis-2335804", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "2067a177a2842fbf", canonicalSlug: "sammy-morgan-2335817", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "ee779c43a8926d52", canonicalSlug: "rashad-evans-2335465", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "93ce4ac89e3d7652", canonicalSlug: "luke-cummo-2335799", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
+  { retiredSourceId: "b9d0fd83bb8a147a", canonicalSlug: "keith-jardine-2335469", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
   /* TUF 1 contestants: ESPN athlete ids attached through their exact finale bouts (no merge). */
   { retiredSourceId: "aee8eecfc4bfb1e7", canonicalSlug: "bobby-southworth-2431311", reconciliation: "tuf1-espn-athlete-ids-2026-09-13" },
   { retiredSourceId: "dd37fd509af89f15", canonicalSlug: "josh-koscheck-2335664", reconciliation: "tuf1-espn-athlete-ids-2026-09-13" },

@@ -24,7 +24,7 @@ test("an id that merely contains the retired id is not captured", () => {
 
 test("one permanent redirect per retired fighter, never Joey Gomez", () => {
   const r = retiredFighterSlugRedirects();
-  assert.equal(r.length, 18, "2 DWCS merges + 16 TUF 1 ESPN-id attachments");
+  assert.equal(r.length, 28, "2 DWCS merges + 16 TUF 1 + 10 TUF 2 ESPN-id attachments");
   assert.equal(new Set(RETIRED_FIGHTER_SLUGS.map((x) => x.retiredSourceId)).size, r.length, "one entry per retired id");
   assert.ok(r.every((x) => x.permanent));
   assert.ok(!JSON.stringify(r).includes("0778f94eb5d588a5") && !JSON.stringify(r).includes("4357555"));
@@ -38,4 +38,14 @@ test("a TUF 1 contestant's old UFC Stats URL lands on the ESPN-keyed profile", (
   const quarry = RETIRED_FIGHTER_SLUGS.find((x) => x.retiredSourceId === "52cae54377b433b7");
   assert.equal(quarry?.canonicalSlug, "nate-quarry-2335773", "the canonical row's own name, not the season's printed Nathan");
   assert.equal(RETIRED_FIGHTER_SLUGS.filter((x) => x.reconciliation === "tuf1-espn-athlete-ids-2026-09-13").length, 16);
+});
+
+test("the 10 TUF 2 contestants' old UFC Stats URLs land on their ESPN-keyed profiles", () => {
+  const tuf2 = RETIRED_FIGHTER_SLUGS.filter((x) => x.reconciliation === "tuf2-espn-athlete-ids-2026-09-13");
+  assert.equal(tuf2.length, 10);
+  const burkman = tuf2.find((x) => x.retiredSourceId === "6da99156486ed6c2");
+  assert.equal(burkman?.canonicalSlug, "joshua-burkman-2354104", "the canonical row's own name, not the season's printed Josh");
+  assert.ok(matches("6da99156486ed6c2", "joshua-burkman-6da99156486ed6c2"));
+  assert.ok(matches("6da99156486ed6c2", "josh-burkman-6da99156486ed6c2"), "an old link under another name prefix still redirects");
+  for (const x of tuf2) assert.match(x.canonicalSlug, /-\d{7}$/);
 });

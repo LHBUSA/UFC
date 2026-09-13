@@ -72,6 +72,8 @@ export function rosterMarks(season: SeasonLike): Map<string, RosterMark[]> {
       else if (e.type === "elimination_without_fight") add(f, { label: "Sent home", episode: ep, kind: "elimination" });
       else if (e.type === "withdrawal") add(f, { label: "Withdrew", episode: ep, kind: "withdrawal" });
       else if (e.type === "replacement_return") add(f, { label: "Returned", episode: ep, kind: "return" });
+      else if (e.type === "replacement" && e.replaces) add(f, { label: `Replaced ${e.replaces}`, episode: ep, kind: "return" });
+      else if (e.type === "forfeit" && f === e.fighters[0]) add(f, { label: "Forfeited", episode: ep, kind: "elimination" });
       else if (e.type === "staff_change") add(f, { label: "Assistant coach", episode: ep, kind: "staff" });
     }
   }
@@ -92,7 +94,7 @@ export function rosterMarks(season: SeasonLike): Map<string, RosterMark[]> {
 }
 
 export type TimelineCounts = {
-  trades: number; withdrawals: number; replacements: number; alternates: number; injuries: number;
+  trades: number; withdrawals: number; replacements: number; alternates: number; injuries: number; medical: number; forfeits: number; team_events: number;
   eliminations_without_fight: number; eliminations_by_bout: number; eliminations: number;
   weight_events: number; staff_changes: number; unresolved_placements: number;
 };
@@ -106,14 +108,17 @@ export function timelineCounts(season: SeasonLike): TimelineCounts {
     if (st.stage === "elimination" || st.stage === "semi_final") byBout += st.bouts.filter((b) => b.winner).length;
   }
   return {
-    trades: n("trade"), withdrawals: n("withdrawal"), replacements: n("replacement_return"), alternates: n("alternate_named"),
-    injuries: n("injury"), eliminations_without_fight: n("elimination_without_fight"), eliminations_by_bout: byBout,
-    eliminations: n("elimination_without_fight") + byBout, weight_events: n("weight_issue"), staff_changes: n("staff_change"),
+    trades: n("trade"), withdrawals: n("withdrawal"), replacements: n("replacement_return") + n("replacement"), alternates: n("alternate_named"),
+    injuries: n("injury"), medical: n("medical_clearance"), forfeits: n("forfeit"),
+    eliminations_without_fight: n("elimination_without_fight") + n("forfeit"), eliminations_by_bout: byBout,
+    eliminations: n("elimination_without_fight") + n("forfeit") + byBout, weight_events: n("weight_issue"), staff_changes: n("staff_change"),
+    team_events: n("team_selection") + n("trade"),
     unresolved_placements: ev.filter((e) => e.episode == null).length,
   };
 }
 
 const FAMILY_LABEL: Record<string, string> = {
+  athletic_commission: "Commission record",
   our_records: "Our fight records",
   "ufc.com": "UFC.com",
   ufc_com_recap: "UFC.com recap",
@@ -124,6 +129,7 @@ const FAMILY_LABEL: Record<string, string> = {
 };
 const LEVEL_LABEL: Record<string, string> = {
   canonical: "canonical",
+  commission_record: "primary",
   official: "official",
   network_listing: "network",
   secondary_affirmative: "secondary, affirmative",
@@ -133,14 +139,14 @@ const LEVEL_LABEL: Record<string, string> = {
 };
 
 /** "Wikipedia (draft)", "ESPN retrospective (secondary, affirmative)". */
-export function sourceLabel(s: Pick<EvidenceSource, "family" | "evidence_level" | "published">): string {
-  const family = FAMILY_LABEL[s.family] ?? s.family;
+export function sourceLabel(s: Pick<EvidenceSource, "family" | "evidence_level" | "published" | "jurisdiction">): string {
+  const family = s.family === "athletic_commission" && s.jurisdiction ? `${s.jurisdiction} commission record` : FAMILY_LABEL[s.family] ?? s.family;
   const year = s.family === "espn_retrospective" && s.published ? ` ${s.published.slice(0, 4)}` : "";
   const level = LEVEL_LABEL[s.evidence_level] ?? s.evidence_level;
   return `${family}${year}${level ? ` (${level})` : ""}`;
 }
 
 /** Distinct source labels, in order, for a compact evidence line. */
-export function sourceLabels(sources: ReadonlyArray<Pick<EvidenceSource, "family" | "evidence_level" | "published">> | undefined): string[] {
+export function sourceLabels(sources: ReadonlyArray<Pick<EvidenceSource, "family" | "evidence_level" | "published" | "jurisdiction">> | undefined): string[] {
   return [...new Set((sources ?? []).map(sourceLabel))];
 }

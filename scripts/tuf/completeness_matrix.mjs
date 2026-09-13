@@ -59,6 +59,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expectedBouts } from '../../web/lib/tufFormat.ts';
 import { buildEpisodeViews, timelineCounts } from '../../web/lib/tufTimeline.ts';
+import { hasCommissionResult } from '../../web/lib/tufBoutState.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const DATA = path.join(ROOT, 'web', 'data', 'tuf');
@@ -213,7 +214,9 @@ for (const row of inventory.seasons) {
     const classificationRepairable = b.classification === 'unverified' && b.stage === 'final' && dbVerified;
     const scheduled = b.stage === 'final' && !b.winner && (dbPair || []).some((x) => !x.has_result && x.status !== 'cancelled' && String(x.date) >= today);
     let result;
-    if (b.winner && (dbVerified || officialWinner || recapAgrees)) result = 'verified';
+    /* A primary athletic-commission record verifies a house result only through an
+     * explicit record cited by document and bout (web/data/tuf/commission_records.json). */
+    if (b.winner && (dbVerified || officialWinner || recapAgrees || hasCommissionResult(b))) result = 'verified';
     else if (b.winner) result = 'partial';
     else if (scheduled) result = 'scheduled';
     else result = 'unknown';
@@ -283,6 +286,9 @@ for (const row of inventory.seasons) {
     house_bouts: houseBouts.length,
     house_bouts_with_episode: houseBouts.filter((b) => b.episode != null).length,
     house_bouts_with_result_evidence: houseBouts.filter((b) => (b.result_sources || []).length || (b.sources || []).some((x) => x.fields.includes('winner'))).length,
+    house_bouts_commission_verified: houseBouts.filter((b) => hasCommissionResult(b)).length,
+    exhibition_commission_backed: exhibitions.filter((b) => (b.classification_basis?.affirmative || []).some((a) => a.family === 'athletic_commission' && a.evidence_level === 'commission_record' && a.record_id)).length,
+    house_bouts_with_fight_date: houseBouts.filter((b) => b.fight_date).length,
     exhibition_with_affirmative_basis: exhibitions.filter((b) => (b.classification_basis?.affirmative || []).length).length,
     exhibition_absence_only: exhibitions.filter((b) => !(b.classification_basis?.affirmative || []).length).length,
     competition_format_declared: Boolean(d?.competition_format),
