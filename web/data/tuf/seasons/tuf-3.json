@@ -11,7 +11,7 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json. House results, fight dates and classification are from the Nevada State Athletic Commission's Season 3 results record (tuf3-tuf4-nsac-reconciliation). The draft's differing values are kept in each bout's corrections; its compatible method detail is kept as secondary detail. Solomon Hutcherson vs Rory Singer prints its show date as \"02/0706\" (the separator between day and year is missing); it is read as 2006-02-07 and the printed form is kept as date_printed."
   },
   "_conflicts": [
     {
@@ -244,13 +244,117 @@
               "a": "Kalib Starnes",
               "b": "Mike Stine",
               "winner": "Kalib Starnes",
-              "method": "KO (punches)",
+              "method": "TKO",
               "round": 1,
-              "time": "2:09",
+              "time": "2:10",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "80a70b97-37a5-48bb-aedc-42a8f44e81d1"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-01-24 and aired in episode 1; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
+              "a_fighter_id": "80a70b97-37a5-48bb-aedc-42a8f44e81d1",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "KO (punches)",
+                  "new": "TKO",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-01"
+                  },
+                  "reason": "the commission record states method as \"TKO\" (\"Starnes won by TKO 2:10 of the 1st round.\"); a primary commission record overrides the Wikipedia draft; the draft's category is contradicted and not kept, and its compatible detail \"punches\" is kept as secondary detail",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:09",
+                  "new": "2:10",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-01"
+                  },
+                  "reason": "the commission record states time as \"2:10\" (\"Starnes won by TKO 2:10 of the 1st round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-01-24",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-01"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-01"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-01",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Kalib Starnes",
+                  "quote": "Starnes won by TKO 2:10 of the 1st round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-01",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-01",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-01",
+              "method_detail": {
+                "value": "punches",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "quote": "KO (punches)",
+                  "note": "secondary detail; the commission record does not print it"
+                }
+              }
             },
             {
               "a": "Ross Pointon",
@@ -258,25 +362,209 @@
               "winner": "Kendall Grove",
               "method": "Submission (rear naked choke)",
               "round": 1,
-              "time": "3:45",
+              "time": "3:47",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-01-30 and aired in episode 3; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "4e32d334-47ac-4e8f-a075-8ed51ac61469",
-              "b_fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
+              "b_fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "3:45",
+                  "new": "3:47",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-03"
+                  },
+                  "reason": "the commission record states time as \"3:47\" (\"Grove won by tap out 3:47 of the 1st round – rear naked choke.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-01-30",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-03"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-03"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-03",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Kendall Grove",
+                  "quote": "Grove won by tap out 3:47 of the 1st round – rear naked choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-03",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-03",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-03"
             },
             {
               "a": "Solomon Hutcherson",
               "b": "Rory Singer",
               "winner": "Rory Singer",
-              "method": "KO (head kick and punches)",
+              "method": "TKO",
               "round": 2,
-              "time": "0:21",
+              "time": "0:23",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-07 and aired in episode 5; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "ec1b64ab-0263-4f03-9c2a-262fb0d3edc2",
-              "b_fighter_id": "bf82e7bb-bb93-4924-92fe-910cc6b02e5d"
+              "b_fighter_id": "bf82e7bb-bb93-4924-92fe-910cc6b02e5d",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "KO (head kick and punches)",
+                  "new": "TKO",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-05"
+                  },
+                  "reason": "the commission record states method as \"TKO\" (\"Singer won by TKO 0:23 of the 2nd round.\"); a primary commission record overrides the Wikipedia draft; the draft's category is contradicted and not kept, and its compatible detail \"head kick and punches\" is kept as secondary detail",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "0:21",
+                  "new": "0:23",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-05"
+                  },
+                  "reason": "the commission record states time as \"0:23\" (\"Singer won by TKO 0:23 of the 2nd round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-02-07",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-05"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-05"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-05",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Rory Singer",
+                  "quote": "Singer won by TKO 0:23 of the 2nd round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-05",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-05",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-05",
+              "method_detail": {
+                "value": "head kick and punches",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "quote": "KO (head kick and punches)",
+                  "note": "secondary detail; the commission record does not print it"
+                }
+              }
             },
             {
               "a": "Ed Herman",
@@ -284,12 +572,92 @@
               "winner": "Ed Herman",
               "method": "Submission (armbar)",
               "round": 1,
-              "time": "4:14",
+              "time": "4:20",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-14 and aired in episode 8; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a",
-              "b_fighter_id": "9e388bfc-f7cb-4990-aa76-54d87f77b3dd"
+              "b_fighter_id": "9e388bfc-f7cb-4990-aa76-54d87f77b3dd",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "4:14",
+                  "new": "4:20",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-07"
+                  },
+                  "reason": "the commission record states time as \"4:20\" (\"Herman won by tap out 4:20 of the 1st round – arm bar.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-02-14",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-07"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-07"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-07",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Ed Herman",
+                  "quote": "Herman won by tap out 4:20 of the 1st round – arm bar."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-07",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-07",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-07"
             }
           ]
         },
@@ -301,14 +669,118 @@
               "a": "Kalib Starnes",
               "b": "Kendall Grove",
               "winner": "Kendall Grove",
-              "method": "Verbal submission (rib injury)",
+              "method": "TKO",
               "round": 3,
-              "time": "0:30",
+              "time": "0:34",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-21 and aired in episode 10; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "80a70b97-37a5-48bb-aedc-42a8f44e81d1",
-              "b_fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
+              "b_fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "Verbal submission (rib injury)",
+                  "new": "TKO",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-09"
+                  },
+                  "reason": "the commission record states method as \"TKO\" (\"Grove won by TKO 0:34 of the 3rd round.\"); a primary commission record overrides the Wikipedia draft; the draft's category is contradicted and not kept, and its compatible detail \"rib injury\" is kept as secondary detail",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "0:30",
+                  "new": "0:34",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-09"
+                  },
+                  "reason": "the commission record states time as \"0:34\" (\"Grove won by TKO 0:34 of the 3rd round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-02-21",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-09"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-09"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-09",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Kendall Grove",
+                  "quote": "Grove won by TKO 0:34 of the 3rd round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-09",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-09",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-09",
+              "method_detail": {
+                "value": "rib injury",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "quote": "Kendall Grove defeated Kalib Starnes by verbal submission (rib injury) at 0:30 of the third round..",
+                  "note": "the draft states the rib injury; the commission record prints only TKO and states no injury. The draft's \"verbal submission\" is contradicted by the commission category and is not kept."
+                }
+              }
             },
             {
               "a": "Rory Singer",
@@ -319,9 +791,75 @@
               "time": "2:31",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-22 and aired in episode 11; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "bf82e7bb-bb93-4924-92fe-910cc6b02e5d",
-              "b_fighter_id": "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a"
+              "b_fighter_id": "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a",
+              "fight_date": "2006-02-22",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-10"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-10"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-10",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Ed Herman",
+                  "quote": "Herman won by tap out 2:31 of the 2nd round – rear naked choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-10",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-10",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-10"
             }
           ]
         },
@@ -362,11 +900,91 @@
               "winner": "Noah Inhofer",
               "method": "Submission (armbar)",
               "round": 1,
-              "time": "2:35",
+              "time": "2:36",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "9c566705-75a1-46be-8ee4-5b2e341e6f35"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-01-27 and aired in episode 2; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
+              "a_fighter_id": "9c566705-75a1-46be-8ee4-5b2e341e6f35",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:35",
+                  "new": "2:36",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-02"
+                  },
+                  "reason": "the commission record states time as \"2:36\" (\"Inhofer won by tap out 2:36 of the 1st round. – arm bar\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-01-27",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-02"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-02"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-02",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Noah Inhofer",
+                  "quote": "Inhofer won by tap out 2:36 of the 1st round. – arm bar"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-02",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-02",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-02"
             },
             {
               "a": "Tait Fletcher",
@@ -377,8 +995,74 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "b_fighter_id": "8540fb3a-4db2-4691-8e54-a46067d079d0"
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-10 and aired in episode 7; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
+              "b_fighter_id": "8540fb3a-4db2-4691-8e54-a46067d079d0",
+              "fight_date": "2006-02-10",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-06"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-06"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-06",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Josh Haynes",
+                  "quote": "Haynes won by split decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-06",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-06",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-06"
             },
             {
               "a": "Mike Nickels",
@@ -389,22 +1073,193 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-18 and aired in episode 9; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "10fda69e-6534-490c-a2a9-21cdbde121dc",
-              "b_fighter_id": "7c603bce-b425-4c35-a69e-23704c12a76a"
+              "b_fighter_id": "7c603bce-b425-4c35-a69e-23704c12a76a",
+              "fight_date": "2006-02-18",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-08"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-08"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-08",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Matt Hamill",
+                  "quote": "Hamill won by unanimous decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-08",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-08",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-08"
             },
             {
               "a": "Kristian Rothaermel",
               "b": "Michael Bisping",
               "winner": "Michael Bisping",
-              "method": "TKO (strikes)",
+              "method": "TKO",
               "round": 1,
-              "time": "3:51",
+              "time": "4:02",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-02 and aired in episode 4; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "507d1012-749f-4efd-b689-c3454907cd10",
-              "b_fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f"
+              "b_fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "method_normalization",
+                  "old": "TKO (strikes)",
+                  "new": "TKO",
+                  "detail": "strikes",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-04"
+                  },
+                  "reason": "the commission record prints the method as \"TKO\" (\"Bisping won by TKO 4:02 of the 1st round.\"), less specific than the draft; the official method takes the commission wording and the draft's compatible detail \"strikes\" is kept as secondary detail, not shown to be wrong",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                },
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "3:51",
+                  "new": "4:02",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-04"
+                  },
+                  "reason": "the commission record states time as \"4:02\" (\"Bisping won by TKO 4:02 of the 1st round.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-02-02",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-04"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-04"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-04",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Michael Bisping",
+                  "quote": "Bisping won by TKO 4:02 of the 1st round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-04",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-04",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-04",
+              "method_detail": {
+                "value": "strikes",
+                "relation": "compatible_detail",
+                "source": {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "quote": "TKO (strikes)",
+                  "note": "secondary detail; the commission record does not print it"
+                }
+              }
             }
           ]
         },
@@ -418,12 +1273,92 @@
               "winner": "Josh Haynes",
               "method": "Submission (guillotine choke)",
               "round": 2,
-              "time": "0:18",
+              "time": "0:19",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-23 and aired in episode 12; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "9c566705-75a1-46be-8ee4-5b2e341e6f35",
-              "b_fighter_id": "8540fb3a-4db2-4691-8e54-a46067d079d0"
+              "b_fighter_id": "8540fb3a-4db2-4691-8e54-a46067d079d0",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "0:18",
+                  "new": "0:19",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-11"
+                  },
+                  "reason": "the commission record states time as \"0:19\" (\"Haynes won by tap out 0:19 of the 2nd round – guillotine choke.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-02-23",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-11"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-11"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-11",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Josh Haynes",
+                  "quote": "Haynes won by tap out 0:19 of the 2nd round – guillotine choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-11",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-11",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-11"
             },
             {
               "a": "Ross Pointon",
@@ -431,12 +1366,92 @@
               "winner": "Michael Bisping",
               "method": "Submission (strikes)",
               "round": 1,
-              "time": null,
+              "time": "2:12",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-02-24 and aired in episode 12; the Nevada State Athletic Commission record lists it under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "4e32d334-47ac-4e8f-a075-8ed51ac61469",
-              "b_fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f"
+              "b_fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": null,
+                  "new": "2:12",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-12"
+                  },
+                  "reason": "the commission record states the time as \"2:12\" (\"Bisping won by tap out 2:12 of the 1st round – strikes.\"); the draft gave none",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-02-24",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-3",
+                "record_id": "nsac-2006-tuf3-12"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_3",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf3-12"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-3",
+                  "record_id": "nsac-2006-tuf3-12",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                  "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                  "retrieved": "2026-09-13",
+                  "winner": "Michael Bisping",
+                  "quote": "Bisping won by tap out 2:12 of the 1st round – strikes."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-3",
+                    "record_id": "nsac-2006-tuf3-12",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+                    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+                    "retrieved": "2026-09-13",
+                    "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+                    "note": "listed under \"MIXED MARTIAL ARTS EXHIBITION RESULTS\" in the commission's Season 3 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf3-12",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf3-12"
             }
           ],
           "format_exceptions": [

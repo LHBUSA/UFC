@@ -11,7 +11,7 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json. House results, fight dates and classification are from the Nevada State Athletic Commission's Season 4 results record (tuf3-tuf4-nsac-reconciliation). The draft's differing values are kept in each bout's corrections; its compatible method detail is kept as secondary detail."
   },
   "_conflicts": [
     {
@@ -118,9 +118,75 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-05-25 and aired in episode 1; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "e14206b9-b68d-4802-8298-50c714867a50",
-              "b_fighter_id": "32f4cac6-4424-4c96-ba2b-4828542c673c"
+              "b_fighter_id": "32f4cac6-4424-4c96-ba2b-4828542c673c",
+              "fight_date": "2006-05-25",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-01"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-01"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-01",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Shonie Carter",
+                  "quote": "Carter won by unanimous decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-01",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-01",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-01"
             },
             {
               "a": "Pete Spratt",
@@ -128,12 +194,92 @@
               "winner": "Matt Serra",
               "method": "Submission (strikes)",
               "round": 1,
-              "time": "3:26",
+              "time": "3:29",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-16 and aired in episode 7; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "b47c906b-4963-4fdb-9c10-a5a49c213dad",
-              "b_fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84"
+              "b_fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "3:26",
+                  "new": "3:29",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-07"
+                  },
+                  "reason": "the commission record states time as \"3:29\" (\"Serra won by tap out 3:29 of the 1st round – strikes.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-06-16",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-07"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-07"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-07",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Matt Serra",
+                  "quote": "Serra won by tap out 3:29 of the 1st round – strikes."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-07",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-07",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-07"
             },
             {
               "a": "Pete Spratt",
@@ -141,12 +287,92 @@
               "winner": "Chris Lytle",
               "method": "Submission (guillotine choke)",
               "round": 1,
-              "time": "2:06",
+              "time": "2:08",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-02 and aired in episode 3; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "b47c906b-4963-4fdb-9c10-a5a49c213dad",
-              "b_fighter_id": "3be9b895-b4f9-4320-b25b-27d5ab056977"
+              "b_fighter_id": "3be9b895-b4f9-4320-b25b-27d5ab056977",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:06",
+                  "new": "2:08",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-03"
+                  },
+                  "reason": "the commission record states time as \"2:08\" (\"Lytle won by tap out 2:08 of the 1st round – Guillotine choke\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-06-02",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-03"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-03"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-03",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Chris Lytle",
+                  "quote": "Lytle won by tap out 2:08 of the 1st round – Guillotine choke"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-03",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-03",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-03"
             },
             {
               "a": "Mikey Burnett",
@@ -154,12 +380,92 @@
               "winner": "Din Thomas",
               "method": "Submission (triangle choke)",
               "round": 1,
-              "time": "2:30",
+              "time": "2:33",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-09 and aired in episode 5; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "2d30582b-5b98-492e-a91e-a64d6884bd65",
-              "b_fighter_id": "3d659f7c-bd87-4576-a49c-7681bae2050f"
+              "b_fighter_id": "3d659f7c-bd87-4576-a49c-7681bae2050f",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "2:30",
+                  "new": "2:33",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-05"
+                  },
+                  "reason": "the commission record states time as \"2:33\" (\"Thomas won by tap out 2:33 of the 1st round – triangle choke.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-06-09",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-05"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-05"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-05",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Din Thomas",
+                  "quote": "Thomas won by tap out 2:33 of the 1st round – triangle choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-05",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-05",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-05"
             }
           ],
           "status": "unverified",
@@ -178,9 +484,75 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-26 and aired in episode 10; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "32f4cac6-4424-4c96-ba2b-4828542c673c",
-              "b_fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84"
+              "b_fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
+              "fight_date": "2006-06-26",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-10"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-10"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-10",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Matt Serra",
+                  "quote": "Serra won by unanimous decision"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-10",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-10",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-10"
             },
             {
               "a": "Chris Lytle",
@@ -191,9 +563,75 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-26 and aired in episode 9; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "3be9b895-b4f9-4320-b25b-27d5ab056977",
-              "b_fighter_id": "3d659f7c-bd87-4576-a49c-7681bae2050f"
+              "b_fighter_id": "3d659f7c-bd87-4576-a49c-7681bae2050f",
+              "fight_date": "2006-06-26",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-09"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-09"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-09",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Chris Lytle",
+                  "quote": "Lytle won by unanimous decision"
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-09",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-09",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-09"
             }
           ]
         },
@@ -232,14 +670,94 @@
               "a": "Charles McCarthy",
               "b": "Pete Sell",
               "winner": "Pete Sell",
-              "method": "Decision (unanimous)",
+              "method": "Decision (unanimous, sudden victory round)",
               "round": 3,
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-13 and aired in episode 6; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "358c6724-6e74-4a52-9180-32a879d95494",
-              "b_fighter_id": "6bd2a00a-d785-4ae7-ade6-f90c890c438f"
+              "b_fighter_id": "6bd2a00a-d785-4ae7-ade6-f90c890c438f",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "Decision (unanimous)",
+                  "new": "Decision (unanimous, sudden victory round)",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-06"
+                  },
+                  "reason": "the commission record states the decision came in the sudden victory round (\"Sell won by unanimous decision in the sudden victory round.\"); the commission's wording is the canonical method",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-06-13",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-06"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-06"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-06",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Pete Sell",
+                  "quote": "Sell won by unanimous decision in the sudden victory round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-06",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 6 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-06",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-06"
             },
             {
               "a": "Travis Lutter",
@@ -247,12 +765,92 @@
               "winner": "Travis Lutter",
               "method": "Submission (rear naked choke)",
               "round": 1,
-              "time": "1:13",
+              "time": "1:15",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-06 and aired in episode 4; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe",
-              "b_fighter_id": "d5d839b6-daa7-419a-ab86-d862330daa0f"
+              "b_fighter_id": "d5d839b6-daa7-419a-ab86-d862330daa0f",
+              "corrections": [
+                {
+                  "field": "time",
+                  "kind": "commission_correction",
+                  "old": "1:13",
+                  "new": "1:15",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-04"
+                  },
+                  "reason": "the commission record states time as \"1:15\" (\"Lutter won by tap out 1:15 of the 1st round – rear naked choke.\"); a primary commission record overrides the Wikipedia draft",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-06-06",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-04"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-04"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-04",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Travis Lutter",
+                  "quote": "Lutter won by tap out 1:15 of the 1st round – rear naked choke."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-04",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-04",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-04"
             },
             {
               "a": "Jorge Rivera",
@@ -263,22 +861,168 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-20 and aired in episode 8; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "8a496581-070b-4836-86fc-31576d787e61",
-              "b_fighter_id": "68662bbe-e979-48af-9c82-b6336c25f2f1"
+              "b_fighter_id": "68662bbe-e979-48af-9c82-b6336c25f2f1",
+              "fight_date": "2006-06-20",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-08"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-08"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-08",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Patrick Côté",
+                  "quote": "Cote won by unanimous decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-08",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-08",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-08"
             },
             {
               "a": "Gideon Ray",
               "b": "Edwin DeWees",
               "winner": "Edwin DeWees",
-              "method": "Decision (unanimous)",
+              "method": "Decision (unanimous, sudden victory round)",
               "round": 3,
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-05-30 and aired in episode 2; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "b47d2ee1-8766-4269-8d7a-3741672a7873",
-              "b_fighter_id": "451e7293-d496-44b8-9392-11debb333172"
+              "b_fighter_id": "451e7293-d496-44b8-9392-11debb333172",
+              "corrections": [
+                {
+                  "field": "method",
+                  "kind": "commission_correction",
+                  "old": "Decision (unanimous)",
+                  "new": "Decision (unanimous, sudden victory round)",
+                  "source": {
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-02"
+                  },
+                  "reason": "the commission record states the decision came in the sudden victory round (\"DeWees won by unanimous decision in the sudden victory round.\"); the commission's wording is the canonical method",
+                  "batch": "tuf3-tuf4-nsac-reconciliation"
+                }
+              ],
+              "fight_date": "2006-05-30",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-02"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-02"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-02",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Edwin DeWees",
+                  "quote": "DeWees won by unanimous decision in the sudden victory round."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-02",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-02",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-02"
             }
           ]
         },
@@ -295,9 +1039,75 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-27 and aired in episode 11; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "6bd2a00a-d785-4ae7-ade6-f90c890c438f",
-              "b_fighter_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe"
+              "b_fighter_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe",
+              "fight_date": "2006-06-27",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-11"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-11"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-11",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Travis Lutter",
+                  "quote": "Lutter won by unanimous decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-11",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-11",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-11"
             },
             {
               "a": "Patrick Côté",
@@ -308,9 +1118,75 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "classification_source": "exhibition: fought at the UFC Training Center on 2006-06-27 and aired in episode 12; the Nevada State Athletic Commission record lists it under \"Exhibition Results\" (commission_record) — a commission-sanctioned exhibition, not a professional bout. Absence from our complete 2006 records is corroboration only.",
               "a_fighter_id": "68662bbe-e979-48af-9c82-b6336c25f2f1",
-              "b_fighter_id": "451e7293-d496-44b8-9392-11debb333172"
+              "b_fighter_id": "451e7293-d496-44b8-9392-11debb333172",
+              "fight_date": "2006-06-27",
+              "fight_date_source": {
+                "document_id": "nsac-2006-tuf-season-4",
+                "record_id": "nsac-2006-tuf4-12"
+              },
+              "superseded_result_sources": [
+                {
+                  "family": "wikipedia",
+                  "evidence_level": "secondary_draft",
+                  "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_4",
+                  "retrieved": "2026-09-08",
+                  "note": "season draft import; stated this result before the commission record",
+                  "superseded_by": "nsac-2006-tuf4-12"
+                }
+              ],
+              "result_sources": [
+                {
+                  "family": "athletic_commission",
+                  "source_type": "commission_result_record",
+                  "evidence_level": "commission_record",
+                  "jurisdiction": "Nevada",
+                  "commission": "Nevada State Athletic Commission",
+                  "document_id": "nsac-2006-tuf-season-4",
+                  "record_id": "nsac-2006-tuf4-12",
+                  "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                  "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                  "retrieved": "2026-09-13",
+                  "winner": "Patrick Côté",
+                  "quote": "Cote won by unanimous decision."
+                }
+              ],
+              "classification_basis": {
+                "affirmative": [
+                  {
+                    "family": "athletic_commission",
+                    "source_type": "commission_result_record",
+                    "evidence_level": "commission_record",
+                    "jurisdiction": "Nevada",
+                    "commission": "Nevada State Athletic Commission",
+                    "document_id": "nsac-2006-tuf-season-4",
+                    "record_id": "nsac-2006-tuf4-12",
+                    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+                    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+                    "retrieved": "2026-09-13",
+                    "quote": "Exhibition Results",
+                    "note": "listed under \"Exhibition Results\" in the commission's Season 4 results record"
+                  }
+                ],
+                "corroborating": [
+                  {
+                    "kind": "record_absence",
+                    "family": "our_records",
+                    "evidence_level": "corroboration_only",
+                    "year": 2006,
+                    "quote": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+                    "former_authority": true,
+                    "superseded_by": "nsac-2006-tuf4-12",
+                    "note": "the former classification basis, kept as corroboration"
+                  }
+                ],
+                "authority": "affirmative",
+                "reopen_if": "a later Nevada State Athletic Commission record contradicts this one"
+              },
+              "commission_record_id": "nsac-2006-tuf4-12"
             }
           ]
         },
