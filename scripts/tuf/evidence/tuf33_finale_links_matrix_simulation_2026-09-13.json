@@ -1,0 +1,215 @@
+{
+ "_about": "Measured simulation of HELD proposals, not applied. Each state ran the unchanged exact-verifier matrix on its own temporary copy with read-only database selects.",
+ "proposal": "scripts/tuf/evidence/tuf33_finale_link_proposal_2026-09-13.json",
+ "before_equals_committed_main_matrix": true,
+ "states": {
+  "before": {
+   "applied": [],
+   "tuf33": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "score": 55,
+    "blockers": [
+     "SPELLING_SPLIT_IDENTITY",
+     "FINAL_NOT_VERIFIED",
+     "WINNER_UNRESOLVED",
+     "PROFESSIONAL_FINAL_NOT_LINKED",
+     "CLASSIFICATION_UNRESOLVED",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "final_not_verified": true,
+    "finals": [
+     {
+      "bout": "Daniil Donchenko vs Rodrigo Sezinando",
+      "result": "partial",
+      "evidence": [],
+      "db_finale_bout": null,
+      "bout_blockers": [
+       "NO_PRIMARY_SOURCE",
+       "METHOD_ONLY_NO_TIME",
+       "EPISODE_NOT_AVAILABLE"
+      ]
+     },
+     {
+      "bout": "Joseph Morales vs Alibi Idiris",
+      "result": "partial",
+      "evidence": [],
+      "db_finale_bout": null,
+      "bout_blockers": [
+       "NO_PRIMARY_SOURCE",
+       "METHOD_ONLY_NO_TIME",
+       "EPISODE_NOT_AVAILABLE"
+      ]
+     }
+    ],
+    "finals_verified": 0,
+    "professional_final_linked": 0,
+    "hub_card": "Complete"
+   },
+   "totals": {
+    "finals_verified": 63,
+    "result_verified": 225,
+    "finale_links_verified": 63,
+    "complete": 1,
+    "partial": 43,
+    "blocked": 0
+   },
+   "hub_cards": {
+    "Complete": 42,
+    "Complete + Verified": 1,
+    "Season ongoing": 1
+   },
+   "other_seasons_changed_vs_before": []
+  },
+  "welterweight": {
+   "applied": [
+    "tuf33-finals-exact-linkage/welterweight-final/donchenko-sezinando"
+   ],
+   "tuf33": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "score": 56,
+    "blockers": [
+     "SPELLING_SPLIT_IDENTITY",
+     "FINAL_NOT_VERIFIED",
+     "WINNER_UNRESOLVED",
+     "PROFESSIONAL_FINAL_NOT_LINKED",
+     "CLASSIFICATION_UNRESOLVED",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "final_not_verified": true,
+    "finals": [
+     {
+      "bout": "Daniil Donchenko vs Rodrigo Sezinando",
+      "result": "verified",
+      "evidence": [
+       "finale_result_row"
+      ],
+      "db_finale_bout": {
+       "id": "94616427-2d11-4216-b248-bc57e3ab83e2",
+       "event": "UFC Fight Night: Lopes vs. Silva",
+       "date": "2025-09-13",
+       "linked_by": "explicit_bout_id",
+       "winner_matches_archive": true
+      },
+      "bout_blockers": [
+       "METHOD_ONLY_NO_TIME",
+       "EPISODE_NOT_AVAILABLE",
+       "CLASSIFICATION_REPAIRABLE_FROM_RESULT_ROW"
+      ]
+     },
+     {
+      "bout": "Joseph Morales vs Alibi Idiris",
+      "result": "partial",
+      "evidence": [],
+      "db_finale_bout": null,
+      "bout_blockers": [
+       "NO_PRIMARY_SOURCE",
+       "METHOD_ONLY_NO_TIME",
+       "EPISODE_NOT_AVAILABLE"
+      ]
+     }
+    ],
+    "finals_verified": 1,
+    "professional_final_linked": 0,
+    "hub_card": "Complete"
+   },
+   "totals": {
+    "finals_verified": 64,
+    "result_verified": 226,
+    "finale_links_verified": 63,
+    "complete": 1,
+    "partial": 43,
+    "blocked": 0
+   },
+   "hub_cards": {
+    "Complete": 42,
+    "Complete + Verified": 1,
+    "Season ongoing": 1
+   },
+   "other_seasons_changed_vs_before": []
+  },
+  "both": {
+   "applied": [
+    "tuf33-finals-exact-linkage/welterweight-final/donchenko-sezinando",
+    "tuf33-finals-exact-linkage/flyweight-final/morales-idiris"
+   ],
+   "tuf33": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "score": 58,
+    "blockers": [
+     "SPELLING_SPLIT_IDENTITY",
+     "WINNER_UNRESOLVED",
+     "PROFESSIONAL_FINAL_NOT_LINKED",
+     "CLASSIFICATION_UNRESOLVED",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "final_not_verified": false,
+    "finals": [
+     {
+      "bout": "Daniil Donchenko vs Rodrigo Sezinando",
+      "result": "verified",
+      "evidence": [
+       "finale_result_row"
+      ],
+      "db_finale_bout": {
+       "id": "94616427-2d11-4216-b248-bc57e3ab83e2",
+       "event": "UFC Fight Night: Lopes vs. Silva",
+       "date": "2025-09-13",
+       "linked_by": "explicit_bout_id",
+       "winner_matches_archive": true
+      },
+      "bout_blockers": [
+       "METHOD_ONLY_NO_TIME",
+       "EPISODE_NOT_AVAILABLE",
+       "CLASSIFICATION_REPAIRABLE_FROM_RESULT_ROW"
+      ]
+     },
+     {
+      "bout": "Joseph Morales vs Alibi Idiris",
+      "result": "verified",
+      "evidence": [
+       "finale_result_row"
+      ],
+      "db_finale_bout": {
+       "id": "aa7c0491-43f3-4c90-a668-10ccbdc118ac",
+       "event": "UFC 319: Du Plessis vs. Chimaev",
+       "date": "2025-08-16",
+       "linked_by": "explicit_bout_id",
+       "winner_matches_archive": true
+      },
+      "bout_blockers": [
+       "METHOD_ONLY_NO_TIME",
+       "EPISODE_NOT_AVAILABLE",
+       "CLASSIFICATION_REPAIRABLE_FROM_RESULT_ROW"
+      ]
+     }
+    ],
+    "finals_verified": 2,
+    "professional_final_linked": 0,
+    "hub_card": "Complete"
+   },
+   "totals": {
+    "finals_verified": 65,
+    "result_verified": 227,
+    "finale_links_verified": 63,
+    "complete": 1,
+    "partial": 43,
+    "blocked": 0
+   },
+   "hub_cards": {
+    "Complete": 42,
+    "Complete + Verified": 1,
+    "Season ongoing": 1
+   },
+   "other_seasons_changed_vs_before": []
+  }
+ }
+}

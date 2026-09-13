@@ -1,0 +1,109 @@
+{
+ "_about": "PROPOSED repair records for TUF 33 finale linkage. NOT APPLIED. Each record is held unless its verdict is CLEAN_EXACT_LINK; a reviewer decision is needed to apply any held record.",
+ "batch": "tuf33-finals-exact-linkage",
+ "format": "verified_against = \"ufc_bouts:<uuid>\" (verifier-supported explicit link; seen on TUF 8, 14, 18 finals). Historical provenance is not overwritten: the record adds a finale_link provenance object beside it.",
+ "records": [
+  {
+   "repair_key": "tuf33-finals-exact-linkage/welterweight-final/donchenko-sezinando",
+   "status": "held",
+   "hold_reason": "NOT PROVEN EXACTLY. No finale event is recorded for TUF 33 and no first-party page labels this bout a TUF 33 final. Corroboration only: the broadcaster's season listing names \"TUF 33 Finale: Lopes vs. Silva\", whose headline equals the headline of the canonical event \"UFC Fight Night: Lopes vs. Silva\" (the only \"Lopes vs. Silva\" event in ufc_events) — a headline correspondence, not an exact event-name match.",
+   "final": {
+    "season": "tuf-33",
+    "weight_class": "Welterweight",
+    "stage": "final",
+    "a": "Daniil Donchenko",
+    "b": "Rodrigo Sezinando"
+   },
+   "field": "verified_against",
+   "old": null,
+   "new": "ufc_bouts:94616427-2d11-4216-b248-bc57e3ab83e2",
+   "canonical_bout": {
+    "ufc_bout_id": "94616427-2d11-4216-b248-bc57e3ab83e2",
+    "event": "UFC Fight Night: Lopes vs. Silva",
+    "event_date": "2025-09-13",
+    "fighter_ids": [
+     "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+     "6e2660b2-6505-4a25-bd1a-17356aec23cf"
+    ],
+    "winner_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+    "winner": "Daniil Donchenko",
+    "method": "KO_TKO",
+    "round": 1,
+    "time_sec": 267
+   },
+   "finale_link_provenance": {
+    "relationship_source": "ufc_bouts row between the exact finalist ids (read-only select) + official UFC.com episode 12 recap naming the finale pairing",
+    "finalist_pair_source": {
+     "family": "ufc_com_recap",
+     "evidence_level": "official",
+     "url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap",
+     "retrieved": "2026-09-12",
+     "quote": "Joseph Morales and Alibi Idiris go face-to-face ahead of their bout in the flyweight finale, while Team Cormier fighters Rodrigo Sezinando and Daniil Donchenko step into the cage and square off",
+     "states": "the two finale pairings (flyweight Morales vs Idiris, welterweight Sezinando vs Donchenko); names no event and no date",
+     "via": "scripts/tuf/evidence/recaps/tuf-33.json (episode 12)"
+    },
+    "event_evidence": "NOT PROVEN EXACTLY. No finale event is recorded for TUF 33 and no first-party page labels this bout a TUF 33 final. Corroboration only: the broadcaster's season listing names \"TUF 33 Finale: Lopes vs. Silva\", whose headline equals the headline of the canonical event \"UFC Fight Night: Lopes vs. Silva\" (the only \"Lopes vs. Silva\" event in ufc_events) — a headline correspondence, not an exact event-name match.",
+    "checks": {
+     "1_finalist_ids_map_to_bout": true,
+     "2_on_the_actual_tuf33_finale_event": false,
+     "3_canonical_date_matches_recorded_date": false,
+     "4_recorded_winner_matches_result": true,
+     "5_no_other_bout_between_the_pair": true,
+     "6_professional_card_bout_not_house": true,
+     "7_not_a_later_rematch": true
+    }
+   }
+  },
+  {
+   "repair_key": "tuf33-finals-exact-linkage/flyweight-final/morales-idiris",
+   "status": "held",
+   "hold_reason": "CONTRADICTED. The candidate is on \"UFC 319: Du Plessis vs. Chimaev\" (2025-08-16). The official recap puts this final in \"the live finale\", and the only finale the broadcaster names is \"TUF 33 Finale: Lopes vs. Silva\" — a different card. No first-party page labels this bout a TUF 33 final (UFC.com: \"Flyweight Bout\"); ESPN types it \"Flyweight Title\", which is not a TUF label.",
+   "final": {
+    "season": "tuf-33",
+    "weight_class": "Flyweight",
+    "stage": "final",
+    "a": "Joseph Morales",
+    "b": "Alibi Idiris"
+   },
+   "field": "verified_against",
+   "old": null,
+   "new": "ufc_bouts:aa7c0491-43f3-4c90-a668-10ccbdc118ac",
+   "canonical_bout": {
+    "ufc_bout_id": "aa7c0491-43f3-4c90-a668-10ccbdc118ac",
+    "event": "UFC 319: Du Plessis vs. Chimaev",
+    "event_date": "2025-08-16",
+    "fighter_ids": [
+     "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+     "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
+    ],
+    "winner_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+    "winner": "Joseph Morales",
+    "method": "SUB",
+    "round": 2,
+    "time_sec": 184
+   },
+   "finale_link_provenance": {
+    "relationship_source": "ufc_bouts row between the exact finalist ids (read-only select) + official UFC.com episode 12 recap naming the finale pairing",
+    "finalist_pair_source": {
+     "family": "ufc_com_recap",
+     "evidence_level": "official",
+     "url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap",
+     "retrieved": "2026-09-12",
+     "quote": "Joseph Morales and Alibi Idiris go face-to-face ahead of their bout in the flyweight finale, while Team Cormier fighters Rodrigo Sezinando and Daniil Donchenko step into the cage and square off",
+     "states": "the two finale pairings (flyweight Morales vs Idiris, welterweight Sezinando vs Donchenko); names no event and no date",
+     "via": "scripts/tuf/evidence/recaps/tuf-33.json (episode 12)"
+    },
+    "event_evidence": "CONTRADICTED. The candidate is on \"UFC 319: Du Plessis vs. Chimaev\" (2025-08-16). The official recap puts this final in \"the live finale\", and the only finale the broadcaster names is \"TUF 33 Finale: Lopes vs. Silva\" — a different card. No first-party page labels this bout a TUF 33 final (UFC.com: \"Flyweight Bout\"); ESPN types it \"Flyweight Title\", which is not a TUF label.",
+    "checks": {
+     "1_finalist_ids_map_to_bout": true,
+     "2_on_the_actual_tuf33_finale_event": false,
+     "3_canonical_date_matches_recorded_date": false,
+     "4_recorded_winner_matches_result": true,
+     "5_no_other_bout_between_the_pair": true,
+     "6_professional_card_bout_not_house": true,
+     "7_not_a_later_rematch": true
+    }
+   }
+  }
+ ]
+}

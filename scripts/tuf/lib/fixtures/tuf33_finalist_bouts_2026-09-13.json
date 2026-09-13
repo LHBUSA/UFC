@@ -1,0 +1,247 @@
+{
+ "_about": "Read-only snapshot (2026-09-13) of every ufc_bouts row involving a TUF 33 finalist, with event and result. Fixture for scripts/tuf/lib/tuf33FinaleLinks.test.mjs.",
+ "bouts": {
+  "6b8f1693-bdb7-49c8-a8fa-36f8a9e4a732": {
+   "id": "6b8f1693-bdb7-49c8-a8fa-36f8a9e4a732",
+   "status": "complete",
+   "fighter_a_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+   "fighter_b_id": "782953a0-69c7-41af-83fc-dac09718aae4",
+   "is_title": false,
+   "card_position": "prelim",
+   "bout_order": 3,
+   "weight_class": "WELTERWEIGHT",
+   "event": {
+    "id": "244d7b5e-4098-4af6-941a-6722cabebddd",
+    "name": "UFC Fight Night: Fiziev vs. Torres",
+    "event_date": "2026-06-27",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 2,
+    "method": "KO_TKO",
+    "time_sec": 95,
+    "winner_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6"
+   }
+  },
+  "8fe40fdb-81aa-4700-98fc-23f52690f497": {
+   "id": "8fe40fdb-81aa-4700-98fc-23f52690f497",
+   "status": "complete",
+   "fighter_a_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+   "fighter_b_id": "d4c986e7-66f1-4662-ab4b-73f36e546e98",
+   "is_title": false,
+   "card_position": "prelim",
+   "bout_order": 7,
+   "weight_class": "WELTERWEIGHT",
+   "event": {
+    "id": "29c413f5-ffff-4982-a055-e9a592e3e7b4",
+    "name": "UFC Fight Night: Bautista vs. Oliveira",
+    "event_date": "2026-02-07",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 3,
+    "method": "DEC_U",
+    "time_sec": 300,
+    "winner_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6"
+   }
+  },
+  "94616427-2d11-4216-b248-bc57e3ab83e2": {
+   "id": "94616427-2d11-4216-b248-bc57e3ab83e2",
+   "status": "complete",
+   "fighter_a_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+   "fighter_b_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+   "is_title": false,
+   "card_position": "prelim",
+   "bout_order": 1,
+   "weight_class": "WELTERWEIGHT",
+   "event": {
+    "id": "898bc885-4f4d-4bc4-8e50-094e3221f0a6",
+    "name": "UFC Fight Night: Lopes vs. Silva",
+    "event_date": "2025-09-13",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 1,
+    "method": "KO_TKO",
+    "time_sec": 267,
+    "winner_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6"
+   }
+  },
+  "999af0ae-e4cf-4493-9b27-b000d82fb7dd": {
+   "id": "999af0ae-e4cf-4493-9b27-b000d82fb7dd",
+   "status": "complete",
+   "fighter_a_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+   "fighter_b_id": "1859d7c4-45a8-4cd5-9988-f9c867a9774f",
+   "is_title": false,
+   "card_position": "main",
+   "bout_order": 11,
+   "weight_class": "WELTERWEIGHT",
+   "event": {
+    "id": "0edba201-82f9-4525-85e4-3034b7bc09f7",
+    "name": "UFC Fight Night: Hooker vs. Parnasse",
+    "event_date": "2026-09-05",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 3,
+    "method": "DEC_U",
+    "time_sec": 300,
+    "winner_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6"
+   }
+  },
+  "55af9bc0-35ec-435b-8315-ba453fd0cf26": {
+   "id": "55af9bc0-35ec-435b-8315-ba453fd0cf26",
+   "status": "complete",
+   "fighter_a_id": "2abe9562-869f-4025-99ef-85faf67b0c07",
+   "fighter_b_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+   "is_title": false,
+   "card_position": null,
+   "bout_order": 2,
+   "weight_class": "FLYWEIGHT",
+   "event": {
+    "id": "4ebb881d-ca45-48a8-8c6e-ceea3905dfd1",
+    "name": "UFC Fight Night: Korean Zombie vs. Rodriguez",
+    "event_date": "2018-11-10",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 3,
+    "method": "DEC_S",
+    "time_sec": 300,
+    "winner_id": "2abe9562-869f-4025-99ef-85faf67b0c07"
+   }
+  },
+  "7300eba4-285f-4030-9f3f-216fa376f451": {
+   "id": "7300eba4-285f-4030-9f3f-216fa376f451",
+   "status": "complete",
+   "fighter_a_id": "1fa71f4b-3f7d-4705-ba00-1f6bcf397b9a",
+   "fighter_b_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+   "is_title": false,
+   "card_position": "main",
+   "bout_order": 12,
+   "weight_class": "FLYWEIGHT",
+   "event": {
+    "id": "1d0b22df-81e7-4e5b-8fa5-8e5d03c24c52",
+    "name": "Noche UFC: Silva vs. Delgado",
+    "event_date": "2026-09-12",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 3,
+    "method": "DEC_S",
+    "time_sec": 300,
+    "winner_id": "1fa71f4b-3f7d-4705-ba00-1f6bcf397b9a"
+   }
+  },
+  "75f213fc-a6fc-4e41-a2ac-6d26d80ae92d": {
+   "id": "75f213fc-a6fc-4e41-a2ac-6d26d80ae92d",
+   "status": "complete",
+   "fighter_a_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+   "fighter_b_id": "773f06d2-139a-43e1-a63c-c7567abee1b6",
+   "is_title": false,
+   "card_position": null,
+   "bout_order": 2,
+   "weight_class": "FLYWEIGHT",
+   "event": {
+    "id": "cc3fb5a0-ec2b-40e6-a08b-50b1c8deb9c3",
+    "name": "UFC Fight Night: Pettis vs. Moreno",
+    "event_date": "2017-08-05",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 1,
+    "method": "SUB",
+    "time_sec": 236,
+    "winner_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7"
+   }
+  },
+  "87b53097-a161-4428-a013-fd011e091ac7": {
+   "id": "87b53097-a161-4428-a013-fd011e091ac7",
+   "status": "complete",
+   "fighter_a_id": "307efd9d-1db6-436a-8119-625f5bc042d0",
+   "fighter_b_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+   "is_title": false,
+   "card_position": null,
+   "bout_order": 1,
+   "weight_class": "FLYWEIGHT",
+   "event": {
+    "id": "0d57b5ce-350f-48de-9635-e930017e28cc",
+    "name": "UFC Fight Night: Machida vs. Anders",
+    "event_date": "2018-02-03",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 2,
+    "method": "KO_TKO",
+    "time_sec": 274,
+    "winner_id": "307efd9d-1db6-436a-8119-625f5bc042d0"
+   }
+  },
+  "aa7c0491-43f3-4c90-a668-10ccbdc118ac": {
+   "id": "aa7c0491-43f3-4c90-a668-10ccbdc118ac",
+   "status": "complete",
+   "fighter_a_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+   "fighter_b_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+   "is_title": true,
+   "card_position": "early",
+   "bout_order": 1,
+   "weight_class": "FLYWEIGHT",
+   "event": {
+    "id": "95b646c4-6636-4975-aaf5-29a2308fd1bb",
+    "name": "UFC 319: Du Plessis vs. Chimaev",
+    "event_date": "2025-08-16",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 2,
+    "method": "SUB",
+    "time_sec": 184,
+    "winner_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7"
+   }
+  },
+  "f247d42e-d0f2-46bd-a282-9eb3c238c011": {
+   "id": "f247d42e-d0f2-46bd-a282-9eb3c238c011",
+   "status": "complete",
+   "fighter_a_id": "d5122475-8cc8-44c5-a6d8-6f2575a07127",
+   "fighter_b_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+   "is_title": false,
+   "card_position": "main",
+   "bout_order": 11,
+   "weight_class": "FLYWEIGHT",
+   "event": {
+    "id": "71a8ac99-3f61-4860-9559-a14b67390a58",
+    "name": "UFC Fight Night: Bonfim vs. Brown",
+    "event_date": "2025-11-08",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 1,
+    "method": "SUB",
+    "time_sec": 174,
+    "winner_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7"
+   }
+  },
+  "f3a881a3-34d4-4db6-bdeb-bb07b8829c80": {
+   "id": "f3a881a3-34d4-4db6-bdeb-bb07b8829c80",
+   "status": "complete",
+   "fighter_a_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+   "fighter_b_id": "4bf1793f-8925-4ab9-8fb2-76f338d8b899",
+   "is_title": false,
+   "card_position": "prelim",
+   "bout_order": 7,
+   "weight_class": "FLYWEIGHT",
+   "event": {
+    "id": "ce387df8-d8fc-4a1f-b644-3628e803cb16",
+    "name": "UFC Fight Night: Strickland vs. Hernandez",
+    "event_date": "2026-02-21",
+    "card_status": "complete"
+   },
+   "result": {
+    "round": 3,
+    "method": "DEC_U",
+    "time_sec": 300,
+    "winner_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
+   }
+  }
+ }
+}

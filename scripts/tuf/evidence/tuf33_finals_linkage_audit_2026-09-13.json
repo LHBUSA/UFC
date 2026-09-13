@@ -1,0 +1,399 @@
+{
+ "_about": "READ-ONLY audit (scripts/tuf/audit_tuf33_finals_linkage.mjs). Nothing applied.",
+ "as_of": "2026-09-13",
+ "main": "9415fea057fddd17c899027a70ffa34aa59e7c40",
+ "verifier": "scripts/tuf/lib/boutVerification.mjs (PR #42)",
+ "summary": {
+  "total_finals": 2,
+  "verified_now": 0,
+  "unverified_now": 2,
+  "with_exact_candidate_bout": 2,
+  "blocked_by_identity": 0,
+  "blocked_by_missing_event_or_date": 2,
+  "genuinely_ambiguous": 1,
+  "event_not_proven_exactly": 1,
+  "clean_exact_links": 0,
+  "final_not_verified_removable_now": false
+ },
+ "captured_evidence": {
+  "official_recap_finalists": {
+   "family": "ufc_com_recap",
+   "evidence_level": "official",
+   "url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap",
+   "retrieved": "2026-09-12",
+   "quote": "Joseph Morales and Alibi Idiris go face-to-face ahead of their bout in the flyweight finale, while Team Cormier fighters Rodrigo Sezinando and Daniil Donchenko step into the cage and square off",
+   "states": "the two finale pairings (flyweight Morales vs Idiris, welterweight Sezinando vs Donchenko); names no event and no date",
+   "via": "scripts/tuf/evidence/recaps/tuf-33.json (episode 12)"
+  },
+  "official_recap_live_finale": {
+   "family": "ufc_com_recap",
+   "evidence_level": "official",
+   "url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap",
+   "retrieved": "2026-09-12",
+   "quote": "to see who will face Alibi Idiris in the live finale",
+   "states": "the flyweight final is fought in \"the live finale\"; names no event",
+   "via": "scripts/tuf/evidence/recaps/tuf-33.json"
+  },
+  "broadcaster_finale_listing": {
+   "family": "paramount_plus_episode_metadata",
+   "evidence_level": "network_listing",
+   "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/",
+   "retrieved": "2026-09-12",
+   "title": "TUF 33 Finale: Lopes vs. Silva",
+   "listing_date": "2026-05-25",
+   "states": "the season listing names its finale broadcast \"TUF 33 Finale: Lopes vs. Silva\"; the listing_date is documented as wrong for recent seasons and is never a date",
+   "via": "scripts/tuf/evidence/paramount_plus.json; web/data/tuf/episodes/tuf-33.json finale_broadcast"
+  },
+  "ufc_com_event_pages": [
+   {
+    "url": "https://www.ufc.com/event/ufc-319",
+    "retrieved": "2026-09-13",
+    "title": "UFC 319: Du Plessis vs Chimaev",
+    "bout_label": "Flyweight Bout",
+    "bout": "Alibi Idiris vs Joseph Morales",
+    "states": "Early Prelims, Sat Aug 16; round 2, 3:04, Submission. No TUF / tournament / final label; the card's only title bout is the middleweight main event"
+   },
+   {
+    "url": "https://www.ufc.com/event/ufc-fight-night-september-13-2025",
+    "retrieved": "2026-09-13",
+    "title": "Noche UFC: Lopes vs Silva",
+    "bout_label": "Welterweight Bout",
+    "bout": "Rodrigo Sezinando vs Daniil Donchenko",
+    "states": "Sat Sep 13; round 1, 4:27, KO/TKO. No TUF / tournament / final label"
+   }
+  ],
+  "espn_competitions": [
+   {
+    "url": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600054045/competitions/401808379?lang=en&region=us",
+    "retrieved": "2026-09-13",
+    "bout": "Alibi Idiris vs Joseph Morales",
+    "types": [
+     "Flyweight",
+     "Flyweight Title"
+    ],
+    "card_segment": "Early Prelims",
+    "states": "the source of ufc_bouts.is_title=true; \"Flyweight Title\" is not a TUF label and UFC 319 held no flyweight championship"
+   },
+   {
+    "url": "http://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600053664/competitions/401820047?lang=en&region=us",
+    "retrieved": "2026-09-13",
+    "bout": "Rodrigo Sezinando vs Daniil Donchenko",
+    "types": [
+     "Welterweight"
+    ],
+    "card_segment": "Prelims",
+    "states": "no title or tournament type"
+   }
+  ],
+  "ufcstats": {
+   "url": "http://ufcstats.com/fight-details/<id>",
+   "retrieved": "2026-09-13",
+   "states": "served a browser challenge to a plain request; not bypassed, no label read"
+  }
+ },
+ "inventory_row": {
+  "finale_event": null,
+  "finale_date": null,
+  "final_bouts": null,
+  "finalists": [
+   {
+    "weight_class": "Flyweight",
+    "fighters": [
+     "Joseph Morales",
+     "Alibi Idiris"
+    ],
+    "fighter_ids": [
+     "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+     "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
+    ]
+   },
+   {
+    "weight_class": "Welterweight",
+    "fighters": [
+     "Daniil Donchenko",
+     "Matt Dixon"
+    ],
+    "fighter_ids": [
+     "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+     "f66cd6ec-9772-4cc0-b10c-8fccecc9478a"
+    ]
+   }
+  ],
+  "winners": [],
+  "winner_note": "Sources disagree; see _conflicts. Finalists are sourced, winners are not.",
+  "completion_unverified": true
+ },
+ "open_conflicts": [
+  {
+   "scope": "tuf-33",
+   "field": "winners",
+   "detail": "A summary read of the franchise page reported Joseph Morales and Daniil Donchenko as the season 33 winners. The season's own page lists them only as FINALISTS (flyweight: Morales vs Alibi Idiris; welterweight: Donchenko vs Matt Dixon) and does not state the finale results. Recorded as finalists with winner unknown rather than resolving the disagreement in either direction.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/The_Ultimate_Fighter",
+    "https://en.wikipedia.org/wiki/The_Ultimate_Fighter:_Team_Cormier_vs._Team_Sonnen"
+   ],
+   "retrieved": "2026-09-07"
+  }
+ ],
+ "finals": [
+  {
+   "division": "Welterweight",
+   "tournament": "The Ultimate Fighter 33: Team Cormier vs. Team Sonnen",
+   "fighter_a": "Daniil Donchenko",
+   "fighter_b": "Rodrigo Sezinando",
+   "recorded_winner": "Daniil Donchenko",
+   "current_verified_against": null,
+   "current_ufc_bout_id": null,
+   "explicit_links": [],
+   "current_finale_event_field": null,
+   "current_finale_date_field": null,
+   "inventory_final_bouts": null,
+   "inventory_finalists": {
+    "weight_class": "Welterweight",
+    "fighters": [
+     "Daniil Donchenko",
+     "Matt Dixon"
+    ],
+    "fighter_ids": [
+     "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+     "f66cd6ec-9772-4cc0-b10c-8fccecc9478a"
+    ]
+   },
+   "identities": [
+    {
+     "fighter": "Daniil Donchenko",
+     "fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+     "canonical": {
+      "id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+      "name": "Daniil Donchenko",
+      "ufcstats_id": "70dd69b6a703257e",
+      "espn_athlete_id": "5289841"
+     }
+    },
+    {
+     "fighter": "Rodrigo Sezinando",
+     "fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+     "canonical": {
+      "id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+      "name": "Rodrigo Sezinando",
+      "ufcstats_id": "c06d6b18862f9a53",
+      "espn_athlete_id": "5289853"
+     }
+    }
+   ],
+   "identities_resolved": true,
+   "verifier_now": {
+    "result": "partial",
+    "evidence": [],
+    "finale_link": null,
+    "refusal": "no explicit bout link and no recorded finale date or event",
+    "classification": "unverified"
+   },
+   "candidates": [
+    {
+     "ufc_bout_id": "94616427-2d11-4216-b248-bc57e3ab83e2",
+     "event": "UFC Fight Night: Lopes vs. Silva",
+     "event_date": "2025-09-13",
+     "status": "complete",
+     "is_title": false,
+     "card_position": "prelim",
+     "bout_order": 1,
+     "result": {
+      "round": 1,
+      "method": "KO_TKO",
+      "time_sec": 267,
+      "winner_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6"
+     }
+    }
+   ],
+   "all_bouts_of_each_finalist": {
+    "45866b70-3f63-4996-8ec4-416e40b4c6b6": [
+     "2025-09-13 UFC Fight Night: Lopes vs. Silva (94616427-2d11-4216-b248-bc57e3ab83e2)",
+     "2026-02-07 UFC Fight Night: Bautista vs. Oliveira (8fe40fdb-81aa-4700-98fc-23f52690f497)",
+     "2026-06-27 UFC Fight Night: Fiziev vs. Torres (6b8f1693-bdb7-49c8-a8fa-36f8a9e4a732)",
+     "2026-09-05 UFC Fight Night: Hooker vs. Parnasse (999af0ae-e4cf-4493-9b27-b000d82fb7dd)"
+    ],
+    "6e2660b2-6505-4a25-bd1a-17356aec23cf": [
+     "2025-09-13 UFC Fight Night: Lopes vs. Silva (94616427-2d11-4216-b248-bc57e3ab83e2)"
+    ]
+   },
+   "checks": {
+    "1_finalist_ids_map_to_bout": {
+     "pass": true,
+     "detail": "ufc_bouts 94616427-2d11-4216-b248-bc57e3ab83e2 is between 45866b70-3f63-4996-8ec4-416e40b4c6b6 and 6e2660b2-6505-4a25-bd1a-17356aec23cf"
+    },
+    "2_on_the_actual_tuf33_finale_event": {
+     "pass": false,
+     "detail": "NOT PROVEN EXACTLY. No finale event is recorded for TUF 33 and no first-party page labels this bout a TUF 33 final. Corroboration only: the broadcaster's season listing names \"TUF 33 Finale: Lopes vs. Silva\", whose headline equals the headline of the canonical event \"UFC Fight Night: Lopes vs. Silva\" (the only \"Lopes vs. Silva\" event in ufc_events) — a headline correspondence, not an exact event-name match.",
+     "corroboration": "broadcaster_listing_headline"
+    },
+    "3_canonical_date_matches_recorded_date": {
+     "pass": false,
+     "detail": "no finale date is recorded for TUF 33 (the broadcaster listing date 2026-05-25 is documented as wrong); the canonical date 2025-09-13 has nothing exact to match"
+    },
+    "4_recorded_winner_matches_result": {
+     "pass": true,
+     "detail": "archive winner Daniil Donchenko (45866b70-3f63-4996-8ec4-416e40b4c6b6); canonical winner_id 45866b70-3f63-4996-8ec4-416e40b4c6b6. The archive winner itself is draft-sourced: the inventory records winners [] and an open \"winners\" conflict"
+    },
+    "5_no_other_bout_between_the_pair": {
+     "pass": true,
+     "detail": "1 ufc_bouts row(s) between the two ids, ever"
+    },
+    "6_professional_card_bout_not_house": {
+     "pass": true,
+     "detail": "UFC Fight Night: Lopes vs. Silva, prelim bout 1, status complete; a UFC card, not a TUF house bout"
+    },
+    "7_not_a_later_rematch": {
+     "pass": true,
+     "detail": "the only meeting of the two finalists in the canonical database, so no earlier or later bout between them exists to confuse it with"
+    }
+   },
+   "failed_checks": [
+    "2_on_the_actual_tuf33_finale_event",
+    "3_canonical_date_matches_recorded_date"
+   ],
+   "verdict": "HOLD_EVENT_NOT_PROVEN_EXACTLY",
+   "confidence": "high on bout identity; event not proven exactly",
+   "danger_flags": [
+    "final classification is \"unverified\"; a link would make it CLASSIFICATION_REPAIRABLE, not repaired",
+    "inventory winners [] with an open \"winners\" conflict; the archive winner is draft-sourced",
+    "inventory finalists list Daniil Donchenko vs Matt Dixon; the bracket final and the official episode 12 recap say Daniil Donchenko vs Rodrigo Sezinando",
+    "event evidence is a broadcaster listing headline, not an exact event record"
+   ]
+  },
+  {
+   "division": "Flyweight",
+   "tournament": "The Ultimate Fighter 33: Team Cormier vs. Team Sonnen",
+   "fighter_a": "Joseph Morales",
+   "fighter_b": "Alibi Idiris",
+   "recorded_winner": "Joseph Morales",
+   "current_verified_against": null,
+   "current_ufc_bout_id": null,
+   "explicit_links": [],
+   "current_finale_event_field": null,
+   "current_finale_date_field": null,
+   "inventory_final_bouts": null,
+   "inventory_finalists": {
+    "weight_class": "Flyweight",
+    "fighters": [
+     "Joseph Morales",
+     "Alibi Idiris"
+    ],
+    "fighter_ids": [
+     "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+     "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
+    ]
+   },
+   "identities": [
+    {
+     "fighter": "Joseph Morales",
+     "fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+     "canonical": {
+      "id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+      "name": "Joseph Morales",
+      "ufcstats_id": "2fe9032955c2e013",
+      "espn_athlete_id": "4238229"
+     }
+    },
+    {
+     "fighter": "Alibi Idiris",
+     "fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+     "canonical": {
+      "id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+      "name": "Alibi Idiris",
+      "ufcstats_id": "30cad5a751adcb48",
+      "espn_athlete_id": "5264470"
+     }
+    }
+   ],
+   "identities_resolved": true,
+   "verifier_now": {
+    "result": "partial",
+    "evidence": [],
+    "finale_link": null,
+    "refusal": "no explicit bout link and no recorded finale date or event",
+    "classification": "unverified"
+   },
+   "candidates": [
+    {
+     "ufc_bout_id": "aa7c0491-43f3-4c90-a668-10ccbdc118ac",
+     "event": "UFC 319: Du Plessis vs. Chimaev",
+     "event_date": "2025-08-16",
+     "status": "complete",
+     "is_title": true,
+     "card_position": "early",
+     "bout_order": 1,
+     "result": {
+      "round": 2,
+      "method": "SUB",
+      "time_sec": 184,
+      "winner_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7"
+     }
+    }
+   ],
+   "all_bouts_of_each_finalist": {
+    "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7": [
+     "2017-08-05 UFC Fight Night: Pettis vs. Moreno (75f213fc-a6fc-4e41-a2ac-6d26d80ae92d)",
+     "2018-02-03 UFC Fight Night: Machida vs. Anders (87b53097-a161-4428-a013-fd011e091ac7)",
+     "2018-11-10 UFC Fight Night: Korean Zombie vs. Rodriguez (55af9bc0-35ec-435b-8315-ba453fd0cf26)",
+     "2025-08-16 UFC 319: Du Plessis vs. Chimaev (aa7c0491-43f3-4c90-a668-10ccbdc118ac)",
+     "2025-11-08 UFC Fight Night: Bonfim vs. Brown (f247d42e-d0f2-46bd-a282-9eb3c238c011)",
+     "2026-09-12 Noche UFC: Silva vs. Delgado (7300eba4-285f-4030-9f3f-216fa376f451)"
+    ],
+    "3b0f9220-12df-43e3-89cb-55f4489d6d8b": [
+     "2025-08-16 UFC 319: Du Plessis vs. Chimaev (aa7c0491-43f3-4c90-a668-10ccbdc118ac)",
+     "2026-02-21 UFC Fight Night: Strickland vs. Hernandez (f3a881a3-34d4-4db6-bdeb-bb07b8829c80)"
+    ]
+   },
+   "checks": {
+    "1_finalist_ids_map_to_bout": {
+     "pass": true,
+     "detail": "ufc_bouts aa7c0491-43f3-4c90-a668-10ccbdc118ac is between 5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7 and 3b0f9220-12df-43e3-89cb-55f4489d6d8b"
+    },
+    "2_on_the_actual_tuf33_finale_event": {
+     "pass": false,
+     "detail": "CONTRADICTED. The candidate is on \"UFC 319: Du Plessis vs. Chimaev\" (2025-08-16). The official recap puts this final in \"the live finale\", and the only finale the broadcaster names is \"TUF 33 Finale: Lopes vs. Silva\" — a different card. No first-party page labels this bout a TUF 33 final (UFC.com: \"Flyweight Bout\"); ESPN types it \"Flyweight Title\", which is not a TUF label.",
+     "corroboration": null
+    },
+    "3_canonical_date_matches_recorded_date": {
+     "pass": false,
+     "detail": "no finale date is recorded for TUF 33 (the broadcaster listing date 2026-05-25 is documented as wrong); the canonical date 2025-08-16 has nothing exact to match"
+    },
+    "4_recorded_winner_matches_result": {
+     "pass": true,
+     "detail": "archive winner Joseph Morales (5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7); canonical winner_id 5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7. The archive winner itself is draft-sourced: the inventory records winners [] and an open \"winners\" conflict"
+    },
+    "5_no_other_bout_between_the_pair": {
+     "pass": true,
+     "detail": "1 ufc_bouts row(s) between the two ids, ever"
+    },
+    "6_professional_card_bout_not_house": {
+     "pass": true,
+     "detail": "UFC 319: Du Plessis vs. Chimaev, early bout 1, status complete; a UFC card, not a TUF house bout"
+    },
+    "7_not_a_later_rematch": {
+     "pass": true,
+     "detail": "the only meeting of the two finalists in the canonical database, so no earlier or later bout between them exists to confuse it with"
+    }
+   },
+   "failed_checks": [
+    "2_on_the_actual_tuf33_finale_event",
+    "3_canonical_date_matches_recorded_date"
+   ],
+   "verdict": "HOLD_AMBIGUOUS_EVENT",
+   "confidence": "bout identity unique; finale event contradicted",
+   "danger_flags": [
+    "final classification is \"unverified\"; a link would make it CLASSIFICATION_REPAIRABLE, not repaired",
+    "inventory winners [] with an open \"winners\" conflict; the archive winner is draft-sourced",
+    "the candidate card differs from the only finale card any source names"
+   ]
+  }
+ ],
+ "separate_recommendations": [
+  "DATA (not identity): seasons.json tuf-33 finalists list the welterweight pair as Daniil Donchenko vs Matt Dixon (Wikipedia). Donchenko beat Dixon in the semi-final (episode 12 recap); the official recap names the finale pairing Sezinando vs Donchenko, which is the bracket final. Correct the inventory finalists in their own reviewed batch before or with any finale linkage.",
+  "EVIDENCE: neither final can be linked exactly without a first-party record of where each TUF 33 final was fought (a UFC.com results article or event page that labels the bout as the TUF 33 final, or an athletic commission result). The broadcaster listing names only one finale card (\"Lopes vs. Silva\"); the flyweight candidate is on UFC 319 a month earlier.",
+  "WINNERS: TUF 33 winners stay unresolved (open inventory \"winners\" conflict) independently of linkage; WINNER_UNRESOLVED does not clear by linking a bout.",
+  "DISPLAY (observation, not changed): web/lib/tufGraph.ts marks a TUF 33 final by title flag + year when no finale date is on file; it uses the inventory finalists, so it can mark the flyweight bout but not the welterweight one."
+ ],
+ "identity_review": "No identity blocker: all four bracket finalists resolve to canonical fighters with ufcstats and ESPN ids. No identity change is proposed."
+}
