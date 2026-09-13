@@ -492,10 +492,12 @@ export function seasonStatuses(): Map<string, HubStatus> {
 
 export type StatusReport = {
   seasons: number;
-  verified_complete: number;
-  format_complete: number;
-  structure_partial: number;
+  /* complete + partial + ongoing = seasons */
+  complete: number;
+  partial: number;
   ongoing: number;
+  /* A subset of complete: also verified by primary records. */
+  verified: number;
   /* Separate axis: a finale card we hold says nothing about the season's structure. */
   finales_named: number;
   evidence_as_of: string;
@@ -506,10 +508,10 @@ export function statusReport(): StatusReport {
   const n = (k: HubStatus["state"]) => st.filter((x) => x.state === k).length;
   return {
     seasons: st.length,
-    verified_complete: n("verified_complete"),
-    format_complete: n("format_complete"),
-    structure_partial: n("structure_partial"),
+    complete: n("complete"),
+    partial: n("partial"),
     ongoing: n("ongoing"),
+    verified: st.filter((x) => x.state === "complete" && x.verified).length,
     finales_named: INV.seasons.filter((r) => r.finale_event).length,
     evidence_as_of: STATUS.as_of,
   };

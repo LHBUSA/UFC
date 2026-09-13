@@ -123,32 +123,36 @@ export function evidenceOf(row: StatusSeasonRow, entry: EvidenceEntry | undefine
 
 /* ---- what the hub shows --------------------------------------------------- */
 
-export type HubState = "ongoing" | "verified_complete" | "format_complete" | "structure_partial";
+/* A card answers one question: is this season represented? Complete means the
+ * competition the season ran is fully there in its own format. Verified is an
+ * extra, positive layer — the strict evidence verdict above says every result
+ * and classification is also backed by primary records — never a precondition
+ * for Complete. The research backlog behind a non-verified season (open
+ * conflicts, secondary-only sources) belongs on the season page's evidence
+ * sections, not on the card; the verdict itself is unchanged and still carried
+ * here for anything that needs it. */
+export type HubState = "ongoing" | "complete" | "partial";
 export type HubStatus = {
   state: HubState;
+  /** The strict evidence verdict is VERIFIED (and the season is complete). */
+  verified: boolean;
   structure: Structure;
   evidence: Evidence | null;
   /** The one pill every card carries. */
   primary: { label: string; tone: "live" | "ok" | "thin" };
-  /** At most one quieter state beside it. */
-  secondary: { label: string; tone: "ok" | "gaps" } | null;
+  /** Only ever the positive Verified badge. */
+  secondary: { label: string; tone: "ok" } | null;
 };
 
 export function hubStatus(row: StatusSeasonRow, detail: StatusSeasonDetail | null | undefined, evidence: Evidence | null): HubStatus {
   const structure = structureOf(row, detail);
   if (row.season_state === "ongoing") {
-    return { state: "ongoing", structure, evidence: null, primary: { label: "Season ongoing", tone: "live" }, secondary: null };
+    return { state: "ongoing", verified: false, structure, evidence: null, primary: { label: "Season ongoing", tone: "live" }, secondary: null };
   }
   const ev = evidence ?? { evidence: "gaps" as const, reasons: ["not measured"] };
-  if (structure.structure === "complete" && ev.evidence === "verified") {
-    return { state: "verified_complete", structure, evidence: ev, primary: { label: "Verified complete", tone: "ok" }, secondary: null };
-  }
   if (structure.structure === "complete") {
-    return { state: "format_complete", structure, evidence: ev, primary: { label: "Format complete", tone: "ok" }, secondary: { label: "Research gaps", tone: "gaps" } };
+    const verified = ev.evidence === "verified";
+    return { state: "complete", verified, structure, evidence: ev, primary: { label: "Complete", tone: "ok" }, secondary: verified ? { label: "Verified", tone: "ok" } : null };
   }
-  return {
-    state: "structure_partial", structure, evidence: ev,
-    primary: { label: "Structure partial", tone: "thin" },
-    secondary: ev.evidence === "verified" ? { label: "Verified", tone: "ok" } : { label: "Research gaps", tone: "gaps" },
-  };
+  return { state: "partial", verified: false, structure, evidence: ev, primary: { label: "Partial", tone: "thin" }, secondary: null };
 }

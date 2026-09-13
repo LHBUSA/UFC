@@ -8,11 +8,12 @@ import { SITE } from "@/lib/site";
 /* /tuf — the archive hub.
  *
  * Two things this page refuses to do. It does not show a winner for a season
- * that has not finished, and it does not blur what we hold for a season into
- * one word. Each card states two derived facts, kept apart (lib/tufStatus.ts):
- * whether the competition the season actually ran is represented in its own
- * format — seasons were not all brackets — and whether the season clears the
- * evidence bar. "Verified complete" appears only when both hold. */
+ * that has not finished, and it does not turn the archive's research backlog
+ * into a card-level verdict. Each card says whether the season is represented
+ * in the format it actually used (lib/tufStatus.ts): Complete, Partial or
+ * Season ongoing, plus a Verified badge where every result and classification
+ * is also backed by primary records. Open research questions live on the
+ * season page, where they can be read in context. */
 export const revalidate = 3600;
 
 const TITLE = "The Ultimate Fighter Archive | PropBetEdge UFC";
@@ -34,9 +35,8 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
-/* One primary pill (structure, or that the season is still running) and at
- * most one quieter evidence state. The internal blocker vocabulary stays in
- * the completeness matrix; the card says only what a reader can act on. */
+/* One primary pill and, only where it applies, the positive Verified badge.
+ * The internal blocker vocabulary stays in the completeness matrix. */
 const TONE = { live: "tuf-pill-live", ok: "tuf-pill-ok", thin: "tuf-pill-thin" } as const;
 function StatusPills({ st }: { st: HubStatus }) {
   return (
@@ -112,17 +112,16 @@ export default function TufHub() {
 
       <section className="wrap tuf-cov">
         <div className="tuf-cov-grid">
-          <div className="tuf-cov-cell"><b>{report.verified_complete}</b><span>verified complete</span></div>
-          <div className="tuf-cov-cell"><b>{report.format_complete}</b><span>format complete, research gaps</span></div>
-          {report.structure_partial > 0 && <div className="tuf-cov-cell"><b>{report.structure_partial}</b><span>structure partial</span></div>}
-          <div className="tuf-cov-cell"><b>{report.ongoing}</b><span>season ongoing</span></div>
+          <div className="tuf-cov-cell"><b>{report.complete}</b><span>complete seasons</span></div>
+          <div className="tuf-cov-cell"><b>{report.ongoing}</b><span>ongoing</span></div>
+          {report.partial > 0 && <div className="tuf-cov-cell"><b>{report.partial}</b><span>partial</span></div>}
+          <div className="tuf-cov-cell"><b>{report.verified}</b><span>verified by primary records</span></div>
           <div className="tuf-cov-cell is-total"><b>{report.seasons}</b><span>seasons catalogued</span></div>
         </div>
         <p className="tuf-note">
-          Each season is measured against <strong>the competition format it actually used</strong>, not a standard bracket,
-          and separately against the evidence bar: every result from a primary source, every classification sourced, no open
-          conflict. These states are exclusive and sum to {report.seasons}. {report.finales_named} finale cards are named
-          separately; holding a finale says nothing about how well the season before it is recorded.
+          A season is <strong>complete</strong> when the competition it actually ran is fully represented in its own format.
+          <strong> Verified</strong> is an extra layer on top: every house result and classification is also backed by a primary
+          record, such as the athletic commission&apos;s own results. Where sources still disagree, the season page says so.
         </p>
       </section>
 
