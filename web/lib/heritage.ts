@@ -278,7 +278,7 @@ export const LEGACY_LENSES = [
  * instead of an internal one, including Royce vs Ken Shamrock at UFC 1 — a
  * bout we do not hold. What we hold of that rivalry is the UFC 5 draw. */
 
-export const GRACIE_ARCHIVE_FLOOR = "UFC 2 · March 11, 1994";
+export const GRACIE_ARCHIVE_FLOOR = "UFC 1 · November 12, 1993";
 
 export type GracieMoment = {
   key: string;
@@ -299,8 +299,8 @@ export const GRACIE_MOMENTS: readonly GracieMoment[] = [
     event: "UFC 1",
     title: "The question is asked in public",
     body:
-      "An eight-man, one-night tournament in Denver with no weight classes and no judges. Royce Gracie, the lightest man in the bracket, wins it — including a submission of Ken Shamrock. The result is the first widely seen evidence that a fight can be decided by someone who never lands the harder punch.",
-    archived: false,
+      "An eight-man, one-night tournament in Denver with no weight classes and no judges. Royce Gracie, the lightest man in the bracket, wins it — including a submission of Ken Shamrock. The result is the first widely seen evidence that a fight can be decided by someone who never lands the harder punch. Our archive holds all eight bouts of the night.",
+    archived: true,
     official: UFC_OFFICIAL.ufc1,
   },
   {

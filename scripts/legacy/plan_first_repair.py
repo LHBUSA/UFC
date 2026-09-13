@@ -277,7 +277,11 @@ def main() -> int:
                 espn_holder = next((f for f in fighters if f["espn_athlete_id"] == c["id"]), None)
                 decision = {
                     "espn_athlete_id": c["id"], "ufcstats_id": us["ufcstats_id"], "espn_name": a["fullName"], "ufcstats_name": us["name"],
-                    "dob": (a.get("dateOfBirth") or "")[:10] or None,
+                    # Owner decision 2026-09-13: a new identity's DOB stays NULL unless
+                    # a second, independent source corroborates it. ESPN's value is
+                    # kept as review evidence only.
+                    "dob": None,
+                    "espn_dob_uncorroborated": (a.get("dateOfBirth") or "")[:10] or None,
                     "resolver_status": res.status, "resolver_method": res.method, "fighter_id": res.fighter_id,
                     "candidates": [{"fighter_id": x.fighter_id, "name": by_fighter[x.fighter_id]["name"], "score": round(x.score, 1), "reasons": x.reasons} for x in res.candidates[:5]],
                     "espn_athlete_id_already_on": espn_holder["id"] if espn_holder else None,
@@ -316,6 +320,34 @@ def main() -> int:
             fail(f"{d['espn_name']}: ESPN athlete id already on fighter {d['espn_athlete_id_already_on']}")
         if any(f["ufcstats_id"] == d["ufcstats_id"] for f in fighters):
             fail(f"{d['espn_name']}: UFCStats id already canonical")
+    # Competing referee evidence: Sherdog's UFC 1 page as captured by the
+    # 2026-09-12 scout (secondary, tier 4). Parsed from the raw capture; never
+    # re-fetched. Every bout must map exactly once or the plan is refused.
+    sherdog_path = ev_dir / "rules/raw/officials/sherdog_UFC-1-The-Beginning-7.html"
+    sherdog_html = sherdog_path.read_text(encoding="utf-8", errors="ignore")
+    # Tokens between tags; each bout block reads "<loser name> ... loss ...
+    # <method> ... <referee>". A referee is attributed to the nearest preceding
+    # "loss" marker's name; it counts once per bout (the markup repeats rows).
+    tokens = [t for t in (html.unescape(x).strip() for x in re.split(r"<[^>]+>", sherdog_html)) if t]
+    sherdog_ref = {}
+    for i, tok in enumerate(tokens):
+        if tok not in ("Helio Vigio", "Joao Alberto Barreto"):
+            continue
+        j = max((k for k in range(max(0, i - 40), i) if tokens[k] == "loss"), default=None)
+        if j is None:
+            continue
+        name_tokens = [t for t in tokens[max(0, j - 6):j] if re.fullmatch(r"[A-Z][A-Za-z'.-]+(?: [A-Z][A-Za-z'.-]+)*", t)]
+        if name_tokens:
+            sherdog_ref.setdefault(normalize(name_tokens[-1]).split()[-1], set()).add(tok)
+    for b in ufc1_bouts:
+        loser = b["fighter_a_espn"] if b["winner_espn"] == b["fighter_b_espn"] else b["fighter_b_espn"]
+        last = normalize(ath[loser]["fullName"]).split()[-1]
+        refs = sherdog_ref.get(last, set())
+        if len(refs) != 1:
+            fail(f"Sherdog referee for loser {ath[loser]['fullName']}: {sorted(refs)}")
+        b["sherdog_referee"] = next(iter(refs))
+        b["referee_conflict"] = b["sherdog_referee"] not in b["espn_referee"]
+    sherdog_evidence = {"path": str(sherdog_path), "sha256": sha256_file(sherdog_path), "url": "https://www.sherdog.com/events/UFC-1-The-Beginning-7"}
     venue = json.loads((ev_dir / "espn_ufc1" / "leagues_ufc_venues_2549.json").read_text(encoding="utf-8"))
     plan["ufc1"] = {
         "event": {
@@ -333,9 +365,10 @@ def main() -> int:
         "evidence": {
             "espn_event": {"path": str(espn_event_path), "sha256": sha256_file(espn_event_path)},
             "ufcstats_capture": {"path": str(capture_path), "sha256": sha256_file(capture_path), "url": UFC1_CAPTURE_URL},
+            "sherdog_capture": sherdog_evidence,
             "espn_refs_manifest": json.loads((ev_dir / "espn_ufc1" / "manifest.json").read_text(encoding="utf-8")),
         },
-        "referee_conflict": "ESPN and the UFCStats lineage name Joao Alberto Barreto on all 8 bouts; Sherdog (secondary, research only) splits UFC 1 between Helio Vigio and Barreto. ufc_bout_results.referee stays NULL; ESPN referee claims are stored with conflict_state=open.",
+        "referee_conflict": "ESPN and the UFCStats lineage name Joao Alberto Barreto on all 8 bouts; Sherdog (secondary, tier 4) splits UFC 1 between Helio Vigio and Barreto. ufc_bout_results.referee stays NULL on every bout; both sources are stored as claims in conflict group ufc1-referee, open wherever they disagree.",
     }
 
     # ---- step 4: period semantics ------------------------------------------
@@ -433,6 +466,8 @@ def main() -> int:
         "ufc1_new_identities": plan["ufc1"]["new_identities"],
         "ufc1_matched": [f"{d['espn_name']} -> {d['fighter_id']} ({d['resolver_method']})" for d in plan["ufc1"]["fighters"] if d["resolver_status"] == "matched"],
         "ufc1_review_candidates": {d["espn_name"]: d["candidates"] for d in plan["ufc1"]["fighters"] if d["resolver_status"] != "matched"},
+        "ufc1_new_identity_dob": {d["espn_name"]: d["dob"] for d in plan["ufc1"]["fighters"] if d["resolver_status"] != "matched"},
+        "ufc1_referee": [f"bout_order {b['bout_order']}: espn={b['espn_referee']} sherdog={b['sherdog_referee']} conflict={b['referee_conflict']}" for b in plan["ufc1"]["bouts"]],
         "period_semantics": {k: plan["period_semantics"][k] for k in ("rows_to_update", "by_kind", "rounds_rows")},
         "period_refused": len(refused),
         "espn_event_id_updates": len(id_updates),

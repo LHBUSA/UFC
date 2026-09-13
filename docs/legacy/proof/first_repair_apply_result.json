@@ -2,11 +2,11 @@
  "plan_sha256": "589ab62c8825916cca7b73eaca1933ffcd632351d034f220f1cf1ac636e77491",
  "migration": "20260913140000_ufc_legacy_origins.sql",
  "migration_sha256": "c6e3162d81642901d069f5345a698451d48bcf4f2011eed825643eb50cdd9f84",
- "proof": [
+ "apply": [
   {
    "proof": {
     "failed": 0,
-    "passed": 105,
+    "passed": 89,
     "assertions": [
      {
       "ok": true,
@@ -246,17 +246,17 @@
      {
       "ok": true,
       "name": "no duplicate canonical fighter: Gerard Gordeau",
-      "detail": "45329e3c-7f9a-4e8a-99e3-96ee1acff70a"
+      "detail": "6d2d610f-9ba3-4794-8bc5-00d7cdd5f241"
      },
      {
       "ok": true,
       "name": "no duplicate canonical fighter: Teila Tuli",
-      "detail": "170fa767-3763-4c0e-94f9-c7a4c9ed3fa1"
+      "detail": "42d87164-e4b3-4edd-b598-648757e53f28"
      },
      {
       "ok": true,
       "name": "no duplicate canonical fighter: Art Jimmerson",
-      "detail": "3be61af4-2688-49c6-bd62-b3ee19350f57"
+      "detail": "d1239ab3-7e95-47ba-8995-cf4f51d2c7b4"
      },
      {
       "ok": true,
@@ -452,108 +452,8 @@
       "ok": true,
       "name": "022 posture: no public ufc_* table has anon/authenticated writes",
       "detail": null
-     },
-     {
-      "ok": true,
-      "name": "guard: claim delete refused",
-      "detail": "ufc_event_fact_claims is append-only: claim 1ecd7d55-621e-424a-8415-9f5ce9a2217c cannot be deleted (reject it instead)"
-     },
-     {
-      "ok": true,
-      "name": "guard: claim raw_value is immutable",
-      "detail": "ufc_event_fact_claims: claim 1ecd7d55-621e-424a-8415-9f5ce9a2217c is immutable evidence; only verification_status, conflict_*, notes may change"
-     },
-     {
-      "ok": true,
-      "name": "guard: claim review state may change",
-      "detail": null
-     },
-     {
-      "ok": true,
-      "name": "guard: promotion claim cannot win against a disagreeing claim",
-      "detail": "promotion_official claim 1ecd7d55-621e-424a-8415-9f5ce9a2217c conflicts with 1 other claim(s); only an operator_decision may select it"
-     },
-     {
-      "ok": true,
-      "name": "guard: resolution must select a claim for the same fact",
-      "detail": "insert or update on table \"ufc_event_fact_resolutions\" violates foreign key constraint \"ufc_event_fact_resolutions_claim_fkey\""
-     },
-     {
-      "ok": true,
-      "name": "guard: promotion material cannot be tier 2",
-      "detail": "new row for relation \"ufc_event_fact_claims\" violates check constraint \"ufc_event_fact_claims_promotion_tier\""
-     },
-     {
-      "ok": true,
-      "name": "guard: a bye cannot carry a bout",
-      "detail": "new row for relation \"ufc_tournament_advancements\" violates check constraint \"ufc_tournament_advancements_bout_rule\""
-     },
-     {
-      "ok": true,
-      "name": "guard: a bye with no bout is accepted",
-      "detail": null
-     },
-     {
-      "ok": true,
-      "name": "guard: a bout_win must name its bout",
-      "detail": "new row for relation \"ufc_tournament_advancements\" violates check constraint \"ufc_tournament_advancements_bout_rule\""
-     },
-     {
-      "ok": true,
-      "name": "guard: advancement bout must be on the tournament event",
-      "detail": "advancement bout 71113b6d-f141-41ae-80bb-4b855979b1b8 is not on the tournament event"
-     },
-     {
-      "ok": true,
-      "name": "guard: a replacement must name who it replaces",
-      "detail": "new row for relation \"ufc_tournament_advancements\" violates check constraint \"ufc_tournament_advancements_replacement_rule\""
-     },
-     {
-      "ok": true,
-      "name": "guard: an entry needs a canonical fighter or a review row",
-      "detail": "new row for relation \"ufc_tournament_entries\" violates check constraint \"ufc_tournament_entries_identity\""
-     },
-     {
-      "ok": true,
-      "name": "guard: an untimed result cannot be relabelled a round",
-      "detail": "new row for relation \"ufc_bout_results\" violates check constraint \"ufc_bout_results_period_semantics_coherent\""
-     },
-     {
-      "ok": true,
-      "name": "guard: an interpretation cannot be half-filled (NULL kind)",
-      "detail": "new row for relation \"ufc_bout_results\" violates check constraint \"ufc_bout_results_period_semantics_coherent\""
-     },
-     {
-      "ok": true,
-      "name": "guard: regulation is period 1 only",
-      "detail": "new row for relation \"ufc_bout_results\" violates check constraint \"ufc_bout_results_period_semantics_coherent\""
-     },
-     {
-      "ok": true,
-      "name": "guard: a normalized weight limit needs a stated basis",
-      "detail": "new row for relation \"ufc_bouts\" violates check constraint \"ufc_bouts_historical_limit_needs_basis\""
      }
-    ],
-    "lock_wait_ms": null
-   }
-  }
- ],
- "post_rollback": [
-  {
-   "post_rollback": {
-    "views_left": 0,
-    "tables_left": 0,
-    "packets_left": 0,
-    "function_left": false,
-    "ufc1_event_left": 0,
-    "review_rows_left": 0,
-    "source_rows_left": 0,
-    "bout_columns_left": 0,
-    "claims_table_left": false,
-    "result_columns_left": 0,
-    "minted_fighters_left": 0,
-    "legacy_events_with_espn_id": 0,
-    "video_type_check_has_event_replay": false
+    ]
    }
   }
  ]

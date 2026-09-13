@@ -43,6 +43,15 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 MIGRATION = ROOT / "supabase/migrations/20260913140000_ufc_legacy_origins.sql"
 PROJECT_REF = "tkmlnhmylqnttmnsnief"
 OPERATOR = "proof:ufc-legacy-origins-v1"
+APPLY_OPERATOR = "apply:ufc-legacy-origins-v1 (owner-approved 2026-09-13)"
+EXPECTED_MIGRATION_SHA256 = "c6e3162d81642901d069f5345a698451d48bcf4f2011eed825643eb50cdd9f84"
+# Tables the first repair is allowed to change. Every other public ufc_*/combat_*
+# table must keep its exact row count, and the DWCS governance tables their
+# exact content.
+IN_SCOPE = {"ufc_events", "ufc_bouts", "ufc_bout_results", "ufc_fighters", "ufc_alias_review_queue",
+            "combat_ingest_packets", "combat_sources"}
+UFC_LIKE = "'ufc" + chr(92) + "_%'"
+COMBAT_LIKE = "'combat" + chr(92) + "_%'"
 NEW_TABLES = ["ufc_event_fact_keys", "ufc_event_fact_claims", "ufc_event_fact_resolutions", "ufc_tournaments",
               "ufc_tournament_entries", "ufc_tournament_advancements", "ufc_legacy_repair_ledger"]
 
@@ -115,7 +124,9 @@ def migration_body() -> str:
 
 
 # ---------------------------------------------------------------------------
-def build(plan: dict, plan_sha: str) -> str:
+def build(plan: dict, plan_sha: str, mode: str = "proof") -> str:
+    assert mode in ("proof", "apply")
+    operator = OPERATOR if mode == "proof" else APPLY_OPERATOR
     u1 = plan["ufc1"]
     sem = plan["period_semantics"]
     ids = plan["event_ids_venue"]
@@ -148,9 +159,18 @@ def build(plan: dict, plan_sha: str) -> str:
   (select count(*) from public.ufc_weigh_in_current) as v_weigh_in_current,
   (select count(*) from public.ufc_alias_review_queue) as review_n,
   (select count(*) from public.combat_ingest_packets) as packets_n;""")
+    add("create temp table scope_before (relname text primary key, n bigint) on commit drop;")
+    add(f"""do $s$ declare r record; v bigint; begin
+  for r in select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
+           where n.nspname = 'public' and c.relkind in ('r','p') and (c.relname like {UFC_LIKE} or c.relname like {COMBAT_LIKE})
+  loop execute format('select count(*) from public.%I', r.relname) into v; insert into scope_before values (r.relname, v); end loop;
+end $s$;""")
+    add("""create temp table dwcs_before on commit drop as select
+  (select md5(coalesce(string_agg(t::text, '~' order by t::text), '')) from public.ufc_dwcs_outcome_claims t) as claims_md5,
+  (select md5(coalesce(string_agg(t::text, '~' order by t::text), '')) from public.ufc_dwcs_outcome_resolutions t) as resolutions_md5;""")
     add("create temp table proof_legacy_before on commit drop as select r.bout_id from public.ufc_bout_results r join public.ufc_bouts b on b.id = r.bout_id join public.ufc_events e on e.id = b.event_id where e.event_date <= '2004-12-31';")
 
-    add("-- ===================== MIGRATION BODY =====================")
+    add(f"-- ===================== MIGRATION BODY ({MIGRATION.name}) =====================")
     add(migration_body())
     add("-- ===================== DATA =====================")
 
@@ -179,23 +199,36 @@ def build(plan: dict, plan_sha: str) -> str:
         if f["resolver_status"] == "matched":
             continue
         ctx = {"reason": "legacy_origins_no_candidate", "event": "UFC 1: The Beginning", "espn_athlete_id": f["espn_athlete_id"],
-               "ufcstats_id": f["ufcstats_id"], "dob": f["dob"], "resolver_status": f["resolver_status"], "candidates": f["candidates"],
-               "plan_sha256": plan_sha, "evidence": [f"https://sports.core.api.espn.com/v2/sports/mma/athletes/{f['espn_athlete_id']}", u1["evidence"]["ufcstats_capture"]["url"]]}
+               "ufcstats_id": f["ufcstats_id"], "dob": f["dob"], "espn_dob_uncorroborated": f.get("espn_dob_uncorroborated"),
+               "resolver_status": f["resolver_status"], "candidates": f["candidates"], "plan_sha256": plan_sha,
+               "resolution_rule": "deterministic: zero resolver candidates; UFCStats and ESPN ids unused by any canonical fighter; bout history agrees across ESPN and the UFCStats capture; no name-only merge; owner approved 2026-09-13; DOB withheld until independently corroborated",
+               "evidence": [f"https://sports.core.api.espn.com/v2/sports/mma/athletes/{f['espn_athlete_id']}", u1["evidence"]["ufcstats_capture"]["url"]]}
         add(f"with q as (insert into public.ufc_alias_review_queue (raw_name, source, candidate_fighter_ids, context) values ({lit(f['espn_name'])}, 'legacy_origins_ufc1', '{{}}', {jlit(ctx)}) returning id) "
             f"update u1_fighter set review_id = (select id from q) where espn_athlete_id = {lit(f['espn_athlete_id'])};")
-    add("-- SIMULATED operator resolution (proof only): mint the reviewed identities")
+    add("-- " + ("SIMULATED operator resolution (proof only)" if mode == "proof" else "APPROVED deterministic resolution") + ": mint the reviewed identities")
+    add("do $m$ declare n int; begin")
+    for f in u1["fighters"]:
+        if f["resolver_status"] == "matched":
+            continue
+        nm = lit(f["espn_name"])
+        add(f"""  select count(*) into n from public.ufc_fighters where ufcstats_id = {lit(f['ufcstats_id'])} or espn_athlete_id = {lit(f['espn_athlete_id'])}
+       or lower(regexp_replace(name, '[^A-Za-z]', '', 'g')) = lower(regexp_replace({nm}, '[^A-Za-z]', '', 'g'));
+  if n > 0 then raise exception 'refusing to mint %: % conflicting canonical fighter(s)', {nm}, n; end if;
+  select count(*) into n from public.ufc_fighter_aliases where lower(regexp_replace(alias, '[^A-Za-z]', '', 'g')) = lower(regexp_replace({nm}, '[^A-Za-z]', '', 'g'));
+  if n > 0 then raise exception 'refusing to mint %: alias already held by a canonical fighter', {nm}; end if;""")
+    add("end $m$;")
     for f in u1["fighters"]:
         if f["resolver_status"] == "matched":
             continue
         src = f"https://sports.core.api.espn.com/v2/sports/mma/athletes/{f['espn_athlete_id']}"
         add(f"with ins as (insert into public.ufc_fighters (ufcstats_id, espn_athlete_id, name, dob, source_url) values ({lit(f['ufcstats_id'])}, {lit(f['espn_athlete_id'])}, {lit(f['espn_name'])}, {lit(f['dob'])}::date, {lit(src)}) returning *), "
-            f"led as (insert into public.ufc_legacy_repair_ledger (plan_sha256, step, table_name, row_key, operation, after_image, evidence, operator) select {P}, 'ufc1_ingest', 'ufc_fighters', jsonb_build_object('id', ins.id), 'insert', to_jsonb(ins), jsonb_build_object('review_id', (select review_id from u1_fighter where espn_athlete_id = {lit(f['espn_athlete_id'])})), {lit(OPERATOR)} from ins) "
+            f"led as (insert into public.ufc_legacy_repair_ledger (plan_sha256, step, table_name, row_key, operation, after_image, evidence, operator) select {P}, 'ufc1_ingest', 'ufc_fighters', jsonb_build_object('id', ins.id), 'insert', to_jsonb(ins), jsonb_build_object('review_id', (select review_id from u1_fighter where espn_athlete_id = {lit(f['espn_athlete_id'])})), {lit(operator)} from ins) "
             f"update u1_fighter set fighter_id = (select id from ins) where espn_athlete_id = {lit(f['espn_athlete_id'])};")
     add("update public.ufc_alias_review_queue q set status = 'resolved', resolved_fighter_id = u.fighter_id, resolved_at = now() from u1_fighter u where q.id = u.review_id;")
     add(f"""with ins as (insert into public.ufc_events (ufcstats_id, espn_event_id, name, event_date, city, region, country, location_raw, card_status, source_url)
   values ({lit(ev['ufcstats_id'])}, {lit(ev['espn_event_id'])}, {lit(ev['name'])}, {lit(ev['event_date'])}::date, {lit(ev['city'])}, {lit(ev['region'])}, {lit(ev['country'])}, {lit(ev['location_raw'])}, 'complete', {lit(ev['source_url'])}) returning *)
 insert into public.ufc_legacy_repair_ledger (plan_sha256, step, table_name, row_key, operation, after_image, operator)
-select {P}, 'ufc1_ingest', 'ufc_events', jsonb_build_object('id', id), 'insert', to_jsonb(ins), {lit(OPERATOR)} from ins;""")
+select {P}, 'ufc1_ingest', 'ufc_events', jsonb_build_object('id', id), 'insert', to_jsonb(ins), {lit(operator)} from ins;""")
     ufc1_event = f"(select id from public.ufc_events where ufcstats_id = {lit(ev['ufcstats_id'])})"
     for b in u1["bouts"]:
         fa = f"(select fighter_id from u1_fighter where espn_athlete_id = {lit(b['fighter_a_espn'])})"
@@ -209,21 +242,30 @@ res as (insert into public.ufc_bout_results (bout_id, winner_id, method, method_
   select ins.id, {fw}, {lit(b['method'])}, {lit(b['method_raw'])}, {b['round_raw']}, {b['time_sec']}, {lit(b['time_format'])}, null, {lit(b['finish_detail'])}, 'espn', false, {lit(b['espn_source_url'])},
          {lit(s[0])}, {lit(s[1])}, {s[2]}, {s[3]}, {lit(s[4])}, 1 from ins returning *),
 l1 as (insert into public.ufc_legacy_repair_ledger (plan_sha256, step, table_name, row_key, operation, after_image, evidence, operator)
-  select {P}, 'ufc1_ingest', 'ufc_bouts', jsonb_build_object('id', id), 'insert', to_jsonb(ins), jsonb_build_object('corroboration', {lit(b['ufcstats_source_url'])}), {lit(OPERATOR)} from ins)
+  select {P}, 'ufc1_ingest', 'ufc_bouts', jsonb_build_object('id', id), 'insert', to_jsonb(ins), jsonb_build_object('corroboration', {lit(b['ufcstats_source_url'])}), {lit(operator)} from ins)
 insert into public.ufc_legacy_repair_ledger (plan_sha256, step, table_name, row_key, operation, after_image, evidence, operator)
-  select {P}, 'ufc1_ingest', 'ufc_bout_results', jsonb_build_object('bout_id', bout_id), 'insert', to_jsonb(res), jsonb_build_object('referee', 'withheld: conflict ufc1-referee'), {lit(OPERATOR)} from res;""")
+  select {P}, 'ufc1_ingest', 'ufc_bout_results', jsonb_build_object('bout_id', bout_id), 'insert', to_jsonb(res), jsonb_build_object('referee', 'withheld: conflict ufc1-referee'), {lit(operator)} from res;""")
 
     # claims helper
-    def claim(event_sql, bout_sql, key, raw, norm, url, locator, conflict_group, conflict_state, notes):
-        h = f"encode(sha256(convert_to(concat_ws('|', {event_sql}::text, coalesce({bout_sql}::text, ''), {lit(key)}, {lit(raw)}, 'espn', {lit(url)}, {lit(locator)}), 'UTF8')), 'hex')"
-        return (f"insert into public.ufc_event_fact_claims (event_id, bout_id, fact_key, raw_value, normalized_value, source_id, source_type, source_tier, source_name, source_url, source_locator, captured_at, conflict_group, conflict_state, notes, claim_hash) "
-                f"values ({event_sql}, {bout_sql}, {lit(key)}, {lit(raw)}, {jlit(norm) if norm is not None else 'null'}, null, 'espn', 2, 'ESPN core API', {lit(url)}, {lit(locator)}, '2026-09-12T00:00:00Z', {lit(conflict_group)}, {lit(conflict_state)}, {lit(notes)}, {h});")
+    ESPN = {"source_id": "null", "source_type": "espn", "tier": 2, "name": "ESPN core API"}
+    SHERDOG = {"source_id": "(select id from public.combat_sources where source_key = 'sherdog')", "source_type": "curated_secondary", "tier": 4,
+               "name": "Sherdog Fight Finder (operator-captured page)"}
 
+    def claim(event_sql, bout_sql, key, raw, norm, url, locator, conflict_group, conflict_state, notes, src=ESPN):
+        h = f"encode(sha256(convert_to(concat_ws('|', {event_sql}::text, coalesce({bout_sql}::text, ''), {lit(key)}, {lit(raw)}, {lit(src['source_type'])}, {lit(url)}, {lit(locator)}), 'UTF8')), 'hex')"
+        return (f"insert into public.ufc_event_fact_claims (event_id, bout_id, fact_key, raw_value, normalized_value, source_id, source_type, source_tier, source_name, source_url, source_locator, captured_at, conflict_group, conflict_state, notes, claim_hash) "
+                f"values ({event_sql}, {bout_sql}, {lit(key)}, {lit(raw)}, {jlit(norm) if norm is not None else 'null'}, {src['source_id']}, {lit(src['source_type'])}, {src['tier']}, {lit(src['name'])}, {lit(url)}, {lit(locator)}, '2026-09-12T00:00:00Z', {lit(conflict_group)}, {lit(conflict_state)}, {lit(notes)}, {h});")
+
+    sherdog_ev = u1["evidence"]["sherdog_capture"]
     for b in u1["bouts"]:
         bout_sql = f"(select id from public.ufc_bouts where espn_competition_id = {lit(b['espn_competition_id'])})"
+        state = "open" if b["referee_conflict"] else "none"
         for ref in b["espn_referee"]:
             add(claim(ufc1_event, bout_sql, "referee", ref, {"name": ref}, b["espn_source_url"] + "/officials", "espn_ufc1/manifest.json",
-                      "ufc1-referee", "open", "ESPN/UFCStats lineage lists this referee for every UFC 1 bout; a secondary source splits the card between two referees. Not resolved."))
+                      "ufc1-referee", state, "ESPN (same lineage as UFCStats) names this referee for every UFC 1 bout. Canonical referee withheld."))
+        add(claim(ufc1_event, bout_sql, "referee", b["sherdog_referee"], {"name": b["sherdog_referee"]}, sherdog_ev["url"],
+                  f"rules/raw/officials/sherdog_UFC-1-The-Beginning-7.html sha256={sherdog_ev['sha256']}", "ufc1-referee", state,
+                  "Secondary source; splits UFC 1 between Helio Vigio and Joao Alberto Barreto. Canonical referee withheld.", src=SHERDOG))
     add(claim(ufc1_event, "null", "venue_name", ev["venue_claim"], None, ev["source_url"], "espn_ufc1/leagues_ufc_venues_2549.json",
               None, "none", "ESPN venue document. ESPN renders a venue's current name."))
 
@@ -242,7 +284,7 @@ upd as (
   from plan_semantics p where p.bout_id = r.bout_id and r.period_structure is null
   returning r.bout_id, r.period_structure, r.ending_period_kind, r.ending_period_number, r.elapsed_fight_sec)
 insert into public.ufc_legacy_repair_ledger (plan_sha256, step, table_name, row_key, operation, before_image, after_image, operator)
-select {P}, 'period_semantics', 'ufc_bout_results', jsonb_build_object('bout_id', upd.bout_id), 'update', b.img, to_jsonb(upd), {lit(OPERATOR)}
+select {P}, 'period_semantics', 'ufc_bout_results', jsonb_build_object('bout_id', upd.bout_id), 'update', b.img, to_jsonb(upd), {lit(operator)}
 from upd join before b on b.bout_id = upd.bout_id;""")
 
     # ---- step 5: ESPN event ids + venue claims ----
@@ -251,7 +293,7 @@ from upd join before b on b.bout_id = upd.bout_id;""")
     add(f"""with before as (select e.id, e.espn_event_id from public.ufc_events e join plan_espn_ids p on p.event_id = e.id),
 upd as (update public.ufc_events e set espn_event_id = p.espn_event_id from plan_espn_ids p where p.event_id = e.id and e.espn_event_id is null returning e.id, e.espn_event_id)
 insert into public.ufc_legacy_repair_ledger (plan_sha256, step, table_name, row_key, operation, before_image, after_image, operator)
-select {P}, 'event_ids_venue', 'ufc_events', jsonb_build_object('id', upd.id), 'update', jsonb_build_object('espn_event_id', b.espn_event_id), jsonb_build_object('espn_event_id', upd.espn_event_id), {lit(OPERATOR)}
+select {P}, 'event_ids_venue', 'ufc_events', jsonb_build_object('id', upd.id), 'update', jsonb_build_object('espn_event_id', b.espn_event_id), jsonb_build_object('espn_event_id', upd.espn_event_id), {lit(operator)}
 from upd join before b on b.id = upd.id;""")
     for v in ids["venue_claims"]:
         if not v["venue_name_raw"]:
@@ -310,7 +352,19 @@ from upd join before b on b.id = upd.id;""")
     check("UFC 1: Royce Gracie wins the final (highest bout_order) by submission at 1:44",
           f"(select f.name = 'Royce Gracie' and r.method = 'SUB' and r.time_sec = 104 from public.ufc_bouts b join public.ufc_bout_results r on r.bout_id = b.id join public.ufc_fighters f on f.id = r.winner_id where b.event_id = {ufc1_event} order by b.bout_order desc limit 1)")
     check("UFC 1: no result presented as a round (all untimed/whole_fight)", f"(select bool_and(r.period_structure = 'untimed' and r.ending_period_kind = 'whole_fight' and r.elapsed_fight_sec = r.time_sec) from public.ufc_bout_results r join public.ufc_bouts b on b.id = r.bout_id where b.event_id = {ufc1_event})")
-    check("UFC 1: referee withheld (conflict open, 8 ESPN claims)", f"(select count(*) from public.ufc_bout_results r join public.ufc_bouts b on b.id = r.bout_id where b.event_id = {ufc1_event} and r.referee is not null) = 0 and (select count(*) from public.ufc_event_fact_claims where event_id = {ufc1_event} and fact_key = 'referee' and conflict_state = 'open') = 8")
+    n_conflict = sum(1 for b in u1["bouts"] if b["referee_conflict"])
+    check("UFC 1: canonical referee NULL on every bout", f"(select count(*) from public.ufc_bout_results r join public.ufc_bouts b on b.id = r.bout_id where b.event_id = {ufc1_event} and r.referee is not null) = 0")
+    check(f"UFC 1: competing referee claims stored (8 ESPN tier 2 + 8 Sherdog tier 4; {2 * n_conflict} open across {n_conflict} disagreeing bouts)",
+          f"(select count(*) from public.ufc_event_fact_claims where event_id = {ufc1_event} and fact_key = 'referee' and source_type = 'espn' and source_tier = 2) = 8"
+          f" and (select count(*) from public.ufc_event_fact_claims where event_id = {ufc1_event} and fact_key = 'referee' and source_type = 'curated_secondary' and source_tier = 4) = 8"
+          f" and (select count(*) from public.ufc_event_fact_claims where event_id = {ufc1_event} and fact_key = 'referee' and conflict_state = 'open') = {2 * n_conflict}",
+          f"(select string_agg(raw_value || ':' || source_type || ':' || conflict_state, ', ' order by raw_value, source_type) from public.ufc_event_fact_claims where event_id = {ufc1_event} and fact_key = 'referee')")
+    check("UFC 1: no referee resolution exists", f"(select count(*) from public.ufc_event_fact_resolutions where event_id = {ufc1_event}) = 0")
+    check("UFC 1: minted identities carry DOB NULL (uncorroborated)",
+          "(select count(*) from public.ufc_fighters where name in ('Gerard Gordeau','Teila Tuli','Art Jimmerson') and dob is not null) = 0"
+          " and (select count(*) from public.ufc_fighters where name in ('Gerard Gordeau','Teila Tuli','Art Jimmerson')) = 3")
+    check("UFC 1: review rows retain evidence and the resolution rule",
+          "(select count(*) from public.ufc_alias_review_queue where source = 'legacy_origins_ufc1' and context ? 'resolution_rule' and context ? 'evidence' and jsonb_array_length(context->'evidence') >= 2) = 3")
     check(f"fighters: exactly {n_new} new rows", f"(select count(*) from public.ufc_fighters) = (select fighters_n from proof_before) + {n_new}")
     for f in u1["fighters"]:
         if f["resolver_status"] != "matched":
@@ -356,6 +410,31 @@ from upd join before b on b.id = upd.id;""")
         check(f"view {v} still selects", f"(select count(*) from public.{v}) >= 0",
               f"(select 'before=' || (select {key} from proof_before) || ' after=' || (select count(*) from public.{v}))")
     check("web RESULT_COLS select still valid", "(select count(*) from (select bout_id,winner_id,method,method_raw,round,time_sec,time_format,referee,finish_detail,result_source,has_stats,scorecards,judge_1,judge_2,judge_3,source_url from public.ufc_bout_results limit 1) x) >= 0")
+
+    add("-- current main: every table outside the repair's scope is untouched")
+    add("create temp table scope_after (relname text primary key, n bigint) on commit drop;")
+    add("""do $s$ declare r record; v bigint; begin
+  for r in select relname from scope_before loop execute format('select count(*) from public.%I', r.relname) into v; insert into scope_after values (r.relname, v); end loop;
+end $s$;""")
+    scope_list = ",".join(lit(t) for t in sorted(IN_SCOPE))
+    check("out-of-scope ufc_*/combat_* tables: row counts unchanged",
+          f"(select count(*) from scope_before b join scope_after a using (relname) where b.n <> a.n and relname not in ({scope_list})) = 0",
+          f"(select coalesce(string_agg(relname || ' ' || b.n || '->' || a.n, ', '), 'none') from scope_before b join scope_after a using (relname) where b.n <> a.n)")
+    check("DWCS outcome claims and resolutions byte-identical",
+          "(select md5(coalesce(string_agg(t::text, '~' order by t::text), '')) from public.ufc_dwcs_outcome_claims t) = (select claims_md5 from dwcs_before)"
+          " and (select md5(coalesce(string_agg(t::text, '~' order by t::text), '')) from public.ufc_dwcs_outcome_resolutions t) = (select resolutions_md5 from dwcs_before)")
+    for t in NEW_TABLES:
+        check(f"022 posture: {t} has no anon/authenticated privilege at all",
+              f"not exists (select 1 from pg_class c cross join lateral aclexplode(coalesce(c.relacl, acldefault('r', c.relowner))) a where c.oid = 'public.{t}'::regclass and pg_get_userbyid(a.grantee) in ('anon','authenticated'))")
+    check("022 posture: no public ufc_* table has anon/authenticated writes",
+          f"not exists (select 1 from pg_class c join pg_namespace n on n.oid = c.relnamespace cross join lateral aclexplode(coalesce(c.relacl, acldefault('r', c.relowner))) a where n.nspname = 'public' and c.relkind in ('r','p') and c.relname like {UFC_LIKE} and pg_get_userbyid(a.grantee) in ('anon','authenticated') and a.privilege_type in ('INSERT','UPDATE','DELETE','TRUNCATE'))")
+
+    if mode == "apply":
+        add("do $f$ begin if exists (select 1 from proof where not ok) then raise exception 'APPLY ABORTED, assertion(s) failed: %', (select string_agg(name, ' | ' order by seq) from proof where not ok); end if; end $f$;")
+        add("select jsonb_build_object('passed', (select count(*) from proof where ok), 'failed', (select count(*) from proof where not ok), "
+            "'assertions', (select jsonb_agg(jsonb_build_object('name', name, 'ok', ok, 'detail', detail) order by seq) from proof)) as proof;")
+        add("commit;")
+        return chr(10).join(sql)
 
     add("-- guards (each expected failure runs in its own subtransaction)")
     ufc2 = "(select id from public.ufc_events where name like 'UFC 2:%' limit 1)"
@@ -456,6 +535,8 @@ POST_CHECK = """select jsonb_build_object(
   'legacy_events_with_espn_id', (select count(*) from public.ufc_events where event_date <= '2004-12-31' and espn_event_id is not null),
   'review_rows_left', (select count(*) from public.ufc_alias_review_queue where source = 'legacy_origins_ufc1'),
   'packets_left', (select count(*) from public.combat_ingest_packets where ingest_key like 'legacy-origins:%'),
+  'claims_table_left', to_regclass('public.ufc_event_fact_claims') is not null,
+  'minted_fighters_left', (select count(*) from public.ufc_fighters where ufcstats_id in ('279093302a6f44b3','96eff1a628adcc7f','a5c53b3ddb31cc7d') or espn_athlete_id in ('2335738','2504081','2335638')),
   'source_rows_left', (select count(*) from public.combat_sources where source_key in ('nsac','nj_sacb','pbe_legacy_curated')),
   'video_type_check_has_event_replay', (select pg_get_constraintdef(oid) like '%event_replay%' from pg_constraint where conname = 'ufc_videos_video_type_check')
 ) as post_rollback;"""
@@ -466,7 +547,11 @@ def main() -> int:
     ap.add_argument("--plan", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--build-only", action="store_true")
+    ap.add_argument("--mode", choices=["proof", "apply"], default="proof")
     args = ap.parse_args()
+    mig_sha = hashlib.sha256(MIGRATION.read_bytes()).hexdigest()
+    if mig_sha != EXPECTED_MIGRATION_SHA256:
+        raise SystemExit(f"migration hash {mig_sha} != reviewed {EXPECTED_MIGRATION_SHA256}; STOP")
     plan_path = pathlib.Path(args.plan)
     plan_bytes = plan_path.read_bytes()
     plan_sha = hashlib.sha256(plan_bytes).hexdigest()
@@ -474,21 +559,39 @@ def main() -> int:
     if plan_sha != recorded:
         raise SystemExit(f"plan hash {plan_sha} != recorded {recorded}")
     plan = json.loads(plan_bytes)
-    sql = build(plan, plan_sha)
+    sql = build(plan, plan_sha, args.mode)
     out = pathlib.Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "first_repair_proof.sql").write_text(sql, encoding="utf-8")
+    (out / f"first_repair_{args.mode}.sql").write_bytes(sql.encode("utf-8"))
     print(f"proof sql: {len(sql):,} chars, plan {plan_sha}")
     if args.build_only:
         return 0
 
     token = cli_token()
+    if args.mode == "apply":
+        busy = run_sql(token, "select count(*) as n from pg_stat_activity where datname = current_database() and pid <> pg_backend_pid() and state <> 'idle' and backend_type = 'client backend'")
+        if isinstance(busy, dict) or busy[0]["n"] != 0:
+            raise SystemExit(f"concurrent client activity, refusing to apply: {busy}")
+        result = run_sql(token, sql)
+        report = {"plan_sha256": plan_sha, "migration": MIGRATION.name, "migration_sha256": mig_sha, "apply": result}
+        (out / "first_repair_apply_result.json").write_bytes(json.dumps(report, indent=1).encode("utf-8"))
+        if isinstance(result, dict) and result.get("error"):
+            print(json.dumps(result, indent=1))
+            return 2
+        proof = result[0]["proof"] if result else None
+        if not proof:
+            print("apply returned no assertion table:", json.dumps(result))
+            return 2
+        for a in proof["assertions"]:
+            print(("PASS " if a["ok"] else "FAIL ") + a["name"] + (f"  [{a['detail']}]" if a["detail"] and not a["ok"] else ""))
+        print(f"APPLIED: passed={proof['passed']} failed={proof['failed']}")
+        run_sql(token, "notify pgrst, 'reload schema';")
+        return 0 if proof["failed"] == 0 else 1
     result = run_sql(token, sql)
     post = run_sql(token, POST_CHECK.format(tables=",".join(f"'{t}'" for t in NEW_TABLES)))
-    report = {"plan_sha256": plan_sha, "migration": MIGRATION.name,
-              "migration_sha256": hashlib.sha256(MIGRATION.read_bytes()).hexdigest(),
+    report = {"plan_sha256": plan_sha, "migration": MIGRATION.name, "migration_sha256": mig_sha,
               "proof": result, "post_rollback": post}
-    (out / "first_repair_proof_result.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
+    (out / "first_repair_proof_result.json").write_bytes(json.dumps(report, indent=1).encode("utf-8"))
 
     if isinstance(result, dict) and result.get("error"):
         print(json.dumps(result, indent=1))
@@ -501,7 +604,8 @@ def main() -> int:
     print("post-rollback:", json.dumps(pr))
     clean = (pr["tables_left"] == 0 and pr["result_columns_left"] == 0 and pr["bout_columns_left"] == 0 and not pr["function_left"]
              and pr["views_left"] == 0 and pr["ufc1_event_left"] == 0 and pr["legacy_events_with_espn_id"] == 0
-             and pr["review_rows_left"] == 0 and pr["packets_left"] == 0 and pr["source_rows_left"] == 0 and not pr["video_type_check_has_event_replay"])
+             and pr["review_rows_left"] == 0 and pr["packets_left"] == 0 and pr["source_rows_left"] == 0 and not pr["video_type_check_has_event_replay"]
+             and not pr["claims_table_left"] and pr["minted_fighters_left"] == 0)
     print("ROLLBACK CLEAN" if clean else "ROLLBACK NOT CLEAN")
     return 0 if proof["failed"] == 0 and clean else 1
 

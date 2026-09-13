@@ -86,23 +86,26 @@ test("the page never claims early results prove BJJ supremacy today", () => {
   assert.match(ufc60.body, /stopped/i);
 });
 
-test("UFC 1 is marked as an archive gap and never linked internally", () => {
+test("the stated archive floor matches the earliest moment marked archived", () => {
+  /* UFC 1 entered the archive on 2026-09-13 (Legacy Origins first repair).
+     The floor, the moment flag and the early-event set must move together, or
+     the page states a boundary its own bout list contradicts. */
   const ufc1 = GRACIE_MOMENTS.find((m) => m.event === "UFC 1");
   assert.ok(ufc1, "UFC 1 must appear");
-  assert.equal(ufc1.archived, false, "UFC 1 is not in the PropBetEdge archive and must say so");
-  assert.equal(ufc1.official, UFC_OFFICIAL.ufc1, "an unarchived moment must carry the official UFC source");
-  /* The stated floor has to match the moment that is marked unarchived. */
-  assert.match(GRACIE_ARCHIVE_FLOOR, /UFC 2/);
-  /* Every archived moment is an event we actually hold. */
-  for (const m of GRACIE_MOMENTS) {
-    if (m.archived) assert.notEqual(m.event, "UFC 1", "UFC 1 must never be marked archived");
-  }
+  assert.equal(ufc1.archived, true, "UFC 1 is in the PropBetEdge archive and must say so");
+  assert.equal(ufc1.official, UFC_OFFICIAL.ufc1, "the moment still carries the official UFC source");
+  assert.match(GRACIE_ARCHIVE_FLOOR, /UFC 1/);
+  assert.match(pageSource, /const EARLY_EVENTS = \["UFC 1",/);
+  assert.ok(!/UFC 1 is not in it/.test(pageSource), "the retired coverage-gap sentence is still on the page");
 });
 
-test("the page does not imply we hold Royce vs Shamrock at UFC 1", () => {
-  /* We hold the UFC 5 draw. We do not hold the UFC 1 submission, and the
-     rivalry must not be presented as fully covered. */
-  assert.match(pageSource, /We do not hold their UFC 1 meeting|do not hold/i);
+test("the UFC 1 referee is not asserted where sources disagree", () => {
+  assert.match(pageSource, /leave the field unresolved/);
+  assert.ok(!/(Barreto|Vigio)/.test(allProse), "the page names a UFC 1 referee the sources have not settled");
+});
+
+test("both Royce vs Shamrock meetings are described as held", () => {
+  assert.match(pageSource, /the UFC 1 submission and the UFC 5 draw/);
   const ufc5 = GRACIE_MOMENTS.find((m) => m.event === "UFC 5");
   assert.ok(ufc5 && ufc5.archived, "the UFC 5 draw is the part of that rivalry we do hold");
   assert.match(ufc5.body, /draw/i);

@@ -1,7 +1,7 @@
-# plan_sha256=2b6a372cbb9151c464c87860cfb4190570bd02f55a13a9f82eb7c2aa74ccd581
+# plan_sha256=589ab62c8825916cca7b73eaca1933ffcd632351d034f220f1cf1ac636e77491
 step,table,row_key,label,change,before,after
 3 ufc1,ufc_alias_review_queue,new,Gerard Gordeau,insert pending review row,,source=legacy_origins_ufc1 espn=2335738 ufcstats=279093302a6f44b3 candidates=0
-3 ufc1,ufc_fighters,after review,Gerard Gordeau,insert,,ufcstats_id=279093302a6f44b3 espn_athlete_id=2335738 dob=1959-03-30
+3 ufc1,ufc_fighters,after review,Gerard Gordeau,insert,,ufcstats_id=279093302a6f44b3 espn_athlete_id=2335738 dob=None
 3 ufc1,ufc_alias_review_queue,new,Teila Tuli,insert pending review row,,source=legacy_origins_ufc1 espn=2504081 ufcstats=96eff1a628adcc7f candidates=0
 3 ufc1,ufc_fighters,after review,Teila Tuli,insert,,ufcstats_id=96eff1a628adcc7f espn_athlete_id=2504081 dob=None
 3 ufc1,(none: existing fighter reused),6f694d0e-378d-46a2-9cb3-fe3b6fa6c8aa,Zane Frazier,resolver,,matched by ufcstats_id
@@ -16,28 +16,36 @@ step,table,row_key,label,change,before,after
 3 ufc1,ufc_events,new,UFC 1: The Beginning,insert,,"date=1993-11-12 ufcstats=6420efac0578988b espn=400255729 Denver, Colorado, USA venue=NULL"
 3 ufc1,ufc_bouts,new,Gerard Gordeau v Royce Gracie,insert,,bout_order=8 ufcstats=64139d1d505e46c5 espn=158197 Open Weight is_title=True
 3 ufc1,ufc_bout_results,new,Gerard Gordeau v Royce Gracie,insert,,winner=Royce Gracie Submission (Rear Naked Choke) raw_round=1 time=104s format=No Time Limit referee=NULL -> untimed/whole_fight 1 elapsed=104s
-3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Royce Gracie,insert referee claim,,"Joao Alberto Barreto (espn tier 2, conflict ufc1-referee open)"
+3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Royce Gracie,insert referee claim,,"Joao Alberto Barreto (espn tier 2, group ufc1-referee, open)"
+3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Royce Gracie,insert referee claim,,"Helio Vigio (sherdog tier 4, group ufc1-referee, open)"
 3 ufc1,ufc_bouts,new,Trent Jenkins v Jason DeLucia,insert,,bout_order=7 ufcstats=00b0796724ec1c09 espn=158199 Open Weight is_title=False
 3 ufc1,ufc_bout_results,new,Trent Jenkins v Jason DeLucia,insert,,winner=Jason DeLucia Submission (Rear Naked Choke) raw_round=1 time=52s format=No Time Limit referee=NULL -> untimed/whole_fight 1 elapsed=52s
-3 ufc1,ufc_event_fact_claims,new,Trent Jenkins v Jason DeLucia,insert referee claim,,"Joao Alberto Barreto (espn tier 2, conflict ufc1-referee open)"
+3 ufc1,ufc_event_fact_claims,new,Trent Jenkins v Jason DeLucia,insert referee claim,,"Joao Alberto Barreto (espn tier 2, group ufc1-referee, none)"
+3 ufc1,ufc_event_fact_claims,new,Trent Jenkins v Jason DeLucia,insert referee claim,,"Joao Alberto Barreto (sherdog tier 4, group ufc1-referee, none)"
 3 ufc1,ufc_bouts,new,Royce Gracie v Ken Shamrock,insert,,bout_order=6 ufcstats=ffd16691c4c4aafc espn=158195 Open Weight is_title=False
 3 ufc1,ufc_bout_results,new,Royce Gracie v Ken Shamrock,insert,,winner=Royce Gracie Submission (Rear Naked Choke) raw_round=1 time=57s format=No Time Limit referee=NULL -> untimed/whole_fight 1 elapsed=57s
-3 ufc1,ufc_event_fact_claims,new,Royce Gracie v Ken Shamrock,insert referee claim,,"Joao Alberto Barreto (espn tier 2, conflict ufc1-referee open)"
+3 ufc1,ufc_event_fact_claims,new,Royce Gracie v Ken Shamrock,insert referee claim,,"Joao Alberto Barreto (espn tier 2, group ufc1-referee, open)"
+3 ufc1,ufc_event_fact_claims,new,Royce Gracie v Ken Shamrock,insert referee claim,,"Helio Vigio (sherdog tier 4, group ufc1-referee, open)"
 3 ufc1,ufc_bouts,new,Gerard Gordeau v Kevin Rosier,insert,,bout_order=5 ufcstats=ac7ca2ec38b96c1a espn=158193 Open Weight is_title=False
 3 ufc1,ufc_bout_results,new,Gerard Gordeau v Kevin Rosier,insert,,winner=Gerard Gordeau KO/TKO (None) raw_round=1 time=59s format=No Time Limit referee=NULL -> untimed/whole_fight 1 elapsed=59s
-3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Kevin Rosier,insert referee claim,,"Joao Alberto Barreto (espn tier 2, conflict ufc1-referee open)"
+3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Kevin Rosier,insert referee claim,,"Joao Alberto Barreto (espn tier 2, group ufc1-referee, none)"
+3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Kevin Rosier,insert referee claim,,"Joao Alberto Barreto (sherdog tier 4, group ufc1-referee, none)"
 3 ufc1,ufc_bouts,new,Ken Shamrock v Patrick Trey Smith,insert,,bout_order=4 ufcstats=46acd54cc0c905fb espn=158198 Open Weight is_title=False
 3 ufc1,ufc_bout_results,new,Ken Shamrock v Patrick Trey Smith,insert,,winner=Ken Shamrock Submission (Heel Hook) raw_round=1 time=109s format=No Time Limit referee=NULL -> untimed/whole_fight 1 elapsed=109s
-3 ufc1,ufc_event_fact_claims,new,Ken Shamrock v Patrick Trey Smith,insert referee claim,,"Joao Alberto Barreto (espn tier 2, conflict ufc1-referee open)"
+3 ufc1,ufc_event_fact_claims,new,Ken Shamrock v Patrick Trey Smith,insert referee claim,,"Joao Alberto Barreto (espn tier 2, group ufc1-referee, open)"
+3 ufc1,ufc_event_fact_claims,new,Ken Shamrock v Patrick Trey Smith,insert referee claim,,"Helio Vigio (sherdog tier 4, group ufc1-referee, open)"
 3 ufc1,ufc_bouts,new,Royce Gracie v Art Jimmerson,insert,,bout_order=3 ufcstats=cecdc0da584274b9 espn=158196 Open Weight is_title=False
 3 ufc1,ufc_bout_results,new,Royce Gracie v Art Jimmerson,insert,,winner=Royce Gracie Submission (Other) raw_round=1 time=138s format=No Time Limit referee=NULL -> untimed/whole_fight 1 elapsed=138s
-3 ufc1,ufc_event_fact_claims,new,Royce Gracie v Art Jimmerson,insert referee claim,,"Joao Alberto Barreto (espn tier 2, conflict ufc1-referee open)"
+3 ufc1,ufc_event_fact_claims,new,Royce Gracie v Art Jimmerson,insert referee claim,,"Joao Alberto Barreto (espn tier 2, group ufc1-referee, none)"
+3 ufc1,ufc_event_fact_claims,new,Royce Gracie v Art Jimmerson,insert referee claim,,"Joao Alberto Barreto (sherdog tier 4, group ufc1-referee, none)"
 3 ufc1,ufc_bouts,new,Zane Frazier v Kevin Rosier,insert,,bout_order=2 ufcstats=2d2bbc86e941e05c espn=158194 Open Weight is_title=False
 3 ufc1,ufc_bout_results,new,Zane Frazier v Kevin Rosier,insert,,winner=Kevin Rosier KO/TKO (None) raw_round=1 time=260s format=No Time Limit referee=NULL -> untimed/whole_fight 1 elapsed=260s
-3 ufc1,ufc_event_fact_claims,new,Zane Frazier v Kevin Rosier,insert referee claim,,"Joao Alberto Barreto (espn tier 2, conflict ufc1-referee open)"
+3 ufc1,ufc_event_fact_claims,new,Zane Frazier v Kevin Rosier,insert referee claim,,"Joao Alberto Barreto (espn tier 2, group ufc1-referee, open)"
+3 ufc1,ufc_event_fact_claims,new,Zane Frazier v Kevin Rosier,insert referee claim,,"Helio Vigio (sherdog tier 4, group ufc1-referee, open)"
 3 ufc1,ufc_bouts,new,Gerard Gordeau v Teila Tuli,insert,,bout_order=1 ufcstats=567a09fd200cfa05 espn=158192 Open Weight is_title=False
 3 ufc1,ufc_bout_results,new,Gerard Gordeau v Teila Tuli,insert,,winner=Gerard Gordeau KO/TKO (Kick) raw_round=1 time=26s format=No Time Limit referee=NULL -> untimed/whole_fight 1 elapsed=26s
-3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Teila Tuli,insert referee claim,,"Joao Alberto Barreto (espn tier 2, conflict ufc1-referee open)"
+3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Teila Tuli,insert referee claim,,"Joao Alberto Barreto (espn tier 2, group ufc1-referee, none)"
+3 ufc1,ufc_event_fact_claims,new,Gerard Gordeau v Teila Tuli,insert referee claim,,"Joao Alberto Barreto (sherdog tier 4, group ufc1-referee, none)"
 3 ufc1,ufc_event_fact_claims,new,UFC 1: The Beginning,insert venue_name claim,,McNichols Sports Arena (espn tier 2)
 3 ufc1,combat_ingest_packets,new,UFC 1: The Beginning,insert 12 validated packets,,"1 event + 8 bouts + 3 fighters, source ufc_canonical"
 4 period_semantics,ufc_bout_results,e6037c05-44e2-4228-982c-e6d4de651bc0,UFC 2: No Way Out | Royce Gracie v Patrick Smith,period_structure/ending_period_kind/number/elapsed,NULL,untimed/whole_fight 1 elapsed=77s (raw round=1 time=77s format=No Time Limit)

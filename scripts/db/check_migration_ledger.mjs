@@ -131,6 +131,21 @@ export const APPLIED = new Set([
   // boundary was evidenced, so a period-transition inference is never shown
   // with the same precision as a directly observed end-of-round state.
   '20260913000004_ufc_market_boundary_basis.sql',
+
+  // Applied 2026-09-13 (session goodl-be) after a re-run audit against current
+  // production (52 ufc_* tables, 35 carrying anon/authenticated writes) and a
+  // BEGIN..ROLLBACK proof: 16/16, including a throwaway table created by the
+  // table-owning role (postgres) inheriting no write grant. The default ACL it
+  // changes is postgres's, the role that owns every ufc_* table. Live verify:
+  // 0 anon/authenticated write grants, every other ACL entry, RLS and policy
+  // unchanged. scripts/db/prove_privilege_hardening.py.
+  '20260913000005_ufc_privilege_hardening.sql',
+
+  // Applied 2026-09-13 (session goodl-be), atomically with the first Legacy
+  // Origins repair (plan 589ab62c), after a BEGIN..ROLLBACK proof of both on
+  // production: 105/105. Commit-time assertions 89/89; fresh-connection verify
+  // 36/36. See docs/legacy/origins_data_model.md.
+  '20260913140000_ufc_legacy_origins.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))

@@ -1,7 +1,28 @@
 # UFC Legacy / Origins data model: proposal + rollback proof
 
 Branch `ufc-legacy-origins-v1`. Migration `supabase/migrations/20260913140000_ufc_legacy_origins.sql`
-(sha256 `c6e3162d…9f84`). **Not applied.** The owner approves the apply separately.
+(sha256 `c6e3162d…9f84`).
+
+## Production status (2026-09-13)
+
+**APPLIED.** The migration and the first repair were applied in one transaction by session goodl-be, after the owner's approval.
+
+- **Order:** privilege hardening `20260913000005` first (proof 16/16, live verify 16/16), then this migration with the repair.
+- **Plan:** `589ab62c…7491`. It was regenerated against current production, and its content equals the original plan except for two owner decisions:
+  - the three new identities get DOB NULL (ESPN is the only source);
+  - UFC 1 referee claims come from both ESPN and Sherdog, with the canonical referee left NULL.
+- **Proofs:**
+  - BEGIN…ROLLBACK proof 105/105, including current-main checks: out-of-scope table counts, DWCS byte-identity, and the 022 privilege posture;
+  - commit-time assertions 89/89;
+  - fresh-connection verify 36/36 against a fingerprint captured before the apply.
+- **Production result:**
+  - UFC 1 added: 1 event, 8 bouts, 8 whole-fight results, and 3 new fighters (Gordeau, Tuli, Jimmerson, DOB NULL). The review rows are resolved and keep their evidence.
+  - Period semantics written on the 440 pre-2005 results: 31 whole fight, 53 single period, 88 regulation, 29 overtime, 239 rounds.
+  - 54 ESPN event IDs filled.
+  - 69 claims: 53 ESPN venue claims and 16 UFC 1 referee claims (8 ESPN, 8 Sherdog; 8 open across the 4 disagreeing bouts).
+  - 0 canonical venue writes, 0 resolutions, 0 tournaments.
+- **Raw fingerprints unchanged:** results, bouts, events (excluding the ESPN ID fill), round stats, videos, DWCS claims and resolutions, and existing fighters.
+- **Evidence:** everything is in `docs/legacy/proof/`.
 
 ## Principle
 
@@ -97,10 +118,10 @@ Full list: `docs/legacy/first_repair_rows.csv` (594 rows, plan sha in its header
 | Step | Table | Rows | What |
 |---|---|---|---|
 | 3 UFC 1 | `ufc_alias_review_queue` | 3 insert | Gerard Gordeau, Teila Tuli, Art Jimmerson. The resolver found **0 candidates** for each. |
-| 3 | `ufc_fighters` | 3 insert, **after review** | UFCStats and ESPN IDs from the evidence. Gordeau's DOB is ESPN-only. |
+| 3 | `ufc_fighters` | 3 insert, **after review** | UFCStats and ESPN IDs from the evidence. DOB NULL for all three; ESPN's Gordeau DOB is kept as review evidence only. |
 | 3 | `ufc_events` | 1 insert | UFC 1, 1993-11-12, Denver. venue NULL. |
 | 3 | `ufc_bouts` / `ufc_bout_results` | 8 + 8 insert | ESPN core agrees with the UFCStats capture on every winner, method, round and time. referee NULL (conflict). |
-| 3 | `ufc_event_fact_claims` | 9 insert | 8 ESPN referee claims (conflict `ufc1-referee` open) and 1 venue claim |
+| 3 | `ufc_event_fact_claims` | 17 insert | 8 ESPN + 8 Sherdog referee claims in group `ufc1-referee` (open on the 4 bouts where they disagree) and 1 venue claim |
 | 3 | `combat_ingest_packets` | 12 insert | Source `ufc_canonical`, validated |
 | 4 | `ufc_bout_results` | 440 update (new columns only) | 31 untimed/whole_fight, 53 single_period, 88 regulation_period, 29 overtime, 239 round |
 | 5 | `ufc_events.espn_event_id` | 54 update (NULL → id) | Every legacy event, each ID unique |

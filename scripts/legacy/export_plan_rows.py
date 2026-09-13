@@ -42,8 +42,11 @@ def main() -> int:
         rows.append(("3 ufc1", "ufc_bout_results", "new", label, "insert", "",
                      f"winner={names[b['winner_espn']]} {b['method_raw']} ({b['finish_detail']}) raw_round={b['round_raw']} time={b['time_sec']}s "
                      f"format={b['time_format']} referee=NULL -> {s[0]}/{s[1]} {s[2]} elapsed={s[3]}s"))
+        state = "open" if b.get("referee_conflict") else "none"
         for ref in b["espn_referee"]:
-            rows.append(("3 ufc1", "ufc_event_fact_claims", "new", label, "insert referee claim", "", f"{ref} (espn tier 2, conflict ufc1-referee open)"))
+            rows.append(("3 ufc1", "ufc_event_fact_claims", "new", label, "insert referee claim", "", f"{ref} (espn tier 2, group ufc1-referee, {state})"))
+        if b.get("sherdog_referee"):
+            rows.append(("3 ufc1", "ufc_event_fact_claims", "new", label, "insert referee claim", "", f"{b['sherdog_referee']} (sherdog tier 4, group ufc1-referee, {state})"))
     rows.append(("3 ufc1", "ufc_event_fact_claims", "new", ev["name"], "insert venue_name claim", "", f"{ev['venue_claim']} (espn tier 2)"))
     rows.append(("3 ufc1", "combat_ingest_packets", "new", ev["name"], "insert 12 validated packets", "", "1 event + 8 bouts + 3 fighters, source ufc_canonical"))
 
