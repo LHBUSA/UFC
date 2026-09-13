@@ -569,6 +569,7 @@ export async function scheduledBoutsNow(boutIds: string[]): Promise<Map<string, 
  */
 export async function finaleIntegration(season: SeasonDetail, event: LinkedEvent | null, contestantIds: string[], coachIds: string[]): Promise<FinaleIntegration | null> {
   if (!event?.event_date) return null;
+  const eventDate = event.event_date;
   const F = "id,name,espn_athlete_id,ufcstats_id";
   const bouts = await rest<FinaleBoutRow[]>(
     `ufc_bouts?select=id,bout_order,weight_class_raw,is_title,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(${F}),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(${F}),result:ufc_bout_results(winner_id,method_raw,round,time_sec)&event_id=eq.${event.id}&order=bout_order.asc`,
@@ -603,10 +604,10 @@ export async function finaleIntegration(season: SeasonDetail, event: LinkedEvent
   }
   /* The coaches' fight: a bout between the two head coaches within six months
    * after the finale. Seasons whose coaches never fought show none. */
-  const limit = new Date(Date.parse(event.event_date) + 183 * 86400e3).toISOString().slice(0, 10);
+  const limit = new Date(Date.parse(eventDate) + 183 * 86400e3).toISOString().slice(0, 10);
   const coach = coachBouts
     .map((b) => ({ row: { ...b, result: one(b.result) }, event: one(b.event)! }))
-    .filter((x) => x.event?.event_date && x.event.event_date >= event.event_date && x.event.event_date <= limit)
+    .filter((x) => x.event?.event_date && x.event.event_date >= eventDate && x.event.event_date <= limit)
     .sort((x, y) => x.event.event_date.localeCompare(y.event.event_date))[0] ?? null;
   const finals = allBouts(season).filter((b) => b.stage === "final" && b.on_finale_card).map((b) => ({
     weight_class: b.weight_class,
@@ -614,7 +615,7 @@ export async function finaleIntegration(season: SeasonDetail, event: LinkedEvent
     ids: b.a_fighter_id && b.b_fighter_id ? ([b.a_fighter_id, b.b_fighter_id] as [string, string]) : undefined,
   }));
   return shapeFinale({
-    event: { id: event.id, name: event.name, event_date: event.event_date },
+    event: { id: event.id, name: event.name, event_date: eventDate },
     bouts: rows, scorecards, rounds, finals, contestantIds: new Set(cast), firstBoutDate, coachFight: coach,
   });
 }

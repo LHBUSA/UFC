@@ -72,7 +72,7 @@ const EVENT_LABEL: Record<string, string> = {
   medical_postponement: "Medical postponement", catchweight: "Catchweight", coin_toss: "Coin toss", coach_challenge: "Coaches challenge",
   team_selection: "Team draft", elimination_without_fight: "Sent home", weight_issue: "Weight", trade: "Team move",
   matchup_ordered: "Matchup ordered", replacement_return: "Return", staff_change: "Staff", alternate_named: "Alternate",
-  semi_final_matchups_announced: "Semi-finals",
+  semi_final_matchups_announced: "Semi-final matchups",
 };
 
 const CLASS_LABEL: Record<ClassState, string> = {
@@ -531,8 +531,9 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
             </Link>
             {integration?.debuts.debuted_here ? (
               <small>
-                {integration.debuts.debuted_here === integration.debuts.contestants ? "All " : ""}
-                {integration.debuts.debuted_here} of {integration.debuts.contestants} contestants made their UFC debut on this card, by our records.
+                {integration.debuts.debuted_here === integration.debuts.contestants
+                  ? `All ${integration.debuts.contestants} contestants`
+                  : `${integration.debuts.debuted_here} of ${integration.debuts.contestants} contestants`} made their UFC debut on this card, by our records.
               </small>
             ) : null}
           </p>
@@ -817,7 +818,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                   <li key={x.id} className={`tuf-tl-event is-${x.type}`}>
                     <b>{EVENT_LABEL[x.type] ?? x.type}</b>
                     <span className="tuf-tl-who">{x.fighters.map((f, i) => <span key={f}>{i ? ", " : ""}<Name name={f} linked={linked} /></span>)}</span>
-                    <span className="tuf-tl-detail">{x.detail}{x.episode_candidates?.length ? ` Sources place it in episode ${x.episode_candidates.join(" or ")}.` : ""}</span>
+                    <span className="tuf-tl-detail">{x.detail}</span>
                     <SourceTags sources={x.sources} />
                   </li>
                 ))}

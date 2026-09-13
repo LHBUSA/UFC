@@ -158,7 +158,7 @@ for (const { b, st, br } of allBouts()) {
   b.classification_basis = {
     affirmative: [ESPN20],
     corroborating: [
-      { kind: 'record_absence', evidence_level: 'corroboration_only', year: 2004, note: `no bout between these two fighters in our records for 2004 (complete: ${c04.events} events, ${c04.bouts} bouts, every one with a result) or 2005; the season was filmed in late 2004`, filming_source: UFCCOM },
+      { kind: 'record_absence', family: 'our_records', evidence_level: 'corroboration_only', year: 2004, note: `no bout between these two fighters in our records for 2004 (complete: ${c04.events} events, ${c04.bouts} bouts, every one with a result) or 2005; the season was filmed in late 2004`, filming_source: UFCCOM },
       ...weighIn,
     ],
     authority: 'affirmative',
