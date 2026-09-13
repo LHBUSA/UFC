@@ -1,0 +1,163 @@
+{
+  "_about": "TUF 1 gold-standard audit evidence, captured 2026-09-13. Research only: nothing here has been applied to the season, episode or identity files. Short factual quotes with URL, family and retrieval time; no article is stored. Wikipedia is draft/secondary evidence and is labelled as such on every claim that rests on it.",
+  "season": "tuf-1",
+  "retrieved": "2026-09-13",
+  "sources": {
+    "db": { "family": "our_records", "tier": "canonical", "what": "ufc_events c93a5b04 (The Ultimate Fighter: Team Couture vs. Team Liddell Finale, 2005-04-09), its 9 ufc_bouts with ufc_bout_results, ufc_bout_scorecards and ufc_bout_round_stats; UFC 52 (2005-04-16) Liddell vs Couture 1af8211c" },
+    "espn_finale": { "family": "espn_core_api", "tier": 2, "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/400254386", "what": "finale event: 9 competitions, competitor athlete ids and winners", "retrieved": "2026-09-13" },
+    "espn_eventlog": { "family": "espn_core_api", "tier": 2, "url": "https://sports.core.api.espn.com/v2/sports/mma/athletes/{id}/eventlog", "what": "checked for Sanchez 2335671, Southworth 2431311, Leben 2335513: no TUF 1 house bout is carried by ESPN; Southworth's log goes PRIDE 13 (2001) -> TUF 1 Finale (2005)", "retrieved": "2026-09-13" },
+    "ufc_legends": { "family": "ufc.com", "tier": 1, "url": "https://www.ufc.com/news/ufc-legends-griffin-vs-bonnar-1", "published": "2015-04-14", "retrieved": "2026-09-13", "note": "single targeted fetch; no crawl" },
+    "paramount_s1": { "family": "paramount_plus_episode_metadata", "tier": 4, "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/1/", "retrieved": "2026-09-13", "what": "13 items: episodes 1-12 plus the finale broadcast, each with title, listing date, display airdate and a short description" },
+    "espn_retrospective": { "family": "espn.com", "tier": 5, "url": "https://www.espn.com/mma/story/_/id/29014001/the-story-how-ultimate-fighter-saved-ufc-15-years-ago", "author": "Michael Rothstein", "published": "2020-04-09", "retrieved": "2026-09-13" },
+    "wikipedia_tuf1": { "family": "wikipedia", "tier": "draft", "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_1", "retrieved": "2026-09-13", "note": "episode-by-episode bullets and finale results; its airdates cite IMDb" },
+    "wikipedia_tuf": { "family": "wikipedia", "tier": "draft", "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter", "retrieved": "2026-09-13", "note": "format paragraph cites three Spike ultimatefighter.com videos (dead links); exhibition sentence cites an MMAWeekly 2007 salaries article" },
+    "mmafullcontact": { "family": "secondary", "tier": 6, "url": "https://www.mmafullcontact.com/the-ultimate-fighter-1-recap/", "retrieved": "2026-09-13", "note": "mirrors the Wikipedia wording; NOT independent corroboration" },
+    "not_captured": [
+      { "url": "https://www.tapology.com/fightcenter/bouts/208902-the-ultimate-fighter-season-1-kenny-kenflo-florian-vs-chris-the-crippler-leben", "why": "HTTP 403 to automated fetch; not bypassed" },
+      { "what": "Nevada State Athletic Commission record for the 2004 exhibitions", "why": "not located online" },
+      { "what": "IMDb episode list (Wikipedia's airdate citation)", "why": "not fetched" }
+    ]
+  },
+
+  "format_finding": {
+    "summary": "Season 1 was not a fixed eight-man bracket. Each division started with eight fighters. Team challenges eliminated fighters without a fight early on, and later decided which team picked the next matchup. The loser of a house fight left, so a fighter could fight more than once and others reached the last four without fighting. After the elimination fights, four remained per division for the semi-finals, and an injured semi-finalist was replaced by a previously eliminated fighter he chose.",
+    "claims": [
+      { "claim": "challenges decided which team paired one of its fighters against an opponent of its choice; the loser was eliminated", "source": "wikipedia_tuf1", "quote": "to determine which had the right to pair one of their fighters against an opponent of their choice" },
+      { "claim": "early challenges eliminated fighters who had not fought; later challenges selected the next fight", "source": "wikipedia_tuf", "quote": "These challenges resulted in eliminations of fighters who hadn't fought" },
+      { "claim": "losers left the house, producing odd team sizes and forced team moves", "source": "wikipedia_tuf", "quote": "fighters would also leave the house for good upon losing" },
+      { "claim": "two fighters eliminated without a fight in episode 2", "source": "paramount_s1", "episode": 2, "quote": "two fighters are eliminated and sent home" }
+    ],
+    "reconstruction": {
+      "Light Heavyweight": {
+        "start": ["Bobby Southworth", "Sam Hoger", "Forrest Griffin", "Alex Schoenauer", "Stephan Bonnar", "Mike Swick", "Lodune Sincaid", "Jason Thacker"],
+        "eliminated_without_fight": [{ "fighter": "Jason Thacker", "episode": 2 }],
+        "elimination_bouts": [
+          { "episode": 3, "winner": "Bobby Southworth", "loser": "Lodune Sincaid" },
+          { "episode": 7, "winner": "Stephan Bonnar", "loser": "Bobby Southworth" },
+          { "episode": 9, "winner": "Forrest Griffin", "loser": "Alex Schoenauer" }
+        ],
+        "reached_last_four_without_a_house_fight": ["Sam Hoger", "Mike Swick"],
+        "fought_twice_before_semis": ["Bobby Southworth"],
+        "semi_finals": [{ "episode": 12, "pairs": [["Forrest Griffin", "Sam Hoger"], ["Stephan Bonnar", "Mike Swick"]] }],
+        "alternate": { "fighter": "Bobby Southworth", "episode": 10, "for": "Forrest Griffin", "used": false }
+      },
+      "Middleweight": {
+        "start": ["Josh Koscheck", "Diego Sanchez", "Kenny Florian", "Josh Rafferty", "Nathan Quarry", "Chris Leben", "Alex Karalexis", "Chris Sanford"],
+        "eliminated_without_fight": [{ "fighter": "Chris Sanford", "episode": 2 }],
+        "elimination_bouts": [
+          { "episode": 4, "winner": "Diego Sanchez", "loser": "Alex Karalexis" },
+          { "episode": 6, "winner": "Josh Koscheck", "loser": "Chris Leben", "note": "ordered by Dana White after the episode 5 house incident; no challenge" },
+          { "episode": 8, "winner": "Diego Sanchez", "loser": "Josh Rafferty" }
+        ],
+        "reached_last_four_without_a_house_fight": ["Kenny Florian", "Nathan Quarry"],
+        "fought_twice_before_semis": ["Diego Sanchez"],
+        "withdrawal_and_return": { "episode": 8, "withdrew": "Nathan Quarry", "reason": "ankle injury (sustained episode 5)", "returned": "Chris Leben", "chosen_by": "Nathan Quarry" },
+        "semi_finals": [{ "episode": 10, "pairs": [["Kenny Florian", "Chris Leben"]] }, { "episode": 11, "pairs": [["Diego Sanchez", "Josh Koscheck"]] }]
+      },
+      "consistency": "Every bout in the current season file fits this reconstruction and none is missing. The 'conflicts' (Southworth winning and losing in one round; Sanchez twice; Hoger and Florian with no preceding bout) are artefacts of forcing the season into quarter-finals, not source disagreements."
+    }
+  },
+
+  "episode_facts": [
+    { "episode": 1, "type": "team_selection", "fact": "coaches drafted the teams; Liddell's first pick Bobby Southworth, Couture's first pick Nate Quarry", "sources": [{ "source": "wikipedia_tuf1", "quote": "Light heavyweight and middleweight teams are chosen by coaches Liddell and Couture" }], "evidence": "secondary_only" },
+    { "episode": 2, "type": "elimination_without_fight", "fighters": ["Jason Thacker"], "fact": "sent home by Couture", "sources": [{ "source": "paramount_s1", "quote": "two fighters are eliminated and sent home" }, { "source": "wikipedia_tuf1", "quote": "Jason Thacker is sent home by Couture." }], "evidence": "network_count + secondary_name", "season_file": "roster note 'Eliminated in episode 2.'" },
+    { "episode": 2, "type": "elimination_without_fight", "fighters": ["Chris Sanford"], "fact": "sent home by Couture", "sources": [{ "source": "paramount_s1", "quote": "two fighters are eliminated and sent home" }, { "source": "wikipedia_tuf1", "quote": "Chris Sanford is sent home by Couture." }], "evidence": "network_count + secondary_name", "season_file": "roster note 'Eliminated in episode 2.'" },
+    { "episode": 3, "type": "weight_issue", "fighters": ["Bobby Southworth"], "fact": "cut about 20 lb in 24 hours; weighed 208, given 2 hours by the Nevada State Athletic Commission, made 206", "sources": [{ "source": "paramount_s1", "quote": "a top contender struggles to lose 20 lbs in 24 hours, or face elimination" }, { "source": "wikipedia_tuf1", "quote": "the Nevada State Athletic Commission gives Southworth 2 hours to cut 2 pounds" }], "evidence": "network (unnamed) + secondary" },
+    { "episode": 3, "type": "bout", "bracket_ref": { "weight_class": "Light Heavyweight", "a": "Bobby Southworth", "b": "Lodune Sincaid" }, "sources": [{ "source": "paramount_s1", "quote": "Two fighters christen the Octagon" }, { "source": "wikipedia_tuf1", "quote": "Bobby Southworth defeated Lodune Sincaid by KO (strikes) at 0:12 of the second round." }], "evidence": "network (first bout, unnamed) + secondary result", "season_file": "episode 3 already" },
+    { "episode": 4, "type": "trade", "fighters": ["Alex Schoenauer"], "from": "Team Liddell", "to": "Team Couture", "sources": [{ "source": "wikipedia_tuf1", "quote": "Alex Schoenauer is traded to Team Couture as part of a team reshuffle." }, { "source": "paramount_s1", "quote": "After losing three of its members, Team Couture comes up with a new strategy" }], "evidence": "secondary (network context only)", "season_file": "coaching_changes ep 4 + roster note" },
+    { "episode": 4, "type": "bout", "bracket_ref": { "weight_class": "Middleweight", "a": "Diego Sanchez", "b": "Alex Karalexis" }, "sources": [{ "source": "paramount_s1", "quote": "two Middle Weights face off in the Octagon" }, { "source": "wikipedia_tuf1", "quote": "Diego Sanchez defeated Alex Karalexis by submission (rear naked choke) at 1:47 of the first round." }], "evidence": "network (unnamed) + secondary result", "season_file": "episode 4 already" },
+    { "episode": 5, "type": "injury", "fighters": ["Nathan Quarry"], "fact": "ankle injured in practice when Couture landed on it during a takedown", "sources": [{ "source": "wikipedia_tuf1", "quote": "Nate Quarry injures his ankle after Couture lands on his ankle during a takedown in practice." }], "evidence": "secondary_only", "season_file": "roster note puts only the withdrawal (episode 8)" },
+    { "episode": 5, "type": "injury", "fighters": ["Chris Leben"], "fact": "cut his hand punching a door window during the house incident", "sources": [{ "source": "paramount_s1", "quote": "A night on the town for the team members turns violent." }, { "source": "wikipedia_tuf1", "quote": "punching the front door window with his left hand" }], "evidence": "network (unnamed) + secondary" },
+    { "episode": 5, "type": "matchup_ordered", "fighters": ["Josh Koscheck", "Chris Leben"], "fact": "Dana White ordered Koscheck vs Leben to settle the incident", "sources": [{ "source": "paramount_s1", "quote": "Dana White and his coaches wrestle with how to settle the conflict." }, { "source": "wikipedia_tuf1", "quote": "the only fair way to resolve the situation is for Koscheck and Leben to fight" }], "evidence": "network (unnamed) + secondary" },
+    { "episode": 6, "type": "bout", "bracket_ref": { "weight_class": "Middleweight", "a": "Josh Koscheck", "b": "Chris Leben" }, "sources": [{ "source": "paramount_s1", "episode_of_quote": 7, "quote": "After the much-anticipated Leben vs Koscheck fight" }, { "source": "paramount_s1", "quote": "the emotional conflict is settled in the Octagon" }, { "source": "wikipedia_tuf1", "quote": "Josh Koscheck defeated Chris Leben by unanimous decision after two rounds." }], "evidence": "network names the pairing (episode 7 opens after it) + secondary result", "season_file": "episode NULL — attachable" },
+    { "episode": 7, "type": "bout", "bracket_ref": { "weight_class": "Light Heavyweight", "a": "Stephan Bonnar", "b": "Bobby Southworth" }, "sources": [{ "source": "paramount_s1", "quote": "The Light Heavyweights have a match up that pits two of the strongest fighters" }, { "source": "wikipedia_tuf1", "quote": "Stephan Bonnar defeated Bobby Southworth by split decision after 2 rounds." }], "evidence": "network (unnamed) + secondary", "season_file": "episode NULL — attachable" },
+    { "episode": 7, "type": "trade", "fighters": ["Josh Rafferty"], "from": "Team Liddell", "to": "Team Couture", "sources": [{ "source": "wikipedia_tuf1", "quote": "Josh Rafferty is traded to Team Couture in another team reshuffle." }], "evidence": "secondary_only", "conflict": "season file says episode 8 (coaching_changes and roster note); Wikipedia's episode bullets say episode 7; the network listing does not mention it. Unresolved." },
+    { "episode": 8, "type": "withdrawal", "fighters": ["Nathan Quarry"], "fact": "eliminated from the competition because of the ankle injury; stayed on as an assistant coach", "sources": [{ "source": "paramount_s1", "quote": "Nate discovers his fate in the game" }, { "source": "wikipedia_tuf1", "quote": "Nate Quarry is eliminated from the show due to his ankle injury." }], "evidence": "network names Nate + secondary" },
+    { "episode": 8, "type": "replacement_return", "fighters": ["Chris Leben"], "replaces": "Nathan Quarry", "fact": "chosen by Quarry from the eliminated fighters", "sources": [{ "source": "paramount_s1", "quote": "a previously eliminated fighter gets another shot at the contract" }, { "source": "wikipedia_tuf1", "quote": "he chooses Chris Leben" }], "evidence": "network (unnamed) + secondary" },
+    { "episode": 8, "type": "staff_change", "fighters": ["Nathan Quarry"], "fact": "asked by White to stay as an assistant coach, agreed", "sources": [{ "source": "wikipedia_tuf1", "quote": "White asks Quarry to stay on as an assistant coach, and he agrees." }], "evidence": "secondary_only" },
+    { "episode": 8, "type": "bout", "bracket_ref": { "weight_class": "Middleweight", "a": "Diego Sanchez", "b": "Josh Rafferty" }, "sources": [{ "source": "wikipedia_tuf1", "quote": "Diego Sanchez defeated Josh Rafferty by submission (rear naked choke) at 1:48 of the first round." }], "evidence": "secondary_only", "season_file": "episode 8 already" },
+    { "episode": 9, "type": "trade", "fighters": ["Kenny Florian"], "from": "Team Liddell", "to": "Team Couture", "sources": [{ "source": "wikipedia_tuf1", "quote": "Kenny Florian is traded to Team Couture in another team reshuffle." }], "evidence": "secondary_only", "season_file": "coaching_changes ep 9 + roster note" },
+    { "episode": 9, "type": "bout", "bracket_ref": { "weight_class": "Light Heavyweight", "a": "Forrest Griffin", "b": "Alex Schoenauer" }, "sources": [{ "source": "paramount_s1", "quote": "The Light Heavyweights compete in the challenge, and controversy arises during the fighter selection." }, { "source": "wikipedia_tuf1", "quote": "Forrest Griffin defeated Alex Schoenauer by submission (strikes) at 1:20 of the first round." }], "evidence": "network (LHW selection, unnamed) + secondary", "season_file": "episode NULL — attachable", "secondary_inconsistency": "the same Wikipedia article's finale prose says Griffin beat Schoenauer 'by TKO'" },
+    { "episode": 9, "type": "injury", "fighters": ["Forrest Griffin"], "fact": "cut above the left eye in the Schoenauer fight, feared severe enough to stop him fighting again", "sources": [{ "source": "wikipedia_tuf1", "quote": "Griffin receives a cut above his left eye" }, { "source": "paramount_s1", "episode_of_quote": 10, "quote": "Forrest's cut puts his dream for the contract in jeopardy." }], "evidence": "network (next episode) + secondary" },
+    { "episode": 10, "type": "alternate_named", "fighters": ["Bobby Southworth"], "for": "Forrest Griffin", "fact": "Griffin chose Southworth as his alternate; Griffin was cleared and Southworth did not fight", "sources": [{ "source": "wikipedia_tuf1", "quote": "He chooses Bobby Southworth, who is not given the chance to fight" }, { "source": "paramount_s1", "episode_of_quote": 11, "quote": "give up his chance for the contract to alternate Bobby Southworth" }], "evidence": "network names the alternate + secondary" },
+    { "episode": 10, "type": "semi_final_matchups_announced", "fact": "White announced how the semi-final opponents would be set", "sources": [{ "source": "paramount_s1", "quote": "a surprising announcement from Dana that effect who they will fight to get into the finals" }], "evidence": "network_only (content of the announcement not stated)" },
+    { "episode": 10, "type": "bout", "bracket_ref": { "weight_class": "Middleweight", "a": "Kenny Florian", "b": "Chris Leben" }, "sources": [{ "source": "wikipedia_tuf1", "quote": "Kenny Florian defeated Chris Leben by TKO (doctor stoppage) at 3:11 of the second round." }], "evidence": "secondary + network title 'Middleweight Semi-Final #1'", "season_file": "episode 10 already" },
+    { "episode": 11, "type": "bout", "bracket_ref": { "weight_class": "Middleweight", "a": "Diego Sanchez", "b": "Josh Koscheck" }, "sources": [{ "source": "wikipedia_tuf1", "quote": "Diego Sanchez defeated Josh Koscheck by split decision after 3 rounds" }], "evidence": "secondary + network title 'Middleweight Semi-Final #2'", "season_file": "episode 11 already" },
+    { "episode": 12, "type": "bout", "bracket_ref": { "weight_class": "Light Heavyweight", "a": "Forrest Griffin", "b": "Sam Hoger" }, "sources": [{ "source": "wikipedia_tuf1", "quote": "Forrest Griffin defeated Sam Hoger by TKO (strikes) at 1:05 of the second round." }, { "source": "paramount_s1", "episode_of_quote": 11, "quote": "Forrest Griffin finds out if his cut has healed enough to fight Sam Hoger" }], "evidence": "network names the pairing (under the wrong episode, see defects) + secondary result", "season_file": "episode 12 already" },
+    { "episode": 12, "type": "bout", "bracket_ref": { "weight_class": "Light Heavyweight", "a": "Stephan Bonnar", "b": "Mike Swick" }, "sources": [{ "source": "wikipedia_tuf1", "quote": "Stephan Bonnar defeated Mike Swick by submission (triangle armbar) at 4:58 of the first round." }, { "source": "paramount_s1", "episode_of_quote": 11, "quote": "Stephan Bonnar fights his close friend and training partner Mike Swick" }], "evidence": "network names the pairing (under the wrong episode) + secondary result", "season_file": "episode 12 already" }
+  ],
+
+  "network_metadata_defects": [
+    { "episodes": [11, 12], "defect": "Paramount+ titles agree with every other source (11 = Middleweight Semi-Final #2, 12 = Light Heavyweight Semi-Finals) but the two descriptions are swapped: item 11 describes the light heavyweight semi-finals and item 12 the last middleweight final spot. Use the titles; use those two descriptions only for pairings, never for episode placement." },
+    { "episodes": "all", "defect": "the display airdate field is one day later than listing_date for every episode (Jan 18 vs Jan 17, 2005, …), consistent with a UTC rendering; listing_date equals Wikipedia's IMDb-cited original airdate for all 12 episodes." }
+  ],
+
+  "air_dates": {
+    "finding": "listing_date (network) and Wikipedia's original airdate (citing IMDb) agree on all 12 episodes: 2005-01-17, 01-24, 01-31, 02-07, 02-14, 02-21, 02-28, 03-07, 03-14, 03-21, 03-28, 04-04. The archive currently shows none.",
+    "status": "two sources agree; neither is a broadcaster schedule of record. Proposed rule for approval, not applied."
+  },
+
+  "filming": {
+    "claim": "house fights were filmed in late 2004, not 2005",
+    "sources": [{ "source": "ufc_legends", "quote": "Filming for the show started in late 2004" }, { "source": "espn_retrospective", "quote": "The 16 fighters all lived in the same house for 54 days" }],
+    "consequence": "The current exhibition basis cites absence from our 2005 records. The bouts were fought in 2004, and web/data/tuf/record_completeness.json has no 2004 entry, so the absence argument points at the wrong year and is unassessed for the right one."
+  },
+
+  "classification_evidence": {
+    "affirmative": [
+      { "source": "espn_retrospective", "quote": "Fertitta had worked with the Nevada State Athletic Commission to designate any fights before the live finale as exhibitions", "strength": "secondary reporting (ESPN, 2020) of the commission arrangement for this season; names the regulator and the scope (every fight before the live finale)" },
+      { "source": "wikipedia_tuf1", "episode": 3, "quote": "the Nevada State Athletic Commission gives Southworth 2 hours to cut 2 pounds", "strength": "secondary; shows commission oversight of a house weigh-in, corroborates regulation but not the exhibition label by itself" }
+    ],
+    "general_statement_not_season_specific": { "source": "wikipedia_tuf", "quote": "sanctioned by the Nevada Athletic Commission as exhibition matches", "citation": "MMAWeekly 'UFC 68 fighter salaries' (2007) — does not concern Season 1" },
+    "commission_record": "not located",
+    "database_absence": "corroboration only; currently argued from 2005 when the fights were in 2004"
+  },
+
+  "identity": {
+    "method": "exact bout anchoring: every contestant's first UFC bout is on the finale card, so each canonical row is tied to an ESPN competition by the same pairing, card and date",
+    "espn_athlete_ids_by_finale_competition": [
+      { "competition": "152726", "winner": "Forrest Griffin", "espn": { "Forrest Griffin": "2335522", "Stephan Bonnar": "2335525" } },
+      { "competition": "152263", "winner": "Diego Sanchez", "espn": { "Diego Sanchez": "2335671", "Kenny Florian": "2335675" } },
+      { "competition": "156039", "winner": "Sam Hoger", "espn": { "Sam Hoger": "2335605", "Bobby Southworth": "2431311" } },
+      { "competition": "153494", "winner": "Chris Leben", "espn": { "Chris Leben": "2335513", "Jason Thacker": "2431252" } },
+      { "competition": "153184", "winner": "Josh Koscheck", "espn": { "Josh Koscheck": "2335664", "Chris Sanford": "2488455" } },
+      { "competition": "153234", "winner": "Nate Quarry", "espn": { "Nate Quarry": "2335773", "Lodune Sincaid": "2431312" } },
+      { "competition": "152109", "winner": "Mike Swick", "espn": { "Mike Swick": "2335819", "Alex Schoenauer": "2335745" } },
+      { "competition": "156040", "winner": "Alex Karalexis", "espn": { "Alex Karalexis": "2335822", "Josh Rafferty": "2556812" } }
+    ],
+    "canonical_rows_with_espn_id": 0,
+    "no_other_row_holds_these_espn_ids": true,
+    "nathan_quarry": {
+      "printed": "Nathan Quarry",
+      "canonical_row": { "id": "e8999544-0e72-4010-9d05-d4325b552f45", "name": "Nate Quarry", "ufcstats_id": "52cae54377b433b7", "espn_athlete_id": null },
+      "bout_evidence": "Nate Quarry def. Lodune Sincaid (a TUF 1 castmate), TKO R1 3:17, on the finale card 2005-04-09 — ufc_bouts 2edd40e1, ESPN competition 153234",
+      "why_unlinked_now": "the resolver's name conventions do not map Nathan to Nate, so no candidate was considered; the finale-date evidence would have settled it",
+      "network": { "source": "paramount_s1", "episode": 8, "quote": "Nate discovers his fate in the game" }
+    },
+    "staff_without_fighter_rows": ["Marc Laimon (grappling coach)", "Ganyao Fairtex (Muay Thai coach)", "Peter Welch (boxing coach)"],
+    "staff_note": "Wikipedia gives each a discipline and no team; the season file's role_basis ('listed on a team staff') misstates that."
+  },
+
+  "finale": {
+    "event": { "id": "c93a5b04-6a74-4ec9-854b-422fbfbc5074", "name": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale", "date": "2005-04-09", "espn_event": "400254386", "venue_in_db": null, "venue_in_season_file": "Cox Pavilion, Las Vegas, Nevada" },
+    "tournament_finals": [
+      { "weight_class": "Light Heavyweight", "ufc_bout": "65856c98-1421-4859-8e62-4eb651fdc221", "espn_competition": "152726", "result": "Forrest Griffin def. Stephan Bonnar, DEC_U R3 5:00", "scorecards_in_db": ["Dalby Shirley 29-28", "Tony Weeks 29-28", "Jeff Mullen 29-28"], "round_stats_rows": 6 },
+      { "weight_class": "Middleweight", "ufc_bout": "45c3c849-90b4-47ec-a891-76e7a1effa5f", "espn_competition": "152263", "result": "Diego Sanchez def. Kenny Florian, KO/TKO R1 2:49", "scorecards_in_db": [], "round_stats_rows": 2 }
+    ],
+    "other_cast_bouts_on_the_card": [
+      "Sam Hoger def. Bobby Southworth (DEC_U; cards 30-28, 29-28, 29-28 in db)",
+      "Chris Leben def. Jason Thacker (KO/TKO R1)",
+      "Josh Koscheck def. Chris Sanford (KO/TKO R1)",
+      "Nate Quarry def. Lodune Sincaid (KO/TKO R1)",
+      "Mike Swick def. Alex Schoenauer (KO/TKO R1)",
+      "Alex Karalexis def. Josh Rafferty (KO/TKO R1, welterweight)"
+    ],
+    "fact": "all 16 contestants made their UFC debut on this card (first ufc_bouts date 2005-04-09 for every one); the ninth bout is Rich Franklin def. Ken Shamrock",
+    "coaches_fight": { "event": "UFC 52: Couture vs Liddell 2", "date": "2005-04-16", "ufc_bout": "1af8211c-12d2-460a-8668-901111748c39", "result": "Chuck Liddell def. Randy Couture, KO/TKO R1" }
+  },
+
+  "portraits": {
+    "licensed_ufc_images": ["Mike Swick", "Josh Koscheck", "Chris Leben", "Stephan Bonnar", "Kenny Florian", "Nate Quarry (unlinked on the page)", "Chuck Liddell", "Randy Couture"],
+    "none": ["Forrest Griffin (champion)", "Diego Sanchez (champion)", "Sam Hoger", "Alex Karalexis", "Bobby Southworth", "Jason Thacker", "Chris Sanford", "Lodune Sincaid", "Alex Schoenauer", "Josh Rafferty"]
+  }
+}
