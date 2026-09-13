@@ -17,7 +17,9 @@
   "archive_house_bouts_in_covered_seasons": 520,
   "applied_so_far": [
    "tuf-1",
-   "tuf-2"
+   "tuf-2",
+   "tuf-3",
+   "tuf-4"
   ],
   "not_found": [
    "tuf-9",
@@ -27,10 +29,15 @@
    "tuf-1..33 international editions other than brazil-4 and latam-2 (filmed outside Nevada or under another commission)"
   ],
   "audited_not_applied": [
-   "tuf-3",
-   "tuf-4"
+   "tuf-5",
+   "tuf-6"
   ],
-  "operational_state_updated": "2026-09-13: TUF 1 applied (PR #38) and TUF 2 applied (PR #34) through web/data/tuf/commission_records.json; TUF 3 and TUF 4 audited only (scripts/tuf/evidence/nsac_tuf3_tuf4_audit_2026-09-13.json). Discovery facts are as found at scout time and are not rewritten."
+  "operational_state_updated": "2026-09-13: TUF 1 (PR #38), TUF 2 (PR #34), TUF 3 and TUF 4 (PR #41) applied through web/data/tuf/commission_records.json; TUF 5 and TUF 6 audited only (scripts/tuf/evidence/nsac_tuf5_tuf6_audit_2026-09-13.json). Discovery facts are as found at scout time and are not rewritten.",
+  "reverification_2026-09-13_tuf5_tuf6": {
+   "note": "Re-verified by the TUF 5/6 audit; the scout rows below are left as found.",
+   "tuf-5": "confirmed: live HTTP 200 application/pdf 56,215 bytes, sha256 d12c518b...23cb = Wayback 20161213143108 raw capture; 3 pages; 14 records; 14 house bouts; 'Exhibition Results' (page-1 column header, TUF 2 pattern); not redacted; DOB, weight, referee, judges' scores, method/time and remarks columns. Additional: the header prints 'SEASON 5– THE ULTIMATE FIGHTER'. The scout's 'house results verified now: 1' was a later professional Diaz vs Maynard result (2013) counted by the matrix, not house-bout evidence.",
+   "tuf-6": "confirmed: live HTTP 200 application/pdf 58,230 bytes, sha256 bb8e7795...decd = Wayback 20161213143128 raw capture; 3 pages; 14 records; 14 house bouts; 'Exhibition Results' (page-1 column header); not redacted; DOB, weight, referee, judges' scores, remarks. Correction to the scout's field profile: result lines also print method and time (e.g. 'tap out 4:55 of the 1st round'). Additional: the header prints 'SEASON 6 – THE ULTIMATE FIGHTER', and page 3 prints a replacement note (Arroyo injured, Kolosci replaced him). The scout's 'house results verified now: 1' was the Barrera vs Saunders professional rematch on the TUF 6 finale card, counted by the matrix, not house-bout evidence."
+  }
  },
  "seasons": [
   {

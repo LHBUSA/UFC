@@ -1,6 +1,6 @@
 # Athletic commission TUF documents — discovery inventory (2026-09-13)
 
-Read-only scout; discovery facts below are as found. Operational state (updated 2026-09-13): TUF 1 and TUF 2 applied; TUF 3 and TUF 4 audited, not applied. Evidence and hashes: `scripts/tuf/evidence/nsac_tuf_document_inventory_2026-09-13.json`.
+Read-only scout; discovery facts below are as found. Operational state (updated 2026-09-13): TUF 1, TUF 2, TUF 3 and TUF 4 applied; TUF 5 and TUF 6 audited, not applied. Evidence and hashes: `scripts/tuf/evidence/nsac_tuf_document_inventory_2026-09-13.json`.
 
 ## Summary
 
@@ -15,8 +15,8 @@ Read-only scout; discovery facts below are as found. Operational state (updated 
 | bouts listed in season documents | 415 |
 | bouts listed in entry round documents | 204 |
 | archive house bouts in covered seasons | 520 |
-| applied so far | tuf-1, tuf-2 |
-| audited, not applied | tuf-3, tuf-4 |
+| applied so far | tuf-1, tuf-2, tuf-3, tuf-4 |
+| audited, not applied | tuf-5, tuf-6 |
 | not found | tuf-9, tuf-21, tuf-30, tuf-34, tuf-1..33 international editions other than brazil-4 and latam-2 (filmed outside Nevada or under another commission) |
 
 ## Seasons with a Nevada season-results document
@@ -110,6 +110,7 @@ Read-only scout; discovery facts below are as found. Operational state (updated 
 
 ## Notes
 
+- **Re-verified 2026-09-13 (TUF 5/6 audit, `docs/tuf/nsac_tuf5_tuf6_reconciliation_audit_2026-09-13.md`).** TUF 5 and TUF 6 rows confirmed (URL, HTTP 200, bytes, sha256 = Wayback raw capture, 3 pages, 14 records, 14 house bouts, page-1 "Exhibition Results", not redacted). Both headers print the season ("SEASON 5– THE ULTIMATE FIGHTER™", "SEASON 6 – THE ULTIMATE FIGHTER™"). TUF 6 result lines also print method/time (the scout's field profile missed it) and page 3 prints "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him." The "house results verified now: 1" for TUF 5 and TUF 6 was a later professional result between the same fighters counted by the matrix, not house-bout evidence. Rows above are left as found.
 - **TUF 1 has a Nevada season document** (TUFSEASON1.pdf, 10 bouts, "EXHIBITION RESULTS"). It would supersede the ESPN retrospective as TUF 1's classification basis and could verify its 10 house results. The TUF 1 decision is not reopened here; flagged for the next batch.
 - Entry-round ("fight-in") documents are dated, not numbered; their season is inferred from the date and must be confirmed. Some seasons have both an entry-round and a season document (7, 11, 12, 19, 22, 23, Brazil 4).
 - TUF 13, 14 and 15 season documents print no "Exhibition" wording in their text layer: classification language must be read from the document itself before any use.
