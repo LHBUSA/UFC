@@ -613,3 +613,4 @@ a.tuf-ep { color: var(--pbe-subtle); text-decoration: underline; text-underline-
 .tuf-tl-detail { flex-basis: 100%; }
 .tuf-tl-event .tuf-srctag { flex-basis: 100%; }
 .tuf-unplaced { margin-top: var(--s-4); }
+.tuf-linkcard a span { white-space: nowrap; }
