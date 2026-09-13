@@ -1,6 +1,6 @@
 # Athletic commission TUF documents — discovery inventory (2026-09-13)
 
-Read-only scout. Nothing ingested; only TUF 2 is applied. Evidence and hashes: `scripts/tuf/evidence/nsac_tuf_document_inventory_2026-09-13.json`.
+Read-only scout; discovery facts below are as found. Operational state (updated 2026-09-13): TUF 1 and TUF 2 applied; TUF 3 and TUF 4 audited, not applied. Evidence and hashes: `scripts/tuf/evidence/nsac_tuf_document_inventory_2026-09-13.json`.
 
 ## Summary
 
@@ -15,7 +15,8 @@ Read-only scout. Nothing ingested; only TUF 2 is applied. Evidence and hashes: `
 | bouts listed in season documents | 415 |
 | bouts listed in entry round documents | 204 |
 | archive house bouts in covered seasons | 520 |
-| applied so far | tuf-2 |
+| applied so far | tuf-1, tuf-2 |
+| audited, not applied | tuf-3, tuf-4 |
 | not found | tuf-9, tuf-21, tuf-30, tuf-34, tuf-1..33 international editions other than brazil-4 and latam-2 (filmed outside Nevada or under another commission) |
 
 ## Seasons with a Nevada season-results document

@@ -1,0 +1,106 @@
+{
+ "_about": "Measured simulation, not applied. A temporary copy of the repository TUF data had the TUF 3 and TUF 4 proposals from nsac_tuf3_tuf4_audit_2026-09-13.json applied (commission result_sources, commission classification basis with record absence as corroboration, fight_date, commission method/round/time); scripts/tuf/completeness_matrix.mjs then ran against the copy with read-only database selects. Repository data unchanged.",
+ "as_of": "2026-09-13",
+ "baseline": "scripts/tuf/evidence/tuf_completeness_2026-09-13.after_tuf1_nsac.json",
+ "seasons": {
+  "tuf-3": {
+   "before": {
+    "status": "PARTIAL",
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "result_verified": 2,
+    "bouts": 14,
+    "secondary_only": 12,
+    "house_commission_verified": 0,
+    "exhibitions_commission_backed": 0,
+    "exhibitions": 12,
+    "classification_unresolved": 0
+   },
+   "if_applied": {
+    "status": "PARTIAL",
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT"
+    ],
+    "result_verified": 14,
+    "bouts": 14,
+    "secondary_only": 0,
+    "house_commission_verified": 12,
+    "exhibitions_commission_backed": 12,
+    "exhibitions": 12,
+    "classification_unresolved": 0
+   }
+  },
+  "tuf-4": {
+   "before": {
+    "status": "PARTIAL",
+    "blockers": [
+     "ROSTER_MISSING",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ],
+    "result_verified": 2,
+    "bouts": 14,
+    "secondary_only": 12,
+    "house_commission_verified": 0,
+    "exhibitions_commission_backed": 0,
+    "exhibitions": 12,
+    "classification_unresolved": 0
+   },
+   "if_applied": {
+    "status": "PARTIAL",
+    "blockers": [
+     "ROSTER_MISSING",
+     "OPEN_SOURCE_CONFLICT",
+     "BRACKET_NAME_NOT_IN_ROSTER"
+    ],
+    "result_verified": 14,
+    "bouts": 14,
+    "secondary_only": 0,
+    "house_commission_verified": 12,
+    "exhibitions_commission_backed": 12,
+    "exhibitions": 12,
+    "classification_unresolved": 0
+   }
+  }
+ },
+ "seasons_with_changed_verdict": [
+  "tuf-3",
+  "tuf-4"
+ ],
+ "totals_if_applied": {
+  "complete": 1,
+  "partial": 43,
+  "blocked": 0
+ },
+ "remaining_blockers_explained": {
+  "OPEN_SOURCE_CONFLICT": "each season keeps one open bracket conflict the commission record informs but does not settle (see the audit conflicts section)",
+  "ROSTER_MISSING": "TUF 4 has no team rosters loaded; unrelated to commission evidence",
+  "BRACKET_NAME_NOT_IN_ROSTER": "follows from the missing TUF 4 rosters"
+ },
+ "architecture": {
+  "sufficient": true,
+  "fits_without_change": [
+   "document + records in web/data/tuf/commission_records.json",
+   "result_sources / classification_basis / fight_date / fight_date_source / commission_record_id on bouts",
+   "corrections (commission_correction, method_normalization) and method_detail for the one compatible detail (TUF 3 Rothaermel vs Bisping: strikes)",
+   "identity_disagreements on the document for DOB differences (Pointon, Hutcherson, Burnett, Sell)",
+   "commissionWeights display: 48/48 weights shown, 42 named by fighter; printed-name fallback for 6 corners whose printed first name differs (Abbadi, Carter x2, Spratt x2, Smith), fail-safe as designed",
+   "sudden-victory decisions: method \"Decision (unanimous, sudden victory round)\" (commission wording, primary normalization), round 3, scheduled_rounds 2, result_text as printed"
+  ],
+  "transcription_keys_not_in_the_ledger_shape": {
+   "winner_surname": "audit helper; replaced by winner at apply",
+   "weight_class": "audit helper; carried by bout.weight_class",
+   "stage": "audit helper; carried by bout.stage",
+   "rounds_printed": "redundant with method + scheduled_rounds + result_text; drop at apply",
+   "scorecard_order_printed": "the printed typo \"Lytle - Thomasr\"; scorecards.order is normalized; drop at apply",
+   "date_printed": "the one real gap: TUF 3 record 05 prints \"02/0706\". The ledger has no field for a misprinted value. Options for approval: (a) one optional generic CommissionRecord.date_printed, or (b) keep only the normalized 2006-02-07 and state the misprint in the bout correction reason. No schema is added in this audit."
+  }
+ },
+ "decisions_for_apply": [
+  "TUF 3 method contradictions: KO (punches), KO (head kick and punches) and Verbal submission (rib injury) against the commission TKO. The TUF 1 rule makes the commission category canonical with the draft label in corrections only; decide whether \"head kick and punches\" / \"rib injury\" survive as secondary detail despite the category change.",
+  "TUF 3 Singer vs Hutcherson misprinted date: option (a) or (b) above."
+ ]
+}

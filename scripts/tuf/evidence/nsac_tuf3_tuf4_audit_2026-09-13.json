@@ -1,0 +1,3836 @@
+{
+ "_about": "READ-ONLY audit (scripts/tuf/audit_nsac_tuf3_tuf4.mjs). Nothing applied. Documents are not redistributed; records are transcriptions for reconciliation, printed names and hometowns as printed.",
+ "seasons": {
+  "tuf-3": {
+   "document": {
+    "id": "nsac-2006-tuf-season-3",
+    "source_family": "athletic_commission",
+    "source_type": "commission_result_record",
+    "commission": "Nevada State Athletic Commission",
+    "jurisdiction": "Nevada",
+    "document": "Mixed Martial Arts Exhibition Results (TUF Season 3 results record)",
+    "seasons": [
+     "tuf-3"
+    ],
+    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+    "archive_url": "https://web.archive.org/web/20161219211127/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON3.pdf",
+    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+    "bytes": 51136,
+    "pages": 2,
+    "retrieved": "2026-09-13",
+    "live": {
+     "http": 200,
+     "content_type": "application/pdf",
+     "last_modified": "Wed, 06 Feb 2013 22:42:33 GMT"
+    },
+    "live_matches_archive": true,
+    "pdf_metadata": {
+     "title": "STATE OF NEVADA",
+     "author": "Athletic Commission",
+     "created": "2006-06-19"
+    },
+    "title_quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+    "classification_language": {
+     "quote": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+     "where": "document title, page 1; the results column is headed \"Exhibition Results\" on both pages"
+    },
+    "season_identity": {
+     "printed": false,
+     "basis": "No season number or show name is printed. Season 3 identity rests on the file name TUFSEASON3.pdf (2006_Results), location \"UFC Training Center, Las Vegas\", show dates 2006-01-24..2006-02-24, and the pairings matching the TUF 3 house bouts."
+    },
+    "location": "UFC Training Center, Las Vegas",
+    "promoter": "Zuffa, LLC",
+    "executive_director": "Marc Ratner",
+    "officials": {
+     "referees": [
+      "Steve Mazzagatti"
+     ],
+     "visiting_referees": [
+      "Herb Dean",
+      "John McCarthy"
+     ],
+     "judges": [
+      "Adalaide Byrd",
+      "Dalby Shirley",
+      "Glenn Trowbridge",
+      "Tony Weeks"
+     ],
+     "visiting_judges": [
+      "Abe Belardo",
+      "Nelson Hamilton",
+      "Cecil Peoples",
+      "Marcos Rosales"
+     ],
+     "timekeepers": [
+      "Jane Broadfoot",
+      "James Cavin",
+      "Steve Esposito",
+      "Mike LaCella"
+     ],
+     "ringside_doctors": [
+      "William Berliner",
+      "Al Capanna",
+      "Jeff Davidson",
+      "James Dettling",
+      "James Game",
+      "David Watson"
+     ]
+    },
+    "remarks_note": "The Remarks column is empty for all 12 bouts."
+   },
+   "local_pdf_check": {
+    "bytes": 51136,
+    "sha256": "ba5a84252378e0d8d19f5e4749cf965dc2a478207483e59c75da1ba33b6ee2ed",
+    "matches": true
+   },
+   "records": [
+    {
+     "id": "nsac-2006-tuf3-01",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-01-24",
+     "stage_label": "Middleweight Quarter Final",
+     "corners": [
+      {
+       "printed": "MICHAEL DANIEL STINE",
+       "hometown": "Hicksville, NY",
+       "dob": "1979-01-08",
+       "weight_lbs": 183
+      },
+      {
+       "printed": "KALIB AXEL STARNES",
+       "hometown": "Surrey, BC, Canada",
+       "dob": "1975-01-06",
+       "weight_lbs": 185
+      }
+     ],
+     "winner_surname": "Starnes",
+     "result_text": "Starnes won by TKO 2:10 of the 1st round.",
+     "method": "TKO",
+     "round": 1,
+     "time": "2:10",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "quarter_final",
+      "a": "Kalib Starnes",
+      "b": "Mike Stine"
+     },
+     "winner": "Kalib Starnes"
+    },
+    {
+     "id": "nsac-2006-tuf3-02",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-01-27",
+     "stage_label": "Light Heavyweight Quarter Final",
+     "corners": [
+      {
+       "printed": "NOAH INHOFER",
+       "hometown": "Yankton, SD",
+       "dob": "1981-06-17",
+       "weight_lbs": 206
+      },
+      {
+       "printed": "JESSE LEE FORBES",
+       "hometown": "Tempe, AZ",
+       "dob": "1984-10-24",
+       "weight_lbs": 204
+      }
+     ],
+     "winner_surname": "Inhofer",
+     "result_text": "Inhofer won by tap out 2:36 of the 1st round. – arm bar",
+     "method": "Submission (armbar)",
+     "round": 1,
+     "time": "2:36",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": "Light Heavyweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Light Heavyweight",
+      "stage": "quarter_final",
+      "a": "Jesse Forbes",
+      "b": "Noah Inhofer"
+     },
+     "winner": "Noah Inhofer"
+    },
+    {
+     "id": "nsac-2006-tuf3-03",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-01-30",
+     "stage_label": "Middleweight Quarter Final",
+     "corners": [
+      {
+       "printed": "KENDALL KEKOA GROVE",
+       "hometown": "Las Vegas, NV",
+       "dob": "1982-11-12",
+       "weight_lbs": 185
+      },
+      {
+       "printed": "ROSS JOHN POINTON",
+       "hometown": "Stout on Trent, England",
+       "dob": "1978-02-18",
+       "weight_lbs": 185
+      }
+     ],
+     "winner_surname": "Grove",
+     "result_text": "Grove won by tap out 3:47 of the 1st round – rear naked choke.",
+     "method": "Submission (rear naked choke)",
+     "round": 1,
+     "time": "3:47",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "quarter_final",
+      "a": "Ross Pointon",
+      "b": "Kendall Grove"
+     },
+     "winner": "Kendall Grove"
+    },
+    {
+     "id": "nsac-2006-tuf3-04",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-02",
+     "stage_label": "Light Heavyweight Quarter Final",
+     "corners": [
+      {
+       "printed": "MICHAEL GAVIN JOSEPH BISPING",
+       "hometown": "Clitheror, Lancs, UK",
+       "dob": "1979-02-28",
+       "weight_lbs": 204.5
+      },
+      {
+       "printed": "KRISTIAN BAXTER ROTHAERMEL",
+       "hometown": "Metairie, LA",
+       "dob": "1972-01-31",
+       "weight_lbs": 204
+      }
+     ],
+     "winner_surname": "Bisping",
+     "result_text": "Bisping won by TKO 4:02 of the 1st round.",
+     "method": "TKO",
+     "round": 1,
+     "time": "4:02",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": "Light Heavyweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Light Heavyweight",
+      "stage": "quarter_final",
+      "a": "Kristian Rothaermel",
+      "b": "Michael Bisping"
+     },
+     "winner": "Michael Bisping"
+    },
+    {
+     "id": "nsac-2006-tuf3-05",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-07",
+     "date_printed": "02/0706",
+     "stage_label": "Middleweight Quarter Final",
+     "corners": [
+      {
+       "printed": "RORY MICHAEL SINGER",
+       "hometown": "Athens, GA",
+       "dob": "1976-05-28",
+       "weight_lbs": 186
+      },
+      {
+       "printed": "SOLOMON MARK HUTCHERSON",
+       "hometown": "Racine, WI",
+       "dob": "1972-08-13",
+       "weight_lbs": 185
+      }
+     ],
+     "winner_surname": "Singer",
+     "result_text": "Singer won by TKO 0:23 of the 2nd round.",
+     "method": "TKO",
+     "round": 2,
+     "time": "0:23",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "quarter_final",
+      "a": "Solomon Hutcherson",
+      "b": "Rory Singer"
+     },
+     "winner": "Rory Singer"
+    },
+    {
+     "id": "nsac-2006-tuf3-06",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-10",
+     "stage_label": "Light Heavyweight Quarter Final",
+     "corners": [
+      {
+       "printed": "JOSHUA LEE HAYNES",
+       "hometown": "Medford, OR",
+       "dob": "1977-07-30",
+       "weight_lbs": 202.5
+      },
+      {
+       "printed": "TAIT G. FLETCHER",
+       "hometown": "Hollywood, CA",
+       "dob": "1971-02-07",
+       "weight_lbs": 205
+      }
+     ],
+     "winner_surname": "Haynes",
+     "result_text": "Haynes won by split decision.",
+     "method": "Decision (split)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Haynes",
+       "Fletcher"
+      ],
+      "cards": [
+       {
+        "judge": "Tony Weeks",
+        "score": "20-18"
+       },
+       {
+        "judge": "Dalby Shirley",
+        "score": "20-18"
+       },
+       {
+        "judge": "Nelson Hamilton",
+        "score": "18-20"
+       }
+      ]
+     },
+     "referee": "Herb Dean",
+     "weight_class": "Light Heavyweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Light Heavyweight",
+      "stage": "quarter_final",
+      "a": "Tait Fletcher",
+      "b": "Josh Haynes"
+     },
+     "winner": "Josh Haynes"
+    },
+    {
+     "id": "nsac-2006-tuf3-07",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-14",
+     "stage_label": "Middleweight Quarter Final",
+     "corners": [
+      {
+       "printed": "MUNTASER DANNY ABBADI",
+       "hometown": "Lake Mary, FL",
+       "dob": "1983-07-03",
+       "weight_lbs": 182
+      },
+      {
+       "printed": "EDWARD BENSON HERMAN",
+       "hometown": "Portland, OR",
+       "dob": "1980-10-02",
+       "weight_lbs": 185
+      }
+     ],
+     "winner_surname": "Herman",
+     "result_text": "Herman won by tap out 4:20 of the 1st round – arm bar.",
+     "method": "Submission (armbar)",
+     "round": 1,
+     "time": "4:20",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "quarter_final",
+      "a": "Ed Herman",
+      "b": "Danny Abbadi"
+     },
+     "winner": "Ed Herman"
+    },
+    {
+     "id": "nsac-2006-tuf3-08",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-18",
+     "stage_label": "Light Heavyweight Quarter Final",
+     "corners": [
+      {
+       "printed": "MATTHEW S HAMILL",
+       "hometown": "New York Mills, NY",
+       "dob": "1976-10-05",
+       "weight_lbs": 204.5
+      },
+      {
+       "printed": "MICHAEL JOHN NICKELS",
+       "hometown": "Denver, CO",
+       "dob": "1971-12-13",
+       "weight_lbs": 205
+      }
+     ],
+     "winner_surname": "Hamill",
+     "result_text": "Hamill won by unanimous decision.",
+     "method": "Decision (unanimous)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Hamill",
+       "Nickels"
+      ],
+      "cards": [
+       {
+        "judge": "Adalaide Byrd",
+        "score": "20-18"
+       },
+       {
+        "judge": "Tony Weeks",
+        "score": "20-18"
+       },
+       {
+        "judge": "Cecil Peoples",
+        "score": "20-18"
+       }
+      ]
+     },
+     "referee": "Steve Mazzagatti",
+     "weight_class": "Light Heavyweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Light Heavyweight",
+      "stage": "quarter_final",
+      "a": "Mike Nickels",
+      "b": "Matt Hamill"
+     },
+     "winner": "Matt Hamill"
+    },
+    {
+     "id": "nsac-2006-tuf3-09",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-21",
+     "stage_label": "Middleweight Semi Final",
+     "corners": [
+      {
+       "printed": "KENDALL KEKOA GROVE",
+       "hometown": "Las Vegas, NV",
+       "dob": "1982-11-12",
+       "weight_lbs": 186
+      },
+      {
+       "printed": "KALIB AXEL STARNES",
+       "hometown": "Surrey, BC, Canada",
+       "dob": "1975-01-06",
+       "weight_lbs": 186
+      }
+     ],
+     "winner_surname": "Grove",
+     "result_text": "Grove won by TKO 0:34 of the 3rd round.",
+     "method": "TKO",
+     "round": 3,
+     "time": "0:34",
+     "scheduled_rounds": 3,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": "Middleweight",
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "semi_final",
+      "a": "Kalib Starnes",
+      "b": "Kendall Grove"
+     },
+     "winner": "Kendall Grove"
+    },
+    {
+     "id": "nsac-2006-tuf3-10",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-22",
+     "stage_label": "Middleweight Semi Final",
+     "corners": [
+      {
+       "printed": "RORY MICHAEL SINGER",
+       "hometown": "Athens, GA",
+       "dob": "1976-05-28",
+       "weight_lbs": 186
+      },
+      {
+       "printed": "EDWARD BENSON HERMAN",
+       "hometown": "Portland, OR",
+       "dob": "1980-10-02",
+       "weight_lbs": 186
+      }
+     ],
+     "winner_surname": "Herman",
+     "result_text": "Herman won by tap out 2:31 of the 2nd round – rear naked choke.",
+     "method": "Submission (rear naked choke)",
+     "round": 2,
+     "time": "2:31",
+     "scheduled_rounds": 3,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": "Middleweight",
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "semi_final",
+      "a": "Rory Singer",
+      "b": "Ed Herman"
+     },
+     "winner": "Ed Herman"
+    },
+    {
+     "id": "nsac-2006-tuf3-11",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-23",
+     "stage_label": "Light Heavyweight Semi Final",
+     "corners": [
+      {
+       "printed": "JOSHUA LEE HAYNES",
+       "hometown": "Medford, OR",
+       "dob": "1977-07-30",
+       "weight_lbs": 205.5
+      },
+      {
+       "printed": "JESSE LEE FORBES",
+       "hometown": "Tempe, AZ",
+       "dob": "1984-10-24",
+       "weight_lbs": 206
+      }
+     ],
+     "winner_surname": "Haynes",
+     "result_text": "Haynes won by tap out 0:19 of the 2nd round – guillotine choke.",
+     "method": "Submission (guillotine choke)",
+     "round": 2,
+     "time": "0:19",
+     "scheduled_rounds": 3,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": "Light Heavyweight",
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Light Heavyweight",
+      "stage": "semi_final",
+      "a": "Jesse Forbes",
+      "b": "Josh Haynes"
+     },
+     "winner": "Josh Haynes"
+    },
+    {
+     "id": "nsac-2006-tuf3-12",
+     "document_id": "nsac-2006-tuf-season-3",
+     "remarks": [],
+     "date": "2006-02-24",
+     "stage_label": "Light Heavyweight Semi Final",
+     "corners": [
+      {
+       "printed": "MICHAEL GAVIN JOSEPH BISPING",
+       "hometown": "Clitheror, Lancs, UK",
+       "dob": "1979-02-28",
+       "weight_lbs": 205
+      },
+      {
+       "printed": "ROSS JOHN POINTON",
+       "hometown": "Stout on Trent, England",
+       "dob": "1978-02-18",
+       "weight_lbs": 205
+      }
+     ],
+     "winner_surname": "Bisping",
+     "result_text": "Bisping won by tap out 2:12 of the 1st round – strikes.",
+     "method": "Submission (strikes)",
+     "round": 1,
+     "time": "2:12",
+     "scheduled_rounds": 3,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": "Light Heavyweight",
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Light Heavyweight",
+      "stage": "semi_final",
+      "a": "Ross Pointon",
+      "b": "Michael Bisping"
+     },
+     "winner": "Michael Bisping"
+    }
+   ],
+   "summary": {
+    "house_bouts_expected": 12,
+    "house_bouts_in_archive": 12,
+    "records_in_document": 12,
+    "matched": 12,
+    "unmatched": 0,
+    "ambiguous": 0,
+    "duplicate_use": [],
+    "unused_records": [],
+    "differences": {
+     "winner": 0,
+     "method": 4,
+     "round": 0,
+     "time_contradictions": 8,
+     "time_source_only": 1
+    },
+    "method_kinds": {
+     "true_contradiction": [
+      "Kalib Starnes vs Mike Stine",
+      "Solomon Hutcherson vs Rory Singer",
+      "Kalib Starnes vs Kendall Grove"
+     ],
+     "primary_normalization": [],
+     "compatible_secondary_detail": [
+      "Kristian Rothaermel vs Michael Bisping"
+     ],
+     "source_only_new_fact": []
+    },
+    "fight_dates": 12,
+    "referees": 12,
+    "scorecards": 2,
+    "decisions": 2,
+    "decisions_without_cards": [],
+    "weights": 24,
+    "remarks": 0,
+    "dob": {
+     "agrees": 11,
+     "disagreements": [
+      "Ross Pointon: printed 1978-02-18, canonical 1980-02-18",
+      "Solomon Hutcherson: printed 1972-08-13, canonical 1972-08-31"
+     ],
+     "no_canonical_identity": [
+      "Mike Stine: printed 1979-01-08",
+      "Noah Inhofer: printed 1981-06-17",
+      "Tait Fletcher: printed 1971-02-07"
+     ]
+    },
+    "classification_wording": "MIXED MARTIAL ARTS EXHIBITION RESULTS",
+    "classification_primary_possible": true,
+    "fight_dates_follow_episode_order": true,
+    "open_conflicts": [
+     "Light Heavyweight_semi_final: partially_informs"
+    ]
+   },
+   "bouts": [
+    {
+     "bout": "Kalib Starnes vs Mike Stine",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 1,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-01",
+     "canonical": {
+      "winner": "Kalib Starnes",
+      "method": "KO (punches)",
+      "round": 1,
+      "time": "2:09",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Starnes",
+      "method": "TKO",
+      "round": 1,
+      "time": "2:10",
+      "date": "2006-01-24",
+      "result_text": "Starnes won by TKO 2:10 of the 1st round.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "MICHAEL DANIEL STINE",
+        183
+       ],
+       [
+        "KALIB AXEL STARNES",
+        185
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Quarter Final"
+     },
+     "ids": [
+      "80a70b97-37a5-48bb-aedc-42a8f44e81d1",
+      null
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "true_contradiction",
+       "canonical": "KO (punches)",
+       "commission": "TKO",
+       "note": "the draft's \"punches\" sits under a different method category than the record's; per the TUF 1 rule a contradicted label is not carried forward, but the injury/strike detail itself may be reviewed"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:09",
+       "commission": "2:10"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-01-24"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MICHAEL DANIEL STINE",
+         183
+        ],
+        [
+         "KALIB AXEL STARNES",
+         185
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Ross Pointon vs Kendall Grove",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 3,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-03",
+     "canonical": {
+      "winner": "Kendall Grove",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "3:45",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Grove",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "3:47",
+      "date": "2006-01-30",
+      "result_text": "Grove won by tap out 3:47 of the 1st round – rear naked choke.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "KENDALL KEKOA GROVE",
+        185
+       ],
+       [
+        "ROSS JOHN POINTON",
+        185
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Quarter Final"
+     },
+     "ids": [
+      "4e32d334-47ac-4e8f-a075-8ed51ac61469",
+      "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "3:45",
+       "commission": "3:47"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-01-30"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "KENDALL KEKOA GROVE",
+         185
+        ],
+        [
+         "ROSS JOHN POINTON",
+         185
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Solomon Hutcherson vs Rory Singer",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 5,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-05",
+     "canonical": {
+      "winner": "Rory Singer",
+      "method": "KO (head kick and punches)",
+      "round": 2,
+      "time": "0:21",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Singer",
+      "method": "TKO",
+      "round": 2,
+      "time": "0:23",
+      "date": "2006-02-07",
+      "result_text": "Singer won by TKO 0:23 of the 2nd round.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "RORY MICHAEL SINGER",
+        186
+       ],
+       [
+        "SOLOMON MARK HUTCHERSON",
+        185
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Quarter Final"
+     },
+     "ids": [
+      "ec1b64ab-0263-4f03-9c2a-262fb0d3edc2",
+      "bf82e7bb-bb93-4924-92fe-910cc6b02e5d"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "true_contradiction",
+       "canonical": "KO (head kick and punches)",
+       "commission": "TKO",
+       "note": "the draft's \"head kick and punches\" sits under a different method category than the record's; per the TUF 1 rule a contradicted label is not carried forward, but the injury/strike detail itself may be reviewed"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "0:21",
+       "commission": "0:23"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-07",
+       "printed": "02/0706",
+       "note": "misprinted in the document; read as 2006-02-07 from the printed day/month and its place between 02/02/06 and 02/10/06 — a transcription judgement to confirm"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "RORY MICHAEL SINGER",
+         186
+        ],
+        [
+         "SOLOMON MARK HUTCHERSON",
+         185
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Ed Herman vs Danny Abbadi",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 8,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-07",
+     "canonical": {
+      "winner": "Ed Herman",
+      "method": "Submission (armbar)",
+      "round": 1,
+      "time": "4:14",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Herman",
+      "method": "Submission (armbar)",
+      "round": 1,
+      "time": "4:20",
+      "date": "2006-02-14",
+      "result_text": "Herman won by tap out 4:20 of the 1st round – arm bar.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "MUNTASER DANNY ABBADI",
+        182
+       ],
+       [
+        "EDWARD BENSON HERMAN",
+        185
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Quarter Final"
+     },
+     "ids": [
+      "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a",
+      "9e388bfc-f7cb-4990-aa76-54d87f77b3dd"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "4:14",
+       "commission": "4:20"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-14"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MUNTASER DANNY ABBADI",
+         182
+        ],
+        [
+         "EDWARD BENSON HERMAN",
+         185
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Kalib Starnes vs Kendall Grove",
+     "weight_class": "Middleweight",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 10,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-09",
+     "canonical": {
+      "winner": "Kendall Grove",
+      "method": "Verbal submission (rib injury)",
+      "round": 3,
+      "time": "0:30",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Grove",
+      "method": "TKO",
+      "round": 3,
+      "time": "0:34",
+      "date": "2006-02-21",
+      "result_text": "Grove won by TKO 0:34 of the 3rd round.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "KENDALL KEKOA GROVE",
+        186
+       ],
+       [
+        "KALIB AXEL STARNES",
+        186
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Semi Final"
+     },
+     "ids": [
+      "80a70b97-37a5-48bb-aedc-42a8f44e81d1",
+      "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "true_contradiction",
+       "canonical": "Verbal submission (rib injury)",
+       "commission": "TKO",
+       "note": "the draft's \"rib injury\" sits under a different method category than the record's; per the TUF 1 rule a contradicted label is not carried forward, but the injury/strike detail itself may be reviewed"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "0:30",
+       "commission": "0:34"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-21"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "KENDALL KEKOA GROVE",
+         186
+        ],
+        [
+         "KALIB AXEL STARNES",
+         186
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Rory Singer vs Ed Herman",
+     "weight_class": "Middleweight",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 11,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-10",
+     "canonical": {
+      "winner": "Ed Herman",
+      "method": "Submission (rear naked choke)",
+      "round": 2,
+      "time": "2:31",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Herman",
+      "method": "Submission (rear naked choke)",
+      "round": 2,
+      "time": "2:31",
+      "date": "2006-02-22",
+      "result_text": "Herman won by tap out 2:31 of the 2nd round – rear naked choke.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "RORY MICHAEL SINGER",
+        186
+       ],
+       [
+        "EDWARD BENSON HERMAN",
+        186
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Semi Final"
+     },
+     "ids": [
+      "bf82e7bb-bb93-4924-92fe-910cc6b02e5d",
+      "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-22"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "RORY MICHAEL SINGER",
+         186
+        ],
+        [
+         "EDWARD BENSON HERMAN",
+         186
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Jesse Forbes vs Noah Inhofer",
+     "weight_class": "Light Heavyweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 2,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-02",
+     "canonical": {
+      "winner": "Noah Inhofer",
+      "method": "Submission (armbar)",
+      "round": 1,
+      "time": "2:35",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Inhofer",
+      "method": "Submission (armbar)",
+      "round": 1,
+      "time": "2:36",
+      "date": "2006-01-27",
+      "result_text": "Inhofer won by tap out 2:36 of the 1st round. – arm bar",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "NOAH INHOFER",
+        206
+       ],
+       [
+        "JESSE LEE FORBES",
+        204
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Light Heavyweight Quarter Final"
+     },
+     "ids": [
+      "9c566705-75a1-46be-8ee4-5b2e341e6f35",
+      null
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:35",
+       "commission": "2:36"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-01-27"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "NOAH INHOFER",
+         206
+        ],
+        [
+         "JESSE LEE FORBES",
+         204
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Tait Fletcher vs Josh Haynes",
+     "weight_class": "Light Heavyweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 7,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-06",
+     "canonical": {
+      "winner": "Josh Haynes",
+      "method": "Decision (split)",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Haynes",
+      "method": "Decision (split)",
+      "round": 2,
+      "time": null,
+      "date": "2006-02-10",
+      "result_text": "Haynes won by split decision.",
+      "referee": "Herb Dean",
+      "scorecards": {
+       "order": [
+        "Haynes",
+        "Fletcher"
+       ],
+       "cards": [
+        {
+         "judge": "Tony Weeks",
+         "score": "20-18"
+        },
+        {
+         "judge": "Dalby Shirley",
+         "score": "20-18"
+        },
+        {
+         "judge": "Nelson Hamilton",
+         "score": "18-20"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "JOSHUA LEE HAYNES",
+        202.5
+       ],
+       [
+        "TAIT G. FLETCHER",
+        205
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Light Heavyweight Quarter Final"
+     },
+     "ids": [
+      null,
+      "8540fb3a-4db2-4691-8e54-a46067d079d0"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-10"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Haynes",
+         "Fletcher"
+        ],
+        "cards": [
+         {
+          "judge": "Tony Weeks",
+          "score": "20-18"
+         },
+         {
+          "judge": "Dalby Shirley",
+          "score": "20-18"
+         },
+         {
+          "judge": "Nelson Hamilton",
+          "score": "18-20"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "JOSHUA LEE HAYNES",
+         202.5
+        ],
+        [
+         "TAIT G. FLETCHER",
+         205
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Mike Nickels vs Matt Hamill",
+     "weight_class": "Light Heavyweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 9,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-08",
+     "canonical": {
+      "winner": "Matt Hamill",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Hamill",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "date": "2006-02-18",
+      "result_text": "Hamill won by unanimous decision.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": {
+       "order": [
+        "Hamill",
+        "Nickels"
+       ],
+       "cards": [
+        {
+         "judge": "Adalaide Byrd",
+         "score": "20-18"
+        },
+        {
+         "judge": "Tony Weeks",
+         "score": "20-18"
+        },
+        {
+         "judge": "Cecil Peoples",
+         "score": "20-18"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "MATTHEW S HAMILL",
+        204.5
+       ],
+       [
+        "MICHAEL JOHN NICKELS",
+        205
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Light Heavyweight Quarter Final"
+     },
+     "ids": [
+      "10fda69e-6534-490c-a2a9-21cdbde121dc",
+      "7c603bce-b425-4c35-a69e-23704c12a76a"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-18"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Hamill",
+         "Nickels"
+        ],
+        "cards": [
+         {
+          "judge": "Adalaide Byrd",
+          "score": "20-18"
+         },
+         {
+          "judge": "Tony Weeks",
+          "score": "20-18"
+         },
+         {
+          "judge": "Cecil Peoples",
+          "score": "20-18"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MATTHEW S HAMILL",
+         204.5
+        ],
+        [
+         "MICHAEL JOHN NICKELS",
+         205
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Kristian Rothaermel vs Michael Bisping",
+     "weight_class": "Light Heavyweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 4,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-04",
+     "canonical": {
+      "winner": "Michael Bisping",
+      "method": "TKO (strikes)",
+      "round": 1,
+      "time": "3:51",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Bisping",
+      "method": "TKO",
+      "round": 1,
+      "time": "4:02",
+      "date": "2006-02-02",
+      "result_text": "Bisping won by TKO 4:02 of the 1st round.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "MICHAEL GAVIN JOSEPH BISPING",
+        204.5
+       ],
+       [
+        "KRISTIAN BAXTER ROTHAERMEL",
+        204
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Light Heavyweight Quarter Final"
+     },
+     "ids": [
+      "507d1012-749f-4efd-b689-c3454907cd10",
+      "50e2576e-e89f-4f99-8020-3b95d8a3094f"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "compatible_secondary_detail",
+       "canonical": "TKO (strikes)",
+       "commission": "TKO",
+       "detail": "strikes"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "3:51",
+       "commission": "4:02"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-02"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MICHAEL GAVIN JOSEPH BISPING",
+         204.5
+        ],
+        [
+         "KRISTIAN BAXTER ROTHAERMEL",
+         204
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Jesse Forbes vs Josh Haynes",
+     "weight_class": "Light Heavyweight",
+     "stage": "semi_final",
+     "stage_status": "unverified",
+     "episode": 12,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-11",
+     "canonical": {
+      "winner": "Josh Haynes",
+      "method": "Submission (guillotine choke)",
+      "round": 2,
+      "time": "0:18",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Haynes",
+      "method": "Submission (guillotine choke)",
+      "round": 2,
+      "time": "0:19",
+      "date": "2006-02-23",
+      "result_text": "Haynes won by tap out 0:19 of the 2nd round – guillotine choke.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "JOSHUA LEE HAYNES",
+        205.5
+       ],
+       [
+        "JESSE LEE FORBES",
+        206
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Light Heavyweight Semi Final"
+     },
+     "ids": [
+      "9c566705-75a1-46be-8ee4-5b2e341e6f35",
+      "8540fb3a-4db2-4691-8e54-a46067d079d0"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "0:18",
+       "commission": "0:19"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-23"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "JOSHUA LEE HAYNES",
+         205.5
+        ],
+        [
+         "JESSE LEE FORBES",
+         206
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Ross Pointon vs Michael Bisping",
+     "weight_class": "Light Heavyweight",
+     "stage": "semi_final",
+     "stage_status": "unverified",
+     "episode": 12,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf3-12",
+     "canonical": {
+      "winner": "Michael Bisping",
+      "method": "Submission (strikes)",
+      "round": 1,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Bisping",
+      "method": "Submission (strikes)",
+      "round": 1,
+      "time": "2:12",
+      "date": "2006-02-24",
+      "result_text": "Bisping won by tap out 2:12 of the 1st round – strikes.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "MICHAEL GAVIN JOSEPH BISPING",
+        205
+       ],
+       [
+        "ROSS JOHN POINTON",
+        205
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Light Heavyweight Semi Final"
+     },
+     "ids": [
+      "4e32d334-47ac-4e8f-a075-8ed51ac61469",
+      "50e2576e-e89f-4f99-8020-3b95d8a3094f"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2:12"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-02-24"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MICHAEL GAVIN JOSEPH BISPING",
+         205
+        ],
+        [
+         "ROSS JOHN POINTON",
+         205
+        ]
+       ]
+      }
+     ]
+    }
+   ],
+   "dates_of_birth": [
+    {
+     "fighter": "Kalib Starnes",
+     "printed_name": "KALIB AXEL STARNES",
+     "printed": "1975-01-06",
+     "canonical": "1975-01-06",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Mike Stine",
+     "printed_name": "MICHAEL DANIEL STINE",
+     "printed": "1979-01-08",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    },
+    {
+     "fighter": "Ross Pointon",
+     "printed_name": "ROSS JOHN POINTON",
+     "printed": "1978-02-18",
+     "canonical": "1980-02-18",
+     "state": "identity_disagreement"
+    },
+    {
+     "fighter": "Kendall Grove",
+     "printed_name": "KENDALL KEKOA GROVE",
+     "printed": "1982-11-12",
+     "canonical": "1982-11-12",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Solomon Hutcherson",
+     "printed_name": "SOLOMON MARK HUTCHERSON",
+     "printed": "1972-08-13",
+     "canonical": "1972-08-31",
+     "state": "identity_disagreement"
+    },
+    {
+     "fighter": "Rory Singer",
+     "printed_name": "RORY MICHAEL SINGER",
+     "printed": "1976-05-28",
+     "canonical": "1976-05-28",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Ed Herman",
+     "printed_name": "EDWARD BENSON HERMAN",
+     "printed": "1980-10-02",
+     "canonical": "1980-10-02",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Danny Abbadi",
+     "printed_name": "MUNTASER DANNY ABBADI",
+     "printed": "1983-07-03",
+     "canonical": "1983-07-03",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Jesse Forbes",
+     "printed_name": "JESSE LEE FORBES",
+     "printed": "1984-10-24",
+     "canonical": "1984-10-24",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Noah Inhofer",
+     "printed_name": "NOAH INHOFER",
+     "printed": "1981-06-17",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    },
+    {
+     "fighter": "Tait Fletcher",
+     "printed_name": "TAIT G. FLETCHER",
+     "printed": "1971-02-07",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    },
+    {
+     "fighter": "Josh Haynes",
+     "printed_name": "JOSHUA LEE HAYNES",
+     "printed": "1977-07-30",
+     "canonical": "1977-07-30",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Mike Nickels",
+     "printed_name": "MICHAEL JOHN NICKELS",
+     "printed": "1971-12-13",
+     "canonical": "1971-12-13",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Matt Hamill",
+     "printed_name": "MATTHEW S HAMILL",
+     "printed": "1976-10-05",
+     "canonical": "1976-10-05",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Kristian Rothaermel",
+     "printed_name": "KRISTIAN BAXTER ROTHAERMEL",
+     "printed": "1972-01-31",
+     "canonical": "1972-01-31",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Michael Bisping",
+     "printed_name": "MICHAEL GAVIN JOSEPH BISPING",
+     "printed": "1979-02-28",
+     "canonical": "1979-02-28",
+     "state": "agrees"
+    }
+   ],
+   "conflicts": [
+    {
+     "field": "Light Heavyweight_semi_final",
+     "verdict": "partially_informs",
+     "detail": "The source's semi-finals for this division do not close as a self-contained round: 1 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
+     "commission_facts": [
+      "NSAC records Haynes vs Forbes on 2006-02-23 and Bisping vs Pointon on 2006-02-24, both headed \"Light Heavyweight Semi Final\".",
+      "Forbes's only other commission bout is his quarter-final loss to Inhofer (2006-01-27); Pointon's is his middleweight quarter-final loss to Grove (2006-01-30). The 12 records account for all 12 house bouts, so no additional sanctioned bout for either fighter exists in this document."
+     ],
+     "does_not_settle": "Why each fighter entered the semi-finals (the season source's format_exceptions describe replacements: Hamill out injured, Pointon moved up). The record states no replacement, injury or withdrawal.",
+     "recommendation": "Keep open. The record supports \"replacement, not a missing bout\" but does not state it; closing needs a source that states the replacements."
+    }
+   ]
+  },
+  "tuf-4": {
+   "document": {
+    "id": "nsac-2006-tuf-season-4",
+    "source_family": "athletic_commission",
+    "source_type": "commission_result_record",
+    "commission": "Nevada State Athletic Commission",
+    "jurisdiction": "Nevada",
+    "document": "Mixed Martial Arts Results (TUF Season 4 results record)",
+    "seasons": [
+     "tuf-4"
+    ],
+    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+    "archive_url": "https://web.archive.org/web/20161219211150/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2006_Results/TUFSEASON4.pdf",
+    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+    "bytes": 52762,
+    "pages": 2,
+    "retrieved": "2026-09-13",
+    "live": {
+     "http": 200,
+     "content_type": "application/pdf",
+     "last_modified": "Wed, 06 Feb 2013 22:42:46 GMT"
+    },
+    "live_matches_archive": true,
+    "pdf_metadata": {
+     "title": "STATE OF NEVADA",
+     "author": "Athletic Commission",
+     "created": "2006-11-09"
+    },
+    "title_quote": "MIXED MARTIAL ARTS RESULTS",
+    "classification_language": {
+     "quote": "Exhibition Results",
+     "where": "results column header on both pages; the document title reads \"MIXED MARTIAL ARTS RESULTS\" (the same pattern as the applied TUF 2 record)"
+    },
+    "season_identity": {
+     "printed": false,
+     "basis": "No season number or show name is printed. Season 4 identity rests on the file name TUFSEASON4.pdf (2006_Results), location \"UFC Training Center, Las Vegas\", show dates 2006-05-25..2006-06-27, and the pairings matching the TUF 4 house bouts."
+    },
+    "location": "UFC Training Center, Las Vegas",
+    "promoter": "Zuffa, LLC",
+    "executive_director": "Marc Ratner",
+    "officials": {
+     "referees": [
+      "Steve Mazzagatti"
+     ],
+     "visiting_referees": [
+      "Herb Dean",
+      "John McCarthy"
+     ],
+     "judges": [
+      "Adalaide Byrd",
+      "Dalby Shirley",
+      "Glenn Trowbridge",
+      "Tony Weeks"
+     ],
+     "visiting_judges": [
+      "Abe Belardo",
+      "Nelson Hamilton",
+      "Cecil Peoples",
+      "Marcos Rosales"
+     ],
+     "timekeepers": [
+      "Jane Broadfoot",
+      "James Cavin",
+      "Steve Esposito",
+      "Mike LaCella"
+     ],
+     "ringside_doctors": [
+      "William Berliner",
+      "Al Capanna",
+      "Jeff Davidson",
+      "James Game",
+      "Anthony Ruggeroli",
+      "David Watson"
+     ]
+    },
+    "remarks_note": "The Remarks column is empty for all 12 bouts."
+   },
+   "local_pdf_check": {
+    "bytes": 52762,
+    "sha256": "b9c780a2e8fe2b8f740fbb360947a0c97d416e294943468f7fe731201f6dd4dd",
+    "matches": true
+   },
+   "records": [
+    {
+     "id": "nsac-2006-tuf4-01",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-05-25",
+     "stage_label": "Welterweight Quarter Final",
+     "corners": [
+      {
+       "printed": "MEARION BICKHEM aka SHONIE CARTER",
+       "hometown": "Chicago, IL",
+       "dob": "1972-05-03",
+       "weight_lbs": 171
+      },
+      {
+       "printed": "RICHARD THOMAS CLEMENTI",
+       "hometown": "Slidell, LA",
+       "dob": "1976-03-31",
+       "weight_lbs": 171
+      }
+     ],
+     "winner_surname": "Carter",
+     "result_text": "Carter won by unanimous decision.",
+     "method": "Decision (unanimous)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Carter",
+       "Clementi"
+      ],
+      "cards": [
+       {
+        "judge": "Adalaide Byrd",
+        "score": "20-18"
+       },
+       {
+        "judge": "Tony Weeks",
+        "score": "20-18"
+       },
+       {
+        "judge": "Abe Belardo",
+        "score": "20-18"
+       }
+      ]
+     },
+     "referee": "John McCarthy",
+     "weight_class": "Welterweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Welterweight",
+      "stage": "quarter_final",
+      "a": "Rich Clementi",
+      "b": "Shonie Carter"
+     },
+     "winner": "Shonie Carter"
+    },
+    {
+     "id": "nsac-2006-tuf4-02",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-05-30",
+     "stage_label": "Middleweight Quarter Final",
+     "corners": [
+      {
+       "printed": "EDWIN STANTON DeWEES",
+       "hometown": "Scottsdale, AZ",
+       "dob": "1982-08-07",
+       "weight_lbs": 186
+      },
+      {
+       "printed": "GIDEON CHARLES RAY",
+       "hometown": "Belingbrook, IL",
+       "dob": "1973-05-27",
+       "weight_lbs": 183
+      }
+     ],
+     "winner_surname": "DeWees",
+     "result_text": "DeWees won by unanimous decision in the sudden victory round.",
+     "method": "Decision (unanimous, sudden victory round)",
+     "round": 3,
+     "time": null,
+     "scheduled_rounds": 2,
+     "rounds_printed": "2 + Sudden Victory",
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "quarter_final",
+      "a": "Gideon Ray",
+      "b": "Edwin DeWees"
+     },
+     "winner": "Edwin DeWees"
+    },
+    {
+     "id": "nsac-2006-tuf4-03",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-02",
+     "stage_label": "Welterweight Quarter Final",
+     "corners": [
+      {
+       "printed": "CHRIS SCOTT LYTLE",
+       "hometown": "New Palestine, IN",
+       "dob": "1974-08-18",
+       "weight_lbs": 170
+      },
+      {
+       "printed": "AARON PETE SPRATT",
+       "hometown": "Sherman, TX",
+       "dob": "1971-01-09",
+       "weight_lbs": 170
+      }
+     ],
+     "winner_surname": "Lytle",
+     "result_text": "Lytle won by tap out 2:08 of the 1st round – Guillotine choke",
+     "method": "Submission (guillotine choke)",
+     "round": 1,
+     "time": "2:08",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": "Welterweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Welterweight",
+      "stage": "quarter_final",
+      "a": "Pete Spratt",
+      "b": "Chris Lytle"
+     },
+     "winner": "Chris Lytle"
+    },
+    {
+     "id": "nsac-2006-tuf4-04",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-06",
+     "stage_label": "Middleweight Quarter Final",
+     "corners": [
+      {
+       "printed": "BRYAN SCOTT SMITH",
+       "hometown": "Elk Grove, CA",
+       "dob": "1979-05-21",
+       "weight_lbs": 184
+      },
+      {
+       "printed": "TRAVIS S. LUTTER",
+       "hometown": "Fort Worth, TX",
+       "dob": "1973-05-12",
+       "weight_lbs": 185.5
+      }
+     ],
+     "winner_surname": "Lutter",
+     "result_text": "Lutter won by tap out 1:15 of the 1st round – rear naked choke.",
+     "method": "Submission (rear naked choke)",
+     "round": 1,
+     "time": "1:15",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "quarter_final",
+      "a": "Travis Lutter",
+      "b": "Scott Smith"
+     },
+     "winner": "Travis Lutter"
+    },
+    {
+     "id": "nsac-2006-tuf4-05",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-09",
+     "stage_label": "Welterweight Quarter Final",
+     "corners": [
+      {
+       "printed": "DIN YERO THOMAS",
+       "hometown": "Port St. Lucis, FL",
+       "dob": "1976-09-28",
+       "weight_lbs": 167.5
+      },
+      {
+       "printed": "MICHAEL WAYNE BURNETT",
+       "hometown": "Tulsa, OK",
+       "dob": "1976-04-12",
+       "weight_lbs": 169.5
+      }
+     ],
+     "winner_surname": "Thomas",
+     "result_text": "Thomas won by tap out 2:33 of the 1st round – triangle choke.",
+     "method": "Submission (triangle choke)",
+     "round": 1,
+     "time": "2:33",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": "Welterweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Welterweight",
+      "stage": "quarter_final",
+      "a": "Mikey Burnett",
+      "b": "Din Thomas"
+     },
+     "winner": "Din Thomas"
+    },
+    {
+     "id": "nsac-2006-tuf4-06",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-13",
+     "stage_label": "Middleweight Quarter Final",
+     "corners": [
+      {
+       "printed": "PETER K. SELL",
+       "hometown": "Westbury, NY",
+       "dob": "1982-08-25",
+       "weight_lbs": 185
+      },
+      {
+       "printed": "CHARLES SIDNEY McCARTHY",
+       "hometown": "Coconut Creek, FL",
+       "dob": "1980-08-06",
+       "weight_lbs": 185
+      }
+     ],
+     "winner_surname": "Sell",
+     "result_text": "Sell won by unanimous decision in the sudden victory round.",
+     "method": "Decision (unanimous, sudden victory round)",
+     "round": 3,
+     "time": null,
+     "scheduled_rounds": 2,
+     "rounds_printed": "2 + Sudden Victory",
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "quarter_final",
+      "a": "Charles McCarthy",
+      "b": "Pete Sell"
+     },
+     "winner": "Pete Sell"
+    },
+    {
+     "id": "nsac-2006-tuf4-07",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-16",
+     "stage_label": "Welterweight Quarter Final",
+     "corners": [
+      {
+       "printed": "MATTHEW JOHN SERRA",
+       "hometown": "East Meadow, NY",
+       "dob": "1974-06-02",
+       "weight_lbs": 170.5
+      },
+      {
+       "printed": "AARON PETE SPRATT",
+       "hometown": "Sherman, TX",
+       "dob": "1971-01-09",
+       "weight_lbs": 169.5
+      }
+     ],
+     "winner_surname": "Serra",
+     "result_text": "Serra won by tap out 3:29 of the 1st round – strikes.",
+     "method": "Submission (strikes)",
+     "round": 1,
+     "time": "3:29",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": "Welterweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Welterweight",
+      "stage": "quarter_final",
+      "a": "Pete Spratt",
+      "b": "Matt Serra"
+     },
+     "winner": "Matt Serra"
+    },
+    {
+     "id": "nsac-2006-tuf4-08",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-20",
+     "stage_label": "Middleweight Quarter Final",
+     "corners": [
+      {
+       "printed": "PATRICK COTE",
+       "hometown": "Beauport. Quebec, Canada",
+       "dob": "1980-02-29",
+       "weight_lbs": 185
+      },
+      {
+       "printed": "JORGE LUIS RIVERA",
+       "hometown": "Urbridge, MA",
+       "dob": "1972-02-28",
+       "weight_lbs": 184.5
+      }
+     ],
+     "winner_surname": "Cote",
+     "result_text": "Cote won by unanimous decision.",
+     "method": "Decision (unanimous)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Cote",
+       "Rivera"
+      ],
+      "cards": [
+       {
+        "judge": "Glenn Trowbridge",
+        "score": "20-18"
+       },
+       {
+        "judge": "Adalaide Byrd",
+        "score": "20-18"
+       },
+       {
+        "judge": "Cecil Peoples",
+        "score": "20-18"
+       }
+      ]
+     },
+     "referee": "Herb Dean",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "quarter_final",
+      "a": "Jorge Rivera",
+      "b": "Patrick Côté"
+     },
+     "winner": "Patrick Côté"
+    },
+    {
+     "id": "nsac-2006-tuf4-09",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-26",
+     "stage_label": "WELTERWEIGHT SEMI-FINAL BOUT",
+     "corners": [
+      {
+       "printed": "CHRIS SCOTT LYTLE",
+       "hometown": "New Palestine, IN",
+       "dob": "1974-08-18",
+       "weight_lbs": 169
+      },
+      {
+       "printed": "DIN YERO THOMAS",
+       "hometown": "Port St. Lucis, FL",
+       "dob": "1976-09-28",
+       "weight_lbs": 168.5
+      }
+     ],
+     "winner_surname": "Lytle",
+     "result_text": "Lytle won by unanimous decision",
+     "method": "Decision (unanimous)",
+     "round": 3,
+     "time": null,
+     "scheduled_rounds": 3,
+     "scorecards": {
+      "order": [
+       "Lytle",
+       "Thomas"
+      ],
+      "cards": [
+       {
+        "judge": "Dalby Shirley",
+        "score": "29-28"
+       },
+       {
+        "judge": "Glenn Trowbridge",
+        "score": "30-27"
+       },
+       {
+        "judge": "Abe Belardo",
+        "score": "30-27"
+       }
+      ]
+     },
+     "scorecard_order_printed": "Lytle - Thomasr",
+     "referee": "Steve Mazzagatti",
+     "weight_class": "Welterweight",
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Welterweight",
+      "stage": "semi_final",
+      "a": "Chris Lytle",
+      "b": "Din Thomas"
+     },
+     "winner": "Chris Lytle"
+    },
+    {
+     "id": "nsac-2006-tuf4-10",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-26",
+     "stage_label": "WELTERWEIGHT SEMI-FINAL BOUT",
+     "corners": [
+      {
+       "printed": "MATTHEW JOHN SERRA",
+       "hometown": "East Meadow, NY",
+       "dob": "1974-06-02",
+       "weight_lbs": 170
+      },
+      {
+       "printed": "MEARION BICKHEM aka SHONIE CARTER",
+       "hometown": "Chicago, IL",
+       "dob": "1972-05-03",
+       "weight_lbs": 170
+      }
+     ],
+     "winner_surname": "Serra",
+     "result_text": "Serra won by unanimous decision",
+     "method": "Decision (unanimous)",
+     "round": 3,
+     "time": null,
+     "scheduled_rounds": 3,
+     "scorecards": {
+      "order": [
+       "Serra",
+       "Carter"
+      ],
+      "cards": [
+       {
+        "judge": "Dalby Shirley",
+        "score": "29-28"
+       },
+       {
+        "judge": "Glenn Trowbridge",
+        "score": "30-27"
+       },
+       {
+        "judge": "Abe Belardo",
+        "score": "29-28"
+       }
+      ]
+     },
+     "referee": "John McCarthy",
+     "weight_class": "Welterweight",
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Welterweight",
+      "stage": "semi_final",
+      "a": "Shonie Carter",
+      "b": "Matt Serra"
+     },
+     "winner": "Matt Serra"
+    },
+    {
+     "id": "nsac-2006-tuf4-11",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-27",
+     "stage_label": "MIDDLEWEIGHT SEMI-FINAL BOUT",
+     "corners": [
+      {
+       "printed": "PETER K. SELL",
+       "hometown": "Westbury, NY",
+       "dob": "1982-08-25",
+       "weight_lbs": 185
+      },
+      {
+       "printed": "TRAVIS S. LUTTER",
+       "hometown": "Fort Worth, TX",
+       "dob": "1973-05-12",
+       "weight_lbs": 185.5
+      }
+     ],
+     "winner_surname": "Lutter",
+     "result_text": "Lutter won by unanimous decision.",
+     "method": "Decision (unanimous)",
+     "round": 3,
+     "time": null,
+     "scheduled_rounds": 3,
+     "scorecards": {
+      "order": [
+       "Sell",
+       "Lutter"
+      ],
+      "cards": [
+       {
+        "judge": "Tony Weeks",
+        "score": "27-30"
+       },
+       {
+        "judge": "Glenn Trowbridge",
+        "score": "27-30"
+       },
+       {
+        "judge": "Nelson Hamilton",
+        "score": "26-30"
+       }
+      ]
+     },
+     "referee": "John McCarthy",
+     "weight_class": "Middleweight",
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "semi_final",
+      "a": "Pete Sell",
+      "b": "Travis Lutter"
+     },
+     "winner": "Travis Lutter"
+    },
+    {
+     "id": "nsac-2006-tuf4-12",
+     "document_id": "nsac-2006-tuf-season-4",
+     "remarks": [],
+     "date": "2006-06-27",
+     "stage_label": "MIDDLEWEIGHT SEMI-FINAL BOUT",
+     "corners": [
+      {
+       "printed": "PATRICK COTE",
+       "hometown": "Beauport. Quebec, Canada",
+       "dob": "1980-02-29",
+       "weight_lbs": 185
+      },
+      {
+       "printed": "EDWIN STANTON DeWEES",
+       "hometown": "Scottsdale, AZ",
+       "dob": "1982-08-07",
+       "weight_lbs": 185
+      }
+     ],
+     "winner_surname": "Cote",
+     "result_text": "Cote won by unanimous decision.",
+     "method": "Decision (unanimous)",
+     "round": 3,
+     "time": null,
+     "scheduled_rounds": 3,
+     "scorecards": {
+      "order": [
+       "Cote",
+       "DeWees"
+      ],
+      "cards": [
+       {
+        "judge": "Tony Weeks",
+        "score": "30-27"
+       },
+       {
+        "judge": "Glenn Trowbridge",
+        "score": "30-27"
+       },
+       {
+        "judge": "Nelson Hamilton",
+        "score": "30-27"
+       }
+      ]
+     },
+     "referee": "Steve Mazzagatti",
+     "weight_class": "Middleweight",
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Middleweight",
+      "stage": "semi_final",
+      "a": "Patrick Côté",
+      "b": "Edwin DeWees"
+     },
+     "winner": "Patrick Côté"
+    }
+   ],
+   "summary": {
+    "house_bouts_expected": 12,
+    "house_bouts_in_archive": 12,
+    "records_in_document": 12,
+    "matched": 12,
+    "unmatched": 0,
+    "ambiguous": 0,
+    "duplicate_use": [],
+    "unused_records": [],
+    "differences": {
+     "winner": 0,
+     "method": 2,
+     "round": 0,
+     "time_contradictions": 4,
+     "time_source_only": 0
+    },
+    "method_kinds": {
+     "true_contradiction": [],
+     "primary_normalization": [
+      "Charles McCarthy vs Pete Sell",
+      "Gideon Ray vs Edwin DeWees"
+     ],
+     "compatible_secondary_detail": [],
+     "source_only_new_fact": []
+    },
+    "fight_dates": 12,
+    "referees": 12,
+    "scorecards": 6,
+    "decisions": 8,
+    "decisions_without_cards": [
+     "nsac-2006-tuf4-02",
+     "nsac-2006-tuf4-06"
+    ],
+    "weights": 24,
+    "remarks": 0,
+    "dob": {
+     "agrees": 13,
+     "disagreements": [
+      "Mikey Burnett: printed 1976-04-12, canonical 1974-04-12",
+      "Pete Sell: printed 1982-08-25, canonical 1982-08-05"
+     ],
+     "no_canonical_identity": []
+    },
+    "classification_wording": "Exhibition Results",
+    "classification_primary_possible": true,
+    "fight_dates_follow_episode_order": true,
+    "open_conflicts": [
+     "Welterweight_quarter_final: partially_informs"
+    ]
+   },
+   "bouts": [
+    {
+     "bout": "Rich Clementi vs Shonie Carter",
+     "weight_class": "Welterweight",
+     "stage": "quarter_final",
+     "stage_status": "unverified",
+     "episode": 1,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-01",
+     "canonical": {
+      "winner": "Shonie Carter",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Carter",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "date": "2006-05-25",
+      "result_text": "Carter won by unanimous decision.",
+      "referee": "John McCarthy",
+      "scorecards": {
+       "order": [
+        "Carter",
+        "Clementi"
+       ],
+       "cards": [
+        {
+         "judge": "Adalaide Byrd",
+         "score": "20-18"
+        },
+        {
+         "judge": "Tony Weeks",
+         "score": "20-18"
+        },
+        {
+         "judge": "Abe Belardo",
+         "score": "20-18"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "MEARION BICKHEM aka SHONIE CARTER",
+        171
+       ],
+       [
+        "RICHARD THOMAS CLEMENTI",
+        171
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Welterweight Quarter Final"
+     },
+     "ids": [
+      "e14206b9-b68d-4802-8298-50c714867a50",
+      "32f4cac6-4424-4c96-ba2b-4828542c673c"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-05-25"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Carter",
+         "Clementi"
+        ],
+        "cards": [
+         {
+          "judge": "Adalaide Byrd",
+          "score": "20-18"
+         },
+         {
+          "judge": "Tony Weeks",
+          "score": "20-18"
+         },
+         {
+          "judge": "Abe Belardo",
+          "score": "20-18"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MEARION BICKHEM aka SHONIE CARTER",
+         171
+        ],
+        [
+         "RICHARD THOMAS CLEMENTI",
+         171
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Pete Spratt vs Matt Serra",
+     "weight_class": "Welterweight",
+     "stage": "quarter_final",
+     "stage_status": "unverified",
+     "episode": 7,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-07",
+     "canonical": {
+      "winner": "Matt Serra",
+      "method": "Submission (strikes)",
+      "round": 1,
+      "time": "3:26",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Serra",
+      "method": "Submission (strikes)",
+      "round": 1,
+      "time": "3:29",
+      "date": "2006-06-16",
+      "result_text": "Serra won by tap out 3:29 of the 1st round – strikes.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "MATTHEW JOHN SERRA",
+        170.5
+       ],
+       [
+        "AARON PETE SPRATT",
+        169.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Welterweight Quarter Final"
+     },
+     "ids": [
+      "b47c906b-4963-4fdb-9c10-a5a49c213dad",
+      "1605cde2-d2e5-40b3-a428-f74644052b84"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "3:26",
+       "commission": "3:29"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-16"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MATTHEW JOHN SERRA",
+         170.5
+        ],
+        [
+         "AARON PETE SPRATT",
+         169.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Pete Spratt vs Chris Lytle",
+     "weight_class": "Welterweight",
+     "stage": "quarter_final",
+     "stage_status": "unverified",
+     "episode": 3,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-03",
+     "canonical": {
+      "winner": "Chris Lytle",
+      "method": "Submission (guillotine choke)",
+      "round": 1,
+      "time": "2:06",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Lytle",
+      "method": "Submission (guillotine choke)",
+      "round": 1,
+      "time": "2:08",
+      "date": "2006-06-02",
+      "result_text": "Lytle won by tap out 2:08 of the 1st round – Guillotine choke",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "CHRIS SCOTT LYTLE",
+        170
+       ],
+       [
+        "AARON PETE SPRATT",
+        170
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Welterweight Quarter Final"
+     },
+     "ids": [
+      "b47c906b-4963-4fdb-9c10-a5a49c213dad",
+      "3be9b895-b4f9-4320-b25b-27d5ab056977"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:06",
+       "commission": "2:08"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-02"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "CHRIS SCOTT LYTLE",
+         170
+        ],
+        [
+         "AARON PETE SPRATT",
+         170
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Mikey Burnett vs Din Thomas",
+     "weight_class": "Welterweight",
+     "stage": "quarter_final",
+     "stage_status": "unverified",
+     "episode": 5,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-05",
+     "canonical": {
+      "winner": "Din Thomas",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "2:30",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Thomas",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "2:33",
+      "date": "2006-06-09",
+      "result_text": "Thomas won by tap out 2:33 of the 1st round – triangle choke.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "DIN YERO THOMAS",
+        167.5
+       ],
+       [
+        "MICHAEL WAYNE BURNETT",
+        169.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Welterweight Quarter Final"
+     },
+     "ids": [
+      "2d30582b-5b98-492e-a91e-a64d6884bd65",
+      "3d659f7c-bd87-4576-a49c-7681bae2050f"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:30",
+       "commission": "2:33"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-09"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "DIN YERO THOMAS",
+         167.5
+        ],
+        [
+         "MICHAEL WAYNE BURNETT",
+         169.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Shonie Carter vs Matt Serra",
+     "weight_class": "Welterweight",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 10,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-10",
+     "canonical": {
+      "winner": "Matt Serra",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Serra",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "date": "2006-06-26",
+      "result_text": "Serra won by unanimous decision",
+      "referee": "John McCarthy",
+      "scorecards": {
+       "order": [
+        "Serra",
+        "Carter"
+       ],
+       "cards": [
+        {
+         "judge": "Dalby Shirley",
+         "score": "29-28"
+        },
+        {
+         "judge": "Glenn Trowbridge",
+         "score": "30-27"
+        },
+        {
+         "judge": "Abe Belardo",
+         "score": "29-28"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "MATTHEW JOHN SERRA",
+        170
+       ],
+       [
+        "MEARION BICKHEM aka SHONIE CARTER",
+        170
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "WELTERWEIGHT SEMI-FINAL BOUT"
+     },
+     "ids": [
+      "32f4cac6-4424-4c96-ba2b-4828542c673c",
+      "1605cde2-d2e5-40b3-a428-f74644052b84"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-26"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Serra",
+         "Carter"
+        ],
+        "cards": [
+         {
+          "judge": "Dalby Shirley",
+          "score": "29-28"
+         },
+         {
+          "judge": "Glenn Trowbridge",
+          "score": "30-27"
+         },
+         {
+          "judge": "Abe Belardo",
+          "score": "29-28"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MATTHEW JOHN SERRA",
+         170
+        ],
+        [
+         "MEARION BICKHEM aka SHONIE CARTER",
+         170
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Chris Lytle vs Din Thomas",
+     "weight_class": "Welterweight",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 9,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-09",
+     "canonical": {
+      "winner": "Chris Lytle",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Lytle",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "date": "2006-06-26",
+      "result_text": "Lytle won by unanimous decision",
+      "referee": "Steve Mazzagatti",
+      "scorecards": {
+       "order": [
+        "Lytle",
+        "Thomas"
+       ],
+       "cards": [
+        {
+         "judge": "Dalby Shirley",
+         "score": "29-28"
+        },
+        {
+         "judge": "Glenn Trowbridge",
+         "score": "30-27"
+        },
+        {
+         "judge": "Abe Belardo",
+         "score": "30-27"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "CHRIS SCOTT LYTLE",
+        169
+       ],
+       [
+        "DIN YERO THOMAS",
+        168.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "WELTERWEIGHT SEMI-FINAL BOUT"
+     },
+     "ids": [
+      "3be9b895-b4f9-4320-b25b-27d5ab056977",
+      "3d659f7c-bd87-4576-a49c-7681bae2050f"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-26"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Lytle",
+         "Thomas"
+        ],
+        "cards": [
+         {
+          "judge": "Dalby Shirley",
+          "score": "29-28"
+         },
+         {
+          "judge": "Glenn Trowbridge",
+          "score": "30-27"
+         },
+         {
+          "judge": "Abe Belardo",
+          "score": "30-27"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "CHRIS SCOTT LYTLE",
+         169
+        ],
+        [
+         "DIN YERO THOMAS",
+         168.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Charles McCarthy vs Pete Sell",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-06",
+     "canonical": {
+      "winner": "Pete Sell",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Sell",
+      "method": "Decision (unanimous, sudden victory round)",
+      "round": 3,
+      "time": null,
+      "date": "2006-06-13",
+      "result_text": "Sell won by unanimous decision in the sudden victory round.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "PETER K. SELL",
+        185
+       ],
+       [
+        "CHARLES SIDNEY McCARTHY",
+        185
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Quarter Final"
+     },
+     "ids": [
+      "358c6724-6e74-4a52-9180-32a879d95494",
+      "6bd2a00a-d785-4ae7-ade6-f90c890c438f"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "primary_normalization",
+       "canonical": "Decision (unanimous)",
+       "commission": "Decision (unanimous, sudden victory round)"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-13"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "PETER K. SELL",
+         185
+        ],
+        [
+         "CHARLES SIDNEY McCARTHY",
+         185
+        ]
+       ]
+      },
+      {
+       "field": "rounds_printed",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2 + Sudden Victory",
+       "note": "decided in the sudden victory round after two scheduled rounds"
+      }
+     ]
+    },
+    {
+     "bout": "Travis Lutter vs Scott Smith",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 4,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-04",
+     "canonical": {
+      "winner": "Travis Lutter",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:13",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Lutter",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:15",
+      "date": "2006-06-06",
+      "result_text": "Lutter won by tap out 1:15 of the 1st round – rear naked choke.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "BRYAN SCOTT SMITH",
+        184
+       ],
+       [
+        "TRAVIS S. LUTTER",
+        185.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Quarter Final"
+     },
+     "ids": [
+      "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe",
+      "d5d839b6-daa7-419a-ab86-d862330daa0f"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "1:13",
+       "commission": "1:15"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-06"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "BRYAN SCOTT SMITH",
+         184
+        ],
+        [
+         "TRAVIS S. LUTTER",
+         185.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Jorge Rivera vs Patrick Côté",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 8,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-08",
+     "canonical": {
+      "winner": "Patrick Côté",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Cote",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "date": "2006-06-20",
+      "result_text": "Cote won by unanimous decision.",
+      "referee": "Herb Dean",
+      "scorecards": {
+       "order": [
+        "Cote",
+        "Rivera"
+       ],
+       "cards": [
+        {
+         "judge": "Glenn Trowbridge",
+         "score": "20-18"
+        },
+        {
+         "judge": "Adalaide Byrd",
+         "score": "20-18"
+        },
+        {
+         "judge": "Cecil Peoples",
+         "score": "20-18"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "PATRICK COTE",
+        185
+       ],
+       [
+        "JORGE LUIS RIVERA",
+        184.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Quarter Final"
+     },
+     "ids": [
+      "8a496581-070b-4836-86fc-31576d787e61",
+      "68662bbe-e979-48af-9c82-b6336c25f2f1"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-20"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Cote",
+         "Rivera"
+        ],
+        "cards": [
+         {
+          "judge": "Glenn Trowbridge",
+          "score": "20-18"
+         },
+         {
+          "judge": "Adalaide Byrd",
+          "score": "20-18"
+         },
+         {
+          "judge": "Cecil Peoples",
+          "score": "20-18"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "PATRICK COTE",
+         185
+        ],
+        [
+         "JORGE LUIS RIVERA",
+         184.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Gideon Ray vs Edwin DeWees",
+     "weight_class": "Middleweight",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 2,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-02",
+     "canonical": {
+      "winner": "Edwin DeWees",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "DeWees",
+      "method": "Decision (unanimous, sudden victory round)",
+      "round": 3,
+      "time": null,
+      "date": "2006-05-30",
+      "result_text": "DeWees won by unanimous decision in the sudden victory round.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "EDWIN STANTON DeWEES",
+        186
+       ],
+       [
+        "GIDEON CHARLES RAY",
+        183
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Middleweight Quarter Final"
+     },
+     "ids": [
+      "b47d2ee1-8766-4269-8d7a-3741672a7873",
+      "451e7293-d496-44b8-9392-11debb333172"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "primary_normalization",
+       "canonical": "Decision (unanimous)",
+       "commission": "Decision (unanimous, sudden victory round)"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-05-30"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "EDWIN STANTON DeWEES",
+         186
+        ],
+        [
+         "GIDEON CHARLES RAY",
+         183
+        ]
+       ]
+      },
+      {
+       "field": "rounds_printed",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2 + Sudden Victory",
+       "note": "decided in the sudden victory round after two scheduled rounds"
+      }
+     ]
+    },
+    {
+     "bout": "Pete Sell vs Travis Lutter",
+     "weight_class": "Middleweight",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 11,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-11",
+     "canonical": {
+      "winner": "Travis Lutter",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Lutter",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "date": "2006-06-27",
+      "result_text": "Lutter won by unanimous decision.",
+      "referee": "John McCarthy",
+      "scorecards": {
+       "order": [
+        "Sell",
+        "Lutter"
+       ],
+       "cards": [
+        {
+         "judge": "Tony Weeks",
+         "score": "27-30"
+        },
+        {
+         "judge": "Glenn Trowbridge",
+         "score": "27-30"
+        },
+        {
+         "judge": "Nelson Hamilton",
+         "score": "26-30"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "PETER K. SELL",
+        185
+       ],
+       [
+        "TRAVIS S. LUTTER",
+        185.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "MIDDLEWEIGHT SEMI-FINAL BOUT"
+     },
+     "ids": [
+      "6bd2a00a-d785-4ae7-ade6-f90c890c438f",
+      "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-27"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Sell",
+         "Lutter"
+        ],
+        "cards": [
+         {
+          "judge": "Tony Weeks",
+          "score": "27-30"
+         },
+         {
+          "judge": "Glenn Trowbridge",
+          "score": "27-30"
+         },
+         {
+          "judge": "Nelson Hamilton",
+          "score": "26-30"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "PETER K. SELL",
+         185
+        ],
+        [
+         "TRAVIS S. LUTTER",
+         185.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Patrick Côté vs Edwin DeWees",
+     "weight_class": "Middleweight",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 12,
+     "match": "deterministic",
+     "record_id": "nsac-2006-tuf4-12",
+     "canonical": {
+      "winner": "Patrick Côté",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner_surname": "Cote",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "date": "2006-06-27",
+      "result_text": "Cote won by unanimous decision.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": {
+       "order": [
+        "Cote",
+        "DeWees"
+       ],
+       "cards": [
+        {
+         "judge": "Tony Weeks",
+         "score": "30-27"
+        },
+        {
+         "judge": "Glenn Trowbridge",
+         "score": "30-27"
+        },
+        {
+         "judge": "Nelson Hamilton",
+         "score": "30-27"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "PATRICK COTE",
+        185
+       ],
+       [
+        "EDWIN STANTON DeWEES",
+        185
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "MIDDLEWEIGHT SEMI-FINAL BOUT"
+     },
+     "ids": [
+      "68662bbe-e979-48af-9c82-b6336c25f2f1",
+      "451e7293-d496-44b8-9392-11debb333172"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2006-06-27"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Cote",
+         "DeWees"
+        ],
+        "cards": [
+         {
+          "judge": "Tony Weeks",
+          "score": "30-27"
+         },
+         {
+          "judge": "Glenn Trowbridge",
+          "score": "30-27"
+         },
+         {
+          "judge": "Nelson Hamilton",
+          "score": "30-27"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "PATRICK COTE",
+         185
+        ],
+        [
+         "EDWIN STANTON DeWEES",
+         185
+        ]
+       ]
+      }
+     ]
+    }
+   ],
+   "dates_of_birth": [
+    {
+     "fighter": "Rich Clementi",
+     "printed_name": "RICHARD THOMAS CLEMENTI",
+     "printed": "1976-03-31",
+     "canonical": "1976-03-31",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Shonie Carter",
+     "printed_name": "MEARION BICKHEM aka SHONIE CARTER",
+     "printed": "1972-05-03",
+     "canonical": "1972-05-03",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Pete Spratt",
+     "printed_name": "AARON PETE SPRATT",
+     "printed": "1971-01-09",
+     "canonical": "1971-01-09",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Matt Serra",
+     "printed_name": "MATTHEW JOHN SERRA",
+     "printed": "1974-06-02",
+     "canonical": "1974-06-02",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Chris Lytle",
+     "printed_name": "CHRIS SCOTT LYTLE",
+     "printed": "1974-08-18",
+     "canonical": "1974-08-18",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Mikey Burnett",
+     "printed_name": "MICHAEL WAYNE BURNETT",
+     "printed": "1976-04-12",
+     "canonical": "1974-04-12",
+     "state": "identity_disagreement"
+    },
+    {
+     "fighter": "Din Thomas",
+     "printed_name": "DIN YERO THOMAS",
+     "printed": "1976-09-28",
+     "canonical": "1976-09-28",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Charles McCarthy",
+     "printed_name": "CHARLES SIDNEY McCARTHY",
+     "printed": "1980-08-06",
+     "canonical": "1980-08-06",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Pete Sell",
+     "printed_name": "PETER K. SELL",
+     "printed": "1982-08-25",
+     "canonical": "1982-08-05",
+     "state": "identity_disagreement"
+    },
+    {
+     "fighter": "Travis Lutter",
+     "printed_name": "TRAVIS S. LUTTER",
+     "printed": "1973-05-12",
+     "canonical": "1973-05-12",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Scott Smith",
+     "printed_name": "BRYAN SCOTT SMITH",
+     "printed": "1979-05-21",
+     "canonical": "1979-05-21",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Jorge Rivera",
+     "printed_name": "JORGE LUIS RIVERA",
+     "printed": "1972-02-28",
+     "canonical": "1972-02-28",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Patrick Côté",
+     "printed_name": "PATRICK COTE",
+     "printed": "1980-02-29",
+     "canonical": "1980-02-29",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Gideon Ray",
+     "printed_name": "GIDEON CHARLES RAY",
+     "printed": "1973-05-27",
+     "canonical": "1973-05-27",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Edwin DeWees",
+     "printed_name": "EDWIN STANTON DeWEES",
+     "printed": "1982-08-07",
+     "canonical": "1982-08-07",
+     "state": "agrees"
+    }
+   ],
+   "conflicts": [
+    {
+     "field": "Welterweight_quarter_final",
+     "verdict": "partially_informs",
+     "detail": "The source's quarter-finals for this division do not close as a self-contained round: 1 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
+     "commission_facts": [
+      "NSAC records Pete Spratt (\"AARON PETE SPRATT\") in two bouts headed \"Welterweight Quarter Final\": a loss to Lytle on 2006-06-02 and a loss to Serra on 2006-06-16.",
+      "All 12 records account for all 12 house bouts; no other welterweight quarter-final bout is listed."
+     ],
+     "does_not_settle": "That Spratt's second quarter-final was a replacement entry (the season source's format_exceptions: a coin toss let Spratt replace the evicted Jeremy Jackson). The record states no replacement.",
+     "recommendation": "Keep open. The record confirms both bouts, their stage labels and order, but not the replacement."
+    }
+   ]
+  }
+ }
+}
