@@ -35,6 +35,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+/* Matching rules live in market_match.mjs so the Cloudflare live-odds Worker
+ * uses the SAME resolution this CLI does. One implementation of whose price
+ * this is; see that file for why. */
+import {
+  OBS_CONFLICT_COLUMNS, OBS_CONFLICT, observationKey,
+  normName, stripNickname, buildIndex, resolveOutcome, matchBout,
+} from './market_match.mjs';
+
+export { OBS_CONFLICT_COLUMNS, OBS_CONFLICT, observationKey, normName, resolveOutcome };
+
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const env = { ...process.env };
 for (const f of [path.join(ROOT, '.env'), path.join(ROOT, 'web', '.env.local')]) {
@@ -63,24 +74,6 @@ const SOURCE = opt('--source');
 
 const H = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'content-type': 'application/json', accept: 'application/json' };
 
-/**
- * The ON CONFLICT target, which must equal ufc_market_obs_unique exactly.
- *
- * Exported so a test can assert the two never drift apart. If a column is
- * added to the constraint and not to this list, PostgREST silently stops
- * deduplicating on it; if one is named here that the constraint lacks, every
- * insert errors. Neither failure is visible until the second ingest.
- *
- * observed_at is deliberately ABSENT: it records when we looked, so including
- * it would make every run's rows unique and defeat the whole mechanism.
- */
-export const OBS_CONFLICT_COLUMNS = [
-  'bout_id', 'bookmaker_key', 'market_key', 'outcome_name', 'source_last_update', 'price',
-];
-export const OBS_CONFLICT = OBS_CONFLICT_COLUMNS.join(',');
-
-/** The identity a row collides on. Two rows with the same key are one fact. */
-export const observationKey = (r) => OBS_CONFLICT_COLUMNS.map((c) => String(r[c] ?? '')).join('|');
 
 const log = (...a) => console.log(...a);
 
@@ -140,108 +133,6 @@ async function all(q, pageSize = 1000) {
   return out;
 }
 
-/* ---- identity ------------------------------------------------------------
- * Normalisation strips the things that differ between sources without ever
- * changing who a name refers to: case, accents, punctuation, extra spacing.
- * It deliberately does NOT drop or reorder name parts, because that is where
- * two different fighters start colliding. */
-export function normName(s) {
-  return String(s || '')
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .replace(/[.'’`]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
-
-/* Nicknames arrive quoted inside a name often enough to be worth removing. */
-const stripNickname = (s) => String(s || '').replace(/["“”].*?["“”]/g, ' ').replace(/\s+/g, ' ').trim();
-
-function buildIndex(fighters, aliases) {
-  const byNorm = new Map();
-  const add = (key, id) => {
-    if (!key) return;
-    let set = byNorm.get(key);
-    if (!set) { set = new Set(); byNorm.set(key, set); }
-    set.add(id);
-  };
-  for (const f of fighters) {
-    add(normName(f.name), f.id);
-    add(normName(stripNickname(f.name)), f.id);
-  }
-  for (const a of aliases || []) {
-    if (a.normalized && a.fighter_id) add(String(a.normalized), a.fighter_id);
-    if (a.alias && a.fighter_id) add(normName(a.alias), a.fighter_id);
-  }
-  return byNorm;
-}
-
-/**
- * Resolve one outcome name to a canonical fighter, restricted to the two
- * fighters actually in the bout.
- *
- * Scoping to the bout is what makes this safe: "Silva" is hopeless across the
- * whole roster and unambiguous when only two people can be meant. Anything
- * that still matches both corners, or neither, is a failure rather than a
- * coin flip.
- */
-export function resolveOutcome(outcomeName, boutFighters, byNorm) {
-  const want = normName(stripNickname(outcomeName));
-  if (!want) return { status: 'unresolved', reason: 'empty_outcome_name' };
-
-  const exact = boutFighters.filter((f) => normName(f.name) === want || normName(stripNickname(f.name)) === want);
-  if (exact.length === 1) return { status: 'ok', fighterId: exact[0].id, method: 'exact' };
-  if (exact.length > 1) return { status: 'ambiguous', reason: 'both_corners_match_exactly' };
-
-  /* Alias table, still scoped to this bout. */
-  const ids = byNorm.get(want);
-  if (ids) {
-    const inBout = boutFighters.filter((f) => ids.has(f.id));
-    if (inBout.length === 1) return { status: 'ok', fighterId: inBout[0].id, method: 'alias' };
-    if (inBout.length > 1) return { status: 'ambiguous', reason: 'alias_matches_both_corners' };
-  }
-
-  /* Surname within the bout. Safe only because the candidate set is two. */
-  const surname = want.split(' ').pop();
-  const bySurname = boutFighters.filter((f) => normName(f.name).split(' ').pop() === surname);
-  if (bySurname.length === 1) return { status: 'ok', fighterId: bySurname[0].id, method: 'surname_in_bout' };
-  if (bySurname.length > 1) return { status: 'ambiguous', reason: 'shared_surname_in_bout' };
-
-  return { status: 'unresolved', reason: 'no_match_in_bout' };
-}
-
-/**
- * Match a source event to a canonical bout.
- *
- * Both fighters must resolve, and they must be the two corners of the same
- * bout. Date is a filter, never the match: two cards can share a date and a
- * date-only match would attach a price to the wrong fight.
- */
-function matchBout(srcEvent, bouts, byNorm) {
-  const a = normName(stripNickname(srcEvent.home_team));
-  const b = normName(stripNickname(srcEvent.away_team));
-  if (!a || !b) return { status: 'unresolved', reason: 'missing_team_names' };
-
-  const commence = srcEvent.commence_time ? new Date(srcEvent.commence_time) : null;
-  const near = commence
-    ? bouts.filter((x) => {
-        if (!x.eventDate) return false;
-        const d = Math.abs(new Date(`${x.eventDate}T00:00:00Z`) - commence) / 86400000;
-        return d <= 2;                       // a card can start late UTC
-      })
-    : bouts;
-
-  const hits = near.filter((x) => {
-    const names = [normName(x.a.name), normName(x.b.name), normName(stripNickname(x.a.name)), normName(stripNickname(x.b.name))];
-    const aHit = names.includes(a) || (byNorm.get(a) && (byNorm.get(a).has(x.a.id) || byNorm.get(a).has(x.b.id)));
-    const bHit = names.includes(b) || (byNorm.get(b) && (byNorm.get(b).has(x.a.id) || byNorm.get(b).has(x.b.id)));
-    return aHit && bHit;
-  });
-
-  if (hits.length === 1) return { status: 'ok', bout: hits[0] };
-  if (hits.length > 1) return { status: 'ambiguous', reason: 'multiple_bouts_match_both_fighters' };
-  return { status: 'unresolved', reason: 'no_bout_with_both_fighters' };
-}
 
 const main = async () => {
   if (!ODDS_KEY && !SOURCE) {

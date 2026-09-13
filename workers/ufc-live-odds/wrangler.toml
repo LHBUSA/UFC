@@ -1,0 +1,51 @@
+name = "ufc-live-odds"
+main = "src/index.js"
+compatibility_date = "2026-09-12"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# The matching module is plain ESM and touches no Node built-in, but it is
+# imported from scripts/odds, which the bundler walks; nodejs_compat keeps any
+# transitive resolution safe without any of it executing here.
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+
+# OFF by default, deliberately. This Worker holds a metered provider key and
+# wakes 1,440 times a day; a deploy must never be the thing that starts
+# spending. Turn it on only after ODDS_API_KEY is set and the quota endpoint
+# has been measured.
+LIVE_ODDS_ENABLED = "false"
+
+# Fail-closed reserve. Below this many remaining provider requests the lane
+# stops making paid calls entirely, so a live card can never consume the
+# allowance the daily descriptive ingest depends on.
+LIVE_ODDS_MIN_REMAINING = "5000"
+
+# Ceiling for one card. A stuck state or an unusually long event cannot run
+# away with the month.
+LIVE_ODDS_MAX_CARD_COST = "250"
+
+# The window around a card's first scheduled bout in which the Worker will
+# look at ESPN at all. Outside it, a tick costs one indexed query.
+LIVE_ODDS_EVENT_WINDOW_MINUTES = "45"
+LIVE_ODDS_CLOSE_HOURS_AFTER = "7"
+
+# Minimum spacing between paid calls. The cron firing is not a reason to buy
+# the same snapshot twice; the provider does not reprice faster than this.
+LIVE_ODDS_MIN_SECONDS_BETWEEN_CALLS = "55"
+
+# Every minute. Waking is free: the gate in src/gate.mjs decides whether a tick
+# may spend, and outside an event window it never reaches ESPN or the provider.
+[triggers]
+crons = ["* * * * *"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Secrets (wrangler secret put), never in this file:
+#   SUPABASE_SERVICE_ROLE_KEY   observation + run ledger writes
+#   ODDS_API_KEY                metered provider access
+#   ADMIN_TRIGGER_TOKEN         required to expose POST /admin/tick at all
