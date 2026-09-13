@@ -10,30 +10,11 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Liddell_vs._Team_Ortiz",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
-  "_conflicts": [
-    {
-      "field": "Tournament_round_of_16",
-      "detail": "The bracket and the episode summary disagree about Josh Bryant versus Kris McCray: the bracket advances Josh Bryant, the episode text says Kris McCray won. Recorded with no winner.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Tournament_round_of_16",
-      "detail": "The source's first round for this division do not close as a self-contained round: 2 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "Tournament_quarter_final",
-      "detail": "The source's quarter-finals for this division do not close as a self-contained round: 2 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
-      "retrieved": "2026-09-08"
-    },
-    {
-      "field": "unplaced_bouts",
-      "detail": "1 bout(s) appear in the episode summaries but in no bracket: Chris Camozzi def. Victor O'Donnell. Left unplaced rather than assigned to a division by guesswork.",
-      "retrieved": "2026-09-08"
-    }
-  ],
+  "_conflicts": [],
   "coaches": [
     {
       "team": "",
@@ -387,6 +368,41 @@
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+            },
+            {
+              "a": "Chris Camozzi",
+              "b": "Victor O'Donnell",
+              "winner": "Chris Camozzi",
+              "method": "Decision (unanimous)",
+              "round": 3,
+              "time": null,
+              "episode": 1,
+              "result_note": "A draw after two rounds sent the bout to a sudden-victory third round.",
+              "classification": "exhibition",
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "sources": [
+                {
+                  "repair": "tuf-11/elim/camozzi-odonnell/add",
+                  "fields": [
+                    "a",
+                    "b",
+                    "winner",
+                    "method",
+                    "round",
+                    "time",
+                    "episode",
+                    "result_note",
+                    "classification",
+                    "classification_source"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-one-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2018-09-14T08:36:04-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "In fight number eight, it was Cincinnati’s Victor O’Donnell squaring off against Lakewood, Colorado’s Chris Camozzi ... leading, not surprisingly, to a draw verdict and a sudden victory round. ... Camozzi broke out in front to take the unanimous decision win.",
+                  "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+                }
+              ]
             }
           ]
         },
@@ -441,13 +457,37 @@
             {
               "a": "Josh Bryant",
               "b": "Kris McCray",
-              "winner": null,
+              "winner": "Josh Bryant",
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": 11,
+              "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "result_note": "The first two rounds left the bout level, so a third, sudden-victory round was fought.",
+              "sources": [
+                {
+                  "repair": "tuf-11/r16/bryant-mccray/result",
+                  "fields": [
+                    "winner",
+                    "method",
+                    "round",
+                    "time",
+                    "episode",
+                    "result_note",
+                    "classification_source"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-five-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2018-09-14T08:36:04-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "After two rounds, the bout is deadlocked, so it’s off to a third sudden victory round. ... it’s enough to secure the unanimous decision victory. ... Kris McCray – Eliminated on episode five by Josh Bryant",
+                  "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date",
+                  "corroboration": [
+                    "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap"
+                  ]
+                }
+              ]
             },
             {
               "a": "Charles Blanchard",
@@ -480,11 +520,40 @@
               "time": "0:59",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "wildcard": true,
+              "sources": [
+                {
+                  "repair": "tuf-11/r16/mccray-uscola/wildcard",
+                  "fields": [
+                    "wildcard"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2018-09-14T08:36:04-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "The first Wild Card fight in the history of The Ultimate Fighter is over, and Kris McCray is on his way to the quarterfinals.",
+                  "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+                }
+              ]
             }
           ],
-          "status": "unverified",
-          "note": "Partial. 2 fighter(s) appear more than once in this round. See conflicts."
+          "note": "Closed against the official recaps: the repeat appearances are the season's Wild Card fight (episode 8), and the two quarterfinalists without an opening-round win were injury replacements (episode 8).",
+          "sources": [
+            {
+              "repair": "tuf-11/stages/closed",
+              "fields": [
+                "status",
+                "note"
+              ],
+              "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+              "family": "ufc_com_recap",
+              "published_on_site": "2018-09-14T08:36:04-04:00",
+              "retrieved": "2026-09-12",
+              "quote": "Defeated Kyacey Uscola in Wild Card fight. ... returning to replace Attonito. ... Brought back on episode eight after injury to Ring.",
+              "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+            }
+          ]
         },
         {
           "stage": "quarter_final",
@@ -510,7 +579,22 @@
               "time": "0:28",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "replacement": "Both men lost in the opening round and re-entered: Court McGee replaced the injured Rich Attonito, and James Hammortree replaced the injured Nick Ring.",
+              "sources": [
+                {
+                  "repair": "tuf-11/qf/mcgee-hammortree/replacement",
+                  "fields": [
+                    "replacement"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2018-09-14T08:36:04-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Court McGee – 1-1 - Eliminated on episode six by Nick Ring; returning to replace Attonito. ... James Hammortree 0-2 – Eliminated on episode three by Brad Tavares. Brought back on episode eight after injury to Ring.",
+                  "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+                }
+              ]
             },
             {
               "a": "Josh Bryant",
@@ -545,8 +629,22 @@
               "evidence": "Wildcard predictions began by the fighters and James Hammortree stated his case, because of his \"controversial\" decision loss to Brad Tavares."
             }
           ],
-          "status": "unverified",
-          "note": "Partial. 2 fighter(s) enter this round without a recorded win in the previous one. See conflicts."
+          "note": "Closed against the official recaps: the repeat appearances are the season's Wild Card fight (episode 8), and the two quarterfinalists without an opening-round win were injury replacements (episode 8).",
+          "sources": [
+            {
+              "repair": "tuf-11/stages/closed",
+              "fields": [
+                "status",
+                "note"
+              ],
+              "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+              "family": "ufc_com_recap",
+              "published_on_site": "2018-09-14T08:36:04-04:00",
+              "retrieved": "2026-09-12",
+              "quote": "Defeated Kyacey Uscola in Wild Card fight. ... returning to replace Attonito. ... Brought back on episode eight after injury to Ring.",
+              "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+            }
+          ]
         },
         {
           "stage": "semi_final",
@@ -617,6 +715,40 @@
         "date": "2010-06-19"
       },
       "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+    }
+  ],
+  "_resolved_conflicts": [
+    {
+      "field": "Tournament_round_of_16",
+      "detail": "The bracket and the episode summary disagree about Josh Bryant versus Kris McCray: the bracket advances Josh Bryant, the episode text says Kris McCray won. Recorded with no winner.",
+      "retrieved": "2026-09-08",
+      "resolved_by": "tuf-11/r16/bryant-mccray/result",
+      "resolved_with": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-five-recap",
+      "resolution": "The draft merged two different fights. Bryant beat McCray in episode 5; McCray beat Bryant in their semifinal rematch in episode 11, which the archive already holds as a separate bout."
+    },
+    {
+      "field": "unplaced_bouts",
+      "detail": "1 bout(s) appear in the episode summaries but in no bracket: Chris Camozzi def. Victor O'Donnell. Left unplaced rather than assigned to a division by guesswork.",
+      "retrieved": "2026-09-08",
+      "resolved_by": "tuf-11/elim/camozzi-odonnell/add",
+      "resolved_with": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-one-recap",
+      "resolution": "The fourteenth elimination bout; the draft held thirteen of fourteen. Camozzi then withdrew injured and Seth Baczynski took his place, which the season file already records."
+    },
+    {
+      "field": "Tournament_round_of_16",
+      "detail": "The source's first round for this division do not close as a self-contained round: 2 fighter(s) appear more than once in this round. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08",
+      "resolved_by": "tuf-11/stages/closed",
+      "resolved_with": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+      "resolution": "With the episode 5 result, the Wild Card, both replacements and the fourteenth elimination bout sourced, every round closes and no dispute is open."
+    },
+    {
+      "field": "Tournament_quarter_final",
+      "detail": "The source's quarter-finals for this division do not close as a self-contained round: 2 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
+      "retrieved": "2026-09-08",
+      "resolved_by": "tuf-11/stages/closed",
+      "resolved_with": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+      "resolution": "With the episode 5 result, the Wild Card, both replacements and the fourteenth elimination bout sourced, every round closes and no dispute is open."
     }
   ]
 }

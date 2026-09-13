@@ -11,7 +11,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Cormier_vs._Team_Sonnen",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "coaches": [
     {
@@ -333,12 +335,26 @@
               "a": "Alibi Idiris",
               "b": "Roybert Echeverria",
               "winner": "Alibi Idiris",
-              "method": "TKO",
+              "method": "KO (flying knee)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 9,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "sources": [
+                {
+                  "repair": "tuf-33/sf/idiris-echeverria/method",
+                  "fields": [
+                    "method",
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-33",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-07-23T14:00:48-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Alibi Idiris def. Roybert Echeverria by KO (flying knee) in Round 1"
+                }
+              ]
             }
           ]
         },

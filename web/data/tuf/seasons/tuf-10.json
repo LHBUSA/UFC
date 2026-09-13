@@ -10,7 +10,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Heavyweights",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "coaches": [
     {
@@ -323,9 +325,24 @@
               "method": "TKO (punches)",
               "round": 1,
               "time": "2:11",
-              "episode": 11,
+              "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "sources": [
+                {
+                  "repair": "tuf-10/semi/schaub-jones/episode",
+                  "fields": [
+                    "episode",
+                    "classification_source"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-final-episode-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2018-09-14T08:36:04-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Marcus Jones 2-1 - Eliminated in the semifinals (episode 12) by Brendan Schaub",
+                  "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+                }
+              ]
             },
             {
               "a": "James McSweeney",
@@ -334,9 +351,24 @@
               "method": "TKO (strikes)",
               "round": 1,
               "time": "4:13",
-              "episode": 11,
+              "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "sources": [
+                {
+                  "repair": "tuf-10/semi/nelson-mcsweeney/episode",
+                  "fields": [
+                    "episode",
+                    "classification_source"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-final-episode-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2018-09-14T08:36:04-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "James McSweeney 2-1 - Eliminated in the semifinals (episode 12) by Roy Nelson",
+                  "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+                }
+              ]
             }
           ]
         },

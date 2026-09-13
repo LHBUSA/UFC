@@ -1,0 +1,339 @@
+{
+  "_about": "Corrections and additions to the Wikipedia-drafted TUF season files, each backed by an official UFC source. The drafter (scripts/tuf/import_season.mjs) re-applies this ledger after every draft, so re-importing a season cannot silently undo a sourced repair. Applied by scripts/tuf/apply_official_repairs.mjs, which refuses a repair whose 'expect' no longer matches rather than overwriting a value it did not check.",
+  "_policy": {
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state.",
+    "contradictions": "When the official source contradicts itself, the value its corroborating statements support is kept and the contradiction is written into the season's _conflicts. Nothing ambiguous is overwritten silently.",
+    "dates": "episode, air_date and fight_date are separate facts. A recap's publish time is not an air date and is never used as one."
+  },
+  "retrieved": "2026-09-12",
+  "repairs": [
+    {
+      "id": "tuf-10/semi/nelson-mcsweeney/episode",
+      "season": "tuf-10",
+      "op": "patch_bout",
+      "kind": "source_conflict",
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "semi_final",
+        "a": "James McSweeney",
+        "b": "Roy Nelson"
+      },
+      "expect": {
+        "episode": 11
+      },
+      "set": {
+        "episode": 12,
+        "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-final-episode-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "James McSweeney 2-1 - Eliminated in the semifinals (episode 12) by Roy Nelson",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "why": "The Wikipedia-drafted row placed both semifinals in episode 11. The official recap's end-of-season roster places both in episode 12, while keeping the two quarterfinals the same recap covers in episode 11."
+    },
+    {
+      "id": "tuf-10/semi/schaub-jones/episode",
+      "season": "tuf-10",
+      "op": "patch_bout",
+      "kind": "source_conflict",
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "semi_final",
+        "a": "Brendan Schaub",
+        "b": "Marcus Jones"
+      },
+      "expect": {
+        "episode": 11
+      },
+      "set": {
+        "episode": 12,
+        "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2009, which are complete for that year — 20 events, 215 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-final-episode-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "Marcus Jones 2-1 - Eliminated in the semifinals (episode 12) by Brendan Schaub",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "why": "Same recap, same roster block as the other semifinal."
+    },
+    {
+      "id": "tuf-11/r16/bryant-mccray/result",
+      "season": "tuf-11",
+      "op": "patch_bout",
+      "kind": "source_conflict",
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Josh Bryant",
+        "b": "Kris McCray"
+      },
+      "expect": {
+        "winner": null,
+        "episode": 11
+      },
+      "set": {
+        "winner": "Josh Bryant",
+        "method": "Decision (unanimous)",
+        "round": 3,
+        "time": null,
+        "episode": 5,
+        "result_note": "The first two rounds left the bout level, so a third, sudden-victory round was fought.",
+        "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+      },
+      "resolves_conflict": [
+        "Josh Bryant versus Kris McCray"
+      ],
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-five-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "After two rounds, the bout is deadlocked, so it’s off to a third sudden victory round. ... it’s enough to secure the unanimous decision victory. ... Kris McCray – Eliminated on episode five by Josh Bryant",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "corroboration": [
+        {
+          "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap",
+          "family": "ufc_com_recap",
+          "published_on_site": "2018-09-14T08:36:04-04:00",
+          "retrieved": "2026-09-12",
+          "quote": "In the second semifinal, it’s a rematch, as Bryant takes on the man he decisioned on episode five, McCray.",
+          "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+        }
+      ],
+      "why": "The draft merged two different fights. Bryant beat McCray in episode 5; McCray beat Bryant in their semifinal rematch in episode 11, which the archive already holds as a separate bout."
+    },
+    {
+      "id": "tuf-11/r16/mccray-uscola/wildcard",
+      "season": "tuf-11",
+      "op": "patch_bout",
+      "kind": "structure",
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Kris McCray",
+        "b": "Kyacey Uscola"
+      },
+      "expect": {
+        "episode": 8
+      },
+      "set": {
+        "wildcard": true
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "The first Wild Card fight in the history of The Ultimate Fighter is over, and Kris McCray is on his way to the quarterfinals.",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "why": "This is why McCray and Uscola each appear twice in the opening round."
+    },
+    {
+      "id": "tuf-11/qf/mcgee-hammortree/replacement",
+      "season": "tuf-11",
+      "op": "patch_bout",
+      "kind": "structure",
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "quarter_final",
+        "a": "Court McGee",
+        "b": "James Hammortree"
+      },
+      "expect": {
+        "episode": 8
+      },
+      "set": {
+        "replacement": "Both men lost in the opening round and re-entered: Court McGee replaced the injured Rich Attonito, and James Hammortree replaced the injured Nick Ring."
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "Court McGee – 1-1 - Eliminated on episode six by Nick Ring; returning to replace Attonito. ... James Hammortree 0-2 – Eliminated on episode three by Brad Tavares. Brought back on episode eight after injury to Ring.",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "why": "Explains the two quarterfinalists without an opening-round win."
+    },
+    {
+      "id": "tuf-11/elim/camozzi-odonnell/add",
+      "season": "tuf-11",
+      "op": "add_bout",
+      "kind": "official_addition",
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "elimination",
+        "a": "Chris Camozzi",
+        "b": "Victor O'Donnell"
+      },
+      "value": {
+        "a": "Chris Camozzi",
+        "b": "Victor O'Donnell",
+        "winner": "Chris Camozzi",
+        "method": "Decision (unanimous)",
+        "round": 3,
+        "time": null,
+        "episode": 1,
+        "result_note": "A draw after two rounds sent the bout to a sudden-victory third round.",
+        "classification": "exhibition",
+        "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2010, which are complete for that year — 24 events, 253 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-one-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "In fight number eight, it was Cincinnati’s Victor O’Donnell squaring off against Lakewood, Colorado’s Chris Camozzi ... leading, not surprisingly, to a draw verdict and a sudden victory round. ... Camozzi broke out in front to take the unanimous decision win.",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "resolves_conflict": [
+        "Chris Camozzi def. Victor O"
+      ],
+      "why": "The fourteenth elimination bout; the draft held thirteen of fourteen. Camozzi then withdrew injured and Seth Baczynski took his place, which the season file already records."
+    },
+    {
+      "id": "tuf-11/stages/closed",
+      "season": "tuf-11",
+      "op": "close_stages",
+      "kind": "structure",
+      "stages": [
+        {
+          "weight_class": "Tournament",
+          "stage": "round_of_16"
+        },
+        {
+          "weight_class": "Tournament",
+          "stage": "quarter_final"
+        }
+      ],
+      "resolves_conflict": [
+        "appear more than once in this round",
+        "enter this round without a recorded win"
+      ],
+      "note": "Closed against the official recaps: the repeat appearances are the season's Wild Card fight (episode 8), and the two quarterfinalists without an opening-round win were injury replacements (episode 8).",
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "Defeated Kyacey Uscola in Wild Card fight. ... returning to replace Attonito. ... Brought back on episode eight after injury to Ring.",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "set_coverage": "bracket_full",
+      "why": "With the episode 5 result, the Wild Card, both replacements and the fourteenth elimination bout sourced, every round closes and no dispute is open."
+    },
+    {
+      "id": "tuf-30/qf/heiderman-cole/time",
+      "season": "tuf-30",
+      "op": "patch_bout",
+      "kind": "source_conflict",
+      "bout": {
+        "weight_class": "Heavyweight",
+        "stage": "quarter_final",
+        "a": "Jordan Heiderman",
+        "b": "Chandler Cole"
+      },
+      "expect": {
+        "time": "1:16",
+        "round": 3
+      },
+      "set": {
+        "time": "1:14",
+        "method": "TKO (strikes)"
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/episode-7-recap-the-ultimate-fighter-team-pena-vs-team-nunes-jordan-heiderman-chandler-cole",
+        "family": "ufc_com_recap",
+        "published_on_site": "2022-06-14T17:20:58-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "Official Result: Jordan Heiderman def. Chandler Cole by TKO (strikes) at 1:14 of Round 3"
+      },
+      "why": "The official result line gives 1:14 and strikes; the draft had 1:16 and punches."
+    },
+    {
+      "id": "tuf-33/sf/idiris-echeverria/method",
+      "season": "tuf-33",
+      "op": "patch_bout",
+      "kind": "source_conflict",
+      "bout": {
+        "weight_class": "Flyweight",
+        "stage": "semi_final",
+        "a": "Alibi Idiris",
+        "b": "Roybert Echeverria"
+      },
+      "expect": {
+        "method": "TKO",
+        "round": 1
+      },
+      "set": {
+        "method": "KO (flying knee)",
+        "episode": 9
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-33",
+        "family": "ufc_com_recap",
+        "published_on_site": "2025-07-23T14:00:48-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "Official Result: Alibi Idiris def. Roybert Echeverria by KO (flying knee) in Round 1"
+      },
+      "why": "The official result line says KO by flying knee; the draft said TKO. The page is the episode 9 recap, so the episode is sourced as well."
+    },
+    {
+      "id": "tuf-32/qf/torres-roets/rounds",
+      "season": "tuf-32",
+      "op": "patch_bout",
+      "kind": "official_source_contradicts_itself",
+      "bout": {
+        "weight_class": "Featherweight",
+        "stage": "quarter_final",
+        "a": "Guillermo Torres",
+        "b": "Roedie Roets"
+      },
+      "expect": {
+        "winner": "Roedie Roets",
+        "round": 2
+      },
+      "set": {
+        "round": 3,
+        "episode": 1,
+        "result_note": "Level after two rounds; decided in a third."
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+        "family": "ufc_com_recap",
+        "published_on_site": "2024-06-05T10:20:32-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "OFFICIAL RESULT: Roedie Roets defeats Guillermo Torres by unanimous decision ... They traded shots on the feet to start the third round"
+      },
+      "corroboration": [
+        {
+          "url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+          "family": "ufc_com_recap",
+          "published_on_site": "2024-06-12T11:46:17-04:00",
+          "retrieved": "2026-09-12",
+          "quote": "After three hard-fought rounds, Roets earned a decision win, giving Team Shevchenko the first victory of the season."
+        }
+      ],
+      "add_conflict": {
+        "field": "Featherweight_quarter_final",
+        "kind": "official_source_contradicts_itself",
+        "detail": "UFC.com's episode 1 recap contradicts itself on Guillermo Torres vs Roedie Roets. One paragraph says “Team Grasso’s Torres earning the first win in the competition”; the same page's OFFICIAL RESULT line says “Roedie Roets defeats Guillermo Torres by unanimous decision”, and the episode 2 recap says Roets won after three rounds. Roets is kept on the two statements that agree, one of them the formal result line. The contradiction is recorded rather than resolved away.",
+        "source_urls": [
+          "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+          "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko"
+        ],
+        "retrieved": "2026-09-12"
+      },
+      "why": "The winner is unchanged. The draft's two rounds contradict the official account of a third round."
+    }
+  ]
+}

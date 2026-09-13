@@ -11,13 +11,26 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Grasso_vs._Team_Shevchenko",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "_conflicts": [
     {
       "field": "Featherweight_semi_final",
       "detail": "The source's semi-finals for this division do not close as a self-contained round: 1 fighter(s) enter this round without a recorded win in the previous one. That is what a wildcard, second chance or replacement entry looks like, and also what a missing bout looks like; the bracket alone does not say which. The stated bouts are recorded as given and the round is left unverified rather than reordered into something the source does not say.",
       "retrieved": "2026-09-08"
+    },
+    {
+      "field": "Featherweight_quarter_final",
+      "kind": "official_source_contradicts_itself",
+      "detail": "UFC.com's episode 1 recap contradicts itself on Guillermo Torres vs Roedie Roets. One paragraph says “Team Grasso’s Torres earning the first win in the competition”; the same page's OFFICIAL RESULT line says “Roedie Roets defeats Guillermo Torres by unanimous decision”, and the episode 2 recap says Roets won after three rounds. Roets is kept on the two statements that agree, one of them the formal result line. The contradiction is recorded rather than resolved away.",
+      "source_urls": [
+        "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+        "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko"
+      ],
+      "retrieved": "2026-09-12",
+      "repair": "tuf-32/qf/torres-roets/rounds"
     }
   ],
   "coaches": [
@@ -189,11 +202,30 @@
               "b": "Roedie Roets",
               "winner": "Roedie Roets",
               "method": "Decision (unanimous)",
-              "round": 2,
+              "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 1,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "result_note": "Level after two rounds; decided in a third.",
+              "sources": [
+                {
+                  "repair": "tuf-32/qf/torres-roets/rounds",
+                  "fields": [
+                    "round",
+                    "episode",
+                    "result_note"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-06-05T10:20:32-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "OFFICIAL RESULT: Roedie Roets defeats Guillermo Torres by unanimous decision ... They traded shots on the feet to start the third round",
+                  "corroboration": [
+                    "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko"
+                  ]
+                }
+              ]
             },
             {
               "a": "Kaan Ofli",
