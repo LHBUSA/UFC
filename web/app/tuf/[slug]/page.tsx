@@ -14,10 +14,14 @@ import {
   seasonBySlug,
   seasons,
   episodesFor,
+  scheduledBoutsNow,
+  type FieldSource,
   type LinkedFighter,
+  type ScheduledBoutNow,
   type SeasonDetail,
   type TufBout,
 } from "@/lib/tuf";
+import { classState, displayDate, recapWinners, resultState, summarizeBouts, summaryPhrases, type ClassState, type ResultState } from "@/lib/tufBoutState";
 
 /* /tuf/[slug] — one season.
  *
@@ -62,11 +66,53 @@ const EVENT_LABEL: Record<string, string> = {
   medical_postponement: "Medical postponement", catchweight: "Catchweight", coin_toss: "Coin toss", coach_challenge: "Coaches challenge",
 };
 
-const CLASS_LABEL: Record<TufBout["classification"], string> = {
+const CLASS_LABEL: Record<ClassState, string> = {
   professional: "Professional",
   exhibition: "Exhibition",
-  unverified: "Unverified",
+  unresolved: "Classification unresolved",
 };
+/* The result axis, kept apart from classification. Only a result that some
+ * source other than the season draft states is called verified. */
+const RESULT_LABEL: Record<ResultState, { text: string; title: string }> = {
+  verified: { text: "Result verified", title: "The winner is stated by an official source or our own result records." },
+  reported: { text: "Winner reported", title: "Primary result source not yet verified: only the season record states this winner." },
+  scheduled: { text: "Scheduled", title: "An announced bout that has not been fought." },
+  unknown: { text: "Result not recorded", title: "No source loaded states a winner." },
+};
+
+function sourceLabel(src: FieldSource, episode: number | null): string {
+  if (src.family === "paramount_plus_episode_metadata") {
+    const printed = Object.entries(src.printed_names ?? {}).map(([name, as]) => `${name} listed as ${as}`).join("; ");
+    return `Episode ${episode ?? ""} listing on Paramount+${printed ? ` (${printed})` : ""}`;
+  }
+  return "Corrected from UFC.com";
+}
+/* The listing evidence is recorded against the network's data endpoint; a
+ * reader is sent to the show page that renders it. */
+function sourceHref(src: FieldSource): string {
+  return src.family === "paramount_plus_episode_metadata" ? "https://www.paramountplus.com/shows/the-ultimate-fighter/" : src.url;
+}
+
+/* An announced bout. The committed "scheduled" is checked against our records
+ * at render: once the result row exists, or the bout is cancelled or its date
+ * has passed, it is not shown as upcoming. */
+function ScheduledResult({ event, date, now, today }: { event: string; date: string; now?: ScheduledBoutNow; today: string }) {
+  const href = `/events/${eventSlug({ name: event, event_date: date })}`;
+  if (now?.has_result) {
+    return (
+      <span className="tuf-res">
+        <b>Fought {displayDate(date)}</b> · result on <Link href={href}>the event page</Link>
+      </span>
+    );
+  }
+  if (now?.status === "cancelled") return <span className="tuf-res tuf-none">No longer on the card in our records</span>;
+  if (date < today) return <span className="tuf-res tuf-none">Result pending · {displayDate(date)}</span>;
+  return (
+    <span className="tuf-res tuf-sched">
+      <b>Scheduled</b> · {displayDate(date)} · <Link href={href}>{event}</Link>
+    </span>
+  );
+}
 
 /* A name, with its canonical portrait when one exists. The fallback is the
  * shared Avatar's initials treatment rather than a grey box or a stand-in
@@ -100,8 +146,15 @@ function Name({
   );
 }
 
-function BoutRow({ b, linked, faces }: { b: TufBout; linked: Map<string, LinkedFighter>; faces?: Map<string, PortraitSet> }) {
+function BoutRow({
+  b, linked, faces, recaps, now, today,
+}: {
+  b: TufBout; linked: Map<string, LinkedFighter>; faces?: Map<string, PortraitSet>;
+  recaps: Map<string, string>; now: Map<string, ScheduledBoutNow>; today: string;
+}) {
   const pro = countsTowardsRecord(b);
+  const result = resultState(b, recaps);
+  const cls = classState(b);
   return (
     <li className={`tuf-bout${pro ? " is-pro" : ""}`}>
       <span className="tuf-bout-names">
@@ -110,7 +163,9 @@ function BoutRow({ b, linked, faces }: { b: TufBout; linked: Map<string, LinkedF
         <Name name={b.b} linked={linked} faces={faces} size={28} />
       </span>
       <span className="tuf-bout-meta">
-        {b.winner ? (
+        {result === "scheduled" && b.scheduled ? (
+          <ScheduledResult event={b.scheduled.event} date={b.scheduled.date} now={now.get(b.scheduled.ufc_bout_id)} today={today} />
+        ) : b.winner ? (
           <span className="tuf-res">
             <b>{b.winner}</b>
             {b.method ? ` · ${b.method}` : ""}
@@ -118,9 +173,12 @@ function BoutRow({ b, linked, faces }: { b: TufBout; linked: Map<string, LinkedF
             {b.time ? ` ${b.time}` : ""}
           </span>
         ) : (
-          <span className="tuf-res tuf-none">Result unavailable</span>
+          <span className="tuf-res tuf-none">Result not recorded</span>
         )}
-        <span className={`tuf-class tuf-class-${b.classification}`}>{CLASS_LABEL[b.classification]}</span>
+        {result === "verified" || result === "reported" ? (
+          <span className={`tuf-rstate is-${result}`} title={RESULT_LABEL[result].title}>{RESULT_LABEL[result].text}</span>
+        ) : null}
+        <span className={`tuf-class tuf-class-${cls}`}>{CLASS_LABEL[cls]}</span>
         {/* Season 21 was scored rather than bracketed, and what a win was worth
           * rose through the season. Without the number the twelve bouts look
           * like an unordered list; with it they read as the standings they
@@ -139,8 +197,8 @@ function BoutRow({ b, linked, faces }: { b: TufBout; linked: Map<string, LinkedF
       {b.sources?.length ? (
         <span className="tuf-bout-src">
           {b.sources.map((src) => (
-            <a key={src.repair} href={src.url} rel="nofollow noopener" target="_blank">
-              Corrected from UFC.com
+            <a key={src.repair} href={sourceHref(src)} rel="nofollow noopener" target="_blank" title={src.quote}>
+              {sourceLabel(src, b.episode)}
             </a>
           ))}
         </span>
@@ -178,8 +236,14 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
     for (const f of await getFightersByIds(missingIds).catch(() => [])) linkedById.set(f.id, f);
   }
 
-  const proCount = bouts.filter(countsTowardsRecord).length;
-  const exCount = bouts.length - proCount;
+  const recaps = recapWinners(eps);
+  const summary = summaryPhrases(summarizeBouts(bouts, recaps));
+  const today = new Date().toISOString().slice(0, 10);
+  const scheduledIds = [
+    ...bouts.flatMap((b) => (b.scheduled ? [b.scheduled.ufc_bout_id] : [])),
+    ...(season.final_bouts ?? []).flatMap((f) => (f.status === "scheduled" && f.ufc_bout_id ? [f.ufc_bout_id] : [])),
+  ];
+  const now = await scheduledBoutsNow(scheduledIds);
 
   return (
     <>
@@ -306,8 +370,9 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
         <section className="wrap tuf-section">
           <div className="tuf-section-head">
             <h2>Tournament finals</h2>
-            <p>Each verified by the exact finalist-versus-finalist bout in our own records — not by a champion appearing
-              somewhere on a card, which is not evidence and once linked two seasons to the wrong night.</p>
+            <p>Each matched to the exact finalist-versus-finalist bout in our own records — not to a champion appearing
+              somewhere on a card, which is not evidence and once linked two seasons to the wrong night.
+              {season.final_bouts.some((f) => f.status === "scheduled") ? " A scheduled final has no winner until its result exists." : ""}</p>
           </div>
           <ul className="tuf-bouts">
             {season.final_bouts.map((f, i) => (
@@ -318,13 +383,17 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                   <Name name={f.b} linked={linked} />
                 </span>
                 <span className="tuf-bout-meta">
-                  <span className="tuf-res">
-                    {f.winner ? <b>{f.winner}</b> : null}
-                    {f.method ? ` · ${f.method}` : ""}
-                    {f.round ? ` · R${f.round}` : ""}
-                  </span>
+                  {f.status === "scheduled" ? (
+                    <ScheduledResult event={f.event} date={f.date} now={f.ufc_bout_id ? now.get(f.ufc_bout_id) : undefined} today={today} />
+                  ) : (
+                    <span className="tuf-res">
+                      {f.winner ? <b>{f.winner}</b> : null}
+                      {f.method ? ` · ${f.method}` : ""}
+                      {f.round ? ` · R${f.round}` : ""}
+                    </span>
+                  )}
                   <span className="tuf-class tuf-class-professional">{f.weight_class}</span>
-                  <span className="tuf-ep">{f.event} · {f.date}</span>
+                  {f.status === "scheduled" ? null : <span className="tuf-ep">{f.event} · {f.date}</span>}
                 </span>
               </li>
             ))}
@@ -506,9 +575,11 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
         <section className="wrap tuf-section">
           <div className="tuf-section-head">
             <h2>{season.team_competition ? "Series results" : "Tournament"}</h2>
+            {summary.length ? <p className="tuf-summary">{summary.join(" · ")}</p> : null}
             <p>
-              {proCount} professional · {exCount} exhibition or unverified. House bouts are unsanctioned and are excluded
-              from professional records and every professional stat aggregate.
+              Result and classification are separate. A reported winner comes from the season record alone; a verified
+              one is stated by an official source or our own result records. Only sourced professional bouts count
+              toward a professional record — house exhibitions and unresolved house bouts never do.
             </p>
           </div>
           {season.bracket.map((wc) => (
@@ -524,7 +595,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                   {st.bouts.length ? (
                     <ul className="tuf-bouts">
                       {st.bouts.map((b, i) => (
-                        <BoutRow key={`${b.a}-${b.b}-${i}`} b={b} linked={linked} faces={faces} />
+                        <BoutRow key={`${b.a}-${b.b}-${i}`} b={b} linked={linked} faces={faces} recaps={recaps} now={now} today={today} />
                       ))}
                     </ul>
                   ) : (
@@ -573,6 +644,19 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
             {season._conflicts.map((c, i) => (
               <p key={i}>
                 <b>{c.field}</b> — {c.detail}
+              </p>
+            ))}
+          </div>
+        ) : null}
+        {season.name_corrections?.length ? (
+          <div className="tuf-conflicts">
+            <h2>Name corrections</h2>
+            {season.name_corrections.map((c) => (
+              <p key={c.draft_name}>
+                <b>{c.name}</b> — the season record printed &ldquo;{c.draft_name}&rdquo;.{" "}
+                {c.kind === "source_correction"
+                  ? `Corrected to the name ESPN and the broadcaster's episode listing use; "${c.draft_name}" is not attested by a first-party source and is not treated as an alias.`
+                  : "A misspelling of the name ESPN and the broadcaster's episode listing use."}
               </p>
             ))}
           </div>

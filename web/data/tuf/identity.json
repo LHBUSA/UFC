@@ -22,8 +22,8 @@
     }
   },
   "generated_from": {
-    "fighters": 3175,
-    "bouts": 9417
+    "fighters": 3178,
+    "bouts": 9425
   },
   "entries": {
     "tuf-1|Alex Karalexis": {
@@ -8654,12 +8654,14 @@
       "fighter_id": "a223c4bc-17b9-4d57-9d8e-7f54dbd668a8",
       "records_name": "Delphine Benouaich"
     },
-    "tuf-34|Giovanna Canuto": {
+    "tuf-34|Gigi Canuto": {
       "roles": [
         "contestant"
       ],
-      "status": "unlinked",
-      "reason": "no fighter in ufc_fighters has this name under any recorded convention"
+      "status": "linked",
+      "tier": "exact",
+      "fighter_id": "b4028b75-c0ad-4087-b91f-4ed24306eeb6",
+      "records_name": "Gigi Canuto"
     },
     "tuf-34|Ilimbek Akylbek Uulu": {
       "roles": [
@@ -8670,13 +8672,6 @@
       "fighter_id": "70116fec-53b8-4a05-8684-4415498f4889",
       "records_name": "Ilimbek Akylbek Uulu"
     },
-    "tuf-34|Illimbek Akylbek Uulu": {
-      "roles": [
-        "contestant"
-      ],
-      "status": "unlinked",
-      "reason": "no fighter in ufc_fighters has this name under any recorded convention"
-    },
     "tuf-34|Mackenzie Stiller": {
       "roles": [
         "contestant"
@@ -8685,13 +8680,6 @@
       "reason": "no fighter in ufc_fighters has this name under any recorded convention"
     },
     "tuf-34|Marlon Jones": {
-      "roles": [
-        "contestant"
-      ],
-      "status": "unlinked",
-      "reason": "no fighter in ufc_fighters has this name under any recorded convention"
-    },
-    "tuf-34|Mehemedeli Osmanli": {
       "roles": [
         "contestant"
       ],

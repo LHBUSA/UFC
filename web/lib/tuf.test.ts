@@ -726,6 +726,99 @@ test("the current season lists its episodes without inventing results", () => {
   assert.ok(t34.episodes.every((e) => e.title && !e.bouts), "titles from the listing, no recap facts");
 });
 
+/* ---- scheduled finals and name corrections (TUF 34, repair batch 1) ---------- */
+
+type AnyBout = Bout & {
+  a_fighter_id?: string; b_fighter_id?: string; result_state?: string;
+  scheduled?: { event: string; date: string; ufc_bout_id: string; verified_against: string };
+  sources?: Array<{ family: string; fields: string[]; states_winner?: boolean }>;
+};
+const boutsOf = (slug: string) =>
+  ((DETAIL_BY_SLUG[slug] as { bracket?: Array<{ weight_class: string; stages: Array<{ stage: string; bouts: AnyBout[] }> }> }).bracket ?? [])
+    .flatMap((br) => br.stages.flatMap((st) => st.bouts.map((b) => ({ ...b, stage: st.stage, weight_class: br.weight_class }))));
+
+test("a scheduled bout carries no result, anywhere in the archive", () => {
+  for (const slug of Object.keys(DETAIL_BY_SLUG)) {
+    for (const b of boutsOf(slug)) {
+      if (b.result_state !== "scheduled") continue;
+      assert.equal(b.winner, null, `${slug}: ${b.a} vs ${b.b} is scheduled and has a winner`);
+      assert.equal(b.method, null);
+      assert.equal(b.round, null);
+      assert.match(String(b.scheduled?.ufc_bout_id), /^[0-9a-f-]{36}$/, `${slug}: a scheduled bout names the announced bout it is`);
+      assert.match(String(b.scheduled?.verified_against), /ufc_bouts/);
+      assert.ok(b.a_fighter_id && b.b_fighter_id, `${slug}: a scheduled bout is matched by both finalists' ids`);
+    }
+  }
+});
+
+test("TUF 34's finals are scheduled professional bouts, and the season stays ongoing with no winner", () => {
+  const row = seasons.find((s) => s.slug === "tuf-34")!;
+  assert.equal(row.season_state, "ongoing");
+  assert.deepEqual(row.winners, []);
+  assert.equal(row.finale_event, "UFC Fight Night: Rosas Jr. vs. Barcelos");
+  assert.equal(row.finale_date, "2026-09-26");
+  const finalBouts = (row as Record<string, unknown>).final_bouts as Array<{ status?: string; winner?: string; ufc_bout_id?: string }>;
+  assert.equal(finalBouts.length, 2);
+  for (const f of finalBouts) {
+    assert.equal(f.status, "scheduled");
+    assert.equal(f.winner, undefined, "no winner before the bout");
+  }
+  const finals = boutsOf("tuf-34").filter((b) => b.stage === "final");
+  const want: Record<string, [string, string]> = {
+    Bantamweight: ["13dd06fe-1f79-401b-9a8a-23c61a907745", "70116fec-53b8-4a05-8684-4415498f4889"],
+    "Women's Strawweight": ["f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d", "aef54e82-da80-4fa1-b917-11b94eca49e8"],
+  };
+  assert.equal(finals.length, 2);
+  for (const f of finals) {
+    assert.equal(f.result_state, "scheduled");
+    assert.equal(f.classification, "professional");
+    assert.match(String(f.classification_source), /sanctioned/i);
+    assert.deepEqual([f.a_fighter_id, f.b_fighter_id].sort(), [...want[f.weight_class]].sort(), `${f.weight_class}: exact finalist ids`);
+    assert.equal(f.scheduled?.date, "2026-09-26");
+    assert.ok(finalBouts.some((x) => x.ufc_bout_id === f.scheduled?.ufc_bout_id), "inventory and bracket name the same announced bout");
+  }
+  assert.deepEqual((DETAIL_BY_SLUG["tuf-34"] as { _conflicts?: unknown[] })._conflicts, [], "an unfought final is not a source conflict");
+});
+
+test("TUF 34's house bouts keep an unresolved classification: absence from our records is not proof", () => {
+  const house = boutsOf("tuf-34").filter((b) => b.stage !== "final");
+  assert.equal(house.length, 12);
+  for (const b of house) {
+    assert.equal(b.classification, "unverified", `${b.a} vs ${b.b}`);
+    assert.equal(b.classification_source, null);
+    assert.ok(b.winner, "the draft's reported winner is kept");
+    assert.ok(!(b.sources ?? []).some((s) => s.fields.includes("winner")), "nothing attached states the result");
+  }
+});
+
+test("Gigi Canuto is a source correction, and Giovanna is kept as draft provenance only, never as an alias", () => {
+  const d = DETAIL_BY_SLUG["tuf-34"] as {
+    teams: Array<{ roster: Array<{ name: string; printed_as?: string }> }>;
+    name_corrections: Array<{ draft_name: string; name: string; fighter_id: string; kind: string; official_alias?: boolean }>;
+  };
+  assert.equal(identityIndex["tuf-34"]["Gigi Canuto"], "b4028b75-c0ad-4087-b91f-4ed24306eeb6");
+  assert.equal(identityIndex["tuf-34"]["Giovanna Canuto"], undefined);
+  assert.equal(identity.entries["tuf-34|Giovanna Canuto"], undefined, "the draft spelling is not a registry name");
+  const printed = [...boutsOf("tuf-34").flatMap((b) => [b.a, b.b, b.winner]), ...d.teams.flatMap((t) => t.roster.flatMap((p) => [p.name, p.printed_as]))];
+  assert.ok(!printed.includes("Giovanna Canuto"), "no page name or printed_as carries Giovanna");
+  const c = d.name_corrections.find((x) => x.draft_name === "Giovanna Canuto")!;
+  assert.equal(c.name, "Gigi Canuto");
+  assert.equal(c.kind, "source_correction");
+  assert.equal(c.official_alias, false);
+  const aliases = readFileSync(new URL("../data/tuf/name_aliases.json", import.meta.url), "utf8");
+  assert.ok(!aliases.includes("Giovanna"), "not asserted in the alias file either");
+});
+
+test("TUF 34's misspelled finalists resolve to one fighter each, with no split left behind", () => {
+  assert.equal(identityIndex["tuf-34"]["Mehemmedeli Osmanli"], "13dd06fe-1f79-401b-9a8a-23c61a907745");
+  assert.equal(identityIndex["tuf-34"]["Ilimbek Akylbek Uulu"], "70116fec-53b8-4a05-8684-4415498f4889");
+  for (const old of ["Mehemedeli Osmanli", "Illimbek Akylbek Uulu"]) {
+    assert.equal(identity.entries[`tuf-34|${old}`], undefined, `${old} is no longer a separate, unlinked person`);
+  }
+  const kinds = (DETAIL_BY_SLUG["tuf-34"] as { name_corrections: Array<{ draft_name: string; kind: string }> }).name_corrections;
+  assert.deepEqual(kinds.filter((k) => k.kind === "spelling_variant").map((k) => k.draft_name).sort(), ["Illimbek Akylbek Uulu", "Mehemedeli Osmanli"]);
+});
+
 /* ---- rosters and staff ------------------------------------------------------- */
 
 test("no roster, staff or exception entry is parser debris", () => {

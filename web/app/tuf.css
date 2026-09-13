@@ -267,6 +267,13 @@
 .tuf-class-professional { border-color: var(--pbe-gold-soft); color: var(--pbe-gold); }
 .tuf-class-exhibition { color: var(--pbe-faint); }
 .tuf-class-unverified { color: var(--pbe-crimson-bright); border-color: rgba(193,39,61,.45); }
+/* An open question, not a defect: visible, but not alarming on every row. */
+.tuf-class-unresolved { color: var(--pbe-subtle); border-style: dashed; }
+.tuf-rstate { font-family: var(--pbe-font-data); font-size: var(--fs-micro); color: var(--pbe-subtle); cursor: help; }
+.tuf-rstate.is-verified { color: var(--pbe-gold); }
+.tuf-sched b { color: var(--pbe-gold); text-transform: uppercase; letter-spacing: var(--ls-micro); font-size: var(--fs-micro); }
+.tuf-sched a { color: var(--pbe-dim); }
+.tuf-section-head p.tuf-summary { color: var(--pbe-dim); font-family: var(--pbe-font-data); margin-bottom: var(--s-2); }
 
 @media (max-width: 620px) {
   .tuf-bout-meta { margin-left: 0; width: 100%; }

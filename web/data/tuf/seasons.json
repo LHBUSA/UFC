@@ -1741,14 +1741,37 @@
         "Women's Strawweight"
       ],
       "winners": [],
-      "finale_event": null,
-      "finale_date": null,
+      "finale_event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+      "finale_date": "2026-09-26",
       "coverage": "bracket_partial",
       "season_state": "ongoing",
       "detail": "tuf-34",
       "coach_fighter_ids": [
         "189dbb32-67d4-42b7-b098-81be761d4146",
         "50e2576e-e89f-4f99-8020-3b95d8a3094f"
+      ],
+      "finale_link_basis": "Scheduled, not yet fought: both tournament finals are announced bouts on UFC Fight Night: Rosas Jr. vs. Barcelos (2026-09-26), matched by exact finalist ids in ufc_bouts — Mehemmedeli Osmanli vs Ilimbek Akylbek Uulu; Melissa Amaya vs Valesca Machado. No winner is recorded until the results exist.",
+      "final_bouts": [
+        {
+          "weight_class": "Bantamweight",
+          "a": "Mehemmedeli Osmanli",
+          "b": "Ilimbek Akylbek Uulu",
+          "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+          "date": "2026-09-26",
+          "status": "scheduled",
+          "ufc_bout_id": "48c61e02-40c8-4ed3-9e77-96c3fa09755f",
+          "verified_against": "ufc_bouts 48c61e02-40c8-4ed3-9e77-96c3fa09755f — exact finalist-versus-finalist matchup, status announced, no result row (checked 2026-09-13)"
+        },
+        {
+          "weight_class": "Women's Strawweight",
+          "a": "Melissa Amaya",
+          "b": "Valesca Machado",
+          "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+          "date": "2026-09-26",
+          "status": "scheduled",
+          "ufc_bout_id": "c632d30e-d28a-41c5-88ce-f82c50e04334",
+          "verified_against": "ufc_bouts c632d30e-d28a-41c5-88ce-f82c50e04334 — exact finalist-versus-finalist matchup, status announced, no result row (checked 2026-09-13)"
+        }
       ]
     },
     {
