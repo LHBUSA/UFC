@@ -226,17 +226,17 @@ Existing commission architecture sufficient: **YES**. No schema change proposed.
 - TUF 6 page-3 note: carry as commission-sourced timeline events (Arroyo injury/withdrawal, Kolosci replacement) with episode null, or leave for a later timeline batch.
 - Recorded only, no write: Richie Hightower printed DOB 1981-11-24 vs canonical 1974-11-26 (the canonical value equals John Kolosci's DOB exactly — worth a separate identity review).
 
-## Generic matrix observation (reported, not changed)
+## Generic matrix defect (fixed separately, before any apply)
 
-scripts/tuf/completeness_matrix.mjs counts a house (exhibition) bout as verified when a LATER professional bout between the same two fighter ids has the same winner (TUF 5 Diaz vs Maynard via 2013; TUF 6 Barrera vs Saunders via the 2007 finale; 9 house bouts across TUF 5, 6, 7, 11, 24, 26; none in TUF 1-4). Reported only; no matrix rule changed. See nsac_tuf5_tuf6_matrix_simulation_2026-09-13.json.
+Found by this audit and FIXED in its own PR (branch tuf-matrix-exact-verification, scripts/tuf/lib/boutVerification.mjs): the old completeness matrix counted a house (exhibition) bout as verified when any other professional bout between the same two fighter ids had the same winner (TUF 5 Diaz vs Maynard via 2013; TUF 6 Barrera vs Saunders via the 2007 finale; 9 house bouts across TUF 5, 6, 7, 11, 24, 26, plus 2 TUF 33 finals with no recorded finale link; none in TUF 1-4). The matrix simulation below is re-measured on the exact verifier; the BEFORE numbers of the first simulation were contaminated and are superseded.
 
-## Matrix simulation (temporary copy, read-only selects)
+## Matrix simulation (temporary copy, read-only selects, exact verifier)
 
 | Season | | Status | Blockers | Results verified | Secondary-only | Commission-backed exhibitions | Classification unresolved |
 |---|---|---|---|---|---|---|---|
-| tuf-5 | before | PARTIAL | OPEN_SOURCE_CONFLICT, HOUSE_RESULTS_SECONDARY_ONLY | 2/15 | 13 | 0/14 | 0 |
+| tuf-5 | before | PARTIAL | OPEN_SOURCE_CONFLICT, HOUSE_RESULTS_SECONDARY_ONLY | 1/15 | 14 | 0/14 | 0 |
 | tuf-5 | if applied | PARTIAL | OPEN_SOURCE_CONFLICT | 15/15 | 0 | 14/14 | 0 |
-| tuf-6 | before | PARTIAL | ROSTER_MISSING, CLASSIFICATION_UNRESOLVED, BRACKET_NAME_NOT_IN_ROSTER, HOUSE_RESULTS_SECONDARY_ONLY | 2/15 | 13 | 0/13 | 1 |
+| tuf-6 | before | PARTIAL | ROSTER_MISSING, CLASSIFICATION_UNRESOLVED, BRACKET_NAME_NOT_IN_ROSTER, HOUSE_RESULTS_SECONDARY_ONLY | 1/15 | 14 | 0/13 | 1 |
 | tuf-6 | if applied | PARTIAL | ROSTER_MISSING, BRACKET_NAME_NOT_IN_ROSTER | 15/15 | 0 | 14/14 | 0 |
 
 Only tuf-5 and tuf-6 change; totals stay {"complete":1,"partial":43,"blocked":0}.

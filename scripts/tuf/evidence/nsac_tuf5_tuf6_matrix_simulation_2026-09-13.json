@@ -28,18 +28,36 @@
      "HOUSE_RESULTS_SECONDARY_ONLY"
     ],
     "critical_blockers": [],
-    "score": 71,
-    "depth_score": 65,
-    "result_verified": 2,
+    "score": 70,
+    "depth_score": 63,
+    "result_verified": 1,
     "bouts": 15,
-    "secondary_only": 13,
+    "secondary_only": 14,
     "house_commission_verified": 0,
     "exhibitions_commission_backed": 0,
     "exhibitions": 14,
     "classification_unresolved": 0,
     "house_bouts_with_fight_date": 0,
-    "house_verified_by_later_db_pairing": [
-     "Nate Diaz vs Gray Maynard"
+    "house_secondary_only": 14,
+    "house_verified_by": {},
+    "finals": [
+     {
+      "bout": "Nate Diaz vs Manny Gamburyan",
+      "result": "verified",
+      "evidence": [
+       "finale_result_row"
+      ],
+      "db_finale_bout": {
+       "id": "108b36a6-20be-4070-b638-e34554ec4c78",
+       "event": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale",
+       "date": "2007-06-23",
+       "linked_by": "recorded_finale_event_date_pair",
+       "winner_matches_archive": true
+      }
+     }
+    ],
+    "other_professional_bouts_between_house_pairs": [
+     "Nate Diaz vs Gray Maynard: UFC Fight Night: Maynard vs Diaz 2010-01-11; The Ultimate Fighter: Team Rousey vs. Team Tate Finale 2013-11-30 (listed, not evidence)"
     ]
    },
    "if_applied": {
@@ -59,8 +77,28 @@
     "exhibitions": 14,
     "classification_unresolved": 0,
     "house_bouts_with_fight_date": 14,
-    "house_verified_by_later_db_pairing": [
-     "Nate Diaz vs Gray Maynard"
+    "house_secondary_only": 0,
+    "house_verified_by": {
+     "commission_record": 14
+    },
+    "finals": [
+     {
+      "bout": "Nate Diaz vs Manny Gamburyan",
+      "result": "verified",
+      "evidence": [
+       "finale_result_row"
+      ],
+      "db_finale_bout": {
+       "id": "108b36a6-20be-4070-b638-e34554ec4c78",
+       "event": "The Ultimate Fighter: Team Pulver vs. Team Penn Finale",
+       "date": "2007-06-23",
+       "linked_by": "recorded_finale_event_date_pair",
+       "winner_matches_archive": true
+      }
+     }
+    ],
+    "other_professional_bouts_between_house_pairs": [
+     "Nate Diaz vs Gray Maynard: UFC Fight Night: Maynard vs Diaz 2010-01-11; The Ultimate Fighter: Team Rousey vs. Team Tate Finale 2013-11-30 (listed, not evidence)"
     ]
    }
   },
@@ -75,18 +113,36 @@
      "HOUSE_RESULTS_SECONDARY_ONLY"
     ],
     "critical_blockers": [],
-    "score": 70,
-    "depth_score": 52,
-    "result_verified": 2,
+    "score": 69,
+    "depth_score": 51,
+    "result_verified": 1,
     "bouts": 15,
-    "secondary_only": 13,
+    "secondary_only": 14,
     "house_commission_verified": 0,
     "exhibitions_commission_backed": 0,
     "exhibitions": 13,
     "classification_unresolved": 1,
     "house_bouts_with_fight_date": 0,
-    "house_verified_by_later_db_pairing": [
-     "Dan Barrera vs Ben Saunders"
+    "house_secondary_only": 14,
+    "house_verified_by": {},
+    "finals": [
+     {
+      "bout": "Mac Danzig vs Tom Speer",
+      "result": "verified",
+      "evidence": [
+       "finale_result_row"
+      ],
+      "db_finale_bout": {
+       "id": "23f94611-a238-4032-87bd-e67d250743f7",
+       "event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
+       "date": "2007-12-08",
+       "linked_by": "recorded_finale_event_date_pair",
+       "winner_matches_archive": true
+      }
+     }
+    ],
+    "other_professional_bouts_between_house_pairs": [
+     "Dan Barrera vs Ben Saunders: The Ultimate Fighter: Team Hughes vs. Team Serra Finale 2007-12-08 (listed, not evidence)"
     ]
    },
    "if_applied": {
@@ -107,8 +163,28 @@
     "exhibitions": 14,
     "classification_unresolved": 0,
     "house_bouts_with_fight_date": 14,
-    "house_verified_by_later_db_pairing": [
-     "Dan Barrera vs Ben Saunders"
+    "house_secondary_only": 0,
+    "house_verified_by": {
+     "commission_record": 14
+    },
+    "finals": [
+     {
+      "bout": "Mac Danzig vs Tom Speer",
+      "result": "verified",
+      "evidence": [
+       "finale_result_row"
+      ],
+      "db_finale_bout": {
+       "id": "23f94611-a238-4032-87bd-e67d250743f7",
+       "event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
+       "date": "2007-12-08",
+       "linked_by": "recorded_finale_event_date_pair",
+       "winner_matches_archive": true
+      }
+     }
+    ],
+    "other_professional_bouts_between_house_pairs": [
+     "Dan Barrera vs Ben Saunders: The Ultimate Fighter: Team Hughes vs. Team Serra Finale 2007-12-08 (listed, not evidence)"
     ]
    }
   }
@@ -127,19 +203,18 @@
   "partial": 43,
   "blocked": 0
  },
- "generic_matrix_observation": {
-  "finding": "A house (exhibition) bout is counted \"verified\" when a LATER professional bout between the same two fighter ids has the same winner (dbVerified in completeness_matrix.mjs does not require the result row to be the house bout itself). Reported only; no matrix rule changed.",
-  "house_bouts_affected_before": [
-   "tuf-5: Nate Diaz vs Gray Maynard (The Ultimate Fighter: Team Rousey vs. Team Tate Finale 2013-11-30)",
-   "tuf-6: Dan Barrera vs Ben Saunders (The Ultimate Fighter: Team Hughes vs. Team Serra Finale 2007-12-08)",
-   "tuf-7: Amir Sadollah vs C. B. Dollaway (The Ultimate Fighter: Team Rampage vs Team Forrest Finale 2008-06-21)",
-   "tuf-11: Court McGee vs Nick Ring (UFC 149: Faber vs Barao 2012-07-21)",
-   "tuf-11: Brad Tavares vs Seth Baczynski (The Ultimate Fighter: Team Liddell vs Team Ortiz Finale 2010-06-19)",
-   "tuf-24: Alexandre Pantoja vs Kai Kara-France (UFC 317: Topuria vs. Oliveira 2025-06-28)",
-   "tuf-24: Alexandre Pantoja vs Brandon Moreno (UFC Fight Night: Maia vs. Usman 2018-05-19; UFC 290: Volkanovski vs. Rodriguez 2023-07-08)",
-   "tuf-24: Alexandre Pantoja vs Kai Kara France (UFC 317: Topuria vs. Oliveira 2025-06-28)",
-   "tuf-26: Roxanne Modafferi vs Sijara Eubanks (UFC 230: Cormier vs. Lewis 2018-11-03)"
-  ],
-  "tuf_1_to_4_affected": false
+ "verifier": "exact result verification (scripts/tuf/lib/boutVerification.mjs, PR tuf-matrix-exact-verification): house bouts only by commission record / official repair / official recap; finals only by their exact finale-card bout. No DB pair row verifies a house bout.",
+ "superseded_measurement": {
+  "note": "The first simulation (audit commit a9bcf2c) ran under the old pair-level rule and counted one house bout per season as verified from a later professional fight between the same fighters. Those BEFORE numbers were contaminated and are replaced by this run.",
+  "tuf-5_before_old_rule": {
+   "result_verified": 2,
+   "secondary_only": 13,
+   "false_positive": "Nate Diaz vs Gray Maynard (UFC fight 2013-11-30)"
+  },
+  "tuf-6_before_old_rule": {
+   "result_verified": 2,
+   "secondary_only": 13,
+   "false_positive": "Dan Barrera vs Ben Saunders (TUF 6 Finale 2007-12-08)"
+  }
  }
 }

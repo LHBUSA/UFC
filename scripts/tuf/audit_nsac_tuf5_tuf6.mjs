@@ -411,7 +411,7 @@ audit.decisions_for_apply = [
   'TUF 6 page-3 note: carry as commission-sourced timeline events (Arroyo injury/withdrawal, Kolosci replacement) with episode null, or leave for a later timeline batch.',
   'Recorded only, no write: Richie Hightower printed DOB 1981-11-24 vs canonical 1974-11-26 (the canonical value equals John Kolosci\'s DOB exactly — worth a separate identity review).',
 ];
-audit.generic_matrix_observation = 'scripts/tuf/completeness_matrix.mjs counts a house (exhibition) bout as verified when a LATER professional bout between the same two fighter ids has the same winner (TUF 5 Diaz vs Maynard via 2013; TUF 6 Barrera vs Saunders via the 2007 finale; 9 house bouts across TUF 5, 6, 7, 11, 24, 26; none in TUF 1-4). Reported only; no matrix rule changed. See nsac_tuf5_tuf6_matrix_simulation_2026-09-13.json.';
+audit.generic_matrix_observation = 'Found by this audit and FIXED in its own PR (branch tuf-matrix-exact-verification, scripts/tuf/lib/boutVerification.mjs): the old completeness matrix counted a house (exhibition) bout as verified when any other professional bout between the same two fighter ids had the same winner (TUF 5 Diaz vs Maynard via 2013; TUF 6 Barrera vs Saunders via the 2007 finale; 9 house bouts across TUF 5, 6, 7, 11, 24, 26, plus 2 TUF 33 finals with no recorded finale link; none in TUF 1-4). The matrix simulation below is re-measured on the exact verifier; the BEFORE numbers of the first simulation were contaminated and are superseded.';
 fs.writeFileSync(OUT_JSON, JSON.stringify(audit, null, 1) + '\n');
 
 const md = ['# TUF 5 + TUF 6 — Nevada State Athletic Commission reconciliation audit (2026-09-13)', '', 'Read-only. Nothing applied. Evidence: `scripts/tuf/evidence/nsac_tuf5_tuf6_audit_2026-09-13.json` (`scripts/tuf/audit_nsac_tuf5_tuf6.mjs`). Matrix simulation: `scripts/tuf/evidence/nsac_tuf5_tuf6_matrix_simulation_2026-09-13.json`.', ''];
@@ -440,11 +440,11 @@ md.push('## Architecture check', '', `Existing commission architecture sufficien
 for (const x of audit.architecture.fits_without_change) md.push(`- ${x}`);
 md.push('', '## Decisions an apply would need', '');
 for (const x of audit.decisions_for_apply) md.push(`- ${x}`);
-md.push('', '## Generic matrix observation (reported, not changed)', '', audit.generic_matrix_observation, '');
+md.push('', '## Generic matrix defect (fixed separately, before any apply)', '', audit.generic_matrix_observation, '');
 const simPath = path.join(ROOT, 'scripts', 'tuf', 'evidence', 'nsac_tuf5_tuf6_matrix_simulation_2026-09-13.json');
 if (fs.existsSync(simPath)) {
   const sim = JSON.parse(fs.readFileSync(simPath, 'utf8'));
-  md.push('## Matrix simulation (temporary copy, read-only selects)', '', '| Season | | Status | Blockers | Results verified | Secondary-only | Commission-backed exhibitions | Classification unresolved |', '|---|---|---|---|---|---|---|---|');
+  md.push('## Matrix simulation (temporary copy, read-only selects, exact verifier)', '', '| Season | | Status | Blockers | Results verified | Secondary-only | Commission-backed exhibitions | Classification unresolved |', '|---|---|---|---|---|---|---|---|');
   for (const [slug, v] of Object.entries(sim.seasons)) for (const [k, m] of Object.entries(v)) md.push(`| ${slug} | ${k.replace('_', ' ')} | ${m.status} | ${m.blockers.join(', ') || '—'} | ${m.result_verified}/${m.bouts} | ${m.secondary_only} | ${m.exhibitions_commission_backed}/${m.exhibitions} | ${m.classification_unresolved} |`);
   md.push('', `Only ${sim.seasons_with_changed_verdict_or_counts.join(' and ')} change; totals stay ${JSON.stringify(sim.totals_if_applied)}.`, '');
 }

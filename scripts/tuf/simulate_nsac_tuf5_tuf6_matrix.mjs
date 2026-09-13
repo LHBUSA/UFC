@@ -14,6 +14,7 @@
  * matrix again (IF APPLIED). The matrix makes read-only database selects. Conflicts,
  * stage statuses, rosters, identities, episodes and finals are not touched.
  * Writes only scripts/tuf/evidence/nsac_tuf5_tuf6_matrix_simulation_2026-09-13.json.
+ * Measured on the exact result verifier (scripts/tuf/lib/boutVerification.mjs).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -44,7 +45,10 @@ const metrics = (s) => ({
   result_verified: s.tournament.result_verified, bouts: s.tournament.bouts_present, secondary_only: s.tournament.result_partial,
   house_commission_verified: s.depth.house_bouts_commission_verified, exhibitions_commission_backed: s.depth.exhibition_commission_backed,
   exhibitions: s.tournament.exhibition, classification_unresolved: s.tournament.classification_unresolved, house_bouts_with_fight_date: s.depth.house_bouts_with_fight_date,
-  house_verified_by_later_db_pairing: s.bouts.filter((b) => b.stage !== 'final' && !b.on_finale_card && (b.db_pairing || []).some((p) => p.winner_matches_archive)).map((b) => `${b.a} vs ${b.b}`),
+  house_secondary_only: s.bouts.filter((b) => !b.on_finale_card && b.result_verification === 'partial').length,
+  house_verified_by: s.bouts.filter((b) => !b.on_finale_card && b.result_verification === 'verified').flatMap((b) => b.result_evidence).reduce((m, e) => ({ ...m, [e]: (m[e] || 0) + 1 }), {}),
+  finals: s.bouts.filter((b) => b.on_finale_card).map((b) => ({ bout: `${b.a} vs ${b.b}`, result: b.result_verification, evidence: b.result_evidence, db_finale_bout: b.db_finale_bout })),
+  other_professional_bouts_between_house_pairs: s.bouts.filter((b) => !b.on_finale_card && (b.db_pair_matches || []).length).map((b) => `${b.a} vs ${b.b}: ${b.db_pair_matches.map((m) => `${m.event} ${m.date}`).join('; ')} (listed, not evidence)`),
 });
 
 const before = runMatrix('before');
@@ -105,10 +109,11 @@ const report = {
   seasons: Object.fromEntries(['tuf-5', 'tuf-6'].map((k) => [k, { before: metrics(B[k]), if_applied: metrics(Af[k]) }])),
   seasons_with_changed_verdict_or_counts: changed,
   totals_before: totals(before), totals_if_applied: totals(after),
-  generic_matrix_observation: {
-    finding: 'A house (exhibition) bout is counted "verified" when a LATER professional bout between the same two fighter ids has the same winner (dbVerified in completeness_matrix.mjs does not require the result row to be the house bout itself). Reported only; no matrix rule changed.',
-    house_bouts_affected_before: before.flatMap((s) => s.bouts.filter((b) => b.stage !== 'final' && !b.on_finale_card && (b.db_pairing || []).some((p) => p.winner_matches_archive)).map((b) => `${s.slug}: ${b.a} vs ${b.b} (${b.db_pairing.filter((p) => p.winner_matches_archive).map((p) => `${p.event} ${p.date}`).join('; ')})`)),
-    tuf_1_to_4_affected: before.filter((s) => ['tuf-1', 'tuf-2', 'tuf-3', 'tuf-4'].includes(s.slug)).some((s) => s.bouts.some((b) => b.stage !== 'final' && !b.on_finale_card && (b.db_pairing || []).some((p) => p.winner_matches_archive))),
+  verifier: 'exact result verification (scripts/tuf/lib/boutVerification.mjs, PR tuf-matrix-exact-verification): house bouts only by commission record / official repair / official recap; finals only by their exact finale-card bout. No DB pair row verifies a house bout.',
+  superseded_measurement: {
+    note: 'The first simulation (audit commit a9bcf2c) ran under the old pair-level rule and counted one house bout per season as verified from a later professional fight between the same fighters. Those BEFORE numbers were contaminated and are replaced by this run.',
+    'tuf-5_before_old_rule': { result_verified: 2, secondary_only: 13, false_positive: 'Nate Diaz vs Gray Maynard (UFC fight 2013-11-30)' },
+    'tuf-6_before_old_rule': { result_verified: 2, secondary_only: 13, false_positive: 'Dan Barrera vs Ben Saunders (TUF 6 Finale 2007-12-08)' },
   },
 };
 fs.writeFileSync(OUT, JSON.stringify(report, null, 1) + '\n');
