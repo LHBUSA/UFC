@@ -106,6 +106,10 @@ export const APPLIED = new Set([
   // idempotence, and a BEGIN..ROLLBACK proof of its own rollback file. Purely
   // additive; no deployed Worker, the API or the website reads any of it yet.
   '20260909180000_ufc_news_pipeline.sql',
+
+  // Applied 2026-09-13 after a BEGIN..ROLLBACK proof; probe: table present,
+  // RLS on. Additive.
+  '20260913000001_ufc_dwcs_outcome_claims.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))
