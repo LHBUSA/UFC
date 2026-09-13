@@ -7,6 +7,7 @@ import { SITE } from "@/lib/site";
 import { getFightersByIds, type PortraitSet } from "@/lib/db";
 import {
   allBouts,
+  commissionRecord,
   countsTowardsRecord,
   finaleIntegration,
   fighterIdFor,
@@ -73,6 +74,7 @@ const EVENT_LABEL: Record<string, string> = {
   team_selection: "Team draft", elimination_without_fight: "Sent home", weight_issue: "Weight", trade: "Team move",
   matchup_ordered: "Matchup ordered", replacement_return: "Return", staff_change: "Staff", alternate_named: "Alternate",
   semi_final_matchups_announced: "Semi-final matchups",
+  forfeit: "Forfeit", medical_clearance: "Medical",
 };
 
 const CLASS_LABEL: Record<ClassState, string> = {
@@ -174,6 +176,37 @@ function Evidence({ b }: { b: TufBout }) {
   );
 }
 
+const foldName = (x: string) => x.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+
+/* What the commission record adds to a house bout. The record is the source;
+ * the bracket row already carries the result it states. */
+function CommissionDetail({ b }: { b: TufBout }) {
+  const hit = commissionRecord(b.commission_record_id);
+  if (!hit) return null;
+  const { record } = hit;
+  const loser = b.winner === b.a ? b.b : b.a;
+  let cards: string | null = null;
+  if (record.scorecards) {
+    const [first, second] = record.scorecards.order;
+    const winnerFirst = foldName(String(b.winner)).includes(foldName(first)) || foldName(loser).includes(foldName(second));
+    cards = record.scorecards.cards.map((c) => {
+      const [x, y] = c.score.split("-");
+      return `${winnerFirst ? `${x}-${y}` : `${y}-${x}`} (${c.judge})`;
+    }).join(" · ");
+  }
+  return (
+    <span className="tuf-evidence">
+      <span><b>Fought</b> {displayDate(record.date)}</span>
+      {cards ? <span><b>Judges</b> {cards}</span> : null}
+      {record.referee ? <span><b>Referee</b> {record.referee}</span> : null}
+      {record.remarks.map((r, i) => <span key={i}><b>Commission remark</b> {r.quote}</span>)}
+      {b.corrections?.length ? (
+        <span><b>Corrected by the commission record</b> {b.corrections.map((c) => `${c.field} ${c.old ?? "—"} → ${c.new ?? "—"}`).join("; ")}</span>
+      ) : null}
+    </span>
+  );
+}
+
 function BoutRow({
   b, linked, faces, recaps, now, today, showEvidence = true,
 }: {
@@ -219,6 +252,7 @@ function BoutRow({
         </span>
       )}
       {showEvidence ? <Evidence b={b} /> : null}
+      {showEvidence ? <CommissionDetail b={b} /> : null}
       {b.sources?.length ? (
         <span className="tuf-bout-src">
           {b.sources.map((src) => (
@@ -294,6 +328,7 @@ function EpisodeBoutLine({ x, linked, recaps }: { x: AiredBout; linked: Map<stri
         {result === "verified" || result === "reported" ? <span className={`tuf-rstate is-${result}`} title={RESULT_LABEL[result].title}>{RESULT_LABEL[result].text}</span> : null}
         <span className={`tuf-class tuf-class-${cls}`}>{CLASS_LABEL[cls]}</span>
         <span className="tuf-ep">{x.weight_class} · {x.stage_label}</span>
+        {b.fight_date ? <span className="tuf-ep">Fought {displayDate(b.fight_date)}</span> : null}
       </span>
       {x.recap?.weigh_ins.length ? (
         <span className="tuf-weighins">
@@ -370,6 +405,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
     ...bouts.flatMap((b) => [b.a, b.b]),
     ...(season.bracket ?? []).flatMap((wc) => wc.stages.flatMap((st) => (st.disputed ?? []).flatMap((b) => [b.a, b.b]))),
     ...(season.teams ?? []).flatMap((t) => t.roster.map((r) => r.name)),
+    ...(season.pre_draft_cast ?? []).map((p) => p.name),
     ...(season.coaches_full ?? []).map((c) => c.name),
     ...season.coaches,
     ...season.winners.map((w) => w.fighter),
@@ -379,6 +415,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
   ];
   const contestantIds = [
     ...(season.teams ?? []).flatMap((t) => t.roster.map((r) => r.fighter_id ?? fighterIdFor(season.slug, r.name))),
+    ...(season.pre_draft_cast ?? []).map((p) => p.fighter_id ?? fighterIdFor(season.slug, p.name)),
     ...bouts.flatMap((b) => [b.a_fighter_id, b.b_fighter_id]),
   ].filter(Boolean) as string[];
   const [linked, finale] = await Promise.all([linkSeasonNames(season.slug, names), linkedFinale(season.finale_event, season.finale_date)]);
@@ -439,9 +476,11 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
           {premiere ? <div><dt>Premiere</dt><dd>{displayDate(premiere)}<small className="tuf-srctag">{ov?.premiere?.basis ?? "episode 1 air date"}</small></dd></div> : null}
           {season.finale_date ? <div><dt>Finale</dt><dd>{displayDate(season.finale_date)}<small className="tuf-srctag">{season.finale_event}</small></dd></div> : null}
           {ov?.filming?.value ? <div><dt>Filmed</dt><dd>{ov.filming.value}<SourceTags sources={ov.filming.sources} /></dd></div> : null}
+          {ov?.fight_window?.start ? <div><dt>House fights</dt><dd>{displayDate(ov.fight_window.start)} – {displayDate(ov.fight_window.end)}<small className="tuf-srctag">{ov.fight_window.basis}</small></dd></div> : null}
           <div><dt>Divisions</dt><dd>{season.weight_classes.join(" · ")}</dd></div>
           {ov?.cast_size?.value ? <div><dt>Cast</dt><dd>{ov.cast_size.value} fighters<SourceTags sources={ov.cast_size.sources} /></dd></div> : null}
           {ov?.network?.value ? <div><dt>Network</dt><dd>{ov.network.value}<SourceTags sources={ov.network.sources} /></dd></div> : null}
+          {ov?.hosts?.value ? <div><dt>Hosts</dt><dd>{ov.hosts.value}<SourceTags sources={ov.hosts.sources} /></dd></div> : null}
           {season.coaches.length ? <div><dt>Coaches</dt><dd>{season.coaches.join(" · ")}</dd></div> : null}
           <div><dt>State</dt><dd>{season.season_state === "ongoing" ? "In progress" : "Completed"}</dd></div>
         </dl>
@@ -672,6 +711,20 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
               </div>
             ))}
           </div>
+          {season.pre_draft_cast?.length ? (
+            <div className="tuf-team tuf-predraft">
+              <h3>Before the draft<small>left before the teams were picked — no bout</small></h3>
+              <ul>
+                {season.pre_draft_cast.map((p) => (
+                  <li key={p.name}>
+                    <Name name={p.name} linked={linked} faces={faces} size={34} />
+                    <small>{[p.weight_class, p.exit === "injury" ? "Injured out" : p.exit === "left_show" ? "Left the show" : p.exit === "forfeit" ? "Forfeited" : p.exit].filter(Boolean).join(" · ")}</small>
+                    <span className="tuf-marks"><a className="tuf-mark is-elimination" href={`#ep-${p.episode}`}>Episode {p.episode}</a></span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           {season.teams.find((t) => t.pick_basis)?.pick_basis ? <p className="tuf-fine">{season.teams.find((t) => t.pick_basis)!.pick_basis}</p> : null}
         </section>
       ) : null}
@@ -749,7 +802,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                     <summary>
                       <span className="tuf-ep-num">Ep {e.episode_number}</span>
                       <span className="tuf-ep-title">{e.title ?? <em className="tuf-none">Title not listed</em>}</span>
-                      {e.air_date ? <span className="tuf-ep-date">{displayDate(e.air_date)}</span> : null}
+                      {e.air_date ? <span className="tuf-ep-date">{displayDate(e.air_date)}</span> : e.air_date_resolution?.status === "unresolved" ? <span className="tuf-ep-date">Air date unresolved</span> : null}
                       {v.hasFacts ? (
                         <span className="tuf-ep-sum">
                           {[
@@ -787,6 +840,11 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                           Aired {displayDate(e.air_date)}: the network listing and {e.air_date_resolution.independent_source?.family === "wikipedia" ? "Wikipedia" : e.air_date_resolution.independent_source?.family}
                           {e.air_date_resolution.independent_source?.cites ? ` (citing ${e.air_date_resolution.independent_source.cites.split(" (")[0]})` : ""} agree.
                           {e.air_date_resolution.network_display_date && e.air_date_resolution.network_display_date !== e.air_date ? ` The network displays ${displayDate(e.air_date_resolution.network_display_date)}.` : ""}
+                        </span>
+                      ) : null}
+                      {e.air_date_resolution?.status === "unresolved" ? (
+                        <span className="tuf-fine tuf-ep-provenance">
+                          Air date unresolved: {e.air_date_resolution.why}.
                         </span>
                       ) : null}
                       {e.recap_url ? (
@@ -844,7 +902,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
           <div className="tuf-section-head">
             <h2>{season.team_competition ? "Series results" : "Tournament"}</h2>
             {summary.length ? <p className="tuf-summary">{summary.join(" · ")}</p> : null}
-            {format ? <p><b>{format.label}.</b> {format.phases.map((p) => p.rule).filter(Boolean).join(" ")}</p> : null}
+            {format ? <p><b>{format.label}.</b> {[...(format.steps ?? []).map((st) => st.rule), ...format.phases.map((p) => p.rule)].filter(Boolean).join(" ")}</p> : null}
             <p>
               Result and classification are separate. A reported winner comes from the season record alone; a verified
               one is stated by an official source or our own result records. Only sourced professional bouts count

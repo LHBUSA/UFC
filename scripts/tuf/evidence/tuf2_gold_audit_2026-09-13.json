@@ -1,0 +1,136 @@
+{
+  "_about": "TUF 2 gold-standard audit evidence, captured 2026-09-13. Research only: nothing here has been applied to the season, episode, identity or database layers. Short factual quotes with URL, family and retrieval time; documents are not redistributed.",
+  "season": "tuf-2",
+  "retrieved": "2026-09-13",
+
+  "sources": {
+    "nsac_tuf2": {
+      "family": "nsac_commission_record", "tier": "primary", "evidence_level": "commission_record",
+      "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+      "archive_url": "https://web.archive.org/web/20161230191151/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2005_Results/TUFSEASON2.pdf",
+      "sha256": "67843346012b3a41776b2a868cfd0183867b614078ffcb886644f25a611b5db4",
+      "note": "Nevada State Athletic Commission 'MIXED MARTIAL ARTS RESULTS', location 'UFC Training Center, Las Vegas', promoter Zuffa, LLC. 2 pages, 12 bouts. The live file is byte-identical to the 2016-12-30 archive capture. combat_sources already has an approved 'nsac' source (approved_ingest, facts only).",
+      "retrieved": "2026-09-13"
+    },
+    "our_records": { "family": "our_records", "tier": "canonical", "what": "ufc_events 409b765d (The Ultimate Fighter: Team Hughes vs. Team Franklin Finale, 2005-11-05): 7 ufc_bouts with results, 9 scorecard rows, round stats on all 7" },
+    "espn_finale": { "family": "espn_core_api", "tier": 2, "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/400254173", "what": "The Ultimate Fighter 2 Finale, 2005-11-06T02:00Z: 7 competitions with athlete ids, winners and DOBs", "retrieved": "2026-09-13" },
+    "paramount_s2": { "family": "paramount_plus_episode_metadata", "tier": 4, "url": "https://www.paramountplus.com/shows/the-ultimate-fighter/xhr/episodes/page/0/size/50/xs/0/season/2/", "what": "13 items (12 episodes + finale) with title, listing date, display date and description", "retrieved": "2026-09-13" },
+    "wikipedia_tuf2": { "family": "wikipedia", "tier": "draft", "url": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter_2", "retrieved": "2026-09-13", "note": "episode bullets, draft table, original air dates (no citation given for the dates)" }
+  },
+
+  "classification": {
+    "finding": "Affirmative commission evidence exists for Season 2 itself. The TUF 1 ESPN retrospective is NOT needed and must not be generalized.",
+    "affirmative": [
+      { "source": "nsac_tuf2", "quote": "Exhibition Results", "where": "results column header, page 1", "scope": "the 12 bouts at the UFC Training Center, 06/15/05 to 07/12/05" },
+      { "source": "nsac_tuf2", "quote": "MIXED MARTIAL ARTS RESULTS", "where": "document title; page 2 continues the same table with the column header 'Results'" }
+    ],
+    "context": { "source": "wikipedia_tuf2", "quote": "For many years, Season 2 was the only season where all fights that took place were considered as professional MMA bouts by the Nevada State Athletic Commission.  However, this has recently been changed and they are now considered to be exhibition bouts.", "note": "secondary; cites the same NSAC document. Records that the commission's treatment changed at some point, so an older record or third-party database may still show these as professional bouts. The current commission document is the authority; the change is worth recording." },
+    "corroborating": "absence from our complete 2005 professional records (corroboration only)",
+    "reopen_if": "a later commission record reclassifies the bouts"
+  },
+
+  "house_bouts": [
+    { "fighters": ["Josh Burkman", "Melvin Guillard"], "episode": 2, "nsac_date": "2005-06-15", "nsac": "Burkman won by unanimous decision. 30-27; 30-27; 30-27 (Weeks, Trowbridge, Shirley). Referee Herb Dean.", "draft": "Burkman, Decision (unanimous), R3", "state": "PRIMARY/OFFICIAL RESULT", "differences": "none; commission adds cards, judges and referee" },
+    { "fighters": ["Brad Imes", "Rob MacDonald"], "episode": 3, "nsac_date": "2005-06-18", "nsac": "Imes Smith win by tap out 4:10 of the 1st round – triangle choke. Referee Herb Dean. Remark: MacDonald must have left bicep and left labrum tears cleared by Dr.", "draft": "Imes, Submission (triangle choke), R1 4:07", "state": "PRIMARY/OFFICIAL RESULT", "differences": "time 4:10 (commission) vs 4:07 (draft); commission prints the name 'Bradley Imes Smith'" },
+    { "fighters": ["Joe Stevenson", "Marcus Davis"], "episode": 4, "nsac_date": "2005-06-22", "nsac": "Stevenson won by tap out 4:12 of the 1st round – elbow strikes. Referee Steve Mazzagatti.", "draft": "Stevenson, Submission (elbows), R1 4:10", "state": "PRIMARY/OFFICIAL RESULT", "differences": "time 4:12 vs 4:10; method wording 'tap out – elbow strikes'" },
+    { "fighters": ["Rashad Evans", "Tom Murphy"], "episode": 5, "nsac_date": "2005-06-25", "nsac": "Evans won by unanimous decision. Murphy – Evans 28-29; 28-29; 27-30 (Weeks, Shirley, Rosales). Referee John McCarthy.", "draft": "Evans, Decision (unanimous), R3", "state": "PRIMARY/OFFICIAL RESULT", "differences": "none" },
+    { "fighters": ["Jason Von Flue", "Jorge Gurgel"], "episode": 6, "nsac_date": "2005-06-29", "nsac": "von Flue won by unanimous decision. 29-28; 29-28; 29-28 (Shirley, Weeks, Hamilton). Referee Steve Mazzagatti. Remark: Gurgel must have torn left ACL tear cleared by an Orthopedic Dr.", "draft": "Von Flue, Decision (unanimous), R3", "state": "PRIMARY/OFFICIAL RESULT", "differences": "none" },
+    { "fighters": ["Seth Petruzelli", "Dan Christison"], "episode": 7, "nsac_date": "2005-07-02", "nsac": "Petruzelli won by unanimous decision. Christison – Petruzelli 28-29; 28-29; 28-29 (Trowbridge, Byrd, Belardo). Referee Steve Mazzagatti. Remark: Christison must have nasal and facial fractures cleared by Dr.", "draft": "Petruzelli, Decision (unanimous), R3", "state": "PRIMARY/OFFICIAL RESULT", "differences": "none" },
+    { "fighters": ["Luke Cummo", "Anthony Torres"], "episode": 8, "nsac_date": "2005-07-06", "nsac": "Cummo won by unanimous decision. 29-28; 30-26; 30-27 (Shirley, Weeks, Peoples). Referee Herb Dean.", "draft": "Cummo, Decision (unanimous), R3", "state": "PRIMARY/OFFICIAL RESULT", "differences": "none" },
+    { "fighters": ["Rashad Evans", "Mike Whitehead"], "episode": 9, "nsac_date": "2005-07-08", "nsac": "Evans won by unanimous decision. Whitehead – Evans 27-30; 27-30; 27-30 (Shirley, Trowbridge, Peoples). Referee Steve Mazzagatti.", "draft": "Evans, Decision (unanimous), R3", "state": "PRIMARY/OFFICIAL RESULT", "differences": "none" },
+    { "fighters": ["Luke Cummo", "Sammy Morgan"], "episode": 10, "stage": "welterweight semi-final", "nsac_date": "2005-07-11", "nsac": "Cummo won by TKO 2:08 of the 2nd round. Referee Herb Dean.", "draft": "Cummo, KO (knee), R2 2:05", "state": "PRIMARY/OFFICIAL RESULT", "differences": "method TKO (commission) vs KO (knee) (draft); time 2:08 vs 2:05. Winner agrees." },
+    { "fighters": ["Rashad Evans", "Keith Jardine"], "episode": 11, "stage": "heavyweight semi-final", "nsac_date": "2005-07-11", "nsac": "Evans won by unanimous decision. Jardine – Evans 28-29; 28-29; 28-29 (Shirley, Trowbridge, Byrd). Referee John McCarthy.", "draft": "Evans, Decision (unanimous), R3", "state": "PRIMARY/OFFICIAL RESULT", "differences": "none" },
+    { "fighters": ["Brad Imes", "Seth Petruzelli"], "episode": 12, "stage": "heavyweight semi-final", "nsac_date": "2005-07-12", "nsac": "Smith won by split decision. Smith – Petruzelli 29-28; 28-29; 29-28 (Shirley, Rosales, Peoples). Referee John McCarthy.", "draft": "Imes, Decision (split), R3", "state": "PRIMARY/OFFICIAL RESULT", "differences": "the commission names him Bradley Imes Smith ('Smith won'); identity is the same corner (DOB 03/16/77)" },
+    { "fighters": ["Joe Stevenson", "Jason Von Flue"], "episode": 12, "stage": "welterweight semi-final", "nsac_date": "2005-07-12", "nsac": "Stevenson won by tap out 4:49 of the 1st round – arm bar. Referee Steve Mazzagatti.", "draft": "Stevenson, Submission (armbar), R1 4:46", "state": "PRIMARY/OFFICIAL RESULT", "differences": "time 4:49 vs 4:46" }
+  ],
+  "result_summary": { "primary_official": 12, "network_pairing_only": 0, "high_quality_secondary": 0, "wikipedia_only": 0, "conflicted_winner": 0, "unknown": 0, "method_or_time_differences_vs_draft": 4 },
+
+  "format": {
+    "current_model": "elimination (4 per division, labelled 'Elimination round', note 'Bouts the episode summaries record but the source's bracket does not include') -> semi_final -> final; no competition_format declared; format_exceptions notes not rendered; a synthetic 'Unassigned' team",
+    "actual": {
+      "cast": { "value": "18 fighters, 9 per division", "sources": [{ "source": "paramount_s2", "episode": 1, "quote": "Eighteen of the world's toughest heavyweights and welterweights compete for two UFC contracts." }, { "source": "wikipedia_tuf2", "quote": "with 9 fighters initially in each division" }] },
+      "pre_draft_episode_1": "Before the draft: heavyweight Kerry Schall out with a knee injury; Eli Joslin left the show; Kenny Stevens, chosen as the weakest welterweight, called out Sammy Morgan and forfeited, saying he could not make weight. Sixteen were drafted.",
+      "draft": "Episode 2: a coin flip gave Franklin the first pick; each coach picked 8 (4 per division). Dan Christison joined as Schall's replacement.",
+      "matchups": "Team challenges (designed and hosted by Randy Couture) decided which team chose the next elimination matchup; the loser of each house fight left.",
+      "replacement": "Josh Burkman won the first fight but broke his arm and left (episode 3); Jason Von Flue replaced him and fought his way into the semi-finals.",
+      "advanced_without_house_fight": ["Sammy Morgan (opponent forfeited before the draft)", "Keith Jardine"],
+      "fought_twice_before_semis": ["Rashad Evans (Tom Murphy, Mike Whitehead)"],
+      "team_moves": ["Jason Von Flue to Team Franklin (episode 7)", "Brad Imes to Team Hughes (episode 8)"],
+      "semi_finals": "Set by Dana White, Franklin and Hughes with fighter input (episode 10). Marcus Davis was brought back as alternate for a cut Von Flue, who was then cleared. Semi-finals fought 07/11/05 and 07/12/05 per the commission record.",
+      "finals": "Live finale card, 2005-11-05",
+      "fight_dates": "The commission record dates all 12 house bouts: 2005-06-15 to 2005-07-12. They are fight dates, distinct from air dates (August to November 2005).",
+      "declared_format_proposal": "elimination_then_semifinals, with a pre-draft selection phase (episode 1) recorded as timeline events rather than bouts; the forfeit is not a bout and must not be invented as one",
+      "joslin_division": "not stated by any captured source; left unassigned rather than guessed"
+    }
+  },
+
+  "episode_audit": [
+    { "episode": 1, "title": "A New Crop", "listing_date": "2005-08-22", "display_date": "2005-08-23", "independent_air_date": "2005-08-22", "air_date": "resolvable", "bouts": [], "events": ["Kerry Schall out, knee injury (wikipedia)", "Eli Joslin leaves the show (wikipedia)", "Kenny Stevens forfeits his match with Sammy Morgan, citing weight (wikipedia)", "cast of 18 (paramount)"], "facts_now": false, "facts_available": true },
+    { "episode": 2, "title": "The Teams Are Picked", "listing_date": "2005-08-29", "display_date": "2005-08-30", "independent_air_date": "2005-08-29", "air_date": "resolvable", "bouts": ["Burkman def. Guillard (NSAC 2005-06-15)"], "events": ["Christison joins, replacing Schall", "coin flip; Franklin picks first; draft of 16 (pick order)", "Team Hughes wins the welterweight challenge"], "network": "The coaches make their choices and Team Hughes battles Team Franklin in the first challenge.", "facts_now": true, "facts_available": true },
+    { "episode": 3, "title": "No Pain, No Gain", "listing_date": "2005-09-05", "display_date": "2005-09-06", "independent_air_date": "2005-09-05", "air_date": "resolvable", "bouts": ["Imes def. MacDonald (NSAC 2005-06-18)"], "events": ["Burkman leaves with a broken arm", "Von Flue joins, replacing Burkman", "MacDonald shoulder complaints (NSAC: bicep and labrum tears to be cleared)", "Team Hughes wins the heavyweight challenge"], "network": "A new fighter arrives at the house ruffling some feathers and the heavyweights prepare for their first battle", "facts_now": true, "facts_available": true },
+    { "episode": 4, "title": "Strategy", "listing_date": "2005-09-12", "display_date": "2005-09-13", "independent_air_date": "2005-09-12", "air_date": "resolvable", "bouts": ["Stevenson def. Davis (NSAC 2005-06-22)"], "events": ["Team Franklin wins the welterweight challenge"], "network": "a second welterweight is sent home in brutal fashion", "facts_now": true, "facts_available": true },
+    { "episode": 5, "title": "Leave it in the Octagon", "listing_date": "2005-09-19", "display_date": "2005-09-20", "independent_air_date": "2005-09-19", "air_date": "resolvable", "bouts": ["Evans def. Murphy (NSAC 2005-06-25)"], "events": ["Team Hughes wins the heavyweight challenge"], "network": "two more heavyweights go toe to toe", "facts_now": true, "facts_available": true },
+    { "episode": 6, "title": "Slugfest", "listing_date": "2005-09-26", "display_date": "2005-09-27", "independent_air_date": "2005-09-26", "air_date": "resolvable", "bouts": ["Von Flue def. Gurgel (NSAC 2005-06-29)"], "events": ["Team Hughes wins the welterweight challenge (Team Franklin forfeits it)", "Gurgel: torn left ACL to be cleared (NSAC remark)"], "network": "A welterweight suffers a crushing defeat in an all out three round slugfest.", "facts_now": true, "facts_available": true },
+    { "episode": 7, "title": "No Respect", "listing_date": "2005-10-03", "display_date": "2005-10-04", "independent_air_date": "2005-10-03", "air_date": "resolvable", "bouts": ["Petruzelli def. Christison (NSAC 2005-07-02)"], "events": ["Von Flue moved to Team Franklin", "Team Franklin wins the heavyweight challenge", "Christison: nasal and facial fractures to be cleared (NSAC remark)"], "network": "The teams are re-balanced.", "facts_now": true, "facts_available": true },
+    { "episode": 8, "title": "Knees & Elbows", "listing_date": "2005-10-10", "display_date": "2005-10-11", "independent_air_date": "2005-10-10", "air_date": "resolvable", "bouts": ["Cummo def. Torres (NSAC 2005-07-06)"], "events": ["Team Hughes wins the welterweight challenge", "Imes moved to Team Hughes"], "network": "Two welterweights listen to his advice and go to war.", "facts_now": true, "facts_available": true },
+    { "episode": 9, "title": "Mental Game", "listing_date": "2005-10-17", "display_date": "2005-10-18", "independent_air_date": "2005-10-17", "air_date": "resolvable", "bouts": ["Evans def. Whitehead (NSAC 2005-07-08)"], "events": ["Team Hughes wins the heavyweight challenge", "Imes passed over for a fight because of a cut from training"], "network": "Brad quickly learns how different training is over at Team Hughes.", "facts_now": true, "facts_available": true },
+    { "episode": 10, "title": "Semi-Final #1 Killer Instinct", "listing_date": "2005-10-24", "display_date": "2005-10-25", "independent_air_date": "2005-10-24", "air_date": "resolvable", "bouts": ["Cummo def. Morgan, welterweight semi-final (NSAC 2005-07-11)"], "events": ["Von Flue cut in practice; Marcus Davis brought back as alternate", "semi-final matchups set by White, Franklin and Hughes with fighter input: Cummo–Morgan, Stevenson–Von Flue, Imes–Petruzelli, Evans–Jardine"], "network_defect": "this item's description describes Evans vs Jardine (the episode 11 bout) — swapped with item 11", "facts_now": true, "facts_available": true },
+    { "episode": 11, "title": "Semi-Final #2 Bloody Brawl", "listing_date": "2005-10-31", "display_date": "2005-11-01", "independent_air_date": "2005-10-31", "air_date": "resolvable", "bouts": ["Evans def. Jardine, heavyweight semi-final (NSAC 2005-07-11)"], "events": [], "network_defect": "this item's description describes the semi-final announcement and the first welterweight finalist (episode 10) — swapped with item 10", "facts_now": true, "facts_available": true },
+    { "episode": 12, "title": "Semi-Final #3 & 4: Countdown", "listing_date": "2005-10-31", "display_date": "2005-11-01", "independent_air_date": "2005-11-01", "air_date": "UNRESOLVED: network listing 2005-10-31 vs independent 2005-11-01", "bouts": ["Stevenson def. Von Flue, welterweight semi-final (NSAC 2005-07-12)", "Imes def. Petruzelli, heavyweight semi-final (NSAC 2005-07-12)"], "events": ["Von Flue cleared by the doctors to fight", "Petruzelli ear injury (wikipedia)"], "network": "A doctor examines Jason's cut to determine if he can fight. If he can't, Marcus will take his place", "facts_now": true, "facts_available": true },
+    { "episode": "finale", "title": "TUF 2 Finale: Team Hughes vs. Team Franklin", "listing_date": "2005-11-05", "display_date": "2005-11-06", "independent_air_date": "2005-11-05", "air_date": "resolvable" }
+  ],
+
+  "identity": {
+    "contestants": 20,
+    "linked_current": 17,
+    "unresolved_current": ["Josh Burkman", "Kenny Stevens", "Eli Joslin"],
+    "provable": {
+      "Josh Burkman": {
+        "canonical": { "id": "1f85c086-ece4-46fd-9cb0-cd991a3caaee", "name": "Joshua Burkman", "ufcstats_id": "6da99156486ed6c2", "dob": "1980-04-10" },
+        "evidence": [
+          "our finale card: Joshua Burkman def. Sammy Morgan (a TUF 2 castmate), KO/TKO R1 0:21, 2005-11-05 (ufc_bouts e1f04fc8)",
+          "ESPN competition 156030 on the finale event: Joshua Burkman (2354104, winner) vs Sammy Morgan",
+          "NSAC record: 'JOSHUA R BURKMAN', DOB 04/10/80 — equal to the canonical row's DOB"
+        ],
+        "why_unlinked_now": "the resolver's name conventions do not map Josh to Joshua; finale-date evidence would settle it",
+        "proposal": "name_aliases.json entry Josh Burkman -> Joshua Burkman (tuf-2)"
+      }
+    },
+    "no_canonical_row_expected": {
+      "Kenny Stevens": "forfeited before the draft (episode 1); no UFC bout in our records under any spelling; no other captured source gives a professional UFC bout",
+      "Eli Joslin": "left the show in episode 1; the only similar row, Jeff Joslin, is a different person (namesake)"
+    },
+    "canonical_rows_missing": 0,
+    "dob_cross_check_against_nsac": "16 of the 17 bout-participant rows match the commission DOB exactly; Brad Imes differs (canonical 1977-03-13; NSAC 03/16/77; ESPN 1977-03-16)"
+  },
+
+  "espn": {
+    "contestant_rows_with_espn_id": 0,
+    "anchorable_via_finale_event_400254173": 10,
+    "plan": { "expected": 10, "mapped": 10, "ambiguous": 0, "conflicts": 0, "duplicate_ids": 0 },
+    "mappings": {
+      "Rashad Evans": "2335465", "Joshua Burkman": "2354104", "Melvin Guillard": "2335800", "Joe Stevenson": "2335672", "Marcus Davis": "2335804",
+      "Keith Jardine": "2335469", "Brad Imes": "2335606", "Luke Cummo": "2335799", "Sammy Morgan": "2335817", "Kerry Schall": "2354537"
+    },
+    "not_anchorable_via_finale": ["Seth Petruzelli", "Jorge Gurgel", "Jason Von Flue", "Dan Christison", "Anthony Torres", "Rob MacDonald", "Tom Murphy", "Mike Whitehead"],
+    "not_anchorable_note": "their first UFC bouts were on other 2006 events; a deterministic mapping would need each exact event, so they are out of a finale-anchored plan",
+    "dob_conflicts": [{ "fighter": "Brad Imes", "canonical": "1977-03-13", "espn": "1977-03-16", "nsac": "1977-03-16" }],
+    "slug_effect": "attaching an ESPN id changes the fighter's public slug; the TUF 1 pattern (retired-slug 308s) would be required"
+  },
+
+  "finale": {
+    "event": "409b765d-29b1-45c4-a9ef-ee234d350af0",
+    "bouts": 7,
+    "finals": [
+      { "bout": "1027f33c", "result": "Joe Stevenson def. Luke Cummo, DEC_U R3", "scorecards": 3, "round_stats_rounds": 3 },
+      { "bout": "efdfe676", "result": "Rashad Evans def. Brad Imes, DEC_S R3", "scorecards": 3, "round_stats_rounds": 3 }
+    ],
+    "castmate_bouts": ["Keith Jardine def. Kerry Schall (KO/TKO R2)", "Melvin Guillard def. Marcus Davis (KO/TKO R2)", "Joshua Burkman def. Sammy Morgan (KO/TKO R1) — shown as 'rest of the card' until Burkman links"],
+    "other_bouts": ["Kenny Florian def. Kit Cope (SUB R2) — Florian is a TUF 1 finalist", "Diego Sanchez def. Nick Diaz (DEC_U R3, main event) — Sanchez is the TUF 1 middleweight winner"],
+    "debuts_now_rendered": "9 of 17 contestants",
+    "debuts_after_burkman_link": "10 of 18 contestants",
+    "coaches_connection": "none: Matt Hughes and Rich Franklin did not fight each other; no coaches' fight is shown and none should be invented"
+  },
+
+  "portraits": { "with_licensed_portrait": ["Rashad Evans", "Joe Stevenson", "Marcus Davis", "Keith Jardine", "Jason Von Flue"], "without": 13, "approved_candidates": 0 }
+}

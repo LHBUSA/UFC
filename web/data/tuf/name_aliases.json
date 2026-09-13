@@ -17,6 +17,14 @@
       "evidence": "The season source's cast list and roster print Nathan Quarry; our roster holds exactly one Quarry, Nate Quarry (e8999544, UFC Stats 52cae54377b433b7). The bout that decides it is on the season's own finale card: Nate Quarry def. Lodune Sincaid, a TUF 1 castmate, KO/TKO in round one at 3:17 on The Ultimate Fighter: Team Couture vs. Team Liddell Finale, 2005-04-09 (ufc_bouts 2edd40e1; ESPN competition 153234 names Nate Quarry, athlete 2335773). The network listing calls him Nate in episode 8.",
       "verified_against": "ufc_bouts + ufc_bout_results; ESPN core API event 400254386",
       "retrieved": "2026-09-13"
+    },
+    {
+      "source_name": "Josh Burkman",
+      "records_name": "Joshua Burkman",
+      "seasons": ["tuf-2"],
+      "evidence": "One proven identity, not a naming rule. The season source prints Josh Burkman; our roster holds exactly one Burkman, Joshua Burkman (1f85c086, UFC Stats 6da99156486ed6c2, DOB 1980-04-10). Three independent anchors agree: on the season's own finale card, Joshua Burkman def. Sammy Morgan, a TUF 2 castmate, KO/TKO in round one at 0:21, 2005-11-05 (ufc_bouts e1f04fc8); ESPN competition 156030 on The Ultimate Fighter 2 Finale names Joshua Burkman (athlete 2354104) as the winner over Sammy Morgan; the Nevada State Athletic Commission's Season 2 results record prints JOSHUA R BURKMAN, DOB 04/10/80, the canonical row's date of birth.",
+      "verified_against": "ufc_bouts + ufc_bout_results; ESPN core API event 400254173; web/data/tuf/commission_records.json nsac-2005-tuf2-01",
+      "retrieved": "2026-09-13"
     }
   ]
 }
