@@ -23,6 +23,9 @@ import tuf22Json from "../data/tuf/seasons/tuf-22.json" with { type: "json" };
 import tuf1Json from "../data/tuf/seasons/tuf-1.json" with { type: "json" };
 import tuf20Json from "../data/tuf/seasons/tuf-20.json" with { type: "json" };
 import tuf5Json from "../data/tuf/seasons/tuf-5.json" with { type: "json" };
+import { advancementProblems, expectedBouts } from "./tufFormat.ts";
+import { buildEpisodeViews, rosterMarks, timelineCounts } from "./tufTimeline.ts";
+import { classState, resultState } from "./tufBoutState.ts";
 
 type Bout = {
   a: string; b: string; winner: string | null; method: string | null;
@@ -659,7 +662,7 @@ test("a proven duplicate row is recorded with its proof, and both spellings reac
 type EpisodeFile = {
   slug: string;
   episodes: Array<{
-    episode_number: number; title: string | null; air_date: null; listing_date: string | null; recap_url: string | null;
+    episode_number: number; title: string | null; air_date: string | null; listing_date: string | null; recap_url: string | null;
     bouts?: Array<{
       a: string; b: string; a_fighter_id?: string; b_fighter_id?: string;
       bracket: { weight_class: string; stage: string; a: string; b: string } | null;
@@ -680,7 +683,14 @@ test("an episode never carries an air date or a fight date it was not given", ()
     assert.deepEqual(numbers, [...new Set(numbers)].sort((a, b) => a - b), `${slug}: episode numbers are unique and ordered`);
     for (const e of file.episodes) {
       n += 1;
-      assert.equal(e.air_date, null, `${slug} ep${e.episode_number}: no source states an air date`);
+      /* An air date exists only where the network listing date and an
+       * independent source give the same day, and both are recorded. */
+      const res = (e as { air_date_resolution?: { basis: string | null; network_listing_date: string | null; independent_date: string | null } }).air_date_resolution;
+      if (e.air_date !== null) {
+        assert.equal(res?.basis, "network_listing + independent_source", `${slug} ep${e.episode_number}: an air date needs two agreeing sources`);
+        assert.equal(res?.network_listing_date, e.air_date);
+        assert.equal(res?.independent_date, e.air_date);
+      }
       assert.ok(!("fight_date" in e), `${slug} ep${e.episode_number}: an episode is not a fight date`);
     }
   }
@@ -817,6 +827,167 @@ test("TUF 34's misspelled finalists resolve to one fighter each, with no split l
   }
   const kinds = (DETAIL_BY_SLUG["tuf-34"] as { name_corrections: Array<{ draft_name: string; kind: string }> }).name_corrections;
   assert.deepEqual(kinds.filter((k) => k.kind === "spelling_variant").map((k) => k.draft_name).sort(), ["Illimbek Akylbek Uulu", "Mehemedeli Osmanli"]);
+});
+
+/* ---- TUF 1 gold standard ---------------------------------------------------- */
+
+type T1Bout = AnyBout & { episode: number | null; ufc_bout_id?: string; result_sources?: Array<{ family: string; evidence_level: string }>;
+  classification_basis?: { affirmative: Array<{ family: string; evidence_level: string; quote?: string }>; corroborating: Array<{ kind?: string; evidence_level: string }>; authority?: string } };
+const t1 = DETAIL_BY_SLUG["tuf-1"] as unknown as {
+  competition_format: { kind: string; phases: Array<{ stage: string; expected_bouts: number | null }> };
+  bracket: Array<{ weight_class: string; stages: Array<{ stage: string; label: string; bouts: T1Bout[] }> }>;
+  timeline_events: Array<{ id: string; episode: number | null; episode_candidates?: number[]; type: string; fighters: string[]; sources: Array<{ family: string }> }>;
+  teams: Array<{ name: string; roster: Array<{ name: string; pick?: number; note?: string }> }>;
+  coaches: Array<{ name: string; team: string | null; role: string; discipline?: string; from_episode?: number }>;
+  _conflicts: Array<{ field: string }>; _resolved_conflicts: Array<{ field: string; resolution: string }>;
+};
+const t1Bouts = t1.bracket.flatMap((br) => br.stages.flatMap((st) => st.bouts.map((b) => ({ ...b, stage: st.stage, weight_class: br.weight_class }))));
+const t1House = t1Bouts.filter((b) => b.stage !== "final");
+
+test("TUF 1 declares its real format: elimination phase, semi-finals, finals — no quarter-final expectation", () => {
+  assert.equal(t1.competition_format.kind, "elimination_then_semifinals");
+  assert.deepEqual(t1.competition_format.phases.map((p) => p.stage), ["elimination", "semi_final", "final"]);
+  assert.ok(!t1Bouts.some((b) => b.stage === "quarter_final"), "no quarter-final stage");
+  assert.equal(expectedBouts(t1.competition_format as never, "quarter_final", 0).undeclared, true);
+  const el = expectedBouts(t1.competition_format as never, "elimination", 3);
+  assert.deepEqual([el.expected, el.basis], [3, "declared_open"], "an elimination phase has no fixed count, so it is never short");
+  assert.equal(expectedBouts(null, "quarter_final", 3).expected, 4, "a season with no declared format keeps the modern shape");
+});
+
+test("TUF 1 advancement is valid in its own format, with no bout invented", () => {
+  assert.deepEqual(advancementProblems(t1 as never), []);
+  const inElim = (name: string) => t1Bouts.filter((b) => b.stage === "elimination" && (b.a === name || b.b === name)).length;
+  assert.equal(inElim("Bobby Southworth"), 2, "Southworth fought twice: won, then lost");
+  assert.equal(inElim("Diego Sanchez"), 2, "Sanchez fought twice");
+  for (const name of ["Sam Hoger", "Kenny Florian", "Mike Swick"]) {
+    assert.equal(inElim(name), 0, `${name} reached the last four without a house fight`);
+    assert.ok(t1Bouts.some((b) => b.stage === "semi_final" && (b.a === name || b.b === name)), `${name} fought a semi-final`);
+  }
+  assert.equal(t1Bouts.length, 12, "twelve bouts, none added");
+  assert.deepEqual(t1.bracket.map((br) => br.stages.map((st) => [st.stage, st.bouts.length])), [
+    [["elimination", 3], ["semi_final", 2], ["final", 1]],
+    [["elimination", 3], ["semi_final", 2], ["final", 1]],
+  ]);
+  assert.ok(!t1._conflicts.some((c) => /quarter_finals/.test(c.field)), "the bracket-model conflicts are no longer open");
+  assert.equal(t1._resolved_conflicts.filter((c) => /quarter_finals/.test(c.field) && /elimination phase/.test(c.resolution)).length, 2);
+});
+
+test("an elimination-format season with a loser reappearing and no sourced return is flagged", () => {
+  const broken = JSON.parse(JSON.stringify(t1)) as typeof t1;
+  broken.timeline_events = broken.timeline_events.filter((e) => e.type !== "replacement_return");
+  const problems = advancementProblems(broken as never);
+  assert.deepEqual(problems.map((p) => p.fighter), ["Chris Leben"], "Leben lost in episode 6; only his sourced return makes his semi-final valid");
+});
+
+test("TUF 1 house results stay reported: exhibition classification never upgrades a result", () => {
+  assert.equal(t1House.length, 10);
+  for (const b of t1House) {
+    assert.equal(resultState(b as never), "reported", `${b.a} vs ${b.b}`);
+    assert.ok(b.result_sources?.length && b.result_sources.every((s) => s.family === "wikipedia" && s.evidence_level === "secondary_draft"));
+  }
+});
+
+test("TUF 1 house classifications are exhibitions on affirmative ESPN evidence, never on database absence", () => {
+  for (const b of t1House) {
+    assert.equal(classState(b as never), "exhibition", `${b.a} vs ${b.b}`);
+    const basis = b.classification_basis!;
+    assert.equal(basis.authority, "affirmative");
+    assert.equal(basis.affirmative.length, 1);
+    assert.equal(basis.affirmative[0].family, "espn_retrospective");
+    assert.equal(basis.affirmative[0].evidence_level, "secondary_affirmative");
+    assert.match(String(basis.affirmative[0].quote), /Nevada State Athletic Commission/);
+    const absence = basis.corroborating.filter((c) => c.kind === "record_absence");
+    assert.equal(absence.length, 1);
+    assert.equal(absence[0].evidence_level, "corroboration_only");
+    assert.ok(!basis.affirmative.some((a) => a.family === "our_records"), "absence is never the affirmative basis");
+    assert.doesNotMatch(String(b.classification_source), /record verified/i, "never claims the commission record itself");
+    assert.match(String(b.classification_source), /not the commission record/);
+    assert.match(String(b.classification_source), /2004/, "the corroboration is argued from the year the show was filmed");
+  }
+});
+
+test("TUF 1 finals remain verified professional bouts, linked by exact bout id", () => {
+  const finals = t1Bouts.filter((b) => b.stage === "final");
+  assert.equal(finals.length, 2);
+  for (const f of finals) {
+    assert.equal(resultState(f as never), "verified");
+    assert.equal(classState(f as never), "professional");
+    assert.match(String(f.ufc_bout_id), /^[0-9a-f-]{36}$/);
+  }
+});
+
+test("scorecards are read from the database, never copied into a season file", () => {
+  for (const [slug, detail] of Object.entries(DETAIL_BY_SLUG)) {
+    assert.ok(!JSON.stringify(detail).includes("\"scorecards\""), `${slug} carries a copied scorecards field`);
+  }
+});
+
+test("Nathan Quarry resolves to the canonical Nate Quarry through the governed alias", () => {
+  assert.equal(identityIndex["tuf-1"]["Nathan Quarry"], "e8999544-0e72-4010-9d05-d4325b552f45");
+  const e = identity.entries["tuf-1|Nathan Quarry"];
+  assert.equal(e.status, "linked");
+  assert.equal(e.tier, "alias");
+  assert.match(String(e.evidence), /Lodune Sincaid/);
+});
+
+test("the 16 TUF 1 ESPN athlete ids map one to one, each through its finale bout", () => {
+  const plan = JSON.parse(readFileSync(new URL("../../scripts/reconcile/evidence/tuf1_espn_athlete_ids.2026-09-13.json", import.meta.url), "utf8")) as {
+    expected: number; mapped: number; ambiguous: number; conflicts: number; duplicate_ids: number;
+    mappings: Array<{ fighter_id: string; espn_athlete_id: string; bout_id: string; espn_competition_id: string; role: string }>;
+  };
+  assert.deepEqual([plan.expected, plan.mapped, plan.ambiguous, plan.conflicts, plan.duplicate_ids], [16, 16, 0, 0, 0]);
+  assert.equal(new Set(plan.mappings.map((m) => m.espn_athlete_id)).size, 16);
+  assert.equal(new Set(plan.mappings.map((m) => m.fighter_id)).size, 16);
+  const roster = new Set(t1.teams.flatMap((t) => t.roster.map((r) => identityIndex["tuf-1"][r.name])));
+  assert.ok(plan.mappings.every((m) => roster.has(m.fighter_id)), "only TUF 1 contestants");
+  const byBout = new Map<string, string[]>();
+  for (const m of plan.mappings) byBout.set(m.bout_id, [...(byBout.get(m.bout_id) ?? []), m.role]);
+  assert.equal(byBout.size, 8, "eight finale bouts, one winner and one loser each");
+  for (const roles of byBout.values()) assert.deepEqual(roles.sort(), ["loser", "winner"]);
+});
+
+test("TUF 1 air dates resolve only where the network listing and an independent source agree, keeping the +1 display offset", () => {
+  const f = EPISODES["tuf-1"] as unknown as { episodes: Array<{ episode_number: number; air_date: string | null; listing_date: string | null; air_date_resolution?: { network_display_date: string | null; date_conflict_note?: string } }>; source_defects?: Array<{ episodes: number[] | string; defect: string }>; finale_broadcast?: { air_date?: string | null } };
+  assert.equal(f.episodes.length, 12);
+  for (const e of f.episodes) {
+    assert.equal(e.air_date, e.listing_date);
+    assert.ok(e.air_date_resolution?.network_display_date && e.air_date_resolution.network_display_date > e.air_date!, "the network display date is preserved, one day later");
+    assert.match(String(e.air_date_resolution?.date_conflict_note), /\+1 day/);
+  }
+  assert.equal(f.finale_broadcast?.air_date, "2005-04-09");
+  assert.ok(f.source_defects?.some((d) => d.defect === "descriptions_swapped" && JSON.stringify(d.episodes) === "[11,12]"), "the episode 11/12 description swap is kept as a source defect");
+  for (const [slug, file] of Object.entries(EPISODES)) if (slug !== "tuf-1") assert.ok(file.episodes.every((e) => e.air_date === null), `${slug}: no captured independent source, no air date`);
+});
+
+test("every TUF 1 episode has sourced facts, and the Rafferty trade stays unresolved", () => {
+  const views = buildEpisodeViews(t1 as never, EPISODES["tuf-1"] as never);
+  assert.equal(views.episodes.length, 12);
+  assert.deepEqual(views.episodes.filter((v) => !v.hasFacts).map((v) => v.episode.episode_number), [], "no title-only shells");
+  const rafferty = t1.timeline_events.find((e) => e.id === "tuf1-rafferty-trade")!;
+  assert.equal(rafferty.episode, null);
+  assert.deepEqual(rafferty.episode_candidates, [7, 8]);
+  assert.ok(t1._conflicts.some((c) => c.field === "timeline:josh_rafferty_trade_episode"), "an open conflict, not a silent choice");
+  assert.deepEqual(views.unplacedEvents.map((e) => e.id), ["tuf1-rafferty-trade"]);
+  const counts = timelineCounts(t1 as never);
+  assert.deepEqual([counts.trades, counts.withdrawals, counts.replacements, counts.injuries, counts.eliminations, counts.weight_events, counts.staff_changes], [3, 1, 1, 3, 12, 1, 1]);
+  const people = new Set([...t1.teams.flatMap((t) => t.roster.map((r) => r.name)), ...t1.coaches.map((c) => c.name)]);
+  for (const e of t1.timeline_events) {
+    assert.ok(e.sources.length, `${e.id}: a timeline event carries its sources`);
+    for (const who of e.fighters) assert.ok(people.has(who), `${e.id}: ${who} is not in the season's cast or staff`);
+  }
+  assert.ok(t1.teams.every((t) => t.roster.every((r) => r.pick && !r.note)), "roster cards are clean: picks, no loose notes");
+  const marks = rosterMarks(t1 as never);
+  assert.deepEqual(marks.get("Chris Leben")?.map((m) => [m.label, m.episode]), [["Lost elimination fight", 6], ["Returned", 8], ["Lost semi-final", 10]]);
+});
+
+test("TUF 1 staff are discipline coaches with no invented team", () => {
+  for (const [name, discipline] of [["Marc Laimon", "Grappling"], ["Ganyao Fairtex", "Muay Thai"], ["Peter Welch", "Boxing"]]) {
+    const c = t1.coaches.find((x) => x.name === name)!;
+    assert.equal(c.discipline, discipline);
+    assert.equal(c.team, null);
+  }
+  const quarry = t1.coaches.find((x) => x.name === "Nathan Quarry")!;
+  assert.deepEqual([quarry.role, quarry.team, quarry.from_episode], ["assistant", null, 8]);
 });
 
 /* ---- rosters and staff ------------------------------------------------------- */

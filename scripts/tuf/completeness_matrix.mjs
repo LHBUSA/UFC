@@ -39,6 +39,16 @@
  *   conflict on a final, or no bracket at all for a bracket season).
  * PARTIAL: everything else.
  *
+ * EXPECTED STAGES come from the season's declared competition_format
+ * (web/lib/tufFormat.ts). Only a season that declares none is measured against
+ * the modern bracket shape. An elimination phase has no fixed bout count.
+ *
+ * PRODUCT DEPTH is reported beside the structural status and never replaces
+ * it: episodes with sourced facts vs title-only shells, timeline coverage,
+ * episode placement of house bouts, result and classification evidence,
+ * identity coverage and finale integration. Depth never makes a season
+ * COMPLETE, and COMPLETE never makes a season gold-standard.
+ *
  * HOUSE_RESULTS_SECONDARY_ONLY also blocks COMPLETE: a house result resting
  * only on the Wikipedia draft is not a defensible record under the Phase 2
  * source tiers. Seasons that miss the bar for that reason alone are listed as
@@ -47,6 +57,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { expectedBouts } from '../../web/lib/tufFormat.ts';
+import { buildEpisodeViews, timelineCounts } from '../../web/lib/tufTimeline.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const DATA = path.join(ROOT, 'web', 'data', 'tuf');
@@ -93,7 +105,6 @@ const pairKey = (a, b) => [norm(a), norm(b)].sort().join('|');
 const idPair = (a, b) => [a, b].sort().join('|');
 
 const STAGE_ORDER = ['elimination', 'round_of_16', 'quarter_final', 'semi_final', 'final'];
-const EXPECTED_BY_STAGE = { final: 1, semi_final: 2, quarter_final: 4, round_of_16: 8 };
 
 /* ---- database: finale pairings and portraits, by canonical id only ---- */
 const allIds = new Set();
@@ -230,10 +241,11 @@ for (const row of inventory.seasons) {
     for (const st of wc.stages) {
       const key = `${wc.weight_class}|${st.stage}`;
       const present = st.bouts.length;
-      const expected = EXPECTED_BY_STAGE[st.stage] ?? present;
+      const exp = expectedBouts(d?.competition_format, st.stage, present);
+      const expected = exp.expected;
       const rows = boutRows.filter((x) => x.weight_class === wc.weight_class && x.stage === st.stage);
       byStage[key] = {
-        weight_class: wc.weight_class, stage: st.stage, expected, present,
+        weight_class: wc.weight_class, stage: st.stage, expected, expected_basis: exp.basis, present,
         results_present: rows.filter((x) => x.winner).length,
         results_verified: rows.filter((x) => x.result_verification === 'verified').length,
         disputed: (st.disputed || []).length,
@@ -256,6 +268,26 @@ for (const row of inventory.seasons) {
   const finaleProfessionalLinked = finals.filter((f) => f.on_finale_card && f.classification === 'professional' && (f.db_pairing || []).some((x) => x.winner_matches_archive)).length;
   const finaleScheduled = finals.filter((f) => f.result_verification === 'scheduled').length;
 
+  /* product depth — reported beside the status, never folded into it */
+  const views = d ? buildEpisodeViews(d, eps) : { episodes: [], unplacedEvents: [] };
+  const houseBouts = bouts.filter((b) => !(b.stage === 'final' && b.on_finale_card));
+  const tl = d ? timelineCounts(d) : null;
+  const exhibitions = bouts.filter((b) => b.classification === 'exhibition');
+  const depthMetrics = {
+    episodes_total: views.episodes.length,
+    episodes_with_facts: views.episodes.filter((v) => v.hasFacts).length,
+    title_only_shells: views.episodes.filter((v) => !v.hasFacts).length,
+    timeline_events: (d?.timeline_events || []).length,
+    timeline_unplaced: views.unplacedEvents.length,
+    timeline_counts: tl,
+    house_bouts: houseBouts.length,
+    house_bouts_with_episode: houseBouts.filter((b) => b.episode != null).length,
+    house_bouts_with_result_evidence: houseBouts.filter((b) => (b.result_sources || []).length || (b.sources || []).some((x) => x.fields.includes('winner'))).length,
+    exhibition_with_affirmative_basis: exhibitions.filter((b) => (b.classification_basis?.affirmative || []).length).length,
+    exhibition_absence_only: exhibitions.filter((b) => !(b.classification_basis?.affirmative || []).length).length,
+    competition_format_declared: Boolean(d?.competition_format),
+    overview_declared: Boolean(d?.overview),
+  };
   /* portraits */
   const linkedIds = [...new Set(linkedContestants.map((e) => e.fighter_id).filter(Boolean))];
   const portraits = linkedIds.filter((id) => portraitIds.has(id)).length;
@@ -305,6 +337,21 @@ for (const row of inventory.seasons) {
   seasons.push({
     slug: row.slug, name: row.name, year: row.year, edition: row.edition, season_state: row.season_state, coverage: row.coverage,
     status, score, critical_blockers: critical, blockers,
+    depth: (() => {
+      const fr = (a, b) => (b ? a / b : null);
+      const parts = {
+        episodes_with_facts: fr(depthMetrics.episodes_with_facts, depthMetrics.episodes_total),
+        house_bouts_placed_in_episodes: fr(depthMetrics.house_bouts_with_episode, depthMetrics.house_bouts),
+        /* Verified, not merely cited: a Wikipedia result source is recorded
+         * evidence, and it still does not make the result verified. */
+        house_results_verified: fr(boutRows.filter((x) => !(x.stage === 'final' && x.on_finale_card) && x.result_verification === 'verified').length, depthMetrics.house_bouts),
+        classification_affirmative: fr(depthMetrics.exhibition_with_affirmative_basis + finaleProfessionalLinked, exhibitions.length + finaleProfessionalLinked + count((x) => x.classification === 'unresolved')),
+        identity_coverage: fr(linkedContestants.length, contestantEntries.length),
+        finale_integration: fr(finaleProfessionalLinked + finaleScheduled, finaleExpected),
+      };
+      const known = Object.values(parts).filter((v) => v != null);
+      return { ...depthMetrics, identity: { contestants: contestantEntries.length, linked: linkedContestants.length }, finale_integration: { expected: finaleExpected, linked_by_exact_ids: finaleProfessionalLinked, scheduled: finaleScheduled }, parts, depth_score: known.length ? Math.round((100 * known.reduce((a, v) => a + v, 0)) / known.length) : null };
+    })(),
     structurally_complete_except_house_sourcing: status !== 'COMPLETE' && blockers.filter((x) => !['EPISODE_LAYER_MISSING', 'HOUSE_RESULTS_SECONDARY_ONLY'].includes(x)).length === 0,
     episodes: { ...episodes, rows: undefined },
     contestants: {
@@ -377,6 +424,12 @@ const totals = {
   episodes_with_title: seasons.reduce((n, s) => n + s.episodes.with_title, 0),
   episodes_with_source: seasons.reduce((n, s) => n + s.episodes.with_recap_source, 0),
   episodes_with_bout_facts: seasons.reduce((n, s) => n + s.episodes.with_bout_facts, 0),
+  depth_episodes_with_facts: seasons.reduce((n, s) => n + s.depth.episodes_with_facts, 0),
+  depth_title_only_shells: seasons.reduce((n, s) => n + s.depth.title_only_shells, 0),
+  depth_timeline_events: seasons.reduce((n, s) => n + s.depth.timeline_events, 0),
+  exhibition_with_affirmative_basis: seasons.reduce((n, s) => n + s.depth.exhibition_with_affirmative_basis, 0),
+  exhibition_absence_only: seasons.reduce((n, s) => n + s.depth.exhibition_absence_only, 0),
+  seasons_with_declared_format: seasons.filter((s) => s.depth.competition_format_declared).map((s) => s.slug),
 };
 totals.finale_links_missing = totals.finale_links_expected - totals.finale_links_verified - totals.finale_links_scheduled;
 const worst = [...seasons].sort((a, b) => a.score - b.score || b.year - a.year).slice(0, 10).map((s) => ({ slug: s.slug, score: s.score, status: s.status, blockers: s.blockers }));
@@ -400,6 +453,7 @@ for (const [k, v] of [
   ['Winners expected', totals.winners_expected], ['Winners resolved', totals.winners_resolved], ['Winners linked', totals.winners_linked],
   ['Contestant link rate', `${(totals.contestant_link_rate * 100).toFixed(1)}% (${totals.contestant_linked}/${totals.contestant_identity_entries})`], ['Spelling-split identities', totals.spelling_splits],
   ['Finale links expected', totals.finale_links_expected], ['Finale links verified', totals.finale_links_verified], ['Finale links scheduled', totals.finale_links_scheduled], ['Finale links missing', totals.finale_links_missing],
+  ['Episodes with sourced facts (all seasons)', totals.depth_episodes_with_facts], ['Title-only episode shells', totals.depth_title_only_shells], ['Timeline events', totals.depth_timeline_events], ['Exhibitions with an affirmative basis / absence-only', `${totals.exhibition_with_affirmative_basis} / ${totals.exhibition_absence_only}`], ['Seasons with a declared format', totals.seasons_with_declared_format.join(', ') || 'none'],
   ['Episodes (present / expected)', `${totals.episodes_total} / ${totals.episodes_expected}`], ['Episodes with title', totals.episodes_with_title], ['Episodes with recap source', totals.episodes_with_source], ['Episodes with bout facts', totals.episodes_with_bout_facts],
 ]) md.push(`| ${k} | ${v} |`);
 md.push('', '## Worst 10 by completeness score', '', '| Season | Score | Status | Blockers |', '|---|---|---|---|');
@@ -408,6 +462,11 @@ md.push('', '## Season matrix', '', '| Season | Year | State | Status | Score | 
 for (const s of seasons) {
   const t = s.tournament;
   md.push(`| ${s.slug} | ${s.year} | ${s.season_state} | ${s.status} | ${s.score} | ${s.episodes.with_title}/${s.episodes.with_recap_source}/${s.episodes.with_bout_facts} of ${s.episodes.expected ?? '—'} | ${s.contestants.roster_present} | ${s.contestants.linked}/${s.contestants.unresolved} | ${t.bouts_present}/${t.bouts_expected} | ${t.professional}/${t.exhibition}/${t.classification_unresolved} | ${t.result_verified}/${t.result_partial}/${t.result_scheduled}/${t.result_unknown} | ${tick(t.quarterfinals_complete)}/${tick(t.semifinals_complete)}/${tick(t.final_complete)} | ${s.winners.resolved}/${s.winners.linked} of ${s.winners.expected} | ${s.finale.professional_final_linked} of ${s.finale.expected}${s.finale.scheduled ? ` (${s.finale.scheduled} scheduled)` : ''} | ${s.conflicts.open} | ${s.portraits.with_licensed_portrait}/${s.portraits.linked_contestants} |`);
+}
+md.push('', '## Product depth', '', 'Reported beside the structural status, never folded into it. Depth score = mean of the parts that apply (episodes with sourced facts, house bouts placed in episodes, house results verified, classification with an affirmative basis, identity coverage, finale integration).', '', '| Season | Depth | Episodes with facts / shells | Timeline events (unplaced) | House bouts in episodes | Result evidence | Exhibition affirmative / absence-only | Identity | Finale linked+scheduled / exp. | Format declared |', '|---|---|---|---|---|---|---|---|---|---|');
+for (const s of seasons) {
+  const x = s.depth;
+  md.push(`| ${s.slug} | ${x.depth_score ?? '—'} | ${x.episodes_with_facts} / ${x.title_only_shells} | ${x.timeline_events} (${x.timeline_unplaced}) | ${x.house_bouts_with_episode}/${x.house_bouts} | ${x.house_bouts_with_result_evidence}/${x.house_bouts} | ${x.exhibition_with_affirmative_basis} / ${x.exhibition_absence_only} | ${x.identity.linked}/${x.identity.contestants} | ${x.finale_integration.linked_by_exact_ids + x.finale_integration.scheduled}/${x.finale_integration.expected} | ${x.competition_format_declared ? 'yes' : 'no'} |`);
 }
 md.push('', '## Season blockers', '');
 for (const s of seasons) md.push(`- **${s.slug}** (${s.status}): ${s.blockers.join(', ') || 'none'}${s.critical_blockers.length ? ` — critical: ${s.critical_blockers.join('; ')}` : ''}`);

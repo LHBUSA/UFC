@@ -25,6 +25,7 @@ import inventory from "@/data/tuf/seasons.json";
 import identityIndex from "@/data/tuf/identity.index.json";
 import { TUF_DETAILS } from "@/data/tuf/details.generated";
 import { TUF_EPISODES } from "@/data/tuf/episodes.generated";
+import { shapeFinale, type FinaleBoutRow, type FinaleIntegration, type RoundRow, type ScorecardRow } from "@/lib/tufFinaleShape";
 
 /* ---- episodes ------------------------------------------------------------- */
 
@@ -42,13 +43,27 @@ export type EpisodeBout = {
   fight_pick: { chosen_by: string } | null;
   caption_filming_dates: string[];
 };
+/** How an air date was (or was not) resolved. See scripts/tuf/lib/airDates.mjs:
+ * the network listing date and an independent source must give the same day. */
+export type AirDateResolution = {
+  basis: "network_listing + independent_source" | null;
+  status: "resolved" | "unresolved";
+  why?: string;
+  network_listing_date: string | null;
+  network_display_date: string | null;
+  independent_date: string | null;
+  network_source?: { family: string; url: string; retrieved: string };
+  independent_source?: { family: string; url: string; retrieved: string; cites?: string };
+  date_conflict_note?: string;
+};
 export type Episode = {
   episode_number: number;
   title: string | null;
   title_source: "paramount_plus" | null;
-  /** Always null: no source states a broadcast date. */
-  air_date: null;
-  /** The Paramount+ listing's own date. Not a broadcast date. */
+  /** Null unless the two-source rule resolved it (air_date_resolution says how). */
+  air_date: string | null;
+  air_date_resolution?: AirDateResolution;
+  /** The Paramount+ listing's own date. Not by itself a broadcast date. */
   listing_date: string | null;
   recap_url: string | null;
   recap_published: string | null;
@@ -60,8 +75,10 @@ export type Episode = {
 export type SeasonEpisodes = {
   slug: string;
   sources: { titles: string | null; recaps: string | null };
-  finale_broadcast?: { title: string; listing_date: string | null };
+  finale_broadcast?: { title: string; listing_date: string | null; air_date?: string | null; air_date_resolution?: AirDateResolution };
   missing_recaps?: Array<{ episode_number: number; why: string }>;
+  /** Known defects in a source's own metadata, kept rather than silently corrected. */
+  source_defects?: Array<{ family: string; episodes: number[] | "all"; defect: string; detail: string; retrieved: string }>;
   episodes: Episode[];
 };
 
@@ -107,6 +124,67 @@ export type FieldSource = {
   states_winner?: false;
   /** Archive name -> the name this source printed, where they differ. */
   printed_names?: Record<string, string>;
+};
+
+/** One piece of evidence for a season fact, with its quality stated. */
+export type EvidenceSource = {
+  family: string;
+  evidence_level: "canonical" | "official" | "network_listing" | "secondary_affirmative" | "secondary" | "secondary_draft" | "corroboration_only" | string;
+  url?: string; retrieved?: string; published?: string; author?: string;
+  quote?: string; note?: string; content_id?: string; listing_item?: number; what?: string; kind?: string;
+};
+
+/** Why a bout has the classification it has. `affirmative` is the authority;
+ * `corroborating` supports it and can never stand in for it. */
+export type ClassificationBasis = {
+  affirmative: EvidenceSource[];
+  corroborating: EvidenceSource[];
+  authority?: "affirmative";
+  reopen_if?: string;
+};
+
+/** A season's declared competition format. Stages and their expected bout
+ * counts come from here, not from an assumed modern bracket. */
+export type FormatPhase = {
+  stage: Stage["stage"] | "league";
+  label: string;
+  /** Bouts expected per weight class; null where the format fixes no number. */
+  expected_bouts: number | null;
+  advances?: number;
+  rule?: string;
+  contested?: string;
+};
+export type CompetitionFormat = {
+  kind: string;
+  label: string;
+  applies_to?: string;
+  phases: FormatPhase[];
+  sources?: EvidenceSource[];
+};
+
+export type TimelineEventType =
+  | "team_selection" | "elimination_without_fight" | "weight_issue" | "trade" | "injury" | "matchup_ordered"
+  | "withdrawal" | "replacement_return" | "staff_change" | "alternate_named" | "semi_final_matchups_announced" | string;
+
+/** A sourced competition event. Bouts are never repeated here: an episode reads
+ * its bouts from the bracket, which stays the single result record. */
+export type TimelineEvent = {
+  id: string;
+  episode: number | null;
+  /** Set with `conflict` when sources place the event in different episodes. */
+  episode_candidates?: number[];
+  conflict?: string;
+  type: TimelineEventType;
+  fighters: string[];
+  team?: string; from_team?: string; to_team?: string; replaces?: string;
+  detail: string;
+  sources: EvidenceSource[];
+};
+
+export type OverviewFact = { value?: string | number; date?: string; event?: string; basis?: string; sources?: EvidenceSource[] };
+export type SeasonOverview = {
+  format?: OverviewFact; premiere?: OverviewFact; finale?: OverviewFact; filming?: OverviewFact;
+  cast_size?: OverviewFact; network?: OverviewFact;
 };
 
 /** A bout on an announced card that has not been fought. Linked by the exact
@@ -209,6 +287,12 @@ export type TufBout = {
   scheduled?: ScheduledBout;
   /** Why `episode` is null, where that was checked against the listing. */
   episode_blocker?: string;
+  /** What places the bout in its episode, and what states its result. */
+  episode_sources?: EvidenceSource[];
+  result_sources?: EvidenceSource[];
+  classification_basis?: ClassificationBasis;
+  /** The professional bout this row is, for a final on a sanctioned card. */
+  ufc_bout_id?: string;
 };
 
 export type Stage = {
@@ -234,6 +318,9 @@ export type SeasonDetail = SeasonRow & {
   draft?: { first_selection?: string; first_fight_pick?: string; basis?: string; fight_pick_rule?: string; source?: string };
   _resolved_conflicts?: Array<{ field: string; detail: string; resolved_by: string; resolved_with: string; resolution: string }>;
   name_corrections?: NameCorrection[];
+  competition_format?: CompetitionFormat;
+  timeline_events?: TimelineEvent[];
+  overview?: SeasonOverview;
   bracket?: Array<{ weight_class: string; stages: Stage[] }>;
   /** Seasons decided by points between two gyms rather than by a bracket.
    * Season 21 is the only one so far. Its standings are read from the source
@@ -273,6 +360,9 @@ export type StaffEntry = {
   team: string | null; name: string; role: StaffRole; fighter_id?: string;
   nickname?: string; discipline?: string; region?: string; note?: string; printed_as?: string;
   role_basis: string; team_basis?: string;
+  /** A role taken on partway through the season. */
+  from_episode?: number;
+  role_sources?: EvidenceSource[];
 };
 export type RosterEntry = {
   name: string; fighter_id?: string; country?: string; note?: string; weight_class?: string;
@@ -468,6 +558,65 @@ export async function scheduledBoutsNow(boutIds: string[]): Promise<Map<string, 
     out.set(r.id, { status: r.status, has_result: Boolean(result) });
   }
   return out;
+}
+
+/**
+ * The finale card as our records hold it, joined to the season: its finals
+ * (with judges' cards and round coverage), the other bouts between castmates,
+ * how many contestants debuted there, and the coaches' fight if one followed.
+ * Read-only joins; nothing is copied into the season data. Null when the card
+ * is not in our records.
+ */
+export async function finaleIntegration(season: SeasonDetail, event: LinkedEvent | null, contestantIds: string[], coachIds: string[]): Promise<FinaleIntegration | null> {
+  if (!event?.event_date) return null;
+  const F = "id,name,espn_athlete_id,ufcstats_id";
+  const bouts = await rest<FinaleBoutRow[]>(
+    `ufc_bouts?select=id,bout_order,weight_class_raw,is_title,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(${F}),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(${F}),result:ufc_bout_results(winner_id,method_raw,round,time_sec)&event_id=eq.${event.id}&order=bout_order.asc`,
+    [],
+  );
+  if (!bouts.length) return null;
+  const one = <T,>(v: T | T[] | null): T | null => (Array.isArray(v) ? v[0] ?? null : v);
+  const rows = bouts.map((b) => ({ ...b, result: one(b.result) }));
+  const ids = rows.map((b) => b.id).join(",");
+  const cast = [...new Set(contestantIds)];
+  const [scorecards, rounds, careers, coachBouts] = await Promise.all([
+    rest<ScorecardRow[]>(`ufc_bout_scorecards?select=bout_id,card_index,judge_name,fighter_a_id,fighter_a_score,fighter_b_score&bout_id=in.(${ids})`, []),
+    rest<RoundRow[]>(`ufc_bout_round_stats?select=bout_id,round&bout_id=in.(${ids})`, []),
+    cast.length
+      ? rest<Array<{ fighter_a_id: string; fighter_b_id: string; event: { event_date: string | null } | Array<{ event_date: string | null }> | null }>>(
+        `ufc_bouts?select=fighter_a_id,fighter_b_id,event:ufc_events(event_date)&or=(fighter_a_id.in.(${cast.join(",")}),fighter_b_id.in.(${cast.join(",")}))&limit=1000`, [])
+      : Promise.resolve([]),
+    coachIds.length === 2
+      ? rest<Array<FinaleBoutRow & { event: { name: string; event_date: string } | Array<{ name: string; event_date: string }> }>>(
+        `ufc_bouts?select=id,bout_order,weight_class_raw,is_title,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(${F}),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(${F}),result:ufc_bout_results(winner_id,method_raw,round,time_sec),event:ufc_events(name,event_date)&or=(and(fighter_a_id.eq.${coachIds[0]},fighter_b_id.eq.${coachIds[1]}),and(fighter_a_id.eq.${coachIds[1]},fighter_b_id.eq.${coachIds[0]}))`, [])
+      : Promise.resolve([]),
+  ]);
+  const firstBoutDate = new Map<string, string>();
+  for (const b of careers) {
+    const d = one(b.event)?.event_date;
+    if (!d) continue;
+    for (const id of [b.fighter_a_id, b.fighter_b_id]) {
+      if (!cast.includes(id)) continue;
+      const prev = firstBoutDate.get(id);
+      if (!prev || d < prev) firstBoutDate.set(id, d);
+    }
+  }
+  /* The coaches' fight: a bout between the two head coaches within six months
+   * after the finale. Seasons whose coaches never fought show none. */
+  const limit = new Date(Date.parse(event.event_date) + 183 * 86400e3).toISOString().slice(0, 10);
+  const coach = coachBouts
+    .map((b) => ({ row: { ...b, result: one(b.result) }, event: one(b.event)! }))
+    .filter((x) => x.event?.event_date && x.event.event_date >= event.event_date && x.event.event_date <= limit)
+    .sort((x, y) => x.event.event_date.localeCompare(y.event.event_date))[0] ?? null;
+  const finals = allBouts(season).filter((b) => b.stage === "final" && b.on_finale_card).map((b) => ({
+    weight_class: b.weight_class,
+    ufc_bout_id: b.ufc_bout_id ?? b.scheduled?.ufc_bout_id,
+    ids: b.a_fighter_id && b.b_fighter_id ? ([b.a_fighter_id, b.b_fighter_id] as [string, string]) : undefined,
+  }));
+  return shapeFinale({
+    event: { id: event.id, name: event.name, event_date: event.event_date },
+    bouts: rows, scorecards, rounds, finals, contestantIds: new Set(cast), firstBoutDate, coachFight: coach,
+  });
 }
 
 export type LinkedFighter = { id: string; name: string; espn_athlete_id: string | null; ufcstats_id: string | null };

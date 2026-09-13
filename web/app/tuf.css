@@ -577,3 +577,39 @@
   .tuf-coach-pair { flex-direction: column; align-items: flex-start; }
   .tuf-coach-pair > em { padding-left: 56px; }
 }
+
+/* ---- season overview, evidence, timeline, finale integration ------------ */
+
+.tuf-overview { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: var(--s-2); }
+.tuf-overview > div { display: flex; flex-direction: column; gap: 2px; padding: var(--s-3) var(--s-4); border: 1px solid var(--pbe-line); border-radius: var(--r-md); background: var(--pbe-ink-2); min-width: 0; }
+.tuf-overview dt { font-family: var(--pbe-font-data); font-size: var(--fs-micro); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); }
+.tuf-overview dd { margin: 0; color: var(--pbe-paper); font-size: 15px; line-height: 1.45; display: flex; flex-direction: column; gap: 2px; overflow-wrap: anywhere; }
+.tuf-srctag { font-family: var(--pbe-font-data); font-size: var(--fs-micro); color: var(--pbe-subtle); letter-spacing: .02em; line-height: 1.4; }
+
+.tuf-evidence { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); font-family: var(--pbe-font-data); font-size: var(--fs-micro); color: var(--pbe-subtle); line-height: 1.5; }
+.tuf-evidence b { color: var(--pbe-dim); font-weight: 600; margin-right: var(--s-1); }
+.tuf-evidence em { font-style: normal; color: var(--pbe-faint); }
+.tuf-evidence a { color: var(--pbe-dim); }
+a.tuf-ep { color: var(--pbe-subtle); text-decoration: underline; text-underline-offset: 2px; }
+
+.tuf-subhead { margin: var(--s-5) 0 var(--s-2); font-family: var(--pbe-font-data); font-size: var(--fs-micro); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); font-weight: 600; }
+.tuf-restcard { margin-top: var(--s-4); }
+.tuf-restcard > summary { cursor: pointer; font-family: var(--pbe-font-data); font-size: var(--fs-micro); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-subtle); margin-bottom: var(--s-2); }
+
+.tuf-marks { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: var(--s-1); margin-top: var(--s-1); }
+.tuf-mark { font-family: var(--pbe-font-data); font-size: var(--fs-micro); letter-spacing: .03em; color: var(--pbe-dim); border: 1px solid var(--pbe-line-strong); border-radius: var(--r-pill); padding: 1px var(--s-2); text-decoration: none; white-space: nowrap; }
+.tuf-mark.is-trade, .tuf-mark.is-return { color: var(--pbe-gold); border-color: var(--pbe-gold-soft); }
+.tuf-mark.is-bout_loss, .tuf-mark.is-elimination, .tuf-mark.is-withdrawal { color: var(--pbe-subtle); }
+
+.tuf-episode.is-empty summary .tuf-ep-title { color: var(--pbe-dim); }
+.tuf-ep-date { font-family: var(--pbe-font-data); font-size: var(--fs-micro); color: var(--pbe-subtle); }
+.tuf-ep-h { margin: var(--s-2) 0 0; font-family: var(--pbe-font-data); font-size: var(--fs-micro); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-subtle); font-weight: 600; }
+.tuf-ep-provenance { font-size: var(--fs-micro); }
+.tuf-ep-finale { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-3); padding: var(--s-3) var(--s-4); border: 1px solid var(--pbe-gold-soft); border-radius: var(--r-md); background: var(--pbe-ink-2); text-decoration: none; }
+.tuf-tl-events { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+.tuf-tl-event { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-2); font-size: var(--fs-sm); color: var(--pbe-dim); line-height: 1.5; padding-top: var(--s-2); border-top: 1px solid var(--pbe-line-faint); }
+.tuf-tl-event > b { font-family: var(--pbe-font-data); font-size: var(--fs-micro); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--pbe-gold); font-weight: 600; min-width: 7em; }
+.tuf-tl-who { color: var(--pbe-paper); }
+.tuf-tl-detail { flex-basis: 100%; }
+.tuf-tl-event .tuf-srctag { flex-basis: 100%; }
+.tuf-unplaced { margin-top: var(--s-4); }

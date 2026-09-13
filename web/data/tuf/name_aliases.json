@@ -9,6 +9,14 @@
       "evidence": "The season source's featherweight bracket names him Godofredo Castro; our roster holds exactly one candidate, Godofredo Pepey, and no fighter named Castro. The final that decides it is in our records: Rony Jason def. Godofredo Pepey, unanimous decision over three rounds, UFC 147 on 2012-06-23, featherweight — the same bout, card and date the source gives for the Castro pairing.",
       "verified_against": "ufc_bouts + ufc_bout_results",
       "retrieved": "2026-09-08"
+    },
+    {
+      "source_name": "Nathan Quarry",
+      "records_name": "Nate Quarry",
+      "seasons": ["tuf-1"],
+      "evidence": "The season source's cast list and roster print Nathan Quarry; our roster holds exactly one Quarry, Nate Quarry (e8999544, UFC Stats 52cae54377b433b7). The bout that decides it is on the season's own finale card: Nate Quarry def. Lodune Sincaid, a TUF 1 castmate, KO/TKO in round one at 3:17 on The Ultimate Fighter: Team Couture vs. Team Liddell Finale, 2005-04-09 (ufc_bouts 2edd40e1; ESPN competition 153234 names Nate Quarry, athlete 2335773). The network listing calls him Nate in episode 8.",
+      "verified_against": "ufc_bouts + ufc_bout_results; ESPN core API event 400254386",
+      "retrieved": "2026-09-13"
     }
   ]
 }

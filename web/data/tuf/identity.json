@@ -168,10 +168,14 @@
     },
     "tuf-1|Nathan Quarry": {
       "roles": [
-        "contestant"
+        "contestant",
+        "staff"
       ],
-      "status": "unlinked",
-      "reason": "no fighter in ufc_fighters has this name under any recorded convention"
+      "status": "linked",
+      "tier": "alias",
+      "fighter_id": "e8999544-0e72-4010-9d05-d4325b552f45",
+      "records_name": "Nate Quarry",
+      "evidence": "The season source's cast list and roster print Nathan Quarry; our roster holds exactly one Quarry, Nate Quarry (e8999544, UFC Stats 52cae54377b433b7). The bout that decides it is on the season's own finale card: Nate Quarry def. Lodune Sincaid, a TUF 1 castmate, KO/TKO in round one at 3:17 on The Ultimate Fighter: Team Couture vs. Team Liddell Finale, 2005-04-09 (ufc_bouts 2edd40e1; ESPN competition 153234 names Nate Quarry, athlete 2335773). The network listing calls him Nate in episode 8."
     },
     "tuf-1|Peter Welch": {
       "roles": [
