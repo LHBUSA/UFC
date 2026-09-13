@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { JUDGE_ALIASES, judgeSlug } from "./lib/judgeScoring";
+import { retiredFighterSlugRedirects } from "./lib/retiredFighterSlugs";
 
 const supabaseHost = (() => {
   try { return new URL(process.env.SUPABASE_URL || "https://tkmlnhmylqnttmnsnief.supabase.co").hostname; } catch { return "tkmlnhmylqnttmnsnief.supabase.co"; }
@@ -61,6 +62,9 @@ const nextConfig: NextConfig = {
        * mechanism that cannot be reached too late. Derived from the alias table
        * itself so the list cannot drift away from the merges it represents. */
       ...retiredJudgeSlugRedirects(),
+      /* Retired fighter URLs, same reasoning: a merged duplicate's UFC
+       * Stats-keyed profile must 308 before the streaming page can answer 200. */
+      ...retiredFighterSlugRedirects(),
     ];
   },
 };
