@@ -296,6 +296,133 @@
           "action": "recorded_only"
         }
       ]
+    },
+    {
+      "id": "nsac-2007-tuf-season-5",
+      "source_family": "athletic_commission",
+      "source_type": "commission_result_record",
+      "commission": "Nevada State Athletic Commission",
+      "jurisdiction": "Nevada",
+      "document": "Mixed Martial Arts Results — Season 5, The Ultimate Fighter",
+      "seasons": [
+        "tuf-5"
+      ],
+      "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+      "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+      "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+      "pages": 3,
+      "retrieved": "2026-09-13",
+      "live_matches_archive": true,
+      "title_quote": "MIXED MARTIAL ARTS RESULTS",
+      "location": "UFC Training Center, Las Vegas",
+      "promoter": "Zuffa, LLC",
+      "executive_director": "Keith Kizer",
+      "classification_language": {
+        "quote": "Exhibition Results",
+        "where": "results column header, page 1; pages 2 and 3 continue the same table (page 2 headed \"Results\", page 3 under \"SEMI-FINAL BOUT\") — the applied TUF 2 pattern"
+      },
+      "officials": {
+        "referees": [
+          "Steve Mazzagatti"
+        ],
+        "visiting_referees": [
+          "Herb Dean",
+          "John McCarthy"
+        ],
+        "judges": [
+          "Adalaide Byrd",
+          "Glenn Trowbridge",
+          "Tony Weeks"
+        ],
+        "visiting_judges": [
+          "Lester Griffin",
+          "Nelson Hamilton",
+          "Cecil Peoples",
+          "Marcos Rosales"
+        ],
+        "timekeepers": [
+          "James Cavin",
+          "Steve Esposito",
+          "Ernie Jauregui",
+          "Mike LaCella"
+        ],
+        "ringside_doctors": [
+          "William Berliner",
+          "Al Capanna",
+          "Jeff Davidson",
+          "James Game",
+          "Anthony Ruggeroli",
+          "David Watson"
+        ]
+      },
+      "season_identity": {
+        "printed": true,
+        "basis": "Printed in the document header: \"SEASON 5– THE ULTIMATE FIGHTER™\". Consistent with the file name TUFSEASON5.pdf (2007_Results), location \"UFC Training Center, Las Vegas\", show dates 2007-01-27..2007-02-28 and 14/14 pairings."
+      }
+    },
+    {
+      "id": "nsac-2007-tuf-season-6",
+      "source_family": "athletic_commission",
+      "source_type": "commission_result_record",
+      "commission": "Nevada State Athletic Commission",
+      "jurisdiction": "Nevada",
+      "document": "Mixed Martial Arts Results — Season 6, The Ultimate Fighter",
+      "seasons": [
+        "tuf-6"
+      ],
+      "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+      "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+      "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+      "pages": 3,
+      "retrieved": "2026-09-13",
+      "live_matches_archive": true,
+      "title_quote": "MIXED MARTIAL ARTS RESULTS",
+      "location": "UFC Training Center, Las Vegas",
+      "promoter": "Zuffa, LLC",
+      "executive_director": "Keith Kizer",
+      "classification_language": {
+        "quote": "Exhibition Results",
+        "where": "results column header, page 1; pages 2 and 3 continue the same table (page 2 headed \"Results\", page 3 under \"SEMI-FINAL BOUT\") — the applied TUF 2 pattern"
+      },
+      "officials": {
+        "referees": [
+          "Steve Mazzagatti"
+        ],
+        "visiting_referees": [
+          "Herb Dean",
+          "John McCarthy"
+        ],
+        "judges": [
+          "Adalaide Byrd",
+          "Patricia Morse Jarman",
+          "Glenn Trowbridge",
+          "Tony Weeks"
+        ],
+        "visiting_judges": [
+          "Lester Griffin",
+          "Nelson Hamilton",
+          "Cecil Peoples",
+          "Marcos Rosales"
+        ],
+        "timekeepers": [
+          "James Cavin",
+          "Steve Esposito",
+          "Ernie Jauregui",
+          "Mike LaCella"
+        ],
+        "ringside_doctors": [
+          "William Berliner",
+          "Al Capanna",
+          "Jeff Davidson",
+          "James Game",
+          "Anthony Ruggeroli",
+          "David Watson"
+        ]
+      },
+      "season_identity": {
+        "printed": true,
+        "basis": "Printed in the document header: \"SEASON 6 – THE ULTIMATE FIGHTER™\". Consistent with the file name TUFSEASON6.pdf (2007_Results), location \"UFC Training Center, Las Vegas\", show dates 2007-06-11..2007-07-15 and 14/14 pairings."
+      }
     }
   ],
   "records": [
@@ -1769,6 +1896,1091 @@
       },
       "referee": "Steve Mazzagatti",
       "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-01",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-01-27",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "ALLEN M. BERUBE",
+          "hometown": "Lutz, FL",
+          "dob": "1974-08-25",
+          "weight_lbs": 155.5
+        },
+        {
+          "printed": "JEREMIAH COLE MILLER",
+          "hometown": "Boynton Beach, FL",
+          "dob": "1984-04-26",
+          "weight_lbs": 155
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "elimination",
+        "a": "Cole Miller",
+        "b": "Allen Berube"
+      },
+      "winner": "Cole Miller",
+      "result_text": "Miller won by tap out 2:35 of the 1st round – triangle choke",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "2:35",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-02",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-01-30",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "NOAH MARTIN THOMAS",
+          "hometown": "Fort Collins, CO",
+          "dob": "1981-03-27",
+          "weight_lbs": 154.5
+        },
+        {
+          "printed": "MANUEL GAMBURYAN",
+          "hometown": "Los Angeles, CA",
+          "dob": "1981-05-08",
+          "weight_lbs": 156
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "elimination",
+        "a": "Manny Gamburyan",
+        "b": "Noah Thomas"
+      },
+      "winner": "Manny Gamburyan",
+      "result_text": "Gamburyan won by tap out 2:10 of the 1st round – Kimura.",
+      "method": "Submission (kimura)",
+      "round": 1,
+      "time": "2:10",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-03",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-02",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "ROBERT MICHAEL EMERSON",
+          "hometown": "Newport Beach, CA",
+          "dob": "1981-07-30",
+          "weight_lbs": 156
+        },
+        {
+          "printed": "NATHAN DONALD DIAZ",
+          "hometown": "Stockton, CA",
+          "dob": "1985-04-16",
+          "weight_lbs": 156
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "elimination",
+        "a": "Nate Diaz",
+        "b": "Rob Emerson"
+      },
+      "winner": "Nate Diaz",
+      "result_text": "Diaz won by tap out 4:46 of the 2nd round – rear naked choke.",
+      "method": "Submission (rear naked choke)",
+      "round": 2,
+      "time": "4:46",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-04",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-06",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "ANDREW P. WANG",
+          "hometown": "Torrance, CA",
+          "dob": "1977-05-28",
+          "weight_lbs": 155
+        },
+        {
+          "printed": "BRANDON LOUIS MELENDEZ",
+          "hometown": "Bountiful, UT",
+          "dob": "1983-03-24",
+          "weight_lbs": 155.5
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "elimination",
+        "a": "Brandon Melendez",
+        "b": "Andy Wang"
+      },
+      "winner": "Brandon Melendez",
+      "result_text": "Melendez won by unanimous decision.",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "scheduled_rounds": 2,
+      "scorecards": {
+        "order": [
+          "Wang",
+          "Melendez"
+        ],
+        "cards": [
+          {
+            "judge": "Adalaide Byrd",
+            "score": "18-20"
+          },
+          {
+            "judge": "Glenn Trowbridge",
+            "score": "18-20"
+          },
+          {
+            "judge": "Lester Griffin",
+            "score": "18-20"
+          }
+        ]
+      },
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-05",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-12",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "ROBERT MICHAEL EMERSON",
+          "hometown": "Newport Beach, CA",
+          "dob": "1981-07-30",
+          "weight_lbs": 155
+        },
+        {
+          "printed": "COREY CORNELIUS HILL",
+          "hometown": "Colorado Springs, CA",
+          "dob": "1978-10-03",
+          "weight_lbs": 155
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "elimination",
+        "a": "Corey Hill",
+        "b": "Rob Emerson"
+      },
+      "winner": "Corey Hill",
+      "result_text": "Hill won by unanimous decision in the sudden victory round.",
+      "method": "Decision (unanimous, sudden victory round)",
+      "round": 3,
+      "time": null,
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-06",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-12",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "JOSEPH E. LAUZON, JR.",
+          "hometown": "Quincy, MA",
+          "dob": "1984-05-22",
+          "weight_lbs": 155
+        },
+        {
+          "printed": "BRIAN JOSEPH GERAGHTY",
+          "hometown": "Kenosha, WI",
+          "dob": "1980-11-04",
+          "weight_lbs": 154
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "elimination",
+        "a": "Joe Lauzon",
+        "b": "Brian Geraghty"
+      },
+      "winner": "Joe Lauzon",
+      "result_text": "Lauzon won by tap out 1:13 of the 1st round – rear naked choke.",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:13",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-07",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-15",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "BRADLEY GRAY MAYNARD",
+          "hometown": "Las Vegas, NV",
+          "dob": "1979-05-09",
+          "weight_lbs": 156
+        },
+        {
+          "printed": "WAYNE LEROY WEEMS",
+          "hometown": "Molina, IL",
+          "dob": "1982-06-23",
+          "weight_lbs": 155
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "elimination",
+        "a": "Gray Maynard",
+        "b": "Wayne Weems"
+      },
+      "winner": "Gray Maynard",
+      "result_text": "Maynard won by TKO 2:48 of the 1st round.",
+      "method": "TKO",
+      "round": 1,
+      "time": "2:48",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-08",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-15",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "MATTHEW CHARLES WIMAN",
+          "hometown": "Tulsa, OK",
+          "dob": "1983-09-19",
+          "weight_lbs": 156
+        },
+        {
+          "printed": "MARLON SIMS",
+          "hometown": "Homestead. FL",
+          "dob": "1974-01-18",
+          "weight_lbs": 156
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "elimination",
+        "a": "Matt Wiman",
+        "b": "Marlon Sims"
+      },
+      "winner": "Matt Wiman",
+      "result_text": "Wiman won by choke out 0:50 of the 1st round. – rear naked choke.",
+      "method": "Technical submission (rear naked choke)",
+      "round": 1,
+      "time": "0:50",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-09",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-21",
+      "stage_label": "Quarter Finals",
+      "corners": [
+        {
+          "printed": "BRADLEY GRAY MAYNARD",
+          "hometown": "Las Vegas, NV",
+          "dob": "1979-05-09",
+          "weight_lbs": 155
+        },
+        {
+          "printed": "BRANDON LOUIS MELENDEZ",
+          "hometown": "Bountiful, UT",
+          "dob": "1983-03-24",
+          "weight_lbs": 156
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "quarter_final",
+        "a": "Brandon Melendez",
+        "b": "Gray Maynard"
+      },
+      "winner": "Gray Maynard",
+      "result_text": "Maynard won by tap out 4:07 of the 2nd round – guillotine choke",
+      "method": "Submission (guillotine choke)",
+      "round": 2,
+      "time": "4:07",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-10",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-21",
+      "stage_label": "Quarter Finals",
+      "corners": [
+        {
+          "printed": "JOSEPH E. LAUZON, JR.",
+          "hometown": "Quincy, MA",
+          "dob": "1984-05-22",
+          "weight_lbs": 155
+        },
+        {
+          "printed": "JEREMIAH COLE MILLER",
+          "hometown": "Boynton Beach, FL",
+          "dob": "1984-04-26",
+          "weight_lbs": 155
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "quarter_final",
+        "a": "Joe Lauzon",
+        "b": "Cole Miller"
+      },
+      "winner": "Joe Lauzon",
+      "result_text": "Lauzon won by TKO 3:59 of the 2nd round.",
+      "method": "TKO",
+      "round": 2,
+      "time": "3:59",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-11",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-22",
+      "stage_label": "Quarter Finals",
+      "corners": [
+        {
+          "printed": "NATHAN DONALD DIAZ",
+          "hometown": "Stockton, CA",
+          "dob": "1985-04-16",
+          "weight_lbs": 156
+        },
+        {
+          "printed": "COREY CORNELIUS HILL",
+          "hometown": "Colorado Springs, CA",
+          "dob": "1978-10-03",
+          "weight_lbs": 155
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "quarter_final",
+        "a": "Nate Diaz",
+        "b": "Corey Hill"
+      },
+      "winner": "Nate Diaz",
+      "result_text": "Diaz won by tap out 3:03 of the 1st round – triangle choke.",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "3:03",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-12",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-22",
+      "stage_label": "Quarter Finals",
+      "corners": [
+        {
+          "printed": "MATTHEW CHARLES WIMAN",
+          "hometown": "Tulsa, OK",
+          "dob": "1983-09-19",
+          "weight_lbs": 156
+        },
+        {
+          "printed": "MANUEL GAMBURYAN",
+          "hometown": "Los Angeles, CA",
+          "dob": "1981-05-08",
+          "weight_lbs": 155
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "quarter_final",
+        "a": "Manny Gamburyan",
+        "b": "Matt Wiman"
+      },
+      "winner": "Manny Gamburyan",
+      "result_text": "Gamburyan won by unanimous decision.",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "scheduled_rounds": 2,
+      "scorecards": {
+        "order": [
+          "Wiman",
+          "Gamburyan"
+        ],
+        "cards": [
+          {
+            "judge": "Adalaide Byrd",
+            "score": "18-20"
+          },
+          {
+            "judge": "Tony Weeks",
+            "score": "18-20"
+          },
+          {
+            "judge": "Cecil Peoples",
+            "score": "18-20"
+          }
+        ]
+      },
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-13",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-28",
+      "stage_label": "SEMI-FINAL BOUT",
+      "corners": [
+        {
+          "printed": "JOSEPH E. LAUZON, JR.",
+          "hometown": "Quincy, MA",
+          "dob": "1984-05-22",
+          "weight_lbs": 156
+        },
+        {
+          "printed": "MANUEL GAMBURYAN",
+          "hometown": "Los Angeles, CA",
+          "dob": "1981-05-08",
+          "weight_lbs": 155
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "semi_final",
+        "a": "Manny Gamburyan",
+        "b": "Joe Lauzon"
+      },
+      "winner": "Manny Gamburyan",
+      "result_text": "Gamburyan won by unanimous decision.",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "scheduled_rounds": 3,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf5-14",
+      "document_id": "nsac-2007-tuf-season-5",
+      "date": "2007-02-28",
+      "stage_label": "SEMI-FINAL BOUT",
+      "corners": [
+        {
+          "printed": "BRADLEY GRAY MAYNARD",
+          "hometown": "Las Vegas, NV",
+          "dob": "1979-05-09",
+          "weight_lbs": 156
+        },
+        {
+          "printed": "NATHAN DONALD DIAZ",
+          "hometown": "Stockton, CA",
+          "dob": "1985-04-16",
+          "weight_lbs": 155
+        }
+      ],
+      "bout": {
+        "weight_class": "Lightweight",
+        "stage": "semi_final",
+        "a": "Nate Diaz",
+        "b": "Gray Maynard"
+      },
+      "winner": "Nate Diaz",
+      "result_text": "Diaz won by tap out 1:20 of the 2nd round – Guillotine choke",
+      "method": "Submission (guillotine choke)",
+      "round": 2,
+      "time": "1:20",
+      "scheduled_rounds": 3,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-01",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-06-11",
+      "date_printed": "0611/07",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "MAC DANZIG",
+          "hometown": "Los Angels, CA",
+          "dob": "1980-01-02",
+          "weight_lbs": 170
+        },
+        {
+          "printed": "JOSEPH WILLIAM SCAROLA",
+          "hometown": "East Meadow, NY",
+          "dob": "1979-03-12",
+          "weight_lbs": 169
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Mac Danzig",
+        "b": "Joe Scarola"
+      },
+      "winner": "Mac Danzig",
+      "result_text": "Danzig won by tap out 4:55 of the 1st round – triangle choke.",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "4:55",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-02",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-06-14",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "DORIAN PRICE",
+          "hometown": "Columbus, OH",
+          "dob": "1977-08-20",
+          "weight_lbs": 170
+        },
+        {
+          "printed": "MATTHEW VINCENT ARROYO",
+          "hometown": "Tampa, FL",
+          "dob": "1982-09-01",
+          "weight_lbs": 168
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Dorian Price",
+        "b": "Matt Arroyo"
+      },
+      "winner": "Matt Arroyo",
+      "result_text": "Arroyo won by tap out 1:48 of the 1st round – rear naked choke.",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:48",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-03",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-06-18",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "WILLIAM SCOT MILES",
+          "hometown": "Loomis. CA",
+          "dob": "1978-04-28",
+          "weight_lbs": 171
+        },
+        {
+          "printed": "JOHN MICHAEL KOLOSCI",
+          "hometown": "Portage, IN",
+          "dob": "1974-11-26",
+          "weight_lbs": 169.5
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Billy Miles",
+        "b": "John Kolosci"
+      },
+      "winner": "John Kolosci",
+      "result_text": "Kolosci won by tap out 2:58 of the 1st round – guillotine choke.",
+      "method": "Submission (guillotine choke)",
+      "round": 1,
+      "time": "2:58",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-04",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-06-21",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "BLAKE R. BOWMAN",
+          "hometown": "Carrollton, GA",
+          "dob": "1981-06-20",
+          "weight_lbs": 170
+        },
+        {
+          "printed": "RICHIE JAMES HIGHTOWER",
+          "hometown": "Phoenix, AZ",
+          "dob": "1981-11-24",
+          "weight_lbs": 170
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Blake Bowman",
+        "b": "Richie Hightower"
+      },
+      "winner": "Richie Hightower",
+      "result_text": "Hightower won by TKO 0:50 of the 1st round.",
+      "method": "TKO",
+      "round": 1,
+      "time": "0:50",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-05",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-06-26",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "PAUL KARA GEORGIEFF",
+          "hometown": "Madison, WI",
+          "dob": "1982-09-22",
+          "weight_lbs": 170
+        },
+        {
+          "printed": "TROY HISASHI MANDALONIZ",
+          "hometown": "Henderson, NV",
+          "dob": "1980-02-01",
+          "weight_lbs": 168
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Paul Georgieff",
+        "b": "Troy Mandaloniz"
+      },
+      "winner": "Troy Mandaloniz",
+      "result_text": "Mandaloniz won by TKO 2:40 of the 1st round.",
+      "method": "TKO",
+      "round": 1,
+      "time": "2:40",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-06",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-06-26",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "DANIEL L. BARRERA",
+          "hometown": "Radcliff, KY",
+          "dob": "1980-12-23",
+          "weight_lbs": 171
+        },
+        {
+          "printed": "BENJAMIN SAUNDERS",
+          "hometown": "Orlando, FL",
+          "dob": "1983-04-13",
+          "weight_lbs": 170
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Dan Barrera",
+        "b": "Ben Saunders"
+      },
+      "winner": "Ben Saunders",
+      "result_text": "Saunders won by majority decision.",
+      "method": "Decision (majority)",
+      "round": 2,
+      "time": null,
+      "scheduled_rounds": 2,
+      "scorecards": {
+        "order": [
+          "Barrera",
+          "Saunders"
+        ],
+        "cards": [
+          {
+            "judge": "Adalaide Byrd",
+            "score": "18-20"
+          },
+          {
+            "judge": "Lester Griffin",
+            "score": "18-20"
+          },
+          {
+            "judge": "Cecil Peoples",
+            "score": "19-19"
+          }
+        ]
+      },
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-07",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-06-29",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "JARED MICHAEL ROLLINS",
+          "hometown": "Stanton, CA",
+          "dob": "1977-01-26",
+          "weight_lbs": 171
+        },
+        {
+          "printed": "GEORGE SOTIROPOULOS",
+          "hometown": "Bell Post Hill, Victoria, Australia",
+          "dob": "1977-07-09",
+          "weight_lbs": 168.5
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Jared Rollins",
+        "b": "George Sotiropoulos"
+      },
+      "winner": "George Sotiropoulos",
+      "result_text": "Sotriopoulos won by TKO 3:50 of the 1st round.",
+      "method": "TKO",
+      "round": 1,
+      "time": "3:50",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-08",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-06-29",
+      "stage_label": null,
+      "corners": [
+        {
+          "printed": "THOMAS CHARLES SPEER",
+          "hometown": "Elgin, MN",
+          "dob": "1984-08-20",
+          "weight_lbs": 171
+        },
+        {
+          "printed": "JONATHON PAUL KOPPENHAVER",
+          "hometown": "Chula Vista, CA",
+          "dob": "1981-11-30",
+          "weight_lbs": 169.5
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Tom Speer",
+        "b": "Jon Koppenhaver"
+      },
+      "winner": "Tom Speer",
+      "result_text": "Speer won by unanimous decision",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "scheduled_rounds": 2,
+      "scorecards": {
+        "order": [
+          "Speer",
+          "Koppenhaver"
+        ],
+        "cards": [
+          {
+            "judge": "Adalaide Byrd",
+            "score": "20-18"
+          },
+          {
+            "judge": "Patricia Morse Jarman",
+            "score": "20-18"
+          },
+          {
+            "judge": "Cecil Peoples",
+            "score": "20-18"
+          }
+        ]
+      },
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-09",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-07-03",
+      "stage_label": "Quarter Finals",
+      "corners": [
+        {
+          "printed": "MAC DANZIG",
+          "hometown": "Los Angels, CA",
+          "dob": "1980-01-02",
+          "weight_lbs": 169
+        },
+        {
+          "printed": "JOHN MICHAEL KOLOSCI",
+          "hometown": "Portage, IN",
+          "dob": "1974-11-26",
+          "weight_lbs": 170
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "quarter_final",
+        "a": "Mac Danzig",
+        "b": "John Kolosci"
+      },
+      "winner": "Mac Danzig",
+      "result_text": "Danzig won by tap out 3:57 of the 1st round – rear naked choke.",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "3:57",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-10",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-07-05",
+      "stage_label": "Quarter Finals",
+      "corners": [
+        {
+          "printed": "MATTHEW VINCENT ARROYO",
+          "hometown": "Tampa, FL",
+          "dob": "1982-09-01",
+          "weight_lbs": 170
+        },
+        {
+          "printed": "TROY HISASHI MANDALONIZ",
+          "hometown": "Henderson, NV",
+          "dob": "1980-02-01",
+          "weight_lbs": 170.5
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "quarter_final",
+        "a": "Matt Arroyo",
+        "b": "Troy Mandaloniz"
+      },
+      "winner": "Matt Arroyo",
+      "result_text": "Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.",
+      "method": "Submission (armbar)",
+      "round": 1,
+      "time": "1:07",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-11",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-07-05",
+      "stage_label": "Quarter Finals",
+      "corners": [
+        {
+          "printed": "RICHIE JAMES HIGHTOWER",
+          "hometown": "Phoenix, AZ",
+          "dob": "1981-11-24",
+          "weight_lbs": 171
+        },
+        {
+          "printed": "GEORGE SOTIROPOULOS",
+          "hometown": "Bell Post Hill, Victoria, Australia",
+          "dob": "1977-07-09",
+          "weight_lbs": 168
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "quarter_final",
+        "a": "Richie Hightower",
+        "b": "George Sotiropoulos"
+      },
+      "winner": "George Sotiropoulos",
+      "result_text": "Sotiropoulos won by tap out 4:10 of the 1st round – kumara.",
+      "method": "Submission (kimura)",
+      "round": 1,
+      "time": "4:10",
+      "scheduled_rounds": 2,
+      "scorecards": null,
+      "referee": "Herb Dean",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-12",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-07-09",
+      "stage_label": "Quarter Finals",
+      "corners": [
+        {
+          "printed": "THOMAS CHARLES SPEER",
+          "hometown": "Elgin, MN",
+          "dob": "1984-08-20",
+          "weight_lbs": 171
+        },
+        {
+          "printed": "BENJAMIN SAUNDERS",
+          "hometown": "Orlando, FL",
+          "dob": "1983-04-13",
+          "weight_lbs": 170
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "quarter_final",
+        "a": "Tom Speer",
+        "b": "Ben Saunders"
+      },
+      "winner": "Tom Speer",
+      "result_text": "Speer won by majority decision.",
+      "method": "Decision (majority)",
+      "round": 2,
+      "time": null,
+      "scheduled_rounds": 2,
+      "scorecards": {
+        "order": [
+          "Speer",
+          "Saunders"
+        ],
+        "cards": [
+          {
+            "judge": "Patricia Morse Jarman",
+            "score": "20-18"
+          },
+          {
+            "judge": "Glenn Trowbridge",
+            "score": "19-19"
+          },
+          {
+            "judge": "Lester Griffin",
+            "score": "20-18"
+          }
+        ]
+      },
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-13",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-07-15",
+      "stage_label": "SEMI-FINAL BOUT",
+      "corners": [
+        {
+          "printed": "MAC DANZIG",
+          "hometown": "Los Angels, CA",
+          "dob": "1980-01-02",
+          "weight_lbs": 169.5
+        },
+        {
+          "printed": "JOHN MICHAEL KOLOSCI",
+          "hometown": "Portage, IN",
+          "dob": "1974-11-26",
+          "weight_lbs": 170
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "semi_final",
+        "a": "Mac Danzig",
+        "b": "John Kolosci"
+      },
+      "winner": "Mac Danzig",
+      "result_text": "Danzig won by tap out 4:29 of the 1st round – rear naked choke.",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "4:29",
+      "scheduled_rounds": 3,
+      "scorecards": null,
+      "referee": "Steve Mazzagatti",
+      "remarks": []
+    },
+    {
+      "id": "nsac-2007-tuf6-14",
+      "document_id": "nsac-2007-tuf-season-6",
+      "date": "2007-07-15",
+      "stage_label": "SEMI-FINAL BOUT",
+      "corners": [
+        {
+          "printed": "THOMAS CHARLES SPEER",
+          "hometown": "Elgin, MN",
+          "dob": "1984-08-20",
+          "weight_lbs": 171
+        },
+        {
+          "printed": "GEORGE SOTIROPOULOS",
+          "hometown": "Bell Post Hill, Victoria, Australia",
+          "dob": "1977-07-09",
+          "weight_lbs": 170
+        }
+      ],
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "semi_final",
+        "a": "Tom Speer",
+        "b": "George Sotiropoulos"
+      },
+      "winner": "Tom Speer",
+      "result_text": "Speer won by TKO 2:59 of the 1st round.",
+      "method": "TKO",
+      "round": 1,
+      "time": "2:59",
+      "scheduled_rounds": 3,
+      "scorecards": null,
+      "referee": "John McCarthy",
+      "remarks": [
+        {
+          "fighter": "George Sotiropoulos",
+          "quote": "Suspend Sotiropoulos until 09/14/07"
+        },
+        {
+          "fighter": "George Sotiropoulos",
+          "quote": "No contact until 08/30/07"
+        }
+      ]
     }
   ]
 }

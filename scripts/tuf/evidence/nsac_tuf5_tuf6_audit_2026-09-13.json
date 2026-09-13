@@ -1,0 +1,4772 @@
+{
+ "_about": "READ-ONLY audit (scripts/tuf/audit_nsac_tuf5_tuf6.mjs). Nothing applied. Documents are not redistributed; records are transcriptions for reconciliation, printed names and hometowns as printed.",
+ "seasons": {
+  "tuf-5": {
+   "document": {
+    "id": "nsac-2007-tuf-season-5",
+    "source_family": "athletic_commission",
+    "source_type": "commission_result_record",
+    "commission": "Nevada State Athletic Commission",
+    "jurisdiction": "Nevada",
+    "document": "Mixed Martial Arts Results — Season 5, The Ultimate Fighter",
+    "seasons": [
+     "tuf-5"
+    ],
+    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+    "archive_url": "https://web.archive.org/web/20161213143108/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+    "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+    "bytes": 56215,
+    "pages": 3,
+    "retrieved": "2026-09-13",
+    "live": {
+     "http": 200,
+     "content_type": "application/pdf",
+     "last_modified": "Wed, 06 Feb 2013 18:18:43 GMT"
+    },
+    "archive": {
+     "http": 200,
+     "content_type": "application/pdf",
+     "bytes": 56215,
+     "fetched_as": "id_ (raw capture)"
+    },
+    "live_matches_archive": true,
+    "pdf_metadata": {
+     "title": "STATE OF NEVADA",
+     "author": "Athletic Commission",
+     "created": "2007-06-20"
+    },
+    "title_quote": "MIXED MARTIAL ARTS RESULTS",
+    "classification_language": {
+     "quote": "Exhibition Results",
+     "where": "results column header, page 1; pages 2 and 3 continue the same table (page 2 headed \"Results\", page 3 under \"SEMI-FINAL BOUT\") — the applied TUF 2 pattern"
+    },
+    "season_identity": {
+     "printed": true,
+     "basis": "Printed in the document header: \"SEASON 5– THE ULTIMATE FIGHTER™\". Consistent with the file name TUFSEASON5.pdf (2007_Results), location \"UFC Training Center, Las Vegas\", show dates 2007-01-27..2007-02-28 and 14/14 pairings."
+    },
+    "location": "UFC Training Center, Las Vegas",
+    "promoter": "Zuffa, LLC",
+    "executive_director": "Keith Kizer",
+    "officials": {
+     "referees": [
+      "Steve Mazzagatti"
+     ],
+     "visiting_referees": [
+      "Herb Dean",
+      "John McCarthy"
+     ],
+     "judges": [
+      "Adalaide Byrd",
+      "Glenn Trowbridge",
+      "Tony Weeks"
+     ],
+     "visiting_judges": [
+      "Lester Griffin",
+      "Nelson Hamilton",
+      "Cecil Peoples",
+      "Marcos Rosales"
+     ],
+     "timekeepers": [
+      "James Cavin",
+      "Steve Esposito",
+      "Ernie Jauregui",
+      "Mike LaCella"
+     ],
+     "ringside_doctors": [
+      "William Berliner",
+      "Al Capanna",
+      "Jeff Davidson",
+      "James Game",
+      "Anthony Ruggeroli",
+      "David Watson"
+     ]
+    },
+    "remarks_note": "The Remarks column carries only the \"Referee:\" line for all 14 bouts; no other remark.",
+    "printed_notes": []
+   },
+   "local_pdf_check": {
+    "live": {
+     "bytes": 56215,
+     "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb"
+    },
+    "archive": {
+     "bytes": 56215,
+     "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb"
+    },
+    "matches": true
+   },
+   "records": [
+    {
+     "id": "nsac-2007-tuf5-01",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-01-27",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "ALLEN M. BERUBE",
+       "hometown": "Lutz, FL",
+       "dob": "1974-08-25",
+       "weight_lbs": 155.5
+      },
+      {
+       "printed": "JEREMIAH COLE MILLER",
+       "hometown": "Boynton Beach, FL",
+       "dob": "1984-04-26",
+       "weight_lbs": 155
+      }
+     ],
+     "winner_surname": "Miller",
+     "result_text": "Miller won by tap out 2:35 of the 1st round – triangle choke",
+     "method": "Submission (triangle choke)",
+     "round": 1,
+     "time": "2:35",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "elimination",
+      "a": "Cole Miller",
+      "b": "Allen Berube"
+     },
+     "winner": "Cole Miller"
+    },
+    {
+     "id": "nsac-2007-tuf5-02",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-01-30",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "NOAH MARTIN THOMAS",
+       "hometown": "Fort Collins, CO",
+       "dob": "1981-03-27",
+       "weight_lbs": 154.5
+      },
+      {
+       "printed": "MANUEL GAMBURYAN",
+       "hometown": "Los Angeles, CA",
+       "dob": "1981-05-08",
+       "weight_lbs": 156
+      }
+     ],
+     "winner_surname": "Gamburyan",
+     "result_text": "Gamburyan won by tap out 2:10 of the 1st round – Kimura.",
+     "method": "Submission (kimura)",
+     "round": 1,
+     "time": "2:10",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "elimination",
+      "a": "Manny Gamburyan",
+      "b": "Noah Thomas"
+     },
+     "winner": "Manny Gamburyan"
+    },
+    {
+     "id": "nsac-2007-tuf5-03",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-02",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "ROBERT MICHAEL EMERSON",
+       "hometown": "Newport Beach, CA",
+       "dob": "1981-07-30",
+       "weight_lbs": 156
+      },
+      {
+       "printed": "NATHAN DONALD DIAZ",
+       "hometown": "Stockton, CA",
+       "dob": "1985-04-16",
+       "weight_lbs": 156
+      }
+     ],
+     "winner_surname": "Diaz",
+     "result_text": "Diaz won by tap out 4:46 of the 2nd round – rear naked choke.",
+     "method": "Submission (rear naked choke)",
+     "round": 2,
+     "time": "4:46",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "elimination",
+      "a": "Nate Diaz",
+      "b": "Rob Emerson"
+     },
+     "winner": "Nate Diaz"
+    },
+    {
+     "id": "nsac-2007-tuf5-04",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-06",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "ANDREW P. WANG",
+       "hometown": "Torrance, CA",
+       "dob": "1977-05-28",
+       "weight_lbs": 155
+      },
+      {
+       "printed": "BRANDON LOUIS MELENDEZ",
+       "hometown": "Bountiful, UT",
+       "dob": "1983-03-24",
+       "weight_lbs": 155.5
+      }
+     ],
+     "winner_surname": "Melendez",
+     "result_text": "Melendez won by unanimous decision.",
+     "method": "Decision (unanimous)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Wang",
+       "Melendez"
+      ],
+      "cards": [
+       {
+        "judge": "Adalaide Byrd",
+        "score": "18-20"
+       },
+       {
+        "judge": "Glenn Trowbridge",
+        "score": "18-20"
+       },
+       {
+        "judge": "Lester Griffin",
+        "score": "18-20"
+       }
+      ]
+     },
+     "referee": "John McCarthy",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "elimination",
+      "a": "Brandon Melendez",
+      "b": "Andy Wang"
+     },
+     "winner": "Brandon Melendez"
+    },
+    {
+     "id": "nsac-2007-tuf5-05",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-12",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "ROBERT MICHAEL EMERSON",
+       "hometown": "Newport Beach, CA",
+       "dob": "1981-07-30",
+       "weight_lbs": 155
+      },
+      {
+       "printed": "COREY CORNELIUS HILL",
+       "hometown": "Colorado Springs, CA",
+       "dob": "1978-10-03",
+       "weight_lbs": 155
+      }
+     ],
+     "winner_surname": "Hill",
+     "result_text": "Hill won by unanimous decision in the sudden victory round.",
+     "method": "Decision (unanimous, sudden victory round)",
+     "round": 3,
+     "time": null,
+     "scheduled_rounds": 2,
+     "rounds_printed": "2 + Sudden Victory",
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "elimination",
+      "a": "Corey Hill",
+      "b": "Rob Emerson"
+     },
+     "winner": "Corey Hill"
+    },
+    {
+     "id": "nsac-2007-tuf5-06",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-12",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "JOSEPH E. LAUZON, JR.",
+       "hometown": "Quincy, MA",
+       "dob": "1984-05-22",
+       "weight_lbs": 155
+      },
+      {
+       "printed": "BRIAN JOSEPH GERAGHTY",
+       "hometown": "Kenosha, WI",
+       "dob": "1980-11-04",
+       "weight_lbs": 154
+      }
+     ],
+     "winner_surname": "Lauzon",
+     "result_text": "Lauzon won by tap out 1:13 of the 1st round – rear naked choke.",
+     "method": "Submission (rear naked choke)",
+     "round": 1,
+     "time": "1:13",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "elimination",
+      "a": "Joe Lauzon",
+      "b": "Brian Geraghty"
+     },
+     "winner": "Joe Lauzon"
+    },
+    {
+     "id": "nsac-2007-tuf5-07",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-15",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "BRADLEY GRAY MAYNARD",
+       "hometown": "Las Vegas, NV",
+       "dob": "1979-05-09",
+       "weight_lbs": 156
+      },
+      {
+       "printed": "WAYNE LEROY WEEMS",
+       "hometown": "Molina, IL",
+       "dob": "1982-06-23",
+       "weight_lbs": 155
+      }
+     ],
+     "winner_surname": "Maynard",
+     "result_text": "Maynard won by TKO 2:48 of the 1st round.",
+     "method": "TKO",
+     "round": 1,
+     "time": "2:48",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "elimination",
+      "a": "Gray Maynard",
+      "b": "Wayne Weems"
+     },
+     "winner": "Gray Maynard"
+    },
+    {
+     "id": "nsac-2007-tuf5-08",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-15",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "MATTHEW CHARLES WIMAN",
+       "hometown": "Tulsa, OK",
+       "dob": "1983-09-19",
+       "weight_lbs": 156
+      },
+      {
+       "printed": "MARLON SIMS",
+       "hometown": "Homestead. FL",
+       "dob": "1974-01-18",
+       "weight_lbs": 156
+      }
+     ],
+     "winner_surname": "Wiman",
+     "result_text": "Wiman won by choke out 0:50 of the 1st round. – rear naked choke.",
+     "method": "Technical submission (rear naked choke)",
+     "round": 1,
+     "time": "0:50",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "reading": {
+      "printed": "choke out",
+      "read_as": "Technical submission",
+      "note": "the record distinguishes \"choke out\" from its \"tap out\" wording elsewhere; read as a technical submission (rear naked choke), which is the archive's own category for this bout — a normalization judgement to confirm"
+     },
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "elimination",
+      "a": "Matt Wiman",
+      "b": "Marlon Sims"
+     },
+     "winner": "Matt Wiman"
+    },
+    {
+     "id": "nsac-2007-tuf5-09",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-21",
+     "stage_label": "Quarter Finals",
+     "corners": [
+      {
+       "printed": "BRADLEY GRAY MAYNARD",
+       "hometown": "Las Vegas, NV",
+       "dob": "1979-05-09",
+       "weight_lbs": 155
+      },
+      {
+       "printed": "BRANDON LOUIS MELENDEZ",
+       "hometown": "Bountiful, UT",
+       "dob": "1983-03-24",
+       "weight_lbs": 156
+      }
+     ],
+     "winner_surname": "Maynard",
+     "result_text": "Maynard won by tap out 4:07 of the 2nd round – guillotine choke",
+     "method": "Submission (guillotine choke)",
+     "round": 2,
+     "time": "4:07",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "quarter_final",
+      "a": "Brandon Melendez",
+      "b": "Gray Maynard"
+     },
+     "winner": "Gray Maynard"
+    },
+    {
+     "id": "nsac-2007-tuf5-10",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-21",
+     "stage_label": "Quarter Finals",
+     "corners": [
+      {
+       "printed": "JOSEPH E. LAUZON, JR.",
+       "hometown": "Quincy, MA",
+       "dob": "1984-05-22",
+       "weight_lbs": 155
+      },
+      {
+       "printed": "JEREMIAH COLE MILLER",
+       "hometown": "Boynton Beach, FL",
+       "dob": "1984-04-26",
+       "weight_lbs": 155
+      }
+     ],
+     "winner_surname": "Lauzon",
+     "result_text": "Lauzon won by TKO 3:59 of the 2nd round.",
+     "method": "TKO",
+     "round": 2,
+     "time": "3:59",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "quarter_final",
+      "a": "Joe Lauzon",
+      "b": "Cole Miller"
+     },
+     "winner": "Joe Lauzon"
+    },
+    {
+     "id": "nsac-2007-tuf5-11",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-22",
+     "stage_label": "Quarter Finals",
+     "corners": [
+      {
+       "printed": "NATHAN DONALD DIAZ",
+       "hometown": "Stockton, CA",
+       "dob": "1985-04-16",
+       "weight_lbs": 156
+      },
+      {
+       "printed": "COREY CORNELIUS HILL",
+       "hometown": "Colorado Springs, CA",
+       "dob": "1978-10-03",
+       "weight_lbs": 155
+      }
+     ],
+     "winner_surname": "Diaz",
+     "result_text": "Diaz won by tap out 3:03 of the 1st round – triangle choke.",
+     "method": "Submission (triangle choke)",
+     "round": 1,
+     "time": "3:03",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": null,
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "quarter_final",
+      "a": "Nate Diaz",
+      "b": "Corey Hill"
+     },
+     "winner": "Nate Diaz"
+    },
+    {
+     "id": "nsac-2007-tuf5-12",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-22",
+     "stage_label": "Quarter Finals",
+     "corners": [
+      {
+       "printed": "MATTHEW CHARLES WIMAN",
+       "hometown": "Tulsa, OK",
+       "dob": "1983-09-19",
+       "weight_lbs": 156
+      },
+      {
+       "printed": "MANUEL GAMBURYAN",
+       "hometown": "Los Angeles, CA",
+       "dob": "1981-05-08",
+       "weight_lbs": 155
+      }
+     ],
+     "winner_surname": "Gamburyan",
+     "result_text": "Gamburyan won by unanimous decision.",
+     "method": "Decision (unanimous)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Wiman",
+       "Gamburyan"
+      ],
+      "cards": [
+       {
+        "judge": "Adalaide Byrd",
+        "score": "18-20"
+       },
+       {
+        "judge": "Tony Weeks",
+        "score": "18-20"
+       },
+       {
+        "judge": "Cecil Peoples",
+        "score": "18-20"
+       }
+      ]
+     },
+     "scores_printed": "18-20 18-2018-20",
+     "referee": "Herb Dean",
+     "weight_class": null,
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "quarter_final",
+      "a": "Manny Gamburyan",
+      "b": "Matt Wiman"
+     },
+     "winner": "Manny Gamburyan"
+    },
+    {
+     "id": "nsac-2007-tuf5-13",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-28",
+     "stage_label": "SEMI-FINAL BOUT",
+     "corners": [
+      {
+       "printed": "JOSEPH E. LAUZON, JR.",
+       "hometown": "Quincy, MA",
+       "dob": "1984-05-22",
+       "weight_lbs": 156
+      },
+      {
+       "printed": "MANUEL GAMBURYAN",
+       "hometown": "Los Angeles, CA",
+       "dob": "1981-05-08",
+       "weight_lbs": 155
+      }
+     ],
+     "winner_surname": "Gamburyan",
+     "result_text": "Gamburyan won by unanimous decision.",
+     "method": "Decision (unanimous)",
+     "round": 3,
+     "time": null,
+     "scheduled_rounds": 3,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "semi_final",
+      "a": "Manny Gamburyan",
+      "b": "Joe Lauzon"
+     },
+     "winner": "Manny Gamburyan"
+    },
+    {
+     "id": "nsac-2007-tuf5-14",
+     "document_id": "nsac-2007-tuf-season-5",
+     "remarks": [],
+     "date": "2007-02-28",
+     "stage_label": "SEMI-FINAL BOUT",
+     "corners": [
+      {
+       "printed": "BRADLEY GRAY MAYNARD",
+       "hometown": "Las Vegas, NV",
+       "dob": "1979-05-09",
+       "weight_lbs": 156
+      },
+      {
+       "printed": "NATHAN DONALD DIAZ",
+       "hometown": "Stockton, CA",
+       "dob": "1985-04-16",
+       "weight_lbs": 155
+      }
+     ],
+     "winner_surname": "Diaz",
+     "result_text": "Diaz won by tap out 1:20 of the 2nd round – Guillotine choke",
+     "method": "Submission (guillotine choke)",
+     "round": 2,
+     "time": "1:20",
+     "scheduled_rounds": 3,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": null,
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Lightweight",
+      "stage": "semi_final",
+      "a": "Nate Diaz",
+      "b": "Gray Maynard"
+     },
+     "winner": "Nate Diaz"
+    }
+   ],
+   "summary": {
+    "house_bouts_expected": 14,
+    "house_bouts_in_archive": 14,
+    "records_in_document": 14,
+    "matched": 14,
+    "unmatched": 0,
+    "ambiguous": 0,
+    "duplicate_use": [],
+    "unused_records": [],
+    "match_rules": {
+     "weight_class": "document prints none; season bracket has 1 weight class (Lightweight)",
+     "unlabeled_records": 8,
+     "labeled_stages": [
+      "quarter_final",
+      "semi_final"
+     ]
+    },
+    "differences": {
+     "winner": 1,
+     "winner_print_defects": 0,
+     "method": 3,
+     "round": 0,
+     "time_contradictions": 8,
+     "time_source_only": 0
+    },
+    "method_kinds": {
+     "true_contradiction": [],
+     "primary_normalization": [
+      "Corey Hill vs Rob Emerson"
+     ],
+     "compatible_secondary_detail": [
+      "Gray Maynard vs Wayne Weems",
+      "Joe Lauzon vs Cole Miller"
+     ],
+     "source_only_new_fact": []
+    },
+    "method_readings": [
+     "Matt Wiman vs Marlon Sims: printed \"choke out\" → Technical submission (rear naked choke) (normalization_judgement)"
+    ],
+    "print_date_defects": [],
+    "fight_dates": 14,
+    "referees": 14,
+    "scorecards": 2,
+    "decisions": 4,
+    "decisions_without_cards": [
+     "nsac-2007-tuf5-05",
+     "nsac-2007-tuf5-13"
+    ],
+    "weights": 28,
+    "remarks": 0,
+    "printed_document_notes": 0,
+    "dob": {
+     "agrees": 12,
+     "disagreements": [],
+     "no_canonical_identity": [
+      "Noah Thomas: printed 1981-03-27",
+      "Wayne Weems: printed 1982-06-23",
+      "Marlon Sims: printed 1974-01-18"
+     ]
+    },
+    "name_disagreements": [
+     "Cole Miller: printed JEREMIAH COLE MILLER, canonical Cole Miller [printed_first_initial_differs (weights use the printed-name fallback)]",
+     "Manny Gamburyan: printed MANUEL GAMBURYAN, canonical Manvel Gamburyan [canonical_name_differs_from_archive]",
+     "Gray Maynard: printed BRADLEY GRAY MAYNARD, canonical Gray Maynard [printed_first_initial_differs (weights use the printed-name fallback)]"
+    ],
+    "printed_winner_name_defects": [],
+    "classification_wording": "Exhibition Results",
+    "classification_primary_possible": true,
+    "fight_dates_follow_episode_order": true,
+    "open_conflicts": [
+     "quarter_finals: commission_resolves",
+     "early_rounds: partially_informs",
+     "final_method_and_opponent_name: does_not_touch",
+     "gamburyan_name: does_not_touch",
+     "final_method_wording: does_not_touch"
+    ],
+    "structure": [
+     "stage status \"unverified\" on elimination and quarter_final: partially_informs",
+     "Rob Emerson fights twice in the opening round (bout carries a \"replacement\" note): partially_informs",
+     "Gabe Ruediger on the Team Penn roster with no bout: does_not_touch",
+     "Corey Hill vs Rob Emerson recorded as a 3-round unanimous decision: commission_resolves",
+     "contestants without a canonical identity: Noah Thomas, Wayne Weems, Marlon Sims: does_not_touch"
+    ]
+   },
+   "bouts": [
+    {
+     "bout": "Cole Miller vs Allen Berube",
+     "weight_class": "Lightweight",
+     "stage": "elimination",
+     "stage_status": "unverified",
+     "episode": 1,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-01"
+     ],
+     "record_id": "nsac-2007-tuf5-01",
+     "canonical": {
+      "winner": "Cole Miller",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "2:33",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Cole Miller",
+      "winner_resolved_via": "surname",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "2:35",
+      "date": "2007-01-27",
+      "result_text": "Miller won by tap out 2:35 of the 1st round – triangle choke",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "ALLEN M. BERUBE",
+        155.5
+       ],
+       [
+        "JEREMIAH COLE MILLER",
+        155
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "539fc170-0d99-471c-b50f-79b9bff89334",
+      "e04eb41c-90f6-40fe-923f-0e105c949673"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:33",
+       "commission": "2:35"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-01-27"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "ALLEN M. BERUBE",
+         155.5
+        ],
+        [
+         "JEREMIAH COLE MILLER",
+         155
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Manny Gamburyan vs Noah Thomas",
+     "weight_class": "Lightweight",
+     "stage": "elimination",
+     "stage_status": "unverified",
+     "episode": 2,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-02"
+     ],
+     "record_id": "nsac-2007-tuf5-02",
+     "canonical": {
+      "winner": "Manny Gamburyan",
+      "method": "Submission (kimura)",
+      "round": 1,
+      "time": "2:09",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Manny Gamburyan",
+      "winner_resolved_via": "surname",
+      "method": "Submission (kimura)",
+      "round": 1,
+      "time": "2:10",
+      "date": "2007-01-30",
+      "result_text": "Gamburyan won by tap out 2:10 of the 1st round – Kimura.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "NOAH MARTIN THOMAS",
+        154.5
+       ],
+       [
+        "MANUEL GAMBURYAN",
+        156
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "729e5697-25f3-4adb-ad81-8bd466d40618",
+      null
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:09",
+       "commission": "2:10"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-01-30"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "NOAH MARTIN THOMAS",
+         154.5
+        ],
+        [
+         "MANUEL GAMBURYAN",
+         156
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Nate Diaz vs Rob Emerson",
+     "weight_class": "Lightweight",
+     "stage": "elimination",
+     "stage_status": "unverified",
+     "episode": 3,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-03"
+     ],
+     "record_id": "nsac-2007-tuf5-03",
+     "canonical": {
+      "winner": "Nate Diaz",
+      "method": "Submission (rear naked choke)",
+      "round": 2,
+      "time": "4:45",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Nate Diaz",
+      "winner_resolved_via": "surname",
+      "method": "Submission (rear naked choke)",
+      "round": 2,
+      "time": "4:46",
+      "date": "2007-02-02",
+      "result_text": "Diaz won by tap out 4:46 of the 2nd round – rear naked choke.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "ROBERT MICHAEL EMERSON",
+        156
+       ],
+       [
+        "NATHAN DONALD DIAZ",
+        156
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+      "ea654993-adbd-4dc0-a279-6691349a0bdb"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "4:45",
+       "commission": "4:46"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-02"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "ROBERT MICHAEL EMERSON",
+         156
+        ],
+        [
+         "NATHAN DONALD DIAZ",
+         156
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Brandon Melendez vs Andy Wang",
+     "weight_class": "Lightweight",
+     "stage": "elimination",
+     "stage_status": "unverified",
+     "episode": 4,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-04"
+     ],
+     "record_id": "nsac-2007-tuf5-04",
+     "canonical": {
+      "winner": "Brandon Melendez",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Brandon Melendez",
+      "winner_resolved_via": "surname",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "date": "2007-02-06",
+      "result_text": "Melendez won by unanimous decision.",
+      "referee": "John McCarthy",
+      "scorecards": {
+       "order": [
+        "Wang",
+        "Melendez"
+       ],
+       "cards": [
+        {
+         "judge": "Adalaide Byrd",
+         "score": "18-20"
+        },
+        {
+         "judge": "Glenn Trowbridge",
+         "score": "18-20"
+        },
+        {
+         "judge": "Lester Griffin",
+         "score": "18-20"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "ANDREW P. WANG",
+        155
+       ],
+       [
+        "BRANDON LOUIS MELENDEZ",
+        155.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "c1f849a0-829a-4313-84c9-8cb3e7091527",
+      "e4b7ec8f-8169-4d08-bce8-b5b6e6b81f5a"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-06"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Wang",
+         "Melendez"
+        ],
+        "cards": [
+         {
+          "judge": "Adalaide Byrd",
+          "score": "18-20"
+         },
+         {
+          "judge": "Glenn Trowbridge",
+          "score": "18-20"
+         },
+         {
+          "judge": "Lester Griffin",
+          "score": "18-20"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "ANDREW P. WANG",
+         155
+        ],
+        [
+         "BRANDON LOUIS MELENDEZ",
+         155.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Joe Lauzon vs Brian Geraghty",
+     "weight_class": "Lightweight",
+     "stage": "elimination",
+     "stage_status": "unverified",
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-06"
+     ],
+     "record_id": "nsac-2007-tuf5-06",
+     "canonical": {
+      "winner": "Joe Lauzon",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:13",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Joe Lauzon",
+      "winner_resolved_via": "surname",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:13",
+      "date": "2007-02-12",
+      "result_text": "Lauzon won by tap out 1:13 of the 1st round – rear naked choke.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "JOSEPH E. LAUZON, JR.",
+        155
+       ],
+       [
+        "BRIAN JOSEPH GERAGHTY",
+        154
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "49cfc17e-904a-49ac-8c81-1790f25873a6",
+      "3af95539-21d5-477d-90cf-4d3c6f5b47df"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-12"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "JOSEPH E. LAUZON, JR.",
+         155
+        ],
+        [
+         "BRIAN JOSEPH GERAGHTY",
+         154
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Corey Hill vs Rob Emerson",
+     "weight_class": "Lightweight",
+     "stage": "elimination",
+     "stage_status": "unverified",
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-05"
+     ],
+     "record_id": "nsac-2007-tuf5-05",
+     "canonical": {
+      "winner": "Corey Hill",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Corey Hill",
+      "winner_resolved_via": "surname",
+      "method": "Decision (unanimous, sudden victory round)",
+      "round": 3,
+      "time": null,
+      "date": "2007-02-12",
+      "result_text": "Hill won by unanimous decision in the sudden victory round.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "ROBERT MICHAEL EMERSON",
+        155
+       ],
+       [
+        "COREY CORNELIUS HILL",
+        155
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "96098c9a-4ef7-456b-ab39-378438d050b8",
+      "ea654993-adbd-4dc0-a279-6691349a0bdb"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "primary_normalization",
+       "canonical": "Decision (unanimous)",
+       "commission": "Decision (unanimous, sudden victory round)"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-12"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "ROBERT MICHAEL EMERSON",
+         155
+        ],
+        [
+         "COREY CORNELIUS HILL",
+         155
+        ]
+       ]
+      },
+      {
+       "field": "rounds_printed",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2 + Sudden Victory",
+       "note": "decided in the sudden victory round after two scheduled rounds"
+      }
+     ]
+    },
+    {
+     "bout": "Gray Maynard vs Wayne Weems",
+     "weight_class": "Lightweight",
+     "stage": "elimination",
+     "stage_status": "unverified",
+     "episode": 7,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-07"
+     ],
+     "record_id": "nsac-2007-tuf5-07",
+     "canonical": {
+      "winner": "Gray Maynard",
+      "method": "TKO (punches)",
+      "round": 1,
+      "time": "2:47",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Gray Maynard",
+      "winner_resolved_via": "surname",
+      "method": "TKO",
+      "round": 1,
+      "time": "2:48",
+      "date": "2007-02-15",
+      "result_text": "Maynard won by TKO 2:48 of the 1st round.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "BRADLEY GRAY MAYNARD",
+        156
+       ],
+       [
+        "WAYNE LEROY WEEMS",
+        155
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "537117ea-93e1-456b-96a2-3c48d8e600c9",
+      null
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "compatible_secondary_detail",
+       "canonical": "TKO (punches)",
+       "commission": "TKO",
+       "detail": "punches"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:47",
+       "commission": "2:48"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-15"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "BRADLEY GRAY MAYNARD",
+         156
+        ],
+        [
+         "WAYNE LEROY WEEMS",
+         155
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Matt Wiman vs Marlon Sims",
+     "weight_class": "Lightweight",
+     "stage": "elimination",
+     "stage_status": "unverified",
+     "episode": 7,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-08"
+     ],
+     "record_id": "nsac-2007-tuf5-08",
+     "canonical": {
+      "winner": "Matt Wiman",
+      "method": "Technical submission (rear naked choke)",
+      "round": 1,
+      "time": "0:52",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Matt Wiman",
+      "winner_resolved_via": "surname",
+      "method": "Technical submission (rear naked choke)",
+      "round": 1,
+      "time": "0:50",
+      "date": "2007-02-15",
+      "result_text": "Wiman won by choke out 0:50 of the 1st round. – rear naked choke.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "MATTHEW CHARLES WIMAN",
+        156
+       ],
+       [
+        "MARLON SIMS",
+        156
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "dea61de0-138a-4aac-9c52-68d4d421b66c",
+      null
+     ],
+     "discrepancies": [
+      {
+       "field": "method_reading",
+       "kind": "normalization_judgement",
+       "canonical": "Technical submission (rear naked choke)",
+       "commission": "Technical submission (rear naked choke)",
+       "printed": "choke out",
+       "note": "the record distinguishes \"choke out\" from its \"tap out\" wording elsewhere; read as a technical submission (rear naked choke), which is the archive's own category for this bout — a normalization judgement to confirm"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "0:52",
+       "commission": "0:50"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-15"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MATTHEW CHARLES WIMAN",
+         156
+        ],
+        [
+         "MARLON SIMS",
+         156
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Joe Lauzon vs Cole Miller",
+     "weight_class": "Lightweight",
+     "stage": "quarter_final",
+     "stage_status": "unverified",
+     "episode": 8,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-10"
+     ],
+     "record_id": "nsac-2007-tuf5-10",
+     "canonical": {
+      "winner": "Joe Lauzon",
+      "method": "TKO (strikes)",
+      "round": 2,
+      "time": "3:58",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Joe Lauzon",
+      "winner_resolved_via": "surname",
+      "method": "TKO",
+      "round": 2,
+      "time": "3:59",
+      "date": "2007-02-21",
+      "result_text": "Lauzon won by TKO 3:59 of the 2nd round.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "JOSEPH E. LAUZON, JR.",
+        155
+       ],
+       [
+        "JEREMIAH COLE MILLER",
+        155
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Quarter Finals"
+     },
+     "ids": [
+      "49cfc17e-904a-49ac-8c81-1790f25873a6",
+      "539fc170-0d99-471c-b50f-79b9bff89334"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "compatible_secondary_detail",
+       "canonical": "TKO (strikes)",
+       "commission": "TKO",
+       "detail": "strikes"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "3:58",
+       "commission": "3:59"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-21"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "JOSEPH E. LAUZON, JR.",
+         155
+        ],
+        [
+         "JEREMIAH COLE MILLER",
+         155
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Brandon Melendez vs Gray Maynard",
+     "weight_class": "Lightweight",
+     "stage": "quarter_final",
+     "stage_status": "unverified",
+     "episode": 9,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-09"
+     ],
+     "record_id": "nsac-2007-tuf5-09",
+     "canonical": {
+      "winner": "Brandon Melendez",
+      "method": "Submission (guillotine choke)",
+      "round": 2,
+      "time": "4:07",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Gray Maynard",
+      "winner_resolved_via": "surname",
+      "method": "Submission (guillotine choke)",
+      "round": 2,
+      "time": "4:07",
+      "date": "2007-02-21",
+      "result_text": "Maynard won by tap out 4:07 of the 2nd round – guillotine choke",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "BRADLEY GRAY MAYNARD",
+        155
+       ],
+       [
+        "BRANDON LOUIS MELENDEZ",
+        156
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Quarter Finals"
+     },
+     "ids": [
+      "c1f849a0-829a-4313-84c9-8cb3e7091527",
+      "537117ea-93e1-456b-96a2-3c48d8e600c9"
+     ],
+     "discrepancies": [
+      {
+       "field": "winner",
+       "kind": "true_contradiction",
+       "canonical": "Brandon Melendez",
+       "commission": "Gray Maynard"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-21"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "BRADLEY GRAY MAYNARD",
+         155
+        ],
+        [
+         "BRANDON LOUIS MELENDEZ",
+         156
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Nate Diaz vs Corey Hill",
+     "weight_class": "Lightweight",
+     "stage": "quarter_final",
+     "stage_status": "unverified",
+     "episode": 10,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-11"
+     ],
+     "record_id": "nsac-2007-tuf5-11",
+     "canonical": {
+      "winner": "Nate Diaz",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "3:02",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Nate Diaz",
+      "winner_resolved_via": "surname",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "3:03",
+      "date": "2007-02-22",
+      "result_text": "Diaz won by tap out 3:03 of the 1st round – triangle choke.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "NATHAN DONALD DIAZ",
+        156
+       ],
+       [
+        "COREY CORNELIUS HILL",
+        155
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Quarter Finals"
+     },
+     "ids": [
+      "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+      "96098c9a-4ef7-456b-ab39-378438d050b8"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "3:02",
+       "commission": "3:03"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-22"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "NATHAN DONALD DIAZ",
+         156
+        ],
+        [
+         "COREY CORNELIUS HILL",
+         155
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Manny Gamburyan vs Matt Wiman",
+     "weight_class": "Lightweight",
+     "stage": "quarter_final",
+     "stage_status": "unverified",
+     "episode": 10,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-12"
+     ],
+     "record_id": "nsac-2007-tuf5-12",
+     "canonical": {
+      "winner": "Manny Gamburyan",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Manny Gamburyan",
+      "winner_resolved_via": "surname",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "date": "2007-02-22",
+      "result_text": "Gamburyan won by unanimous decision.",
+      "referee": "Herb Dean",
+      "scorecards": {
+       "order": [
+        "Wiman",
+        "Gamburyan"
+       ],
+       "cards": [
+        {
+         "judge": "Adalaide Byrd",
+         "score": "18-20"
+        },
+        {
+         "judge": "Tony Weeks",
+         "score": "18-20"
+        },
+        {
+         "judge": "Cecil Peoples",
+         "score": "18-20"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "MATTHEW CHARLES WIMAN",
+        156
+       ],
+       [
+        "MANUEL GAMBURYAN",
+        155
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Quarter Finals"
+     },
+     "ids": [
+      "729e5697-25f3-4adb-ad81-8bd466d40618",
+      "dea61de0-138a-4aac-9c52-68d4d421b66c"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-22"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Wiman",
+         "Gamburyan"
+        ],
+        "cards": [
+         {
+          "judge": "Adalaide Byrd",
+          "score": "18-20"
+         },
+         {
+          "judge": "Tony Weeks",
+          "score": "18-20"
+         },
+         {
+          "judge": "Cecil Peoples",
+          "score": "18-20"
+         }
+        ]
+       },
+       "printed": "18-20 18-2018-20"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MATTHEW CHARLES WIMAN",
+         156
+        ],
+        [
+         "MANUEL GAMBURYAN",
+         155
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Manny Gamburyan vs Joe Lauzon",
+     "weight_class": "Lightweight",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 11,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-13"
+     ],
+     "record_id": "nsac-2007-tuf5-13",
+     "canonical": {
+      "winner": "Manny Gamburyan",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Manny Gamburyan",
+      "winner_resolved_via": "surname",
+      "method": "Decision (unanimous)",
+      "round": 3,
+      "time": null,
+      "date": "2007-02-28",
+      "result_text": "Gamburyan won by unanimous decision.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "JOSEPH E. LAUZON, JR.",
+        156
+       ],
+       [
+        "MANUEL GAMBURYAN",
+        155
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "SEMI-FINAL BOUT"
+     },
+     "ids": [
+      "729e5697-25f3-4adb-ad81-8bd466d40618",
+      "49cfc17e-904a-49ac-8c81-1790f25873a6"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-28"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "JOSEPH E. LAUZON, JR.",
+         156
+        ],
+        [
+         "MANUEL GAMBURYAN",
+         155
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Nate Diaz vs Gray Maynard",
+     "weight_class": "Lightweight",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 12,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf5-14"
+     ],
+     "record_id": "nsac-2007-tuf5-14",
+     "canonical": {
+      "winner": "Nate Diaz",
+      "method": "Submission (guillotine choke)",
+      "round": 2,
+      "time": "1:17",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Nate Diaz",
+      "winner_resolved_via": "surname",
+      "method": "Submission (guillotine choke)",
+      "round": 2,
+      "time": "1:20",
+      "date": "2007-02-28",
+      "result_text": "Diaz won by tap out 1:20 of the 2nd round – Guillotine choke",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "BRADLEY GRAY MAYNARD",
+        156
+       ],
+       [
+        "NATHAN DONALD DIAZ",
+        155
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "SEMI-FINAL BOUT"
+     },
+     "ids": [
+      "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+      "537117ea-93e1-456b-96a2-3c48d8e600c9"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "1:17",
+       "commission": "1:20"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-02-28"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "BRADLEY GRAY MAYNARD",
+         156
+        ],
+        [
+         "NATHAN DONALD DIAZ",
+         155
+        ]
+       ]
+      }
+     ]
+    }
+   ],
+   "dates_of_birth": [
+    {
+     "fighter": "Cole Miller",
+     "printed_name": "JEREMIAH COLE MILLER",
+     "printed": "1984-04-26",
+     "canonical": "1984-04-26",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Allen Berube",
+     "printed_name": "ALLEN M. BERUBE",
+     "printed": "1974-08-25",
+     "canonical": "1974-08-25",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Manny Gamburyan",
+     "printed_name": "MANUEL GAMBURYAN",
+     "printed": "1981-05-08",
+     "canonical": "1981-05-08",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Noah Thomas",
+     "printed_name": "NOAH MARTIN THOMAS",
+     "printed": "1981-03-27",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    },
+    {
+     "fighter": "Nate Diaz",
+     "printed_name": "NATHAN DONALD DIAZ",
+     "printed": "1985-04-16",
+     "canonical": "1985-04-16",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Rob Emerson",
+     "printed_name": "ROBERT MICHAEL EMERSON",
+     "printed": "1981-07-30",
+     "canonical": "1981-07-30",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Brandon Melendez",
+     "printed_name": "BRANDON LOUIS MELENDEZ",
+     "printed": "1983-03-24",
+     "canonical": "1983-03-24",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Andy Wang",
+     "printed_name": "ANDREW P. WANG",
+     "printed": "1977-05-28",
+     "canonical": "1977-05-28",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Joe Lauzon",
+     "printed_name": "JOSEPH E. LAUZON, JR.",
+     "printed": "1984-05-22",
+     "canonical": "1984-05-22",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Brian Geraghty",
+     "printed_name": "BRIAN JOSEPH GERAGHTY",
+     "printed": "1980-11-04",
+     "canonical": "1980-11-04",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Corey Hill",
+     "printed_name": "COREY CORNELIUS HILL",
+     "printed": "1978-10-03",
+     "canonical": "1978-10-03",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Gray Maynard",
+     "printed_name": "BRADLEY GRAY MAYNARD",
+     "printed": "1979-05-09",
+     "canonical": "1979-05-09",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Wayne Weems",
+     "printed_name": "WAYNE LEROY WEEMS",
+     "printed": "1982-06-23",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    },
+    {
+     "fighter": "Matt Wiman",
+     "printed_name": "MATTHEW CHARLES WIMAN",
+     "printed": "1983-09-19",
+     "canonical": "1983-09-19",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Marlon Sims",
+     "printed_name": "MARLON SIMS",
+     "printed": "1974-01-18",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    }
+   ],
+   "names": [
+    {
+     "fighter": "Cole Miller",
+     "printed_name": "JEREMIAH COLE MILLER",
+     "canonical_name": "Cole Miller",
+     "kinds": [
+      "printed_first_initial_differs (weights use the printed-name fallback)"
+     ]
+    },
+    {
+     "fighter": "Allen Berube",
+     "printed_name": "ALLEN M. BERUBE",
+     "canonical_name": "Allen Berube",
+     "kinds": []
+    },
+    {
+     "fighter": "Manny Gamburyan",
+     "printed_name": "MANUEL GAMBURYAN",
+     "canonical_name": "Manvel Gamburyan",
+     "kinds": [
+      "canonical_name_differs_from_archive"
+     ]
+    },
+    {
+     "fighter": "Noah Thomas",
+     "printed_name": "NOAH MARTIN THOMAS",
+     "canonical_name": null,
+     "kinds": []
+    },
+    {
+     "fighter": "Nate Diaz",
+     "printed_name": "NATHAN DONALD DIAZ",
+     "canonical_name": "Nate Diaz",
+     "kinds": []
+    },
+    {
+     "fighter": "Rob Emerson",
+     "printed_name": "ROBERT MICHAEL EMERSON",
+     "canonical_name": "Rob Emerson",
+     "kinds": []
+    },
+    {
+     "fighter": "Brandon Melendez",
+     "printed_name": "BRANDON LOUIS MELENDEZ",
+     "canonical_name": "Brandon Melendez",
+     "kinds": []
+    },
+    {
+     "fighter": "Andy Wang",
+     "printed_name": "ANDREW P. WANG",
+     "canonical_name": "Andy Wang",
+     "kinds": []
+    },
+    {
+     "fighter": "Joe Lauzon",
+     "printed_name": "JOSEPH E. LAUZON, JR.",
+     "canonical_name": "Joe Lauzon",
+     "kinds": []
+    },
+    {
+     "fighter": "Brian Geraghty",
+     "printed_name": "BRIAN JOSEPH GERAGHTY",
+     "canonical_name": "Brian Geraghty",
+     "kinds": []
+    },
+    {
+     "fighter": "Corey Hill",
+     "printed_name": "COREY CORNELIUS HILL",
+     "canonical_name": "Corey Hill",
+     "kinds": []
+    },
+    {
+     "fighter": "Gray Maynard",
+     "printed_name": "BRADLEY GRAY MAYNARD",
+     "canonical_name": "Gray Maynard",
+     "kinds": [
+      "printed_first_initial_differs (weights use the printed-name fallback)"
+     ]
+    },
+    {
+     "fighter": "Wayne Weems",
+     "printed_name": "WAYNE LEROY WEEMS",
+     "canonical_name": null,
+     "kinds": []
+    },
+    {
+     "fighter": "Matt Wiman",
+     "printed_name": "MATTHEW CHARLES WIMAN",
+     "canonical_name": "Matt Wiman",
+     "kinds": []
+    },
+    {
+     "fighter": "Marlon Sims",
+     "printed_name": "MARLON SIMS",
+     "canonical_name": null,
+     "kinds": []
+    }
+   ],
+   "conflicts": [
+    {
+     "field": "quarter_finals",
+     "detail": "The source has Brandon Melendez beating Gray Maynard in the quarter-finals and then has Maynard losing to Nate Diaz in the semi-finals. Maynard cannot be eliminated in one round and appear in the next. Both bouts are recorded as the source gives them and the round is marked unverified, rather than dropping one to make the bracket tidy.",
+     "verdict": "commission_resolves",
+     "commission_facts": [
+      "nsac-2007-tuf5-09 (2007-02-21, \"Quarter Finals\"): \"Maynard won by tap out 4:07 of the 2nd round – guillotine choke\" — Gray Maynard beat Brandon Melendez.",
+      "nsac-2007-tuf5-14 (2007-02-28, \"SEMI-FINAL BOUT\"): Maynard then lost to Diaz."
+     ],
+     "resolves": "The archive's quarter-final winner (Melendez) is contradicted by the primary record: Maynard won the quarter-final, which is why he appears in the semi-final. Method, round and time agree (guillotine choke, R2, 4:07); only the winner was inverted.",
+     "recommendation": "On approval: winner corrected to Gray Maynard as a commission_correction, and the conflict can close with the commission record as its resolution. Not applied in this audit."
+    },
+    {
+     "field": "early_rounds",
+     "detail": "The source labels the opening bouts as an elimination round plus 'Round 2', 'Round 3' and 'Round 4' across episodes 1-7, which does not map cleanly onto a sixteen-fighter bracket. They are recorded together as the opening rounds in the order given, without being renamed into stages the source does not claim.",
+     "verdict": "partially_informs",
+     "commission_facts": [
+      "The record lists eight bouts 2007-01-27..2007-02-15 with no stage label, each scheduled for 2 rounds, before four bouts headed \"Quarter Finals\" (2007-02-21/22) and two headed \"SEMI-FINAL BOUT\" (2007-02-28).",
+      "The eight winners (Miller, Gamburyan, Diaz, Melendez, Hill, Lauzon, Maynard, Wiman) are exactly the eight quarter-finalists."
+     ],
+     "does_not_settle": "The record prints no name for the opening stage, and states nothing about the source's \"Round 2/3/4\" numbering or Rob Emerson's reinstatement (it only records that Emerson fought twice).",
+     "recommendation": "Keep open unless the owner accepts the record's shape as enough to name the stage; the stage label stays as is."
+    },
+    {
+     "field": "final_method_and_opponent_name",
+     "detail": "Our own records and the season source describe the same bout differently. Both agree on round 2 at twenty seconds and on Nate Diaz winning. The source calls it a TKO from a shoulder injury; UFC Stats records it as a submission. And the opponent is 'Manny Gamburyan' in the source and 'Manvel Gamburyan' in ufc_fighters — the same man under two spellings. Both readings are kept; neither is corrected into the other.",
+     "verdict": "does_not_touch",
+     "note": "The final was on the professional finale card and is not in the house-bout record. The record prints Gamburyan as \"MANUEL GAMBURYAN\" — a third rendering, recorded as a name disagreement only."
+    },
+    {
+     "field": "gamburyan_name",
+     "detail": "The season source calls him Manny Gamburyan; our fighter roster and ufcstats call him Manvel Gamburyan. One man, two spellings — the archive keeps the source’s and records the roster’s alongside it, so a lookup on either resolves. Found because the classification check reported the final as unverifiable when the bout was in our records all along.",
+     "verdict": "does_not_touch",
+     "note": "The record prints \"MANUEL GAMBURYAN\" (the archive has Manny, ufc_fighters has Manvel). A commission printed legal-name rendering does not decide the archive's display spelling; recorded as a name disagreement, no alias or identity write."
+    },
+    {
+     "field": "final_method_wording",
+     "detail": "Our result row records the final as a submission; the season source records a TKO on a shoulder injury. Both describe the same bout on the same card — Gamburyan’s shoulder dislocated and the fight ended there — so this is two descriptions of one finish, not two fights. Recorded rather than reconciled, because neither source is wrong about what happened.",
+     "verdict": "does_not_touch",
+     "note": "Finale-card bout; not in the house-bout record."
+    }
+   ],
+   "structure": [
+    {
+     "item": "stage status \"unverified\" on elimination and quarter_final",
+     "verdict": "partially_informs",
+     "detail": "The record confirms all 12 bouts in those stages (8 unlabeled + 4 \"Quarter Finals\") and resolves the quarter-final inversion; stage statuses are not changed by this audit."
+    },
+    {
+     "item": "Rob Emerson fights twice in the opening round (bout carries a \"replacement\" note)",
+     "verdict": "partially_informs",
+     "detail": "The record lists both bouts (nsac-2007-tuf5-03 vs Diaz 2007-02-02, nsac-2007-tuf5-05 vs Hill 2007-02-12). It states no reinstatement or replacement; the replacement note stays sourced to the draft."
+    },
+    {
+     "item": "Gabe Ruediger on the Team Penn roster with no bout",
+     "verdict": "does_not_touch",
+     "detail": "No Ruediger bout is in the record, which is consistent with the roster note (expelled for missing weight) but states nothing about it."
+    },
+    {
+     "item": "Corey Hill vs Rob Emerson recorded as a 3-round unanimous decision",
+     "verdict": "commission_resolves",
+     "detail": "nsac-2007-tuf5-05: \"Hill won by unanimous decision in the sudden victory round.\" Rds \"2 + Sudden Victory\" — the TUF 4 sudden-victory shape (round 3, scheduled_rounds 2)."
+    },
+    {
+     "item": "contestants without a canonical identity: Noah Thomas, Wayne Weems, Marlon Sims",
+     "verdict": "does_not_touch",
+     "detail": "Printed legal names and DOBs are reported for review; no identity write."
+    }
+   ]
+  },
+  "tuf-6": {
+   "document": {
+    "id": "nsac-2007-tuf-season-6",
+    "source_family": "athletic_commission",
+    "source_type": "commission_result_record",
+    "commission": "Nevada State Athletic Commission",
+    "jurisdiction": "Nevada",
+    "document": "Mixed Martial Arts Results — Season 6, The Ultimate Fighter",
+    "seasons": [
+     "tuf-6"
+    ],
+    "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+    "archive_url": "https://web.archive.org/web/20161213143128/http://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+    "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+    "bytes": 58230,
+    "pages": 3,
+    "retrieved": "2026-09-13",
+    "live": {
+     "http": 200,
+     "content_type": "application/pdf",
+     "last_modified": "Wed, 06 Feb 2013 18:18:59 GMT"
+    },
+    "archive": {
+     "http": 200,
+     "content_type": "application/pdf",
+     "bytes": 58230,
+     "fetched_as": "id_ (raw capture)"
+    },
+    "live_matches_archive": true,
+    "pdf_metadata": {
+     "title": "STATE OF NEVADA",
+     "author": "Athletic Commission",
+     "created": "2007-12-14"
+    },
+    "title_quote": "MIXED MARTIAL ARTS RESULTS",
+    "classification_language": {
+     "quote": "Exhibition Results",
+     "where": "results column header, page 1; pages 2 and 3 continue the same table (page 2 headed \"Results\", page 3 under \"SEMI-FINAL BOUT\") — the applied TUF 2 pattern"
+    },
+    "season_identity": {
+     "printed": true,
+     "basis": "Printed in the document header: \"SEASON 6 – THE ULTIMATE FIGHTER™\". Consistent with the file name TUFSEASON6.pdf (2007_Results), location \"UFC Training Center, Las Vegas\", show dates 2007-06-11..2007-07-15 and 14/14 pairings."
+    },
+    "location": "UFC Training Center, Las Vegas",
+    "promoter": "Zuffa, LLC",
+    "executive_director": "Keith Kizer",
+    "officials": {
+     "referees": [
+      "Steve Mazzagatti"
+     ],
+     "visiting_referees": [
+      "Herb Dean",
+      "John McCarthy"
+     ],
+     "judges": [
+      "Adalaide Byrd",
+      "Patricia Morse Jarman",
+      "Glenn Trowbridge",
+      "Tony Weeks"
+     ],
+     "visiting_judges": [
+      "Lester Griffin",
+      "Nelson Hamilton",
+      "Cecil Peoples",
+      "Marcos Rosales"
+     ],
+     "timekeepers": [
+      "James Cavin",
+      "Steve Esposito",
+      "Ernie Jauregui",
+      "Mike LaCella"
+     ],
+     "ringside_doctors": [
+      "William Berliner",
+      "Al Capanna",
+      "Jeff Davidson",
+      "James Game",
+      "Anthony Ruggeroli",
+      "David Watson"
+     ]
+    },
+    "remarks_note": "The Remarks column carries the \"Referee:\" line for all 14 bouts; one bout (Speer vs Sotiropoulos, semi-final) also carries a suspension remark.",
+    "printed_notes": [
+     {
+      "page": 3,
+      "where": "bold line above the semi-final table, outside any record row",
+      "quote": "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him.",
+      "fighters": [
+       "Matt Arroyo",
+       "John Kolosci"
+      ]
+     }
+    ]
+   },
+   "local_pdf_check": {
+    "live": {
+     "bytes": 58230,
+     "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd"
+    },
+    "archive": {
+     "bytes": 58230,
+     "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd"
+    },
+    "matches": true
+   },
+   "records": [
+    {
+     "id": "nsac-2007-tuf6-01",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-06-11",
+     "date_printed": "0611/07",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "MAC DANZIG",
+       "hometown": "Los Angels, CA",
+       "dob": "1980-01-02",
+       "weight_lbs": 170
+      },
+      {
+       "printed": "JOSEPH WILLIAM SCAROLA",
+       "hometown": "East Meadow, NY",
+       "dob": "1979-03-12",
+       "weight_lbs": 169
+      }
+     ],
+     "winner_surname": "Danzig",
+     "result_text": "Danzig won by tap out 4:55 of the 1st round – triangle choke.",
+     "method": "Submission (triangle choke)",
+     "round": 1,
+     "time": "4:55",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "round_of_16",
+      "a": "Mac Danzig",
+      "b": "Joe Scarola"
+     },
+     "winner": "Mac Danzig"
+    },
+    {
+     "id": "nsac-2007-tuf6-02",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-06-14",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "DORIAN PRICE",
+       "hometown": "Columbus, OH",
+       "dob": "1977-08-20",
+       "weight_lbs": 170
+      },
+      {
+       "printed": "MATTHEW VINCENT ARROYO",
+       "hometown": "Tampa, FL",
+       "dob": "1982-09-01",
+       "weight_lbs": 168
+      }
+     ],
+     "winner_surname": "Arroyo",
+     "result_text": "Arroyo won by tap out 1:48 of the 1st round – rear naked choke.",
+     "method": "Submission (rear naked choke)",
+     "round": 1,
+     "time": "1:48",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "round_of_16",
+      "a": "Dorian Price",
+      "b": "Matt Arroyo"
+     },
+     "winner": "Matt Arroyo"
+    },
+    {
+     "id": "nsac-2007-tuf6-03",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-06-18",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "WILLIAM SCOT MILES",
+       "hometown": "Loomis. CA",
+       "dob": "1978-04-28",
+       "weight_lbs": 171
+      },
+      {
+       "printed": "JOHN MICHAEL KOLOSCI",
+       "hometown": "Portage, IN",
+       "dob": "1974-11-26",
+       "weight_lbs": 169.5
+      }
+     ],
+     "winner_surname": "Kolosci",
+     "result_text": "Kolosci won by tap out 2:58 of the 1st round – guillotine choke.",
+     "method": "Submission (guillotine choke)",
+     "round": 1,
+     "time": "2:58",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "round_of_16",
+      "a": "Billy Miles",
+      "b": "John Kolosci"
+     },
+     "winner": "John Kolosci"
+    },
+    {
+     "id": "nsac-2007-tuf6-04",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-06-21",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "BLAKE R. BOWMAN",
+       "hometown": "Carrollton, GA",
+       "dob": "1981-06-20",
+       "weight_lbs": 170
+      },
+      {
+       "printed": "RICHIE JAMES HIGHTOWER",
+       "hometown": "Phoenix, AZ",
+       "dob": "1981-11-24",
+       "weight_lbs": 170
+      }
+     ],
+     "winner_surname": "Hightower",
+     "result_text": "Hightower won by TKO 0:50 of the 1st round.",
+     "method": "TKO",
+     "round": 1,
+     "time": "0:50",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "round_of_16",
+      "a": "Blake Bowman",
+      "b": "Richie Hightower"
+     },
+     "winner": "Richie Hightower"
+    },
+    {
+     "id": "nsac-2007-tuf6-05",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-06-26",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "PAUL KARA GEORGIEFF",
+       "hometown": "Madison, WI",
+       "dob": "1982-09-22",
+       "weight_lbs": 170
+      },
+      {
+       "printed": "TROY HISASHI MANDALONIZ",
+       "hometown": "Henderson, NV",
+       "dob": "1980-02-01",
+       "weight_lbs": 168
+      }
+     ],
+     "winner_surname": "Mandaloniz",
+     "result_text": "Mandaloniz won by TKO 2:40 of the 1st round.",
+     "method": "TKO",
+     "round": 1,
+     "time": "2:40",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "round_of_16",
+      "a": "Paul Georgieff",
+      "b": "Troy Mandaloniz"
+     },
+     "winner": "Troy Mandaloniz"
+    },
+    {
+     "id": "nsac-2007-tuf6-06",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-06-26",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "DANIEL L. BARRERA",
+       "hometown": "Radcliff, KY",
+       "dob": "1980-12-23",
+       "weight_lbs": 171
+      },
+      {
+       "printed": "BENJAMIN SAUNDERS",
+       "hometown": "Orlando, FL",
+       "dob": "1983-04-13",
+       "weight_lbs": 170
+      }
+     ],
+     "winner_surname": "Saunders",
+     "result_text": "Saunders won by majority decision.",
+     "method": "Decision (majority)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Barrera",
+       "Saunders"
+      ],
+      "cards": [
+       {
+        "judge": "Adalaide Byrd",
+        "score": "18-20"
+       },
+       {
+        "judge": "Lester Griffin",
+        "score": "18-20"
+       },
+       {
+        "judge": "Cecil Peoples",
+        "score": "19-19"
+       }
+      ]
+     },
+     "referee": "Herb Dean",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "round_of_16",
+      "a": "Dan Barrera",
+      "b": "Ben Saunders"
+     },
+     "winner": "Ben Saunders"
+    },
+    {
+     "id": "nsac-2007-tuf6-07",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-06-29",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "JARED MICHAEL ROLLINS",
+       "hometown": "Stanton, CA",
+       "dob": "1977-01-26",
+       "weight_lbs": 171
+      },
+      {
+       "printed": "GEORGE SOTIROPOULOS",
+       "hometown": "Bell Post Hill, Victoria, Australia",
+       "dob": "1977-07-09",
+       "weight_lbs": 168.5
+      }
+     ],
+     "winner_surname": "Sotriopoulos",
+     "result_text": "Sotriopoulos won by TKO 3:50 of the 1st round.",
+     "method": "TKO",
+     "round": 1,
+     "time": "3:50",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "round_of_16",
+      "a": "Jared Rollins",
+      "b": "George Sotiropoulos"
+     },
+     "winner": "George Sotiropoulos"
+    },
+    {
+     "id": "nsac-2007-tuf6-08",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-06-29",
+     "stage_label": null,
+     "corners": [
+      {
+       "printed": "THOMAS CHARLES SPEER",
+       "hometown": "Elgin, MN",
+       "dob": "1984-08-20",
+       "weight_lbs": 171
+      },
+      {
+       "printed": "JONATHON PAUL KOPPENHAVER",
+       "hometown": "Chula Vista, CA",
+       "dob": "1981-11-30",
+       "weight_lbs": 169.5
+      }
+     ],
+     "winner_surname": "Speer",
+     "result_text": "Speer won by unanimous decision",
+     "method": "Decision (unanimous)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Speer",
+       "Koppenhaver"
+      ],
+      "cards": [
+       {
+        "judge": "Adalaide Byrd",
+        "score": "20-18"
+       },
+       {
+        "judge": "Patricia Morse Jarman",
+        "score": "20-18"
+       },
+       {
+        "judge": "Cecil Peoples",
+        "score": "20-18"
+       }
+      ]
+     },
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": null,
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "round_of_16",
+      "a": "Tom Speer",
+      "b": "Jon Koppenhaver"
+     },
+     "winner": "Tom Speer"
+    },
+    {
+     "id": "nsac-2007-tuf6-09",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-07-03",
+     "stage_label": "Quarter Finals",
+     "corners": [
+      {
+       "printed": "MAC DANZIG",
+       "hometown": "Los Angels, CA",
+       "dob": "1980-01-02",
+       "weight_lbs": 169
+      },
+      {
+       "printed": "JOHN MICHAEL KOLOSCI",
+       "hometown": "Portage, IN",
+       "dob": "1974-11-26",
+       "weight_lbs": 170
+      }
+     ],
+     "winner_surname": "Danzig",
+     "result_text": "Danzig won by tap out 3:57 of the 1st round – rear naked choke.",
+     "method": "Submission (rear naked choke)",
+     "round": 1,
+     "time": "3:57",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": null,
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "quarter_final",
+      "a": "Mac Danzig",
+      "b": "John Kolosci"
+     },
+     "winner": "Mac Danzig"
+    },
+    {
+     "id": "nsac-2007-tuf6-10",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-07-05",
+     "stage_label": "Quarter Finals",
+     "corners": [
+      {
+       "printed": "MATTHEW VINCENT ARROYO",
+       "hometown": "Tampa, FL",
+       "dob": "1982-09-01",
+       "weight_lbs": 170
+      },
+      {
+       "printed": "TROY HISASHI MANDALONIZ",
+       "hometown": "Henderson, NV",
+       "dob": "1980-02-01",
+       "weight_lbs": 170.5
+      }
+     ],
+     "winner_surname": "Arroyo",
+     "result_text": "Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.",
+     "method": "Submission (armbar)",
+     "round": 1,
+     "time": "1:07",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "reading": {
+      "printed": "verbal tap out … – arm bar",
+      "read_as": "Submission (armbar)",
+      "note": "\"verbal\" is kept in result_text only; the archive has no category for a verbal submission — a normalization judgement to confirm"
+     },
+     "weight_class": null,
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "quarter_final",
+      "a": "Matt Arroyo",
+      "b": "Troy Mandaloniz"
+     },
+     "winner": "Matt Arroyo"
+    },
+    {
+     "id": "nsac-2007-tuf6-11",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-07-05",
+     "stage_label": "Quarter Finals",
+     "corners": [
+      {
+       "printed": "RICHIE JAMES HIGHTOWER",
+       "hometown": "Phoenix, AZ",
+       "dob": "1981-11-24",
+       "weight_lbs": 171
+      },
+      {
+       "printed": "GEORGE SOTIROPOULOS",
+       "hometown": "Bell Post Hill, Victoria, Australia",
+       "dob": "1977-07-09",
+       "weight_lbs": 168
+      }
+     ],
+     "winner_surname": "Sotiropoulos",
+     "result_text": "Sotiropoulos won by tap out 4:10 of the 1st round – kumara.",
+     "method": "Submission (kimura)",
+     "round": 1,
+     "time": "4:10",
+     "scheduled_rounds": 2,
+     "scorecards": null,
+     "referee": "Herb Dean",
+     "reading": {
+      "printed": "kumara",
+      "read_as": "kimura",
+      "note": "misspelling of the kimura lock; print defect"
+     },
+     "weight_class": null,
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "quarter_final",
+      "a": "Richie Hightower",
+      "b": "George Sotiropoulos"
+     },
+     "winner": "George Sotiropoulos"
+    },
+    {
+     "id": "nsac-2007-tuf6-12",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-07-09",
+     "stage_label": "Quarter Finals",
+     "corners": [
+      {
+       "printed": "THOMAS CHARLES SPEER",
+       "hometown": "Elgin, MN",
+       "dob": "1984-08-20",
+       "weight_lbs": 171
+      },
+      {
+       "printed": "BENJAMIN SAUNDERS",
+       "hometown": "Orlando, FL",
+       "dob": "1983-04-13",
+       "weight_lbs": 170
+      }
+     ],
+     "winner_surname": "Speer",
+     "result_text": "Speer won by majority decision.",
+     "method": "Decision (majority)",
+     "round": 2,
+     "time": null,
+     "scheduled_rounds": 2,
+     "scorecards": {
+      "order": [
+       "Speer",
+       "Saunders"
+      ],
+      "cards": [
+       {
+        "judge": "Patricia Morse Jarman",
+        "score": "20-18"
+       },
+       {
+        "judge": "Glenn Trowbridge",
+        "score": "19-19"
+       },
+       {
+        "judge": "Lester Griffin",
+        "score": "20-18"
+       }
+      ]
+     },
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": "quarter_final",
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "quarter_final",
+      "a": "Tom Speer",
+      "b": "Ben Saunders"
+     },
+     "winner": "Tom Speer"
+    },
+    {
+     "id": "nsac-2007-tuf6-13",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [],
+     "date": "2007-07-15",
+     "stage_label": "SEMI-FINAL BOUT",
+     "corners": [
+      {
+       "printed": "MAC DANZIG",
+       "hometown": "Los Angels, CA",
+       "dob": "1980-01-02",
+       "weight_lbs": 169.5
+      },
+      {
+       "printed": "JOHN MICHAEL KOLOSCI",
+       "hometown": "Portage, IN",
+       "dob": "1974-11-26",
+       "weight_lbs": 170
+      }
+     ],
+     "winner_surname": "Danzig",
+     "result_text": "Danzig won by tap out 4:29 of the 1st round – rear naked choke.",
+     "method": "Submission (rear naked choke)",
+     "round": 1,
+     "time": "4:29",
+     "scheduled_rounds": 3,
+     "scorecards": null,
+     "referee": "Steve Mazzagatti",
+     "weight_class": null,
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "semi_final",
+      "a": "Mac Danzig",
+      "b": "John Kolosci"
+     },
+     "winner": "Mac Danzig"
+    },
+    {
+     "id": "nsac-2007-tuf6-14",
+     "document_id": "nsac-2007-tuf-season-6",
+     "remarks": [
+      {
+       "fighter": "George Sotiropoulos",
+       "quote": "Suspend Sotiropoulos until 09/14/07"
+      },
+      {
+       "fighter": "George Sotiropoulos",
+       "quote": "No contact until 08/30/07"
+      }
+     ],
+     "date": "2007-07-15",
+     "stage_label": "SEMI-FINAL BOUT",
+     "corners": [
+      {
+       "printed": "THOMAS CHARLES SPEER",
+       "hometown": "Elgin, MN",
+       "dob": "1984-08-20",
+       "weight_lbs": 171
+      },
+      {
+       "printed": "GEORGE SOTIROPOULOS",
+       "hometown": "Bell Post Hill, Victoria, Australia",
+       "dob": "1977-07-09",
+       "weight_lbs": 170
+      }
+     ],
+     "winner_surname": "Speer",
+     "result_text": "Speer won by TKO 2:59 of the 1st round.",
+     "method": "TKO",
+     "round": 1,
+     "time": "2:59",
+     "scheduled_rounds": 3,
+     "scorecards": null,
+     "referee": "John McCarthy",
+     "weight_class": null,
+     "stage": "semi_final",
+     "bout": {
+      "weight_class": "Tournament",
+      "stage": "semi_final",
+      "a": "Tom Speer",
+      "b": "George Sotiropoulos"
+     },
+     "winner": "Tom Speer"
+    }
+   ],
+   "summary": {
+    "house_bouts_expected": 14,
+    "house_bouts_in_archive": 14,
+    "records_in_document": 14,
+    "matched": 14,
+    "unmatched": 0,
+    "ambiguous": 0,
+    "duplicate_use": [],
+    "unused_records": [],
+    "match_rules": {
+     "weight_class": "document prints none; season bracket has 1 weight class (Tournament)",
+     "unlabeled_records": 8,
+     "labeled_stages": [
+      "quarter_final",
+      "semi_final"
+     ]
+    },
+    "differences": {
+     "winner": 0,
+     "winner_print_defects": 1,
+     "method": 7,
+     "round": 0,
+     "time_contradictions": 9,
+     "time_source_only": 1
+    },
+    "method_kinds": {
+     "true_contradiction": [
+      "Paul Georgieff vs Troy Mandaloniz",
+      "Tom Speer vs Ben Saunders",
+      "Tom Speer vs George Sotiropoulos"
+     ],
+     "primary_normalization": [
+      "Tom Speer vs Jon Koppenhaver",
+      "Matt Arroyo vs Troy Mandaloniz"
+     ],
+     "compatible_secondary_detail": [
+      "Blake Bowman vs Richie Hightower",
+      "Jared Rollins vs George Sotiropoulos"
+     ],
+     "source_only_new_fact": []
+    },
+    "method_readings": [
+     "Matt Arroyo vs Troy Mandaloniz: printed \"verbal tap out … – arm bar\" → Submission (armbar) (normalization_judgement)",
+     "Richie Hightower vs George Sotiropoulos: printed \"kumara\" → Submission (kimura) (print_date_defect)"
+    ],
+    "print_date_defects": [
+     "Mac Danzig vs Joe Scarola: date_printed printed \"0611/07\"",
+     "Jared Rollins vs George Sotiropoulos: winner_printed_name printed \"Sotriopoulos\"",
+     "Richie Hightower vs George Sotiropoulos: method_reading printed \"kumara\""
+    ],
+    "fight_dates": 14,
+    "referees": 14,
+    "scorecards": 3,
+    "decisions": 3,
+    "decisions_without_cards": [],
+    "weights": 28,
+    "remarks": 2,
+    "printed_document_notes": 1,
+    "dob": {
+     "agrees": 12,
+     "disagreements": [
+      "Richie Hightower: printed 1981-11-24, canonical 1974-11-26"
+     ],
+     "no_canonical_identity": [
+      "Joe Scarola: printed 1979-03-12",
+      "Blake Bowman: printed 1981-06-20",
+      "Jon Koppenhaver: printed 1981-11-30"
+     ]
+    },
+    "name_disagreements": [
+     "Billy Miles: printed WILLIAM SCOT MILES, canonical Billy Miles [printed_first_initial_differs (weights use the printed-name fallback)]",
+     "Tom Speer: printed THOMAS CHARLES SPEER, canonical Tommy Speer [canonical_name_differs_from_archive]"
+    ],
+    "printed_winner_name_defects": [
+     "George Sotiropoulos: result line prints \"Sotriopoulos\" (Jared Rollins vs George Sotiropoulos)"
+    ],
+    "classification_wording": "Exhibition Results",
+    "classification_primary_possible": true,
+    "fight_dates_follow_episode_order": true,
+    "open_conflicts": [],
+    "structure": [
+     "format_exceptions: Kolosci replaces the injured Arroyo in the semi-finals (episode 6): commission_resolves",
+     "format_exceptions: Jon Koppenhaver replaces Mitichyan (episode 1): does_not_touch",
+     "quarter-final Mac Danzig vs John Kolosci carries the semi-final's values: commission_resolves",
+     "quarter-final Matt Arroyo vs Troy Mandaloniz: classification unverified, no time, no episode: partially_informs",
+     "weight class labelled \"Tournament\": does_not_touch",
+     "ROSTER_MISSING (no teams loaded): does_not_touch",
+     "contestants without a canonical identity: Joe Scarola, Blake Bowman, Jon Koppenhaver: does_not_touch",
+     "nine title-only episode shells; many house bouts placed in episode 6: does_not_touch"
+    ]
+   },
+   "bouts": [
+    {
+     "bout": "Mac Danzig vs Joe Scarola",
+     "weight_class": "Tournament",
+     "stage": "round_of_16",
+     "stage_status": null,
+     "episode": 1,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-01"
+     ],
+     "record_id": "nsac-2007-tuf6-01",
+     "canonical": {
+      "winner": "Mac Danzig",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "4:54",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Mac Danzig",
+      "winner_resolved_via": "surname",
+      "method": "Submission (triangle choke)",
+      "round": 1,
+      "time": "4:55",
+      "date": "2007-06-11",
+      "result_text": "Danzig won by tap out 4:55 of the 1st round – triangle choke.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "MAC DANZIG",
+        170
+       ],
+       [
+        "JOSEPH WILLIAM SCAROLA",
+        169
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "b85e860e-455b-4976-9f4a-4f56374f04ee",
+      null
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "4:54",
+       "commission": "4:55"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-06-11"
+      },
+      {
+       "field": "date_printed",
+       "kind": "print_date_defect",
+       "canonical": null,
+       "commission": "2007-06-11",
+       "printed": "0611/07",
+       "note": "the separator between month and day is missing; read as 2007-06-11 from the printed month/day and its place before 06/14/07 — a transcription judgement to confirm"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MAC DANZIG",
+         170
+        ],
+        [
+         "JOSEPH WILLIAM SCAROLA",
+         169
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Billy Miles vs John Kolosci",
+     "weight_class": "Tournament",
+     "stage": "round_of_16",
+     "stage_status": null,
+     "episode": 3,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-03"
+     ],
+     "record_id": "nsac-2007-tuf6-03",
+     "canonical": {
+      "winner": "John Kolosci",
+      "method": "Submission (guillotine choke)",
+      "round": 1,
+      "time": "2:56",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "John Kolosci",
+      "winner_resolved_via": "surname",
+      "method": "Submission (guillotine choke)",
+      "round": 1,
+      "time": "2:58",
+      "date": "2007-06-18",
+      "result_text": "Kolosci won by tap out 2:58 of the 1st round – guillotine choke.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "WILLIAM SCOT MILES",
+        171
+       ],
+       [
+        "JOHN MICHAEL KOLOSCI",
+        169.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "940cafca-d04f-4082-8ea8-18465cee6a3d",
+      "92b41400-bf88-48e0-9c5e-d14b6475cc99"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:56",
+       "commission": "2:58"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-06-18"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "WILLIAM SCOT MILES",
+         171
+        ],
+        [
+         "JOHN MICHAEL KOLOSCI",
+         169.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Dorian Price vs Matt Arroyo",
+     "weight_class": "Tournament",
+     "stage": "round_of_16",
+     "stage_status": null,
+     "episode": 1,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-02"
+     ],
+     "record_id": "nsac-2007-tuf6-02",
+     "canonical": {
+      "winner": "Matt Arroyo",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:48",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Matt Arroyo",
+      "winner_resolved_via": "surname",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "1:48",
+      "date": "2007-06-14",
+      "result_text": "Arroyo won by tap out 1:48 of the 1st round – rear naked choke.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "DORIAN PRICE",
+        170
+       ],
+       [
+        "MATTHEW VINCENT ARROYO",
+        168
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "77d803f1-378f-4bdb-b84f-6279428ea097",
+      "e19418e1-e7e9-4eb6-bad5-f85df19d5a82"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-06-14"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "DORIAN PRICE",
+         170
+        ],
+        [
+         "MATTHEW VINCENT ARROYO",
+         168
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Paul Georgieff vs Troy Mandaloniz",
+     "weight_class": "Tournament",
+     "stage": "round_of_16",
+     "stage_status": null,
+     "episode": 3,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-05"
+     ],
+     "record_id": "nsac-2007-tuf6-05",
+     "canonical": {
+      "winner": "Troy Mandaloniz",
+      "method": "KO (punch)",
+      "round": 1,
+      "time": "2:39",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Troy Mandaloniz",
+      "winner_resolved_via": "surname",
+      "method": "TKO",
+      "round": 1,
+      "time": "2:40",
+      "date": "2007-06-26",
+      "result_text": "Mandaloniz won by TKO 2:40 of the 1st round.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "PAUL KARA GEORGIEFF",
+        170
+       ],
+       [
+        "TROY HISASHI MANDALONIZ",
+        168
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "b2ca40ff-3575-467b-bd08-7f46e61c22c0",
+      "efe0a272-d338-4e40-920c-ca53e306ba79"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "true_contradiction",
+       "canonical": "KO (punch)",
+       "commission": "TKO",
+       "note": "the draft's \"punch\" sits under a different method category or decision type than the record's; per the TUF 1-4 rule a contradicted label is not carried forward, a compatible mechanism may survive as secondary detail"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:39",
+       "commission": "2:40"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-06-26"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "PAUL KARA GEORGIEFF",
+         170
+        ],
+        [
+         "TROY HISASHI MANDALONIZ",
+         168
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Blake Bowman vs Richie Hightower",
+     "weight_class": "Tournament",
+     "stage": "round_of_16",
+     "stage_status": null,
+     "episode": 3,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-04"
+     ],
+     "record_id": "nsac-2007-tuf6-04",
+     "canonical": {
+      "winner": "Richie Hightower",
+      "method": "TKO (strikes)",
+      "round": 1,
+      "time": "0:49",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Richie Hightower",
+      "winner_resolved_via": "surname",
+      "method": "TKO",
+      "round": 1,
+      "time": "0:50",
+      "date": "2007-06-21",
+      "result_text": "Hightower won by TKO 0:50 of the 1st round.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "BLAKE R. BOWMAN",
+        170
+       ],
+       [
+        "RICHIE JAMES HIGHTOWER",
+        170
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      null,
+      "7048342e-436f-4e85-a3ac-8f5db2d1dca1"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "compatible_secondary_detail",
+       "canonical": "TKO (strikes)",
+       "commission": "TKO",
+       "detail": "strikes"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "0:49",
+       "commission": "0:50"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-06-21"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "BLAKE R. BOWMAN",
+         170
+        ],
+        [
+         "RICHIE JAMES HIGHTOWER",
+         170
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Jared Rollins vs George Sotiropoulos",
+     "weight_class": "Tournament",
+     "stage": "round_of_16",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-07"
+     ],
+     "record_id": "nsac-2007-tuf6-07",
+     "canonical": {
+      "winner": "George Sotiropoulos",
+      "method": "TKO (strikes)",
+      "round": 1,
+      "time": "3:48",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "George Sotiropoulos",
+      "winner_resolved_via": "print_defect_fallback",
+      "method": "TKO",
+      "round": 1,
+      "time": "3:50",
+      "date": "2007-06-29",
+      "result_text": "Sotriopoulos won by TKO 3:50 of the 1st round.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "JARED MICHAEL ROLLINS",
+        171
+       ],
+       [
+        "GEORGE SOTIROPOULOS",
+        168.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "3e9e45d3-712e-4bbd-be56-808ad953c3ff",
+      "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
+     ],
+     "discrepancies": [
+      {
+       "field": "winner_printed_name",
+       "kind": "print_date_defect",
+       "canonical": "George Sotiropoulos",
+       "commission": "Sotriopoulos",
+       "note": "the result line misspells the winner's surname; its letters are exactly sotiropoulos rearranged and the record's own corner prints the name correctly"
+      },
+      {
+       "field": "method",
+       "kind": "compatible_secondary_detail",
+       "canonical": "TKO (strikes)",
+       "commission": "TKO",
+       "detail": "strikes"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "3:48",
+       "commission": "3:50"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-06-29"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "JARED MICHAEL ROLLINS",
+         171
+        ],
+        [
+         "GEORGE SOTIROPOULOS",
+         168.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Tom Speer vs Jon Koppenhaver",
+     "weight_class": "Tournament",
+     "stage": "round_of_16",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-08"
+     ],
+     "record_id": "nsac-2007-tuf6-08",
+     "canonical": {
+      "winner": "Tom Speer",
+      "method": "Decision",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Tom Speer",
+      "winner_resolved_via": "surname",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "date": "2007-06-29",
+      "result_text": "Speer won by unanimous decision",
+      "referee": "Steve Mazzagatti",
+      "scorecards": {
+       "order": [
+        "Speer",
+        "Koppenhaver"
+       ],
+       "cards": [
+        {
+         "judge": "Adalaide Byrd",
+         "score": "20-18"
+        },
+        {
+         "judge": "Patricia Morse Jarman",
+         "score": "20-18"
+        },
+        {
+         "judge": "Cecil Peoples",
+         "score": "20-18"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "THOMAS CHARLES SPEER",
+        171
+       ],
+       [
+        "JONATHON PAUL KOPPENHAVER",
+        169.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "2da2aea2-9090-43cc-9da9-1b288e34a320",
+      null
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "primary_normalization",
+       "canonical": "Decision",
+       "commission": "Decision (unanimous)"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-06-29"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Speer",
+         "Koppenhaver"
+        ],
+        "cards": [
+         {
+          "judge": "Adalaide Byrd",
+          "score": "20-18"
+         },
+         {
+          "judge": "Patricia Morse Jarman",
+          "score": "20-18"
+         },
+         {
+          "judge": "Cecil Peoples",
+          "score": "20-18"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "THOMAS CHARLES SPEER",
+         171
+        ],
+        [
+         "JONATHON PAUL KOPPENHAVER",
+         169.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Dan Barrera vs Ben Saunders",
+     "weight_class": "Tournament",
+     "stage": "round_of_16",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-06"
+     ],
+     "record_id": "nsac-2007-tuf6-06",
+     "canonical": {
+      "winner": "Ben Saunders",
+      "method": "Decision (majority)",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Ben Saunders",
+      "winner_resolved_via": "surname",
+      "method": "Decision (majority)",
+      "round": 2,
+      "time": null,
+      "date": "2007-06-26",
+      "result_text": "Saunders won by majority decision.",
+      "referee": "Herb Dean",
+      "scorecards": {
+       "order": [
+        "Barrera",
+        "Saunders"
+       ],
+       "cards": [
+        {
+         "judge": "Adalaide Byrd",
+         "score": "18-20"
+        },
+        {
+         "judge": "Lester Griffin",
+         "score": "18-20"
+        },
+        {
+         "judge": "Cecil Peoples",
+         "score": "19-19"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "DANIEL L. BARRERA",
+        171
+       ],
+       [
+        "BENJAMIN SAUNDERS",
+        170
+       ]
+      ],
+      "remarks": [],
+      "stage_label": null
+     },
+     "ids": [
+      "8eb3c131-cda2-46d7-8d41-ed822f245af7",
+      "94d262bf-744e-42e8-965b-9e56e52e0d06"
+     ],
+     "discrepancies": [
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-06-26"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Barrera",
+         "Saunders"
+        ],
+        "cards": [
+         {
+          "judge": "Adalaide Byrd",
+          "score": "18-20"
+         },
+         {
+          "judge": "Lester Griffin",
+          "score": "18-20"
+         },
+         {
+          "judge": "Cecil Peoples",
+          "score": "19-19"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "DANIEL L. BARRERA",
+         171
+        ],
+        [
+         "BENJAMIN SAUNDERS",
+         170
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Mac Danzig vs John Kolosci",
+     "weight_class": "Tournament",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-09"
+     ],
+     "record_id": "nsac-2007-tuf6-09",
+     "canonical": {
+      "winner": "Mac Danzig",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "4:28",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Mac Danzig",
+      "winner_resolved_via": "surname",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "3:57",
+      "date": "2007-07-03",
+      "result_text": "Danzig won by tap out 3:57 of the 1st round – rear naked choke.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "MAC DANZIG",
+        169
+       ],
+       [
+        "JOHN MICHAEL KOLOSCI",
+        170
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Quarter Finals"
+     },
+     "ids": [
+      "b85e860e-455b-4976-9f4a-4f56374f04ee",
+      "92b41400-bf88-48e0-9c5e-d14b6475cc99"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "4:28",
+       "commission": "3:57"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-07-03"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MAC DANZIG",
+         169
+        ],
+        [
+         "JOHN MICHAEL KOLOSCI",
+         170
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Matt Arroyo vs Troy Mandaloniz",
+     "weight_class": "Tournament",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": null,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-10"
+     ],
+     "record_id": "nsac-2007-tuf6-10",
+     "canonical": {
+      "winner": "Matt Arroyo",
+      "method": "Submission",
+      "round": 1,
+      "time": null,
+      "fight_date": null,
+      "classification": "unverified",
+      "classification_source": null
+     },
+     "commission": {
+      "winner": "Matt Arroyo",
+      "winner_resolved_via": "surname",
+      "method": "Submission (armbar)",
+      "round": 1,
+      "time": "1:07",
+      "date": "2007-07-05",
+      "result_text": "Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "MATTHEW VINCENT ARROYO",
+        170
+       ],
+       [
+        "TROY HISASHI MANDALONIZ",
+        170.5
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Quarter Finals"
+     },
+     "ids": [
+      "e19418e1-e7e9-4eb6-bad5-f85df19d5a82",
+      "efe0a272-d338-4e40-920c-ca53e306ba79"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "primary_normalization",
+       "canonical": "Submission",
+       "commission": "Submission (armbar)"
+      },
+      {
+       "field": "method_reading",
+       "kind": "normalization_judgement",
+       "canonical": "Submission",
+       "commission": "Submission (armbar)",
+       "printed": "verbal tap out … – arm bar",
+       "note": "\"verbal\" is kept in result_text only; the archive has no category for a verbal submission — a normalization judgement to confirm"
+      },
+      {
+       "field": "time",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "1:07"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-07-05"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MATTHEW VINCENT ARROYO",
+         170
+        ],
+        [
+         "TROY HISASHI MANDALONIZ",
+         170.5
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Richie Hightower vs George Sotiropoulos",
+     "weight_class": "Tournament",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-11"
+     ],
+     "record_id": "nsac-2007-tuf6-11",
+     "canonical": {
+      "winner": "George Sotiropoulos",
+      "method": "Submission (kimura)",
+      "round": 1,
+      "time": "4:07",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "George Sotiropoulos",
+      "winner_resolved_via": "surname",
+      "method": "Submission (kimura)",
+      "round": 1,
+      "time": "4:10",
+      "date": "2007-07-05",
+      "result_text": "Sotiropoulos won by tap out 4:10 of the 1st round – kumara.",
+      "referee": "Herb Dean",
+      "scorecards": null,
+      "weights": [
+       [
+        "RICHIE JAMES HIGHTOWER",
+        171
+       ],
+       [
+        "GEORGE SOTIROPOULOS",
+        168
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Quarter Finals"
+     },
+     "ids": [
+      "7048342e-436f-4e85-a3ac-8f5db2d1dca1",
+      "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
+     ],
+     "discrepancies": [
+      {
+       "field": "method_reading",
+       "kind": "print_date_defect",
+       "canonical": "Submission (kimura)",
+       "commission": "Submission (kimura)",
+       "printed": "kumara",
+       "note": "misspelling of the kimura lock; print defect"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "4:07",
+       "commission": "4:10"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-07-05"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Herb Dean"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "RICHIE JAMES HIGHTOWER",
+         171
+        ],
+        [
+         "GEORGE SOTIROPOULOS",
+         168
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Tom Speer vs Ben Saunders",
+     "weight_class": "Tournament",
+     "stage": "quarter_final",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-12"
+     ],
+     "record_id": "nsac-2007-tuf6-12",
+     "canonical": {
+      "winner": "Tom Speer",
+      "method": "Decision (unanimous)",
+      "round": 2,
+      "time": null,
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Tom Speer",
+      "winner_resolved_via": "surname",
+      "method": "Decision (majority)",
+      "round": 2,
+      "time": null,
+      "date": "2007-07-09",
+      "result_text": "Speer won by majority decision.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": {
+       "order": [
+        "Speer",
+        "Saunders"
+       ],
+       "cards": [
+        {
+         "judge": "Patricia Morse Jarman",
+         "score": "20-18"
+        },
+        {
+         "judge": "Glenn Trowbridge",
+         "score": "19-19"
+        },
+        {
+         "judge": "Lester Griffin",
+         "score": "20-18"
+        }
+       ]
+      },
+      "weights": [
+       [
+        "THOMAS CHARLES SPEER",
+        171
+       ],
+       [
+        "BENJAMIN SAUNDERS",
+        170
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "Quarter Finals"
+     },
+     "ids": [
+      "2da2aea2-9090-43cc-9da9-1b288e34a320",
+      "94d262bf-744e-42e8-965b-9e56e52e0d06"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "true_contradiction",
+       "canonical": "Decision (unanimous)",
+       "commission": "Decision (majority)",
+       "note": "the draft's \"unanimous\" sits under a different method category or decision type than the record's; per the TUF 1-4 rule a contradicted label is not carried forward, a compatible mechanism may survive as secondary detail"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-07-09"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "scorecards",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": {
+        "order": [
+         "Speer",
+         "Saunders"
+        ],
+        "cards": [
+         {
+          "judge": "Patricia Morse Jarman",
+          "score": "20-18"
+         },
+         {
+          "judge": "Glenn Trowbridge",
+          "score": "19-19"
+         },
+         {
+          "judge": "Lester Griffin",
+          "score": "20-18"
+         }
+        ]
+       }
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "THOMAS CHARLES SPEER",
+         171
+        ],
+        [
+         "BENJAMIN SAUNDERS",
+         170
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Mac Danzig vs John Kolosci",
+     "weight_class": "Tournament",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-13"
+     ],
+     "record_id": "nsac-2007-tuf6-13",
+     "canonical": {
+      "winner": "Mac Danzig",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "4:28",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Mac Danzig",
+      "winner_resolved_via": "surname",
+      "method": "Submission (rear naked choke)",
+      "round": 1,
+      "time": "4:29",
+      "date": "2007-07-15",
+      "result_text": "Danzig won by tap out 4:29 of the 1st round – rear naked choke.",
+      "referee": "Steve Mazzagatti",
+      "scorecards": null,
+      "weights": [
+       [
+        "MAC DANZIG",
+        169.5
+       ],
+       [
+        "JOHN MICHAEL KOLOSCI",
+        170
+       ]
+      ],
+      "remarks": [],
+      "stage_label": "SEMI-FINAL BOUT"
+     },
+     "ids": [
+      "b85e860e-455b-4976-9f4a-4f56374f04ee",
+      "92b41400-bf88-48e0-9c5e-d14b6475cc99"
+     ],
+     "discrepancies": [
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "4:28",
+       "commission": "4:29"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-07-15"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "Steve Mazzagatti"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "MAC DANZIG",
+         169.5
+        ],
+        [
+         "JOHN MICHAEL KOLOSCI",
+         170
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "bout": "Tom Speer vs George Sotiropoulos",
+     "weight_class": "Tournament",
+     "stage": "semi_final",
+     "stage_status": null,
+     "episode": 6,
+     "match": "deterministic",
+     "candidates": [
+      "nsac-2007-tuf6-14"
+     ],
+     "record_id": "nsac-2007-tuf6-14",
+     "canonical": {
+      "winner": "Tom Speer",
+      "method": "KO (strikes)",
+      "round": 1,
+      "time": "2:57",
+      "fight_date": null,
+      "classification": "exhibition",
+      "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+     },
+     "commission": {
+      "winner": "Tom Speer",
+      "winner_resolved_via": "surname",
+      "method": "TKO",
+      "round": 1,
+      "time": "2:59",
+      "date": "2007-07-15",
+      "result_text": "Speer won by TKO 2:59 of the 1st round.",
+      "referee": "John McCarthy",
+      "scorecards": null,
+      "weights": [
+       [
+        "THOMAS CHARLES SPEER",
+        171
+       ],
+       [
+        "GEORGE SOTIROPOULOS",
+        170
+       ]
+      ],
+      "remarks": [
+       {
+        "fighter": "George Sotiropoulos",
+        "quote": "Suspend Sotiropoulos until 09/14/07"
+       },
+       {
+        "fighter": "George Sotiropoulos",
+        "quote": "No contact until 08/30/07"
+       }
+      ],
+      "stage_label": "SEMI-FINAL BOUT"
+     },
+     "ids": [
+      "2da2aea2-9090-43cc-9da9-1b288e34a320",
+      "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
+     ],
+     "discrepancies": [
+      {
+       "field": "method",
+       "kind": "true_contradiction",
+       "canonical": "KO (strikes)",
+       "commission": "TKO",
+       "note": "the draft's \"strikes\" sits under a different method category or decision type than the record's; per the TUF 1-4 rule a contradicted label is not carried forward, a compatible mechanism may survive as secondary detail"
+      },
+      {
+       "field": "time",
+       "kind": "true_contradiction",
+       "canonical": "2:57",
+       "commission": "2:59"
+      },
+      {
+       "field": "fight_date",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "2007-07-15"
+      },
+      {
+       "field": "referee",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": "John McCarthy"
+      },
+      {
+       "field": "weights",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        [
+         "THOMAS CHARLES SPEER",
+         171
+        ],
+        [
+         "GEORGE SOTIROPOULOS",
+         170
+        ]
+       ]
+      },
+      {
+       "field": "remarks",
+       "kind": "source_only_new_fact",
+       "canonical": null,
+       "commission": [
+        {
+         "fighter": "George Sotiropoulos",
+         "quote": "Suspend Sotiropoulos until 09/14/07"
+        },
+        {
+         "fighter": "George Sotiropoulos",
+         "quote": "No contact until 08/30/07"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "dates_of_birth": [
+    {
+     "fighter": "Mac Danzig",
+     "printed_name": "MAC DANZIG",
+     "printed": "1980-01-02",
+     "canonical": "1980-01-02",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Joe Scarola",
+     "printed_name": "JOSEPH WILLIAM SCAROLA",
+     "printed": "1979-03-12",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    },
+    {
+     "fighter": "Billy Miles",
+     "printed_name": "WILLIAM SCOT MILES",
+     "printed": "1978-04-28",
+     "canonical": "1978-04-28",
+     "state": "agrees"
+    },
+    {
+     "fighter": "John Kolosci",
+     "printed_name": "JOHN MICHAEL KOLOSCI",
+     "printed": "1974-11-26",
+     "canonical": "1974-11-26",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Dorian Price",
+     "printed_name": "DORIAN PRICE",
+     "printed": "1977-08-20",
+     "canonical": "1977-08-20",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Matt Arroyo",
+     "printed_name": "MATTHEW VINCENT ARROYO",
+     "printed": "1982-09-01",
+     "canonical": "1982-09-01",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Paul Georgieff",
+     "printed_name": "PAUL KARA GEORGIEFF",
+     "printed": "1982-09-22",
+     "canonical": "1982-09-22",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Troy Mandaloniz",
+     "printed_name": "TROY HISASHI MANDALONIZ",
+     "printed": "1980-02-01",
+     "canonical": "1980-02-01",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Blake Bowman",
+     "printed_name": "BLAKE R. BOWMAN",
+     "printed": "1981-06-20",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    },
+    {
+     "fighter": "Richie Hightower",
+     "printed_name": "RICHIE JAMES HIGHTOWER",
+     "printed": "1981-11-24",
+     "canonical": "1974-11-26",
+     "state": "identity_disagreement"
+    },
+    {
+     "fighter": "Jared Rollins",
+     "printed_name": "JARED MICHAEL ROLLINS",
+     "printed": "1977-01-26",
+     "canonical": "1977-01-26",
+     "state": "agrees"
+    },
+    {
+     "fighter": "George Sotiropoulos",
+     "printed_name": "GEORGE SOTIROPOULOS",
+     "printed": "1977-07-09",
+     "canonical": "1977-07-09",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Tom Speer",
+     "printed_name": "THOMAS CHARLES SPEER",
+     "printed": "1984-08-20",
+     "canonical": "1984-08-20",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Jon Koppenhaver",
+     "printed_name": "JONATHON PAUL KOPPENHAVER",
+     "printed": "1981-11-30",
+     "canonical": null,
+     "state": "no_canonical_identity"
+    },
+    {
+     "fighter": "Dan Barrera",
+     "printed_name": "DANIEL L. BARRERA",
+     "printed": "1980-12-23",
+     "canonical": "1980-12-23",
+     "state": "agrees"
+    },
+    {
+     "fighter": "Ben Saunders",
+     "printed_name": "BENJAMIN SAUNDERS",
+     "printed": "1983-04-13",
+     "canonical": "1983-04-13",
+     "state": "agrees"
+    }
+   ],
+   "names": [
+    {
+     "fighter": "Mac Danzig",
+     "printed_name": "MAC DANZIG",
+     "canonical_name": "Mac Danzig",
+     "kinds": []
+    },
+    {
+     "fighter": "Joe Scarola",
+     "printed_name": "JOSEPH WILLIAM SCAROLA",
+     "canonical_name": null,
+     "kinds": []
+    },
+    {
+     "fighter": "Billy Miles",
+     "printed_name": "WILLIAM SCOT MILES",
+     "canonical_name": "Billy Miles",
+     "kinds": [
+      "printed_first_initial_differs (weights use the printed-name fallback)"
+     ]
+    },
+    {
+     "fighter": "John Kolosci",
+     "printed_name": "JOHN MICHAEL KOLOSCI",
+     "canonical_name": "John Kolosci",
+     "kinds": []
+    },
+    {
+     "fighter": "Dorian Price",
+     "printed_name": "DORIAN PRICE",
+     "canonical_name": "Dorian Price",
+     "kinds": []
+    },
+    {
+     "fighter": "Matt Arroyo",
+     "printed_name": "MATTHEW VINCENT ARROYO",
+     "canonical_name": "Matt Arroyo",
+     "kinds": []
+    },
+    {
+     "fighter": "Paul Georgieff",
+     "printed_name": "PAUL KARA GEORGIEFF",
+     "canonical_name": "Paul Georgieff",
+     "kinds": []
+    },
+    {
+     "fighter": "Troy Mandaloniz",
+     "printed_name": "TROY HISASHI MANDALONIZ",
+     "canonical_name": "Troy Mandaloniz",
+     "kinds": []
+    },
+    {
+     "fighter": "Blake Bowman",
+     "printed_name": "BLAKE R. BOWMAN",
+     "canonical_name": null,
+     "kinds": []
+    },
+    {
+     "fighter": "Richie Hightower",
+     "printed_name": "RICHIE JAMES HIGHTOWER",
+     "canonical_name": "Richie Hightower",
+     "kinds": []
+    },
+    {
+     "fighter": "Jared Rollins",
+     "printed_name": "JARED MICHAEL ROLLINS",
+     "canonical_name": "Jared Rollins",
+     "kinds": []
+    },
+    {
+     "fighter": "George Sotiropoulos",
+     "printed_name": "GEORGE SOTIROPOULOS",
+     "canonical_name": "George Sotiropoulos",
+     "kinds": []
+    },
+    {
+     "fighter": "Tom Speer",
+     "printed_name": "THOMAS CHARLES SPEER",
+     "canonical_name": "Tommy Speer",
+     "kinds": [
+      "canonical_name_differs_from_archive"
+     ]
+    },
+    {
+     "fighter": "Jon Koppenhaver",
+     "printed_name": "JONATHON PAUL KOPPENHAVER",
+     "canonical_name": null,
+     "kinds": []
+    },
+    {
+     "fighter": "Dan Barrera",
+     "printed_name": "DANIEL L. BARRERA",
+     "canonical_name": "Dan Barrera",
+     "kinds": []
+    },
+    {
+     "fighter": "Ben Saunders",
+     "printed_name": "BENJAMIN SAUNDERS",
+     "canonical_name": "Ben Saunders",
+     "kinds": []
+    }
+   ],
+   "conflicts": [],
+   "structure": [
+    {
+     "item": "format_exceptions: Kolosci replaces the injured Arroyo in the semi-finals (episode 6)",
+     "verdict": "commission_resolves",
+     "detail": "The document prints, above its semi-final table (page 3): \"MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him.\" The replacement and its cause are stated by the primary record. Episode placement (6) is not stated and is not settled."
+    },
+    {
+     "item": "format_exceptions: Jon Koppenhaver replaces Mitichyan (episode 1)",
+     "verdict": "does_not_touch",
+     "detail": "The record lists only Koppenhaver's bout (nsac-2007-tuf6-08, lost to Speer 2007-06-29). No Mitichyan, no replacement stated."
+    },
+    {
+     "item": "quarter-final Mac Danzig vs John Kolosci carries the semi-final's values",
+     "verdict": "commission_resolves",
+     "detail": "The archive QF and SF rows are identical (Submission (rear naked choke), R1, 4:28, episode 6). The record has two distinct bouts: QF nsac-2007-tuf6-09 2007-07-03 at 3:57 (referee John McCarthy) and SF nsac-2007-tuf6-13 2007-07-15 at 4:29 (referee Steve Mazzagatti). Result values resolve; the QF episode placement does not."
+    },
+    {
+     "item": "quarter-final Matt Arroyo vs Troy Mandaloniz: classification unverified, no time, no episode",
+     "verdict": "partially_informs",
+     "detail": "nsac-2007-tuf6-10: \"Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.\" under \"Exhibition Results\" — resolves classification, method detail and time (1:07). Episode stays unplaced."
+    },
+    {
+     "item": "weight class labelled \"Tournament\"",
+     "verdict": "does_not_touch",
+     "detail": "The record prints no weight class; its weights (168–171 lb) are consistent with welterweight but a weight class is not inferred from weights."
+    },
+    {
+     "item": "ROSTER_MISSING (no teams loaded)",
+     "verdict": "does_not_touch",
+     "detail": "The record lists the 16 contestants who fought, with legal names and DOBs, but no teams or coaches."
+    },
+    {
+     "item": "contestants without a canonical identity: Joe Scarola, Blake Bowman, Jon Koppenhaver",
+     "verdict": "does_not_touch",
+     "detail": "Printed legal names and DOBs are reported for review; no identity write."
+    },
+    {
+     "item": "nine title-only episode shells; many house bouts placed in episode 6",
+     "verdict": "does_not_touch",
+     "detail": "Fight dates are new facts; they are not used to move or place episodes."
+    }
+   ]
+  }
+ },
+ "architecture": {
+  "sufficient": true,
+  "fits_without_change": [
+   "document + 28 records in web/data/tuf/commission_records.json (CommissionDocument / CommissionRecord as typed in web/lib/tuf.ts)",
+   "stage_label null for the 16 unlabeled opening-round records (the applied TUF 2 shape)",
+   "result_sources / classification_basis / fight_date / fight_date_source / commission_record_id on bouts; superseded_result_sources for the draft",
+   "corrections (commission_correction, method_normalization) and method_detail for compatible detail (TUF 5: punches, strikes; TUF 6: strikes x2)",
+   "a winner correction is a FieldCorrection with field \"winner\" (the type is generic); no season has needed one before, and the TUF 3/4 apply script refuses one by design",
+   "sudden-victory decision (TUF 5 Hill vs Emerson): the TUF 4 shape — method \"Decision (unanimous, sudden victory round)\", round 3, scheduled_rounds 2",
+   "date_printed for TUF 6 \"0611/07\" (the generic field added for TUF 3)",
+   "remarks [{fighter, quote}] for the TUF 6 suspension (the TUF 2 shape)",
+   "the TUF 6 page-3 replacement note as timeline_events (injury / withdrawal / replacement with replaces) citing the commission document and the semi-final record it heads — the TUF 2 medical_clearance pattern",
+   "identity_disagreements on the document for the one DOB difference (Hightower); name renderings stay in corners.printed",
+   "commissionWeights: printed-name fallback for corners whose printed first initial differs (Cole Miller x2, Gray Maynard x3, Billy Miles), fail-safe as designed"
+  ],
+  "transcription_keys_not_in_the_ledger_shape": {
+   "winner_surname": "audit helper; replaced by winner at apply (TUF 6 record 07 resolved through the print-defect fallback)",
+   "weight_class": "audit helper (null: not printed); carried by bout.weight_class",
+   "stage": "audit helper; carried by bout.stage",
+   "rounds_printed": "redundant with method + scheduled_rounds + result_text; drop at apply (as TUF 4)",
+   "scores_printed": "the printed run-together \"18-20 18-2018-20\"; scorecards.cards is normalized; drop at apply",
+   "reading": "the normalization judgement for \"choke out\", \"verbal tap out\", \"kumara\"; belongs in the correction reason / provenance; drop at apply"
+  },
+  "no_schema_change_proposed": true
+ },
+ "decisions_for_apply": [
+  "TUF 5 Brandon Melendez vs Gray Maynard (quarter-final): the commission winner is Gray Maynard; the archive has Melendez. First winner correction in the TUF archive — approve a winner commission_correction and closing the quarter_finals conflict with the record as its resolution.",
+  "TUF 5 Matt Wiman vs Marlon Sims: printed \"choke out\" read as Technical submission (rear naked choke) (equals the archive). Confirm the reading.",
+  "TUF 6 Matt Arroyo vs Troy Mandaloniz: printed \"verbal tap out … – arm bar\" read as Submission (armbar); \"verbal\" kept only in result_text. Confirm.",
+  "TUF 6 method contradictions: Georgieff vs Mandaloniz KO (punch) → TKO; Speer vs Sotiropoulos KO (strikes) → TKO; Speer vs Saunders Decision (unanimous) → Decision (majority). Under the TUF 3 rule the category is corrected; decide whether \"punch\" / \"strikes\" survive as method_detail.",
+  "TUF 6 quarter-final Mac Danzig vs John Kolosci: the archive row duplicates the semi-final (4:28); the record gives 3:57 on 2007-07-03. Correct the values; episode placement is not settled by the record.",
+  "TUF 6 \"0611/07\" → 2007-06-11 with date_printed; \"Sotriopoulos\" → George Sotiropoulos via the print-defect fallback; \"kumara\" → kimura. Confirm the three readings.",
+  "TUF 6 page-3 note: carry as commission-sourced timeline events (Arroyo injury/withdrawal, Kolosci replacement) with episode null, or leave for a later timeline batch.",
+  "Recorded only, no write: Richie Hightower printed DOB 1981-11-24 vs canonical 1974-11-26 (the canonical value equals John Kolosci's DOB exactly — worth a separate identity review)."
+ ],
+ "generic_matrix_observation": "Found by this audit and FIXED in its own PR (branch tuf-matrix-exact-verification, scripts/tuf/lib/boutVerification.mjs): the old completeness matrix counted a house (exhibition) bout as verified when any other professional bout between the same two fighter ids had the same winner (TUF 5 Diaz vs Maynard via 2013; TUF 6 Barrera vs Saunders via the 2007 finale; 9 house bouts across TUF 5, 6, 7, 11, 24, 26, plus 2 TUF 33 finals with no recorded finale link; none in TUF 1-4). The matrix simulation below is re-measured on the exact verifier; the BEFORE numbers of the first simulation were contaminated and are superseded."
+}

@@ -1,0 +1,630 @@
+{
+ "_about": "READ-ONLY review report for the TUF 5 + TUF 6 NSAC apply (scripts/tuf/report_tuf5_tuf6_apply.mjs). Matrices from the exact verifier on main 552ed92.",
+ "batch": "tuf5-tuf6-nsac-reconciliation",
+ "reviewer": "Justin Erickson",
+ "commission_documents": [
+  {
+   "id": "nsac-2007-tuf-season-5",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON5.pdf",
+   "sha256": "d12c518bf3289183934696e4f8f4e1107a3142d1107f97c95852753fd2d623cb",
+   "records": 14
+  },
+  {
+   "id": "nsac-2007-tuf-season-6",
+   "url": "https://boxing.nv.gov/uploadedFiles/boxingnvgov/content/results/2007_Results/TUFSEASON6.pdf",
+   "sha256": "bb8e779598068219395c4132f4878df9fce16fb3b499e1b9cbff8835da6deecd",
+   "records": 14
+  }
+ ],
+ "corrections": [
+  {
+   "season": "tuf-5",
+   "stage": "elimination",
+   "bout": "Cole Miller vs Allen Berube",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "2:33",
+   "new": "2:35",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-01",
+   "reason": "the commission record states the time as \"2:35\" (\"Miller won by tap out 2:35 of the 1st round – triangle choke\"); a primary commission record overrides the draft's \"2:33\""
+  },
+  {
+   "season": "tuf-5",
+   "stage": "elimination",
+   "bout": "Manny Gamburyan vs Noah Thomas",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "2:09",
+   "new": "2:10",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-02",
+   "reason": "the commission record states the time as \"2:10\" (\"Gamburyan won by tap out 2:10 of the 1st round – Kimura.\"); a primary commission record overrides the draft's \"2:09\""
+  },
+  {
+   "season": "tuf-5",
+   "stage": "elimination",
+   "bout": "Nate Diaz vs Rob Emerson",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "4:45",
+   "new": "4:46",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-03",
+   "reason": "the commission record states the time as \"4:46\" (\"Diaz won by tap out 4:46 of the 2nd round – rear naked choke.\"); a primary commission record overrides the draft's \"4:45\""
+  },
+  {
+   "season": "tuf-5",
+   "stage": "elimination",
+   "bout": "Corey Hill vs Rob Emerson",
+   "field": "method",
+   "kind": "commission_correction",
+   "old": "Decision (unanimous)",
+   "new": "Decision (unanimous, sudden victory round)",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-05",
+   "reason": "the commission record states the method more specifically (\"Hill won by unanimous decision in the sudden victory round.\"); the commission's wording \"Decision (unanimous, sudden victory round)\" is canonical"
+  },
+  {
+   "season": "tuf-5",
+   "stage": "elimination",
+   "bout": "Gray Maynard vs Wayne Weems",
+   "field": "method",
+   "kind": "method_normalization",
+   "old": "TKO (punches)",
+   "new": "TKO",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-07",
+   "reason": "the commission record prints the method as \"TKO\" (\"Maynard won by TKO 2:48 of the 1st round.\"), the same category as the draft but less specific; the official method takes the commission wording and the draft's compatible detail \"punches\" is kept as secondary detail with the draft as its source — the commission does not print it"
+  },
+  {
+   "season": "tuf-5",
+   "stage": "elimination",
+   "bout": "Gray Maynard vs Wayne Weems",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "2:47",
+   "new": "2:48",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-07",
+   "reason": "the commission record states the time as \"2:48\" (\"Maynard won by TKO 2:48 of the 1st round.\"); a primary commission record overrides the draft's \"2:47\""
+  },
+  {
+   "season": "tuf-5",
+   "stage": "elimination",
+   "bout": "Matt Wiman vs Marlon Sims",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "0:52",
+   "new": "0:50",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-08",
+   "reason": "the commission record states the time as \"0:50\" (\"Wiman won by choke out 0:50 of the 1st round. – rear naked choke.\"); a primary commission record overrides the draft's \"0:52\""
+  },
+  {
+   "season": "tuf-5",
+   "stage": "quarter_final",
+   "bout": "Joe Lauzon vs Cole Miller",
+   "field": "method",
+   "kind": "method_normalization",
+   "old": "TKO (strikes)",
+   "new": "TKO",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-10",
+   "reason": "the commission record prints the method as \"TKO\" (\"Lauzon won by TKO 3:59 of the 2nd round.\"), the same category as the draft but less specific; the official method takes the commission wording and the draft's compatible detail \"strikes\" is kept as secondary detail with the draft as its source — the commission does not print it"
+  },
+  {
+   "season": "tuf-5",
+   "stage": "quarter_final",
+   "bout": "Joe Lauzon vs Cole Miller",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "3:58",
+   "new": "3:59",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-10",
+   "reason": "the commission record states the time as \"3:59\" (\"Lauzon won by TKO 3:59 of the 2nd round.\"); a primary commission record overrides the draft's \"3:58\""
+  },
+  {
+   "season": "tuf-5",
+   "stage": "quarter_final",
+   "bout": "Brandon Melendez vs Gray Maynard",
+   "field": "winner",
+   "kind": "commission_correction",
+   "old": "Brandon Melendez",
+   "new": "Gray Maynard",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-09",
+   "reason": "the commission record states \"Maynard won by tap out 4:07 of the 2nd round – guillotine choke\" (2007-02-21, \"Quarter Finals\"); Gray Maynard won the quarter-final, which is why he fights Nate Diaz in the commission's semi-final. Method, round and time already agreed; only the winner was inverted in the draft"
+  },
+  {
+   "season": "tuf-5",
+   "stage": "quarter_final",
+   "bout": "Nate Diaz vs Corey Hill",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "3:02",
+   "new": "3:03",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-11",
+   "reason": "the commission record states the time as \"3:03\" (\"Diaz won by tap out 3:03 of the 1st round – triangle choke.\"); a primary commission record overrides the draft's \"3:02\""
+  },
+  {
+   "season": "tuf-5",
+   "stage": "semi_final",
+   "bout": "Nate Diaz vs Gray Maynard",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "1:17",
+   "new": "1:20",
+   "document_id": "nsac-2007-tuf-season-5",
+   "record_id": "nsac-2007-tuf5-14",
+   "reason": "the commission record states the time as \"1:20\" (\"Diaz won by tap out 1:20 of the 2nd round – Guillotine choke\"); a primary commission record overrides the draft's \"1:17\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Mac Danzig vs Joe Scarola",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "4:54",
+   "new": "4:55",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-01",
+   "reason": "the commission record states the time as \"4:55\" (\"Danzig won by tap out 4:55 of the 1st round – triangle choke.\"); a primary commission record overrides the draft's \"4:54\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Billy Miles vs John Kolosci",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "2:56",
+   "new": "2:58",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-03",
+   "reason": "the commission record states the time as \"2:58\" (\"Kolosci won by tap out 2:58 of the 1st round – guillotine choke.\"); a primary commission record overrides the draft's \"2:56\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Paul Georgieff vs Troy Mandaloniz",
+   "field": "method",
+   "kind": "commission_correction",
+   "old": "KO (punch)",
+   "new": "TKO",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-05",
+   "reason": "the commission record states \"TKO\" (\"Mandaloniz won by TKO 2:40 of the 1st round.\"), a different category from the draft's \"KO (punch)\"; the commission category is canonical and the draft's detail is not carried forward, because the commission does not print it"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Paul Georgieff vs Troy Mandaloniz",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "2:39",
+   "new": "2:40",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-05",
+   "reason": "the commission record states the time as \"2:40\" (\"Mandaloniz won by TKO 2:40 of the 1st round.\"); a primary commission record overrides the draft's \"2:39\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Blake Bowman vs Richie Hightower",
+   "field": "method",
+   "kind": "method_normalization",
+   "old": "TKO (strikes)",
+   "new": "TKO",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-04",
+   "reason": "the commission record prints the method as \"TKO\" (\"Hightower won by TKO 0:50 of the 1st round.\"), the same category as the draft but less specific; the official method takes the commission wording and the draft's compatible detail \"strikes\" is kept as secondary detail with the draft as its source — the commission does not print it"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Blake Bowman vs Richie Hightower",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "0:49",
+   "new": "0:50",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-04",
+   "reason": "the commission record states the time as \"0:50\" (\"Hightower won by TKO 0:50 of the 1st round.\"); a primary commission record overrides the draft's \"0:49\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Jared Rollins vs George Sotiropoulos",
+   "field": "method",
+   "kind": "method_normalization",
+   "old": "TKO (strikes)",
+   "new": "TKO",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-07",
+   "reason": "the commission record prints the method as \"TKO\" (\"Sotriopoulos won by TKO 3:50 of the 1st round.\"), the same category as the draft but less specific; the official method takes the commission wording and the draft's compatible detail \"strikes\" is kept as secondary detail with the draft as its source — the commission does not print it"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Jared Rollins vs George Sotiropoulos",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "3:48",
+   "new": "3:50",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-07",
+   "reason": "the commission record states the time as \"3:50\" (\"Sotriopoulos won by TKO 3:50 of the 1st round.\"); a primary commission record overrides the draft's \"3:48\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Tom Speer vs Jon Koppenhaver",
+   "field": "method",
+   "kind": "commission_correction",
+   "old": "Decision",
+   "new": "Decision (unanimous)",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-08",
+   "reason": "the commission record states the method more specifically (\"Speer won by unanimous decision\"); the commission's wording \"Decision (unanimous)\" is canonical"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "quarter_final",
+   "bout": "Mac Danzig vs John Kolosci",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "4:28",
+   "new": "3:57",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-09",
+   "reason": "the commission record states the time as \"3:57\" (\"Danzig won by tap out 3:57 of the 1st round – rear naked choke.\"); a primary commission record overrides the draft's \"4:28\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "quarter_final",
+   "bout": "Matt Arroyo vs Troy Mandaloniz",
+   "field": "method",
+   "kind": "commission_correction",
+   "old": "Submission",
+   "new": "Submission (armbar)",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-10",
+   "reason": "the commission record states the method more specifically (\"Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.\"); the commission's wording \"Submission (armbar)\" is canonical"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "quarter_final",
+   "bout": "Matt Arroyo vs Troy Mandaloniz",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": null,
+   "new": "1:07",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-10",
+   "reason": "the commission record states the time as \"1:07\" (\"Arroyo won by verbal tap out 1:07 of the 1st round – arm bar.\"); the draft gave none, so it is added as a primary fact"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "quarter_final",
+   "bout": "Matt Arroyo vs Troy Mandaloniz",
+   "field": "classification",
+   "kind": "commission_correction",
+   "old": "unverified",
+   "new": "exhibition",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-10",
+   "reason": "the commission's Season 6 results record lists this bout under \"Exhibition Results\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "quarter_final",
+   "bout": "Richie Hightower vs George Sotiropoulos",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "4:07",
+   "new": "4:10",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-11",
+   "reason": "the commission record states the time as \"4:10\" (\"Sotiropoulos won by tap out 4:10 of the 1st round – kumara.\"); a primary commission record overrides the draft's \"4:07\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "quarter_final",
+   "bout": "Tom Speer vs Ben Saunders",
+   "field": "method",
+   "kind": "commission_correction",
+   "old": "Decision (unanimous)",
+   "new": "Decision (majority)",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-12",
+   "reason": "the commission record states a majority decision (\"Speer won by majority decision.\"), contradicting the draft's \"Decision (unanimous)\"; a primary commission record overrides the draft"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "semi_final",
+   "bout": "Mac Danzig vs John Kolosci",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "4:28",
+   "new": "4:29",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-13",
+   "reason": "the commission record states the time as \"4:29\" (\"Danzig won by tap out 4:29 of the 1st round – rear naked choke.\"); a primary commission record overrides the draft's \"4:28\""
+  },
+  {
+   "season": "tuf-6",
+   "stage": "semi_final",
+   "bout": "Tom Speer vs George Sotiropoulos",
+   "field": "method",
+   "kind": "commission_correction",
+   "old": "KO (strikes)",
+   "new": "TKO",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-14",
+   "reason": "the commission record states \"TKO\" (\"Speer won by TKO 2:59 of the 1st round.\"), a different category from the draft's \"KO (strikes)\"; the commission category is canonical and the draft's detail is not carried forward, because the commission does not print it"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "semi_final",
+   "bout": "Tom Speer vs George Sotiropoulos",
+   "field": "time",
+   "kind": "commission_correction",
+   "old": "2:57",
+   "new": "2:59",
+   "document_id": "nsac-2007-tuf-season-6",
+   "record_id": "nsac-2007-tuf6-14",
+   "reason": "the commission record states the time as \"2:59\" (\"Speer won by TKO 2:59 of the 1st round.\"); a primary commission record overrides the draft's \"2:57\""
+  }
+ ],
+ "secondary_method_detail_kept": [
+  {
+   "season": "tuf-5",
+   "stage": "elimination",
+   "bout": "Gray Maynard vs Wayne Weems",
+   "value": "punches",
+   "source": "wikipedia (secondary_draft)"
+  },
+  {
+   "season": "tuf-5",
+   "stage": "quarter_final",
+   "bout": "Joe Lauzon vs Cole Miller",
+   "value": "strikes",
+   "source": "wikipedia (secondary_draft)"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Blake Bowman vs Richie Hightower",
+   "value": "strikes",
+   "source": "wikipedia (secondary_draft)"
+  },
+  {
+   "season": "tuf-6",
+   "stage": "round_of_16",
+   "bout": "Jared Rollins vs George Sotiropoulos",
+   "value": "strikes",
+   "source": "wikipedia (secondary_draft)"
+  }
+ ],
+ "timeline_events_added": [
+  {
+   "season": "tuf-6",
+   "id": "tuf6-arroyo-injured",
+   "type": "injury",
+   "fighters": [
+    "Matt Arroyo"
+   ],
+   "replaces": null,
+   "episode": null,
+   "detail": "Injured; the commission record names no injury.",
+   "record_id": "nsac-2007-tuf6-13",
+   "quote": "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him."
+  },
+  {
+   "season": "tuf-6",
+   "id": "tuf6-arroyo-out-of-semi-final",
+   "type": "withdrawal",
+   "fighters": [
+    "Matt Arroyo"
+   ],
+   "replaces": null,
+   "episode": null,
+   "detail": "Could not compete in the semi-finals.",
+   "record_id": "nsac-2007-tuf6-13",
+   "quote": "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him."
+  },
+  {
+   "season": "tuf-6",
+   "id": "tuf6-kolosci-replaces-arroyo",
+   "type": "replacement",
+   "fighters": [
+    "John Kolosci"
+   ],
+   "replaces": "Matt Arroyo",
+   "episode": null,
+   "detail": "Replaced Matt Arroyo in the semi-finals.",
+   "record_id": "nsac-2007-tuf6-13",
+   "quote": "MATT ARROYO – Injured and could not compete in Semi-Finals. John Kolosci replaced him."
+  }
+ ],
+ "resolved": [
+  {
+   "season": "tuf-5",
+   "stage": "quarter_final",
+   "status_now": null,
+   "note": "Closed against the Nevada State Athletic Commission record: all four quarter-finals are on it, and Gray Maynard beat Brandon Melendez before meeting Nate Diaz in the semi-finals."
+  },
+  {
+   "season": "tuf-5",
+   "conflict": "quarter_finals",
+   "resolved_with": "Nevada State Athletic Commission, Mixed Martial Arts Results — Season 5, The Ultimate Fighter — record nsac-2007-tuf5-09 (2007-02-21, \"Quarter Finals\") and nsac-2007-tuf5-14 (2007-02-28, \"SEMI-FINAL BOUT\")"
+  }
+ ],
+ "seasons": {
+  "tuf-5": {
+   "before": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "hub_card": "Complete",
+    "score": 70,
+    "depth_score": 63,
+    "results_verified": "1/15",
+    "house_secondary_only": 14,
+    "house_commission_verified": 0,
+    "commission_backed_exhibitions": "0/14",
+    "classification_unresolved": 0,
+    "open_conflicts": 5,
+    "timeline_events": 0,
+    "professional_final_linked": 1,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ]
+   },
+   "after": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "hub_card": "Complete",
+    "score": 88,
+    "depth_score": 96,
+    "results_verified": "15/15",
+    "house_secondary_only": 0,
+    "house_commission_verified": 14,
+    "commission_backed_exhibitions": "14/14",
+    "classification_unresolved": 0,
+    "open_conflicts": 4,
+    "timeline_events": 0,
+    "professional_final_linked": 1,
+    "blockers": [
+     "OPEN_SOURCE_CONFLICT"
+    ]
+   }
+  },
+  "tuf-6": {
+   "before": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "hub_card": "Complete",
+    "score": 69,
+    "depth_score": 51,
+    "results_verified": "1/15",
+    "house_secondary_only": 14,
+    "house_commission_verified": 0,
+    "commission_backed_exhibitions": "0/13",
+    "classification_unresolved": 1,
+    "open_conflicts": 0,
+    "timeline_events": 0,
+    "professional_final_linked": 1,
+    "blockers": [
+     "ROSTER_MISSING",
+     "CLASSIFICATION_UNRESOLVED",
+     "BRACKET_NAME_NOT_IN_ROSTER",
+     "HOUSE_RESULTS_SECONDARY_ONLY"
+    ]
+   },
+   "after": {
+    "status": "PARTIAL",
+    "structure": "complete",
+    "hub_card": "Complete",
+    "score": 88,
+    "depth_score": 83,
+    "results_verified": "15/15",
+    "house_secondary_only": 0,
+    "house_commission_verified": 14,
+    "commission_backed_exhibitions": "14/14",
+    "classification_unresolved": 0,
+    "open_conflicts": 0,
+    "timeline_events": 3,
+    "professional_final_linked": 1,
+    "blockers": [
+     "ROSTER_MISSING",
+     "BRACKET_NAME_NOT_IN_ROSTER"
+    ]
+   }
+  }
+ },
+ "seasons_changed": [
+  "tuf-5",
+  "tuf-6"
+ ],
+ "totals": {
+  "complete": {
+   "before": 1,
+   "after": 1
+  },
+  "partial": {
+   "before": 43,
+   "after": 43
+  },
+  "blocked": {
+   "before": 0,
+   "after": 0
+  },
+  "result_verified": {
+   "before": 197,
+   "after": 225
+  },
+  "result_partial": {
+   "before": 556,
+   "after": 528
+  },
+  "result_unknown": {
+   "before": 1,
+   "after": 1
+  },
+  "finals_verified": {
+   "before": 63,
+   "after": 63
+  },
+  "finale_links_verified": {
+   "before": 63,
+   "after": 63
+  },
+  "classification_exhibition": {
+   "before": 539,
+   "after": 540
+  },
+  "classification_unresolved": {
+   "before": 151,
+   "after": 150
+  },
+  "exhibition_with_affirmative_basis": {
+   "before": 46,
+   "after": 74
+  },
+  "exhibition_absence_only": {
+   "before": 493,
+   "after": 466
+  },
+  "depth_timeline_events": {
+   "before": 37,
+   "after": 40
+  },
+  "commission_backed_exhibitions": {
+   "before": 46,
+   "after": 74
+  },
+  "house_secondary_only": {
+   "before": 552,
+   "after": 524
+  },
+  "structure_complete": {
+   "before": 44,
+   "after": 44
+  }
+ },
+ "hub_cards": {
+  "before": {
+   "Complete": 42,
+   "Complete + Verified": 1,
+   "Season ongoing": 1
+  },
+  "after": {
+   "Complete": 42,
+   "Complete + Verified": 1,
+   "Season ongoing": 1
+  }
+ }
+}
