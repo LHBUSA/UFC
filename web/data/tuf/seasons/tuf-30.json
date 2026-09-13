@@ -11,7 +11,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_Pe%C3%B1a_vs._Team_Nunes",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "_conflicts": [
     {
@@ -173,12 +175,26 @@
               "a": "Jordan Heiderman",
               "b": "Chandler Cole",
               "winner": "Jordan Heiderman",
-              "method": "TKO (punches)",
+              "method": "TKO (strikes)",
               "round": 3,
-              "time": "1:16",
+              "time": "1:14",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "sources": [
+                {
+                  "repair": "tuf-30/qf/heiderman-cole/time",
+                  "fields": [
+                    "time",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-7-recap-the-ultimate-fighter-team-pena-vs-team-nunes-jordan-heiderman-chandler-cole",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2022-06-14T17:20:58-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Jordan Heiderman def. Chandler Cole by TKO (strikes) at 1:14 of Round 3"
+                }
+              ]
             },
             {
               "a": "Eduardo Perez",

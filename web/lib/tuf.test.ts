@@ -513,6 +513,80 @@ test("a documented wildcard or replacement is recorded with the sentence that do
   assert.ok(seen > 20, `these seasons are full of wildcards and replacements; only ${seen} were captured`);
 });
 
+/* ---- official repairs ------------------------------------------------------ */
+
+type Repair = {
+  id: string; season: string; op: string; kind: string;
+  bout?: { weight_class: string; stage: string; a: string; b: string };
+  set?: Record<string, unknown>; value?: Record<string, unknown>;
+  source: { url: string; family: string; quote: string };
+  add_conflict?: { kind: string };
+};
+const ledger = JSON.parse(readFileSync(new URL("../data/tuf/official_repairs.json", import.meta.url), "utf8")) as { repairs: Repair[] };
+
+function ledgerBout(r: Repair) {
+  const detail = DETAIL_BY_SLUG[r.season];
+  const st = detail?.bracket?.find((d) => d.weight_class === r.bout!.weight_class)?.stages.find((s) => s.stage === r.bout!.stage);
+  return st?.bouts.filter((b) => (b.a === r.bout!.a && b.b === r.bout!.b) || (b.a === r.bout!.b && b.b === r.bout!.a)) ?? [];
+}
+
+test("every official repair is present in the season files, with its source on the bout", () => {
+  assert.ok(ledger.repairs.length >= 10);
+  for (const r of ledger.repairs) {
+    assert.match(r.source.url, /^https:\/\/www\.ufc\.com\//, `${r.id}: an official repair cites an official page`);
+    assert.ok(r.source.quote.length > 20, `${r.id}: the sentence carrying the fact is kept`);
+    if (r.op !== "patch_bout" && r.op !== "add_bout") continue;
+    const hits = ledgerBout(r);
+    assert.equal(hits.length, 1, `${r.id}: exactly one bout carries the repair`);
+    const bout = hits[0] as Bout & { sources?: Array<{ repair: string }> };
+    for (const [k, v] of Object.entries(r.set ?? r.value ?? {})) {
+      assert.deepEqual((bout as Record<string, unknown>)[k], v, `${r.id}: ${k} is not in the state the ledger records`);
+    }
+    assert.ok(bout.sources?.some((s) => s.repair === r.id), `${r.id}: the bout must say which source changed it`);
+  }
+});
+
+test("the six source conflicts resolve to the official account", () => {
+  const find = (slug: string, a: string, b: string, stage: string) =>
+    (DETAIL_BY_SLUG[slug].bracket ?? []).flatMap((d) => d.stages.filter((s) => s.stage === stage).flatMap((s) => s.bouts))
+      .filter((x) => (x.a === a && x.b === b) || (x.a === b && x.b === a));
+  for (const [a, b] of [["James McSweeney", "Roy Nelson"], ["Brendan Schaub", "Marcus Jones"]]) {
+    assert.equal(find("tuf-10", a, b, "semi_final")[0].episode, 12, `TUF 10 ${a} vs ${b} aired in episode 12`);
+  }
+  /* Two different fights between the same men, and they must stay two. */
+  const r16 = find("tuf-11", "Josh Bryant", "Kris McCray", "round_of_16");
+  const sf = find("tuf-11", "Josh Bryant", "Kris McCray", "semi_final");
+  assert.equal(r16.length, 1);
+  assert.equal(sf.length, 1);
+  assert.deepEqual([r16[0].winner, r16[0].episode, r16[0].round], ["Josh Bryant", 5, 3]);
+  assert.deepEqual([sf[0].winner, sf[0].episode], ["Kris McCray", 11]);
+  assert.equal(find("tuf-30", "Jordan Heiderman", "Chandler Cole", "quarter_final")[0].time, "1:14");
+  assert.equal(find("tuf-33", "Alibi Idiris", "Roybert Echeverria", "semi_final")[0].method, "KO (flying knee)");
+  const t32 = DETAIL_BY_SLUG["tuf-32"] as { _conflicts?: Array<{ kind?: string }> };
+  assert.equal(find("tuf-32", "Guillermo Torres", "Roedie Roets", "quarter_final")[0].winner, "Roedie Roets");
+  assert.ok(
+    t32._conflicts?.some((c) => c.kind === "official_source_contradicts_itself"),
+    "an official page that contradicts itself is recorded as a conflict, not resolved away",
+  );
+});
+
+test("a repaired bout keeps its classification and the evidence behind it", () => {
+  for (const r of ledger.repairs.filter((x) => x.op === "patch_bout" || x.op === "add_bout")) {
+    const b = ledgerBout(r)[0];
+    if (b.classification === "exhibition") {
+      assert.ok(b.classification_source, `${r.id}: still sourced`);
+      if (b.episode != null) {
+        assert.match(b.classification_source!, new RegExp(`episode ${b.episode}\\b`), `${r.id}: the evidence names the corrected episode`);
+      }
+    }
+    assert.ok(!countsTowardsRecordShape(b), `${r.id}: an in-house bout never becomes record-eligible through a repair`);
+  }
+});
+
+function countsTowardsRecordShape(b: Bout) {
+  return b.classification === "professional" && Boolean(b.classification_source) && !(b as { on_finale_card?: boolean }).on_finale_card;
+}
+
 test("a season with no bracket to load is not filed as missing data", () => {
   const fc = seasons.filter((s) => s.coverage === "format_complete");
   assert.equal(fc.length, 1, "season 21 is the only season with no tournament bracket");
