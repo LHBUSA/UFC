@@ -24,44 +24,56 @@
     {
       "team": "Team Whittaker",
       "name": "Robert Whittaker",
+      "fighter_id": "67a8b445-de16-48b4-8cb4-f60d64f5f04d",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Fabricio Itte",
-      "role": "head",
-      "note": "Wrestling Coach"
+      "role": "assistant",
+      "discipline": "Wrestling",
+      "note": "Wrestling Coach",
+      "role_basis": "source note: \"Wrestling Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Justin Fitzgerald",
-      "role": "head",
-      "note": "Boxing Coach"
+      "role": "assistant",
+      "discipline": "Boxing",
+      "note": "Boxing Coach",
+      "role_basis": "source note: \"Boxing Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Sergio Penha",
-      "role": "head",
-      "note": "Jiu Jitsu Coach"
+      "role": "assistant",
+      "discipline": "Jiu Jitsu",
+      "note": "Jiu Jitsu Coach",
+      "role_basis": "source note: \"Jiu Jitsu Coach\""
     },
     {
       "team": "Team Gastelum",
       "name": "Kelvin Gastelum",
+      "fighter_id": "498b0036-6dc0-491a-8e36-f4ec466a6c35",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Terrell Hunsinger",
       "role": "assistant",
-      "note": "Assistant Coach"
+      "note": "Assistant Coach",
+      "role_basis": "source note: \"Assistant Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Tyler Minton",
       "role": "assistant",
-      "note": "Assistant Coach"
+      "note": "Assistant Coach",
+      "role_basis": "source note: \"Assistant Coach\""
     }
   ],
   "teams": [
@@ -74,11 +86,13 @@
         },
         {
           "name": "Juan Espino",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "ea7357c6-7133-4ce7-8707-795c46c26abe"
         },
         {
           "name": "Michel Batista",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "64588fcd-835f-4925-b7c3-f1f9ffc80087"
         },
         {
           "name": "Przemysław Mysiala",
@@ -86,15 +100,18 @@
         },
         {
           "name": "Julija Stoliarenko",
-          "weight_class": "Women's Featherweight"
+          "weight_class": "Women's Featherweight",
+          "fighter_id": "d9680268-f039-449e-94d6-0536b37e03b6"
         },
         {
           "name": "Leah Letson",
-          "weight_class": "Women's Featherweight"
+          "weight_class": "Women's Featherweight",
+          "fighter_id": "86c4283d-3901-4fd0-bd11-d2c7059d727c"
         },
         {
           "name": "Larissa Pacheco",
-          "weight_class": "Women's Featherweight"
+          "weight_class": "Women's Featherweight",
+          "fighter_id": "9f0fd12b-7ccd-4f54-bca5-7cfa1708b19b"
         },
         {
           "name": "Katharina Lehner",
@@ -107,31 +124,38 @@
       "roster": [
         {
           "name": "Ben Sosoli",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "e0c805ac-3077-4e46-b387-1118f6e221b6"
         },
         {
           "name": "Maurice Greene",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "0949d137-832e-45a8-88e3-531f74dd566b"
         },
         {
           "name": "Josh Parisian",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "c20e9a5c-b4b4-4816-b9ed-dd229a408142"
         },
         {
           "name": "Justin Frazier",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "f50a5185-ca1d-4307-b501-45497a89be1c"
         },
         {
           "name": "Macy Chiasson",
-          "weight_class": "Women's Featherweight"
+          "weight_class": "Women's Featherweight",
+          "fighter_id": "2cdc9861-742c-4499-a586-cee4e6bed7e0"
         },
         {
           "name": "Pannie Kianzad",
-          "weight_class": "Women's Featherweight"
+          "weight_class": "Women's Featherweight",
+          "fighter_id": "74aea984-1cb8-470d-aff7-415bbe24f947"
         },
         {
           "name": "Bea Malecki",
-          "weight_class": "Women's Featherweight"
+          "weight_class": "Women's Featherweight",
+          "fighter_id": "acd09310-bf1c-442e-99c4-72a7d52fbd28"
         },
         {
           "name": "Marciea Allen",
@@ -169,7 +193,9 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c20e9a5c-b4b4-4816-b9ed-dd229a408142",
+              "b_fighter_id": "64588fcd-835f-4925-b7c3-f1f9ffc80087"
             },
             {
               "a": "Justin Frazier",
@@ -180,7 +206,8 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f50a5185-ca1d-4307-b501-45497a89be1c"
             },
             {
               "a": "Maurice Greene",
@@ -191,7 +218,8 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0949d137-832e-45a8-88e3-531f74dd566b"
             },
             {
               "a": "Ben Sosoli",
@@ -202,7 +230,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "e0c805ac-3077-4e46-b387-1118f6e221b6",
+              "b_fighter_id": "ea7357c6-7133-4ce7-8707-795c46c26abe"
             }
           ]
         },
@@ -219,7 +249,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "64588fcd-835f-4925-b7c3-f1f9ffc80087",
+              "b_fighter_id": "f50a5185-ca1d-4307-b501-45497a89be1c"
             },
             {
               "a": "Maurice Greene",
@@ -230,7 +262,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "0949d137-832e-45a8-88e3-531f74dd566b",
+              "b_fighter_id": "ea7357c6-7133-4ce7-8707-795c46c26abe"
             }
           ]
         },
@@ -250,7 +284,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "f50a5185-ca1d-4307-b501-45497a89be1c",
+              "b_fighter_id": "ea7357c6-7133-4ce7-8707-795c46c26abe"
             }
           ]
         }
@@ -272,7 +308,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "74aea984-1cb8-470d-aff7-415bbe24f947"
             },
             {
               "a": "Marciea Allen",
@@ -283,7 +320,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "d9680268-f039-449e-94d6-0536b37e03b6"
             },
             {
               "a": "Bea Malecki",
@@ -294,7 +332,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "acd09310-bf1c-442e-99c4-72a7d52fbd28",
+              "b_fighter_id": "86c4283d-3901-4fd0-bd11-d2c7059d727c"
             },
             {
               "a": "Macy Chiasson",
@@ -305,7 +345,9 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2cdc9861-742c-4499-a586-cee4e6bed7e0",
+              "b_fighter_id": "9f0fd12b-7ccd-4f54-bca5-7cfa1708b19b"
             }
           ]
         },
@@ -322,7 +364,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "74aea984-1cb8-470d-aff7-415bbe24f947",
+              "b_fighter_id": "d9680268-f039-449e-94d6-0536b37e03b6"
             },
             {
               "a": "Leah Letson",
@@ -333,7 +377,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2018, which are complete for that year — 50 events, 529 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "86c4283d-3901-4fd0-bd11-d2c7059d727c",
+              "b_fighter_id": "2cdc9861-742c-4499-a586-cee4e6bed7e0"
             }
           ]
         },
@@ -353,7 +399,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "74aea984-1cb8-470d-aff7-415bbe24f947",
+              "b_fighter_id": "2cdc9861-742c-4499-a586-cee4e6bed7e0"
             }
           ]
         }
@@ -377,7 +425,8 @@
         "event": "The Ultimate Fighter: Heavy Hitters Finale",
         "date": "2018-11-30"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "ea7357c6-7133-4ce7-8707-795c46c26abe"
     },
     {
       "weight_class": "Women's Featherweight",
@@ -390,7 +439,8 @@
         "event": "The Ultimate Fighter: Heavy Hitters Finale",
         "date": "2018-11-30"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "2cdc9861-742c-4499-a586-cee4e6bed7e0"
     }
   ]
 }

@@ -81,7 +81,8 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e790b376-7880-44e8-925b-447628e3b202"
             },
             {
               "a": "Jonathan Ortega",
@@ -92,7 +93,8 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "d1527992-269a-423a-905e-c938a6ef73e5"
             },
             {
               "a": "Danny Salas",
@@ -103,7 +105,8 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "d83d5cce-d34c-4026-be7b-a99314a996cd"
             },
             {
               "a": "Christhian Soto",
@@ -114,7 +117,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "b81e9ff3-d26a-4e7e-bbd5-c0166311c086"
             }
           ]
         },
@@ -131,7 +135,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e790b376-7880-44e8-925b-447628e3b202",
+              "b_fighter_id": "d1527992-269a-423a-905e-c938a6ef73e5"
             },
             {
               "a": "Horacio Gutiérrez",
@@ -142,7 +148,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "d83d5cce-d34c-4026-be7b-a99314a996cd",
+              "b_fighter_id": "b81e9ff3-d26a-4e7e-bbd5-c0166311c086"
             }
           ]
         },
@@ -162,7 +170,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "d1527992-269a-423a-905e-c938a6ef73e5",
+              "b_fighter_id": "d83d5cce-d34c-4026-be7b-a99314a996cd"
             }
           ]
         }
@@ -184,7 +194,8 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "86a83750-28a8-425c-a749-e1685e5d8c9c"
             },
             {
               "a": "Hector Aldana",
@@ -195,7 +206,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ddf393d7-c9ac-47a2-ab25-32c510679d44",
+              "b_fighter_id": "2c0b65ca-3601-49ba-bda1-da575ac036db"
             },
             {
               "a": "Erick Montaño",
@@ -206,7 +219,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "09a3c956-bd33-49a8-969f-d0a85d5ea68b"
             },
             {
               "a": "Wilmer Fernández",
@@ -217,7 +231,8 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "809b7e62-7360-4c88-a8fd-7fcc45b0545a"
             }
           ]
         },
@@ -234,7 +249,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "86a83750-28a8-425c-a749-e1685e5d8c9c",
+              "b_fighter_id": "ddf393d7-c9ac-47a2-ab25-32c510679d44"
             },
             {
               "a": "Erick Montaño",
@@ -245,7 +262,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2015, which are complete for that year — 41 events, 473 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "09a3c956-bd33-49a8-969f-d0a85d5ea68b",
+              "b_fighter_id": "809b7e62-7360-4c88-a8fd-7fcc45b0545a"
             }
           ]
         },
@@ -265,7 +284,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "86a83750-28a8-425c-a749-e1685e5d8c9c",
+              "b_fighter_id": "09a3c956-bd33-49a8-969f-d0a85d5ea68b"
             }
           ]
         }
@@ -289,7 +310,8 @@
         "event": "UFC Fight Night: Magny vs Gastelum",
         "date": "2015-11-21"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+      "fighter_id": "d1527992-269a-423a-905e-c938a6ef73e5"
     },
     {
       "weight_class": "Welterweight",
@@ -302,7 +324,8 @@
         "event": "UFC Fight Night: Magny vs Gastelum",
         "date": "2015-11-21"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+      "fighter_id": "09a3c956-bd33-49a8-969f-d0a85d5ea68b"
     }
   ]
 }

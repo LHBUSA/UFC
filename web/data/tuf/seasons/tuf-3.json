@@ -22,56 +22,67 @@
   ],
   "coaches": [
     {
-      "team": "",
-      "name": "Team Ortiz",
-      "role": "head"
-    },
-    {
-      "team": "",
+      "team": "Team Ortiz",
       "name": "Tito Ortiz",
+      "fighter_id": "6c94e303-2ab9-4f5e-8a2b-b8a9a369c360",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Ortiz",
       "name": "Dean Lister",
-      "role": "head",
-      "note": "jiu jitsu coach"
+      "fighter_id": "160d48ba-40ab-45b7-a815-c6820646ceaa",
+      "role": "assistant",
+      "discipline": "jiu jitsu",
+      "note": "jiu jitsu coach",
+      "role_basis": "source note: \"jiu jitsu coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Ortiz",
       "name": "Saul Soliz",
-      "role": "head",
-      "note": "kickboxing coach"
+      "role": "assistant",
+      "discipline": "kickboxing",
+      "note": "kickboxing coach",
+      "role_basis": "source note: \"kickboxing coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Ortiz",
       "name": "Wing Butler",
-      "role": "head",
-      "note": "sign language interpreter"
+      "role": "other",
+      "note": "sign language interpreter",
+      "role_basis": "source note: \"sign language interpreter\" (staff, not a coach)",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
-      "name": "Team Shamrock",
-      "role": "head"
-    },
-    {
-      "team": "",
+      "team": "Team Shamrock",
       "name": "Ken Shamrock",
+      "fighter_id": "404702dc-e2b8-4703-a291-0299990a74d0",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Shamrock",
       "name": "Roman Pollock",
-      "role": "head",
-      "note": "boxing coach"
+      "role": "assistant",
+      "discipline": "boxing",
+      "note": "boxing coach",
+      "role_basis": "source note: \"boxing coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Shamrock",
       "name": "Dan Freeman",
-      "role": "head",
-      "note": "nutrition/strength coach"
+      "role": "assistant",
+      "discipline": "nutrition/strength",
+      "note": "nutrition/strength coach",
+      "role_basis": "source note: \"nutrition/strength coach\"",
+      "team_basis": "section order in the season source"
     }
   ],
   "teams": [
@@ -84,31 +95,38 @@
         },
         {
           "name": "Kendall Grove",
-          "weight_class": "Team Ortiz"
+          "weight_class": "Team Ortiz",
+          "fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
         },
         {
           "name": "Rory Singer",
-          "weight_class": "Team Ortiz"
+          "weight_class": "Team Ortiz",
+          "fighter_id": "bf82e7bb-bb93-4924-92fe-910cc6b02e5d"
         },
         {
           "name": "Danny Abbadi",
-          "weight_class": "Team Ortiz"
+          "weight_class": "Team Ortiz",
+          "fighter_id": "9e388bfc-f7cb-4990-aa76-54d87f77b3dd"
         },
         {
           "name": "Kalib Starnes",
-          "weight_class": "Team Shamrock"
+          "weight_class": "Team Shamrock",
+          "fighter_id": "80a70b97-37a5-48bb-aedc-42a8f44e81d1"
         },
         {
           "name": "Solomon Hutcherson",
-          "weight_class": "Team Shamrock"
+          "weight_class": "Team Shamrock",
+          "fighter_id": "ec1b64ab-0263-4f03-9c2a-262fb0d3edc2"
         },
         {
           "name": "Ed Herman",
-          "weight_class": "Team Shamrock"
+          "weight_class": "Team Shamrock",
+          "fighter_id": "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a"
         },
         {
           "name": "Ross Pointon",
-          "weight_class": "Team Shamrock"
+          "weight_class": "Team Shamrock",
+          "fighter_id": "4e32d334-47ac-4e8f-a075-8ed51ac61469"
         }
       ]
     },
@@ -117,11 +135,13 @@
       "roster": [
         {
           "name": "Matt Hamill",
-          "weight_class": "Team Ortiz"
+          "weight_class": "Team Ortiz",
+          "fighter_id": "7c603bce-b425-4c35-a69e-23704c12a76a"
         },
         {
           "name": "Michael Bisping",
-          "weight_class": "Team Ortiz"
+          "weight_class": "Team Ortiz",
+          "fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f"
         },
         {
           "name": "Noah Inhofer",
@@ -129,15 +149,18 @@
         },
         {
           "name": "Josh Haynes",
-          "weight_class": "Team Ortiz"
+          "weight_class": "Team Ortiz",
+          "fighter_id": "8540fb3a-4db2-4691-8e54-a46067d079d0"
         },
         {
           "name": "Jesse Forbes",
-          "weight_class": "Team Shamrock"
+          "weight_class": "Team Shamrock",
+          "fighter_id": "9c566705-75a1-46be-8ee4-5b2e341e6f35"
         },
         {
           "name": "Kristian Rothaermel",
-          "weight_class": "Team Shamrock"
+          "weight_class": "Team Shamrock",
+          "fighter_id": "507d1012-749f-4efd-b689-c3454907cd10"
         },
         {
           "name": "Tait Fletcher",
@@ -145,7 +168,8 @@
         },
         {
           "name": "Mike Nickels",
-          "weight_class": "Team Shamrock"
+          "weight_class": "Team Shamrock",
+          "fighter_id": "10fda69e-6534-490c-a2a9-21cdbde121dc"
         }
       ]
     }
@@ -225,7 +249,8 @@
               "time": "2:09",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "80a70b97-37a5-48bb-aedc-42a8f44e81d1"
             },
             {
               "a": "Ross Pointon",
@@ -236,7 +261,9 @@
               "time": "3:45",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4e32d334-47ac-4e8f-a075-8ed51ac61469",
+              "b_fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
             },
             {
               "a": "Solomon Hutcherson",
@@ -247,7 +274,9 @@
               "time": "0:21",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ec1b64ab-0263-4f03-9c2a-262fb0d3edc2",
+              "b_fighter_id": "bf82e7bb-bb93-4924-92fe-910cc6b02e5d"
             },
             {
               "a": "Ed Herman",
@@ -258,7 +287,9 @@
               "time": "4:14",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a",
+              "b_fighter_id": "9e388bfc-f7cb-4990-aa76-54d87f77b3dd"
             }
           ]
         },
@@ -275,7 +306,9 @@
               "time": "0:30",
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "80a70b97-37a5-48bb-aedc-42a8f44e81d1",
+              "b_fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
             },
             {
               "a": "Rory Singer",
@@ -286,7 +319,9 @@
               "time": "2:31",
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "bf82e7bb-bb93-4924-92fe-910cc6b02e5d",
+              "b_fighter_id": "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a"
             }
           ]
         },
@@ -306,7 +341,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6",
+              "b_fighter_id": "d2f41bc2-ec66-44f1-9e27-5d85b6d2ab2a"
             }
           ]
         }
@@ -328,7 +365,8 @@
               "time": "2:35",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "9c566705-75a1-46be-8ee4-5b2e341e6f35"
             },
             {
               "a": "Tait Fletcher",
@@ -339,7 +377,8 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "8540fb3a-4db2-4691-8e54-a46067d079d0"
             },
             {
               "a": "Mike Nickels",
@@ -350,7 +389,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "10fda69e-6534-490c-a2a9-21cdbde121dc",
+              "b_fighter_id": "7c603bce-b425-4c35-a69e-23704c12a76a"
             },
             {
               "a": "Kristian Rothaermel",
@@ -361,7 +402,9 @@
               "time": "3:51",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "507d1012-749f-4efd-b689-c3454907cd10",
+              "b_fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f"
             }
           ]
         },
@@ -378,7 +421,9 @@
               "time": "0:18",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "9c566705-75a1-46be-8ee4-5b2e341e6f35",
+              "b_fighter_id": "8540fb3a-4db2-4691-8e54-a46067d079d0"
             },
             {
               "a": "Ross Pointon",
@@ -389,7 +434,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4e32d334-47ac-4e8f-a075-8ed51ac61469",
+              "b_fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f"
             }
           ],
           "format_exceptions": [
@@ -421,7 +468,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "8540fb3a-4db2-4691-8e54-a46067d079d0",
+              "b_fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f"
             }
           ]
         }
@@ -445,7 +494,8 @@
         "event": "The Ultimate Fighter: Team Ortiz vs. Team Shamrock Finale",
         "date": "2006-06-24"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "e5e4a741-21c8-41de-a581-c14c0be0ffb6"
     },
     {
       "weight_class": "Light Heavyweight",
@@ -458,7 +508,8 @@
         "event": "The Ultimate Fighter: Team Ortiz vs. Team Shamrock Finale",
         "date": "2006-06-24"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f"
     }
   ]
 }

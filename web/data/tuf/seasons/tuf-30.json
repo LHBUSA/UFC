@@ -31,14 +31,18 @@
     {
       "team": "Team Peña",
       "name": "Julianna Peña",
+      "fighter_id": "dabc8833-d2fc-4a5b-bf67-1bf69c8a98ce",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Nunes",
       "name": "Amanda Nunes",
+      "fighter_id": "c00f064b-2a2c-474f-b64d-057642207f6b",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     }
   ],
   "teams": [
@@ -47,11 +51,13 @@
       "roster": [
         {
           "name": "Mohammed Usman",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586"
         },
         {
           "name": "Zac Pauga",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa"
         },
         {
           "name": "Jordan Heiderman",
@@ -67,7 +73,8 @@
         },
         {
           "name": "Juliana Miller",
-          "weight_class": "Women's Flyweight"
+          "weight_class": "Women's Flyweight",
+          "fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07"
         },
         {
           "name": "Hannah Guy",
@@ -75,13 +82,49 @@
         },
         {
           "name": "Chantel Coates",
-          "weight_class": "Women's Flyweight"
+          "weight_class": "Women's Flyweight",
+          "status": "withdrawn",
+          "episode": 4,
+          "note": "Weighed 154.5 lb, 28.5 over the flyweight limit, days before her scheduled bout with Brogan Walker; her coaches pulled her from the competition in episode 4.",
+          "sources": [
+            {
+              "repair": "tuf-30/roster/coates-gallardo",
+              "fields": [
+                "status",
+                "episode",
+                "note"
+              ],
+              "url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-team-pena-vs-team-nunes",
+              "family": "ufc_com_recap",
+              "published_on_site": "2022-05-24T15:35:22-04:00",
+              "retrieved": "2026-09-12",
+              "quote": "comes in at 154.5 pounds, meaning she’s 28.5 pounds above the flyweight limit ... the coaches outline to Coates that they have to pull her from the fight. ... Pena explains that she’s familiar with her alternate, Laura Gallardo"
+            }
+          ]
         },
         {
-          "name": "Coates was unable to make weight"
-        },
-        {
-          "name": "was replaced on episode 4 by Gallardo"
+          "name": "Laura Gallardo",
+          "status": "replacement",
+          "replacement_for": "Chantel Coates",
+          "episode": 4,
+          "note": "Team Peña's alternate, brought in for Chantel Coates in episode 4.",
+          "sources": [
+            {
+              "repair": "tuf-30/roster/coates-gallardo",
+              "fields": [
+                "name",
+                "status",
+                "replacement_for",
+                "episode",
+                "note"
+              ],
+              "url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-team-pena-vs-team-nunes",
+              "family": "ufc_com_recap",
+              "published_on_site": "2022-05-24T15:35:22-04:00",
+              "retrieved": "2026-09-12",
+              "quote": "comes in at 154.5 pounds, meaning she’s 28.5 pounds above the flyweight limit ... the coaches outline to Coates that they have to pull her from the fight. ... Pena explains that she’s familiar with her alternate, Laura Gallardo"
+            }
+          ]
         }
       ]
     },
@@ -94,11 +137,13 @@
         },
         {
           "name": "Chandler Cole",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "9d6cb0e8-88dc-40cf-910a-3ccf7a12bf52"
         },
         {
           "name": "Mitchell Sipe",
-          "weight_class": "Heavyweight"
+          "weight_class": "Heavyweight",
+          "fighter_id": "058f90d6-95f9-44fe-ba0f-214bbad5fb5f"
         },
         {
           "name": "Nyle Bartling",
@@ -110,7 +155,8 @@
         },
         {
           "name": "Brogan Walker-Sanchez",
-          "weight_class": "Women's Flyweight"
+          "weight_class": "Women's Flyweight",
+          "fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596"
         },
         {
           "name": "Kaytlin Neil",
@@ -118,7 +164,8 @@
         },
         {
           "name": "Kathryn Paprocki",
-          "weight_class": "Women's Flyweight"
+          "weight_class": "Women's Flyweight",
+          "fighter_id": "26390164-4020-4033-9ad4-3bb539346ab8"
         }
       ]
     }
@@ -130,8 +177,6 @@
       ],
       "fighters": [
         "Chantel Coates",
-        "Coates was unable to make weight",
-        "was replaced on episode 4 by Gallardo",
         "Laura Gallardo",
         "Brogan Walker"
       ],
@@ -143,7 +188,6 @@
         "injury"
       ],
       "fighters": [
-        "was replaced on episode 4 by Gallardo",
         "Kathryn Paprocki",
         "Laura Gallardo",
         "Brogan Walker"
@@ -169,7 +213,8 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa"
             },
             {
               "a": "Jordan Heiderman",
@@ -194,7 +239,8 @@
                   "retrieved": "2026-09-12",
                   "quote": "Official Result: Jordan Heiderman def. Chandler Cole by TKO (strikes) at 1:14 of Round 3"
                 }
-              ]
+              ],
+              "b_fighter_id": "9d6cb0e8-88dc-40cf-910a-3ccf7a12bf52"
             },
             {
               "a": "Eduardo Perez",
@@ -216,7 +262,9 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+              "b_fighter_id": "058f90d6-95f9-44fe-ba0f-214bbad5fb5f"
             }
           ]
         },
@@ -233,7 +281,8 @@
               "time": "0:37",
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa"
             },
             {
               "a": "Eduardo Perez",
@@ -244,7 +293,8 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586"
             }
           ]
         },
@@ -264,7 +314,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+              "b_fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586"
             }
           ],
           "status": "unverified",
@@ -288,7 +340,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596"
             },
             {
               "a": "Laura Gallardo",
@@ -299,7 +352,8 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "26390164-4020-4033-9ad4-3bb539346ab8"
             },
             {
               "a": "Helen Peralta",
@@ -321,7 +375,8 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07"
             }
           ]
         },
@@ -338,7 +393,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596"
             },
             {
               "a": "Juliana Miller",
@@ -349,7 +405,8 @@
               "time": "3:34",
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07"
             }
           ]
         },
@@ -369,7 +426,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+              "b_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07"
             }
           ]
         }
@@ -393,7 +452,8 @@
         "event": "UFC Fight Night: Santos vs. Hill",
         "date": "2022-08-06"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+      "fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586"
     },
     {
       "weight_class": "Women's Flyweight",
@@ -406,7 +466,8 @@
         "event": "UFC Fight Night: Santos vs. Hill",
         "date": "2022-08-06"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+      "fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07"
     }
   ]
 }

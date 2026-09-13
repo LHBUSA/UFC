@@ -16,70 +16,96 @@
     {
       "team": "Team Carwin",
       "name": "Shane Carwin",
+      "fighter_id": "2ecfccfe-350a-46e8-a12f-6be75f90084a",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Trevor Wittman",
-      "role": "head",
-      "note": "boxing coach"
+      "role": "assistant",
+      "discipline": "boxing",
+      "note": "boxing coach",
+      "role_basis": "source note: \"boxing coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Nate Marquardt",
-      "role": "head",
-      "note": "jiu Jitsu coach"
+      "fighter_id": "9a1e249c-c060-4506-809c-8eb578c9b476",
+      "role": "assistant",
+      "discipline": "jiu Jitsu",
+      "note": "jiu Jitsu coach",
+      "role_basis": "source note: \"jiu Jitsu coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Pat Barry",
-      "role": "head",
-      "note": "striking coach"
+      "fighter_id": "65b9ad7e-f89d-47f2-92aa-33e3638bfa2b",
+      "role": "assistant",
+      "discipline": "striking",
+      "note": "striking coach",
+      "role_basis": "source note: \"striking coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Duane Ludwig",
-      "role": "head",
-      "note": "striking coach"
+      "fighter_id": "bc084fe7-ad9a-4d5f-a2e9-16803bdd1ec7",
+      "role": "assistant",
+      "discipline": "striking",
+      "note": "striking coach",
+      "role_basis": "source note: \"striking coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Leister Bowling",
-      "role": "head",
-      "note": "wrestling coach"
+      "role": "assistant",
+      "discipline": "wrestling",
+      "note": "wrestling coach",
+      "role_basis": "source note: \"wrestling coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Loren Landlow",
-      "role": "head",
-      "note": "sports performance coach"
+      "role": "other",
+      "note": "sports performance coach",
+      "role_basis": "source note: \"sports performance coach\" (staff, not a coach)"
     },
     {
       "team": "Team Nelson",
       "name": "Roy Nelson",
+      "fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Nick Diaz",
-      "role": "head"
+      "fighter_id": "619798d7-9395-4f5a-93a5-c847c0e342f3",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Nate Diaz",
-      "role": "head"
+      "fighter_id": "146aad7c-3e37-4432-942c-53d0b9a5d5eb",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jake Shields",
-      "role": "head"
+      "fighter_id": "831e9532-bd01-4388-ba5e-90ff4b709483",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Gilbert Melendez",
-      "role": "head"
+      "fighter_id": "ff07b3f8-8a86-4e43-896c-844703675442",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -87,16 +113,20 @@
       "name": "Team Carwin",
       "roster": [
         {
-          "name": "Sam Alvey"
+          "name": "Sam Alvey",
+          "fighter_id": "8419dc7e-b21a-41aa-ae46-57641d39fd02"
         },
         {
-          "name": "Bristol Marunde"
+          "name": "Bristol Marunde",
+          "fighter_id": "313cca7b-3844-4e6f-ac1c-1b5f970b3283"
         },
         {
-          "name": "Mike Ricci"
+          "name": "Mike Ricci",
+          "fighter_id": "c9d96798-4718-4d03-a2b8-b39de0e4c2ae"
         },
         {
-          "name": "Neil Magny"
+          "name": "Neil Magny",
+          "fighter_id": "364315aa-0984-4f42-9c3f-4af8f52d2f56"
         },
         {
           "name": "James Chaney"
@@ -105,7 +135,8 @@
           "name": "Eddy Ellis"
         },
         {
-          "name": "Igor Araujo"
+          "name": "Igor Araujo",
+          "fighter_id": "28bc2ef8-62f2-46c1-8051-01e0bd6ab6bc"
         },
         {
           "name": "Matt Secor"
@@ -125,10 +156,12 @@
           "name": "Cameron Diffley"
         },
         {
-          "name": "Colton Smith"
+          "name": "Colton Smith",
+          "fighter_id": "5d5485ab-4125-498c-b9ae-4a5f61761043"
         },
         {
-          "name": "Jon Manley"
+          "name": "Jon Manley",
+          "fighter_id": "0aada74e-eb17-4fad-93a6-c93a4160d259"
         },
         {
           "name": "Nic Herron-Webb"
@@ -159,7 +192,8 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "8419dc7e-b21a-41aa-ae46-57641d39fd02"
             },
             {
               "a": "Jon Manley",
@@ -170,7 +204,8 @@
               "time": "3:25",
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0aada74e-eb17-4fad-93a6-c93a4160d259"
             },
             {
               "a": "Nic Herron-Webb",
@@ -181,7 +216,8 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "28bc2ef8-62f2-46c1-8051-01e0bd6ab6bc"
             },
             {
               "a": "Colton Smith",
@@ -192,7 +228,8 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5d5485ab-4125-498c-b9ae-4a5f61761043"
             },
             {
               "a": "Dom Waters",
@@ -203,7 +240,8 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "c9d96798-4718-4d03-a2b8-b39de0e4c2ae"
             },
             {
               "a": "Michael Hill",
@@ -225,7 +263,8 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "313cca7b-3844-4e6f-ac1c-1b5f970b3283"
             },
             {
               "a": "Cameron Diffley",
@@ -236,7 +275,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "364315aa-0984-4f42-9c3f-4af8f52d2f56"
             }
           ]
         },
@@ -253,7 +293,8 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "0aada74e-eb17-4fad-93a6-c93a4160d259"
             },
             {
               "a": "Igor Araujo",
@@ -264,7 +305,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "28bc2ef8-62f2-46c1-8051-01e0bd6ab6bc",
+              "b_fighter_id": "5d5485ab-4125-498c-b9ae-4a5f61761043"
             },
             {
               "a": "Mike Ricci",
@@ -275,7 +318,8 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c9d96798-4718-4d03-a2b8-b39de0e4c2ae"
             },
             {
               "a": "Bristol Marunde",
@@ -286,7 +330,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "313cca7b-3844-4e6f-ac1c-1b5f970b3283",
+              "b_fighter_id": "364315aa-0984-4f42-9c3f-4af8f52d2f56"
             }
           ]
         },
@@ -303,7 +349,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0aada74e-eb17-4fad-93a6-c93a4160d259",
+              "b_fighter_id": "5d5485ab-4125-498c-b9ae-4a5f61761043"
             },
             {
               "a": "Mike Ricci",
@@ -314,7 +362,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2012, which are complete for that year — 31 events, 341 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c9d96798-4718-4d03-a2b8-b39de0e4c2ae",
+              "b_fighter_id": "364315aa-0984-4f42-9c3f-4af8f52d2f56"
             }
           ]
         },
@@ -334,7 +384,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "5d5485ab-4125-498c-b9ae-4a5f61761043",
+              "b_fighter_id": "c9d96798-4718-4d03-a2b8-b39de0e4c2ae"
             }
           ]
         }
@@ -358,7 +410,8 @@
         "event": "The Ultimate Fighter: Team Carwin vs. Team Nelson Finale",
         "date": "2012-12-15"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "5d5485ab-4125-498c-b9ae-4a5f61761043"
     }
   ]
 }

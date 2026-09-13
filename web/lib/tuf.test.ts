@@ -533,8 +533,12 @@ function ledgerBout(r: Repair) {
 test("every official repair is present in the season files, with its source on the bout", () => {
   assert.ok(ledger.repairs.length >= 10);
   for (const r of ledger.repairs) {
-    assert.match(r.source.url, /^https:\/\/www\.ufc\.com\//, `${r.id}: an official repair cites an official page`);
-    assert.ok(r.source.quote.length > 20, `${r.id}: the sentence carrying the fact is kept`);
+    /* The one exception is stripping wiki markup from a name, which asserts
+     * nothing the draft did not already say. */
+    if (r.kind !== "markup_debris") {
+      assert.match(r.source.url, /^https:\/\/www\.ufc\.com\//, `${r.id}: an official repair cites an official page`);
+      assert.ok(r.source.quote.length > 20, `${r.id}: the sentence carrying the fact is kept`);
+    }
     if (r.op !== "patch_bout" && r.op !== "add_bout") continue;
     const hits = ledgerBout(r);
     assert.equal(hits.length, 1, `${r.id}: exactly one bout carries the repair`);
@@ -581,6 +585,116 @@ test("a repaired bout keeps its classification and the evidence behind it", () =
     }
     assert.ok(!countsTowardsRecordShape(b), `${r.id}: an in-house bout never becomes record-eligible through a repair`);
   }
+});
+
+/* ---- identity -------------------------------------------------------------- */
+
+type IdentityEntry = {
+  roles: string[]; status: string; tier?: string; rule?: string; fighter_id?: string;
+  evidence?: unknown; candidates?: Array<{ id: string; name: string; rule?: string; evidence?: unknown }>;
+};
+const identity = JSON.parse(readFileSync(new URL("../data/tuf/identity.json", import.meta.url), "utf8")) as {
+  entries: Record<string, IdentityEntry>;
+  proven_duplicates: Record<string, { canonical_for_archive: string; proof: string }>;
+};
+const identityIndex = JSON.parse(readFileSync(new URL("../data/tuf/identity.index.json", import.meta.url), "utf8")) as Record<string, Record<string, string>>;
+
+test("a house fighter never borrows a namesake's career", () => {
+  const e = identity.entries["tuf-28|Anderson da Silva"];
+  assert.ok(e, "TUF 28's Anderson da Silva is in the registry");
+  assert.notEqual(e.status, "linked", "Anderson da Silva must not resolve to Anderson Silva");
+  assert.equal(identityIndex["tuf-28"]?.["Anderson da Silva"], undefined);
+});
+
+test("an accent does not decide whether a coach or champion links", () => {
+  const pena18 = identity.entries["tuf-18|Julianna Peña"];
+  const pena30 = identity.entries["tuf-30|Julianna Peña"];
+  assert.equal(pena18.status, "linked");
+  assert.equal(pena30.status, "linked");
+  assert.equal(pena18.fighter_id, pena30.fighter_id, "one person across both seasons");
+  for (const s of seasons) {
+    for (const w of s.winners) {
+      assert.ok((w as { fighter_id?: string }).fighter_id, `${s.slug}: winner ${w.fighter} resolves to a canonical fighter`);
+    }
+  }
+});
+
+test("a spelling convention is never accepted without a bout behind it", () => {
+  for (const [key, e] of Object.entries(identity.entries)) {
+    if (e.status !== "linked") continue;
+    if (e.tier === "convention" || e.tier === "exact_with_evidence") {
+      assert.ok(e.evidence, `${key}: linked by ${e.rule} with no evidence`);
+    }
+    assert.match(String(e.fighter_id), /^[0-9a-f-]{36}$/, `${key}: a link is a canonical id`);
+  }
+});
+
+test("every id on a season page is the id the registry decided", () => {
+  for (const [slug, detail] of Object.entries(DETAIL_BY_SLUG)) {
+    const d = detail as {
+      bracket?: Array<{ stages: Array<{ bouts: Array<Bout & { a_fighter_id?: string; b_fighter_id?: string }> }> }>;
+      teams?: Array<{ roster: Array<{ name: string; fighter_id?: string }> }>;
+      coaches?: Array<{ name: string; fighter_id?: string }>;
+    };
+    const want = (name: string) => identityIndex[slug]?.[name];
+    for (const div of d.bracket ?? []) for (const st of div.stages) for (const b of st.bouts) {
+      assert.equal(b.a_fighter_id, want(b.a), `${slug}: ${b.a}`);
+      assert.equal(b.b_fighter_id, want(b.b), `${slug}: ${b.b}`);
+    }
+    for (const t of d.teams ?? []) for (const p of t.roster) assert.equal(p.fighter_id, want(p.name), `${slug}: roster ${p.name}`);
+    for (const c of d.coaches ?? []) assert.equal(c.fighter_id, want(c.name), `${slug}: staff ${c.name}`);
+  }
+});
+
+test("a proven duplicate row is recorded with its proof, and both spellings reach one fighter", () => {
+  const dup = identity.proven_duplicates["f5785bba-c6f8-45de-8682-d044d586c8ac"];
+  assert.ok(dup?.proof.includes("2504639"), "the proof names the shared opponent");
+  const a = identityIndex["tuf-brazil-3"]?.["Márcio Alexandre Jr."];
+  const b = identityIndex["tuf-brazil-3"]?.["Márcio Alexandre Júnior"];
+  assert.ok(a && a === b && a === dup.canonical_for_archive);
+});
+
+/* ---- rosters and staff ------------------------------------------------------- */
+
+test("no roster, staff or exception entry is parser debris", () => {
+  const debris = /\[\[|\]\]|\|TUF|\bwas replaced\b|\bunable to make weight\b|^\s*;/;
+  for (const [slug, detail] of Object.entries(DETAIL_BY_SLUG)) {
+    const d = detail as {
+      teams?: Array<{ roster: Array<{ name: string }> }>;
+      coaches?: Array<{ name: string }>;
+      format_exceptions?: Array<{ fighters: string[] }>;
+    };
+    for (const t of d.teams ?? []) for (const p of t.roster) assert.doesNotMatch(p.name, debris, `${slug}: roster "${p.name}"`);
+    for (const c of d.coaches ?? []) assert.doesNotMatch(c.name, debris, `${slug}: staff "${c.name}"`);
+    for (const x of d.format_exceptions ?? []) for (const n of x.fighters) assert.doesNotMatch(n, debris, `${slug}: exception "${n}"`);
+  }
+  const t25 = DETAIL_BY_SLUG["tuf-25"] as { teams: Array<{ name: string; roster: Array<{ name: string; pick?: number }> }> };
+  assert.deepEqual(
+    t25.teams.find((t) => t.name === "Team Dillashaw")!.roster.map((p) => p.name),
+    ["James Krause", "Jesse Taylor", "Ramsey Nijem", "Dhiego Lima", "Joe Stevenson", "Tom Gallicchio", "Gilbert Smith"],
+    "TUF 25 rosters are the official selection order",
+  );
+});
+
+test("staff roles are head, assistant, guest or other, and only the season's coaches are head", () => {
+  const ROLES = new Set(["head", "assistant", "guest", "other"]);
+  let heads = 0;
+  let assistants = 0;
+  for (const s of seasons) {
+    const d = DETAIL_BY_SLUG[s.slug] as { coaches?: Array<{ name: string; role: string; role_basis?: string; note?: string }> };
+    for (const c of d?.coaches ?? []) {
+      assert.ok(ROLES.has(c.role), `${s.slug}: ${c.name} has role "${c.role}"`);
+      assert.ok(c.role_basis, `${s.slug}: ${c.name} must say why it has its role`);
+      if (c.role === "head") {
+        heads += 1;
+        const named = (s as unknown as { coaches: string[] }).coaches.some((n) => n.normalize("NFD").replace(/[̀-ͯ]/g, "") === c.name.normalize("NFD").replace(/[̀-ͯ]/g, ""));
+        assert.ok(named || /head coach/i.test(c.note ?? ""), `${s.slug}: ${c.name} is head without being a named or noted head coach`);
+      }
+      if (c.role === "assistant") assistants += 1;
+    }
+  }
+  assert.ok(heads < 100, `head coaches are two a season, not ${heads}`);
+  assert.ok(assistants > heads, "assistants outnumber head coaches");
 });
 
 function countsTowardsRecordShape(b: Bout) {

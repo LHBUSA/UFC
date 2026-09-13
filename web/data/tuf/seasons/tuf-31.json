@@ -17,62 +17,82 @@
     {
       "team": "Team McGregor",
       "name": "Conor McGregor",
+      "fighter_id": "8f4b27fb-34af-46cf-83a5-2cd3e5c1ffcc",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "John Kavanagh",
       "role": "assistant",
-      "note": "Assistant Coach"
+      "note": "Assistant Coach",
+      "role_basis": "source note: \"Assistant Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Owen Roddy",
-      "role": "head",
-      "note": "Striking/Boxing Coach"
+      "role": "assistant",
+      "discipline": "Striking/Boxing",
+      "note": "Striking/Boxing Coach",
+      "role_basis": "source note: \"Striking/Boxing Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Cian Cowley",
-      "role": "head",
-      "note": "Muay Thai Coach"
+      "role": "assistant",
+      "discipline": "Muay Thai",
+      "note": "Muay Thai Coach",
+      "role_basis": "source note: \"Muay Thai Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Phil Sutcliffe",
-      "role": "head",
-      "note": "Boxing Coach"
+      "role": "assistant",
+      "discipline": "Boxing",
+      "note": "Boxing Coach",
+      "role_basis": "source note: \"Boxing Coach\""
     },
     {
       "team": "Team Chandler",
       "name": "Michael Chandler",
+      "fighter_id": "52712309-ab1c-4b92-93c8-8c45a1704b0c",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Ryan Bader",
+      "fighter_id": "3986a037-6bf6-48d6-ba9a-072999f4d2c3",
       "role": "assistant",
-      "note": "Assistant Coach"
+      "note": "Assistant Coach",
+      "role_basis": "source note: \"Assistant Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Robert Drysdale",
-      "role": "head",
-      "note": "Jiu Jitsu Coach"
+      "fighter_id": "11aa702f-acef-49cc-91d1-f2acc98de480",
+      "role": "assistant",
+      "discipline": "Jiu Jitsu",
+      "note": "Jiu Jitsu Coach",
+      "role_basis": "source note: \"Jiu Jitsu Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jason Strout",
-      "role": "head",
-      "note": "Striking Coach"
+      "role": "assistant",
+      "discipline": "Striking",
+      "note": "Striking Coach",
+      "role_basis": "source note: \"Striking Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Greg Jones",
-      "role": "head",
-      "note": "Wrestling Coach"
+      "role": "assistant",
+      "discipline": "Wrestling",
+      "note": "Wrestling Coach",
+      "role_basis": "source note: \"Wrestling Coach\""
     }
   ],
   "teams": [
@@ -81,15 +101,18 @@
       "roster": [
         {
           "name": "Rico DiSciullo",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b"
         },
         {
           "name": "Mando Gutierrez",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "dbb6f2c8-ab92-42c8-8bcc-2ec883ad91e3"
         },
         {
           "name": "Carlos Vera",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "1afc302d-f6e5-4d85-a70a-e7ae835559b2"
         },
         {
           "name": "Trevor Wells",
@@ -109,7 +132,8 @@
         },
         {
           "name": "Landon Quiñones",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "4a6ed304-4f80-4ae7-90d9-0e92850cb756"
         }
       ]
     },
@@ -118,35 +142,43 @@
       "roster": [
         {
           "name": "Hunter Azure",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "4caa6eda-3ae0-4004-8fb7-79cf8ec6b74a"
         },
         {
           "name": "Cody Gibson",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
         },
         {
           "name": "Brad Katona",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed"
         },
         {
           "name": "Timur Valiev",
-          "weight_class": "Bantamweight"
+          "weight_class": "Bantamweight",
+          "fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
         },
         {
           "name": "Kurt Holobaugh",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416"
         },
         {
           "name": "Austin Hubbard",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8"
         },
         {
           "name": "Jason Knight",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c"
         },
         {
           "name": "Roosevelt Roberts",
-          "weight_class": "Lightweight"
+          "weight_class": "Lightweight",
+          "fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555"
         }
       ]
     }
@@ -168,7 +200,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "1afc302d-f6e5-4d85-a70a-e7ae835559b2",
+              "b_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed"
             },
             {
               "a": "Trevor Wells",
@@ -179,7 +213,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
             },
             {
               "a": "Hunter Azure",
@@ -190,7 +225,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "4caa6eda-3ae0-4004-8fb7-79cf8ec6b74a",
+              "b_fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b"
             },
             {
               "a": "Mando Gutierrez",
@@ -201,7 +238,9 @@
               "time": "3:23",
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2023, which are complete for that year — 53 events, 569 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2023, which are complete for that year — 53 events, 569 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "dbb6f2c8-ab92-42c8-8bcc-2ec883ad91e3",
+              "b_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
             }
           ]
         },
@@ -218,7 +257,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+              "b_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
             },
             {
               "a": "Rico DiSciullo",
@@ -229,7 +270,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
+              "b_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
             }
           ]
         },
@@ -249,7 +292,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+              "b_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
             }
           ]
         }
@@ -271,7 +316,8 @@
               "time": "0:08",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2023, which are complete for that year — 53 events, 569 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2023, which are complete for that year — 53 events, 569 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555"
             },
             {
               "a": "Aaron McKenzie",
@@ -282,7 +328,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8"
             },
             {
               "a": "Jason Knight",
@@ -293,7 +340,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
+              "b_fighter_id": "4a6ed304-4f80-4ae7-90d9-0e92850cb756"
             },
             {
               "a": "Lee Hammond",
@@ -304,7 +353,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416"
             }
           ]
         },
@@ -321,7 +371,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
+              "b_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8"
             },
             {
               "a": "Jason Knight",
@@ -332,7 +384,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
+              "b_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416"
             }
           ]
         },
@@ -352,7 +406,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+              "b_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416"
             }
           ]
         }
@@ -376,7 +432,8 @@
         "event": "UFC 292: Sterling vs. O'Malley",
         "date": "2023-08-19"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+      "fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed"
     },
     {
       "weight_class": "Lightweight",
@@ -389,7 +446,8 @@
         "event": "UFC 292: Sterling vs. O'Malley",
         "date": "2023-08-19"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
+      "fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416"
     }
   ]
 }

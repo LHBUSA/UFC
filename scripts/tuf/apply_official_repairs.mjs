@@ -120,6 +120,62 @@ export function applyRepairsToSeason(season, inventoryRow, ledger) {
         log.push(`${r.id}: coverage ${inventoryRow.coverage} -> ${r.set_coverage}`);
         inventoryRow.coverage = r.set_coverage;
       }
+    } else if (r.op === 'set_team_rosters') {
+      const want = r.teams.map((t) => ({ name: t.name, roster: t.roster.map((p) => ({ ...p })) }));
+      const current = season.teams || [];
+      const applied = want.every((t) => {
+        const have = current.find((c) => c.name === t.name);
+        return have && same(have.roster.map((p) => p.name), t.roster.map((p) => p.name));
+      });
+      if (applied) { log.push(`${r.id}: already applied`); }
+      else {
+        /* Only replace a roster that is visibly broken. A clean roster that
+         * merely differs is a disagreement to look at, not debris to sweep. */
+        const debris = current.some((t) => t.roster.some((p) => String(p.name).includes(r.expect_debris)));
+        if (!debris) { refused.push(`${r.id}: expected debris "${r.expect_debris}" in the current roster and found none`); continue; }
+        season.teams = want.map((t) => {
+          const prev = current.find((c) => c.name === t.name) || {};
+          return { ...prev, name: t.name, roster: t.roster };
+        });
+        log.push(`${r.id}: rosters rebuilt`);
+      }
+      for (const t of season.teams) {
+        if (want.some((w) => w.name === t.name)) { t.pick_basis = r.pick_basis; addSource(t, sourceEntry(r, ['roster'])); }
+      }
+      if (r.draft) season.draft = { ...r.draft, source: r.source.url };
+    } else if (r.op === 'patch_roster') {
+      const team = (season.teams || []).find((t) => t.name === r.team);
+      if (!team) { refused.push(`${r.id}: no team ${r.team}`); continue; }
+      let changed = false;
+      for (const junk of r.remove || []) {
+        const before = team.roster.length;
+        team.roster = team.roster.filter((p) => p.name !== junk);
+        if (team.roster.length !== before) changed = true;
+      }
+      for (const [from, to] of Object.entries(r.rename || {})) {
+        for (const p of team.roster) if (p.name === from) { p.name = to; p.printed_as = from; changed = true; }
+      }
+      for (const [name, fields] of Object.entries(r.annotate || {})) {
+        const p = team.roster.find((x) => x.name === name);
+        if (!p) { refused.push(`${r.id}: ${name} not on ${r.team}`); continue; }
+        for (const [k, v] of Object.entries(fields)) if (!same(p[k], v)) { p[k] = v; changed = true; }
+        addSource(p, sourceEntry(r, Object.keys(fields)));
+      }
+      for (const add of r.add || []) {
+        let p = team.roster.find((x) => x.name === add.name);
+        if (!p) { p = { ...add }; team.roster.push(p); changed = true; }
+        addSource(p, sourceEntry(r, Object.keys(add)));
+      }
+      const fx = r.format_exceptions;
+      if (fx) {
+        for (const x of season.format_exceptions || []) {
+          const next = [...new Set(x.fighters
+            .filter((n) => !(fx.drop || []).includes(n))
+            .map((n) => (fx.rename || {})[n] || n))];
+          if (!same(next, x.fighters)) { x.fighters = next; changed = true; }
+        }
+      }
+      log.push(`${r.id}: ${changed ? 'applied' : 'already applied'}`);
     } else {
       refused.push(`${r.id}: unknown op ${r.op}`);
       continue;

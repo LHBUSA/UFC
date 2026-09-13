@@ -10,7 +10,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Redemption",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "_conflicts": [
     {
@@ -23,143 +25,209 @@
     {
       "team": "Team Garbrandt",
       "name": "Cody Garbrandt",
+      "fighter_id": "8194f109-c951-455f-a4bc-055250d027fb",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Urijah Faber",
-      "role": "head"
+      "fighter_id": "96fceb90-0bf8-4a2c-ab81-ffe2b5b6ed8b",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Danny Castillo",
-      "role": "head"
+      "fighter_id": "1fb7d5cf-1ed2-402f-b578-cda3ccebc279",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Justin Buchholz",
-      "role": "head"
+      "fighter_id": "d2f1cbc2-0c68-4c68-9cf1-4512bd0fed76",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Fábio Prado",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Robert Meese",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Eddie Barraco",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Dillashaw",
       "name": "T.J. Dillashaw",
+      "fighter_id": "5b3b8865-f1c3-442f-94d1-7db9c47faa2b",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Duane Ludwig",
-      "role": "head"
+      "fighter_id": "bc084fe7-ad9a-4d5f-a2e9-16803bdd1ec7",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Eliot Marshall",
-      "role": "head"
+      "fighter_id": "a5158fd1-d265-4d6f-a3d1-a2b0fd4fa3e0",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Leister Bowling",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Matt Brown",
-      "role": "head"
+      "fighter_id": "fd96b49b-7712-45a7-9200-825a7815be52",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Robert Follis",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
     {
-      "name": "Team Garbrandt",
+      "name": "Team Dillashaw",
       "roster": [
         {
-          "name": "Team Liddell vs",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+          "name": "James Krause",
+          "pick": 1,
+          "fighter_id": "3b6911f1-dd29-4d39-992d-fd3549dc5aa4"
         },
         {
-          "name": "Team Ortiz|TUF 11]]), Mehdi Baghdad ([[The Ultimate Fighter: Team McGregor vs",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+          "name": "Jesse Taylor",
+          "pick": 2,
+          "fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1"
         },
         {
-          "name": "Team Faber|TUF 22]]), Eddie Gordon ([[The Ultimate Fighter: Team Edgar vs",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+          "name": "Ramsey Nijem",
+          "pick": 3,
+          "fighter_id": "20f60f25-983a-42b6-8796-1a87bee8b0b3"
         },
         {
-          "name": "Team Penn|TUF 19]]), Hayder Hassan ([[The Ultimate Fighter: American Top Team vs",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+          "name": "Dhiego Lima",
+          "pick": 4,
+          "fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8"
         },
         {
-          "name": "Blackzilians|TUF 21]]), Julian Lane ([[The Ultimate Fighter: Team Carwin vs",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+          "name": "Joe Stevenson",
+          "pick": 5,
+          "fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e"
         },
         {
-          "name": "Team Nelson|TUF 16]]), Justin Edwards ([[The Ultimate Fighter: Team Lesnar vs",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+          "name": "Tom Gallicchio",
+          "pick": 6,
+          "fighter_id": "0c5e7f09-5732-4a2e-bebf-c163f14b8803"
         },
         {
-          "name": "Team dos Santos|TUF 13]])",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
-        },
+          "name": "Gilbert Smith",
+          "pick": 7,
+          "fighter_id": "a51da90a-d0f9-43ee-8c20-2e6994bbd065"
+        }
+      ],
+      "pick_basis": "position in the team list the official episode 1 recap gives under 'here's how the team selections were made'; the same recap calls Seth Baczynski Garbrandt's No. 1 pick and Gilbert Smith Dillashaw's last selection",
+      "sources": [
         {
-          "name": "Johnny Nunez* ([[The Ultimate Fighter: Team McGregor vs",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
-        },
-        {
-          "name": "Team Faber|TUF 22]])",
-          "weight_class": "Seth Baczynski ([[The Ultimate Fighter"
+          "repair": "tuf-25/rosters/rebuilt",
+          "fields": [
+            "roster"
+          ],
+          "url": "https://www.ufc.com/news/ultimate-fighter-redemption-ep-1-recap",
+          "family": "ufc_com_recap",
+          "published_on_site": "2018-09-14T08:36:04-04:00",
+          "retrieved": "2026-09-12",
+          "quote": "TEAM DILLASHAW James Krause, Jesse Taylor, Ramsey Nijem, Dhiego Lima, Joe Stevenson, Tom Gallicchio, Gilbert Smith TEAM GARBRANDT Seth Baczynski, Mehdi Baghdad, Eddie Gordon, Hector Urbina, Hayder Hassan, Julian Lane, Justin Edwards. ... With Urbina gone, Garbrandt selected Johnny Nunez ... as his replacement",
+          "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
         }
       ]
     },
     {
-      "name": "Team Dillashaw",
+      "name": "Team Garbrandt",
       "roster": [
         {
-          "name": "Live|TUF 15]]), Jesse Taylor ([[The Ultimate Fighter: Team Rampage vs",
-          "weight_class": "James Krause ([[The Ultimate Fighter"
+          "name": "Seth Baczynski",
+          "pick": 1,
+          "fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3"
         },
         {
-          "name": "Team Forrest|TUF 7]]), Ramsey Nijem ([[The Ultimate Fighter: Team Lesnar vs",
-          "weight_class": "James Krause ([[The Ultimate Fighter"
+          "name": "Mehdi Baghdad",
+          "pick": 2,
+          "fighter_id": "4ccaaf23-bed5-45fa-9d5f-042a891dfebc"
         },
         {
-          "name": "Team dos Santos|TUF 13]]), Dhiego Lima ([[The Ultimate Fighter: Team Edgar vs",
-          "weight_class": "James Krause ([[The Ultimate Fighter"
+          "name": "Eddie Gordon",
+          "pick": 3,
+          "fighter_id": "0a622157-e34c-433f-8a70-57f80ea1fc9e"
         },
         {
-          "name": "Team Penn|TUF 19]]), Joe Stevenson (TUF 2), Tom Gallicchio ([[The Ultimate Fighter: Team McGregor vs",
-          "weight_class": "James Krause ([[The Ultimate Fighter"
+          "name": "Hector Urbina",
+          "pick": 4,
+          "status": "withdrawn",
+          "note": "Came in more than 20 pounds over the welterweight limit and left the competition in episode 1 without fighting; replaced by Johnny Nunez.",
+          "episode": 1,
+          "fighter_id": "b8c84994-6548-4563-8c15-7ffb6283e7e5"
         },
         {
-          "name": "Team Faber|TUF 22]])",
-          "weight_class": "James Krause ([[The Ultimate Fighter"
+          "name": "Hayder Hassan",
+          "pick": 5,
+          "fighter_id": "bb5cc4aa-1000-455e-b84e-194f62c30cf4"
         },
         {
-          "name": "Gilbert Smith ([[The Ultimate Fighter: Team Jones vs",
-          "weight_class": "James Krause ([[The Ultimate Fighter"
+          "name": "Julian Lane",
+          "pick": 6
         },
         {
-          "name": "Team Sonnen|TUF 17]])",
-          "weight_class": "James Krause ([[The Ultimate Fighter"
+          "name": "Justin Edwards",
+          "pick": 7,
+          "fighter_id": "769dbc02-f5e5-49d3-a7ce-d09f514998b4"
+        },
+        {
+          "name": "Johnny Nunez",
+          "status": "replacement",
+          "replacement_for": "Hector Urbina",
+          "note": "Selected by Garbrandt in episode 1 to replace Hector Urbina.",
+          "episode": 1
+        }
+      ],
+      "pick_basis": "position in the team list the official episode 1 recap gives under 'here's how the team selections were made'; the same recap calls Seth Baczynski Garbrandt's No. 1 pick and Gilbert Smith Dillashaw's last selection",
+      "sources": [
+        {
+          "repair": "tuf-25/rosters/rebuilt",
+          "fields": [
+            "roster"
+          ],
+          "url": "https://www.ufc.com/news/ultimate-fighter-redemption-ep-1-recap",
+          "family": "ufc_com_recap",
+          "published_on_site": "2018-09-14T08:36:04-04:00",
+          "retrieved": "2026-09-12",
+          "quote": "TEAM DILLASHAW James Krause, Jesse Taylor, Ramsey Nijem, Dhiego Lima, Joe Stevenson, Tom Gallicchio, Gilbert Smith TEAM GARBRANDT Seth Baczynski, Mehdi Baghdad, Eddie Gordon, Hector Urbina, Hayder Hassan, Julian Lane, Justin Edwards. ... With Urbina gone, Garbrandt selected Johnny Nunez ... as his replacement",
+          "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
         }
       ]
     }
@@ -228,7 +296,9 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3",
+              "b_fighter_id": "a51da90a-d0f9-43ee-8c20-2e6994bbd065"
             },
             {
               "a": "Hayder Hassan",
@@ -239,7 +309,9 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "bb5cc4aa-1000-455e-b84e-194f62c30cf4",
+              "b_fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8"
             },
             {
               "a": "Eddie Gordon",
@@ -250,7 +322,9 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0a622157-e34c-433f-8a70-57f80ea1fc9e",
+              "b_fighter_id": "0c5e7f09-5732-4a2e-bebf-c163f14b8803"
             },
             {
               "a": "Justin Edwards",
@@ -261,7 +335,9 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "769dbc02-f5e5-49d3-a7ce-d09f514998b4",
+              "b_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e"
             },
             {
               "a": "James Krause",
@@ -272,7 +348,8 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "3b6911f1-dd29-4d39-992d-fd3549dc5aa4"
             },
             {
               "a": "Ramsey Nijem",
@@ -283,7 +360,8 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "20f60f25-983a-42b6-8796-1a87bee8b0b3"
             },
             {
               "a": "Jesse Taylor",
@@ -294,7 +372,9 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1",
+              "b_fighter_id": "4ccaaf23-bed5-45fa-9d5f-042a891dfebc"
             },
             {
               "a": "Joe Stevenson",
@@ -305,7 +385,9 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "046fbca6-d803-4bc8-a3c9-d2d45144fc5e",
+              "b_fighter_id": "bb5cc4aa-1000-455e-b84e-194f62c30cf4"
             }
           ],
           "status": "unverified",
@@ -324,7 +406,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a51da90a-d0f9-43ee-8c20-2e6994bbd065",
+              "b_fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8"
             },
             {
               "a": "Tom Gallicchio",
@@ -335,7 +419,9 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "0c5e7f09-5732-4a2e-bebf-c163f14b8803",
+              "b_fighter_id": "769dbc02-f5e5-49d3-a7ce-d09f514998b4"
             },
             {
               "a": "James Krause",
@@ -346,7 +432,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "3b6911f1-dd29-4d39-992d-fd3549dc5aa4",
+              "b_fighter_id": "20f60f25-983a-42b6-8796-1a87bee8b0b3"
             },
             {
               "a": "Jesse Taylor",
@@ -357,7 +445,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1",
+              "b_fighter_id": "bb5cc4aa-1000-455e-b84e-194f62c30cf4"
             }
           ]
         },
@@ -374,7 +464,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8",
+              "b_fighter_id": "0c5e7f09-5732-4a2e-bebf-c163f14b8803"
             },
             {
               "a": "James Krause",
@@ -385,7 +477,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "3b6911f1-dd29-4d39-992d-fd3549dc5aa4",
+              "b_fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1"
             }
           ]
         },
@@ -405,7 +499,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8",
+              "b_fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1"
             }
           ]
         }
@@ -429,7 +525,15 @@
         "event": "The Ultimate Fighter: Redemption Finale",
         "date": "2017-07-07"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "ef8d0424-95a5-4734-b6c4-e197ed5972e1"
     }
-  ]
+  ],
+  "draft": {
+    "first_selection": "Team Dillashaw",
+    "first_fight_pick": "Team Garbrandt",
+    "basis": "coin toss won by Dillashaw, who took the first selection",
+    "fight_pick_rule": "fight picks alternated each week regardless of who won the previous bout",
+    "source": "https://www.ufc.com/news/ultimate-fighter-redemption-ep-1-recap"
+  }
 }

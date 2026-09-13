@@ -15,56 +15,71 @@
   },
   "coaches": [
     {
-      "team": "",
+      "team": null,
       "name": "Vitor Belfort",
+      "fighter_id": "47a004fd-5814-48fa-86de-5b6736999f42",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rodrigo Artilheiro",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Gilbert Burns",
-      "role": "head"
+      "fighter_id": "3aebb4e4-e90d-4e04-a8ed-b79518179734",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Luiz Carlos Dórea",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Francisco Filho",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Wanderlei Silva",
+      "fighter_id": "dcd7b51c-3599-4cb7-a218-d4b47bc62ce7",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Andre Amade",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rafael Cordeiro",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Renato Sobral",
-      "role": "head"
+      "fighter_id": "2a9416f5-acca-4dd2-a883-da43dd301050",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Fabrício Werdum",
-      "role": "head"
+      "fighter_id": "21660e67-082c-4a9e-b1f7-beb718ac5706",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -78,28 +93,35 @@
           "name": "Rony Mariano Bezerra"
         },
         {
-          "name": "John Teixeira"
+          "name": "John Teixeira",
+          "fighter_id": "60f1144e-55e7-4c14-8c31-fd9a4f3da264"
         },
         {
-          "name": "Marcos Vinícius"
+          "name": "Marcos Vinícius",
+          "fighter_id": "c61fb918-ac93-4fdf-97b4-ce9bfd64abfd"
         },
         {
-          "name": "Wagner Campos"
+          "name": "Wagner Campos",
+          "fighter_id": "6cb9719d-cdc2-4719-a9f4-5a38c04b4ad2"
         },
         {
           "name": "Middleweights"
         },
         {
-          "name": "Delson Heleno"
+          "name": "Delson Heleno",
+          "fighter_id": "fd7b41d3-2b93-46ea-9424-dfab006a89ee"
         },
         {
-          "name": "Francisco Trinaldo"
+          "name": "Francisco Trinaldo",
+          "fighter_id": "925d8cdc-8824-49ac-baef-4f3ecef16304"
         },
         {
-          "name": "Renee Forte"
+          "name": "Renee Forte",
+          "fighter_id": "52588946-cca5-4666-9500-3b8d534dfec4"
         },
         {
-          "name": "Leonardo Mafra"
+          "name": "Leonardo Mafra",
+          "fighter_id": "5eb7a5f0-9556-47c6-8521-2ab3dafc7aa7"
         }
       ]
     },
@@ -110,31 +132,39 @@
           "name": "Featherweights"
         },
         {
-          "name": "Hugo Viana"
+          "name": "Hugo Viana",
+          "fighter_id": "e08f35ec-a25f-4eda-87e0-630595ff4f3a"
         },
         {
-          "name": "Rodrigo Damm"
+          "name": "Rodrigo Damm",
+          "fighter_id": "c0babd42-4117-4692-a335-4918c5c9a5cb"
         },
         {
-          "name": "Godofredo Pepey"
+          "name": "Godofredo Pepey",
+          "fighter_id": "d40b9de0-80b5-4d0a-bbd0-40b3398dc939"
         },
         {
-          "name": "Anistávio Medeiros"
+          "name": "Anistávio Medeiros",
+          "fighter_id": "69fa2c6f-906c-48ed-90f6-e1df7185a50a"
         },
         {
           "name": "Middleweights"
         },
         {
-          "name": "Cezar Ferreira"
+          "name": "Cezar Ferreira",
+          "fighter_id": "ee7d7c32-0be3-4e41-ac0c-23f969944ea5"
         },
         {
-          "name": "Daniel Sarafian"
+          "name": "Daniel Sarafian",
+          "fighter_id": "f121bb37-c9e1-4011-b9e1-e90059bc02ca"
         },
         {
-          "name": "Thiago Perpétuo"
+          "name": "Thiago Perpétuo",
+          "fighter_id": "ab7b163e-dae1-4219-a772-bfbfeba03bf4"
         },
         {
-          "name": "Sérgio Moraes"
+          "name": "Sérgio Moraes",
+          "fighter_id": "55e5a11f-10ae-421e-92ab-330f606470c1"
         }
       ]
     },
@@ -155,11 +185,13 @@
         },
         {
           "name": "Dileno Lopes",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "bef25236-f689-4f64-b29f-ce6602a73695"
         },
         {
           "name": "Pedro Nobre",
-          "weight_class": "Featherweight"
+          "weight_class": "Featherweight",
+          "fighter_id": "d33902a9-a0d3-4cd6-9b53-135b6671995f"
         },
         {
           "name": "Alexandre Ramos",
@@ -187,7 +219,8 @@
         },
         {
           "name": "Richardson Moreira",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "8d4ff581-25bb-4d95-9c63-a17aa5dd2aad"
         },
         {
           "name": "Thiago Rela",
@@ -243,7 +276,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "d40b9de0-80b5-4d0a-bbd0-40b3398dc939",
+              "b_fighter_id": "6cb9719d-cdc2-4719-a9f4-5a38c04b4ad2"
             },
             {
               "a": "Rodrigo Damm",
@@ -254,7 +289,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "c0babd42-4117-4692-a335-4918c5c9a5cb",
+              "b_fighter_id": "60f1144e-55e7-4c14-8c31-fd9a4f3da264"
             },
             {
               "a": "Hugo Viana",
@@ -265,7 +302,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "e08f35ec-a25f-4eda-87e0-630595ff4f3a",
+              "b_fighter_id": "c61fb918-ac93-4fdf-97b4-ce9bfd64abfd"
             },
             {
               "a": "Anistavio Medeiros",
@@ -276,7 +315,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "69fa2c6f-906c-48ed-90f6-e1df7185a50a",
+              "b_fighter_id": "985955fe-1bed-45d8-a951-259c47fe29e8"
             }
           ]
         },
@@ -294,7 +335,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "d40b9de0-80b5-4d0a-bbd0-40b3398dc939",
+              "b_fighter_id": "c61fb918-ac93-4fdf-97b4-ce9bfd64abfd"
             },
             {
               "a": "Hugo Viana",
@@ -305,7 +348,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "e08f35ec-a25f-4eda-87e0-630595ff4f3a",
+              "b_fighter_id": "985955fe-1bed-45d8-a951-259c47fe29e8"
             }
           ],
           "format_exceptions": [
@@ -336,7 +381,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "d40b9de0-80b5-4d0a-bbd0-40b3398dc939",
+              "b_fighter_id": "985955fe-1bed-45d8-a951-259c47fe29e8"
             }
           ]
         }
@@ -358,7 +405,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "f121bb37-c9e1-4011-b9e1-e90059bc02ca",
+              "b_fighter_id": "52588946-cca5-4666-9500-3b8d534dfec4"
             },
             {
               "a": "Sérgio Moraes",
@@ -369,7 +418,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "55e5a11f-10ae-421e-92ab-330f606470c1",
+              "b_fighter_id": "fd7b41d3-2b93-46ea-9424-dfab006a89ee"
             },
             {
               "a": "Cezar Ferreira",
@@ -380,7 +431,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "ee7d7c32-0be3-4e41-ac0c-23f969944ea5",
+              "b_fighter_id": "5eb7a5f0-9556-47c6-8521-2ab3dafc7aa7"
             },
             {
               "a": "Thiago Perpétuo",
@@ -391,7 +444,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "ab7b163e-dae1-4219-a772-bfbfeba03bf4",
+              "b_fighter_id": "925d8cdc-8824-49ac-baef-4f3ecef16304"
             }
           ]
         },
@@ -408,7 +463,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "f121bb37-c9e1-4011-b9e1-e90059bc02ca",
+              "b_fighter_id": "55e5a11f-10ae-421e-92ab-330f606470c1"
             },
             {
               "a": "Cezar Ferreira",
@@ -419,7 +476,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "ee7d7c32-0be3-4e41-ac0c-23f969944ea5",
+              "b_fighter_id": "ab7b163e-dae1-4219-a772-bfbfeba03bf4"
             }
           ]
         },
@@ -439,7 +498,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "55e5a11f-10ae-421e-92ab-330f606470c1",
+              "b_fighter_id": "ee7d7c32-0be3-4e41-ac0c-23f969944ea5"
             }
           ]
         }
@@ -463,7 +524,8 @@
         "event": "UFC 147: Silva vs Franklin 2",
         "date": "2012-06-23"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+      "fighter_id": "985955fe-1bed-45d8-a951-259c47fe29e8"
     },
     {
       "weight_class": "Middleweight",
@@ -476,7 +538,8 @@
         "event": "UFC 147: Silva vs Franklin 2",
         "date": "2012-06-23"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup, champion is the recorded winner",
+      "fighter_id": "ee7d7c32-0be3-4e41-ac0c-23f969944ea5"
     }
   ]
 }

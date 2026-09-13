@@ -245,7 +245,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
 
       {/* Kept below the professional history and visually apart from it:
           house bouts are not part of the record above. */}
-      <TufOnFighter name={f.name} />
+      <TufOnFighter fighterId={f.id} />
 
       <VideoRail videos={videos} title={`${f.name} · official video`} eyebrow="Official channels · attached by fighter identity" note="Only videos the resolver linked to this fighter with medium or high confidence · embedded from YouTube, not hosted by PropBetEdge" max={4} />
 

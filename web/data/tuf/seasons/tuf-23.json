@@ -61,7 +61,8 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "1b38b3a3-c0e2-4659-af13-307c7b9db317"
             },
             {
               "a": "Elias Urbina IV",
@@ -72,7 +73,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "8f56e87d-5a80-4497-b48d-2cfac8dee69d",
+              "b_fighter_id": "a2acbdca-fb5d-4933-9ac9-b78b19edb4d9"
             },
             {
               "a": "Josh Stansbury",
@@ -83,7 +86,8 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "d60652f2-abb7-4694-b82c-3e3f49f050f5"
             },
             {
               "a": "Khalil Rountree",
@@ -94,7 +98,9 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e157711f-a5e0-4efe-bc63-e45f74a7e895",
+              "b_fighter_id": "06616b10-89f9-483c-aba3-68a604c465cb"
             }
           ]
         },
@@ -111,7 +117,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "1b38b3a3-c0e2-4659-af13-307c7b9db317",
+              "b_fighter_id": "a2acbdca-fb5d-4933-9ac9-b78b19edb4d9"
             },
             {
               "a": "Josh Stansbury",
@@ -122,7 +130,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "d60652f2-abb7-4694-b82c-3e3f49f050f5",
+              "b_fighter_id": "e157711f-a5e0-4efe-bc63-e45f74a7e895"
             }
           ],
           "format_exceptions": [
@@ -152,7 +162,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "1b38b3a3-c0e2-4659-af13-307c7b9db317",
+              "b_fighter_id": "e157711f-a5e0-4efe-bc63-e45f74a7e895"
             }
           ]
         }
@@ -174,7 +186,9 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4bdcba77-06cd-419b-ac02-bb0c23db1145",
+              "b_fighter_id": "6fae0484-8a90-4d40-9046-98903de9cdb8"
             },
             {
               "a": "Helen Harper",
@@ -196,7 +210,9 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a4aa5dd9-7392-4275-ae6b-4e26d858195a",
+              "b_fighter_id": "313da9e3-e53f-4011-a133-2ecdfd24ae50"
             },
             {
               "a": "Ashley Yoder",
@@ -207,7 +223,8 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "ee43e165-3b1b-4168-b00e-f79306c9aad1"
             }
           ]
         },
@@ -224,7 +241,8 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "6fae0484-8a90-4d40-9046-98903de9cdb8"
             },
             {
               "a": "Tatiana Suarez",
@@ -235,7 +253,8 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "313da9e3-e53f-4011-a133-2ecdfd24ae50"
             }
           ]
         },
@@ -255,7 +274,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "6fae0484-8a90-4d40-9046-98903de9cdb8",
+              "b_fighter_id": "313da9e3-e53f-4011-a133-2ecdfd24ae50"
             }
           ]
         }
@@ -279,7 +300,8 @@
         "event": "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale",
         "date": "2016-07-08"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "1b38b3a3-c0e2-4659-af13-307c7b9db317"
     },
     {
       "weight_class": "Women's Strawweight",
@@ -292,7 +314,8 @@
         "event": "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale",
         "date": "2016-07-08"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "313da9e3-e53f-4011-a133-2ecdfd24ae50"
     }
   ]
 }

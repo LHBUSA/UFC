@@ -22,46 +22,60 @@
   ],
   "coaches": [
     {
-      "team": "",
+      "team": null,
       "name": "Randy Couture",
-      "role": "head",
-      "note": "coach"
+      "fighter_id": "e5bc5dd5-58a7-419f-80ad-f97454d9e0ae",
+      "role": "other",
+      "note": "coach",
+      "role_basis": "source says \"coach\" on a season with no fixed coaches; not asserted as head or assistant"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Georges St-Pierre",
-      "role": "head",
-      "note": "coach"
+      "fighter_id": "0d330097-6917-470a-a48f-40b4e85ec3bb",
+      "role": "other",
+      "note": "coach",
+      "role_basis": "source says \"coach\" on a season with no fixed coaches; not asserted as head or assistant"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Mark DellaGrotte",
-      "role": "head",
-      "note": "Muay Thai/kickboxing coach"
+      "role": "assistant",
+      "discipline": "Muay Thai/kickboxing",
+      "note": "Muay Thai/kickboxing coach",
+      "role_basis": "source note: \"Muay Thai/kickboxing coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Marc Laimon",
-      "role": "head",
-      "note": "Brazilian jiu-jitsu coach"
+      "role": "assistant",
+      "discipline": "Brazilian jiu-jitsu",
+      "note": "Brazilian jiu-jitsu coach",
+      "role_basis": "source note: \"Brazilian jiu-jitsu coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rich Franklin",
-      "role": "head",
-      "note": "guest coach"
+      "fighter_id": "1eebf87a-9a1e-42ee-a43b-9facfda71466",
+      "role": "guest",
+      "note": "guest coach",
+      "role_basis": "source note: \"guest coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Chuck Liddell",
-      "role": "head",
-      "note": "guest coach"
+      "fighter_id": "22356d0a-d3df-4100-988e-254ef08da3c5",
+      "role": "guest",
+      "note": "guest coach",
+      "role_basis": "source note: \"guest coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Matt Hughes",
-      "role": "head",
-      "note": "guest coach"
+      "fighter_id": "a143202d-2906-4fb8-a91b-5165db04b5cf",
+      "role": "guest",
+      "note": "guest coach",
+      "role_basis": "source note: \"guest coach\""
     }
   ],
   "format_exceptions": [
@@ -104,7 +118,9 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "e14206b9-b68d-4802-8298-50c714867a50",
+              "b_fighter_id": "32f4cac6-4424-4c96-ba2b-4828542c673c"
             },
             {
               "a": "Pete Spratt",
@@ -115,7 +131,9 @@
               "time": "3:26",
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b47c906b-4963-4fdb-9c10-a5a49c213dad",
+              "b_fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84"
             },
             {
               "a": "Pete Spratt",
@@ -126,7 +144,9 @@
               "time": "2:06",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b47c906b-4963-4fdb-9c10-a5a49c213dad",
+              "b_fighter_id": "3be9b895-b4f9-4320-b25b-27d5ab056977"
             },
             {
               "a": "Mikey Burnett",
@@ -137,7 +157,9 @@
               "time": "2:30",
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2d30582b-5b98-492e-a91e-a64d6884bd65",
+              "b_fighter_id": "3d659f7c-bd87-4576-a49c-7681bae2050f"
             }
           ],
           "status": "unverified",
@@ -156,7 +178,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "32f4cac6-4424-4c96-ba2b-4828542c673c",
+              "b_fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84"
             },
             {
               "a": "Chris Lytle",
@@ -167,7 +191,9 @@
               "time": null,
               "episode": 9,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "3be9b895-b4f9-4320-b25b-27d5ab056977",
+              "b_fighter_id": "3d659f7c-bd87-4576-a49c-7681bae2050f"
             }
           ]
         },
@@ -187,7 +213,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
+              "b_fighter_id": "3be9b895-b4f9-4320-b25b-27d5ab056977"
             }
           ]
         }
@@ -209,7 +237,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "358c6724-6e74-4a52-9180-32a879d95494",
+              "b_fighter_id": "6bd2a00a-d785-4ae7-ade6-f90c890c438f"
             },
             {
               "a": "Travis Lutter",
@@ -220,7 +250,9 @@
               "time": "1:13",
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe",
+              "b_fighter_id": "d5d839b6-daa7-419a-ab86-d862330daa0f"
             },
             {
               "a": "Jorge Rivera",
@@ -231,7 +263,9 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "8a496581-070b-4836-86fc-31576d787e61",
+              "b_fighter_id": "68662bbe-e979-48af-9c82-b6336c25f2f1"
             },
             {
               "a": "Gideon Ray",
@@ -242,7 +276,9 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b47d2ee1-8766-4269-8d7a-3741672a7873",
+              "b_fighter_id": "451e7293-d496-44b8-9392-11debb333172"
             }
           ]
         },
@@ -259,7 +295,9 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "6bd2a00a-d785-4ae7-ade6-f90c890c438f",
+              "b_fighter_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe"
             },
             {
               "a": "Patrick Côté",
@@ -270,7 +308,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2006, which are complete for that year — 18 events, 158 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "68662bbe-e979-48af-9c82-b6336c25f2f1",
+              "b_fighter_id": "451e7293-d496-44b8-9392-11debb333172"
             }
           ]
         },
@@ -290,7 +330,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe",
+              "b_fighter_id": "68662bbe-e979-48af-9c82-b6336c25f2f1"
             }
           ]
         }
@@ -314,7 +356,8 @@
         "event": "The Ultimate Fighter: The Comeback Finale",
         "date": "2006-11-11"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84"
     },
     {
       "weight_class": "Middleweight",
@@ -327,7 +370,8 @@
         "event": "The Ultimate Fighter: The Comeback Finale",
         "date": "2006-11-11"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "a3b6f42a-c8df-4164-b6d7-6ce3c24b98fe"
     }
   ]
 }

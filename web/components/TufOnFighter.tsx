@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { nonProfessionalAppearances, tufSeasonsFor } from "@/lib/tuf";
+import { nonProfessionalAppearances, tufSeasonsForFighter, type TufRole } from "@/lib/tuf";
 
 /* The Ultimate Fighter on a fighter profile.
  *
@@ -11,9 +11,20 @@ import { nonProfessionalAppearances, tufSeasonsFor } from "@/lib/tuf";
  *
  * Renders nothing at all when a fighter has no TUF history, so every other
  * profile on the site is untouched. */
-export function TufOnFighter({ name }: { name: string }) {
-  const appearances = nonProfessionalAppearances(name);
-  const seasonsAsCoachOrContestant = tufSeasonsFor(name);
+const ROLE_LABEL: Record<TufRole, string> = {
+  coach: "Head coach",
+  assistant_coach: "Assistant coach",
+  guest_coach: "Guest coach",
+  contestant: "Contestant",
+  champion: "Tournament winner",
+};
+
+/* By canonical fighter id. Matching the profile's name against the archive's
+ * printed names missed every accented spelling, so Julianna Peña's profile had
+ * no TUF history at all. */
+export function TufOnFighter({ fighterId }: { fighterId: string }) {
+  const appearances = nonProfessionalAppearances(fighterId);
+  const seasonsAsCoachOrContestant = tufSeasonsForFighter(fighterId);
   if (!appearances.length && !seasonsAsCoachOrContestant.length) return null;
 
   return (
@@ -35,8 +46,9 @@ export function TufOnFighter({ name }: { name: string }) {
                 {r.season.name}
               </Link>
               <small>
-                {r.role === "coach" ? "Coach" : r.role === "champion" ? "Tournament winner" : "Contestant"}
+                {ROLE_LABEL[r.role]}
                 {r.team ? ` · ${r.team}` : ""}
+                {r.discipline ? ` · ${r.discipline}` : ""}
                 {r.weight_class ? ` · ${r.weight_class}` : ""}
               </small>
             </li>
@@ -52,9 +64,10 @@ export function TufOnFighter({ name }: { name: string }) {
             bout&rsquo;s status could not be established it is marked unverified, and unverified is excluded too.
           </p>
           <ul className="tuf-bouts">
-            {appearances.map(({ season, bout }, i) => {
-              const opponent = bout.a === name ? bout.b : bout.a;
-              const won = bout.winner === name;
+            {appearances.map(({ season, bout, side }, i) => {
+              const printed = side === "a" ? bout.a : bout.b;
+              const opponent = side === "a" ? bout.b : bout.a;
+              const won = bout.winner === printed;
               return (
                 <li className="tuf-bout" key={`${season.slug}-${i}`}>
                   <span className="tuf-bout-names">

@@ -22,52 +22,68 @@
   ],
   "coaches": [
     {
-      "team": "",
+      "team": null,
       "name": "Patrick Côté",
+      "fighter_id": "68662bbe-e979-48af-9c82-b6336c25f2f1",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Kru Ash",
-      "role": "head",
-      "note": "Striking Coach"
+      "role": "assistant",
+      "discipline": "Striking",
+      "note": "Striking Coach",
+      "role_basis": "source note: \"Striking Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Fábio Holanda",
-      "role": "head",
-      "note": "Jiu Jitsu Coach"
+      "role": "assistant",
+      "discipline": "Jiu Jitsu",
+      "note": "Jiu Jitsu Coach",
+      "role_basis": "source note: \"Jiu Jitsu Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "David Zilberman",
-      "role": "head",
-      "note": "Wrestling Coach"
+      "role": "assistant",
+      "discipline": "Wrestling",
+      "note": "Wrestling Coach",
+      "role_basis": "source note: \"Wrestling Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Kyle Noke",
+      "fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Israel Martinez",
-      "role": "head",
-      "note": "Wrestling Coach"
+      "role": "assistant",
+      "discipline": "Wrestling",
+      "note": "Wrestling Coach",
+      "role_basis": "source note: \"Wrestling Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Adrian Pang",
-      "role": "head",
-      "note": "Striking Coach"
+      "role": "assistant",
+      "discipline": "Striking",
+      "note": "Striking Coach",
+      "role_basis": "source note: \"Striking Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Roberto Tussa",
-      "role": "head",
-      "note": "Jiu Jitsu Coach"
+      "role": "assistant",
+      "discipline": "Jiu Jitsu",
+      "note": "Jiu Jitsu Coach",
+      "role_basis": "source note: \"Jiu Jitsu Coach\""
     }
   ],
   "teams": [
@@ -76,7 +92,8 @@
       "roster": [
         {
           "name": "Olivier Aubin-Mercier",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "bdefabb8-7a64-4c30-9b89-e4fa287048c2"
         },
         {
           "name": "Matthew Desroches",
@@ -84,11 +101,13 @@
         },
         {
           "name": "Kajan Johnson",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "45da660f-1682-473b-8b45-e8d014320239"
         },
         {
           "name": "Chad Laprise",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "81f465b3-eeac-4348-8980-a2423ef8718c"
         },
         {
           "name": "Luke Harris",
@@ -96,15 +115,18 @@
         },
         {
           "name": "Nordine Taleb",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "89544176-5d8c-414d-a06d-15da132b88a5"
         },
         {
           "name": "Elias Theodorou",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "4abc03ab-2395-4ea7-a409-29bd5cf02dee"
         },
         {
           "name": "Sheldon Westcott",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "00461685-3f15-4bd0-98cc-cddba5fa3d6b"
         }
       ]
     },
@@ -113,27 +135,33 @@
       "roster": [
         {
           "name": "Chris Indich",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "4e60e4ff-df1a-4e74-905d-60484d846bb2"
         },
         {
           "name": "Jake Matthews",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "e8da7d18-e8cc-42ab-9449-e0d98337014b"
         },
         {
           "name": "Brendan O’Reilly",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "3ca76308-752b-4a16-8da1-de3286b4fde0"
         },
         {
           "name": "Richard Walsh",
-          "weight_class": "Welterweight"
+          "weight_class": "Welterweight",
+          "fighter_id": "4996b621-b78e-4a02-b626-516ba5444423"
         },
         {
           "name": "Vik Grujic",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "e349e56a-d1aa-42b3-9001-ced8eaf460f7"
         },
         {
           "name": "Daniel Kelly",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "e0c5caa9-145e-41c0-be24-f22244b8719b"
         },
         {
           "name": "Tyler Manawaroa",
@@ -219,7 +247,9 @@
               "time": null,
               "episode": 7,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "bdefabb8-7a64-4c30-9b89-e4fa287048c2",
+              "b_fighter_id": "e8da7d18-e8cc-42ab-9449-e0d98337014b"
             }
           ]
         },
@@ -236,7 +266,9 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "45da660f-1682-473b-8b45-e8d014320239",
+              "b_fighter_id": "3ca76308-752b-4a16-8da1-de3286b4fde0"
             },
             {
               "a": "Chad Laprise",
@@ -247,7 +279,9 @@
               "time": null,
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "81f465b3-eeac-4348-8980-a2423ef8718c",
+              "b_fighter_id": "4e60e4ff-df1a-4e74-905d-60484d846bb2"
             },
             {
               "a": "Matthew Desroches",
@@ -258,7 +292,8 @@
               "time": null,
               "episode": 5,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "4996b621-b78e-4a02-b626-516ba5444423"
             },
             {
               "a": "Oliver Aubin-Mercier",
@@ -269,7 +304,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "e8da7d18-e8cc-42ab-9449-e0d98337014b"
             }
           ]
         },
@@ -286,7 +322,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "45da660f-1682-473b-8b45-e8d014320239",
+              "b_fighter_id": "81f465b3-eeac-4348-8980-a2423ef8718c"
             },
             {
               "a": "Richard Walsh",
@@ -297,7 +335,9 @@
               "time": null,
               "episode": 12,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4996b621-b78e-4a02-b626-516ba5444423",
+              "b_fighter_id": "bdefabb8-7a64-4c30-9b89-e4fa287048c2"
             }
           ],
           "status": "unverified",
@@ -319,7 +359,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "81f465b3-eeac-4348-8980-a2423ef8718c",
+              "b_fighter_id": "bdefabb8-7a64-4c30-9b89-e4fa287048c2"
             }
           ]
         }
@@ -341,7 +383,8 @@
               "time": null,
               "episode": 2,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4abc03ab-2395-4ea7-a409-29bd5cf02dee"
             },
             {
               "a": "Nordine Taleb",
@@ -352,7 +395,8 @@
               "time": null,
               "episode": 4,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "89544176-5d8c-414d-a06d-15da132b88a5"
             },
             {
               "a": "Sheldon Westcott",
@@ -363,7 +407,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "00461685-3f15-4bd0-98cc-cddba5fa3d6b",
+              "b_fighter_id": "e0c5caa9-145e-41c0-be24-f22244b8719b"
             },
             {
               "a": "Luke Harris",
@@ -374,7 +420,8 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "e349e56a-d1aa-42b3-9001-ced8eaf460f7"
             }
           ]
         },
@@ -391,7 +438,8 @@
               "time": null,
               "episode": 11,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "4abc03ab-2395-4ea7-a409-29bd5cf02dee"
             },
             {
               "a": "Sheldon Westcott",
@@ -402,7 +450,9 @@
               "time": null,
               "episode": 13,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 13 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 13 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "00461685-3f15-4bd0-98cc-cddba5fa3d6b",
+              "b_fighter_id": "e349e56a-d1aa-42b3-9001-ced8eaf460f7"
             }
           ]
         },
@@ -422,7 +472,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "4abc03ab-2395-4ea7-a409-29bd5cf02dee",
+              "b_fighter_id": "00461685-3f15-4bd0-98cc-cddba5fa3d6b"
             }
           ]
         }
@@ -446,7 +498,8 @@
         "event": "UFC Fight Night: Bisping vs Kennedy",
         "date": "2014-04-16"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
+      "fighter_id": "81f465b3-eeac-4348-8980-a2423ef8718c"
     },
     {
       "weight_class": "Middleweight",
@@ -459,7 +512,8 @@
         "event": "UFC Fight Night: Bisping vs Kennedy",
         "date": "2014-04-16"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record"
+      "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup on the named card, champion is the recorded winner, method and round agreeing with the season record",
+      "fighter_id": "4abc03ab-2395-4ea7-a409-29bd5cf02dee"
     }
   ]
 }

@@ -14,56 +14,69 @@
   },
   "coaches": [
     {
-      "team": "",
-      "name": "Team Hughes",
-      "role": "head"
-    },
-    {
-      "team": "",
+      "team": "Team Hughes",
       "name": "Matt Hughes",
+      "fighter_id": "a143202d-2906-4fb8-a91b-5165db04b5cf",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Hughes",
       "name": "Robbie Lawler",
-      "role": "head",
-      "note": "wrestling coach"
+      "fighter_id": "47c1eaa5-954a-44c8-8cb1-7e03e0b37ad5",
+      "role": "assistant",
+      "discipline": "wrestling",
+      "note": "wrestling coach",
+      "role_basis": "source note: \"wrestling coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Hughes",
       "name": "Matt Pena",
-      "role": "head",
-      "note": "boxing coach"
+      "role": "assistant",
+      "discipline": "boxing",
+      "note": "boxing coach",
+      "role_basis": "source note: \"boxing coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Hughes",
       "name": "Marc Fiore",
-      "role": "head",
-      "note": "strength and conditioning coach"
+      "role": "assistant",
+      "discipline": "strength and conditioning",
+      "note": "strength and conditioning coach",
+      "role_basis": "source note: \"strength and conditioning coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
-      "name": "Team Serra",
-      "role": "head"
-    },
-    {
-      "team": "",
+      "team": "Team Serra",
       "name": "Matt Serra",
+      "fighter_id": "1605cde2-d2e5-40b3-a428-f74644052b84",
       "role": "head",
-      "note": "head coach"
+      "note": "head coach",
+      "role_basis": "named as a coach of the season in the inventory",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Serra",
       "name": "Ray Longo",
-      "role": "head",
-      "note": "kickboxing coach"
+      "role": "assistant",
+      "discipline": "kickboxing",
+      "note": "kickboxing coach",
+      "role_basis": "source note: \"kickboxing coach\"",
+      "team_basis": "section order in the season source"
     },
     {
-      "team": "",
+      "team": "Team Serra",
       "name": "Pete Sell",
-      "role": "head",
-      "note": "jiu-jitsu coach"
+      "fighter_id": "6bd2a00a-d785-4ae7-ade6-f90c890c438f",
+      "role": "assistant",
+      "discipline": "jiu-jitsu",
+      "note": "jiu-jitsu coach",
+      "role_basis": "source note: \"jiu-jitsu coach\"",
+      "team_basis": "section order in the season source"
     }
   ],
   "format_exceptions": [
@@ -107,7 +120,8 @@
               "time": "4:54",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee"
             },
             {
               "a": "Billy Miles",
@@ -118,7 +132,9 @@
               "time": "2:56",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "940cafca-d04f-4082-8ea8-18465cee6a3d",
+              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99"
             },
             {
               "a": "Dorian Price",
@@ -129,7 +145,9 @@
               "time": "1:48",
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "77d803f1-378f-4bdb-b84f-6279428ea097",
+              "b_fighter_id": "e19418e1-e7e9-4eb6-bad5-f85df19d5a82"
             },
             {
               "a": "Paul Georgieff",
@@ -140,7 +158,9 @@
               "time": "2:39",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b2ca40ff-3575-467b-bd08-7f46e61c22c0",
+              "b_fighter_id": "efe0a272-d338-4e40-920c-ca53e306ba79"
             },
             {
               "a": "Blake Bowman",
@@ -151,7 +171,8 @@
               "time": "0:49",
               "episode": 3,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "b_fighter_id": "7048342e-436f-4e85-a3ac-8f5db2d1dca1"
             },
             {
               "a": "Jared Rollins",
@@ -162,7 +183,9 @@
               "time": "3:48",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "3e9e45d3-712e-4bbd-be56-808ad953c3ff",
+              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
             },
             {
               "a": "Tom Speer",
@@ -173,7 +196,8 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2da2aea2-9090-43cc-9da9-1b288e34a320"
             },
             {
               "a": "Dan Barrera",
@@ -184,7 +208,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "8eb3c131-cda2-46d7-8d41-ed822f245af7",
+              "b_fighter_id": "94d262bf-744e-42e8-965b-9e56e52e0d06"
             }
           ]
         },
@@ -201,7 +227,9 @@
               "time": "4:28",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee",
+              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99"
             },
             {
               "a": "Matt Arroyo",
@@ -212,7 +240,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "e19418e1-e7e9-4eb6-bad5-f85df19d5a82",
+              "b_fighter_id": "efe0a272-d338-4e40-920c-ca53e306ba79"
             },
             {
               "a": "Richie Hightower",
@@ -223,7 +253,9 @@
               "time": "4:07",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "7048342e-436f-4e85-a3ac-8f5db2d1dca1",
+              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
             },
             {
               "a": "Tom Speer",
@@ -234,7 +266,9 @@
               "time": null,
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2da2aea2-9090-43cc-9da9-1b288e34a320",
+              "b_fighter_id": "94d262bf-744e-42e8-965b-9e56e52e0d06"
             }
           ]
         },
@@ -251,7 +285,9 @@
               "time": "4:28",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee",
+              "b_fighter_id": "92b41400-bf88-48e0-9c5e-d14b6475cc99"
             },
             {
               "a": "Tom Speer",
@@ -262,7 +298,9 @@
               "time": "2:57",
               "episode": 6,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2007, which are complete for that year — 19 events, 171 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "2da2aea2-9090-43cc-9da9-1b288e34a320",
+              "b_fighter_id": "8148a9ca-0e21-4c3b-aa7f-09b441128ce0"
             }
           ]
         },
@@ -282,7 +320,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee",
+              "b_fighter_id": "2da2aea2-9090-43cc-9da9-1b288e34a320"
             }
           ]
         }
@@ -306,7 +346,8 @@
         "event": "The Ultimate Fighter: Team Hughes vs. Team Serra Finale",
         "date": "2007-12-08"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "b85e860e-455b-4976-9f4a-4f56374f04ee"
     }
   ]
 }

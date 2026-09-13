@@ -16,74 +16,97 @@
     {
       "team": "Team Alvarez",
       "name": "Eddie Alvarez",
+      "fighter_id": "ca95c036-a2c1-4c05-b1cd-22ccbf1138c1",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Mark Henry",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Zabit Magomedsharipov",
-      "role": "head"
+      "fighter_id": "06c60fd5-be0a-4bd4-8cc6-9d544a61ed57",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Marlon Moraes",
-      "role": "head"
+      "fighter_id": "c8a2028f-dbc3-4e7c-836b-8814a4060782",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Corey Anderson",
-      "role": "head"
+      "fighter_id": "7217c3b4-1ff3-4492-a752-1c4adc4e0732",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Rich Pohler",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
       "team": "Team Gaethje",
       "name": "Justin Gaethje",
+      "fighter_id": "91218960-ded4-4375-890a-f3208575b374",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Trevor Wittman",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Phil Nurse",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Matthew Lopez",
-      "role": "head"
+      "fighter_id": "f78a8147-7e13-49f4-a5e3-72fd722a489e",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Luke Caudillo",
-      "role": "head"
+      "fighter_id": "09559cfb-f58f-49ce-a7dd-4ce864d9cd55",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jacob Ramos",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Vinny Magalhães",
-      "role": "head"
+      "fighter_id": "6fff6e25-d6af-4993-b033-f57f420b6cd9",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Miesha Tate",
-      "role": "head"
+      "fighter_id": "41746330-33bd-4070-9dfc-0affe3e9201d",
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -91,28 +114,36 @@
       "name": "Team Alvarez",
       "roster": [
         {
-          "name": "Barb Honchak"
+          "name": "Barb Honchak",
+          "fighter_id": "c2627ad2-0730-4c6a-9e02-71395a5efb70"
         },
         {
-          "name": "Lauren Murphy"
+          "name": "Lauren Murphy",
+          "fighter_id": "01961edd-17bf-4cdc-a609-b9bb3ba8262a"
         },
         {
-          "name": "DeAnna Bennett"
+          "name": "DeAnna Bennett",
+          "fighter_id": "45d64702-a368-4309-969b-5db9e20dbaa3"
         },
         {
-          "name": "Melinda Fábián"
+          "name": "Melinda Fábián",
+          "fighter_id": "c0961d68-c824-48b8-88fb-43bef2d6e7eb"
         },
         {
-          "name": "Christina Marks"
+          "name": "Christina Marks",
+          "fighter_id": "a7dd4d6c-3687-43d1-bee8-67eaebd83777"
         },
         {
-          "name": "Ariel Beck"
+          "name": "Ariel Beck",
+          "fighter_id": "9c05cdf1-df0e-4487-9044-aaa55ffdafab"
         },
         {
-          "name": "Sijara Eubanks"
+          "name": "Sijara Eubanks",
+          "fighter_id": "7cc36f5f-fb8a-4cc5-87a3-b047f07a3be1"
         },
         {
-          "name": "Shana Dobson"
+          "name": "Shana Dobson",
+          "fighter_id": "7b2713f0-0cfa-4ba6-8eb8-f085c93032e1"
         }
       ]
     },
@@ -120,28 +151,35 @@
       "name": "Team Gaethje",
       "roster": [
         {
-          "name": "Roxanne Modafferi"
+          "name": "Roxanne Modafferi",
+          "fighter_id": "4405dee6-e224-4b05-aae6-3ec885dc8166"
         },
         {
-          "name": "Maia Stevenson"
+          "name": "Maia Stevenson",
+          "fighter_id": "a8c366a6-d829-4005-9ac8-2a783ba42157"
         },
         {
           "name": "Montana Stewart"
         },
         {
-          "name": "Emily Whitmire"
+          "name": "Emily Whitmire",
+          "fighter_id": "264dcee1-05d4-4fd8-ae31-865428b920a1"
         },
         {
-          "name": "Rachael Ostovich-Berdon"
+          "name": "Rachael Ostovich-Berdon",
+          "fighter_id": "d4713f9c-7e35-40df-baa0-72e3b325af8f"
         },
         {
-          "name": "Karine Gevorgyan"
+          "name": "Karine Gevorgyan",
+          "fighter_id": "3a0953d0-6010-4812-972e-391471209301"
         },
         {
-          "name": "Nicco Montaño"
+          "name": "Nicco Montaño",
+          "fighter_id": "4389a1b2-5102-4b66-8202-8c463265a9fd"
         },
         {
-          "name": "Gillian Robertson"
+          "name": "Gillian Robertson",
+          "fighter_id": "92096721-6fcc-4093-8f9a-2beace103b06"
         }
       ]
     }
@@ -186,7 +224,9 @@
               "time": null,
               "episode": 10,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "c2627ad2-0730-4c6a-9e02-71395a5efb70",
+              "b_fighter_id": "d4713f9c-7e35-40df-baa0-72e3b325af8f"
             }
           ]
         },
@@ -204,7 +244,9 @@
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 16"
+              "seeds": "1 vs 16",
+              "a_fighter_id": "4405dee6-e224-4b05-aae6-3ec885dc8166",
+              "b_fighter_id": "7b2713f0-0cfa-4ba6-8eb8-f085c93032e1"
             },
             {
               "a": "Emily Whitmire",
@@ -216,7 +258,9 @@
               "episode": 8,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "8 vs 9"
+              "seeds": "8 vs 9",
+              "a_fighter_id": "264dcee1-05d4-4fd8-ae31-865428b920a1",
+              "b_fighter_id": "a7dd4d6c-3687-43d1-bee8-67eaebd83777"
             },
             {
               "a": "Maia Stevenson",
@@ -228,7 +272,9 @@
               "episode": 5,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "5 vs 12"
+              "seeds": "5 vs 12",
+              "a_fighter_id": "a8c366a6-d829-4005-9ac8-2a783ba42157",
+              "b_fighter_id": "7cc36f5f-fb8a-4cc5-87a3-b047f07a3be1"
             },
             {
               "a": "DeAnna Bennett",
@@ -240,7 +286,9 @@
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "4 vs 13"
+              "seeds": "4 vs 13",
+              "a_fighter_id": "45d64702-a368-4309-969b-5db9e20dbaa3",
+              "b_fighter_id": "3a0953d0-6010-4812-972e-391471209301"
             },
             {
               "a": "Barb Honchak",
@@ -252,7 +300,9 @@
               "episode": 6,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "2 vs 15"
+              "seeds": "2 vs 15",
+              "a_fighter_id": "c2627ad2-0730-4c6a-9e02-71395a5efb70",
+              "b_fighter_id": "92096721-6fcc-4093-8f9a-2beace103b06"
             },
             {
               "a": "Melinda Fábián",
@@ -264,7 +314,9 @@
               "episode": 7,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "7 vs 10"
+              "seeds": "7 vs 10",
+              "a_fighter_id": "c0961d68-c824-48b8-88fb-43bef2d6e7eb",
+              "b_fighter_id": "d4713f9c-7e35-40df-baa0-72e3b325af8f"
             },
             {
               "a": "Montana Stewart",
@@ -276,7 +328,8 @@
               "episode": 3,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 11"
+              "seeds": "6 vs 11",
+              "b_fighter_id": "9c05cdf1-df0e-4487-9044-aaa55ffdafab"
             },
             {
               "a": "Lauren Murphy",
@@ -288,7 +341,9 @@
               "episode": 4,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "3 vs 14"
+              "seeds": "3 vs 14",
+              "a_fighter_id": "01961edd-17bf-4cdc-a609-b9bb3ba8262a",
+              "b_fighter_id": "4389a1b2-5102-4b66-8202-8c463265a9fd"
             }
           ]
         },
@@ -306,7 +361,9 @@
               "episode": 9,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 8"
+              "seeds": "1 vs 8",
+              "a_fighter_id": "4405dee6-e224-4b05-aae6-3ec885dc8166",
+              "b_fighter_id": "264dcee1-05d4-4fd8-ae31-865428b920a1"
             },
             {
               "a": "Sijara Eubanks",
@@ -318,7 +375,9 @@
               "episode": 9,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "12 vs 4"
+              "seeds": "12 vs 4",
+              "a_fighter_id": "7cc36f5f-fb8a-4cc5-87a3-b047f07a3be1",
+              "b_fighter_id": "45d64702-a368-4309-969b-5db9e20dbaa3"
             },
             {
               "a": "Barb Honchak",
@@ -330,7 +389,9 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null,
-              "seeds": "2 vs 10"
+              "seeds": "2 vs 10",
+              "a_fighter_id": "c2627ad2-0730-4c6a-9e02-71395a5efb70",
+              "b_fighter_id": "d4713f9c-7e35-40df-baa0-72e3b325af8f"
             },
             {
               "a": "Montana Stewart",
@@ -342,7 +403,8 @@
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 14"
+              "seeds": "6 vs 14",
+              "b_fighter_id": "4389a1b2-5102-4b66-8202-8c463265a9fd"
             }
           ]
         },
@@ -360,7 +422,9 @@
               "episode": 12,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 12"
+              "seeds": "1 vs 12",
+              "a_fighter_id": "4405dee6-e224-4b05-aae6-3ec885dc8166",
+              "b_fighter_id": "7cc36f5f-fb8a-4cc5-87a3-b047f07a3be1"
             },
             {
               "a": "Barb Honchak",
@@ -372,7 +436,9 @@
               "episode": 11,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2017, which are complete for that year — 47 events, 497 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "2 vs 14"
+              "seeds": "2 vs 14",
+              "a_fighter_id": "c2627ad2-0730-4c6a-9e02-71395a5efb70",
+              "b_fighter_id": "4389a1b2-5102-4b66-8202-8c463265a9fd"
             }
           ]
         },
@@ -392,7 +458,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "4405dee6-e224-4b05-aae6-3ec885dc8166",
+              "b_fighter_id": "4389a1b2-5102-4b66-8202-8c463265a9fd"
             }
           ]
         }
@@ -416,7 +484,8 @@
         "event": "The Ultimate Fighter: A New World Champion Finale",
         "date": "2017-12-01"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "4389a1b2-5102-4b66-8202-8c463265a9fd"
     }
   ]
 }

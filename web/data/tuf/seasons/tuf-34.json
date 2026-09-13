@@ -29,14 +29,18 @@
     {
       "team": "Team Cormier",
       "name": "Daniel Cormier",
+      "fighter_id": "189dbb32-67d4-42b7-b098-81be761d4146",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
       "team": "Team Bisping",
       "name": "Michael Bisping",
+      "fighter_id": "50e2576e-e89f-4f99-8020-3b95d8a3094f",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     }
   ],
   "teams": [
@@ -61,15 +65,18 @@
         },
         {
           "name": "Valesca Machado",
-          "weight_class": "Women's Strawweight"
+          "weight_class": "Women's Strawweight",
+          "fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8"
         },
         {
           "name": "Delphine Benouaich",
-          "weight_class": "Women's Strawweight"
+          "weight_class": "Women's Strawweight",
+          "fighter_id": "a223c4bc-17b9-4d57-9d8e-7f54dbd668a8"
         },
         {
           "name": "Melissa Amaya",
-          "weight_class": "Women's Strawweight"
+          "weight_class": "Women's Strawweight",
+          "fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d"
         },
         {
           "name": "Anita Karim",
@@ -82,11 +89,13 @@
       "roster": [
         {
           "name": "Xavier Franklin",
-          "weight_class": "Men's Bantameight"
+          "weight_class": "Men's Bantameight",
+          "fighter_id": "33d214fa-053f-47e9-b7a1-ac2c443b79c9"
         },
         {
           "name": "Mehemmedeli Osmanli",
-          "weight_class": "Men's Bantameight"
+          "weight_class": "Men's Bantameight",
+          "fighter_id": "13dd06fe-1f79-401b-9a8a-23c61a907745"
         },
         {
           "name": "Illimbek Akylbek Uulu",
@@ -98,7 +107,8 @@
         },
         {
           "name": "Anna Melisano",
-          "weight_class": "Women's Strawweight"
+          "weight_class": "Women's Strawweight",
+          "fighter_id": "65527918-fc5e-42bc-b271-fdf7ad3f8350"
         },
         {
           "name": "Giovanna Canuto",
@@ -154,7 +164,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889"
             },
             {
               "a": "Micaias Ureña",
@@ -165,7 +176,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "b_fighter_id": "33d214fa-053f-47e9-b7a1-ac2c443b79c9"
             }
           ]
         },
@@ -193,7 +205,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889",
+              "b_fighter_id": "33d214fa-053f-47e9-b7a1-ac2c443b79c9"
             }
           ]
         },
@@ -212,7 +226,8 @@
               "classification": "unverified",
               "classification_source": null,
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "b_fighter_id": "70116fec-53b8-4a05-8684-4415498f4889"
             }
           ]
         }
@@ -234,7 +249,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d",
+              "b_fighter_id": "65527918-fc5e-42bc-b271-fdf7ad3f8350"
             },
             {
               "a": "Anita Karim",
@@ -256,7 +273,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8"
             },
             {
               "a": "Delphine Benouaich",
@@ -267,7 +285,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "a223c4bc-17b9-4d57-9d8e-7f54dbd668a8"
             }
           ]
         },
@@ -284,7 +303,8 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d"
             },
             {
               "a": "Valesca Machado",
@@ -295,7 +315,9 @@
               "time": null,
               "episode": null,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "a_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8",
+              "b_fighter_id": "a223c4bc-17b9-4d57-9d8e-7f54dbd668a8"
             }
           ]
         },
@@ -314,7 +336,9 @@
               "classification": "unverified",
               "classification_source": null,
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "f0f35412-3bc3-4fbd-a5ef-c5a3e4b0c27d",
+              "b_fighter_id": "aef54e82-da80-4fa1-b917-11b94eca49e8"
             }
           ]
         }

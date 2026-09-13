@@ -17,61 +17,83 @@
     {
       "team": "Team Edgar",
       "name": "Frankie Edgar",
+      "fighter_id": "ac16125b-e7be-4d3a-940d-f08b7a18663c",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Mark Henry",
-      "role": "head",
-      "note": "Boxing Coach"
+      "role": "assistant",
+      "discipline": "Boxing",
+      "note": "Boxing Coach",
+      "role_basis": "source note: \"Boxing Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Ricardo Almeida",
-      "role": "head",
-      "note": "Jiu Jitsu Coach"
+      "fighter_id": "69010231-bc84-419f-b896-744138390a06",
+      "role": "assistant",
+      "discipline": "Jiu Jitsu",
+      "note": "Jiu Jitsu Coach",
+      "role_basis": "source note: \"Jiu Jitsu Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Steve Rivera",
-      "role": "head",
-      "note": "Wrestling Coach"
+      "role": "assistant",
+      "discipline": "Wrestling",
+      "note": "Wrestling Coach",
+      "role_basis": "source note: \"Wrestling Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Anderson França",
-      "role": "head",
-      "note": "Muay Thai Coach"
+      "role": "assistant",
+      "discipline": "Muay Thai",
+      "note": "Muay Thai Coach",
+      "role_basis": "source note: \"Muay Thai Coach\""
     },
     {
       "team": "Team Penn",
       "name": "B.J. Penn",
+      "fighter_id": "ac97d89c-5662-4416-a2bf-0c77d4ff080e",
       "role": "head",
-      "note": "Head Coach"
+      "note": "Head Coach",
+      "role_basis": "named as a coach of the season in the inventory"
     },
     {
-      "team": "",
+      "team": null,
       "name": "Mark Coleman",
-      "role": "head",
-      "note": "Wrestling Coach"
+      "fighter_id": "4eaf4e2d-7570-4951-ab7c-240bc4ab21e6",
+      "role": "assistant",
+      "discipline": "Wrestling",
+      "note": "Wrestling Coach",
+      "role_basis": "source note: \"Wrestling Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Andre Pederneiras",
-      "role": "head",
-      "note": "Jiu Jitsu Coach"
+      "fighter_id": "0508ea27-f11b-4e03-9ad1-b32883ea6dfa",
+      "role": "assistant",
+      "discipline": "Jiu Jitsu",
+      "note": "Jiu Jitsu Coach",
+      "role_basis": "source note: \"Jiu Jitsu Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "Jason Parillo",
-      "role": "head",
-      "note": "Boxing Coach"
+      "role": "assistant",
+      "discipline": "Boxing",
+      "note": "Boxing Coach",
+      "role_basis": "source note: \"Boxing Coach\""
     },
     {
-      "team": "",
+      "team": null,
       "name": "John Hackleman",
-      "role": "head"
+      "role": "assistant",
+      "role_basis": "listed on a team staff with no head-coach designation"
     }
   ],
   "teams": [
@@ -80,7 +102,8 @@
       "roster": [
         {
           "name": "Hector Urbina",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "b8c84994-6548-4563-8c15-7ffb6283e7e5"
         },
         {
           "name": "Ian Stephens",
@@ -88,11 +111,13 @@
         },
         {
           "name": "Eddie Gordon",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "0a622157-e34c-433f-8a70-57f80ea1fc9e"
         },
         {
           "name": "Dhiego Lima",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8"
         },
         {
           "name": "Todd Monaghan",
@@ -100,15 +125,18 @@
         },
         {
           "name": "Patrick Walsh",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "4128f511-e2fd-4e49-9e10-e27d6a09e8ac"
         },
         {
           "name": "Matt Van Buren",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "a500707d-119c-4650-9556-58cc586b12db"
         },
         {
           "name": "Corey Anderson",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "7217c3b4-1ff3-4492-a752-1c4adc4e0732"
         }
       ]
     },
@@ -117,23 +145,28 @@
       "roster": [
         {
           "name": "Cathal Pendred",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "ab8d7513-6a3a-43db-9867-87eb243c8b10"
         },
         {
           "name": "Roger Zapata",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "c7ed2b11-c1aa-484f-a52b-45466e4968fb"
         },
         {
           "name": "Tim Williams",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "d7e7cdf0-fe08-4c88-ba14-6d7f95f09ff9"
         },
         {
           "name": "Mike King",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "ea00667b-8c29-42af-8326-e441c3030bf1"
         },
         {
           "name": "Daniel Spohn",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "8a7e49dd-770c-47ec-9939-15cf9638023b"
         },
         {
           "name": "Chris Fields",
@@ -141,7 +174,8 @@
         },
         {
           "name": "Anton Berzin",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "3f1c3e93-c570-4933-b608-532f20e6679e"
         },
         {
           "name": "Josh Clark",
@@ -162,11 +196,13 @@
         },
         {
           "name": "Lyman Good",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "47600b93-823a-42a9-a668-aaa535b1d37f"
         },
         {
           "name": "Bojan Veličković",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "c86691ff-4d08-4f72-bee7-90361bd68545"
         },
         {
           "name": "Matt Gabel",
@@ -178,7 +214,8 @@
         },
         {
           "name": "Nordine Taleb",
-          "weight_class": "Middleweight"
+          "weight_class": "Middleweight",
+          "fighter_id": "89544176-5d8c-414d-a06d-15da132b88a5"
         },
         {
           "name": "Tyler King",
@@ -190,7 +227,8 @@
         },
         {
           "name": "Josh Stansbury",
-          "weight_class": "Light Heavyweight"
+          "weight_class": "Light Heavyweight",
+          "fighter_id": "d60652f2-abb7-4694-b82c-3e3f49f050f5"
         },
         {
           "name": "Cody Mumma",
@@ -233,7 +271,9 @@
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 7"
+              "seeds": "6 vs 7",
+              "a_fighter_id": "ab8d7513-6a3a-43db-9867-87eb243c8b10",
+              "b_fighter_id": "b8c84994-6548-4563-8c15-7ffb6283e7e5"
             },
             {
               "a": "Mike King",
@@ -245,7 +285,9 @@
               "episode": 8,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "2 vs 5"
+              "seeds": "2 vs 5",
+              "a_fighter_id": "ea00667b-8c29-42af-8326-e441c3030bf1",
+              "b_fighter_id": "0a622157-e34c-433f-8a70-57f80ea1fc9e"
             },
             {
               "a": "Tim Williams",
@@ -257,7 +299,9 @@
               "episode": 4,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "4 vs 3"
+              "seeds": "4 vs 3",
+              "a_fighter_id": "d7e7cdf0-fe08-4c88-ba14-6d7f95f09ff9",
+              "b_fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8"
             },
             {
               "a": "Roger Zapata",
@@ -269,7 +313,8 @@
               "episode": 6,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "8 vs 1"
+              "seeds": "8 vs 1",
+              "a_fighter_id": "c7ed2b11-c1aa-484f-a52b-45466e4968fb"
             }
           ]
         },
@@ -287,7 +332,9 @@
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 5"
+              "seeds": "6 vs 5",
+              "a_fighter_id": "ab8d7513-6a3a-43db-9867-87eb243c8b10",
+              "b_fighter_id": "0a622157-e34c-433f-8a70-57f80ea1fc9e"
             },
             {
               "a": "Dhiego Lima",
@@ -299,7 +346,9 @@
               "episode": 12,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "3 vs 8"
+              "seeds": "3 vs 8",
+              "a_fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8",
+              "b_fighter_id": "c7ed2b11-c1aa-484f-a52b-45466e4968fb"
             }
           ]
         },
@@ -319,7 +368,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "0a622157-e34c-433f-8a70-57f80ea1fc9e",
+              "b_fighter_id": "5f474c58-9fa5-4f30-a995-a50ea2a142c8"
             }
           ]
         }
@@ -342,7 +393,8 @@
               "episode": 5,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 5 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "4 vs 1"
+              "seeds": "4 vs 1",
+              "b_fighter_id": "7217c3b4-1ff3-4492-a752-1c4adc4e0732"
             },
             {
               "a": "Anton Berzin",
@@ -354,7 +406,9 @@
               "episode": 7,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "2 vs 3"
+              "seeds": "2 vs 3",
+              "a_fighter_id": "3f1c3e93-c570-4933-b608-532f20e6679e",
+              "b_fighter_id": "4128f511-e2fd-4e49-9e10-e27d6a09e8ac"
             },
             {
               "a": "Chris Fields",
@@ -366,7 +420,8 @@
               "episode": 9,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "8 vs 5"
+              "seeds": "8 vs 5",
+              "b_fighter_id": "a500707d-119c-4650-9556-58cc586b12db"
             },
             {
               "a": "Daniel Spohn",
@@ -378,7 +433,8 @@
               "episode": 3,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 7"
+              "seeds": "6 vs 7",
+              "a_fighter_id": "8a7e49dd-770c-47ec-9939-15cf9638023b"
             }
           ]
         },
@@ -396,7 +452,9 @@
               "episode": 11,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 3"
+              "seeds": "1 vs 3",
+              "a_fighter_id": "7217c3b4-1ff3-4492-a752-1c4adc4e0732",
+              "b_fighter_id": "4128f511-e2fd-4e49-9e10-e27d6a09e8ac"
             },
             {
               "a": "Matt Van Buren",
@@ -408,7 +466,9 @@
               "episode": 12,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "5 vs 6"
+              "seeds": "5 vs 6",
+              "a_fighter_id": "a500707d-119c-4650-9556-58cc586b12db",
+              "b_fighter_id": "8a7e49dd-770c-47ec-9939-15cf9638023b"
             }
           ]
         },
@@ -428,7 +488,9 @@
               "classification": "professional",
               "classification_source": "contested on a sanctioned UFC card; verified against ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "a_fighter_id": "7217c3b4-1ff3-4492-a752-1c4adc4e0732",
+              "b_fighter_id": "a500707d-119c-4650-9556-58cc586b12db"
             }
           ]
         }
@@ -452,7 +514,8 @@
         "event": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
         "date": "2014-07-06"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "0a622157-e34c-433f-8a70-57f80ea1fc9e"
     },
     {
       "weight_class": "Light Heavyweight",
@@ -465,7 +528,8 @@
         "event": "The Ultimate Fighter: Team Edgar vs. Team Penn Finale",
         "date": "2014-07-06"
       },
-      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card"
+      "verified_against": "ufc_bouts + ufc_bout_results — the champion is the recorded winner of this bout on the finale card",
+      "fighter_id": "7217c3b4-1ff3-4492-a752-1c4adc4e0732"
     }
   ]
 }

@@ -30,7 +30,9 @@
               "time": null,
               "episode": 1,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "d42313c6-3189-4d54-8f31-a88d001088aa",
+              "b_fighter_id": "cecf7d01-5f46-4753-a583-8814ced96907"
             },
             {
               "a": "Alexandre Pantoja",
@@ -41,7 +43,9 @@
               "time": null,
               "episode": 8,
               "classification": "exhibition",
-              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them"
+              "classification_source": "broadcast in episode 8 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
+              "a_fighter_id": "13eebfea-dbd0-4110-a41a-200b8a73051d",
+              "b_fighter_id": "d42313c6-3189-4d54-8f31-a88d001088aa"
             }
           ]
         },
@@ -59,7 +63,9 @@
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 16"
+              "seeds": "1 vs 16",
+              "a_fighter_id": "13eebfea-dbd0-4110-a41a-200b8a73051d",
+              "b_fighter_id": "1fa71f4b-3f7d-4705-ba00-1f6bcf397b9a"
             },
             {
               "a": "Terrence Mitchell",
@@ -71,7 +77,9 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null,
-              "seeds": "8 vs 9"
+              "seeds": "8 vs 9",
+              "a_fighter_id": "cecf7d01-5f46-4753-a583-8814ced96907",
+              "b_fighter_id": "d42313c6-3189-4d54-8f31-a88d001088aa"
             },
             {
               "a": "Hiromasa Ogikubo",
@@ -95,7 +103,9 @@
               "episode": 3,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 3 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "4 vs 13"
+              "seeds": "4 vs 13",
+              "a_fighter_id": "ac5b22ab-a8bb-47b0-8d39-3abf7401e6b9",
+              "b_fighter_id": "110f4c45-3e64-48aa-9f5c-c047e0c97155"
             },
             {
               "a": "Yoni Sherbatov",
@@ -107,7 +117,8 @@
               "episode": 4,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 4 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "2 vs 15"
+              "seeds": "2 vs 15",
+              "b_fighter_id": "2abe9562-869f-4025-99ef-85faf67b0c07"
             },
             {
               "a": "Ronaldo Candido",
@@ -131,7 +142,8 @@
               "episode": 6,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 6 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 11"
+              "seeds": "6 vs 11",
+              "a_fighter_id": "d5122475-8cc8-44c5-a6d8-6f2575a07127"
             },
             {
               "a": "Tim Elliott",
@@ -143,7 +155,8 @@
               "episode": 7,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "3 vs 14"
+              "seeds": "3 vs 14",
+              "a_fighter_id": "cbdc3e19-b826-44c5-83ac-3f48f4047b46"
             }
           ]
         },
@@ -161,7 +174,9 @@
               "episode": null,
               "classification": "unverified",
               "classification_source": null,
-              "seeds": "1 vs 9"
+              "seeds": "1 vs 9",
+              "a_fighter_id": "13eebfea-dbd0-4110-a41a-200b8a73051d",
+              "b_fighter_id": "d42313c6-3189-4d54-8f31-a88d001088aa"
             },
             {
               "a": "Hiromasa Ogikubo",
@@ -173,7 +188,8 @@
               "episode": 9,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 9 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "5 vs 13"
+              "seeds": "5 vs 13",
+              "b_fighter_id": "110f4c45-3e64-48aa-9f5c-c047e0c97155"
             },
             {
               "a": "Eric Shelton",
@@ -185,7 +201,8 @@
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "15 vs 7"
+              "seeds": "15 vs 7",
+              "a_fighter_id": "2abe9562-869f-4025-99ef-85faf67b0c07"
             },
             {
               "a": "Matt Schnell",
@@ -197,7 +214,9 @@
               "episode": 10,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 10 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "6 vs 3"
+              "seeds": "6 vs 3",
+              "a_fighter_id": "d5122475-8cc8-44c5-a6d8-6f2575a07127",
+              "b_fighter_id": "cbdc3e19-b826-44c5-83ac-3f48f4047b46"
             }
           ]
         },
@@ -215,7 +234,8 @@
               "episode": 11,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "1 vs 5"
+              "seeds": "1 vs 5",
+              "a_fighter_id": "13eebfea-dbd0-4110-a41a-200b8a73051d"
             },
             {
               "a": "Eric Shelton",
@@ -227,7 +247,9 @@
               "episode": 11,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 11 of the season, and absent from our fight records for 2016, which are complete for that year — 41 events, 493 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "seeds": "15 vs 3"
+              "seeds": "15 vs 3",
+              "a_fighter_id": "2abe9562-869f-4025-99ef-85faf67b0c07",
+              "b_fighter_id": "cbdc3e19-b826-44c5-83ac-3f48f4047b46"
             }
           ]
         },
@@ -247,7 +269,8 @@
               "classification_source": null,
               "seeds": "5 vs 3",
               "on_finale_card": true,
-              "tournament_deciding": true
+              "tournament_deciding": true,
+              "b_fighter_id": "cbdc3e19-b826-44c5-83ac-3f48f4047b46"
             }
           ]
         }
@@ -264,7 +287,8 @@
       "weight_class": "Flyweight",
       "fighter": "Tim Elliott",
       "won_tournament": true,
-      "received_contract": true
+      "received_contract": true,
+      "fighter_id": "cbdc3e19-b826-44c5-83ac-3f48f4047b46"
     }
   ]
 }
