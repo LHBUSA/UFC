@@ -33,30 +33,33 @@ const clone = <T,>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 
 /* ---- known seasons -------------------------------------------------------- */
 
-test("TUF 1: format complete with research gaps, never verified yet", () => {
+test("TUF 1: Complete on the card, while the strict evidence verdict still counts its open conflict", () => {
   const st = statusOf("tuf-1");
   assert.equal(st.structure.structure, "complete");
   assert.equal(st.structure.basis, "declared_format", "measured against its elimination format, not a bracket");
-  assert.equal(st.state, "format_complete");
-  assert.equal(labels("tuf-1"), "FORMAT COMPLETE + RESEARCH GAPS");
-  assert.notEqual(st.evidence?.evidence, "verified");
-  /* The house results are commission-verified now; the open Rafferty episode-placement
-   * conflict is the one thing the matrix bar still counts against the season. */
+  assert.equal(st.state, "complete");
+  assert.equal(labels("tuf-1"), "COMPLETE");
+  assert.equal(st.verified, false);
+  /* Presentation changed; the verdict did not. The Rafferty episode-placement
+   * conflict is still the one thing the matrix bar counts against the season. */
+  assert.equal(st.evidence?.evidence, "gaps");
   assert.deepEqual(st.evidence!.reasons, ["OPEN_SOURCE_CONFLICT"]);
 });
 
-test("TUF 2: verified complete", () => {
+test("TUF 2: Complete + Verified", () => {
   const st = statusOf("tuf-2");
-  assert.equal(st.state, "verified_complete");
-  assert.equal(labels("tuf-2"), "VERIFIED COMPLETE");
-  assert.equal(st.secondary, null, "one pill, not two");
+  assert.equal(st.state, "complete");
+  assert.equal(st.verified, true);
+  assert.equal(labels("tuf-2"), "COMPLETE + VERIFIED");
+  assert.equal(st.evidence?.evidence, "verified");
 });
 
-test("TUF 3, 4 and 5: every expected stage present, so format complete; research gaps stay separate", () => {
-  for (const slug of ["tuf-3", "tuf-4", "tuf-5"]) {
+test("TUF 3, 4, 5 and 25–33: Complete, whatever research remains behind them", () => {
+  for (const slug of ["tuf-3", "tuf-4", "tuf-5", ...Array.from({ length: 9 }, (_, i) => `tuf-${25 + i}`)]) {
     const st = statusOf(slug);
     assert.equal(st.structure.structure, "complete", `${slug}: ${st.structure.missing.join("; ")}`);
-    assert.equal(labels(slug), "FORMAT COMPLETE + RESEARCH GAPS", slug);
+    assert.equal(labels(slug), "COMPLETE", slug);
+    assert.equal(st.evidence?.evidence, "gaps", `${slug}: the strict verdict is unchanged`);
   }
 });
 
@@ -64,7 +67,7 @@ test("TUF 21 is measured against its points format and never described as a brac
   const st = statusOf("tuf-21");
   assert.equal(st.structure.basis, "team_points_format");
   assert.equal(st.structure.structure, "complete");
-  assert.doesNotMatch(labels("tuf-21"), /BRACKET/);
+  assert.equal(labels("tuf-21"), "COMPLETE");
 });
 
 test("TUF 34: season ongoing, and nothing else on the card", () => {
@@ -73,17 +76,33 @@ test("TUF 34: season ongoing, and nothing else on the card", () => {
   assert.equal(labels("tuf-34"), "SEASON ONGOING");
 });
 
-/* ---- no bracket language on the hub -------------------------------------- */
+/* ---- what cards may say --------------------------------------------------- */
 
-test("no season's hub status uses bracket terminology, and BRACKET PARTIAL is gone", () => {
+test("cards say only Complete, Complete + Verified, Partial or Season ongoing — never research backlog or bracket terms", () => {
+  const seen = new Set<string>();
   for (const s of inventory.seasons) {
     const l = labels(s.slug);
-    assert.doesNotMatch(l, /BRACKET/, `${s.slug}: ${l}`);
-    assert.ok(/^(VERIFIED COMPLETE|FORMAT COMPLETE \+ (RESEARCH GAPS|VERIFIED)|STRUCTURE PARTIAL \+ (RESEARCH GAPS|VERIFIED)|SEASON ONGOING)$/.test(l), `${s.slug}: unexpected label ${l}`);
+    seen.add(l);
+    assert.ok(/^(COMPLETE|COMPLETE \+ VERIFIED|PARTIAL|SEASON ONGOING)$/.test(l), `${s.slug}: unexpected card label ${l}`);
+    assert.doesNotMatch(l, /RESEARCH GAPS|FORMAT COMPLETE|STRUCTURE PARTIAL|BRACKET/, s.slug);
   }
+  assert.deepEqual([...seen].sort(), ["COMPLETE", "COMPLETE + VERIFIED", "SEASON ONGOING"]);
   const page = readFileSync(url("../app/tuf/page.tsx"), "utf8");
-  assert.doesNotMatch(page, /bracket partial|bracket complete|coverage/i, "the hub page has no legacy status strings");
+  assert.doesNotMatch(page, /research gaps|format complete|structure partial|bracket partial|bracket complete|coverage/i, "the hub page carries none of the retired card strings");
   for (const e of inventory.editions) assert.doesNotMatch(e.blurb, /through a bracket/i, `${e.key}: seasons used different formats`);
+});
+
+test("the summary counts are consumer-friendly and add up", () => {
+  const all = inventory.seasons.map((s) => statusOf(s.slug));
+  const complete = all.filter((x) => x.state === "complete").length;
+  const ongoing = all.filter((x) => x.state === "ongoing").length;
+  const partial = all.filter((x) => x.state === "partial").length;
+  const verified = all.filter((x) => x.state === "complete" && x.verified).length;
+  assert.deepEqual([complete, ongoing, partial, verified, all.length], [43, 1, 0, 1, 44]);
+  assert.ok(all.every((x) => !x.verified || x.state === "complete"), "Verified only ever sits on a complete season");
+  const page = readFileSync(url("../app/tuf/page.tsx"), "utf8");
+  assert.match(page, /complete seasons/);
+  assert.match(page, /verified by primary records/);
 });
 
 test("non-bracket seasons are never measured as brackets", () => {
@@ -114,7 +133,7 @@ test("evidence gaps never downgrade structure", () => {
   }
 });
 
-test("a missing expected competition bout still produces STRUCTURE PARTIAL", () => {
+test("a genuinely missing competition bout makes the card Partial", () => {
   type D = StatusSeasonDetail & { bracket: Array<{ weight_class: string; stages: Array<{ stage: string; bouts: unknown[] }> }>; team_competition?: { standings?: unknown[] } };
   const cases: Array<[string, (d: D) => void]> = [
     ["tuf-3", (d) => { d.bracket[0].stages.find((s) => s.stage === "quarter_final")!.bouts.pop(); }],
@@ -127,9 +146,10 @@ test("a missing expected competition bout still produces STRUCTURE PARTIAL", () 
     const d = clone(detailOf(slug)!) as D;
     mutate(d);
     const r = row(slug);
-    const st = hubStatus(r, d, { evidence: "gaps", reasons: [] });
+    const st = hubStatus(r, d, { evidence: "verified", reasons: [] });
     assert.equal(st.structure.structure, "partial", `${slug}: ${mutate.toString()}`);
-    assert.equal(st.primary.label.toUpperCase(), "STRUCTURE PARTIAL");
+    assert.equal(st.primary.label.toUpperCase(), "PARTIAL");
+    assert.equal(st.secondary, null, "no badge beside Partial");
   }
   assert.equal(structureOf(row("tuf-3"), null).structure, "partial", "no season data at all is not structure");
 });
@@ -153,4 +173,19 @@ test("a stale or missing evidence verdict is never shown as verified", () => {
   assert.equal(evidenceOf(r, { ...entry, fingerprint: "00000000" }, entry.fingerprint).evidence, "gaps");
   assert.equal(evidenceOf(r, undefined, entry.fingerprint).evidence, "gaps");
   assert.equal(evidenceOf({ ...r, completion_unverified: true }, entry, entry.fingerprint).evidence, "gaps");
+});
+
+test("the strict evidence layer is untouched: verdicts, fingerprints and structure rules", () => {
+  /* Verdicts straight from the matrix export, independent of any card text. */
+  assert.equal(artifact.seasons["tuf-2"].matrix_status, "COMPLETE");
+  assert.equal(inventory.seasons.filter((s) => artifact.seasons[s.slug]?.matrix_status === "COMPLETE").length, 1);
+  const entry = artifact.seasons["tuf-2"];
+  assert.equal(evidenceOf(row("tuf-2"), { ...entry, fingerprint: "00000000" }, entry.fingerprint).evidence, "gaps", "a stale verdict is still never verified");
+  const t1 = detailOf("tuf-1")!;
+  const broken = clone(t1) as StatusSeasonDetail & { bracket: Array<{ stages: Array<{ stage: string; bouts: unknown[] }> }> };
+  broken.bracket[0].stages = broken.bracket[0].stages.filter((x) => x.stage !== "final");
+  assert.equal(structureOf(row("tuf-1"), broken).structure, "partial", "structure rules unchanged");
+  const matrix = readFileSync(url("../../scripts/tuf/completeness_matrix.mjs"), "utf8");
+  assert.match(matrix, /HOUSE_RESULTS_SECONDARY_ONLY/);
+  assert.match(matrix, /OPEN_SOURCE_CONFLICT/);
 });
