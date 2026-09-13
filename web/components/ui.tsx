@@ -99,11 +99,15 @@ export function Portrait({ f, img, sizes = "(max-width: 680px) 45vw, 320px", pri
   );
 }
 export function Credit({ img, prefix = "Photo" }: { img?: PortraitSet | null; prefix?: string }) {
-  if (!img || (!img.author && !img.license)) return null;
-  /* A display-only ESPN headshot is not a Commons photo. */
+  if (!img) return null;
+  /* A display-only ESPN headshot is not a Commons photo, and it carries no
+   * licence or author of ours — so this branch is checked BEFORE the
+   * author/licence guard below, which would otherwise suppress the credit
+   * entirely and leave a displayed image unattributed. */
   if (img.kind === "display_fallback" || img.source_family === "espn") {
-    return <div className="credit">{prefix}: {img.source_url ? <a href={img.source_url} rel="noopener nofollow" target="_blank">ESPN</a> : "ESPN"}</div>;
+    return <div className="credit">{prefix}: {img.source_url ? <a href={img.source_url} rel="noopener nofollow" target="_blank">ESPN</a> : "ESPN"} · identity-verified display portrait</div>;
   }
+  if (!img.author && !img.license) return null;
   return (
     <div className="credit">
       {prefix}: {img.source_url ? <a href={img.source_url} rel="noopener nofollow" target="_blank">{img.author || "Wikimedia Commons"}</a> : img.author}{img.license ? ` · ${img.license}` : ""} · via Wikimedia Commons

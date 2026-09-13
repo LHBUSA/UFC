@@ -1,4 +1,6 @@
 import { rankVideos, videoLanguage, type LiveVideoState } from "@/lib/videoPolicy";
+import { prefersEspnDisplay, preferredDisplayFighterIds } from "@/lib/displayPortraitPolicy";
+import { espnVerifiedPortrait } from "@/lib/espnPortraitGate";
 /* Server-only data access. PostgREST over fetch with the service-role key
  * (RLS has no anon policies by design). Every reader is wrapped so that a
  * missing env var, a table that does not exist yet, or a network failure
@@ -366,7 +368,46 @@ export async function getImagesForFighters(ids: string[]): Promise<Map<string, P
     const available = await Promise.all(fallbacks.map((x) => espnHeadshotAvailable((x.fallback as PortraitSet).card)));
     fallbacks.forEach((x, idx) => { if (available[idx]) m.set(x.fighter.id, x.fallback as PortraitSet); });
   }
+
+  await applyDisplayPortraitPreference(m, uniq);
   return m;
+}
+
+/* A narrow, identity-gated display preference.
+ *
+ * Applied HERE, in the one resolver every fighter surface already calls, so
+ * the preference reaches the profile, heroes, event and fight pages, Fight
+ * Week, Round-by-Round, rankings, the directory, weigh-ins and editorial
+ * without a single component knowing about it. Patching surfaces one at a
+ * time is what produces a fighter who looks like two different people
+ * depending on the page.
+ *
+ * It changes the DISPLAY only. The stored row keeps its licence, author,
+ * attribution and provenance, is not deleted or demoted, and is still what
+ * the media record holds; the ESPN asset is display-only and never persisted.
+ * Anything the gate cannot verify keeps the stored image, so this can improve
+ * a portrait or do nothing, never blank one.
+ */
+async function applyDisplayPortraitPreference(m: Map<string, PortraitSet>, uniq: string[]): Promise<void> {
+  const preferred = new Set(preferredDisplayFighterIds());
+  const candidates = uniq.filter((id) => preferred.has(id));
+  if (!candidates.length) return;
+
+  const fighters = (await rest<Array<Pick<Fighter, "id" | "name" | "espn_athlete_id" | "dob">>>(
+    `ufc_fighters?select=id,name,espn_athlete_id,dob&id=in.(${candidates.join(",")})`, [], { revalidate: 300 },
+  )).data;
+
+  await Promise.all(fighters.map(async (fighter) => {
+    /* Canonical id AND the expected ESPN id, before any network call. */
+    if (!prefersEspnDisplay(fighter)) return;
+    try {
+      const stored = m.get(fighter.id) ?? null;
+      const espn = await espnVerifiedPortrait(fighter, stored);
+      if (espn && espn.source_family === "espn" && espn.portrait) m.set(fighter.id, espn);
+    } catch {
+      /* keep the stored image */
+    }
+  }));
 }
 
 export async function getImageById(id: string): Promise<PortraitSet | null> {
