@@ -175,6 +175,44 @@ export async function discoverViaDataApi(channelId, { key, since, now = new Date
     pageToken = pl.nextPageToken;
     if (!pageToken || allOld) break;
   }
+  const entries = await videoEntries(ids, key, now);
+  return { channel: { id: channelId, title: item.snippet?.title || null, uploads_playlist: uploads }, entries };
+}
+
+/* Every item of one playlist, regardless of age (archive backfill). With a key:
+ * playlists.list for the title, playlistItems.list paged to the end (bounded),
+ * videos.list for details. Without one: the playlist's public Atom feed, which
+ * carries only the newest ~15 items, and `complete: false` says so. Each entry
+ * carries the playlist id and title so the TUF tag can read them. */
+export async function discoverPlaylist(playlistId, { key, now = new Date(), maxPages = 40 } = {}) {
+  if (!key) {
+    const r = await fetchText(`https://www.youtube.com/feeds/videos.xml?playlist_id=${encodeURIComponent(playlistId)}`);
+    if (!r.ok) throw new Error(`playlist feed http ${r.status}`);
+    const parsed = parseYoutubeFeed(r.body);
+    const title = parsed.channel.title || null;
+    return {
+      discovery: 'atom_feed_playlist',
+      complete: false,
+      playlist: { id: playlistId, title },
+      entries: parsed.entries.map((e) => ({ ...e, playlist_id: playlistId, playlist_title: title })),
+    };
+  }
+  const meta = await apiGet('playlists', { part: 'snippet', id: playlistId }, key);
+  const title = meta.items?.[0]?.snippet?.title || null;
+  const ids = [];
+  let pageToken;
+  let complete = false;
+  for (let page = 0; page < maxPages; page += 1) {
+    const pl = await apiGet('playlistItems', { part: 'contentDetails', playlistId, maxResults: 50, ...(pageToken ? { pageToken } : {}) }, key);
+    for (const it of pl.items || []) if (it.contentDetails?.videoId) ids.push(it.contentDetails.videoId);
+    pageToken = pl.nextPageToken;
+    if (!pageToken) { complete = true; break; }
+  }
+  const entries = (await videoEntries([...new Set(ids)], key, now)).map((e) => ({ ...e, playlist_id: playlistId, playlist_title: title }));
+  return { discovery: 'youtube_data_api_v3_playlist', complete, playlist: { id: playlistId, title }, entries };
+}
+
+async function videoEntries(ids, key, now) {
   const entries = [];
   for (let i = 0; i < ids.length; i += 50) {
     const v = await apiGet('videos', { part: 'snippet,contentDetails,status,liveStreamingDetails', id: ids.slice(i, i + 50).join(',') }, key);
@@ -208,7 +246,7 @@ export async function discoverViaDataApi(channelId, { key, since, now = new Date
       });
     }
   }
-  return { channel: { id: channelId, title: item.snippet?.title || null, uploads_playlist: uploads }, entries };
+  return entries;
 }
 
 /* ------------------------------------------------------- classification */

@@ -45,6 +45,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "shared"))
 from common import (AccessGateError, Config, Fetcher, RunLog, SchemaAssertionError,  # noqa: E402
                     Supabase, discord, now_iso)
 from wayback import WaybackMissing, WaybackUnavailable  # noqa: E402
+from tuf_guard import tuf_in_house_event_reason  # noqa: E402
 import parsers  # noqa: E402
 import normalizers  # noqa: E402  (imported for the capability guard in main())
 from alias_resolver import AliasResolver, FighterRef, alias_rows_for_fighter, normalize  # noqa: E402
@@ -334,6 +335,11 @@ class Backfill:
             if self.args.limit:
                 events = events[: self.args.limit]
             new, linked = [], 0
+            # TUF house fights are exhibitions, never UFC events (shared/tuf_guard.py).
+            skipped_tuf = [e for e in events if tuf_in_house_event_reason(e.get("name"))]
+            for e in skipped_tuf:
+                self.log.event("tuf_in_house_event_skipped", ufcstats_id=e["ufcstats_id"], name=e["name"])
+            events = [e for e in events if not tuf_in_house_event_reason(e.get("name"))]
             for e in events:
                 if e["ufcstats_id"] in self.event_by_ufcstats and not self.args.force:
                     continue

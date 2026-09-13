@@ -15,7 +15,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SHARED_FILES = ["enums.json", "alias_resolver.mjs"]
+SHARED_FILES = ["enums.json", "alias_resolver.mjs", "tuf_guard.mjs"]
 WORKERS = [p for p in (ROOT / "workers").iterdir() if (p / "wrangler.toml").exists()]
 
 
