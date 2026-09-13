@@ -1,0 +1,2697 @@
+{
+  "_about": "Episode numbers and titles from the Paramount+ episode listing for The Ultimate Fighter (keyless JSON, retrieved 2026-09-12). listing_date is the listing's own date field: it matches original broadcast dates for early seasons and is wrong for recent ones (TUF 33's finale is listed on 2026-05-25), so it is never used as an air date. Descriptions are not copied.",
+  "source": "https://www.paramountplus.com/shows/the-ultimate-fighter/",
+  "retrieved": "2026-09-12",
+  "seasons": {
+    "tuf-1": [
+      {
+        "episode_number": 1,
+        "title": "The Quest Begins",
+        "listing_date": "2005-01-17",
+        "content_id": "spUhuYW6QdsZ7uX8u25WyTpmuOZY9k3u"
+      },
+      {
+        "episode_number": 2,
+        "title": "Team Challenges",
+        "listing_date": "2005-01-24",
+        "content_id": "BoArfPQnMrsDrVTV6kXyLPso9Xt3rRbX"
+      },
+      {
+        "episode_number": 3,
+        "title": "Making Weight",
+        "listing_date": "2005-01-31",
+        "content_id": "ikGbywWpCajQDB90W53YGcmGZ9_l_Jzk"
+      },
+      {
+        "episode_number": 4,
+        "title": "On the Ropes",
+        "listing_date": "2005-02-07",
+        "content_id": "ITewzu08Ny7kRkNRpIgG6jhRt3h67wid"
+      },
+      {
+        "episode_number": 5,
+        "title": "Un-Caged",
+        "listing_date": "2005-02-14",
+        "content_id": "Wihp2LD6hEdtskUWUezTvYOsGy153ZAc"
+      },
+      {
+        "episode_number": 6,
+        "title": "The Fight is On",
+        "listing_date": "2005-02-21",
+        "content_id": "FNQYXSgrM6B_YjTAOCAyLcO83_g8pvmc"
+      },
+      {
+        "episode_number": 7,
+        "title": "Ground & Pound",
+        "listing_date": "2005-02-28",
+        "content_id": "GDzsFvzKw1wXYtf0NjnEMj9qzy4sHBWS"
+      },
+      {
+        "episode_number": 8,
+        "title": "Sprawl N Brawl",
+        "listing_date": "2005-03-07",
+        "content_id": "yXh34gY8fl9J_EeArDBZatvU25USf_Kh"
+      },
+      {
+        "episode_number": 9,
+        "title": "Low Blow",
+        "listing_date": "2005-03-14",
+        "content_id": "xSil9csBKcjEmYmibordYZ0fkv1Vetf2"
+      },
+      {
+        "episode_number": 10,
+        "title": "Middleweight Semi-Final #1",
+        "listing_date": "2005-03-21",
+        "content_id": "YA5TIwXDGp2sJHrrnlP41IyzxnzI4cYp"
+      },
+      {
+        "episode_number": 11,
+        "title": "Middleweight Semi-Final #2",
+        "listing_date": "2005-03-28",
+        "content_id": "GNQbFUSqbuIOaOeVwMDAdMrbWLXZ_bcJ"
+      },
+      {
+        "episode_number": 12,
+        "title": "Light Heavyweight Semi-Finals",
+        "listing_date": "2005-04-04",
+        "content_id": "WWsGd_YF0JBJ9i3hzHVhlM7G379ojqoz"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 1 Finale: Team Liddell vs. Team Couture",
+        "listing_date": "2005-04-09",
+        "content_id": "1O1Oy_GnhGqc28KVm0S__e5lDd8pkK3c"
+      }
+    ],
+    "tuf-2": [
+      {
+        "episode_number": 1,
+        "title": "A New Crop",
+        "listing_date": "2005-08-22",
+        "content_id": "oy_2Ke1PEZATCGXVddYuK_GE1ylojKnJ"
+      },
+      {
+        "episode_number": 2,
+        "title": "The Teams Are Picked",
+        "listing_date": "2005-08-29",
+        "content_id": "z9988rJAJ5Xv_cgM0uribFOKhHDk_Wty"
+      },
+      {
+        "episode_number": 3,
+        "title": "No Pain, No Gain",
+        "listing_date": "2005-09-05",
+        "content_id": "D_bzk_SYrUPH7UBQZkPmqS9yLRPHsAtp"
+      },
+      {
+        "episode_number": 4,
+        "title": "Strategy",
+        "listing_date": "2005-09-12",
+        "content_id": "TkeN2JgHH8XP4odVqqZnkTnwpdmOZbct"
+      },
+      {
+        "episode_number": 5,
+        "title": "Leave it in the Octagon",
+        "listing_date": "2005-09-19",
+        "content_id": "EpJ6fvkZtLIFgEwAxtXmFcAkY4d_ARjJ"
+      },
+      {
+        "episode_number": 6,
+        "title": "Slugfest",
+        "listing_date": "2005-09-26",
+        "content_id": "53HJjoTZCoLiRSTXdF_bOh4iUimpKWQe"
+      },
+      {
+        "episode_number": 7,
+        "title": "No Respect",
+        "listing_date": "2005-10-03",
+        "content_id": "GRvyUhCGc4BOAaWbd4JCAq1fyTcq6LZE"
+      },
+      {
+        "episode_number": 8,
+        "title": "Knees & Elbows",
+        "listing_date": "2005-10-10",
+        "content_id": "FQyvIHOlWUhtiarm0JqknLDqi4WVBZmk"
+      },
+      {
+        "episode_number": 9,
+        "title": "Mental Game",
+        "listing_date": "2005-10-17",
+        "content_id": "JHqCOX89ZDmyzlQcEY3u5DXObd64Fx8W"
+      },
+      {
+        "episode_number": 10,
+        "title": "Semi-Final #1 Killer Instinct",
+        "listing_date": "2005-10-24",
+        "content_id": "gqP3OZYgcBG0whuR9Rl_BtkzxpReOwQs"
+      },
+      {
+        "episode_number": 11,
+        "title": "Semi-Final #2 Bloody Brawl",
+        "listing_date": "2005-10-31",
+        "content_id": "r3LUT9PRMeLxkdvj6n3lg3UtrkjhptLn"
+      },
+      {
+        "episode_number": 12,
+        "title": "Semi-Final #3 & 4: Countdown",
+        "listing_date": "2005-10-31",
+        "content_id": "xxzGTkKb72RKRhmRridUTFdub9VUt0O0"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 2 Finale: Team Hughes vs. Team Franklin",
+        "listing_date": "2005-11-05",
+        "content_id": "Y4vEzF4hZ2gStOhyCSC0n4eTd1l9Zsup"
+      }
+    ],
+    "tuf-3": [
+      {
+        "episode_number": 1,
+        "title": "Fresh Meat",
+        "listing_date": "2006-04-06",
+        "content_id": "C0XcTq3VOmEmxJ3V3DtVRJ8Saahq_jdo"
+      },
+      {
+        "episode_number": 2,
+        "title": "The Basketball",
+        "listing_date": "2006-04-13",
+        "content_id": "58KHCcsbgZ7QLfAcYrYoLKfDx7XZPZVs"
+      },
+      {
+        "episode_number": 3,
+        "title": "Team Dagger",
+        "listing_date": "2006-04-20",
+        "content_id": "WD92Uq7J7sIf13TYzpYioqZunZ6fcize"
+      },
+      {
+        "episode_number": 4,
+        "title": "Hitting It Hard",
+        "listing_date": "2006-04-27",
+        "content_id": "lbmUwQqh0aXTY8avDaG13qBU0aTLs_uA"
+      },
+      {
+        "episode_number": 5,
+        "title": "The Truce Is Over",
+        "listing_date": "2006-05-04",
+        "content_id": "KDB7xgOxVFuqnxQO1Q2ip5mDJM4rWrJe"
+      },
+      {
+        "episode_number": 6,
+        "title": "The Letter",
+        "listing_date": "2006-05-11",
+        "content_id": "PKwfExPb0_8poAnP8XzgbHrzZlmgv3i4"
+      },
+      {
+        "episode_number": 7,
+        "title": "Mohawk",
+        "listing_date": "2006-05-18",
+        "content_id": "OQm5SSmMySorZKmJHSdyKr80R0bjQJ2l"
+      },
+      {
+        "episode_number": 8,
+        "title": "The Fuse is Lit",
+        "listing_date": "2006-05-25",
+        "content_id": "KZMtqN5_s7QdpWjxt3bfElurNY0wtqoh"
+      },
+      {
+        "episode_number": 9,
+        "title": "The Golden Boy",
+        "listing_date": "2006-06-01",
+        "content_id": "3YhCfCTu_c274UQ_3UVIVZ_QJ55GELW6"
+      },
+      {
+        "episode_number": 10,
+        "title": "Full House",
+        "listing_date": "2006-06-08",
+        "content_id": "OBwRJxuKPSrvhcqdoS5FSf5sIiKU06n9"
+      },
+      {
+        "episode_number": 11,
+        "title": "The Jungle",
+        "listing_date": "2006-06-15",
+        "content_id": "3CDu1c1c_o9eh1v1gM1FFN8_ySSlUiOn"
+      },
+      {
+        "episode_number": 12,
+        "title": "Bangin'",
+        "listing_date": "2006-06-15",
+        "content_id": "26EXa7TBSIsBQv666dMXaoaB0vLz7eFy"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 3 Finale: Team Ortiz vs. Team Shamrock",
+        "listing_date": "2006-06-24",
+        "content_id": "JKPPavxt9xaLlXzg1ySSd4SMzVXGzQUJ"
+      }
+    ],
+    "tuf-4": [
+      {
+        "episode_number": 1,
+        "title": "The Comeback Begins",
+        "listing_date": "2006-08-17",
+        "content_id": "ZKcQoxT89kRO5v5Ix3iqkP11EqFsWHpE"
+      },
+      {
+        "episode_number": 2,
+        "title": "Blood Bath",
+        "listing_date": "2006-08-24",
+        "content_id": "yA4W6EL5FYm8_Le5dpJgOF94DpSwbOmB"
+      },
+      {
+        "episode_number": 3,
+        "title": "Passing Guard",
+        "listing_date": "2006-08-31",
+        "content_id": "ymisEQorj3FXHXnDgM_x0EaOpwMDgm_c"
+      },
+      {
+        "episode_number": 4,
+        "title": "The Funk",
+        "listing_date": "2006-09-07",
+        "content_id": "1mQ_Tc0Llf6VsMLNRFOu5WromKN7IDvs"
+      },
+      {
+        "episode_number": 5,
+        "title": "Flip a Coin",
+        "listing_date": "2006-09-14",
+        "content_id": "qdKWyA0whwaUSKG03V38QCmfjM1CxwNo"
+      },
+      {
+        "episode_number": 6,
+        "title": "Captain Miserable",
+        "listing_date": "2006-09-21",
+        "content_id": "VgBUws4lf3pVXoo338t2_bC2udkwp3oZ"
+      },
+      {
+        "episode_number": 7,
+        "title": "Drop to a Knee",
+        "listing_date": "2006-09-28",
+        "content_id": "gB47jW805jtxoBCuKOH6jnNvwrolTq_X"
+      },
+      {
+        "episode_number": 8,
+        "title": "True Colors",
+        "listing_date": "2006-10-05",
+        "content_id": "joymzaIggXN_bHVDbk9H7E9wqdZfPkPr"
+      },
+      {
+        "episode_number": 9,
+        "title": "Semi-Finale Match-Ups",
+        "listing_date": "2006-10-12",
+        "content_id": "wOtNisOa2GczK5hh8DSfUQ_4eMugA8uk"
+      },
+      {
+        "episode_number": 10,
+        "title": "Carter vs Serra",
+        "listing_date": "2006-10-19",
+        "content_id": "1XxUCltQ6UJiGuiilaALRA0Sc_B8V5oB"
+      },
+      {
+        "episode_number": 11,
+        "title": "Lutter vs Sell",
+        "listing_date": "2006-10-26",
+        "content_id": "3da_PM6z_FgRcIZsb43hP8FiiGAnfUNR"
+      },
+      {
+        "episode_number": 12,
+        "title": "DeWees vs Cote",
+        "listing_date": "2006-11-02",
+        "content_id": "Fh5_KHdqrUrlKTb3xuMT_s7315jPLbY2"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 4 Finale: The Comeback",
+        "listing_date": "2006-11-11",
+        "content_id": "w0AGHT9yjWARwOkYq64mLy06Icqk8vvB"
+      }
+    ],
+    "tuf-5": [
+      {
+        "episode_number": 1,
+        "title": "It's Like Anarchy Here",
+        "listing_date": "2007-04-05",
+        "content_id": "orevPv8sJnrCvIor8ouZ1SMWKenBRWaR"
+      },
+      {
+        "episode_number": 2,
+        "title": "Not in the House",
+        "listing_date": "2007-04-12",
+        "content_id": "xXyq_KSyvYPi0fnvfHpOOI9_24VdKEsw"
+      },
+      {
+        "episode_number": 3,
+        "title": "This Is My Zone",
+        "listing_date": "2007-04-19",
+        "content_id": "7sMymWDZyIVXbvbHsHgg3ezVPSu8rgXF"
+      },
+      {
+        "episode_number": 4,
+        "title": "Waa, Waa",
+        "listing_date": "2007-04-26",
+        "content_id": "1eioXLXwAPqvRhxDxAsRyBBdYvD_6Q1y"
+      },
+      {
+        "episode_number": 5,
+        "title": "Put Me Back In",
+        "listing_date": "2007-05-03",
+        "content_id": "rLtokShJRLxIkXiiZ4YLKiur5zRUkgCS"
+      },
+      {
+        "episode_number": 6,
+        "title": "All Your Might",
+        "listing_date": "2007-05-10",
+        "content_id": "1wkhsmP1yXwxDyMobadcLIj4ssZgGvJp"
+      },
+      {
+        "episode_number": 7,
+        "title": "Be the General",
+        "listing_date": "2007-05-17",
+        "content_id": "LVvlLF_kGZPqVrq3iqJ3PM1mEkCTi_c2"
+      },
+      {
+        "episode_number": 8,
+        "title": "Not on the Concrete",
+        "listing_date": "2007-05-24",
+        "content_id": "V5W6J5NifGeIiQGWH1tGdzNwV0FYjcjT"
+      },
+      {
+        "episode_number": 9,
+        "title": "It Was a Brawl",
+        "listing_date": "2007-05-31",
+        "content_id": "pACvO_Ngg1OBlD12vS7wAY8AbRoDmhEm"
+      },
+      {
+        "episode_number": 10,
+        "title": "Traitor",
+        "listing_date": "2007-06-07",
+        "content_id": "dbrK7U5cmMX2yb1bojp5ACSQWmhFLJ3w"
+      },
+      {
+        "episode_number": 11,
+        "title": "I Humbly Apologize",
+        "listing_date": "2007-06-14",
+        "content_id": "aIZLXv4HidQtuplAEMBrmkEsNj_dqhdU"
+      },
+      {
+        "episode_number": 12,
+        "title": "Gave a Hundred",
+        "listing_date": "2007-06-14",
+        "content_id": "8JNuqcCufj6wmmESULkj5_dOXxI_Vg9G"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 5 Finale: Team Pulver vs Team Penn",
+        "listing_date": "2007-06-23",
+        "content_id": "1FwRhQTyg0xxb9TdMEYCWr1FZYeek0zw"
+      }
+    ],
+    "tuf-6": [
+      {
+        "episode_number": 1,
+        "title": "Don't You Tap",
+        "listing_date": "2007-09-26",
+        "content_id": "ALVE01KMGW4BZ1E47RYWWM1P972ZXV"
+      },
+      {
+        "episode_number": 2,
+        "title": "I Need You, Bro",
+        "listing_date": "2007-09-26",
+        "content_id": "ALVE01KMGWCQJGEH0VEHKA3X9FBTRY"
+      },
+      {
+        "episode_number": 3,
+        "title": "It's About Character",
+        "listing_date": "2007-10-03",
+        "content_id": "ALVE01KMGX8PNNEQHACHBYVCC8ECPW"
+      },
+      {
+        "episode_number": 4,
+        "title": "Get Out of My Face",
+        "listing_date": "2007-10-10",
+        "content_id": "ALVE01KMGXG56YENG9H4MJGN0WXG0E"
+      },
+      {
+        "episode_number": 5,
+        "title": "Not A Real Fighter",
+        "listing_date": "2007-10-17",
+        "content_id": "ALVE01KMGXS82ZE16S9DDPKK9HJM6C"
+      },
+      {
+        "episode_number": 6,
+        "title": "It's All a Test",
+        "listing_date": "2007-10-22",
+        "content_id": "ALVE01KMGY0WBKE3VRAZP52PSRM32E"
+      },
+      {
+        "episode_number": 7,
+        "title": "The Game Plan",
+        "listing_date": "2007-10-31",
+        "content_id": "ALVE01KMGY6RWDEYEAVXCPVZEN0Z6R"
+      },
+      {
+        "episode_number": 8,
+        "title": "War Machine",
+        "listing_date": "2007-11-07",
+        "content_id": "ALVE01KMGY8JY4E6K92540KCV54TPE"
+      },
+      {
+        "episode_number": 9,
+        "title": "Karma",
+        "listing_date": "2007-11-14",
+        "content_id": "ALVE01KMGYAT22EAB9SF79GXTB3MXY"
+      },
+      {
+        "episode_number": 10,
+        "title": "Nothing to Lose",
+        "listing_date": "2007-11-21",
+        "content_id": "ALVE01KMGYCWZ5ET2AWK81WTF77KTG"
+      },
+      {
+        "episode_number": 11,
+        "title": "Upper Decker",
+        "listing_date": "2007-11-28",
+        "content_id": "ALVE01KMGYG82RE56BPC1S16P12XES"
+      },
+      {
+        "episode_number": 12,
+        "title": "Do You Want This Fight",
+        "listing_date": "2007-12-05",
+        "content_id": "ALVE01KMGYJ1RFEE7SAKMX4WHE3B4H"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 6 Finale: Team Hughes vs. Team Serra",
+        "listing_date": "2007-12-08",
+        "content_id": "ALVE01KMGYKVMPEBTSCBVAC76MC092"
+      }
+    ],
+    "tuf-7": [
+      {
+        "episode_number": 1,
+        "title": "No Poseurs",
+        "listing_date": "2008-04-02",
+        "content_id": "ALVE01KKN31518E68TQNKFB17711M4"
+      },
+      {
+        "episode_number": 2,
+        "title": "No Losers Here",
+        "listing_date": "2008-04-09",
+        "content_id": "ALVE01KKN31J16E3KVS2WRDD6MS8SM"
+      },
+      {
+        "episode_number": 3,
+        "title": "The Heebie-Jeebies",
+        "listing_date": "2008-04-16",
+        "content_id": "ALVE01KKN31TS0ECQ9QGWJHY8R7RCH"
+      },
+      {
+        "episode_number": 4,
+        "title": "Everything to Lose",
+        "listing_date": "2008-04-23",
+        "content_id": "ALVE01KKN32SCME7Z8WX811VBGA4G3"
+      },
+      {
+        "episode_number": 5,
+        "title": "Chewbacle",
+        "listing_date": "2008-04-30",
+        "content_id": "ALVE01KKN331CYEB7AX7XJQA2TKC23"
+      },
+      {
+        "episode_number": 6,
+        "title": "Piece of Meat",
+        "listing_date": "2008-05-07",
+        "content_id": "ALVE01KKN339SBE7EB2BZ9DX8VS699"
+      },
+      {
+        "episode_number": 7,
+        "title": "Under The Radar",
+        "listing_date": "2008-05-14",
+        "content_id": "ALVE01KKN33MHGEC79EMNNHRJP29ZD"
+      },
+      {
+        "episode_number": 8,
+        "title": "Mean and Nasty",
+        "listing_date": "2008-05-21",
+        "content_id": "ALVE01KKN33ZBCEH1V8AZWPA21HJY1"
+      },
+      {
+        "episode_number": 9,
+        "title": "Throwing Bombs",
+        "listing_date": "2008-05-28",
+        "content_id": "ALVE01KKN346R7EBZS6TDA9W0EET0W"
+      },
+      {
+        "episode_number": 10,
+        "title": "Losers Go Home",
+        "listing_date": "2008-06-04",
+        "content_id": "ALVE01KKN34E1EEGQV4G6JTYY4CWCN"
+      },
+      {
+        "episode_number": 11,
+        "title": "Coco is King",
+        "listing_date": "2008-06-11",
+        "content_id": "ALVE01KKN34RFZEPDSMMBKYEN2997Q"
+      },
+      {
+        "episode_number": 12,
+        "title": "First Time Ever",
+        "listing_date": "2008-06-18",
+        "content_id": "ALVE01KKN351ACEYRSP9TG4M4QPXV4"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 7 Finale: Team Rampage vs. Team Forrest",
+        "listing_date": "2008-06-21",
+        "content_id": "ALVE01KKN35HJYEPPTY41JG4B9CYXJ"
+      }
+    ],
+    "tuf-8": [
+      {
+        "episode_number": 1,
+        "title": "Ready to Fight",
+        "listing_date": "2008-09-17",
+        "content_id": "ALVE01KMH1P0FCEQXTNR0CC282D1JK"
+      },
+      {
+        "episode_number": 2,
+        "title": "Down to Business",
+        "listing_date": "2008-09-24",
+        "content_id": "ALVE01KMH1SPP1E039WRVZ05BZ6QJ6"
+      },
+      {
+        "episode_number": 3,
+        "title": "Demons",
+        "listing_date": "2008-10-01",
+        "content_id": "ALVE01KMH1WAMXE7WAFTQMV2W12YD4"
+      },
+      {
+        "episode_number": 4,
+        "title": "Punk",
+        "listing_date": "2008-10-08",
+        "content_id": "ALVE01KMH1ZG6WEWBVP2XJP7PMPCFJ"
+      },
+      {
+        "episode_number": 5,
+        "title": "From Chill to Kill",
+        "listing_date": "2008-10-15",
+        "content_id": "ALVE01KMH22EVCE0Z8PKWR3J4HVPH2"
+      },
+      {
+        "episode_number": 6,
+        "title": "Fight, Fight, Kill, Kill",
+        "listing_date": "2008-10-22",
+        "content_id": "ALVE01KMH27A36EXVSKP6SGHGWD89W"
+      },
+      {
+        "episode_number": 7,
+        "title": "Body Bag",
+        "listing_date": "2008-10-29",
+        "content_id": "ALVE01KMH2C2Q6E49VEAJW0GE42CWW"
+      },
+      {
+        "episode_number": 8,
+        "title": "Splushi",
+        "listing_date": "2008-11-05",
+        "content_id": "ALVE01KMH2FQ1DET6V40SY58BYSDRB"
+      },
+      {
+        "episode_number": 9,
+        "title": "Hurts Like Hell",
+        "listing_date": "2008-11-12",
+        "content_id": "ALVE01KMH2JTCFE7ZRQ74RXD8GNRVA"
+      },
+      {
+        "episode_number": 10,
+        "title": "Fire the Cannons!",
+        "listing_date": "2008-11-19",
+        "content_id": "ALVE01KMH2NMH1EAKBP5WGRQ6A0GBP"
+      },
+      {
+        "episode_number": 11,
+        "title": "Make Him Pay",
+        "listing_date": "2008-11-26",
+        "content_id": "ALVE01KMH2QVVTE91RQ9ZMD07K2TDX"
+      },
+      {
+        "episode_number": 12,
+        "title": "Three Strikes",
+        "listing_date": "2008-12-03",
+        "content_id": "ALVE01KMH2VZQVE5ASS36GMYF02ESR"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 8 Finale: Team Nogueria vs Team Mir",
+        "listing_date": "2008-12-13",
+        "content_id": "ALVE01KMH30CQZEM5BAQB3FTMPE1W5"
+      }
+    ],
+    "tuf-9": [
+      {
+        "episode_number": 1,
+        "title": "Bangers & Mashers",
+        "listing_date": "2009-04-01",
+        "content_id": "ALVE01KMH6X9ZHEQVAE9EPCKND4M7K"
+      },
+      {
+        "episode_number": 2,
+        "title": "Scars and Stripes",
+        "listing_date": "2009-04-08",
+        "content_id": "ALVE01KMH71AP9E3T9NF4YPR41XRWZ"
+      },
+      {
+        "episode_number": 3,
+        "title": "Red, White & Bruised",
+        "listing_date": "2009-04-15",
+        "content_id": "ALVE01KMH74N82E96T8DDPTD78A6JH"
+      },
+      {
+        "episode_number": 4,
+        "title": "Game On",
+        "listing_date": "2009-04-22",
+        "content_id": "ALVE01KMH776CKESHV90KZBYXXPQY8"
+      },
+      {
+        "episode_number": 5,
+        "title": "Wiggity Wack",
+        "listing_date": "2009-04-29",
+        "content_id": "ALVE01KMH7A375EH2855J9CGGEBYZX"
+      },
+      {
+        "episode_number": 6,
+        "title": "$100 a Tooth",
+        "listing_date": "2009-05-06",
+        "content_id": "ALVE01KMH7FT48E6K9MKK9P7NW9WXB"
+      },
+      {
+        "episode_number": 7,
+        "title": "The Bash Room",
+        "listing_date": "2009-05-13",
+        "content_id": "ALVE01KMH7JTGMEZ9R61Y9B21TDY0B"
+      },
+      {
+        "episode_number": 8,
+        "title": "Negative Energy",
+        "listing_date": "2009-05-20",
+        "content_id": "ALVE01KMH7NK9EEQ2T1WPGVC3FCREN"
+      },
+      {
+        "episode_number": 9,
+        "title": "Battle Royale",
+        "listing_date": "2009-05-27",
+        "content_id": "ALVE01KMH7R2JCEP0AWV4371F8NT2K"
+      },
+      {
+        "episode_number": 10,
+        "title": "Smiling and Punching",
+        "listing_date": "2009-06-03",
+        "content_id": "ALVE01KMH7TCQ8ECKRWBDA6SJP3VBN"
+      },
+      {
+        "episode_number": 11,
+        "title": "More Ups, Less Downs",
+        "listing_date": "2009-06-10",
+        "content_id": "ALVE01KMH7WH4ME9MB1ZF2GVSQH0N6"
+      },
+      {
+        "episode_number": 12,
+        "title": "Rematch",
+        "listing_date": "2009-06-17",
+        "content_id": "ALVE01KMH7YQV2E7C9EHN3495STPGN"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 9 Finale: United States vs United Kingdom",
+        "listing_date": "2009-06-20",
+        "content_id": "ALVE01KMH80T3HE60S4CZ88V62T3S8"
+      }
+    ],
+    "tuf-10": [
+      {
+        "episode_number": 1,
+        "title": "Size Does Matter",
+        "listing_date": "2009-09-16",
+        "content_id": "ALVE01KKPTBN4ZED7VKEZGR7XGZQ1P"
+      },
+      {
+        "episode_number": 2,
+        "title": "All About Survival",
+        "listing_date": "2009-09-23",
+        "content_id": "ALVE01KKPTEDYTES28H1V39DH6NMZZ"
+      },
+      {
+        "episode_number": 3,
+        "title": "The Enemy",
+        "listing_date": "2009-09-30",
+        "content_id": "ALVE01KKPTET4EECFS82WNGEKKBC1D"
+      },
+      {
+        "episode_number": 4,
+        "title": "Snitch",
+        "listing_date": "2009-10-07",
+        "content_id": "ALVE01KKPTF2Y9EM58CRPVYPJSWFAN"
+      },
+      {
+        "episode_number": 5,
+        "title": "Rude Awakening",
+        "listing_date": "2009-10-14",
+        "content_id": "ALVE01KKPTFD8PE06928WJR5V8Q7NR"
+      },
+      {
+        "episode_number": 6,
+        "title": "16 Sharks",
+        "listing_date": "2009-10-21",
+        "content_id": "ALVE01KKPTFRRTEREVBGPXTTHNYQW4"
+      },
+      {
+        "episode_number": 7,
+        "title": "Voices In My Head",
+        "listing_date": "2009-10-28",
+        "content_id": "ALVE01KKPTG9NTE6Q9NH1REHXT28GZ"
+      },
+      {
+        "episode_number": 8,
+        "title": "One Solider Left",
+        "listing_date": "2009-11-04",
+        "content_id": "ALVE01KKPTGKGNEJP9WT120PHFV8T7"
+      },
+      {
+        "episode_number": 9,
+        "title": "Rattled",
+        "listing_date": "2009-11-11",
+        "content_id": "ALVE01KKPT9T63EPSSZ3RX5007232H"
+      },
+      {
+        "episode_number": 10,
+        "title": "Gut Check",
+        "listing_date": "2009-11-18",
+        "content_id": "ALVE01KKPTGY5PEPKTHB9994Y1KDW2"
+      },
+      {
+        "episode_number": 11,
+        "title": "Demise Me",
+        "listing_date": "2009-12-02",
+        "content_id": "ALVE01KKPTH71MEBNB1DYBSZW6KXTF"
+      },
+      {
+        "episode_number": 12,
+        "title": "Battle Tested",
+        "listing_date": "2009-12-05",
+        "content_id": "ALVE01KKPTHM5AE1K9ENB6VA1EFPQH"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 10 Finale: Heavyweights",
+        "listing_date": "2009-12-05",
+        "content_id": "ALVE01KKPTJR8EEETS31C2N5658BFT"
+      }
+    ],
+    "tuf-11": [
+      {
+        "episode_number": 1,
+        "title": "Smashed Up",
+        "listing_date": "2010-03-31",
+        "content_id": "ALVE01KMRJFQWMETPA6BCC4TQFT18S"
+      },
+      {
+        "episode_number": 2,
+        "title": "Suck it Up",
+        "listing_date": "2010-04-07",
+        "content_id": "ALVE01KMRJH3YAES2S6N49993BFBXG"
+      },
+      {
+        "episode_number": 3,
+        "title": "A Lotta Heart",
+        "listing_date": "2010-04-14",
+        "content_id": "ALVE01KMRJHKAXEBEV2WRZN8VW7APB"
+      },
+      {
+        "episode_number": 4,
+        "title": "Clown Box",
+        "listing_date": "2010-04-21",
+        "content_id": "ALVE01KMRJJ380EQAS0RZ67Q4JNV93"
+      },
+      {
+        "episode_number": 5,
+        "title": "If It Breathes, It Bleeds",
+        "listing_date": "2010-04-28",
+        "content_id": "ALVE01KMRJR1MCEEJVJBAEBGE33HD5"
+      },
+      {
+        "episode_number": 6,
+        "title": "Did You Dizzle",
+        "listing_date": "2010-05-05",
+        "content_id": "ALVE01KMRJRJ3GEG9RKYPPTY4SJ99N"
+      },
+      {
+        "episode_number": 7,
+        "title": "Coming for Blood",
+        "listing_date": "2010-05-12",
+        "content_id": "ALVE01KMRJS2KWE2YSZFHTAE4J2DJG"
+      },
+      {
+        "episode_number": 8,
+        "title": "Closed Mouth Don't Get Fed",
+        "listing_date": "2010-05-19",
+        "content_id": "ALVE01KMRJSJA3E78VN5PG4NKCZ8BX"
+      },
+      {
+        "episode_number": 9,
+        "title": "Civilized Sport",
+        "listing_date": "2010-05-26",
+        "content_id": "ALVE01KMRJT0NHE1TA1E64JCSYDEEK"
+      },
+      {
+        "episode_number": 10,
+        "title": "Shocked and Awed",
+        "listing_date": "2010-06-02",
+        "content_id": "ALVE01KMRK7T2RETKB6Q7GF89H62RS"
+      },
+      {
+        "episode_number": 11,
+        "title": "Dogfight",
+        "listing_date": "2010-06-09",
+        "content_id": "ALVE01KMRKH4R5ECPVXWKBBMX5PT0T"
+      },
+      {
+        "episode_number": 12,
+        "title": "Bell to Bell",
+        "listing_date": "2010-06-16",
+        "content_id": "ALVE01KMRKHNBXE2JSSZD1C60G67MS"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 11 Finale: Team Liddell vs. Team Ortiz",
+        "listing_date": "2010-06-19",
+        "content_id": "ALVE01KMRKJ6J4E10T068SS8ZYKKKF"
+      }
+    ],
+    "tuf-12": [
+      {
+        "episode_number": 1,
+        "title": "Go For It",
+        "listing_date": "2010-09-15",
+        "content_id": "ALVE01KMH9MVXGEPXT4GW5JNP8JQ3Y"
+      },
+      {
+        "episode_number": 2,
+        "title": "Well-Played",
+        "listing_date": "2010-09-22",
+        "content_id": "ALVE01KMH9QT95ES19V0HDRJRTWVTJ"
+      },
+      {
+        "episode_number": 3,
+        "title": "Unleash Hell",
+        "listing_date": "2010-09-29",
+        "content_id": "ALVE01KMH9RDWQE6C8F5TKDGSJVPYC"
+      },
+      {
+        "episode_number": 4,
+        "title": "Love To Hate",
+        "listing_date": "2010-10-06",
+        "content_id": "ALVE01KMH9S77ZE13RX76PCJMQ4D39"
+      },
+      {
+        "episode_number": 5,
+        "title": "Disrespectful",
+        "listing_date": "2010-10-13",
+        "content_id": "ALVE01KMH9SV9ZEPQVNK5XWP4CFW85"
+      },
+      {
+        "episode_number": 6,
+        "title": "Win Or Die",
+        "listing_date": "2010-10-20",
+        "content_id": "ALVE01KMH9TERVEJ4ANP65BY0R568W"
+      },
+      {
+        "episode_number": 7,
+        "title": "Second Chance",
+        "listing_date": "2010-10-27",
+        "content_id": "ALVE01KMH9V0RPEEZAY14KYQ62FY40"
+      },
+      {
+        "episode_number": 8,
+        "title": "Kos in a Commotion",
+        "listing_date": "2010-11-03",
+        "content_id": "ALVE01KMH9VFZKE65A4R86ANGE931W"
+      },
+      {
+        "episode_number": 9,
+        "title": "Personal",
+        "listing_date": "2010-11-10",
+        "content_id": "ALVE01KMH9W22WEKJSPSATHAW6QVQJ"
+      },
+      {
+        "episode_number": 10,
+        "title": "Spinning Tornado",
+        "listing_date": "2010-11-17",
+        "content_id": "ALVE01KMH9WJ0BE548R0SBWBN71RZW"
+      },
+      {
+        "episode_number": 11,
+        "title": "Victory's All That Matters",
+        "listing_date": "2010-12-01",
+        "content_id": "ALVE01KMH9X2CCEJZA8CNMVMPAY3B4"
+      },
+      {
+        "episode_number": 12,
+        "title": "Absolute War",
+        "listing_date": "2010-12-01",
+        "content_id": "ALVE01KMH9XHAFEPVB4Y8CZCK2MFNJ"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 12 Finale: Team GSP vs Team Koscheck Finale",
+        "listing_date": "2010-12-04",
+        "content_id": "ALVE01KMH9Y1XPED5S1YJ6ZQJJWQ91"
+      }
+    ],
+    "tuf-13": [
+      {
+        "episode_number": 1,
+        "title": "Something to Prove",
+        "listing_date": "2011-03-30",
+        "content_id": "ALVE01KMH7WG7WED6S88FG16VHMSK2"
+      },
+      {
+        "episode_number": 2,
+        "title": "Suck It Up",
+        "listing_date": "2011-04-06",
+        "content_id": "ALVE01KMH7XJHKEWQVNED6ZZP7M5XK"
+      },
+      {
+        "episode_number": 3,
+        "title": "Chicken Salad",
+        "listing_date": "2011-04-13",
+        "content_id": "ALVE01KMH7YK9AE5HVJ69M4GQ4E3EM"
+      },
+      {
+        "episode_number": 4,
+        "title": "A Bad Dream",
+        "listing_date": "2011-04-20",
+        "content_id": "ALVE01KMH804CDERDT7DVWY953R3H8"
+      },
+      {
+        "episode_number": 5,
+        "title": "Wow Me",
+        "listing_date": "2011-04-27",
+        "content_id": "ALVE01KMH817GREC5S5MTM9B3C8KRM"
+      },
+      {
+        "episode_number": 6,
+        "title": "Mean Streak",
+        "listing_date": "2011-05-04",
+        "content_id": "ALVE01KMH81RWFEJAR03X98AQH1M5C"
+      },
+      {
+        "episode_number": 7,
+        "title": "It's Just Good to Win",
+        "listing_date": "2011-05-11",
+        "content_id": "ALVE01KMH829TQE4H84KGEDM0F29NZ"
+      },
+      {
+        "episode_number": 8,
+        "title": "Shut Him Up",
+        "listing_date": "2011-05-18",
+        "content_id": "ALVE01KMH834PPE4NB7A1MTT75Q9ZA"
+      },
+      {
+        "episode_number": 9,
+        "title": "Then It Turned Ugly",
+        "listing_date": "2011-05-25",
+        "content_id": "ALVE01KMH83WM6EC7S2P6HPM56NYHP"
+      },
+      {
+        "episode_number": 10,
+        "title": "The Biggest Threat",
+        "listing_date": "2011-06-01",
+        "content_id": "ALVE01KMH84CR3E1ZTW28HCJWZ9J42"
+      },
+      {
+        "episode_number": 11,
+        "title": "TUF 13 Finale: Team Lesnar vs. Team dos Santos",
+        "listing_date": "2011-06-04",
+        "content_id": "ALVE01KMH857H6EBES9F7E66JWHT34"
+      }
+    ],
+    "tuf-14": [
+      {
+        "episode_number": 1,
+        "title": "Scrappers",
+        "listing_date": "2011-09-21",
+        "content_id": "ALVE01KKMWXYVCENG9PM7YQ95A38N4"
+      },
+      {
+        "episode_number": 2,
+        "title": "I Against I",
+        "listing_date": "2011-09-28",
+        "content_id": "ALVE01KKMWY96JEX9TEVZEW92BNY6E"
+      },
+      {
+        "episode_number": 3,
+        "title": "Death Leprechauns",
+        "listing_date": "2011-10-05",
+        "content_id": "ALVE01KMBTG4JMEATTEAV7AEKCPDYJ"
+      },
+      {
+        "episode_number": 4,
+        "title": "Get the F Up",
+        "listing_date": "2011-10-12",
+        "content_id": "ALVE01KMBTG8J4E96V8FG3WHHNGHPX"
+      },
+      {
+        "episode_number": 5,
+        "title": "Swagger Jacker",
+        "listing_date": "2011-10-19",
+        "content_id": "ALVE01KMBTGDFPE4AV6XQ26PMTVXF3"
+      },
+      {
+        "episode_number": 6,
+        "title": "Thrown to the Lions",
+        "listing_date": "2011-10-26",
+        "content_id": "ALVE01KMBTGGAGE3RRV6088PECS5XX"
+      },
+      {
+        "episode_number": 7,
+        "title": "Draft Dodger",
+        "listing_date": "2011-11-02",
+        "content_id": "ALVE01KMBTGKK1ECA8S6YEKZHXYKJ0"
+      },
+      {
+        "episode_number": 8,
+        "title": "Don't Do This at Home, Kids",
+        "listing_date": "2011-11-09",
+        "content_id": "ALVE01KMBTGPCKEDG9GB969YMNTN2N"
+      },
+      {
+        "episode_number": 9,
+        "title": "Get Me to the Finals",
+        "listing_date": "2011-11-16",
+        "content_id": "ALVE01KMBTGSJKENPAM5B58W28KM6Z"
+      },
+      {
+        "episode_number": 10,
+        "title": "It's About to Go Down",
+        "listing_date": "2011-11-30",
+        "content_id": "ALVE01KMBTGWHVE5G9S0TB7324XEH0"
+      },
+      {
+        "episode_number": 11,
+        "title": "TUF 14 Finale: Team Bisping vs. Team Miller",
+        "listing_date": "2011-12-03",
+        "content_id": "ALVE01KMBTH19NEA2SJZ0C5X8Y0J6K"
+      }
+    ],
+    "tuf-15": [
+      {
+        "episode_number": 1,
+        "title": "The Ultimate Fighter Live",
+        "listing_date": "2012-03-09",
+        "content_id": "ALVE01KMH4PK6CE1CSCZRMXQF2RC61"
+      },
+      {
+        "episode_number": 2,
+        "title": "Embrace the War",
+        "listing_date": "2012-03-16",
+        "content_id": "ALVE01KMH4Q0MFEB084CMJ4KPTNZWY"
+      },
+      {
+        "episode_number": 3,
+        "title": "Old School vs New School",
+        "listing_date": "2012-03-23",
+        "content_id": "ALVE01KMH4Q8B5EKF8YKC2SXP7YME7"
+      },
+      {
+        "episode_number": 4,
+        "title": "All the Pressure",
+        "listing_date": "2012-03-30",
+        "content_id": "ALVE01KMH4QJBVE6VA6XMA7PPQ9M6Z"
+      },
+      {
+        "episode_number": 5,
+        "title": "That Miserable Feeling",
+        "listing_date": "2012-04-06",
+        "content_id": "ALVE01KMH4QS8FED38S030A865R3ZS"
+      },
+      {
+        "episode_number": 6,
+        "title": "Dog with No Bark",
+        "listing_date": "2012-04-13",
+        "content_id": "ALVE01KMH4R0RXEEST00DM17FMXB3R"
+      },
+      {
+        "episode_number": 7,
+        "title": "Weather the Storm",
+        "listing_date": "2012-04-20",
+        "content_id": "ALVE01KMH4R7Y7EB6SA02GZJYWSD5D"
+      },
+      {
+        "episode_number": 8,
+        "title": "The Lion's Den",
+        "listing_date": "2012-04-27",
+        "content_id": "ALVE01KMH4RJXSEQ39X2EP4G2BGR25"
+      },
+      {
+        "episode_number": 9,
+        "title": "Become That Hero",
+        "listing_date": "2012-05-04",
+        "content_id": "ALVE01KMH4SA0VE41SB2FTXFQ7N2S8"
+      },
+      {
+        "episode_number": 10,
+        "title": "So Real, It's Unreal",
+        "listing_date": "2012-05-11",
+        "content_id": "ALVE01KMH4SW16EDQB3R99WZ1HVG86"
+      },
+      {
+        "episode_number": 11,
+        "title": "Like a Spartan",
+        "listing_date": "2012-05-18",
+        "content_id": "ALVE01KMH4TDDXEJ2V37Z1EM8VGCTN"
+      },
+      {
+        "episode_number": 12,
+        "title": "Reality Check",
+        "listing_date": "2012-05-25",
+        "content_id": "ALVE01KMH4TW7JEEKA46A4PSE4RG41"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 15 Finale: Team Cruz vs Team Faber",
+        "listing_date": "2012-06-01",
+        "content_id": "ALVE01KMH4VDBAEG78Q9DXDRA311JB"
+      }
+    ],
+    "tuf-16": [
+      {
+        "episode_number": 1,
+        "title": "Bring It!",
+        "listing_date": "2012-09-14",
+        "content_id": "ALVE01KMGW9CZ4EY88S60E0ZZF8DWQ"
+      },
+      {
+        "episode_number": 2,
+        "title": "What We Do",
+        "listing_date": "2012-09-21",
+        "content_id": "ALVE01KMGYMPYXE3ATN8W6RJPM3HQW"
+      },
+      {
+        "episode_number": 3,
+        "title": "We Have Control",
+        "listing_date": "2012-09-28",
+        "content_id": "ALVE01KMGYPVJ4E7ZA2MFFRJ094TKK"
+      },
+      {
+        "episode_number": 4,
+        "title": "Can't Fix Stupid",
+        "listing_date": "2012-10-05",
+        "content_id": "ALVE01KMGYS2JAEP2S6FJM7JY9CK7S"
+      },
+      {
+        "episode_number": 5,
+        "title": "Unleash the Beast",
+        "listing_date": "2012-10-12",
+        "content_id": "ALVE01KMGZZSS2EFEVSET1FPJV4F5V"
+      },
+      {
+        "episode_number": 6,
+        "title": "One Mission",
+        "listing_date": "2012-10-19",
+        "content_id": "ALVE01KMH004R4E67AXRSCGG65A963"
+      },
+      {
+        "episode_number": 7,
+        "title": "Summer Camp",
+        "listing_date": "2012-10-27",
+        "content_id": "ALVE01KMH00BWZEPT8ZKW09RA7C6F0"
+      },
+      {
+        "episode_number": 8,
+        "title": "Rock 'Em, Sock 'Em",
+        "listing_date": "2012-11-02",
+        "content_id": "ALVE01KMH00Q7NEEN9AC9JVV2JMA64"
+      },
+      {
+        "episode_number": 9,
+        "title": "Betrayal",
+        "listing_date": "2012-11-09",
+        "content_id": "ALVE01KMH01KQQEYYS9RJZ7QEZ70B1"
+      },
+      {
+        "episode_number": 10,
+        "title": "Coming for You",
+        "listing_date": "2012-11-16",
+        "content_id": "ALVE01KMH01W8PEX3S8ZFFZXH1EPHC"
+      },
+      {
+        "episode_number": 11,
+        "title": "Fight the Perfect Fight",
+        "listing_date": "2012-11-30",
+        "content_id": "ALVE01KMH025DGE2F89T0VDT8X10RX"
+      },
+      {
+        "episode_number": 12,
+        "title": "Semifinal Showdown",
+        "listing_date": "2012-12-07",
+        "content_id": "ALVE01KMH02DJ2EY9R1KAEKPBA4TTJ"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 16 Finale: Team Carwin vs. Team Nelson",
+        "listing_date": "2012-12-15",
+        "content_id": "ALVE01KMH02SWVEQN8VWFZF2C3W6ZB"
+      }
+    ],
+    "tuf-17": [
+      {
+        "episode_number": 1,
+        "title": "Enter the Octagon",
+        "listing_date": "2013-01-22",
+        "content_id": "ALVE01KMEKGPZWEM4VN7HS2KNJN4HY"
+      },
+      {
+        "episode_number": 2,
+        "title": "Ambush",
+        "listing_date": "2013-01-29",
+        "content_id": "ALVE01KMEKGT0CES8SPY2GEFXAHT50"
+      },
+      {
+        "episode_number": 3,
+        "title": "Embrace the Suffering",
+        "listing_date": "2013-02-05",
+        "content_id": "ALVE01KMEKGXDVEYMVSE2JRG1F4XNG"
+      },
+      {
+        "episode_number": 4,
+        "title": "Sign of Disrespect",
+        "listing_date": "2013-02-12",
+        "content_id": "ALVE01KMEKH16KEXRR95SJ3FC5SXER"
+      },
+      {
+        "episode_number": 5,
+        "title": "The Reflection of Perfection",
+        "listing_date": "2013-02-19",
+        "content_id": "ALVE01KMEKH4CHE54B5VS7M4NBYWST"
+      },
+      {
+        "episode_number": 6,
+        "title": "Path to Greatness",
+        "listing_date": "2013-02-26",
+        "content_id": "ALVE01KMEKH77FE2FBTWM7D2RE0QH6"
+      },
+      {
+        "episode_number": 7,
+        "title": "His Fist on My Face",
+        "listing_date": "2013-03-05",
+        "content_id": "ALVE01KMEKHBGQE9AAPJ0MC5ACCMQ6"
+      },
+      {
+        "episode_number": 8,
+        "title": "Bag of Tools",
+        "listing_date": "2013-03-12",
+        "content_id": "ALVE01KMEKHMFNEW79CYNS3JFJXVSP"
+      },
+      {
+        "episode_number": 9,
+        "title": "The Wild Card",
+        "listing_date": "2013-03-19",
+        "content_id": "ALVE01KMEKHQ8WEDCV1DQTMRCEMXWW"
+      },
+      {
+        "episode_number": 10,
+        "title": "The Quarterfinals Begin",
+        "listing_date": "2013-03-26",
+        "content_id": "ALVE01KMEKHVGPE5VTHAR86HXMZ1JC"
+      },
+      {
+        "episode_number": 11,
+        "title": "Vicious",
+        "listing_date": "2013-04-02",
+        "content_id": "ALVE01KMEKHYQDE8XBNKHRK9C3PYQA"
+      },
+      {
+        "episode_number": 12,
+        "title": "The Semis",
+        "listing_date": "2013-04-09",
+        "content_id": "ALVE01KMEKJ1WVEQYAM909XBY9146A"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 17 Finale: Faber vs Jorgensen",
+        "listing_date": "2013-04-13",
+        "content_id": "ALVE01KMEKJ53PE5E90N5PPHEAH3RN"
+      }
+    ],
+    "tuf-18": [
+      {
+        "episode_number": 1,
+        "title": "History in the Making",
+        "listing_date": "2013-09-04",
+        "content_id": "ALVE01KMRMXF75EWCBDY5PNNN5NE1J"
+      },
+      {
+        "episode_number": 2,
+        "title": "Ladies First",
+        "listing_date": "2013-09-11",
+        "content_id": "ALVE01KMRMY0KVE6N8A6865E22ZY8S"
+      },
+      {
+        "episode_number": 3,
+        "title": "Stick and Move",
+        "listing_date": "2013-09-18",
+        "content_id": "ALVE01KMRMYGZEEFWT0136J8YPYC3V"
+      },
+      {
+        "episode_number": 4,
+        "title": "Use the Force",
+        "listing_date": "2013-09-25",
+        "content_id": "ALVE01KMRNHFSWE95S4FMD6A98CCBS"
+      },
+      {
+        "episode_number": 5,
+        "title": "Redemption",
+        "listing_date": "2013-10-02",
+        "content_id": "ALVE01KMRVAB36E8H8DX8N9N50R2AZ"
+      },
+      {
+        "episode_number": 6,
+        "title": "Little Princesses",
+        "listing_date": "2013-10-09",
+        "content_id": "ALVE01KMRVDWXFEWGRKS110W7RJBZH"
+      },
+      {
+        "episode_number": 7,
+        "title": "Zone In",
+        "listing_date": "2013-10-16",
+        "content_id": "ALVE01KMRVEHA9E8QAWWWDGA0KDH7Y"
+      },
+      {
+        "episode_number": 8,
+        "title": "Tied",
+        "listing_date": "2013-10-23",
+        "content_id": "ALVE01KMRVFHSGEM4A5TWGMBDXJFM0"
+      },
+      {
+        "episode_number": 9,
+        "title": "Sacrifice",
+        "listing_date": "2013-10-30",
+        "content_id": "ALVE01KMRVG34TECQ9R402HQQ59ZKC"
+      },
+      {
+        "episode_number": 10,
+        "title": "HWPO",
+        "listing_date": "2013-11-06",
+        "content_id": "ALVE01KMRVGX7XEF3B4JRB95CDAZ8S"
+      },
+      {
+        "episode_number": 11,
+        "title": "Mean Girls",
+        "listing_date": "2013-11-13",
+        "content_id": "ALVE01KMRVHH5PE4RRCCZAH8X1ZXP0"
+      },
+      {
+        "episode_number": 12,
+        "title": "One Punch Away",
+        "listing_date": "2013-11-20",
+        "content_id": "ALVE01KMRVJ161EGP9KMC9RTY5FERG"
+      },
+      {
+        "episode_number": 13,
+        "title": "Aiming for the Top",
+        "listing_date": "2013-11-27",
+        "content_id": "ALVE01KMRVJHR5EC5AFN5TMHRW0013"
+      },
+      {
+        "episode_number": 14,
+        "title": "TUF 18 Finale: Team Rousey vs. Team Tate",
+        "listing_date": "2013-11-30",
+        "content_id": "ALVE01KMRVK9QQEE8SQAHEEAB30RM5"
+      }
+    ],
+    "tuf-19": [
+      {
+        "episode_number": 1,
+        "title": "The Hurting Game",
+        "listing_date": "2014-04-16",
+        "content_id": "ALVE01KPM3NWVQEFBV4J3YG2FMAXM7"
+      },
+      {
+        "episode_number": 2,
+        "title": "Flying the Flag",
+        "listing_date": "2014-04-23",
+        "content_id": "ALVE01KPM3ZVT5EHGS6FH20W3AJF0T"
+      },
+      {
+        "episode_number": 3,
+        "title": "Anytime, Anywhere",
+        "listing_date": "2014-04-30",
+        "content_id": "ALVE01KPM43MECEMZSVEFR3NSEBJM0"
+      },
+      {
+        "episode_number": 4,
+        "title": "Stand and Bang",
+        "listing_date": "2014-05-07",
+        "content_id": "ALVE01KPM49NDHE9PSQ5BQ5D5W9Q8K"
+      },
+      {
+        "episode_number": 5,
+        "title": "Too Salty",
+        "listing_date": "2014-05-14",
+        "content_id": "ALVE01KPM4DNWHE5KVSAXVXD7Q8JX8"
+      },
+      {
+        "episode_number": 6,
+        "title": "Fight to Live",
+        "listing_date": "2014-05-21",
+        "content_id": "ALVE01KPM4J8JXEPQSH1VNSX01PRDQ"
+      },
+      {
+        "episode_number": 7,
+        "title": "Kinetic Chess",
+        "listing_date": "2014-05-28",
+        "content_id": "ALVE01KPM4NR9AEAT94KZK7QAEPWGK"
+      },
+      {
+        "episode_number": 8,
+        "title": "Someone's Getting Bullied",
+        "listing_date": "2014-06-04",
+        "content_id": "ALVE01KPM4S79GEDSSX8SPG74WNJG6"
+      },
+      {
+        "episode_number": 9,
+        "title": "Get That Money",
+        "listing_date": "2014-06-11",
+        "content_id": "ALVE01KPM4WQ7YEPWSFQ596G0GV4Z4"
+      },
+      {
+        "episode_number": 10,
+        "title": "One Fight Away",
+        "listing_date": "2014-06-18",
+        "content_id": "ALVE01KPM50HWGETF92E1NQNDFEYND"
+      },
+      {
+        "episode_number": 11,
+        "title": "The Zombie",
+        "listing_date": "2014-06-25",
+        "content_id": "ALVE01KPM54QKYE3ESZWB6A6MRD7RQ"
+      },
+      {
+        "episode_number": 12,
+        "title": "The Big Show",
+        "listing_date": "2014-07-02",
+        "content_id": "ALVE01KPM583PNEZR92WDTTM2B4A9F"
+      },
+      {
+        "episode_number": 13,
+        "title": "UFC Fight Night: Edgar vs Penn",
+        "listing_date": "2014-07-06",
+        "content_id": "ALVE01KPM5BDZBE8CRN0A1BSJGXWND"
+      }
+    ],
+    "tuf-20": [
+      {
+        "episode_number": 1,
+        "title": "For the Belt",
+        "listing_date": "2014-09-10",
+        "content_id": "ALVE01KQX5QBPNEWXVPXYERQ3S153W"
+      },
+      {
+        "episode_number": 2,
+        "title": "We All Came Here to Fight",
+        "listing_date": "2014-09-14",
+        "content_id": "ALVE01KQX5YVQTE28VKZKMJ8SS3V3N"
+      },
+      {
+        "episode_number": 3,
+        "title": "Don't Fight Fate",
+        "listing_date": "2014-09-24",
+        "content_id": "ALVE01KQX66CFREXBV0Q8FE2BC584Y"
+      },
+      {
+        "episode_number": 4,
+        "title": "Make a Big Strike",
+        "listing_date": "2014-10-01",
+        "content_id": "ALVE01KQX6C7N8EXXS2MMRE8D7Z3WT"
+      },
+      {
+        "episode_number": 5,
+        "title": "Coming to Get You",
+        "listing_date": "2014-10-22",
+        "content_id": "ALVE01KQX6HW2ZEB7RV7D34Z5STBNV"
+      },
+      {
+        "episode_number": 6,
+        "title": "Give It All You Have",
+        "listing_date": "2014-10-29",
+        "content_id": "ALVE01KQX6PNR9ETJVJNKSB2AQJEWY"
+      },
+      {
+        "episode_number": 7,
+        "title": "Risk It All",
+        "listing_date": "2014-11-05",
+        "content_id": "ALVE01KQX6TX64ENET0SN9P09MXK4D"
+      },
+      {
+        "episode_number": 8,
+        "title": "The Scrapettes",
+        "listing_date": "2014-11-12",
+        "content_id": "ALVE01KQX6Z226E5HR6J6N1XG98WA3"
+      },
+      {
+        "episode_number": 9,
+        "title": "Don't Talk to Me",
+        "listing_date": "2014-11-19",
+        "content_id": "ALVE01KQX723JJEVYVRHKFVWZXE1MB"
+      },
+      {
+        "episode_number": 10,
+        "title": "Fighting for Themselves",
+        "listing_date": "2014-11-26",
+        "content_id": "ALVE01KQX75YNHE79TKQYYSFSX9R2C"
+      },
+      {
+        "episode_number": 11,
+        "title": "Best Job in the World",
+        "listing_date": "2014-12-03",
+        "content_id": "ALVE01KQX79C73E0H963NG0DWRNGA2"
+      },
+      {
+        "episode_number": 12,
+        "title": "It's About to Get Real",
+        "listing_date": "2014-12-10",
+        "content_id": "ALVE01KQX7D29NEMY9JV0YENJXQHCG"
+      },
+      {
+        "episode_number": 13,
+        "title": "UFC Fight Night: The Ultimate Fighter Finale: A Champion Will Be Crowned",
+        "listing_date": "2014-12-12",
+        "content_id": "ALVE01KQX7HNKVEWWT59PTASEYE7B6"
+      }
+    ],
+    "tuf-21": [
+      {
+        "episode_number": 1,
+        "title": "The Rumble in South Florida",
+        "listing_date": "2015-04-24",
+        "content_id": "ALVE01KMNTD3JMEXPVXRTSC5NX18T3"
+      },
+      {
+        "episode_number": 2,
+        "title": "Battle Lines Drawn",
+        "listing_date": "2015-04-29",
+        "content_id": "ALVE01KMNTJ0Y1ECZVEFGQHA6VWSZS"
+      },
+      {
+        "episode_number": 3,
+        "title": "Setting the Score",
+        "listing_date": "2015-05-06",
+        "content_id": "ALVE01KMNTQFW3EJRBGFD0HMSWE73F"
+      },
+      {
+        "episode_number": 4,
+        "title": "Boiling Point",
+        "listing_date": "2015-05-13",
+        "content_id": "ALVE01KMNTT4BSEDY9NCR0YPTB3VXX"
+      },
+      {
+        "episode_number": 5,
+        "title": "Battle Wounds",
+        "listing_date": "2015-05-20",
+        "content_id": "ALVE01KMNTX5DFEC78P5HQ5PB3JJ4C"
+      },
+      {
+        "episode_number": 6,
+        "title": "Fight Through the Pain",
+        "listing_date": "2015-05-27",
+        "content_id": "ALVE01KMNTZGNHESH981SCBRSD2DF0"
+      },
+      {
+        "episode_number": 7,
+        "title": "Eyes on the Prize",
+        "listing_date": "2015-06-03",
+        "content_id": "ALVE01KMNV1RE2E4E9FA3QA1NZ3TJB"
+      },
+      {
+        "episode_number": 8,
+        "title": "Lightning Strikes Twice",
+        "listing_date": "2015-06-10",
+        "content_id": "ALVE01KMNV3TRXEMET29S4VVDFRPQ3"
+      },
+      {
+        "episode_number": 9,
+        "title": "No Guts, No Glory",
+        "listing_date": "2015-06-17",
+        "content_id": "ALVE01KMNV63BHESW8XBBM6CWTV1XR"
+      },
+      {
+        "episode_number": 10,
+        "title": "Do or Die",
+        "listing_date": "2015-06-24",
+        "content_id": "ALVE01KMNV86QAE4XBG3QQR02E5GY0"
+      },
+      {
+        "episode_number": 11,
+        "title": "Pushing the Limits",
+        "listing_date": "2015-07-01",
+        "content_id": "ALVE01KMNVANK7ER4981GF5TVKNZPZ"
+      },
+      {
+        "episode_number": 12,
+        "title": "Showdown",
+        "listing_date": "2015-07-08",
+        "content_id": "ALVE01KMNVD2K2E1NVHHCZQKK15JDK"
+      },
+      {
+        "episode_number": 13,
+        "title": "American Top Team vs Blackzilians",
+        "listing_date": "2015-07-12",
+        "content_id": "ALVE01KMNVF2FHEC9T2FQGX8Z2PBG4"
+      }
+    ],
+    "tuf-22": [
+      {
+        "episode_number": 1,
+        "title": "Europe vs USA",
+        "listing_date": "2015-09-09",
+        "content_id": "ALVE01KQJNKEPFECK8F2EG1TMB4S5Y"
+      },
+      {
+        "episode_number": 2,
+        "title": "Crowded House",
+        "listing_date": "2015-09-16",
+        "content_id": "ALVE01KQJP3GJZE0AR17Z7WE6HJRKB"
+      },
+      {
+        "episode_number": 3,
+        "title": "Recognize the Enemy",
+        "listing_date": "2015-09-23",
+        "content_id": "ALVE01KQJPNHTWE268RZ3P3M1DT02K"
+      },
+      {
+        "episode_number": 4,
+        "title": "A Faithless Foe",
+        "listing_date": "2015-09-30",
+        "content_id": "ALVE01KQJPNSVFEAM8481JVTENFGDV"
+      },
+      {
+        "episode_number": 5,
+        "title": "Just Do Something",
+        "listing_date": "2015-10-07",
+        "content_id": "ALVE01KQJPNXF9EB59PSD2BXH3DG6P"
+      },
+      {
+        "episode_number": 6,
+        "title": "Snake in the Grass",
+        "listing_date": "2015-10-21",
+        "content_id": "ALVE01KQJPP4VKEQJSV7448AMED3CJ"
+      },
+      {
+        "episode_number": 7,
+        "title": "Mental Breakdown",
+        "listing_date": "2015-11-04",
+        "content_id": "ALVE01KQJPP95SE2BRSF2G1FJK281J"
+      },
+      {
+        "episode_number": 8,
+        "title": "Heart is not Enough",
+        "listing_date": "2015-11-11",
+        "content_id": "ALVE01KQJPPEHHECD9K3CA00G4PE0E"
+      },
+      {
+        "episode_number": 9,
+        "title": "Bullseye",
+        "listing_date": "2015-11-18",
+        "content_id": "ALVE01KQJPPKJ9EJKA5X9KWRCW382W"
+      },
+      {
+        "episode_number": 10,
+        "title": "Nice and Flowy",
+        "listing_date": "2015-11-25",
+        "content_id": "ALVE01KQJPPRK2ECHTWV006JQ4RB4T"
+      },
+      {
+        "episode_number": 11,
+        "title": "Bone on Bone",
+        "listing_date": "2015-12-02",
+        "content_id": "ALVE01KQJPPWMTEZKRDYAR6GVDS8FW"
+      },
+      {
+        "episode_number": 12,
+        "title": "Here for Myself",
+        "listing_date": "2015-12-09",
+        "content_id": "ALVE01KQJPQ0PYEQQ8MGSKCE1Y44B3"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 22 Finale: The Ultimate Fighter Finale: Team McGregor vs Team Faber",
+        "listing_date": "2015-12-11",
+        "content_id": "ALVE01KQJPQ520EQXTJFH48EF6BJSM"
+      }
+    ],
+    "tuf-23": [
+      {
+        "episode_number": 1,
+        "title": "Ladies and Gents",
+        "listing_date": "2016-04-20",
+        "content_id": "ALVE01KRF6NQ6PE0V8XETY53M7R3NA"
+      },
+      {
+        "episode_number": 2,
+        "title": "Friends and Foes",
+        "listing_date": "2016-04-27",
+        "content_id": "ALVE01KRF6NTKHEYYSXY41BG18W5J6"
+      },
+      {
+        "episode_number": 3,
+        "title": "Who I Am",
+        "listing_date": "2016-05-04",
+        "content_id": "ALVE01KRF6NWM0EKE9DHSS0M5F5M5D"
+      },
+      {
+        "episode_number": 4,
+        "title": "Wake Up Guys!",
+        "listing_date": "2016-05-11",
+        "content_id": "ALVE01KRF6NY55EK4VW8MN1TMWBS1X"
+      },
+      {
+        "episode_number": 5,
+        "title": "Battle of the Brits",
+        "listing_date": "2016-05-18",
+        "content_id": "ALVE01KRF6P059E6RRC4YM2B9MJBNH"
+      },
+      {
+        "episode_number": 6,
+        "title": "The Situation",
+        "listing_date": "2016-05-25",
+        "content_id": "ALVE01KRF6P1Z2E929YRAV6PRSE7J9"
+      },
+      {
+        "episode_number": 7,
+        "title": "No Easy Fight",
+        "listing_date": "2016-06-01",
+        "content_id": "ALVE01KRF6P3CXE5MVXF83C20AB3KH"
+      },
+      {
+        "episode_number": 8,
+        "title": "It's a Mental Thing",
+        "listing_date": "2016-06-08",
+        "content_id": "ALVE01KRF6P4WWEWX9D89XJ06G9P0Z"
+      },
+      {
+        "episode_number": 9,
+        "title": "Beast Inside of You",
+        "listing_date": "2016-06-15",
+        "content_id": "ALVE01KRF6P6HVEJQBFGSGTWM6XGAS"
+      },
+      {
+        "episode_number": 10,
+        "title": "Friends Hurting Friends",
+        "listing_date": "2016-06-22",
+        "content_id": "ALVE01KRF6P8SXE1GSPKD2M2CMEA21"
+      },
+      {
+        "episode_number": 11,
+        "title": "Bump in the Road",
+        "listing_date": "2016-06-29",
+        "content_id": "ALVE01KRF6PB9REKZ993EJ1FAD79J0"
+      },
+      {
+        "episode_number": 12,
+        "title": "Fight of the Season",
+        "listing_date": "2016-07-06",
+        "content_id": "ALVE01KRF6PD66EF78X6G3QHEY0SYV"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 23 Finale: Team Joanna vs Team Claudia",
+        "listing_date": "2016-07-08",
+        "content_id": "ALVE01KRF6PGEFEHWA3B1JEETF7S37"
+      }
+    ],
+    "tuf-24": [
+      {
+        "episode_number": 1,
+        "title": "The Tournament Begins",
+        "listing_date": "2016-08-31",
+        "content_id": "ALVE01KRF6PJ96EXFT9TCX6TR6B47W"
+      },
+      {
+        "episode_number": 2,
+        "title": "Language of Combat",
+        "listing_date": "2016-09-07",
+        "content_id": "ALVE01KRF6PKX5EX28N9G8S3CDBXMA"
+      },
+      {
+        "episode_number": 3,
+        "title": "Look Through Your Soul",
+        "listing_date": "2016-09-14",
+        "content_id": "ALVE01KRF6PPZAECS9T2C4P2YW4K69"
+      },
+      {
+        "episode_number": 4,
+        "title": "Young and Hungry",
+        "listing_date": "2016-09-21",
+        "content_id": "ALVE01KRF6PRQREQ69NRJM4257DFVR"
+      },
+      {
+        "episode_number": 5,
+        "title": "Nothing Stops Us",
+        "listing_date": "2016-09-28",
+        "content_id": "ALVE01KRF6PTMGE5RSB95MZ7BP9HBF"
+      },
+      {
+        "episode_number": 6,
+        "title": "Let It Loose",
+        "listing_date": "2016-10-05",
+        "content_id": "ALVE01KRF6PWF5E3BB75M5HZ8BVQ08"
+      },
+      {
+        "episode_number": 7,
+        "title": "Animal Instincts",
+        "listing_date": "2016-10-12",
+        "content_id": "ALVE01KRF6PY6REVFSZJA1NSBKVKJF"
+      },
+      {
+        "episode_number": 8,
+        "title": "Round Two",
+        "listing_date": "2016-11-02",
+        "content_id": "ALVE01KRF6PZW9EB4S2APPTEZ0K293"
+      },
+      {
+        "episode_number": 9,
+        "title": "What Are You Fighting For?",
+        "listing_date": "2016-11-09",
+        "content_id": "ALVE01KRF6Q1G2ED4A1BBJVK7AD9Q0"
+      },
+      {
+        "episode_number": 10,
+        "title": "All on the Line",
+        "listing_date": "2016-11-16",
+        "content_id": "ALVE01KRF6Q3DQE8HBA73P3T3WSCH5"
+      },
+      {
+        "episode_number": 11,
+        "title": "About to Clash",
+        "listing_date": "2016-11-23",
+        "content_id": "ALVE01KRF6Q5ARE8X8XAQFAVKZRMW7"
+      },
+      {
+        "episode_number": 12,
+        "title": "Last Champion Standing",
+        "listing_date": "2016-11-30",
+        "content_id": "ALVE01KRF6Q72TERJTWFBKTX9XZDNP"
+      },
+      {
+        "episode_number": 13,
+        "title": "Tournament of Champions Finale",
+        "listing_date": "2016-12-03",
+        "content_id": "ALVE01KRF6Q8WGEH98KM73KZ19ZTXH"
+      }
+    ],
+    "tuf-25": [
+      {
+        "episode_number": 1,
+        "title": "Redemption",
+        "listing_date": "2017-04-19",
+        "content_id": "ALVE01KRF9D074E5BAJP180NH2N5AT"
+      },
+      {
+        "episode_number": 2,
+        "title": "Eat Some Souls",
+        "listing_date": "2017-04-26",
+        "content_id": "ALVE01KRF9E6N8E4RBV2S4ZA38X3MC"
+      },
+      {
+        "episode_number": 3,
+        "title": "Iron Sharpens Iron",
+        "listing_date": "2017-05-03",
+        "content_id": "ALVE01KRF9FAW1EANBVG5GMTYQPD0T"
+      },
+      {
+        "episode_number": 4,
+        "title": "Piece of Us",
+        "listing_date": "2017-05-10",
+        "content_id": "ALVE01KRF9GKDREQCSYEAT5TBJEP1B"
+      },
+      {
+        "episode_number": 5,
+        "title": "A Brutal Business",
+        "listing_date": "2017-05-17",
+        "content_id": "ALVE01KRF9HW0PECC89D4WD59XD088"
+      },
+      {
+        "episode_number": 6,
+        "title": "Let Me Bang!",
+        "listing_date": "2017-05-24",
+        "content_id": "ALVE01KRF9JV9WEKD9PBZZS5DZJ4YT"
+      },
+      {
+        "episode_number": 7,
+        "title": "Dark Horse",
+        "listing_date": "2017-05-31",
+        "content_id": "ALVE01KRF9KWMXEKMSJQP2MSZJQ9X2"
+      },
+      {
+        "episode_number": 8,
+        "title": "Kryptonite",
+        "listing_date": "2017-06-07",
+        "content_id": "ALVE01KRF9N0V9EDKSQCSRXS7GJM40"
+      },
+      {
+        "episode_number": 9,
+        "title": "Killashaw",
+        "listing_date": "2017-06-14",
+        "content_id": "ALVE01KRF9P0A5E2QRR4E2WKZ4XW0W"
+      },
+      {
+        "episode_number": 10,
+        "title": "Time to Smash",
+        "listing_date": "2017-06-21",
+        "content_id": "ALVE01KRF9QBAHE2KS4K73H4107FF7"
+      },
+      {
+        "episode_number": 11,
+        "title": "Embrace the Snake",
+        "listing_date": "2017-06-28",
+        "content_id": "ALVE01KRF9SP7VECRBHKM0ECPGGPYN"
+      },
+      {
+        "episode_number": 12,
+        "title": "The Winner's Circle",
+        "listing_date": "2017-07-05",
+        "content_id": "ALVE01KRF9VBYVE439MYZ1FE81SRKN"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF Redemption: Johnson vs Gaethje",
+        "listing_date": "2017-07-07",
+        "content_id": "ALVE01KRF9WTKAEHD8RBJNBXSCTYCD"
+      }
+    ],
+    "tuf-26": [
+      {
+        "episode_number": 1,
+        "title": "A New World Champion",
+        "listing_date": "2017-08-30",
+        "content_id": "ALVE01KRFBMA98EAQASY3W6QGD8Z15"
+      },
+      {
+        "episode_number": 2,
+        "title": "Fight!",
+        "listing_date": "2017-09-06",
+        "content_id": "ALVE01KRFBSF1XEWV9B3HGBP7S6022"
+      },
+      {
+        "episode_number": 3,
+        "title": "Time to Shine",
+        "listing_date": "2017-09-13",
+        "content_id": "ALVE01KRFBX3SGEGHSB004EB5ZGVAH"
+      },
+      {
+        "episode_number": 4,
+        "title": "The Truth in Me",
+        "listing_date": "2017-09-20",
+        "content_id": "ALVE01KRFC2XQGE0DTJHRGF7ZAP61K"
+      },
+      {
+        "episode_number": 5,
+        "title": "Feelings Mean Nothing",
+        "listing_date": "2017-09-27",
+        "content_id": "ALVE01KRFC8SWWEF4R4BZZYMR3B9EG"
+      },
+      {
+        "episode_number": 6,
+        "title": "Predator",
+        "listing_date": "2017-10-04",
+        "content_id": "ALVE01KRFCDHETETBA12DWKWCVQ8VN"
+      },
+      {
+        "episode_number": 7,
+        "title": "Enjoy the Moment",
+        "listing_date": "2017-10-18",
+        "content_id": "ALVE01KRFCHEFEEKFTBN98N5B5PKFF"
+      },
+      {
+        "episode_number": 8,
+        "title": "Sink or Swim",
+        "listing_date": "2017-11-01",
+        "content_id": "ALVE01KRFCQAX8ECTS5JFRM6DBDMRR"
+      },
+      {
+        "episode_number": 9,
+        "title": "The Fight Gods",
+        "listing_date": "2017-11-08",
+        "content_id": "ALVE01KRFCTNVGE8Y9R9XXXJZZXVWG"
+      },
+      {
+        "episode_number": 10,
+        "title": "Make it a Fight",
+        "listing_date": "2017-11-15",
+        "content_id": "ALVE01KRFCZPHKETMBRCY3V3VHRNDF"
+      },
+      {
+        "episode_number": 11,
+        "title": "A Will to Win",
+        "listing_date": "2017-11-22",
+        "content_id": "ALVE01KRFD37QJEZSASMDCCY93JZK9"
+      },
+      {
+        "episode_number": 12,
+        "title": "The Ultimate Goal",
+        "listing_date": "2017-11-29",
+        "content_id": "ALVE01KRFD6Q9MESSBQ5XZ6JF02ZHF"
+      },
+      {
+        "episode_number": 13,
+        "title": "The Ultimate Fighter Season 26 Finale: Team Alvarez vs Team Gaethje",
+        "listing_date": "2017-12-01",
+        "content_id": "ALVE01KRFDAGRGE6XBCDWNYX429QHE"
+      }
+    ],
+    "tuf-27": [
+      {
+        "episode_number": 1,
+        "title": "Good Day for a Fight",
+        "listing_date": "2018-04-18",
+        "content_id": "ALVE01KRFDPPS5E949T7DFT6NAMZ1X"
+      },
+      {
+        "episode_number": 2,
+        "title": "Fight or Flight",
+        "listing_date": "2018-04-25",
+        "content_id": "ALVE01KRFDV9S2EWKS1ZP5SPKPK3J9"
+      },
+      {
+        "episode_number": 3,
+        "title": "Pressure Makes Diamonds",
+        "listing_date": "2018-05-02",
+        "content_id": "ALVE01KRFDYJEXEYT895364JK54418"
+      },
+      {
+        "episode_number": 4,
+        "title": "Straight Savage",
+        "listing_date": "2018-05-09",
+        "content_id": "ALVE01KRFE1RYWEE8B4ENWPT9TGFD4"
+      },
+      {
+        "episode_number": 5,
+        "title": "Break His Will",
+        "listing_date": "2018-05-16",
+        "content_id": "ALVE01KRFE4GKEEQSBD10NNNKPF4B6"
+      },
+      {
+        "episode_number": 6,
+        "title": "Dig Deep Down",
+        "listing_date": "2018-05-23",
+        "content_id": "ALVE01KRFE859SEWYR5J951F033GAF"
+      },
+      {
+        "episode_number": 7,
+        "title": "The Cookie Crumbles",
+        "listing_date": "2018-05-30",
+        "content_id": "ALVE01KRFEF7SXEPWBY9P23EQDJ3MF"
+      },
+      {
+        "episode_number": 8,
+        "title": "Face Your Fears",
+        "listing_date": "2018-06-06",
+        "content_id": "ALVE01KRFEJFTPEAZ8FFJ69QN0CF7Q"
+      },
+      {
+        "episode_number": 9,
+        "title": "Guns Blazing",
+        "listing_date": "2018-06-13",
+        "content_id": "ALVE01KRFENM5AEGCRTF5J1NCRKH77"
+      },
+      {
+        "episode_number": 10,
+        "title": "Embrace It",
+        "listing_date": "2018-06-20",
+        "content_id": "ALVE01KRFESKNYEFKA525XZH09PKPT"
+      },
+      {
+        "episode_number": 11,
+        "title": "Ready for War",
+        "listing_date": "2018-06-27",
+        "content_id": "ALVE01KRFEX10EEYQR8C91SVM904QR"
+      },
+      {
+        "episode_number": 12,
+        "title": "Blood, Sweat, Tears",
+        "listing_date": "2018-07-04",
+        "content_id": "ALVE01KRFF058TEH48H03DR43X5BD2"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 27 Finale: The Ultimate Fighter: Undefeated",
+        "listing_date": "2018-07-06",
+        "content_id": "ALVE01KRFF3A24EMVVV7VPBQFE1X2J"
+      }
+    ],
+    "tuf-28": [
+      {
+        "episode_number": 1,
+        "title": "Biggest and Baddest",
+        "listing_date": "2018-08-29",
+        "content_id": "ALVE01KRM3E77JENAV6B75Q847A6V3"
+      },
+      {
+        "episode_number": 2,
+        "title": "Throw Leather",
+        "listing_date": "2018-09-05",
+        "content_id": "ALVE01KRM3N6SDEEWB83N0HYARG5RB"
+      },
+      {
+        "episode_number": 3,
+        "title": "War Tanks",
+        "listing_date": "2018-09-12",
+        "content_id": "ALVE01KRM3Q7RREJ99GQ7WS33BSEAE"
+      },
+      {
+        "episode_number": 4,
+        "title": "A Win is a Win",
+        "listing_date": "2018-09-19",
+        "content_id": "ALVE01KRM3RJMXE1ERYDH71BZ0PHYR"
+      },
+      {
+        "episode_number": 5,
+        "title": "Life is a Fight",
+        "listing_date": "2018-09-26",
+        "content_id": "ALVE01KRM3T1VRE1Y8DZN8XPEND51Z"
+      },
+      {
+        "episode_number": 6,
+        "title": "Comfortable with the Uncomfortable",
+        "listing_date": "2018-10-03",
+        "content_id": "ALVE01KRM3VWR2EP4T9BFTQK3GN36R"
+      },
+      {
+        "episode_number": 7,
+        "title": "I Never Have Fear",
+        "listing_date": "2018-10-24",
+        "content_id": "ALVE01KRM3X8D2E5YTPKV7N4HVS1SB"
+      },
+      {
+        "episode_number": 8,
+        "title": "Be First to Be Last",
+        "listing_date": "2018-10-31",
+        "content_id": "ALVE01KRM3YQGYESNA90DYWKDS10P1"
+      },
+      {
+        "episode_number": 9,
+        "title": "Act Like A Professional",
+        "listing_date": "2018-11-07",
+        "content_id": "ALVE01KRM40F4BE8TA8KD9R5KMMVS0"
+      },
+      {
+        "episode_number": 10,
+        "title": "Made For This",
+        "listing_date": "2018-11-14",
+        "content_id": "ALVE01KRM42K8TEAMVRKA4RPQ9X7CE"
+      },
+      {
+        "episode_number": 11,
+        "title": "Be Loose Be Free Be Me",
+        "listing_date": "2018-11-21",
+        "content_id": "ALVE01KRM43NKAEKRVAC928F607ZHH"
+      },
+      {
+        "episode_number": 12,
+        "title": "One Thousand Percent",
+        "listing_date": "2018-11-28",
+        "content_id": "ALVE01KRM44XB2ER3AYKF6DTG83R30"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 28 Finale: The Ultimate Fighter: Heavy Hitters",
+        "listing_date": "2018-11-30",
+        "content_id": "ALVE01KRM45YF2ECER8J1ENDDCEYJ5"
+      }
+    ],
+    "tuf-29": [
+      {
+        "episode_number": 2,
+        "title": "Stake Your Claim",
+        "listing_date": "2021-06-08",
+        "content_id": "ALVE01KRM5CHSVETATVAAGXFD6K51Z"
+      },
+      {
+        "episode_number": 3,
+        "title": "Bring in the Rhino",
+        "listing_date": "2021-06-15",
+        "content_id": "ALVE01KRM5E5FME0PV4J6DTDDAAG7W"
+      },
+      {
+        "episode_number": 4,
+        "title": "On My Time",
+        "listing_date": "2021-06-22",
+        "content_id": "ALVE01KRM5FBBZEH98H762D0NQX78R"
+      },
+      {
+        "episode_number": 5,
+        "title": "Hard Headed",
+        "listing_date": "2021-06-29",
+        "content_id": "ALVE01KRM5SJRPEKSB1XXCTJQYQ17Q"
+      },
+      {
+        "episode_number": 6,
+        "title": "Let the Games Begin",
+        "listing_date": "2021-07-06",
+        "content_id": "ALVE01KRM5TXV9E5NRY01HN1HP7M5C"
+      },
+      {
+        "episode_number": 7,
+        "title": "Friend or Foe",
+        "listing_date": "2021-07-13",
+        "content_id": "ALVE01KRM5W0V5EE28A9GY8G7DG5CY"
+      },
+      {
+        "episode_number": 8,
+        "title": "Fight or Flight",
+        "listing_date": "2021-07-20",
+        "content_id": "ALVE01KRM5X4QZE2YV05GQ2R428R29"
+      },
+      {
+        "episode_number": 9,
+        "title": "Clocked",
+        "listing_date": "2021-07-27",
+        "content_id": "ALVE01KRM5Y5ZKE4493D71YS0395JG"
+      },
+      {
+        "episode_number": 10,
+        "title": "Eye on the Prize",
+        "listing_date": "2021-08-03",
+        "content_id": "ALVE01KRM5ZS6VEA1S8FN5XZ4A6VDS"
+      },
+      {
+        "episode_number": 11,
+        "title": "Snake Bitten",
+        "listing_date": "2021-08-10",
+        "content_id": "ALVE01KRM60Y6XE96TJGRNTBFG8W72"
+      },
+      {
+        "episode_number": 12,
+        "title": "A Beautiful Fight",
+        "listing_date": "2021-08-17",
+        "content_id": "ALVE01KRM62KE8ER8A488DBZZ5SRK9"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 29 Finale: Barboza vs. Chikadze",
+        "listing_date": "2021-08-28",
+        "content_id": "ALVE01KRM64CJREEASCFGB3XJNFB76"
+      }
+    ],
+    "tuf-30": [
+      {
+        "episode_number": 1,
+        "title": "Road to the Rematch",
+        "listing_date": "2022-05-03",
+        "content_id": "ALVE01KRM65KD1ETH8H1XPQY49DFFH"
+      },
+      {
+        "episode_number": 2,
+        "title": "Time to Eat",
+        "listing_date": "2022-05-10",
+        "content_id": "ALVE01KRM66TSWEVG90J911WYPBF8Q"
+      },
+      {
+        "episode_number": 3,
+        "title": "Boiling Point",
+        "listing_date": "2022-05-17",
+        "content_id": "ALVE01KRM682QWEX7RBJX66THTPJTG"
+      },
+      {
+        "episode_number": 4,
+        "title": "Opportunity Knocks",
+        "listing_date": "2022-05-24",
+        "content_id": "ALVE01KRM6DAVCEBVRW06XP46VHGHH"
+      },
+      {
+        "episode_number": 5,
+        "title": "Face the Boogeyman",
+        "listing_date": "2022-05-31",
+        "content_id": "ALVE01KRM6F2AEECWBPWHB3B6Y0JEP"
+      },
+      {
+        "episode_number": 6,
+        "title": "We Meet Again",
+        "listing_date": "2022-06-07",
+        "content_id": "ALVE01KRM6G6PMEASA46F7WS1CYBRK"
+      },
+      {
+        "episode_number": 7,
+        "title": "Crush Your Dreams",
+        "listing_date": "2022-06-14",
+        "content_id": "ALVE01KRM6HFHSEWVVDDYJC9TAXNJ2"
+      },
+      {
+        "episode_number": 8,
+        "title": "Make It Ugly",
+        "listing_date": "2022-06-21",
+        "content_id": "ALVE01KRM6JHK9E918BWVHPFTP6JX8"
+      },
+      {
+        "episode_number": 9,
+        "title": "Bring Your Lunchbox",
+        "listing_date": "2022-06-28",
+        "content_id": "ALVE01KRM6KVC7EN3S5SJKHNW00KTG"
+      },
+      {
+        "episode_number": 10,
+        "title": "Throw Nasty Stuff",
+        "listing_date": "2022-07-05",
+        "content_id": "ALVE01KRM6N4DAEWAVFWPNEYKZV7QK"
+      },
+      {
+        "episode_number": 11,
+        "title": "Time to Come Alive",
+        "listing_date": "2022-07-12",
+        "content_id": "ALVE01KRM6PEZ1E4KS25B9STZ9C3AC"
+      },
+      {
+        "episode_number": 12,
+        "title": "A Beautiful Fight",
+        "listing_date": "2022-07-19",
+        "content_id": "ALVE01KRM70SDTEJVTWQCG0VFG29Q4"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 30 Finale: Santos vs. Hill",
+        "listing_date": "2022-08-06",
+        "content_id": "ALVE01KRM72TTNEMCRVT17N7FZG3T9"
+      }
+    ],
+    "tuf-31": [
+      {
+        "episode_number": 1,
+        "title": "A Notorious Return",
+        "listing_date": "2023-05-30",
+        "content_id": "ALVE01KN5FQGJXEZP98XQ64M5FD1K9"
+      },
+      {
+        "episode_number": 2,
+        "title": "A Hefty Price to Pay",
+        "listing_date": "2023-06-06",
+        "content_id": "ALVE01KN5FQN5VETVAW17AAAZ6CEDH"
+      },
+      {
+        "episode_number": 3,
+        "title": "No Easy Path",
+        "listing_date": "2023-06-13",
+        "content_id": "ALVE01KN5FQSFHEJA853TRZZ8DJDRF"
+      },
+      {
+        "episode_number": 4,
+        "title": "Heart, Soul, and Brain",
+        "listing_date": "2023-06-20",
+        "content_id": "ALVE01KN5FQX6SE9K8C6DC421VMEZV"
+      },
+      {
+        "episode_number": 5,
+        "title": "Conflict of Interest",
+        "listing_date": "2023-06-27",
+        "content_id": "ALVE01KN5FR64GEDEANS3Y6R6VBJW7"
+      },
+      {
+        "episode_number": 6,
+        "title": "Break Your Nose",
+        "listing_date": "2023-07-04",
+        "content_id": "ALVE01KN5FR9N5EC1V0WA6DCPE2QA6"
+      },
+      {
+        "episode_number": 7,
+        "title": "There Are Levels to This",
+        "listing_date": "2023-07-11",
+        "content_id": "ALVE01KN5FRCWPEGP8C3GN3QKP7PYW"
+      },
+      {
+        "episode_number": 8,
+        "title": "Protect Ya Neck",
+        "listing_date": "2023-07-18",
+        "content_id": "ALVE01KN5FRG35EJ7VY91S8EPAK6RW"
+      },
+      {
+        "episode_number": 9,
+        "title": "It's Personal, Not Just Business",
+        "listing_date": "2023-07-25",
+        "content_id": "ALVE01KN5FRKFREN2AHX55ZCT82KF5"
+      },
+      {
+        "episode_number": 10,
+        "title": "Just Win, Baby",
+        "listing_date": "2023-08-01",
+        "content_id": "ALVE01KN5FRPE6E0XSF6B66FNNKN78"
+      },
+      {
+        "episode_number": 11,
+        "title": "Mississippi vs Louisiana",
+        "listing_date": "2023-08-08",
+        "content_id": "ALVE01KN5FRTC2E1H8DTBYRPH36QV7"
+      },
+      {
+        "episode_number": 12,
+        "title": "Whatever It Takes",
+        "listing_date": "2023-08-15",
+        "content_id": "ALVE01KN5FRYCREKH8WD7XS1ZJZ2MH"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 31 Finale: Sterling vs. O'Malley",
+        "listing_date": "2023-08-19",
+        "content_id": "ALVE01KN5FS1Z2E6SAPJ1ZV27SEW7E"
+      }
+    ],
+    "tuf-32": [
+      {
+        "episode_number": 1,
+        "title": "The Opportunity of Your Life",
+        "listing_date": "2024-06-04",
+        "content_id": "ALVE01KKPVEW3TESCT2N7QR9ND29Y2"
+      },
+      {
+        "episode_number": 2,
+        "title": "Victory or Valhalla",
+        "listing_date": "2024-06-11",
+        "content_id": "ALVE01KN8554MNEMK9A5XRR9XKSKXD"
+      },
+      {
+        "episode_number": 3,
+        "title": "Fly the Flag",
+        "listing_date": "2024-06-18",
+        "content_id": "ALVE01KN8557BDE6YSHJW7GNT3JVAS"
+      },
+      {
+        "episode_number": 4,
+        "title": "Putting Everyone on Notice",
+        "listing_date": "2024-06-25",
+        "content_id": "ALVE01KN855AA6E3YSAZ7J8A372MPW"
+      },
+      {
+        "episode_number": 5,
+        "title": "Full of Violence",
+        "listing_date": "2024-07-02",
+        "content_id": "ALVE01KN855CVXE96SX3P2089ND7GK"
+      },
+      {
+        "episode_number": 6,
+        "title": "Everything In My Power",
+        "listing_date": "2024-07-09",
+        "content_id": "ALVE01KN855FM5EMJBMK9SJM2GMZWD"
+      },
+      {
+        "episode_number": 7,
+        "title": "Smash His Face",
+        "listing_date": "2024-07-16",
+        "content_id": "ALVE01KN855J81ET2BN2ZBPQAP1Q5M"
+      },
+      {
+        "episode_number": 8,
+        "title": "World Class Killer Instinct",
+        "listing_date": "2024-07-23",
+        "content_id": "ALVE01KN855MYMEGH9NGYN9FV1YVQT"
+      },
+      {
+        "episode_number": 9,
+        "title": "You Know What's Coming",
+        "listing_date": "2024-07-30",
+        "content_id": "ALVE01KN855QP8EGNV7VRB6X5SDFJ0"
+      },
+      {
+        "episode_number": 10,
+        "title": "The Biggest Fight of My Life",
+        "listing_date": "2024-08-06",
+        "content_id": "ALVE01KN855TCDE56VM2STG5H72VP4"
+      },
+      {
+        "episode_number": 11,
+        "title": "Friendly Fire",
+        "listing_date": "2024-08-13",
+        "content_id": "ALVE01KN855WRSEMVTBJ9W4YT4HM2W"
+      },
+      {
+        "episode_number": 12,
+        "title": "How Champions Are Born",
+        "listing_date": "2024-08-20",
+        "content_id": "ALVE01KN855ZEDE0ZA7CYZR7ZZ455N"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 32 Finale: Borralho vs. Cannonier",
+        "listing_date": "2024-08-24",
+        "content_id": "ALVE01KN85628AE8PAHVHSHCZAC4TW"
+      }
+    ],
+    "tuf-33": [
+      {
+        "episode_number": 1,
+        "title": "Into the Pressure Cooker",
+        "listing_date": "2025-05-27",
+        "content_id": "ALVE01KNQB5VJDE3HS560MPC06SM79"
+      },
+      {
+        "episode_number": 2,
+        "title": "Nothing to Lose",
+        "listing_date": "2025-06-03",
+        "content_id": "ALVE01KNQB5YB7E24AQYKMQ3DSDXF6"
+      },
+      {
+        "episode_number": 3,
+        "title": "Give Them a Show",
+        "listing_date": "2025-06-10",
+        "content_id": "ALVE01KNQB6116ECNB08D120TM99V1"
+      },
+      {
+        "episode_number": 4,
+        "title": "Jesus Loves Knockouts",
+        "listing_date": "2025-06-17",
+        "content_id": "ALVE01KNQB63FSEPWS8YP5C3GTF4AB"
+      },
+      {
+        "episode_number": 5,
+        "title": "Frenemies",
+        "listing_date": "2025-06-24",
+        "content_id": "ALVE01KNQB669KE95ATHAV8XG81349"
+      },
+      {
+        "episode_number": 6,
+        "title": "A Lesson in Brutality",
+        "listing_date": "2025-07-01",
+        "content_id": "ALVE01KNQB6962E5EB5KTPWYMBA0Q4"
+      },
+      {
+        "episode_number": 7,
+        "title": "Make Them Remember Me",
+        "listing_date": "2025-07-08",
+        "content_id": "ALVE01KNQB6C5JEAP9SSREWKZ2BQG1"
+      },
+      {
+        "episode_number": 8,
+        "title": "Respect Is Earned",
+        "listing_date": "2025-07-15",
+        "content_id": "ALVE01KNQB6ERQEDPBM2DCS4VDN0XH"
+      },
+      {
+        "episode_number": 9,
+        "title": "Comfortable with the Uncomfortable",
+        "listing_date": "2025-07-22",
+        "content_id": "ALVE01KNQB6HHVES0R956XWWGBR19W"
+      },
+      {
+        "episode_number": 10,
+        "title": "Common Goals Can't Be Shared",
+        "listing_date": "2025-07-29",
+        "content_id": "ALVE01KNQB6M1RE1ABMZ4WX44F2N3H"
+      },
+      {
+        "episode_number": 11,
+        "title": "Bring Your Best",
+        "listing_date": "2025-08-05",
+        "content_id": "ALVE01KNQB6PTWE7BVNNN0XG15GX3E"
+      },
+      {
+        "episode_number": 12,
+        "title": "Tested by the Fire",
+        "listing_date": "2025-08-12",
+        "content_id": "ALVE01KNQB6SMAEC4A3MFW7QFBAFZW"
+      },
+      {
+        "episode_number": 13,
+        "title": "TUF 33 Finale: Lopes vs. Silva",
+        "listing_date": "2026-05-25",
+        "content_id": "ALVE01KQJPNP97EQ9VV1B8KK2ZB0T7"
+      }
+    ],
+    "tuf-34": [
+      {
+        "episode_number": 1,
+        "title": "A New Frontier",
+        "listing_date": "2026-06-14",
+        "content_id": "ALVE01KSR7Y6QCEDSTNVFHN05FNPFP"
+      },
+      {
+        "episode_number": 2,
+        "title": "Scousers Don’t Get Knocked Out",
+        "listing_date": "2026-06-16",
+        "content_id": "ALVE01KTPS8ZDAEDYRYDDG560DBE88"
+      },
+      {
+        "episode_number": 3,
+        "title": "The Perfect Performance",
+        "listing_date": "2026-06-23",
+        "content_id": "ALVE01KV8XD7RZEDT8N54BHEEJ5PNH"
+      },
+      {
+        "episode_number": 4,
+        "title": "I'm The Future",
+        "listing_date": "2026-06-30",
+        "content_id": "ALVE01KVV07SHDEYPVNF2KQP92RQ1X"
+      },
+      {
+        "episode_number": 5,
+        "title": "How Bad Do You Want It?",
+        "listing_date": "2026-07-07",
+        "content_id": "ALVE01KWCRZFNQECKRE6V46REJE3J0"
+      },
+      {
+        "episode_number": 6,
+        "title": "Settle The Score",
+        "listing_date": "2026-07-14",
+        "content_id": "ALVE01KWZ01MRSESEAS9JE5YFDGCGX"
+      },
+      {
+        "episode_number": 7,
+        "title": "Thrive In Chaos",
+        "listing_date": "2026-07-21",
+        "content_id": "ALVE01KXEG01FXE2H95S8A306TXNB1"
+      },
+      {
+        "episode_number": 8,
+        "title": "It’s Gonna Be Electric",
+        "listing_date": "2026-07-28",
+        "content_id": "ALVE01KXEG676DE9N8NRH2PKEJF246"
+      },
+      {
+        "episode_number": 9,
+        "title": "One Leg vs One Eye",
+        "listing_date": "2026-08-04",
+        "content_id": "ALVE01KXEG7ZZ8E3KSN3EQTKZSW2D8"
+      },
+      {
+        "episode_number": 10,
+        "title": "Forget About Friendship",
+        "listing_date": "2026-08-11",
+        "content_id": "ALVE01KXEG9H3GE1XBPFBZG5A850XW"
+      },
+      {
+        "episode_number": 11,
+        "title": "Two Amazing Women",
+        "listing_date": "2026-08-18",
+        "content_id": "ALVE01KXEGBKDYEHWTG3VVFP579T3G"
+      },
+      {
+        "episode_number": 12,
+        "title": "A Memorable Finish",
+        "listing_date": "2026-08-25",
+        "content_id": "ALVE01KXEGE369ESES24FF74YSXA0V"
+      }
+    ]
+  }
+}

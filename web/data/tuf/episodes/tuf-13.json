@@ -1,0 +1,114 @@
+{
+  "slug": "tuf-13",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "finale_broadcast": {
+    "title": "TUF 13 Finale: Team Lesnar vs. Team dos Santos",
+    "listing_date": "2011-06-04"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Something to Prove",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-03-30",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-one-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Suck It Up",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-04-06",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-two-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Chicken Salad",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-04-13",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-three-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "A Bad Dream",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-04-20",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-four-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Wow Me",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-04-27",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-five-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Mean Streak",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-05-04",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-six-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "It's Just Good to Win",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-05-11",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-seven-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Shut Him Up",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-05-18",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-eight-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Then It Turned Ugly",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-05-25",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-nine-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "The Biggest Threat",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2011-06-01",
+      "recap_url": "https://www.ufc.com/news/tuf-13-episode-ten-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

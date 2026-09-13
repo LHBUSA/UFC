@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-15",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "finale_broadcast": {
+    "title": "TUF 15 Finale: Team Cruz vs Team Faber",
+    "listing_date": "2012-06-01"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "The Ultimate Fighter Live",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-03-09",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Embrace the War",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-03-16",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-two",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Old School vs New School",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-03-23",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-three",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "All the Pressure",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-03-30",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-four",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "That Miserable Feeling",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-04-06",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-five",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Dog with No Bark",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-04-13",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-six",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Weather the Storm",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-04-20",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-seven",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "The Lion's Den",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-04-27",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-eight",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Become That Hero",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-05-04",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-nine",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "So Real, It's Unreal",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-05-11",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-ten",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Like a Spartan",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-05-18",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-eleven",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Reality Check",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2012-05-25",
+      "recap_url": "https://www.ufc.com/news/ultimate-recap-live-episode-twelve",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

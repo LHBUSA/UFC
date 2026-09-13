@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-17",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "finale_broadcast": {
+    "title": "TUF 17 Finale: Faber vs Jorgensen",
+    "listing_date": "2013-04-13"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Enter the Octagon",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-01-22",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-1",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Ambush",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-01-29",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-2",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Embrace the Suffering",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-02-05",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-3",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Sign of Disrespect",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-02-12",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-4",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "The Reflection of Perfection",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-02-19",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-5",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Path to Greatness",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-02-26",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-6",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "His Fist on My Face",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-03-05",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-7",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Bag of Tools",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-03-12",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-8",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "The Wild Card",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-03-19",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-9",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "The Quarterfinals Begin",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-03-26",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-10",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Vicious",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-04-02",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-11",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "The Semis",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-04-09",
+      "recap_url": "https://www.ufc.com/news/tuf-17-weekly-recap-episode-12",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

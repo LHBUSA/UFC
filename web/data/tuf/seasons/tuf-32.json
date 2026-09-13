@@ -31,6 +31,16 @@
       ],
       "retrieved": "2026-09-12",
       "repair": "tuf-32/qf/torres-roets/rounds"
+    },
+    {
+      "field": "Middleweight_quarter_final",
+      "kind": "official_source_contradicts_itself",
+      "detail": "Robert Valentin Frey vs Giannis Bachar: Method conflict (winner consistent): result line says right hand; fight narrative says a right elbow.",
+      "source_urls": [
+        "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko"
+      ],
+      "retrieved": "2026-09-12",
+      "repair": "recap/tuf-32/ep2/robert-valentin-frey-giannis-bachar"
     }
   ],
   "coaches": [
@@ -262,11 +272,24 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 3,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
-              "b_fighter_id": "02456b1c-b787-4f76-82b6-8bfb1658049e"
+              "b_fighter_id": "02456b1c-b787-4f76-82b6-8bfb1658049e",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep3/kaan-ofli-nathan-fletcher",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-32",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-06-19T11:41:01-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Kaan Ofli defeats Nathan Fletcher by decision"
+                }
+              ]
             },
             {
               "a": "Bekhzod Usmonov",
@@ -275,10 +298,23 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 5,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "75cddfdf-2c61-4e5b-a8d2-0fafe7b49d7f"
+              "b_fighter_id": "75cddfdf-2c61-4e5b-a8d2-0fafe7b49d7f",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep5/bekhzod-usmonov-zygimantas-ramaska",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-32",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-07-03T07:34:01-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Zygimantas Ramaska defeats Bekhzod Usmonov by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Mairon Santos",
@@ -287,10 +323,23 @@
               "method": "Decision (split)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 7,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d"
+              "a_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep7/mairon-santos-edwin-cooper-jr",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-32",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-07-17T16:40:40-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Mairon Santos def. Edwin Cooper Jr. by split decision"
+                }
+              ]
             }
           ]
         },
@@ -302,13 +351,27 @@
               "a": "Roedie Roets",
               "b": "Kaan Ofli",
               "winner": "Kaan Ofli",
-              "method": "Submission",
+              "method": "Submission (guillotine choke)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 10,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a"
+              "b_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep10/roedie-roets-kaan-ofli",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-32",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-08-07T12:12:47-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Kaan Ofli def. Roedie Roets by submission (guillotine choke) in Round 1"
+                }
+              ]
             },
             {
               "a": "Guillermo Torres",
@@ -317,10 +380,23 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 12,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d"
+              "b_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep12/guillermo-torres-mairon-santos",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-season-32",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-08-21T12:43:00-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Mairon Santos defeats Guillermo Torres by unanimous decision"
+                }
+              ]
             }
           ],
           "status": "unverified",
@@ -361,48 +437,104 @@
               "a": "Omran Chaaban",
               "b": "Shamidkhan Magomedov",
               "winner": "Omran Chaaban",
-              "method": "Submission",
+              "method": "Technical submission",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 4,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep4/omran-chaaban-shamidkhan-magomedov",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-32",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-06-26T10:41:17-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Omran Chabaan def. Shamidkhan Magomedov by technical submission in Round 2"
+                }
+              ]
             },
             {
               "a": "Tom Theocharis",
               "b": "Ryan Loder",
               "winner": "Ryan Loder",
-              "method": "Submission",
+              "method": "Submission (arm-triangle choke)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 6,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2"
+              "b_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep6/tom-theocharis-ryan-loder",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-team-grasso-vs-team-shevchenko-episode-6-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-07-10T11:43:08-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Ryan Loder defeats Tom Theocharis by submission (arm-triangle choke) in Round 1"
+                }
+              ]
             },
             {
               "a": "Paddy McCorry",
               "b": "Mark Hulme",
               "winner": "Paddy McCorry",
-              "method": "Submission",
+              "method": "Submission (guillotine choke)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 8,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7"
+              "a_fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep8/paddy-mccorry-mark-hulme",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-32",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-07-25T12:07:17-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Paddy McCorry def. Mark Hulme by submission (guillotine choke) in Round 1"
+                }
+              ]
             },
             {
               "a": "Robert Valentin Frey",
               "b": "Giannis Bachar",
               "winner": "Robert Valentin Frey",
-              "method": "TKO",
+              "method": "KO (right hand)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 2,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca"
+              "a_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep2/robert-valentin-frey-giannis-bachar",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-06-12T11:46:17-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Robert Valentin defeats Giannis Bachar by KO (right hand)"
+                }
+              ]
             }
           ]
         },
@@ -417,10 +549,23 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 9,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2"
+              "b_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep9/omran-chaaban-ryan-loder",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-32",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-07-31T12:08:38-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Ryan Loder defeats Omraan Chaaban by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Paddy McCorry",
@@ -429,11 +574,24 @@
               "method": "Submission",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 11,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7",
-              "b_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca"
+              "b_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+              "sources": [
+                {
+                  "repair": "recap/tuf-32/ep11/paddy-mccorry-robert-valentin-frey",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-season-32-tuf",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2024-08-14T12:33:00-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Robert Valentin defeats Paddy McCorry by verbal submission in Round 1"
+                }
+              ]
             }
           ]
         },

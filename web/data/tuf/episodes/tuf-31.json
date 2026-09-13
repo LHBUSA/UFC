@@ -1,0 +1,1034 @@
+{
+  "slug": "tuf-31",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recaps/tuf-31.json"
+  },
+  "finale_broadcast": {
+    "title": "TUF 31 Finale: Sterling vs. O'Malley",
+    "listing_date": "2023-08-19"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "A Notorious Return",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-05-30",
+      "recap_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler",
+      "recap_published": "2023-05-31T12:59:55-04:00",
+      "recap_byline_date": "May. 31, 2023",
+      "bouts": [
+        {
+          "a": "Nate Jennerman",
+          "b": "Roosevelt Roberts",
+          "b_fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
+          "weight_class": "Lightweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Lightweight",
+            "stage": "quarter_final",
+            "a": "Roosevelt Roberts",
+            "b": "Nate Jennerman"
+          },
+          "result": {
+            "winner": "Roosevelt Roberts",
+            "winner_fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
+            "method": null,
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roosevelt Roberts",
+              "fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
+              "weight_lbs": 156,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler"
+            },
+            {
+              "fighter": "Nate Jennerman",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Chandler"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Chandler",
+      "events": [
+        {
+          "type": "team_selection",
+          "text": "McGregor had first pick and took the lightweight prospects; Chandler took the lightweight veterans.",
+          "fighters": [],
+          "fighter_ids": []
+        },
+        {
+          "type": "team_selection",
+          "text": "Chandler took the bantamweight veterans, making it veterans (Chandler) vs prospects (McGregor).",
+          "fighters": [],
+          "fighter_ids": []
+        },
+        {
+          "type": "other",
+          "text": "Seeding format: coaches rank their four per division 1-4; No. 1 faces No. 4, No. 2 faces No. 3.",
+          "fighters": [],
+          "fighter_ids": []
+        },
+        {
+          "type": "other",
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "fighters": [
+            "Nate Jennerman",
+            "Roosevelt Roberts"
+          ],
+          "fighter_ids": [
+            null,
+            "2158cdfd-e641-425b-97f8-04bfe113e555"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "fighters": [
+            "Trevor Wells",
+            "Timur Valiev"
+          ],
+          "fighter_ids": [
+            null,
+            "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "fighters": [
+            "Aaron McKenzie",
+            "Austin Hubbard"
+          ],
+          "fighter_ids": [
+            null,
+            "d30516f6-38be-4656-a2ad-6928f800e1c8"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "fighters": [
+            "Mando Gutierrez",
+            "Cody Gibson"
+          ],
+          "fighter_ids": [
+            "dbb6f2c8-ab92-42c8-8bcc-2ec883ad91e3",
+            "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "fighters": [
+            "Carlos Vera",
+            "Brad Katona"
+          ],
+          "fighter_ids": [
+            "1afc302d-f6e5-4d85-a70a-e7ae835559b2",
+            "4d63d8a0-d10f-485f-9e9f-130457d5d1ed"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "fighters": [
+            "Lee Hammond",
+            "Kurt Holobaugh"
+          ],
+          "fighter_ids": [
+            null,
+            "7f42a1fa-ebb7-4821-8f53-ffe431afb416"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "fighters": [
+            "Landon Quinones",
+            "Jason Knight"
+          ],
+          "fighter_ids": [
+            null,
+            "917594d9-4001-4ed5-a3b2-70d2a183c92c"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "fighters": [
+            "Rico DiSciullo",
+            "Hunter Azure"
+          ],
+          "fighter_ids": [
+            "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
+            "4caa6eda-3ae0-4004-8fb7-79cf8ec6b74a"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 2,
+      "title": "A Hefty Price to Pay",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-06-06",
+      "recap_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-31-mcgregor-chandler",
+      "recap_published": "2023-06-06T23:00:00-04:00",
+      "recap_byline_date": "Jun. 7, 2023",
+      "bouts": [
+        {
+          "a": "Cody Gibson",
+          "b": "Mando Gutierrez",
+          "a_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955",
+          "b_fighter_id": "dbb6f2c8-ab92-42c8-8bcc-2ec883ad91e3",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Bantamweight",
+            "stage": "quarter_final",
+            "a": "Mando Gutierrez",
+            "b": "Cody Gibson"
+          },
+          "result": {
+            "winner": "Cody Gibson",
+            "winner_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955",
+            "method": "TKO (flying knee and punches)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Cody Gibson",
+              "fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-31-mcgregor-chandler"
+            },
+            {
+              "fighter": "Mando Gutierrez",
+              "fighter_id": "dbb6f2c8-ab92-42c8-8bcc-2ec883ad91e3",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-31-mcgregor-chandler"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "medical_postponement",
+          "text": "Wells vs Valiev scratched on fight day: Wells failed the NSAC pre-fight medical (active cold sore).",
+          "fighters": [
+            "Trevor Wells",
+            "Timur Valiev"
+          ],
+          "fighter_ids": [
+            null,
+            "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "White: bout to be rescheduled the following week, otherwise Valiev gets a bye to the semifinals.",
+          "fighters": [
+            "Timur Valiev",
+            "Trevor Wells"
+          ],
+          "fighter_ids": [
+            "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+            null
+          ]
+        },
+        {
+          "type": "catchweight",
+          "text": "White floated a catchweight for the rescheduled bout since Valiev would have to make weight again; left unsettled.",
+          "fighters": [
+            "Timur Valiev",
+            "Trevor Wells"
+          ],
+          "fighter_ids": [
+            "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 3,
+      "title": "No Easy Path",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-06-13",
+      "recap_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-31-mcgregor-chandler",
+      "recap_published": "2023-06-14T07:31:42-04:00",
+      "recap_byline_date": "Jun. 14, 2023",
+      "bouts": [
+        {
+          "a": "Austin Hubbard",
+          "b": "Aaron McKenzie",
+          "a_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+          "weight_class": "Lightweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Lightweight",
+            "stage": "quarter_final",
+            "a": "Aaron McKenzie",
+            "b": "Austin Hubbard"
+          },
+          "result": {
+            "winner": "Austin Hubbard",
+            "winner_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Austin Hubbard",
+              "fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+              "weight_lbs": 156,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-31-mcgregor-chandler"
+            },
+            {
+              "fighter": "Aaron McKenzie",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-31-mcgregor-chandler"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 4,
+      "title": "Heart, Soul, and Brain",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-06-20",
+      "recap_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler",
+      "recap_published": "2023-06-21T10:03:18-04:00",
+      "recap_byline_date": "Jun. 21, 2023",
+      "bouts": [
+        {
+          "a": "Timur Valiev",
+          "b": "Trevor Wells",
+          "a_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Bantamweight",
+            "stage": "quarter_final",
+            "a": "Trevor Wells",
+            "b": "Timur Valiev"
+          },
+          "result": {
+            "winner": "Timur Valiev",
+            "winner_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Timur Valiev",
+              "fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+              "weight_lbs": 141.5,
+              "missed_weight": false,
+              "limit_lbs": 142,
+              "episode_number": 4,
+              "source_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler"
+            },
+            {
+              "fighter": "Trevor Wells",
+              "weight_lbs": 141.5,
+              "missed_weight": false,
+              "limit_lbs": 142,
+              "episode_number": 4,
+              "source_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 03, 2023"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "medical_postponement",
+          "text": "Wells cleared to fight after the episode-2 medical postponement.",
+          "fighters": [
+            "Trevor Wells"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "catchweight",
+          "text": "Team McGregor checked Wells at 137.5 lb and wanted the rescheduled bout at 135 to force Valiev to cut again.",
+          "fighters": [
+            "Trevor Wells"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "catchweight",
+          "text": "Chandler countered with 144 lb.",
+          "fighters": [
+            "Timur Valiev"
+          ],
+          "fighter_ids": [
+            "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
+          ]
+        },
+        {
+          "type": "catchweight",
+          "text": "Agreed catchweight of 142 lb for the rescheduled quarterfinal.",
+          "fighters": [
+            "Timur Valiev",
+            "Trevor Wells"
+          ],
+          "fighter_ids": [
+            "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 5,
+      "title": "Conflict of Interest",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-06-27",
+      "recap_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-31-mcgregor-chandler",
+      "recap_published": "2023-06-27T19:19:56-04:00",
+      "recap_byline_date": "Jun. 27, 2023",
+      "bouts": [
+        {
+          "a": "Brad Katona",
+          "b": "Carlos Vera",
+          "a_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+          "b_fighter_id": "1afc302d-f6e5-4d85-a70a-e7ae835559b2",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Bantamweight",
+            "stage": "quarter_final",
+            "a": "Carlos Vera",
+            "b": "Brad Katona"
+          },
+          "result": {
+            "winner": "Brad Katona",
+            "winner_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brad Katona",
+              "fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-31-mcgregor-chandler"
+            },
+            {
+              "fighter": "Carlos Vera",
+              "fighter_id": "1afc302d-f6e5-4d85-a70a-e7ae835559b2",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-31-mcgregor-chandler"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 6,
+      "title": "Break Your Nose",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-07-04",
+      "recap_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler",
+      "recap_published": "2023-07-05T10:59:16-04:00",
+      "recap_byline_date": "Jul. 5, 2023",
+      "bouts": [
+        {
+          "a": "Kurt Holobaugh",
+          "b": "Lee Hammond",
+          "a_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416",
+          "weight_class": "Lightweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Lightweight",
+            "stage": "quarter_final",
+            "a": "Lee Hammond",
+            "b": "Kurt Holobaugh"
+          },
+          "result": {
+            "winner": "Kurt Holobaugh",
+            "winner_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416",
+            "method": "Submission (mounted guillotine choke)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kurt Holobaugh",
+              "fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler"
+            },
+            {
+              "fighter": "Lee Hammond",
+              "weight_lbs": 156,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 2, 2023",
+            "March 2, 2023",
+            "March 2, 2023",
+            "March 2, 2023"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 7,
+      "title": "There Are Levels to This",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-07-11",
+      "recap_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-07-12T11:36:04-04:00",
+      "recap_byline_date": "Jul. 12, 2023",
+      "bouts": [
+        {
+          "a": "Jason Knight",
+          "b": "Landon Quinones",
+          "a_fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
+          "b_fighter_id": "4a6ed304-4f80-4ae7-90d9-0e92850cb756",
+          "weight_class": "Lightweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Lightweight",
+            "stage": "quarter_final",
+            "a": "Jason Knight",
+            "b": "Landon Quiñones"
+          },
+          "result": {
+            "winner": "Jason Knight",
+            "winner_fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
+            "method": "Submission (triangle choke)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jason Knight",
+              "fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 7,
+              "source_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-31"
+            },
+            {
+              "fighter": "Landon Quinones",
+              "fighter_id": "4a6ed304-4f80-4ae7-90d9-0e92850cb756",
+              "weight_lbs": null,
+              "weight_text": "coming in at the same number",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 7,
+              "source_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-31"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 2, 2023",
+            "March 2, 2023",
+            "March 2, 2023"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "injury",
+          "text": "Knight suffered an inch-long cut over his right eye in training (head clash with Valiev); fight stayed on.",
+          "fighters": [
+            "Jason Knight"
+          ],
+          "fighter_ids": [
+            "917594d9-4001-4ed5-a3b2-70d2a183c92c"
+          ]
+        },
+        {
+          "type": "injury",
+          "text": "Quarterfinal winner Gibson diagnosed with a Grade 2 MCL sprain; doctor recommended eight weeks of rest.",
+          "fighters": [
+            "Cody Gibson"
+          ],
+          "fighter_ids": [
+            "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Gibson chose to stay in the competition despite the knee injury.",
+          "fighters": [
+            "Cody Gibson"
+          ],
+          "fighter_ids": [
+            "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 8,
+      "title": "Protect Ya Neck",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-07-18",
+      "recap_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-07-19T07:24:30-04:00",
+      "recap_byline_date": "Jul. 19, 2023",
+      "bouts": [
+        {
+          "a": "Rico DiSciullo",
+          "b": "Hunter Azure",
+          "a_fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
+          "b_fighter_id": "4caa6eda-3ae0-4004-8fb7-79cf8ec6b74a",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Bantamweight",
+            "stage": "quarter_final",
+            "a": "Hunter Azure",
+            "b": "Rico DiSciullo"
+          },
+          "result": {
+            "winner": "Rico DiSciullo",
+            "winner_fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
+            "method": "KO (right hand)",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Hunter Azure",
+              "fighter_id": "4caa6eda-3ae0-4004-8fb7-79cf8ec6b74a",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-31"
+            },
+            {
+              "fighter": "Rico DiSciullo",
+              "fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-31"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 2, 2023",
+            "March 2, 2023"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "White canvassed fighters on semifinal matchups, starting with DiSciullo.",
+          "fighters": [
+            "Rico DiSciullo"
+          ],
+          "fighter_ids": [
+            "7eef85f2-fffc-48ef-84f5-3976928e3b8b"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "McGregor asked for DiSciullo to face Valiev in the semifinal.",
+          "fighters": [
+            "Timur Valiev"
+          ],
+          "fighter_ids": [
+            "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 9,
+      "title": "It's Personal, Not Just Business",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-07-25",
+      "recap_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-07-26T12:26:01-04:00",
+      "recap_byline_date": "Jul. 26, 2023",
+      "bouts": [
+        {
+          "a": "Austin Hubbard",
+          "b": "Roosevelt Roberts",
+          "a_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+          "b_fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
+          "weight_class": "Lightweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Lightweight",
+            "stage": "semi_final",
+            "a": "Roosevelt Roberts",
+            "b": "Austin Hubbard"
+          },
+          "result": {
+            "winner": "Austin Hubbard",
+            "winner_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roosevelt Roberts",
+              "fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
+              "weight_lbs": null,
+              "weight_text": "a quarter of a pound over the 156-pound limit",
+              "missed_weight": true,
+              "limit_lbs": 156,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-31"
+            },
+            {
+              "fighter": "Roosevelt Roberts",
+              "fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
+              "weight_lbs": null,
+              "weight_text": "hits the mark",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-31"
+            },
+            {
+              "fighter": "Austin Hubbard",
+              "fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-31"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Dana White"
+          },
+          "caption_filming_dates": [
+            "March 13, 2023",
+            "March 13, 2023"
+          ]
+        }
+      ],
+      "fight_pick_control": "Dana White",
+      "events": [
+        {
+          "type": "missed_weight",
+          "text": "Roberts a quarter-pound over the 156-lb limit on first attempt; cut his braids and made weight within the hour.",
+          "fighters": [
+            "Roosevelt Roberts"
+          ],
+          "fighter_ids": [
+            "2158cdfd-e641-425b-97f8-04bfe113e555"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "White wanted three Team Chandler fighters to move to Team McGregor for the semifinals, leaving it to the athletes.",
+          "fighters": [],
+          "fighter_ids": []
+        },
+        {
+          "type": "other",
+          "text": "Katona was the only fighter who chose to switch teams for the semifinals.",
+          "fighters": [
+            "Brad Katona"
+          ],
+          "fighter_ids": [
+            "4d63d8a0-d10f-485f-9e9f-130457d5d1ed"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Semifinals are three five-minute rounds (quarterfinals were two).",
+          "fighters": [],
+          "fighter_ids": []
+        }
+      ]
+    },
+    {
+      "episode_number": 10,
+      "title": "Just Win, Baby",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-08-01",
+      "recap_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-08-01T12:47:23-04:00",
+      "recap_byline_date": "Aug. 1, 2023",
+      "bouts": [
+        {
+          "a": "Brad Katona",
+          "b": "Timur Valiev",
+          "a_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+          "b_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+          "weight_class": "Bantamweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Bantamweight",
+            "stage": "semi_final",
+            "a": "Brad Katona",
+            "b": "Timur Valiev"
+          },
+          "result": {
+            "winner": "Brad Katona",
+            "winner_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Timur Valiev",
+              "fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-31"
+            },
+            {
+              "fighter": "Brad Katona",
+              "fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-31"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 2023",
+            "March 2023"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Katona formally switched from Team Chandler to Team McGregor before his semifinal.",
+          "fighters": [
+            "Brad Katona"
+          ],
+          "fighter_ids": [
+            "4d63d8a0-d10f-485f-9e9f-130457d5d1ed"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 11,
+      "title": "Mississippi vs Louisiana",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-08-08",
+      "recap_url": "https://www.ufc.com/news/episode-11-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-08-09T11:11:55-04:00",
+      "recap_byline_date": "Aug. 9, 2023",
+      "bouts": [
+        {
+          "a": "Kurt Holobaugh",
+          "b": "Jason Knight",
+          "a_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416",
+          "b_fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
+          "weight_class": "Lightweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Lightweight",
+            "stage": "semi_final",
+            "a": "Jason Knight",
+            "b": "Kurt Holobaugh"
+          },
+          "result": {
+            "winner": "Kurt Holobaugh",
+            "winner_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416",
+            "method": "TKO (strikes)",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jason Knight",
+              "fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
+              "weight_lbs": 155,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/episode-11-recap-ultimate-fighter-season-31"
+            },
+            {
+              "fighter": "Kurt Holobaugh",
+              "fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416",
+              "weight_lbs": null,
+              "weight_text": "half-a-pound higher",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/episode-11-recap-ultimate-fighter-season-31"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 2023",
+            "March 2023"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 12,
+      "title": "Whatever It Takes",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2023-08-15",
+      "recap_url": "https://www.ufc.com/news/episode-12-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-08-16T10:54:00-04:00",
+      "recap_byline_date": "Aug. 16, 2023",
+      "bouts": [
+        {
+          "a": "Cody Gibson",
+          "b": "Rico DiSciullo",
+          "a_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955",
+          "b_fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
+          "weight_class": "Bantamweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Bantamweight",
+            "stage": "semi_final",
+            "a": "Rico DiSciullo",
+            "b": "Cody Gibson"
+          },
+          "result": {
+            "winner": "Cody Gibson",
+            "winner_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955",
+            "method": "Submission (arm-triangle choke)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Cody Gibson",
+              "fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-ultimate-fighter-season-31"
+            },
+            {
+              "fighter": "Rico DiSciullo",
+              "fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-ultimate-fighter-season-31"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 13, 2023"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "injury",
+          "text": "Gibson entered the semifinal compromised by his knee injury.",
+          "fighters": [
+            "Cody Gibson"
+          ],
+          "fighter_ids": [
+            "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
+          ]
+        }
+      ]
+    }
+  ]
+}

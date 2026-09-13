@@ -1,0 +1,140 @@
+{
+  "slug": "tuf-21",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "The Rumble in South Florida",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-04-24",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-1-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Battle Lines Drawn",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-04-29",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-2-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Setting the Score",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-05-06",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-3-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Boiling Point",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-05-13",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-4-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Battle Wounds",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-05-20",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-5-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Fight Through the Pain",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-05-27",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-6-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Eyes on the Prize",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-06-03",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-7-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Lightning Strikes Twice",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-06-10",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-8-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "No Guts, No Glory",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-06-17",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-9-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Do or Die",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-06-24",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-10-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Pushing the Limits",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-07-01",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-11-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Showdown",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-07-08",
+      "recap_url": "https://www.ufc.com/news/tuf-21-episode-12-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 13,
+      "title": "American Top Team vs Blackzilians",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2015-07-12",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

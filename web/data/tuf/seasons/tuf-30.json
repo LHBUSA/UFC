@@ -246,12 +246,27 @@
               "a": "Eduardo Perez",
               "b": "Bobby Maximus",
               "winner": "Eduardo Perez",
-              "method": "TKO",
+              "method": "TKO (strikes)",
               "round": 1,
-              "time": null,
-              "episode": null,
+              "time": "3:58",
+              "episode": 5,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "sources": [
+                {
+                  "repair": "recap/tuf-30/ep5/eduardo-perez-bobby-maximus",
+                  "fields": [
+                    "episode",
+                    "method",
+                    "time"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-5-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2022-05-31T12:32:01-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Eduardo Perez def. Bobby Maximus by TKO (strikes) at 3:58 of Round 1"
+                }
+              ]
             },
             {
               "a": "Mohammed Usman",
@@ -335,13 +350,27 @@
               "a": "Hannah Guy",
               "b": "Brogan Walker-Sanchez",
               "winner": "Brogan Walker-Sanchez",
-              "method": null,
+              "method": "Decision (majority)",
               "round": null,
               "time": null,
-              "episode": null,
+              "episode": 8,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596"
+              "b_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+              "sources": [
+                {
+                  "repair": "recap/tuf-30/ep8/hannah-guy-brogan-walker-sanchez",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-8-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2022-06-21T12:46:42-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Brogan Walker def. Hannah Guy by majority decision"
+                }
+              ]
             },
             {
               "a": "Laura Gallardo",
@@ -391,22 +420,48 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 10,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596"
+              "a_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+              "sources": [
+                {
+                  "repair": "recap/tuf-30/ep10/brogan-walker-sanchez-laura-gallardo",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-team-pena-vs-team-nunes",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2022-07-05T14:44:03-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Brogan Walker def. Laura Gallardo by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Juliana Miller",
               "b": "Kaytlin Neil",
               "winner": "Juliana Miller",
-              "method": "Kimura submission",
+              "method": "Submission (kimura)",
               "round": 2,
               "time": "3:34",
               "episode": 12,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2022, which are complete for that year — 52 events, 560 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07"
+              "a_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+              "sources": [
+                {
+                  "repair": "recap/tuf-30/ep12/juliana-miller-kaytlin-neil",
+                  "fields": [
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2022-07-19T13:08:44-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Juliana Miller def. Kaytlin Neil by submission (kimura) … Round 2: Miller resumes her forward pressure"
+                }
+              ]
             }
           ]
         },

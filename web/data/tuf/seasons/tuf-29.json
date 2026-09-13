@@ -11,7 +11,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Return_of_The_Ultimate_Fighter%3A_Team_Volkanovski_vs._Team_Ortega",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "coaches": [
     {
@@ -232,12 +234,25 @@
               "winner": "Andre Petroski",
               "method": "Submission (guillotine choke)",
               "round": 1,
-              "time": null,
+              "time": "4:42",
               "episode": 1,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 1 of the season, and absent from our fight records for 2021, which are complete for that year — 53 events, 559 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "a_fighter_id": "8a95f75b-b499-4d84-838c-877fcf841741",
-              "b_fighter_id": "b21a21be-2b2b-4c1a-a52f-fc701284dfa8"
+              "b_fighter_id": "b21a21be-2b2b-4c1a-a52f-fc701284dfa8",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep1/andre-petroski-aaron-phillips",
+                  "fields": [
+                    "time"
+                  ],
+                  "url": "https://www.ufc.com/news/return-the-ultimate-fighter-season-29-tuf-episode-1-recap-volkanovksi-ortega-read",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-06-01T15:46:09-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Andre Petroski def. Aaron Phillips by submission (guillotine choke) at 4:42 of Round 1."
+                }
+              ]
             },
             {
               "a": "Kemran Lachinov",
@@ -246,10 +261,23 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 5,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "37fb7123-bbc5-4560-b474-3b9fe898a886"
+              "b_fighter_id": "37fb7123-bbc5-4560-b474-3b9fe898a886",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep5/kemran-lachinov-bryan-battle",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/return-ultimate-fighter-episode-5-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-06-29T13:42:39-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Bryan Battle def. Kemran Lachinov by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Tresean Gore",
@@ -258,22 +286,49 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 3,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "8e3cda51-7bfa-4440-ae9a-e9332ecbaa79"
+              "a_fighter_id": "8e3cda51-7bfa-4440-ae9a-e9332ecbaa79",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep3/tresean-gore-ryder-newman",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/return-the-ultimate-fighter-season-29-tuf-episode-3-recap-volkanovksi-ortega-read",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-06-15T19:40:57-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Tresean Gore defeats Ryder Newman by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Michael Gillmore",
               "b": "Gilbert Urbina",
               "winner": "Gilbert Urbina",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 8,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "626e90c9-1f5e-442b-a74c-55214a9deda0"
+              "b_fighter_id": "626e90c9-1f5e-442b-a74c-55214a9deda0",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep8/michael-gillmore-gilbert-urbina",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/return-ultimate-fighter-episode-8-recap-volkanovski-ortega-read",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-07-21T13:06:43-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Gilbert Urbina def. Michael Gilmore by submission (rear-naked choke) … Round 1: Gilbert catches a lazy low kick right out of the gate"
+                }
+              ]
             }
           ]
         },
@@ -285,27 +340,57 @@
               "a": "Andre Petroski",
               "b": "Bryan Battle",
               "winner": "Bryan Battle",
-              "method": "Submission",
+              "method": "Submission (guillotine choke)",
               "round": 2,
-              "time": null,
-              "episode": null,
+              "time": "2:05",
+              "episode": 10,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "8a95f75b-b499-4d84-838c-877fcf841741",
-              "b_fighter_id": "37fb7123-bbc5-4560-b474-3b9fe898a886"
+              "b_fighter_id": "37fb7123-bbc5-4560-b474-3b9fe898a886",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep10/andre-petroski-bryan-battle",
+                  "fields": [
+                    "episode",
+                    "method",
+                    "time"
+                  ],
+                  "url": "https://www.ufc.com/news/return-of-the-ultimate-fighter-episode-10-recap-petroski-battle",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-08-03T13:36:32-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Bryan Battle def. Andre Petroski by submission (guillotine choke) at 2:05 of Round 2"
+                }
+              ]
             },
             {
               "a": "Tresean Gore",
               "b": "Gilbert Urbina",
               "winner": "Tresean Gore",
-              "method": "KO",
+              "method": "KO (left hook)",
               "round": 2,
-              "time": null,
-              "episode": null,
+              "time": "1:14",
+              "episode": 12,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "8e3cda51-7bfa-4440-ae9a-e9332ecbaa79",
-              "b_fighter_id": "626e90c9-1f5e-442b-a74c-55214a9deda0"
+              "b_fighter_id": "626e90c9-1f5e-442b-a74c-55214a9deda0",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep12/tresean-gore-gilbert-urbina",
+                  "fields": [
+                    "episode",
+                    "method",
+                    "time"
+                  ],
+                  "url": "https://www.ufc.com/news/return-ultimate-fighter-episode-12-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-08-17T20:41:51-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Tresean Gore def. Gilbert Urbina by KO (left hook) at 1:14 of Round 2"
+                }
+              ]
             }
           ]
         },
@@ -360,23 +445,51 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 6,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "848c2bc1-ace5-4113-afa9-3d77b87b6f51",
-              "b_fighter_id": "97887699-7280-462d-ad14-99f5920e0cef"
+              "b_fighter_id": "97887699-7280-462d-ad14-99f5920e0cef",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep6/daniel-argueta-ricky-turcios",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/return-ultimate-fighter-episode-6-recap-tuf-read",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-07-06T18:10:25-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Ricky Turcios def. Dan Argueta by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Vince Murdock",
               "b": "Dustin Lampros",
               "winner": "Vince Murdock",
-              "method": "TKO",
+              "method": "KO (strikes)",
               "round": 1,
-              "time": null,
-              "episode": null,
+              "time": "2:40",
+              "episode": 4,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "5de26257-4e0b-4403-8b0d-22ebc04e1fc9"
+              "a_fighter_id": "5de26257-4e0b-4403-8b0d-22ebc04e1fc9",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep4/vince-murdock-dustin-lampros",
+                  "fields": [
+                    "episode",
+                    "method",
+                    "time"
+                  ],
+                  "url": "https://www.ufc.com/news/return-ultimate-fighter-episode-4-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-06-22T18:04:43-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Vincent Murdock def. Dustin Lampros by KO (strikes) at 2:40 of Round 1"
+                }
+              ]
             },
             {
               "a": "Joshua Rettinghouse",
@@ -385,10 +498,23 @@
               "method": "Decision (split)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 7,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "46ac0f3a-d59f-4a53-be77-5ad09803ac3a"
+              "b_fighter_id": "46ac0f3a-d59f-4a53-be77-5ad09803ac3a",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep7/joshua-rettinghouse-brady-hiestand",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/return-ultimate-fighter-episode-7-recap-tuf-read",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-07-13T14:52:09-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Brady Hiestand def. Josh Rettinghouse by split decision"
+                }
+              ]
             }
           ]
         },
@@ -403,24 +529,52 @@
               "method": "Decision (unanimous)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 9,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "611d5ef6-a01a-42b6-bdcc-e52e0e4cdd78",
-              "b_fighter_id": "97887699-7280-462d-ad14-99f5920e0cef"
+              "b_fighter_id": "97887699-7280-462d-ad14-99f5920e0cef",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep9/liudvik-sholinian-ricky-turcios",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/return-ultimate-fighter-episode-9-recap-volkanovski-ortega-read",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-07-28T14:50:53-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Ricky Turcios def. Liudvik Sholinian by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Vince Murdock",
               "b": "Brady Hiestand",
               "winner": "Brady Hiestand",
-              "method": "TKO",
+              "method": "TKO (punches)",
               "round": 1,
-              "time": null,
-              "episode": null,
+              "time": "3:20",
+              "episode": 11,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "5de26257-4e0b-4403-8b0d-22ebc04e1fc9",
-              "b_fighter_id": "46ac0f3a-d59f-4a53-be77-5ad09803ac3a"
+              "b_fighter_id": "46ac0f3a-d59f-4a53-be77-5ad09803ac3a",
+              "sources": [
+                {
+                  "repair": "recap/tuf-29/ep11/vince-murdock-brady-hiestand",
+                  "fields": [
+                    "episode",
+                    "method",
+                    "time"
+                  ],
+                  "url": "https://www.ufc.com/news/return-ultimate-fighter-episode-11-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2021-08-10T19:07:08-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Brady Hiestand def. Vince Murdock by TKO (punches) at 3:20 of Round 1"
+                }
+              ]
             }
           ]
         },
@@ -482,6 +636,18 @@
       },
       "verified_against": "ufc_bouts + ufc_bout_results — exact finalist-versus-finalist matchup",
       "fighter_id": "37fb7123-bbc5-4560-b474-3b9fe898a886"
+    }
+  ],
+  "_conflicts": [
+    {
+      "field": "Middleweight_semi_final",
+      "kind": "official_source_contradicts_itself",
+      "detail": "Tresean Gore vs Gilbert Urbina: Official result says KO (left hook); a photo caption on the same page calls it a TKO win.",
+      "source_urls": [
+        "https://www.ufc.com/news/return-ultimate-fighter-episode-12-recap"
+      ],
+      "retrieved": "2026-09-12",
+      "repair": "recap/tuf-29/ep12/tresean-gore-gilbert-urbina"
     }
   ]
 }

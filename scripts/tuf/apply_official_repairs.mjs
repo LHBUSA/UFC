@@ -26,6 +26,16 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const DATA = path.join(ROOT, 'web', 'data', 'tuf');
 export const LEDGER_FILE = path.join(DATA, 'official_repairs.json');
+/* Hand-reviewed repairs first, then the ones generated from recap extracts by
+ * scripts/tuf/build_episodes.mjs. Order matters: a generated repair's
+ * `expect` describes the file after the hand-reviewed ledger has run. */
+export const LEDGER_FILES = [LEDGER_FILE, path.join(DATA, 'official_recap_repairs.json')];
+
+/** Every ledger that exists, merged in application order. */
+export function loadLedgers() {
+  const ledgers = LEDGER_FILES.filter((f) => fs.existsSync(f)).map((f) => JSON.parse(fs.readFileSync(f, 'utf8')));
+  return { _policy: ledgers[0]._policy, repairs: ledgers.flatMap((l) => l.repairs) };
+}
 
 const same = (x, y) => JSON.stringify(x ?? null) === JSON.stringify(y ?? null);
 
@@ -203,7 +213,7 @@ export function applyRepairsToSeason(season, inventoryRow, ledger) {
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 if (isCli) {
   const check = process.argv.includes('--check');
-  const ledger = JSON.parse(fs.readFileSync(LEDGER_FILE, 'utf8'));
+  const ledger = loadLedgers();
   const invFile = path.join(DATA, 'seasons.json');
   const inventory = JSON.parse(fs.readFileSync(invFile, 'utf8'));
   const slugs = [...new Set(ledger.repairs.map((r) => r.season))];

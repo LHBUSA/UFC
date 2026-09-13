@@ -1,0 +1,144 @@
+{
+  "slug": "tuf-18",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "finale_broadcast": {
+    "title": "TUF 18 Finale: Team Rousey vs. Team Tate",
+    "listing_date": "2013-11-30"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "History in the Making",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-09-04",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-1",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Ladies First",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-09-11",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-2",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Stick and Move",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-09-18",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-3",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Use the Force",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-09-25",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-4",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Redemption",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-10-02",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-5",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Little Princesses",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-10-09",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-6",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Zone In",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-10-16",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-7",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Tied",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-10-23",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Sacrifice",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-10-30",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-9",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "HWPO",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-11-06",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-10",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Mean Girls",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-11-13",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-11",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "One Punch Away",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-11-20",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-12",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 13,
+      "title": "Aiming for the Top",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2013-11-27",
+      "recap_url": "https://www.ufc.com/news/tuf-18-weekly-recap-episode-13",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

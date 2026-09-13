@@ -1,0 +1,1027 @@
+{
+  "slug": "tuf-30",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recaps/tuf-30.json"
+  },
+  "finale_broadcast": {
+    "title": "TUF 30 Finale: Santos vs. Hill",
+    "listing_date": "2022-08-06"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Road to the Rematch",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-05-03",
+      "recap_url": "https://www.ufc.com/news/episode-1-recap-the-ultimate-fighter-team-pena-vs-team-nunes-heavyweight-flyweight-tuf-30",
+      "recap_published": "2022-05-03T13:12:23-04:00",
+      "recap_byline_date": "May. 3, 2022",
+      "bouts": [
+        {
+          "a": "Zac Pauga",
+          "b": "Nyle Bartling",
+          "a_fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Heavyweight",
+            "stage": "quarter_final",
+            "a": "Zac Pauga",
+            "b": "Nyle Bartling"
+          },
+          "result": {
+            "winner": "Zac Pauga",
+            "winner_fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Nyle Bartling",
+              "weight_lbs": 245,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-the-ultimate-fighter-team-pena-vs-team-nunes-heavyweight-flyweight-tuf-30"
+            },
+            {
+              "fighter": "Zac Pauga",
+              "fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+              "weight_lbs": 241.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-the-ultimate-fighter-team-pena-vs-team-nunes-heavyweight-flyweight-tuf-30"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Peña"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Peña",
+      "events": [
+        {
+          "type": "team_selection",
+          "text": "Team Nunes had the first pick and took Claire Guthrie.",
+          "fighters": [
+            "Claire Guthrie"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "Team Peña heavyweights.",
+          "fighters": [
+            "Mohammed Usman",
+            "Zac Pauga",
+            "Jordan Heiderman",
+            "Bobby Maximus"
+          ],
+          "fighter_ids": [
+            "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+            "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+            null,
+            null
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "Team Peña flyweights.",
+          "fighters": [
+            "Helen Peralta",
+            "Juliana Miller",
+            "Hannah Guy",
+            "Chantel Coates"
+          ],
+          "fighter_ids": [
+            null,
+            "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+            null,
+            null
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "Team Nunes heavyweights.",
+          "fighters": [
+            "Eduardo Perez",
+            "Chandler Cole",
+            "Mitchell Sipe",
+            "Nyle Bartling"
+          ],
+          "fighter_ids": [
+            null,
+            "9d6cb0e8-88dc-40cf-910a-3ccf7a12bf52",
+            "058f90d6-95f9-44fe-ba0f-214bbad5fb5f",
+            null
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "Team Nunes flyweights.",
+          "fighters": [
+            "Claire Guthrie",
+            "Brogan Walker",
+            "Kaytlin Neil",
+            "Kathryn Paprocki"
+          ],
+          "fighter_ids": [
+            null,
+            "5d53d9f1-212f-425e-be02-8d441494f596",
+            null,
+            "26390164-4020-4033-9ad4-3bb539346ab8"
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "Bartling was Team Nunes' last heavyweight pick; Bobby Maximus the final fighter selected.",
+          "fighters": [
+            "Nyle Bartling",
+            "Bobby Maximus"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Peña picks the first flyweight fight: Helen Peralta vs. Kaytlin Neil.",
+          "fighters": [
+            "Helen Peralta",
+            "Kaytlin Neil"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 2,
+      "title": "Time to Eat",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-05-10",
+      "recap_url": "https://www.ufc.com/news/the-ultimate-fighter-season-30-team-pena-vs-team-nunes-episode-2-recap-espn",
+      "recap_published": "2022-05-10T16:16:22-04:00",
+      "recap_byline_date": "May. 10, 2022",
+      "bouts": [
+        {
+          "a": "Kaytlin Neil",
+          "b": "Helen Peralta",
+          "weight_class": "Flyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Women's Flyweight",
+            "stage": "quarter_final",
+            "a": "Helen Peralta",
+            "b": "Kaytlin Neil"
+          },
+          "result": {
+            "winner": "Kaytlin Neil",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kaytlin Neil",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/the-ultimate-fighter-season-30-team-pena-vs-team-nunes-episode-2-recap-espn"
+            },
+            {
+              "fighter": "Helen Peralta",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/the-ultimate-fighter-season-30-team-pena-vs-team-nunes-episode-2-recap-espn"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Peña"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Peña",
+      "events": [
+        {
+          "type": "other",
+          "text": "Team Nunes picks the next fight: Mohammed Usman vs. Mitchell Sipe.",
+          "fighters": [
+            "Mohammed Usman",
+            "Mitchell Sipe"
+          ],
+          "fighter_ids": [
+            "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+            "058f90d6-95f9-44fe-ba0f-214bbad5fb5f"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 3,
+      "title": "Boiling Point",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-05-17",
+      "recap_url": "https://www.ufc.com/news/episode-3-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-05-17T12:49:59-04:00",
+      "recap_byline_date": "May. 17, 2022",
+      "bouts": [
+        {
+          "a": "Mohammed Usman",
+          "b": "Mitchell Sipe",
+          "a_fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+          "b_fighter_id": "058f90d6-95f9-44fe-ba0f-214bbad5fb5f",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Heavyweight",
+            "stage": "quarter_final",
+            "a": "Mohammed Usman",
+            "b": "Mitchell Sipe"
+          },
+          "result": {
+            "winner": "Mohammed Usman",
+            "winner_fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Mitchell Sipe",
+              "fighter_id": "058f90d6-95f9-44fe-ba0f-214bbad5fb5f",
+              "weight_lbs": 265,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/episode-3-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Mohammed Usman",
+              "fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+              "weight_lbs": 238,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/episode-3-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Nunes"
+          },
+          "caption_filming_dates": [
+            "February 17, 2022",
+            "February 17, 2022"
+          ]
+        }
+      ],
+      "fight_pick_control": "Team Nunes",
+      "events": [
+        {
+          "type": "other",
+          "text": "Team Nunes picks the next flyweight fight: Brogan Walker vs. Chantel Coates.",
+          "fighters": [
+            "Brogan Walker",
+            "Chantel Coates"
+          ],
+          "fighter_ids": [
+            "5d53d9f1-212f-425e-be02-8d441494f596",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 4,
+      "title": "Opportunity Knocks",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-05-24",
+      "recap_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-05-24T15:35:22-04:00",
+      "recap_byline_date": "May. 24, 2022",
+      "bouts": [
+        {
+          "a": "Laura Gallardo",
+          "b": "Kathryn Paprocki",
+          "b_fighter_id": "26390164-4020-4033-9ad4-3bb539346ab8",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Women's Flyweight",
+            "stage": "quarter_final",
+            "a": "Laura Gallardo",
+            "b": "Kathryn Paprocki"
+          },
+          "result": {
+            "winner": "Laura Gallardo",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kathryn Paprocki",
+              "fighter_id": "26390164-4020-4033-9ad4-3bb539346ab8",
+              "weight_lbs": 124,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 4,
+              "source_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Laura Gallardo",
+              "weight_lbs": 123.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 4,
+              "source_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Nunes"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Nunes",
+      "events": [
+        {
+          "type": "injury",
+          "text": "Brogan Walker hurt her knee in training; diagnosed Grade 1 MCL tear.",
+          "fighters": [
+            "Brogan Walker"
+          ],
+          "fighter_ids": [
+            "5d53d9f1-212f-425e-be02-8d441494f596"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Coates weighed 154.5 lb at a house check, 28.5 lb over the flyweight limit, days before her scheduled fight with Walker.",
+          "fighters": [
+            "Chantel Coates"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "withdrawal",
+          "text": "Team Peña coaches pulled Coates from her fight (still at 148 or 149 lb four days out).",
+          "fighters": [
+            "Chantel Coates"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "replacement",
+          "text": "Team Peña alternate Laura Gallardo brought in for Coates.",
+          "fighters": [
+            "Laura Gallardo",
+            "Chantel Coates"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "With Walker injured, Team Nunes (holding the pick) changed the matchup; Paprocki asked to fight Gallardo.",
+          "fighters": [
+            "Kathryn Paprocki",
+            "Laura Gallardo",
+            "Brogan Walker"
+          ],
+          "fighter_ids": [
+            "26390164-4020-4033-9ad4-3bb539346ab8",
+            null,
+            "5d53d9f1-212f-425e-be02-8d441494f596"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Team Peña picks the next heavyweight fight: Bobby Maximus vs. Eduardo Perez.",
+          "fighters": [
+            "Bobby Maximus",
+            "Eduardo Perez"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 5,
+      "title": "Face the Boogeyman",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-05-31",
+      "recap_url": "https://www.ufc.com/news/episode-5-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-05-31T12:32:01-04:00",
+      "recap_byline_date": "May. 31, 2022",
+      "bouts": [
+        {
+          "a": "Eduardo Perez",
+          "b": "Bobby Maximus",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Heavyweight",
+            "stage": "quarter_final",
+            "a": "Eduardo Perez",
+            "b": "Bobby Maximus"
+          },
+          "result": {
+            "winner": "Eduardo Perez",
+            "method": "TKO (strikes)",
+            "round": 1,
+            "time": "3:58"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Eduardo Perez",
+              "weight_lbs": 266,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/episode-5-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Bobby Maximus",
+              "weight_lbs": 237,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/episode-5-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "injury",
+          "text": "Chandler Cole has a complete UCL tear in his elbow and elects to stay in the competition.",
+          "fighters": [
+            "Chandler Cole"
+          ],
+          "fighter_ids": [
+            "9d6cb0e8-88dc-40cf-910a-3ccf7a12bf52"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Peña picks the next flyweight fight: Juliana Miller vs. Claire Guthrie.",
+          "fighters": [
+            "Juliana Miller",
+            "Claire Guthrie"
+          ],
+          "fighter_ids": [
+            "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 6,
+      "title": "We Meet Again",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-06-07",
+      "recap_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-06-07T15:55:00-04:00",
+      "recap_byline_date": "Jun. 7, 2022",
+      "bouts": [
+        {
+          "a": "Juliana Miller",
+          "b": "Claire Guthrie",
+          "a_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+          "weight_class": "Flyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Women's Flyweight",
+            "stage": "quarter_final",
+            "a": "Juliana Miller",
+            "b": "Claire Guthrie"
+          },
+          "result": {
+            "winner": "Juliana Miller",
+            "winner_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Juliana Miller",
+              "fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Claire Guthrie",
+              "weight_lbs": 127,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "made_weight_on_retry": true,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "missed_weight",
+          "text": "Guthrie weighed 127, still half a pound over nude, and was given 60 minutes; made the limit after Nina Nunes cut her hair.",
+          "fighters": [
+            "Claire Guthrie"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Last heavyweight first-round pairing announced: Chandler Cole vs. Jordan Heiderman (chooser not stated).",
+          "fighters": [
+            "Chandler Cole",
+            "Jordan Heiderman"
+          ],
+          "fighter_ids": [
+            "9d6cb0e8-88dc-40cf-910a-3ccf7a12bf52",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 7,
+      "title": "Crush Your Dreams",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-06-14",
+      "recap_url": "https://www.ufc.com/news/episode-7-recap-the-ultimate-fighter-team-pena-vs-team-nunes-jordan-heiderman-chandler-cole",
+      "recap_published": "2022-06-14T17:20:58-04:00",
+      "recap_byline_date": "Jun. 14, 2022",
+      "bouts": [
+        {
+          "a": "Jordan Heiderman",
+          "b": "Chandler Cole",
+          "b_fighter_id": "9d6cb0e8-88dc-40cf-910a-3ccf7a12bf52",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Heavyweight",
+            "stage": "quarter_final",
+            "a": "Jordan Heiderman",
+            "b": "Chandler Cole"
+          },
+          "result": {
+            "winner": "Jordan Heiderman",
+            "method": "TKO (strikes)",
+            "round": 3,
+            "time": "1:14"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Chandler Cole",
+              "fighter_id": "9d6cb0e8-88dc-40cf-910a-3ccf7a12bf52",
+              "weight_lbs": 264.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 7,
+              "source_url": "https://www.ufc.com/news/episode-7-recap-the-ultimate-fighter-team-pena-vs-team-nunes-jordan-heiderman-chandler-cole"
+            },
+            {
+              "fighter": "Jordan Heiderman",
+              "weight_lbs": 247,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 7,
+              "source_url": "https://www.ufc.com/news/episode-7-recap-the-ultimate-fighter-team-pena-vs-team-nunes-jordan-heiderman-chandler-cole"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Final flyweight first-round fight announced: Hannah Guy vs. Brogan Walker (chooser not stated).",
+          "fighters": [
+            "Hannah Guy",
+            "Brogan Walker"
+          ],
+          "fighter_ids": [
+            null,
+            "5d53d9f1-212f-425e-be02-8d441494f596"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 8,
+      "title": "Make It Ugly",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-06-21",
+      "recap_url": "https://www.ufc.com/news/episode-8-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-06-21T12:46:42-04:00",
+      "recap_byline_date": "Jun. 21, 2022",
+      "bouts": [
+        {
+          "a": "Brogan Walker",
+          "b": "Hannah Guy",
+          "a_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Women's Flyweight",
+            "stage": "quarter_final",
+            "a": "Hannah Guy",
+            "b": "Brogan Walker-Sanchez"
+          },
+          "result": {
+            "winner": "Brogan Walker",
+            "winner_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brogan Walker",
+              "fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+              "weight_lbs": 125,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/episode-8-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Hannah Guy",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/episode-8-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Peña suggests Usman vs. Perez and Pauga vs. Heiderman; Nunes counters with Perez vs. Heiderman and Usman vs. Pauga.",
+          "fighters": [
+            "Mohammad Usman",
+            "Eduardo Perez",
+            "Zac Pauga",
+            "Jordan Heiderman"
+          ],
+          "fighter_ids": [
+            "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+            null,
+            "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Semifinal announced by Dana White.",
+          "fighters": [
+            "Jordan Heiderman",
+            "Zac Pauga"
+          ],
+          "fighter_ids": [
+            null,
+            "4ecbf662-e2f7-4cb5-a898-ca548a6110aa"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Semifinal announced by Dana White.",
+          "fighters": [
+            "Laura Gallardo",
+            "Brogan Walker"
+          ],
+          "fighter_ids": [
+            null,
+            "5d53d9f1-212f-425e-be02-8d441494f596"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Semifinal announced by Dana White.",
+          "fighters": [
+            "Mohammad Usman",
+            "Eduardo Perez"
+          ],
+          "fighter_ids": [
+            "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Semifinal announced by Dana White.",
+          "fighters": [
+            "Juliana Miller",
+            "Kaytlin Neil"
+          ],
+          "fighter_ids": [
+            "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "White's pairings matched Peña's suggestions.",
+          "fighters": [],
+          "fighter_ids": []
+        }
+      ]
+    },
+    {
+      "episode_number": 9,
+      "title": "Bring Your Lunchbox",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-06-28",
+      "recap_url": "https://www.ufc.com/news/episode-9-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-06-28T12:48:59-04:00",
+      "recap_byline_date": "Jun. 28, 2022",
+      "bouts": [
+        {
+          "a": "Zac Pauga",
+          "b": "Jordan Heiderman",
+          "a_fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+          "weight_class": "Heavyweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Heavyweight",
+            "stage": "semi_final",
+            "a": "Zac Pauga",
+            "b": "Jordan Heiderman"
+          },
+          "result": {
+            "winner": "Zac Pauga",
+            "winner_fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+            "method": "TKO",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jordan Heiderman",
+              "weight_lbs": 247,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Zac Pauga",
+              "fighter_id": "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+              "weight_lbs": 244,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 10,
+      "title": "Throw Nasty Stuff",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-07-05",
+      "recap_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-07-05T14:44:03-04:00",
+      "recap_byline_date": "Jul. 5, 2022",
+      "bouts": [
+        {
+          "a": "Brogan Walker",
+          "b": "Laura Gallardo",
+          "a_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+          "weight_class": "Flyweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Women's Flyweight",
+            "stage": "semi_final",
+            "a": "Brogan Walker-Sanchez",
+            "b": "Laura Gallardo"
+          },
+          "result": {
+            "winner": "Brogan Walker",
+            "winner_fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brogan Walker",
+              "fighter_id": "5d53d9f1-212f-425e-be02-8d441494f596",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Laura Gallardo",
+              "weight_lbs": 124,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 11,
+      "title": "Time to Come Alive",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-07-12",
+      "recap_url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-07-12T12:54:55-04:00",
+      "recap_byline_date": "Jul. 12, 2022",
+      "bouts": [
+        {
+          "a": "Mohammad Usman",
+          "b": "Eduardo Perez",
+          "a_fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+          "weight_class": "Heavyweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Heavyweight",
+            "stage": "semi_final",
+            "a": "Eduardo Perez",
+            "b": "Mohammed Usman"
+          },
+          "result": {
+            "winner": "Mohammad Usman",
+            "winner_fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Eduardo Perez",
+              "weight_lbs": 265,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Mohammad Usman",
+              "fighter_id": "f2cd289d-b872-4b19-bc45-c8c7c811d586",
+              "weight_lbs": 238,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 12,
+      "title": "A Beautiful Fight",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2022-07-19",
+      "recap_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-07-19T13:08:44-04:00",
+      "recap_byline_date": "Jul. 19, 2022",
+      "bouts": [
+        {
+          "a": "Juliana Miller",
+          "b": "Kaytlin Neil",
+          "a_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+          "weight_class": "Flyweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Women's Flyweight",
+            "stage": "semi_final",
+            "a": "Juliana Miller",
+            "b": "Kaytlin Neil"
+          },
+          "result": {
+            "winner": "Juliana Miller",
+            "winner_fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+            "method": "Submission (kimura)",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kaytlin Neil",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            },
+            {
+              "fighter": "Juliana Miller",
+              "fighter_id": "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+              "weight_lbs": 125,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-team-pena-vs-team-nunes"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Finalists face off: Miller vs. Walker (flyweight) and Pauga vs. Usman (heavyweight).",
+          "fighters": [
+            "Juliana Miller",
+            "Brogan Walker",
+            "Zac Pauga",
+            "Mohammad Usman"
+          ],
+          "fighter_ids": [
+            "7d43c8ca-770e-4e5f-943d-d7aef360fd07",
+            "5d53d9f1-212f-425e-be02-8d441494f596",
+            "4ecbf662-e2f7-4cb5-a898-ca548a6110aa",
+            "f2cd289d-b872-4b19-bc45-c8c7c811d586"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Finals are on the UFC on ESPN main card at the UFC APEX the weekend after UFC 277 (July 30).",
+          "fighters": [],
+          "fighter_ids": []
+        }
+      ]
+    }
+  ]
+}

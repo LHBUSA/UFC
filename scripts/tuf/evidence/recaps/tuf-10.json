@@ -1,0 +1,627 @@
+{
+  "_about": "Facts from UFC.com episode recaps for tuf-10. Every value carries the exact sentence it came from; quotes were checked as verbatim substrings of the recap text on 2026-09-12. Names are as the recap printed them.",
+  "source_family": "ufc_com_recap",
+  "retrieved": "2026-09-12",
+  "slug": "tuf-10",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-one-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Sep. 15, 2009",
+      "bouts": [
+        {
+          "a": "Jon Madsen",
+          "b": "Abe Wagner",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Jon Madsen",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "The unanimous decision win (20-16, 20-17, 20-17) for Madsen is a mere formality, and Team Rashad has taken the lead, 1-0."
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Rampage",
+            "quote": "For the first fight pick, Rampage chooses Team Rashad’s Jon Madsen (1-0) to face his fighter, Abe Wagner (6-1)."
+          },
+          "caption_filming_dates": [],
+          "notes": "Two-round fight. Roster line: \"Abe Wagner – Eliminated in week one by Jon Madsen\"."
+        }
+      ],
+      "events": [
+        {
+          "type": "coin_toss",
+          "fighters": [
+            "Rashad Evans",
+            "Quinton Jackson"
+          ],
+          "text": "Evans wins the coin toss and picks first fighter; Jackson gets to pick the first two fights.",
+          "quote": "After the two-hour evaluation period, Evans won the coin toss and opted to select the first fighter, with Jackson getting the opportunity to pick the first two fights."
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "James McSweeney",
+            "Kimbo Slice"
+          ],
+          "text": "First picks: McSweeney (Team Rashad), Kimbo Slice (Team Rampage).",
+          "quote": "Evans’ first pick, his teammate from Albuquerque, James McSweeney. Rampage’s pick was no surprise, as he made good on his promise to pick Kimbo Slice."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 2,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-two-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Sep. 23, 2009",
+      "bouts": [
+        {
+          "a": "James McSweeney",
+          "b": "Wes Shivers",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "James McSweeney",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null,
+            "quote": "Neither fighter seems to be ready for a third round, and luckily they don’t have to cross that bridge, as the judges see it 20-18 twice and 19-19 for the winner, by majority decision, James McSweeney."
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Rampage",
+            "quote": "Neither Nelson or Slice are in the second bout though, as Jackson decides to go for the kill shot by putting former NFL player Wes Shivers against Team Rashad’s number one pick, James McSweeney."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Roy Nelson",
+            "Kimbo Slice"
+          ],
+          "text": "Evans picks Nelson vs Kimbo Slice for fight three.",
+          "quote": "Team Rampage will have a tough road ahead though, especially considering that for fight number three next week, Evans has decided to pit Nelson, the former IFL heavyweight champion, against Kimbo Slice."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 3,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-three-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Sep. 28, 2009",
+      "bouts": [
+        {
+          "a": "Roy Nelson",
+          "b": "Kimbo Slice",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Roy Nelson",
+            "method": "TKO (strikes)",
+            "round": 2,
+            "time": null,
+            "quote": "This time, Dean decides to call a halt to the action after another series of unanswered blows.",
+            "round_quote": "Kimbos fires out a jab to begin round two, but he’s obviously winded."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roy Nelson",
+              "weight_lbs": 264,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "The 32-year old Nelson (13-4) weighs in at 264 pounds for the bout, with the 35-year old Kimbo (3-1) checking in at 230 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Kimbo Slice",
+              "weight_lbs": 230,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "The 32-year old Nelson (13-4) weighs in at 264 pounds for the bout, with the 35-year old Kimbo (3-1) checking in at 230 pounds.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Rashad",
+            "quote": "Not to Nelson though, which is why his coach, Rashad Evans, picked him for this assignment."
+          },
+          "caption_filming_dates": [],
+          "notes": "Recap does not use the word TKO: referee Herb Dean halts the bout after unanswered blows in round two."
+        }
+      ],
+      "events": [],
+      "notes": null
+    },
+    {
+      "episode_number": 4,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-four-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Oct. 7, 2009",
+      "bouts": [
+        {
+          "a": "Brendan Schaub",
+          "b": "Demico Rogers",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Brendan Schaub",
+            "method": "Submission (anaconda choke)",
+            "round": null,
+            "time": null,
+            "quote": "Schaub is finally able to escape though, and he begins his own attack, eventually locking in a slick anaconda choke that forces referee Josh Rosenthal to halt the bout and give Team Rashad its fourth consecutive victory."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Round number not stated (narrative describes a single round). Picker not stated."
+        }
+      ],
+      "events": [],
+      "notes": null
+    },
+    {
+      "episode_number": 5,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-five-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Oct. 14, 2009",
+      "bouts": [
+        {
+          "a": "Justin Wren",
+          "b": "Wes Sims",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Justin Wren",
+            "method": "Submission (arm triangle)",
+            "round": null,
+            "time": null,
+            "quote": "Your winner by submission, Justin Wren."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Justin Wren",
+              "weight_lbs": 247.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "6 foot 3 Wren (8-1) weighs in at 247.5 for the bout; the 6 foot 10 Sims (22-12-1) checks in at 251",
+              "context_quote": null
+            },
+            {
+              "fighter": "Wes Sims",
+              "weight_lbs": 251,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "6 foot 3 Wren (8-1) weighs in at 247.5 for the bout; the 6 foot 10 Sims (22-12-1) checks in at 251",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Rashad",
+            "quote": "Schaub doesn’t get his wish though, as Team Rashad picks Justin Wren, a Travis Lutter protégé, to face Team Rampage’s Wes Sims, a UFC veteran."
+          },
+          "caption_filming_dates": [],
+          "notes": "Arm triangle named in the fight sentence: \"Within moments, Wren locks in an arm triangle and soon, Sims goes to sleep, forcing referee Herb Dean to halt the bout.\" Round not stated."
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Matt Mitrione"
+          ],
+          "text": "Mitrione jams his shoulder in practice but keeps training.",
+          "quote": "As the episode opens, Team Rashad’s Matt Mitrione jams his shoulder during practice, but keeps training."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 6,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-six-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Oct. 20, 2009",
+      "bouts": [
+        {
+          "a": "Darrill Schoonover",
+          "b": "Zak Jensen",
+          "weight_class": "Heavyweight",
+          "stage": "round_of_16",
+          "stage_quote": "CAUTION: SPOILERS INCLUDED – With Team Rashad up 5-0 on The Ultimate Fighter: Heavyweights with three first round fights remaining, all Team Rampage can do is try to save face and get one of their three fighters into the quarterfinals.",
+          "result": {
+            "winner": "Darrill Schoonover",
+            "method": "Submission (triangle choke)",
+            "round": null,
+            "time": null,
+            "quote": "Jensen survives the initial storm and gets a takedown, but Schoonover locks in a triangle choke that eventually puts the game Jensen to sleep, bringing in referee Steve Mazzagatti to halt the bout."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Darrill Schoonover",
+              "weight_lbs": 251,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Schoonover (10-0) weighs in at 251 for the fight; Jensen (7-2) checks in at 263.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Zak Jensen",
+              "weight_lbs": 263,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Schoonover (10-0) weighs in at 251 for the fight; Jensen (7-2) checks in at 263.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Rashad",
+            "quote": "After cooler heads prevail, it’s time for this week’s fight announcement, and Evans picks Schoonover to fight Team Rampage’s Zak Jensen."
+          },
+          "caption_filming_dates": [],
+          "notes": "Recap does not name the method category; the triangle choke put Jensen to sleep and the referee halted the bout. Round not stated."
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Zak Jensen"
+          ],
+          "text": "Jensen cut over the right eye in training but still fights.",
+          "quote": "When things get more serious, Jackson focuses on Jensen, but while training with Wes Shivers, Jensen gets cut over the right eye."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 7,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-seven-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Oct. 28, 2009",
+      "bouts": [
+        {
+          "a": "Matt Mitrione",
+          "b": "Scott Junk",
+          "weight_class": "Heavyweight",
+          "stage": "round_of_16",
+          "stage_quote": "In this week’s fight, Team Rashad chooses Matt Mitrione to face Team Rampage’s Scott Junk, leaving the final first round matchup as Team Rashad’s Mike Wessel against Team Rampage’s Marcus Jones.",
+          "result": {
+            "winner": "Matt Mitrione",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null,
+            "quote": "When it’s all over, the judges see it 20-18 twice and 19-19 for the winner by majority decision, Matt Mitrione."
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Rashad",
+            "quote": "In this week’s fight, Team Rashad chooses Matt Mitrione to face Team Rampage’s Scott Junk, leaving the final first round matchup as Team Rashad’s Mike Wessel against Team Rampage’s Marcus Jones."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Mike Wessel",
+            "Marcus Jones"
+          ],
+          "text": "Final first-round matchup left as Wessel vs Jones.",
+          "quote": "In this week’s fight, Team Rashad chooses Matt Mitrione to face Team Rampage’s Scott Junk, leaving the final first round matchup as Team Rashad’s Mike Wessel against Team Rampage’s Marcus Jones."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 8,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-eight-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Nov. 4, 2009",
+      "bouts": [
+        {
+          "a": "Marcus Jones",
+          "b": "Mike Wessel",
+          "weight_class": "Heavyweight",
+          "stage": "round_of_16",
+          "stage_quote": "Seconds later the fight hits the mat, and Jones immediately takes control, locking in an armbar that forces Wessel to verbally submit, giving Team Rampage their first and only win of the opening round of the competition.",
+          "result": {
+            "winner": "Marcus Jones",
+            "method": "Verbal submission (armbar)",
+            "round": null,
+            "time": null,
+            "quote": "Seconds later the fight hits the mat, and Jones immediately takes control, locking in an armbar that forces Wessel to verbally submit, giving Team Rampage their first and only win of the opening round of the competition."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Mike Wessel",
+              "weight_lbs": 260,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Next it’s time for the real fight, as Wessel (6-0, 260) takes on Jones (6-6, 262).",
+              "context_quote": "At the weigh-in for the fight, Jackson gets into it again with Darrill Schoonover, and the two have to be separated."
+            },
+            {
+              "fighter": "Marcus Jones",
+              "weight_lbs": 262,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Next it’s time for the real fight, as Wessel (6-0, 260) takes on Jones (6-6, 262).",
+              "context_quote": "At the weigh-in for the fight, Jackson gets into it again with Darrill Schoonover, and the two have to be separated."
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Weights printed as (record, weight) in the sentence following the weigh-in sentence; the word pounds is not used. Round not stated."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "White and the coaches determine the quarterfinal matchups: Nelson vs Wren, Schaub vs Madsen, McSweeney vs Mitrione, Jones vs Schoonover.",
+          "quote": "White immediately gets the two coaches together and they begin the process of determining the quarterfinal matchups, which gets even more interesting considering that three of the four matchups will pit members of Team Rashad against each other."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 9,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-nine-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Nov. 9, 2009",
+      "bouts": [
+        {
+          "a": "Roy Nelson",
+          "b": "Justin Wren",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Justin Wren 1-1 – Eliminated in the quarterfinals (episode nine) by Roy Nelson",
+          "result": {
+            "winner": "Roy Nelson",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null,
+            "quote": "After two rounds, most observers believed that the fight was going to a third and deciding round, but the judges saw it 20-18 twice, and 19-19 for the winner by majority decision, Roy Nelson, who is on his way to the semifinals."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roy Nelson",
+              "weight_lbs": 264,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Nelson (13-4) weighs in for this week’s bout at 264 pounds; Wren (8-1) checks in at 250.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Justin Wren",
+              "weight_lbs": 250,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Nelson (13-4) weighs in for this week’s bout at 264 pounds; Wren (8-1) checks in at 250.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Matt Mitrione"
+          ],
+          "text": "Mitrione taken to hospital (concussion signs); White says he fights if the doctor clears him.",
+          "quote": "The next morning at Team Rashad’s practice, it was revealed that Mitrione was taken to the hospital the night before."
+        },
+        {
+          "type": "medical_postponement",
+          "fighters": [
+            "Matt Mitrione"
+          ],
+          "text": "Mitrione's quarterfinal depends on medical clearance.",
+          "quote": "White then confirms that if the doctor clears Mitrione he will fight."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 10,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-ten-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Nov. 18, 2009",
+      "bouts": [
+        {
+          "a": "Brendan Schaub",
+          "b": "Jon Madsen",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Jon Madsen 1-1 – Eliminated in the quarterfinals (episode ten) by Brendan Schaub",
+          "result": {
+            "winner": "Brendan Schaub",
+            "method": "KO (right hand)",
+            "round": 2,
+            "time": null,
+            "quote": "Down one round, Schaub needs to turn things around in the second, and after fighting off two takedown attempts, he erupts with a big right to the chin which puts Madsen down and out and earns him a berth in the semifinals."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brendan Schaub",
+              "weight_lbs": 239,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Schaub (239) and Madsen (247) are definitely fighting, and Schaub tosses off Madsen’s initial takedown attempt and begins stalking his foe.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Jon Madsen",
+              "weight_lbs": 247,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Schaub (239) and Madsen (247) are definitely fighting, and Schaub tosses off Madsen’s initial takedown attempt and begins stalking his foe.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Weights printed in parentheses without the word pounds or a weigh-in sentence. Recap says \"down and out\" (no KO/TKO label)."
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Kimbo Slice"
+          ],
+          "text": "Kimbo's left knee banged up while he is being prepared as a possible replacement for Mitrione.",
+          "quote": "The opposing coach, Quinton Jackson, is hoping that if Mitrione drops out, his fighter – Kimbo Slice – can come back into the competition, but Slice has his own issues after his left knee was banged up while rolling with Demico Rogers."
+        },
+        {
+          "type": "medical_postponement",
+          "fighters": [
+            "Matt Mitrione"
+          ],
+          "text": "Mitrione's medical clearance to be decided the next day.",
+          "quote": "White shows up to the house and talks to both teams about the situation, letting them know that the next day will be the one that determines whether Mitrione is medically cleared or not."
+        }
+      ],
+      "notes": "Coaches' Challenge (beach volleyball, won by Team Rashad) omitted as not bracket-relevant."
+    },
+    {
+      "episode_number": 11,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-final-episode-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Dec. 2, 2009",
+      "bouts": [
+        {
+          "a": "James McSweeney",
+          "b": "Matt Mitrione",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Matt Mitrione 1-1 – Eliminated in the quarterfinals (episode 11) by James McSweeney",
+          "result": {
+            "winner": "James McSweeney",
+            "method": "Submission (guillotine choke)",
+            "round": null,
+            "time": null,
+            "quote": "With 90 seconds left, McSweeney sinks in a guillotine choke, and the tap comes seconds later."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Round not stated."
+        },
+        {
+          "a": "Marcus Jones",
+          "b": "Darrill Schoonover",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Darrill Schoonover 1-1 - Eliminated in the quarterfinals (episode 11) by Marcus Jones",
+          "result": {
+            "winner": "Marcus Jones",
+            "method": "TKO (strikes)",
+            "round": null,
+            "time": null,
+            "quote": "In seconds, Jones is in control and looking to finish, and though Schoonover tries his best to survive, Jones will not be denied, and midway through the round he finishes Schoonover off with strikes."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Round number not stated (\"midway through the round\")."
+        }
+      ],
+      "events": [
+        {
+          "type": "replacement",
+          "fighters": [
+            "Kimbo Slice",
+            "Matt Mitrione"
+          ],
+          "text": "Kimbo's return as a replacement is unlikely (knee); Mitrione gets medical clearance and keeps his quarterfinal.",
+          "quote": "In the end, everything remains the same though, as Mitrione is feeling better, and with medical clearance in hand, he’s ready to take on McSweeney."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Roy Nelson",
+            "James McSweeney",
+            "Brendan Schaub",
+            "Marcus Jones"
+          ],
+          "text": "Semifinals set: Nelson vs McSweeney, Schaub vs Jones.",
+          "quote": "So now the semifinals are set. Here are the matchups:"
+        }
+      ],
+      "notes": "One recap (\"Final Episode Recap\") covers episodes 11 and 12; its end-of-season roster dates each elimination (quarterfinals = episode 11, semifinals = episode 12). recap_published is the 2018-09-14 site-migration stamp; the byline date is the original dateline."
+    },
+    {
+      "episode_number": 12,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-final-episode-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Dec. 2, 2009",
+      "bouts": [
+        {
+          "a": "Roy Nelson",
+          "b": "James McSweeney",
+          "weight_class": "Heavyweight",
+          "stage": "semi_final",
+          "stage_quote": "James McSweeney 2-1 - Eliminated in the semifinals (episode 12) by Roy Nelson",
+          "result": {
+            "winner": "Roy Nelson",
+            "method": "TKO (strikes)",
+            "round": 1,
+            "time": null,
+            "quote": "Roy Nelson wins by first round TKO and moves into the TUF10 finals."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Brendan Schaub",
+          "b": "Marcus Jones",
+          "weight_class": "Heavyweight",
+          "stage": "semi_final",
+          "stage_quote": "Marcus Jones 2-1 - Eliminated in the semifinals (episode 12) by Brendan Schaub",
+          "result": {
+            "winner": "Brendan Schaub",
+            "method": "TKO (strikes)",
+            "round": null,
+            "time": null,
+            "quote": "Schaub pounces on him, and after a series of unanswered blows, referee Josh Rosenthal halts the bout."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Recap does not use the word TKO; referee halted the bout after unanswered blows. Round not stated."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Roy Nelson",
+            "Brendan Schaub"
+          ],
+          "text": "Final set: Nelson vs Schaub (both Team Rashad).",
+          "quote": "The finals are set, as Team Rashad’s Roy Nelson and Brendan Schaub will square off this Saturday night."
+        }
+      ],
+      "notes": "One recap (\"Final Episode Recap\") covers episodes 11 and 12; its end-of-season roster dates each elimination (quarterfinals = episode 11, semifinals = episode 12). recap_published is the 2018-09-14 site-migration stamp; the byline date is the original dateline."
+    }
+  ],
+  "missing_episodes": []
+}

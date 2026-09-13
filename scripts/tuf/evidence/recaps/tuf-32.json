@@ -1,0 +1,868 @@
+{
+  "_about": "Facts from UFC.com episode recaps for tuf-32. Every value carries the exact sentence it came from; quotes were checked as verbatim substrings of the recap text on 2026-09-12. Names are as the recap printed them.",
+  "source_family": "ufc_com_recap",
+  "retrieved": "2026-09-12",
+  "slug": "tuf-32",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "recap_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+      "recap_published": "2024-06-05T10:20:32-0400",
+      "byline_date_text": "Jun. 5, 2024",
+      "bouts": [
+        {
+          "a": "Roedie Roets",
+          "b": "Guillermo Torres",
+          "weight_class": "Featherweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Roedie Roets",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Roedie Roets defeats Guillermo Torres by unanimous decision",
+            "contradiction": "Prose paragraph under the fight heading says Torres earned the win; the OFFICIAL RESULT line (and the rest of the fight narrative, and the episode 2 recap) say Roets won. Result recorded per the OFFICIAL RESULT line.",
+            "contradiction_quotes": [
+              "The top picks in the featherweight division for each team squared off in the first bout of the season, with Team Grasso’s Torres earning the first win in the competition.",
+              "Roedie Roets defeats Guillermo Torres by unanimous decision"
+            ]
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roedie Roets",
+              "weight_lbs": 145,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Roets is up first and hits 145 pounds on the dot",
+              "context_quote": null
+            },
+            {
+              "fighter": "Guillermo Torres",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "before Torres follows and hits the same mark, making the first fight of the season official",
+              "context_quote": null,
+              "weight_text": "hits the same mark"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Shevchenko",
+            "quote": "Because Grasso had first pick of the fighters, Shevchenko has the first fight pick, and selects Roedie Roets to face Torres"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "coin_toss",
+          "fighters": [
+            "Guillermo Torres"
+          ],
+          "text": "Grasso won the coin flip and drafted Torres first overall.",
+          "quote": "Grasso wins the coin flip and has the first selection, drafting featherweight Guillermo Torres with the first overall selection."
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "Format: two-round fights with a sudden-victory third round if deadlocked.",
+          "quote": "These are two-round fights with a sudden victory overtime available if the athletes are deadlocked after the first two rounds."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Shamidkhan Magomedov",
+            "Omran Chaaban"
+          ],
+          "text": "Team Shevchenko (after winning) picked the first middleweight matchup: Magomedov vs Chaaban.",
+          "quote": "Team Shevchenko takes the early lead and has the opportunity to select the first middleweight matchup as well, picking Shamidkhan Magomedov to face off with Team Grasso’s Omran Chaaban."
+        }
+      ],
+      "notes": "The official result is split over two lines on the page ('OFFICIAL RESULT:' then the result sentence). Fight went to a third (sudden-victory) round per prose: 'They traded shots on the feet to start the third round'. Stage not stated."
+    },
+    {
+      "episode_number": 2,
+      "recap_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+      "recap_published": "2024-06-12T11:46:17-0400",
+      "byline_date_text": "Jun. 12, 2024",
+      "bouts": [
+        {
+          "a": "Robert Valentin",
+          "b": "Giannis Bachar",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Robert Valentin",
+            "method": "KO (right hand)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Robert Valentin defeats Giannis Bachar by KO (right hand)",
+            "contradiction": "Method conflict (winner consistent): result line says right hand; fight narrative says a right elbow.",
+            "contradiction_quotes": [
+              "Just 15 seconds into the fight, Bachar presses forward looking to close the distance and Valentin hits him with a right elbow on the temple that stiffens him up instantly.",
+              "Official Result: Robert Valentin defeats Giannis Bachar by KO (right hand)"
+            ]
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Giannis Bachar",
+              "weight_lbs": 184,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Bachar is first to the scale, coming in at 184 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Robert Valentin",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Valentin follows, weighing in at 186 pounds.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Grasso",
+            "quote": "the first matchup Grasso put together in the middleweight division"
+          },
+          "caption_filming_dates": [
+            {
+              "date_text": "March 20, 2024",
+              "quote": "Giannis Bachar enters the Octagon prior to his middleweight fight against Robert Valentin during the filming of The Ultimate Fighter at UFC APEX on March 20, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "medical_postponement",
+          "fighters": [
+            "Omran Chaaban",
+            "Shamidkhan Magomedov"
+          ],
+          "text": "Chaaban vs Magomedov pulled on fight day: Chaaban not medically cleared (unhealed cold sore); bout pushed back.",
+          "quote": "Turns out, Chaaban has a cold sore that hasn’t healed and will not be cleared to fight. The bout will be pushed back until he’s cleared."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Kaan Ofli",
+            "Nathan Fletcher"
+          ],
+          "text": "Grasso picked the next featherweight matchup: Ofli vs Fletcher.",
+          "quote": "Grasso has the selection and chooses Kaan Ofli to face Team Shevchenko’s Nathan Fletcher."
+        }
+      ],
+      "notes": "No round or time in the result line; prose says 'Just 15 seconds into the fight' while the episode 4 and 11 recaps call it an '18-second knockout'. Face-off captions (March 19, 2024) not attached as filming dates of the fight."
+    },
+    {
+      "episode_number": 3,
+      "recap_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-06-19T11:41:01-0400",
+      "byline_date_text": "Jun. 19, 2024",
+      "bouts": [
+        {
+          "a": "Kaan Ofli",
+          "b": "Nathan Fletcher",
+          "weight_class": "Featherweight",
+          "stage": "quarter_final",
+          "stage_quote": "Team Grasso has their first featherweight through to the semifinals, as Kaan Ofli scored a two-round decision win over Nathan Fletcher in the second fight in the 145-pound competition.",
+          "result": {
+            "winner": "Kaan Ofli",
+            "method": "Decision",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Kaan Ofli defeats Nathan Fletcher by decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Nathan Fletcher",
+              "weight_lbs": 145,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Team Shevchenko’s Fletcher is up first, stepping on the scale at 145 pounds even.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Kaan Ofli",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Ofli follows and hits the same mark, making the fight official.",
+              "context_quote": null,
+              "weight_text": "hits the same mark"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Grasso",
+            "quote": "as Grasso explains why she selected this pairing for her charge"
+          },
+          "caption_filming_dates": [
+            {
+              "date_text": "March 20, 2024",
+              "quote": "Kaan Ofli prepares for his featherweight fight against Nathan Fletcher during the filming of The Ultimate Fighter at UFC APEX on March 20, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [],
+      "notes": "Decision type (unanimous/split) not stated anywhere on the page. Page also prints 'Olfi'. Caption is a pre-fight 'prepares for' photo; the weigh-in face-off caption (March 19, 2024) is not attached."
+    },
+    {
+      "episode_number": 4,
+      "recap_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-06-26T10:41:17-0400",
+      "byline_date_text": "Jun. 26, 2024",
+      "bouts": [
+        {
+          "a": "Omran Chabaan",
+          "b": "Shamidkhan Magomedov",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "stage_quote": "Omran Chabaan showcased the full complement of his game, registering a second-round submission win over Shamidkhan Magomedov to join teammate Robert Valentin in the middleweight semifinals.",
+          "result": {
+            "winner": "Omran Chabaan",
+            "method": "Technical submission",
+            "round": 2,
+            "time": null,
+            "quote": "Official Result: Omran Chabaan def. Shamidkhan Magomedov by technical submission in Round 2"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Omran Chabaan",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": 186,
+              "quote": "Chabaan hits the middleweight limit, 186 pounds, with Magomedov coming in at 184.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Shamidkhan Magomedov",
+              "weight_lbs": 184.5,
+              "missed_weight": false,
+              "limit_lbs": 186,
+              "quote": "Chabaan hits the middleweight limit, 186 pounds, with Magomedov coming in at 184.5 pounds.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "medical_postponement",
+          "fighters": [
+            "Omran Chabaan",
+            "Shamidkhan Magomedov"
+          ],
+          "text": "The bout postponed in episode 2 (medical) was contested this episode.",
+          "quote": "Now Chabaan and Magomedov will finally face off to see who will join Valentin in the semifinals."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Zygimantas Ramaska",
+            "Bekhzod Usmonov"
+          ],
+          "text": "Shevchenko picked the third featherweight matchup: Ramaska vs Usmonov.",
+          "quote": "The third featherweight matchup is announced, with Shevchenko selecting Zygimantas Ramaska from her team and representing Lithuania to face Team Grasso’s Bekhzod Usmonov of Tajikistan."
+        }
+      ],
+      "notes": "Page spells him 'Chabaan' (result line) and 'Chaaban' (photo credit, video titles). Prose: 'the lanky Finnish fighter locked up an anaconda choke, squeezing until Magomedov went to sleep' (episode 9 recap instead calls his opening-round finish a 'D’arce choke'). Matchup was picked by Team Shevchenko per the episode 1 recap (see that episode's events); this page does not restate who picked it."
+    },
+    {
+      "episode_number": 5,
+      "recap_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-07-03T07:34:01-0400",
+      "byline_date_text": "Jul. 3, 2024",
+      "bouts": [
+        {
+          "a": "Zygimantas Ramaska",
+          "b": "Bekhzod Usmonov",
+          "weight_class": "Featherweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Zygimantas Ramaska",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Zygimantas Ramaska defeats Bekhzod Usmonov by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Bekhzod Usmonov",
+              "weight_lbs": 146.5,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "quote": "The Team Grasso fighter is up first, weighing in at 146.5 pounds, meaning Usmonov has one hour to cut the final half-pound.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Zygimantas Ramaska",
+              "weight_lbs": 146.5,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "quote": "Ramaska weighs in behind the curtain and he too comes in at 146.5 pounds.",
+              "context_quote": "Shevchenko and Grasso discuss the situation with NSAC director Jeff Mullin, agreeing that since are both over the same amount, neither will cut any further weight and the fight will proceed as scheduled."
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Bekhzod Usmanov prepares for his featherweight fight against Zygimantas Ramaska during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Zygimantas Ramaska punches Bekhzod Usmanov in their featherweight fight during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "missed_weight",
+          "fighters": [
+            "Bekhzod Usmonov",
+            "Zygimantas Ramaska"
+          ],
+          "text": "Both featherweights 146.5 lb (over by the same amount); coaches and NSAC agreed neither would cut further and the fight proceeded.",
+          "quote": "Shevchenko and Grasso discuss the situation with NSAC director Jeff Mullin, agreeing that since are both over the same amount, neither will cut any further weight and the fight will proceed as scheduled."
+        }
+      ],
+      "notes": "Ramaska's missed_weight comes from the following 'both over the same amount' sentence (context_quote), not his own weigh-in sentence. Numeric limit not stated. Stage not stated on this page. Captions print 'Usmanov'; result line prints 'Usmonov'."
+    },
+    {
+      "episode_number": 6,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-grasso-vs-team-shevchenko-episode-6-recap",
+      "recap_published": "2024-07-10T11:43:08-0400",
+      "byline_date_text": "Jul. 10, 2024",
+      "bouts": [
+        {
+          "a": "Ryan Loder",
+          "b": "Tom Theocharis",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Ryan Loder",
+            "method": "Submission (arm-triangle choke)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Ryan Loder defeats Tom Theocharis by submission (arm-triangle choke) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Ryan Loder",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Loder comes in at 186 pounds first",
+              "context_quote": null
+            },
+            {
+              "fighter": "Tom Theocharis",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "before Theocharis follows at the same weight",
+              "context_quote": null,
+              "weight_text": "at the same weight"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Ryan Loder walks to the Octagon prior to his middleweight fight against Tommy Theocharis during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [],
+      "notes": "Page prints both 'Tom' and 'Tommy' Theocharis. Stage not stated. Face-off caption (March 26, 2024) not attached."
+    },
+    {
+      "episode_number": 7,
+      "recap_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-07-17T16:40:40-0400",
+      "byline_date_text": "Jul. 17, 2024",
+      "bouts": [
+        {
+          "a": "Mairon Santos",
+          "b": "Edwin Cooper Jr.",
+          "weight_class": "Featherweight",
+          "stage": "quarter_final",
+          "stage_quote": "eager to make a statement and show out in this quarterfinal battle",
+          "result": {
+            "winner": "Mairon Santos",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Mairon Santos def. Edwin Cooper Jr. by split decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Edwin Cooper Jr.",
+              "weight_lbs": 146,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "with Cooper Jr. coming in at 146 pounds",
+              "context_quote": null
+            },
+            {
+              "fighter": "Mairon Santos",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "while Santos hits the same number after stripping down to nothing",
+              "context_quote": null,
+              "weight_text": "hits the same number"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Edwin Cooper Jr. battles Mairon Santos in their featherweight fight during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Mairon Santos punches Edwin Cooper Jr. in their featherweight fight during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [],
+      "notes": "Went three rounds per prose: 'The final fight in the featherweight quarterfinals went all three rounds'."
+    },
+    {
+      "episode_number": 8,
+      "recap_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-07-25T12:07:17-0400",
+      "byline_date_text": "Jul. 25, 2024",
+      "bouts": [
+        {
+          "a": "Paddy McCorry",
+          "b": "Mark Hulme",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "stage_quote": "making the final fight of the quarterfinals official",
+          "result": {
+            "winner": "Paddy McCorry",
+            "method": "Submission (guillotine choke)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Paddy McCorry def. Mark Hulme by submission (guillotine choke) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Mark Hulme",
+              "weight_lbs": 184.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Hulme is up first on the scale, coming in at 184.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Paddy McCorry",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "McCorry follows suit, weighing in at 186 pounds, making the final fight of the quarterfinals official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Mark Hulme prepares for his middleweight fight against Paddy McCorry during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Paddy McCorry walks to the Octagon prior to his middleweight fight against Mark Hulme during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Paddy McCorry battles Mark Hulme in their middleweight fight during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Mark Hulme enters the Octagon prior to his middleweight fight against Paddy McCorry during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 27, 2024",
+              "quote": "Mark Hulme punches Paddy McCorry in their middleweight fight during the filming of The Ultimate Fighter at UFC APEX on March 27, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Ryan Loder",
+            "Omran Chaaban",
+            "Robert Valentin",
+            "Paddy McCorry"
+          ],
+          "text": "Middleweight semifinal pairings: Loder vs Chaaban, Valentin vs McCorry.",
+          "quote": "At middleweight, Ryan Loder will fight Omran Chaaban, which means Team Grasso reps Robert Valentin and Paddy McCorry will face off on the other side of the bracket"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Kaan Olfi",
+            "Roedie Roets",
+            "Mairon Santos",
+            "Zygimantas Ramaska"
+          ],
+          "text": "Featherweight semifinal pairings: Ofli vs Roets, Santos vs Ramaska.",
+          "quote": "In the featherweight tournament, each of the semifinal pairings is Team Grasso vs. Team Shevchenko, with Kaan Olfi facing Roedie Roets, and Mairon Santos taking on Zygimantas Ramaska."
+        }
+      ],
+      "notes": "Page says McCorry asked to fight Hulme ('She says that McCorry asked for the opportunity to fight Hulme') but does not say which coach made the pick, so fight_pick is null. Face-off caption ('March 26 , 2024') not attached."
+    },
+    {
+      "episode_number": 9,
+      "recap_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-07-31T12:08:38-0400",
+      "byline_date_text": "Jul. 31, 2024",
+      "bouts": [
+        {
+          "a": "Ryan Loder",
+          "b": "Omraan Chaaban",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "stage_quote": "The first middleweight semifinal matchup is official.",
+          "result": {
+            "winner": "Ryan Loder",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Ryan Loder defeats Omraan Chaaban by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Ryan Loder",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": 186,
+              "quote": "Loder is the first to the scale, coming in at the middleweight limit, 186 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Omran Chaaban",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Chaaban steps on the scale next, registering a little over with his boxers on before getting behind the shadow box and hitting 186 pounds.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Dana White",
+            "quote": "UFC CEO Dana White set up the semifinal pairings"
+          },
+          "caption_filming_dates": [
+            {
+              "date_text": "April 09, 2024",
+              "quote": "Omran Chaaban kicks Ryan Loder in their middleweight fight during the filming of The Ultimate Fighter at UFC APEX on April 09, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "April 09, 2024",
+              "quote": "Ryan Loder prepares for his middleweight fight against Omran Chaaban during the filming of The Ultimate Fighter at UFC APEX on April 09, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "April 09, 2024",
+              "quote": "Ryan Loder kicks Omran Chaaban in their middleweight fight during the filming of The Ultimate Fighter at UFC APEX on April 09, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "All semifinal fights are three rounds instead of two.",
+          "quote": "White explains that all semifinal fights will be three rounds instead of two"
+        }
+      ],
+      "notes": "Result line prints 'Omraan Chaaban'; the rest of the page prints 'Omran Chaaban' (weigh-in row uses the name as printed in its sentence, 'Chaaban'). This page says his quarterfinal finish was a 'D’arce choke'; episodes 4-5 say anaconda choke. Face-off caption (April 08, 2024) not attached."
+    },
+    {
+      "episode_number": 10,
+      "recap_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-08-07T12:12:47-0400",
+      "byline_date_text": "Aug. 7, 2024",
+      "bouts": [
+        {
+          "a": "Kaan Ofli",
+          "b": "Roedie Roets",
+          "weight_class": "Featherweight",
+          "stage": "semi_final",
+          "stage_quote": "Now, it’s South Africa versus Australia in the first featherweight semifinal matchup.",
+          "result": {
+            "winner": "Kaan Ofli",
+            "method": "Submission (guillotine choke)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Kaan Ofli def. Roedie Roets by submission (guillotine choke) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roedie Roets",
+              "weight_lbs": 145.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Roets is up first on the scale, with the South African coming in at 145.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Kaan Ofli",
+              "weight_lbs": 145.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Ofli follows, weighing in at 145.5 pounds, as well.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "text": "Scan after the Usmonov fight revealed a small cheekbone fracture; surgeon said it should not prevent him competing.",
+          "quote": "The scan reveals a small fracture in his cheekbone."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "text": "Second opinion: UFC chief physician Dr. Davidson cleared Ramaska (commission clearance still pending per episodes 11-12).",
+          "quote": "Dr. Davidson doesn’t see any issues and is happy to clear him to fight."
+        }
+      ],
+      "notes": "All photo captions on this page date OTHER bouts (Ofli-Fletcher, Roets-Torres March 20, 2024; Ramaska-Usmanov March 27, 2024) and are not attached. Page prints both 'Ofli' and 'Olfi'. Coaches Challenge (basketball, won by Shevchenko: $10,000 coach / $2,000 per fighter) omitted as not bracket-relevant."
+    },
+    {
+      "episode_number": 11,
+      "recap_url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-season-32-tuf",
+      "recap_published": "2024-08-14T12:33:00-0400",
+      "byline_date_text": "Aug. 14, 2024",
+      "bouts": [
+        {
+          "a": "Robert Valentin",
+          "b": "Paddy McCorry",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "stage_quote": "Valentin traces his path to his semifinal fight with McCorry",
+          "result": {
+            "winner": "Robert Valentin",
+            "method": "Verbal submission",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Robert Valentin defeats Paddy McCorry by verbal submission in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Paddy McCorry",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "First on the scale is McCorry, who comes in at 186 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Robert Valentin",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Valentin follows and hits the same number, making the fight official.",
+              "context_quote": null,
+              "weight_text": "hits the same number"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "April 09, 2024",
+              "quote": "Robert Valentin kicks Paddy McCorry in their middleweight fight during the filming of The Ultimate Fighter at UFC APEX on April 09, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Nathan Fletcher"
+          ],
+          "text": "Fletcher found to have a full fracture of the left fibula (from his quarterfinal); eight weeks to recover, removing him as a replacement option.",
+          "quote": "the x-rays show that he has a full fracture of his left fibula"
+        },
+        {
+          "type": "injury",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "text": "Ramaska's facial fracture left the commission uncertain he would be cleared for his semifinal.",
+          "quote": "Ramaska turns up at the APEX as White explains that he suffered a facial fracture, and the commission isn’t certain that he’ll be cleared to fight."
+        },
+        {
+          "type": "replacement",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "text": "Commission required one alternate from each team on standby for Ramaska's semifinal.",
+          "quote": "The UFC boss says that the commission wants one alternate from each team ready to go in case Ramaska isn’t cleared to compete."
+        },
+        {
+          "type": "replacement",
+          "fighters": [
+            "Edwin Cooper Jr.",
+            "Guillermo Torres",
+            "Nathan Fletcher",
+            "Bekhzod Usmonov"
+          ],
+          "text": "Cooper Jr. and Torres named alternates; Fletcher (broken leg) and Usmonov (medical suspension) unavailable.",
+          "quote": "Those two were basically the last two standing as possible replacements, since Fletcher has a broken leg and Usmonov is carrying a medical suspension following his quarterfinal clash with Ramaska."
+        }
+      ],
+      "notes": "Result line gives no submission detail; prose: 'quickly locked up a keylock with his legs'. Face-off caption (April 08, 2024) and the McCorry-vs-Hulme caption are not attached to this bout."
+    },
+    {
+      "episode_number": 12,
+      "recap_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-season-32",
+      "recap_published": "2024-08-21T12:43:00-0400",
+      "byline_date_text": "Aug. 21, 2024",
+      "bouts": [
+        {
+          "a": "Mairon Santos",
+          "b": "Guillermo Torres",
+          "weight_class": "Featherweight",
+          "stage": "semi_final",
+          "stage_quote": "throughout their impromptu semifinal pairing",
+          "result": {
+            "winner": "Mairon Santos",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Mairon Santos defeats Guillermo Torres by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Zygimantas Ramaska",
+              "weight_lbs": 145.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Ramaska is first on the scale, coming in at 145.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Mairon Santos",
+              "weight_lbs": 148,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "quote": "He’s 148 pounds and has one hour to lose two pounds in order to make weight.",
+              "context_quote": "Santos follows, getting into the covered box looking drawn out."
+            },
+            {
+              "fighter": "Mairon Santos",
+              "weight_lbs": 146.5,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "quote": "He heads to the UFC PI, hits the sauna, and is brought back to weigh-in for a second time. This time, he’s 146.5 pounds, leaving him a half pound over.",
+              "context_quote": "Santos follows, getting into the covered box looking drawn out. He’s 148 pounds and has one hour to lose two pounds in order to make weight."
+            },
+            {
+              "fighter": "Guillermo Torres",
+              "weight_lbs": 145,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Both Torres and Cooper Jr. weigh in just in case they’re required to sub in for Ramaska, with the former coming in at 145 pounds and the latter weighing 145.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Edwin Cooper Jr.",
+              "weight_lbs": 145.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Both Torres and Cooper Jr. weigh in just in case they’re required to sub in for Ramaska, with the former coming in at 145 pounds and the latter weighing 145.5 pounds.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "April 09, 2024",
+              "quote": "Mairon Santos prepares for his featherweight fight against Guillermo Torres during the filming of The Ultimate Fighter at UFC APEX on April 09, 2024 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "April 09, 2024",
+              "quote": "Mairon Santos punches Guillermo Torres in their featherweight fight during the filming of The Ultimate Fighter at UFC APEX on April 09, 2024 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "missed_weight",
+          "fighters": [
+            "Mairon Santos"
+          ],
+          "text": "Santos 148 lb, then 146.5 lb on re-weigh (half a pound over).",
+          "quote": "This time, he’s 146.5 pounds, leaving him a half pound over."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Mairon Santos",
+            "Zygimantas Ramaska"
+          ],
+          "text": "Shevchenko agreed the fight could go ahead despite Santos' miss.",
+          "quote": "Shevchenko says the fight can go forward, acknowledging the difficulty of the situation"
+        },
+        {
+          "type": "withdrawal",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "text": "On fight day NSAC declined to clear Ramaska (facial fracture), removing him from the semifinal.",
+          "quote": "Mullen informs him that he will not be cleared to compete."
+        },
+        {
+          "type": "replacement",
+          "fighters": [
+            "Guillermo Torres",
+            "Mairon Santos"
+          ],
+          "text": "Torres (quarterfinal loser to Roets) replaced Ramaska against Santos.",
+          "quote": "Grasso is brought back to speak with Mullen, who informs her that Ramaska has not been cleared to compete, and that Torres will be able to step in and compete against Santos."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Guillermo Torres",
+            "Edwin Cooper Jr."
+          ],
+          "text": "Torres chosen over Cooper Jr. because he had more recovery time since his last fight.",
+          "quote": "She goes back and tells Torres that he’ll be fighting, as he had more time to recover since his last fight than Cooper Jr."
+        }
+      ],
+      "notes": "Weigh-in rows include the originally scheduled opponent (Ramaska) and both alternates (Torres, Cooper Jr.) because they weighed in for this semifinal slot. Santos' numeric limit is not stated. Grasso coached neither side (all-Team Grasso bout)."
+    }
+  ],
+  "missing_episodes": []
+}

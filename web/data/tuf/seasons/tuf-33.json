@@ -199,9 +199,22 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 4,
               "classification": "unverified",
-              "classification_source": null
+              "classification_source": null,
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep4/jefferson-creighton-andreeas-binder",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-33-sonnen-cormier",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-06-18T14:39:14-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Jeff Creighton defeats Andreeas Binder by decision"
+                }
+              ]
             },
             {
               "a": "Rodrigo Sezinando",
@@ -210,10 +223,23 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 8,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf"
+              "a_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep8/rodrigo-sezinando-diego-bianchini",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-33",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-07-16T12:02:50-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Rodrigo Sezinando def. Diego Bianchini by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Daniil Donchenko",
@@ -222,10 +248,23 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 2,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6"
+              "a_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep2/daniil-donchenko-richard-martins",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-33",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-06-04T12:30:00-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Daniil Donchenko def. Richard Martins by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Alejandro Sanchez",
@@ -252,23 +291,50 @@
               "method": "Decision (split)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 10,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf"
+              "b_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep10/jefferson-creighton-rodrigo-sezinando",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-10-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-07-30T13:33:27-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Rodrigo Sezinando def. Jeff Creighton by split decision"
+                }
+              ]
             },
             {
               "a": "Daniil Donchenko",
               "b": "Matt Dixon",
               "winner": "Daniil Donchenko",
-              "method": "TKO",
+              "method": "TKO (strikes)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 12,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
-              "b_fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a"
+              "b_fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep12/daniil-donchenko-matt-dixon",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-08-13T12:21:00-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Daniil Donchenko def. Matt Dixon by TKO (strikes) in Round 1"
+                }
+              ]
             }
           ]
         },
@@ -306,13 +372,27 @@
               "a": "Eduardo Henrique",
               "b": "Joseph Morales",
               "winner": "Joseph Morales",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 1,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7"
+              "b_fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep1/eduardo-henrique-joseph-morales",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-33-cormier-sonnen",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-05-28T12:11:57-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Joseph Morales defeats Eduardo Henrique by submission (rear-naked choke) in Round 1"
+                }
+              ]
             },
             {
               "a": "Imanol Rodriguez",
@@ -321,10 +401,23 @@
               "method": "TKO",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 3,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "be1af222-a9ab-41bc-84d1-23f5f5f1100b"
+              "a_fighter_id": "be1af222-a9ab-41bc-84d1-23f5f5f1100b",
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep3/imanol-rodriguez-arshiyan-memon",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-33",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-06-11T11:19:37-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Imanol Rodriguez Defeats Arshiyan Memon by TKO in Round 1"
+                }
+              ]
             },
             {
               "a": "Alibi Idiris",
@@ -333,22 +426,49 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 5,
               "classification": "unverified",
               "classification_source": null,
-              "a_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
+              "a_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep5/alibi-idiris-furkatbek-yokubov",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-33",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-06-25T11:58:18-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Alibi Idiris defeats Furkatbek Yokubov by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Tumelo Manyamala",
               "b": "Roybert Echeverria",
               "winner": "Roybert Echeverria",
-              "method": "Submission",
+              "method": "Submission (rear-naked choke)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 7,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "ccf42f31-e899-442c-8d45-839607d78122"
+              "b_fighter_id": "ccf42f31-e899-442c-8d45-839607d78122",
+              "sources": [
+                {
+                  "repair": "recap/tuf-33/ep7/tumelo-manyamala-roybert-echeverria",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-33",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2025-07-09T13:35:00-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Roybert Echeverria def. Tumelo Manyamala by submission (rear-naked choke) in Round 2"
+                }
+              ]
             }
           ]
         },

@@ -1,0 +1,777 @@
+{
+  "_about": "Facts from UFC.com episode recaps for tuf-29. Every value carries the exact sentence it came from; quotes were checked as verbatim substrings of the recap text on 2026-09-12. Names are as the recap printed them.",
+  "source_family": "ufc_com_recap",
+  "retrieved": "2026-09-12",
+  "slug": "tuf-29",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "recap_url": "https://www.ufc.com/news/return-the-ultimate-fighter-season-29-tuf-episode-1-recap-volkanovksi-ortega-read",
+      "recap_published": "2021-06-01T15:46:09-0400",
+      "byline_date_text": "Jun. 2, 2021",
+      "bouts": [
+        {
+          "a": "Andre Petroski",
+          "b": "Aaron Phillips",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "stage_quote": "Middleweight Quarterfinals",
+          "result": {
+            "winner": "Andre Petroski",
+            "method": "Submission (guillotine choke)",
+            "round": 1,
+            "time": "4:42",
+            "quote": "Official Result: Andre Petroski def. Aaron Phillips by submission (guillotine choke) at 4:42 of Round 1."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Andre Petroski",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Weigh-In Day arrives and the fighters hit the scale, Petroski clocking in at a chiseled 186 pounds, while Phillips hits the same mark, with members of each team expressing their excitement for the fight and supporting their guy.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Aaron Phillips",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Weigh-In Day arrives and the fighters hit the scale, Petroski clocking in at a chiseled 186 pounds, while Phillips hits the same mark, with members of each team expressing their excitement for the fight and supporting their guy.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Ortega",
+            "quote": "“They picked the first fighter, so we pick the first fight,” says Ortega, who announces that Andre Petroski will take on Aaron Phillips in a middleweight matchup."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "coin_toss",
+          "fighters": [
+            "Mitch Raposo"
+          ],
+          "text": "Team Volkanovski won the coin toss and chose first fighter (Mitch Raposo); Team Ortega therefore picked the first fight.",
+          "quote": "Team Volkanovski wins the toss and decide to choose the first fighter, selecting bantamweight Mitch Raposo."
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Aaron Phillips",
+            "Dustin Lampros",
+            "Gilbert Urbina",
+            "Mitch Raposo",
+            "Brady Hiestand",
+            "Ricky Turcios",
+            "Ryder Newman",
+            "Bryan Battle"
+          ],
+          "text": "Team Volkanovski roster.",
+          "quote": "Team Volk: Aaron Phillips, Dustin Lampros, Gilbert Urbina, Mitch Raposo, Brady Hiestand, Ricky Turcios, Ryder Newman, and Bryan Battle"
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Andre Petroski",
+            "Dan Argueta",
+            "Miles Hunsinger",
+            "Josh Rettinghouse",
+            "Tresean Gore",
+            "Vincent Murdock",
+            "Liudvik Sholinian",
+            "Kemran Lachinov"
+          ],
+          "text": "Team Ortega roster.",
+          "quote": "Team Ortega: Andre Petroski, Dan Argueta, Miles Hunsinger, Josh Rettinghouse, Tresean Gore, Vincent Murdock, Liudvik Sholinian, Kemran Lachinov"
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Kemran Lachinov"
+          ],
+          "text": "Kemran Lachinov was the last fighter picked (by Team Ortega).",
+          "quote": "From there, the picks come hot and heavy until only middleweight Kemran Lachinov remains."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Liudvik Sholinian",
+            "Mitch Raposo"
+          ],
+          "text": "Team Ortega also made the first bantamweight fight: Liudvik Sholinian vs. Mitch Raposo.",
+          "quote": "Dana explains that since Team Volkanovski had first pick in both weight classes, Team Ortega gets to make the first bantamweight fight as well and the matchup is made: Liudvik Sholinian vs. Mitch Raposo."
+        }
+      ],
+      "notes": "Recap also spells the winner 'Andre Petrovski' in the bout heading; result line uses 'Andre Petroski'."
+    },
+    {
+      "episode_number": 2,
+      "recap_url": "https://www.ufc.com/news/return-the-ultimate-fighter-season-29-tuf-episode-2-recap-volkanovksi-ortega-read",
+      "recap_published": "2021-06-08T19:58:21-0400",
+      "byline_date_text": "Jun. 8, 2021",
+      "bouts": [
+        {
+          "a": "Liudvik Sholinian",
+          "b": "Mitch Raposo",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "stage_quote": "Liudvik dedicates the win to the Armenian people and is happy that he was able to come away with a win, moving into the semifinals in the bantamweight competition.",
+          "result": {
+            "winner": "Liudvik Sholinian",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Liudvik Sholinian def. Mitch Raposo by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Liudvik Sholinian",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "It’s weigh-in day for Liudvik and Mitch, and both make weight without issue, the former coming in at 136, ripped, and the latter landing at 135.5 for the first bantamweight pairing of the season.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Mitch Raposo",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "It’s weigh-in day for Liudvik and Mitch, and both make weight without issue, the former coming in at 136, ripped, and the latter landing at 135.5 for the first bantamweight pairing of the season.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Ortega",
+            "quote": "Following the victory, the next bout is set, with Team Ortega tabbing Liudvik Sholinian to take on Team Volkanovski’s first overall pick, Mitch Raposo."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Ryder Newman",
+            "Tresean Gore"
+          ],
+          "text": "Team Volkanovski picks the next fight: Ryder Newman vs. Tresean Gore.",
+          "quote": "Team Volkanovski makes the next fight selection, tabbing Ryder Newman to square off with Tresean Gore."
+        }
+      ],
+      "notes": "Stage set from the stated advancement ('moving into the semifinals'); captions call it 'the first round of fights'. Three rounds fought (Round 3 heading)."
+    },
+    {
+      "episode_number": 3,
+      "recap_url": "https://www.ufc.com/news/return-the-ultimate-fighter-season-29-tuf-episode-3-recap-volkanovksi-ortega-read",
+      "recap_published": "2021-06-15T19:40:57-0400",
+      "byline_date_text": "Jun. 15, 2021",
+      "bouts": [
+        {
+          "a": "Tresean Gore",
+          "b": "Ryder Newman",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Tresean Gore",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Tresean Gore defeats Ryder Newman by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Tresean Gore",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "It’s weigh-in Day at the UFC APEX with Tresean up first, hitting the scale at 186 pounds, with Ryder coming in half-a-pound lighter.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Ryder Newman",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "It’s weigh-in Day at the UFC APEX with Tresean up first, hitting the scale at 186 pounds, with Ryder coming in half-a-pound lighter.",
+              "context_quote": null,
+              "weight_text": "half-a-pound lighter"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Volkanovski",
+            "quote": "At the UFC APEX four days before the fight, Volkanovski explains that Ryder wanted to fight Tresean and the coaching staff agreed, believing it was a good fight."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Dustin Lampros",
+            "Vincent Murdock"
+          ],
+          "text": "Team Volkanovski picks the next bantamweight fight: Dustin Lampros vs. Vincent Murdock.",
+          "quote": "Team Volkanovski selects the next bantamweight matchup, tabbing Dustin Lampros to take on Team Ortega’s Vincent Murdock, which draws an “Of course” from Lampros as the two square off."
+        }
+      ],
+      "notes": "No tournament stage stated. Only Round 1 and Round 2 headings before the decision (two-round fight). Ryder Newman's weight is given only relative to Gore's 186."
+    },
+    {
+      "episode_number": 4,
+      "recap_url": "https://www.ufc.com/news/return-ultimate-fighter-episode-4-recap",
+      "recap_published": "2021-06-22T18:04:43-0400",
+      "byline_date_text": "Jun. 22, 2021",
+      "bouts": [
+        {
+          "a": "Vincent Murdock",
+          "b": "Dustin Lampros",
+          "weight_class": "Bantamweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Vincent Murdock",
+            "method": "KO (strikes)",
+            "round": 1,
+            "time": "2:40",
+            "quote": "Official Result: Vincent Murdock def. Dustin Lampros by KO (strikes) at 2:40 of Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Vincent Murdock",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Vincent hits the scale, coming in at 136 even.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Dustin Lampros",
+              "weight_lbs": null,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "quote": "“It’s less than a pound. You’ve got one hour to make weight,” explains the NSAC official as Dustin looks surprised by the miss.",
+              "context_quote": null,
+              "made_weight_on_retry": true,
+              "retry_quote": "“There it is,” the NSAC official says, drawing a roar from Team Volkanovski as the bantamweights face off."
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "missed_weight",
+          "fighters": [
+            "Dustin Lampros"
+          ],
+          "text": "Lampros was initially over by less than a pound, was given an hour, and made weight on the re-weigh.",
+          "quote": "“It’s less than a pound. You’ve got one hour to make weight,” explains the NSAC official as Dustin looks surprised by the miss."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Kemran Lachinov",
+            "Bryan Battle"
+          ],
+          "text": "Ortega picks the next fight: Kemran Lachinov vs. Bryan Battle.",
+          "quote": "After acknowledging how much he loves having Volkanovski pissed off, Ortega announces the next bout, selecting Kemran Lachinov will face Team Volkanovski’s Bryan Battle in a battle of the last two picks."
+        }
+      ],
+      "notes": "No stage stated. Lampros's scale number is never given."
+    },
+    {
+      "episode_number": 5,
+      "recap_url": "https://www.ufc.com/news/return-ultimate-fighter-episode-5-recap",
+      "recap_published": "2021-06-29T13:42:39-0400",
+      "byline_date_text": "Jun. 29, 2021",
+      "bouts": [
+        {
+          "a": "Bryan Battle",
+          "b": "Kemran Lachinov",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Bryan Battle",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Bryan Battle def. Kemran Lachinov by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Bryan Battle",
+              "weight_lbs": 185,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Bryan is up first, coming in at 185 on the nose.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Kemran Lachinov",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Kemran follows and hits 186 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Dan Argueta",
+            "Ricky Turcios"
+          ],
+          "text": "Team Ortega picks the next fight: Dan Argueta vs. Ricky Turcios.",
+          "quote": "On to the next fight announcement: Team Ortega selects Dan Argueta to face Team Volkanovski’s Ricky Turcios, with Dan acknowledging in a confessional interview that this was the fight he wanted, as Ricky is one of the more experienced guys in the house."
+        }
+      ],
+      "notes": "Recap calls it 'the fifth preliminary matchup of the season' (not a named stage). Two rounds fought."
+    },
+    {
+      "episode_number": 6,
+      "recap_url": "https://www.ufc.com/news/return-ultimate-fighter-episode-6-recap-tuf-read",
+      "recap_published": "2021-07-06T18:10:25-0400",
+      "byline_date_text": "Jul. 6, 2021",
+      "bouts": [
+        {
+          "a": "Ricky Turcios",
+          "b": "Dan Argueta",
+          "weight_class": "Bantamweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Ricky Turcios",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Ricky Turcios def. Dan Argueta by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Ricky Turcios",
+              "weight_lbs": 134.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Ricky is up first and calmly comes in at 134.5 pounds, while Dan comes in at a chiseled 135 on the dot.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Dan Argueta",
+              "weight_lbs": 135,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Ricky is up first and calmly comes in at 134.5 pounds, while Dan comes in at a chiseled 135 on the dot.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Bryan Battle",
+            "Kemran Lachinov"
+          ],
+          "text": "Photo caption on this page dates the Episode 5 bout Bryan Battle vs. Kemran Lachinov to filming on May 06, 2021.",
+          "quote": "Bryan Battle celebrates his victory over Kemran Lachinov in their middleweight bout during the filming of The Return of The Ultimate Fighter at UFC APEX at UFC APEX on May 06, 2021 in Las Vegas, Nevada."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Brady Hiestand",
+            "Josh Rettinghouse"
+          ],
+          "text": "Team Volkanovski picks the next fight: Brady Hiestand vs. Josh Rettinghouse.",
+          "quote": "Team Volkanovski calls upon Brady Hiestand to take on Team Ortega’s Josh Rettinghouse, with both men acknowledging it’s an awkward matchup because they’re friends and training partners outside of the competition."
+        }
+      ],
+      "notes": "No stage stated on this page (Episode 7 page says Turcios 'earned a place in the bantamweight semifinals'). Three rounds fought. Recap also prints 'Daniel Argueta' in captions."
+    },
+    {
+      "episode_number": 7,
+      "recap_url": "https://www.ufc.com/news/return-ultimate-fighter-episode-7-recap-tuf-read",
+      "recap_published": "2021-07-13T14:52:09-0400",
+      "byline_date_text": "Jul. 13, 2021",
+      "bouts": [
+        {
+          "a": "Brady Hiestand",
+          "b": "Josh Rettinghouse",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "stage_quote": "Now, friends and roommates Brady Hiestand and Josh Rettinghouse battle for the final spot in the bantamweight semifinals.",
+          "result": {
+            "winner": "Brady Hiestand",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Brady Hiestand def. Josh Rettinghouse by split decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brady Hiestand",
+              "weight_lbs": 135,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "135 even for Brady, and the same for Josh.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Josh Rettinghouse",
+              "weight_lbs": 135,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "135 even for Brady, and the same for Josh.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Gilbert Urbina",
+            "Miles Hunsinger"
+          ],
+          "text": "Final middleweight first-round fight announced: Gilbert Urbina vs. Miles Hunsinger (chooser not stated).",
+          "quote": "Back at the Performance Institute, the final fight in the middleweight competition is announced with Team Volkanovski’s Gilbert Urbina taking on Team Ortega’s Miles Hunsinger."
+        }
+      ],
+      "notes": "Stage set from 'battle for the final spot in the bantamweight semifinals'. Three rounds fought. Weigh-ins at the UFC Performance Institute."
+    },
+    {
+      "episode_number": 8,
+      "recap_url": "https://www.ufc.com/news/return-ultimate-fighter-episode-8-recap-volkanovski-ortega-read",
+      "recap_published": "2021-07-21T13:06:43-0400",
+      "byline_date_text": "Jul. 21, 2021",
+      "bouts": [
+        {
+          "a": "Gilbert Urbina",
+          "b": "Michael Gilmore",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "stage_quote": "Gilbert Urbina enters the Octagon ahead of his The Return Of The Ultimate Fighter quarterfinal bout with Michael Gilmore.",
+          "result": {
+            "winner": "Gilbert Urbina",
+            "method": "Submission (rear-naked choke)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Gilbert Urbina def. Michael Gilmore by submission (rear-naked choke)",
+            "round_quote": "Round 1: Gilbert catches a lazy low kick right out of the gate"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Gilbert Urbina",
+              "weight_lbs": 185.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Gilbert is up first and makes 185.5. Michael follows him to the scale and comes in at the same number.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Michael Gilmore",
+              "weight_lbs": 185.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Gilbert is up first and makes 185.5. Michael follows him to the scale and comes in at the same number.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Miles Hunsinger"
+          ],
+          "text": "Miles Hunsinger diagnosed with a Grade 2 MCL strain during fight week.",
+          "quote": "“The MRI shows what is called a Grade 2 strain of the medial collateral ligament,” explains Dr. Davidson, showing Miles where on his knee the injury has occurred."
+        },
+        {
+          "type": "withdrawal",
+          "fighters": [
+            "Miles Hunsinger"
+          ],
+          "text": "Hunsinger chose not to fight after being given the decision by the doctor.",
+          "quote": "Two days before the fight, UFC President Dana White recaps that Ortega and the coaches called him to inform him about Miles’ MCL tear, noting that the doctor gave Miles the decision to fight or not and that he chose not to compete."
+        },
+        {
+          "type": "replacement",
+          "fighters": [
+            "Michael Gilmore",
+            "Miles Hunsinger"
+          ],
+          "text": "Alternate Michael Gilmore replaces Hunsinger on Team Ortega against Gilbert Urbina.",
+          "quote": "Dana then introduces Michael Gilmore to the two sides and he’s welcomed onto Team Ortega."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Bryan Battle",
+            "Andrei Petroski",
+            "Gilbert Urbina",
+            "Tresean Gore"
+          ],
+          "text": "Ortega suggests middleweight semifinals Battle vs. Petroski and Urbina vs. Gore; Volkanovski agrees.",
+          "quote": "Ortega suggests Bryan Battle versus Andrei Petroski and Gilbert Urbina versus Tresean Gore for the middleweight pairings"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Ricky Turcios",
+            "Liudvik Sholinian",
+            "Brady Hiestand",
+            "Vince Murdock"
+          ],
+          "text": "Volkanovski suggests bantamweight semifinals Turcios vs. Sholinian and Hiestand vs. Murdock; Ortega agrees.",
+          "quote": "Volkanovski suggests Ricky versus Liudvik Sholinian and Brady Hiestand versus Vince, and Ortega says he’s happy with it."
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "Dana White announces all four semifinals as the coaches suggested.",
+          "quote": "When it’s time to make the announcements, he goes with pairings the coaches suggested in both weight classes, expressing excitement about all four matchups."
+        }
+      ],
+      "notes": "Round 1 from the only round heading before the tap; result line gives no round/time. Recap spells 'Michael Gilmore' (Episode 10 page spells 'Michael Gillmore')."
+    },
+    {
+      "episode_number": 9,
+      "recap_url": "https://www.ufc.com/news/return-ultimate-fighter-episode-9-recap-volkanovski-ortega-read",
+      "recap_published": "2021-07-28T14:50:53-0400",
+      "byline_date_text": "Jul. 28, 2021",
+      "bouts": [
+        {
+          "a": "Ricky Turcios",
+          "b": "Liudvik Sholinian",
+          "weight_class": "Bantamweight",
+          "stage": "semi_final",
+          "stage_quote": "Mike Beltran is the third man in the Octagon for the first semifinal fight of the season.",
+          "result": {
+            "winner": "Ricky Turcios",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Ricky Turcios def. Liudvik Sholinian by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Ricky Turcios",
+              "weight_lbs": 135,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Ricky is up first and comes in on championship weight, 135 even.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Liudvik Sholinian",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Liudvik is up next and clocks in at 135.5, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [],
+      "notes": null
+    },
+    {
+      "episode_number": 10,
+      "recap_url": "https://www.ufc.com/news/return-of-the-ultimate-fighter-episode-10-recap-petroski-battle",
+      "recap_published": "2021-08-03T13:36:32-0400",
+      "byline_date_text": "Aug. 4, 2021",
+      "bouts": [
+        {
+          "a": "Bryan Battle",
+          "b": "Andre Petroski",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "stage_quote": "Now, middleweights Bryan Battle and Andre Petroski square off in the first middleweight semifinal fight of the season, with a spot in the finals on the line.",
+          "result": {
+            "winner": "Bryan Battle",
+            "method": "Submission (guillotine choke)",
+            "round": 2,
+            "time": "2:05",
+            "quote": "Official Result: Bryan Battle def. Andre Petroski by submission (guillotine choke) at 2:05 of Round 2"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Bryan Battle",
+              "weight_lbs": 184.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Bryan is up first and comes in at 184.5 pounds, while Andre follows him up there and hits 186 pounds, making the fight official.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Andre Petroski",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Bryan is up first and comes in at 184.5 pounds, while Andre follows him up there and hits 186 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [],
+      "notes": "Play-by-play describes the finish as a 'ninja choke' (modified no-arm guillotine); official line says guillotine choke. Byline date (Aug. 4) is a day after PUBLISHED (Aug. 3)."
+    },
+    {
+      "episode_number": 11,
+      "recap_url": "https://www.ufc.com/news/return-ultimate-fighter-episode-11-recap",
+      "recap_published": "2021-08-10T19:07:08-0400",
+      "byline_date_text": "Aug. 10, 2021",
+      "bouts": [
+        {
+          "a": "Brady Hiestand",
+          "b": "Vince Murdock",
+          "weight_class": "Bantamweight",
+          "stage": "semi_final",
+          "stage_quote": "Two days before the bantamweight semifinal fight, Brady goes through his prep at the PI while Volkanovski speaks glowingly about his young charge.",
+          "result": {
+            "winner": "Brady Hiestand",
+            "method": "TKO (punches)",
+            "round": 1,
+            "time": "3:20",
+            "quote": "Official Result: Brady Hiestand def. Vince Murdock by TKO (punches) at 3:20 of Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brady Hiestand",
+              "weight_lbs": 134.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "It’s time for the weigh-ins, and Brady is up first, weighing in at 134.5.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Vince Murdock",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Vince follows him to the scale and comes in at 136 even, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Vince Murdock"
+          ],
+          "text": "Murdock entered the semifinal with a small MCL tear.",
+          "quote": "In a confessional interview, Vince acknowledges that he has a small tear in his MCL, but that he’s going to do his best to adjust and work around it."
+        },
+        {
+          "type": "injury",
+          "fighters": [
+            "Vince Murdock"
+          ],
+          "text": "Murdock says he blew out his knee early in the fight.",
+          "quote": "As the physicians come in to check on Vince, he tells them he blew out his knee right out of the gate."
+        }
+      ],
+      "notes": "Coaches Challenge (cornhole, Ortega won, gave the $10,000 to Team Volkanovski) omitted: no bracket effect."
+    },
+    {
+      "episode_number": 12,
+      "recap_url": "https://www.ufc.com/news/return-ultimate-fighter-episode-12-recap",
+      "recap_published": "2021-08-17T20:41:51-0400",
+      "byline_date_text": "Aug. 18, 2021",
+      "bouts": [
+        {
+          "a": "Tresean Gore",
+          "b": "Gilbert Urbina",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "stage_quote": "Gilbert Urbina punches Tresean Gore in their semi-final bout on The Return Of The Ultimate Fighter (photo by Chris Unger/Zuffa LLC)",
+          "result": {
+            "winner": "Tresean Gore",
+            "method": "KO (left hook)",
+            "round": 2,
+            "time": "1:14",
+            "quote": "Official Result: Tresean Gore def. Gilbert Urbina by KO (left hook) at 1:14 of Round 2",
+            "contradiction": "Official result says KO (left hook); a photo caption on the same page calls it a TKO win.",
+            "contradiction_quotes": [
+              "Official Result: Tresean Gore def. Gilbert Urbina by KO (left hook) at 1:14 of Round 2",
+              "Tresean Gore celebrates his TKO win over Gilbert Urbina during their semi-final fight on The Return Of The Ultimate Fighter"
+            ]
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Gilbert Urbina",
+              "weight_lbs": 185.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Gilbert is first on the scale, coming in at 185.5. Tresean steps up and hits the same number, making the fight official.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Tresean Gore",
+              "weight_lbs": 185.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Gilbert is first on the scale, coming in at 185.5. Tresean steps up and hits the same number, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Bryan Battle",
+            "Tresean Gore",
+            "Ricky Turcios",
+            "Brady Hiestand"
+          ],
+          "text": "Finales set: Bryan Battle vs. Tresean Gore (middleweight), Ricky Turcios vs. Brady Hiestand (bantamweight).",
+          "quote": "Back in the APEX, Dana White squares off the finalists for the first time, with Team Volkanovski’s Bryan Battle taking on Team Ortega’s Tresean Gore in the middleweight finale, while Team Volkanovski standouts Ricky Turcios and Brady Hiestand are set to battle in the bantamweight finale."
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "Both finals booked for the UFC Fight Night main card on Saturday, August 28.",
+          "quote": "The UFC President is pumped for both matchups, which take place on the main card of UFC Fight Night on Saturday, August 28 on ESPN."
+        }
+      ],
+      "notes": "Byline date (Aug. 18) is a day after PUBLISHED (Aug. 17)."
+    }
+  ],
+  "missing_episodes": []
+}

@@ -1,0 +1,140 @@
+{
+  "slug": "tuf-brazil-1",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": null,
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/episode-one-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/episode-two-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/episode-three-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/tuf-brasil-episode-four-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/tuf-brasil-episode-five-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/episode-six-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/episode-seven-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/episode-eight-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/episode-nine-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/tuf-brasil-episode-ten-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/recap-do-episodio-11-do-tuf-brasil",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/recap-do-episodio-12-do-tuf-brasil",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 13,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/recap-do-episodio-13-do-tuf-brasil",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

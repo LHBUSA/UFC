@@ -1,0 +1,829 @@
+{
+  "_about": "Facts from UFC.com episode recaps for tuf-30. Every value carries the exact sentence it came from; quotes were checked as verbatim substrings of the recap text on 2026-09-12. Names are as the recap printed them.",
+  "source_family": "ufc_com_recap",
+  "retrieved": "2026-09-12",
+  "slug": "tuf-30",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "recap_url": "https://www.ufc.com/news/episode-1-recap-the-ultimate-fighter-team-pena-vs-team-nunes-heavyweight-flyweight-tuf-30",
+      "recap_published": "2022-05-03T13:12:23-0400",
+      "byline_date_text": "May. 3, 2022",
+      "bouts": [
+        {
+          "a": "Zac Pauga",
+          "b": "Nyle Bartling",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Zac Pauga",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Zac Pauga defeats Nyle Bartling by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Nyle Bartling",
+              "weight_lbs": 245,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Bartling gets on the scale first, fully clothed, coming in at 245 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Zac Pauga",
+              "weight_lbs": 241.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Pauga follows suit, weighing in at 241.5, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Peña",
+            "quote": "Since Nunes won the first selection, Pena gets to make the first fight, and she selects Zac Pauga to face Nyle Bartling, pitting her second heavyweight selection against Nunes’ final pick in the big boy division."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Claire Guthrie"
+          ],
+          "text": "Team Nunes had the first pick and took Claire Guthrie.",
+          "quote": "Team Nunes gets the first pick, and selects Claire Guthrie, who acknowledges in a confessional interview that being the first pick certainly puts a target on her back."
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Mohammed Usman",
+            "Zac Pauga",
+            "Jordan Heiderman",
+            "Bobby Maximus"
+          ],
+          "text": "Team Peña heavyweights.",
+          "quote": "Heavyweights: Mohammed Usman, Zac Pauga, Jordan Heiderman, Bobby Maximus"
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Helen Peralta",
+            "Juliana Miller",
+            "Hannah Guy",
+            "Chantel Coates"
+          ],
+          "text": "Team Peña flyweights.",
+          "quote": "Flyweights: Helen Peralta, Juliana Miller, Hannah Guy, Chantel Coates"
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Eduardo Perez",
+            "Chandler Cole",
+            "Mitchell Sipe",
+            "Nyle Bartling"
+          ],
+          "text": "Team Nunes heavyweights.",
+          "quote": "Heavyweights : Eduardo Perez, Chandler Cole, Mitchell Sipe, Nyle Bartling"
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Claire Guthrie",
+            "Brogan Walker",
+            "Kaytlin Neil",
+            "Kathryn Paprocki"
+          ],
+          "text": "Team Nunes flyweights.",
+          "quote": "Flyweights : Claire Guthrie, Brogan Walker, Kaytlin Neil, Kathryn Paprocki"
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Nyle Bartling",
+            "Bobby Maximus"
+          ],
+          "text": "Bartling was Team Nunes' last heavyweight pick; Bobby Maximus the final fighter selected.",
+          "quote": "Nyle Bartling is the last heavyweight selection by Team Nunes, leaving Bobby Maximus as the final fighter selected for Season 30."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Helen Peralta",
+            "Kaytlin Neil"
+          ],
+          "text": "Peña picks the first flyweight fight: Helen Peralta vs. Kaytlin Neil.",
+          "quote": "Now it’s time to pick the first flyweight fight, and Pena announces that it will be Team Pena’s Helen Peralta against Team Nunes’ Kaytlin Neil."
+        }
+      ],
+      "notes": "No stage stated. Two rounds fought. Roster heading lines do not name the team in the same line; team is from the preceding 'Team Peña' / 'Team Nunes' heading lines. Recap spells both 'Chantal Coates' and 'Chantel Coates'."
+    },
+    {
+      "episode_number": 2,
+      "recap_url": "https://www.ufc.com/news/the-ultimate-fighter-season-30-team-pena-vs-team-nunes-episode-2-recap-espn",
+      "recap_published": "2022-05-10T16:16:22-0400",
+      "byline_date_text": "May. 10, 2022",
+      "bouts": [
+        {
+          "a": "Kaytlin Neil",
+          "b": "Helen Peralta",
+          "weight_class": "Flyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Kaytlin Neil",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Kaytlin Neil def. Helen Peralta by split decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kaytlin Neil",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Neil is up first and makes 126 pounds, while Peralta comes in at 126 in her Team Pena jersey.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Helen Peralta",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Neil is up first and makes 126 pounds, while Peralta comes in at 126 in her Team Pena jersey.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Peña",
+            "quote": "For the initial fight in the flyweight competition, Pena selected Helen Peralta to face off against Kaytlin Neil."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Mohammed Usman",
+            "Mitchell Sipe"
+          ],
+          "text": "Team Nunes picks the next fight: Mohammed Usman vs. Mitchell Sipe.",
+          "quote": "Team Nunes now has control, and selects Mohammed Usman to face Mitchell Sipe, setting up a fight that was supposed to happen on the regional circuit a few years ago."
+        }
+      ],
+      "notes": "No stage stated on this page. Three rounds fought."
+    },
+    {
+      "episode_number": 3,
+      "recap_url": "https://www.ufc.com/news/episode-3-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-05-17T12:49:59-0400",
+      "byline_date_text": "May. 17, 2022",
+      "bouts": [
+        {
+          "a": "Mohammed Usman",
+          "b": "Mitchell Sipe",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Mohammed Usman prepares to fight Mitchell Sipe in The Ultimate Fighter season 30 quarterfinals.",
+          "result": {
+            "winner": "Mohammed Usman",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Mohammed Usman def. Mitchell Sipe by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Mitchell Sipe",
+              "weight_lbs": 265,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Sipe comes in at 265 even, while Usman tips the scale at 238.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Mohammed Usman",
+              "weight_lbs": 238,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Sipe comes in at 265 even, while Usman tips the scale at 238.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Nunes",
+            "quote": "Amanda Nunes explains that Sipe wanted this fight, so it was her obvious choice for the next heavyweight matchup."
+          },
+          "caption_filming_dates": [
+            {
+              "date_text": "February 17, 2022",
+              "quote": "Mitchell Sipe taunts Mohammed Usman in their heavyweight fight during the filming of The Ultimate Fighter at UFC APEX on February 17, 2022 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "February 17, 2022",
+              "quote": "Mohammed Usman punches Mitchell Sipe in their heavyweight fight during the filming of The Ultimate Fighter at UFC APEX on February 17, 2022 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Brogan Walker",
+            "Chantel Coates"
+          ],
+          "text": "Team Nunes picks the next flyweight fight: Brogan Walker vs. Chantel Coates.",
+          "quote": "Team Nunes has the pick and selects Brogan Walker to face Team Pena’s Chantel Coates."
+        }
+      ],
+      "notes": "Page also says Zac Pauga won 'by decision after two rounds' (spelled 'Zac Paugu')."
+    },
+    {
+      "episode_number": 4,
+      "recap_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-05-24T15:35:22-0400",
+      "byline_date_text": "May. 24, 2022",
+      "bouts": [
+        {
+          "a": "Laura Gallardo",
+          "b": "Kathryn Paprocki",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "stage_quote": "The Ultimate Fighter Season 30 contestant Laura Gallardo prepares for her quarterfinal fight on TUF.",
+          "result": {
+            "winner": "Laura Gallardo",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Laura Gallardo def. Kathryn Paprocki by majority decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kathryn Paprocki",
+              "weight_lbs": 124,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Paprocki is up first, coming in at 124 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Laura Gallardo",
+              "weight_lbs": 123.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Gallardo gets on the scale next and comes in at 123.5 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Nunes",
+            "quote": "Since Team Nunes originally selected the matchup, how to proceed is their decision."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Brogan Walker"
+          ],
+          "text": "Brogan Walker hurt her knee in training; diagnosed Grade 1 MCL tear.",
+          "quote": "It’s a Grade 1 tear, so there is an opportunity for things to heal, but it’s all a matter of time."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Chantel Coates"
+          ],
+          "text": "Coates weighed 154.5 lb at a house check, 28.5 lb over the flyweight limit, days before her scheduled fight with Walker.",
+          "quote": "Coates gets down to a sports bra and underwear, steps on the scale, and comes in at 154.5 pounds, meaning she’s 28.5 pounds above the flyweight limit with not a lot of time to get her weight down."
+        },
+        {
+          "type": "withdrawal",
+          "fighters": [
+            "Chantel Coates"
+          ],
+          "text": "Team Peña coaches pulled Coates from her fight (still at 148 or 149 lb four days out).",
+          "quote": "Everyone meets in the dressing room and the coaches outline to Coates that they have to pull her from the fight."
+        },
+        {
+          "type": "replacement",
+          "fighters": [
+            "Laura Gallardo",
+            "Chantel Coates"
+          ],
+          "text": "Team Peña alternate Laura Gallardo brought in for Coates.",
+          "quote": "Pena explains that she’s familiar with her alternate, Laura Gallardo, greeting her at the doors as she comes into the facility, where she presents her with a Team Pena jersey."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Kathryn Paprocki",
+            "Laura Gallardo",
+            "Brogan Walker"
+          ],
+          "text": "With Walker injured, Team Nunes (holding the pick) changed the matchup; Paprocki asked to fight Gallardo.",
+          "quote": "Kathryn Paprocki raises her hand and asks to fight the new arrival, Laura Gallardo."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Bobby Maximus",
+            "Eduardo Perez"
+          ],
+          "text": "Team Peña picks the next heavyweight fight: Bobby Maximus vs. Eduardo Perez.",
+          "quote": "Team Pena has the selection, and picks Bobby Maximus versus Eduardo Perez."
+        }
+      ],
+      "notes": "Two rounds fought. Caption spells 'Katlyn Paprocki'. The Episode 5 page describes this result as 'a two-round unanimous decision win', contradicting this page's majority decision."
+    },
+    {
+      "episode_number": 5,
+      "recap_url": "https://www.ufc.com/news/episode-5-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-05-31T12:32:01-0400",
+      "byline_date_text": "May. 31, 2022",
+      "bouts": [
+        {
+          "a": "Eduardo Perez",
+          "b": "Bobby Maximus",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Eduardo Perez",
+            "method": "TKO (strikes)",
+            "round": 1,
+            "time": "3:58",
+            "quote": "Official Result: Eduardo Perez def. Bobby Maximus by TKO (strikes) at 3:58 of Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Eduardo Perez",
+              "weight_lbs": 266,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Forrest Griffin calls Eduardo Perez to the scale, coming in at 266 pounds with his uniform on.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Bobby Maximus",
+              "weight_lbs": 237,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Maximus is up next, registering 237 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "stage_conflict": "Photo captions call this a semifinal, but the same page says the two earlier heavyweight winners advanced to the semifinals (and the Episode 11 page calls this a quarterfinal). Stage left null.",
+          "stage_conflict_quotes": [
+            "The Ultimate Fighter Season 30 contestant Bobby Maximus walks to Octagon to fight Eduardo Perez in the semifinals of TUF.",
+            "In the first two heavyweight fights, Team Pena representatives Zac Pauga and Mohammed Usman earned wins over their Team Nunes counterparts to advance to the semifinals"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Chandler Cole"
+          ],
+          "text": "Chandler Cole has a complete UCL tear in his elbow and elects to stay in the competition.",
+          "quote": "The MRI shows a complete tear of the ulnar collateral ligament (UCL)."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Juliana Miller",
+            "Claire Guthrie"
+          ],
+          "text": "Peña picks the next flyweight fight: Juliana Miller vs. Claire Guthrie.",
+          "quote": "Pena selects Juliana Miller to face Claire Guthrie."
+        }
+      ],
+      "notes": "Page misdescribes the Episode 4 result as 'a two-round unanimous decision' (Episode 4 official result: majority decision)."
+    },
+    {
+      "episode_number": 6,
+      "recap_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-06-07T15:55:00-0400",
+      "byline_date_text": "Jun. 7, 2022",
+      "bouts": [
+        {
+          "a": "Juliana Miller",
+          "b": "Claire Guthrie",
+          "weight_class": "Flyweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Juliana Miller",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Juliana Miller def. Claire Guthrie by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Juliana Miller",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Miller is up first and hits 125.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Claire Guthrie",
+              "weight_lbs": 127,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "quote": "Guthrie gets on the scale and is over, coming in at 127 pounds.",
+              "context_quote": null,
+              "made_weight_on_retry": true,
+              "retry_quote": "She grabs scissors, goes behind the screen and lops off a chunk of Guthrie’s long hair, which is enough for her to hit the official limit and secure the opportunity to square off with Miller."
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "missed_weight",
+          "fighters": [
+            "Claire Guthrie"
+          ],
+          "text": "Guthrie weighed 127, still half a pound over nude, and was given 60 minutes; made the limit after Nina Nunes cut her hair.",
+          "quote": "Guthrie gets on the scale and is over, coming in at 127 pounds."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Chandler Cole",
+            "Jordan Heiderman"
+          ],
+          "text": "Last heavyweight first-round pairing announced: Chandler Cole vs. Jordan Heiderman (chooser not stated).",
+          "quote": "In the last heavyweight pairing, Team Nunes’ Chandler Cole takes on Team Pena’s Jordan Heiderman, whom we’ve seen or heard nothing from thus far this season."
+        }
+      ],
+      "notes": "No stage stated. Three rounds fought. Limit not stated for this bout (page calls it her '125-pound fight'; the 126-pound limit mentioned belongs to a Season 26 flashback). Pre-weigh-in house checks (142.5, 128) omitted as unofficial."
+    },
+    {
+      "episode_number": 7,
+      "recap_url": "https://www.ufc.com/news/episode-7-recap-the-ultimate-fighter-team-pena-vs-team-nunes-jordan-heiderman-chandler-cole",
+      "recap_published": "2022-06-14T17:20:58-0400",
+      "byline_date_text": "Jun. 14, 2022",
+      "bouts": [
+        {
+          "a": "Jordan Heiderman",
+          "b": "Chandler Cole",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Now it’s time for the final quarterfinal matchup in the heavyweight competition, as Cole looks to push through the pain and advance to the next round when he takes on Jordan Heiderman of Team Pena.",
+          "result": {
+            "winner": "Jordan Heiderman",
+            "method": "TKO (strikes)",
+            "round": 3,
+            "time": "1:14",
+            "quote": "Official Result: Jordan Heiderman def. Chandler Cole by TKO (strikes) at 1:14 of Round 3"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Chandler Cole",
+              "weight_lbs": 264.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Cole climbs on the scale first, coming in at 264.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Jordan Heiderman",
+              "weight_lbs": 247,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Heiderman follows him onto the scale, weighing in at 247 pounds.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Hannah Guy",
+            "Brogan Walker"
+          ],
+          "text": "Final flyweight first-round fight announced: Hannah Guy vs. Brogan Walker (chooser not stated).",
+          "quote": "White says he didn’t agree with the judges before the squads reassemble to announce the final flyweight fight of the season: Hannah Guy from Team Pena versus Brogan Walker of Team Nunes."
+        }
+      ],
+      "notes": "Third round ordered by judges after two rounds (Episode 8 page calls it the sudden victory round)."
+    },
+    {
+      "episode_number": 8,
+      "recap_url": "https://www.ufc.com/news/episode-8-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-06-21T12:46:42-0400",
+      "byline_date_text": "Jun. 21, 2022",
+      "bouts": [
+        {
+          "a": "Brogan Walker",
+          "b": "Hannah Guy",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Now in the final quarterfinal fight, Walker steps into the cage against Hannah Guy.",
+          "result": {
+            "winner": "Brogan Walker",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Brogan Walker def. Hannah Guy by majority decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brogan Walker",
+              "weight_lbs": 125,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Walker is up first and comes in at 125 pounds on the dot.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Hannah Guy",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Guy follows and comes in at 125.5 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Mohammad Usman",
+            "Eduardo Perez",
+            "Zac Pauga",
+            "Jordan Heiderman"
+          ],
+          "text": "Peña suggests Usman vs. Perez and Pauga vs. Heiderman; Nunes counters with Perez vs. Heiderman and Usman vs. Pauga.",
+          "quote": "She suggests Mohammad Usman and Eduardo Perez face each other, while Zac Pauga and Jordan Heiderman pair off, while Nunes counters with Perez, her lone heavyweight, against Heiderman, and Usman versus Pauga."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Jordan Heiderman",
+            "Zac Pauga"
+          ],
+          "text": "Semifinal announced by Dana White.",
+          "quote": "Heiderman vs. Pauga"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Laura Gallardo",
+            "Brogan Walker"
+          ],
+          "text": "Semifinal announced by Dana White.",
+          "quote": "Gallardo vs. Walker"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Mohammad Usman",
+            "Eduardo Perez"
+          ],
+          "text": "Semifinal announced by Dana White.",
+          "quote": "Usman vs. Perez"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Juliana Miller",
+            "Kaytlin Neil"
+          ],
+          "text": "Semifinal announced by Dana White.",
+          "quote": "Miller vs. Neil"
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "White's pairings matched Peña's suggestions.",
+          "quote": "Pena got the four matchups she was hoping for, and the semifinals are set."
+        }
+      ],
+      "notes": "Two rounds, no third round ordered. Page calls Guy 'The Team Nunes fighter' in round 2 play-by-play (Guy is Team Peña)."
+    },
+    {
+      "episode_number": 9,
+      "recap_url": "https://www.ufc.com/news/episode-9-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-06-28T12:48:59-0400",
+      "byline_date_text": "Jun. 28, 2022",
+      "bouts": [
+        {
+          "a": "Zac Pauga",
+          "b": "Jordan Heiderman",
+          "weight_class": "Heavyweight",
+          "stage": "semi_final",
+          "stage_quote": "Zac Pauga prepares for his semifinal bout against Jordan Heiderman on episode 9 of The Ultimate Fighter: Team Peña vs Team Nunes.",
+          "result": {
+            "winner": "Zac Pauga",
+            "method": "TKO",
+            "round": 2,
+            "time": null,
+            "quote": "Official Result: Zac Pauga def. Jordan Heiderman by TKO",
+            "round_quote": "Round 2: Pauga jumps into a left hook and follows it up with a clean right hand 30 seconds into the frame that staggers and drops Heiderman and the fight is over!"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jordan Heiderman",
+              "weight_lbs": 247,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Heiderman is up first and comes in at 247 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Zac Pauga",
+              "weight_lbs": 244,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Pauga steps on the scale second and clocks in at 244.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [],
+      "notes": "Round 2 from the round heading; no official time given (only '30 seconds into the frame'). Page wrongly calls Nyle Bartling 'Team Pena’s'. Team coaches stayed out of the corners (home coaches cornered). Coaches Challenge (axe throwing, Nunes won) omitted."
+    },
+    {
+      "episode_number": 10,
+      "recap_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-07-05T14:44:03-0400",
+      "byline_date_text": "Jul. 5, 2022",
+      "bouts": [
+        {
+          "a": "Brogan Walker",
+          "b": "Laura Gallardo",
+          "weight_class": "Flyweight",
+          "stage": "semi_final",
+          "stage_quote": "Now Walker and Gallardo face off with one another in the first flyweight semifinals, to determine which one of them will advance to the live final.",
+          "result": {
+            "winner": "Brogan Walker",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Brogan Walker def. Laura Gallardo by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brogan Walker",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Walker is first on the scale, coming in at 126 pounds, while Gallardo follows and weighs in at 124 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Laura Gallardo",
+              "weight_lbs": 124,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Walker is first on the scale, coming in at 126 pounds, while Gallardo follows and weighs in at 124 pounds.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [],
+      "notes": "Page reuses stale photo captions from earlier bouts ('prepares for her quarterfinal fight', 'bout against Hannah Guy'). Three rounds fought."
+    },
+    {
+      "episode_number": 11,
+      "recap_url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-07-12T12:54:55-0400",
+      "byline_date_text": "Jul. 12, 2022",
+      "bouts": [
+        {
+          "a": "Mohammad Usman",
+          "b": "Eduardo Perez",
+          "weight_class": "Heavyweight",
+          "stage": "semi_final",
+          "stage_quote": "Mohammed Usman fights Eduardo Perez in the heavyweight semifinal on The Ultimate Fighter: Team Peña vs Team Nunes.",
+          "result": {
+            "winner": "Mohammad Usman",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Mohammad Usman def. Eduardo Perez by split decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Eduardo Perez",
+              "weight_lbs": 265,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Perez is up first and comes in at 265 pounds, while Usman follows him to the scale, weighing 238 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Mohammad Usman",
+              "weight_lbs": 238,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Perez is up first and comes in at 265 pounds, while Usman follows him to the scale, weighing 238 pounds.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [],
+      "notes": "Result line spells 'Mohammad Usman'; most of the page spells 'Mohammed Usman'. Three rounds fought."
+    },
+    {
+      "episode_number": 12,
+      "recap_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-team-pena-vs-team-nunes",
+      "recap_published": "2022-07-19T13:08:44-0400",
+      "byline_date_text": "Jul. 19, 2022",
+      "bouts": [
+        {
+          "a": "Juliana Miller",
+          "b": "Kaytlin Neil",
+          "weight_class": "Flyweight",
+          "stage": "semi_final",
+          "stage_quote": "Juliana Miller submits Kaytlin Neil in their flyweight semifinal bout on The Ultimate Fighter: Team Peña vs Team Nunes.",
+          "result": {
+            "winner": "Juliana Miller",
+            "method": "Submission (kimura)",
+            "round": 2,
+            "time": null,
+            "quote": "Official Result: Juliana Miller def. Kaytlin Neil by submission (kimura)",
+            "round_quote": "Round 2: Miller resumes her forward pressure"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kaytlin Neil",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Team Nunes’ Neil is up first and comes in at 125.5 pounds, while Team Pena’s Miller hits 125 pounds even, making the fight official.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Juliana Miller",
+              "weight_lbs": 125,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Team Nunes’ Neil is up first and comes in at 125.5 pounds, while Team Pena’s Miller hits 125 pounds even, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Juliana Miller",
+            "Brogan Walker",
+            "Zac Pauga",
+            "Mohammad Usman"
+          ],
+          "text": "Finalists face off: Miller vs. Walker (flyweight) and Pauga vs. Usman (heavyweight).",
+          "quote": "Miller and Walker stand in with Dana White in the lone Team Pena versus Team Nunes matchup before Team Pena heavyweights Pauga and Usman do the same."
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "Finals are on the UFC on ESPN main card at the UFC APEX the weekend after UFC 277 (July 30).",
+          "quote": "The following weekend, the four TUF finalists get their turn in the spotlight when they return to the UFC APEX in Las Vegas to compete on the main card of UFC on ESPN."
+        }
+      ],
+      "notes": "Round 2 from the round heading; no official time given. Page says Neil teased she 'got knocked out in her opening bout' (she won that bout by split decision)."
+    }
+  ],
+  "missing_episodes": []
+}

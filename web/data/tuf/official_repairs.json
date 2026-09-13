@@ -336,6 +336,33 @@
       "why": "The winner is unchanged. The draft's two rounds contradict the official account of a third round."
     },
     {
+      "id": "tuf-11/r16/mccray-uscola/method",
+      "season": "tuf-11",
+      "op": "patch_bout",
+      "kind": "source_conflict",
+      "bout": {
+        "weight_class": "Tournament",
+        "stage": "round_of_16",
+        "a": "Kris McCray",
+        "b": "Kyacey Uscola"
+      },
+      "expect": {
+        "method": "Submission (keylock)"
+      },
+      "set": {
+        "method": "Submission (kimura)"
+      },
+      "source": {
+        "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+        "family": "ufc_com_recap",
+        "published_on_site": "2018-09-14T08:36:04-04:00",
+        "retrieved": "2026-09-12",
+        "quote": "McCray taking control immediately with a takedown followed by a quick kimura attempt that produces a tap out from Uscola.",
+        "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+      },
+      "why": "The draft recorded a keylock; the official recap names a kimura, a different shoulder lock. Found while extracting the season's recaps."
+    },
+    {
       "id": "tuf-25/rosters/rebuilt",
       "season": "tuf-25",
       "op": "set_team_rosters",

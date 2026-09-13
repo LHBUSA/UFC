@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-23",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "finale_broadcast": {
+    "title": "TUF 23 Finale: Team Joanna vs Team Claudia",
+    "listing_date": "2016-07-08"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Ladies and Gents",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-04-20",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-1-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Friends and Foes",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-04-27",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-2-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Who I Am",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-05-04",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-3-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Wake Up Guys!",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-05-11",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-4-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Battle of the Brits",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-05-18",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-5-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "The Situation",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-05-25",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-6-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "No Easy Fight",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-06-01",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-7-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "It's a Mental Thing",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-06-08",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-8-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Beast Inside of You",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-06-15",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-9-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Friends Hurting Friends",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-06-22",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-10-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Bump in the Road",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-06-29",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-11-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Fight of the Season",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2016-07-06",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-23-ep-12-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

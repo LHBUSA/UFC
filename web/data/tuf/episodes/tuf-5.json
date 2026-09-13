@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-5",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": null
+  },
+  "finale_broadcast": {
+    "title": "TUF 5 Finale: Team Pulver vs Team Penn",
+    "listing_date": "2007-06-23"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "It's Like Anarchy Here",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-04-05",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Not in the House",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-04-12",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "This Is My Zone",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-04-19",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Waa, Waa",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-04-26",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Put Me Back In",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-05-03",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "All Your Might",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-05-10",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Be the General",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-05-17",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Not on the Concrete",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-05-24",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "It Was a Brawl",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-05-31",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Traitor",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-06-07",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "I Humbly Apologize",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-06-14",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Gave a Hundred",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-06-14",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

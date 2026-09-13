@@ -560,7 +560,7 @@
               "a": "Kris McCray",
               "b": "Kyacey Uscola",
               "winner": "Kris McCray",
-              "method": "Submission (keylock)",
+              "method": "Submission (kimura)",
               "round": 2,
               "time": "0:59",
               "episode": 8,
@@ -578,6 +578,18 @@
                   "published_on_site": "2018-09-14T08:36:04-04:00",
                   "retrieved": "2026-09-12",
                   "quote": "The first Wild Card fight in the history of The Ultimate Fighter is over, and Kris McCray is on his way to the quarterfinals.",
+                  "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
+                },
+                {
+                  "repair": "tuf-11/r16/mccray-uscola/method",
+                  "fields": [
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2018-09-14T08:36:04-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "McCray taking control immediately with a takedown followed by a quick kimura attempt that produces a tap out from Uscola.",
                   "published_note": "legacy recap: ufc.com re-stamped every pre-2018 article with its 2018-09-14 site migration time, so this is not the original publication date"
                 }
               ],

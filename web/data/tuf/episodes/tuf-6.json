@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-6",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": null
+  },
+  "finale_broadcast": {
+    "title": "TUF 6 Finale: Team Hughes vs. Team Serra",
+    "listing_date": "2007-12-08"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Don't You Tap",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-09-26",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "I Need You, Bro",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-09-26",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "It's About Character",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-10-03",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Get Out of My Face",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-10-10",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Not A Real Fighter",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-10-17",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "It's All a Test",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-10-22",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "The Game Plan",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-10-31",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "War Machine",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-11-07",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Karma",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-11-14",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Nothing to Lose",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-11-21",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Upper Decker",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-11-28",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Do You Want This Fight",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2007-12-05",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

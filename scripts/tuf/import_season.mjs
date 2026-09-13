@@ -51,7 +51,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pairMatch } from './lib/names.mjs';
-import { applyRepairsToSeason, LEDGER_FILE } from './apply_official_repairs.mjs';
+import { applyRepairsToSeason, loadLedgers } from './apply_official_repairs.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT = path.join(ROOT, 'web', 'data', 'tuf', 'seasons');
@@ -1426,8 +1426,7 @@ const main = async () => {
    * ledger are re-applied before anything is written, so deleting a file and
    * re-drafting it cannot quietly bring back a result UFC.com contradicts. A
    * repair the new draft no longer fits is refused loudly, not dropped. */
-  const ledger = JSON.parse(fs.readFileSync(LEDGER_FILE, 'utf8'));
-  const repaired = applyRepairsToSeason(detail, row, ledger);
+  const repaired = applyRepairsToSeason(detail, row, loadLedgers());
   for (const l of repaired.log) console.log(`  official: ${l}`);
   if (repaired.refused.length) {
     for (const r of repaired.refused) console.error(`  official repair REFUSED: ${r}`);
