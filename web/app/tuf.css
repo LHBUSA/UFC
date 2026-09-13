@@ -21,6 +21,8 @@
   --tuf-text-4: #8e8a80;
   --tuf-fs-meta: 11px;
   --tuf-fs-role: 11.5px;
+  /* --pbe-live measures 4.4:1 on a card at pill size; one step brighter here. */
+  --tuf-live: #ef5a64;
   --tuf-card-line: rgba(255,245,220,.14);
   --tuf-card-shadow: inset 0 1px 0 rgba(255,245,220,.035), 0 10px 26px -14px rgba(0,0,0,.85);
 }
@@ -150,8 +152,9 @@
   white-space: nowrap;
 }
 .tuf-pill-ok { border-color: var(--pbe-gold-soft); color: var(--pbe-gold); }
-.tuf-pill-live { border-color: rgba(230,57,70,.5); color: var(--pbe-live); }
-.tuf-pill-thin { opacity: .75; }
+.tuf-pill-live { border-color: rgba(230,57,70,.5); color: var(--tuf-live); }
+/* Thin coverage reads as quieter through colour and a dashed edge, not opacity, which took it below AA. */
+.tuf-pill-thin { color: var(--tuf-text-4); border-style: dashed; }
 
 .tuf-card-name {
   font-family: var(--pbe-font-display);
