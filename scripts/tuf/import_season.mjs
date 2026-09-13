@@ -1387,36 +1387,10 @@ const main = async () => {
   console.log(`  stages flagged unverified ${counts.unverified_stages}   bouts with no winner ${counts.no_winner}`);
   for (const c of conflicts) console.log(`    ! ${c.field}: ${c.detail.slice(0, 160)}`);
 
-  /* Coverage is a claim about how good the bracket is, so it is derived from
-   * the bracket rather than asserted. Full means every division has a final
-   * and no round was flagged; partial means a bracket exists but something in
-   * it is unresolved. A season with no bracket at all keeps metadata_only. */
-  const everyDivisionComplete =
-    bracket.length === (row.weight_classes?.length || bracket.length) &&
-    bracket.every((d) => d.stages.some((s) => s.stage === 'final' && s.bouts.length));
-  const nothingFlagged =
-    counts.unverified_stages === 0 && counts.no_winner === 0 && conflicts.length === 0;
-  /* A season with no bracket is not necessarily a season we have failed to
-   * load. Season 21 had none to load — two gyms fought a scored series — and
-   * calling that "partial" counted the absence of a structure it never had as
-   * missing data. It gets its own bucket when its own format is fully
-   * recorded: the series, the standings, and the bout that concluded it. */
-  const formatComplete = Boolean(
-    teamCompetition
-    && teamCompetition.standings?.length
-    && teamCompetition.concluding_bout
-    && bracket.length,
-  );
-  const nextCoverage = formatComplete
-    ? 'format_complete'
-    : !bracket.length
-      ? 'metadata_only'
-      : everyDivisionComplete && nothingFlagged
-        ? 'bracket_full'
-        : 'bracket_partial';
-
+  /* No coverage label is written. Structure and evidence are derived from the
+   * season data (web/lib/tufStatus.ts, scripts/tuf/completeness_matrix.mjs), so
+   * a repaired season can never keep an import-time label that says otherwise. */
   const file = path.join(OUT, `${SLUG}.json`);
-  console.log(`  coverage ${row.coverage} -> ${nextCoverage}`);
   if (!WRITE) { console.log(`\n(dry run — pass --write to save ${path.relative(ROOT, file)})`); return; }
   if (fs.existsSync(file)) {
     console.error(`refusing to overwrite ${path.relative(ROOT, file)} — hand-built files are not regenerated`);
@@ -1434,12 +1408,10 @@ const main = async () => {
   }
   fs.writeFileSync(file, JSON.stringify(detail, null, 2) + '\n');
 
-  /* The inventory row points at the detail file. A season that claims bracket
-   * coverage without that pointer renders from its metadata alone, so the two
-   * are written together rather than left to be remembered separately. */
-  if (row.coverage !== nextCoverage || (bracket.length && row.detail !== SLUG)) {
-    row.coverage = nextCoverage;
-    if (bracket.length) row.detail = SLUG;
+  /* The inventory row points at the detail file. A season with bouts but no
+   * pointer renders from its metadata alone, so the pointer is written with the file. */
+  if (bracket.length && row.detail !== SLUG) {
+    row.detail = SLUG;
     fs.writeFileSync(path.join(ROOT, 'web', 'data', 'tuf', 'seasons.json'), JSON.stringify(inv, null, 2) + '\n');
   }
   console.log(`\nwrote ${path.relative(ROOT, file)}`);

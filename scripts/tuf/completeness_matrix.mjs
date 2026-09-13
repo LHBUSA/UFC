@@ -3,7 +3,7 @@
  * TUF Phase 2 completeness matrix. READ-ONLY.
  *
  *   UFC_ENV_FILE=D:/Workers/secrets/ufc-propbetedge.env \
- *     node scripts/tuf/completeness_matrix.mjs [--as-of 2026-09-13] [--out-json <path>] [--out-md <path>]
+ *     node scripts/tuf/completeness_matrix.mjs [--as-of 2026-09-13] [--out-json <path>] [--out-md <path>] [--out-status <path>]
  *
  * Reproducible from committed source data plus read-only database selects:
  *   web/data/tuf/seasons.json, seasons/*.json, episodes/*.json, identity.json,
@@ -49,6 +49,12 @@
  * identity coverage and finale integration. Depth never makes a season
  * COMPLETE, and COMPLETE never makes a season gold-standard.
  *
+ * STRUCTURE comes from web/lib/tufStatus.ts (the same function the hub uses): a
+ * team season scored on points is measured against that format, never against
+ * a bracket. The site reads this run's per-season verdict from
+ * web/data/tuf/status.generated.json (--out-status), fingerprinted against the
+ * season data it measured.
+ *
  * HOUSE_RESULTS_SECONDARY_ONLY also blocks COMPLETE: a house result resting
  * only on the Wikipedia draft is not a defensible record under the Phase 2
  * source tiers. Seasons that miss the bar for that reason alone are listed as
@@ -60,6 +66,7 @@ import { fileURLToPath } from 'node:url';
 import { expectedBouts } from '../../web/lib/tufFormat.ts';
 import { buildEpisodeViews, timelineCounts } from '../../web/lib/tufTimeline.ts';
 import { hasCommissionResult } from '../../web/lib/tufBoutState.ts';
+import { fingerprint, structureOf } from '../../web/lib/tufStatus.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const DATA = path.join(ROOT, 'web', 'data', 'tuf');
@@ -68,6 +75,7 @@ const opt = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] :
 const AS_OF = opt('--as-of', new Date().toISOString().slice(0, 10));
 const OUT_JSON = opt('--out-json', path.join(ROOT, 'scripts', 'tuf', 'evidence', `tuf_completeness_${AS_OF}.json`));
 const OUT_MD = opt('--out-md', path.join(ROOT, 'docs', 'tuf', `tuf_completeness_${AS_OF}.md`));
+const OUT_STATUS = opt('--out-status', path.join(ROOT, 'web', 'data', 'tuf', 'status.generated.json'));
 
 const envFile = process.env.UFC_ENV_FILE || path.join(ROOT, '.env');
 const env = { ...process.env };
@@ -134,6 +142,8 @@ for (const row of inventory.seasons) {
   const d = detailOf(row.slug);
   const eps = episodesOf(row.slug);
   const blockers = [];
+  const structure = structureOf(row, d);
+  const teamFormat = structure.basis === 'team_points_format' && structure.structure === 'complete';
   const identEntries = Object.entries(identity.entries).filter(([k]) => k.startsWith(`${row.slug}|`)).map(([k, v]) => ({ name: k.slice(row.slug.length + 1), ...v }));
   const contestantEntries = identEntries.filter((e) => e.roles.includes('contestant'));
   const staffEntries = identEntries.filter((e) => !e.roles.includes('contestant'));
@@ -301,7 +311,7 @@ for (const row of inventory.seasons) {
   /* ---- blockers + status ---- */
   if (row.season_state !== 'completed') blockers.push('SEASON_NOT_COMPLETED');
   if (!roster.length) blockers.push('ROSTER_MISSING');
-  if (!d?.bracket?.length && row.coverage !== 'format_complete') blockers.push('BRACKET_MISSING');
+  if (!d?.bracket?.length && !teamFormat) blockers.push('BRACKET_MISSING');
   if (Object.values(byStage).some((s) => s.present < s.expected)) blockers.push('BRACKET_BOUTS_MISSING');
   if (boutRows.some((x) => !x.winner && x.result_verification !== 'scheduled')) blockers.push('RESULTS_MISSING');
   if (finaleScheduled) blockers.push('FINALE_NOT_YET_FOUGHT');
@@ -321,10 +331,10 @@ for (const row of inventory.seasons) {
   if (boutRows.some((x) => x.result_verification === 'partial')) blockers.push('HOUSE_RESULTS_SECONDARY_ONLY');
 
   const critical = [];
-  if (!d?.bracket?.length && row.coverage !== 'format_complete') critical.push('no bracket loaded for a bracket season');
+  if (!d?.bracket?.length && !teamFormat) critical.push('no bracket loaded for a bracket season');
   if (openConflicts && finals.some((f) => f.result_verification === 'unknown')) critical.push('an open source conflict leaves a final undecided');
   const completeBlockers = blockers.filter((b) => b !== 'EPISODE_LAYER_MISSING');
-  const status = row.coverage === 'format_complete' && !completeBlockers.filter((b) => !['BRACKET_MISSING', 'BRACKET_BOUTS_MISSING', 'FINAL_NOT_VERIFIED'].includes(b)).length
+  const status = teamFormat && !completeBlockers.filter((b) => !['BRACKET_MISSING', 'BRACKET_BOUTS_MISSING', 'FINAL_NOT_VERIFIED'].includes(b)).length
     ? 'COMPLETE'
     : !completeBlockers.length ? 'COMPLETE' : critical.length ? 'BLOCKED' : 'PARTIAL';
 
@@ -341,7 +351,9 @@ for (const row of inventory.seasons) {
   ));
 
   seasons.push({
-    slug: row.slug, name: row.name, year: row.year, edition: row.edition, season_state: row.season_state, coverage: row.coverage,
+    slug: row.slug, name: row.name, year: row.year, edition: row.edition, season_state: row.season_state,
+    structure: structure.structure, structure_basis: structure.basis, structure_missing: structure.missing,
+    fingerprint: fingerprint(row, d, eps),
     status, score, critical_blockers: critical, blockers,
     depth: (() => {
       const fr = (a, b) => (b ? a / b : null);
@@ -443,6 +455,16 @@ const worst = [...seasons].sort((a, b) => a.score - b.score || b.year - a.year).
 const out = { _about: 'Generated by scripts/tuf/completeness_matrix.mjs. Do not edit by hand; re-run the script.', _rules: 'See the header of scripts/tuf/completeness_matrix.mjs for every definition.', totals, worst_10: worst, seasons };
 fs.mkdirSync(path.dirname(OUT_JSON), { recursive: true });
 fs.writeFileSync(OUT_JSON, JSON.stringify(out, null, 1) + '\n');
+
+/* What the site reads: the evidence verdict per season, keyed to the data it measured. */
+const statusOut = {
+  _about: 'Generated by scripts/tuf/completeness_matrix.mjs. Do not edit by hand; re-run the script. Evidence verdict per season (matrix_status COMPLETE = verified). A fingerprint that no longer matches the season data means the verdict is stale and the site will not show the season as verified.',
+  as_of: AS_OF,
+  matrix: path.relative(ROOT, OUT_JSON).replace(/\\/g, '/'),
+  seasons: Object.fromEntries(seasons.map((x) => [x.slug, { matrix_status: x.status, blockers: x.blockers, fingerprint: x.fingerprint }])),
+};
+fs.mkdirSync(path.dirname(OUT_STATUS), { recursive: true });
+fs.writeFileSync(OUT_STATUS, JSON.stringify(statusOut, null, 1) + '\n');
 
 /* ---- markdown dashboard ---- */
 const pct = (a, b) => (b ? `${Math.round((100 * a) / b)}%` : '—');

@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHead, JsonLd } from "@/components/ui";
-import { coverage, editions, inventoryConflicts, inventoryProvenance, seasons, type SeasonRow } from "@/lib/tuf";
+import { editions, inventoryConflicts, inventoryProvenance, seasonStatuses, seasons, statusReport, type SeasonRow } from "@/lib/tuf";
+import type { HubStatus } from "@/lib/tufStatus";
 import { SITE } from "@/lib/site";
 
 /* /tuf — the archive hub.
  *
  * Two things this page refuses to do. It does not show a winner for a season
- * that has not finished, and it does not describe our coverage as the show's
- * coverage: the status on each card is what WE hold, so "partial" means we
- * have the season and its finale but not its bracket, not that the season was
- * somehow incomplete. Saying "complete" about a season we have barely loaded
- * would be the easiest lie on the site to tell. */
+ * that has not finished, and it does not blur what we hold for a season into
+ * one word. Each card states two derived facts, kept apart (lib/tufStatus.ts):
+ * whether the competition the season actually ran is represented in its own
+ * format — seasons were not all brackets — and whether the season clears the
+ * evidence bar. "Verified complete" appears only when both hold. */
 export const revalidate = 3600;
 
 const TITLE = "The Ultimate Fighter Archive | PropBetEdge UFC";
@@ -33,30 +34,27 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
-/* Two independent facts, two pills. Conflating "the season is still running"
- * with "we have not loaded it" is how an archive ends up describing its own
- * gaps as the sport's. */
-function StatePill({ s }: { s: SeasonRow }) {
-  if (s.season_state === "ongoing") return <span className="tuf-pill tuf-pill-live">Season ongoing</span>;
-  if (s.completion_unverified) return <span className="tuf-pill tuf-pill-thin">Result unverified</span>;
-  return null;
+/* One primary pill (structure, or that the season is still running) and at
+ * most one quieter evidence state. The internal blocker vocabulary stays in
+ * the completeness matrix; the card says only what a reader can act on. */
+const TONE = { live: "tuf-pill-live", ok: "tuf-pill-ok", thin: "tuf-pill-thin" } as const;
+function StatusPills({ st }: { st: HubStatus }) {
+  return (
+    <span className="tuf-status">
+      <span className={`tuf-pill ${TONE[st.primary.tone]}`}>{st.primary.label}</span>
+      {st.secondary && <span className={`tuf-status-sub is-${st.secondary.tone}`}>{st.secondary.label}</span>}
+    </span>
+  );
 }
 
-function CoveragePill({ s }: { s: SeasonRow }) {
-  if (s.coverage === "bracket_full") return <span className="tuf-pill tuf-pill-ok">Bracket complete</span>;
-  if (s.coverage === "bracket_partial") return <span className="tuf-pill tuf-pill-ok">Bracket partial</span>;
-  return <span className="tuf-pill tuf-pill-thin">Not loaded</span>;
-}
-
-function Card({ s }: { s: SeasonRow }) {
+function Card({ s, st }: { s: SeasonRow; st: HubStatus }) {
   const champions = s.winners ?? [];
   return (
     <Link href={`/tuf/${s.slug}`} className={`tuf-card${s.detail ? " has-detail" : ""}`}>
       <span className="tuf-card-top">
         <span className="tuf-num">{s.number}</span>
         <span className="tuf-year">{s.year}</span>
-        <StatePill s={s} />
-        <CoveragePill s={s} />
+        <StatusPills st={st} />
       </span>
       <span className="tuf-card-name">{s.name.replace(/^The Ultimate Fighter( Brazil| Latin America| China| Nations)?[: ]*/i, "") || s.name}</span>
       <span className="tuf-coaches">
@@ -88,7 +86,8 @@ function Card({ s }: { s: SeasonRow }) {
 export default function TufHub() {
   const rows = seasons();
   const eds = editions();
-  const cov = coverage();
+  const report = statusReport();
+  const statuses = seasonStatuses();
   const conflicts = inventoryConflicts();
   const prov = inventoryProvenance();
 
@@ -113,17 +112,17 @@ export default function TufHub() {
 
       <section className="wrap tuf-cov">
         <div className="tuf-cov-grid">
-          <div className="tuf-cov-cell"><b>{cov.bracket_full}</b><span>bracket complete</span></div>
-          <div className="tuf-cov-cell"><b>{cov.bracket_partial}</b><span>bracket partial</span></div>
-          <div className="tuf-cov-cell"><b>{cov.metadata_only}</b><span>not loaded</span></div>
-          <div className="tuf-cov-cell is-total"><b>{cov.seasons}</b><span>seasons catalogued</span></div>
+          <div className="tuf-cov-cell"><b>{report.verified_complete}</b><span>verified complete</span></div>
+          <div className="tuf-cov-cell"><b>{report.format_complete}</b><span>format complete, research gaps</span></div>
+          {report.structure_partial > 0 && <div className="tuf-cov-cell"><b>{report.structure_partial}</b><span>structure partial</span></div>}
+          <div className="tuf-cov-cell"><b>{report.ongoing}</b><span>season ongoing</span></div>
+          <div className="tuf-cov-cell is-total"><b>{report.seasons}</b><span>seasons catalogued</span></div>
         </div>
         <p className="tuf-note">
-          The first three describe <strong>our coverage of the tournaments</strong> and are mutually exclusive: every season
-          is in exactly one, and they sum to {cov.seasons}. Separately, {cov.completed} season{cov.completed === 1 ? " has" : "s have"} finished
-          and {cov.ongoing} {cov.ongoing === 1 ? "is" : "are"} still running — a fact about the show, not about us. We hold or can name{" "}
-          {cov.finales_named} finale cards, which is <em>not</em> tournament coverage: a finale is a UFC event we happen to
-          have, and says nothing about whether the bracket that led to it is in the archive.
+          Each season is measured against <strong>the competition format it actually used</strong>, not a standard bracket,
+          and separately against the evidence bar: every result from a primary source, every classification sourced, no open
+          conflict. These states are exclusive and sum to {report.seasons}. {report.finales_named} finale cards are named
+          separately; holding a finale says nothing about how well the season before it is recorded.
         </p>
       </section>
 
@@ -150,7 +149,7 @@ export default function TufHub() {
             </div>
             <div className="tuf-grid">
               {list.map((s) => (
-                <Card key={s.slug} s={s} />
+                <Card key={s.slug} s={s} st={statuses.get(s.slug)!} />
               ))}
             </div>
           </section>

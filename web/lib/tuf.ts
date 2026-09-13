@@ -26,6 +26,8 @@ import identityIndex from "@/data/tuf/identity.index.json";
 import { TUF_DETAILS } from "@/data/tuf/details.generated";
 import { TUF_EPISODES } from "@/data/tuf/episodes.generated";
 import commissionLedger from "@/data/tuf/commission_records.json";
+import statusArtifact from "@/data/tuf/status.generated.json";
+import { evidenceOf, fingerprint, hubStatus, type HubStatus, type StatusArtifact } from "@/lib/tufStatus";
 import { shapeFinale, type FinaleBoutRow, type FinaleIntegration, type RoundRow, type ScorecardRow } from "@/lib/tufFinaleShape";
 
 /* ---- episodes ------------------------------------------------------------- */
@@ -278,20 +280,11 @@ export type SeasonRow = {
   /** A link we withdrew or could not establish, with what blocks it. Kept so
    * the gap is actionable rather than invisible. */
   unresolved_finale?: { withdrawn_match?: string; why_wrong?: string; candidate_card?: string; blocker: string };
-  /** OUR coverage of the tournament. Three mutually exclusive buckets, so
-   * every season is in exactly one and they sum to the season count. A finale
-   * card we happen to hold is NOT coverage and is tracked separately. */
-  coverage: Coverage;
-  /** A fact about the season, not about us. */
+  /** A fact about the season, not about us. What the archive holds for it is
+   * derived, never stored: see seasonStatus() and web/lib/tufStatus.ts. */
   season_state: "completed" | "ongoing";
   detail?: string;
 };
-
-/* format_complete is not a weaker bracket_full. It is for a season with no
- * bracket to load — season 21 was a scored series between two gyms — where
- * filing it as "partial" would count the absence of a structure it never had
- * as data we are missing. */
-export type Coverage = "bracket_full" | "bracket_partial" | "metadata_only" | "format_complete";
 
 export type TufBout = {
   a: string;
@@ -451,42 +444,49 @@ export function seasonBySlug(slug: string): SeasonDetail | null {
   return { ...(rest as object), ...row, coaches_full: detailCoaches as SeasonDetail["coaches_full"] } as SeasonDetail;
 }
 
-/* ---- coverage ----------------------------------------------------------- */
+/* ---- season status ------------------------------------------------------ */
 
-export type CoverageReport = {
+/* Structure (from the season's own format) and evidence (from the completeness
+ * matrix) are derived per season; see web/lib/tufStatus.ts. Nothing here reads
+ * a stored label. The fingerprint check means an evidence verdict computed
+ * against older season data can never present a season as verified. */
+const STATUS = statusArtifact as unknown as StatusArtifact;
+let statusCache: Map<string, HubStatus> | null = null;
+
+export function seasonStatuses(): Map<string, HubStatus> {
+  if (statusCache) return statusCache;
+  const out = new Map<string, HubStatus>();
+  for (const row of INV.seasons) {
+    const detail = DETAILS[row.slug] as Parameters<typeof hubStatus>[1];
+    const evidence = evidenceOf(row, STATUS.seasons[row.slug], fingerprint(row, DETAILS[row.slug], TUF_EPISODES[row.slug]));
+    out.set(row.slug, hubStatus(row, detail, evidence));
+  }
+  statusCache = out;
+  return out;
+}
+
+export type StatusReport = {
   seasons: number;
-  /* Mutually exclusive; these three sum to `seasons`. */
-  bracket_full: number;
-  bracket_partial: number;
-  metadata_only: number;
-  /* Separate axes. Neither is coverage. */
-  completed: number;
+  verified_complete: number;
+  format_complete: number;
+  structure_partial: number;
   ongoing: number;
+  /* Separate axis: a finale card we hold says nothing about the season's structure. */
   finales_named: number;
-  byEdition: Array<{ edition: Edition; total: number; bracket_full: number; bracket_partial: number; metadata_only: number }>;
+  evidence_as_of: string;
 };
 
-export function coverage(): CoverageReport {
-  const all = seasons();
-  const n = (rows: SeasonRow[], c: Coverage) => rows.filter((r) => r.coverage === c).length;
+export function statusReport(): StatusReport {
+  const st = [...seasonStatuses().values()];
+  const n = (k: HubStatus["state"]) => st.filter((x) => x.state === k).length;
   return {
-    seasons: all.length,
-    bracket_full: n(all, "bracket_full"),
-    bracket_partial: n(all, "bracket_partial"),
-    metadata_only: n(all, "metadata_only"),
-    completed: all.filter((r) => r.season_state === "completed").length,
-    ongoing: all.filter((r) => r.season_state === "ongoing").length,
-    finales_named: all.filter((r) => r.finale_event).length,
-    byEdition: INV.editions.map((edition) => {
-      const rows = all.filter((r) => r.edition === edition.key);
-      return {
-        edition,
-        total: rows.length,
-        bracket_full: n(rows, "bracket_full"),
-        bracket_partial: n(rows, "bracket_partial"),
-        metadata_only: n(rows, "metadata_only"),
-      };
-    }),
+    seasons: st.length,
+    verified_complete: n("verified_complete"),
+    format_complete: n("format_complete"),
+    structure_partial: n("structure_partial"),
+    ongoing: n("ongoing"),
+    finales_named: INV.seasons.filter((r) => r.finale_event).length,
+    evidence_as_of: STATUS.as_of,
   };
 }
 

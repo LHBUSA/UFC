@@ -33,6 +33,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pairMatch, cornerNames } from './lib/names.mjs';
+import { structureOf } from '../../web/lib/tufStatus.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const DIR = path.join(ROOT, 'web', 'data', 'tuf', 'seasons');
@@ -155,11 +156,18 @@ assert(
   'finals matched + absent != total',
 );
 
-const coverage = {};
-for (const s of INV.seasons) coverage[s.coverage] = (coverage[s.coverage] || 0) + 1;
+/* Structure is derived from each season's own format (web/lib/tufStatus.ts);
+ * there is no stored coverage label to tally. */
+const structure = {};
+for (const s of INV.seasons) {
+  const p = path.join(ROOT, 'web', 'data', 'tuf', 'seasons', `${s.slug}.json`);
+  const d = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : null;
+  const k = `${structureOf(s, d).structure}${s.season_state === 'ongoing' ? ' (ongoing)' : ''}`;
+  structure[k] = (structure[k] || 0) + 1;
+}
 assert(
-  Object.values(coverage).reduce((a, b) => a + b, 0) === INV.seasons.length,
-  'coverage buckets do not sum to the season count',
+  Object.values(structure).reduce((a, b) => a + b, 0) === INV.seasons.length,
+  'structure states do not sum to the season count',
 );
 
 /* ---------- output ---------- */
@@ -196,7 +204,7 @@ if (absent.length) {
   }
   for (const [slug, list] of bySeason) {
     const row = INV.seasons.find((s) => s.slug === slug);
-    console.log(`  ${slug.padEnd(15)} coverage=${row.coverage}`);
+    console.log(`  ${slug.padEnd(15)} ${row.season_state}`);
     for (const a of list) console.log(`      ${a.weight_class ?? '?'}: ${a.bout}  (${a.event}, ${a.date})`);
   }
 }
@@ -206,8 +214,8 @@ if (bracketFinalsNotVerified.length) {
   for (const b of bracketFinalsNotVerified) console.log(`  ${b.slug.padEnd(15)} ${b.weight_class ?? '?'}: ${b.bout}`);
 }
 
-console.log('\nCOVERAGE');
-for (const [k, v] of Object.entries(coverage).sort()) console.log(`  ${k.padEnd(18)} ${v}`);
+console.log('\nSTRUCTURE');
+for (const [k, v] of Object.entries(structure).sort()) console.log(`  ${k.padEnd(18)} ${v}`);
 console.log(`  seasons             ${INV.seasons.length}`);
 
 console.log('\nARITHMETIC');
@@ -221,7 +229,7 @@ if (problems.length) {
 if (jsonOut) {
   fs.writeFileSync(jsonOut, JSON.stringify({
     generated_at: new Date().toISOString(),
-    bracket, finals, coverage,
+    bracket, finals, structure,
     absent_from_bracket: absent,
     bracket_finals_not_verified: bracketFinalsNotVerified,
     assertions_failed: problems,
