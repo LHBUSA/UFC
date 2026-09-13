@@ -110,6 +110,13 @@ export const APPLIED = new Set([
   // Applied 2026-09-13 after a BEGIN..ROLLBACK proof; probe: table present,
   // RLS on. Additive.
   '20260913000001_ufc_dwcs_outcome_claims.sql',
+
+  // Applied 2026-09-13 after a BEGIN..ROLLBACK proof that also exercised the
+  // behaviour: first-seen-wins on a repeat state, UPDATE and DELETE both
+  // refused, the round-shape CHECK enforced, and ufc_market_observations
+  // unchanged at 352 throughout. Confirmed absent after the rollback, then
+  // applied. Additive; no Worker writes to it yet (LIVE_ODDS_ENABLED=false).
+  '20260913000002_ufc_market_state_transitions.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))

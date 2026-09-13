@@ -80,8 +80,12 @@ async function rest(env, pathq, init = {}) {
 async function activeCard(env, cfg, now) {
   const from = new Date(now - cfg.closeHoursAfter * 3_600_000).toISOString();
   const to = new Date(now + cfg.eventWindowMinutes * 60_000).toISOString();
+  /* The ESPN event id comes from the joined canonical event: the broadcast row
+   * holds the times, ufc_events holds the linkage. Without it the state read
+   * has nothing to ask ESPN about. */
   const rows = await rest(env,
-    `ufc_event_broadcasts?select=ufc_slug,event_id,event_name,event_date,prelims_start_utc,main_card_start_utc,early_prelims_start_utc`
+    `ufc_event_broadcasts?select=ufc_slug,event_id,event_name,event_date,prelims_start_utc,main_card_start_utc,early_prelims_start_utc,`
+    + `event:ufc_events(id,espn_event_id,name)`
     + `&or=(prelims_start_utc.gte.${from},main_card_start_utc.gte.${from})&order=event_date.asc&limit=10`).catch(() => []);
   for (const r of rows || []) {
     const starts = [r.early_prelims_start_utc, r.prelims_start_utc, r.main_card_start_utc].filter(Boolean).sort();
@@ -89,7 +93,7 @@ async function activeCard(env, cfg, now) {
     if (!startsAt) continue;
     const t = Date.parse(startsAt);
     if (now >= t - cfg.eventWindowMinutes * 60_000 && now <= t + cfg.closeHoursAfter * 3_600_000) {
-      return { ...r, startsAt };
+      return { ...r, startsAt, espn_event_id: r.event?.espn_event_id ?? null };
     }
     void to;
   }
@@ -167,7 +171,7 @@ async function tick(env, { dry = false } = {}) {
     return decision;
   }
 
-  const statuses = await boutStatuses(card.espn_event_id || card.event_id ? card.espn_event_id : null).catch(() => []);
+  const statuses = await boutStatuses(card.espn_event_id).catch(() => []);
   if (!dry) await recordTransitions(env, card, statuses, now).catch(() => 0);
 
   /* Quota is read from the last metered response we stored, never guessed. */
@@ -181,7 +185,26 @@ async function tick(env, { dry = false } = {}) {
     quota, cardSpend: 0, lastCallAt: health.last_paid_call_at,
   });
   health.last_decision = { ...decision, card: card.event_name, statuses: statuses.length };
-  if (!decision.poll || dry) return { ...decision, dry, card: card.event_name, statuses: statuses.length, paid_calls: 0 };
+  if (!decision.poll || dry) {
+    return {
+      ...decision,
+      dry,
+      paid_calls: 0,
+      observations_written: 0,
+      quota_consumed: 0,
+      card: { name: card.event_name, ufc_slug: card.ufc_slug, starts_at: card.startsAt, espn_event_id: card.espn_event_id },
+      espn_state: {
+        bouts: statuses.length,
+        active: statuses.filter((x) => isActive(x.status)).map((x) => ({ id: x.competitionId, status: x.status, round: x.round })),
+        imminent: statuses.filter((x) => isImminent(x.status)).map((x) => ({ id: x.competitionId, status: x.status })),
+        sample: statuses.slice(0, 5).map((x) => `${x.competitionId}:${x.status}`),
+      },
+      /* The request this lane WOULD make, with the key redacted. Showing the
+       * shape is the point; showing the key would defeat it. */
+      intended_request: `GET ${ODDS_BASE}/sports/${SPORT}/odds?regions=us&markets=h2h&oddsFormat=american&apiKey=***REDACTED***`,
+      quota_source: quota.known ? { known: true, remaining: quota.remaining, from: 'last recorded metered response' } : { known: false },
+    };
+  }
 
   /* Everything above this line is free. Past it, a credit is spent. */
   const url = `${ODDS_BASE}/sports/${SPORT}/odds?regions=us&markets=h2h&oddsFormat=american&apiKey=${env.ODDS_API_KEY}`;
@@ -211,7 +234,12 @@ export default {
       const cfg = readConfig(env);
       return json({
         service: WORKER, version: VERSION,
-        enabled: cfg.enabled, has_api_key: cfg.hasKey,
+        enabled: cfg.enabled,
+        /* Booleans only. A health endpoint that echoes a secret is a secret
+         * leak with a status code. */
+        has_odds_api_key: Boolean(env.ODDS_API_KEY),
+        has_supabase_key: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
+        has_admin_token: Boolean(env.ADMIN_TRIGGER_TOKEN),
         min_remaining: cfg.minRemaining, max_card_cost: cfg.maxCardCost,
         event_window_minutes: cfg.eventWindowMinutes,
         ...health,
