@@ -105,6 +105,12 @@ export default function TufHub() {
         </div>
       </div>
 
+      <nav className="wrap tuf-hubnav" aria-label="TUF archive sections">
+        <Link href="/tuf/champions">Champions</Link>
+        <Link href="/tuf/alumni">Alumni</Link>
+        <Link href="/tuf/coaches">Coaches</Link>
+      </nav>
+
       <section className="wrap tuf-cov">
         <div className="tuf-cov-grid">
           <div className="tuf-cov-cell"><b>{cov.bracket_full}</b><span>bracket complete</span></div>
