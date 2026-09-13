@@ -23,6 +23,7 @@ import { ApiCta } from "@/components/ApiCta";
 import { getBroadcastForEvent } from "@/lib/broadcast";
 import { WatchStrip } from "@/components/HowToWatch";
 import { getRankingMap } from "@/lib/rankings";
+import { applyHeroPortraits } from "@/lib/heroPortraits";
 
 export const revalidate = 300;
 
@@ -105,6 +106,12 @@ export default async function Home() {
     getIngestFreshness().catch(() => null),
     getFightWeekVideos(next?.id || null, 5).catch(() => []),
   ]);
+  /* Hero-only portrait preference. A separate map so the override touches the
+   * event poster and nothing else on this page — PregameDesk, the champion
+   * rail and every other consumer keep the stored licensed images. */
+  const heroImgs = mainEvent
+    ? await applyHeroPortraits(imgs, [mainEvent.fighter_a, mainEvent.fighter_b])
+    : imgs;
   const framing = await getImageFraming(live.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]);
   const champById = new Map(champs.map((f) => [f.id, f]));
   const contenderById = new Map(contenders.map((f) => [f.id, f]));
@@ -180,7 +187,7 @@ export default async function Home() {
                   <>
                     <div className="poster-faces">
                       {[mainEvent.fighter_a, mainEvent.fighter_b].map((f, i) => {
-                        const img = imgs.get(f.id);
+                        const img = heroImgs.get(f.id);
                         return (
                           <div className={`face ${i ? "b" : "a"}`} key={f.id}>
                             {img ? <img src={img.card} alt="" width={800} height={1000} fetchPriority="high" decoding="async" /> : (

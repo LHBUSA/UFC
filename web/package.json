@@ -20,7 +20,8 @@
     "test:portrait": "node --experimental-strip-types --test lib/portraitIdentity.test.ts",
     "check:css-tokens": "node scripts/check-css-tokens.mjs",
     "test:rankings": "node --experimental-strip-types --test lib/rankingContext.test.ts",
-    "test:gracie": "node --experimental-strip-types --test lib/gracieInfluence.test.ts"
+    "test:gracie": "node --experimental-strip-types --test lib/gracieInfluence.test.ts",
+    "test:hero": "node --experimental-strip-types --test lib/heroPortraits.test.ts"
   },
   "dependencies": {
     "next": "^15.5.25",
