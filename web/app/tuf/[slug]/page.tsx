@@ -27,7 +27,7 @@ import {
   type TimelineEvent,
   type TufBout,
 } from "@/lib/tuf";
-import { classState, displayDate, recapWinners, resultState, summarizeBouts, summaryPhrases, type ClassState, type ResultState } from "@/lib/tufBoutState";
+import { classState, commissionWeights, displayDate, recapWinners, resultState, summarizeBouts, summaryPhrases, type ClassState, type ResultState } from "@/lib/tufBoutState";
 import { stageLabel } from "@/lib/tufFormat";
 import { buildEpisodeViews, rosterMarks, sourceLabel, sourceLabels, type AiredBout } from "@/lib/tufTimeline";
 import type { ShapedBout } from "@/lib/tufFinaleShape";
@@ -201,6 +201,8 @@ function CommissionDetail({ b }: { b: TufBout }) {
   /* A normalization is not a correction: the draft's detail was not shown to be wrong. */
   const corrections = (b.corrections ?? []).filter((c) => c.kind !== "method_normalization");
   const normalized = (b.corrections ?? []).filter((c) => c.kind === "method_normalization");
+  /* The commission's recorded weights, named by fighter only where the printed corner is confidently that fighter. */
+  const weights = commissionWeights(record.corners, [b.a, b.b]);
   const loser = b.winner === b.a ? b.b : b.a;
   let cards: string | null = null;
   if (record.scorecards) {
@@ -214,6 +216,7 @@ function CommissionDetail({ b }: { b: TufBout }) {
   return (
     <span className="tuf-evidence">
       <span><b>Fought</b> {displayDate(record.date)}</span>
+      {weights.length ? <span><b>Commission weights</b> {weights.map((w) => `${w.name} ${w.lbs} lb`).join(" · ")}</span> : null}
       {cards ? <span><b>Judges</b> {cards}</span> : null}
       {record.referee ? <span><b>Referee</b> {record.referee}</span> : null}
       {record.remarks.map((r, i) => <span key={i}><b>Commission remark</b> {r.quote}</span>)}

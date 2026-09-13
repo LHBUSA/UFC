@@ -66,6 +66,50 @@ export function hasCommissionResult(b: Pick<BoutLike, "winner" | "result_sources
     && Boolean(s.document_id) && Boolean(s.record_id) && Boolean(s.winner) && fold(s.winner) === fold(b.winner));
 }
 
+/* ---- commission weights ---------------------------------------------------- */
+
+export type CommissionCorner = { printed: string; weight_lbs?: number | null };
+export type CornerWeight = { name: string; lbs: string; matched: boolean };
+
+/** A recorded weight as printed precision allows: 206 -> "206", 202.5 -> "202.5".
+ * Anything that is not a positive number is not a recorded weight. */
+export function formatLbs(w: unknown): string | null {
+  if (typeof w !== "number" || !Number.isFinite(w) || w <= 0) return null;
+  return String(Number(w.toFixed(2)));
+}
+
+const words = (s: string) => String(s).normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().split(/[^a-z]+/).filter(Boolean);
+const titleCase = (s: string) => String(s).toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase());
+/* A printed corner is this fighter only when the fighter's surname is a word of
+ * the printed name and the first initials agree ("KENNETH ALAN FLORIAN" is Kenny
+ * Florian; "BRADLEY IMES SMITH" is Brad Imes). A misspelled surname does not match. */
+function cornerIs(printed: string, fighter: string): boolean {
+  const p = words(printed), f = words(fighter);
+  if (!p.length || f.length < 2) return false;
+  return p.includes(f[f.length - 1]) && p[0][0] === f[0][0];
+}
+
+/**
+ * The commission's recorded weights for a bout, named by the bout's fighters.
+ * Each printed corner is reconciled to exactly one fighter or not at all; a
+ * corner that is not confidently one fighter keeps the commission's printed
+ * name, so a weight is never attached to the wrong person. Corners without a
+ * recorded weight are left out. Nothing is inferred from the weights.
+ */
+export function commissionWeights(corners: ReadonlyArray<CommissionCorner>, fighters: readonly [string, string]): CornerWeight[] {
+  const claims = corners.map((c) => fighters.filter((f) => cornerIs(c.printed, f)));
+  const out: Array<CornerWeight & { order: number }> = [];
+  corners.forEach((c, i) => {
+    const lbs = formatLbs(c.weight_lbs);
+    if (!lbs) return;
+    const only = claims[i].length === 1 ? claims[i][0] : null;
+    const contested = only != null && claims.some((other, j) => j !== i && other.includes(only));
+    if (only && !contested) out.push({ name: only, lbs, matched: true, order: fighters.indexOf(only) });
+    else out.push({ name: titleCase(c.printed), lbs, matched: false, order: 2 + i });
+  });
+  return out.sort((x, y) => x.order - y.order).map(({ order: _o, ...w }) => w);
+}
+
 export function resultState(b: BoutLike, recaps: Map<string, string> = new Map()): ResultState {
   if (!b.winner) return b.result_state === "scheduled" ? "scheduled" : "unknown";
   /* A winner printed as neither corner is a data defect; it is not verified
