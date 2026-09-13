@@ -125,7 +125,8 @@ export function summaryPhrases(s: SeasonBoutSummary): string[] {
   const played = s.professional - s.professional_scheduled;
   if (played) out.push(`Professional: ${played}`);
   if (s.professional_scheduled) out.push(`Professional scheduled: ${s.professional_scheduled}`);
-  if (s.house_reported) out.push(`House results reported: ${s.house_reported}${s.house_verified ? ` (${s.house_verified} verified)` : ""}`);
+  if (s.house_reported && s.house_verified === s.house_reported) out.push(`House results verified: ${s.house_verified}`);
+  else if (s.house_reported) out.push(`House results reported: ${s.house_reported}${s.house_verified ? ` (${s.house_verified} verified)` : ""}`);
   if (s.house_unknown) out.push(`House results not recorded: ${s.house_unknown}`);
   if (s.house_exhibition) out.push(`House exhibitions: ${s.house_exhibition}`);
   if (s.house_unresolved) out.push(`House classifications unresolved: ${s.house_unresolved}`);
