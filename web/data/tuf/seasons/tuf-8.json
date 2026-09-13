@@ -725,12 +725,14 @@
               "round": 3,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified by canonical fighter id against ufc_bouts da32d03c-8c94-4668-8087-b1e6dad14302 (The Ultimate Fighter: Team Nogueira vs. Team Mir Finale, 2008-12-13) + ufc_bout_results — the recorded winner is the archive's winner",
               "on_finale_card": true,
               "tournament_deciding": true,
               "a_fighter_id": "6475de6b-4160-4193-a9ad-56a4bfef6271",
-              "b_fighter_id": "f36bc33b-7b43-47fa-b1be-3e855f80a8c2"
+              "b_fighter_id": "f36bc33b-7b43-47fa-b1be-3e855f80a8c2",
+              "fight_date": "2008-12-13",
+              "verified_against": "ufc_bouts:da32d03c-8c94-4668-8087-b1e6dad14302"
             }
           ]
         }

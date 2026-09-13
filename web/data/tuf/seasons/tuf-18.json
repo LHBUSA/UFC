@@ -381,13 +381,15 @@
               "round": 1,
               "time": null,
               "episode": null,
-              "classification": "unverified",
-              "classification_source": null,
+              "classification": "professional",
+              "classification_source": "contested on a sanctioned UFC card; verified by canonical fighter id against ufc_bouts 1ea34b9c-a18e-411a-9ae0-658229e9f0a0 (The Ultimate Fighter: Team Rousey vs. Team Tate Finale, 2013-11-30) + ufc_bout_results — the recorded winner is the archive's winner",
               "seeds": "1 vs 8",
               "on_finale_card": true,
               "tournament_deciding": true,
               "a_fighter_id": "dabc8833-d2fc-4a5b-bf67-1bf69c8a98ce",
-              "b_fighter_id": "78e83779-8244-443d-91d4-a1379d3d9fec"
+              "b_fighter_id": "78e83779-8244-443d-91d4-a1379d3d9fec",
+              "fight_date": "2013-11-30",
+              "verified_against": "ufc_bouts:1ea34b9c-a18e-411a-9ae0-658229e9f0a0"
             }
           ]
         }
