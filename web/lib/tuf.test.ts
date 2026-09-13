@@ -994,7 +994,7 @@ test("TUF 1 staff are discipline coaches with no invented team", () => {
 
 /* ---- TUF 2 gold standard: the commission record ------------------------------ */
 
-type T2Bout = T1Bout & { fight_date?: string; commission_record_id?: string; corrections?: Array<{ field: string; old: unknown; new: unknown; source: { document_id?: string; record_id?: string }; reason: string }>;
+type T2Bout = Omit<T1Bout, "result_sources"> & { fight_date?: string; commission_record_id?: string; corrections?: Array<{ field: string; old: unknown; new: unknown; source: { document_id?: string; record_id?: string }; reason: string }>;
   result_sources?: Array<{ family: string; evidence_level: string; source_type?: string; document_id?: string; record_id?: string; winner?: string }> };
 const t2 = DETAIL_BY_SLUG["tuf-2"] as unknown as {
   competition_format: { kind: string; steps: Array<{ key: string }>; phases: Array<{ stage: string }> };

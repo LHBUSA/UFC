@@ -83,7 +83,7 @@ test("the broadcaster's listing attaches episodes and verifies no house result",
     assert.ok(b.episode, `${b.a} vs ${b.b}: an attached listing carries its episode`);
     for (const s of b.sources!.filter((x) => x.family === "paramount_plus_episode_metadata")) {
       assert.ok(!s.fields.includes("winner"), "the listing never states a winner");
-      assert.equal(s.states_winner, false);
+      assert.equal((s as { states_winner?: boolean }).states_winner, false);
     }
     assert.equal(resultState(b), "reported", `${b.a} vs ${b.b}: still reported`);
   }
