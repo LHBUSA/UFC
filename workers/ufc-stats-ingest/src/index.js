@@ -53,6 +53,7 @@ import { Espn } from './espn.mjs';
 import * as P from './parsers.mjs';
 import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec } from './normalizers.mjs';
 import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_resolver.mjs';
+import { tufInHouseEventReason } from './shared/tuf_guard.mjs';
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
 
 /* Per-run ceiling on fight-total lookups, same idea as the scorecard cap:
@@ -545,6 +546,14 @@ async function espnPass(env, espn, ctx, run, { dates: datesOverride = null, scop
     const ev = await espn.event(ref);
     const espnId = String(ev.raw.id);
     const eventDate = String(ev.raw.date).slice(0, 10);
+    /* ESPN lists TUF house fights as events ("The Ultimate Fighter 29
+     * Semifinal"). They are exhibitions; stored here they would become
+     * professional bouts. Skipped before any row is written. */
+    const tufReason = tufInHouseEventReason(ev.raw.name);
+    if (tufReason) {
+      run.notes.tuf_in_house_events_skipped = [...(run.notes.tuf_in_house_events_skipped || []), { espn_event_id: espnId, name: ev.raw.name, date: eventDate }];
+      continue;
+    }
     /* Link to a UFC Stats-keyed row for the same card before creating a new
      * row: same date (+-1 day) AND the same "UFC <n>" number or overlapping
      * headline tokens. Never on date alone (2026-09-06: 45 duplicate cards). */

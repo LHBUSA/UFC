@@ -20,13 +20,31 @@
  * marked link_status='rejected' keep their links. --relink recomputes
  * classification + links for the stored rows of the selected channels without
  * touching the network (use it after a fighter/event load lands).
+ *
+ * Playlist backfill (The Ultimate Fighter, 2026-09-12):
+ *
+ *   node scripts/videos/ingest_youtube.mjs --playlist <id> [--playlist <id> ...] [--dry-run]
+ *
+ * Reads every item of the named playlists instead of a channel's newest
+ * uploads, and ignores the --since-days window, because an archive's videos
+ * are years old by design. Nothing else changes: a video is still written only
+ * if its uploading channel is enabled AND verified in ufc_video_channels, so a
+ * playlist cannot smuggle in a channel nobody vetted (the FS1-era @tufonfs1
+ * channel is not allowlisted and stays out). Full playlists need
+ * YOUTUBE_API_KEY; without it only the ~15 newest items the playlist feed
+ * exposes are read, and the run says so.
+ *
+ * Every row, from any mode, carries source_metadata.tuf (season, episode,
+ * kind, evidence) when its title or playlist is about The Ultimate Fighter —
+ * see tuf.mjs. No column or enum changes.
  */
 import { canonicalJson } from '../news/lib.mjs';
 import { detectLanguage,
   Supabase, loadEnv, loadFighterIndex, fetchText,
-  PROVIDER, WINDOW_DAYS, feedUrl, watchUrl, parseYoutubeFeed, checkEmbeddable, discoverViaDataApi,
+  PROVIDER, WINDOW_DAYS, feedUrl, watchUrl, parseYoutubeFeed, checkEmbeddable, discoverViaDataApi, discoverPlaylist,
   classifyVideo, loadEventContext, linkVideo, sleep,
 } from './lib.mjs';
+import { tufTag } from './tuf.mjs';
 
 const MAX_DESCRIPTION = 6000;
 
@@ -41,6 +59,7 @@ export function parseCliOptions(argv = []) {
     relink: argv.includes('--relink'),
     sinceDays: Number(argv[argv.indexOf('--since-days') + 1] || 30) || 30,
     onlyChannel: argv.includes('--channel') ? argv[argv.indexOf('--channel') + 1] : null,
+    playlists: argv.flatMap((a, i) => (a === '--playlist' && argv[i + 1] ? [argv[i + 1]] : [])),
   };
 }
 
@@ -125,6 +144,11 @@ function toDbRow(row, entry, existing, now) {
     review: row.review,
     linked_at: now.toISOString(),
   };
+  const playlistTitle = entry.playlist_title || prev.playlist_title || null;
+  if (playlistTitle) source_metadata.playlist_title = playlistTitle;
+  if (entry.playlist_id || prev.playlist_id) source_metadata.playlist_id = entry.playlist_id || prev.playlist_id;
+  const tuf = tufTag({ title: entry.title, description: entry.description, playlistTitle, durationSec: entry.duration_sec ?? null });
+  if (tuf) source_metadata.tuf = tuf; else delete source_metadata.tuf;
   const { discovery, classification, linking, review_reason, review, ...cols } = row;
   return { ...cols, source_metadata, updated_at: now.toISOString() };
 }
@@ -148,6 +172,7 @@ function changed(dbRow, existing) {
   if (canonicalJson(sm.classification?.evidence || null) !== canonicalJson(dbRow.source_metadata.classification?.evidence || null)) return true;
   if (canonicalJson(sm.linking || null) !== canonicalJson(dbRow.source_metadata.linking || null)) return true;
   if (canonicalJson(sm.review || null) !== canonicalJson(dbRow.source_metadata.review || null)) return true;
+  if (canonicalJson(sm.tuf || null) !== canonicalJson(dbRow.source_metadata.tuf || null)) return true;
   return false;
 }
 
@@ -160,6 +185,9 @@ export async function main(injectedEnv, options = {}) {
   const RELINK = Boolean(options.relink);
   const SINCE_DAYS = Number(options.sinceDays) || 30;
   const ONLY_CHANNEL = options.onlyChannel || null;
+  const PLAYLISTS = Array.isArray(options.playlists) ? options.playlists.filter(Boolean) : [];
+  const BACKFILL = PLAYLISTS.length > 0;
+  if (BACKFILL && RELINK) throw new Error('--playlist and --relink are separate modes');
   const now = options.now ? new Date(options.now) : new Date();
   const since = new Date(now.getTime() - SINCE_DAYS * 86400e3);
   const apiKey = env.YOUTUBE_API_KEY || '';
@@ -173,9 +201,27 @@ export async function main(injectedEnv, options = {}) {
   console.log(`${DRY ? 'DRY RUN  ' : ''}discovery=${discovery}${RELINK ? ' (relink, no network)' : ''} since=${since.toISOString().slice(0, 10)} channels=${channels.length}`);
   console.log(`index: ${index.fighters.length} fighters, ${ctx.events.length} events within +-${WINDOW_DAYS}d (${ctx.window.lo}..${ctx.window.hi}), ${ctx.bouts.length} bouts, ${ctx.cardFighterIds.size} card fighters`);
 
-  const totals = { fetched: 0, skipped_old: 0, new: 0, updated: 0, unchanged: 0, review: 0, embed_checks: 0, failed_channels: 0 };
+  const totals = { fetched: 0, skipped_old: 0, new: 0, updated: 0, unchanged: 0, review: 0, embed_checks: 0, failed_channels: 0, skipped_not_allowlisted: 0, tuf_tagged: 0 };
   const byType = {}; const byConfidence = {};
   const plan = [];
+
+  /* Backfill: read the playlists once, then hand each allowlisted channel the
+   * items it uploaded. Items from any other channel are counted and dropped. */
+  const playlistEntries = [];
+  if (BACKFILL) {
+    for (const playlistId of PLAYLISTS) {
+      try {
+        const d = await discoverPlaylist(playlistId, { key: apiKey, now });
+        playlistEntries.push(...d.entries);
+        console.log(`playlist ${playlistId} "${d.playlist.title || '?'}": ${d.entries.length} item(s) via ${d.discovery}${d.complete ? '' : ' — PARTIAL: the keyless feed shows only the newest items; set YOUTUBE_API_KEY for the full playlist'}`);
+      } catch (e) {
+        totals.failed_channels += 1;
+        console.log(`playlist ${playlistId} FAILED: ${e.message}`);
+      }
+    }
+    const allowed = new Set(channels.map((c) => c.channel_id));
+    for (const e of playlistEntries) if (!allowed.has(e.channel_id)) totals.skipped_not_allowlisted += 1;
+  }
 
   for (const channel of channels) {
     const existingRows = await sb.select('ufc_videos', `select=id,provider_video_id,channel_name,channel_verified_source,url,title,description,published_at,duration_sec,thumbnail_url,embeddable,live_broadcast_state,video_type,fighter_ids,event_id,bout_id,article_id,resolver_confidence,link_status,source_metadata&provider=eq.${PROVIDER}&channel_id=eq.${encodeURIComponent(channel.channel_id)}`);
@@ -191,6 +237,10 @@ export async function main(injectedEnv, options = {}) {
         duration_sec: r.duration_sec, embeddable: r.embeddable, live_broadcast_state: r.live_broadcast_state,
         privacy_status: r.source_metadata?.privacy_status, updated: r.source_metadata?.feed_updated,
       }));
+    } else if (BACKFILL) {
+      entries = playlistEntries.filter((e) => e.channel_id === channel.channel_id);
+      channelDiscovery = apiKey ? 'youtube_data_api_v3_playlist' : 'atom_feed_playlist';
+      if (!entries.length) continue;
     } else {
       try {
         if (apiKey) {
@@ -215,7 +265,7 @@ export async function main(injectedEnv, options = {}) {
     const rows = [];
     for (const entry of entries) {
       const pub = entry.published ? new Date(entry.published) : null;
-      if (!RELINK && pub && pub < since) { totals.skipped_old += 1; continue; }
+      if (!RELINK && !BACKFILL && pub && pub < since) { totals.skipped_old += 1; continue; }
       const existing = existingById.get(entry.video_id) || null;
 
       /* Feed path: oEmbed once per new video (or whenever the stored answer is still null). */
@@ -233,6 +283,7 @@ export async function main(injectedEnv, options = {}) {
       applyClassification(row, entry);
       applyLinks(row, entry, index, ctx, existing);
       const dbRow = toDbRow(row, entry, existing, now);
+      if (dbRow.source_metadata.tuf) totals.tuf_tagged += 1;
       const isNew = !existing;
       const isChanged = changed(dbRow, existing);
       if (isNew) totals.new += 1; else if (isChanged) totals.updated += 1; else totals.unchanged += 1;
@@ -263,6 +314,7 @@ export async function main(injectedEnv, options = {}) {
   console.log(`  by type: ${Object.entries(byType).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k}=${v}`).join(', ') || '-'}`);
   console.log(`  by confidence: ${['high', 'medium', 'low', 'none'].map((k) => `${k}=${byConfidence[k] || 0}`).join(', ')}`);
   console.log(`  review: ${totals.review}`);
+  console.log(`  TUF-tagged: ${totals.tuf_tagged}${BACKFILL ? `; playlist items from channels not allowlisted, skipped: ${totals.skipped_not_allowlisted}` : ''}`);
   if (DRY && plan.length) console.log(`  plan: ${plan.filter((p) => p.action === 'insert').length} inserts, ${plan.filter((p) => p.action === 'update').length} updates, ${plan.filter((p) => p.action === 'unchanged').length} unchanged`);
 
   /* Returned rather than logged-and-grepped, so a Worker can ledger it. */
