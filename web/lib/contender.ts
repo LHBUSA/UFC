@@ -31,7 +31,9 @@ async function contenderEvents(): Promise<ContenderEvent[]> {
       const identity = contenderIdentity(e.name, e.event_date);
       return { ...e, identity, season: identity.season || 0, week: identity.week };
     })
-    .sort((a, b) => String(a.event_date || "").localeCompare(String(b.event_date || "")));
+    /* Two Brazil episodes share a date; the episode/week number breaks the tie. */
+    .sort((a, b) => String(a.event_date || "").localeCompare(String(b.event_date || ""))
+      || ((a.identity.week ?? a.identity.episode ?? 0) - (b.identity.week ?? b.identity.episode ?? 0)));
 }
 
 export async function getContenderSeries(): Promise<ContenderSeason[]> {

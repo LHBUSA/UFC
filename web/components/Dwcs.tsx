@@ -49,7 +49,8 @@ export function AlumRanks({ ctx }: { ctx: FighterRankingContext | null | undefin
   return (
     <span className="dwa-ranks">
       <RankChip rank={best} />
-      <span className="dwa-rank-l">{best.full}</span>
+      {/* The chip already carries the number; the label names what it ranks. */}
+      <span className="dwa-rank-l">{best.kind === "champion" ? best.full : best.divisionLabel}</span>
       {p4p && best.kind !== "p4p" ? <RankChip rank={p4p} /> : null}
     </span>
   );
@@ -57,13 +58,21 @@ export function AlumRanks({ ctx }: { ctx: FighterRankingContext | null | undefin
 
 export function ClaimChips({ claims }: { claims: OutcomeClaim[] | undefined }) {
   if (!claims?.length) return null;
+  /* One badge per outcome, linked to its earliest source; further sources
+   * saying the same thing are counted, not repeated. */
+  const byType = new Map<string, OutcomeClaim[]>();
+  for (const c of claims) byType.set(c.claim_type, [...(byType.get(c.claim_type) || []), c]);
   return (
     <span className="dwa-claims">
-      {claims.map((c) => (
-        <a key={c.id} className="tag pos" href={c.source_url} target="_blank" rel="noopener" title={c.source_title || c.source_url}>
-          {CLAIM_LABEL[c.claim_type]} · source ↗
-        </a>
-      ))}
+      {[...byType.values()].map((list) => {
+        const first = [...list].sort((a, b) => String(a.source_date || "").localeCompare(String(b.source_date || "")))[0];
+        const n = new Set(list.map((c) => c.source_url)).size;
+        return (
+          <a key={first.id} className="tag pos" href={first.source_url} target="_blank" rel="noopener" title={`${first.source_title || first.source_url}${first.source_excerpt_short ? ` — “${first.source_excerpt_short}”` : ""}${n > 1 ? ` (+${n - 1} more UFC.com ${n === 2 ? "source" : "sources"})` : ""}`}>
+            {CLAIM_LABEL[first.claim_type]} · UFC.com ↗
+          </a>
+        );
+      })}
     </span>
   );
 }

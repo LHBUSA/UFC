@@ -135,7 +135,7 @@ function toGraphBout(b: RawBout, fighterId: string, ev: RawEvent): GraphBout {
   };
 }
 
-const byDate = (a: GraphBout, b: GraphBout) => String(a.event.eventDate || "").localeCompare(String(b.event.eventDate || ""));
+const byDate = (a: GraphBout, b: GraphBout) => String(a.event.eventDate || "").localeCompare(String(b.event.eventDate || "")) || a.event.name.localeCompare(b.event.name);
 
 const BOUT_COLS = "id,event_id,fighter_a_id,fighter_b_id,status,weight_class,is_womens,is_title,result:ufc_bout_results(winner_id,method,round,time_sec)";
 
