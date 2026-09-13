@@ -46,7 +46,7 @@ test('3. the exact finale ufc_bout_id verifies the professional final', () => {
   const v = run(final({ ufc_bout_id: 'finale-1' }), [row('finale-1', '2005-04-09', 'The Ultimate Fighter Finale', A)]);
   assert.equal(v.result, 'verified');
   assert.equal(v.dbFinaleVerified, true);
-  assert.equal(v.actualFinaleDbBout.linked_by, 'ufc_bout_id');
+  assert.equal(v.actualFinaleDbBout.linked_by, 'explicit_bout_id');
   assert.deepEqual(v.evidence, ['finale_result_row']);
 });
 
@@ -76,7 +76,7 @@ test('4. with several professional bouts between the pair, only the exact linked
   /* no recorded finale date and no id: the rematch cannot stand in */
   v = verifyBout({ bout: final(), seasonRow: { winners: [], final_bouts: [] }, episodes: null, pairRows: [rematch], today: TODAY });
   assert.equal(v.result, 'partial');
-  assert.match(v.finaleLinkReason, /no recorded finale date/);
+  assert.match(v.finaleLinkReason, /no recorded finale date or event/);
   /* fight_date disagreeing with the recorded finale date: fail closed */
   v = run(final({ fight_date: '2006-08-26' }), [rematch, row('finale-1', '2005-04-09', 'The Ultimate Fighter Finale', A)]);
   assert.equal(v.actualFinaleDbBout, null);
@@ -86,6 +86,35 @@ test('4. with several professional bouts between the pair, only the exact linked
   /* a same-date row at a different event name: not the recorded finale */
   v = run(final(), [row('other-card', '2005-04-09', 'Some Other Card', A)]);
   assert.equal(v.actualFinaleDbBout, null);
+});
+
+test('4d. a recorded verified_against "ufc_bouts:<uuid>" is an explicit link, never overridden by the fallback', () => {
+  const onDate = row('finale-1', '2005-04-09', 'The Ultimate Fighter Finale', A);
+  const LINKED = 'aaaaaaaa-1111-2222-3333-444444444444';
+  let v = run(final({ verified_against: `ufc_bouts:${LINKED}` }), [onDate, row(LINKED, '2005-04-09', 'The Ultimate Fighter Finale', A)]);
+  assert.equal(v.actualFinaleDbBout.id, LINKED);
+  assert.equal(v.actualFinaleDbBout.linked_by, 'explicit_bout_id');
+  /* the recorded link is not among the pair rows: fail closed although a date+event candidate exists */
+  v = run(final({ verified_against: 'ufc_bouts:bbbbbbbb-1111-2222-3333-444444444444' }), [onDate]);
+  assert.equal(v.actualFinaleDbBout, null);
+  assert.equal(v.result, 'partial');
+  /* free-text verified_against is not a link; the fallback applies */
+  assert.equal(run(final({ verified_against: 'ufc_bouts + ufc_bout_results' }), [onDate]).actualFinaleDbBout.linked_by, 'recorded_finale_event_date_pair');
+  /* explicit links that disagree: fail closed */
+  v = run(final({ ufc_bout_id: 'finale-1', verified_against: 'ufc_bouts:bbbbbbbb-1111-2222-3333-444444444444' }), [onDate]);
+  assert.equal(v.actualFinaleDbBout, null);
+  assert.match(v.finaleLinkReason, /conflicting explicit bout links/);
+});
+
+test('4e. the fallback needs a recorded event matched exactly; only the tournament final on the finale card links', () => {
+  const onDate = row('finale-1', '2005-04-09', 'The Ultimate Fighter Finale', A);
+  let v = verifyBout({ bout: final(), seasonRow: { winners: [], finale_date: '2005-04-09', final_bouts: [] }, episodes: null, pairRows: [onDate], today: TODAY });
+  assert.equal(v.actualFinaleDbBout, null);
+  assert.match(v.finaleLinkReason, /no recorded finale event/);
+  assert.equal(run(final(), [row('finale-1', '2005-04-09', 'The Ultimate Fighter: Finale', A)]).actualFinaleDbBout, null, 'near-miss event name');
+  v = run(final({ stage: 'semi_final' }), [onDate]);
+  assert.equal(v.actualFinaleDbBout, null);
+  assert.equal(v.result, 'partial');
 });
 
 test('4b. classification repair needs the exact finale bout, never a rematch', () => {
@@ -112,6 +141,8 @@ test('6. an official-repair-backed house bout remains verified', () => {
   const v = run(house({ sources: [{ repair: 'r1', fields: ['winner'], url: 'https://www.ufc.com/news/x', family: 'ufc_com', retrieved: '2026-09-12', quote: 'Diaz won' }] }), []);
   assert.equal(v.result, 'verified');
   assert.deepEqual(v.evidence, ['official_repair']);
+  /* a non-Wikipedia source covering the winner that is not an applied repair does not verify */
+  assert.equal(run(house({ sources: [{ fields: ['winner'], url: 'https://www.ufc.com/news/x', family: 'ufc_com', retrieved: '2026-09-12', quote: 'Diaz won' }] }), []).result, 'partial');
   /* a Wikipedia source covering the winner is not an official repair */
   assert.equal(run(house({ sources: [{ repair: 'r2', fields: ['winner'], url: 'https://en.wikipedia.org/x', family: 'wikipedia', retrieved: '2026-09-12', quote: 'x' }] }), []).result, 'partial');
 });

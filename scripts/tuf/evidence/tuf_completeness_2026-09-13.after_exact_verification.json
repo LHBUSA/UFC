@@ -379,7 +379,7 @@
        "id": "65856c98-1421-4859-8e62-4eb651fdc221",
        "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
        "date": "2005-04-09",
-       "linked_by": "ufc_bout_id",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": true
       },
       "db_finale_verified": true,
@@ -415,7 +415,7 @@
        "id": "45c3c849-90b4-47ec-a891-76e7a1effa5f",
        "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
        "date": "2005-04-09",
-       "linked_by": "ufc_bout_id",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": true
       },
       "db_finale_verified": true,
@@ -590,7 +590,7 @@
       "id": "65856c98-1421-4859-8e62-4eb651fdc221",
       "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
       "date": "2005-04-09",
-      "linked_by": "ufc_bout_id",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": true
      },
      "db_finale_verified": true,
@@ -771,7 +771,7 @@
       "id": "45c3c849-90b4-47ec-a891-76e7a1effa5f",
       "event": "The Ultimate Fighter: Team Couture vs. Team Liddell Finale",
       "date": "2005-04-09",
-      "linked_by": "ufc_bout_id",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": true
      },
      "db_finale_verified": true,
@@ -1154,7 +1154,7 @@
        "id": "1027f33c-bd93-46f3-a424-277a6927c822",
        "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
        "date": "2005-11-05",
-       "linked_by": "ufc_bout_id",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": true
       },
       "db_finale_verified": true,
@@ -1181,7 +1181,7 @@
        "id": "efdfe676-6d25-4f2e-b8fe-e31bb368e99b",
        "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
        "date": "2005-11-05",
-       "linked_by": "ufc_bout_id",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": true
       },
       "db_finale_verified": true,
@@ -1380,7 +1380,7 @@
       "id": "1027f33c-bd93-46f3-a424-277a6927c822",
       "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
       "date": "2005-11-05",
-      "linked_by": "ufc_bout_id",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": true
      },
      "db_finale_verified": true,
@@ -1566,7 +1566,7 @@
       "id": "efdfe676-6d25-4f2e-b8fe-e31bb368e99b",
       "event": "The Ultimate Fighter: Team Hughes vs. Team Franklin Finale",
       "date": "2005-11-05",
-      "linked_by": "ufc_bout_id",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": true
      },
      "db_finale_verified": true,
@@ -6554,7 +6554,7 @@
        "id": "da32d03c-8c94-4668-8087-b1e6dad14302",
        "event": "The Ultimate Fighter: Team Nogueira vs. Team Mir Finale",
        "date": "2008-12-13",
-       "linked_by": "recorded_finale_event_date_pair",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": true
       },
       "db_finale_verified": true,
@@ -7267,7 +7267,7 @@
       "id": "da32d03c-8c94-4668-8087-b1e6dad14302",
       "event": "The Ultimate Fighter: Team Nogueira vs. Team Mir Finale",
       "date": "2008-12-13",
-      "linked_by": "recorded_finale_event_date_pair",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": true
      },
      "db_finale_verified": true,
@@ -13222,7 +13222,7 @@
        "id": "7cb907c8-3e85-4c38-add2-993dafee86ad",
        "event": "The Ultimate Fighter: Team Bisping vs Team Miller Finale",
        "date": "2011-12-03",
-       "linked_by": "recorded_finale_event_date_pair",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": true
       },
       "db_finale_verified": true,
@@ -13660,7 +13660,7 @@
       "id": "7cb907c8-3e85-4c38-add2-993dafee86ad",
       "event": "The Ultimate Fighter: Team Bisping vs Team Miller Finale",
       "date": "2011-12-03",
-      "linked_by": "recorded_finale_event_date_pair",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": true
      },
      "db_finale_verified": true,
@@ -17284,7 +17284,7 @@
        "id": "1ea34b9c-a18e-411a-9ae0-658229e9f0a0",
        "event": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
        "date": "2013-11-30",
-       "linked_by": "recorded_finale_event_date_pair",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": true
       },
       "db_finale_verified": true,
@@ -17510,7 +17510,7 @@
       "id": "1ea34b9c-a18e-411a-9ae0-658229e9f0a0",
       "event": "The Ultimate Fighter: Team Rousey vs. Team Tate Finale",
       "date": "2013-11-30",
-      "linked_by": "recorded_finale_event_date_pair",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": true
      },
      "db_finale_verified": true,
@@ -30535,7 +30535,7 @@
      "on_finale_card": true,
      "db_finale_bout": null,
      "db_finale_verified": false,
-     "db_finale_unlinked_reason": "no ufc_bout_id and no recorded finale date",
+     "db_finale_unlinked_reason": "no explicit bout link and no recorded finale date or event",
      "db_pair_matches": [
       {
        "id": "94616427-2d11-4216-b248-bc57e3ab83e2",
@@ -30730,7 +30730,7 @@
      "on_finale_card": true,
      "db_finale_bout": null,
      "db_finale_verified": false,
-     "db_finale_unlinked_reason": "no ufc_bout_id and no recorded finale date",
+     "db_finale_unlinked_reason": "no explicit bout link and no recorded finale date or event",
      "db_pair_matches": [
       {
        "id": "aa7c0491-43f3-4c90-a668-10ccbdc118ac",
@@ -31174,7 +31174,7 @@
        "id": "48c61e02-40c8-4ed3-9e77-96c3fa09755f",
        "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
        "date": "2026-09-26",
-       "linked_by": "ufc_bout_id",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": false
       },
       "db_finale_verified": false,
@@ -31201,7 +31201,7 @@
        "id": "c632d30e-d28a-41c5-88ce-f82c50e04334",
        "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
        "date": "2026-09-26",
-       "linked_by": "ufc_bout_id",
+       "linked_by": "explicit_bout_id",
        "winner_matches_archive": false
       },
       "db_finale_verified": false,
@@ -31407,7 +31407,7 @@
       "id": "48c61e02-40c8-4ed3-9e77-96c3fa09755f",
       "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
       "date": "2026-09-26",
-      "linked_by": "ufc_bout_id",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": false
      },
      "db_finale_verified": false,
@@ -31599,7 +31599,7 @@
       "id": "c632d30e-d28a-41c5-88ce-f82c50e04334",
       "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
       "date": "2026-09-26",
-      "linked_by": "ufc_bout_id",
+      "linked_by": "explicit_bout_id",
       "winner_matches_archive": false
      },
      "db_finale_verified": false,

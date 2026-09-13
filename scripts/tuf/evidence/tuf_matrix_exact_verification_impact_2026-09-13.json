@@ -230,7 +230,7 @@
     }
    ],
    "other_professional_bouts_between_the_pair": [],
-   "why_wrong": "a finale-card final with no ufc_bout_id and no recorded finale date or event (no ufc_bout_id and no recorded finale date); the old rule accepted any bout between the pair, so the result row was never shown to be THIS final",
+   "why_wrong": "a finale-card final with no ufc_bout_id and no recorded finale date or event (no explicit bout link and no recorded finale date or event); the old rule accepted any bout between the pair, so the result row was never shown to be THIS final",
    "result_before": "verified",
    "result_after": "partial",
    "evidence_after": [],
@@ -251,7 +251,7 @@
     }
    ],
    "other_professional_bouts_between_the_pair": [],
-   "why_wrong": "a finale-card final with no ufc_bout_id and no recorded finale date or event (no ufc_bout_id and no recorded finale date); the old rule accepted any bout between the pair, so the result row was never shown to be THIS final",
+   "why_wrong": "a finale-card final with no ufc_bout_id and no recorded finale date or event (no explicit bout link and no recorded finale date or event); the old rule accepted any bout between the pair, so the result row was never shown to be THIS final",
    "result_before": "verified",
    "result_after": "partial",
    "evidence_after": [],
