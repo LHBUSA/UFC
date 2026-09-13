@@ -32,7 +32,10 @@
  *   - ESPN roundups are an attributed, non-official second source: agreement is
  *     recorded as corroboration, an ESPN-only name is `secondary_only`, and a
  *     fighter the two sources place at different events is `conflicted` on
- *     both sides. None of those is published.
+ *     both sides. None of those is eligible for display.
+ *
+ * `eligible` is TRIAGE, not display: nothing is shown until an operator records
+ * a resolution in ufc_dwcs_outcome_resolutions (migration 20260913000006).
  *
  * Output rows match public.ufc_dwcs_outcome_claims. Excerpts are capped at 200
  * characters: evidentiary, never the article.
@@ -239,7 +242,7 @@ for (const file of files) {
           fighter_id: r.fighter.id, event_id: r.event.id, bout_id: r.bout.id,
           claim_type: tuf ? 'tuf_invite' : developmental ? 'developmental_deal' : 'contract_awarded',
           source_url: art.url, source_title: art.title, source_date: art.sourceDate, source_family: 'ufc.com',
-          source_excerpt_short: excerpt, claim_status: won ? 'published' : 'review',
+          source_excerpt_short: excerpt, claim_status: won ? 'eligible' : 'review',
           review_reason: won ? null : 'claim names a fighter the stored result does not record as the winner',
           evidence: { match: h.via, file: art.file, fighter_name: r.fighter.name, event: r.event.name, article_scope: { season: sc.season, week: sc.week ?? week } },
         });
@@ -257,10 +260,10 @@ const uniq = claims.filter((c) => { const k = `${c.fighter_id}|${c.event_id}|${c
  *   - names the same fighter for the same week as UFC.com -> corroboration,
  *     recorded on the UFC.com claim; no extra public row
  *   - names a fighter for a week UFC.com does not         -> `secondary_only`
- *     (kept as evidence, never published: ESPN is not the official source,
+ *     (kept as evidence, never eligible: ESPN is not the official source,
  *     and an unmatched UFC.com sentence is a recall gap, not a contradiction)
  *   - names a fighter for a DIFFERENT event than UFC.com   -> a real conflict:
- *     both rows become `conflicted` and nothing is published for that fighter */
+ *     both rows become `conflicted` and nothing is eligible for that fighter */
 const secondary = [];
 if (ESPN_DIR && fs.existsSync(ESPN_DIR)) {
   for (const f of fs.readdirSync(ESPN_DIR).filter((x) => /^espn_\d+\.json$/.test(x))) {

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getDwcsGraph, getOutcomeClaims } from "@/lib/dwcsGraph";
+import { getSourceDobs } from "@/lib/db";
+import { ageRange, dobDispute } from "@/lib/dobEvidence";
 import { DwcsLineage } from "@/components/Dwcs";
 import { getFighterBouts, getImagesForFighters, getArticlesForFighter, getFighterRoundStats, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
@@ -57,7 +59,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
    * merge), or a stale name, resolves to the same fighter and redirects to the
    * canonical slug instead of serving a duplicate page. */
   if (slug !== fighterSlug(f)) permanentRedirect(`/fighters/${fighterSlug(f)}`);
-  const [bouts, articles, rounds, rankings, dna, videos, statusEvents, dwcsGraph, dwcsClaims] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => []), getDwcsGraph(), getOutcomeClaims()]);
+  const [bouts, articles, rounds, rankings, dna, videos, statusEvents, dwcsGraph, dwcsClaims, sourceDobs] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => []), getDwcsGraph(), getOutcomeClaims(), getSourceDobs(f.id).catch(() => [])]);
   const dwcsAlum = dwcsGraph?.byFighter.get(f.id) || null;
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
@@ -80,7 +82,11 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
   const primaryRank = bestRank(rankCtx);
   const lastWc = bouts.find((b) => b.weight_class)?.weight_class || null;
   const lastWomens = bouts.find((b) => b.weight_class)?.is_womens || false;
-  const a = age(f.dob);
+  /* Where the sources behind this fighter print different birth dates, the
+   * stored value is one of them, not an agreed fact: show the disagreement,
+   * give the age as the range it allows, and publish no birthDate. */
+  const dob = dobDispute(sourceDobs);
+  const a = dob ? ageRange(dob) : age(f.dob);
 
   return (
     <div className="wrap page">
@@ -109,7 +115,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
             <dt>Reach</dt><dd>{fmtReach(f.reach_in)}</dd>
             <dt>Stance</dt><dd>{stanceLabel(f.stance)}</dd>
             <dt>Weight</dt><dd>{f.weight_lbs != null ? `${f.weight_lbs} lb` : "—"}</dd>
-            <dt>Born</dt><dd>{f.dob ? fmtDate(f.dob, { month: "short", day: "numeric", year: "numeric" }) : "—"}</dd>
+            <dt>Born</dt><dd>{dob ? <span title={dob.values.map((v) => `${v.sources.join(", ")}: ${v.dob}`).join(" · ")}>{dob.values.map((v) => `${fmtDate(v.dob, { month: "short", day: "numeric", year: "numeric" })} (${v.sources.join(", ")})`).join(" · ")} <span className="faint">· sources disagree</span></span> : f.dob ? fmtDate(f.dob, { month: "short", day: "numeric", year: "numeric" }) : "—"}</dd>
             <dt>KO / Sub / Dec</dt><dd>{sum.fights ? `${sum.ko} / ${sum.sub} / ${sum.dec}` : "—"}</dd>
           </dl>
         </div>
@@ -258,7 +264,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
 
       <JsonLd data={{
         "@context": "https://schema.org", "@type": "Person", "@id": `${SITE.url}/fighters/${fighterSlug(f)}#person`, name: f.name, alternateName: f.nickname || undefined, url: `${SITE.url}/fighters/${fighterSlug(f)}`,
-        image: img ? img.portrait : `${SITE.url}/fighters/${fighterSlug(f)}/opengraph-image`, birthDate: f.dob || undefined,
+        image: img ? img.portrait : `${SITE.url}/fighters/${fighterSlug(f)}/opengraph-image`, birthDate: dob ? undefined : f.dob || undefined,
         height: f.height_in != null ? { "@type": "QuantitativeValue", value: f.height_in, unitCode: "INH" } : undefined,
         weight: f.weight_lbs != null ? { "@type": "QuantitativeValue", value: f.weight_lbs, unitCode: "LBR" } : undefined,
         jobTitle: "Mixed martial artist", memberOf: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship" },

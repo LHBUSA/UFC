@@ -232,6 +232,16 @@ export async function getFighterBySourceId(id: string): Promise<Fighter | null> 
   const rows = (await rest<Fighter[]>(`ufc_fighters?select=${FIGHTER_COLS}&or=(espn_athlete_id.eq.${id},ufcstats_id.eq.${id})&limit=1`, [])).data;
   return rows[0] || null;
 }
+/* The date of birth each source namespace prints for this canonical fighter
+ * (combat_fighter_identities, one row per source). Evidence only: the page
+ * uses it to avoid presenting ufc_fighters.dob as unanimous when it is not. */
+export async function getSourceDobs(fighterId: string): Promise<Array<{ source: string; dob: string }>> {
+  type Row = { combat_fighter_identities: Array<{ dob: string | null; combat_sources: { source_key: string } | null }> };
+  const rows = (await rest<Row[]>(`combat_fighters?select=combat_fighter_identities(dob,combat_sources(source_key))&ufc_fighter_id=eq.${fighterId}&limit=1`, [])).data;
+  return (rows[0]?.combat_fighter_identities || [])
+    .filter((i) => i.dob && i.combat_sources?.source_key)
+    .map((i) => ({ source: i.combat_sources!.source_key, dob: String(i.dob) }));
+}
 export async function getFightersByIds(ids: string[]): Promise<Fighter[]> {
   if (!ids.length) return [];
   return (await rest<Fighter[]>(`ufc_fighters?select=${FIGHTER_COLS}&id=in.(${ids.slice(0, 200).join(",")})`, [])).data;

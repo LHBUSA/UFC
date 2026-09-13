@@ -5,10 +5,10 @@
   "articles_skipped": 12,
   "claims": 270,
   "by_status": {
-   "published": 126,
    "review": 5,
    "conflicted": 2,
-   "secondary_only": 137
+   "secondary_only": 137,
+   "eligible": 126
   },
   "by_type": {
    "contract_awarded": 268,
@@ -84,7 +84,7 @@
    "source_date": "2026-09-08",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ve winners earned UFC deals from UFC President and CEO Dana White, as Christian Natividad, Martin Kozak, Isaac Moreno, and Quentin Pasley all impressed with their respective performances in Las Vegas.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -108,7 +108,7 @@
    "source_date": "2026-09-08",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ve winners earned UFC deals from UFC President and CEO Dana White, as Christian Natividad, Martin Kozak, Isaac Moreno, and Quentin Pasley all impressed with their respective performances in Las Vegas.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -132,7 +132,7 @@
    "source_date": "2026-09-08",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ve winners earned UFC deals from UFC President and CEO Dana White, as Christian Natividad, Martin Kozak, Isaac Moreno, and Quentin Pasley all impressed with their respective performances in Las Vegas.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -156,7 +156,7 @@
    "source_date": "2026-09-08",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ve winners earned UFC deals from UFC President and CEO Dana White, as Christian Natividad, Martin Kozak, Isaac Moreno, and Quentin Pasley all impressed with their respective performances in Las Vegas.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -180,7 +180,7 @@
    "source_date": "2019-06-18",
    "source_family": "ufc.com",
    "source_excerpt_short": "Despite reaching the final bell for the first time in his UFC career, Soriano showed enough heart, tenacity and potential to earn a UFC contract, much to his own relief.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -204,7 +204,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -228,7 +228,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -252,7 +252,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -276,7 +276,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -300,7 +300,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "…nly episode of season four to see all five winners receive a contract as Dustin Stoltzfus, Adrian Yanez, Cory McKenna, TJ Laramie and Impa Kasanganay all moved up to the big show following their wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -348,7 +348,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "Drako Rodriguez and Aliaskhab Khizriev used their submission skills to get them a UFC deal.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -372,7 +372,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "Drako Rodriguez and Aliaskhab Khizriev used their submission skills to get them a UFC deal.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -396,7 +396,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "Gloria de Paula and Tucker Lutz's dominant performances also earned them contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -420,7 +420,7 @@
    "source_date": "2021-08-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "Gloria de Paula and Tucker Lutz's dominant performances also earned them contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -444,7 +444,7 @@
    "source_date": "2020-11-03",
    "source_family": "ufc.com",
    "source_excerpt_short": "…aters, Ignacio Bahamondes matriculates to the welterweight division, and Carlos Ulberg claims a place in the light heavyweight division, bringing the total number of contracts handed out this season t…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -468,7 +468,7 @@
    "source_date": "2020-11-03",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ht ranks, Luis Saldana jumps into the talent-rich featherweight waters, Ignacio Bahamondes matriculates to the welterweight division, and Carlos Ulberg claims a place in the light heavyweight division…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -492,7 +492,7 @@
    "source_date": "2020-11-03",
    "source_family": "ufc.com",
    "source_excerpt_short": "Jared Vanderaa joins the heavyweight ranks, Luis Saldana jumps into the talent-rich featherweight waters, Ignacio Bahamondes matriculates to the welterweight division, and Carlos Ulberg claims a place…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -516,7 +516,7 @@
    "source_date": "2020-11-03",
    "source_family": "ufc.com",
    "source_excerpt_short": "Jared Vanderaa joins the heavyweight ranks, Luis Saldana jumps into the talent-rich featherweight waters, Ignacio Bahamondes matriculates to the welterweight division, and Carlos Ulberg claims a place…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -540,7 +540,7 @@
    "source_date": "2020-08-17",
    "source_family": "ufc.com",
    "source_excerpt_short": "…aight week, White handed out a bushel of contracts, welcoming both Louis and Orion Cosce, Josh Parisian, and Cheyanne Buys to the UFC, bringing the Season 4 total to an even dozen through three weeks.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -564,7 +564,7 @@
    "source_date": "2020-08-17",
    "source_family": "ufc.com",
    "source_excerpt_short": "…aight week, White handed out a bushel of contracts, welcoming both Louis and Orion Cosce, Josh Parisian, and Cheyanne Buys to the UFC, bringing the Season 4 total to an even dozen through three weeks.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -612,7 +612,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "Only Holobaugh and Salmon were awarded contracts after the event.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -636,7 +636,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "O'Malley was the only fighter from the episode to earn a UFC contract, and thanks to his charisma and fighting style, he became one of the hottest newcomers in the UFC.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -660,7 +660,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "White decided to award Roberson and Neal with UFC contracts for their performances.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -684,7 +684,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "White decided to award Roberson and Neal with UFC contracts for their performances.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -708,7 +708,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "Davis' impressive performance earned him a contract.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -732,7 +732,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "The highlight reel KO earned Kansas City's Marquez a contract.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -756,7 +756,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "The sixth week of DWCS belonged to the submission specialists, as Charles Byrd and Grant Dawson both earned contracts by securing second-round rear naked choke wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -780,7 +780,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "The sixth week of DWCS belonged to the submission specialists, as Charles Byrd and Grant Dawson both earned contracts by securing second-round rear naked choke wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -804,7 +804,7 @@
    "source_date": "2021-08-10",
    "source_family": "ufc.com",
    "source_excerpt_short": "In addition, Bevon Lewis was given a developmental contract.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -828,7 +828,7 @@
    "source_date": "2026-08-25",
    "source_family": "ufc.com",
    "source_excerpt_short": "Joining Apocada on the UFC roster are fellow victors Nick Galanti, Ronald Humphrey, Sean Clancy Jr. and Guilherme Uriel, with each of that quartet earning their respective contracts with big finishes.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -852,7 +852,7 @@
    "source_date": "2026-08-25",
    "source_family": "ufc.com",
    "source_excerpt_short": "Joining Apocada on the UFC roster are fellow victors Nick Galanti, Ronald Humphrey, Sean Clancy Jr. and Guilherme Uriel, with each of that quartet earning their respective contracts with big finishes.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -876,7 +876,7 @@
    "source_date": "2026-08-25",
    "source_family": "ufc.com",
    "source_excerpt_short": "Joining Apocada on the UFC roster are fellow victors Nick Galanti, Ronald Humphrey, Sean Clancy Jr. and Guilherme Uriel, with each of that quartet earning their respective contracts with big finishes.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -900,7 +900,7 @@
    "source_date": "2026-08-25",
    "source_family": "ufc.com",
    "source_excerpt_short": "Joining Apocada on the UFC roster are fellow victors Nick Galanti, Ronald Humphrey, Sean Clancy Jr. and Guilherme Uriel, with each of that quartet earning their respective contracts with big finishes.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -948,7 +948,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "A quartet of fighters earned contracts for their work in week two – Matt Sayles, Anthony Hernandez, Ryan Spann and Dwight Grant – on a night in which every fight ended via finish.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -972,7 +972,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "A quartet of fighters earned contracts for their work in week two – Matt Sayles, Anthony Hernandez, Ryan Spann and Dwight Grant – on a night in which every fight ended via finish.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -996,7 +996,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "A quartet of fighters earned contracts for their work in week two – Matt Sayles, Anthony Hernandez, Ryan Spann and Dwight Grant – on a night in which every fight ended via finish.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1020,7 +1020,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "Antonina Shevchenko, sister of UFC flyweight queen Valentina Shevchenko, impressed with a second-round TKO and earned her contract.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1044,7 +1044,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "Domingo Pilarte also earned a contract for his second-round submission win.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1068,7 +1068,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "However, Yusuff's calculated and entertaining striking style shone through en route to his decision win and UFC contract.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -1092,7 +1092,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "Jeff Hughes also received a contract for his work, getting the job done in the first round.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1116,7 +1116,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "…oosevelt Roberts submitted his way to a UFC contract in the featured bout, and Ian Heinisch, Jordan Griffin and Juan Adams all locked up contracts as well after they each tallied first-round finishes.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1140,7 +1140,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "…oosevelt Roberts submitted his way to a UFC contract in the featured bout, and Ian Heinisch, Jordan Griffin and Juan Adams all locked up contracts as well after they each tallied first-round finishes.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1164,7 +1164,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "Roosevelt Roberts submitted his way to a UFC contract in the featured bout, and Ian Heinisch, Jordan Griffin and Juan Adams all locked up contracts as well after they each tallied first-round finishes…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1188,7 +1188,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "…oosevelt Roberts submitted his way to a UFC contract in the featured bout, and Ian Heinisch, Jordan Griffin and Juan Adams all locked up contracts as well after they each tallied first-round finishes.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1212,7 +1212,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "He and Kennedy Nzechukwu notched first-round knockouts as well as UFC contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1236,7 +1236,7 @@
    "source_date": "2021-08-11",
    "source_family": "ufc.com",
    "source_excerpt_short": "Bobby Moffett earned his contract with his second-round submission effort and provided a memorable moment in the Octagon with his Fight of the Night effort against Bryce Mitchell.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1260,7 +1260,7 @@
    "source_date": "2021-08-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "Miles Johns and Miguel Baeza started off a night defined by unanimous decisions with strong enough statement wins to both earn UFC contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1284,7 +1284,7 @@
    "source_date": "2021-08-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "Miles Johns and Miguel Baeza started off a night defined by unanimous decisions with strong enough statement wins to both earn UFC contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1308,7 +1308,7 @@
    "source_date": "2021-08-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "The final three fights of the night delivered in big ways, with flyweight Tracy Cortez, featherweight Aalon Cruz and light heavyweight Aleksa Camur all coming away from their performances with UFC con…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1332,7 +1332,7 @@
    "source_date": "2021-08-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "…al three fights of the night delivered in big ways, with flyweight Tracy Cortez, featherweight Aalon Cruz and light heavyweight Aleksa Camur all coming away from their performances with UFC contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1356,7 +1356,7 @@
    "source_date": "2021-08-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "…al three fights of the night delivered in big ways, with flyweight Tracy Cortez, featherweight Aalon Cruz and light heavyweight Aleksa Camur all coming away from their performances with UFC contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1380,7 +1380,7 @@
    "source_date": "2021-08-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "**William Knight was awarded a developmental league contract",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1404,7 +1404,7 @@
    "source_date": "2021-08-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "Only one performance in episode nine did enough for Dana to award a contract, and it was Phil Rowe who got to sign his name on the dotted line to secure his spot in the UFC.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1428,7 +1428,7 @@
    "source_date": "2020-11-17",
    "source_family": "ufc.com",
    "source_excerpt_short": "To wrap up the season, Dana White welcomed Victoria Leonardo to the UFC flyweight division, Tucker Lutz to the lightweight ranks, Gloria de Paula to the strawweight division, and JP Buys to the flywei…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1452,7 +1452,7 @@
    "source_date": "2020-11-17",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ht division, Tucker Lutz to the lightweight ranks, Gloria de Paula to the strawweight division, and JP Buys to the flyweight class, bringing the total number of contracts awarded on Season Four to 37.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1476,7 +1476,7 @@
    "source_date": "2020-11-17",
    "source_family": "ufc.com",
    "source_excerpt_short": "…on, Dana White welcomed Victoria Leonardo to the UFC flyweight division, Tucker Lutz to the lightweight ranks, Gloria de Paula to the strawweight division, and JP Buys to the flyweight class, bringing…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1500,7 +1500,7 @@
    "source_date": "2020-11-17",
    "source_family": "ufc.com",
    "source_excerpt_short": "…to the UFC flyweight division, Tucker Lutz to the lightweight ranks, Gloria de Paula to the strawweight division, and JP Buys to the flyweight class, bringing the total number of contracts awarded on…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1524,7 +1524,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…m for the majority of the last two-plus seasons, as the UFC President doled out four more contracts, bringing lightweight Genaro Valdez, Fernie Garcia, Carlos Hernandez, and Mike Malott into the fold.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1548,7 +1548,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…m for the majority of the last two-plus seasons, as the UFC President doled out four more contracts, bringing lightweight Genaro Valdez, Fernie Garcia, Carlos Hernandez, and Mike Malott into the fold.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1572,7 +1572,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…m for the majority of the last two-plus seasons, as the UFC President doled out four more contracts, bringing lightweight Genaro Valdez, Fernie Garcia, Carlos Hernandez, and Mike Malott into the fold.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1596,7 +1596,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…m for the majority of the last two-plus seasons, as the UFC President doled out four more contracts, bringing lightweight Genaro Valdez, Fernie Garcia, Carlos Hernandez, and Mike Malott into the fold.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1620,7 +1620,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…FC roster, as undefeated lightweight Daniel Zellhuber and light heavyweight underdog Ihor Potieria got the call to the Octagon, bringing the total number of contracts awarded so far this season to 21.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1644,7 +1644,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ced a couple more additions to the UFC roster, as undefeated lightweight Daniel Zellhuber and light heavyweight underdog Ihor Potieria got the call to the Octagon, bringing the total number of contrac…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1668,7 +1668,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ddition to the flyweight combatants, White handed contracts to each of the three additional winners — welterweight AJ Fletcher, featherweight Joanderson Brito, and light heavyweight Azamat Murzakanov.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1692,7 +1692,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ddition to the flyweight combatants, White handed contracts to each of the three additional winners — welterweight AJ Fletcher, featherweight Joanderson Brito, and light heavyweight Azamat Murzakanov.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1716,7 +1716,7 @@
    "source_date": "2021-08-31",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ddition to the flyweight combatants, White handed contracts to each of the three additional winners — welterweight AJ Fletcher, featherweight Joanderson Brito, and light heavyweight Azamat Murzakanov.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1740,7 +1740,7 @@
    "source_date": "2024-12-26",
    "source_family": "ufc.com",
    "source_excerpt_short": "Heavyweights Danylo Voievodkin, Talisson Teixeira, and Mario Pinto all earned contracts this season",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1767,7 +1767,7 @@
    "source_date": "2024-12-26",
    "source_family": "ufc.com",
    "source_excerpt_short": "Heavyweights Danylo Voievodkin, Talisson Teixeira, and Mario Pinto all earned contracts this season",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1794,7 +1794,7 @@
    "source_date": "2024-12-26",
    "source_family": "ufc.com",
    "source_excerpt_short": "Heavyweights Danylo Voievodkin, Talisson Teixeira, and Mario Pinto all earned contracts this season",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -1821,7 +1821,7 @@
    "source_date": "2017-07-18",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ngside an elite crew including UFC fighters Drakkar Klose and Bryan Barberena , O'Malley gets plenty of good work in the gym, and with his performance on Tuesday night, “Sugar” earned the opportunity…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -1845,7 +1845,7 @@
    "source_date": "2017-08-29",
    "source_family": "ufc.com",
    "source_excerpt_short": "In a surprise ending to the season, UFC President Dana White handed out a trio of contracts, inking Allen Crowder , Lauren Mueller and Matt Frevola to contracts",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1869,7 +1869,7 @@
    "source_date": "2017-08-29",
    "source_family": "ufc.com",
    "source_excerpt_short": "In a surprise ending to the season, UFC President Dana White handed out a trio of contracts, inking Allen Crowder , Lauren Mueller and Matt Frevola to contracts",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1893,7 +1893,7 @@
    "source_date": "2017-08-29",
    "source_family": "ufc.com",
    "source_excerpt_short": "In a surprise ending to the season, UFC President Dana White handed out a trio of contracts, inking Allen Crowder , Lauren Mueller and Matt Frevola to contracts",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1917,7 +1917,7 @@
    "source_date": "2018-06-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "…out of the gates hot last summer, it was more of the same as Season 2 kicked off on Tuesday night with the UFC President handing out contracts to first-round finishers Alonzo Menifield and Greg Hardy.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1941,7 +1941,7 @@
    "source_date": "2018-06-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "…out of the gates hot last summer, it was more of the same as Season 2 kicked off on Tuesday night with the UFC President handing out contracts to first-round finishers Alonzo Menifield and Greg Hardy.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1965,7 +1965,7 @@
    "source_date": "2019-06-18",
    "source_family": "ufc.com",
    "source_excerpt_short": "…victors earning a shot to compete inside the Octagon, as heavyweight Yorgan De Castro and middleweight Punahele Soriano impressed UFC President Dana White enough to become the first two competitors t…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -1989,7 +1989,7 @@
    "source_date": "2019-06-18",
    "source_family": "ufc.com",
    "source_excerpt_short": "…e inside the Octagon, as heavyweight Yorgan De Castro and middleweight Punahele Soriano impressed UFC President Dana White enough to become the first two competitors to graduate to the biggest stage i…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2013,7 +2013,7 @@
    "source_date": "2019-06-25",
    "source_family": "ufc.com",
    "source_excerpt_short": "after impressive performances in victory, Miguel Baeza and Miles Johns were awarded UFC contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2037,7 +2037,7 @@
    "source_date": "2019-06-25",
    "source_family": "ufc.com",
    "source_excerpt_short": "after impressive performances in victory, Miguel Baeza and Miles Johns were awarded UFC contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2061,7 +2061,7 @@
    "source_date": "2022-08-09",
    "source_family": "ufc.com",
    "source_excerpt_short": "When the night was over, three more fighters joined the UFC roster, as Clayton Carpenter, Erik Silva, and Jamal Pogues were all awarded contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2088,7 +2088,7 @@
    "source_date": "2022-08-09",
    "source_family": "ufc.com",
    "source_excerpt_short": "When the night was over, three more fighters joined the UFC roster, as Clayton Carpenter, Erik Silva, and Jamal Pogues were all awarded contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2115,7 +2115,7 @@
    "source_date": "2022-08-09",
    "source_family": "ufc.com",
    "source_excerpt_short": "When the night was over, three more fighters joined the UFC roster, as Clayton Carpenter, Erik Silva, and Jamal Pogues were all awarded contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2142,7 +2142,7 @@
    "source_date": "2022-08-23",
    "source_family": "ufc.com",
    "source_excerpt_short": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2169,7 +2169,7 @@
    "source_date": "2022-08-23",
    "source_family": "ufc.com",
    "source_excerpt_short": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2196,7 +2196,7 @@
    "source_date": "2022-08-23",
    "source_family": "ufc.com",
    "source_excerpt_short": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2223,7 +2223,7 @@
    "source_date": "2022-08-23",
    "source_family": "ufc.com",
    "source_excerpt_short": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2250,7 +2250,7 @@
    "source_date": "2022-08-23",
    "source_family": "ufc.com",
    "source_excerpt_short": "Each of the night's five victors earned deals, with White singing the praises of Denise Gomes, Cameron Saaiman, Jesus Aguilar, Darrius Flowers, and Mick Parkin.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2277,7 +2277,7 @@
    "source_date": "2022-09-06",
    "source_family": "ufc.com",
    "source_excerpt_short": "Virgin Islands' Karl Williams joining a trio of Brazilians on the roster, as Vitor Petrino and the Bonfim brothers, Ismael and Gabriel, all secured deals after impressive wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2304,7 +2304,7 @@
    "source_date": "2022-09-06",
    "source_family": "ufc.com",
    "source_excerpt_short": "Virgin Islands' Karl Williams joining a trio of Brazilians on the roster, as Vitor Petrino and the Bonfim brothers, Ismael and Gabriel, all secured deals after impressive wins.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2331,7 +2331,7 @@
    "source_date": "2023-08-08",
    "source_family": "ufc.com",
    "source_excerpt_short": "After three straight decisions to start the show, Nolan set off some fireworks to secure the victory and a place on the UFC roster later this evening when Dana White hands out contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -2358,7 +2358,7 @@
    "source_date": "2023-08-15",
    "source_family": "ufc.com",
    "source_excerpt_short": "…in a giving mood, handing out contracts to all five winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavy…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2385,7 +2385,7 @@
    "source_date": "2023-08-15",
    "source_family": "ufc.com",
    "source_excerpt_short": "…e winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavyweight, and Abdul-Kerim Al-Selwady at lightweight.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2412,7 +2412,7 @@
    "source_date": "2023-08-15",
    "source_family": "ufc.com",
    "source_excerpt_short": "…l five winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavyweight, and Abdul-Kerim Al-Selwady at lightwe…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2439,7 +2439,7 @@
    "source_date": "2023-08-15",
    "source_family": "ufc.com",
    "source_excerpt_short": "…e winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavyweight, and Abdul-Kerim Al-Selwady at lightweight.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2466,7 +2466,7 @@
    "source_date": "2023-08-15",
    "source_family": "ufc.com",
    "source_excerpt_short": "…e winners, adding Charalampos Grigoriou to the bantamweight ranks, Eduarda Moura at strawweight, Hyder Amil at featherweight, Ibo Aslan at light heavyweight, and Abdul-Kerim Al-Selwady at lightweight.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -2493,7 +2493,7 @@
    "source_date": "2023-08-22",
    "source_family": "ufc.com",
    "source_excerpt_short": "This week, we saw just four fights and only three athletes awarded contracts, as Luis Pajuelo, Oban Elliott, and Zachary Reese all punched their ticket to the UFC",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2520,7 +2520,7 @@
    "source_date": "2023-08-22",
    "source_family": "ufc.com",
    "source_excerpt_short": "This week, we saw just four fights and only three athletes awarded contracts, as Luis Pajuelo, Oban Elliott, and Zachary Reese all punched their ticket to the UFC",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2547,7 +2547,7 @@
    "source_date": "2018-06-26",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ance and White handed out two contracts, adding lightweight Te Edwards and flyweight Antonina Shevchenko to the class of competitors graduating from the Contenders Series to the UFC roster this season",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2571,7 +2571,7 @@
    "source_date": "2018-06-26",
    "source_family": "ufc.com",
    "source_excerpt_short": "…d inside the distance and White handed out two contracts, adding lightweight Te Edwards and flyweight Antonina Shevchenko to the class of competitors graduating from the Contenders Series to the UFC r…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2619,7 +2619,7 @@
    "source_date": "2024-10-15",
    "source_family": "ufc.com",
    "source_excerpt_short": "…s, as Australia's Jonathan Micallef, Cuba's Yadier DelValle, and Americans Luis Gurule and Nick Klein were invited to join the UFC roster, bringing the total number of fighters moving forward this sea…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2646,7 +2646,7 @@
    "source_date": "2024-10-15",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ralia's Jonathan Micallef, Cuba's Yadier DelValle, and Americans Luis Gurule and Nick Klein were invited to join the UFC roster, bringing the total number of fighters moving forward this season to 42.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2673,7 +2673,7 @@
    "source_date": "2024-10-15",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ious fighters on Tuesday's fight card earned contracts, as Australia's Jonathan Micallef, Cuba's Yadier DelValle, and Americans Luis Gurule and Nick Klein were invited to join the UFC roster, bringing…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2700,7 +2700,7 @@
    "source_date": "2023-09-05",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ith short-notice bantamweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Brazilian light heavyweight Brendson Ribeiro a…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2727,7 +2727,7 @@
    "source_date": "2023-09-05",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ore athletes were added to the UFC roster, with short-notice bantamweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Br…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2754,7 +2754,7 @@
    "source_date": "2023-09-05",
    "source_family": "ufc.com",
    "source_excerpt_short": "…amweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Brazilian light heavyweight Brendson Ribeiro all earning contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2781,7 +2781,7 @@
    "source_date": "2023-09-05",
    "source_family": "ufc.com",
    "source_excerpt_short": "…amweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Brazilian light heavyweight Brendson Ribeiro all earning contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2808,7 +2808,7 @@
    "source_date": "2023-09-05",
    "source_family": "ufc.com",
    "source_excerpt_short": "…amweight Dione Barbosa, Fighting Nerds representative Jean Silva, wrestler Dylan Budka, standout Canadian prospect Serhiy Sidey, and Brazilian light heavyweight Brendson Ribeiro all earning contracts.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2835,7 +2835,7 @@
    "source_date": "2025-09-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "Chovancek, Gantt, Baraniewski and Sosa all impressed White, joining their names to the growing Class of '25 graduates joining the UFC roster so far this season.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -2862,7 +2862,7 @@
    "source_date": "2025-09-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "Chovancek, Gantt, Baraniewski and Sosa all impressed White, joining their names to the growing Class of '25 graduates joining the UFC roster so far this season.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -2889,7 +2889,7 @@
    "source_date": "2025-09-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "Chovancek, Gantt, Baraniewski and Sosa all impressed White, joining their names to the growing Class of '25 graduates joining the UFC roster so far this season.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -2916,7 +2916,7 @@
    "source_date": "2025-09-16",
    "source_family": "ufc.com",
    "source_excerpt_short": "Chovancek, Gantt, Baraniewski and Sosa all impressed White, joining their names to the growing Class of '25 graduates joining the UFC roster so far this season.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -2940,7 +2940,7 @@
    "source_date": "2024-09-24",
    "source_family": "ufc.com",
    "source_excerpt_short": "…age, UFC CEO Dana White handed out contracts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time thi…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2967,7 +2967,7 @@
    "source_date": "2024-09-24",
    "source_family": "ufc.com",
    "source_excerpt_short": "…a White handed out contracts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time this season that fi…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -2994,7 +2994,7 @@
    "source_date": "2024-09-24",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ut contracts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time this season that five contracts wer…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -3021,7 +3021,7 @@
    "source_date": "2024-09-24",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time this season that five contracts were awarded.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -3048,7 +3048,7 @@
    "source_date": "2024-09-24",
    "source_family": "ufc.com",
    "source_excerpt_short": "…ts to all five winners, adding Alexia Thainara, Kevin Vallejos, Kevin Christian, Daniel Frunza, and Voievodkin to the roster, marking just the second time this season that five contracts were awarded.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -3075,7 +3075,7 @@
    "source_date": "2024-10-01",
    "source_family": "ufc.com",
    "source_excerpt_short": "For the second straight week, all five victorious fighters were awarded contracts, including Finney, whose second victory of the season and third DWCS win finally punched his ticket to the UFC.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -3102,7 +3102,7 @@
    "source_date": "2026-08-19",
    "source_family": "ufc.com",
    "source_excerpt_short": "Upon landing, Miller found himself in the perfect position to apply the rarely-seen technique, and rendered his man unconscious to claim a UFC contract from White, who praised the underdog for throwin…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -3174,7 +3174,7 @@
    "source_date": "2026-08-26",
    "source_family": "ufc.com",
    "source_excerpt_short": "And as Apodaca revisited with Laura Sanko after confirmation of her UFC contract, she admitted it's going to take some time for the reality of it all to set in.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -3198,7 +3198,7 @@
    "source_date": "2026-09-02",
    "source_family": "ufc.com",
    "source_excerpt_short": "It was a virtually punch-perfect performance from Darby, who ended the night celebrating a UFC contract as he heard those famous four words, “Welcome to the UFC!”",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -3222,7 +3222,7 @@
    "source_date": "2026-09-02",
    "source_family": "ufc.com",
    "source_excerpt_short": "And, after his contract was confirmed, Sanchez recounted his conversation with White, where the UFC boss told him something pretty similar.",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -3246,7 +3246,7 @@
    "source_date": "2026-09-09",
    "source_family": "ufc.com",
    "source_excerpt_short": "Isaac Moreno: Signing the contract, then tying the knot",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -3270,7 +3270,7 @@
    "source_date": "2026-09-09",
    "source_family": "ufc.com",
    "source_excerpt_short": "After receiving the news of his UFC contract, Natividad put the rest of the UFC flyweight division on notice as he served warning that what we'd just witnessed was just the tip of the iceberg when it…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",
@@ -3294,7 +3294,7 @@
    "source_date": "2026-09-09",
    "source_family": "ufc.com",
    "source_excerpt_short": "Signed and sealed ✍️ Quentin Pasley, Isaac Moreno, Martin Kozak, & Christian Natividad earn UFC contracts after their performances in Week 5 of #DWCS ! [ B2YB @TotalWireless ] pic.twitter.com/8KecGMGy…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -3318,7 +3318,7 @@
    "source_date": "2026-09-09",
    "source_family": "ufc.com",
    "source_excerpt_short": "Signed and sealed ✍️ Quentin Pasley, Isaac Moreno, Martin Kozak, & Christian Natividad earn UFC contracts after their performances in Week 5 of #DWCS ! [ B2YB @TotalWireless ] pic.twitter.com/8KecGMGy…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "full_name",
@@ -3342,7 +3342,7 @@
    "source_date": "2026-08-12",
    "source_family": "ufc.com",
    "source_excerpt_short": "Kropschot got the nod via unanimous decision, and then got the nod from White, who said “The Land Animal's” desire to push for the finish in the final round proved the deciding factor when assessing w…",
-   "claim_status": "published",
+   "claim_status": "eligible",
    "review_reason": null,
    "evidence": {
     "match": "surname_unique_in_scope",

@@ -8,7 +8,8 @@
  * their deterministic id (sha of fighter|event|type|source_url), so a re-run
  * rewrites the same rows instead of adding copies. Every row is re-validated
  * against the canonical database before anything is written: the fighter must
- * be on the bout, the bout on the event, and a published row must be ufc.com.
+ * be on the bout, the bout on the event, and an eligible row must be ufc.com.
+ * It writes evidence only; it never creates a display resolution.
  * One failed check and nothing is written.
  */
 import fs from 'node:fs';
@@ -45,7 +46,8 @@ for (const c of claims) {
     if (b.event_id !== c.event_id) problems.push(`${c.id}: bout is not on event ${c.event_id}`);
     if (![b.fighter_a_id, b.fighter_b_id].includes(c.fighter_id)) problems.push(`${c.id}: fighter ${c.fighter_id} is not on bout ${b.id}`);
   }
-  if (c.claim_status === 'published' && c.source_family !== 'ufc.com') problems.push(`${c.id}: published from ${c.source_family}`);
+  if (c.claim_status === 'eligible' && c.source_family !== 'ufc.com') problems.push(`${c.id}: eligible from ${c.source_family}`);
+  if (c.claim_status === 'published') problems.push(`${c.id}: legacy triage 'published' (renamed 'eligible' in 20260913000006)`);
   if ((c.source_excerpt_short || '').length > 240) problems.push(`${c.id}: excerpt too long`);
 }
 const by = (k) => claims.reduce((a, r) => ((a[r[k]] = (a[r[k]] || 0) + 1), a), {});

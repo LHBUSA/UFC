@@ -4,6 +4,7 @@ import { Breadcrumbs, Empty, JsonLd } from "@/components/ui";
 import { AlumCard } from "@/components/Dwcs";
 import { getImagesForFighters } from "@/lib/db";
 import { getDwcsGraph, getOutcomeClaims } from "@/lib/dwcsGraph";
+import { contractFilterAvailable, resolvedContractCount } from "@/lib/outcomeResolution";
 import { alumniMetrics, filterAlumni, FILTER_LABEL, paginate, parseFilter, parseSeries, parseSort, SORT_LABEL, sortAlumni, type AlumniFilter, type AlumniSort } from "@/lib/dwcsAlumni";
 import { getRankingIndex } from "@/lib/rankings";
 import { fighterSlug } from "@/lib/slug";
@@ -48,12 +49,14 @@ export default async function DwcsAlumniPage({ searchParams }: { searchParams: P
     );
   }
   const rank = (id: string) => rankIndex?.byFighter.get(id) ?? null;
+  /* `claims` holds operator-APPROVED outcomes only (lib/outcomeResolution.ts). */
   const hasContract = (id: string) => (claims.get(id) || []).some((c) => c.claim_type === "contract_awarded");
-  const contractClaims = [...claims.values()].flat().filter((c) => c.claim_type === "contract_awarded").length;
+  const resolvedContracts = resolvedContractCount(claims);
+  const showContractFilter = contractFilterAvailable(claims);
 
   const filter = parseFilter(sp.filter);
-  /* The contract filter exists only once sourced claims exist. */
-  const activeFilter: AlumniFilter = filter === "contract" && !contractClaims ? "all" : filter;
+  /* The contract filter exists only once a resolved public contract exists. */
+  const activeFilter: AlumniFilter = filter === "contract" && !showContractFilter ? "all" : filter;
   const sort = parseSort(sp.sort);
   const series = parseSeries(sp.series);
   const seriesKey = series ? ("brazil" in series ? "brazil" : String(series.season)) : undefined;
@@ -66,7 +69,7 @@ export default async function DwcsAlumniPage({ searchParams }: { searchParams: P
 
   const seasons = [...new Set(graph.events.filter((e) => e.identity.series === "dwcs" && e.identity.season).map((e) => e.identity.season as number))].sort((a, b) => a - b);
   const hasBrazil = graph.events.some((e) => e.identity.series === "brazil");
-  const filters: AlumniFilter[] = contractClaims ? ["all", "ufc", "ranked", "champions", "contract"] : ["all", "ufc", "ranked", "champions"];
+  const filters: AlumniFilter[] = showContractFilter ? ["all", "ufc", "ranked", "champions", "contract"] : ["all", "ufc", "ranked", "champions"];
   const snapshot = rankIndex?.snapshotDate || null;
 
   return (
@@ -126,7 +129,7 @@ export default async function DwcsAlumniPage({ searchParams }: { searchParams: P
 
       <section className="dwcs-source">
         <b>How this is built.</b> Contender Series appearances and results come from the canonical event, bout and result tables that power every PropBetEdge fight page. A fighter &quot;reached a UFC card&quot; when that same canonical fighter record holds a completed UFC-card bout dated after their first Contender Series appearance; UFC fights and wins in the headline count only those bouts. Rankings and champions are read from the one official UFC rankings snapshot the whole site uses. There are no active or retired labels: the last UFC fight date is shown instead.
-        {contractClaims ? ` Contract badges appear only where an attributed source names the fighter (${contractClaims} sourced).` : " Contract outcomes are not shown: a win on the Contender Series is not a contract, and no fighter-named source claims are loaded yet."}
+        {showContractFilter ? ` Contract badges appear only where an operator has reviewed and approved an official source naming the fighter (${resolvedContracts} resolved).` : " Contract outcomes are not shown yet: a win on the Contender Series is not a contract, and official source claims are displayed only after individual review."}
       </section>
 
       <JsonLd data={{

@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { contenderIdentity, isDanaWhiteContenderSeries, type ContenderIdentity } from "@/lib/contenderIdentity";
 import { isContenderSeries } from "@/lib/db";
+import { groupByFighter, resolvePublicOutcomes, type OutcomeClaimRow, type OutcomeResolutionRow, type PublicOutcome } from "@/lib/outcomeResolution";
 
 /* The Contender Series alumni graph.
  *
@@ -12,7 +13,8 @@ import { isContenderSeries } from "@/lib/db";
  * matches a fighter by name, copies a rank into a fighter row, or infers a
  * contract from a win (Diego Lopes lost on Season 5 and reached the UFC; the
  * graph records what happened, not what a win usually means). Contract and
- * opportunity outcomes appear only as sourced claims — see getOutcomeClaims.
+ * opportunity outcomes appear only as operator-approved resolutions of sourced
+ * claims — see getOutcomeClaims.
  *
  * Activity is reported as facts ("last UFC fight Mar 2026", "14 UFC fights"),
  * never as an active/inactive/retired label: ufc_fighters.is_active is not a
@@ -228,35 +230,41 @@ export const getDwcsGraph = cache(async (): Promise<DwcsGraph | null> => {
   }
 });
 
-/* ---- sourced outcome claims ------------------------------------------- */
+/* ---- resolved outcomes ------------------------------------------------ */
 
-export type OutcomeClaimType = "contract_awarded" | "developmental_deal" | "tuf_invite" | "other_opportunity";
-export type OutcomeClaim = {
-  id: string; fighter_id: string; event_id: string; bout_id: string | null;
-  claim_type: OutcomeClaimType; source_url: string; source_title: string | null; source_date: string | null;
-  source_family: string; source_excerpt_short: string | null; captured_at: string;
-};
+export type { OutcomeClaimType, PublicOutcome as OutcomeClaim } from "@/lib/outcomeResolution";
+export { CLAIM_LABEL } from "@/lib/outcomeResolution";
 
-export const CLAIM_LABEL: Record<OutcomeClaimType, string> = {
-  contract_awarded: "Contract awarded",
-  developmental_deal: "Developmental deal",
-  tuf_invite: "TUF invite",
-  other_opportunity: "UFC opportunity",
-};
+/* Short: withdrawing a resolution has to take a badge down promptly, and
+ * "is anything approved" is exactly the kind of answer a long cache gets wrong
+ * the moment it flips. */
+const RESOLUTION_REVALIDATE = 60;
 
-/* Only published, unconflicted claims. A table that does not exist yet, or a
- * read that fails, yields no claims — never an inferred one. */
-export const getOutcomeClaims = cache(async (): Promise<Map<string, OutcomeClaim[]>> => {
-  const m = new Map<string, OutcomeClaim[]>();
-  if (!URL_ || !KEY) return m;
+/**
+ * Outcomes an operator has APPROVED for display, by fighter.
+ *
+ * Not "claims with a good triage label": a UFC.com sentence is evidence, and
+ * evidence alone returns nothing here. Approved resolutions are read first; a
+ * claim is fetched only because a resolution selected it; both then pass
+ * resolvePublicOutcomes, which re-checks the rules the database enforces.
+ * Any failed read yields no outcomes — absence, never inference.
+ */
+export const getOutcomeClaims = cache(async (): Promise<Map<string, PublicOutcome[]>> => {
+  if (!URL_ || !KEY) return new Map();
   try {
-    const res = await fetch(`${URL_}/rest/v1/ufc_dwcs_outcome_claims?select=id,fighter_id,event_id,bout_id,claim_type,source_url,source_title,source_date,source_family,source_excerpt_short,captured_at&claim_status=eq.published&order=source_date.asc&limit=${PAGE}`, { headers: headers(), next: { revalidate: REVALIDATE } });
-    if (!res.ok) return m;
-    for (const c of (await res.json()) as OutcomeClaim[]) {
-      const list = m.get(c.fighter_id) || [];
-      list.push(c);
-      m.set(c.fighter_id, list);
+    const rres = await fetch(`${URL_}/rest/v1/ufc_dwcs_outcome_resolutions?select=id,fighter_id,event_id,claim_type,selected_claim_id,resolution_status,resolution_rule,resolved_by,reviewed_at&resolution_status=eq.approved&limit=${PAGE}`, { headers: headers(), next: { revalidate: RESOLUTION_REVALIDATE } });
+    if (!rres.ok) return new Map();
+    const resolutions = (await rres.json()) as OutcomeResolutionRow[];
+    if (!resolutions.length) return new Map();
+    const ids = [...new Set(resolutions.map((r) => r.selected_claim_id))];
+    const claims: OutcomeClaimRow[] = [];
+    for (let i = 0; i < ids.length; i += 100) {
+      const cres = await fetch(`${URL_}/rest/v1/ufc_dwcs_outcome_claims?select=id,fighter_id,event_id,bout_id,claim_type,claim_status,source_url,source_title,source_date,source_family,source_excerpt_short&id=in.(${ids.slice(i, i + 100).join(",")})`, { headers: headers(), next: { revalidate: RESOLUTION_REVALIDATE } });
+      if (!cres.ok) return new Map();
+      claims.push(...((await cres.json()) as OutcomeClaimRow[]));
     }
-  } catch { /* absence, not inference */ }
-  return m;
+    return groupByFighter(resolvePublicOutcomes(claims, resolutions));
+  } catch {
+    return new Map();
+  }
 });

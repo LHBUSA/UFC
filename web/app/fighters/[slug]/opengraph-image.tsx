@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { resolveFighter } from "@/lib/resolve";
-import { getImagesForFighters, getFighterBouts } from "@/lib/db";
+import { getImagesForFighters, getFighterBouts, getSourceDobs } from "@/lib/db";
+import { ageRange, dobDispute } from "@/lib/dobEvidence";
 import { ogFonts, OG_SIZE } from "@/lib/og";
 import { OgFrame, OgFace } from "@/components/og";
 import { fmtHeight, fmtReach, fmtRecord, stanceLabel, age, archiveSummary } from "@/lib/format";
@@ -13,11 +14,13 @@ export const contentType = "image/png";
 
 export default async function OG({ params }: { params: Promise<{ slug: string }> }) {
   const [fonts, f] = await Promise.all([ogFonts(), resolveFighter((await params).slug)]);
-  const [imgs, bouts] = f ? await Promise.all([getImagesForFighters([f.id]), getFighterBouts(f.id)]) : [new Map(), []];
+  const [imgs, bouts, sourceDobs] = f ? await Promise.all([getImagesForFighters([f.id]), getFighterBouts(f.id), getSourceDobs(f.id).catch(() => [])]) : [new Map(), [], []];
+  /* Same rule as the profile: disputed birth dates give an age range, not one age. */
+  const dob = dobDispute(sourceDobs);
   const img = f ? imgs.get(f.id) : null;
   const s = f ? archiveSummary(f.id, bouts) : null;
   const stats: Array<[string, string]> = f ? [
-    ["RECORD", fmtRecord(f)], ["AGE", age(f.dob)?.toString() || "—"], ["HEIGHT", fmtHeight(f.height_in)], ["REACH", fmtReach(f.reach_in)], ["STANCE", stanceLabel(f.stance).toUpperCase()],
+    ["RECORD", fmtRecord(f)], ["AGE", dob ? ageRange(dob) : age(f.dob)?.toString() || "—"], ["HEIGHT", fmtHeight(f.height_in)], ["REACH", fmtReach(f.reach_in)], ["STANCE", stanceLabel(f.stance).toUpperCase()],
     ...(s && s.fights ? [["FINISHES", `${s.ko + s.sub} of ${s.w} wins`] as [string, string]] : []),
   ] : [];
   return new ImageResponse(
