@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 
 /* Accessible metric explainer.
@@ -10,7 +11,14 @@ import Link from "next/link";
  * returns focus, clicking outside closes. The trigger carries aria-expanded
  * and aria-controls; the panel is a labelled dialog region. Nothing inside
  * grades a value — it explains the definition and shows the sample behind
- * the number. */
+ * the number.
+ *
+ * The panel renders in a portal on document.body with fixed positioning
+ * measured from the trigger, so no card, accordion or transformed ancestor can
+ * clip it, and it is kept inside all four viewport edges. Below the mobile
+ * breakpoint it becomes a bottom sheet. Keyboard order is preserved by hand:
+ * Tab from the open trigger moves into the panel, and leaving the panel either
+ * way returns to the trigger. */
 
 export type ExplainProps = {
   /* Heading of the popover, e.g. the metric's full name. */
@@ -28,33 +36,162 @@ export type ExplainProps = {
   size?: "sm" | "md";
 };
 
+const SHEET_MAX = 680; // px: at or below this viewport width the panel is a bottom sheet
+const GAP = 8;         // px between trigger and panel
+const EDGE = 12;       // px minimum distance from every viewport edge
+const TIERS = new Set(["high", "medium", "low", "insufficient"]);
+
+type Place = { top: number; left: number; width: number; maxHeight: number; side: "below" | "above" } | null;
+
+function useIsoLayoutEffect(fn: () => void | (() => void), deps: unknown[]) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  (typeof window === "undefined" ? useEffect : useLayoutEffect)(fn, deps);
+}
+
 export function Explain({ title, body, unit, caution, formula, rows, learnHref, learnLabel = "Learn more →", label, size = "sm" }: ExplainProps) {
   const [open, setOpen] = useState(false);
-  const [flip, setFlip] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [sheet, setSheet] = useState(false);
+  const [place, setPlace] = useState<Place>(null);
   const id = useId();
-  const wrap = useRef<HTMLSpanElement>(null);
   const btn = useRef<HTMLButtonElement>(null);
+  const pop = useRef<HTMLDivElement>(null);
   const hoverTimer = useRef<number | null>(null);
+  const viaKeyboard = useRef(false);
+  /* Clicking a panel that hover opened pins it, so mouse-leave no longer closes it. */
+  const pinned = useRef(false);
 
-  const close = useCallback((refocus = false) => { setOpen(false); if (refocus) btn.current?.focus(); }, []);
+  useEffect(() => setMounted(true), []);
+
+  const close = useCallback((refocus = false) => { pinned.current = false; setOpen(false); setPlace(null); if (refocus) btn.current?.focus(); }, []);
+
+  /* Measure from the trigger and keep the whole panel on screen. */
+  const position = useCallback(() => {
+    const b = btn.current, p = pop.current;
+    if (!b || !p) return;
+    const vw = document.documentElement.clientWidth;
+    const vh = window.innerHeight;
+    if (vw <= SHEET_MAX) { setSheet(true); setPlace(null); return; }
+    setSheet(false);
+    const r = b.getBoundingClientRect();
+    const width = Math.min(Math.max(360, vw * 0.32), 440, vw - EDGE * 2);
+    let left = r.left;
+    if (left + width > vw - EDGE) left = vw - EDGE - width;
+    if (left < EDGE) left = EDGE;
+    const natural = p.scrollHeight;
+    const below = vh - r.bottom - GAP - EDGE;
+    const above = r.top - GAP - EDGE;
+    const side: "below" | "above" = natural <= below || below >= above ? "below" : "above";
+    const maxHeight = Math.max(160, side === "below" ? below : above);
+    const height = Math.min(natural, maxHeight);
+    const top = side === "below" ? r.bottom + GAP : Math.max(EDGE, r.top - GAP - height);
+    setPlace({ top, left, width, maxHeight, side });
+  }, []);
+
+  useIsoLayoutEffect(() => { if (open) position(); }, [open, position]);
 
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopPropagation(); close(true); } };
-    const onDown = (e: PointerEvent) => { if (wrap.current && !wrap.current.contains(e.target as Node)) close(false); };
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as Node;
+      if (btn.current?.contains(t) || pop.current?.contains(t) || (t as Element).classList?.contains("xp-scrim")) return;
+      close(false);
+    };
+    const onMove = () => position();
     document.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onDown);
-    /* Keep the panel inside the viewport: flip to right-aligned when it would overflow. */
-    const r = btn.current?.getBoundingClientRect();
-    if (r) setFlip(r.left + 340 > window.innerWidth);
-    return () => { document.removeEventListener("keydown", onKey); document.removeEventListener("pointerdown", onDown); };
-  }, [open, close]);
+    window.addEventListener("resize", onMove);
+    window.addEventListener("scroll", onMove, true);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("resize", onMove);
+      window.removeEventListener("scroll", onMove, true);
+    };
+  }, [open, close, position]);
 
-  const hoverIn = () => { if (window.matchMedia?.("(hover: hover)").matches) { if (hoverTimer.current) window.clearTimeout(hoverTimer.current); hoverTimer.current = window.setTimeout(() => setOpen(true), 120); } };
-  const hoverOut = () => { if (window.matchMedia?.("(hover: hover)").matches) { if (hoverTimer.current) window.clearTimeout(hoverTimer.current); hoverTimer.current = window.setTimeout(() => setOpen(false), 180); } };
+  /* Opened from the keyboard: move focus into the dialog so its links are reachable. */
+  useEffect(() => {
+    if (open && viaKeyboard.current && (place || sheet)) { pop.current?.focus(); viaKeyboard.current = false; }
+  }, [open, place, sheet]);
+
+  const hover = () => typeof window !== "undefined" && window.matchMedia?.("(hover: hover)").matches;
+  const hoverIn = () => { if (!hover()) return; if (hoverTimer.current) window.clearTimeout(hoverTimer.current); hoverTimer.current = window.setTimeout(() => setOpen(true), 120); };
+  const hoverOut = () => { if (!hover() || pinned.current) return; if (hoverTimer.current) window.clearTimeout(hoverTimer.current); hoverTimer.current = window.setTimeout(() => close(false), 180); };
+  const holdOpen = () => { if (hoverTimer.current) window.clearTimeout(hoverTimer.current); };
+
+  const onTriggerKey = (e: React.KeyboardEvent) => {
+    if ((e.key === "Enter" || e.key === " ") && !open) viaKeyboard.current = true;
+    if (e.key === "Tab" && !e.shiftKey && open && pop.current) { e.preventDefault(); pop.current.focus(); }
+  };
+  const onPanelKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "Tab" || !pop.current) return;
+    const focusables = [...pop.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")];
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && (active === pop.current || active === first)) { e.preventDefault(); btn.current?.focus(); }
+    else if (!e.shiftKey && (active === last || (!last && active === pop.current))) { e.preventDefault(); close(true); }
+  };
+
+  const conf = (v: string) => {
+    const t = v.trim().toLowerCase();
+    return TIERS.has(t) ? <span className={`conf ${t}`}>{t}</span> : v;
+  };
+
+  const style: React.CSSProperties | undefined = sheet
+    ? undefined
+    : place
+      ? { top: place.top, left: place.left, width: place.width, maxHeight: place.maxHeight }
+      : { top: 0, left: -9999, width: typeof window === "undefined" ? 440 : Math.min(Math.max(360, document.documentElement.clientWidth * 0.32), 440, document.documentElement.clientWidth - EDGE * 2), visibility: "hidden" };
+
+  const panel = (
+    <div
+      ref={pop}
+      id={`${id}-pop`}
+      role="dialog"
+      aria-labelledby={`${id}-title`}
+      tabIndex={-1}
+      className={`xp-pop${sheet ? " sheet" : ""}${place?.side === "above" ? " above" : ""}`}
+      hidden={!open}
+      style={open ? style : undefined}
+      onMouseEnter={holdOpen}
+      onMouseLeave={hoverOut}
+      onKeyDown={onPanelKey}
+    >
+      <div className="xp-head">
+        <b id={`${id}-title`}>{title}</b>
+        <button type="button" className="xp-close" aria-label="Close explainer" onClick={() => close(true)}><span aria-hidden="true">×</span></button>
+      </div>
+      <p className="xp-p">{body}</p>
+      {unit && <p className="xp-p xp-unit">{unit}</p>}
+      {rows && rows.length > 0 && (
+        <dl className="xp-rows">
+          {rows.map(([k, v]) => (
+            <div className="xp-row" key={k}>
+              <dt className="xp-dt">{TIERS.has(k.trim().toLowerCase()) ? conf(k) : k}</dt>
+              <dd className="xp-dd">{/^confidence$/i.test(k) ? conf(v) : v}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {caution && <p className="xp-caution">{caution}</p>}
+      {formula && (
+        <div className="xp-formula">
+          <span className="xp-label">Formula</span>
+          <code>{formula}</code>
+        </div>
+      )}
+      <div className="xp-links">
+        {learnHref && <Link href={learnHref} onClick={() => close(false)}>{learnLabel}</Link>}
+        <Link href="/learn/fight-dna#confidence" onClick={() => close(false)}>What does confidence mean?</Link>
+      </div>
+    </div>
+  );
 
   return (
-    <span className={`xp${open ? " open" : ""}`} ref={wrap} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+    <span className={`xp${open ? " open" : ""}`} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
       <button
         ref={btn}
         type="button"
@@ -63,23 +200,16 @@ export function Explain({ title, body, unit, caution, formula, rows, learnHref, 
         aria-expanded={open}
         aria-controls={`${id}-pop`}
         aria-haspopup="dialog"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+          if (open && !pinned.current && hover()) { pinned.current = true; return; }
+          if (open) close(false); else { pinned.current = hover(); setOpen(true); }
+        }}
+        onKeyDown={onTriggerKey}
       >
         <span aria-hidden="true">i</span>
       </button>
-      {/* Phrasing content only (spans), so the popover is valid inside <p>, <th> and <span> hosts and hydrates cleanly. */}
-      <span id={`${id}-pop`} role="dialog" aria-labelledby={`${id}-title`} className={`xp-pop${flip ? " flip" : ""}`} hidden={!open}>
-        <b id={`${id}-title`}>{title}</b>
-        <span className="xp-p">{body}</span>
-        {unit && <span className="xp-p xp-unit">{unit}</span>}
-        {caution && <span className="xp-p xp-caution">{caution}</span>}
-        {rows && rows.length > 0 && <span className="xp-rows">{rows.map(([k, v]) => <span className="xp-row" key={k}><span className="xp-dt">{k}</span><span className="xp-dd">{v}</span></span>)}</span>}
-        {formula && <code className="xp-formula">{formula}</code>}
-        <span className="xp-links">
-          {learnHref && <Link href={learnHref} onClick={() => close(false)}>{learnLabel}</Link>}
-          <Link href="/learn/fight-dna#confidence" onClick={() => close(false)}>What does confidence mean?</Link>
-        </span>
-      </span>
+      {mounted && createPortal(<>{open && sheet ? <div className="xp-scrim" aria-hidden="true" onClick={() => close(true)} /> : null}{panel}</>, document.body)}
     </span>
   );
 }
