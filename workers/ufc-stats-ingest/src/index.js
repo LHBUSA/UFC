@@ -55,6 +55,7 @@ import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec } f
 import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_resolver.mjs';
 import { tufInHouseEventReason } from './shared/tuf_guard.mjs';
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
+import { roundArchiveGaps, roundLaneStatus, gapAlertDecision, DEFAULT_GRACE_HOURS, DEFAULT_ESCALATE_HOURS } from './archiveHealth.mjs';
 
 /* Per-run ceiling on fight-total lookups, same idea as the scorecard cap:
  * a daily year-walk must not turn into an unbounded backfill. Each bout costs
@@ -110,7 +111,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.5.0';
+const VERSION = 'v0.6.0';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -133,6 +134,7 @@ function adminAuthorized(req, env) {
 /* R2-held state. Small JSON documents next to the raw page archive. */
 const STATE = {
   health: 'ufc-raw/_state/source_health.json',
+  archiveAlert: 'ufc-raw/_state/round_archive_alert.json',
   latency: (boutId) => `ufc-raw/_state/latency/${boutId}.json`,
 };
 async function getState(env, key) {
@@ -193,6 +195,17 @@ export default {
         const qrows = await selectAll(env, 'ufc_round_stat_queue', 'select=state');
         queue = qrows.reduce((acc, r) => ({ ...acc, [r.state]: (acc[r.state] || 0) + 1 }), {});
       } catch (_) { /* reported as null */ }
+      /* The round archive is judged separately from the service: ESPN results can
+       * be landing perfectly while no round data does. Read-only here - alerts
+       * are sent by runs, never by a health check. */
+      let archive = null;
+      try {
+        const sourceHealthNow = await getState(env, STATE.health);
+        const gaps = await collectRoundArchiveGaps(env, Date.now(), sourceHealthNow);
+        archive = { round_lane_status: roundLaneStatus({ gaps }), round_archive_gaps: gaps, round_archive_alert: await getState(env, STATE.archiveAlert) };
+      } catch (e) {
+        archive = { round_lane_status: 'unknown', round_archive_gaps: null, error: String(e?.message || e).slice(0, 160) };
+      }
       return json({
         service: SERVICE, version: VERSION, ...health,
         ufcstats_enabled: String(env.UFCSTATS_ENABLED ?? 'true') !== 'false',
@@ -203,6 +216,7 @@ export default {
         last_worker_round_write: lastWorkerRoundWrite,
         last_result_write: lastResultWrite,
         round_stat_queue: queue,
+        ...archive,
         challenge_policy: String(env.UFCSTATS_SOLVE_CHALLENGE || 'false') === 'true' ? 'solve_known_shape' : 'fail_closed',
         requirements: {
           SUPABASE_URL: Boolean(env.SUPABASE_URL),
@@ -328,7 +342,15 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
     card = await activeCard(env);
     if (!card && !force) {
       health.last_fast_skip = { at: nowIso(), reason: 'no card inside the fight-night window' };
-      return { status: 'skipped', reason: 'no active card', mode };
+      /* Once an hour (the tick at :00) the quiet fast cron also checks the round
+       * archive for completed cards still missing round rows, so a gap is noticed
+       * within the hour rather than at the next daily run. Database reads only;
+       * no ESPN or UFC Stats request, no run row; the alert state dedupes. */
+      let archive = null;
+      if (new Date().getUTCMinutes() < 15) {
+        try { archive = await checkRoundArchive(env, { now: Date.now() }); } catch (e) { console.error(`[${SERVICE}] round archive check failed: ${String(e?.message || e).slice(0, 120)}`); }
+      }
+      return { status: 'skipped', reason: 'no active card', mode, ...(archive ? { round_archive: archive } : {}) };
     }
   }
 
@@ -392,6 +414,10 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
     run.notes.review_deduplicated = ctx.reviewDeduplicated;
 
     if ((run.notes.round_rows_written || 0) > 0) run.notes.dna_trigger = await triggerFightDna(env, run);
+    /* After the lane, so rows written by this run already count. Never fatal. */
+    try { run.notes.round_archive = await checkRoundArchive(env, { now: Date.now() }); } catch (e) {
+      run.notes.round_archive = { round_lane_status: 'unknown', error: String(e?.message || e).slice(0, 160) };
+    }
   } catch (e) {
     status = 'failed';
     const cls = e?.name || 'Error';
@@ -896,6 +922,64 @@ async function boutsWithRounds(env, boutIds) {
     for (const r of rows) have.add(r.bout_id);
   }
   return have;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Round-archive gaps: completed cards whose round rows never arrived        */
+/* ------------------------------------------------------------------------ */
+/* Flat reads (events, bouts, results, round-row presence, queue) over the lane's
+ * own forward window. Source state only labels the cause; nothing here fetches
+ * from ESPN or UFC Stats. */
+async function collectRoundArchiveGaps(env, now, sourceHealth) {
+  const forwardDays = Number(env.UFCSTATS_FORWARD_DAYS || 45);
+  const from = new Date(now - forwardDays * 86400e3).toISOString().slice(0, 10);
+  const events = await selectAll(env, 'ufc_events', `select=id,name,event_date,card_status&card_status=eq.complete&event_date=gte.${from}`);
+  if (!events.length) return [];
+  const bouts = [];
+  for (let i = 0; i < events.length; i += 60) {
+    bouts.push(...await selectAll(env, 'ufc_bouts', `select=id,event_id,status&event_id=in.(${events.slice(i, i + 60).map((e) => e.id).join(',')})`));
+  }
+  const live = bouts.filter((b) => b.status !== 'cancelled');
+  const ids = live.map((b) => b.id);
+  const results = new Set(); const queue = new Map();
+  for (let i = 0; i < ids.length; i += 60) {
+    const chunk = ids.slice(i, i + 60).join(',');
+    for (const r of await selectAll(env, 'ufc_bout_results', `select=bout_id&bout_id=in.(${chunk})`)) results.add(r.bout_id);
+    for (const q of await selectAll(env, Q, `select=bout_id,state,last_reason&bout_id=in.(${chunk})`)) queue.set(q.bout_id, q);
+  }
+  const withRows = await boutsWithRounds(env, ids.filter((id) => results.has(id)));
+  const byEvent = events.map((e) => ({
+    ...e,
+    bouts: live.filter((b) => b.event_id === e.id).map((b) => ({
+      id: b.id, has_result: results.has(b.id), round_rows: withRows.has(b.id) ? 1 : 0,
+      queue_state: queue.get(b.id)?.state ?? null, queue_reason: queue.get(b.id)?.last_reason ?? null,
+    })),
+  }));
+  const enabled = String(env.UFCSTATS_ENABLED ?? 'true') !== 'false';
+  return roundArchiveGaps({
+    events: byEvent, now, graceHours: Number(env.ROUND_ARCHIVE_GRACE_HOURS || DEFAULT_GRACE_HOURS),
+    source: { enabled, challenged: Boolean(sourceHealth?.challenged) },
+  });
+}
+
+/* Detect, decide, alert once, remember. The alert state lives in R2 next to
+ * source health, so a 15-minute cadence does not become a 15-minute alarm. */
+async function checkRoundArchive(env, { now }) {
+  const sourceHealth = await getState(env, STATE.health);
+  const gaps = await collectRoundArchiveGaps(env, now, sourceHealth);
+  const previous = await getState(env, STATE.archiveAlert);
+  const decision = gapAlertDecision({ gaps, previous, now, escalateHours: Number(env.ROUND_ARCHIVE_ESCALATE_HOURS || DEFAULT_ESCALATE_HOURS) });
+  if (decision.send) {
+    const delivered = await discord(env, `**${SERVICE}** ${decision.message}`, { loud: decision.kind === 'new' || decision.kind === 'escalation' });
+    decision.next.last_alert = { kind: decision.kind, message: decision.message, delivered: delivered ? 'discord' : (env.DISCORD_WEBHOOK_URL ? 'discord_failed' : 'discord_unconfigured') };
+  } else if (previous?.last_alert) {
+    decision.next.last_alert = previous.last_alert;
+  }
+  if (decision.send || JSON.stringify(previous) !== JSON.stringify(decision.next)) await putState(env, STATE.archiveAlert, decision.next);
+  return {
+    round_lane_status: roundLaneStatus({ gaps }), gaps,
+    alert: decision.send ? { kind: decision.kind, delivered: decision.next.last_alert.delivered } : { kind: 'none' },
+  };
 }
 
 /* ------------------------------------------------------------------------ */

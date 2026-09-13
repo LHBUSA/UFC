@@ -1,0 +1,64 @@
+{
+  "service": "ufc-stats-ingest",
+  "version": "v0.5.0",
+  "invoked": "manual",
+  "canary": {
+    "at": "2026-09-13T23:20:12.198Z",
+    "limit": 6,
+    "egress": {
+      "colo": "ORD",
+      "loc": "US",
+      "ip_family": "v6"
+    },
+    "bouts": [],
+    "source": {
+      "requests": 1,
+      "http_statuses": {
+        "200": 1
+      },
+      "fetched": {
+        "lists": 0,
+        "events": 0,
+        "fights": 0,
+        "fighters": 0
+      },
+      "interstitials_seen": 1,
+      "last_interstitial_at": "2026-09-13T23:20:12.591Z",
+      "challenges_solved": 0,
+      "cookie_present": false
+    },
+    "verdict": "challenged",
+    "error": {
+      "class": "AccessGateError",
+      "detail": "challenge interstitial present (canary does not answer challenges) @ http://ufcstats.com/fight-details/e93a446ad5e483de",
+      "url": "http://ufcstats.com/fight-details/e93a446ad5e483de"
+    },
+    "source_health": {
+      "status": "challenged",
+      "challenged": true,
+      "source": "ufcstats.com",
+      "at": "2026-09-13T23:20:12.591Z",
+      "detail": "challenge interstitial present (canary does not answer challenges) @ http://ufcstats.com/fight-details/e93a446ad5e483de",
+      "url": "http://ufcstats.com/fight-details/e93a446ad5e483de",
+      "via": "canary",
+      "backoff_hours": 6,
+      "retry_after": "2026-09-14T05:20:12.591Z",
+      "telemetry": {
+        "requests": 1,
+        "http_statuses": {
+          "200": 1
+        },
+        "fetched": {
+          "lists": 0,
+          "events": 0,
+          "fights": 0,
+          "fighters": 0
+        },
+        "interstitials_seen": 1,
+        "last_interstitial_at": "2026-09-13T23:20:12.591Z",
+        "challenges_solved": 0,
+        "cookie_present": false
+      }
+    }
+  }
+}
