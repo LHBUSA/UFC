@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-9",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "finale_broadcast": {
+    "title": "TUF 9 Finale: United States vs United Kingdom",
+    "listing_date": "2009-06-20"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Bangers & Mashers",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-04-01",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-one-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Scars and Stripes",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-04-08",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-two-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Red, White & Bruised",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-04-15",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-three-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Game On",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-04-22",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-four-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Wiggity Wack",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-04-29",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-five-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "$100 a Tooth",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-05-06",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-six-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "The Bash Room",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-05-13",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-seven-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Negative Energy",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-05-20",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-eight-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Battle Royale",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-05-27",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-nine-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Smiling and Punching",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-06-03",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-ten-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "More Ups, Less Downs",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-06-10",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-eleven-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Rematch",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-06-17",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-us-vs-uk-episode-twelve-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

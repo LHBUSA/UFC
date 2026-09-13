@@ -1,0 +1,996 @@
+{
+  "slug": "tuf-32",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recaps/tuf-32.json"
+  },
+  "finale_broadcast": {
+    "title": "TUF 32 Finale: Borralho vs. Cannonier",
+    "listing_date": "2024-08-24"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "The Opportunity of Your Life",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-06-04",
+      "recap_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+      "recap_published": "2024-06-05T10:20:32-04:00",
+      "recap_byline_date": "Jun. 5, 2024",
+      "bouts": [
+        {
+          "a": "Roedie Roets",
+          "b": "Guillermo Torres",
+          "weight_class": "Featherweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Featherweight",
+            "stage": "quarter_final",
+            "a": "Guillermo Torres",
+            "b": "Roedie Roets"
+          },
+          "result": {
+            "winner": "Roedie Roets",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "contradiction": "Prose paragraph under the fight heading says Torres earned the win; the OFFICIAL RESULT line (and the rest of the fight narrative, and the episode 2 recap) say Roets won. Result recorded per the OFFICIAL RESULT line."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roedie Roets",
+              "weight_lbs": 145,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-32-grasso-vs-shevchenko"
+            },
+            {
+              "fighter": "Guillermo Torres",
+              "weight_lbs": null,
+              "weight_text": "hits the same mark",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-32-grasso-vs-shevchenko"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Shevchenko"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Shevchenko",
+      "events": [
+        {
+          "type": "coin_toss",
+          "text": "Grasso won the coin flip and drafted Torres first overall.",
+          "fighters": [
+            "Guillermo Torres"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Format: two-round fights with a sudden-victory third round if deadlocked.",
+          "fighters": [],
+          "fighter_ids": []
+        },
+        {
+          "type": "other",
+          "text": "Team Shevchenko (after winning) picked the first middleweight matchup: Magomedov vs Chaaban.",
+          "fighters": [
+            "Shamidkhan Magomedov",
+            "Omran Chaaban"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 2,
+      "title": "Victory or Valhalla",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-06-11",
+      "recap_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko",
+      "recap_published": "2024-06-12T11:46:17-04:00",
+      "recap_byline_date": "Jun. 12, 2024",
+      "bouts": [
+        {
+          "a": "Robert Valentin",
+          "b": "Giannis Bachar",
+          "a_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Middleweight",
+            "stage": "quarter_final",
+            "a": "Robert Valentin Frey",
+            "b": "Giannis Bachar"
+          },
+          "result": {
+            "winner": "Robert Valentin",
+            "winner_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+            "method": "KO (right hand)",
+            "round": null,
+            "time": null,
+            "contradiction": "Method conflict (winner consistent): result line says right hand; fight narrative says a right elbow."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Giannis Bachar",
+              "weight_lbs": 184,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko"
+            },
+            {
+              "fighter": "Robert Valentin",
+              "fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-32-grasso-vs-shevchenko"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Grasso"
+          },
+          "caption_filming_dates": [
+            "March 20, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": "Team Grasso",
+      "events": [
+        {
+          "type": "medical_postponement",
+          "text": "Chaaban vs Magomedov pulled on fight day: Chaaban not medically cleared (unhealed cold sore); bout pushed back.",
+          "fighters": [
+            "Omran Chaaban",
+            "Shamidkhan Magomedov"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Grasso picked the next featherweight matchup: Ofli vs Fletcher.",
+          "fighters": [
+            "Kaan Ofli",
+            "Nathan Fletcher"
+          ],
+          "fighter_ids": [
+            "e9ed83e3-2b69-4221-be91-720f92ce689a",
+            "02456b1c-b787-4f76-82b6-8bfb1658049e"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 3,
+      "title": "Fly the Flag",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-06-18",
+      "recap_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-06-19T11:41:01-04:00",
+      "recap_byline_date": "Jun. 19, 2024",
+      "bouts": [
+        {
+          "a": "Kaan Ofli",
+          "b": "Nathan Fletcher",
+          "a_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+          "b_fighter_id": "02456b1c-b787-4f76-82b6-8bfb1658049e",
+          "weight_class": "Featherweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Featherweight",
+            "stage": "quarter_final",
+            "a": "Kaan Ofli",
+            "b": "Nathan Fletcher"
+          },
+          "result": {
+            "winner": "Kaan Ofli",
+            "winner_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+            "method": "Decision",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Nathan Fletcher",
+              "fighter_id": "02456b1c-b787-4f76-82b6-8bfb1658049e",
+              "weight_lbs": 145,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Kaan Ofli",
+              "fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+              "weight_lbs": null,
+              "weight_text": "hits the same mark",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-32"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Grasso"
+          },
+          "caption_filming_dates": [
+            "March 20, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": "Team Grasso",
+      "events": []
+    },
+    {
+      "episode_number": 4,
+      "title": "Putting Everyone on Notice",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-06-25",
+      "recap_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-06-26T10:41:17-04:00",
+      "recap_byline_date": "Jun. 26, 2024",
+      "bouts": [
+        {
+          "a": "Omran Chabaan",
+          "b": "Shamidkhan Magomedov",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Middleweight",
+            "stage": "quarter_final",
+            "a": "Omran Chaaban",
+            "b": "Shamidkhan Magomedov"
+          },
+          "result": {
+            "winner": "Omran Chabaan",
+            "method": "Technical submission",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Omran Chabaan",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": 186,
+              "episode_number": 4,
+              "source_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Shamidkhan Magomedov",
+              "weight_lbs": 184.5,
+              "missed_weight": false,
+              "limit_lbs": 186,
+              "episode_number": 4,
+              "source_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-32"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "medical_postponement",
+          "text": "The bout postponed in episode 2 (medical) was contested this episode.",
+          "fighters": [
+            "Omran Chabaan",
+            "Shamidkhan Magomedov"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Shevchenko picked the third featherweight matchup: Ramaska vs Usmonov.",
+          "fighters": [
+            "Zygimantas Ramaska",
+            "Bekhzod Usmonov"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 5,
+      "title": "Full of Violence",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-07-02",
+      "recap_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-07-03T07:34:01-04:00",
+      "recap_byline_date": "Jul. 3, 2024",
+      "bouts": [
+        {
+          "a": "Zygimantas Ramaska",
+          "b": "Bekhzod Usmonov",
+          "a_fighter_id": "75cddfdf-2c61-4e5b-a8d2-0fafe7b49d7f",
+          "weight_class": "Featherweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Featherweight",
+            "stage": "quarter_final",
+            "a": "Bekhzod Usmonov",
+            "b": "Žygimantas Ramaška"
+          },
+          "result": {
+            "winner": "Zygimantas Ramaska",
+            "winner_fighter_id": "75cddfdf-2c61-4e5b-a8d2-0fafe7b49d7f",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Bekhzod Usmonov",
+              "weight_lbs": 146.5,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Zygimantas Ramaska",
+              "fighter_id": "75cddfdf-2c61-4e5b-a8d2-0fafe7b49d7f",
+              "weight_lbs": 146.5,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-32"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 27, 2024",
+            "March 27, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "missed_weight",
+          "text": "Both featherweights 146.5 lb (over by the same amount); coaches and NSAC agreed neither would cut further and the fight proceeded.",
+          "fighters": [
+            "Bekhzod Usmonov",
+            "Zygimantas Ramaska"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 6,
+      "title": "Everything In My Power",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-07-09",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-grasso-vs-team-shevchenko-episode-6-recap",
+      "recap_published": "2024-07-10T11:43:08-04:00",
+      "recap_byline_date": "Jul. 10, 2024",
+      "bouts": [
+        {
+          "a": "Ryan Loder",
+          "b": "Tom Theocharis",
+          "a_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Middleweight",
+            "stage": "quarter_final",
+            "a": "Tom Theocharis",
+            "b": "Ryan Loder"
+          },
+          "result": {
+            "winner": "Ryan Loder",
+            "winner_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+            "method": "Submission (arm-triangle choke)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Ryan Loder",
+              "fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-team-grasso-vs-team-shevchenko-episode-6-recap"
+            },
+            {
+              "fighter": "Tom Theocharis",
+              "weight_lbs": null,
+              "weight_text": "at the same weight",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-team-grasso-vs-team-shevchenko-episode-6-recap"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 27, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 7,
+      "title": "Smash His Face",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-07-16",
+      "recap_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-07-17T16:40:40-04:00",
+      "recap_byline_date": "Jul. 17, 2024",
+      "bouts": [
+        {
+          "a": "Mairon Santos",
+          "b": "Edwin Cooper Jr.",
+          "a_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+          "weight_class": "Featherweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Featherweight",
+            "stage": "quarter_final",
+            "a": "Mairon Santos",
+            "b": "Edwin Cooper Jr."
+          },
+          "result": {
+            "winner": "Mairon Santos",
+            "winner_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Edwin Cooper Jr.",
+              "weight_lbs": 146,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 7,
+              "source_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Mairon Santos",
+              "fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+              "weight_lbs": null,
+              "weight_text": "hits the same number",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 7,
+              "source_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-32"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 27, 2024",
+            "March 27, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 8,
+      "title": "World Class Killer Instinct",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-07-23",
+      "recap_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-07-25T12:07:17-04:00",
+      "recap_byline_date": "Jul. 25, 2024",
+      "bouts": [
+        {
+          "a": "Paddy McCorry",
+          "b": "Mark Hulme",
+          "a_fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Middleweight",
+            "stage": "quarter_final",
+            "a": "Paddy McCorry",
+            "b": "Mark Hulme"
+          },
+          "result": {
+            "winner": "Paddy McCorry",
+            "winner_fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7",
+            "method": "Submission (guillotine choke)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Mark Hulme",
+              "weight_lbs": 184.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Paddy McCorry",
+              "fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-32"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 27, 2024",
+            "March 27, 2024",
+            "March 27, 2024",
+            "March 27, 2024",
+            "March 27, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Middleweight semifinal pairings: Loder vs Chaaban, Valentin vs McCorry.",
+          "fighters": [
+            "Ryan Loder",
+            "Omran Chaaban",
+            "Robert Valentin",
+            "Paddy McCorry"
+          ],
+          "fighter_ids": [
+            "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+            null,
+            "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+            "d7b6b465-9084-4970-a54e-0b5f48d3f6a7"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Featherweight semifinal pairings: Ofli vs Roets, Santos vs Ramaska.",
+          "fighters": [
+            "Kaan Olfi",
+            "Roedie Roets",
+            "Mairon Santos",
+            "Zygimantas Ramaska"
+          ],
+          "fighter_ids": [
+            null,
+            null,
+            "99b3bdc3-241e-462d-af80-9595ffbc959d",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 9,
+      "title": "You Know What's Coming",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-07-30",
+      "recap_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-07-31T12:08:38-04:00",
+      "recap_byline_date": "Jul. 31, 2024",
+      "bouts": [
+        {
+          "a": "Ryan Loder",
+          "b": "Omraan Chaaban",
+          "a_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Middleweight",
+            "stage": "semi_final",
+            "a": "Omran Chaaban",
+            "b": "Ryan Loder"
+          },
+          "result": {
+            "winner": "Ryan Loder",
+            "winner_fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Ryan Loder",
+              "fighter_id": "b964d221-ff26-4d62-bdb0-93eddbd388a2",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": 186,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Omran Chaaban",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-32"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Dana White"
+          },
+          "caption_filming_dates": [
+            "April 09, 2024",
+            "April 09, 2024",
+            "April 09, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": "Dana White",
+      "events": [
+        {
+          "type": "other",
+          "text": "All semifinal fights are three rounds instead of two.",
+          "fighters": [],
+          "fighter_ids": []
+        }
+      ]
+    },
+    {
+      "episode_number": 10,
+      "title": "The Biggest Fight of My Life",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-08-06",
+      "recap_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-32",
+      "recap_published": "2024-08-07T12:12:47-04:00",
+      "recap_byline_date": "Aug. 7, 2024",
+      "bouts": [
+        {
+          "a": "Kaan Ofli",
+          "b": "Roedie Roets",
+          "a_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+          "weight_class": "Featherweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Featherweight",
+            "stage": "semi_final",
+            "a": "Roedie Roets",
+            "b": "Kaan Ofli"
+          },
+          "result": {
+            "winner": "Kaan Ofli",
+            "winner_fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+            "method": "Submission (guillotine choke)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roedie Roets",
+              "weight_lbs": 145.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Kaan Ofli",
+              "fighter_id": "e9ed83e3-2b69-4221-be91-720f92ce689a",
+              "weight_lbs": 145.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-32"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "injury",
+          "text": "Scan after the Usmonov fight revealed a small cheekbone fracture; surgeon said it should not prevent him competing.",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Second opinion: UFC chief physician Dr. Davidson cleared Ramaska (commission clearance still pending per episodes 11-12).",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 11,
+      "title": "Friendly Fire",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-08-13",
+      "recap_url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-season-32-tuf",
+      "recap_published": "2024-08-14T12:33:00-04:00",
+      "recap_byline_date": "Aug. 14, 2024",
+      "bouts": [
+        {
+          "a": "Robert Valentin",
+          "b": "Paddy McCorry",
+          "a_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+          "b_fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Middleweight",
+            "stage": "semi_final",
+            "a": "Paddy McCorry",
+            "b": "Robert Valentin Frey"
+          },
+          "result": {
+            "winner": "Robert Valentin",
+            "winner_fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+            "method": "Verbal submission",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Paddy McCorry",
+              "fighter_id": "d7b6b465-9084-4970-a54e-0b5f48d3f6a7",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-season-32-tuf"
+            },
+            {
+              "fighter": "Robert Valentin",
+              "fighter_id": "f0eff1bc-dc54-434a-af27-23b66d57b1ca",
+              "weight_lbs": null,
+              "weight_text": "hits the same number",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/episode-11-recap-the-ultimate-fighter-season-32-tuf"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "April 09, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "injury",
+          "text": "Fletcher found to have a full fracture of the left fibula (from his quarterfinal); eight weeks to recover, removing him as a replacement option.",
+          "fighters": [
+            "Nathan Fletcher"
+          ],
+          "fighter_ids": [
+            "02456b1c-b787-4f76-82b6-8bfb1658049e"
+          ]
+        },
+        {
+          "type": "injury",
+          "text": "Ramaska's facial fracture left the commission uncertain he would be cleared for his semifinal.",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "replacement",
+          "text": "Commission required one alternate from each team on standby for Ramaska's semifinal.",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "replacement",
+          "text": "Cooper Jr. and Torres named alternates; Fletcher (broken leg) and Usmonov (medical suspension) unavailable.",
+          "fighters": [
+            "Edwin Cooper Jr.",
+            "Guillermo Torres",
+            "Nathan Fletcher",
+            "Bekhzod Usmonov"
+          ],
+          "fighter_ids": [
+            null,
+            null,
+            "02456b1c-b787-4f76-82b6-8bfb1658049e",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 12,
+      "title": "How Champions Are Born",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2024-08-20",
+      "recap_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-season-32",
+      "recap_published": "2024-08-21T12:43:00-04:00",
+      "recap_byline_date": "Aug. 21, 2024",
+      "bouts": [
+        {
+          "a": "Mairon Santos",
+          "b": "Guillermo Torres",
+          "a_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+          "weight_class": "Featherweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Featherweight",
+            "stage": "semi_final",
+            "a": "Guillermo Torres",
+            "b": "Mairon Santos"
+          },
+          "result": {
+            "winner": "Mairon Santos",
+            "winner_fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Zygimantas Ramaska",
+              "weight_lbs": 145.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Mairon Santos",
+              "fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+              "weight_lbs": 148,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Mairon Santos",
+              "fighter_id": "99b3bdc3-241e-462d-af80-9595ffbc959d",
+              "weight_lbs": 146.5,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Guillermo Torres",
+              "weight_lbs": 145,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-season-32"
+            },
+            {
+              "fighter": "Edwin Cooper Jr.",
+              "weight_lbs": 145.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/episode-12-recap-the-ultimate-fighter-season-32"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "April 09, 2024",
+            "April 09, 2024"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "missed_weight",
+          "text": "Santos 148 lb, then 146.5 lb on re-weigh (half a pound over).",
+          "fighters": [
+            "Mairon Santos"
+          ],
+          "fighter_ids": [
+            "99b3bdc3-241e-462d-af80-9595ffbc959d"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Shevchenko agreed the fight could go ahead despite Santos' miss.",
+          "fighters": [
+            "Mairon Santos",
+            "Zygimantas Ramaska"
+          ],
+          "fighter_ids": [
+            "99b3bdc3-241e-462d-af80-9595ffbc959d",
+            null
+          ]
+        },
+        {
+          "type": "withdrawal",
+          "text": "On fight day NSAC declined to clear Ramaska (facial fracture), removing him from the semifinal.",
+          "fighters": [
+            "Zygimantas Ramaska"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "replacement",
+          "text": "Torres (quarterfinal loser to Roets) replaced Ramaska against Santos.",
+          "fighters": [
+            "Guillermo Torres",
+            "Mairon Santos"
+          ],
+          "fighter_ids": [
+            null,
+            "99b3bdc3-241e-462d-af80-9595ffbc959d"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Torres chosen over Cooper Jr. because he had more recovery time since his last fight.",
+          "fighters": [
+            "Guillermo Torres",
+            "Edwin Cooper Jr."
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  ]
+}

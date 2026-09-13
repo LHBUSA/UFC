@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-2",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": null
+  },
+  "finale_broadcast": {
+    "title": "TUF 2 Finale: Team Hughes vs. Team Franklin",
+    "listing_date": "2005-11-05"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "A New Crop",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-08-22",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "The Teams Are Picked",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-08-29",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "No Pain, No Gain",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-09-05",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Strategy",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-09-12",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Leave it in the Octagon",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-09-19",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Slugfest",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-09-26",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "No Respect",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-10-03",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Knees & Elbows",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-10-10",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Mental Game",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-10-17",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Semi-Final #1 Killer Instinct",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-10-24",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Semi-Final #2 Bloody Brawl",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-10-31",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Semi-Final #3 & 4: Countdown",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2005-10-31",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

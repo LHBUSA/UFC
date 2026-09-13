@@ -11,7 +11,9 @@
   "_provenance": {
     "primary": "https://en.wikipedia.org/wiki/The_Ultimate_Fighter%3A_Team_McGregor_vs._Team_Chandler",
     "retrieved": "2026-09-08",
-    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json."
+    "note": "Drafted from the source article by scripts/tuf/import_season.mjs, which reads the bracket templates and the episode summaries separately and joins them. Where the two disagree the bout carries no winner and the disagreement is recorded in _conflicts. Finale results are not asserted here; they are verified against our own result rows in seasons.json.",
+    "official_repairs": "web/data/tuf/official_repairs.json",
+    "precedence": "An official UFC source (ufc.com recap or event page) outranks the Wikipedia draft for the fields it states. Wikipedia stays the discovery source and the provenance of every field the official source does not state."
   },
   "coaches": [
     {
@@ -198,11 +200,24 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 5,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "1afc302d-f6e5-4d85-a70a-e7ae835559b2",
-              "b_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed"
+              "b_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep5/carlos-vera-brad-katona",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-31-mcgregor-chandler",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-06-27T19:19:56-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Brad Katona def. Carlos Vera by unanimous decision"
+                }
+              ]
             },
             {
               "a": "Trevor Wells",
@@ -211,36 +226,76 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 4,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
+              "b_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep4/trevor-wells-timur-valiev",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-06-21T10:03:18-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Timur Valiev defeats Trevor Wells By Unanimous Decision"
+                }
+              ]
             },
             {
               "a": "Hunter Azure",
               "b": "Rico DiSciullo",
               "winner": "Rico DiSciullo",
-              "method": "KO",
+              "method": "KO (right hand)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 8,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "4caa6eda-3ae0-4004-8fb7-79cf8ec6b74a",
-              "b_fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b"
+              "b_fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep8/hunter-azure-rico-disciullo",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-31",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-07-19T07:24:30-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Rico DiSciullo def. Hunter Azure by KO (right hand) in Round 2"
+                }
+              ]
             },
             {
               "a": "Mando Gutierrez",
               "b": "Cody Gibson",
               "winner": "Cody Gibson",
-              "method": "TKO (switch knee and punches)",
+              "method": "TKO (flying knee and punches)",
               "round": 1,
               "time": "3:23",
               "episode": 2,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 2 of the season, and absent from our fight records for 2023, which are complete for that year — 53 events, 569 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
               "a_fighter_id": "dbb6f2c8-ab92-42c8-8bcc-2ec883ad91e3",
-              "b_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
+              "b_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep2/mando-gutierrez-cody-gibson",
+                  "fields": [
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-31-mcgregor-chandler",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-06-06T23:00:00-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Cody Gibson def. Mando Gutierrez by TKO (flying knee and punches) in Round 1"
+                }
+              ]
             }
           ]
         },
@@ -255,24 +310,51 @@
               "method": "Decision (split)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 10,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "4d63d8a0-d10f-485f-9e9f-130457d5d1ed",
-              "b_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a"
+              "b_fighter_id": "b7f7064a-0f22-47be-a73a-8dfa464bd16a",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep10/brad-katona-timur-valiev",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-31",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-08-01T12:47:23-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Brad Katona def. Timur Valiev by split decision"
+                }
+              ]
             },
             {
               "a": "Rico DiSciullo",
               "b": "Cody Gibson",
               "winner": "Cody Gibson",
-              "method": "Submission",
+              "method": "Submission (arm-triangle choke)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 12,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "7eef85f2-fffc-48ef-84f5-3976928e3b8b",
-              "b_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955"
+              "b_fighter_id": "cc1ac3e9-4e7f-4146-9170-a1a8ba9b8955",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep12/rico-disciullo-cody-gibson",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-12-recap-ultimate-fighter-season-31",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-08-16T10:54:00-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Cody Gibson defeats Rico DiSciullo by submission (arm-triangle choke) in the first round"
+                }
+              ]
             }
           ]
         },
@@ -326,35 +408,76 @@
               "method": "Decision (unanimous)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 3,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8"
+              "b_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep3/aaron-mckenzie-austin-hubbard",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-31-mcgregor-chandler",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-06-14T07:31:42-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Austin Hubbard def. Aaron McKenzie by Unanimous Decision"
+                }
+              ]
             },
             {
               "a": "Jason Knight",
               "b": "Landon Quiñones",
               "winner": "Jason Knight",
-              "method": "Submission",
+              "method": "Submission (triangle choke)",
               "round": 1,
               "time": null,
-              "episode": null,
+              "episode": 7,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
-              "b_fighter_id": "4a6ed304-4f80-4ae7-90d9-0e92850cb756"
+              "b_fighter_id": "4a6ed304-4f80-4ae7-90d9-0e92850cb756",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep7/jason-knight-landon-quinones",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-31",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-07-12T11:36:04-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Jason Knight def. Landon Quinones by submission (triangle choke) in Round 1"
+                }
+              ]
             },
             {
               "a": "Lee Hammond",
               "b": "Kurt Holobaugh",
               "winner": "Kurt Holobaugh",
-              "method": "Submission",
+              "method": "Submission (mounted guillotine choke)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 6,
               "classification": "unverified",
               "classification_source": null,
-              "b_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416"
+              "b_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep6/lee-hammond-kurt-holobaugh",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-07-05T10:59:16-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Kurt Holobaugh def. Lee Hammond by submission (mounted guillotine choke)"
+                }
+              ]
             }
           ]
         },
@@ -369,24 +492,51 @@
               "method": "Decision (split)",
               "round": 3,
               "time": null,
-              "episode": null,
+              "episode": 9,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "2158cdfd-e641-425b-97f8-04bfe113e555",
-              "b_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8"
+              "b_fighter_id": "d30516f6-38be-4656-a2ad-6928f800e1c8",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep9/roosevelt-roberts-austin-hubbard",
+                  "fields": [
+                    "episode"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-31",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-07-26T12:26:01-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Austin Hubbard def. Roosevelt Roberts by Split Decision"
+                }
+              ]
             },
             {
               "a": "Jason Knight",
               "b": "Kurt Holobaugh",
               "winner": "Kurt Holobaugh",
-              "method": "TKO",
+              "method": "TKO (strikes)",
               "round": 2,
               "time": null,
-              "episode": null,
+              "episode": 11,
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "917594d9-4001-4ed5-a3b2-70d2a183c92c",
-              "b_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416"
+              "b_fighter_id": "7f42a1fa-ebb7-4821-8f53-ffe431afb416",
+              "sources": [
+                {
+                  "repair": "recap/tuf-31/ep11/jason-knight-kurt-holobaugh",
+                  "fields": [
+                    "episode",
+                    "method"
+                  ],
+                  "url": "https://www.ufc.com/news/episode-11-recap-ultimate-fighter-season-31",
+                  "family": "ufc_com_recap",
+                  "published_on_site": "2023-08-09T11:11:55-04:00",
+                  "retrieved": "2026-09-12",
+                  "quote": "Official Result: Kurt Holobaugh def. Jason Knight by TKO (strikes) in Round 2"
+                }
+              ]
             }
           ]
         },

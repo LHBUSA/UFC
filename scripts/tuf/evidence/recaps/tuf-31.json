@@ -1,0 +1,873 @@
+{
+  "_about": "Facts from UFC.com episode recaps for tuf-31. Every value carries the exact sentence it came from; quotes were checked as verbatim substrings of the recap text on 2026-09-12. Names are as the recap printed them.",
+  "source_family": "ufc_com_recap",
+  "retrieved": "2026-09-12",
+  "slug": "tuf-31",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "recap_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler",
+      "recap_published": "2023-05-31T12:59:55-0400",
+      "byline_date_text": "May. 31, 2023",
+      "bouts": [
+        {
+          "a": "Nate Jennerman",
+          "b": "Roosevelt Roberts",
+          "weight_class": "Lightweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Roosevelt Roberts",
+            "method": null,
+            "round": null,
+            "time": null,
+            "quote": "Roberts celebrates with Team Chandler in the dressing room, while Team McGregor consoles their fallen charge, focusing on regrouping while Jennerman struggles with the quick defeat."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roosevelt Roberts",
+              "weight_lbs": 156,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Roberts is first on the scale, coming in at 156 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Nate Jennerman",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Jennerman follows and checks in at 155.5 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Chandler",
+            "quote": "Chandler gets to pick the first matchup, but all that means is that he selects who on his team will fight first, since he has no idea how McGregor has ranked his team members."
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "team_selection",
+          "fighters": [],
+          "text": "McGregor had first pick and took the lightweight prospects; Chandler took the lightweight veterans.",
+          "quote": "McGregor gets the first pick and selects the lightweight prospects, explaining that he’s confident in the young fighters."
+        },
+        {
+          "type": "team_selection",
+          "fighters": [],
+          "text": "Chandler took the bantamweight veterans, making it veterans (Chandler) vs prospects (McGregor).",
+          "quote": "Chandler then selects the bantamweight veterans, turning this into a true “Veterans vs. Prospects” season, which should be interesting."
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "Seeding format: coaches rank their four per division 1-4; No. 1 faces No. 4, No. 2 faces No. 3.",
+          "quote": "the coaches will rank each fighter in their group from 1 to 4, with the matchups coming together in a true tournament format where No. 1 will face No. 4, No. 2 will face No. 3 on each side of the bracket"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Nate Jennerman",
+            "Roosevelt Roberts"
+          ],
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "quote": "155: Nate Jennerman (2) vs. Roosevelt Roberts (3)"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Trevor Wells",
+            "Timur Valiev"
+          ],
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "quote": "135: Trevor Wells (2) vs. Timur Valiev (3)"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Aaron McKenzie",
+            "Austin Hubbard"
+          ],
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "quote": "155: Aaron McKenzie (3) vs. Austin Hubbard (2)"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Mando Gutierrez",
+            "Cody Gibson"
+          ],
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "quote": "135: Mando Gutierrez (1) vs. Cody Gibson (4)"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Carlos Vera",
+            "Brad Katona"
+          ],
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "quote": "135: Carlos Vera (3) vs. Brad Katona (2)"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Lee Hammond",
+            "Kurt Holobaugh"
+          ],
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "quote": "155: Lee Hammond (1) vs. Kurt Holobaugh (4)"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Landon Quinones",
+            "Jason Knight"
+          ],
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "quote": "155: Landon Quinones (4) vs. Jason Knight (1)"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Rico DiSciullo",
+            "Hunter Azure"
+          ],
+          "text": "Opening-round pairing announced (seeds in parentheses).",
+          "quote": "135: Rico DiSciullo (4) vs. Hunter Azure (1)"
+        }
+      ],
+      "notes": "No 'Official Result' line on this page. Winner taken from prose only (referee Mark Smith halts the action after Roberts drops Jennerman with a right hand). Method, round and time are NOT stated in the article prose; method left null. Embedded video titles on the page conflict on method: \"Michael Chandler Reacts To Roosevelt Roberts' TKO Win\" vs \"Roosevelt Roberts Discusses His 10 Second KO\". Stage not stated. Weigh-in limit not stated in the weigh-in sentences (page states divisions as 'lightweights (155 pounds)')."
+    },
+    {
+      "episode_number": 2,
+      "recap_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-31-mcgregor-chandler",
+      "recap_published": "2023-06-06T23:00:00-0400",
+      "byline_date_text": "Jun. 7, 2023",
+      "bouts": [
+        {
+          "a": "Cody Gibson",
+          "b": "Mando Gutierrez",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "stage_quote": "Great finish for Gibson, who moves on to the semifinals.",
+          "result": {
+            "winner": "Cody Gibson",
+            "method": "TKO (flying knee and punches)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Cody Gibson def. Mando Gutierrez by TKO (flying knee and punches) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Cody Gibson",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Gibson is up first and comes in at 136.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Mando Gutierrez",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Gutierrez follows, registering 135.5 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "medical_postponement",
+          "fighters": [
+            "Trevor Wells",
+            "Timur Valiev"
+          ],
+          "text": "Wells vs Valiev scratched on fight day: Wells failed the NSAC pre-fight medical (active cold sore).",
+          "quote": "the doctor noticed a cold sore on his face, which made him ineligible to compete that day as it was still active and contagious"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Timur Valiev",
+            "Trevor Wells"
+          ],
+          "text": "White: bout to be rescheduled the following week, otherwise Valiev gets a bye to the semifinals.",
+          "quote": "Dana White comes to the locker rooms to explain the situation, informing Team Chandler that if Valiev and Wells will fight the following week, and if that can’t happen, Valiev will get a bye to the semifinals."
+        },
+        {
+          "type": "catchweight",
+          "fighters": [
+            "Timur Valiev",
+            "Trevor Wells"
+          ],
+          "text": "White floated a catchweight for the rescheduled bout since Valiev would have to make weight again; left unsettled.",
+          "quote": "suggests a potential catchweight bout between the two, leaving it unsettled, but on the table"
+        }
+      ],
+      "notes": "Result line gives 'flying knee'; the page's video blurb says 'switch knee knockout' and prose says 'jumping knee'. Time not stated (prose: 'three minutes into the first round')."
+    },
+    {
+      "episode_number": 3,
+      "recap_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-31-mcgregor-chandler",
+      "recap_published": "2023-06-14T07:31:42-0400",
+      "byline_date_text": "Jun. 14, 2023",
+      "bouts": [
+        {
+          "a": "Austin Hubbard",
+          "b": "Aaron McKenzie",
+          "weight_class": "Lightweight",
+          "stage": "quarter_final",
+          "stage_quote": "Conor McGregor Discusses Aaron McKenzie's Quarterfinal Bout",
+          "result": {
+            "winner": "Austin Hubbard",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Austin Hubbard def. Aaron McKenzie by Unanimous Decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Austin Hubbard",
+              "weight_lbs": 156,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Hubbard is first to the scale, coming in at 156 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Aaron McKenzie",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "McKenzie follows him to the scale, weighs in at 155.5 pounds, and the fight is official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [],
+      "notes": "Stage quote is an embedded video title on the page."
+    },
+    {
+      "episode_number": 4,
+      "recap_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler",
+      "recap_published": "2023-06-21T10:03:18-0400",
+      "byline_date_text": "Jun. 21, 2023",
+      "bouts": [
+        {
+          "a": "Timur Valiev",
+          "b": "Trevor Wells",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "stage_quote": "Now, Wells and Valiev finally face off, with another spot in the semifinals on the line.",
+          "result": {
+            "winner": "Timur Valiev",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Timur Valiev defeats Trevor Wells By Unanimous Decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Timur Valiev",
+              "weight_lbs": 141.5,
+              "missed_weight": false,
+              "limit_lbs": 142,
+              "quote": "He comes in at 141.5 pounds.",
+              "context_quote": "Valiev is up first, explaining that he had to cut weight for a second time, but that he’ll do whatever it takes to win the competition."
+            },
+            {
+              "fighter": "Trevor Wells",
+              "weight_lbs": 141.5,
+              "missed_weight": false,
+              "limit_lbs": 142,
+              "quote": "Wells follows him to the scale and comes in at 141.5 pounds as well, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 03, 2023",
+              "quote": "Timur Valiev kicks Trevor Wells in their bantamweight fight during the filming of The Ultimate Fighter at UFC APEX on March 03, 2023 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "medical_postponement",
+          "fighters": [
+            "Trevor Wells"
+          ],
+          "text": "Wells cleared to fight after the episode-2 medical postponement.",
+          "quote": "Dana White explains that Wells has been cleared to fight"
+        },
+        {
+          "type": "catchweight",
+          "fighters": [
+            "Trevor Wells"
+          ],
+          "text": "Team McGregor checked Wells at 137.5 lb and wanted the rescheduled bout at 135 to force Valiev to cut again.",
+          "quote": "Team McGregor checks Wells’ weight — he’s 137.5 pounds when they ask — and their thinking is that they should do the fight at 135 pounds in order to make Valiev cut weight a second time, thereby making it more difficult for him."
+        },
+        {
+          "type": "catchweight",
+          "fighters": [
+            "Timur Valiev"
+          ],
+          "text": "Chandler countered with 144 lb.",
+          "quote": "Chandler instantly shoots down the idea, suggesting they do 144 pounds."
+        },
+        {
+          "type": "catchweight",
+          "fighters": [
+            "Timur Valiev",
+            "Trevor Wells"
+          ],
+          "text": "Agreed catchweight of 142 lb for the rescheduled quarterfinal.",
+          "quote": "White calls Chandler, and it seems they have agreed to a catchweight of 142 pounds."
+        }
+      ],
+      "notes": "Bout contested at an agreed 142-lb catchweight (limit_lbs 142 comes from the catchweight event quote, not the weigh-in sentence). Decision after two rounds (prose: 'McGregor shouts about there being another round, but there is a decision.'). First announced in episode 1, postponed in episode 2."
+    },
+    {
+      "episode_number": 5,
+      "recap_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-31-mcgregor-chandler",
+      "recap_published": "2023-06-27T19:19:56-0400",
+      "byline_date_text": "Jun. 27, 2023",
+      "bouts": [
+        {
+          "a": "Brad Katona",
+          "b": "Carlos Vera",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "stage_quote": "Conor McGregor Discusses Carlos Vera's Quarterfinal Bout",
+          "result": {
+            "winner": "Brad Katona",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Brad Katona def. Carlos Vera by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brad Katona",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Katona is first to the scale, coming in at 135.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Carlos Vera",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "The Team McGregor man also comes in at 135.5 pounds and we have ourselves a fight.",
+              "context_quote": "White calls Vera a “dynamic fighter” that has “been knocking at the UFC door for quite some time.”"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [],
+      "notes": "Stage quote is an embedded video title on the page. Two-round decision (prose: 'Despite it being a close fight that seemed destined for a third round, the judges returned a decision')."
+    },
+    {
+      "episode_number": 6,
+      "recap_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-31-team-mcgregor-team-chandler",
+      "recap_published": "2023-07-05T10:59:16-0400",
+      "byline_date_text": "Jul. 5, 2023",
+      "bouts": [
+        {
+          "a": "Kurt Holobaugh",
+          "b": "Lee Hammond",
+          "weight_class": "Lightweight",
+          "stage": "quarter_final",
+          "stage_quote": "Get ready for an emotional battle with a spot in the semifinals at stake, and an intense aftermath in the Octagon.",
+          "result": {
+            "winner": "Kurt Holobaugh",
+            "method": "Submission (mounted guillotine choke)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Kurt Holobaugh def. Lee Hammond by submission (mounted guillotine choke)"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kurt Holobaugh",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Team Chandler’s Holobaugh is first on the scale, coming in at 155.5 pounds with a picture of his family in his hand.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Lee Hammond",
+              "weight_lbs": 156,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "The Team McGregor man follows him to the scale, weighing in at 156 pounds even.",
+              "context_quote": "Team Chandler’s Holobaugh is first on the scale, coming in at 155.5 pounds with a picture of his family in his hand."
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 2, 2023",
+              "quote": "Lee Hammond in his lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 2, 2023",
+              "quote": "Kurt Holobaugh in his lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 2, 2023",
+              "quote": "TUF 31 Michael Chandler and lightweight Kurt Holobaugh during his fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 2, 2023",
+              "quote": "TUF 31 lightweights Kurt Holobaugh and Lee Hammond during their fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [],
+      "notes": "Round not in the result line, so round is null; prose places the finish in round 2: 'Hammond lands a knee up the middle early in the second, taking Holobaugh to the ground' ... 'locking in a mounted guillotine that draws a tap from the young Irishman'. Caution: episodes 6, 7 and 8 all caption different fights (and bantamweight Azure/DiSciullo as 'lightweight') with the same 'March 2, 2023' date, so these captions may be generic."
+    },
+    {
+      "episode_number": 7,
+      "recap_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-07-12T11:36:04-0400",
+      "byline_date_text": "Jul. 12, 2023",
+      "bouts": [
+        {
+          "a": "Jason Knight",
+          "b": "Landon Quinones",
+          "weight_class": "Lightweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Jason Knight",
+            "method": "Submission (triangle choke)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Jason Knight def. Landon Quinones by submission (triangle choke) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jason Knight",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "The veteran is the first one on the scale, coming in at 155.5 pounds, “with the socks and the chain,” he adds.",
+              "context_quote": "Quinones follows him onto the scale, coming in at the same number."
+            },
+            {
+              "fighter": "Landon Quinones",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Quinones follows him onto the scale, coming in at the same number.",
+              "context_quote": null,
+              "weight_text": "coming in at the same number"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 2, 2023",
+              "quote": "Jason Knight in his lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 2, 2023",
+              "quote": "Landon Quinones in his lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 2, 2023",
+              "quote": "Jason Knight in a lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Jason Knight"
+          ],
+          "text": "Knight suffered an inch-long cut over his right eye in training (head clash with Valiev); fight stayed on.",
+          "quote": "Dana White explains that Knight is fortunate his cut won’t keep him from the fight"
+        },
+        {
+          "type": "injury",
+          "fighters": [
+            "Cody Gibson"
+          ],
+          "text": "Quarterfinal winner Gibson diagnosed with a Grade 2 MCL sprain; doctor recommended eight weeks of rest.",
+          "quote": "Dr. Davidson explains it’s a Grade 2 MCL sprain — which means tear — which surprises Gibson."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Cody Gibson"
+          ],
+          "text": "Gibson chose to stay in the competition despite the knee injury.",
+          "quote": "Gibson says he knows what his decision is — “I’m fighting! You tell me I tore my ACL, I’m fighting!”"
+        }
+      ],
+      "notes": "'The veteran' weigh-in resolved to Knight using the FOLLOWING sentence (Quinones follows him), not the preceding one; the preceding text is a section heading. Quinones' weight is printed only as 'the same number' (i.e. same as Knight), so weight_lbs is null. Stage not stated for this bout on this page. A fourth caption, 'Conor McGregor in a lightweight fight ... March 2, 2023', is not attached (no fighter of this bout named)."
+    },
+    {
+      "episode_number": 8,
+      "recap_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-07-19T07:24:30-0400",
+      "byline_date_text": "Jul. 19, 2023",
+      "bouts": [
+        {
+          "a": "Rico DiSciullo",
+          "b": "Hunter Azure",
+          "weight_class": "Bantamweight",
+          "stage": "quarter_final",
+          "stage_quote": "making the final quarterfinal fight official",
+          "result": {
+            "winner": "Rico DiSciullo",
+            "method": "KO (right hand)",
+            "round": 2,
+            "time": null,
+            "quote": "Official Result: Rico DiSciullo def. Hunter Azure by KO (right hand) in Round 2"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Hunter Azure",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Hunter Azure is first on the scale, and he comes in at 135.5 pounds",
+              "context_quote": null
+            },
+            {
+              "fighter": "Rico DiSciullo",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "while DiSciullo checks in at 136 pounds, making the final quarterfinal fight official",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 2, 2023",
+              "quote": "Hunter Azure in his lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 2, 2023",
+              "quote": "Rico DiSciullo in his lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2, 2023 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Rico DiSciullo"
+          ],
+          "text": "White canvassed fighters on semifinal matchups, starting with DiSciullo.",
+          "quote": "White meets with DiSciullo to get his thoughts on who he’d like to fight in the semifinals"
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Timur Valiev"
+          ],
+          "text": "McGregor asked for DiSciullo to face Valiev in the semifinal.",
+          "quote": "McGregor says they’re asking for Valiev, and Chandler calls him the toughest guy in the bantamweight competition."
+        }
+      ],
+      "notes": "Captions label bantamweights Azure and DiSciullo as 'lightweight' and use the same March 2, 2023 date as episodes 6-7; treat as possibly generic."
+    },
+    {
+      "episode_number": 9,
+      "recap_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-07-26T12:26:01-0400",
+      "byline_date_text": "Jul. 26, 2023",
+      "bouts": [
+        {
+          "a": "Austin Hubbard",
+          "b": "Roosevelt Roberts",
+          "weight_class": "Lightweight",
+          "stage": "semi_final",
+          "stage_quote": "Two days before the fight, Roberts and Hubbard continue to get geared up for their semifinal fight.",
+          "result": {
+            "winner": "Austin Hubbard",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Austin Hubbard def. Roosevelt Roberts by Split Decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roosevelt Roberts",
+              "weight_lbs": null,
+              "missed_weight": true,
+              "limit_lbs": 156,
+              "quote": "Roberts is up first and comes in a quarter of a pound over the 156-pound limit.",
+              "context_quote": null,
+              "weight_text": "a quarter of a pound over the 156-pound limit"
+            },
+            {
+              "fighter": "Roosevelt Roberts",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Roberts cuts his braids, apologizing to his people back home for doing so, but hits the mark as he steps back on the scale, making the fight official.",
+              "context_quote": null,
+              "weight_text": "hits the mark"
+            },
+            {
+              "fighter": "Austin Hubbard",
+              "weight_lbs": 155.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Hubbard steps up, hits 155.5 pounds easy",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Dana White",
+            "quote": "UFC President Dana White met with the coaches and fighters to figure out the semifinal pairings"
+          },
+          "caption_filming_dates": [
+            {
+              "date_text": "March 13, 2023",
+              "quote": "Michael Chandler during a lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 13, 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 13, 2023",
+              "quote": "Austin Hubbard in a lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 13, 2023 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "missed_weight",
+          "fighters": [
+            "Roosevelt Roberts"
+          ],
+          "text": "Roberts a quarter-pound over the 156-lb limit on first attempt; cut his braids and made weight within the hour.",
+          "quote": "Roberts is up first and comes in a quarter of a pound over the 156-pound limit."
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "White wanted three Team Chandler fighters to move to Team McGregor for the semifinals, leaving it to the athletes.",
+          "quote": "White would like to have three of the fighters move over to train with Team McGregor, since they’re down to one fighter remaining, but says that he’s going to leave the final decision up to the athletes."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Brad Katona"
+          ],
+          "text": "Katona was the only fighter who chose to switch teams for the semifinals.",
+          "quote": "White explains that Katona was the only fighter that wanted to switch teams heading into the semifinals"
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "Semifinals are three five-minute rounds (quarterfinals were two).",
+          "quote": "outlining that the semifinal fights are three five-minute rounds, not two rounds like in the quarterfinals"
+        }
+      ],
+      "notes": "Both fighters were Team Chandler; Chandler did not corner either. Roberts' re-weigh result is printed only as 'hits the mark'."
+    },
+    {
+      "episode_number": 10,
+      "recap_url": "https://www.ufc.com/news/episode-10-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-08-01T12:47:23-0400",
+      "byline_date_text": "Aug. 1, 2023",
+      "bouts": [
+        {
+          "a": "Brad Katona",
+          "b": "Timur Valiev",
+          "weight_class": "Bantamweight",
+          "stage": "semi_final",
+          "stage_quote": "when he takes on former teammate Timur Valiev in the first bantamweight semifinal matchup",
+          "result": {
+            "winner": "Brad Katona",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Brad Katona def. Timur Valiev by split decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Timur Valiev",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "The Russian veteran comes in at 136 pounds",
+              "context_quote": "Back at the APEX for the semifinal weigh-in, with Valiev up first."
+            },
+            {
+              "fighter": "Brad Katona",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "while the newest member of Team McGregor clocks in at 135.5 pounds, making the fight official.",
+              "context_quote": "Back at the APEX for the semifinal weigh-in, with Valiev up first."
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 2023",
+              "quote": "Timur Valiev in a lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 2023",
+              "quote": "Brad Katona in a lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2023 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Brad Katona"
+          ],
+          "text": "Katona formally switched from Team Chandler to Team McGregor before his semifinal.",
+          "quote": "He gets a Team McGregor jersey from the former two-division world champion, officially marking his switch."
+        }
+      ],
+      "notes": "'The newest member of Team McGregor' = Katona, who switched teams on this page. Captions give month/year only and call the bantamweights 'lightweight'."
+    },
+    {
+      "episode_number": 11,
+      "recap_url": "https://www.ufc.com/news/episode-11-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-08-09T11:11:55-0400",
+      "byline_date_text": "Aug. 9, 2023",
+      "bouts": [
+        {
+          "a": "Kurt Holobaugh",
+          "b": "Jason Knight",
+          "weight_class": "Lightweight",
+          "stage": "semi_final",
+          "stage_quote": "when they square off in the second lightweight semifinal",
+          "result": {
+            "winner": "Kurt Holobaugh",
+            "method": "TKO (strikes)",
+            "round": 2,
+            "time": null,
+            "quote": "Official Result: Kurt Holobaugh def. Jason Knight by TKO (strikes) in Round 2"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jason Knight",
+              "weight_lbs": 155,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "with Knight making lightweight championship weight, 155 pounds",
+              "context_quote": null
+            },
+            {
+              "fighter": "Kurt Holobaugh",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "and Holobaugh coming in half-a-pound higher",
+              "context_quote": null,
+              "weight_text": "half-a-pound higher"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 2023",
+              "quote": "Michael Chandler during a lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2023 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 2023",
+              "quote": "Kurt Holobaugh before a lightweight fight during the filming of The Ultimate Fighter at UFC Apex on March 2023 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [],
+      "notes": "Coaches Challenge (cold-plunge trivia, won by McGregor: $10,000 coach / $1500 per team member) omitted from events as it did not affect picks or the bracket. Holobaugh's weight printed only relative to Knight's."
+    },
+    {
+      "episode_number": 12,
+      "recap_url": "https://www.ufc.com/news/episode-12-recap-ultimate-fighter-season-31",
+      "recap_published": "2023-08-16T10:54:00-0400",
+      "byline_date_text": "Aug. 16, 2023",
+      "bouts": [
+        {
+          "a": "Cody Gibson",
+          "b": "Rico DiSciullo",
+          "weight_class": "Bantamweight",
+          "stage": "semi_final",
+          "stage_quote": "It’s time for the final semifinal matchup.",
+          "result": {
+            "winner": "Cody Gibson",
+            "method": "Submission (arm-triangle choke)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Cody Gibson defeats Rico DiSciullo by submission (arm-triangle choke) in the first round"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Cody Gibson",
+              "weight_lbs": 135.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "The Team Chandler representative is first to the scale, coming in at 135.5 pounds.",
+              "context_quote": "DiSciullo follows him, hitting 136 pounds, making the fight official."
+            },
+            {
+              "fighter": "Rico DiSciullo",
+              "weight_lbs": 136,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "DiSciullo follows him, hitting 136 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 13, 2023",
+              "quote": "Cody Gibson (top) punches Rico DiSciullo in their bantamweight fight during the filming of The Ultimate Fighter at UFC APEX on March 13, 2023 in Las Vegas, Nevada."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Cody Gibson"
+          ],
+          "text": "Gibson entered the semifinal compromised by his knee injury.",
+          "quote": "acknowledging that he’s somewhat compromised by his knee injury"
+        }
+      ],
+      "notes": "'The Team Chandler representative' resolved to Gibson using the FOLLOWING sentence (the preceding text is a photo caption). Time not stated (prose: 'just before the opening round expired'). Captions 'Cody Gibson / Conor McGregor / Michael Chandler during the filming ... March 13, 2023' name no fight and are not attached."
+    }
+  ],
+  "missing_episodes": []
+}

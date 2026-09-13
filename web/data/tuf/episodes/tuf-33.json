@@ -1,0 +1,947 @@
+{
+  "slug": "tuf-33",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recaps/tuf-33.json"
+  },
+  "finale_broadcast": {
+    "title": "TUF 33 Finale: Lopes vs. Silva",
+    "listing_date": "2026-05-25"
+  },
+  "missing_recaps": [
+    {
+      "episode_number": 11,
+      "why": "No episode 11 recap found on ufc.com: the sitemap URL list (all_urls.txt) has season-33 recaps for episodes 1-10 and 12 only; TUF hub https://www.ufc.com/tuf?page=0..6 re-checked 2026-09-12 lists recaps for 6, 7 (page 6), 8 (page 5), 9, 10, 12 (page 4) and no episode 11 recap or 'Episode 11' item. Expected content: flyweight semifinal Imanol Rodriguez vs Joseph Morales (announced in the episode 10 recap; the episode 12 recap places Morales in the flyweight finale)."
+    }
+  ],
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Into the Pressure Cooker",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-05-27",
+      "recap_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-33-cormier-sonnen",
+      "recap_published": "2025-05-28T12:11:57-04:00",
+      "recap_byline_date": "May. 28, 2025",
+      "bouts": [
+        {
+          "a": "Joseph Morales",
+          "b": "Eduardo Henrique",
+          "a_fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Flyweight",
+            "stage": "quarter_final",
+            "a": "Eduardo Henrique",
+            "b": "Joseph Morales"
+          },
+          "result": {
+            "winner": "Joseph Morales",
+            "winner_fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+            "method": "Submission (rear-naked choke)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Eduardo Henrique",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-33-cormier-sonnen"
+            },
+            {
+              "fighter": "Joseph Morales",
+              "fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+              "weight_lbs": 126.5,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-33-cormier-sonnen"
+            },
+            {
+              "fighter": "Joseph Morales",
+              "fighter_id": "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 1,
+              "source_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-33-cormier-sonnen"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Sonnen"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Sonnen",
+      "events": [
+        {
+          "type": "coin_toss",
+          "text": "Cormier wins the coin flip and drafts first.",
+          "fighters": [
+            "Daniel Cormier"
+          ],
+          "fighter_ids": [
+            "189dbb32-67d4-42b7-b098-81be761d4146"
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "First picks: Henrique (Cormier) and Morales (Sonnen) at flyweight; Sezinando (Cormier) and Bianchini (Sonnen) at welterweight.",
+          "fighters": [
+            "Eduardo Henrique",
+            "Joseph Morales",
+            "Rodrigo Sezinando",
+            "Diego Bianchini"
+          ],
+          "fighter_ids": [
+            null,
+            "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+            "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+            null
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "Binder is the last fighter drafted by Team Sonnen.",
+          "fighters": [
+            "Andreeas Binder"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Team Sonnen has control of the first matchup.",
+          "fighters": [],
+          "fighter_ids": []
+        },
+        {
+          "type": "missed_weight",
+          "text": "Morales weighs 126.5 (half a pound over) on his first attempt, then makes 126 stripped.",
+          "fighters": [
+            "Joseph Morales"
+          ],
+          "fighter_ids": [
+            "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Team Sonnen picks the first welterweight matchup: Donchenko (Team Cormier) vs Martins (Team Sonnen).",
+          "fighters": [
+            "Daniel Donchenko",
+            "Richard Martins"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Welterweight matchup announced.",
+          "fighters": [
+            "Daniel Donchenko",
+            "Richard Martins"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 2,
+      "title": "Nothing to Lose",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-06-03",
+      "recap_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-06-04T12:30:00-04:00",
+      "recap_byline_date": "Jun. 4, 2025",
+      "bouts": [
+        {
+          "a": "Daniil Donchenko",
+          "b": "Richard Martins",
+          "a_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+          "weight_class": "Welterweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Welterweight",
+            "stage": "quarter_final",
+            "a": "Daniil Donchenko",
+            "b": "Richard Martins"
+          },
+          "result": {
+            "winner": "Daniil Donchenko",
+            "winner_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Daniil Donchenko",
+              "fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+              "weight_lbs": 171,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-33"
+            },
+            {
+              "fighter": "Richard Martins",
+              "weight_lbs": 169.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-33"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Team Cormier has the flyweight matchup choice.",
+          "fighters": [
+            "Imanol Rodriguez",
+            "Arshiyan Memon"
+          ],
+          "fighter_ids": [
+            "be1af222-a9ab-41bc-84d1-23f5f5f1100b",
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Cormier picks Rodriguez (Team Cormier) vs Memon (Team Sonnen).",
+          "fighters": [
+            "Imanol Rodriguez",
+            "Arshiyan Memon"
+          ],
+          "fighter_ids": [
+            "be1af222-a9ab-41bc-84d1-23f5f5f1100b",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 3,
+      "title": "Give Them a Show",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-06-10",
+      "recap_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-06-11T11:19:37-04:00",
+      "recap_byline_date": "Jun. 11, 2025",
+      "bouts": [
+        {
+          "a": "Imanol Rodriguez",
+          "b": "Arshiyan Memon",
+          "a_fighter_id": "be1af222-a9ab-41bc-84d1-23f5f5f1100b",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Flyweight",
+            "stage": "quarter_final",
+            "a": "Imanol Rodriguez",
+            "b": "Arshiyan Memon"
+          },
+          "result": {
+            "winner": "Imanol Rodriguez",
+            "winner_fighter_id": "be1af222-a9ab-41bc-84d1-23f5f5f1100b",
+            "method": "TKO",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Imanol Rodriguez",
+              "fighter_id": "be1af222-a9ab-41bc-84d1-23f5f5f1100b",
+              "weight_lbs": 125,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-33"
+            },
+            {
+              "fighter": "Arshiyan Memon",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-33"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Cormier picks Creighton (Team Cormier) vs Binder (Team Sonnen) for the next welterweight fight.",
+          "fighters": [
+            "Jeff Creighton",
+            "Andreeas Binder"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 4,
+      "title": "Jesus Loves Knockouts",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-06-17",
+      "recap_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-33-sonnen-cormier",
+      "recap_published": "2025-06-18T14:39:14-04:00",
+      "recap_byline_date": "Jun. 18, 2025",
+      "bouts": [
+        {
+          "a": "Jeff Creighton",
+          "b": "Andreeas Binder",
+          "weight_class": "Welterweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Welterweight",
+            "stage": "quarter_final",
+            "a": "Jefferson Creighton",
+            "b": "Andreeas Binder"
+          },
+          "result": {
+            "winner": "Jeff Creighton",
+            "method": "Decision",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jeff Creighton",
+              "weight_lbs": 170,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 4,
+              "source_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-33-sonnen-cormier"
+            },
+            {
+              "fighter": "Andreeas Binder",
+              "weight_lbs": 175.5,
+              "missed_weight": true,
+              "limit_lbs": 171,
+              "episode_number": 4,
+              "source_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-33-sonnen-cormier"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "missed_weight",
+          "text": "Binder cannot make weight, stuck at 176 pounds on the cut; weighs in at 175.5.",
+          "fighters": [
+            "Andreeas Binder"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "catchweight",
+          "text": "Creighton accepts the overweight fight for $2,500 per pound ($12,500) paid by Sonnen.",
+          "fighters": [
+            "Andreeas Binder",
+            "Jeff Creighton"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "type": "catchweight",
+          "text": "Deal requires Binder to be under 176 pounds or it could be voided.",
+          "fighters": [
+            "Andreeas Binder"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "White lets Binder stay and compete despite missing weight.",
+          "fighters": [
+            "Andreeas Binder"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Cormier picks Idiris (Team Cormier) vs Yokubov (Team Sonnen).",
+          "fighters": [
+            "Alibi Idiris",
+            "Furkatbek Yokubov"
+          ],
+          "fighter_ids": [
+            "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 5,
+      "title": "Frenemies",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-06-24",
+      "recap_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-06-25T11:58:18-04:00",
+      "recap_byline_date": "Jun. 25, 2025",
+      "bouts": [
+        {
+          "a": "Alibi Idiris",
+          "b": "Furkatbek Yokubov",
+          "a_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Flyweight",
+            "stage": "quarter_final",
+            "a": "Alibi Idiris",
+            "b": "Furkatbek Yokubov"
+          },
+          "result": {
+            "winner": "Alibi Idiris",
+            "winner_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Furkatbek Yokubov",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-33"
+            },
+            {
+              "fighter": "Alibi Idiris",
+              "fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-33"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Cormier announces the third welterweight quarterfinal: Dixon (Team Sonnen) vs Sanchez (Team Cormier).",
+          "fighters": [
+            "Matt Dixon",
+            "Alex Sanchez"
+          ],
+          "fighter_ids": [
+            "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 6,
+      "title": "A Lesson in Brutality",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-07-01",
+      "recap_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-07-03T12:27:43-04:00",
+      "recap_byline_date": "Jul. 3, 2025",
+      "bouts": [
+        {
+          "a": "Matt Dixon",
+          "b": "Alex Sanchez",
+          "a_fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+          "weight_class": "Welterweight",
+          "stage": "quarter_final",
+          "bracket": null,
+          "result": {
+            "winner": "Matt Dixon",
+            "winner_fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+            "method": "TKO (left hook)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Matt Dixon",
+              "fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+              "weight_lbs": 171,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-33"
+            },
+            {
+              "fighter": "Alex Sanchez",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-33"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Final flyweight pairing announced (picker not stated).",
+          "fighters": [
+            "Roybert Echerverria",
+            "Tumelo Manyamala"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 7,
+      "title": "Make Them Remember Me",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-07-08",
+      "recap_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-07-09T13:35:00-04:00",
+      "recap_byline_date": "Jul. 9, 2025",
+      "bouts": [
+        {
+          "a": "Roybert Echeverria",
+          "b": "Tumelo Manyamala",
+          "a_fighter_id": "ccf42f31-e899-442c-8d45-839607d78122",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Flyweight",
+            "stage": "quarter_final",
+            "a": "Tumelo Manyamala",
+            "b": "Roybert Echeverria"
+          },
+          "result": {
+            "winner": "Roybert Echeverria",
+            "winner_fighter_id": "ccf42f31-e899-442c-8d45-839607d78122",
+            "method": "Submission (rear-naked choke)",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roybert Echeverria",
+              "fighter_id": "ccf42f31-e899-442c-8d45-839607d78122",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 7,
+              "source_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-33"
+            },
+            {
+              "fighter": "Tumelo Manyamala",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 7,
+              "source_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-33"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Final quarterfinal announced: Bianchini (Team Sonnen) vs Sezinando (Team Cormier); picker not stated.",
+          "fighters": [
+            "Diego Bianchini",
+            "Rodrigo Senzinanda"
+          ],
+          "fighter_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 8,
+      "title": "Respect Is Earned",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-07-15",
+      "recap_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-07-16T12:02:50-04:00",
+      "recap_byline_date": "Jul. 16, 2025",
+      "bouts": [
+        {
+          "a": "Rodrigo Sezinando",
+          "b": "Diego Bianchini",
+          "a_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+          "weight_class": "Welterweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Welterweight",
+            "stage": "quarter_final",
+            "a": "Rodrigo Sezinando",
+            "b": "Diego Bianchini"
+          },
+          "result": {
+            "winner": "Rodrigo Sezinando",
+            "winner_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Diego Bianchini",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-33"
+            },
+            {
+              "fighter": "Rodrigo Sezinando",
+              "fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-33"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Coaches set the semifinal matchups together, with semifinalists giving input.",
+          "fighters": [],
+          "fighter_ids": []
+        },
+        {
+          "type": "other",
+          "text": "Semifinals: Idiris vs Echeverria, Rodriguez vs Morales (flyweight); Dixon vs Donchenko, Creighton vs Sezinando (welterweight).",
+          "fighters": [
+            "Alibi Idiris",
+            "Roybert Echeverria",
+            "Imanol Rodriugez",
+            "Joseph Morales",
+            "Matt Dixon",
+            "Daniil Donchenko",
+            "Jeff Creighton",
+            "Rodrigo Sezinando"
+          ],
+          "fighter_ids": [
+            "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+            "ccf42f31-e899-442c-8d45-839607d78122",
+            null,
+            "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+            "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+            "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+            null,
+            "6e2660b2-6505-4a25-bd1a-17356aec23cf"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 9,
+      "title": "Comfortable with the Uncomfortable",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-07-22",
+      "recap_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-07-23T14:00:48-04:00",
+      "recap_byline_date": "Jul. 23, 2025",
+      "bouts": [
+        {
+          "a": "Alibi Idiris",
+          "b": "Roybert Echeverria",
+          "a_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+          "b_fighter_id": "ccf42f31-e899-442c-8d45-839607d78122",
+          "weight_class": "Flyweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Flyweight",
+            "stage": "semi_final",
+            "a": "Alibi Idiris",
+            "b": "Roybert Echeverria"
+          },
+          "result": {
+            "winner": "Alibi Idiris",
+            "winner_fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+            "method": "KO (flying knee)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Alibi Idiris",
+              "fighter_id": "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-33"
+            },
+            {
+              "fighter": "Roybert Echeverria",
+              "fighter_id": "ccf42f31-e899-442c-8d45-839607d78122",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-33"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            "March 12, 2025",
+            "March 12, 2025",
+            "March 12, 2025",
+            "March 12, 2025",
+            "March 12, 2025",
+            "March 12, 2025",
+            "March 12, 2025"
+          ]
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Next: all-Team Cormier welterweight semifinal, Creighton vs Sezinando.",
+          "fighters": [
+            "Jeff Creighton",
+            "Rodrigo Sezinando"
+          ],
+          "fighter_ids": [
+            null,
+            "6e2660b2-6505-4a25-bd1a-17356aec23cf"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 10,
+      "title": "Common Goals Can't Be Shared",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-07-29",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-10-recap",
+      "recap_published": "2025-07-30T13:33:27-04:00",
+      "recap_byline_date": "Jul. 30, 2025",
+      "bouts": [
+        {
+          "a": "Rodrigo Sezinando",
+          "b": "Jeff Creighton",
+          "a_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+          "weight_class": "Welterweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Welterweight",
+            "stage": "semi_final",
+            "a": "Jefferson Creighton",
+            "b": "Rodrigo Sezinando"
+          },
+          "result": {
+            "winner": "Rodrigo Sezinando",
+            "winner_fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jeff Creighton",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-10-recap"
+            },
+            {
+              "fighter": "Rodrigo Sezinando",
+              "fighter_id": "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-10-recap"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Next flyweight semifinal: Rodriguez vs Morales, winner faces Idiris in the finale.",
+          "fighters": [
+            "Imanol Rodriguez",
+            "Joseph Morales",
+            "Alibi Idiris"
+          ],
+          "fighter_ids": [
+            "be1af222-a9ab-41bc-84d1-23f5f5f1100b",
+            "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+            "3b0f9220-12df-43e3-89cb-55f4489d6d8b"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 11,
+      "title": "Bring Your Best",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-08-05",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Tested by the Fire",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2025-08-12",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap",
+      "recap_published": "2025-08-13T12:21:00-04:00",
+      "recap_byline_date": "Aug. 13, 2025",
+      "bouts": [
+        {
+          "a": "Daniil Donchenko",
+          "b": "Matt Dixon",
+          "a_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+          "b_fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+          "weight_class": "Welterweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Welterweight",
+            "stage": "semi_final",
+            "a": "Daniil Donchenko",
+            "b": "Matt Dixon"
+          },
+          "result": {
+            "winner": "Daniil Donchenko",
+            "winner_fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+            "method": "TKO (strikes)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Matt Dixon",
+              "fighter_id": "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+              "weight_lbs": 171,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap"
+            },
+            {
+              "fighter": "Daniil Donchenko",
+              "fighter_id": "45866b70-3f63-4996-8ec4-416e40b4c6b6",
+              "weight_lbs": 171,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 12,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Illegal blows to the back of the head; fight paused, Dixon chose to continue.",
+          "fighters": [
+            "Matt Dixon",
+            "Daniil Donchenko"
+          ],
+          "fighter_ids": [
+            "f66cd6ec-9772-4cc0-b10c-8fccecc9478a",
+            "45866b70-3f63-4996-8ec4-416e40b4c6b6"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Finale pairings face off: Morales vs Idiris (flyweight), Sezinando vs Donchenko (welterweight).",
+          "fighters": [
+            "Joseph Morales",
+            "Alibi Idiris",
+            "Rodrigo Sezinando",
+            "Daniil Donchenko"
+          ],
+          "fighter_ids": [
+            "5be77aa0-2a5b-4a31-90b8-5f5b7513e0e7",
+            "3b0f9220-12df-43e3-89cb-55f4489d6d8b",
+            "6e2660b2-6505-4a25-bd1a-17356aec23cf",
+            "45866b70-3f63-4996-8ec4-416e40b4c6b6"
+          ]
+        }
+      ]
+    }
+  ]
+}

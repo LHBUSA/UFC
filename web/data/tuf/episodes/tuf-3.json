@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-3",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": null
+  },
+  "finale_broadcast": {
+    "title": "TUF 3 Finale: Team Ortiz vs. Team Shamrock",
+    "listing_date": "2006-06-24"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Fresh Meat",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-04-06",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "The Basketball",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-04-13",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Team Dagger",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-04-20",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Hitting It Hard",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-04-27",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "The Truce Is Over",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-05-04",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "The Letter",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-05-11",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Mohawk",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-05-18",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "The Fuse is Lit",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-05-25",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "The Golden Boy",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-06-01",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Full House",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-06-08",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "The Jungle",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-06-15",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Bangin'",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2006-06-15",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

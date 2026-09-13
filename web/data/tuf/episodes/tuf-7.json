@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-7",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "finale_broadcast": {
+    "title": "TUF 7 Finale: Team Rampage vs. Team Forrest",
+    "listing_date": "2008-06-21"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "No Poseurs",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-04-02",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "No Losers Here",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-04-09",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "The Heebie-Jeebies",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-04-16",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Everything to Lose",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-04-23",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Chewbacle",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-04-30",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Piece of Meat",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-05-07",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighterr-team-rampage-vs-team-forrest-episode-6-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Under The Radar",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-05-14",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighterr-team-rampage-vs-team-forrest-episode-7-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Mean and Nasty",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-05-21",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighterr-team-rampage-vs-team-forrest-episode-eight-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Throwing Bombs",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-05-28",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-rampage-vs-team-forrest-episode-nine-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Losers Go Home",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-06-04",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-rampage-vs-team-forrest-episode-ten-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Coco is King",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-06-11",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-rampage-vs-team-forrest-episode-11-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "First Time Ever",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-06-18",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-rampage-vs-team-forrest-episode-12-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

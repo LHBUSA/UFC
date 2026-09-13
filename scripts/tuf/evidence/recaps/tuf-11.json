@@ -1,0 +1,868 @@
+{
+  "_about": "Facts from UFC.com episode recaps for tuf-11. Every value carries the exact sentence it came from; quotes were checked as verbatim substrings of the recap text on 2026-09-12. Names are as the recap printed them.",
+  "source_family": "ufc_com_recap",
+  "retrieved": "2026-09-12",
+  "slug": "tuf-11",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-one-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Mar. 30, 2010",
+      "bouts": [
+        {
+          "a": "Jamie Yager",
+          "b": "Ben Stark",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Jamie Yager",
+            "method": "KO (kicks)",
+            "round": null,
+            "time": null,
+            "quote": "Pasadena’s Jamie Yager makes an immediate impression, not only with his huge afro, but with a quick knockout of Coconut Creek’s Ben Stark, who he decimated with a series of kicks."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Brad Tavares",
+          "b": "Jordan Smith",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Brad Tavares",
+            "method": "KO (right hand)",
+            "round": 1,
+            "time": null,
+            "quote": "This one ended quick as well, with Tavares knocking out Smith with a right hand in the first round."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Kris McCray",
+          "b": "Cleburn Walker",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "Stephanville, Texas’ Cleburn Walker battled Woodbridge, Virginia’s Kris McCray (5-0) in the next elimination bout, and McCray immediately impressed with a throw that dislocated Walker’s shoulder and forced referee Herb Dean to halt the bout, moving McCray into the TUF house.",
+          "result": {
+            "winner": "Kris McCray",
+            "method": "TKO (dislocated shoulder)",
+            "round": null,
+            "time": null,
+            "quote": "Stephanville, Texas’ Cleburn Walker battled Woodbridge, Virginia’s Kris McCray (5-0) in the next elimination bout, and McCray immediately impressed with a throw that dislocated Walker’s shoulder and forced referee Herb Dean to halt the bout, moving McCray into the TUF house."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Recap does not use the word TKO: referee halted the bout after a throw dislocated Walker's shoulder."
+        },
+        {
+          "a": "James Hammortree",
+          "b": "Norman Paraisy",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "James Hammortree",
+            "method": "TKO (quit between rounds)",
+            "round": null,
+            "time": null,
+            "quote": "Paraisy wanted to quit between rounds, and despite the pleas of cornermen John Hackleman and Howard Davis Jr., he did, giving Hammortree the TKO win."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Stoppage came after the first round ended; no round number is attached to the TKO."
+        },
+        {
+          "a": "Nick Ring",
+          "b": "Woody Weatherby",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Nick Ring",
+            "method": "TKO",
+            "round": null,
+            "time": null,
+            "quote": "Nick Ring (10-0) moved on to the house in the next bout with a TKO win over Woody Weatherby, and Kyle Noke joined him with a bloody two round decision win over Warren Thompson."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Kyle Noke",
+          "b": "Warren Thompson",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Kyle Noke",
+            "method": "Decision",
+            "round": null,
+            "time": null,
+            "quote": "Nick Ring (10-0) moved on to the house in the next bout with a TKO win over Woody Weatherby, and Kyle Noke joined him with a bloody two round decision win over Warren Thompson."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Decision type not stated; two rounds."
+        },
+        {
+          "a": "Court McGee",
+          "b": "Seth Baczynski",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Court McGee",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "In the sudden victory round, McGee gutted it out and won the final stanza and the fight via unanimous decision."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Draw after two rounds; decided in a sudden victory round."
+        },
+        {
+          "a": "Chris Camozzi",
+          "b": "Victor O’Donnell",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Chris Camozzi",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "The third round continued the torrid pace of the previous two, but this time Camozzi broke out in front to take the unanimous decision win."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Draw after two rounds; decided in a sudden victory (third) round. Recap: \"In fight number eight\"."
+        },
+        {
+          "a": "Kyacey Uscola",
+          "b": "Brent Cooper",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "The ninth fight of the elimination round saw Sacramento veteran Kyacey Uscola (18-15) taking on Irvine’s Brent Cooper (5-1), and it was Uscola making short work of his opponent via knockout.",
+          "result": {
+            "winner": "Kyacey Uscola",
+            "method": "KO",
+            "round": null,
+            "time": null,
+            "quote": "The ninth fight of the elimination round saw Sacramento veteran Kyacey Uscola (18-15) taking on Irvine’s Brent Cooper (5-1), and it was Uscola making short work of his opponent via knockout."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Joseph Henle",
+          "b": "Constantinos Philippou",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Joseph Henle",
+            "method": "Submission (armbar)",
+            "round": null,
+            "time": null,
+            "quote": "Joseph Henle also earned a spot in the house with a come from behind submission win over Constantinos Philippou, who was dominating the bout before an armbar ended his night."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Rich Attonito",
+          "b": "Lyle Steffens",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Rich Attonito",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Next up, American Top Team’s Rich Attonito pounded out a two round unanimous decision win over Lyle Steffens, Josh Bryant did the same via majority decision over Greg Rebello, and Charles Blanchard halted Jacen Flynn in the first round."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Josh Bryant",
+          "b": "Greg Rebello",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Josh Bryant",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null,
+            "quote": "Next up, American Top Team’s Rich Attonito pounded out a two round unanimous decision win over Lyle Steffens, Josh Bryant did the same via majority decision over Greg Rebello, and Charles Blanchard halted Jacen Flynn in the first round."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Charles Blanchard",
+          "b": "Jacen Flynn",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "“I think we’ve got some serious talent here,” said White after convening the 14 elimination bout winners.",
+          "result": {
+            "winner": "Charles Blanchard",
+            "method": null,
+            "round": 1,
+            "time": null,
+            "quote": "Next up, American Top Team’s Rich Attonito pounded out a two round unanimous decision win over Lyle Steffens, Josh Bryant did the same via majority decision over Greg Rebello, and Charles Blanchard halted Jacen Flynn in the first round."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Method not stated beyond \"halted\"."
+        },
+        {
+          "a": "Clayton McKinney",
+          "b": "Charley Lynch",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "stage_quote": "In the final fight of the elimination round, Minneapolis’ Charley Lynch (6-0) and Orlando’s Clayton McKinney (4-2) are friends outside of the Octagon, but they didn’t act like it when the bell rang.",
+          "result": {
+            "winner": "Clayton McKinney",
+            "method": "TKO (strikes)",
+            "round": null,
+            "time": null,
+            "quote": "McKinney then moved in for the finish and got it as he stunned his foe and then got the TKO with a follow-up barrage."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "wildcard",
+          "fighters": [],
+          "text": "Season introduces a wildcard: two house fighters chosen by the coaches get a second chance at the final quarterfinal spot after the first seven preliminary bouts.",
+          "quote": "As the premiere episode opens, UFC President Dana White informs the 28 middleweight hopefuls that this season will introduce a wildcard into the TUF formula, with two fighters in the house (chosen by the coaches) getting a second chance to earn the final spot in the quarterfinals after the first seven preliminary bouts."
+        }
+      ],
+      "notes": "28 fighters, 14 elimination bouts; winners enter the house. Stage quote for bouts without their own stage sentence is White's line about the 14 elimination bout winners."
+    },
+    {
+      "episode_number": 2,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-two-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Apr. 7, 2010",
+      "bouts": [
+        {
+          "a": "Kyle Noke",
+          "b": "Clayton McKinney",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Kyle Noke",
+            "method": "Submission (triangle choke)",
+            "round": null,
+            "time": null,
+            "quote": "McKinney looks to be in control, but suddenly Noke reverses position and sinks in a bout-ending triangle choke that eliminates the Florida fighter."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kyle Noke",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Both fighters made weight for their bout, and after referee Herb Dean waves them in, the competition is now truly underway.",
+              "context_quote": null,
+              "weight_text": "made weight"
+            },
+            {
+              "fighter": "Clayton McKinney",
+              "weight_lbs": null,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Both fighters made weight for their bout, and after referee Herb Dean waves them in, the competition is now truly underway.",
+              "context_quote": null,
+              "weight_text": "made weight"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Liddell",
+            "quote": "But it’s not to be this week, as Liddell opts to have his first pick Kyle Noke take on McKinney."
+          },
+          "caption_filming_dates": [],
+          "notes": "Round not stated."
+        }
+      ],
+      "events": [
+        {
+          "type": "coin_toss",
+          "fighters": [
+            "Tito Ortiz",
+            "Chuck Liddell"
+          ],
+          "text": "Ortiz wins the coin flip and takes first pick; Liddell chooses the first fight.",
+          "quote": "The next morning, Ortiz wins the opening coin flip and opts to take the first pick, with Liddell getting to choose the first fight."
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Nick Ring",
+            "Kyle Noke"
+          ],
+          "text": "First picks: Nick Ring (Ortiz), Kyle Noke (Liddell).",
+          "quote": "Ortiz’ first team pick is Nick Ring. Liddell counters with Kyle Noke."
+        },
+        {
+          "type": "injury",
+          "fighters": [
+            "Clayton McKinney"
+          ],
+          "text": "McKinney's shoulder: no rotator cuff tear, bone bruise, cleared to fight.",
+          "quote": "There was a bone bruise, but he was clear to fight."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 3,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-three-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Apr. 14, 2010",
+      "bouts": [
+        {
+          "a": "Brad Tavares",
+          "b": "James Hammortree",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Brad Tavares",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "The verdict: 10-9 across the board for Tavares, who takes the bout via unanimous decision"
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Liddell",
+            "quote": "Luckily, he won’t have to fight immediately, as Team Liddell chose Brad Tavares to face Team Ortiz’ James Hammortree."
+          },
+          "caption_filming_dates": [],
+          "notes": "Draw after two rounds; decided in a third sudden victory round."
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Chris Camozzi"
+          ],
+          "text": "Camozzi removed from the show with a broken jaw from his elimination bout.",
+          "quote": "Following Team Liddell’s workout though, the series takes a turn when UFC President Dana White announces that Team Ortiz’ Chris Camozzi is being removed from the show due to a broken jaw suffered in his first bout against Victor O’Donnell that the fighter thought was a toothache."
+        },
+        {
+          "type": "replacement",
+          "fighters": [
+            "Seth Baczynski",
+            "Chris Camozzi"
+          ],
+          "text": "Ortiz's staff choose Seth Baczynski to fill Camozzi's roster spot.",
+          "quote": "Four of the previously eliminated fighters from episode one are healthy and available, so Ortiz and his coaching staff decided that Seth Baczynski – who had a close three round battle with Court McGee in the elimination round - will fill Camozzi’s spot on the roster."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 4,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-four-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Apr. 21, 2010",
+      "bouts": [
+        {
+          "a": "Rich Attonito",
+          "b": "Kyacey Uscola",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Rich Attonito",
+            "method": "Disqualification (knee to the head of a downed opponent)",
+            "round": null,
+            "time": null,
+            "quote": "In an ensuing scramble though, Uscola knees his downed opponent to the head, and with Attonito unable to continue, he is disqualified."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Round not stated. Picker not stated (\"This week’s first fight will pit Team Liddell’s Rich Attonito against Team Ortiz’ Kyacey Uscola.\")."
+        },
+        {
+          "a": "Jamie Yager",
+          "b": "Charlie Blanchard",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Jamie Yager",
+            "method": "TKO (strikes)",
+            "round": null,
+            "time": null,
+            "quote": "A follow-up barrage by Yager brought in referee Josh Rosenthal to halt the fight and give Team Ortiz its first victory."
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Liddell",
+            "quote": "Liddell’s next fight pick will see Charlie Blanchard take on Team Ortiz’ Jamie Yager, and it’s a quick one, with Yager avoiding an early takedown attempt to drill Blanchard with a right hand that dropped him."
+          },
+          "caption_filming_dates": [],
+          "notes": "Printed as Charlie Blanchard in the fight sentence and Charles Blanchard in the roster. Round not stated."
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Rich Attonito"
+          ],
+          "text": "Attonito broke his right hand in the fight and may be out of the competition.",
+          "quote": "But in a bizarre twist, Attonito might be out of the competition as well after it was revealed that he broke his right hand in the fight."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 5,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-five-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Apr. 28, 2010",
+      "bouts": [
+        {
+          "a": "Josh Bryant",
+          "b": "Kris McCray",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Josh Bryant",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "With 30 seconds left, Bryant gets McCray’s back and tries for a rear naked choke, and though he doesn’t get it, it’s enough to secure the unanimous decision victory."
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Ortiz",
+            "quote": "After Yager’s victory, Team Ortiz takes control, and for this week’s fight, coach Tito Ortiz chooses Kris McCray to take on Team Liddell’s Josh Bryant."
+          },
+          "caption_filming_dates": [],
+          "notes": "Deadlocked after two rounds; decided in a third sudden victory round. Weigh-ins mentioned without weights."
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Clayton McKinney",
+            "Charles Blanchard",
+            "Rich Attonito"
+          ],
+          "text": "McKinney (shoulder surgery) unlikely to return; Attonito's broken hand to keep him from moving forward.",
+          "quote": "Then there’s Rich Attonito, whose broken hand is going to keep him from moving forward, even though he defeated Kyacey Uscola on episode four."
+        },
+        {
+          "type": "wildcard",
+          "fighters": [
+            "Kyacey Uscola",
+            "James Hammortree"
+          ],
+          "text": "Wildcard favorites: Uscola and Hammortree.",
+          "quote": "So right now, it looks like the favorites for the Wild Card are Uscola, who was DQed in his bout with Attonito, and Hammortree, who lost a controversial decision to Brad Tavares."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 6,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-six-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "May. 5, 2010",
+      "bouts": [
+        {
+          "a": "Nick Ring",
+          "b": "Court McGee",
+          "weight_class": "Middleweight",
+          "stage": "round_of_16",
+          "stage_quote": "CAUTION: SPOILERS INCLUDED – The first round of elimination bouts are almost over, and this week, one more fighter will advance on The Ultimate Fighter: Team Liddell vs Team Ortiz.",
+          "result": {
+            "winner": "Nick Ring",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null,
+            "quote": "It isn’t to be though, as Ring is awarded the two round majority decision, and Liddell is livid about the decision that drops Team Liddell’s lead to 4-2 in the competition."
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Liddell",
+            "quote": "Getting back to the business at hand, Liddell chooses Court McGee to face Team Ortiz’ Nick Ring."
+          },
+          "caption_filming_dates": [],
+          "notes": "Stage mapped from \"first round\" (the house round of seven bouts plus the Wild Card that fills the eight quarterfinal spots)."
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "James Hammortree"
+          ],
+          "text": "Hammortree injures his back in training (bulging disc).",
+          "quote": "During Team Ortiz’ training session, it’s bad news again, when Hammortree injures his back and is taken from the gym on a stretcher."
+        }
+      ],
+      "notes": "Coaches Challenge (dodgeball, swept by Liddell) omitted as not bracket-relevant."
+    },
+    {
+      "episode_number": 7,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-seven-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "May. 12, 2010",
+      "bouts": [
+        {
+          "a": "Seth Baczynski",
+          "b": "Joseph Henle",
+          "weight_class": "Middleweight",
+          "stage": "round_of_16",
+          "stage_quote": "There is still one more first round bout to be fought though, and it will pit Team Ortiz’ Baczynski (11-5) against Team Liddell’s Henle (3-0), who has only been in the sport since July of 2009.",
+          "result": {
+            "winner": "Seth Baczynski",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "By this point, Baczynski is in total control, and when the final bell rings, there is no question who earned the unanimous decision victory."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Deadlocked after two rounds; third deciding round. Stage mapped from \"first round\"."
+        }
+      ],
+      "events": [
+        {
+          "type": "injury",
+          "fighters": [
+            "Nick Ring"
+          ],
+          "text": "Ring nursing an injured knee; future participation uncertain.",
+          "quote": "After his victory over Court McGee last week, Team Ortiz’ Nick Ring is nursing an injured knee, and he consults the doctor about it, leaving things up in there when it comes to his future participation in the competition, especially when it gives out on him during a subsequent training session."
+        },
+        {
+          "type": "wildcard",
+          "fighters": [
+            "Kyacey Uscola",
+            "Kris McCray"
+          ],
+          "text": "Wild Card bout set: Uscola vs McCray (both Team Ortiz).",
+          "quote": "Now all that remains in the first round is the Wild Card bout, and that bout will see Team Ortiz’ Kyacey Uscola return to take on his teammate Kris McCray."
+        },
+        {
+          "type": "replacement",
+          "fighters": [
+            "Court McGee",
+            "Rich Attonito"
+          ],
+          "text": "McGee fills the spot opened by Attonito's injury.",
+          "quote": "The injury to Team Liddell’s Rich Attonito also opens up a spot, and that spot will be filled by his teammate Court McGee, who lost a controversial decision to Nick Ring on episode six."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 8,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "May. 19, 2010",
+      "bouts": [
+        {
+          "a": "Kris McCray",
+          "b": "Kyacey Uscola",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "stage_quote": null,
+          "result": {
+            "winner": "Kris McCray",
+            "method": "Submission (kimura)",
+            "round": 2,
+            "time": null,
+            "quote": "With Ortiz yelling “don’t leave it up to the judges”, the fighters come out fast for the second round, but its McCray taking control immediately with a takedown followed by a quick kimura attempt that produces a tap out from Uscola."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Wild Card bout (stage enum has no wildcard value): \"The first Wild Card fight in the history of The Ultimate Fighter is over, and Kris McCray is on his way to the quarterfinals.\""
+        },
+        {
+          "a": "Court McGee",
+          "b": "James Hammortree",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "stage_quote": "In the first quarterfinal bout, Hammortree and McGee battle it out pretty evenly in the opening round, with McGee perhaps holding a light edge due to his takedowns.",
+          "result": {
+            "winner": "Court McGee",
+            "method": "Submission (standing guillotine choke)",
+            "round": 2,
+            "time": null,
+            "quote": "Hammortree looks to get back at McGee in the second, but he gets too aggressive and gets caught in a standing guillotine choke that ends matters via tap out and sends McGee to the semifinals."
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Dana White",
+            "quote": "“Hammortree is the guy who stepped up to the plate,” said White, who gives the Team Ortiz member the fight against McGee."
+          },
+          "caption_filming_dates": [],
+          "notes": "Hammortree replaced the injured Nick Ring in this quarterfinal."
+        }
+      ],
+      "events": [
+        {
+          "type": "wildcard",
+          "fighters": [
+            "Kris McCray",
+            "Kyacey Uscola"
+          ],
+          "text": "McCray wins the first Wild Card fight and enters the quarterfinals.",
+          "quote": "The first Wild Card fight in the history of The Ultimate Fighter is over, and Kris McCray is on his way to the quarterfinals."
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "White makes the final decision on quarterfinal matchups: Ring vs McGee, Noke vs McCray, Tavares vs Baczynski, Yager vs Bryant.",
+          "quote": "The final decision rests with White though and the bouts are as follows:"
+        },
+        {
+          "type": "withdrawal",
+          "fighters": [
+            "Nick Ring"
+          ],
+          "text": "Ring withdraws for knee surgery (third ACL reconstruction).",
+          "quote": "White visits the house to speak with Ring, and the Canadian admits that he needs to get the surgery now."
+        },
+        {
+          "type": "replacement",
+          "fighters": [
+            "James Hammortree",
+            "Nick Ring"
+          ],
+          "text": "Hammortree gets Ring's quarterfinal against McGee.",
+          "quote": "“Hammortree is the guy who stepped up to the plate,” said White, who gives the Team Ortiz member the fight against McGee."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 9,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-nine-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "May. 26, 2010",
+      "bouts": [
+        {
+          "a": "Kris McCray",
+          "b": "Kyle Noke",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "stage_quote": "As the show opens, Team Ortiz’ Kris McCray and Team Liddell’s Kyle Noke weigh in for their quarterfinal bout, and the two buddies are ready for battle.",
+          "result": {
+            "winner": "Kris McCray",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Eventually, referee Steve Mazzagatti stands the fighters, but McCray closes the distance and locks Noke up against the fence to seal his unanimous decision victory."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Even after two rounds; third sudden victory round. Weigh-in mentioned without weights."
+        },
+        {
+          "a": "Brad Tavares",
+          "b": "Seth Baczynski",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "stage_quote": "Brad Tavares 2-0 - Defeated Baczynski in quarterfinals (episode nine).",
+          "result": {
+            "winner": "Brad Tavares",
+            "method": "Disqualification (kick to the head of a downed opponent)",
+            "round": null,
+            "time": null,
+            "quote": "Tavares quickly rises, but is still on wobbly legs, and the Octagonside physician deems him unable to continue, and Baczynski is disqualified."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Round not stated. Ortiz disputed that the kick landed to the head."
+        }
+      ],
+      "events": [],
+      "notes": null
+    },
+    {
+      "episode_number": 10,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-ten-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Jun. 2, 2010",
+      "bouts": [
+        {
+          "a": "Josh Bryant",
+          "b": "Jamie Yager",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "stage_quote": "Liddell is the last person on Ortiz’ mind right now though, as he deals with concerns about his health and his fighter Jamie Yager’s upcoming quarterfinal bout against Team Liddell’s Josh Bryant.",
+          "result": {
+            "winner": "Josh Bryant",
+            "method": "TKO (did not come out for the third round)",
+            "round": null,
+            "time": null,
+            "quote": "After two rounds of action, the judges declared the fight a draw, sending it to a third round, but the exhausted Yager doesn’t get off his stool, awarding the fight to Bryant via TKO."
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Retirement on the stool after a two-round draw; no round number attached to the TKO."
+        }
+      ],
+      "events": [
+        {
+          "type": "replacement",
+          "fighters": [
+            "Tito Ortiz",
+            "Rich Franklin"
+          ],
+          "text": "Ortiz leaves the show (spine injury); Rich Franklin takes over Team Ortiz as coach.",
+          "quote": "Former UFC middleweight champion and TUF2 coach Rich Franklin (who will face Liddell at UFC 115 on June 12th) and assistant coaches Forrest Griffin, Gray Maynard, and Tyson Griffin."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Kris McCray",
+            "Josh Bryant",
+            "Brad Tavares",
+            "Court McGee"
+          ],
+          "text": "Semifinal matchups announced: McCray vs Bryant, Tavares vs McGee.",
+          "quote": "It was an emotional gathering, but the next day, it was back to business and the semifinal fight announcements, which are as follows:"
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 11,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap",
+      "recap_published": "2018-09-14T08:36:04-0400",
+      "byline_date_text": "Jun. 10, 2010",
+      "bouts": [
+        {
+          "a": "Court McGee",
+          "b": "Brad Tavares",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "stage_quote": "This is it – Two fighters will emerge from semifinal matches this week to earn a spot in the main event of The Ultimate Fighter: Team Liddell vs Team Ortiz live finale on June 19th in Las Vegas.",
+          "result": {
+            "winner": "Court McGee",
+            "method": "Technical submission (rear naked choke)",
+            "round": 3,
+            "time": null,
+            "quote": "McGee then sinks in a rear naked choke and finishes the fight with less than 15 seconds left, earning himself a technical submission win and a berth in the finals.",
+            "round_quote": "The final round begins with an inadvertent low kick from Tavares that brings a momentary halt to the action."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brad Tavares",
+              "weight_lbs": 185,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Tavares weighs in for the bout at 185, while McGee checks in at 185.5.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Court McGee",
+              "weight_lbs": 185.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Tavares weighs in for the bout at 185, while McGee checks in at 185.5.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Round 3 from the recap's sequence (first round, round two, \"The final round\"). Time not stated (\"less than 15 seconds left\"). The post-fight quote after this bout is attributed to McCray (\"There are no words to describe how I feel,\" said McCray.), apparently a misattribution; it does not contradict the result."
+        },
+        {
+          "a": "Kris McCray",
+          "b": "Josh Bryant",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "stage_quote": "In the second semifinal, it’s a rematch, as Bryant takes on the man he decisioned on episode five, McCray.",
+          "result": {
+            "winner": "Kris McCray",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "It’s more of the same in the final round, and despite fatigue setting in, both fighters leave it all in the Octagon, exhausting themselves before the final verdict, which reads 30-27, 30-27, and 29-28 in favor of McCray, who now meets McGee in the final at The Palms on June 19th."
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Josh Bryant",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Both fighters weigh in at 186, and the pace is fast as the bout begins, with McCray closing the distance and getting a couple quick takedowns.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Kris McCray",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Both fighters weigh in at 186, and the pace is fast as the bout begins, with McCray closing the distance and getting a couple quick takedowns.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Recap gives scorecards 30-27, 30-27, 29-28 all for McCray; the word unanimous is not printed."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Court McGee",
+            "Kris McCray"
+          ],
+          "text": "Final set: McGee vs McCray at the June 19 finale.",
+          "quote": "The following week, on June 19th, it’s the TUF 11 finale, as Court McGee takes on Kris McCray."
+        }
+      ],
+      "notes": null
+    }
+  ],
+  "missing_episodes": []
+}

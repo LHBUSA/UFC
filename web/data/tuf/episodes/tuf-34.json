@@ -1,0 +1,130 @@
+{
+  "slug": "tuf-34",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": null
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "A New Frontier",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-06-14",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Scousers Don’t Get Knocked Out",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-06-16",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "The Perfect Performance",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-06-23",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "I'm The Future",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-06-30",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "How Bad Do You Want It?",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-07-07",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Settle The Score",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-07-14",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Thrive In Chaos",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-07-21",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "It’s Gonna Be Electric",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-07-28",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "One Leg vs One Eye",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-08-04",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Forget About Friendship",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-08-11",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Two Amazing Women",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-08-18",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "A Memorable Finish",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2026-08-25",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

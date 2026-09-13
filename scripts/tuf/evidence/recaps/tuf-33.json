@@ -1,0 +1,773 @@
+{
+  "_about": "Facts from UFC.com episode recaps for tuf-33. Every value carries the exact sentence it came from; quotes were checked as verbatim substrings of the recap text on 2026-09-12. Names are as the recap printed them.",
+  "source_family": "ufc_com_recap",
+  "retrieved": "2026-09-12",
+  "slug": "tuf-33",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "recap_url": "https://www.ufc.com/news/episode-1-recap-ultimate-fighter-season-33-cormier-sonnen",
+      "recap_published": "2025-05-28T12:11:57-0400",
+      "byline_date_text": "May. 28, 2025",
+      "bouts": [
+        {
+          "a": "Joseph Morales",
+          "b": "Eduardo Henrique",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Joseph Morales is moving on to the flyweight semifinals after collecting a first-round submission win over first-overall pick Eduardo Henrique.",
+          "result": {
+            "winner": "Joseph Morales",
+            "method": "Submission (rear-naked choke)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Joseph Morales defeats Eduardo Henrique by submission (rear-naked choke) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Eduardo Henrique",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Henrique makes weight at 125.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Joseph Morales",
+              "weight_lbs": 126.5,
+              "missed_weight": true,
+              "limit_lbs": null,
+              "quote": "Morales follows and comes in at 126.5 pounds, half-a-pound over the limit, with Cormier immediately asking Team Sonnen why they’re clapping.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Joseph Morales",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "The commission brings out the enclosure, Morales strips down, and makes 126 pounds even.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Sonnen",
+            "quote": "Sonnen announces that Joseph Morales will square off with Eduardo Henrique, creating a matchup of the top selections from each team."
+          },
+          "caption_filming_dates": [],
+          "notes": "Morales was half a pound over on his first attempt, then made 126 stripped behind the enclosure. Stage is quarter_final because the winner moves on to the semifinals; the recap does not use the word quarterfinal."
+        }
+      ],
+      "events": [
+        {
+          "type": "coin_toss",
+          "fighters": [
+            "Daniel Cormier"
+          ],
+          "text": "Cormier wins the coin flip and drafts first.",
+          "quote": "Cormier wins the coin flip and opts to draft first, selecting Henrique as his first pick from the flyweights."
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Eduardo Henrique",
+            "Joseph Morales",
+            "Rodrigo Sezinando",
+            "Diego Bianchini"
+          ],
+          "text": "First picks: Henrique (Cormier) and Morales (Sonnen) at flyweight; Sezinando (Cormier) and Bianchini (Sonnen) at welterweight.",
+          "quote": "Sonnen selects UFC veteran Joseph Morales with his first pick. Shifting to welterweight, Cormier picks Rodrigo Sezinando, while Sonnen grabs Diego Bianchini, who says his alter ego is “The Brazilian Bad Boy.”"
+        },
+        {
+          "type": "team_selection",
+          "fighters": [
+            "Andreeas Binder"
+          ],
+          "text": "Binder is the last fighter drafted by Team Sonnen.",
+          "quote": "Andreeas Binder of Ireland ends up as the last fighter to join Team Sonnen."
+        },
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "Team Sonnen has control of the first matchup.",
+          "quote": "Team Sonnen has control of the first matchup, but Sonnen isn’t sure yet who to select, noting that because of the limited evaluation time and general lack of familiarity with the athletes, top picks get knocked off early all the time."
+        },
+        {
+          "type": "missed_weight",
+          "fighters": [
+            "Joseph Morales"
+          ],
+          "text": "Morales weighs 126.5 (half a pound over) on his first attempt, then makes 126 stripped.",
+          "quote": "Morales follows and comes in at 126.5 pounds, half-a-pound over the limit, with Cormier immediately asking Team Sonnen why they’re clapping."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Daniel Donchenko",
+            "Richard Martins"
+          ],
+          "text": "Team Sonnen picks the first welterweight matchup: Donchenko (Team Cormier) vs Martins (Team Sonnen).",
+          "quote": "White explains that it’s time for the next fight to be announced, and since Team Cormier had first pick in both weight classes, Team Sonnen gets to pick the first welterweight fight, as well."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Daniel Donchenko",
+            "Richard Martins"
+          ],
+          "text": "Welterweight matchup announced.",
+          "quote": "He selects Daniel Donchenko from Team Cormier to face Richard Martins from Team Sonnen."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 2,
+      "recap_url": "https://www.ufc.com/news/episode-2-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-06-04T12:30:00-0400",
+      "byline_date_text": "Jun. 4, 2025",
+      "bouts": [
+        {
+          "a": "Daniil Donchenko",
+          "b": "Richard Martins",
+          "weight_class": "Welterweight",
+          "stage": "quarter_final",
+          "stage_quote": "Daniil Donchenko is the first welterweight into the semifinals after registering a clear two-round win over Richard Martins.",
+          "result": {
+            "winner": "Daniil Donchenko",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Daniil Donchenko def. Richard Martins by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Daniil Donchenko",
+              "weight_lbs": 171,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Donchenko is up first, coming in at 171 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Richard Martins",
+              "weight_lbs": 169.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Martins follows him to the scale, registering 169.5 pounds, so we’re official without issue.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Decision after two rounds (\"After two rounds, the judges have a decision, and Donchenko is through.\")."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Imanol Rodriguez",
+            "Arshiyan Memon"
+          ],
+          "text": "Team Cormier has the flyweight matchup choice.",
+          "quote": "We’re moving back to the 125-pound weight class, with Team Cormier having the matchup choice."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Imanol Rodriguez",
+            "Arshiyan Memon"
+          ],
+          "text": "Cormier picks Rodriguez (Team Cormier) vs Memon (Team Sonnen).",
+          "quote": "DC tabs Imanol Rodriguez from his squad to face Arshiyan Memon of Team Sonnen."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 3,
+      "recap_url": "https://www.ufc.com/news/episode-3-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-06-11T11:19:37-0400",
+      "byline_date_text": "Jun. 11, 2025",
+      "bouts": [
+        {
+          "a": "Imanol Rodriguez",
+          "b": "Arshiyan Memon",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Imanol Rodriguez is through to the semifinals after a frantic first-round stoppage win over Arshiyan Memon.",
+          "result": {
+            "winner": "Imanol Rodriguez",
+            "method": "TKO",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Imanol Rodriguez Defeats Arshiyan Memon by TKO in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Imanol Rodriguez",
+              "weight_lbs": 125,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Rodriguez is up first on the scale, making 125 pounds even.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Arshiyan Memon",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Memon follows, coming in at 126 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Jeff Creighton",
+            "Andreeas Binder"
+          ],
+          "text": "Cormier picks Creighton (Team Cormier) vs Binder (Team Sonnen) for the next welterweight fight.",
+          "quote": "Cormier has control of the next welterweight fight, and he selects a matchup between Creighton and Team Sonnen’s Andreeas Binder."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 4,
+      "recap_url": "https://www.ufc.com/news/episode-4-recap-ultimate-fighter-season-33-sonnen-cormier",
+      "recap_published": "2025-06-18T14:39:14-0400",
+      "byline_date_text": "Jun. 18, 2025",
+      "bouts": [
+        {
+          "a": "Jeff Creighton",
+          "b": "Andreeas Binder",
+          "weight_class": "Welterweight",
+          "stage": "quarter_final",
+          "stage_quote": "Now it’s time for the second welterweight quarterfinal bout, as Jeff Creighton of Team Cormier squares off with Andreeas Binder of Team Sonnen, only for a problem in his weight cut to put Binder’s future in the competition in jeopardy.",
+          "result": {
+            "winner": "Jeff Creighton",
+            "method": "Decision",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Jeff Creighton defeats Andreeas Binder by decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jeff Creighton",
+              "weight_lbs": 170,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Creighton is up first, and comes in at an easy 170 pounds; championship weight.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Andreeas Binder",
+              "weight_lbs": 175.5,
+              "missed_weight": true,
+              "limit_lbs": 171,
+              "quote": "Binder weighs 175.5 pounds, Sonnen pays Creighton, and White raves about the Team Cormeir man not taking the forfeit, while earning a little extra cash on the side, as well.",
+              "context_quote": "Creighton says he derives confidence from Binder missing weight, while the Dubliner wants to make his American counterpart eat his words from the previous day, promising a knockout.",
+              "limit_quote": "He’s currently 14 pounds over, and goes through the usual circuit of skipping rope, sauna, hot tub, and “burrito wrap,” repeating those four steps as he looks to get down to 171 pounds for his fight with Creighton."
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Decision type not stated (only \"by decision\"); Sonnen says Creighton got a 10-8 second round. No third round was fought (\"Both teams believe there will be a third round, but there is a decision.\")."
+        }
+      ],
+      "events": [
+        {
+          "type": "missed_weight",
+          "fighters": [
+            "Andreeas Binder"
+          ],
+          "text": "Binder cannot make weight, stuck at 176 pounds on the cut; weighs in at 175.5.",
+          "quote": "“We made a mistake, and now we need grace,” offers the bespectacled “Bad Guy,” who jumps on the phone with Cormier, informing him that Binder is stuck at 176 pounds and won’t be able to lose any more weight."
+        },
+        {
+          "type": "catchweight",
+          "fighters": [
+            "Andreeas Binder",
+            "Jeff Creighton"
+          ],
+          "text": "Creighton accepts the overweight fight for $2,500 per pound ($12,500) paid by Sonnen.",
+          "quote": "Sonnen does the quick math, noting that it’s $12,500, and tells Creighton he’ll have it in a white envelope at weigh-ins before hanging up."
+        },
+        {
+          "type": "catchweight",
+          "fighters": [
+            "Andreeas Binder"
+          ],
+          "text": "Deal requires Binder to be under 176 pounds or it could be voided.",
+          "quote": "White’s interstitial continues in a voice over, with the UFC CEO noting there is an allowance between athletes when competing at welterweight, adding that with Sonnen paying by the pound, Binder needs to be under 176 pounds or else the deal could be voided."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Andreeas Binder"
+          ],
+          "text": "White lets Binder stay and compete despite missing weight.",
+          "quote": "But with Sonnen having struck up a deal and stood up for his athlete — which is a first in TUF history — he’s letting Binder stick around and compete."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Alibi Idiris",
+            "Furkatbek Yokubov"
+          ],
+          "text": "Cormier picks Idiris (Team Cormier) vs Yokubov (Team Sonnen).",
+          "quote": "Cormier picks Alibi Idiris from his side to face Team Sonnen’s Furkatbek Yokubov."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 5,
+      "recap_url": "https://www.ufc.com/news/episode-5-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-06-25T11:58:18-0400",
+      "byline_date_text": "Jun. 25, 2025",
+      "bouts": [
+        {
+          "a": "Alibi Idiris",
+          "b": "Furkatbek Yokubov",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Alibi Idiris punched his ticket to the flyweight semifinals with a dominant effort against Team Sonnen’s Furkatbek Yokubov.",
+          "result": {
+            "winner": "Alibi Idiris",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Alibi Idiris defeats Furkatbek Yokubov by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Furkatbek Yokubov",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Yokubov is up first, stepping behind the privacy screen to make 126 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Alibi Idiris",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Idiris makes 126 pounds as well before the two face off.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Idiris was docked a point in the second round for an accidental eye poke."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Matt Dixon",
+            "Alex Sanchez"
+          ],
+          "text": "Cormier announces the third welterweight quarterfinal: Dixon (Team Sonnen) vs Sanchez (Team Cormier).",
+          "quote": "Cormier announces the third welterweight quarterfinal matchup, selecting Matt Dixon of Team Sonnen to face Team Cormier’s Alex Sanchez."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 6,
+      "recap_url": "https://www.ufc.com/news/episode-6-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-07-03T12:27:43-0400",
+      "byline_date_text": "Jul. 3, 2025",
+      "bouts": [
+        {
+          "a": "Matt Dixon",
+          "b": "Alex Sanchez",
+          "weight_class": "Welterweight",
+          "stage": "quarter_final",
+          "stage_quote": "Tensions between Brazilian welterweights Diego Bianchini and Rodrigo Senzinando continue to simmer, as fellow welterweights Matt Dixon and Alex Sanchez prepare to do battle for a place in the semifinals.",
+          "result": {
+            "winner": "Matt Dixon",
+            "method": "TKO (left hook)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Matt Dixon defeats Alex Sanchez by TKO (left hook) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Matt Dixon",
+              "weight_lbs": 171,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Dixon is up first, making 171 pounds, looking ripped.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Alex Sanchez",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Sanchez follows, tipping the scale at 170.5 pounds, making the fight official.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Roybert Echerverria",
+            "Tumelo Manyamala"
+          ],
+          "text": "Final flyweight pairing announced (picker not stated).",
+          "quote": "The final flyweight pairing is announced, with Team Sonnen’s Roybert Echerverria facing off against Tumelo Manyamala of Team Cormier."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 7,
+      "recap_url": "https://www.ufc.com/news/episode-7-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-07-09T13:35:00-0400",
+      "byline_date_text": "Jul. 9, 2025",
+      "bouts": [
+        {
+          "a": "Roybert Echeverria",
+          "b": "Tumelo Manyamala",
+          "weight_class": "Flyweight",
+          "stage": "quarter_final",
+          "stage_quote": "Roybert Echeverria joined teammate Joseph Morales in the semifinals by registering a second-round submission win over Tumelo Manyamala in the final flyweight quarterfinal matchup.",
+          "result": {
+            "winner": "Roybert Echeverria",
+            "method": "Submission (rear-naked choke)",
+            "round": 2,
+            "time": null,
+            "quote": "Official Result: Roybert Echeverria def. Tumelo Manyamala by submission (rear-naked choke) in Round 2"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roybert Echeverria",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Echeverria is up first, hitting 125.5 pounds while wearing his bling, which Cormier asks about.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Tumelo Manyamala",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Echeverria is up first, hitting 125.5 pounds while wearing his bling, which Cormier asks about. Manyamala follows him to the scale, coming in at the exact same weight.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Diego Bianchini",
+            "Rodrigo Senzinanda"
+          ],
+          "text": "Final quarterfinal announced: Bianchini (Team Sonnen) vs Sezinando (Team Cormier); picker not stated.",
+          "quote": "White tees up the final quarterfinal fight of the season, calling it “one we’ve all been waiting for,” as Team Sonnen’s Diego Bianchini and Team Cormier’s Rodrigo Senzinanda will finally face off."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 8,
+      "recap_url": "https://www.ufc.com/news/episode-8-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-07-16T12:02:50-0400",
+      "byline_date_text": "Jul. 16, 2025",
+      "bouts": [
+        {
+          "a": "Rodrigo Sezinando",
+          "b": "Diego Bianchini",
+          "weight_class": "Welterweight",
+          "stage": "quarter_final",
+          "stage_quote": "Brazilian Rivals Face Off In the Final Quarterfinal Bout Of The Season Before The Semifinal Pairings Are Announced",
+          "result": {
+            "winner": "Rodrigo Sezinando",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Rodrigo Sezinando def. Diego Bianchini by unanimous decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Diego Bianchini",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Bianchini is up first, tipping the scale at 170.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Rodrigo Sezinando",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Sezinando follows, coming in at 170.5 as well.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Decision after two rounds (\"A third round wasn’t needed, as Sezinando claimed the decision win after two rounds\")."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [],
+          "text": "Coaches set the semifinal matchups together, with semifinalists giving input.",
+          "quote": "With the quarterfinals completed, Cormier and Sonnen meet to set the matchups for the semifinals, with Team Cormier having five athletes to Team Sonnen’s three."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Alibi Idiris",
+            "Roybert Echeverria",
+            "Imanol Rodriugez",
+            "Joseph Morales",
+            "Matt Dixon",
+            "Daniil Donchenko",
+            "Jeff Creighton",
+            "Rodrigo Sezinando"
+          ],
+          "text": "Semifinals: Idiris vs Echeverria, Rodriguez vs Morales (flyweight); Dixon vs Donchenko, Creighton vs Sezinando (welterweight).",
+          "quote": "At flyweight, it will be Alibi Idiris of Team Cormier against Team Sonnen’s Roybert Echeverria, and Imanol Rodriugez against Joseph Morales. In the welterweight semifinals, Team Sonnen’s lone entrant, Matt Dixon, will face Daniil Donchenko of Team Cormier, while teammates Jeff Creighton and Rodrigo Sezinando will go head-to-head to see who represents Team Cormier in the finals."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 9,
+      "recap_url": "https://www.ufc.com/news/episode-9-recap-ultimate-fighter-season-33",
+      "recap_published": "2025-07-23T14:00:48-0400",
+      "byline_date_text": "Jul. 23, 2025",
+      "bouts": [
+        {
+          "a": "Alibi Idiris",
+          "b": "Roybert Echeverria",
+          "weight_class": "Flyweight",
+          "stage": "semi_final",
+          "stage_quote": "The Semifinals Begin With A Spirited Battle In The Flyweight Division",
+          "result": {
+            "winner": "Alibi Idiris",
+            "method": "KO (flying knee)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Alibi Idiris def. Roybert Echeverria by KO (flying knee) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Alibi Idiris",
+              "weight_lbs": 125.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "He comes in at 125.5 pounds, with Echeverria following suit, hitting 126 pounds even.",
+              "context_quote": "NSAC Executive Director Jeff Mullin gets things underway, with Idiris weighing in first."
+            },
+            {
+              "fighter": "Roybert Echeverria",
+              "weight_lbs": 126,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "He comes in at 125.5 pounds, with Echeverria following suit, hitting 126 pounds even.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [
+            {
+              "date_text": "March 12, 2025",
+              "quote": "Alibi Idiris warms up prior to a fight against Roybert Echerverria during the filming of The Ultimate Fighter Season 33 on March 12, 2025 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 12, 2025",
+              "quote": "Coach Chael Sonnen looks on prior to a fight between Roybert Echerverria and Alibi Idiris during the filming of The Ultimate Fighter Season 33 on March 12, 2025 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 12, 2025",
+              "quote": "Roybert Echerverria warms up prior to a fight against Alibi Idiris during the filming of The Ultimate Fighter Season 33 on March 12, 2025 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 12, 2025",
+              "quote": "Roybert Echerverria looks on against Alibi Idiris in a flyweight fight during the filming of The Ultimate Fighter Season 33 on March 12, 2025 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 12, 2025",
+              "quote": "Roybert Echerverria punches Alibi Idiris in a flyweight fight during the filming of The Ultimate Fighter Season 33 on March 12, 2025 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 12, 2025",
+              "quote": "Roybert Echerverria prepares to face Alibi Idiris during the filming of The Ultimate Fighter Season 33 on March 12, 2025 in Las Vegas, Nevada."
+            },
+            {
+              "date_text": "March 12, 2025",
+              "quote": "Alibi Idiris punches Roybert Echerverria in a flyweight fight during the filming of The Ultimate Fighter Season 33 on March 12, 2025 in Las Vegas, Nevada."
+            }
+          ],
+          "notes": "The fight paragraph says Idiris \"is on to the semifinals\", but this bout is the flyweight semifinal: the headline, the SEMIFINAL WEIGH-INS FLYWEIGHT heading and the closing line (\"With Idiris through to the flyweight finale\") all place it in the semifinal round. Stage-wording slip only; the result is not contradicted."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Jeff Creighton",
+            "Rodrigo Sezinando"
+          ],
+          "text": "Next: all-Team Cormier welterweight semifinal, Creighton vs Sezinando.",
+          "quote": "With Idiris through to the flyweight finale, it’s time for the All-Cormier Showdown in the welterweight division, as Jeff Creighton will go head-to-head with Rodrigo Sezinando to see who will advance."
+        }
+      ],
+      "notes": "Coaches Challenge (pickleball, won by Cormier; $10,000 to the coach, $2,500 per fighter) omitted as not bracket-relevant. Captions dated February 13, 2025 show the Coaches Challenge; one caption dated February 26, 2025 (\"Alibi Idiris warms up backstage\") names no bout and is not attached."
+    },
+    {
+      "episode_number": 10,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-10-recap",
+      "recap_published": "2025-07-30T13:33:27-0400",
+      "byline_date_text": "Jul. 30, 2025",
+      "bouts": [
+        {
+          "a": "Rodrigo Sezinando",
+          "b": "Jeff Creighton",
+          "weight_class": "Welterweight",
+          "stage": "semi_final",
+          "stage_quote": "The First Welterweight Semifinal Takes Place, Pitting Two Team Cormier Representatives Against One Another",
+          "result": {
+            "winner": "Rodrigo Sezinando",
+            "method": "Decision (split)",
+            "round": null,
+            "time": null,
+            "quote": "Official Result: Rodrigo Sezinando def. Jeff Creighton by split decision"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Jeff Creighton",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Creighton is up first, coming in at 170.5 pounds.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Rodrigo Sezinando",
+              "weight_lbs": 170.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Sezinando follows, tipping the scale at 170.5 pounds as well.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "A third round was fought (White references Creighton striking \"in the third\")."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Imanol Rodriguez",
+            "Joseph Morales",
+            "Alibi Idiris"
+          ],
+          "text": "Next flyweight semifinal: Rodriguez vs Morales, winner faces Idiris in the finale.",
+          "quote": "With the first welterweight semifinal in the books, it’s time to shift back to flyweight, where Team Cormier’s Imanol Rodriguez will face UFC vet and Team Sonnen’s No. 1 pick, Joseph Morales, to see who will face Alibi Idiris in the live finale."
+        }
+      ],
+      "notes": null
+    },
+    {
+      "episode_number": 12,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap",
+      "recap_published": "2025-08-13T12:21:00-0400",
+      "byline_date_text": "Aug. 13, 2025",
+      "bouts": [
+        {
+          "a": "Daniil Donchenko",
+          "b": "Matt Dixon",
+          "weight_class": "Welterweight",
+          "stage": "semi_final",
+          "stage_quote": "SEMIFINAL WEIGH-IN WELTERWEIGHT",
+          "result": {
+            "winner": "Daniil Donchenko",
+            "method": "TKO (strikes)",
+            "round": 1,
+            "time": null,
+            "quote": "Official Result: Daniil Donchenko def. Matt Dixon by TKO (strikes) in Round 1"
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Matt Dixon",
+              "weight_lbs": 171,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Dixon is up first, coming in at 171 pounds, looking solid and not drawn out at all.",
+              "context_quote": null
+            },
+            {
+              "fighter": "Daniil Donchenko",
+              "weight_lbs": 171,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "quote": "Donchenkofollows, tipping the scale at 171 pounds a well, shredded and smiling.",
+              "context_quote": null
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": [],
+          "notes": "Recap notes controversy: Donchenko landed blows to the back of the head; the fight was paused and Dixon elected to continue."
+        }
+      ],
+      "events": [
+        {
+          "type": "other",
+          "fighters": [
+            "Matt Dixon",
+            "Daniil Donchenko"
+          ],
+          "text": "Illegal blows to the back of the head; fight paused, Dixon chose to continue.",
+          "quote": "The fight was paused, Dixon got time to recover and elected to continue, with Donchenkoclipping him in the midst of a back-and-forth exchange, causing him to retreat to the fence."
+        },
+        {
+          "type": "other",
+          "fighters": [
+            "Joseph Morales",
+            "Alibi Idiris",
+            "Rodrigo Sezinando",
+            "Daniil Donchenko"
+          ],
+          "text": "Finale pairings face off: Morales vs Idiris (flyweight), Sezinando vs Donchenko (welterweight).",
+          "quote": "Joseph Morales and Alibi Idiris go face-to-face ahead of their bout in the flyweight finale, while Team Cormier fighters Rodrigo Sezinando and Daniil Donchenko step into the cage and square off after shaking hands."
+        }
+      ],
+      "notes": "This recap names Joseph Morales as the flyweight finalist, implying he won the episode 11 semifinal against Imanol Rodriguez; that result is not stated on any recap read and is not recorded as a bout."
+    }
+  ],
+  "missing_episodes": [
+    {
+      "episode_number": 11,
+      "why": "No episode 11 recap found on ufc.com: the sitemap URL list (all_urls.txt) has season-33 recaps for episodes 1-10 and 12 only; TUF hub https://www.ufc.com/tuf?page=0..6 re-checked 2026-09-12 lists recaps for 6, 7 (page 6), 8 (page 5), 9, 10, 12 (page 4) and no episode 11 recap or 'Episode 11' item. Expected content: flyweight semifinal Imanol Rodriguez vs Joseph Morales (announced in the episode 10 recap; the episode 12 recap places Morales in the flyweight finale)."
+    }
+  ]
+}

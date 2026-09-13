@@ -1,0 +1,140 @@
+{
+  "slug": "tuf-19",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "The Hurting Game",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-04-16",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-1-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Flying the Flag",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-04-23",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-2-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Anytime, Anywhere",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-04-30",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-3-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Stand and Bang",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-05-07",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-4-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "Too Salty",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-05-14",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-5-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Fight to Live",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-05-21",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-6-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Kinetic Chess",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-05-28",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-7-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Someone's Getting Bullied",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-06-04",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-8-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Get That Money",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-06-11",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-9-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "One Fight Away",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-06-18",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-10-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "The Zombie",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-06-25",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-11-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "The Big Show",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-07-02",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-19-episode-12-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 13,
+      "title": "UFC Fight Night: Edgar vs Penn",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2014-07-06",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

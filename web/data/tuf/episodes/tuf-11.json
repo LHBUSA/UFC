@@ -1,0 +1,1122 @@
+{
+  "slug": "tuf-11",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recaps/tuf-11.json"
+  },
+  "finale_broadcast": {
+    "title": "TUF 11 Finale: Team Liddell vs. Team Ortiz",
+    "listing_date": "2010-06-19"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Smashed Up",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-03-31",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-one-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Mar. 30, 2010",
+      "bouts": [
+        {
+          "a": "Jamie Yager",
+          "b": "Ben Stark",
+          "a_fighter_id": "8c6884ea-5c3a-48a9-ab52-1a0949c407f5",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Jamie Yager",
+            "b": "Ben Stark"
+          },
+          "result": {
+            "winner": "Jamie Yager",
+            "winner_fighter_id": "8c6884ea-5c3a-48a9-ab52-1a0949c407f5",
+            "method": "KO (kicks)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Brad Tavares",
+          "b": "Jordan Smith",
+          "a_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Brad Tavares",
+            "b": "Jordan Smith"
+          },
+          "result": {
+            "winner": "Brad Tavares",
+            "winner_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+            "method": "KO (right hand)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Kris McCray",
+          "b": "Cleburn Walker",
+          "a_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Kris McCray",
+            "b": "Cleburn Walker"
+          },
+          "result": {
+            "winner": "Kris McCray",
+            "winner_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+            "method": "TKO (dislocated shoulder)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "James Hammortree",
+          "b": "Norman Paraisy",
+          "a_fighter_id": "bd074f4f-7d69-4388-bc98-e6d7e2dd301f",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "James Hammortree",
+            "b": "Norman Paraisy"
+          },
+          "result": {
+            "winner": "James Hammortree",
+            "winner_fighter_id": "bd074f4f-7d69-4388-bc98-e6d7e2dd301f",
+            "method": "TKO (quit between rounds)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Nick Ring",
+          "b": "Woody Weatherby",
+          "a_fighter_id": "de624e42-ba47-4d46-ae5a-e73b0b1e1a79",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Nick Ring",
+            "b": "Woody Weatherby"
+          },
+          "result": {
+            "winner": "Nick Ring",
+            "winner_fighter_id": "de624e42-ba47-4d46-ae5a-e73b0b1e1a79",
+            "method": "TKO",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Kyle Noke",
+          "b": "Warren Thompson",
+          "a_fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Kyle Noke",
+            "b": "Warren Thompson"
+          },
+          "result": {
+            "winner": "Kyle Noke",
+            "winner_fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab",
+            "method": "Decision",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Court McGee",
+          "b": "Seth Baczynski",
+          "a_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+          "b_fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Court McGee",
+            "b": "Seth Baczynski"
+          },
+          "result": {
+            "winner": "Court McGee",
+            "winner_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Chris Camozzi",
+          "b": "Victor O’Donnell",
+          "a_fighter_id": "a5071dad-cef0-4ac6-b930-1d04cb7e2eb6",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Chris Camozzi",
+            "b": "Victor O'Donnell"
+          },
+          "result": {
+            "winner": "Chris Camozzi",
+            "winner_fighter_id": "a5071dad-cef0-4ac6-b930-1d04cb7e2eb6",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Kyacey Uscola",
+          "b": "Brent Cooper",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Kyacey Uscola",
+            "b": "Brent Cooper"
+          },
+          "result": {
+            "winner": "Kyacey Uscola",
+            "method": "KO",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Joseph Henle",
+          "b": "Constantinos Philippou",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": null,
+          "result": {
+            "winner": "Joseph Henle",
+            "method": "Submission (armbar)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Rich Attonito",
+          "b": "Lyle Steffens",
+          "a_fighter_id": "6e15ee83-04e1-4360-8886-ca782c745c88",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Rich Attonito",
+            "b": "Lyle Steffens"
+          },
+          "result": {
+            "winner": "Rich Attonito",
+            "winner_fighter_id": "6e15ee83-04e1-4360-8886-ca782c745c88",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Josh Bryant",
+          "b": "Greg Rebello",
+          "a_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+          "b_fighter_id": "f4b01b69-64ed-431d-9745-5d2a6f0f95db",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Josh Bryant",
+            "b": "Greg Rebello"
+          },
+          "result": {
+            "winner": "Josh Bryant",
+            "winner_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Charles Blanchard",
+          "b": "Jacen Flynn",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Charles Blanchard",
+            "b": "Jacen Flynn"
+          },
+          "result": {
+            "winner": "Charles Blanchard",
+            "method": null,
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Clayton McKinney",
+          "b": "Charley Lynch",
+          "weight_class": "Middleweight",
+          "stage": "elimination",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "elimination",
+            "a": "Clayton McKinney",
+            "b": "Charley Lynch"
+          },
+          "result": {
+            "winner": "Clayton McKinney",
+            "method": "TKO (strikes)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "wildcard",
+          "text": "Season introduces a wildcard: two house fighters chosen by the coaches get a second chance at the final quarterfinal spot after the first seven preliminary bouts.",
+          "fighters": [],
+          "fighter_ids": []
+        }
+      ]
+    },
+    {
+      "episode_number": 2,
+      "title": "Suck it Up",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-04-07",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-two-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Apr. 7, 2010",
+      "bouts": [
+        {
+          "a": "Kyle Noke",
+          "b": "Clayton McKinney",
+          "a_fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Kyle Noke",
+            "b": "Clayton McKinney"
+          },
+          "result": {
+            "winner": "Kyle Noke",
+            "winner_fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab",
+            "method": "Submission (triangle choke)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Kyle Noke",
+              "fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab",
+              "weight_lbs": null,
+              "weight_text": "made weight",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-two-recap"
+            },
+            {
+              "fighter": "Clayton McKinney",
+              "weight_lbs": null,
+              "weight_text": "made weight",
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 2,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-two-recap"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Liddell"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Liddell",
+      "events": [
+        {
+          "type": "coin_toss",
+          "text": "Ortiz wins the coin flip and takes first pick; Liddell chooses the first fight.",
+          "fighters": [
+            "Tito Ortiz",
+            "Chuck Liddell"
+          ],
+          "fighter_ids": [
+            "6c94e303-2ab9-4f5e-8a2b-b8a9a369c360",
+            "22356d0a-d3df-4100-988e-254ef08da3c5"
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "First picks: Nick Ring (Ortiz), Kyle Noke (Liddell).",
+          "fighters": [
+            "Nick Ring",
+            "Kyle Noke"
+          ],
+          "fighter_ids": [
+            "de624e42-ba47-4d46-ae5a-e73b0b1e1a79",
+            "2850b22f-7d74-4621-bfc0-8b04c05d8eab"
+          ]
+        },
+        {
+          "type": "injury",
+          "text": "McKinney's shoulder: no rotator cuff tear, bone bruise, cleared to fight.",
+          "fighters": [
+            "Clayton McKinney"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 3,
+      "title": "A Lotta Heart",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-04-14",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-three-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Apr. 14, 2010",
+      "bouts": [
+        {
+          "a": "Brad Tavares",
+          "b": "James Hammortree",
+          "a_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+          "b_fighter_id": "bd074f4f-7d69-4388-bc98-e6d7e2dd301f",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Brad Tavares",
+            "b": "James Hammortree"
+          },
+          "result": {
+            "winner": "Brad Tavares",
+            "winner_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Liddell"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Liddell",
+      "events": [
+        {
+          "type": "injury",
+          "text": "Camozzi removed from the show with a broken jaw from his elimination bout.",
+          "fighters": [
+            "Chris Camozzi"
+          ],
+          "fighter_ids": [
+            "a5071dad-cef0-4ac6-b930-1d04cb7e2eb6"
+          ]
+        },
+        {
+          "type": "replacement",
+          "text": "Ortiz's staff choose Seth Baczynski to fill Camozzi's roster spot.",
+          "fighters": [
+            "Seth Baczynski",
+            "Chris Camozzi"
+          ],
+          "fighter_ids": [
+            "eee4e2a3-0ab0-410b-899b-a691ea91bbe3",
+            "a5071dad-cef0-4ac6-b930-1d04cb7e2eb6"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 4,
+      "title": "Clown Box",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-04-21",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-four-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Apr. 21, 2010",
+      "bouts": [
+        {
+          "a": "Rich Attonito",
+          "b": "Kyacey Uscola",
+          "a_fighter_id": "6e15ee83-04e1-4360-8886-ca782c745c88",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Rich Attonito",
+            "b": "Kyacey Uscola"
+          },
+          "result": {
+            "winner": "Rich Attonito",
+            "winner_fighter_id": "6e15ee83-04e1-4360-8886-ca782c745c88",
+            "method": "Disqualification (knee to the head of a downed opponent)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Jamie Yager",
+          "b": "Charlie Blanchard",
+          "a_fighter_id": "8c6884ea-5c3a-48a9-ab52-1a0949c407f5",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Charles Blanchard",
+            "b": "Jamie Yager"
+          },
+          "result": {
+            "winner": "Jamie Yager",
+            "winner_fighter_id": "8c6884ea-5c3a-48a9-ab52-1a0949c407f5",
+            "method": "TKO (strikes)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Liddell"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Liddell",
+      "events": [
+        {
+          "type": "injury",
+          "text": "Attonito broke his right hand in the fight and may be out of the competition.",
+          "fighters": [
+            "Rich Attonito"
+          ],
+          "fighter_ids": [
+            "6e15ee83-04e1-4360-8886-ca782c745c88"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 5,
+      "title": "If It Breathes, It Bleeds",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-04-28",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-five-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Apr. 28, 2010",
+      "bouts": [
+        {
+          "a": "Josh Bryant",
+          "b": "Kris McCray",
+          "a_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+          "b_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Josh Bryant",
+            "b": "Kris McCray"
+          },
+          "result": {
+            "winner": "Josh Bryant",
+            "winner_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Ortiz"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Ortiz",
+      "events": [
+        {
+          "type": "injury",
+          "text": "McKinney (shoulder surgery) unlikely to return; Attonito's broken hand to keep him from moving forward.",
+          "fighters": [
+            "Clayton McKinney",
+            "Charles Blanchard",
+            "Rich Attonito"
+          ],
+          "fighter_ids": [
+            null,
+            null,
+            "6e15ee83-04e1-4360-8886-ca782c745c88"
+          ]
+        },
+        {
+          "type": "wildcard",
+          "text": "Wildcard favorites: Uscola and Hammortree.",
+          "fighters": [
+            "Kyacey Uscola",
+            "James Hammortree"
+          ],
+          "fighter_ids": [
+            null,
+            "bd074f4f-7d69-4388-bc98-e6d7e2dd301f"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 6,
+      "title": "Did You Dizzle",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-05-05",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-six-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "May. 5, 2010",
+      "bouts": [
+        {
+          "a": "Nick Ring",
+          "b": "Court McGee",
+          "a_fighter_id": "de624e42-ba47-4d46-ae5a-e73b0b1e1a79",
+          "b_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+          "weight_class": "Middleweight",
+          "stage": "round_of_16",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Court McGee",
+            "b": "Nick Ring"
+          },
+          "result": {
+            "winner": "Nick Ring",
+            "winner_fighter_id": "de624e42-ba47-4d46-ae5a-e73b0b1e1a79",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Liddell"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Liddell",
+      "events": [
+        {
+          "type": "injury",
+          "text": "Hammortree injures his back in training (bulging disc).",
+          "fighters": [
+            "James Hammortree"
+          ],
+          "fighter_ids": [
+            "bd074f4f-7d69-4388-bc98-e6d7e2dd301f"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 7,
+      "title": "Coming for Blood",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-05-12",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-seven-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "May. 12, 2010",
+      "bouts": [
+        {
+          "a": "Seth Baczynski",
+          "b": "Joseph Henle",
+          "a_fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3",
+          "weight_class": "Middleweight",
+          "stage": "round_of_16",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Joseph Henle",
+            "b": "Seth Baczynski"
+          },
+          "result": {
+            "winner": "Seth Baczynski",
+            "winner_fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "injury",
+          "text": "Ring nursing an injured knee; future participation uncertain.",
+          "fighters": [
+            "Nick Ring"
+          ],
+          "fighter_ids": [
+            "de624e42-ba47-4d46-ae5a-e73b0b1e1a79"
+          ]
+        },
+        {
+          "type": "wildcard",
+          "text": "Wild Card bout set: Uscola vs McCray (both Team Ortiz).",
+          "fighters": [
+            "Kyacey Uscola",
+            "Kris McCray"
+          ],
+          "fighter_ids": [
+            null,
+            "faee7b09-14c9-4804-87bc-34d55dcf2da6"
+          ]
+        },
+        {
+          "type": "replacement",
+          "text": "McGee fills the spot opened by Attonito's injury.",
+          "fighters": [
+            "Court McGee",
+            "Rich Attonito"
+          ],
+          "fighter_ids": [
+            "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+            "6e15ee83-04e1-4360-8886-ca782c745c88"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 8,
+      "title": "Closed Mouth Don't Get Fed",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-05-19",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eight-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "May. 19, 2010",
+      "bouts": [
+        {
+          "a": "Kris McCray",
+          "b": "Kyacey Uscola",
+          "a_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+          "weight_class": "Middleweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Kris McCray",
+            "b": "Kyacey Uscola"
+          },
+          "result": {
+            "winner": "Kris McCray",
+            "winner_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+            "method": "Submission (kimura)",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Court McGee",
+          "b": "James Hammortree",
+          "a_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+          "b_fighter_id": "bd074f4f-7d69-4388-bc98-e6d7e2dd301f",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "quarter_final",
+            "a": "Court McGee",
+            "b": "James Hammortree"
+          },
+          "result": {
+            "winner": "Court McGee",
+            "winner_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+            "method": "Submission (standing guillotine choke)",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Dana White"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Dana White",
+      "events": [
+        {
+          "type": "wildcard",
+          "text": "McCray wins the first Wild Card fight and enters the quarterfinals.",
+          "fighters": [
+            "Kris McCray",
+            "Kyacey Uscola"
+          ],
+          "fighter_ids": [
+            "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+            null
+          ]
+        },
+        {
+          "type": "other",
+          "text": "White makes the final decision on quarterfinal matchups: Ring vs McGee, Noke vs McCray, Tavares vs Baczynski, Yager vs Bryant.",
+          "fighters": [],
+          "fighter_ids": []
+        },
+        {
+          "type": "withdrawal",
+          "text": "Ring withdraws for knee surgery (third ACL reconstruction).",
+          "fighters": [
+            "Nick Ring"
+          ],
+          "fighter_ids": [
+            "de624e42-ba47-4d46-ae5a-e73b0b1e1a79"
+          ]
+        },
+        {
+          "type": "replacement",
+          "text": "Hammortree gets Ring's quarterfinal against McGee.",
+          "fighters": [
+            "James Hammortree",
+            "Nick Ring"
+          ],
+          "fighter_ids": [
+            "bd074f4f-7d69-4388-bc98-e6d7e2dd301f",
+            "de624e42-ba47-4d46-ae5a-e73b0b1e1a79"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 9,
+      "title": "Civilized Sport",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-05-26",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-nine-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "May. 26, 2010",
+      "bouts": [
+        {
+          "a": "Kris McCray",
+          "b": "Kyle Noke",
+          "a_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+          "b_fighter_id": "2850b22f-7d74-4621-bfc0-8b04c05d8eab",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "quarter_final",
+            "a": "Kyle Noke",
+            "b": "Kris McCray"
+          },
+          "result": {
+            "winner": "Kris McCray",
+            "winner_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Brad Tavares",
+          "b": "Seth Baczynski",
+          "a_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+          "b_fighter_id": "eee4e2a3-0ab0-410b-899b-a691ea91bbe3",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "quarter_final",
+            "a": "Brad Tavares",
+            "b": "Seth Baczynski"
+          },
+          "result": {
+            "winner": "Brad Tavares",
+            "winner_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+            "method": "Disqualification (kick to the head of a downed opponent)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 10,
+      "title": "Shocked and Awed",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-06-02",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-ten-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Jun. 2, 2010",
+      "bouts": [
+        {
+          "a": "Josh Bryant",
+          "b": "Jamie Yager",
+          "a_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+          "b_fighter_id": "8c6884ea-5c3a-48a9-ab52-1a0949c407f5",
+          "weight_class": "Middleweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "quarter_final",
+            "a": "Josh Bryant",
+            "b": "Jamie Yager"
+          },
+          "result": {
+            "winner": "Josh Bryant",
+            "winner_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+            "method": "TKO (did not come out for the third round)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "replacement",
+          "text": "Ortiz leaves the show (spine injury); Rich Franklin takes over Team Ortiz as coach.",
+          "fighters": [
+            "Tito Ortiz",
+            "Rich Franklin"
+          ],
+          "fighter_ids": [
+            "6c94e303-2ab9-4f5e-8a2b-b8a9a369c360",
+            "1eebf87a-9a1e-42ee-a43b-9facfda71466"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Semifinal matchups announced: McCray vs Bryant, Tavares vs McGee.",
+          "fighters": [
+            "Kris McCray",
+            "Josh Bryant",
+            "Brad Tavares",
+            "Court McGee"
+          ],
+          "fighter_ids": [
+            "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+            "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+            "5e5a8668-32d0-4dda-8615-48510cc93d66",
+            "5f12cacb-78d0-488a-9f22-7c1c347031c9"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 11,
+      "title": "Dogfight",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-06-09",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Jun. 10, 2010",
+      "bouts": [
+        {
+          "a": "Court McGee",
+          "b": "Brad Tavares",
+          "a_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+          "b_fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "semi_final",
+            "a": "Brad Tavares",
+            "b": "Court McGee"
+          },
+          "result": {
+            "winner": "Court McGee",
+            "winner_fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+            "method": "Technical submission (rear naked choke)",
+            "round": 3,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brad Tavares",
+              "fighter_id": "5e5a8668-32d0-4dda-8615-48510cc93d66",
+              "weight_lbs": 185,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap"
+            },
+            {
+              "fighter": "Court McGee",
+              "fighter_id": "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+              "weight_lbs": 185.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Kris McCray",
+          "b": "Josh Bryant",
+          "a_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+          "b_fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+          "weight_class": "Middleweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "semi_final",
+            "a": "Josh Bryant",
+            "b": "Kris McCray"
+          },
+          "result": {
+            "winner": "Kris McCray",
+            "winner_fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Josh Bryant",
+              "fighter_id": "8ae061d9-2bc3-4aad-b37a-3c3849dcea05",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap"
+            },
+            {
+              "fighter": "Kris McCray",
+              "fighter_id": "faee7b09-14c9-4804-87bc-34d55dcf2da6",
+              "weight_lbs": 186,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 11,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-team-liddell-vs-team-ortiz-episode-eleven-recap"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Final set: McGee vs McCray at the June 19 finale.",
+          "fighters": [
+            "Court McGee",
+            "Kris McCray"
+          ],
+          "fighter_ids": [
+            "5f12cacb-78d0-488a-9f22-7c1c347031c9",
+            "faee7b09-14c9-4804-87bc-34d55dcf2da6"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 12,
+      "title": "Bell to Bell",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2010-06-16",
+      "recap_url": null,
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

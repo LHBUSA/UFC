@@ -654,6 +654,78 @@ test("a proven duplicate row is recorded with its proof, and both spellings reac
   assert.ok(a && a === b && a === dup.canonical_for_archive);
 });
 
+/* ---- episodes and weigh-ins --------------------------------------------------- */
+
+type EpisodeFile = {
+  slug: string;
+  episodes: Array<{
+    episode_number: number; title: string | null; air_date: null; listing_date: string | null; recap_url: string | null;
+    bouts?: Array<{
+      a: string; b: string; a_fighter_id?: string; b_fighter_id?: string;
+      bracket: { weight_class: string; stage: string; a: string; b: string } | null;
+      result: { winner: string | null } | null;
+      weigh_ins: Array<{ fighter: string; fighter_id?: string; weight_lbs: number | null; weight_text?: string; missed_weight: boolean; episode_number: number; source_url: string }>;
+    }>;
+  }>;
+};
+const EPISODE_DIR = new URL("../data/tuf/episodes/", import.meta.url);
+const EPISODES: Record<string, EpisodeFile> = Object.fromEntries(
+  readdirSync(EPISODE_DIR).filter((f) => f.endsWith(".json")).map((f) => [f.replace(/\.json$/, ""), JSON.parse(readFileSync(new URL(f, EPISODE_DIR), "utf8"))]),
+);
+
+test("an episode never carries an air date or a fight date it was not given", () => {
+  let n = 0;
+  for (const [slug, file] of Object.entries(EPISODES)) {
+    const numbers = file.episodes.map((e) => e.episode_number);
+    assert.deepEqual(numbers, [...new Set(numbers)].sort((a, b) => a - b), `${slug}: episode numbers are unique and ordered`);
+    for (const e of file.episodes) {
+      n += 1;
+      assert.equal(e.air_date, null, `${slug} ep${e.episode_number}: no source states an air date`);
+      assert.ok(!("fight_date" in e), `${slug} ep${e.episode_number}: an episode is not a fight date`);
+    }
+  }
+  assert.ok(n > 400, `episodes loaded: ${n}`);
+});
+
+test("every in-house weigh-in names its fighter, its weight or the words used, and its source", () => {
+  let rows = 0;
+  let misses = 0;
+  for (const [slug, file] of Object.entries(EPISODES)) {
+    for (const e of file.episodes) for (const b of e.bouts ?? []) for (const w of b.weigh_ins) {
+      rows += 1;
+      if (w.missed_weight) misses += 1;
+      assert.ok(w.fighter, `${slug} ep${e.episode_number}: weigh-in without a fighter`);
+      /* A miss can be the whole fact: "It's less than a pound" gives no number. */
+      assert.ok(w.weight_lbs != null || w.weight_text || w.missed_weight, `${slug} ep${e.episode_number}: ${w.fighter} has neither a weight, the recap's words, nor a recorded miss`);
+      assert.equal(w.episode_number, e.episode_number);
+      assert.match(w.source_url, /^https:\/\/www\.ufc\.com\//, `${slug}: a weigh-in cites the official recap`);
+      assert.ok(w.fighter === b.a || w.fighter === b.b || w.fighter_id === b.a_fighter_id || w.fighter_id === b.b_fighter_id || /\s/.test(w.fighter), `${slug} ep${e.episode_number}: ${w.fighter} is not in ${b.a} vs ${b.b}`);
+    }
+  }
+  assert.ok(rows > 100, `weigh-in rows: ${rows}`);
+  assert.ok(misses > 0, "misses are captured, not smoothed over");
+});
+
+test("a recap bout points at a real bracket bout, and the bracket carries the episode it reports", () => {
+  for (const [slug, file] of Object.entries(EPISODES)) {
+    for (const e of file.episodes) for (const b of e.bouts ?? []) {
+      if (!b.bracket) continue;
+      const detail = DETAIL_BY_SLUG[slug];
+      const st = detail.bracket?.find((d) => d.weight_class === b.bracket!.weight_class)?.stages.find((s) => s.stage === b.bracket!.stage);
+      const bout = st?.bouts.find((x) => x.a === b.bracket!.a && x.b === b.bracket!.b);
+      assert.ok(bout, `${slug} ep${e.episode_number}: ${b.bracket.a} vs ${b.bracket.b} is not in the bracket`);
+      assert.equal(bout!.episode, e.episode_number, `${slug}: ${bout!.a} vs ${bout!.b} aired in episode ${e.episode_number}`);
+    }
+  }
+});
+
+test("the current season lists its episodes without inventing results", () => {
+  const t34 = EPISODES["tuf-34"];
+  assert.ok(t34, "TUF 34 has an episode file");
+  assert.equal(t34.episodes.length, 12);
+  assert.ok(t34.episodes.every((e) => e.title && !e.bouts), "titles from the listing, no recap facts");
+});
+
 /* ---- rosters and staff ------------------------------------------------------- */
 
 test("no roster, staff or exception entry is parser debris", () => {

@@ -1,0 +1,90 @@
+{
+  "slug": "tuf-latam-3",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": null,
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-latam-ep-1-recap-fast-start",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-latin-america-ep-2-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-latin-america-ep-3-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-latin-america-ep-4-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-latam-episode-5-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-latam-ep-8-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-latam-ep-9-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": null,
+      "title_source": null,
+      "air_date": null,
+      "listing_date": null,
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-latam-ep-10-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}

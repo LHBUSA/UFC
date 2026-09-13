@@ -1,0 +1,803 @@
+{
+  "slug": "tuf-10",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recaps/tuf-10.json"
+  },
+  "finale_broadcast": {
+    "title": "TUF 10 Finale: Heavyweights",
+    "listing_date": "2009-12-05"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Size Does Matter",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-09-16",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-one-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Sep. 15, 2009",
+      "bouts": [
+        {
+          "a": "Jon Madsen",
+          "b": "Abe Wagner",
+          "a_fighter_id": "718e8e97-aaa7-4368-abf0-1acbd4eb22f0",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Abe Wagner",
+            "b": "Jon Madsen"
+          },
+          "result": {
+            "winner": "Jon Madsen",
+            "winner_fighter_id": "718e8e97-aaa7-4368-abf0-1acbd4eb22f0",
+            "method": "Decision (unanimous)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Rampage"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Rampage",
+      "events": [
+        {
+          "type": "coin_toss",
+          "text": "Evans wins the coin toss and picks first fighter; Jackson gets to pick the first two fights.",
+          "fighters": [
+            "Rashad Evans",
+            "Quinton Jackson"
+          ],
+          "fighter_ids": [
+            "b65310ab-e8fa-40ab-875a-aaa383ece4e5",
+            "11141034-95cb-46f1-a030-b816b1f92baf"
+          ]
+        },
+        {
+          "type": "team_selection",
+          "text": "First picks: McSweeney (Team Rashad), Kimbo Slice (Team Rampage).",
+          "fighters": [
+            "James McSweeney",
+            "Kimbo Slice"
+          ],
+          "fighter_ids": [
+            "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+            "9f88ffd1-0509-4770-87e1-4a4463ec411b"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 2,
+      "title": "All About Survival",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-09-23",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-two-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Sep. 23, 2009",
+      "bouts": [
+        {
+          "a": "James McSweeney",
+          "b": "Wes Shivers",
+          "a_fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Wes Shivers",
+            "b": "James McSweeney"
+          },
+          "result": {
+            "winner": "James McSweeney",
+            "winner_fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Rampage"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Rampage",
+      "events": [
+        {
+          "type": "other",
+          "text": "Evans picks Nelson vs Kimbo Slice for fight three.",
+          "fighters": [
+            "Roy Nelson",
+            "Kimbo Slice"
+          ],
+          "fighter_ids": [
+            "fcfe843e-40ef-4516-92d4-a38a6496a723",
+            "9f88ffd1-0509-4770-87e1-4a4463ec411b"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 3,
+      "title": "The Enemy",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-09-30",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-three-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Sep. 28, 2009",
+      "bouts": [
+        {
+          "a": "Roy Nelson",
+          "b": "Kimbo Slice",
+          "a_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+          "b_fighter_id": "9f88ffd1-0509-4770-87e1-4a4463ec411b",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Kimbo Slice",
+            "b": "Roy Nelson"
+          },
+          "result": {
+            "winner": "Roy Nelson",
+            "winner_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+            "method": "TKO (strikes)",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roy Nelson",
+              "fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+              "weight_lbs": 264,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-three-recap"
+            },
+            {
+              "fighter": "Kimbo Slice",
+              "fighter_id": "9f88ffd1-0509-4770-87e1-4a4463ec411b",
+              "weight_lbs": 230,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 3,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-three-recap"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Rashad"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Rashad",
+      "events": []
+    },
+    {
+      "episode_number": 4,
+      "title": "Snitch",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-10-07",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-four-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Oct. 7, 2009",
+      "bouts": [
+        {
+          "a": "Brendan Schaub",
+          "b": "Demico Rogers",
+          "a_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Demico Rogers",
+            "b": "Brendan Schaub"
+          },
+          "result": {
+            "winner": "Brendan Schaub",
+            "winner_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+            "method": "Submission (anaconda choke)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": []
+    },
+    {
+      "episode_number": 5,
+      "title": "Rude Awakening",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-10-14",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-five-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Oct. 14, 2009",
+      "bouts": [
+        {
+          "a": "Justin Wren",
+          "b": "Wes Sims",
+          "a_fighter_id": "3e09de20-7b0e-4cf0-b771-e980cae691f8",
+          "b_fighter_id": "2f20ca74-3e76-4f14-b504-3c1389b90ea0",
+          "weight_class": "Heavyweight",
+          "stage": null,
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Wes Sims",
+            "b": "Justin Wren"
+          },
+          "result": {
+            "winner": "Justin Wren",
+            "winner_fighter_id": "3e09de20-7b0e-4cf0-b771-e980cae691f8",
+            "method": "Submission (arm triangle)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Justin Wren",
+              "fighter_id": "3e09de20-7b0e-4cf0-b771-e980cae691f8",
+              "weight_lbs": 247.5,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-five-recap"
+            },
+            {
+              "fighter": "Wes Sims",
+              "fighter_id": "2f20ca74-3e76-4f14-b504-3c1389b90ea0",
+              "weight_lbs": 251,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 5,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-five-recap"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Rashad"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Rashad",
+      "events": [
+        {
+          "type": "injury",
+          "text": "Mitrione jams his shoulder in practice but keeps training.",
+          "fighters": [
+            "Matt Mitrione"
+          ],
+          "fighter_ids": [
+            "26c6119c-9d02-47f9-acee-bbfa6cabe420"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 6,
+      "title": "16 Sharks",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-10-21",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-six-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Oct. 20, 2009",
+      "bouts": [
+        {
+          "a": "Darrill Schoonover",
+          "b": "Zak Jensen",
+          "a_fighter_id": "22a44527-2ecc-4598-b88b-a7a15dd695bb",
+          "weight_class": "Heavyweight",
+          "stage": "round_of_16",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Zak Jensen",
+            "b": "Darrill Schoonover"
+          },
+          "result": {
+            "winner": "Darrill Schoonover",
+            "winner_fighter_id": "22a44527-2ecc-4598-b88b-a7a15dd695bb",
+            "method": "Submission (triangle choke)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Darrill Schoonover",
+              "fighter_id": "22a44527-2ecc-4598-b88b-a7a15dd695bb",
+              "weight_lbs": 251,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-six-recap"
+            },
+            {
+              "fighter": "Zak Jensen",
+              "weight_lbs": 263,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 6,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-six-recap"
+            }
+          ],
+          "fight_pick": {
+            "chosen_by": "Team Rashad"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Rashad",
+      "events": [
+        {
+          "type": "injury",
+          "text": "Jensen cut over the right eye in training but still fights.",
+          "fighters": [
+            "Zak Jensen"
+          ],
+          "fighter_ids": [
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 7,
+      "title": "Voices In My Head",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-10-28",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-seven-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Oct. 28, 2009",
+      "bouts": [
+        {
+          "a": "Matt Mitrione",
+          "b": "Scott Junk",
+          "a_fighter_id": "26c6119c-9d02-47f9-acee-bbfa6cabe420",
+          "b_fighter_id": "2d85bf00-7286-4879-9642-2c39dc49b240",
+          "weight_class": "Heavyweight",
+          "stage": "round_of_16",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Scott Junk",
+            "b": "Matt Mitrione"
+          },
+          "result": {
+            "winner": "Matt Mitrione",
+            "winner_fighter_id": "26c6119c-9d02-47f9-acee-bbfa6cabe420",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": {
+            "chosen_by": "Team Rashad"
+          },
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": "Team Rashad",
+      "events": [
+        {
+          "type": "other",
+          "text": "Final first-round matchup left as Wessel vs Jones.",
+          "fighters": [
+            "Mike Wessel",
+            "Marcus Jones"
+          ],
+          "fighter_ids": [
+            "d6250ab7-2743-4e88-9f8c-f0382c6dbba0",
+            "bcaeedc0-b870-4e12-b70e-840f123c3b80"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 8,
+      "title": "One Solider Left",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-11-04",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-eight-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Nov. 4, 2009",
+      "bouts": [
+        {
+          "a": "Marcus Jones",
+          "b": "Mike Wessel",
+          "a_fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80",
+          "b_fighter_id": "d6250ab7-2743-4e88-9f8c-f0382c6dbba0",
+          "weight_class": "Heavyweight",
+          "stage": "round_of_16",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "round_of_16",
+            "a": "Marcus Jones",
+            "b": "Mike Wessel"
+          },
+          "result": {
+            "winner": "Marcus Jones",
+            "winner_fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80",
+            "method": "Verbal submission (armbar)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Mike Wessel",
+              "fighter_id": "d6250ab7-2743-4e88-9f8c-f0382c6dbba0",
+              "weight_lbs": 260,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-eight-recap"
+            },
+            {
+              "fighter": "Marcus Jones",
+              "fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80",
+              "weight_lbs": 262,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 8,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-eight-recap"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "White and the coaches determine the quarterfinal matchups: Nelson vs Wren, Schaub vs Madsen, McSweeney vs Mitrione, Jones vs Schoonover.",
+          "fighters": [],
+          "fighter_ids": []
+        }
+      ]
+    },
+    {
+      "episode_number": 9,
+      "title": "Rattled",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-11-11",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-nine-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Nov. 9, 2009",
+      "bouts": [
+        {
+          "a": "Roy Nelson",
+          "b": "Justin Wren",
+          "a_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+          "b_fighter_id": "3e09de20-7b0e-4cf0-b771-e980cae691f8",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "quarter_final",
+            "a": "Roy Nelson",
+            "b": "Justin Wren"
+          },
+          "result": {
+            "winner": "Roy Nelson",
+            "winner_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+            "method": "Decision (majority)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Roy Nelson",
+              "fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+              "weight_lbs": 264,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-nine-recap"
+            },
+            {
+              "fighter": "Justin Wren",
+              "fighter_id": "3e09de20-7b0e-4cf0-b771-e980cae691f8",
+              "weight_lbs": 250,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 9,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-nine-recap"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "injury",
+          "text": "Mitrione taken to hospital (concussion signs); White says he fights if the doctor clears him.",
+          "fighters": [
+            "Matt Mitrione"
+          ],
+          "fighter_ids": [
+            "26c6119c-9d02-47f9-acee-bbfa6cabe420"
+          ]
+        },
+        {
+          "type": "medical_postponement",
+          "text": "Mitrione's quarterfinal depends on medical clearance.",
+          "fighters": [
+            "Matt Mitrione"
+          ],
+          "fighter_ids": [
+            "26c6119c-9d02-47f9-acee-bbfa6cabe420"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 10,
+      "title": "Gut Check",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-11-18",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-ten-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Nov. 18, 2009",
+      "bouts": [
+        {
+          "a": "Brendan Schaub",
+          "b": "Jon Madsen",
+          "a_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+          "b_fighter_id": "718e8e97-aaa7-4368-abf0-1acbd4eb22f0",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "quarter_final",
+            "a": "Jon Madsen",
+            "b": "Brendan Schaub"
+          },
+          "result": {
+            "winner": "Brendan Schaub",
+            "winner_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+            "method": "KO (right hand)",
+            "round": 2,
+            "time": null
+          },
+          "weigh_ins": [
+            {
+              "fighter": "Brendan Schaub",
+              "fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+              "weight_lbs": 239,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-ten-recap"
+            },
+            {
+              "fighter": "Jon Madsen",
+              "fighter_id": "718e8e97-aaa7-4368-abf0-1acbd4eb22f0",
+              "weight_lbs": 247,
+              "missed_weight": false,
+              "limit_lbs": null,
+              "episode_number": 10,
+              "source_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-episode-ten-recap"
+            }
+          ],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "injury",
+          "text": "Kimbo's left knee banged up while he is being prepared as a possible replacement for Mitrione.",
+          "fighters": [
+            "Kimbo Slice"
+          ],
+          "fighter_ids": [
+            "9f88ffd1-0509-4770-87e1-4a4463ec411b"
+          ]
+        },
+        {
+          "type": "medical_postponement",
+          "text": "Mitrione's medical clearance to be decided the next day.",
+          "fighters": [
+            "Matt Mitrione"
+          ],
+          "fighter_ids": [
+            "26c6119c-9d02-47f9-acee-bbfa6cabe420"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 11,
+      "title": "Demise Me",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-12-02",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-final-episode-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Dec. 2, 2009",
+      "bouts": [
+        {
+          "a": "James McSweeney",
+          "b": "Matt Mitrione",
+          "a_fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+          "b_fighter_id": "26c6119c-9d02-47f9-acee-bbfa6cabe420",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "quarter_final",
+            "a": "James McSweeney",
+            "b": "Matt Mitrione"
+          },
+          "result": {
+            "winner": "James McSweeney",
+            "winner_fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+            "method": "Submission (guillotine choke)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Marcus Jones",
+          "b": "Darrill Schoonover",
+          "a_fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80",
+          "b_fighter_id": "22a44527-2ecc-4598-b88b-a7a15dd695bb",
+          "weight_class": "Heavyweight",
+          "stage": "quarter_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "quarter_final",
+            "a": "Darrill Schoonover",
+            "b": "Marcus Jones"
+          },
+          "result": {
+            "winner": "Marcus Jones",
+            "winner_fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80",
+            "method": "TKO (strikes)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "replacement",
+          "text": "Kimbo's return as a replacement is unlikely (knee); Mitrione gets medical clearance and keeps his quarterfinal.",
+          "fighters": [
+            "Kimbo Slice",
+            "Matt Mitrione"
+          ],
+          "fighter_ids": [
+            "9f88ffd1-0509-4770-87e1-4a4463ec411b",
+            "26c6119c-9d02-47f9-acee-bbfa6cabe420"
+          ]
+        },
+        {
+          "type": "other",
+          "text": "Semifinals set: Nelson vs McSweeney, Schaub vs Jones.",
+          "fighters": [
+            "Roy Nelson",
+            "James McSweeney",
+            "Brendan Schaub",
+            "Marcus Jones"
+          ],
+          "fighter_ids": [
+            "fcfe843e-40ef-4516-92d4-a38a6496a723",
+            "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+            "3927d5d6-ded8-498b-9cde-957372c0835d",
+            "bcaeedc0-b870-4e12-b70e-840f123c3b80"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_number": 12,
+      "title": "Battle Tested",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2009-12-05",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-heavyweights-final-episode-recap",
+      "recap_published": "2018-09-14T08:36:04-04:00",
+      "recap_byline_date": "Dec. 2, 2009",
+      "bouts": [
+        {
+          "a": "Roy Nelson",
+          "b": "James McSweeney",
+          "a_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+          "b_fighter_id": "bc6a0225-0da5-42b2-b81b-7a638aa2bb07",
+          "weight_class": "Heavyweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "semi_final",
+            "a": "James McSweeney",
+            "b": "Roy Nelson"
+          },
+          "result": {
+            "winner": "Roy Nelson",
+            "winner_fighter_id": "fcfe843e-40ef-4516-92d4-a38a6496a723",
+            "method": "TKO (strikes)",
+            "round": 1,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        },
+        {
+          "a": "Brendan Schaub",
+          "b": "Marcus Jones",
+          "a_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+          "b_fighter_id": "bcaeedc0-b870-4e12-b70e-840f123c3b80",
+          "weight_class": "Heavyweight",
+          "stage": "semi_final",
+          "bracket": {
+            "weight_class": "Tournament",
+            "stage": "semi_final",
+            "a": "Brendan Schaub",
+            "b": "Marcus Jones"
+          },
+          "result": {
+            "winner": "Brendan Schaub",
+            "winner_fighter_id": "3927d5d6-ded8-498b-9cde-957372c0835d",
+            "method": "TKO (strikes)",
+            "round": null,
+            "time": null
+          },
+          "weigh_ins": [],
+          "fight_pick": null,
+          "caption_filming_dates": []
+        }
+      ],
+      "fight_pick_control": null,
+      "events": [
+        {
+          "type": "other",
+          "text": "Final set: Nelson vs Schaub (both Team Rashad).",
+          "fighters": [
+            "Roy Nelson",
+            "Brendan Schaub"
+          ],
+          "fighter_ids": [
+            "fcfe843e-40ef-4516-92d4-a38a6496a723",
+            "3927d5d6-ded8-498b-9cde-957372c0835d"
+          ]
+        }
+      ]
+    }
+  ]
+}

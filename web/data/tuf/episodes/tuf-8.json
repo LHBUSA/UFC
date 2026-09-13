@@ -1,0 +1,134 @@
+{
+  "slug": "tuf-8",
+  "_about": "Episode layer for this season. episode_number is where a bout aired; air_date is null because no source states one; listing_date is the Paramount+ listing date and is not a broadcast date; fight dates are never derived from episodes. Bouts reference the bracket bout they report; results in the bracket are the single copy, and differences found in the recaps are applied through the official ledger with the sentence attached.",
+  "sources": {
+    "titles": "scripts/tuf/evidence/paramount_plus.json",
+    "recaps": "scripts/tuf/evidence/recap_urls.json (links only; facts not extracted)"
+  },
+  "finale_broadcast": {
+    "title": "TUF 8 Finale: Team Nogueria vs Team Mir",
+    "listing_date": "2008-12-13"
+  },
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title": "Ready to Fight",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-09-17",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-one-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 2,
+      "title": "Down to Business",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-09-24",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-two-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 3,
+      "title": "Demons",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-10-01",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-three-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 4,
+      "title": "Punk",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-10-08",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-four-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 5,
+      "title": "From Chill to Kill",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-10-15",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-five-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 6,
+      "title": "Fight, Fight, Kill, Kill",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-10-22",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-six-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 7,
+      "title": "Body Bag",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-10-29",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-seven-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 8,
+      "title": "Splushi",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-11-05",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-eight-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 9,
+      "title": "Hurts Like Hell",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-11-12",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-nine-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 10,
+      "title": "Fire the Cannons!",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-11-19",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-ten-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 11,
+      "title": "Make Him Pay",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-11-26",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-1112-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    },
+    {
+      "episode_number": 12,
+      "title": "Three Strikes",
+      "title_source": "paramount_plus",
+      "air_date": null,
+      "listing_date": "2008-12-03",
+      "recap_url": "https://www.ufc.com/news/ultimate-fighter-team-nogueira-vs-team-mir-episode-1112-recap",
+      "recap_published": null,
+      "recap_byline_date": null
+    }
+  ]
+}
