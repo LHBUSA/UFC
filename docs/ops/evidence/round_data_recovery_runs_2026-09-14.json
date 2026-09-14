@@ -1,0 +1,714 @@
+{
+ "runs": [
+  {
+   "at": "2026-09-14T01:54Z",
+   "what": "POST /admin/run?espn=false on v0.7.1 (9dc990b4): Noche first",
+   "written": 13,
+   "round_rows": 70,
+   "feed_requests": 16,
+   "problems": 0
+  },
+  {
+   "at": "2026-09-14T02:04Z",
+   "what": "official links 1327/1326/1321 verified (POST /admin/official-link), then POST /admin/run?espn=false on v0.7.2 (ea0a0757)",
+   "written": 3,
+   "round_rows": 12,
+   "feed_requests": 44,
+   "problems": 0
+  }
+ ],
+ "noche": [
+  {
+   "bout": "JJ Aldrich vs Regina Tarin",
+   "bout_id": "c96f0685-8c23-4030-a79f-b379d89beaf2",
+   "ufcstats_fight_id": "64da2e60f1b472fa",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "12980",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "JJ Aldrich -> JJ Aldrich (name)",
+    "Regina Tarin -> Regina Tarin (name)"
+   ],
+   "stored_result": {
+    "winner_id": "7abfb35f-3072-411a-9320-3e0d654de663",
+    "method": "DEC_U",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12980.json"
+   ],
+   "captured_at": "2026-09-14T01:55:00.857+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Sean King vs Jessie Rosas",
+   "bout_id": "9ad70054-1797-4bd2-ac0a-efb3523e41d4",
+   "ufcstats_fight_id": "5a91827fe8c1dc26",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "13119",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Sean King III -> Sean King (alias)",
+    "Jessie Rosas -> Jessie Rosas (name)"
+   ],
+   "stored_result": {
+    "winner_id": "869107aa-7446-438a-992e-14699cdce495",
+    "method": "KO_TKO",
+    "round": 1,
+    "time_sec": 36,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1
+   ],
+   "round_rows": 2,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13119.json"
+   ],
+   "captured_at": "2026-09-14T01:54:59.684+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Rafa Garcia vs Rongzhu",
+   "bout_id": "b380c59b-c8fc-4635-b890-f33b848099e5",
+   "ufcstats_fight_id": "d0d48877bf3724d1",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "13092",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Rafa Garcia -> Rafa Garcia (name)",
+    "Rongzhu -> Rongzhu (name)"
+   ],
+   "stored_result": {
+    "winner_id": "536374b2-125f-408a-a35a-2415fe227803",
+    "method": "DEC_U",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13092.json"
+   ],
+   "captured_at": "2026-09-14T01:55:01.183+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Drakkar Klose vs Tommy Gantt",
+   "bout_id": "e9f3da1c-42d3-4d64-aa9b-a999733804be",
+   "ufcstats_fight_id": "0aa849ca85e4355a",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "13118",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Drakkar Klose -> Drakkar Klose (name)",
+    "Tommy Gantt -> Tommy Gantt (name)"
+   ],
+   "stored_result": {
+    "winner_id": "08e58845-4ba5-4fcf-982f-2b47171d4dce",
+    "method": "SUB",
+    "round": 3,
+    "time_sec": 166,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13118.json"
+   ],
+   "captured_at": "2026-09-14T01:55:01.332+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Yousri Belgaroui vs Djorden Santos",
+   "bout_id": "3b91feaa-69d8-4eb8-a37a-3464b146210e",
+   "ufcstats_fight_id": null,
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "13097",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Yousri Belgaroui -> Yousri Belgaroui (name)",
+    "Djorden Santos -> Djorden Santos (name)"
+   ],
+   "stored_result": {
+    "winner_id": "456a7363-571c-42d0-887c-e36746063358",
+    "method": "KO_TKO",
+    "round": 1,
+    "time_sec": 265,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1
+   ],
+   "round_rows": 2,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13097.json"
+   ],
+   "captured_at": "2026-09-14T01:55:01.02+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Ignacio Bahamondes vs Muslim Salikhov",
+   "bout_id": "91485168-733a-4123-b8e1-bba091cb0ac8",
+   "ufcstats_fight_id": "046c22f769fd8300",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "13001",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Ignacio Bahamondes -> Ignacio Bahamondes (name)",
+    "Muslim Salikhov -> Muslim Salikhov (name)"
+   ],
+   "stored_result": {
+    "winner_id": "2650d370-e47d-4b07-b4cb-35c4ecf6168b",
+    "method": "DEC_U",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13001.json"
+   ],
+   "captured_at": "2026-09-14T01:55:00.677+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Tim Elliott vs Édgar Cháirez",
+   "bout_id": "ced47b19-7582-4def-b307-92fc16c57a0d",
+   "ufcstats_fight_id": "f154037892b9fb94",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "12978",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Tim Elliott -> Tim Elliott (name)",
+    "Edgar Chairez -> Édgar Cháirez (name)"
+   ],
+   "stored_result": {
+    "winner_id": "cbdc3e19-b826-44c5-83ac-3f48f4047b46",
+    "method": "DEC_U",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12978.json"
+   ],
+   "captured_at": "2026-09-14T01:54:59.85+00:00",
+   "exception": null
+  },
+  {
+   "bout": "David Martinez vs Dan Ige",
+   "bout_id": "577fcd7b-7841-4745-8f41-f7f3fa9aa042",
+   "ufcstats_fight_id": "51caa91f68873cf5",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "13000",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "David Martinez -> David Martinez (name)",
+    "Dan Ige -> Dan Ige (name)"
+   ],
+   "stored_result": {
+    "winner_id": "bf827666-1596-4e59-872b-0946a609bd1c",
+    "method": "DEC_U",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13000.json"
+   ],
+   "captured_at": "2026-09-14T01:55:00+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Waldo Cortes Acosta vs Curtis Blaydes",
+   "bout_id": "fd77037b-684f-4065-89a7-bb9431976b84",
+   "ufcstats_fight_id": "606639bf387f60e2",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "12975",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Waldo Cortes Acosta -> Waldo Cortes Acosta (name)",
+    "Curtis Blaydes -> Curtis Blaydes (name)"
+   ],
+   "stored_result": {
+    "winner_id": "149aacfb-fdfb-4e38-90ba-c7cabea11acc",
+    "method": "DEC_U",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12975.json"
+   ],
+   "captured_at": "2026-09-14T01:54:59.374+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Manon Fiorot vs Alexa Grasso",
+   "bout_id": "c5ab710f-9440-4142-b87f-d2de30c1780d",
+   "ufcstats_fight_id": "d9712b45c094730e",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "12976",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Manon Fiorot -> Manon Fiorot (name)",
+    "Alexa Grasso -> Alexa Grasso (name)"
+   ],
+   "stored_result": {
+    "winner_id": "1d296292-4969-43a8-9948-cd0a76a642ce",
+    "method": "DEC_U",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12976.json"
+   ],
+   "captured_at": "2026-09-14T01:55:01.498+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Tommy McMillen vs Marwan Rahiki",
+   "bout_id": "7b85e0fd-5f0c-47e8-bec1-78af8a82d4dc",
+   "ufcstats_fight_id": "1fca7dfa9e1e15cb",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "13040",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Tommy McMillen -> Tommy McMillen (name)",
+    "Marwan Rahiki -> Marwan Rahiki (name)"
+   ],
+   "stored_result": {
+    "winner_id": "b5bceb9a-635e-4b9f-8426-ca8ea0339ddf",
+    "method": "DEC_U",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13040.json"
+   ],
+   "captured_at": "2026-09-14T01:55:00.345+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Brandon Moreno vs Joseph Morales",
+   "bout_id": "7300eba4-285f-4030-9f3f-216fa376f451",
+   "ufcstats_fight_id": "1aa008d8597a73b8",
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "12977",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Brandon Moreno -> Brandon Moreno (name)",
+    "Joseph Morales -> Joseph Morales (name)"
+   ],
+   "stored_result": {
+    "winner_id": "1fa71f4b-3f7d-4705-ba00-1f6bcf397b9a",
+    "method": "DEC_S",
+    "round": 3,
+    "time_sec": 300,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12977.json"
+   ],
+   "captured_at": "2026-09-14T01:55:00.514+00:00",
+   "exception": null
+  },
+  {
+   "bout": "Jean Silva vs Jose Miguel Delgado",
+   "bout_id": "89e38074-f431-4bc3-b51e-fe42058e60d0",
+   "ufcstats_fight_id": null,
+   "queue_state": "written",
+   "identity_method": "ufc_official_feed",
+   "official_fight_id": "13099",
+   "official_event_id": "1331",
+   "corner_identity": [
+    "Jean Silva -> Jean Silva (name)",
+    "Jose Delgado -> Jose Miguel Delgado (alias)"
+   ],
+   "stored_result": {
+    "winner_id": "eed368a5-484b-412f-9d2c-a4fd6d24d019",
+    "method": "SUB",
+    "round": 3,
+    "time_sec": 177,
+    "result_source": "espn"
+   },
+   "result_validation": "passed (winner, finish round, finish time agree)",
+   "distinct_rounds": [
+    1,
+    2,
+    3
+   ],
+   "round_rows": 6,
+   "both_corners_every_round": true,
+   "source_url": [
+    "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13099.json"
+   ],
+   "captured_at": "2026-09-14T01:54:59.528+00:00",
+   "exception": null
+  }
+ ],
+ "older": {
+  "hooker": [
+   {
+    "bout": "Nora Cornolle vs Klaudia Syguła",
+    "bout_id": "f085b76f-6ebf-41f6-838f-0b8b9399eed0",
+    "ufcstats_fight_id": null,
+    "queue_state": "written",
+    "identity_method": "ufc_official_feed",
+    "official_fight_id": "13056",
+    "official_event_id": "1327",
+    "corner_identity": [
+     "Nora Cornolle -> Nora Cornolle (name)",
+     "Klaudia Sygula -> Klaudia Syguła (name)"
+    ],
+    "stored_result": {
+     "winner_id": "5cd8d0d8-8769-4a59-8851-798523aeaff5",
+     "method": "DEC_U",
+     "round": 3,
+     "time_sec": 300,
+     "result_source": "espn"
+    },
+    "result_validation": "passed (winner, finish round, finish time agree)",
+    "distinct_rounds": [
+     1,
+     2,
+     3
+    ],
+    "round_rows": 6,
+    "both_corners_every_round": true,
+    "source_url": [
+     "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13056.json"
+    ],
+    "captured_at": "2026-09-14T02:04:23.862+00:00",
+    "exception": null
+   }
+  ],
+  "nurmagomedov": [
+   {
+    "bout": "Lawrence Lui vs Hector Santiago",
+    "bout_id": "9ed802bf-3060-4d64-b5a8-7137dbc7c3af",
+    "ufcstats_fight_id": null,
+    "queue_state": "written",
+    "identity_method": "ufc_official_feed",
+    "official_fight_id": "13083",
+    "official_event_id": "1326",
+    "corner_identity": [
+     "Lawrence Lui -> Lawrence Lui (name)",
+     "Hector Santiago -> Hector Santiago (name)"
+    ],
+    "stored_result": {
+     "winner_id": "f75cfc16-0e98-47b2-9108-5e3578be7680",
+     "method": "KO_TKO",
+     "round": 2,
+     "time_sec": 53,
+     "result_source": "espn"
+    },
+    "result_validation": "passed (winner, finish round, finish time agree)",
+    "distinct_rounds": [
+     1,
+     2
+    ],
+    "round_rows": 4,
+    "both_corners_every_round": true,
+    "source_url": [
+     "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13083.json"
+    ],
+    "captured_at": "2026-09-14T02:04:38.372+00:00",
+    "exception": null
+   }
+  ],
+  "medic": [
+   {
+    "bout": "Mateusz Rębecki vs Kyle Prepolec",
+    "bout_id": "3d96a941-254e-469e-8c4d-7cf4d4ca1e4b",
+    "ufcstats_fight_id": null,
+    "queue_state": "written",
+    "identity_method": "ufc_official_feed",
+    "official_fight_id": "12956",
+    "official_event_id": "1321",
+    "corner_identity": [
+     "Mateusz Rebecki -> Mateusz Rębecki (name)",
+     "Kyle Prepolec -> Kyle Prepolec (name)"
+    ],
+    "stored_result": {
+     "winner_id": "68e4296d-bcc7-43aa-9c1f-6e12c96724a3",
+     "method": "KO_TKO",
+     "round": 1,
+     "time_sec": 281,
+     "result_source": "espn"
+    },
+    "result_validation": "passed (winner, finish round, finish time agree)",
+    "distinct_rounds": [
+     1
+    ],
+    "round_rows": 2,
+    "both_corners_every_round": true,
+    "source_url": [
+     "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12956.json"
+    ],
+    "captured_at": "2026-09-14T02:04:54.115+00:00",
+    "exception": null
+   }
+  ]
+ },
+ "mutation_check": {
+  "noche": {
+   "event_unchanged": true,
+   "bouts_unchanged": true,
+   "results_unchanged": true,
+   "fighters_unchanged": true,
+   "round_rows": [
+    0,
+    70
+   ]
+  },
+  "hooker": {
+   "event_unchanged": true,
+   "bouts_unchanged": true,
+   "results_unchanged": true,
+   "fighters_unchanged": true,
+   "round_rows": [
+    56,
+    62
+   ]
+  },
+  "nurmagomedov": {
+   "event_unchanged": true,
+   "bouts_unchanged": true,
+   "results_unchanged": true,
+   "fighters_unchanged": true,
+   "round_rows": [
+    46,
+    50
+   ]
+  },
+  "medic": {
+   "event_unchanged": true,
+   "bouts_unchanged": true,
+   "results_unchanged": true,
+   "fighters_unchanged": true,
+   "round_rows": [
+    38,
+    40
+   ]
+  }
+ },
+ "totals": {
+  "before": {
+   "round_rows": 41930,
+   "results": 9356,
+   "bouts": 9425,
+   "events": 899,
+   "fighters": 3178,
+   "aliases": 6793,
+   "queue_total": 41
+  },
+  "after": {
+   "round_rows": 42012,
+   "results": 9356,
+   "bouts": 9425,
+   "events": 899,
+   "fighters": 3178,
+   "aliases": 6793,
+   "queue_total": 41
+  }
+ },
+ "queue": {
+  "before": {
+   "awaiting_source": 41
+  },
+  "after": {
+   "written": 16,
+   "awaiting_source": 25
+  }
+ },
+ "round_index": {
+  "before": {
+   "last_event_date": "2026-09-05",
+   "eligible": 8912,
+   "round_rows": 41930,
+   "recent_first": [
+    "UFC Fight Night: Hooker vs. Parnasse Delphine Benouaich vs Sofia Montenegro r2",
+    "UFC Fight Night: Hooker vs. Parnasse Matthieu Letho Duclos vs Luis Felipe Dias r1",
+    "UFC Fight Night: Hooker vs. Parnasse Michael Aljarouj vs Fabia Sintes r3"
+   ]
+  },
+  "after": {
+   "last_event_date": "2026-09-12",
+   "eligible": 8928,
+   "round_rows": 42012,
+   "recent_first": [
+    "Noche UFC: Silva vs. Delgado JJ Aldrich vs Regina Tarin r3",
+    "Noche UFC: Silva vs. Delgado Sean King vs Jessie Rosas r1",
+    "Noche UFC: Silva vs. Delgado Rafa Garcia vs Rongzhu r3"
+   ]
+  }
+ },
+ "health_after": {
+  "version": "v0.7.2",
+  "round_lane_status": "degraded",
+  "gaps": [
+   {
+    "event": "Dana White's Contender Series: Season 10, Week 5",
+    "with_rows": 0,
+    "completed": 5,
+    "cause": "source disabled"
+   },
+   {
+    "event": "Dana White's Contender Series: Season 10, Week 4",
+    "with_rows": 0,
+    "completed": 5,
+    "cause": "source disabled"
+   },
+   {
+    "event": "Dana White's Contender Series: Season 10, Week 3",
+    "with_rows": 0,
+    "completed": 5,
+    "cause": "source disabled"
+   },
+   {
+    "event": "Dana White's Contender Series: Season 10, Week 2",
+    "with_rows": 0,
+    "completed": 5,
+    "cause": "source disabled"
+   },
+   {
+    "event": "Dana White's Contender Series: Season 10, Week 1",
+    "with_rows": 0,
+    "completed": 5,
+    "cause": "source disabled"
+   }
+  ],
+  "alert": {
+   "status": "degraded",
+   "alerts_sent": 3,
+   "cleared_events": [
+    {
+     "event_id": "1d0b22df-81e7-4e5b-8fa5-8e5d03c24c52",
+     "event_name": "Noche UFC: Silva vs. Delgado",
+     "cleared_at": "2026-09-14T01:56:26.236Z"
+    },
+    {
+     "event_id": "0edba201-82f9-4525-85e4-3034b7bc09f7",
+     "event_name": "UFC Fight Night: Hooker vs. Parnasse",
+     "cleared_at": "2026-09-14T02:06:04.741Z"
+    },
+    {
+     "event_id": "5d24f2f8-7127-4818-bdc4-965921eb166c",
+     "event_name": "UFC Fight Night: Nurmagomedov vs. Song",
+     "cleared_at": "2026-09-14T02:06:04.741Z"
+    },
+    {
+     "event_id": "95dead24-da21-43fc-afca-f36a7ba19f84",
+     "event_name": "UFC Fight Night: Medić vs. Rodriguez",
+     "cleared_at": "2026-09-14T02:06:04.741Z"
+    }
+   ],
+   "last_alert_kind": "changed",
+   "delivered": "discord_unconfigured"
+  },
+  "ufcstats_enabled": false,
+  "official_rounds_enabled": true,
+  "challenge_policy": "fail_closed",
+  "source_health": "challenged",
+  "retry_after": "2026-09-14T06:34:18.164Z",
+  "last_error_class": null
+ }
+}
