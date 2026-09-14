@@ -50,6 +50,20 @@ async function rest<T>(path: string, fallback: T, revalidate = REVALIDATE): Prom
 /* PostgREST caps a response; the scorecard archive is several thousand rows,
  * so walk it rather than silently rendering the first page as the whole
  * archive — a truncated directory is worse than none. */
+/* Same walk, but says whether it finished. A page that failed upstream ends
+ * the walk exactly like a short last page would, so without this flag a
+ * Supabase blip reads as "this judge has no cards" and a real profile 404s. */
+async function restAllChecked<T>(pathWithoutRange: string, revalidate = REVALIDATE): Promise<{ rows: T[]; complete: boolean }> {
+  const rows: T[] = [];
+  for (let offset = 0; offset < 40000; offset += PAGE) {
+    const page = await rest<T[] | null>(`${pathWithoutRange}&limit=${PAGE}&offset=${offset}`, null, revalidate);
+    if (page === null) return { rows, complete: false };
+    rows.push(...page);
+    if (page.length < PAGE) return { rows, complete: true };
+  }
+  return { rows, complete: false };
+}
+
 async function restAll<T>(pathWithoutRange: string, revalidate = REVALIDATE): Promise<T[]> {
   const out: T[] = [];
   for (let offset = 0; offset < 40000; offset += PAGE) {
@@ -137,6 +151,8 @@ export type JudgeProfile = {
 };
 
 export type JudgeArchive = {
+  /* False when any page of the scorecard walk failed upstream. */
+  complete: boolean;
   judges: JudgeProfile[];
   bySlug: Map<string, JudgeProfile>;
   cardsBySlug: Map<string, JudgeCard[]>;
@@ -171,7 +187,7 @@ const SELECT =
 /* One read builds the whole judge layer; every page then slices it. `cache`
  * dedupes within a render, the fetch revalidate window across renders. */
 export const getJudgeArchive = cache(async (): Promise<JudgeArchive> => {
-  const rows = await restAll<RawScorecardRow>(`ufc_bout_results?select=${SELECT}&scorecards=not.is.null&order=bout_id.asc`);
+  const { rows, complete } = await restAllChecked<RawScorecardRow>(`ufc_bout_results?select=${SELECT}&scorecards=not.is.null&order=bout_id.asc`);
 
   const cardsBySlug = new Map<string, JudgeCard[]>();
   const nameBySlug = new Map<string, string>();
@@ -257,6 +273,7 @@ export const getJudgeArchive = cache(async (): Promise<JudgeArchive> => {
   const allMargins = allCards.map((c) => c.scoreMargin).filter((m) => Number.isFinite(m));
   const allDates = allCards.map((c) => c.eventDate).filter(Boolean).sort() as string[];
   return {
+    complete,
     judges,
     bySlug: new Map(judges.map((j) => [j.slug, j])),
     cardsBySlug,

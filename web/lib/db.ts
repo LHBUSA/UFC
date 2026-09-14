@@ -25,8 +25,22 @@ export function dbConfigured(): boolean {
   return Boolean(URL_ && KEY);
 }
 
-async function rest<T>(path: string, fallback: T, opts: { count?: boolean; revalidate?: number } = {}): Promise<{ data: T; count: number | null }> {
-  if (!dbConfigured()) return { data: fallback, count: null };
+/* Thrown by a `strict` read. An existence check ("does this fighter exist?")
+ * must never read an upstream failure as "no": that would turn a Supabase
+ * blip into a 404 that search engines drop and the data cache can keep. A
+ * strict read throws instead, so the route errors (5xx) and is retried. */
+export class UpstreamReadError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "UpstreamReadError";
+  }
+}
+
+async function rest<T>(path: string, fallback: T, opts: { count?: boolean; revalidate?: number; strict?: boolean } = {}): Promise<{ data: T; count: number | null }> {
+  if (!dbConfigured()) {
+    if (opts.strict) throw new UpstreamReadError(`[db] ${path.split("?")[0]}: database not configured`);
+    return { data: fallback, count: null };
+  }
   try {
     const res = await fetch(`${URL_}/rest/v1/${path}`, {
       headers: headers(opts.count ? { Prefer: "count=exact" } : {}),
@@ -34,6 +48,7 @@ async function rest<T>(path: string, fallback: T, opts: { count?: boolean; reval
     });
     if (!res.ok) {
       console.error(`[db] ${path.split("?")[0]} -> HTTP ${res.status}`);
+      if (opts.strict) throw new UpstreamReadError(`[db] ${path.split("?")[0]} -> HTTP ${res.status}`);
       return { data: fallback, count: null };
     }
     const range = res.headers.get("content-range");
@@ -41,9 +56,31 @@ async function rest<T>(path: string, fallback: T, opts: { count?: boolean; reval
     const text = await res.text();
     return { data: text ? (JSON.parse(text) as T) : fallback, count: Number.isFinite(count as number) ? count : null };
   } catch (e) {
+    if (e instanceof UpstreamReadError) throw e;
     console.error(`[db] ${path.split("?")[0]} failed: ${String((e as Error)?.message || e).slice(0, 120)}`);
+    if (opts.strict) throw new UpstreamReadError(`[db] ${path.split("?")[0]} failed`);
     return { data: fallback, count: null };
   }
+}
+
+/* Every row of a table, walked with keyset pagination on a unique column.
+ * PostgREST caps one response at 1,000 rows and `limit=` cannot raise it, so
+ * a single request silently returns the first page as if it were the whole
+ * population. Always strict: a partial population is an error, never a
+ * shorter list. */
+export async function restAllRows<T extends Record<string, unknown>>(table: string, select: string, key: string, filter = "", revalidate = 3600): Promise<T[]> {
+  const PAGE = 1000;
+  const out: T[] = [];
+  let last: unknown = null;
+  for (let i = 0; i < 1000; i += 1) {
+    const after = last == null ? "" : `&${key}=gt.${encodeURIComponent(String(last))}`;
+    const page = (await rest<T[]>(`${table}?select=${select}${filter}&order=${key}.asc&limit=${PAGE}${after}`, [], { revalidate, strict: true })).data;
+    out.push(...page);
+    if (page.length < PAGE) return out;
+    last = page[page.length - 1][key];
+    if (last == null) throw new UpstreamReadError(`[db] ${table}: keyset column ${key} missing`);
+  }
+  throw new UpstreamReadError(`[db] ${table}: pagination did not terminate`);
 }
 
 /* ---- types ------------------------------------------------------------ */
@@ -145,14 +182,14 @@ export async function getEventYears(): Promise<Array<{ year: number; count: numb
   for (const r of rows) { if (!r.event_date) continue; const y = Number(r.event_date.slice(0, 4)); m.set(y, (m.get(y) || 0) + 1); }
   return [...m.entries()].map(([year, count]) => ({ year, count })).sort((a, b) => b.year - a.year);
 }
-export async function getEventsOnDate(date: string): Promise<Event[]> {
-  return (await rest<Event[]>(`ufc_events?select=${EVENT_COLS}&event_date=eq.${date}`, [])).data;
+export async function getEventsOnDate(date: string, strict = false): Promise<Event[]> {
+  return (await rest<Event[]>(`ufc_events?select=${EVENT_COLS}&event_date=eq.${date}`, [], { strict })).data;
 }
 export async function getEventById(id: string): Promise<Event | null> {
   return (await rest<Event[]>(`ufc_events?select=${EVENT_COLS}&id=eq.${id}&limit=1`, [])).data[0] || null;
 }
-export async function getEventBouts(eventId: string, revalidate?: number): Promise<Bout[]> {
-  const rows = (await rest<RawBout[]>(`ufc_bouts?select=${BOUT_SELECT}&event_id=eq.${eventId}&order=bout_order.desc`, [], { revalidate })).data;
+export async function getEventBouts(eventId: string, revalidate?: number, strict = false): Promise<Bout[]> {
+  const rows = (await rest<RawBout[]>(`ufc_bouts?select=${BOUT_SELECT}&event_id=eq.${eventId}&order=bout_order.desc`, [], { revalidate, strict })).data;
   return rows.map(flattenResult);
 }
 /* Events in a date window with the two counts Round-for-Round selects on:
@@ -255,8 +292,8 @@ export async function getFighters(q = "", limit = 60, offset = 0, opts: { letter
   const r = await rest<Fighter[]>(`ufc_fighters?select=${FIGHTER_COLS}${filter}&order=name.asc&limit=${limit}&offset=${offset}`, [], { count: true });
   return { rows: r.data, count: r.count };
 }
-export async function getFighterBySourceId(id: string): Promise<Fighter | null> {
-  const rows = (await rest<Fighter[]>(`ufc_fighters?select=${FIGHTER_COLS}&or=(espn_athlete_id.eq.${id},ufcstats_id.eq.${id})&limit=1`, [])).data;
+export async function getFighterBySourceId(id: string, strict = false): Promise<Fighter | null> {
+  const rows = (await rest<Fighter[]>(`ufc_fighters?select=${FIGHTER_COLS}&or=(espn_athlete_id.eq.${id},ufcstats_id.eq.${id})&limit=1`, [], { strict })).data;
   return rows[0] || null;
 }
 /* The date of birth each source namespace prints for this canonical fighter
@@ -490,8 +527,8 @@ export async function getArticles(limit = 20, storyType?: string, offset = 0): P
   const r = await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published${t}&order=published_at.desc&limit=${limit}&offset=${offset}`, [], { count: true });
   return { rows: r.data, count: r.count };
 }
-export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const rows = (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&slug=eq.${encodeURIComponent(slug)}&limit=1`, [])).data;
+export async function getArticleBySlug(slug: string, strict = false): Promise<Article | null> {
+  const rows = (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&slug=eq.${encodeURIComponent(slug)}&limit=1`, [], { strict })).data;
   return rows[0] || null;
 }
 /**

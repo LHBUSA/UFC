@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Octagon } from "@/components/ui";
+
+/* Rendered with a real 404 by the [slug]/layout.tsx existence gates. Its own
+ * robots and title, so the layout's "index, follow" and home title are not
+ * inherited alongside the noindex Next adds for a 404. */
+export const metadata: Metadata = {
+  title: "Page not found",
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (

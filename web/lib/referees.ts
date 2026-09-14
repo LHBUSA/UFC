@@ -9,13 +9,28 @@ function headers() {
   return h;
 }
 
-async function read<T>(path: string, fallback: T, revalidate = 900): Promise<T> {
-  if (!URL_ || !KEY) return fallback;
+async function read<T>(path: string, fallback: T, revalidate = 900, strict = false): Promise<T> {
+  /* strict: an existence check throws on upstream failure instead of
+   * answering "no such referee" (see UpstreamReadError in lib/db.ts). */
+  if (!URL_ || !KEY) {
+    if (strict) throw new Error("[referees] database not configured");
+    return fallback;
+  }
+  let res: Response;
   try {
-    const res = await fetch(`${URL_}/rest/v1/${path}`, { headers: headers(), next: { revalidate } });
-    if (!res.ok) return fallback;
+    res = await fetch(`${URL_}/rest/v1/${path}`, { headers: headers(), next: { revalidate } });
+  } catch (e) {
+    if (strict) throw e;
+    return fallback;
+  }
+  if (!res.ok) {
+    if (strict) throw new Error(`[referees] ${path.split("?")[0]} -> HTTP ${res.status}`);
+    return fallback;
+  }
+  try {
     return (await res.json()) as T;
-  } catch {
+  } catch (e) {
+    if (strict) throw e;
     return fallback;
   }
 }
@@ -91,8 +106,8 @@ export async function getReferees(limit = 200): Promise<RefereeProfile[]> {
   return read<RefereeProfile[]>(`ufc_referee_directory?select=${SELECT}&order=bouts.desc,display_name.asc&limit=${limit}`, []);
 }
 
-export async function getRefereeBySlug(slug: string): Promise<RefereeProfile | null> {
-  const rows = await read<RefereeProfile[]>(`ufc_referee_directory?select=${SELECT}&slug=eq.${encodeURIComponent(slug)}&limit=1`, []);
+export async function getRefereeBySlug(slug: string, strict = false): Promise<RefereeProfile | null> {
+  const rows = await read<RefereeProfile[]>(`ufc_referee_directory?select=${SELECT}&slug=eq.${encodeURIComponent(slug)}&limit=1`, [], 900, strict);
   return rows[0] || null;
 }
 

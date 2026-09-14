@@ -51,7 +51,9 @@ export const metadata: Metadata = {
   creator: "PropBetEdge",
   publisher: SITE.publisher,
   category: "sports",
-  alternates: { canonical: "/", types: { "application/rss+xml": [{ url: `${SITE.url}/feed.xml`, title: `${SITE.name} — News` }] } },
+  /* No canonical here: a layout canonical is inherited by every page that
+   * does not set its own, including not-found, which then pointed at "/". */
+  alternates: { types: { "application/rss+xml": [{ url: `${SITE.url}/feed.xml`, title: `${SITE.name} — News` }] } },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   icons: {
     icon: [

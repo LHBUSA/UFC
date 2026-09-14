@@ -1,0 +1,12 @@
+import { notFound } from "next/navigation";
+import { HOF_BY_SLUG } from "@/lib/hof";
+
+/* Existence gate. A layout above this segment's loading boundary, so it runs
+ * before the response starts streaming: a missing Hall of Fame inductee is a real HTTP 404
+ * (root not-found page, no canonical), not a streamed 200. The lookup is
+ * strict, so an upstream failure throws (5xx) instead of posing as missing. */
+export default async function Gate({ children, params }: { children: React.ReactNode; params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  if (!HOF_BY_SLUG.has(slug)) notFound();
+  return children;
+}
