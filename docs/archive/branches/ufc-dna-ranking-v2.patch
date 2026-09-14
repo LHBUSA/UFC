@@ -1,0 +1,736 @@
+From 398017ce0f5c5854eb6253da6a97fe87d66129fb Mon Sep 17 00:00:00 2001
+From: LHBUSA <sales@localhomebuyersusa.com>
+Date: Fri, 11 Sep 2026 19:52:00 -0500
+Subject: [PATCH] fix(dna): rank the eligible fighter population, not a UUID
+ window (#27)
+
+/v1/ufc/dna/query scanned at most 1000 rows of the 26,167-row snapshot history
+ordered by fighter UUID, resolved "latest snapshot" inside that window, then
+ranked and limited. For the default broad query the window covered 122 of the
+3161 fighters that have a snapshot, so the published top-50 was the top-50 of an
+arbitrary UUID prefix and meta.truncated was true on almost every call.
+
+Ranking now happens in one stable SQL function, public.ufc_dna_metric_ranking:
+resolve each fighter's latest eligible row first, then filter, then rank the
+whole matched population, then limit.
+
+Deliberately unchanged: as_of resolution (latest row <= as_of, chosen without
+regard to the metric filters, so an older passing row never stands in for a
+newer failing one); the confidence gate and its 'low' default; min/max against
+the stored numeric value; explicit nulls stay null and sort last in BOTH
+directions; the name-then-id tie-break; every parameter, field name, type and
+row shape.
+
+Deliberately changed, and documented as such: meta.candidates and
+meta.candidates_total are now both the eligible population that was ranked (one
+latest snapshot or stance split per fighter) and are always equal;
+meta.truncated is always false because no scan cap remains. The keys are kept so
+existing clients do not break.
+
+Proven before shipping, on a local PG17 copy of production (26,167 snapshots,
+3,177 fighters, 44,147 stance splits):
+- equivalence: 154/154 cases identical to a line-for-line port of the current
+  Worker algorithm with the 1000-row cap removed. Zero mismatches, zero
+  tie-order differences.
+- plan: index-only scan on ufc_fighter_dna_snapshots_latest_idx resolves the
+  3,161 latest snapshots, the window stops at rank <= limit. ~70 ms warm for the
+  broad default (~80 ms at min_confidence=insufficient&limit=200, ~45 ms for a
+  stance query), against ~487 ms p50 for the current two-round-trip path.
+- new regression tests build a 1,200-fighter population whose best values sit
+  entirely outside the old 1000-row window and assert the true top-50 is
+  returned, that ranking precedes the limit, that active filtering precedes
+  ranking, that superseded rows never stand in, and that an explicit null is
+  matched, sorts last in both directions and satisfies no bound.
+
+Not deployed. The migration is not applied and the Worker is not released;
+API_VERSION and the OpenAPI version are staged at 2026-09-12.1 so the release
+metadata is not stale when it is. Rollback is a file, and it is ordered: roll
+the Worker back first, then drop the function, because a missing PostgREST
+function reads as a missing schema (503 dna_not_available).
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01PzDoDm2gk69cHQbhCQruBG
+---
+ docs/openapi.ufc-v1.yaml                      |  26 ++-
+ docs/ufc_api_v1.md                            |  13 ++
+ .../20260912000000_ufc_dna_metric_ranking.sql | 161 +++++++++++++++++
+ ...0912000000_ufc_dna_metric_ranking.down.sql |  29 +++
+ workers/ufc-api/src/index.js                  | 101 +++++------
+ workers/ufc-api/src/index.test.mjs            | 171 +++++++++++++++++-
+ workers/ufc-api/src/route_union.test.mjs      |  11 +-
+ workers/ufc-api/wrangler.toml                 |   2 +-
+ 8 files changed, 449 insertions(+), 65 deletions(-)
+ create mode 100644 supabase/migrations/20260912000000_ufc_dna_metric_ranking.sql
+ create mode 100644 supabase/migrations/rollback/20260912000000_ufc_dna_metric_ranking.down.sql
+
+diff --git a/docs/openapi.ufc-v1.yaml b/docs/openapi.ufc-v1.yaml
+index c572847..a07b40c 100644
+--- a/docs/openapi.ufc-v1.yaml
++++ b/docs/openapi.ufc-v1.yaml
+@@ -1,7 +1,7 @@
+ openapi: 3.1.0
+ info:
+   title: PropSports UFC API
+-  version: 2026-09-11.1
++  version: 2026-09-12.1
+   description: >-
+     Read-only normalized UFC event, fighter, bout, result, round-stat, image,
+     rankings and editorial data used by ufc.propbetedge.ai and future PropSports
+@@ -416,14 +416,24 @@ paths:
+         '503': { $ref: '#/components/responses/Error' }
+   /v1/ufc/dna/query:
+     get:
+-      summary: Filter current Fight DNA snapshots (or stance splits) by one metric
++      summary: Rank every eligible fighter by one Fight DNA metric
+       description: >-
+-        North-star filter, e.g. `?metric=pace_retention_r3_vs_r1&min=0.9`. Filters run in PostgREST on the stored
+-        MetricObject (`metrics-><key>->value` jsonb ordering, `metrics-><key>->>confidence`); only a fighter's latest
+-        snapshot (<= `as_of`) qualifies; the candidate scan is capped at 1000 rows (PostgREST max_rows) (`meta.truncated`). With `stance`
+-        the query runs over `ufc_fighter_stance_splits` for that opponent stance and `metric` must be one of
+-        finish_rate, ko_rate, sub_rate, sig_diff_per_min, kd_per_15, td_landed_per_15 (registry aliases accepted).
+-        Rows are `DnaQueryRow`, sorted by value (`order`, nulls last).
++        North-star filter, e.g. `?metric=pace_retention_r3_vs_r1&min=0.9`. Ranks the full eligible population in SQL:
++        each fighter's latest snapshot at or before `as_of` is resolved first (without regard to the metric filters,
++        so an older passing row never stands in for a newer failing one), then `min_confidence` / `min` / `max` /
++        `active` filtering applies, then ordering, then `limit`. With `stance` the query runs over
++        `ufc_fighter_stance_splits` for that opponent stance and `metric` must be one of finish_rate, ko_rate,
++        sub_rate, sig_diff_per_min, kd_per_15, td_landed_per_15 (registry aliases accepted).
++        Rows are `DnaQueryRow`, sorted by value (`order`), then fighter name, then fighter id. A metric value that is
++        explicitly null stays null and sorts last in both directions; nothing is synthesized or defaulted.
++        `meta.candidates` and `meta.candidates_total` are the eligible population that was ranked (one latest snapshot
++        or stance split per fighter) and are always equal; `meta.matched` is how many passed the filters;
++        `meta.truncated` is always `false`.
++        **Changed 2026-09-12 (results-affecting).** Before this release the endpoint scanned at most 1000 rows ordered
++        by fighter UUID and ranked inside that window, so for a broad query it ranked 122 of the 3161 fighters that
++        have a snapshot and the published order was not the true order. `meta.candidates` previously meant "rows in
++        the capped scan" and `meta.candidates_total` "rows the filter matched across all snapshot history".
++        Field names, types and row shape are unchanged.
+       tags: [Fight DNA]
+       parameters:
+         - { name: metric, in: query, required: true, schema: { type: string, pattern: '^[a-z][a-z0-9_]{1,63}$' } }
+diff --git a/docs/ufc_api_v1.md b/docs/ufc_api_v1.md
+index ad97d0e..aa2a254 100644
+--- a/docs/ufc_api_v1.md
++++ b/docs/ufc_api_v1.md
+@@ -64,6 +64,19 @@ Added in `2026-09-11.1` (availability and weigh-ins):
+ - `GET /v1/ufc/weigh-ins` (alias `/v1/weigh-ins`) `?event_id=&fighter_id=&status=&since=` — current reading per fighter. Null `contracted_limit_lbs` / `over_by_lbs` means the limit was not published, never a division default. `is_confirmation` (an official source verified the same weight) is distinct from `is_correction` (the weight changed).
+ - `GET /v1/ufc/events/{id}/weigh-ins?include=history` (also `/v1/events/{id}/weigh-ins`) — coverage with `confirmations` / `corrections`, current results, and the full source trail with `supersession_kind`.
+ 
++Changed in `2026-09-12.1` (Fight DNA ranking correctness — **this changes results**):
++
++- `GET /v1/ufc/dna/query` now ranks every eligible fighter. It used to scan at most 1000 rows ordered by fighter UUID
++  and rank inside that window, so a broad query ranked 122 of the 3161 fighters that have a snapshot and the published
++  order was not the true order. Ranking now happens in one SQL function (`public.ufc_dna_metric_ranking`): each
++  fighter's latest snapshot at or before `as_of` is resolved first, without regard to the metric filters; then
++  `min_confidence` (default `low`), `min`, `max` and `active` filtering; then ordering; then `limit`.
++- No parameter, field name, type or row shape changed, and nothing is synthesized: an explicit null value stays null
++  and sorts last in both directions. `as_of` semantics are unchanged.
++- `meta.candidates` and `meta.candidates_total` now both mean the eligible population that was ranked (one latest
++  snapshot or stance split per fighter) and are always equal; they used to mean "rows in the capped scan" and "rows the
++  filter matched across all snapshot history". `meta.truncated` is now always `false` — no scan cap remains.
++
+ ## Media contract (B1)
+ 
+ Durable origin: the public Supabase Storage bucket `ufc-media`, configured as `UFC_IMAGE_BASE_URL` in `wrangler.toml`
+diff --git a/supabase/migrations/20260912000000_ufc_dna_metric_ranking.sql b/supabase/migrations/20260912000000_ufc_dna_metric_ranking.sql
+new file mode 100644
+index 0000000..6a582dc
+--- /dev/null
++++ b/supabase/migrations/20260912000000_ufc_dna_metric_ranking.sql
+@@ -0,0 +1,161 @@
++-- Issue #27: /v1/ufc/dna/query must rank the eligible fighter population, not the
++-- first 1000 historical rows in (fighter_id, as_of_date) order.
++--
++-- Before this migration the Worker scanned at most DNA_QUERY_CANDIDATE_LIMIT = 1000
++-- rows of a 26,167-row history table ordered by fighter UUID, then resolved "latest
++-- snapshot" and ranked inside that window. For the default broad query that window
++-- covered 122 of the 3,161 fighters that have a snapshot, so the published "top 50"
++-- was the top 50 of an arbitrary UUID prefix.
++--
++-- This function resolves each fighter's latest eligible snapshot in SQL first, then
++-- filters, then ranks, then limits. Semantics that are deliberately UNCHANGED:
++--   * as_of is exclusive-by-construction and resolves to the latest stored row with
++--     as_of_date <= as_of (see DNA_AS_OF_NOTE in the Worker).
++--   * The latest row is chosen WITHOUT regard to the metric filters, so an older row
++--     that passes never stands in for a newer row that fails.
++--   * Confidence gate: rank(metric->>'confidence') >= rank(p_min_confidence); the
++--     default floor stays 'low'.
++--   * min / max compare the stored numeric value; rows whose value is not a JSON
++--     number never satisfy a bound.
++--   * An explicit null stays null. A MetricObject with "value": null keeps its object
++--     and sorts LAST in both directions. Nothing is synthesized or defaulted.
++--   * Ties break on fighter name then fighter id, matching the Worker's previous
++--     localeCompare ordering (ICU en-US).
++create or replace function public.ufc_dna_metric_ranking(
++  p_metric text,
++  p_definition_version int default 1,
++  p_as_of date default null,
++  p_min_confidence text default 'low',
++  p_min numeric default null,
++  p_max numeric default null,
++  p_active boolean default null,
++  p_order text default 'desc',
++  p_limit int default 50,
++  p_stance text default null,
++  p_min_appearances int default 1
++) returns jsonb
++language sql
++stable
++security invoker
++set search_path = public, pg_temp
++as $fn$
++with allowed as (
++  select array(
++    select k from (values ('insufficient', 0), ('low', 1), ('medium', 2), ('high', 3)) t(k, rank)
++    where t.rank >= (case p_min_confidence
++      when 'insufficient' then 0 when 'low' then 1 when 'medium' then 2 when 'high' then 3 end)
++  ) as conf
++),
++latest_snapshot as (
++  select distinct on (s.fighter_id) s.fighter_id, s.as_of_date
++  from public.ufc_fighter_dna_snapshots s
++  where p_stance is null
++    and s.definition_version = p_definition_version
++    and (p_as_of is null or s.as_of_date <= p_as_of)
++  order by s.fighter_id, s.as_of_date desc
++),
++latest_split as (
++  select distinct on (s.fighter_id) s.fighter_id, s.as_of_date
++  from public.ufc_fighter_stance_splits s
++  where p_stance is not null
++    and s.definition_version = p_definition_version
++    and s.opponent_stance = p_stance
++    and (p_as_of is null or s.as_of_date <= p_as_of)
++  order by s.fighter_id, s.as_of_date desc
++),
++-- One row per fighter: the eligible population the ranking evaluates. Both tables
++-- carry a FK to ufc_fighters with on delete cascade, so the join drops nothing.
++eligible as (
++  select s.fighter_id, s.as_of_date, s.metrics -> p_metric as metric, f.name, f.is_active,
++         jsonb_build_object(
++           'sample_bouts', s.sample_bouts,
++           'sample_completed_bouts', s.sample_completed_bouts,
++           'sample_stat_bouts', s.sample_stat_bouts,
++           'sample_rounds', s.sample_rounds,
++           'sample_seconds', s.sample_seconds,
++           'coverage_status', s.coverage_status
++         ) as payload
++  from latest_snapshot l
++  join public.ufc_fighter_dna_snapshots s
++    on s.fighter_id = l.fighter_id
++   and s.as_of_date = l.as_of_date
++   and s.definition_version = p_definition_version
++  join public.ufc_fighters f on f.id = s.fighter_id
++  union all
++  select s.fighter_id, s.as_of_date, s.metrics -> p_metric as metric, f.name, f.is_active,
++         jsonb_build_object(
++           'opponent_stance', s.opponent_stance,
++           'appearances', s.appearances,
++           'wins', s.wins, 'losses', s.losses, 'draws', s.draws, 'no_contests', s.no_contests,
++           'ko_tko_wins', s.ko_tko_wins,
++           'submission_wins', s.submission_wins,
++           'decision_wins', s.decision_wins,
++           'stat_bouts', s.stat_bouts,
++           'stat_rounds', s.stat_rounds,
++           'observed_seconds', s.observed_seconds,
++           'confidence', s.confidence
++         ) as payload
++  from latest_split l
++  join public.ufc_fighter_stance_splits s
++    on s.fighter_id = l.fighter_id
++   and s.as_of_date = l.as_of_date
++   and s.definition_version = p_definition_version
++   and s.opponent_stance = p_stance
++  join public.ufc_fighters f on f.id = s.fighter_id
++  where s.appearances >= p_min_appearances
++),
++scored as (
++  select e.*,
++         case when jsonb_typeof(e.metric -> 'value') = 'number'
++              then (e.metric ->> 'value')::numeric end as value_num,
++         e.metric ->> 'confidence' as confidence
++  from eligible e
++),
++matched as (
++  select s.*
++  from scored s, allowed a
++  where jsonb_typeof(s.metric) = 'object'
++    and s.metric ? 'value'
++    and s.confidence = any (a.conf)
++    and (p_min is null or s.value_num >= p_min)
++    and (p_max is null or s.value_num <= p_max)
++    and (p_active is null or s.is_active is not distinct from p_active)
++),
++-- Rank the whole matched population, then take p_limit. Never the other way round.
++ranked as (
++  select m.*, row_number() over (
++    order by
++      case when m.value_num is null then 1 else 0 end,
++      case when lower(p_order) = 'asc' then m.value_num end asc,
++      case when lower(p_order) <> 'asc' then m.value_num end desc,
++      coalesce(m.name, '') collate "en-US-x-icu",
++      m.fighter_id::text
++  ) as rank
++  from matched m
++)
++select jsonb_build_object(
++  'rows', coalesce((
++    select jsonb_agg(
++      r.payload
++      || jsonb_build_object('fighter_id', r.fighter_id, 'as_of_date', r.as_of_date, 'metric', r.metric)
++      order by r.rank
++    )
++    from ranked r where r.rank <= greatest(p_limit, 0)
++  ), '[]'::jsonb),
++  -- candidates / candidates_total: the eligible population that was ranked, i.e. one
++  -- latest snapshot (or stance split) per fighter. There is no scan cap any more, so
++  -- the two are equal and truncated is always false.
++  'candidates', (select count(*) from eligible),
++  'matched', (select count(*) from matched)
++)
++$fn$;
++
++comment on function public.ufc_dna_metric_ranking(text, int, date, text, numeric, numeric, boolean, text, int, text, int) is
++  'Issue #27. Ranks the full eligible fighter population for one Fight DNA metric: latest snapshot (or stance split) per fighter at or before as_of, then confidence/min/max/active filtering, then ordering, then the limit. Explicit nulls stay null and sort last. Read-only, security invoker, so RLS on the underlying tables still applies.';
++
++-- Same posture as the underlying tables: RLS is enabled on them with no policies, so
++-- only the service role (which bypasses RLS) can read Fight DNA. Keep execute off the
++-- anonymous roles so an unauthenticated caller cannot spend CPU on a full ranking.
++revoke all on function public.ufc_dna_metric_ranking(text, int, date, text, numeric, numeric, boolean, text, int, text, int) from public;
++revoke all on function public.ufc_dna_metric_ranking(text, int, date, text, numeric, numeric, boolean, text, int, text, int) from anon, authenticated;
++grant execute on function public.ufc_dna_metric_ranking(text, int, date, text, numeric, numeric, boolean, text, int, text, int) to service_role;
+diff --git a/supabase/migrations/rollback/20260912000000_ufc_dna_metric_ranking.down.sql b/supabase/migrations/rollback/20260912000000_ufc_dna_metric_ranking.down.sql
+new file mode 100644
+index 0000000..1bd6283
+--- /dev/null
++++ b/supabase/migrations/rollback/20260912000000_ufc_dna_metric_ranking.down.sql
+@@ -0,0 +1,29 @@
++-- Rollback for 20260912000000_ufc_dna_metric_ranking.sql.
++--
++-- Kept as a file rather than as a paragraph in a runbook because a rollback
++-- nobody has read is not a rollback. Prove it the same way the forward
++-- migration was proven:
++--
++--   pwsh scripts/db/probe.ps1 -File supabase/migrations/rollback/20260912000000_ufc_dna_metric_ranking.down.sql
++--     -> executes inside BEGIN ... ROLLBACK, so it is a real parse-plan-execute
++--        against the live schema with no side effects
++--
++-- ORDER MATTERS. The Worker calls this function; dropping it while the new
++-- Worker is live makes /v1/ufc/dna/query answer 503 dna_not_available, because
++-- a missing PostgREST function is indistinguishable from a missing schema.
++-- Roll the Worker back to the previous Cloudflare version FIRST, then drop.
++--
++-- The function reads. It creates nothing, owns no data and no other object
++-- depends on it, so dropping it loses nothing but the correct ranking: the
++-- previous Worker resumes ranking the first 1000 snapshot rows in fighter-UUID
++-- order, which is the behaviour issue #27 was filed against.
++
++begin;
++
++drop function if exists public.ufc_dna_metric_ranking(text, int, date, text, numeric, numeric, boolean, text, int, text, int);
++
++commit;
++
++-- PostgREST caches the schema. After dropping, reload it so the route fails
++-- predictably instead of intermittently:
++--   notify pgrst, 'reload schema';
+diff --git a/workers/ufc-api/src/index.js b/workers/ufc-api/src/index.js
+index d47d9b3..c02807e 100644
+--- a/workers/ufc-api/src/index.js
++++ b/workers/ufc-api/src/index.js
+@@ -216,6 +216,26 @@ async function sb(env, table, params, { count = false, optional = false } = {})
+   return { data, count: Number.isFinite(total) ? total : null };
+ }
+ 
++/* Read-only PostgREST RPC. Same auth and error handling as sb(); `optional: true`
++ * returns null when the function does not exist yet (migration pending). */
++async function sbRpc(env, fn, args, { optional = false } = {}) {
++  requireDb(env);
++  const res = await fetch(sbUrl(env, `rpc/${fn}`), {
++    method: "POST",
++    headers: { ...sbHeaders(env), "Content-Type": "application/json" },
++    body: JSON.stringify(args),
++  });
++  if (!res.ok) {
++    const body = (await res.text()).slice(0, 500);
++    /* PostgREST answers 404 PGRST202 when the function is not in the schema cache,
++     * i.e. the migration is pending. Anything else is a real upstream failure. */
++    if (optional && res.status === 404) return null;
++    throw new ApiError(502, "upstream_error", `UFC data source returned HTTP ${res.status}.`, body || null);
++  }
++  const text = await res.text();
++  return text ? JSON.parse(text) : null;
++}
++
+ function identityFilter(id, uuidCol, ufcstatsCol, espnCol) {
+   if (UUID_RE.test(id)) return [uuidCol, `eq.${id}`];
+   if (UFCSTATS_RE.test(id)) return [ufcstatsCol, `eq.${id}`];
+@@ -1555,8 +1575,6 @@ const DNA_SPLIT_COLS = [
+ ].join(",");
+ const DNA_METRIC_DEF_COLS = "metric_key,definition_version,family,display_name,description,unit,formula,source_families,min_bouts,min_rounds,min_seconds,public,active,updated_at";
+ const DNA_FIGHTER_COLS = "id,name,nickname,ufcstats_id,espn_athlete_id,stance,is_active,record_w,record_l,record_d,record_nc";
+-// Supabase PostgREST max_rows is 1000: a larger limit is silently clamped, so the cap is declared honestly here and in meta.
+-const DNA_QUERY_CANDIDATE_LIMIT = 1000;
+ const DNA_SPLIT_METRIC_KEYS = ["finish_rate", "ko_rate", "sub_rate", "sig_diff_per_min", "kd_per_15", "td_landed_per_15"];
+ const DNA_SPLIT_METRIC_ALIASES = {
+   stance_finish_rate: "finish_rate", stance_ko_rate: "ko_rate", stance_sub_rate: "sub_rate",
+@@ -2248,46 +2266,29 @@ async function dnaQuery(env, url) {
+     throw new ApiError(400, "invalid_metric", "With ?stance= the metric must be a stance-split metric.", { metric: metricRaw, allowed: [...DNA_SPLIT_METRIC_KEYS, ...Object.keys(DNA_SPLIT_METRIC_ALIASES)] });
+   }
+   const table = stance ? "ufc_fighter_stance_splits" : "ufc_fighter_dna_snapshots";
+-  const baseCols = stance
+-    ? "fighter_id,as_of_date,opponent_stance,appearances,wins,losses,draws,no_contests,ko_tko_wins,submission_wins,decision_wins,stat_bouts,stat_rounds,observed_seconds,confidence"
+-    : "fighter_id,as_of_date,sample_bouts,sample_completed_bouts,sample_stat_bouts,sample_rounds,sample_seconds,coverage_status";
+   const allowedConf = Object.keys(DNA_CONFIDENCE_RANK).filter((k) => DNA_CONFIDENCE_RANK[k] >= DNA_CONFIDENCE_RANK[minConfidence]);
+-  const p = new URLSearchParams({
+-    select: `${baseCols},metric:metrics->${metric}`,
+-    definition_version: `eq.${version}`,
+-    order: "fighter_id.asc,as_of_date.desc",
+-    limit: String(DNA_QUERY_CANDIDATE_LIMIT),
+-  });
+-  if (stance) {
+-    p.set("opponent_stance", `eq.${stance}`);
+-    p.set("appearances", `gte.${minAppearances}`);
+-  }
+-  if (min !== null) p.append(`metrics->${metric}->value`, `gte.${min}`);
+-  if (max !== null) p.append(`metrics->${metric}->value`, `lte.${max}`);
+-  p.set(`metrics->${metric}->>confidence`, `in.(${allowedConf.join(",")})`);
+-  if (asOf) p.set("as_of_date", `lte.${asOf}`);
+-  const res = await sb(env, table, p, { optional: true, count: true });
++
++  /* Issue #27. Resolving the latest snapshot per fighter, filtering, ranking and only
++   * then limiting all happen in one SQL function, so the ranking sees every eligible
++   * fighter. It previously saw only the first 1000 rows in fighter-UUID order, which
++   * for the default broad query was 122 of the 3161 fighters that have a snapshot. */
++  const res = await sbRpc(env, "ufc_dna_metric_ranking", {
++    p_metric: metric,
++    p_definition_version: version,
++    p_as_of: asOf,
++    p_min_confidence: minConfidence,
++    p_min: min,
++    p_max: max,
++    p_active: active === "true" ? true : active === "false" ? false : null,
++    p_order: order,
++    p_limit: limit,
++    p_stance: stance,
++    p_min_appearances: stance ? minAppearances : 1,
++  }, { optional: true });
+   if (res === null) throw dnaSchemaMissing();
+-  const candidates = res.data.filter((r) => isMetricObject(r.metric));
+-  const truncated = res.count !== null && res.count > res.data.length;
+-
+-  // Only a fighter's latest row (<= as_of) may qualify: an older snapshot that passes while the latest fails is excluded.
+-  const fighterIds = [...new Set(candidates.map((r) => r.fighter_id))];
+-  const latestByFighter = new Map();
+-  for (let i = 0; i < fighterIds.length; i += 200) {
+-    const chunk = fighterIds.slice(i, i + 200);
+-    const lp = new URLSearchParams({ select: "fighter_id,as_of_date", fighter_id: `in.(${chunk.join(",")})`, definition_version: `eq.${version}`, order: "as_of_date.desc", limit: "10000" });
+-    if (stance) lp.set("opponent_stance", `eq.${stance}`);
+-    if (asOf) lp.set("as_of_date", `lte.${asOf}`);
+-    for (const row of (await sb(env, table, lp)).data) {
+-      const prev = latestByFighter.get(row.fighter_id);
+-      if (!prev || String(row.as_of_date) > String(prev)) latestByFighter.set(row.fighter_id, row.as_of_date);
+-    }
+-  }
+-  const seen = new Set();
+-  const current = candidates.filter((r) => latestByFighter.get(r.fighter_id) === r.as_of_date && !seen.has(r.fighter_id) && seen.add(r.fighter_id));
++  const current = (Array.isArray(res.rows) ? res.rows : []).filter((r) => isMetricObject(r.metric));
+   const identities = await dnaFighterIdentities(env, current.map((r) => r.fighter_id));
+-  let rows = current.map((r) => {
++  const rows = current.map((r) => {
+     const f = identities.get(r.fighter_id) || null;
+     const { metric: m, fighter_id, ...rest } = r;
+     const out = {
+@@ -2307,30 +2308,26 @@ async function dnaQuery(env, url) {
+     }
+     return out;
+   });
+-  if (active === "true" || active === "false") rows = rows.filter((r) => r.fighter.is_active === (active === "true"));
+-  const val = (r) => numOrNull(r.metric?.value);
+-  rows.sort((x, y) => {
+-    const a = val(x); const b = val(y);
+-    if (a === null && b === null) return String(x.fighter.name || "").localeCompare(String(y.fighter.name || "")) || String(x.fighter.id).localeCompare(String(y.fighter.id));
+-    if (a === null) return 1;
+-    if (b === null) return -1;
+-    return (order === "asc" ? a - b : b - a) || String(x.fighter.name || "").localeCompare(String(y.fighter.name || "")) || String(x.fighter.id).localeCompare(String(y.fighter.id));
+-  });
+-  const matched = rows.length;
+-  rows = rows.slice(0, limit);
++  const candidates = Number.isFinite(Number(res.candidates)) ? Number(res.candidates) : rows.length;
++  const matched = Number.isFinite(Number(res.matched)) ? Number(res.matched) : rows.length;
+   return {
+     data: rows,
+     meta: {
+       mode, metric, metric_requested: metricRaw, stance, min, max, min_confidence: minConfidence, min_appearances: stance ? minAppearances : null,
+       active: active === "true" || active === "false" ? active === "true" : null, order,
+       requested_as_of: asOf, definition_version: version,
+-      candidates: res.data.length, candidates_total: res.count, truncated, matched, count: rows.length, limit,
++      /* candidates and candidates_total are both the eligible population that was
++       * ranked: one latest snapshot (or stance split) per fighter at or before as_of.
++       * They are equal because nothing is capped any more, and truncated is therefore
++       * always false. Before 2026-09-12 they meant "rows in the capped scan" and
++       * "rows the filter matched across all history". */
++      candidates, candidates_total: candidates, truncated: false, matched, count: rows.length, limit,
+       filter: {
+         table,
+         value: [min !== null ? `metrics->${metric}->value=gte.${min}` : null, max !== null ? `metrics->${metric}->value=lte.${max}` : null].filter(Boolean),
+         confidence: `metrics->${metric}->>confidence=in.(${allowedConf.join(",")})`,
+       },
+-      note: `Filters run in PostgREST on the stored MetricObject (jsonb ordering on ->value, text match on ->>confidence). Only each fighter's latest ${stance ? "split" : "snapshot"}${asOf ? ` at or before ${asOf}` : ""} qualifies. The candidate scan is capped at ${DNA_QUERY_CANDIDATE_LIMIT} rows; when truncated is true the result set is incomplete. Active filtering happens after the scan.`,
++      note: `Ranked in SQL over every eligible fighter: each fighter's latest ${stance ? "split" : "snapshot"}${asOf ? ` at or before ${asOf}` : ""} is resolved first (without regard to the metric filters), then confidence, min/max and active filtering apply, then ordering, then the limit. candidates and candidates_total are that eligible population (${candidates}); matched is how many passed the filters (${matched}); truncated is always false because no scan cap remains. A metric value that is explicitly null stays null and sorts last in both directions; nothing is synthesized.`,
+       as_of_semantics: DNA_AS_OF_NOTE,
+       origin: DNA_ORIGIN,
+     },
+diff --git a/workers/ufc-api/src/index.test.mjs b/workers/ufc-api/src/index.test.mjs
+index 578120e..c2b2c3e 100644
+--- a/workers/ufc-api/src/index.test.mjs
++++ b/workers/ufc-api/src/index.test.mjs
+@@ -297,6 +297,62 @@ function applyParams(rows, params) {
+   return { rows: out.slice(offset, offset + limit).map((r) => projectSelect(r, select)), total: out.length };
+ }
+ 
++/* Mock of the ufc_dna_metric_ranking SQL function (migration 20260912000000):
++ * resolve the latest row per fighter first, then filter, then rank the whole matched
++ * population, then limit. Deliberately literal, so the Worker's ranking and metadata
++ * contract is exercised without a database. */
++const CONF_RANK = { insufficient: 0, low: 1, medium: 2, high: 3 };
++function dnaMetricRanking(tables, a) {
++  const stance = a.p_stance ?? null;
++  const table = stance ? "ufc_fighter_stance_splits" : "ufc_fighter_dna_snapshots";
++  const fighters = new Map((tables.ufc_fighters || []).map((f) => [f.id, f]));
++  const source = (tables[table] || []).filter((r) =>
++    r.definition_version === a.p_definition_version
++    && (!stance || r.opponent_stance === stance)
++    && (a.p_as_of === null || String(r.as_of_date) <= String(a.p_as_of))
++    && fighters.has(r.fighter_id));
++
++  const latest = new Map();
++  for (const r of source) {
++    const prev = latest.get(r.fighter_id);
++    if (!prev || String(r.as_of_date) > String(prev.as_of_date)) latest.set(r.fighter_id, r);
++  }
++  const eligible = [...latest.values()].filter((r) => !stance || (r.appearances ?? 0) >= a.p_min_appearances);
++
++  const floor = CONF_RANK[a.p_min_confidence];
++  const value = (r) => { const v = (r.metrics || {})[a.p_metric]?.value; return typeof v === "number" ? v : null; };
++  const matched = eligible.filter((r) => {
++    const m = (r.metrics || {})[a.p_metric];
++    if (!m || typeof m !== "object" || Array.isArray(m) || !("value" in m)) return false;
++    if (!(CONF_RANK[m.confidence] >= floor)) return false;
++    const v = value(r);
++    if (a.p_min !== null && !(v !== null && v >= a.p_min)) return false;
++    if (a.p_max !== null && !(v !== null && v <= a.p_max)) return false;
++    if (a.p_active !== null && (fighters.get(r.fighter_id).is_active ?? null) !== a.p_active) return false;
++    return true;
++  });
++
++  const name = (r) => String(fighters.get(r.fighter_id).name || "");
++  const ranked = [...matched].sort((x, y) => {
++    const vx = value(x); const vy = value(y);
++    if (vx === null && vy !== null) return 1;
++    if (vy === null && vx !== null) return -1;
++    const byValue = vx === null || vy === null ? 0 : (a.p_order === "asc" ? vx - vy : vy - vx);
++    return byValue || name(x).localeCompare(name(y)) || String(x.fighter_id).localeCompare(String(y.fighter_id));
++  });
++
++  const cols = stance
++    ? ["opponent_stance", "appearances", "wins", "losses", "draws", "no_contests", "ko_tko_wins", "submission_wins", "decision_wins", "stat_bouts", "stat_rounds", "observed_seconds", "confidence"]
++    : ["sample_bouts", "sample_completed_bouts", "sample_stat_bouts", "sample_rounds", "sample_seconds", "coverage_status"];
++  const rows = ranked.slice(0, Math.max(a.p_limit, 0)).map((r) => ({
++    ...Object.fromEntries(cols.map((c) => [c, r[c]])),
++    fighter_id: r.fighter_id,
++    as_of_date: r.as_of_date,
++    metric: (r.metrics || {})[a.p_metric],
++  }));
++  return { rows, candidates: eligible.length, matched: matched.length };
++}
++
+ function installMock({ tables, storage = {}, missingTables = [] }) {
+   const calls = [];
+   globalThis.fetch = async (input, init = {}) => {
+@@ -308,6 +364,16 @@ function installMock({ tables, storage = {}, missingTables = [] }) {
+       if (key in storage) return new Response(JSON.stringify(storage[key]), { status: 200, headers: { "Content-Type": "application/json" } });
+       return new Response(JSON.stringify({ statusCode: "404", error: "not_found" }), { status: 400 });
+     }
++    const fn = url.pathname.match(/^\/rest\/v1\/rpc\/([a-z_0-9]+)$/);
++    if (fn) {
++      assert.equal(init.method, "POST", "mock: rpc must be POSTed");
++      assert.equal(init.headers?.apikey, "service-key", "mock: service key must be sent");
++      const needs = { ufc_dna_metric_ranking: ["ufc_fighter_dna_snapshots", "ufc_fighter_stance_splits"] }[fn[1]];
++      if (!needs || needs.some((t) => missingTables.includes(t) || !(t in tables))) {
++        return new Response(JSON.stringify({ code: "PGRST202", message: `Could not find the function public.${fn[1]}` }), { status: 404 });
++      }
++      return new Response(JSON.stringify(dnaMetricRanking(tables, JSON.parse(init.body))), { status: 200, headers: { "Content-Type": "application/json" } });
++    }
+     const m = url.pathname.match(/^\/rest\/v1\/([a-z_]+)$/);
+     if (!m) return new Response("nope", { status: 404 });
+     const table = m[1];
+@@ -1523,11 +1589,13 @@ test("dna query filters current snapshots by a metric value and confidence; olde
+   assert.equal(row.metric.confidence, "medium");
+   assert.equal(row.metric_key, "pace_retention_r3_vs_r1");
+   assert.equal(row.sample.coverage_status, "high");
+-  assert.equal(body.meta.candidates, 4, "four snapshot rows pass the raw filter before the latest-per-fighter rule");
++  assert.equal(body.meta.candidates, 3, "candidates is the eligible population: one latest snapshot per fighter");
++  assert.equal(body.meta.candidates_total, body.meta.candidates, "no scan cap remains, so the two are equal");
+   assert.equal(body.meta.matched, 1);
+   assert.equal(body.meta.truncated, false);
+   assert.deepEqual(body.meta.filter.value, ["metrics->pace_retention_r3_vs_r1->value=gte.0.9"]);
+-  assert.ok(body.meta.note.includes("capped at 1000"));
++  assert.ok(body.meta.note.includes("Ranked in SQL over every eligible fighter"));
++  assert.ok(!body.meta.note.includes("capped"), "the 1000-row candidate cap is gone (issue #27)");
+ 
+   const older = await call("/v1/ufc/dna/query?metric=pace_retention_r3_vs_r1&min=0.9&as_of=2025-06-01");
+   assert.deepEqual(older.body.data.map((r) => [r.fighter.id, r.as_of_date]), [[F_OPP, "2025-01-01"], [F_MEDIA, "2025-04-14"]], "as_of makes the 2025-01-01 opponent snapshot current; sorted by value desc");
+@@ -1578,6 +1646,105 @@ test("dna query with ?stance= runs over stance splits (fighters with >= N appear
+   assert.ok(bad.body.error.detail.allowed.includes("ko_rate"));
+ });
+ 
++/* Issue #27. Before the SQL ranking, dna/query scanned at most 1000 rows ordered by
++ * fighter UUID and ranked inside that window, so a fighter sorting late by UUID could
++ * never appear however good the metric was. This fixture puts the best value on the
++ * last fighter by UUID and the worst on the first. */
++const RANK_POP = 1200;
++const rankUuid = (i) => `${String(i).padStart(8, "0")}-0000-4000-8000-000000000000`;
++const rankTables = () => {
++  const fighters = [];
++  const snapshots = [];
++  for (let i = 0; i < RANK_POP; i += 1) {
++    const id = rankUuid(i);
++    fighters.push({ id, name: `Fighter ${String(i).padStart(4, "0")}`, nickname: null, ufcstats_id: null, espn_athlete_id: String(900000 + i), stance: "ORTHODOX", is_active: i % 2 === 0, record_w: 1, record_l: 0, record_d: 0, record_nc: 0 });
++    /* Value climbs with the UUID, so the true top-50 is the tail the old window missed.
++     * The last three carry an explicit null value: matched, but ranked last either way. */
++    const value = i >= RANK_POP - 3 ? null : i / 100;
++    snapshots.push({
++      fighter_id: id, as_of_date: "2026-09-06", definition_version: 1,
++      sample_bouts: 8, sample_completed_bouts: 8, sample_stat_bouts: 8, sample_rounds: 24, sample_seconds: 7200, coverage_status: "high",
++      metrics: { sig_landed_per_min: { value, confidence: "high", sample_bouts: 8 } },
++    });
++    /* A superseded 2024 row with an unbeatable value: it must never stand in for the
++     * current one, at any population size. */
++    snapshots.push({
++      fighter_id: id, as_of_date: "2024-01-01", definition_version: 1,
++      sample_bouts: 4, sample_completed_bouts: 4, sample_stat_bouts: 4, sample_rounds: 12, sample_seconds: 3600, coverage_status: "medium",
++      metrics: { sig_landed_per_min: { value: 999, confidence: "high", sample_bouts: 4 } },
++    });
++  }
++  return { ufc_fighters: fighters, ufc_fighter_dna_snapshots: snapshots, ufc_fighter_stance_splits: [] };
++};
++
++test("dna query ranks the whole eligible population, not the first 1000 rows by fighter UUID (#27)", async () => {
++  const tables = rankTables();
++  const calls = installMock({ tables });
++  const { body } = await call("/v1/ufc/dna/query?metric=sig_landed_per_min");
++
++  assert.equal(body.meta.candidates, RANK_POP, "one latest snapshot per fighter is the eligible population");
++  assert.equal(body.meta.candidates_total, RANK_POP);
++  assert.equal(body.meta.matched, RANK_POP, "every fighter has the metric at high confidence, explicit nulls included");
++  assert.equal(body.meta.truncated, false);
++  assert.equal(body.meta.count, 50);
++  assert.equal(body.data.length, 50);
++
++  /* The old implementation could only ever return fighters 0..499 (1000 rows / 2 per
++   * fighter). The correct top-50 is entirely outside that window. */
++  assert.equal(body.data[0].fighter.id, rankUuid(RANK_POP - 4), "highest non-null value ranks first");
++  assert.equal(body.data[0].metric.value, (RANK_POP - 4) / 100);
++  assert.ok(body.data.every((r) => Number(r.fighter.id.slice(0, 8)) >= 1000), "no result comes from the old UUID window");
++  assert.equal(body.data.at(-1).metric.value, (RANK_POP - 53) / 100, "ranking happens before the limit, so the 50th is the 50th best");
++  assert.ok(body.data.every((r) => r.as_of_date === "2026-09-06"), "the superseded 2024 rows never stand in");
++  assert.ok(body.data.every((r) => r.metric.value !== 999));
++
++  const asc = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&order=asc");
++  assert.equal(asc.body.data[0].fighter.id, rankUuid(0), "asc starts at the lowest value");
++  assert.equal(asc.body.data[0].metric.value, 0);
++
++  const active = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&active=true");
++  assert.equal(active.body.meta.matched, RANK_POP / 2, "active is filtered before ranking, not after the scan");
++  assert.ok(active.body.data.every((r) => r.fighter.is_active === true));
++  assert.equal(active.body.data[0].fighter.id, rankUuid(RANK_POP - 4), "1196 is active and still the best");
++
++  const asOf = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&as_of=2025-01-01");
++  assert.equal(asOf.body.meta.candidates, RANK_POP);
++  assert.ok(asOf.body.data.every((r) => r.as_of_date === "2024-01-01" && r.metric.value === 999), "as_of resolves to the 2024 row for every fighter");
++  assert.equal(asOf.body.data[0].fighter.name, "Fighter 0000", "values tie at 999, so the name tie-break decides");
++
++  const ranking = calls.filter((c) => c.startsWith("/rest/v1/rpc/ufc_dna_metric_ranking"));
++  assert.equal(ranking.length, 4, "one ranking call per request, no per-fighter follow-up scans");
++  assert.equal(calls.filter((c) => c.startsWith("/rest/v1/ufc_fighter_dna_snapshots")).length, 0, "the Worker no longer scans the snapshot table itself");
++});
++
++test("dna query keeps an explicit null explicit: it is matched, sorts last in both directions, and satisfies no bound (#27)", async () => {
++  const ids = [0, 1, 2, 3, 4].map(rankUuid);
++  const values = [2.5, null, 7.1, null, 0.4];
++  const tables = {
++    ufc_fighters: ids.map((id, i) => ({ id, name: `Fighter ${i}`, nickname: null, ufcstats_id: null, espn_athlete_id: String(910000 + i), stance: "ORTHODOX", is_active: true, record_w: 1, record_l: 0, record_d: 0, record_nc: 0 })),
++    ufc_fighter_dna_snapshots: ids.map((id, i) => ({
++      fighter_id: id, as_of_date: "2026-09-06", definition_version: 1,
++      sample_bouts: 6, sample_completed_bouts: 6, sample_stat_bouts: 6, sample_rounds: 18, sample_seconds: 5400, coverage_status: "high",
++      metrics: { sig_landed_per_min: { value: values[i], confidence: "high", sample_bouts: 6 } },
++    })),
++    ufc_fighter_stance_splits: [],
++  };
++  installMock({ tables });
++
++  const desc = await call("/v1/ufc/dna/query?metric=sig_landed_per_min");
++  assert.equal(desc.body.meta.matched, 5, "an explicit null is a real MetricObject and still matches");
++  assert.deepEqual(desc.body.data.map((r) => r.metric.value), [7.1, 2.5, 0.4, null, null]);
++  assert.deepEqual(desc.body.data.slice(3).map((r) => r.fighter.name), ["Fighter 1", "Fighter 3"], "tied nulls break on name");
++
++  const asc = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&order=asc");
++  assert.deepEqual(asc.body.data.map((r) => r.metric.value), [0.4, 2.5, 7.1, null, null], "nulls stay last when the order flips");
++
++  const bounded = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&min=0");
++  assert.deepEqual(bounded.body.data.map((r) => r.metric.value), [7.1, 2.5, 0.4], "a null value satisfies no bound");
++  assert.equal(bounded.body.meta.candidates, 5, "candidates stays the eligible population, not the matched count");
++  assert.equal(bounded.body.meta.matched, 3);
++});
++
+ test("index advertises every Fight DNA route", async () => {
+   installMock({ tables: dnaTables });
+   const i = await call("/v1/ufc");
+diff --git a/workers/ufc-api/src/route_union.test.mjs b/workers/ufc-api/src/route_union.test.mjs
+index 4e26786..5f7f595 100644
+--- a/workers/ufc-api/src/route_union.test.mjs
++++ b/workers/ufc-api/src/route_union.test.mjs
+@@ -41,9 +41,16 @@ function installStub() {
+   const seen = [];
+   globalThis.fetch = async (input, init = {}) => {
+     const url = new URL(typeof input === "string" ? input : input.url);
+-    if (init.method && init.method !== "GET" && init.method !== "HEAD") {
++    /* PostgREST RPC is POSTed but is still a read: the function is declared stable and
++     * granted to the service role only. Anything else that writes is a bug. */
++    const rpc = url.pathname.match(/^\/rest\/v1\/(rpc\/[a-z_0-9]+)$/);
++    if (init.method && init.method !== "GET" && init.method !== "HEAD" && !(rpc && init.method === "POST")) {
+       throw new Error(`stub: the read API must never write (${init.method} ${url.pathname})`);
+     }
++    if (rpc) {
++      seen.push(rpc[1]);
++      return new Response(JSON.stringify({ rows: [], candidates: 0, matched: 0 }), { status: 200, headers: { "Content-Type": "application/json" } });
++    }
+     const m = url.pathname.match(/^\/rest\/v1\/([a-z_]+)$/);
+     if (!m) return new Response(JSON.stringify({ statusCode: "404" }), { status: 404 });
+     seen.push(m[1]);
+@@ -73,7 +80,7 @@ const call = async (path, method = "GET") => {
+ const DNA_EMPTY = ["dna_not_available"];
+ const LOST_BY_MAIN = [
+   ["/v1/ufc/dna/metrics", "ufc_dna_metric_definitions"],
+-  ["/v1/ufc/dna/query?metric=sig_landed_per_min&min_confidence=insufficient", "ufc_fighter_dna_snapshots", ["unknown_metric", "dna_not_available"]],
++  ["/v1/ufc/dna/query?metric=sig_landed_per_min&min_confidence=insufficient", "rpc/ufc_dna_metric_ranking", ["unknown_metric", "dna_not_available"]],
+   ["/v1/ufc/videos", "ufc_videos"],
+   [`/v1/ufc/bouts/${BOUT}/ledger`, "ufc_fight_state_ledger"],
+   [`/v1/ufc/bouts/${BOUT}/videos`, "ufc_videos"],
+diff --git a/workers/ufc-api/wrangler.toml b/workers/ufc-api/wrangler.toml
+index 253e817..c51539c 100644
+--- a/workers/ufc-api/wrangler.toml
++++ b/workers/ufc-api/wrangler.toml
+@@ -10,7 +10,7 @@ custom_domain = true
+ 
+ [vars]
+ SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
+-API_VERSION = "2026-09-11.1"
++API_VERSION = "2026-09-12.1"
+ REQUIRE_API_KEY = "false"
+ # Durable first-party media origin: public Supabase Storage bucket `ufc-media`.
+ # ufc_images.r2_key ("fighters/<id>/portrait.jpg") resolves to {base}/{r2_key};
+-- 
+2.52.0.windows.1
+
