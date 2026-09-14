@@ -26,6 +26,7 @@ import { Chart, ChartSet, type ChartSpec } from "@/components/charts";
 import { fmtDate } from "@/lib/format";
 import { readableFamilies, familiesSentence } from "@/lib/provenance";
 import { renderMarkdownBlocks } from "@/lib/markdown";
+import { inlineSlot } from "@/lib/housePromo";
 import { OfficialVideo } from "@/components/OfficialVideo";
 import { renderablePlanVideos, type PlanVideo, type RenderablePlanVideo } from "@/lib/videoPolicy";
 
@@ -657,7 +658,7 @@ export function MethodologyModule({ plan, updated, corroborating }: { plan: Cont
  * If there is not enough prose to hold them all, the surplus falls through to
  * the end rather than being dropped or crowded in.
  */
-export function ArticleBody({ md, modules }: { md: string; modules: ReactNode[] }) {
+export function ArticleBody({ md, modules, promo = null }: { md: string; modules: ReactNode[]; promo?: ReactNode }) {
   const blocks = renderMarkdownBlocks(md);
   const mods = modules.filter(Boolean);
   const n = blocks.length;
@@ -675,12 +676,17 @@ export function ArticleBody({ md, modules }: { md: string; modules: ReactNode[] 
     used.add(want);
     at.set(want, [...(at.get(want) || []), node]);
   });
+  /* A house promo is placed AFTER the modules and yields to them: it never
+   * moves a module, never sits beside one, and is dropped if no slot fits
+   * (lib/housePromo.ts inlineSlot). */
+  const promoAt = promo ? inlineSlot(blocks, new Set(at.keys())) : null;
 
   return (
     <>
       {blocks.map((html, i) => (
         <div key={i}>
           {(at.get(i) || []).map((node, j) => <div key={j}>{node}</div>)}
+          {promoAt === i && promo}
           <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
         </div>
       ))}

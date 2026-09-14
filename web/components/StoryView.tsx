@@ -15,6 +15,8 @@ import { storyMedia } from "@/lib/faces";
 import { getMatchupDna } from "@/lib/dna";
 import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
+import { HousePromoInline, HousePromoNetwork } from "@/components/HousePromo";
+import { inlineCampaign, inlineSlot } from "@/lib/housePromo";
 import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } from "@/components/editorial";
 import { getEditorialMarket } from "@/lib/editorialMarket";
 import { getRankingMap } from "@/lib/rankings";
@@ -135,6 +137,12 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
     : railInitialSelection(videos, 3).filter((v) => isViewable(v));
   const updated = materiallyUpdated(a.published_at, a.updated_at);
   const articleUrl = `${SITE.url}/news/${a.slug}`;
+  /* House promotion: presentation only, never in the body, metadata or JSON-LD.
+   * Clicks are not recorded from a desk preview. */
+  const promoCampaign = inlineCampaign(a.story_type, a.body_md);
+  const inlinePromo = promoCampaign ? <HousePromoInline campaign={promoCampaign} slug={a.slug} track={!preview} /> : null;
+  const legacyBlocks = !plan && inlinePromo ? renderMarkdownBlocks(a.body_md) : null;
+  const legacySlot = legacyBlocks ? inlineSlot(legacyBlocks) : null;
   const keywords = [...new Set(["UFC", "MMA", label, event?.name, ...fighters.map((f) => f.name), "PropBetEdge UFC", "Fight Intelligence"].filter(Boolean))];
 
   return (
@@ -215,7 +223,14 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
                 <RoundStyleModule key="rounds" plan={plan} names={planNames} />,
                 access.pro ? <MarketModule key="mkt" plan={plan} charts={charts} /> : null,
               ]}
+              promo={inlinePromo}
             />
+          ) : legacyBlocks && legacySlot != null ? (
+            <>
+              <div className="prose" dangerouslySetInnerHTML={{ __html: legacyBlocks.slice(0, legacySlot).join("\n") }} />
+              {inlinePromo}
+              <div className="prose" dangerouslySetInnerHTML={{ __html: legacyBlocks.slice(legacySlot).join("\n") }} />
+            </>
           ) : (
             <div className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }} />
           )}
@@ -226,6 +241,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
           {plan ? <MethodologyModule plan={plan} updated={a.updated_at} corroborating={(fb as { corroboration?: { publisher: string; url: string }[] }).corroboration} /> : fb.version ? <Methodology fb={fb} updated={a.updated_at} /> : (
             <p className="faint label mt-6">Written by the {SITE.desk} from PropBetEdge's own fight tables and a stored fact block. Read the <Link href="/about" className="dim">editorial policy</Link>.</p>
           )}
+          <HousePromoNetwork slug={a.slug} track={!preview} showApi={!promoCampaign} />
         </div>
         <aside className="stack" style={{ gap: 24 }}>
           {bout && event && (

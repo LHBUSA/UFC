@@ -16,6 +16,7 @@
     "test:judges": "node --experimental-strip-types --test lib/judgeScoring.test.mjs lib/judgeSchema.test.mjs",
     "test:model": "node --experimental-strip-types --test lib/model.test.mjs",
     "test:algo": "node --experimental-strip-types --test lib/algo.test.mjs",
+    "test:house-promo": "node --experimental-strip-types --test lib/housePromo.test.mjs",
     "test:round-index": "node --experimental-strip-types --test lib/roundIndex.test.mjs",
     "test:round-rollover": "node --experimental-strip-types --test lib/roundRollover.test.ts lib/broadcast-display.test.ts",
     "test:story-media": "node --experimental-strip-types --test lib/storyImages.test.ts lib/videoPolicy.test.ts",
