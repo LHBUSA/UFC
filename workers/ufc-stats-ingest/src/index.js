@@ -113,7 +113,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.7.0';
+const VERSION = 'v0.7.1';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -980,7 +980,12 @@ async function checkRoundArchive(env, { now }) {
   const sourceHealth = await getState(env, STATE.health);
   const gaps = await collectRoundArchiveGaps(env, now, sourceHealth);
   const previous = await getState(env, STATE.archiveAlert);
-  const decision = gapAlertDecision({ gaps, previous, now, escalateHours: Number(env.ROUND_ARCHIVE_ESCALATE_HOURS || DEFAULT_ESCALATE_HOURS) });
+  /* Name cards that cleared since the last check (older alert states stored ids only). */
+  const clearedIds = (previous?.event_ids || []).filter((id) => !gaps.some((g) => g.event_id === id) && !previous?.event_names?.[id]);
+  const eventNames = clearedIds.length
+    ? Object.fromEntries(((await select(env, 'ufc_events', `select=id,name&id=in.(${clearedIds.join(',')})`)) || []).map((e) => [e.id, e.name]))
+    : {};
+  const decision = gapAlertDecision({ gaps, previous, now, escalateHours: Number(env.ROUND_ARCHIVE_ESCALATE_HOURS || DEFAULT_ESCALATE_HOURS), eventNames });
   if (decision.send) {
     const delivered = await discord(env, `**${SERVICE}** ${decision.message}`, { loud: decision.kind === 'new' || decision.kind === 'escalation' });
     decision.next.last_alert = { kind: decision.kind, message: decision.message, delivered: delivered ? 'discord' : (env.DISCORD_WEBHOOK_URL ? 'discord_failed' : 'discord_unconfigured') };
