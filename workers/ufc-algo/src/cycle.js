@@ -195,6 +195,12 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
           features_available: row ? row.available_count : null, sample: row ? { min_prior_bouts: row.min_prior_bouts, min_stat_bouts: row.min_stat_bouts } : null,
           market: eligible ? market : null, regeneration_drift_pts: drift, identity: corners,
         };
+        // Admin report only: exactly what a draft would store, so a dry run can be audited feature by feature.
+        if (eligible) {
+          boutReport.prob_a = round(probA, 8);
+          boutReport.feature_vector = Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, row.x[i]]));
+          boutReport.feature_availability = Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, Boolean(row.available[i])]));
+        }
 
         if (mode === 'armed') {
           await q.post('ufc_model_bout_evaluations', {

@@ -1,0 +1,198 @@
+/* PBE Algo presentation logic. Pure: no I/O, no environment, testable.
+ *
+ * Nothing here invents a reason. "Why the Algo leans this way" is the model's
+ * own arithmetic: each feature's contribution to the log-odds is
+ * coefficient x (stored feature value / stored scale), read from the locked
+ * prediction's feature_vector and the release artifact whose spec hash the
+ * scheduler verified against the registry. The largest contributions for and
+ * against the pick are shown with the feature's documented meaning, and a
+ * feature that was unavailable contributes nothing and is never listed. */
+
+import artifact from "@/lib/generated/model-v1.json";
+
+export type AlgoConfidence = "LEAN" | "MEDIUM" | "HIGH";
+export type AlgoGradeResult = "WIN" | "LOSS" | "DRAW" | "NC" | "VOID";
+
+export type AlgoMarket = { books: number; raw_implied_pick: number; devigged_pick: number; pbe_delta_pts: number; observed_before?: string } | null;
+
+/** One bout on a card, as a UFC Pro member sees it. */
+export type AlgoBoutView = {
+  bout_id: string;
+  event_id: string;
+  event_name: string;
+  event_date: string;
+  event_slug: string;
+  fight_slug: string;
+  card_position: string | null;
+  order: number | null;
+  fighter_a: { id: string; name: string };
+  fighter_b: { id: string; name: string };
+  decision: "ELIGIBLE" | "NO_MODEL_CALL" | "NOT_EVALUATED";
+  reasons: string[];
+  confidence: AlgoConfidence | null;
+  pick_fighter_id: string | null;
+  pick_probability: number | null;
+  features_available: number | null;
+  sample: { min_prior_bouts?: number; min_stat_bouts?: number } | null;
+  market: AlgoMarket;
+  model_version: string | null;
+  feature_version: string | null;
+  evaluated_at: string | null;
+  prediction: {
+    id: string;
+    generated_at: string;
+    locked_at: string | null;
+    prob_a: number;
+    prob_b: number;
+    pick_fighter_id: string;
+    pick_probability: number;
+    confidence_band: string;
+    feature_vector: Record<string, number>;
+    feature_availability: Record<string, boolean>;
+    market_implied_prob_pick: number | null;
+    model_edge_pts: number | null;
+  } | null;
+  grade: { result: AlgoGradeResult; revision: number; graded_at: string; revision_reason: string | null } | null;
+  /** Every grade revision, oldest first. Record page only; superseded entries stay visible. */
+  grade_history?: Array<{ result: AlgoGradeResult; revision: number; graded_at: string; revision_reason: string | null }>;
+};
+
+export const REASON_COPY: Record<string, string> = {
+  EVENT_OUT_OF_SCOPE: "Not a UFC card in PBE Algo scope",
+  BOUT_NOT_SCHEDULED: "Bout off the card, changed or already fought",
+  IDENTITY_UNRESOLVED: "Fighter identity not fully reconciled",
+  MODEL_VERSION_UNAVAILABLE: "No live model version",
+  FEATURES_NOT_ASSEMBLED: "Pre-fight features could not be assembled",
+  STALE_FIGHTER_DATA: "Latest fight not yet in Fight DNA",
+  DEBUT_CORNER: "A fighter is making their UFC debut",
+  INSUFFICIENT_FEATURES: "Fewer than 20 of 33 features available",
+  LOW_CONFIDENCE: "Too close to call (below 55%)",
+  LOCK_WINDOW_CLOSED: "Lock window closed before a call was made",
+};
+
+export const FEATURES_TOTAL = artifact.features.length;
+
+export function confidenceCopy(c: AlgoConfidence | null): string {
+  return c === "HIGH" ? "High" : c === "MEDIUM" ? "Medium" : c === "LEAN" ? "Lean" : "—";
+}
+
+export function pctText(p: number | null | undefined, dp = 1): string {
+  return p == null || !Number.isFinite(p) ? "—" : `${(p * 100).toFixed(dp)}%`;
+}
+
+export function deltaText(v: number | null | undefined): string {
+  return v == null || !Number.isFinite(v) ? "—" : `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(1)} pts`;
+}
+
+/** ET wall-clock for a lock timestamp, e.g. "Sep 18 · 12:41 PM ET". */
+export function lockedText(iso: string | null): string {
+  if (!iso) return "Not locked";
+  const d = new Date(iso);
+  const date = d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" });
+  const time = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
+  return `${date} · ${time} ET`;
+}
+
+export type Driver = { key: string; label: string; family: string; doc: string; contribution: number; pickMinusOpponent: number };
+
+/** Short names for the 33 features. Differences are always PICK minus OPPONENT. */
+export const FEATURE_LABEL: Record<string, string> = {
+  age_diff_years: "Age (years)", reach_diff_in: "Reach (in)", height_diff_in: "Height (in)",
+  experience_log_diff: "Experience (prior bouts)", five_round_exp_diff: "Five-round experience", title_exp_diff: "Title-fight experience",
+  winrate_diff: "Career win rate", recent5_winrate_diff: "Last-5 win rate", streak_diff: "Current streak", layoff_log_diff: "Layoff length",
+  slpm_diff: "Sig. strikes landed / min", sapm_diff: "Sig. strikes absorbed / min", sig_diff_per_min_diff: "Striking differential / min",
+  sig_accuracy_diff: "Striking accuracy", sig_defense_diff: "Striking defence", kd_per15_diff: "Knockdowns scored / 15",
+  kd_absorbed_per15_diff: "Knockdowns absorbed / 15", td_landed_per15_diff: "Takedowns / 15", td_accuracy_diff: "Takedown accuracy",
+  td_defense_diff: "Takedown defence", control_share_diff: "Control-time share", sub_att_per15_diff: "Submission attempts / 15",
+  finish_rate_diff: "Finish rate", ko_rate_diff: "KO/TKO win share", sub_rate_diff: "Submission win share",
+  ko_loss_rate_diff: "Stopped by strikes", sub_loss_rate_diff: "Submitted", pace_retention_diff: "Round-3 pace retention",
+  champ_round_delta_diff: "Championship-round pace", southpaw_edge: "Southpaw edge", sos_diff: "Strength of schedule",
+  quality_wins_diff: "Quality wins", stat_sample_log_diff: "Stat-covered sample",
+};
+
+/**
+ * Contributions to the PICKED fighter's log-odds. The stored feature vector is
+ * in canonical orientation (corner 1 = the lexicographically smaller fighter
+ * id), so contributions are negated when the pick is corner 2.
+ */
+export function drivers(pred: NonNullable<AlgoBoutView["prediction"]>, fighterAId: string, fighterBId: string): { supporting: Driver[]; opposing: Driver[]; available: number } {
+  const corner1 = fighterAId < fighterBId ? fighterAId : fighterBId;
+  const sign = pred.pick_fighter_id === corner1 ? 1 : -1;
+  const coef = artifact.model.coefficients as Record<string, number>;
+  const scale = artifact.model.feature_scale as Record<string, number>;
+  const all: Driver[] = [];
+  let available = 0;
+  for (const f of artifact.features) {
+    if (!pred.feature_availability?.[f.key]) continue;
+    available += 1;
+    const x = Number(pred.feature_vector?.[f.key]);
+    if (!Number.isFinite(x) || !scale[f.key]) continue;
+    const c = sign * coef[f.key] * (x / scale[f.key]);
+    if (Math.abs(c) < 1e-6) continue;
+    all.push({ key: f.key, label: FEATURE_LABEL[f.key] || f.key, family: f.family, doc: f.doc, contribution: c, pickMinusOpponent: sign * x });
+  }
+  const supporting = all.filter((d) => d.contribution > 0).sort((a, b) => b.contribution - a.contribution).slice(0, 4);
+  const opposing = all.filter((d) => d.contribution < 0).sort((a, b) => a.contribution - b.contribution).slice(0, 3);
+  return { supporting, opposing, available };
+}
+
+/** One stored feature, re-oriented to PICK minus OPPONENT; null when it was unavailable. */
+export function pickOriented(pred: NonNullable<AlgoBoutView["prediction"]>, fighterAId: string, fighterBId: string, key: string): number | null {
+  if (!pred.feature_availability?.[key]) return null;
+  const x = Number(pred.feature_vector?.[key]);
+  if (!Number.isFinite(x)) return null;
+  const corner1 = fighterAId < fighterBId ? fighterAId : fighterBId;
+  return pred.pick_fighter_id === corner1 ? x : -x;
+}
+
+export type BandEvidence = { band: string; n: number; hitRate: number; lo: number; hi: number; meanConfidence: number };
+
+/**
+ * The out-of-sample walk-forward result for picks in the same probability band:
+ * the legitimate comparable for "how often does a call like this come in". It is
+ * committed release evidence (a backtest), labelled as such wherever it renders,
+ * and never mixed into the live record. Interval: Wilson 95%.
+ */
+export function bandEvidence(p: number | null | undefined): BandEvidence | null {
+  if (p == null || !Number.isFinite(p)) return null;
+  const rows = artifact.evidence.by_confidence_band as Array<{ band: string; lo: number; hi: number; n: number; hits: number; hit_rate: number; mean_confidence: number }>;
+  const r = rows.find((x) => p >= x.lo && (p < x.hi || (x.hi >= 1 && p <= 1)));
+  if (!r || !r.n) return null;
+  const z = 1.96, n = r.n, ph = r.hits / n;
+  const den = 1 + (z * z) / n;
+  const mid = (ph + (z * z) / (2 * n)) / den;
+  const half = (z * Math.sqrt((ph * (1 - ph)) / n + (z * z) / (4 * n * n))) / den;
+  return { band: r.band, n, hitRate: r.hit_rate, lo: mid - half, hi: mid + half, meanConfidence: r.mean_confidence };
+}
+
+export const FAMILY_COPY: Record<string, string> = {
+  age: "Age", reach: "Size & reach", experience: "Experience", form: "Form", striking: "Striking output",
+  accuracy: "Accuracy", durability: "Durability", takedowns: "Takedowns", control: "Control", finishing: "Finishing",
+  pace: "Pace", stance: "Stance", opponent: "Opponent quality", confidence: "Sample depth",
+};
+
+/** Status line for a bout card cell. */
+export function algoStatus(b: AlgoBoutView): { label: string; tone: "locked" | "provisional" | "nocall" | "graded" | "pending" } {
+  if (b.grade) return { label: b.grade.result, tone: "graded" };
+  if (b.prediction?.locked_at) return { label: "LOCKED", tone: "locked" };
+  if (b.decision === "ELIGIBLE" && b.prediction) return { label: "PROVISIONAL", tone: "provisional" };
+  if (b.decision === "NO_MODEL_CALL") return { label: "NO MODEL CALL", tone: "nocall" };
+  return { label: "AWAITING EVALUATION", tone: "pending" };
+}
+
+/* Aggregate public record. Only counts and proper scores: never a pick. */
+export type AlgoPublicRecord = {
+  model_version: string;
+  feature_version: string;
+  locked_predictions: number;
+  decided: number;
+  wins: number;
+  losses: number;
+  no_decision: number;
+  pending: number;
+  hit_rate: number | null;
+  brier: number | null;
+  first_locked_at: string | null;
+  last_locked_at: string | null;
+  calibration: Array<{ band: string; decided: number; predicted: number | null; observed: number | null }>;
+};

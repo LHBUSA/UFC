@@ -10,6 +10,8 @@ import { DnaMatchup } from "@/components/dna";
 import { resolveFight } from "@/lib/resolve";
 import { JsonLd, TaleOfTheTape, Breadcrumbs, Portrait, Credit, BoutRow } from "@/components/ui";
 import { ProPreview } from "@/components/ProPreview";
+import { AlgoPick } from "@/components/AlgoPick";
+import { getAlgoBout, algoLive } from "@/lib/algo";
 import { getUfcAccess } from "@/lib/access";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { getMarketsFor, marketProviderLive, marketStateFor, unresolvedBouts } from "@/lib/market";
@@ -133,7 +135,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   ]);
   const boutStatus = statusByBout.get(b.id) || [];
   const boutWeighIns = weighInsByBout.get(b.id) || [];
-  const [media, dna, dnaFighterA, dnaFighterB] = await Promise.all([
+  const [media, dna, dnaFighterA, dnaFighterB, algo, algoIsLive] = await Promise.all([
     storyMedia(articles),
     access.pro ? getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null) : Promise.resolve(null),
     /* Baselines are read as of the event date so the comparison is against the
@@ -142,6 +144,9 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
      * number toward zero deviation. */
     access.pro ? getFighterDna(b.fighter_a.id, e.event_date) : Promise.resolve(null),
     access.pro ? getFighterDna(b.fighter_b.id, e.event_date) : Promise.resolve(null),
+    /* PBE Algo: the call itself is Pro-only (getAlgoBout also refuses a free caller). */
+    access.pro ? getAlgoBout(access, b.id) : Promise.resolve(null),
+    !access.pro && !b.result && b.status !== "cancelled" ? algoLive() : Promise.resolve(false),
   ]);
   const r = b.result;
   const w = winnerOf(b), l = loserOf(b);
@@ -325,6 +330,10 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
           absence of a card on a finish is itself the answer and has to be
           stated rather than left as a missing section. */}
       {r && <OfficialScorecards result={r} a={b.fighter_a} b={b.fighter_b} sourceUrl={resultSourceUrl} eventDate={e.event_date} />}
+
+      {access.pro
+        ? algo && <section className="segment" id="pbe-algo"><h3>PBE Algo</h3><AlgoPick b={algo} detail /></section>
+        : algoIsLive && <section className="segment" id="pbe-algo"><h3>PBE Algo</h3><ProPreview feature="algo" access={access} returnPath={returnPath} /></section>}
 
       {access.pro
         ? <MarketSection market={market} state={marketState} nameA={b.fighter_a.name} nameB={b.fighter_b.name} />

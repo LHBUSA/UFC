@@ -23,8 +23,8 @@ const Stamp = ({ iso, label }: { iso: string | null; label: string }) => {
 /* Market surfaces.
  *
  * Descriptive pricing only. Nothing here says edge, value, model, pick or win
- * probability, because the product has no prediction model and a market price
- * is not one. Movement is described as toward or away from a fighter and
+ * probability: a market price is not one, and the PBE Algo comparison with the
+ * market lives in the Pro-only PBE Algo module, never in this section. Movement is described as toward or away from a fighter and
  * never as sharp money, steam or public action: those are claims about who is
  * betting, and there is no source behind them.
  */
@@ -162,7 +162,7 @@ export function MarketSection({
         <div className="mk-notes">
           <p>{CONSENSUS_NOTE}</p>
           <p>{FIRST_OBSERVED_NOTE}</p>
-          <p>Market pricing is an independent layer. PropBetEdge does not publish a model probability, an edge or a recommended bet, and nothing on this page should be read as one.</p>
+          <p>Market pricing is an independent layer and is never an input to PBE Algo. Nothing in this section is a model probability, an edge or a recommended bet.</p>
         </div>
       </div>
     </section>

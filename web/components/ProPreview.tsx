@@ -8,7 +8,7 @@ import { unlockHref, type UfcAccess } from "@/lib/accessDecision";
  * page decided entitlement before fetching; a free reader's render never had
  * the numbers in the first place. */
 
-export type ProFeature = "fight_dna" | "matchup_dna" | "round_intelligence" | "market" | "fight_week" | "officials" | "article_intel";
+export type ProFeature = "fight_dna" | "matchup_dna" | "round_intelligence" | "market" | "fight_week" | "officials" | "article_intel" | "algo";
 
 const COPY: Record<ProFeature, { title: string; body: string }> = {
   fight_dna: {
@@ -34,6 +34,10 @@ const COPY: Record<ProFeature, { title: string; body: string }> = {
   officials: {
     title: "Unlock Officials Intelligence",
     body: "Tendency reads measured against the archive baseline, with method and round distributions and dissent significance.",
+  },
+  algo: {
+    title: "Unlock the PBE Algo call",
+    body: "The PBE Algo pick for this fight: win probability, confidence, data quality, the market-implied probability and the PBE delta, plus the model's own drivers for and against. Locked on the database clock before the fight and graded after it.",
   },
   article_intel: {
     title: "Unlock the Pro modules in this story",

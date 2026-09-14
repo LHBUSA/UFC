@@ -64,6 +64,7 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
   { href: "/tuf", label: "The Ultimate Fighter", place: "more", group: "Contender Series" },
   { href: "/history", label: "History", place: "more", group: "Archive" },
   { href: "/hall-of-fame", label: "Hall of Fame", place: "more", group: "Archive" },
+  { href: "/algo", label: "PBE Algo", place: "more", group: "Intelligence" },
   { href: "/model", label: "PBE Model", place: "more", group: "Intelligence" },
   { href: "/round-by-round", label: "Round-by-Round", place: "more", group: "Intelligence" },
   { href: "/referees", label: "Referees", place: "more", group: "Intelligence" },

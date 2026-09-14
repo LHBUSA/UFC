@@ -8,10 +8,11 @@ import { checkoutReturnState, parseCheckoutReturn } from "@/lib/accessDecision";
 import { PRO_OFFER, offerJsonLd } from "@/lib/proOffer";
 import { CheckoutVerifyRefresh } from "@/components/CheckoutVerifyRefresh";
 import { getCurrentAccount } from "@/lib/auth";
+import { algoLive, getAlgoPublicRecord } from "@/lib/algo";
 
 export const metadata: Metadata = {
   title: "UFC Pro — Fight DNA Intelligence Layer & Fight Week Access",
-  description: "PropBetEdge UFC Pro founding season: $9.99/month or $3.99/week, no free trial, cancel anytime. The proprietary Fight DNA intelligence layer (matchup DNA, round intelligence, fight-week desk, market movement, officials tendencies). Model pricing and picks stay held back until validated.",
+  description: "PropBetEdge UFC Pro founding season: $9.99/month or $3.99/week, no free trial, cancel anytime. PBE Algo win probabilities with a locked, graded record, plus the proprietary Fight DNA intelligence layer (matchup DNA, round intelligence, fight-week desk, market movement, officials tendencies).",
   alternates: { canonical: "/pro" },
 };
 
@@ -22,7 +23,7 @@ const safeNext = (v: string | string[] | undefined) => {
 
 export default async function ProPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
-  const [access, rawAccount] = await Promise.all([getUfcAccess(), getCurrentAccount()]);
+  const [access, rawAccount, algoIsLive, algoRecord] = await Promise.all([getUfcAccess(), getCurrentAccount(), algoLive(), getAlgoPublicRecord()]);
   const account = access.signedIn ? rawAccount : null;
   const owner = access.tier === "owner";
   const active = access.pro;
@@ -39,8 +40,8 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
       <PageHead
         crumbs={[{ name: "Pro" }]}
         eyebrow="UFC Pro"
-        title="Fight intelligence first. Model claims only when earned."
-        lede="UFC Pro founding access is built around Fight DNA, bettor-grade analysis and fight-week intelligence. Model prices, picks and probabilities remain unavailable until PropBetEdge has a graded out-of-time track record to support them."
+        title="PBE Algo and Fight DNA. Model claims only when earned."
+        lede="UFC Pro is built around PBE Algo, Fight DNA and fight-week intelligence. Every PBE Algo call is locked before the fight and graded after it, and nothing is shown that the model did not produce."
       />
 
       {returning !== "not_returning" && (
@@ -92,6 +93,19 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
           </div>
         </section>
       ) : returning === "verifying" || returning === "sign_in" ? null : <ProPlans email={account?.email ?? null} />}
+
+      <section className="card hi mt-6 pro-algo" aria-labelledby="pro-algo-title">
+        <div className="eyebrow">UFC Pro flagship · PBE Algo · {algoIsLive ? (algoRecord.locked_predictions ? `${algoRecord.locked_predictions} locked call${algoRecord.locked_predictions === 1 ? "" : "s"}` : "live, first lock pending") : "pre-launch"}</div>
+        <h2 id="pro-algo-title" className="serif" style={{ margin: "7px 0 8px" }}>The call, the probability, the edge and the history.</h2>
+        <p className="dim sm" style={{ maxWidth: 760 }}>
+          PBE Algo scores every eligible UFC bout from pre-fight data only: pick, win probability, confidence and data quality, the market-implied probability with the vig removed, the PBE delta, and the model&apos;s own drivers for and against. Calls lock on the database clock before the fight and are graded after it; ineligible bouts show NO MODEL CALL with the reason.
+          {algoIsLive ? "" : " The first official call has not been locked yet, and the record will start at zero rather than borrow from the backtest."}
+        </p>
+        <div className="row mt-3">
+          <Link href={active ? "/algo/card" : "/algo"} className="btn gold">{active ? "Open the PBE Algo card" : "How PBE Algo works"}</Link>
+          {active && <Link href="/algo/record" className="btn">Track record</Link>}
+        </div>
+      </section>
 
       <section className="pro-dna" aria-labelledby="pro-dna-title">
         <div className="pro-dna-grid">

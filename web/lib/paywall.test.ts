@@ -67,9 +67,9 @@ test("no second Pro check exists outside the access decision", () => {
   }
 });
 
-const PREMIUM_READS = /\b(getFighterDna|getMatchupDna|getMarketsFor|getEditorialMarket|marketProviderLive|unresolvedBouts)\s*\(/;
+const PREMIUM_READS = /\b(getFighterDna|getMatchupDna|getMarketsFor|getEditorialMarket|marketProviderLive|unresolvedBouts|getAlgoBout|getAlgoCards|getAlgoRecord)\s*\(/;
 /* Data libraries define the reads; the QA fixture page 404s in production. */
-const PREMIUM_READ_ALLOW = new Set(["lib/dna.ts", "lib/market.ts", "lib/editorialMarket.ts", "lib/pregame.ts", "app/qa/preview/page.tsx"]);
+const PREMIUM_READ_ALLOW = new Set(["lib/dna.ts", "lib/market.ts", "lib/editorialMarket.ts", "lib/pregame.ts", "lib/algo.ts", "app/qa/preview/page.tsx"]);
 /* Every file that performs a premium read, with the exact guard that keeps a
  * free render from performing it. A new premium read site fails this test
  * until its guard is written down here. */
@@ -82,7 +82,10 @@ const GUARDS: Record<string, RegExp[]> = {
     /const \[markets, providerLive, unresolved\] = access\.pro\s*\? await Promise\.all/,
     /for \(let i = 0; access\.pro && i < rbaRounds\.length; i \+= 1\)/,
     /dnaA=\{access\.pro \? compareToDna/,
+    /access\.pro \? getAlgoBout\(access, b\.id\) : Promise\.resolve\(null\)/,
   ],
+  "app/algo/card/page.tsx": [/const cards = access\.pro \? await getAlgoCards\(access\) : \[\];/],
+  "app/algo/record/page.tsx": [/const rows = access\.pro \? await getAlgoRecord\(access\) : \[\];/],
   "app/events/[slug]/page.tsx": [/const providerLive = access\.pro \? await marketProviderLive\(\) : false;/, /const marketMap = done \|\| !providerLive/, /const unresolved = done \|\| !providerLive/],
   "components/StoryView.tsx": [/const editorialMarket = access\.pro \? await getEditorialMarket/, /const dna = access\.pro && bout && a\.story_type === "fight_preview" \? await getMatchupDna/],
 };
