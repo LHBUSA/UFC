@@ -9,20 +9,23 @@
  *   ledger   the shared PropBetEdge entitlement ledger, read through the
  *            Cloudflare billing Worker with a server-held token
  *
- * Valid Pro during the Stripe transition, in order:
- *   1. owner / unlimited
- *   2. legacy ufc_accounts.plan = "pro" with no expiry or an unexpired one
- *   3. ufc_pro in pbe_sport_entitlements (active/trialing, period end in the
+ * Valid access (paid-only; see lib/authPolicy.ts):
+ *   1. the canonical owner (UFC_OWNER_EMAIL and the owner row, both)
+ *   2. ufc_pro in pbe_sport_entitlements (active/trialing, period end in the
  *      future — decided by pbe_has_sport_entitlement, not re-derived here)
+ * There is no legacy ufc_accounts.plan='pro' grant and no free member.
  *
  * A Stripe redirect, a query string, a session_id or anything else the browser
  * sends grants nothing. Pro unlocks proprietary analysis that exists; it never
  * makes unavailable model output appear.
  */
 
+import { isCanonicalOwner } from "./authPolicy.ts";
+
 export type AccessTier = "free" | "pro" | "owner";
 
 export type AccountInput = {
+  id?: string;
   email: string;
   role: string | null;
   plan: string | null;
@@ -46,47 +49,42 @@ export type UfcAccess = {
   tier: AccessTier;
   pro: boolean;
   signedIn: boolean;
-  source: "owner" | "legacy" | "stripe" | null;
-  /** Legacy plan expiry when legacy access is what grants Pro. */
-  legacyAccessThrough: string | null;
-  /** The newest ledger subscription for this email, entitled or not, for the account page. */
+  source: "owner" | "stripe" | null;
+  /** The ledger subscription behind a Stripe grant, for the account page. */
   subscription: LedgerSubscription | null;
   ledger: LedgerRead["state"];
+  /** True when the session belongs to a non-owner with no current entitlement:
+   *  the caller must revoke it. Never set when the ledger was unreachable. */
+  revokeSession: boolean;
 };
 
 export const FREE_SIGNED_OUT: UfcAccess = Object.freeze({
-  tier: "free", pro: false, signedIn: false, source: null, legacyAccessThrough: null, subscription: null, ledger: "skipped",
+  tier: "free", pro: false, signedIn: false, source: null, subscription: null, ledger: "skipped", revokeSession: false,
 });
 
-export function isOwner(account: AccountInput | null): boolean {
-  return Boolean(account && (account.unlimited === true || account.role === "owner" || account.plan === "owner"));
+export function isOwner(account: AccountInput | null, ownerEmail: string | undefined | null): boolean {
+  if (!account) return false;
+  return isCanonicalOwner(account.email, { id: account.id || "", email: account.email, role: account.role, plan: account.plan, unlimited: account.unlimited }, ownerEmail);
 }
 
-export function legacyProActive(account: AccountInput | null, now: number): boolean {
-  if (!account || account.plan !== "pro") return false;
-  if (!account.access_expires_at) return true;
-  const t = Date.parse(account.access_expires_at);
-  return Number.isFinite(t) && t > now;
+/** The ledger must be consulted for every signed-in account except the canonical owner. */
+export function needsLedger(account: AccountInput | null, ownerEmail: string | undefined | null): boolean {
+  return Boolean(account) && !isOwner(account, ownerEmail);
 }
 
-/** Whether the ledger must be consulted at all (owner and legacy Pro never need it to be Pro). */
-export function needsLedger(account: AccountInput | null, now: number): boolean {
-  return Boolean(account) && !isOwner(account) && !legacyProActive(account, now);
-}
-
-export function decideUfcAccess(account: AccountInput | null, ledger: LedgerRead, now: number): UfcAccess {
+/* Paid-only: a session is only a session for the canonical owner or a current
+ * ufc_pro entitlement. Anything else (free rows, legacy plan='pro', a row
+ * flagged owner/unlimited under another email, a lapsed subscription) is signed
+ * out, and its session is revoked when the ledger positively says "not entitled". */
+export function decideUfcAccess(account: AccountInput | null, ledger: LedgerRead, ownerEmail: string | undefined | null): UfcAccess {
   if (!account) return FREE_SIGNED_OUT;
-  const subscription = ledger.state === "ok" ? ledger.subscription : null;
-  if (isOwner(account)) {
-    return { tier: "owner", pro: true, signedIn: true, source: "owner", legacyAccessThrough: null, subscription, ledger: ledger.state };
+  if (isOwner(account, ownerEmail)) {
+    return { tier: "owner", pro: true, signedIn: true, source: "owner", subscription: ledger.state === "ok" ? ledger.subscription : null, ledger: ledger.state, revokeSession: false };
   }
   if (ledger.state === "ok" && ledger.entitled === true) {
-    return { tier: "pro", pro: true, signedIn: true, source: "stripe", legacyAccessThrough: null, subscription, ledger: ledger.state };
+    return { tier: "pro", pro: true, signedIn: true, source: "stripe", subscription: ledger.subscription, ledger: ledger.state, revokeSession: false };
   }
-  if (legacyProActive(account, now)) {
-    return { tier: "pro", pro: true, signedIn: true, source: "legacy", legacyAccessThrough: account.access_expires_at, subscription, ledger: ledger.state };
-  }
-  return { tier: "free", pro: false, signedIn: true, source: null, legacyAccessThrough: null, subscription, ledger: ledger.state };
+  return { ...FREE_SIGNED_OUT, ledger: ledger.state, revokeSession: ledger.state === "ok" };
 }
 
 /* ---- Stripe return copy ------------------------------------------------ */

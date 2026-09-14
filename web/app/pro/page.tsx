@@ -22,7 +22,8 @@ const safeNext = (v: string | string[] | undefined) => {
 
 export default async function ProPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
-  const [access, account] = await Promise.all([getUfcAccess(), getCurrentAccount()]);
+  const [access, rawAccount] = await Promise.all([getUfcAccess(), getCurrentAccount()]);
+  const account = access.signedIn ? rawAccount : null;
   const owner = access.tier === "owner";
   const active = access.pro;
   /* The query string picks which sentence to show. It is never an input to
@@ -55,7 +56,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
             <>
               <div className="eyebrow">Payment received · verifying UFC Pro access</div>
               <h2>Sign in with the email you used at checkout.</h2>
-              <p>{planLabel} unlocks on the PropBetEdge UFC account with the same email Stripe collected. Signing in is passwordless; we email you a one-use link.</p>
+              <p>{planLabel} unlocks on the PropBetEdge UFC account with the same email Stripe collected. Signing in is passwordless: a one-use link is emailed only once Stripe&apos;s confirmation has reached our billing system, so if it does not arrive, wait a minute and request it again.</p>
               <div className="row mt-3"><Link href={signInHref} className="btn gold">Sign in to activate</Link></div>
             </>
           ) : (

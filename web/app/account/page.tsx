@@ -17,10 +17,9 @@ function orderStatus(status: "paid" | "in_production" | "cancelled"): string {
 }
 
 export default async function AccountPage() {
-  const account = await getCurrentAccount();
-  if (!account) redirect("/login?next=/account");
-  const [access, orders] = await Promise.all([
-    getUfcAccessWithBilling(),
+  const [account, access] = await Promise.all([getCurrentAccount(), getUfcAccessWithBilling()]);
+  if (!account || !access.signedIn) redirect("/login?next=/account");
+  const [orders] = await Promise.all([
     getCustomerOrders(account.email, 20).catch((error) => {
       console.error("[account] order history", String((error as Error)?.message || error).slice(0, 180));
       return [];
@@ -54,7 +53,6 @@ export default async function AccountPage() {
                 {accessThrough && <><dt>{sub.cancel_at_period_end ? "Access through" : "Renews"}</dt><dd>{accessThrough}</dd></>}
               </dl>
             )
-            : access.source === "legacy" ? <p className="faint sm">Legacy UFC Pro{account.access_expires_at ? ` · access through ${fmtDay(account.access_expires_at)}` : " · no expiry"}.</p>
             : sub ? <p className="faint sm">Your UFC Pro subscription is {sub.status === "past_due" ? "past due: update your payment method to restore access" : sub.status === "canceled" ? "canceled" : `not active (${sub.status})`}.</p>
             : access.ledger === "unavailable" ? <p className="faint sm">Billing status could not be checked just now. Refresh in a moment.</p>
             : <p className="faint sm">Upgrade any time.</p>}

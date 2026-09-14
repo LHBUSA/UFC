@@ -149,6 +149,9 @@ export const APPLIED = new Set([
   // Issue #27: public.ufc_dna_metric_ranking. Applied 2026-09-14 via apply_supabase_migration.ps1 (proof, then apply);
   // stable, security invoker, execute service_role only (anon 401). Read-only; the ufc-api Worker calls it over GET.
   '20260914120000_ufc_dna_metric_ranking.sql',
+  // Paid-only UFC auth hotfix: public.ufc_auth_request_attempts (HMAC throttle store). Applied 2026-09-14 via
+  // scripts/db/apply_migration.ps1 (proof, then apply); RLS on, anon/authenticated revoked (anon 401), service_role only.
+  '20260914213000_ufc_auth_request_attempts.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))

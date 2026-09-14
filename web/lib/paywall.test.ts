@@ -129,3 +129,26 @@ test("release gate: every Stripe identity and checkout URL is real, none retired
   for (const id of live) assert.ok(!(RETIRED_CHECKOUT as readonly string[]).includes(id), `${id} is a retired acquisition object`);
   assert.equal(new Set(live).size, live.length);
 });
+
+test("paid-only auth: no free-member creation path, no pre-authorization token or email", () => {
+  const all = source.map((s) => ({ ...s, flat: s.text.replace(/\s+/g, " ") }));
+  for (const { file, text } of all) {
+    assert.doesNotMatch(text, /getOrCreateAccount/, `${file} still has the auto-create path`);
+    if (file !== "lib/auth.ts") assert.doesNotMatch(text, /["'`]ufc_accounts["'`]\s*,\s*\{\s*method:\s*["']POST/, `${file} inserts ufc_accounts directly`);
+  }
+  const auth = source.find((s) => s.file === "lib/auth.ts")!.text;
+  const posts = auth.match(/sb<Account\[\]>\("ufc_accounts", \{\s*method: "POST"/g) || [];
+  assert.equal(posts.length, 1, "exactly one account insert");
+  assert.match(auth, /export async function createEntitledMemberAccount\(proof: EntitlementProof\)[\s\S]{0,160}member_creation_requires_entitlement_proof/);
+  const request = source.find((s) => s.file === "app/api/auth/request/route.ts")!.text;
+  assert.match(request, /handleLoginRequest\(authDeps\(\)/);
+  assert.doesNotMatch(request, /createLoginToken|api\.resend\.com|ufc_accounts/, "request route must not bypass the flow");
+  const verify = source.find((s) => s.file === "app/api/auth/verify/route.ts")!.text;
+  assert.match(verify, /handleLoginVerify\(authDeps\(\)/);
+  assert.doesNotMatch(verify, /createSession|consumeLoginToken|createEntitledMemberAccount/, "verify route must not bypass the flow");
+  const flow = source.find((s) => s.file === "lib/authFlow.ts")!.text;
+  const body = flow.slice(flow.indexOf("export async function handleLoginRequest"), flow.indexOf("export type VerifyResult"));
+  const order = ["deps.countRecentAttempts(", "deps.recordAttempt(", "decideLoginEligibility(", "deps.createLoginToken(", "deps.sendLoginEmail("].map((k) => body.indexOf(k));
+  assert.ok(order.every((i) => i > 0), `request flow missing a step: ${order}`);
+  assert.deepEqual([...order].sort((a, b) => a - b), order, "authorization must precede token creation and email");
+});

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { SITE } from "@/lib/site";
 import { Mark } from "@/components/Brand";
 import { LoginForm } from "@/components/LoginForm";
-import { getCurrentAccount } from "@/lib/auth";
+import { getUfcAccess } from "@/lib/access";
 
 export const metadata: Metadata = {
   title: "Sign in to UFC Fight Intelligence",
@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
-  const account = await getCurrentAccount();
-  if (account) redirect("/account");
+  const access = await getUfcAccess();
+  if (access.signedIn) redirect("/account");
   const params = await searchParams;
   const next = params.next?.startsWith("/") && !params.next.startsWith("//") ? params.next : "/account";
   const error = params.error;
@@ -37,10 +37,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <div className="login-card card hi">
           <div className="eyebrow dim">Member access</div>
           <h2 className="serif">Sign in to PropBetEdge UFC</h2>
-          <p className="dim sm">Use the email tied to your subscription or internal access. New users can still browse the complete free UFC product without an account.</p>
+          <p className="dim sm">UFC accounts are for active UFC Pro subscribers: use the email from your Stripe checkout. Everything free on PropBetEdge UFC needs no account.</p>
           {error && (
             <div className="login-status error" role="alert">
-              {error === "expired" ? "That sign-in link has expired or was already used. Request a fresh one below." : "Secure sign-in is temporarily unavailable. Please request a fresh link."}
+              {error === "expired" ? "That sign-in link has expired or was already used. Request a fresh one below." : error === "not_authorized" ? "That sign-in link can no longer be used. UFC accounts require an active UFC Pro subscription." : "Secure sign-in is temporarily unavailable. Please request a fresh link."}
             </div>
           )}
           <LoginForm next={next} />

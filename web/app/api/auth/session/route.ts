@@ -6,9 +6,10 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const [account, access] = await Promise.all([getCurrentAccount(), getUfcAccess()]);
+  const [rawAccount, access] = await Promise.all([getCurrentAccount(), getUfcAccess()]);
+  const account = access.signedIn ? rawAccount : null;
   return NextResponse.json({
-    authenticated: Boolean(account),
+    authenticated: access.signedIn,
     account: account ? {
       email: account.email,
       display_name: account.display_name,
