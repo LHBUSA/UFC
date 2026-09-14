@@ -57,7 +57,7 @@ import { tufInHouseEventReason } from './shared/tuf_guard.mjs';
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
 import { roundArchiveGaps, roundLaneStatus, gapAlertDecision, DEFAULT_GRACE_HOURS, DEFAULT_ESCALATE_HOURS } from './archiveHealth.mjs';
 import { OFFICIAL_METHOD, officialFightUrl, officialEventUrl, ufcComEventUrl, fightIdsFromUfcComPage, parseOfficialEvent, parseOfficialFight,
-  officialReadiness, sameOfficialEvent, mapOfficialFighters, validateOfficialFight, officialRoundRows, ROUND_COLUMNS } from './ufcOfficial.mjs';
+  officialReadiness, sameOfficialEvent, mapOfficialFighters, validateOfficialFight, officialRoundRows, ROUND_COLUMNS, knownNames } from './ufcOfficial.mjs';
 
 /* Per-run ceiling on fight-total lookups, same idea as the scorecard cap:
  * a daily year-walk must not turn into an unbounded backfill. Each bout costs
@@ -113,7 +113,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.7.2';
+const VERSION = 'v0.8.0';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -174,7 +174,7 @@ async function mergeState(env, key, patchObj, { onlyIfAbsent = [] } = {}) {
 }
 
 /* Exposed for the offline lane tests only. */
-export const __test = { runIngest };
+export const __test = { runIngest, runBoutCanary };
 
 /* The ESPN totals and scorecard lanes, for bounded operator-run repair of
  * cards the daily pass no longer visits (a completed card is never re-walked).
@@ -232,10 +232,13 @@ export default {
         },
       });
     }
-    if (req.method !== 'POST' || !['/admin/run', '/admin/canary', '/admin/official-canary', '/admin/official-link'].includes(url.pathname)) {
+    if (req.method !== 'POST' || !['/admin/run', '/admin/canary', '/admin/official-canary', '/admin/official-link', '/admin/ufcstats-bout-canary'].includes(url.pathname)) {
       return json({ error: 'not_found', service: SERVICE, version: VERSION }, 404);
     }
     if (!adminAuthorized(req, env)) return json({ error: 'not_found' }, 404);
+    if (url.pathname === '/admin/ufcstats-bout-canary') {
+      return json({ service: SERVICE, version: VERSION, invoked: 'manual', bout_canary: await runBoutCanary(env, { boutId: url.searchParams.get('bout') }) });
+    }
     if (url.pathname === '/admin/official-canary') {
       return json({ service: SERVICE, version: VERSION, invoked: 'manual', official_canary: await runOfficialCanary(env, {
         eventId: url.searchParams.get('event_id'), officialEventId: url.searchParams.get('official_event_id'), n: Number(url.searchParams.get('n') || 6) }) });
@@ -252,6 +255,10 @@ export default {
       skipEspn: url.searchParams.get('espn') === 'false',
       onlyBout: url.searchParams.get('bout') || null,
       force: url.searchParams.get('force') === 'true',
+      /* ?bout=<id>&ufcstats_scope=bout: UFC Stats for THIS ONE bout while the
+       * global flag stays off; canary fetch posture (one attempt, no stored
+       * cookie, challenge never answered). Ignored without ?bout. */
+      ufcstatsScope: url.searchParams.get('bout') && url.searchParams.get('ufcstats_scope') === 'bout' ? 'bout' : null,
       /* ?mode=fightnight exercises the fast lane on demand — the same code the
        * fast cron runs, so an operator can prove it without waiting for a tick
        * or guessing from a log line. Default stays the full daily pass. */
@@ -342,7 +349,8 @@ export async function activeCard(env, now = Date.now()) {
 /* ------------------------------------------------------------------------ */
 /* Run driver                                                                */
 /* ------------------------------------------------------------------------ */
-async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false, onlyBout = null, force = false, mode = 'daily' } = {}) {
+async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false, onlyBout = null, force = false, mode = 'daily', ufcstatsScope = null } = {}) {
+  const scopedUfcstats = ufcstatsScope === 'bout' && Boolean(onlyBout);
   health.last_cron_run = nowIso();
 
   /* ---- fight-night short circuit -------------------------------------
@@ -375,7 +383,9 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
    * ESPN continues, and nothing is presented as live. Solving the known
    * proof-of-work shape (decision 2026-09-05) is an explicit operator choice,
    * not something the lane does on its own. */
-  const fetcher = new Fetcher(env, { solveGate: String(env.UFCSTATS_SOLVE_CHALLENGE || 'false') === 'true' });
+  const fetcher = scopedUfcstats
+    ? new Fetcher(env, { solveGate: false, minIntervalMs: 1500, maxAttempts: 1, useStoredCookie: false })
+    : new Fetcher(env, { solveGate: String(env.UFCSTATS_SOLVE_CHALLENGE || 'false') === 'true' });
   const espn = new Espn();
   try {
     const created = await insert(env, 'ufc_ingest_runs', { worker: SERVICE, status: 'running', notes: { invoked, cron, version: VERSION } });
@@ -398,8 +408,9 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
      * while no round data lands at all. The flag state is therefore recorded
      * on every run, enabled or not, and the disabled case is stated in words
      * a human reading the run row will notice. */
-    const ufcstatsEnabled = String(env.UFCSTATS_ENABLED ?? 'true') !== 'false';
+    const ufcstatsEnabled = scopedUfcstats || String(env.UFCSTATS_ENABLED ?? 'true') !== 'false';
     run.notes.ufcstats_enabled = ufcstatsEnabled;
+    if (scopedUfcstats) run.notes.ufcstats_scope = { bout: onlyBout, global_flag: String(env.UFCSTATS_ENABLED ?? 'true'), posture: 'one attempt, no stored cookie, challenge not answered' };
     const sourceHealth = await getState(env, STATE.health);
     const backoffHours = Number(env.SOURCE_BACKOFF_HOURS || 6);
     /* The queue is maintained on every run. Source access only decides
@@ -1653,6 +1664,143 @@ async function runCanary(env, { n = 3 } = {}) {
       await patch(env, 'ufc_ingest_runs', `id=eq.${runId}`, { finished_at: nowIso(), status: report.verdict === 'clean' ? 'success' : 'failed', notes: { mode: 'canary', version: VERSION, ...report } });
     } catch (_) { /* the response still carries the report */ }
   }
+  return report;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Single-bout UFC Stats canary for a bout WITHOUT round rows (read-only)     */
+/* ------------------------------------------------------------------------ */
+/* POST /admin/ufcstats-bout-canary?bout=<uuid>
+ *
+ * The regular canary re-reads bouts whose rows are already stored. This one
+ * answers "can the lane legitimately fill THIS gap bout": it resolves the
+ * UFC Stats fight id the way the lane would (stored id, else the linked
+ * corner's fighter history with an EXACT opponent name), fetches the fight page,
+ * parses and validates it, and returns the rows that would be written.
+ *
+ * Posture: one attempt per URL, no stored session cookie, no challenge answered,
+ * every response recorded. It writes NO database row (not even a run-ledger
+ * row). The only state it may write is source health in R2: challenged (with
+ * backoff) if challenged, ok if clean. */
+async function runBoutCanary(env, { boutId }) {
+  const report = { at: nowIso(), mode: 'ufcstats_bout_canary', version: VERSION, database_writes: 0, bout_id: boutId, verdict: null };
+  const fetcher = new Fetcher(env, { solveGate: false, minIntervalMs: 1500, maxAttempts: 1, useStoredCookie: false, record: true });
+  const t0 = Date.now();
+  try {
+    if (!boutId) throw new Error('bout is required');
+    const bout = (await select(env, 'ufc_bouts', `select=id,event_id,ufcstats_id,fighter_a_id,fighter_b_id,status,scheduled_rounds&id=eq.${boutId}`))?.[0];
+    if (!bout) throw new Error('unknown bout');
+    const event = (await select(env, 'ufc_events', `select=id,name,event_date,ufcstats_id&id=eq.${bout.event_id}`))[0];
+    const fighters = await select(env, 'ufc_fighters', `select=id,name,ufcstats_id,dob&id=in.(${bout.fighter_a_id},${bout.fighter_b_id})`);
+    const fa = fighters.find((x) => x.id === bout.fighter_a_id);
+    const fb = fighters.find((x) => x.id === bout.fighter_b_id);
+    const aliasRows = await select(env, 'ufc_fighter_aliases', `select=fighter_id,alias,source&fighter_id=in.(${bout.fighter_a_id},${bout.fighter_b_id})`);
+    const aliasesOf = (id) => aliasRows.filter((a) => a.fighter_id === id).map((a) => a.alias);
+    const result = (await select(env, 'ufc_bout_results', `select=winner_id,method,round,time_sec,referee,finish_detail,time_format,has_stats,stats_source_url&bout_id=eq.${bout.id}`))?.[0] || null;
+    const rowsBefore = await count(env, 'ufc_bout_round_stats', `bout_id=eq.${bout.id}`);
+    report.selected = {
+      event: { id: event.id, name: event.name, event_date: event.event_date, ufcstats_id: event.ufcstats_id },
+      bout: { id: bout.id, ufcstats_id: bout.ufcstats_id, status: bout.status, scheduled_rounds: bout.scheduled_rounds },
+      fighters: [fa, fb].map((f) => ({ id: f.id, name: f.name, ufcstats_id: f.ufcstats_id, aliases: aliasesOf(f.id) })),
+      stored_result: result, stored_round_rows: rowsBefore,
+    };
+    const health = await getState(env, STATE.health);
+    if (sourceBlocked(health, Date.now(), Number(env.SOURCE_BACKOFF_HOURS || 6))) {
+      report.verdict = 'backoff'; report.detail = `source challenged at ${health.at}; retry_after ${health.retry_after}`; return report;
+    }
+    if (rowsBefore > 0) { report.verdict = 'already_has_rows'; return report; }
+    if (!result) { report.verdict = 'no_stored_result'; return report; }
+
+    /* 1. identity */
+    let fightId = bout.ufcstats_id;
+    let historyRow = null;
+    if (fightId) {
+      report.identity = { method: 'stored_bout_id', fight_id: fightId };
+    } else {
+      const anchor = [fa, fb].find((f) => f.ufcstats_id);
+      if (!anchor) { report.verdict = 'no_anchor'; report.detail = 'neither corner nor the bout is linked to UFC Stats'; return report; }
+      const other = anchor === fa ? fb : fa;
+      const hUrl = fetcher.url('fighters', anchor.ufcstats_id);
+      const hHtml = await fetcher.httpGet(hUrl);
+      const rows = P.parseFighterHistory(hHtml, hUrl);
+      const m = matchHistoryRow(rows, { eventDate: event.event_date, other: { ufcstats_id: other.ufcstats_id || null, name: other.name } });
+      const exact = Boolean(m.row) && (other.ufcstats_id ? m.row.opponent_ufcstats_id === other.ufcstats_id : knownNames(other, aliasesOf(other.id)).has(normalize(m.row.opponent_name)));
+      report.identity = { method: 'fighter_history', anchor: { fighter_id: anchor.id, name: anchor.name, ufcstats_id: anchor.ufcstats_id, page: hUrl }, history_rows: rows.length,
+        rows_within_a_day: m.in_date ?? null, candidates: m.candidates ?? (m.row ? 1 : 0), row: m.row || null, evidence: m.evidence || null, opponent_match_exact: exact };
+      if (!m.row) { report.verdict = 'identity_not_found'; return report; }
+      if (!exact) { report.verdict = 'identity_ambiguous'; report.detail = `history opponent "${m.row.opponent_name}" is not an exact known name of ${other.name}`; return report; }
+      if (event.ufcstats_id && m.row.event_ufcstats_id && m.row.event_ufcstats_id !== event.ufcstats_id) { report.verdict = 'identity_mismatch'; report.detail = 'history row is on a different UFC Stats event'; return report; }
+      fightId = m.row.fight_id;
+      historyRow = m.row;
+    }
+
+    /* 2. fight page */
+    const fUrl = fetcher.url('fights', fightId);
+    const fHtml = await fetcher.httpGet(fUrl);
+    const pre = P.isPreResultFightPage(fHtml);
+    report.fight_page = { url: fUrl, bytes: fHtml.length, pre_result_preview: pre, has_fight_details_structure: fHtml.includes('b-fight-details') };
+    if (pre) { report.verdict = 'not_yet_published'; return report; }
+    const f = P.parseFightPage(fHtml, fUrl);
+    const byRound = new Map();
+    for (const r of f.rounds) { if (!byRound.has(r.round)) byRound.set(r.round, new Set()); byRound.get(r.round).add(r.fighter_ufcstats_id); }
+    report.source_exposes = {
+      canonical_fight_id: f.ufcstats_id, fighters: f.fighters.map((p) => ({ ufcstats_id: p.ufcstats_id, name: p.name, flag: p.flag })),
+      method_raw: f.method_raw, method: f.method, finish_round: f.round, finish_time_sec: f.time_sec, time_format: f.time_format, scheduled_rounds: f.scheduled_rounds,
+      referee: f.referee, has_stats: f.has_stats, rounds_with_rows: [...byRound.keys()].sort((a, b) => a - b), corners_per_round: Object.fromEntries([...byRound].map(([k, v]) => [k, v.size])),
+    };
+
+    /* 3. validate exactly as the lane would, with the unlinked corner linked
+     *    hypothetically by an exact known name on the fight page (nothing stored). */
+    const problems = [];
+    const linkHyp = async (me) => {
+      if (me.ufcstats_id) return { ...me, linked_by: 'stored' };
+      const names = knownNames(me, aliasesOf(me.id));
+      const candidates = f.fighters.filter((p) => ![fa.ufcstats_id, fb.ufcstats_id].includes(p.ufcstats_id) && names.has(normalize(p.name)));
+      if (candidates.length !== 1) { problems.push(`${me.name}: ${candidates.length} exact name matches among unlinked fighters on the fight page`); return { ...me, linked_by: null }; }
+      const clash = await select(env, 'ufc_fighters', `select=id,name&ufcstats_id=eq.${candidates[0].ufcstats_id}`);
+      if (clash.length) problems.push(`UFC Stats fighter ${candidates[0].ufcstats_id} is already linked to ${clash.map((c) => c.name).join(', ')}`);
+      return { ...me, ufcstats_id: candidates[0].ufcstats_id, linked_by: 'exact_name_on_fight_page (hypothetical, not stored)' };
+    };
+    const A = await linkHyp(fa);
+    const B = await linkHyp(fb);
+    if (historyRow && ![A.ufcstats_id, B.ufcstats_id].includes(historyRow.opponent_ufcstats_id)) problems.push('history opponent id is not on the fight page');
+    problems.push(...validateFight({ parsed: f, fighterA: A, fighterB: B, result }));
+    if (result.time_sec != null && f.time_sec != null && result.time_sec !== f.time_sec) problems.push(`finish time disagreement: stored ${result.time_sec}s vs page ${f.time_sec}s`);
+    const winnerPage = f.winner_ufcstats_id === A.ufcstats_id ? A.id : f.winner_ufcstats_id === B.ufcstats_id ? B.id : null;
+    report.validation = {
+      fighter_identities: [A, B].map((x) => ({ fighter_id: x.id, name: x.name, ufcstats_id: x.ufcstats_id, linked_by: x.linked_by })),
+      winner: { stored: result.winner_id, page: winnerPage, agree: (result.winner_id ?? null) === winnerPage },
+      finish_round: { stored: result.round, page: f.round, agree: result.round === f.round },
+      finish_time_sec: { stored: result.time_sec, page: f.time_sec, agree: result.time_sec == null || f.time_sec == null || result.time_sec === f.time_sec },
+      method: { stored: result.method, page: f.method },
+      corners_per_round_expected: 2, problems: [...new Set(problems)],
+    };
+    const rows = report.validation.problems.length ? [] : roundRowsFor(f, A, B, bout.id, fUrl, '(not written)');
+    report.parsed_rows_would_write = rows;
+    report.normal_lane_would_also_write = report.validation.problems.length ? null : {
+      requests: [A, B].filter((x) => x.linked_by !== 'stored').map((x) => `fighter page ${fetcher.url('fighters', x.ufcstats_id)} (linkUfcstatsFighter re-verifies before linking)`),
+      ufc_bouts: bout.ufcstats_id ? {} : { ufcstats_id: fightId, ...(bout.scheduled_rounds == null && f.scheduled_rounds != null ? { scheduled_rounds: f.scheduled_rounds } : {}) },
+      ufc_events: event.ufcstats_id || !historyRow?.event_ufcstats_id ? {} : { ufcstats_id: historyRow.event_ufcstats_id },
+      ufc_fighters: [A, B].filter((x) => x.linked_by !== 'stored').map((x) => ({ fighter_id: x.id, set: 'ufcstats_id + career_* + fight_history_count; nickname/dob/height/reach only where null' })),
+      ufc_fighter_aliases: [A, B].filter((x) => x.linked_by !== 'stored').map((x) => ({ fighter_id: x.id, add: 'ufcstats alias rows (upsert)' })),
+      ufc_bout_results: { stats_source_url: fUrl, has_stats: f.has_stats, ...(f.scorecards ? { scorecards: 'page scorecards', judges: 'page judges' } : {}), ...(!result.referee && f.referee ? { referee: f.referee } : {}),
+        ...(!result.finish_detail && f.finish_detail ? { finish_detail: f.finish_detail } : {}), ...(!result.time_format && f.time_format ? { time_format: f.time_format } : {}) },
+      ufc_bout_round_stats: rows.length, ufc_round_stat_queue: 'written',
+    };
+    report.verdict = report.validation.problems.length ? 'validation_failed' : 'clean';
+  } catch (e) {
+    const detail = String(e?.message || e).slice(0, 300);
+    report.verdict = e instanceof AccessGateError ? 'challenged' : /HTTP (429|5\d\d)/.test(detail) ? 'rate_limited_or_unavailable' : e instanceof SchemaAssertionError ? 'malformed' : 'error';
+    report.error = { class: e?.name || 'Error', detail, url: e?.url || null };
+    if (e instanceof AccessGateError) {
+      report.source_health = challengedState(env, { detail, url: e.url, telemetry: fetcher.telemetry(), via: 'bout_canary' });
+      await putState(env, STATE.health, report.source_health);
+    }
+  }
+  report.elapsed_ms = Date.now() - t0;
+  report.requests = fetcher.telemetry();
+  report.responses = fetcher.responses;
+  if (report.verdict === 'clean') await putState(env, STATE.health, { status: 'ok', challenged: false, source: 'ufcstats.com', at: nowIso(), telemetry: fetcher.telemetry(), via: 'bout_canary' });
   return report;
 }
 

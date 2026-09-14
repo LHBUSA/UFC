@@ -21,7 +21,12 @@
  *   9. official not final   -> not_yet_published, nothing written
  *  10. official wrong card  -> stored link to another card: identity_review, nothing written
  *  11. official event cap   -> newer unlinked cards do not use up the per-run cap; the older
- *                              linked card is still recovered */
+ *                              linked card is still recovered
+ *  12. bout canary clean    -> gap bout resolved by fighter history + exact opponent name,
+ *                              parsed and validated, rows returned, ZERO database writes
+ *  13. bout canary challenged-> exactly one request, no retry, no cookie, fail closed, zero writes
+ *  14. bout canary 429      -> exactly one request, no retry, zero writes
+ *  15. bout-scoped write    -> UFC Stats for one bout while the global flag stays off */
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -122,12 +127,13 @@ xhr.open('POST',"/__c",true);
 xhr.send('nonce='+encodeURIComponent(nonce)+'&n='+n);
 </script></body></html>`;
 
-async function run(seed, { enabled = 'true', challenged = false, shared = null, discordPosts = null, official = null, extraEnv = {} } = {}) {
+async function run(seed, { enabled = 'true', challenged = false, shared = null, discordPosts = null, official = null, extraEnv = {}, canaryBout = null, ufcstatsScope = null, onlyBout = null, status429 = false } = {}) {
   const db = shared?.db || makeDb(seed);
   const r2 = shared?.r2 || new Map();
   const ufcstatsHits = [];
   const dna = [];
   const officialHits = [];
+  const ufcstatsCookies = [];
   globalThis.fetch = async (input, init = {}) => {
     const url = String(input);
     if (url.startsWith('https://www.ufc.com/event/') || url.startsWith('https://d29dxerjsp82wz.cloudfront.net/')) {
@@ -141,6 +147,8 @@ async function run(seed, { enabled = 'true', challenged = false, shared = null, 
     if (url.startsWith('http://discord.test/') && discordPosts) { discordPosts.push(JSON.parse(init.body).content); return new Response(null, { status: 204 }); }
     if (url.startsWith('http://ufcstats.test/')) {
       ufcstatsHits.push(url);
+      ufcstatsCookies.push(init?.headers?.cookie || null);
+      if (status429) return new Response('slow down', { status: 429, headers: { 'retry-after': '120' } });
       if (challenged) return new Response(CHALLENGE, { status: 200 });
       if (url.endsWith(`/fighter-details/${OLIVEIRA}`)) return new Response(page('fighter_18d01f7f8338ae72.html'));
       if (url.endsWith(`/fight-details/${FIGHT}`)) return new Response(page('fight_fb4b1754d510b0d0.html'));
@@ -161,8 +169,10 @@ async function run(seed, { enabled = 'true', challenged = false, shared = null, 
     ...(official ? { UFC_OFFICIAL_ROUNDS_ENABLED: 'true', OFFICIAL_MIN_INTERVAL_MS: '0' } : {}),
     ...extraEnv,
   };
-  const res = await __test.runIngest(env, { invoked: 'test', skipEspn: true });
-  return { res, db, r2, ufcstatsHits, officialHits, dna, env };
+  const res = canaryBout
+    ? await __test.runBoutCanary(env, { boutId: canaryBout })
+    : await __test.runIngest(env, { invoked: 'test', skipEspn: true, onlyBout, ufcstatsScope });
+  return { res, db, r2, ufcstatsHits, ufcstatsCookies, officialHits, dna, env };
 }
 const q = (db) => db.T.ufc_round_stat_queue.find((x) => x.bout_id === 'b1');
 
@@ -324,6 +334,50 @@ const officialServer = (fight = OFFICIAL_FIGHT) => ({
   const { res, db } = await run(seed, { enabled: 'false', official: officialServer(), extraEnv: { MAX_EVENTS_PER_RUN: '1' } });
   check(res.status === 'success' && q(db)?.state === 'written' && db.T.ufc_bout_round_stats.filter((r) => r.bout_id === 'b1').length === 6, `official cap: older linked card recovered ${JSON.stringify(q(db))}`);
   check(db.T.ufc_round_stat_queue.filter((x) => x.bout_id.startsWith('dwb')).every((x) => x.state === 'awaiting_source' && /no UFC.com event link/.test(x.last_reason)), 'official cap: unlinked cards wait with the reason');
+}
+
+/* 12-15. single-bout UFC Stats canary and the bout-scoped write */
+{
+  const unlinked = () => { const w = world(); w.ufc_fighters[1].ufcstats_id = null; w.ufc_bout_results[0].time_sec = null; return w; };
+  const snapshot = (db) => JSON.stringify(db.T);
+  {
+    const seed = unlinked();
+    const r2 = new Map([['ufc-raw/_state/session.json', JSON.stringify({ cookie: 'stale=1' })]]);
+    const db = makeDb(seed);
+    const before = snapshot(db);
+    const { res, ufcstatsHits, ufcstatsCookies } = await run(null, { canaryBout: 'b1', shared: { db, r2 } });
+    check(res.verdict === 'clean', `bout canary: clean ${res.verdict} ${JSON.stringify(res.error || res.validation?.problems || res.detail)}`);
+    check(res.identity?.method === 'fighter_history' && res.identity.opponent_match_exact === true && res.identity.row?.fight_id === FIGHT, `bout canary: identity by history + exact name ${JSON.stringify(res.identity)}`);
+    check(res.parsed_rows_would_write?.length === 4 && res.parsed_rows_would_write.every((r) => ['fa', 'fb'].includes(r.fighter_id)), 'bout canary: 2 rounds x 2 corners returned');
+    check(res.validation?.winner?.agree && res.validation?.finish_round?.agree, `bout canary: result agrees ${JSON.stringify(res.validation)}`);
+    check(snapshot(db) === before && res.database_writes === 0, 'bout canary: zero database writes');
+    check(ufcstatsHits.length === 2 && ufcstatsCookies.every((c) => c === null), `bout canary: two requests, no stored cookie sent (${ufcstatsHits.length} ${JSON.stringify(ufcstatsCookies)})`);
+    check(res.responses?.length === 2 && res.responses.every((x) => x.status === 200 && x.redirect_chain?.length === 1), 'bout canary: responses recorded');
+    check(res.normal_lane_would_also_write?.ufc_fighters?.[0]?.fighter_id === 'fb', 'bout canary: reports the fighter link the lane would make');
+  }
+  {
+    const db = makeDb(unlinked());
+    const before = snapshot(db);
+    const { res, r2, ufcstatsHits } = await run(null, { canaryBout: 'b1', challenged: true, shared: { db, r2: new Map() } });
+    check(res.verdict === 'challenged' && ufcstatsHits.length === 1, `bout canary challenged: one request, fail closed (${res.verdict}, ${ufcstatsHits.length})`);
+    check(snapshot(db) === before && JSON.parse(r2.get('ufc-raw/_state/source_health.json')).status === 'challenged', 'bout canary challenged: zero writes, backoff stored');
+    check(!res.parsed_rows_would_write, 'bout canary challenged: nothing parsed');
+  }
+  {
+    const db = makeDb(unlinked());
+    const before = snapshot(db);
+    const { res, ufcstatsHits } = await run(null, { canaryBout: 'b1', status429: true, shared: { db, r2: new Map() } });
+    check(res.verdict === 'rate_limited_or_unavailable' && ufcstatsHits.length === 1 && res.responses?.[0]?.headers?.['retry-after'] === '120', `bout canary 429: one request, no retry, signal recorded (${res.verdict}, ${ufcstatsHits.length})`);
+    check(snapshot(db) === before, 'bout canary 429: zero writes');
+  }
+  {
+    const { res, db, ufcstatsHits, ufcstatsCookies } = await run(world(), { enabled: 'false', onlyBout: 'b1', ufcstatsScope: 'bout' });
+    check(res.status === 'success' && q(db)?.state === 'written' && db.T.ufc_bout_round_stats.length === 4, `bout-scoped write: written ${res.status} ${JSON.stringify(q(db))}`);
+    check(res.notes.ufcstats_scope?.bout === 'b1' && res.notes.ufcstats_scope.global_flag === 'false', 'bout-scoped write: recorded as scoped, global flag still false');
+    check(ufcstatsCookies.every((c) => c === null), 'bout-scoped write: no stored cookie');
+    const off = await run(world(), { enabled: 'false', onlyBout: 'b1' });
+    check(off.ufcstatsHits.length === 0 && q(off.db)?.state === 'awaiting_source', 'without the scope the flag still keeps UFC Stats off');
+  }
 }
 
 console.log('lane integration:', failures === 0 ? 'OK' : `${failures} FAILURES`);
