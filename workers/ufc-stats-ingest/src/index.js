@@ -55,7 +55,7 @@ import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec } f
 import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_resolver.mjs';
 import { tufInHouseEventReason } from './shared/tuf_guard.mjs';
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
-import { roundArchiveGaps, roundLaneStatus, gapAlertDecision, DEFAULT_GRACE_HOURS, DEFAULT_ESCALATE_HOURS } from './archiveHealth.mjs';
+import { roundArchiveGaps, roundArchiveReviewItems, roundLaneStatus, gapAlertDecision, DEFAULT_GRACE_HOURS, DEFAULT_ESCALATE_HOURS } from './archiveHealth.mjs';
 import { OFFICIAL_METHOD, officialFightUrl, officialEventUrl, ufcComEventUrl, fightIdsFromUfcComPage, parseOfficialEvent, parseOfficialFight,
   officialReadiness, sameOfficialEvent, mapOfficialFighters, validateOfficialFight, officialRoundRows, ROUND_COLUMNS, knownNames } from './ufcOfficial.mjs';
 
@@ -113,7 +113,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.8.3';
+const VERSION = 'v0.8.4';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -205,7 +205,7 @@ export default {
       try {
         const sourceHealthNow = await getState(env, STATE.health);
         const gaps = await collectRoundArchiveGaps(env, Date.now(), sourceHealthNow);
-        archive = { round_lane_status: roundLaneStatus({ gaps }), round_archive_gaps: gaps, round_archive_alert: await getState(env, STATE.archiveAlert) };
+        archive = { round_lane_status: roundLaneStatus({ gaps }), round_archive_gaps: gaps, round_archive_review: gaps.review_items || [], round_archive_alert: await getState(env, STATE.archiveAlert) };
       } catch (e) {
         archive = { round_lane_status: 'unknown', round_archive_gaps: null, error: String(e?.message || e).slice(0, 160) };
       }
@@ -982,10 +982,11 @@ async function collectRoundArchiveGaps(env, now, sourceHealth) {
     })),
   }));
   const enabled = String(env.UFCSTATS_ENABLED ?? 'true') !== 'false';
-  return roundArchiveGaps({
-    events: byEvent, now, graceHours: Number(env.ROUND_ARCHIVE_GRACE_HOURS || DEFAULT_GRACE_HOURS),
-    source: { enabled, challenged: Boolean(sourceHealth?.challenged) },
-  });
+  const graceHours = Number(env.ROUND_ARCHIVE_GRACE_HOURS || DEFAULT_GRACE_HOURS);
+  const gaps = roundArchiveGaps({ events: byEvent, now, graceHours, source: { enabled, challenged: Boolean(sourceHealth?.challenged) } });
+  /* Carried on the array so both callers keep their shape; alerting ignores it. */
+  gaps.review_items = roundArchiveReviewItems({ events: byEvent, now, graceHours });
+  return gaps;
 }
 
 /* Detect, decide, alert once, remember. The alert state lives in R2 next to
@@ -1008,7 +1009,7 @@ async function checkRoundArchive(env, { now }) {
   }
   if (decision.send || JSON.stringify(previous) !== JSON.stringify(decision.next)) await putState(env, STATE.archiveAlert, decision.next);
   return {
-    round_lane_status: roundLaneStatus({ gaps }), gaps,
+    round_lane_status: roundLaneStatus({ gaps }), gaps, review_items: gaps.review_items || [],
     alert: decision.send ? { kind: decision.kind, delivered: decision.next.last_alert.delivered } : { kind: 'none' },
   };
 }

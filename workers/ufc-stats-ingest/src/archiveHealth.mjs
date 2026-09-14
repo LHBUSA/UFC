@@ -24,6 +24,7 @@ export const DEFAULT_GRACE_HOURS = 12;
 export const DEFAULT_ESCALATE_HOURS = 24;
 
 const WAITING_STATES = new Set(['queued', 'awaiting_source', 'not_yet_published']);
+const REVIEW_STATES = new Set(['identity_review', 'validation_failed']);
 
 /** When missing rows for an event dated `eventDate` start to count as a gap. */
 export function gapDueAt(eventDate, graceHours = DEFAULT_GRACE_HOURS) {
@@ -58,6 +59,25 @@ export function roundArchiveGaps({ events, now, graceHours = DEFAULT_GRACE_HOURS
     });
   }
   return gaps.sort((a, b) => String(b.event_date).localeCompare(String(a.event_date)));
+}
+
+/**
+ * Completed bouts still without round rows because they are held for REVIEW
+ * (identity_review, validation_failed), past the grace period. They are not a
+ * source outage, so they do not make the lane degraded or send alerts, but
+ * they are listed so "ok" never hides a bout that has no round data.
+ */
+export function roundArchiveReviewItems({ events, now, graceHours = DEFAULT_GRACE_HOURS }) {
+  const out = [];
+  for (const e of events || []) {
+    if (e.card_status !== 'complete' || !e.event_date || now < gapDueAt(e.event_date, graceHours)) continue;
+    for (const b of e.bouts || []) {
+      if (b.has_result && !(b.round_rows > 0) && REVIEW_STATES.has(b.queue_state)) {
+        out.push({ event_id: e.id, event_name: e.name, event_date: e.event_date, bout_id: b.id, state: b.queue_state, reason: b.queue_reason || null });
+      }
+    }
+  }
+  return out.sort((a, b) => String(b.event_date).localeCompare(String(a.event_date)));
 }
 
 /** ok | degraded. The worker itself is not reported down for this. */

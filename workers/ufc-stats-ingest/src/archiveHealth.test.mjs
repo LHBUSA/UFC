@@ -7,7 +7,7 @@
  * the rows land. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { roundArchiveGaps, roundLaneStatus, gapAlertDecision, gapLine, gapDueAt } from './archiveHealth.mjs';
+import { roundArchiveGaps, roundArchiveReviewItems, roundLaneStatus, gapAlertDecision, gapLine, gapDueAt } from './archiveHealth.mjs';
 
 const NOCHE = (over = {}) => ({
   id: '1d0b22df-81e7-4e5b-8fa5-8e5d03c24c52', name: 'Noche UFC: Silva vs. Delgado', event_date: '2026-09-12', card_status: 'complete',
@@ -94,4 +94,14 @@ test('one card recovers while others remain: one alert naming it, recorded once,
   const again = gapAlertDecision({ gaps: after, previous: d.next, now: now + 15 * 60e3 });
   assert.equal(again.send, false, 'no duplicate recovery alert');
   assert.equal(again.next.cleared_events.length, 1, 'recovery recorded once');
+});
+
+test('a bout held for identity review is not a source gap, but it is listed, so ok never hides it', () => {
+  const now = at('2026-09-14T12:00:00Z');
+  const card = NOCHE({ bouts: NOCHE().bouts.map((b, i) => (i === 0 ? { ...b, queue_state: 'identity_review', queue_reason: 'official feed: 0 fights match both corners exactly' } : { ...b, round_rows: 4, queue_state: 'written' })) });
+  const gaps = roundArchiveGaps({ events: [card], now, source: DISABLED });
+  assert.equal(roundLaneStatus({ gaps }), 'ok');
+  const review = roundArchiveReviewItems({ events: [card], now });
+  assert.deepEqual(review.map((r) => [r.bout_id, r.state]), [['b0', 'identity_review']]);
+  assert.equal(roundArchiveReviewItems({ events: [card], now: at('2026-09-13T06:00:00Z') }).length, 0, 'inside the grace period');
 });

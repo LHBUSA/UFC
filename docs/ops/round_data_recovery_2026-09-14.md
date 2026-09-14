@@ -93,3 +93,20 @@ Card identity for the Contender Series is deterministic: the official name `DWCS
 
 Architecture: the official UFC lane is the round source for UFC and Contender Series cards (same writer, same exact corner and result validation, writes only round rows and queue state); UFC Stats stays disabled and blocked. No separate third-party fallback lane is needed.
 
+## 8. Contender Series backfill (production, 2026-09-14, directly on `main`)
+
+One card per batch: verified card link (`POST /admin/official-link`, season + week + date) → normal lane (`POST /admin/run?espn=false`) → snapshot of all five DWCS cards plus the recovered UFC cards → verification (every bout written, rounds contiguous to the stored finish round, both corners every round, event/bout/result/fighter/alias rows byte-identical, totals change only in round rows).
+
+| Card | Official event | Written | Rows | Notes |
+|---|---|---|---|---|
+| Season 10, Week 1 | 1328 (DWCS 10.1) | 5/5 | 22 | all corners exact |
+| Season 10, Week 2 | 1329 (DWCS 10.2) | 5/5 | 22 | Roman Gabriel Puga / Douglas Henrique Rodrigues via identical DOB + registered-name tokens (v0.8.2) |
+| Season 10, Week 3 | 1330 (DWCS 10.3) | 5/5 | 16 | Nicholas / Nick Galanti via identical DOB + listed short first name (v0.8.3) |
+| Season 10, Week 4 | 1333 (DWCS 10.4) | 5/5 | 22 | all corners exact |
+| Season 10, Week 5 | 1334 (DWCS 10.5) | 4/5 | 14 | **Kwon Won Il vs Apollo Gomes held in identity_review** |
+
+- 24 of 25 bouts recovered, 96 round rows (42,012 → 42,108); every request to the official feed returned 200 (6 per card).
+- Event, bout, result, fighter and alias rows unchanged on every card (byte-compared before/after each batch); no UFC Stats request; no alias or external id written.
+- **Open: Kwon Won Il vs Apollo Gomes.** The official feed names the fighter First "Kwon", Last "WonIl" with DOB 1995-07-24; our canonical row (ESPN) is "Kwon Won Il", DOB 1995-06-24. Apollo Gomes is exact (DOB 2000-07-10 both sides) and the result agrees (Gomes, U-DEC R3), but the DOB conflict means identity would rest on the name, so no rows are written. Needs a reviewed decision on the DOB (evidence: `docs/ops/evidence/dwcs_source_scout_kwon_gomes_w5_2026-09-14.json`).
+- Health: every DWCS gap card cleared once by name; `round_lane_status` is `ok`. v0.8.4 adds `round_archive_review` to `/health`, listing completed bouts held for review without round rows, so `ok` does not hide the Kwon bout.
+

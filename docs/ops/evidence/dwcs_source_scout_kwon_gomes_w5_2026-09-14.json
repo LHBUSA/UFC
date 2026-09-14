@@ -1,0 +1,237 @@
+{
+ "at": "2026-09-14T11:07:43.221Z",
+ "tool": "scripts/sources/dwcs_round_source_scout.mjs",
+ "database_writes": 0,
+ "bout": {
+  "id": "ac23cd35-fa8a-4517-8615-4c682a4d77af",
+  "event": {
+   "id": "187505ab-636d-4f90-8d5f-d98ebfd1cd7c",
+   "name": "Dana White's Contender Series: Season 10, Week 5",
+   "event_date": "2026-09-08",
+   "contender": {
+    "season": 10,
+    "week": 5
+   },
+   "espn_event_id": "600060736",
+   "ufcstats_id": null
+  },
+  "fighters": [
+   {
+    "id": "6c5fdca6-fbe3-464f-8e27-28518a568d70",
+    "name": "Kwon Won Il",
+    "ufcstats_id": null,
+    "espn_athlete_id": "4907790",
+    "aliases": [
+     "Kwon Won Il",
+     "Pretty Boy"
+    ]
+   },
+   {
+    "id": "adc63152-9121-4c36-b470-e9c0ca8cfc66",
+    "name": "Apollo Gomes",
+    "ufcstats_id": null,
+    "espn_athlete_id": "5369425",
+    "aliases": [
+     "Apollo Gomes",
+     "Deus da Guerra"
+    ]
+   }
+  ],
+  "stored_result": {
+   "winner_id": "adc63152-9121-4c36-b470-e9c0ca8cfc66",
+   "method": "DEC_U",
+   "round": 3,
+   "time_sec": 300,
+   "result_source": "espn",
+   "referee": "Frank Trigg"
+  },
+  "stored_round_rows": 0,
+  "queue": {
+   "state": "identity_review",
+   "last_reason": "official feed: 0 fights on official event 1334 match both corners exactly"
+  }
+ },
+ "candidates": {
+  "ufc_official": {
+   "provider": "UFC (official fight statistics feed behind UFC.com)",
+   "base": "https://d29dxerjsp82wz.cloudfront.net/api/v3",
+   "access": "public JSON, no key; UFC-owned; already used in production (ufc-stats-ingest official lane, v0.7.x)",
+   "event_lookup": [
+    {
+     "id": "1334",
+     "status": 200,
+     "name": "DWCS 10.5",
+     "date": "2026-09-08",
+     "feed_status": "Final",
+     "fights": 5,
+     "match": true,
+     "http": {
+      "date": "Mon, 14 Sep 2026 11:07:50 GMT",
+      "cache": "Miss from cloudfront"
+     }
+    }
+   ],
+   "event_identity": {
+    "official_event_id": "1334",
+    "official_name": "DWCS 10.5",
+    "official_date": "2026-09-08",
+    "our_name": "Dana White's Contender Series: Season 10, Week 5",
+    "our_date": "2026-09-08",
+    "rule": "Contender Series season + week + date (+-1 day)",
+    "deterministic": true
+   },
+   "bout_identity": {
+    "fights_on_card": 5,
+    "exact_corner_matches": 0,
+    "fetch_failures": []
+   },
+   "verdict": "no official fight matches both corners exactly",
+   "viable": false,
+   "request_cost": 6
+  },
+  "espn": {
+   "provider": "ESPN core API",
+   "access": "public JSON; already the production schedule/result/identity source",
+   "competition": {
+    "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060736/competitions/401916065?lang=en&region=us",
+    "status": 200,
+    "date": "2026-09-08T23:00Z",
+    "competitors": [
+     {
+      "id": "4907790",
+      "winner": false
+     },
+     {
+      "id": "5369425",
+      "winner": true
+     }
+    ]
+   },
+   "statistics": {
+    "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060736/competitions/401916065/competitors/4907790/statistics?lang=en&region=us",
+    "status": 200,
+    "split": {
+     "id": "0",
+     "name": "All Splits",
+     "type": "total"
+    },
+    "split_1_identical_to_split_0": true,
+    "fields": [
+     "knockDowns",
+     "totalStrikesAttempted",
+     "totalStrikesLanded",
+     "sigStrikesAttempted",
+     "sigStrikesLanded",
+     "sigDistanceHeadStrikesAttempted",
+     "sigDistanceHeadStrikesLanded",
+     "sigDistanceBodyStrikesAttempted",
+     "sigDistanceBodyStrikesLanded",
+     "sigDistanceLegStrikesAttempted",
+     "sigDistanceLegStrikesLanded",
+     "sigClinchBodyStrikesAttempted"
+    ]
+   },
+   "dwcs_coverage": "DWCS events and results present (our result_source for these bouts is ESPN)",
+   "verdict": "fight totals only (splits.type \"total\"); no round dimension, so it cannot supply ufc_bout_round_stats",
+   "viable": false,
+   "request_cost": 3
+  },
+  "ufcstats": {
+   "provider": "UFC Stats (ufcstats.com)",
+   "status": "BLOCKED",
+   "request_cost": 0,
+   "evidence": {
+    "source_health": {
+     "status": "challenged",
+     "at": "2026-09-14T10:00:33.538Z",
+     "via": "bout_canary",
+     "detail": "challenge interstitial present (canary does not answer challenges) @ http://ufcstats.com/fighter-details/5182316da3c1d891",
+     "retry_after": "2026-09-14T16:00:33.538Z"
+    },
+    "canaries": "2026-09-10, 2026-09-13, 2026-09-14 00:34Z and 10:00Z (single-bout, 1 request): challenge interstitial every time"
+   },
+   "verdict": "not requested: automated reads are challenged; no bypass, no solver",
+   "viable": false
+  },
+  "wayback": {
+   "provider": "Internet Archive (captures of UFC Stats pages)",
+   "access": "public CDX index; existing scripts/backfill/wayback.py path; ufcstats.com never contacted",
+   "verdict": "no UFC Stats id on either corner or the bout, so there is no page to look up",
+   "viable": false,
+   "request_cost": 0
+  },
+  "licensed": {
+   "provider": "Commercial MMA data (e.g. Sportradar MMA, Stats Perform)",
+   "request_cost": 0,
+   "verdict": "not requested: not in our architecture, needs a contract/key and owner approval; unnecessary while the official feed covers DWCS",
+   "viable": null
+  }
+ },
+ "requests": [
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/event/live/1334.json",
+   "status": 200,
+   "ms": 668,
+   "bytes": 21890
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13015.json",
+   "status": 200,
+   "ms": 474,
+   "bytes": 9926
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13111.json",
+   "status": 200,
+   "ms": 613,
+   "bytes": 18683
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13112.json",
+   "status": 200,
+   "ms": 530,
+   "bytes": 14094
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13113.json",
+   "status": 200,
+   "ms": 570,
+   "bytes": 18725
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13114.json",
+   "status": 200,
+   "ms": 548,
+   "bytes": 9835
+  },
+  {
+   "candidate": "espn",
+   "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060736/competitions/401916065?lang=en&region=us",
+   "status": 200,
+   "ms": 231,
+   "bytes": 4146
+  },
+  {
+   "candidate": "espn",
+   "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060736/competitions/401916065/competitors/4907790/statistics?lang=en&region=us",
+   "status": 200,
+   "ms": 56,
+   "bytes": 10069
+  },
+  {
+   "candidate": "espn",
+   "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060736/competitions/401916065/competitors/4907790/statistics?lang=en&region=us",
+   "status": 200,
+   "ms": 48,
+   "bytes": 10069
+  }
+ ],
+ "request_cost_total": 9,
+ "viable_sources": []
+}
