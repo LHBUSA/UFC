@@ -276,3 +276,20 @@ resolver confidence only), article rail (article → bout → event links), and
 the Dana White profile (`getVideosMentioning("Dana White")` on the official
 channel). An empty result renders nothing; no surface ever shows an unrelated
 dump.
+
+## The Ultimate Fighter tag (`source_metadata.tuf`)
+
+Every row whose title or playlist is about The Ultimate Fighter carries
+`source_metadata.tuf` = `{ season, episode, kind, evidence }` (scripts/videos/tuf.mjs),
+from any mode: the live feed (ufc-video-autopilot) and the keyless playlist
+backfill (`ingest_youtube.mjs --playlist <id>`, run 2026-09-14 over the 19
+official TUF playlists, 290 rows). A season or episode is recorded only when the
+title, the playlist or the publisher's description states it.
+
+**Consumer: none today, by design.** No page reads the tag: the surfaces above
+reach TUF videos only through their ordinary event/fighter/bout links, and
+`web/lib/videoPolicy.ts` reads `source_metadata` for language and region only.
+The natural future consumer is the season page `/tuf/[slug]` (which already has
+an Episodes section): official videos with `tuf.season = slug`, grouped by
+`tuf.episode` where present. That is a product enhancement to decide on, not
+unfinished ingestion.
