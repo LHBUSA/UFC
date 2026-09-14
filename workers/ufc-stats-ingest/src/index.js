@@ -56,6 +56,8 @@ import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_re
 import { tufInHouseEventReason } from './shared/tuf_guard.mjs';
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
 import { roundArchiveGaps, roundLaneStatus, gapAlertDecision, DEFAULT_GRACE_HOURS, DEFAULT_ESCALATE_HOURS } from './archiveHealth.mjs';
+import { OFFICIAL_METHOD, officialFightUrl, officialEventUrl, ufcComEventUrl, fightIdsFromUfcComPage, parseOfficialEvent, parseOfficialFight,
+  officialReadiness, sameOfficialEvent, mapOfficialFighters, validateOfficialFight, officialRoundRows, ROUND_COLUMNS } from './ufcOfficial.mjs';
 
 /* Per-run ceiling on fight-total lookups, same idea as the scorecard cap:
  * a daily year-walk must not turn into an unbounded backfill. Each bout costs
@@ -111,7 +113,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.6.0';
+const VERSION = 'v0.7.0';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -135,6 +137,7 @@ function adminAuthorized(req, env) {
 const STATE = {
   health: 'ufc-raw/_state/source_health.json',
   archiveAlert: 'ufc-raw/_state/round_archive_alert.json',
+  officialEvent: (eventId) => `ufc-raw/_state/official_event/${eventId}.json`,
   latency: (boutId) => `ufc-raw/_state/latency/${boutId}.json`,
 };
 async function getState(env, key) {
@@ -209,6 +212,7 @@ export default {
       return json({
         service: SERVICE, version: VERSION, ...health,
         ufcstats_enabled: String(env.UFCSTATS_ENABLED ?? 'true') !== 'false',
+        official_rounds_enabled: officialRoundsEnabled(env),
         forward_days: Number(env.UFCSTATS_FORWARD_DAYS || 45),
         source_health: await getState(env, STATE.health),
         last_success: lastSuccess ? { started_at: lastSuccess.started_at, finished_at: lastSuccess.finished_at, round_rows: lastSuccess.notes?.round_rows ?? null, ufcstats_pass: lastSuccess.notes?.ufcstats_pass ?? null } : null,
@@ -228,10 +232,18 @@ export default {
         },
       });
     }
-    if (req.method !== 'POST' || !['/admin/run', '/admin/canary'].includes(url.pathname)) {
+    if (req.method !== 'POST' || !['/admin/run', '/admin/canary', '/admin/official-canary', '/admin/official-link'].includes(url.pathname)) {
       return json({ error: 'not_found', service: SERVICE, version: VERSION }, 404);
     }
     if (!adminAuthorized(req, env)) return json({ error: 'not_found' }, 404);
+    if (url.pathname === '/admin/official-canary') {
+      return json({ service: SERVICE, version: VERSION, invoked: 'manual', official_canary: await runOfficialCanary(env, {
+        eventId: url.searchParams.get('event_id'), officialEventId: url.searchParams.get('official_event_id'), n: Number(url.searchParams.get('n') || 6) }) });
+    }
+    if (url.pathname === '/admin/official-link') {
+      return json({ service: SERVICE, version: VERSION, invoked: 'manual', official_link: await linkOfficialEvent(env, {
+        eventId: url.searchParams.get('event_id'), officialEventId: url.searchParams.get('official_event_id') }) });
+    }
     if (url.pathname === '/admin/canary') {
       return json({ service: SERVICE, version: VERSION, invoked: 'manual', canary: await runCanary(env, { n: Number(url.searchParams.get('n') || 3) }) });
     }
@@ -519,7 +531,7 @@ async function loadContext(env) {
   const events = await selectAll(env, 'ufc_events', 'select=id,ufcstats_id,espn_event_id,name,event_date,card_status');
   const results = await selectAll(env, 'ufc_bout_results', 'select=bout_id,has_stats,winner_id,round,referee,finish_detail,time_format,stats_captured_at,judge_1');
   return {
-    resolver, byEspnAthlete, byUfcstatsFighter,
+    resolver, byEspnAthlete, byUfcstatsFighter, aliasByFighter,
     fightersById: new Map(fighters.map((f) => [f.id, f])),
     events, eventsByEspn: new Map(events.filter((e) => e.espn_event_id).map((e) => [e.espn_event_id, e])),
     bouts: boutRows, boutsByEspn: new Map(boutRows.filter((b) => b.espn_competition_id).map((b) => [b.espn_competition_id, b])),
@@ -1060,7 +1072,15 @@ async function roundStatLane(env, fetcher, ctx, run, { sourceAllowed, sourceReas
     return ok;
   });
 
-  /* 3. no source access: record why, fetch nothing */
+  /* 3. no UFC Stats access. With the official feed enabled, due items go to it
+   *    (same queue states, same writer, its own validation); otherwise record
+   *    why and fetch nothing. */
+  if (!sourceAllowed && officialRoundsEnabled(env)) {
+    await officialRoundPass(env, ctx, run, due, qBy, outcomes, sourceReason);
+    run.notes.round_rows = run.notes.round_rows_written;
+    run.notes.ufcstats_pass = `not fetched (${sourceReason}); official feed pass ran`;
+    return;
+  }
   if (!sourceAllowed) {
     for (const c of due) {
       const q = qBy.get(c.bout.id);
@@ -1182,6 +1202,288 @@ async function roundStatLane(env, fetcher, ctx, run, { sourceAllowed, sourceReas
   }
   run.notes.round_rows = run.notes.round_rows_written;
   run.notes.ufcstats_pass = 'ran';
+}
+
+/* ------------------------------------------------------------------------ */
+/* Official UFC statistics feed: round rows while UFC Stats is unavailable   */
+/* ------------------------------------------------------------------------ */
+/* See src/ufcOfficial.mjs for why this feed may write ufc_bout_round_stats and
+ * the equivalence evidence. It is used only when UFC Stats cannot be read
+ * (disabled or challenged). It never touches results, bout or event rows, or UFC
+ * Stats ids: it writes round rows and queue state, nothing else. */
+function officialRoundsEnabled(env) {
+  return String(env.UFC_OFFICIAL_ROUNDS_ENABLED || 'false') === 'true';
+}
+
+class OfficialCapError extends Error {}
+
+class OfficialFeed {
+  constructor(env) {
+    this.cap = Number(env.MAX_OFFICIAL_REQUESTS_PER_RUN || 45);
+    this.minIntervalMs = Number(env.OFFICIAL_MIN_INTERVAL_MS ?? 1000);
+    this.requests = 0;
+    this.statuses = {};
+    this.last = 0;
+  }
+  async get(url, kind = 'json') {
+    if (this.requests >= this.cap) throw new OfficialCapError(`official feed request cap ${this.cap} reached`);
+    const wait = this.last + this.minIntervalMs - Date.now();
+    if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+    this.last = Date.now();
+    this.requests += 1;
+    let res;
+    try {
+      res = await fetch(url, { headers: { 'User-Agent': `PropBetEdge ${SERVICE}/${VERSION}`, Accept: kind === 'json' ? 'application/json' : 'text/html' } });
+    } catch (e) {
+      this.statuses.network_error = (this.statuses.network_error || 0) + 1;
+      return { ok: false, status: 'network_error', detail: String(e?.message || e).slice(0, 120) };
+    }
+    this.statuses[res.status] = (this.statuses[res.status] || 0) + 1;
+    if (!res.ok) return { ok: false, status: res.status };
+    if (kind === 'json') {
+      try { return { ok: true, status: res.status, body: await res.json() }; } catch (_) { return { ok: false, status: 'invalid_json' }; }
+    }
+    return { ok: true, status: res.status, body: await res.text() };
+  }
+  telemetry() { return { requests: this.requests, http_statuses: this.statuses, cap: this.cap }; }
+}
+
+/* Which official event is this card? A verified link stored earlier (by a run
+ * or by POST /admin/official-link), else the card's UFC.com event page. Every
+ * answer is re-checked against the official event document: same date (+-1
+ * day) and the same event name. Returns { official, via, url } or { reason }. */
+async function resolveOfficialEvent(env, feed, event, { store = true } = {}) {
+  const stored = await getState(env, STATE.officialEvent(event.id));
+  const tryEvent = async (officialId, via) => {
+    const url = officialEventUrl(officialId);
+    const got = await feed.get(url);
+    if (!got.ok) return { reason: `official event ${officialId} HTTP ${got.status}` };
+    const parsed = parseOfficialEvent(got.body);
+    if (parsed.error) return { reason: `official event ${officialId}: ${parsed.error}` };
+    if (!sameOfficialEvent(parsed, event)) return { reason: `official event ${officialId} is "${parsed.name}" ${parsed.date}, not "${event.name}" ${event.event_date}`, mismatch: true };
+    return { official: parsed, via, url };
+  };
+  if (stored?.official_event_id) return tryEvent(stored.official_event_id, stored.via || 'stored_link');
+
+  const link = (await select(env, 'ufc_event_broadcasts', `select=ufc_slug&event_id=eq.${event.id}&limit=1`))?.[0];
+  if (!link?.ufc_slug) return { reason: 'no UFC.com event link for this card' };
+  const page = await feed.get(ufcComEventUrl(link.ufc_slug), 'html');
+  if (!page.ok) return { reason: `UFC.com event page HTTP ${page.status}` };
+  const checked = new Set();
+  let last = { reason: 'no official fight id on the UFC.com event page' };
+  for (const fid of fightIdsFromUfcComPage(page.body).slice(0, 4)) {
+    const doc = await feed.get(officialFightUrl(fid));
+    const parsed = doc.ok ? parseOfficialFight(doc.body) : null;
+    const officialId = parsed && !parsed.error ? parsed.event.id : null;
+    if (!officialId || checked.has(officialId)) continue;
+    checked.add(officialId);
+    const r = await tryEvent(officialId, `ufc_com_event_page:${link.ufc_slug}`);
+    if (r.official) {
+      if (store) await putState(env, STATE.officialEvent(event.id), { official_event_id: r.official.id, name: r.official.name, date: r.official.date, via: r.via, verified_at: nowIso() });
+      return r;
+    }
+    last = r;
+  }
+  return last;
+}
+
+async function linkOfficialEvent(env, { eventId, officialEventId }) {
+  if (!eventId || !/^\d+$/.test(String(officialEventId || ''))) return { ok: false, reason: 'event_id and a numeric official_event_id are required' };
+  const event = (await select(env, 'ufc_events', `select=id,name,event_date&id=eq.${eventId}`))?.[0];
+  if (!event) return { ok: false, reason: 'unknown event_id' };
+  const feed = new OfficialFeed(env);
+  const got = await feed.get(officialEventUrl(officialEventId));
+  const parsed = got.ok ? parseOfficialEvent(got.body) : { error: `HTTP ${got.status}` };
+  if (parsed.error) return { ok: false, reason: parsed.error, feed: feed.telemetry() };
+  if (!sameOfficialEvent(parsed, event)) return { ok: false, reason: `official event ${officialEventId} is "${parsed.name}" ${parsed.date}, not "${event.name}" ${event.event_date}` };
+  const value = { official_event_id: parsed.id, name: parsed.name, date: parsed.date, via: 'admin_link', verified_at: nowIso() };
+  await putState(env, STATE.officialEvent(event.id), value);
+  return { ok: true, event: { id: event.id, name: event.name, event_date: event.event_date }, link: value, fights: parsed.fightIds.length };
+}
+
+/* Fetch every fight document on an official card once. */
+async function officialCardDocs(feed, official) {
+  const docs = [];
+  for (const fid of official.fightIds) {
+    const url = officialFightUrl(fid);
+    const got = await feed.get(url);
+    if (!got.ok) { docs.push({ fid, url, error: `HTTP ${got.status}` }); continue; }
+    const parsed = parseOfficialFight(got.body);
+    docs.push(parsed.error ? { fid, url, error: parsed.error } : { fid, url, parsed });
+  }
+  return docs;
+}
+
+async function officialRoundPass(env, ctx, run, due, qBy, outcomes, sourceReason) {
+  const feed = new OfficialFeed(env);
+  const maxEvents = Number(env.MAX_EVENTS_PER_RUN || 3);
+  const note = { enabled: true, events: [] };
+  run.notes.official = note;
+  const byEvent = new Map();
+  for (const c of due) {
+    if (!byEvent.has(c.event.id)) byEvent.set(c.event.id, { event: c.event, items: [] });
+    byEvent.get(c.event.id).items.push(c);
+  }
+  /* Most recent card first: the card people are looking at recovers first. */
+  const groups = [...byEvent.values()].sort((a, b) => String(b.event.event_date).localeCompare(String(a.event.event_date)));
+  const wait = async (c, why) => {
+    const reason = `${sourceReason}; official feed: ${why}`.slice(0, 500);
+    const q = qBy.get(c.bout.id);
+    if (q?.state !== 'awaiting_source' || q?.last_reason !== reason) await qset(env, c.bout.id, { state: 'awaiting_source', last_reason: reason, next_attempt_at: null });
+    outcomes.awaiting_source += 1;
+  };
+  let eventsDone = 0;
+  for (const { event, items } of groups) {
+    const en = { event_id: event.id, event: event.name, event_date: event.event_date, bouts: items.length };
+    note.events.push(en);
+    if (eventsDone >= maxEvents) { en.outcome = 'deferred (per-run event cap)'; for (const c of items) await wait(c, 'deferred to the next run (per-run event cap)'); continue; }
+    eventsDone += 1;
+    let ev; let docs;
+    try {
+      ev = await resolveOfficialEvent(env, feed, event);
+      if (ev.official) docs = await officialCardDocs(feed, ev.official);
+    } catch (e) {
+      if (!(e instanceof OfficialCapError)) throw e;
+      en.outcome = 'deferred (request cap)';
+      for (const c of items) await wait(c, 'deferred to the next run (request cap)');
+      continue;
+    }
+    if (!ev.official) {
+      en.outcome = ev.reason;
+      if (ev.mismatch) {
+        for (const c of items) {
+          outcomes.identity_review += 1;
+          await qset(env, c.bout.id, { state: 'identity_review', last_reason: `official feed: ${ev.reason}`.slice(0, 500), next_attempt_at: nextAttempt('identity_review', Date.now()) });
+        }
+      } else {
+        for (const c of items) await wait(c, ev.reason);
+      }
+      continue;
+    }
+    en.official_event_id = ev.official.id;
+    en.link = ev.via;
+    en.fight_documents = docs.length;
+    en.fight_document_errors = docs.filter((d) => d.error).map((d) => ({ fight_id: d.fid, error: d.error }));
+    const ids = items.map((c) => c.bout.id);
+    const stored = new Map(((await select(env, 'ufc_bout_results', `select=bout_id,winner_id,round,time_sec&bout_id=in.(${ids.join(',')})`)) || []).map((r) => [r.bout_id, r]));
+    for (const c of items) {
+      const { bout } = c;
+      const q = qBy.get(bout.id) || {};
+      const attempt = { attempts: (q.attempts || 0) + 1, last_attempt_at: nowIso() };
+      const fighterA = ctx.fightersById.get(bout.fighter_a_id);
+      const fighterB = ctx.fightersById.get(bout.fighter_b_id);
+      const matches = docs.filter((d) => d.parsed).map((d) => ({ d, m: mapOfficialFighters(d.parsed, fighterA, fighterB, ctx.aliasByFighter || new Map()) })).filter((x) => x.m.map);
+      const baseEvidence = { source: 'ufc_official', official_event_id: ev.official.id, official_event_url: ev.url, event_link: ev.via, our_fighters: [fighterA?.name, fighterB?.name] };
+      if (matches.length !== 1) {
+        if (!matches.length && en.fight_document_errors.length) { await wait(c, `${en.fight_document_errors.length} fight document(s) unavailable; no exact match yet`); continue; }
+        const reason = `official feed: ${matches.length} fights on official event ${ev.official.id} match both corners exactly`;
+        outcomes.identity_review += 1;
+        run.notes.lane_problems.push({ bout_id: bout.id, kind: 'identity_review', source: 'ufc_official', event: event.name, reason });
+        await qset(env, bout.id, { ...attempt, state: 'identity_review', last_reason: reason, identity_method: OFFICIAL_METHOD, identity_evidence: baseEvidence, next_attempt_at: nextAttempt('identity_review', Date.now()) });
+        continue;
+      }
+      const { d, m } = matches[0];
+      const idFields = { identity_method: OFFICIAL_METHOD, identity_evidence: { ...baseEvidence, official_fight_id: d.fid, official_fight_url: d.url, fighters: m.via } };
+      const ready = officialReadiness(d.parsed);
+      if (!ready.ready) {
+        outcomes.not_yet_published += 1;
+        await qset(env, bout.id, { ...attempt, ...idFields, state: 'not_yet_published', last_reason: ready.reason, last_unavailable_at: nowIso(), next_attempt_at: nextAttempt('not_yet_published', Date.now()) });
+        continue;
+      }
+      const problems = validateOfficialFight({ parsed: d.parsed, mapping: m, result: stored.get(bout.id) || null });
+      if (problems.length) {
+        outcomes.validation_failed += 1;
+        run.notes.lane_problems.push({ bout_id: bout.id, kind: 'validation_failed', source: 'ufc_official', url: d.url, problems });
+        run.assertion_failures.push({ class: 'OfficialRoundValidation', url: d.url, detail: problems.join('; ').slice(0, 300), at: nowIso() });
+        await qset(env, bout.id, { ...attempt, ...idFields, state: 'validation_failed', last_reason: problems.join('; ').slice(0, 500), next_attempt_at: nextAttempt('validation_failed', Date.now()) });
+        continue;
+      }
+      const capturedAt = nowIso();
+      const rows = officialRoundRows(d.parsed, m, bout.id, d.url, capturedAt);
+      const before = await count(env, 'ufc_bout_round_stats', `bout_id=eq.${bout.id}`);
+      await upsert(env, 'ufc_bout_round_stats', rows, 'bout_id,fighter_id,round');
+      const after = await count(env, 'ufc_bout_round_stats', `bout_id=eq.${bout.id}`);
+      if (after !== rows.length) throw new SchemaAssertionError(d.url, `round rows after upsert ${after} != official rows ${rows.length}`);
+      await qset(env, bout.id, { ...attempt, ...idFields, state: 'written', last_reason: 'round rows from the official UFC statistics feed', written_at: capturedAt,
+        rows_written: after - before, source_first_available_at: q.source_first_available_at || capturedAt, next_attempt_at: null });
+      run.notes.round_rows_written += after - before;
+      outcomes.written += 1;
+      run.notes.written_bouts.push({ bout_id: bout.id, source: 'ufc_official', official_fight_id: d.fid, identity_method: OFFICIAL_METHOD, rows: rows.length,
+        rows_before: before, rows_after: after, rounds: new Set(rows.map((r) => r.round)).size, fighters: [fighterA?.name, fighterB?.name] });
+    }
+  }
+  note.feed = feed.telemetry();
+}
+
+/* Read-only proof of the official feed from Cloudflare egress: for bouts on a
+ * card whose round rows are already stored, map, validate and compare every
+ * stored column. Writes nothing but its own run-ledger row. */
+async function runOfficialCanary(env, { eventId, officialEventId, n = 6 }) {
+  const feed = new OfficialFeed(env);
+  const report = { at: nowIso(), event_id: eventId, official_event_id: officialEventId || null, bouts: [], verdict: null };
+  let runId = null;
+  try {
+    const created = await insert(env, 'ufc_ingest_runs', { worker: SERVICE, status: 'running', notes: { mode: 'official_canary', version: VERSION } });
+    runId = created?.[0]?.id || null;
+    const event = eventId ? (await select(env, 'ufc_events', `select=id,name,event_date&id=eq.${eventId}`))?.[0] : null;
+    if (!event) throw new Error('unknown event_id');
+    let ev;
+    if (officialEventId) {
+      const got = await feed.get(officialEventUrl(officialEventId));
+      const parsed = got.ok ? parseOfficialEvent(got.body) : { error: `HTTP ${got.status}` };
+      ev = parsed.error ? { reason: parsed.error } : sameOfficialEvent(parsed, event) ? { official: parsed, via: 'canary_param', url: officialEventUrl(officialEventId) } : { reason: `official event is "${parsed.name}" ${parsed.date}` };
+    } else {
+      ev = await resolveOfficialEvent(env, feed, event, { store: false });
+    }
+    if (!ev.official) throw new Error(`official event not resolved: ${ev.reason}`);
+    report.official_event = { id: ev.official.id, name: ev.official.name, date: ev.official.date, via: ev.via };
+    const bouts = await select(env, 'ufc_bouts', `select=id,fighter_a_id,fighter_b_id,status&event_id=eq.${event.id}`);
+    const withRows = await boutsWithRounds(env, bouts.map((b) => b.id));
+    const picked = bouts.filter((b) => withRows.has(b.id)).slice(0, Math.max(1, Math.min(Number(n) || 6, 14)));
+    const docs = await officialCardDocs(feed, ev.official);
+    const aliases = new Map();
+    const fighterIds = [...new Set(picked.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]))];
+    if (fighterIds.length) {
+      for (const a of (await select(env, 'ufc_fighter_aliases', `select=fighter_id,alias&fighter_id=in.(${fighterIds.join(',')})`)) || []) {
+        if (!aliases.has(a.fighter_id)) aliases.set(a.fighter_id, []);
+        aliases.get(a.fighter_id).push(a.alias);
+      }
+    }
+    for (const b of picked) {
+      const fighters = await select(env, 'ufc_fighters', `select=id,name&id=in.(${b.fighter_a_id},${b.fighter_b_id})`);
+      const fa = fighters.find((x) => x.id === b.fighter_a_id);
+      const fb = fighters.find((x) => x.id === b.fighter_b_id);
+      const result = (await select(env, 'ufc_bout_results', `select=winner_id,round,time_sec&bout_id=eq.${b.id}`))?.[0] || null;
+      const matches = docs.filter((d) => d.parsed).map((d) => ({ d, m: mapOfficialFighters(d.parsed, fa, fb, aliases) })).filter((x) => x.m.map);
+      if (matches.length !== 1) { report.bouts.push({ bout_id: b.id, fighters: [fa?.name, fb?.name], matched: matches.length }); continue; }
+      const { d, m } = matches[0];
+      const problems = validateOfficialFight({ parsed: d.parsed, mapping: m, result });
+      const rows = officialRoundRows(d.parsed, m, b.id, d.url, 'canary');
+      const stored = await select(env, 'ufc_bout_round_stats', `select=fighter_id,round,${ROUND_COLUMNS.map(([c]) => c).join(',')}&bout_id=eq.${b.id}`);
+      const key = (r) => `${r.fighter_id}|${r.round}`;
+      const storedBy = new Map(stored.map((r) => [key(r), r]));
+      const mismatches = [];
+      for (const r of rows) {
+        const s = storedBy.get(key(r));
+        if (!s) { mismatches.push({ row: key(r), issue: 'official row not stored' }); continue; }
+        for (const [c] of ROUND_COLUMNS) if ((s[c] ?? null) !== (r[c] ?? null)) mismatches.push({ row: key(r), col: c, stored: s[c], official: r[c] });
+      }
+      const rowKeys = new Set(rows.map(key));
+      report.bouts.push({ bout_id: b.id, fighters: [fa?.name, fb?.name], official_fight_id: d.fid, matched: 1, validation_problems: problems,
+        official_rows: rows.length, stored_rows: stored.length, cells_compared: rows.length * ROUND_COLUMNS.length, mismatch_count: mismatches.length,
+        mismatches: mismatches.slice(0, 10), stored_rows_not_in_feed: stored.filter((r) => !rowKeys.has(key(r))).length });
+    }
+    const compared = report.bouts.filter((x) => x.matched === 1);
+    report.verdict = compared.length && compared.every((x) => !x.validation_problems.length && !x.mismatch_count && !x.stored_rows_not_in_feed) ? 'clean' : 'discrepancies';
+  } catch (e) {
+    report.verdict = 'error';
+    report.error = { class: e?.name || 'Error', detail: String(e?.message || e).slice(0, 300) };
+  }
+  report.feed = feed.telemetry();
+  if (runId) {
+    try { await patch(env, 'ufc_ingest_runs', `id=eq.${runId}`, { finished_at: nowIso(), status: report.verdict === 'clean' ? 'success' : 'failed', notes: { mode: 'official_canary', version: VERSION, ...report } }); } catch (_) { /* the response still carries the report */ }
+  }
+  return report;
 }
 
 /* UFC Stats identity for one of our bouts, without trusting names alone and

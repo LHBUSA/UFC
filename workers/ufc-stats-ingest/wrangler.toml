@@ -54,6 +54,17 @@ SOURCE_BACKOFF_HOURS = "6"
 # off it for SOURCE_BACKOFF_HOURS. "true" re-enables the proof-of-work solver
 # in ufcstats.mjs for the exact 2026-09-05 shape; that is an operator decision.
 UFCSTATS_SOLVE_CHALLENGE = "false"
+# Official UFC statistics feed (src/ufcOfficial.mjs): per-round statistics from
+# the JSON behind UFC.com event pages. Used ONLY while UFC Stats cannot be read
+# (disabled or challenged); writes round rows and queue state, never results,
+# bouts, events or UFC Stats ids. Equivalence before enabling: 23 bouts whose
+# UFC Stats rows were stored, 2,156 cells compared, 0 mismatches
+# (docs/ops/evidence/ufc_official_round_feed_equivalence_2026-09-14.json).
+# Turned on only after POST /admin/official-canary is clean from Cloudflare egress.
+UFC_OFFICIAL_ROUNDS_ENABLED = "false"
+# Per-run ceiling on official feed requests (UFC.com event page + event + fight documents).
+MAX_OFFICIAL_REQUESTS_PER_RUN = "45"
+OFFICIAL_MIN_INTERVAL_MS = "1000"
 # Optional window override for ESPN, e.g. "20251214" or "20251201-20251231".
 # ESPN_DATES = ""
 

@@ -1,0 +1,105 @@
+{
+ "audited_at": "2026-09-14T01:10Z..01:55Z",
+ "card": "Noche UFC: Silva vs. Delgado (2026-09-12), event 1d0b22df-81e7-4e5b-8fa5-8e5d03c24c52, UFC Stats event 638cfec7ec559d6e",
+ "ufc_bout_round_stats": {
+  "noche_rows": 0
+ },
+ "r2_ufc_raw": {
+  "bucket": "ufc-raw",
+  "keys_checked": [
+   "ufc-raw/events/638cfec7ec559d6e.html",
+   "ufc-raw/fights/64da2e60f1b472fa.html",
+   "ufc-raw/fights/5a91827fe8c1dc26.html",
+   "ufc-raw/fights/d0d48877bf3724d1.html",
+   "ufc-raw/fights/0aa849ca85e4355a.html",
+   "ufc-raw/fights/046c22f769fd8300.html",
+   "ufc-raw/fights/f154037892b9fb94.html",
+   "ufc-raw/fights/51caa91f68873cf5.html",
+   "ufc-raw/fights/606639bf387f60e2.html",
+   "ufc-raw/fights/d9712b45c094730e.html",
+   "ufc-raw/fights/1fca7dfa9e1e15cb.html",
+   "ufc-raw/fights/1aa008d8597a73b8.html"
+  ],
+  "present": 0,
+  "key_convention_verified_with": "ufc-raw/_state/source_health.json (present)"
+ },
+ "combat_round_stats": {
+  "total_rows": 0,
+  "note": "combat direct-source system (Wikipedia/Wikidata career layer); no round data"
+ },
+ "wayback_cdx": {
+  "method": "CDX exact-URL lookups via web.archive.org only (existing scripts/backfill/wayback.py path); ufcstats.com not contacted",
+  "results": {
+   "ufcstats.com/event-details/638cfec7ec559d6e": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/64da2e60f1b472fa": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/5a91827fe8c1dc26": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/d0d48877bf3724d1": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/0aa849ca85e4355a": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/046c22f769fd8300": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/f154037892b9fb94": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/51caa91f68873cf5": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/606639bf387f60e2": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/d9712b45c094730e": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/1fca7dfa9e1e15cb": {
+    "http": 200,
+    "captures": 0
+   },
+   "ufcstats.com/fight-details/1aa008d8597a73b8": {
+    "http": 200,
+    "captures": 0
+   }
+  }
+ },
+ "espn": {
+  "core_competitor_statistics": "splits.type=total for /statistics/0..4 (identical documents)",
+  "linescores": "judges' scores",
+  "site_fightcenter": "no round statistics (only period)",
+  "verdict": "fight totals only; not a round source"
+ },
+ "ufc_official_feed": {
+  "base": "https://d29dxerjsp82wz.cloudfront.net/api/v3",
+  "noche_official_event_id": "1331",
+  "noche_fights": 13,
+  "sample": "fight/live/12975.json Status Final, OfficialStats true, RoundStats 2 fighters x 3 rounds",
+  "contender_series_on_ufc_com": false,
+  "verdict": "directly observed per-round official statistics; equivalence proven (ufc_official_round_feed_equivalence_2026-09-14.json)"
+ },
+ "issue_49_missing_ufcstats_fight_ids": {
+  "bouts": [
+   "Yousri Belgaroui vs Djorden Santos",
+   "Jean Silva vs Jose Miguel Delgado"
+  ],
+  "local_evidence": "no stored UFC Stats event page, no R2 raw HTML, no Wayback capture, no crosswalk row",
+  "status": "left open"
+ }
+}

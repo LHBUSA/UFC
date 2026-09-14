@@ -1,0 +1,62 @@
+{
+ "LiveEventDetail": {
+  "EventId": 1331,
+  "Name": "Noche UFC: Silva vs. Delgado",
+  "StartTime": "2026-09-12T18:00Z",
+  "Status": "Final",
+  "FightCard": [
+   {
+    "FightId": 13099,
+    "FightOrder": 1
+   },
+   {
+    "FightId": 12977,
+    "FightOrder": 2
+   },
+   {
+    "FightId": 13040,
+    "FightOrder": 3
+   },
+   {
+    "FightId": 12976,
+    "FightOrder": 4
+   },
+   {
+    "FightId": 12975,
+    "FightOrder": 5
+   },
+   {
+    "FightId": 13000,
+    "FightOrder": 6
+   },
+   {
+    "FightId": 12978,
+    "FightOrder": 7
+   },
+   {
+    "FightId": 13001,
+    "FightOrder": 8
+   },
+   {
+    "FightId": 13097,
+    "FightOrder": 9
+   },
+   {
+    "FightId": 13118,
+    "FightOrder": 10
+   },
+   {
+    "FightId": 13092,
+    "FightOrder": 11
+   },
+   {
+    "FightId": 13119,
+    "FightOrder": 12
+   },
+   {
+    "FightId": 12980,
+    "FightOrder": 13
+   }
+  ]
+ }
+}

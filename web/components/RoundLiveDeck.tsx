@@ -95,7 +95,7 @@ export function RoundLiveDeck({ state, now = Date.now() }: { state: RoundLiveSta
               {live && <span className={styles.dot} aria-hidden="true" />}
               {primaryLabel}
             </span>
-            {/* Two counts, never merged: results are ESPN, rounds are UFC Stats. */}
+            {/* Two counts, never merged: results are ESPN, rounds are official UFC fight statistics. */}
             <span className={styles.sigResults}>
               {c.results > 0
                 ? `Results · ${c.results}${c.cardSize ? ` of ${c.cardSize}` : ""} bouts`
@@ -178,7 +178,7 @@ export function RoundLiveDeck({ state, now = Date.now() }: { state: RoundLiveSta
             <h3>{live ? <>Tonight&rsquo;s completed-fight round intelligence</> : "Completed fights from this card"}</h3>
             <span>
               {state.completedResults.length > 0
-                ? "Newest completed bout first · results from ESPN, round observations from UFC Stats"
+                ? "Newest completed bout first · results from ESPN, round observations from official UFC fight statistics"
                 : "Updates as official completed-fight data becomes available"}
             </span>
           </div>
