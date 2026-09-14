@@ -205,11 +205,21 @@ test("an ongoing season never carries a winner", () => {
   }
 });
 
-test("a season with disputed winners records finalists, not a guess", () => {
-  const t33 = seasons.find((s) => s.slug === "tuf-33")!;
-  assert.deepEqual(t33.winners, []);
-  assert.ok((t33.finalists ?? []).length > 0);
-  assert.ok(inventory._conflicts.some((c) => c.scope === "tuf-33"));
+test("a disputed-winner season is resolved only by a named first-party source, with the old state kept", () => {
+  const t33 = seasons.find((s) => s.slug === "tuf-33")! as (typeof seasons)[number] & {
+    corrections?: Array<{ repair?: string; field: string; old: unknown; new: unknown; sources?: Array<{ url?: string; family?: string }> }>;
+    completion_unverified?: boolean; winner_note?: string;
+  };
+  assert.deepEqual(t33.winners.map((w) => [w.weight_class, w.fighter]), [["Flyweight", "Joseph Morales"], ["Welterweight", "Daniil Donchenko"]]);
+  assert.equal(t33.completion_unverified, undefined);
+  assert.equal(t33.winner_note, undefined);
+  assert.ok(!inventory._conflicts.some((c) => c.scope === "tuf-33"), "the winners conflict is no longer open");
+  const resolved = (inventory as unknown as { _resolved_conflicts?: Array<{ scope: string; field: string; resolved_by: string }> })._resolved_conflicts ?? [];
+  assert.ok(resolved.some((c) => c.scope === "tuf-33" && c.field === "winners" && c.resolved_by === "tuf33-finals-exact-linkage"));
+  const winners = t33.corrections!.find((c) => c.field === "winners")!;
+  assert.deepEqual(winners.old, [], "the unresolved state is kept as the old value");
+  assert.ok(winners.sources!.every((x) => /^https:\/\/www\.ufc\.com\//.test(String(x.url))), "winners come from UFC.com only");
+  assert.ok(!JSON.stringify(t33.corrections).includes("paramountplus"), "the Paramount+ listing is not an authority here");
 });
 
 test("every season has a unique slug in a declared edition, and the internationals are present", () => {
@@ -1147,7 +1157,7 @@ test("commission corrections beat the draft and keep old value, new value, sourc
   assert.deepEqual(get("Luke Cummo", "Sammy Morgan").corrections!.map((c) => [c.field, c.old, c.new]), [["method", "KO (knee)", "TKO"], ["time", "2:05", "2:08"]]);
   assert.deepEqual(get("Joe Stevenson", "Jason Von Flue").corrections!.map((c) => [c.field, c.old, c.new]), [["time", "4:46", "4:49"]]);
   for (const b of corrected) for (const c of b.corrections!) {
-    assert.ok(c.source.document_id && c.source.record_id && c.reason.length > 20);
+    assert.ok(c.source?.document_id && c.source?.record_id && c.reason.length > 20);
   }
 });
 

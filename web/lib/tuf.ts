@@ -181,8 +181,15 @@ export function commissionRecord(id: string | undefined | null): { record: Commi
  * compatible extra detail moves to the bout's `method_detail` — the draft is
  * not shown to be wrong. */
 export type FieldCorrection = {
-  field: string; old: unknown; new: unknown; source: { document_id?: string; record_id?: string }; reason: string; batch?: string;
-  kind?: "commission_correction" | "method_normalization";
+  field: string; old: unknown; new: unknown; reason: string; batch?: string;
+  /** The commission record a commission correction cites. */
+  source?: { document_id?: string; record_id?: string };
+  /** `official_source_correction`: a first-party UFC source states the value
+   * (the repair key and the sources that state it are carried alongside). */
+  kind?: "commission_correction" | "method_normalization" | "official_source_correction";
+  repair?: string;
+  sources?: EvidenceSource[];
+  approved?: { by: string; on: string };
   /** For a method normalization: the compatible detail kept in method_detail. */
   detail?: string;
 };
@@ -291,6 +298,8 @@ export type SeasonRow = {
   finale_event: string | null;
   finale_date: string | null;
   finale_link_basis?: string;
+  /** Row-level corrections from official sources, each with its repair key and old value. */
+  corrections?: FieldCorrection[];
   /** One entry per weight class. A list, not a single card, because a
    * season's divisions have been decided on different nights. */
   final_bouts?: Array<{
@@ -442,6 +451,8 @@ const INV = inventory as unknown as {
   editions: Edition[];
   seasons: SeasonRow[];
   _conflicts?: Array<{ scope: string; field: string; detail: string; retrieved?: string }>;
+  /** Inventory conflicts settled by a named source, kept as history. */
+  _resolved_conflicts?: Array<{ scope: string; field: string; detail: string; resolved_by: string; resolved_with: string; resolution: string }>;
   _provenance?: { primary: string; retrieved: string; note?: string };
 };
 
