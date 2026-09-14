@@ -146,6 +146,9 @@ export const APPLIED = new Set([
   // production: 105/105. Commit-time assertions 89/89; fresh-connection verify
   // 36/36. See docs/legacy/origins_data_model.md.
   '20260913140000_ufc_legacy_origins.sql',
+  // Issue #27: public.ufc_dna_metric_ranking. Applied 2026-09-14 via apply_supabase_migration.ps1 (proof, then apply);
+  // stable, security invoker, execute service_role only (anon 401). Read-only; the ufc-api Worker calls it over GET.
+  '20260914120000_ufc_dna_metric_ranking.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))
