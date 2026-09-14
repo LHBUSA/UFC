@@ -82,6 +82,18 @@ export async function getAlgoPublicRecord(): Promise<AlgoPublicRecord> {
   };
 }
 
+/** PBE Algo is issuing official calls: the release is registered live AND the
+ *  scheduler has completed an armed cycle in the last 48 hours. Product state,
+ *  not a route: marketing surfaces use this, never the existence of /algo.
+ *  Uncached (an existence question), fails closed. */
+export async function algoCallsActive(): Promise<boolean> {
+  if (fixture()) return process.env.PBE_ALGO_FIXTURE_ACTIVE === "1";
+  if (!(await algoLive())) return false;
+  const since = new Date(Date.now() - 48 * 3600e3).toISOString();
+  const runs = await rest<{ id: string }>(`ufc_model_runs?select=id&mode=eq.armed&status=eq.ok&model_version=eq.${encodeURIComponent(MODEL_VERSION)}&finished_at=gte.${since}&limit=1`);
+  return runs.length > 0;
+}
+
 /* ---- UFC Pro ------------------------------------------------------------ */
 
 type EvalRow = { bout_id: string; event_id: string; decision: "ELIGIBLE" | "NO_MODEL_CALL"; reasons: string[]; confidence: AlgoBoutView["confidence"]; pick_fighter_id: string | null; pick_probability: number | null; features_available: number | null; sample: AlgoBoutView["sample"]; market: AlgoBoutView["market"]; model_version: string; feature_version: string; evaluated_at: string };

@@ -15,7 +15,10 @@ import { storyMedia } from "@/lib/faces";
 import { getMatchupDna } from "@/lib/dna";
 import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
+import { headers } from "next/headers";
 import { HousePromo } from "@/components/HousePromo";
+import { classifyStory, selectPromo, weightsFor } from "@/lib/housePromo";
+import { algoCallsActive } from "@/lib/algo";
 import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } from "@/components/editorial";
 import { getEditorialMarket } from "@/lib/editorialMarket";
 import { getRankingMap } from "@/lib/rankings";
@@ -136,6 +139,20 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
     : railInitialSelection(videos, 3).filter((v) => isViewable(v));
   const updated = materiallyUpdated(a.published_at, a.updated_at);
   const articleUrl = `${SITE.url}/news/${a.slug}`;
+  /* House promo: chosen deterministically from the article, the reader's
+   * entitlement and live product state. Presentation only: never in the body,
+   * metadata or JSON-LD. PBE Algo state is read only for story classes that can
+   * carry the Algo campaign. Impressions are one server log line per real
+   * render (no client request); the desk preview neither logs nor tracks. */
+  const promoClass = classifyStory({ storyType: a.story_type, slug: a.slug, headline: a.headline });
+  const promo = selectPromo({
+    storyType: a.story_type, slug: a.slug, headline: a.headline, readerPro: access.pro,
+    algoActive: (weightsFor(promoClass).get("algo") ?? 0) > 0 ? await algoCallsActive().catch(() => false) : false,
+  });
+  if (!preview) {
+    const ua = (await headers()).get("user-agent") || "";
+    console.info(JSON.stringify({ evt: "house_promo_impression", campaign: promo.campaign.id, placement: "end", dest: promo.campaign.dest, slug: a.slug, story_class: promo.storyClass, rotation: promo.rotationVersion, bot: /bot|crawl|spider|slurp|preview|headless/i.test(ua), at: new Date().toISOString() }));
+  }
   const keywords = [...new Set(["UFC", "MMA", label, event?.name, ...fighters.map((f) => f.name), "PropBetEdge UFC", "Fight Intelligence"].filter(Boolean))];
 
   return (
@@ -229,7 +246,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
           )}
           {/* First-party product promotion: presentation only, never in the body,
             * metadata or JSON-LD. Clicks are not recorded from a desk preview. */}
-          <HousePromo storyType={a.story_type} slug={a.slug} track={!preview} />
+          <HousePromo selection={promo} slug={a.slug} track={!preview} />
         </div>
         <aside className="stack" style={{ gap: 24 }}>
           {bout && event && (
