@@ -7,7 +7,7 @@ import { buildSections, getRoundIndex, type RoundIndexBout } from "@/lib/roundIn
 import { fmtDate, METHOD_SHORT, weightClassLabel } from "@/lib/format";
 import { matchupSlug } from "@/lib/slug";
 import { SITE } from "@/lib/site";
-import { getRoundLiveState } from "@/lib/roundLive";
+import { getRoundForRoundState } from "@/lib/roundLive";
 import { RoundLiveDeck } from "@/components/RoundLiveDeck";
 import styles from "./round-by-round.module.css";
 import cardStyles from "./round-cards.module.css";
@@ -112,7 +112,7 @@ export default async function RoundByRoundIndex() {
    * below is untouched — the two must never be able to break each other. */
   const [index, liveState] = await Promise.all([
     getRoundIndex(),
-    getRoundLiveState().catch(() => null),
+    getRoundForRoundState().catch(() => null),
   ]);
   const ok = index.status === "ok" ? index : null;
   const t = ok?.totals;
@@ -128,10 +128,11 @@ export default async function RoundByRoundIndex() {
     <div className={`wrap page ${styles.page}`}>
       <Breadcrumbs items={[{ name: "Round-by-Round" }]} />
 
-      {/* Band 1 + 2: the live event, then tonight's completed-fight round
-          intelligence. Renders only when there is a card to talk about; the
-          archive below is the page's permanent state. */}
-      {liveState?.broadcast ? <RoundLiveDeck state={liveState} /> : null}
+      {/* Band 1 + 2: the live card, else the latest completed card (kept after
+          its broadcast window closes, while its round observations land), then
+          its completed fights. The next card, if any, is a separate small panel
+          and never the focus. The archive below is the page's permanent state. */}
+      {liveState?.focus || liveState?.next ? <RoundLiveDeck state={liveState} /> : null}
 
       <header className={styles.hero}>
         <div className={styles.heroGrid} aria-hidden="true" />

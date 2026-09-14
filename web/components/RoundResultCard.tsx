@@ -39,7 +39,7 @@ export function RoundResultCard({
   eventDate: string | null;
   latest?: boolean;
 }) {
-  const { bout, coverage, roundReady, scorecard } = entry;
+  const { bout, coverage, roundReady, noRoundDetail, scorecard } = entry;
   const r = bout.result;
   const a = bout.fighter_a;
   const b = bout.fighter_b;
@@ -107,7 +107,7 @@ export function RoundResultCard({
         <span className={styles.chipOfficial}>Official result</span>
         {showScorecards && <span className={styles.chipCards}>Scorecards available</span>}
         <span className={roundReady ? styles.chipReady : styles.chipPending}>
-          {roundReady ? "Round intelligence ready" : "Round data pending"}
+          {roundReady ? "Round intelligence ready" : noRoundDetail ? "No published round detail" : "Round intelligence pending"}
         </span>
         {wc && <span className={styles.chipMeta}>{wc}</span>}
         {bout.is_title && <span className={styles.chipTitle}>Title</span>}
@@ -128,6 +128,8 @@ export function RoundResultCard({
           {method && <p className={styles.method}>{method}</p>}
           {roundLine && <p className={styles.clock}>{roundLine}</p>}
           {r?.result_source && <p className={styles.source}>Source: {r.result_source.toUpperCase()}</p>}
+          {/* The fight page exists as soon as the result does; round intelligence is a separate link below. */}
+          {!roundReady && <Link href={href} className={styles.fightLink} prefetch={false}>Fight page →</Link>}
         </div>
 
         {corner(b, winner?.id === b.id)}
@@ -186,7 +188,7 @@ export function RoundResultCard({
             ) : (
               <div className={styles.roundBlock} data-pending="true">
                 <span className={styles.roundHead}>Round intelligence</span>
-                <em>Pending official round observations</em>
+                <em>{noRoundDetail ? "The official source published no round detail for this fight" : "Pending official round observations"}</em>
               </div>
             )}
           </div>
@@ -196,7 +198,7 @@ export function RoundResultCard({
       {!hasDetail && (
         <div className={styles.pendingFoot}>
           <b>Round intelligence</b>
-          <em>Pending official round observations</em>
+          <em>{noRoundDetail ? "The official source published no round detail for this fight" : "Pending official round observations"}</em>
         </div>
       )}
     </li>

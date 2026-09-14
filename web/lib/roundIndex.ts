@@ -208,7 +208,10 @@ export function parseRoundIndex(doc: unknown): RoundIndex {
   for (const k of SHELF_KEYS) {
     const raw = d.shelves?.[k];
     if (!Array.isArray(raw) || !raw.every(isCard)) return { status: "unavailable", reason: `shelf ${k} malformed` };
-    shelves[k] = (raw as RpcCard[]).map(toBout);
+    /* The archive is the fights whose round rows are stored. The read model is
+     * built from those rows; a card claiming zero covered rounds is dropped here
+     * too, so a bout with only a result can never be offered as analysis. */
+    shelves[k] = (raw as RpcCard[]).filter((c) => isEligible({ rounds: c.rounds_covered, bothCorners: Boolean(c.both_corners) })).map(toBout);
   }
   return {
     status: "ok",

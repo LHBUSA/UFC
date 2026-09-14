@@ -1,0 +1,272 @@
+{
+ "at": "2026-09-13T23:20:56.344Z",
+ "event": {
+  "id": "1d0b22df-81e7-4e5b-8fa5-8e5d03c24c52",
+  "name": "Noche UFC: Silva vs. Delgado",
+  "event_date": "2026-09-12",
+  "card_status": "complete",
+  "ufcstats_id": "638cfec7ec559d6e",
+  "espn_event_id": "600060772"
+ },
+ "bouts": [
+  {
+   "bout_id": "c96f0685-8c23-4030-a79f-b379d89beaf2",
+   "order": 1,
+   "fighters": "JJ Aldrich vs Regina Tarin",
+   "ufcstats_fight_id": "64da2e60f1b472fa",
+   "fighter_ufcstats_ids": [
+    "6fd953151d981979",
+    "9f5609dba6584ab2"
+   ],
+   "result": "DEC_U R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "9ad70054-1797-4bd2-ac0a-efb3523e41d4",
+   "order": 2,
+   "fighters": "Sean King vs Jessie Rosas",
+   "ufcstats_fight_id": "5a91827fe8c1dc26",
+   "fighter_ufcstats_ids": [
+    "41523699f37d400c",
+    "d1026588fa65693f"
+   ],
+   "result": "KO_TKO R1 36s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "b380c59b-c8fc-4635-b890-f33b848099e5",
+   "order": 3,
+   "fighters": "Rafa Garcia vs Rongzhu",
+   "ufcstats_fight_id": "d0d48877bf3724d1",
+   "fighter_ufcstats_ids": [
+    "e132d47bd9efbbe0",
+    "a13d755965a4ec9f"
+   ],
+   "result": "DEC_U R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "e9f3da1c-42d3-4d64-aa9b-a999733804be",
+   "order": 4,
+   "fighters": "Drakkar Klose vs Tommy Gantt",
+   "ufcstats_fight_id": "0aa849ca85e4355a",
+   "fighter_ufcstats_ids": [
+    "7cbf7c78d3b34218",
+    "de83f920fd302871"
+   ],
+   "result": "SUB R3 166s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "3b91feaa-69d8-4eb8-a37a-3464b146210e",
+   "order": 5,
+   "fighters": "Yousri Belgaroui vs Djorden Santos",
+   "ufcstats_fight_id": null,
+   "fighter_ufcstats_ids": [
+    "7674b836ce0698a0",
+    "312f7d7b2b2f7de4"
+   ],
+   "result": "KO_TKO R1 265s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "91485168-733a-4123-b8e1-bba091cb0ac8",
+   "order": 6,
+   "fighters": "Ignacio Bahamondes vs Muslim Salikhov",
+   "ufcstats_fight_id": "046c22f769fd8300",
+   "fighter_ufcstats_ids": [
+    "e4a47b07044ddd72",
+    "447f9858ae78f921"
+   ],
+   "result": "DEC_U R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "ced47b19-7582-4def-b307-92fc16c57a0d",
+   "order": 7,
+   "fighters": "Tim Elliott vs Édgar Cháirez",
+   "ufcstats_fight_id": "f154037892b9fb94",
+   "fighter_ufcstats_ids": [
+    "c96d9178c9ed9e62",
+    "5ef94841c4bc3f86"
+   ],
+   "result": "DEC_U R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "577fcd7b-7841-4745-8f41-f7f3fa9aa042",
+   "order": 8,
+   "fighters": "David Martinez vs Dan Ige",
+   "ufcstats_fight_id": "51caa91f68873cf5",
+   "fighter_ufcstats_ids": [
+    "9a97acbfd5a08bfa",
+    "82a5152216251682"
+   ],
+   "result": "DEC_U R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "fd77037b-684f-4065-89a7-bb9431976b84",
+   "order": 9,
+   "fighters": "Waldo Cortes Acosta vs Curtis Blaydes",
+   "ufcstats_fight_id": "606639bf387f60e2",
+   "fighter_ufcstats_ids": [
+    "fc08099550072fe4",
+    "fa6796c55d6c5440"
+   ],
+   "result": "DEC_U R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "c5ab710f-9440-4142-b87f-d2de30c1780d",
+   "order": 10,
+   "fighters": "Manon Fiorot vs Alexa Grasso",
+   "ufcstats_fight_id": "d9712b45c094730e",
+   "fighter_ufcstats_ids": [
+    "34ff304266360297",
+    "e8b731feff72294b"
+   ],
+   "result": "DEC_U R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "7b85e0fd-5f0c-47e8-bec1-78af8a82d4dc",
+   "order": 11,
+   "fighters": "Tommy McMillen vs Marwan Rahiki",
+   "ufcstats_fight_id": "1fca7dfa9e1e15cb",
+   "fighter_ufcstats_ids": [
+    "6b0a6def604de298",
+    "6eedb757f13b9978"
+   ],
+   "result": "DEC_U R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "7300eba4-285f-4030-9f3f-216fa376f451",
+   "order": 12,
+   "fighters": "Brandon Moreno vs Joseph Morales",
+   "ufcstats_fight_id": "1aa008d8597a73b8",
+   "fighter_ufcstats_ids": [
+    "792be9a24df82ed6",
+    "2fe9032955c2e013"
+   ],
+   "result": "DEC_S R3 300s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  },
+  {
+   "bout_id": "89e38074-f431-4bc3-b51e-fe42058e60d0",
+   "order": 13,
+   "fighters": "Jean Silva vs Jose Miguel Delgado",
+   "ufcstats_fight_id": null,
+   "fighter_ufcstats_ids": [
+    "52ef95b5860fb28c",
+    "7d6ceff6747f2de2"
+   ],
+   "result": "SUB R3 177s (espn)",
+   "round_rows": 0,
+   "queue": {
+    "state": "awaiting_source",
+    "reason": "UFCSTATS_ENABLED=false",
+    "attempts": 0,
+    "next_attempt_at": null
+   }
+  }
+ ],
+ "summary": {
+  "bouts": 13,
+  "results": 13,
+  "bouts_with_round_rows": 0,
+  "round_rows": 0,
+  "queue_states": {
+   "awaiting_source": 13
+  }
+ },
+ "round_index": {
+  "http": 200,
+  "keys": [
+   "totals",
+   "shelves",
+   "contract",
+   "freshness",
+   "generated_at"
+  ],
+  "last_event_date": null,
+  "summary": null,
+  "recent_first": null
+ },
+ "queue_all": {
+  "awaiting_source | UFCSTATS_ENABLED=false": 41
+ }
+}

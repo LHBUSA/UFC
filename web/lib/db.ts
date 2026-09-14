@@ -155,6 +155,33 @@ export async function getEventBouts(eventId: string, revalidate?: number): Promi
   const rows = (await rest<RawBout[]>(`ufc_bouts?select=${BOUT_SELECT}&event_id=eq.${eventId}&order=bout_order.desc`, [], { revalidate })).data;
   return rows.map(flattenResult);
 }
+/* Events in a date window with the two counts Round-for-Round selects on:
+ * bouts on the card (cancelled excluded) and bouts with a STORED RESULT. Whether
+ * a card has been fought is read from results, never from the clock. One request. */
+export type RolloverEventRow = { id: string; name: string; event_date: string | null; card_status: string; bouts: number; results: number };
+export async function getRolloverEvents(fromDate: string, toDate: string, revalidate?: number): Promise<RolloverEventRow[]> {
+  type Raw = { id: string; name: string; event_date: string | null; card_status: string; bouts: Array<{ status: string; result: Array<{ bout_id: string }> | { bout_id: string } | null }> };
+  const rows = (await rest<Raw[]>(
+    `ufc_events?select=id,name,event_date,card_status,bouts:ufc_bouts(status,result:ufc_bout_results(bout_id))&event_date=gte.${fromDate}&event_date=lte.${toDate}&order=event_date.desc&limit=80`,
+    [], { revalidate },
+  )).data;
+  return rows.map((e) => {
+    const live = (e.bouts || []).filter((b) => b.status !== "cancelled");
+    const hasResult = (b: Raw["bouts"][number]) => (Array.isArray(b.result) ? b.result.length > 0 : Boolean(b.result));
+    return { id: e.id, name: e.name, event_date: e.event_date, card_status: e.card_status, bouts: live.length, results: live.filter(hasResult).length };
+  });
+}
+/* Round-stat queue state per bout (ufc_round_stat_queue, written only by
+ * ufc-stats-ingest). Used to tell "the source published no round detail" apart
+ * from "still waiting"; an unreadable queue degrades to "still waiting". */
+export async function getRoundQueueStates(boutIds: string[], revalidate?: number): Promise<Map<string, string>> {
+  const m = new Map<string, string>();
+  const ids = [...new Set(boutIds.filter(Boolean))];
+  if (!ids.length) return m;
+  const rows = (await rest<Array<{ bout_id: string; state: string }>>(`ufc_round_stat_queue?select=bout_id,state&bout_id=in.(${ids.join(",")})`, [], { revalidate })).data;
+  for (const r of rows) m.set(r.bout_id, r.state);
+  return m;
+}
 /* Bout counts for a list of events (one request). */
 export async function getBoutCounts(eventIds: string[]): Promise<Map<string, number>> {
   const m = new Map<string, number>();

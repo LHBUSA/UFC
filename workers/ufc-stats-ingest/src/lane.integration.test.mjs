@@ -9,11 +9,14 @@
  *   3. Contender-style card -> not on the list, resolved by fighter history,
  *                              validated, written, event + bout linked, DNA asked
  *   4. re-run               -> idempotent: nothing written, row count unchanged
- *   5. duplicate bout row   -> fight id already on another bout -> identity_review */
+ *   5. duplicate bout row   -> fight id already on another bout -> identity_review
+ *   6. archive gap          -> source disabled + complete card + results + no rows:
+ *                              round lane degraded, alert once, no UFC Stats fetch,
+ *                              quiet on the next run, visible on /health */
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { __test } from './index.js';
+import worker, { __test } from './index.js';
 
 const FX = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'scripts', 'backfill', 'fixtures');
 const page = (f) => readFileSync(join(FX, f), 'utf8');
@@ -38,6 +41,8 @@ function makeDb(seed) {
       if (v.startsWith('in.')) return inList(v.slice(3)).includes(val);
       if (v.startsWith('not.in.')) return !inList(v.slice(7)).includes(val);
       if (v === 'is.null') return val === null;
+      if (v.startsWith('gte.')) return val !== null && val >= v.slice(4);
+      if (v.startsWith('lte.')) return val !== null && val <= v.slice(4);
       if (v === 'not.is.null') return val !== null;
       throw new Error(`mock: unsupported filter ${k}=${v}`);
     });
@@ -108,14 +113,15 @@ xhr.open('POST',"/__c",true);
 xhr.send('nonce='+encodeURIComponent(nonce)+'&n='+n);
 </script></body></html>`;
 
-async function run(seed, { enabled = 'true', challenged = false } = {}) {
-  const db = makeDb(seed);
-  const r2 = new Map();
+async function run(seed, { enabled = 'true', challenged = false, shared = null, discordPosts = null } = {}) {
+  const db = shared?.db || makeDb(seed);
+  const r2 = shared?.r2 || new Map();
   const ufcstatsHits = [];
   const dna = [];
   globalThis.fetch = async (input, init = {}) => {
     const url = String(input);
     if (url.startsWith('http://sb.test/rest/v1/')) return db.handle(url, init);
+    if (url.startsWith('http://discord.test/') && discordPosts) { discordPosts.push(JSON.parse(init.body).content); return new Response(null, { status: 204 }); }
     if (url.startsWith('http://ufcstats.test/')) {
       ufcstatsHits.push(url);
       if (challenged) return new Response(CHALLENGE, { status: 200 });
@@ -134,9 +140,10 @@ async function run(seed, { enabled = 'true', challenged = false } = {}) {
       put: async (k, v) => { r2.set(k, typeof v === 'string' ? v : String(v)); },
     },
     INTELLIGENCE: { refreshFightDna: async (a) => { dna.push(a); return { status: 'ok', snapshots: 2 }; } },
+    ...(discordPosts ? { DISCORD_WEBHOOK_URL: 'http://discord.test/hook' } : {}),
   };
   const res = await __test.runIngest(env, { invoked: 'test', skipEspn: true });
-  return { res, db, r2, ufcstatsHits, dna };
+  return { res, db, r2, ufcstatsHits, dna, env };
 }
 const q = (db) => db.T.ufc_round_stat_queue.find((x) => x.bout_id === 'b1');
 
@@ -185,6 +192,29 @@ const q = (db) => db.T.ufc_round_stat_queue.find((x) => x.bout_id === 'b1');
   const { res, db } = await run(seed);
   check(res.status === 'success' && q(db)?.state === 'identity_review' && /duplicate bout row/.test(q(db).last_reason), `duplicate: review not overwrite ${JSON.stringify(q(db))}`);
   check(db.T.ufc_bout_round_stats.filter((r) => r.bout_id === 'b1').length === 0 && db.T.ufc_bouts[0].ufcstats_id === null, 'duplicate: nothing written to b1');
+}
+
+/* 6. the silent outage of 2026-09-13: disabled source, complete card, results, no rows */
+{
+  const posts = [];
+  const first = await run(world({ eventName: 'Noche UFC: Silva vs. Delgado' }), { enabled: 'false', discordPosts: posts });
+  const ra = first.res.notes.round_archive;
+  check(first.res.status === 'success', `gap: run itself succeeds (ESPN lane unaffected) ${first.res.status}`);
+  check(first.ufcstatsHits.length === 0 && first.db.T.ufc_bout_round_stats.length === 0, 'gap: no UFC Stats fetch, no rows invented');
+  check(q(first.db)?.state === 'awaiting_source' && q(first.db).last_reason === 'UFCSTATS_ENABLED=false', `gap: queue stays fail-closed ${JSON.stringify(q(first.db))}`);
+  check(ra?.round_lane_status === 'degraded', `gap: round lane degraded ${JSON.stringify(ra)}`);
+  check(ra?.gaps?.[0]?.cause === 'source disabled' && ra.gaps[0].completed_bouts === 1 && ra.gaps[0].with_round_rows === 0, `gap: facts ${JSON.stringify(ra?.gaps?.[0])}`);
+  check(ra?.alert?.kind === 'new' && ra.alert.delivered === 'discord', `gap: alert generated ${JSON.stringify(ra?.alert)}`);
+  const gapPosts = () => posts.filter((m) => m.includes('ROUND ARCHIVE GAP'));
+  check(gapPosts().length === 1 && gapPosts()[0].includes('ROUND ARCHIVE GAP · Noche UFC: Silva vs. Delgado · 1 completed bouts · 0 with round rows · source disabled'), `gap: one factual alert ${JSON.stringify(gapPosts())}`);
+  check(!gapPosts()[0].includes('UFCSTATS_ENABLED'), 'gap: alert states the cause in words, not the flag');
+
+  const second = await run(null, { enabled: 'false', discordPosts: posts, shared: { db: first.db, r2: first.r2 } });
+  check(second.res.notes.round_archive?.alert?.kind === 'none' && gapPosts().length === 1, `gap: no repeat alert on the next run ${JSON.stringify(second.res.notes.round_archive?.alert)}`);
+
+  const health = await (await worker.fetch(new Request('http://worker.test/health'), second.env)).json();
+  check(health.round_lane_status === 'degraded' && health.round_archive_gaps?.length === 1 && health.ufcstats_enabled === false, `gap: /health reports degraded ${JSON.stringify({ s: health.round_lane_status, g: health.round_archive_gaps?.length })}`);
+  check(health.round_archive_alert?.last_alert?.kind === 'new', 'gap: /health shows the last alert');
 }
 
 console.log('lane integration:', failures === 0 ? 'OK' : `${failures} FAILURES`);
