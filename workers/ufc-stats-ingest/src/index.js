@@ -113,7 +113,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.7.1';
+const VERSION = 'v0.7.2';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -1342,10 +1342,14 @@ async function officialRoundPass(env, ctx, run, due, qBy, outcomes, sourceReason
     const en = { event_id: event.id, event: event.name, event_date: event.event_date, bouts: items.length };
     note.events.push(en);
     if (eventsDone >= maxEvents) { en.outcome = 'deferred (per-run event cap)'; for (const c of items) await wait(c, 'deferred to the next run (per-run event cap)'); continue; }
-    eventsDone += 1;
+    /* Only a card that actually uses the feed counts toward the per-run cap. A
+     * card with no official link costs no feed request; counting it would let
+     * newer unlinked cards (Contender Series) starve older linked ones forever. */
+    const requestsBefore = feed.requests;
     let ev; let docs;
     try {
       ev = await resolveOfficialEvent(env, feed, event);
+      if (feed.requests > requestsBefore) eventsDone += 1;
       if (ev.official) docs = await officialCardDocs(feed, ev.official);
     } catch (e) {
       if (!(e instanceof OfficialCapError)) throw e;

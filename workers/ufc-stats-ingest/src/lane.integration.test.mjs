@@ -19,7 +19,9 @@
  *                              idempotent re-run
  *   8. official disagreement-> winner mismatch: validation_failed, nothing written
  *   9. official not final   -> not_yet_published, nothing written
- *  10. official wrong card  -> stored link to another card: identity_review, nothing written */
+ *  10. official wrong card  -> stored link to another card: identity_review, nothing written
+ *  11. official event cap   -> newer unlinked cards do not use up the per-run cap; the older
+ *                              linked card is still recovered */
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -120,7 +122,7 @@ xhr.open('POST',"/__c",true);
 xhr.send('nonce='+encodeURIComponent(nonce)+'&n='+n);
 </script></body></html>`;
 
-async function run(seed, { enabled = 'true', challenged = false, shared = null, discordPosts = null, official = null } = {}) {
+async function run(seed, { enabled = 'true', challenged = false, shared = null, discordPosts = null, official = null, extraEnv = {} } = {}) {
   const db = shared?.db || makeDb(seed);
   const r2 = shared?.r2 || new Map();
   const ufcstatsHits = [];
@@ -157,6 +159,7 @@ async function run(seed, { enabled = 'true', challenged = false, shared = null, 
     INTELLIGENCE: { refreshFightDna: async (a) => { dna.push(a); return { status: 'ok', snapshots: 2 }; } },
     ...(discordPosts ? { DISCORD_WEBHOOK_URL: 'http://discord.test/hook' } : {}),
     ...(official ? { UFC_OFFICIAL_ROUNDS_ENABLED: 'true', OFFICIAL_MIN_INTERVAL_MS: '0' } : {}),
+    ...extraEnv,
   };
   const res = await __test.runIngest(env, { invoked: 'test', skipEspn: true });
   return { res, db, r2, ufcstatsHits, officialHits, dna, env };
@@ -308,6 +311,19 @@ const officialServer = (fight = OFFICIAL_FIGHT) => ({
   const seed = nocheWorld({ eventName: 'UFC Fight Night: Somebody vs. Else' });
   const { db } = await run(null, { enabled: 'false', official: officialServer(), shared: { db: makeDb(seed), r2 } });
   check(q(db)?.state === 'identity_review' && /not "UFC Fight Night: Somebody vs. Else"/.test(q(db).last_reason) && db.T.ufc_bout_round_stats.length === 0, `official wrong card: identity_review ${JSON.stringify(q(db))}`);
+}
+
+/* 11. unlinked newer cards must not starve an older linked card */
+{
+  const seed = nocheWorld();
+  for (let i = 0; i < 3; i += 1) {
+    seed.ufc_events.push({ id: `dw${i}`, name: `Contender Series Week ${i}`, event_date: '2026-09-13', ufcstats_id: null, espn_event_id: `dwe${i}`, card_status: 'complete' });
+    seed.ufc_bouts.push({ id: `dwb${i}`, event_id: `dw${i}`, fighter_a_id: 'fw', fighter_b_id: 'fb', ufcstats_id: null, espn_competition_id: `dwc${i}`, status: 'complete', weight_class: 'HEAVYWEIGHT', scheduled_rounds: 3 });
+    seed.ufc_bout_results.push({ bout_id: `dwb${i}`, winner_id: 'fb', method: 'DEC_U', round: 3, time_sec: 300, has_stats: false, stats_captured_at: null });
+  }
+  const { res, db } = await run(seed, { enabled: 'false', official: officialServer(), extraEnv: { MAX_EVENTS_PER_RUN: '1' } });
+  check(res.status === 'success' && q(db)?.state === 'written' && db.T.ufc_bout_round_stats.filter((r) => r.bout_id === 'b1').length === 6, `official cap: older linked card recovered ${JSON.stringify(q(db))}`);
+  check(db.T.ufc_round_stat_queue.filter((x) => x.bout_id.startsWith('dwb')).every((x) => x.state === 'awaiting_source' && /no UFC.com event link/.test(x.last_reason)), 'official cap: unlinked cards wait with the reason');
 }
 
 console.log('lane integration:', failures === 0 ? 'OK' : `${failures} FAILURES`);
