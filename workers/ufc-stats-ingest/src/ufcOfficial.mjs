@@ -27,6 +27,7 @@
  * Pure: no network, no clock. The Worker fetches and writes.
  */
 import { normalize } from './shared/alias_resolver.mjs';
+import { OFFICIAL_IDENTITY_OVERRIDES } from './officialIdentityOverrides.mjs';
 
 export const OFFICIAL_BASE = 'https://d29dxerjsp82wz.cloudfront.net/api/v3';
 export const officialFightUrl = (id) => `${OFFICIAL_BASE}/fight/live/${id}.json`;
@@ -160,15 +161,30 @@ export function knownNames(fighter, aliases = []) {
  * known name of exactly one of our corners, and the mapping must be one-to-one.
  * Returns { map: Map(official_id -> our fighter id), via } or { problem }.
  */
-export function mapOfficialFighters(parsed, fighterA, fighterB, aliasesById = new Map()) {
+export function mapOfficialFighters(parsed, fighterA, fighterB, aliasesById = new Map(), overrides = OFFICIAL_IDENTITY_OVERRIDES) {
   if (parsed.fighters.length !== 2) return { problem: `official fight lists ${parsed.fighters.length} fighters` };
   const ours = [fighterA, fighterB].map((f) => ({ f, names: knownNames(f, aliasesById.get(f?.id) || []) }));
+  const compact = (s) => normalize(s).replace(/ /g, '');
   const exact = parsed.fighters.map((x) => {
+    /* Audited exception (officialIdentityOverrides.mjs): exact official fight +
+     * fighter id, one of our corners, identical compact name. */
+    const ov = (overrides || []).find((o) => o.official_fight_id === String(parsed.fight_id) && o.official_fighter_id === x.official_id);
+    if (ov) {
+      const o = ours.find((z) => z.f?.id === ov.fighter_id);
+      if (o && compact(o.f.name) && compact(o.f.name) === compact(x.name)) return { x, hits: [o], how: 'audited_override', override: ov };
+      return { x, hits: [], how: null, override_rejected: ov.key };
+    }
     const forms = [[normalize(x.name), 'name'], [normalize(`${x.last} ${x.first}`), 'family_name_first']].filter(([n]) => n);
     const hits = ours.filter((o) => forms.some(([n]) => o.names.has(n)));
     return { x, hits, how: hits.length === 1 ? forms.find(([n]) => hits[0].names.has(n))[1] : null };
   });
   if (exact.some((e) => e.hits.length > 1)) return { problem: 'an official fighter matches both of our corners' };
+  const rejected = exact.find((e) => e.override_rejected);
+  if (rejected) return { problem: `audited override ${rejected.override_rejected} does not apply to this bout` };
+  if (exact.some((e) => e.how === 'audited_override') && !exact.every((e) => e.how === 'audited_override' || (e.hits.length === 1 && e.how !== 'audited_override'))) {
+    return { problem: 'an audited override requires the other corner to match exactly' };
+  }
+  if (exact.filter((e) => e.how === 'audited_override').length > 1) return { problem: 'at most one corner may use an audited override' };
   /* Second tier, for ONE corner only: the other corner matched exactly, and this
    * one is the same person under a registered form of the name — a middle name
    * ("Douglas Henrique Rodrigues" / "Douglas Rodrigues") or the full form of a
@@ -197,8 +213,10 @@ export function mapOfficialFighters(parsed, fighterA, fighterB, aliasesById = ne
   const via = [];
   for (const { x, hits, how } of exact) {
     map.set(x.official_id, hits[0].f.id);
+    const ov = exact.find((e) => e.x === x)?.override;
     via.push({ official_id: x.official_id, official_name: x.name, fighter_id: hits[0].f.id, fighter_name: hits[0].f.name,
-      via: how === 'name' && normalize(hits[0].f.name) !== normalize(x.name) ? 'alias' : how, ...(how === 'dob_and_registered_name' ? { dob: x.dob } : {}) });
+      via: how === 'name' && normalize(hits[0].f.name) !== normalize(x.name) ? 'alias' : how, ...(how === 'dob_and_registered_name' ? { dob: x.dob } : {}),
+      ...(ov ? { override: ov.key, official_dob: x.dob, canonical_dob: ov.canonical_dob, discrepancy: ov.discrepancy } : {}) });
   }
   if (new Set(map.values()).size !== 2) return { problem: 'both official fighters map to the same corner' };
   return { map, via };

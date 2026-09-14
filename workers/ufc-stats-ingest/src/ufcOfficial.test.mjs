@@ -158,3 +158,23 @@ test('a short first name maps to its full registered form only with identical DO
   assert.ok(!mapOfficialFighters(base('Nicholas', '1990-01-01'), { id: 'fw', name: 'Nick Cortes Acosta', dob: '1991-06-30' }, BLAYDES).map, 'listed short form still needs the DOB');
   assert.ok(!mapOfficialFighters(base('Christopher'), { id: 'fw', name: 'Christian Cortes Acosta', dob: '1991-06-30' }, BLAYDES).map, 'two different full names are not short forms');
 });
+
+test('an audited identity override applies to its exact official fight and fighter only, with the other corner exact', () => {
+  const doc = clone(FIGHT);
+  doc.LiveFightDetail.Fighters[0].Name = { FirstName: 'Waldo', LastName: 'CortesAcosta' };
+  doc.LiveFightDetail.Fighters[0].DOB = '1991-07-30';
+  const p = parseOfficialFight(doc);
+  const waldo = { id: 'fw', name: 'Waldo Cortes Acosta', dob: '1991-06-30' };
+  const ov = [{ key: 'test-ov', official_fight_id: p.fight_id, official_fighter_id: p.fighters[0].official_id, fighter_id: 'fw', canonical_dob: '1991-06-30', discrepancy: 'feed DOB wrong' }];
+  assert.ok(!mapOfficialFighters(p, waldo, BLAYDES, new Map(), []).map, 'without the override: DOB conflict, no match');
+  const ok = mapOfficialFighters(p, waldo, BLAYDES, new Map(), ov);
+  assert.ok(ok.map, ok.problem);
+  const w = ok.via.find((v) => v.fighter_id === 'fw');
+  assert.deepEqual([w.via, w.override, w.official_dob, w.canonical_dob], ['audited_override', 'test-ov', '1991-07-30', '1991-06-30']);
+  assert.deepEqual(validateOfficialFight({ parsed: p, mapping: ok, result: RESULT }), [], 'result still validated');
+  assert.ok(!mapOfficialFighters(p, waldo, BLAYDES, new Map(), [{ ...ov[0], official_fight_id: '99999' }]).map, 'another fight id');
+  assert.ok(!mapOfficialFighters(p, waldo, BLAYDES, new Map(), [{ ...ov[0], fighter_id: 'someone-else' }]).map, 'override names a fighter not in this bout');
+  assert.ok(!mapOfficialFighters(p, { ...waldo, name: 'Waldo Acosta' }, BLAYDES, new Map(), ov).map, 'compact name must be identical');
+  assert.ok(!mapOfficialFighters(p, waldo, { id: 'fb', name: 'Curtis Blaze' }, new Map(), ov).map, 'other corner must be exact');
+  assert.ok(mapOfficialFighters(parseOfficialFight(FIGHT), waldo, BLAYDES).map, 'the committed overrides do not affect other fights');
+});

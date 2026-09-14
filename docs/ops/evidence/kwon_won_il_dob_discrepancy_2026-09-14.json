@@ -1,0 +1,26 @@
+{
+ "kind": "audited source discrepancy",
+ "recorded_at": "2026-09-14",
+ "approved": { "by": "owner", "on": "2026-09-14" },
+ "fighter": { "id": "6c5fdca6-fbe3-464f-8e27-28518a568d70", "canonical_name": "Kwon Won Il", "canonical_dob": "1995-06-24", "espn_athlete_id": "4907790" },
+ "conflicting_source": { "provider": "UFC official statistics feed", "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/13113.json", "official_fighter_id": "4484", "name": "Kwon WonIl", "dob": "1995-07-24" },
+ "independent_sources_for_canonical_dob": [
+  { "provider": "ESPN", "dob": "6/24/1995" },
+  { "provider": "Tapology", "dob": "1995-06-24" },
+  { "provider": "Sherdog", "dob": "Jun 24, 1995", "note": "published fighter profile also states June 24, 1995" }
+ ],
+ "decision": "Canonical DOB 1995-06-24 is kept. The UFC official feed value 1995-07-24 is treated as the bad source value and is NOT written anywhere.",
+ "identity_confirmation": {
+  "card": "our 'Dana White's Contender Series: Season 10, Week 5' (2026-09-08) = official event 1334 'DWCS 10.5' (2026-09-08T23:00Z)",
+  "bout": "official fight 13113 pairs exactly official fighters 4484 (Kwon WonIl) and 4597 (Apollo Gomes)",
+  "opponent": "Apollo Gomes exact: name identical, DOB 2000-07-10 on both sides",
+  "result": "stored: Gomes win, DEC_U, round 3, 5:00; official: Apollo Gomes Win, Decision - Unanimous, EndingRound 3, EndingTime 5:00",
+  "name": "compact normalized names identical ('kwonwonil'); only the spacing differs",
+  "ambiguity": "no other ufc_fighters row matches the name",
+  "rounds": "RoundStats rounds 1-3 for both official fighters; OfficialStats true; Status Final"
+ },
+ "mechanism": "workers/ufc-stats-ingest/src/officialIdentityOverrides.mjs entry 'kwon-won-il-dob-2026-09-14' (exact official fight 13113 + official fighter 4484 -> our fighter; other corner must be exact; compact name identical; result must agree)",
+ "writes_allowed": ["ufc_bout_round_stats rows for bout ac23cd35-fa8a-4517-8615-4c682a4d77af", "ufc_round_stat_queue state for that bout"],
+ "writes_forbidden": ["ufc_fighters (including dob)", "ufc_fighter_aliases", "ufc_events", "ufc_bouts", "ufc_bout_results", "external identity ids"],
+ "pre_write_scout": "docs/ops/evidence/dwcs_source_scout_kwon_gomes_w5_override_2026-09-14.json"
+}

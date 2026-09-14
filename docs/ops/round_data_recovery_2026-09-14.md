@@ -110,3 +110,9 @@ One card per batch: verified card link (`POST /admin/official-link`, season + we
 - **Open: Kwon Won Il vs Apollo Gomes.** The official feed names the fighter First "Kwon", Last "WonIl" with DOB 1995-07-24; our canonical row (ESPN) is "Kwon Won Il", DOB 1995-06-24. Apollo Gomes is exact (DOB 2000-07-10 both sides) and the result agrees (Gomes, U-DEC R3), but the DOB conflict means identity would rest on the name, so no rows are written. Needs a reviewed decision on the DOB (evidence: `docs/ops/evidence/dwcs_source_scout_kwon_gomes_w5_2026-09-14.json`).
 - Health: every DWCS gap card cleared once by name; `round_lane_status` is `ok`. v0.8.4 adds `round_archive_review` to `/health`, listing completed bouts held for review without round rows, so `ok` does not hide the Kwon bout.
 
+## 9. Kwon Won Il: audited source discrepancy (2026-09-14)
+
+The UFC official feed reports Kwon Won Il's DOB as **1995-07-24**; ESPN (6/24/1995), Tapology (1995-06-24) and Sherdog (Jun 24, 1995, also stated on the published profile) independently report **1995-06-24**. Owner confirmed 1995-06-24. The canonical DOB is kept; the feed value is treated as the bad source value and is not written.
+
+Identity was confirmed from the full bout evidence, not from the conflicting DOB: same card (official 1334 "DWCS 10.5", 2026-09-08), official fight 13113 pairs exactly Kwon and Apollo Gomes, Gomes exact (name and DOB 2000-07-10), stored result agrees (Gomes, unanimous decision, 3 rounds, 5:00), compact names identical, no other fighter with this name. Mechanism: the audited entry `kwon-won-il-dob-2026-09-14` in `workers/ufc-stats-ingest/src/officialIdentityOverrides.mjs` (exact official fight + fighter id, other corner exact, compact name identical, result must agree). Only round rows and queue state may be written. Evidence: `docs/ops/evidence/kwon_won_il_dob_discrepancy_2026-09-14.json`.
+
