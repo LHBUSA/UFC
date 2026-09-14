@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   parseOfficialFight, parseOfficialEvent, officialReadiness, sameOfficialEvent, mapOfficialFighters,
-  validateOfficialFight, officialRoundRows, fightIdsFromUfcComPage, mmssToSeconds, ROUND_COLUMNS,
+  validateOfficialFight, officialRoundRows, fightIdsFromUfcComPage, mmssToSeconds, ROUND_COLUMNS, contenderSeasonWeek,
 } from './ufcOfficial.mjs';
 
 const fx = (f) => JSON.parse(readFileSync(new URL(`../test-fixtures/official/${f}`, import.meta.url), 'utf8'));
@@ -103,4 +103,18 @@ test('event identity: same card by name and date, never another card', () => {
   assert.ok(!sameOfficialEvent(ev, { name: 'Noche UFC: Silva vs. Delgado', event_date: '2026-09-15' }), 'same name, wrong date');
   assert.ok(!sameOfficialEvent({ name: 'UFC 330', date: '2026-09-12' }, { name: 'UFC 331', event_date: '2026-09-12' }), 'different numbered event');
   assert.deepEqual(fightIdsFromUfcComPage('<div data-fmid="12975"></div><div data-fmid="12975"></div><a data-fmid="13119">'), ['12975', '13119']);
+});
+
+test('Contender Series cards match by season AND week AND date, never by a near name', () => {
+  assert.deepEqual(contenderSeasonWeek('DWCS 10.1'), { season: 10, week: 1 });
+  assert.deepEqual(contenderSeasonWeek("Dana White's Contender Series: Season 10, Week 1"), { season: 10, week: 1 });
+  assert.deepEqual(contenderSeasonWeek("Dana White's Contender Series 2026: Season 10, Week 5"), { season: 10, week: 5 });
+  assert.equal(contenderSeasonWeek('UFC Fight Night: Hooker vs. Parnasse'), null);
+  const w1 = { name: "Dana White's Contender Series: Season 10, Week 1", event_date: '2026-08-11' };
+  assert.ok(sameOfficialEvent({ name: 'DWCS 10.1', date: '2026-08-11' }, w1));
+  assert.ok(!sameOfficialEvent({ name: 'DWCS 10.2', date: '2026-08-11' }, w1), 'different week');
+  assert.ok(!sameOfficialEvent({ name: 'DWCS 9.1', date: '2026-08-11' }, w1), 'different season');
+  assert.ok(!sameOfficialEvent({ name: 'DWCS 10.1', date: '2026-08-18' }, w1), 'right number, wrong date');
+  assert.ok(!sameOfficialEvent({ name: 'UFC Fight Night: X vs. Y', date: '2026-08-11' }, w1), 'a UFC card on the same date is not the DWCS card');
+  assert.ok(!sameOfficialEvent({ name: 'DWCS 10.1', date: '2026-08-11' }, { name: 'UFC Fight Night: X vs. Y', event_date: '2026-08-11' }));
 });

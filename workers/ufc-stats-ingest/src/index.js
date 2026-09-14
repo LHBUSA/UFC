@@ -113,7 +113,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.8.0';
+const VERSION = 'v0.8.1';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -212,6 +212,9 @@ export default {
       return json({
         service: SERVICE, version: VERSION, ...health,
         ufcstats_enabled: String(env.UFCSTATS_ENABLED ?? 'true') !== 'false',
+        /* Owner decision 2026-09-14: UFC Stats is a BLOCKED fallback. No scheduled
+         * canary, no sweep, no challenge solving; round data comes from the official feed. */
+        ufcstats_source_status: String(env.UFCSTATS_SOURCE_STATUS || 'unknown'),
         official_rounds_enabled: officialRoundsEnabled(env),
         forward_days: Number(env.UFCSTATS_FORWARD_DAYS || 45),
         source_health: await getState(env, STATE.health),

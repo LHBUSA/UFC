@@ -29,6 +29,12 @@ MAX_EVENTS_PER_RUN = "3"
 # round_lane_status "degraded" with a ROUND ARCHIVE GAP per affected card
 # (/health, run notes, one Discord alert, deduped and escalated every 24h).
 UFCSTATS_ENABLED = "false"
+# Owner decision 2026-09-14 (after the single-bout canary at 10:00Z was challenged
+# on its first and only request): UFC Stats is a BLOCKED fallback. Do not schedule
+# canaries when retry_after expires, do not sweep, do not build or enable challenge
+# solving. Round data comes from the official UFC statistics feed, including the
+# Contender Series ("DWCS <season>.<week>" official events). Reported on /health.
+UFCSTATS_SOURCE_STATUS = "blocked"
 # Hours after the end of the event day (UTC) before a completed card with
 # missing round rows counts as a round-archive gap.
 ROUND_ARCHIVE_GRACE_HOURS = "12"

@@ -109,12 +109,27 @@ export function officialReadiness(parsed) {
   return { ready: true };
 }
 
-/* Same card: date within a day (UTC start vs local event date) and the same
- * event name after normalization, or the same numbered UFC event. */
+/* Contender Series numbering. The official feed names a card "DWCS 10.1";
+ * our canonical name is "Dana White's Contender Series: Season 10, Week 1". Both
+ * reduce to the same (season, week) pair or to nothing. */
+export function contenderSeasonWeek(name) {
+  const s = String(name || '');
+  const feed = /^\s*DWCS\s+(\d{1,2})\.(\d{1,2})\s*$/i.exec(s);
+  if (feed) return { season: Number(feed[1]), week: Number(feed[2]) };
+  const ours = /contender series(?:\s+\d{4})?\s*:\s*season\s+(\d{1,2})\s*,\s*week\s+(\d{1,2})\s*$/i.exec(s);
+  return ours ? { season: Number(ours[1]), week: Number(ours[2]) } : null;
+}
+
+/* Same card: date within a day (UTC start vs local event date) and one of
+ *   - the same Contender Series season AND week (both sides must parse),
+ *   - the same numbered UFC event,
+ *   - the same event name after normalization. */
 export function sameOfficialEvent(official, ours) {
   if (!official?.date || !ours?.event_date) return false;
   const days = Math.abs(Date.parse(official.date) - Date.parse(ours.event_date)) / 86400e3;
   if (days > 1) return false;
+  const da = contenderSeasonWeek(official.name), db = contenderSeasonWeek(ours.name);
+  if (da || db) return Boolean(da && db && da.season === db.season && da.week === db.week);
   const na = /\bufc\s*(\d+)\b/i.exec(official.name), nb = /\bufc\s*(\d+)\b/i.exec(ours.name);
   if (na || nb) return Boolean(na && nb && na[1] === nb[1]);
   return normalize(official.name) === normalize(ours.name);
