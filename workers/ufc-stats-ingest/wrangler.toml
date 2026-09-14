@@ -17,6 +17,8 @@ MAX_EVENTS_PER_RUN = "3"
 #   2026-09-13 23:20Z  canary n=6 from Cloudflare (ORD, v6): challenge
 #                      interstitial on the first fight page; verdict
 #                      "challenged"; 0 bouts compared; solver not used.
+#   2026-09-14 00:34Z  canary n=6 from Cloudflare (ORD, v6): same interstitial,
+#                      same verdict; retry_after 06:34Z.
 # It is turned on only after POST /admin/canary returns verdict "clean" from
 # Cloudflare egress (no challenge, parser reproduces stored round rows column
 # for column, identity validation passes). Do not flip it to get past a

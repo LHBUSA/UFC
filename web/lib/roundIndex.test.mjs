@@ -91,3 +91,25 @@ test('the whole page is ONE backend request', async () => {
     assert.match(url, /\/rest\/v1\/rpc\/ufc_round_index$/);
   } finally { globalThis.fetch = real; }
 });
+
+test('the permanent archive only lists bouts with real round rows', () => {
+  const d = doc();
+  d.shelves.recent = [card({ bout_id: 'result-only', rounds_covered: 0, both_corners: false }), card()];
+  const r = parseRoundIndex(d);
+  assert.equal(r.status, 'ok');
+  assert.deepEqual(r.shelves.recent.map((b) => b.boutId), ['b1'], 'a result without round rows is not archive analysis');
+  assert.ok(buildSections(r).every((s) => s.bouts.every((b) => b.roundsCovered >= 1)));
+});
+
+test('a completed bout moves into Recent analysis once its round rows land, newest card first', () => {
+  const noche = { bout_id: 'noche-main', event_id: 'noche', event_name: 'Noche UFC: Silva vs. Delgado', event_date: '2026-09-12' };
+  /* before: results stored, 0 round rows -> the read model has nothing for Noche */
+  const before = buildSections(parseRoundIndex(doc())).find((s) => s.key === 'recent');
+  assert.ok(!before.bouts.some((b) => b.eventId === 'noche'));
+  /* after: rows stored -> the read model returns the bout, and it leads the shelf */
+  const d = doc({ totals: { ...doc().totals, eligible: 4, both_corners: 4, by_observed_rounds: { 1: 1, 3: 2, 5: 1 }, last_event_date: '2026-09-12' } });
+  d.shelves.recent = [card({ ...noche, rounds_covered: 3 }), card()];
+  const after = buildSections(parseRoundIndex(d)).find((s) => s.key === 'recent');
+  assert.equal(after.bouts[0].eventName, 'Noche UFC: Silva vs. Delgado');
+  assert.equal(after.bouts[0].roundsCovered, 3);
+});

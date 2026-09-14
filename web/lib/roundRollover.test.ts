@@ -84,7 +84,7 @@ test("results and round coverage are independent: 13 results, 0 round rows", () 
   const c = cardCoverage(13, Array.from({ length: 13 }, () => ({ hasResult: true, roundReady: false, noRoundDetail: false })));
   assert.deepEqual(c, { cardSize: 13, results: 13, roundReady: 0, noRoundDetail: 0, roundPending: 13, phase: "rounds_pending" });
   const line = coverageLine(c);
-  assert.equal(line, "13 results recorded · round data pending");
+  assert.equal(line, "13 results recorded · round intelligence pending");
   assert.doesNotMatch(line, /archiv|verified|complete/i, "no claim of round data that is not stored");
 });
 

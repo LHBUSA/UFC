@@ -133,7 +133,7 @@ export function cardCoverage(cardSize: number, bouts: BoutRoundFact[]): CardCove
 export function coverageLine(c: CardCoverage): string {
   const results = `${c.results} result${c.results === 1 ? "" : "s"} recorded`;
   if (c.results === 0) return "No completed bouts recorded yet";
-  if (c.roundReady === 0 && c.roundPending > 0) return `${results} · round data pending`;
+  if (c.roundReady === 0 && c.roundPending > 0) return `${results} · round intelligence pending`;
   const parts = [results, `${c.roundReady} with round data`];
   if (c.roundPending) parts.push(`${c.roundPending} pending`);
   if (c.noRoundDetail) parts.push(`${c.noRoundDetail} without published round detail`);

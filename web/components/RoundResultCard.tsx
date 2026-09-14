@@ -107,7 +107,7 @@ export function RoundResultCard({
         <span className={styles.chipOfficial}>Official result</span>
         {showScorecards && <span className={styles.chipCards}>Scorecards available</span>}
         <span className={roundReady ? styles.chipReady : styles.chipPending}>
-          {roundReady ? "Round intelligence ready" : noRoundDetail ? "No published round detail" : "Round data pending"}
+          {roundReady ? "Round intelligence ready" : noRoundDetail ? "No published round detail" : "Round intelligence pending"}
         </span>
         {wc && <span className={styles.chipMeta}>{wc}</span>}
         {bout.is_title && <span className={styles.chipTitle}>Title</span>}

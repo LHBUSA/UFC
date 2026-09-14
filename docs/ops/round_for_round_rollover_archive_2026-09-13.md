@@ -1,6 +1,6 @@
 # Round-for-Round: rollover + round-archive gap (2026-09-13)
 
-Branch `round-for-round-rollover-archive-v1`, from main `9415fea`. Not merged, not deployed.
+Branch `round-for-round-rollover-archive-v1`, rebased on main `37e40f8`.
 
 ## Production failure (verified read-only, 2026-09-13 ~23:25Z)
 
@@ -34,6 +34,8 @@ Evidence: `docs/ops/evidence/noche_ufc_round_archive_state_2026-09-13.json`.
 | source_health written | `challenged`, retry_after 2026-09-14T05:20:12Z |
 
 Evidence: `docs/ops/evidence/ufc_stats_ingest_canary_2026-09-13.json`. Same result as the 2026-09-10 canary (DTW).
+
+Re-run 2026-09-14T00:34:17Z (same Worker, ORD, IPv6): **challenged** again on the same fight page, 0 of 6 bouts compared, 0 challenges solved, retry_after 2026-09-14T06:34:18Z. Evidence: `docs/ops/evidence/ufc_stats_ingest_canary_2026-09-14.json`.
 
 **Phases B and C are blocked.** `UFCSTATS_ENABLED` stays `"false"`, the challenge solver stays off, and Noche is not processed. Nothing in this branch fabricates, reconstructs or zero-fills round data.
 
