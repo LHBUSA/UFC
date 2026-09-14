@@ -48,3 +48,25 @@ Also fixed: the deck's "Event details" link used UFC.com's undated slug and rend
 ## Health — the outage is no longer silent (Worker, not deployed)
 
 `workers/ufc-stats-ingest/src/archiveHealth.mjs`: a completed card with results, past a 12h grace after its event day, missing round rows while bouts wait on the source, is a ROUND ARCHIVE GAP. `/health` reports `round_lane_status: degraded` plus the gaps; every run records it in notes; the hourly fast-cron tick checks it with database reads only; one Discord alert, deduped, escalated every 24h, cleared once. `DISCORD_WEBHOOK_URL` is unset in production, so until it is set the alert is visible on `/health` and in run notes only.
+
+## Production acceptance (2026-09-14)
+
+Shipped: PR #47 → main `694ff18` (Vercel production); `ufc-stats-ingest` v0.6.0 = Worker `b2c8dd9f` (rollback `ed2781fc`).
+
+First **natural** hourly archive check (the `*/15` cron tick at 01:00Z; no `/admin/run`, no manual cron): alert state written **2026-09-14T01:01:05.757Z**. Read-only verification at 01:02:11Z, evidence `docs/ops/evidence/round_lane_health_acceptance_2026-09-14.json`:
+
+| Check | Result |
+|---|---|
+| round_lane_status | `degraded` |
+| gap cards / bouts waiting on source | 9 / 41 (all `awaiting_source`, `UFCSTATS_ENABLED=false`) |
+| Noche UFC gap card | present: 13 completed, 0 with round rows, cause `source disabled` |
+| Noche results | 13/13, unchanged from the 2026-09-13 capture |
+| Noche round rows | 0 |
+| Noche queue | 13 × `awaiting_source`, attempts 0 |
+| alert | ONE, kind `new`, `alerts_sent` 1, delivered `discord_unconfigured` (webhook unset; health unaffected) |
+| duplicate on further health reads | none (two reads, identical alert state) |
+| ESPN ingest | `last_error_class` null, last fight-night runs `success`, last ESPN result write 2026-09-13T23:46Z |
+| solver | not used (`challenge_policy` fail_closed, `challenges_solved` 0) |
+| synthetic rows | none (0 round rows captured since 2026-09-14T00:00Z; `last_worker_round_write` null) |
+
+Open, separate: UFC Stats access (challenged; `retry_after` 2026-09-14T06:34Z); Discord webhook unset; two Noche bouts without a stored UFC Stats fight id (Belgaroui vs Santos, Silva vs Delgado) — separate identity/source-resolution task.

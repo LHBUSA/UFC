@@ -1,0 +1,104 @@
+{
+ "checked_at": "2026-09-14T01:02:11.006Z",
+ "natural_tick_alert_at": "2026-09-14T01:01:05.757Z",
+ "health": {
+  "version": "v0.6.0",
+  "round_lane_status": "degraded",
+  "ufcstats_enabled": false,
+  "challenge_policy": "fail_closed",
+  "last_error_class": null,
+  "last_result_write": {
+   "captured_at": "2026-09-13T23:46:02.99+00:00",
+   "result_source": "espn"
+  },
+  "last_worker_round_write": null,
+  "round_stat_queue": {
+   "awaiting_source": 41
+  },
+  "source_health": {
+   "status": "challenged",
+   "challenges_solved": 0,
+   "retry_after": "2026-09-14T06:34:18.164Z"
+  }
+ },
+ "gap_cards": 9,
+ "queued_bouts_in_gaps": 41,
+ "noche_gap": {
+  "event_id": "1d0b22df-81e7-4e5b-8fa5-8e5d03c24c52",
+  "event_name": "Noche UFC: Silva vs. Delgado",
+  "event_date": "2026-09-12",
+  "completed_bouts": 13,
+  "with_round_rows": 0,
+  "no_round_detail": 0,
+  "missing": 13,
+  "waiting_on_source": 13,
+  "missing_by_state": {
+   "awaiting_source": 13
+  },
+  "queue_reasons": [
+   "UFCSTATS_ENABLED=false"
+  ],
+  "cause": "source disabled"
+ },
+ "alert": {
+  "kind": "new",
+  "delivered": "discord_unconfigured",
+  "alerts_sent": 1,
+  "message_first_line": "ROUND ARCHIVE GAP · Noche UFC: Silva vs. Delgado · 13 completed bouts · 0 with round rows · source disabled"
+ },
+ "dedupe": {
+  "alerts_sent_read1": 1,
+  "alerts_sent_read2": 1,
+  "last_alert_at_read1": "2026-09-14T01:01:05.757Z",
+  "last_alert_at_read2": "2026-09-14T01:01:05.757Z",
+  "identical_state": true
+ },
+ "noche": {
+  "bouts": 13,
+  "results": 13,
+  "result_diffs_vs_2026_09_13_capture": [],
+  "result_captured_at_max": "2026-09-13T23:46:02.99+00:00",
+  "round_rows": 0,
+  "queue_states": {
+   "awaiting_source | UFCSTATS_ENABLED=false | attempts 0": 13
+  }
+ },
+ "round_rows_captured_since_2026_09_14": "*/0",
+ "recent_runs": [
+  {
+   "started_at": "2026-09-14T00:34:17.536912+00:00",
+   "finished_at": "2026-09-14T00:34:18.396+00:00",
+   "status": "failed",
+   "mode": "canary",
+   "invoked": null
+  },
+  {
+   "started_at": "2026-09-13T23:45:39.004481+00:00",
+   "finished_at": "2026-09-13T23:46:04.215+00:00",
+   "status": "success",
+   "mode": "fightnight",
+   "invoked": "cron"
+  },
+  {
+   "started_at": "2026-09-13T23:30:28.264097+00:00",
+   "finished_at": "2026-09-13T23:30:54.173+00:00",
+   "status": "success",
+   "mode": "fightnight",
+   "invoked": "cron"
+  },
+  {
+   "started_at": "2026-09-13T23:20:12.270508+00:00",
+   "finished_at": "2026-09-13T23:20:12.764+00:00",
+   "status": "failed",
+   "mode": "canary",
+   "invoked": null
+  },
+  {
+   "started_at": "2026-09-13T23:15:41.76985+00:00",
+   "finished_at": "2026-09-13T23:16:06.965+00:00",
+   "status": "success",
+   "mode": "fightnight",
+   "invoked": "cron"
+  }
+ ]
+}
