@@ -59,6 +59,25 @@ export function rest() {
       }
       return out;
     },
+    /** Keyset walk over a (text, date) key pair. Offset pagination over the
+     *  JSON-extracting snapshot select hits the statement timeout at depth
+     *  (57014); a key-bounded page costs the same at row 1 and row 20,000. */
+    async selectKeyset(table, query, { k1, k2, limit = 500, onPage } = {}) {
+      const out = [];
+      let last = null;
+      for (;;) {
+        const after = last ? `&or=(${k1}.gt.${encodeURIComponent(last[k1])},and(${k1}.eq.${encodeURIComponent(last[k1])},${k2}.gt.${encodeURIComponent(last[k2])}))` : '';
+        const q = query.startsWith('?') ? query : `?${query}`;
+        const res = await fetch(`${url}/rest/v1/${table}${q}${after}&order=${k1}.asc,${k2}.asc&limit=${limit}`, { headers });
+        if (!res.ok) throw new Error(`${table} -> HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`);
+        const rows = await res.json();
+        out.push(...rows);
+        if (onPage) onPage(out.length);
+        if (rows.length < limit) break;
+        last = rows[rows.length - 1];
+      }
+      return out;
+    },
     async count(table, query = 'select=*') {
       const q = query.startsWith('?') ? query : `?${query}`;
       const res = await fetch(`${url}/rest/v1/${table}${q}`, {

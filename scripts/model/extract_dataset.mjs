@@ -60,7 +60,7 @@ const TABLES = [
   ['bout_features', 'ufc_fighter_bout_features',
     'select=fighter_id,bout_id,event_id,opponent_id,event_date,outcome,method,scheduled_rounds,is_title,is_main_event,short_notice_days,observed_seconds,stats_coverage,round_rows,fighter_stance,opponent_stance,stance_context,totals:raw_stats->totals,opp_totals:raw_stats->opp_totals&feature_version=eq.1&order=fighter_id.asc,bout_id.asc'],
   ['snapshots', 'ufc_fighter_dna_snapshots',
-    `select=${SNAPSHOT_SELECT}&definition_version=eq.1&order=fighter_id.asc,as_of_date.asc`],
+    `select=${SNAPSHOT_SELECT}&definition_version=eq.1`, { keyset: ['fighter_id', 'as_of_date'] }],
   ['market', 'ufc_market_observations',
     'select=id,bout_id,event_id,bookmaker_key,market_key,outcome_name,outcome_fighter_id,price,source_last_update,commence_time,observed_at&order=id.asc'],
 ];
@@ -70,9 +70,11 @@ async function main() {
   const dir = cacheDir();
   const manifest = { extracted_at: new Date().toISOString(), tables: {} };
 
-  for (const [name, table, query] of TABLES) {
+  for (const [name, table, query, opts] of TABLES) {
     process.stdout.write(`  ${name} ... `);
-    const rows = await db.selectAll(table, `?${query}`, { limit: 1000 });
+    const rows = opts?.keyset
+      ? await db.selectKeyset(table, `?${query}`, { k1: opts.keyset[0], k2: opts.keyset[1], limit: 500 })
+      : await db.selectAll(table, `?${query}`, { limit: 1000 });
     const file = path.join(dir, `${name}.jsonl`);
     writeJsonl(file, rows);
     manifest.tables[name] = { table, query, rows: rows.length };

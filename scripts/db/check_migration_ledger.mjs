@@ -152,6 +152,10 @@ export const APPLIED = new Set([
   // Paid-only UFC auth hotfix: public.ufc_auth_request_attempts (HMAC throttle store). Applied 2026-09-14 via
   // scripts/db/apply_migration.ps1 (proof, then apply); RLS on, anon/authenticated revoked (anon 401), service_role only.
   '20260914213000_ufc_auth_request_attempts.sql',
+  // PBE Algo runtime: ufc_model_runs, ufc_model_bout_evaluations (+ card view), result-bound grading with VOID for
+  // vanished bouts, TRUNCATE revoked on the record. Proven by scripts/db/prove_026.ps1 (19 behavioural checks, rolled
+  // back) then applied 2026-09-14 via apply_migration.ps1. Creates no model version, prediction or grade.
+  '20260914230000_ufc_algo_runtime.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))
