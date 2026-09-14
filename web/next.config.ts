@@ -22,6 +22,14 @@ function retiredJudgeSlugRedirects() {
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  /* Crawlers that get metadata rendered into <head> before the response
+   * streams. Next 15.5 streams title/canonical/robots into the body for every
+   * other client on an uncached render (React hoists them after hydration),
+   * and its default list leaves out Googlebot and Bingbot. A sitemap sweep
+   * found 2,096 of 3,108 first renders with the canonical after </head>.
+   * Next's default pattern (next/dist/shared/lib/router/utils/html-bots.js,
+   * 15.5) plus the two search crawlers; setting this replaces the default. */
+  htmlLimitedBots: /Googlebot|Bingbot|[\w-]+-Google|Google-[\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight/i,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "propbetedge.ai" },
