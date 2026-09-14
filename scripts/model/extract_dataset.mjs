@@ -27,29 +27,9 @@
 import path from 'node:path';
 import { rest, cacheDir, writeJsonl } from './common.mjs';
 
-export const SNAPSHOT_METRICS = [
-  'sig_landed_per_min', 'sig_absorbed_per_min', 'sig_diff_per_min', 'sig_accuracy', 'sig_defense',
-  'knockdowns_per_15', 'knockdowns_absorbed_per_15',
-  'td_attempts_per_15', 'td_landed_per_15', 'td_accuracy', 'control_share', 'control_seconds_per_td',
-  'sub_attempts_per_15', 'reversals_per_15',
-  'head_attack_share', 'body_attack_share', 'leg_attack_share',
-  'distance_attack_share', 'clinch_attack_share', 'ground_attack_share',
-  'finish_rate', 'ko_finish_rate', 'submission_finish_rate', 'finish_time_median_sec',
-  'pace_retention_r2_vs_r1', 'pace_retention_r3_vs_r1', 'championship_round_delta', 'defensive_drift_r3_vs_r1',
-];
-
-const SNAPSHOT_SELECT = [
-  'fighter_id', 'as_of_date', 'definition_version',
-  'sample_bouts', 'sample_completed_bouts', 'sample_stat_bouts', 'sample_rounds', 'sample_seconds',
-  'coverage_status',
-  ...SNAPSHOT_METRICS.map((k) => `m_${k}:metrics->${k}->>value`),
-  'record:provenance->record',
-  'included_bouts:provenance->bouts',
-  'finished_by:finish_profile->finished_by',
-  'five_round_apps:context_splits->five_round->record->>appearances',
-  'title_apps:context_splits->title->record->>appearances',
-  'main_event_apps:context_splits->main_event->record->>appearances',
-].join(',');
+// The snapshot column contract is shared with the production scheduler.
+import { SNAPSHOT_METRICS, SNAPSHOT_SELECT } from './features_core.mjs';
+export { SNAPSHOT_METRICS };
 
 const TABLES = [
   ['events', 'ufc_events', 'select=id,name,event_date&order=id.asc'],

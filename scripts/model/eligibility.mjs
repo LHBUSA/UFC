@@ -36,7 +36,7 @@ export const RULES = Object.freeze({
 /** Reason codes in precedence order. The first failing code is the headline. */
 export const REASONS = Object.freeze({
   EVENT_OUT_OF_SCOPE: 'Not a UFC event in PBE Algo scope (Contender Series and non-UFC cards are not called).',
-  BOUT_NOT_SCHEDULED: 'Bout is cancelled, replaced, already fought or has no scheduled status.',
+  BOUT_NOT_SCHEDULED: 'Bout is cancelled, replaced, already fought, has no scheduled status, or has an active sourced withdrawal/replacement.',
   IDENTITY_UNRESOLVED: 'A corner\'s fighter identity is missing, duplicated, under alias review or its record does not reconcile.',
   MODEL_VERSION_UNAVAILABLE: 'No registered live model version matches the scoring artifact.',
   FEATURES_NOT_ASSEMBLED: 'The pre-fight feature vector for this bout could not be assembled.',
@@ -50,6 +50,8 @@ const ORDER = Object.keys(REASONS);
 
 const CONTENDER = /contender series|\bdwcs\b/i;
 const SCHEDULED = new Set(['announced', 'scheduled', 'confirmed']);
+/** Active ufc_event_card_changes status types that take a bout off the card. A weight miss does not. */
+export const CARD_CHANGE_BLOCKING = Object.freeze(['injury', 'illness', 'withdrawal', 'replacement', 'suspension', 'visa_travel']);
 
 export function confidenceLabel(pickProbability, row) {
   const p = pickProbability;
@@ -63,7 +65,7 @@ export function confidenceLabel(pickProbability, row) {
 /**
  * @param {object} input
  * @param {{name:string, event_date:string}} input.event
- * @param {{status:string|null, has_result:boolean, fighter_a_id:string|null, fighter_b_id:string|null}} input.bout
+ * @param {{status:string|null, has_result:boolean, fighter_a_id:string|null, fighter_b_id:string|null, active_card_change?:boolean}} input.bout
  * @param {{fighter_exists:boolean, open_alias_review:boolean, record_reconciles:boolean, stale:boolean}[]} input.corners  two entries
  * @param {object|null} input.row      assembled feature row (min_prior_bouts, available_count) or null
  * @param {number|null} input.pickProbability  max(p, 1-p) from the registered model, or null
@@ -77,7 +79,7 @@ export function evaluateBout(input) {
   const { event, bout, corners, row } = input;
 
   if (!event || CONTENDER.test(event.name || '') || !/^UFC\b/i.test(event.name || '')) failed.add('EVENT_OUT_OF_SCOPE');
-  if (bout.has_result || !SCHEDULED.has(String(bout.status || '').toLowerCase())) failed.add('BOUT_NOT_SCHEDULED');
+  if (bout.has_result || bout.active_card_change || !SCHEDULED.has(String(bout.status || '').toLowerCase())) failed.add('BOUT_NOT_SCHEDULED');
   if (!bout.fighter_a_id || !bout.fighter_b_id || bout.fighter_a_id === bout.fighter_b_id
     || !corners || corners.length !== 2
     || corners.some((c) => !c.fighter_exists || c.open_alias_review || !c.record_reconciles)) failed.add('IDENTITY_UNRESOLVED');

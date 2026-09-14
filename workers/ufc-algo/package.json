@@ -1,0 +1,9 @@
+{
+  "name": "ufc-algo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun",
+    "test": "node --test src/cycle.test.mjs"
+  }
+}
