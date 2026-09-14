@@ -82,7 +82,10 @@ export function resolveOptions(options = {}) {
      * somebody is confused about it. Too wide is clamped; not-a-window is
      * replaced. */
     sinceHours: Math.min(24 * 7, Number(options.sinceHours) > 0 ? Number(options.sinceHours) : 6),
-    minConfidence: Math.min(1, Math.max(0, Number(options.minConfidence) ?? 0.6)),
+    /* Number(undefined) is NaN and `NaN ?? 0.6` is still NaN: every comparison
+     * against it is false, so an omitted floor silently disabled the filter for
+     * every non-CLI caller. Absent or non-numeric now means 0.6. */
+    minConfidence: options.minConfidence != null && options.minConfidence !== '' && Number.isFinite(Number(options.minConfidence)) ? Math.min(1, Math.max(0, Number(options.minConfidence))) : 0.6,
     now: options.now ?? Date.now(),
   };
 }
@@ -130,7 +133,7 @@ export async function runStatusPass(injectedEnv, options = {}) {
     });
     steps.collect = {
       ok: true,
-      candidates: c.candidates, events: c.events.length,
+      items_read: c.items_read, candidates: c.candidates, events: c.events.length, below_confidence: c.below_confidence,
       offered: c.offered, inserted: c.inserted, duplicate_noop: c.duplicate_noop, rejected: c.rejected,
     };
   } catch (e) {

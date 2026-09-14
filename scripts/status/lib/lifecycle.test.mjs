@@ -6,7 +6,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { planLifecycle, expiries, resolutions, occurredAt, UNAVAILABLE_TYPES, RESOLVING_TYPES } from './lifecycle.mjs';
+import { planLifecycle, expiries, resolutions, occurredAt, unanchoredExpiries, UNAVAILABLE_TYPES, RESOLVING_TYPES } from './lifecycle.mjs';
 
 const TODAY = '2026-09-08';
 
@@ -179,4 +179,23 @@ test('ordering uses the source clock first and our clock last', () => {
   assert.equal(occurredAt({ effective_at: 'A', source_published_at: 'B', detected_at: 'C' }), 'A');
   assert.equal(occurredAt({ effective_at: null, source_published_at: 'B', detected_at: 'C' }), 'B');
   assert.equal(occurredAt({ effective_at: null, source_published_at: null, detected_at: 'C' }), 'C');
+});
+
+/* ================= unanchored card-level statuses ================= */
+
+test('an unanchored card-level status expires once the fighter\'s next card has happened', () => {
+  /* Production case: "Rodrigo Vera announced visa issues ahead of his fight"
+   * had no event_id and would have stayed active for ever. */
+  const visa = row({ id: 'visa', status_type: 'visa_travel', source_published_at: '2026-09-04T16:32:51Z' });
+  const dates = new Map([['f1', ['2026-03-01', '2026-09-12']]]);
+  assert.deepEqual(unanchoredExpiries([visa], dates, '2026-09-14').map((e) => e.id), ['visa']);
+  assert.deepEqual(unanchoredExpiries([visa], dates, '2026-09-10'), [], 'the card is still ahead');
+  assert.deepEqual(unanchoredExpiries([visa], new Map(), '2026-09-14'), [], 'no card on file: cannot tell, leave it');
+  const plan = planLifecycle({ rows: [visa], eventDateById: new Map(), today: '2026-09-14', cardDatesByFighter: dates });
+  assert.deepEqual(plan.expire.map((e) => e.id), ['visa']);
+});
+
+test('an injury is not card-scoped and never expires by a card date', () => {
+  const inj = row({ id: 'inj', status_type: 'injury', source_published_at: '2026-08-27T00:00:00Z' });
+  assert.deepEqual(unanchoredExpiries([inj], new Map([['f1', ['2026-09-01']]]), '2026-09-14'), []);
 });

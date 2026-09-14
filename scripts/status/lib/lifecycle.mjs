@@ -90,6 +90,38 @@ export function expiries(rows, eventDateById, today) {
  * a commission lifting a ban, and conflating them would publish that someone
  * may compete when the body that suspended them has not said so.
  */
+/** Status types that are about one card, not about a fighter's condition. */
+export const CARD_SCOPED_TYPES = new Set(['withdrawal', 'replacement', 'weight_miss', 'visa_travel']);
+
+/**
+ * Card-level statuses the linker never anchored to an event.
+ *
+ * "Rodrigo Vera announced visa issues ahead of his fight" arrives with no
+ * event_id, so the event-date expiry above can never fire and the row would
+ * stay active for ever, long after the card it was about. The anchor is
+ * recovered from the fighter's own schedule: the first card on or after the
+ * day it was reported (any bout status, because a withdrawal usually cancels
+ * the bout). When that card has taken place, the card-level status is over.
+ * No such card means we cannot tell, and the row is left alone.
+ */
+export function unanchoredExpiries(rows, cardDatesByFighter, today) {
+  const out = [];
+  for (const r of rows) {
+    if (r.state !== 'active' || r.event_id || !CARD_SCOPED_TYPES.has(r.status_type)) continue;
+    const reported = occurredAt(r).slice(0, 10);
+    if (!reported) continue;
+    const next = (cardDatesByFighter.get(r.fighter_id) || []).filter((d) => d >= reported).sort()[0];
+    if (!next || next >= today) continue;
+    out.push({
+      id: r.id,
+      fighter_id: r.fighter_id,
+      event_id: null,
+      reason: `unanchored ${r.status_type} reported ${reported}; the fighter's next card on or after that day took place on ${next}, before ${today}`,
+    });
+  }
+  return out;
+}
+
 export function resolutions(resolvers, openRows) {
   const decided = [];
   const ambiguous = [];
@@ -156,7 +188,7 @@ export function occurredAt(row) {
  * does the writing, which is what makes every rule above testable without a
  * database and without the migration having been applied.
  */
-export function planLifecycle({ rows, eventDateById, today }) {
+export function planLifecycle({ rows, eventDateById, today, cardDatesByFighter = new Map() }) {
   const active = rows.filter((r) => r.state === 'active');
   const resolvers = rows.filter((r) => RESOLVING_TYPES.has(r.status_type));
 
@@ -165,7 +197,9 @@ export function planLifecycle({ rows, eventDateById, today }) {
 
   /* Resolution wins over expiry: a row that a source explicitly ended is
    * resolved, not merely out of date, and the ledger should say which. */
-  const toExpire = expiries(active, eventDateById, today).filter((e) => !resolvedIds.has(e.id));
+  const anchored = expiries(active, eventDateById, today);
+  const unanchored = unanchoredExpiries(active, cardDatesByFighter, today);
+  const toExpire = [...anchored, ...unanchored].filter((e) => !resolvedIds.has(e.id));
 
   return { resolve: decided, expire: toExpire, ambiguous };
 }

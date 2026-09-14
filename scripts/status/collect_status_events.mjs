@@ -53,7 +53,10 @@ export function resolveOptions(options = {}) {
     write: Boolean(options.write),
     sinceHours: Math.min(24 * 30, Math.max(1, Number(options.sinceHours) || 6)),
     limit: Number(options.limit) || 0,
-    minConfidence: Math.min(1, Math.max(0, Number(options.minConfidence) ?? 0.6)),
+    /* Number(undefined) is NaN and `NaN ?? 0.6` is still NaN: every comparison
+     * against it is false, so an omitted floor silently disabled the filter for
+     * every non-CLI caller. Absent or non-numeric now means 0.6. */
+    minConfidence: options.minConfidence != null && options.minConfidence !== '' && Number.isFinite(Number(options.minConfidence)) ? Math.min(1, Math.max(0, Number(options.minConfidence))) : 0.6,
     verbose: Boolean(options.verbose),
     now: options.now ?? Date.now(),
   };

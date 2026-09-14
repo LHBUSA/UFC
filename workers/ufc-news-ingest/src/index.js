@@ -39,8 +39,9 @@ import { Supabase } from './supabase.mjs';
 import { runIngest, WORKER, FETCH_TIMEOUT_MS, MAX_AGE_DAYS } from './ingest.mjs';
 import { verifySources, probeUrl, CANDIDATES, MIN_ITEMS, MIN_DATED_RATIO, MIN_UFC_RATIO } from './sources.mjs';
 import { loadHealth, resetHealth, summarize, CIRCUIT_FAILURE_THRESHOLD, CIRCUIT_COOLDOWN_MS } from './feed_health.mjs';
+import { statusPass, statusDue, loadStatusHealth, STATUS_PERIOD_MIN, STATUS_WINDOW_HOURS } from './status.mjs';
 
-const VERSION = 'v0.1.0';
+const VERSION = 'v0.2.0';
 
 /* In-memory only: survives a warm isolate and nothing more. The durable record
  * is ufc_news_pipeline_events; this is a convenience for whoever curls it. */
@@ -97,7 +98,14 @@ export default {
           ufc_focus_filter: 'foreign promotion named with no UFC anchor -> skipped, never scored',
         },
         verification_standard: { min_items: MIN_ITEMS, min_dated_ratio: MIN_DATED_RATIO, min_ufc_ratio: MIN_UFC_RATIO },
-        writes: 'ufc_news_items, ufc_news_pipeline_events(detect), ufc_news_sources(via /admin/verify?apply). Never ufc_articles.',
+        /* Fighter availability: extraction + lifecycle over the items this
+         * Worker just stored. Deterministic rules, no model, no articles. */
+        fighter_status: {
+          trigger: `after any ingest that inserted items, and every ${STATUS_PERIOD_MIN} minutes regardless`,
+          window_hours: STATUS_WINDOW_HOURS,
+          ...(await loadStatusHealth(env.UFC_NEWS_KV)),
+        },
+        writes: 'ufc_news_items, ufc_news_pipeline_events(detect), ufc_news_sources(via /admin/verify?apply), ufc_fighter_status_events(status pass), ufc_ingest_runs(worker=ufc-fighter-status). Never ufc_articles.',
       });
     }
 
@@ -131,6 +139,14 @@ export default {
       return json({ service: WORKER, version: VERSION, ...result });
     }
 
+    if (path === '/admin/status') {
+      /* Manual status pass. Dry by default; ?write=true stores and transitions.
+       * ?since_hours widens the window (max 720) for a reviewed backfill. */
+      const write = url.searchParams.get('write') === 'true';
+      const sinceHours = Math.min(720, Number(url.searchParams.get('since_hours')) || STATUS_WINDOW_HOURS);
+      return json({ service: WORKER, version: VERSION, ...(await statusPass(env, { trigger: 'admin', write, sinceHours, detail: true })) });
+    }
+
     if (path === '/admin/verify') {
       const sb = new Supabase(env);
       const apply = url.searchParams.get('apply') === 'true';
@@ -154,7 +170,17 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(run(env, { cron: event.cron }));
+    ctx.waitUntil((async () => {
+      const result = await run(env, { cron: event.cron });
+      /* news ingest -> status extraction -> lifecycle. Immediately when new
+       * items landed, and on a bounded period even when none did, so the
+       * lifecycle still ages statuses on a quiet news day. A status failure is
+       * contained here and never touches the ingest result. */
+      const inserted = Number(result?.totals?.inserted || 0);
+      if (inserted > 0 || statusDue(event.scheduledTime)) {
+        await statusPass(env, { trigger: inserted > 0 ? `ingest(+${inserted})` : 'periodic', write: true });
+      }
+    })());
   },
 };
 

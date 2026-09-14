@@ -18,7 +18,7 @@
  * injury with no card attached never expires by time here, at any age.
  */
 import { Supabase, loadEnv } from '../news/lib.mjs';
-import { planLifecycle } from './lib/lifecycle.mjs';
+import { planLifecycle, CARD_SCOPED_TYPES } from './lib/lifecycle.mjs';
 
 export function parseCliOptions(argv = []) {
   const opt = (n, d) => { const i = argv.indexOf(n); return i >= 0 && argv[i + 1] ? argv[i + 1] : d; };
@@ -55,7 +55,28 @@ export async function runLifecycle(injectedEnv, options = {}) {
     : [];
   const eventDateById = new Map(events.map((e) => [e.id, e.event_date]));
 
-  const plan = planLifecycle({ rows, eventDateById, today: opts.today });
+  /* Card dates for fighters holding an active card-level status with no event
+   * anchor (see unanchoredExpiries). One bounded read per pass. */
+  const unanchoredFighters = [...new Set(rows
+    .filter((r) => r.state === 'active' && !r.event_id && CARD_SCOPED_TYPES.has(r.status_type))
+    .map((r) => r.fighter_id))];
+  const cardDatesByFighter = new Map();
+  if (unanchoredFighters.length) {
+    const ids = unanchoredFighters.join(',');
+    const bouts = await sb.select('ufc_bouts',
+      `select=fighter_a_id,fighter_b_id,ufc_events!inner(event_date)&or=(fighter_a_id.in.(${ids}),fighter_b_id.in.(${ids}))&limit=5000`);
+    for (const b of bouts) {
+      const d = b.ufc_events?.event_date;
+      if (!d) continue;
+      for (const f of [b.fighter_a_id, b.fighter_b_id]) {
+        if (!unanchoredFighters.includes(f)) continue;
+        if (!cardDatesByFighter.has(f)) cardDatesByFighter.set(f, []);
+        cardDatesByFighter.get(f).push(d);
+      }
+    }
+  }
+
+  const plan = planLifecycle({ rows, eventDateById, today: opts.today, cardDatesByFighter });
 
   console.log(`[lifecycle] ${rows.length} row(s) considered as of ${opts.today}`);
   console.log(`[lifecycle] resolve=${plan.resolve.length} expire=${plan.expire.length} ambiguous=${plan.ambiguous.length}${opts.write ? '' : '  (dry run)'}`);

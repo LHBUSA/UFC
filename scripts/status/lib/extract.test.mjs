@@ -222,7 +222,7 @@ test('an ordinary result recap is not a status event', () => {
 
 test('every event carries what decided it', () => {
   const e = one({ title: 'Jane Doe withdraws from UFC 320 with a torn ACL' });
-  assert.equal(e.provenance.extractor, 'status-rules-v1');
+  assert.equal(e.provenance.extractor, 'status-rules-v2');
   assert.equal(e.provenance.rule, 'withdrawal');
   assert.equal(e.provenance.matched_in, 'title');
   assert.ok(e.provenance.matched.length, 'the matched spans travel with the row');

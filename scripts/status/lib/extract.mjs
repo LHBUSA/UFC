@@ -140,8 +140,11 @@ export const STATUS_RULES = [
       /\binjur(?:y|ed|ies)\b/i,
       /\bunderwent\s+surgery\b/i,
       /\b(?:has|had)\s+surgery\b/i,
-      /\btor(?:e|n)\s+(?:his|her|their|an?\s+)?\w+/i,
-      /\bbroke(?:n)?\s+(?:his|her|their|an?\s+)?\w+/i,
+      /* Anatomical objects only. "A record being broken", "broke the
+       * promotional record" and "tore into Pereira" are not injuries, and the
+       * earlier any-word version filed one fighter as injured for a record. */
+      /\btor(?:e|n)\s+(?:(?:his|her|their|an?)\s+)?(?:left\s+|right\s+)?(?:acl|mcl|pcl|meniscus|biceps?|pecs?|pectoral|rotator|hamstring|labrum|ligaments?|tendons?|groin|calf|quad(?:ricep)?s?|achilles)\b/i,
+      /\bbroke(?:n)?\s+(?:(?:his|her|their|an?)\s+)?(?:left\s+|right\s+)?(?:hand|foot|jaw|orbital|ribs?|nose|leg|arm|wrist|ankle|toes?|fingers?|thumb|collarbone|clavicle|tibia|fibula|elbow|back|neck|shin|skull|eye\s+socket)\b/i,
       /\bfractured?\b/i,
       /\bconcussion\b/i,
     ],
@@ -247,7 +250,45 @@ export const NEGATORS = [
   { re: /\b(?:on\s+)?fighting\s+[\w\s.'’-]{0,30}\binjured\b/i, why: 'retrospective: describes a completed fight' },
   { re: /\bfought\s+(?:through|with)\s+(?:an?\s+)?injur/i, why: 'retrospective: fought through it' },
   { re: /\bfantasy\b|\bpicks?\s+and\s+predictions?\b|\bbetting\s+preview\b/i, why: 'preview/prediction copy' },
+  /* status-rules-v2, from a 30-day production dry run (2026-09-14). Each of
+   * these produced an 'active injury' for a fighter who was not unavailable. */
+  { re: /\binjur(?:y|ies)\s+(?:(?:he|she|they)\s+)?(?:suffered|sustained|picked\s+up)\s+(?:before|prior\s+to|during|in\s+camp\s+(?:before|for)|ahead\s+of)\b/i, why: 'retrospective: injuries disclosed around a fight that already happened' },
+  { re: /\b(?:before|ahead\s+of|prior\s+to|en\s+route\s+to)\s+(?:(?:his|her|their|the)\s+)?[\w\s.'’-]{0,30}\b(?:win|victory|upset|finish)\b/i, why: 'retrospective: describes a completed win' },
+  { re: /\bwhile\s+(?:suffering|injured|hurt|nursing|dealing\s+with|carrying)\b/i, why: 'retrospective: competed while hurt' },
+  { re: /\binjury\s+claims?\b|\b(?:questions?|doubts?|suspects?|disputes?)\b[^.;:]{0,60}\binjur/i, why: 'disputed claim, not a status report' },
+  { re: /\bconsider(?:s|ing)\b[^.;]{0,40}\b(?:hiatus|break|time\s+off|retir)/i, why: 'speculative: considering, not decided' },
+  { re: /\bteases?\b|\bhints?\s+at\b|\bthinking\s+about\b/i, why: 'speculative: teased, not reported' },
+  { re: /\bif\s+(?:he|she|they)\s+(?:doesn['’]t|does\s+not|isn['’]t|can['’]t|don['’]t)\b|\bplans?\s+(?:a\s+)?break\b[^.;]{0,80}\bif\b/i, why: 'conditional plan' },
+  { re: /\brules?\s+out\b[^.;]{0,40}\b(?:opponents?|fighters?)\b/i, why: 'subject unclear: someone else ruled out' },
+  /* The UFC availability tracker. A fighter now competing elsewhere is not a
+   * UFC availability fact, and the focus filter upstream ranks, not rejects. */
+  { re: /^(?![^.]*\bUFC\b)[^.]*\b(?:BKFC|bare[-\s]knuckle|PFL|ONE\s+(?:Championship|Fight\s+Night)|Bellator|RAF\s+\d|Real\s+American\s+Freestyle|Karate\s+Combat|Misfits|Power\s+Slap|Cage\s+Warriors|KSW|Oktagon|ADCC|Zuffa\s+Boxing)\b/i, why: 'out of scope: another promotion, no UFC anchor in the headline' },
 ];
+
+/**
+ * An injury is an availability fact only when the source says it changes
+ * availability. "I have a lot of injuries", "reveals injuries suffered before
+ * his win" and "injured 'King of Violence'" are true sentences about pain and
+ * say nothing about whether the fighter can compete. /injuries is an
+ * availability tracker, so an injury row needs one of these in the title or in
+ * a sentence naming the subject (status-rules-v2).
+ */
+export const AVAILABILITY_IMPACT = [
+  /\bvacat(?:e|es|ed|ing)\b/i,
+  /\b(?:withdr[ae]wn?|withdraws?|withdrawing|withdrawals?)\b|\bpull(?:s|ed|ing)?\s+out\b|\bforced\s+(?:out|to\s+(?:withdraw|vacate|bow\s+out))\b|\bbows?\s+out\b/i,
+  /\bout\s+(?:of\s+(?:ufc\b|the\s+(?:card|fight|bout|event))|for\s+(?:the\s+(?:rest|year)|\w+\s+(?:months?|weeks?)|a\s+(?:year|while))|until\b|indefinitely\b|of\s+action\b)/i,
+  /\bsidelined\b|\bruled\s+out\b|\bunable\s+to\s+(?:compete|fight|return)\b|\bnot\s+(?:been\s+)?(?:medically\s+)?cleared\b|\bmedical\s+clearance\b/i,
+  /\b(?:will|to)\s+miss\b|\bmisses?\s+(?:the\s+)?(?:rest|remainder)\b/i,
+  /\b(?:underwent|undergo(?:es|ing)?|following|after|post-?)\s+(?:\w+\s+){0,2}surgery\b|\brecover(?:y|ing)\s+from\s+(?:\w+\s+){0,3}(?:surgery|tear|injury)\b|\bon\s+crutches\b/i,
+  /\b(?:hopes?|expects?|targets?|aims?|plans?)\s+to\s+return\b|\breturn\s+(?:timeline|date)\b/i,
+  /\b(?:set|booked)\s+for\s+ufc\b|\bnew\s+(?:main\s+event|opponent|headliner)\b|\breplac(?:e|es|ed|ement)\b/i,
+];
+
+export function availabilityEvidence(text) {
+  const t = String(text || '');
+  for (const re of AVAILABILITY_IMPACT) { const m = t.match(re); if (m) return m[0]; }
+  return null;
+}
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -358,6 +399,11 @@ export function classifyStatus(title, summary) {
   const hits = [];
 
   for (const rule of STATUS_RULES) {
+    /* "unable to secure medical clearance", "not medically cleared", or a
+     * clearance overtaken by a new injury, is not a clearance. It is dropped,
+     * never inverted (status-rules-v2). */
+    if (rule.type === 'cleared' && /\b(?:not|never|yet\s+to\s+be|hasn['’]t\s+been|has\s+not\s+been|isn['’]t|unable\s+to\s+(?:secure|get|obtain))\s+(?:been\s+)?(?:medically\s+)?clear/i.test(`${t} ${s}`)) continue;
+    if (rule.type === 'cleared' && /\b(?:vacat|another\s+injury|new\s+(?:\w+\s+)?injury|setback)/i.test(`${t} ${s}`)) continue;
     const inTitle = rule.patterns.filter((re) => re.test(t));
     const inSummary = rule.patterns.filter((re) => re.test(s));
     if (!inTitle.length && !inSummary.length) continue;
@@ -403,15 +449,18 @@ export function classifyStatus(title, summary) {
  */
 export function resolveSubject(title, summary, fighters, primary) {
   if (!fighters.length) return null;
-  if (fighters.length === 1) return { ...fighters[0], how: 'only linked fighter' };
-
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const t = String(title || '');
   const named = fighters
-    .map((f) => ({ f, at: t.search(new RegExp(`\\b${surnameOf(f.name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i')) }))
+    .map((f) => ({ f, at: t.search(new RegExp(`\\b${esc(surnameOf(f.name))}\\b`, 'i')), len: surnameOf(f.name).length }))
     .filter((x) => x.at >= 0);
 
   if (primary.where === 'title') {
-    /* Where does the matched phrase sit, and which clause is that? */
+    /* Position decides, even with ONE linked fighter (status-rules-v2). The
+     * linker attaches whoever it can resolve, and the injured person is often
+     * someone it did not: "Injured UFC champion Islam Makhachev hopes..." was
+     * linked only to his previous opponent, and "only linked fighter" filed
+     * that opponent as injured. */
     const hit = primary.matched
       .map((m) => t.toLowerCase().indexOf(m.toLowerCase()))
       .filter((i) => i >= 0)
@@ -419,25 +468,41 @@ export function resolveSubject(title, summary, fighters, primary) {
     if (hit != null) {
       const clauseStart = Math.max(t.lastIndexOf(';', hit), t.lastIndexOf(' — ', hit), t.lastIndexOf(' - ', hit), -1) + 1;
       const before = named.filter((x) => x.at < hit && x.at >= clauseStart).sort((a, b) => b.at - a.at);
-      if (before.length) return { ...before[0].f, how: 'named before the status phrase in the same clause' };
+      if (before.length) {
+        /* ...unless a new proper-noun subject starts between that name and
+         * the phrase: "Silva vs. Cong At UFC 332 For Flyweight Title,
+         * Shevchenko Injured" is about Shevchenko, not Cong. */
+        const between = t.slice(before[0].at + before[0].len, hit);
+        if (/[,:]\s+(?:[‘'"“]\s*)?[A-Z][\p{L}'’-]+/u.test(between)) return null;
+        return { ...before[0].f, how: 'named before the status phrase in the same clause' };
+      }
+      /* Adjectival form: "Injured Ulberg hopes to return". The status word
+       * opens its clause and the subject follows within one word. */
+      const phrase = primary.matched.find((m) => t.toLowerCase().indexOf(m.toLowerCase()) === hit) || '';
+      const phraseEnd = hit + phrase.length;
+      if (/^\s*$/.test(t.slice(clauseStart, hit))) {
+        const after = named
+          .filter((x) => x.at >= phraseEnd && t.slice(phraseEnd, x.at).trim().split(/\s+/).filter(Boolean).length <= 1)
+          .sort((a, b) => a.at - b.at);
+        if (after.length) return { ...after[0].f, how: 'named directly after a leading status adjective' };
+      }
     }
-    /* The phrase is in the title and no linked fighter precedes it. Stop.
-     *
-     * Falling through to "the only linked fighter named in the title" is what
-     * an earlier version did, and against our own archive it produced this:
-     * "Shevchenko injured; Silva-Wang set for UFC 332" was linked to Silva and
-     * Wang but NOT to Shevchenko, so the fallback picked Silva — a fighter the
-     * headline names as the beneficiary — and filed her as injured. The
-     * subject of a status change can be someone the linker never resolved, and
-     * the only safe reading of "nobody linked is in front of the phrase" is
-     * that we do not know who this is about. */
     return null;
   }
 
-  /* The phrase matched only in the summary, where position in the title says
-   * nothing. One linked fighter in the title is then the best available
-   * reading of who the story is about. */
-  if (named.length === 1) return { ...named[0].f, how: 'the only linked fighter named in the title' };
+  /* Summary-only: the subject must be named in the SAME sentence as the
+   * matched phrase, and be the only such linked fighter. "Aspinall has been
+   * injured since last October" does not make Josh Hokit, the story's only
+   * linked fighter, injured. */
+  const sents = sentences(String(summary || ''));
+  const withPhrase = sents.filter((sn) => primary.matched.some((m) => sn.toLowerCase().includes(m.toLowerCase())));
+  const inSentence = fighters.filter((f) => withPhrase.some((sn) => new RegExp(`\\b${esc(surnameOf(f.name))}\\b`, 'i').test(sn)));
+  if (inSentence.length !== 1) return null;
+  /* ...and, when more than one fighter is linked, also the only linked
+   * fighter the title names: position in the summary alone is not enough to
+   * choose between several people the story is about. */
+  if (fighters.length === 1) return { ...inSentence[0], how: 'the only linked fighter, named in the sentence carrying the status phrase' };
+  if (named.length === 1 && named[0].f.id === inSentence[0].id) return { ...inSentence[0], how: 'the only linked fighter named in the title and in the sentence carrying the status phrase' };
   return null;
 }
 
@@ -503,6 +568,18 @@ export function extractStatus(item, { now = Date.now() } = {}) {
     };
   }
 
+  /* An injury is only an availability fact when the source says so, in the
+   * title or in a sentence naming the subject (status-rules-v2). */
+  if (primary.type === 'injury' && subject) {
+    const scope = [title, ...sentencesAbout(summary, subject.name)].join(' ');
+    if (!availabilityEvidence(scope)) {
+      return {
+        events: [],
+        skipped: [{ id: item.id, title, reason: 'no_availability_impact', detail: `${subject.name}: injury mentioned, but nothing says it affects availability` }],
+      };
+    }
+  }
+
   /* A diagnosis may only be read from a sentence that names the subject. */
   const clinicalScope = (() => {
     const about = sentencesAbout(text, subject?.name);
@@ -543,7 +620,7 @@ export function extractStatus(item, { now = Date.now() } = {}) {
      * not a report about it, so they carry more weight than the wire. */
     confidence: clamp01(primary.confidence + (item.source_kind === 'official' ? 0.1 : 0)),
     provenance: {
-      extractor: 'status-rules-v1',
+      extractor: 'status-rules-v2',
       rule: primary.type,
       matched_in: primary.where,
       matched: primary.matched,
