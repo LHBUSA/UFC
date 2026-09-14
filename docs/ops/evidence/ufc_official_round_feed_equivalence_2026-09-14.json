@@ -1,0 +1,447 @@
+{
+ "purpose": "Equivalence of the official UFC statistics feed (d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/{id}.json RoundStats) against round rows already stored from UFC Stats, before any write.",
+ "measured_at": "2026-09-14T01:20:38.683Z",
+ "egress": "operator workstation (read-only); production Cloudflare-egress canary recorded separately",
+ "column_map": "kd=Knockdowns; sig_str=SigStrikes; total_str=TotalStrikes; td=Takedowns; sub_att=SubmissionsAttempted; rev=Reversals; ctrl_sec=ControlTime (m:ss); head/body/leg=SigHead/SigBody/SigLeg; distance/clinch/ground=SigDistance/SigClinch/SigGround",
+ "events": [
+  {
+   "event": "UFC Fight Night: Hooker vs. Parnasse",
+   "date": "2026-09-05",
+   "official_event_id": "1327",
+   "official_event_name": "UFC Fight Night: Hooker vs. Parnasse",
+   "bouts": [
+    {
+     "fmid": "12999",
+     "ufc": "Dan Hooker vs Salahdine Parnasse",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 2,
+     "feed_rows": 2,
+     "cells_compared": 44,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13053",
+     "ufc": "Fares Ziam vs Axel Sola",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 2,
+     "feed_rows": 2,
+     "cells_compared": 44,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "12963",
+     "ufc": "Michael Page vs Nursulton Ruziboev",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13100",
+     "ufc": "Daniil Donchenko vs Punahele Soriano",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "12964",
+     "ufc": "Kurtis Campbell vs Trevor Peek",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13054",
+     "ufc": "Losene Keita vs Muhammad Naimov",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 2,
+     "feed_rows": 2,
+     "cells_compared": 44,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13007",
+     "ufc": "Morgan Charriere vs Felipe Lima",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "12965",
+     "ufc": "Mario Pinto vs Ryan Spann",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 4,
+     "feed_rows": 4,
+     "cells_compared": 88,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13055",
+     "ufc": "Oumar Sy vs Modestas Bukauskas",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 4,
+     "feed_rows": 4,
+     "cells_compared": 88,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13115",
+     "ufc": "Nathaniel Wood vs Pavel Andrusca",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13094",
+     "ufc": "Michael Aljarouj vs Fabia Sintes",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13056",
+     "ufc": "Nora Cornolle vs Klaudia Sygula",
+     "status": "Final",
+     "official": true,
+     "match": "NO_EXACT_NAME_MATCH"
+    },
+    {
+     "fmid": "13014",
+     "ufc": "Matthieu Duclos vs Luis Felipe Dias",
+     "status": "Final",
+     "official": true,
+     "match": "NO_EXACT_NAME_MATCH"
+    },
+    {
+     "fmid": "13077",
+     "ufc": "Delphine Benouaich vs Sofia Montenegro",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 4,
+     "feed_rows": 4,
+     "cells_compared": 88,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    }
+   ],
+   "our_bouts_without_exact_name_match": [
+    "Nora Cornolle vs Klaudia Syguła",
+    "Matthieu Letho Duclos vs Luis Felipe Dias"
+   ]
+  },
+  {
+   "event": "UFC Fight Night: Nurmagomedov vs. Song",
+   "date": "2026-08-29",
+   "official_event_id": "1326",
+   "official_event_name": "UFC Fight Night: Nurmagomedov vs. Song",
+   "bouts": [
+    {
+     "fmid": "12947",
+     "ufc": "Umar Nurmagomedov vs Song Yadong",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 4,
+     "feed_rows": 4,
+     "cells_compared": 88,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "12948",
+     "ufc": "Yan Xiaonan vs Denise Gomes",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 2,
+     "feed_rows": 2,
+     "cells_compared": 44,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "12959",
+     "ufc": " Aoriqileng vs Kai Asakura",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 4,
+     "feed_rows": 4,
+     "cells_compared": 88,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "12949",
+     "ufc": "Alex Perez vs  Sumudaerji",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13093",
+     "ufc": "Liu Ce vs Levi Rodrigues Jr.",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 2,
+     "feed_rows": 2,
+     "cells_compared": 44,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13068",
+     "ufc": "Bilal Hasan vs Nilson Rojas",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 4,
+     "feed_rows": 4,
+     "cells_compared": 88,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13012",
+     "ufc": "Namsrai Batbayar vs Andre Lima",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "12950",
+     "ufc": "Rei Tsuruya vs Kevin Borjas",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 2,
+     "feed_rows": 2,
+     "cells_compared": 44,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13005",
+     "ufc": "Jack Jenkins vs Sean Woodson",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13085",
+     "ufc": "Xiao Long vs Francesco Nuzzi",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 2,
+     "feed_rows": 2,
+     "cells_compared": 44,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    },
+    {
+     "fmid": "13083",
+     "ufc": "Lawrence Lui vs Hector Santiago",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 0,
+     "feed_rows": 4,
+     "cells_compared": 0,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": [
+      1,
+      2,
+      1,
+      2
+     ]
+    },
+    {
+     "fmid": "13013",
+     "ufc": "Xiong Jingnan vs Julia Polastri",
+     "status": "Final",
+     "official": true,
+     "match": "NO_EXACT_NAME_MATCH"
+    },
+    {
+     "fmid": "13084",
+     "ufc": "Ding Meng vs Cam Nelson",
+     "status": "Final",
+     "official": true,
+     "stored_rows": 6,
+     "feed_rows": 6,
+     "cells_compared": 132,
+     "mismatches": 0,
+     "result_check": {
+      "winner": true,
+      "round": true,
+      "time": true
+     },
+     "feed_rounds_not_stored": []
+    }
+   ],
+   "our_bouts_without_exact_name_match": [
+    "Jingnan Xiong vs Julia Polastri"
+   ]
+  }
+ ],
+ "totals": {
+  "bouts_compared": 23,
+  "cells": 2156,
+  "mismatches": 0,
+  "result_disagreements": 0
+ }
+}

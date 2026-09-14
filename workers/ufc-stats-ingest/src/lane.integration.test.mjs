@@ -12,7 +12,14 @@
  *   5. duplicate bout row   -> fight id already on another bout -> identity_review
  *   6. archive gap          -> source disabled + complete card + results + no rows:
  *                              round lane degraded, alert once, no UFC Stats fetch,
- *                              quiet on the next run, visible on /health */
+ *                              quiet on the next run, visible on /health
+ *   7. official feed        -> UFC Stats disabled, official feed enabled: the gap card
+ *                              is recovered from the official round statistics (real
+ *                              Noche fixture), results untouched, gap cleared once,
+ *                              idempotent re-run
+ *   8. official disagreement-> winner mismatch: validation_failed, nothing written
+ *   9. official not final   -> not_yet_published, nothing written
+ *  10. official wrong card  -> stored link to another card: identity_review, nothing written */
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -113,13 +120,21 @@ xhr.open('POST',"/__c",true);
 xhr.send('nonce='+encodeURIComponent(nonce)+'&n='+n);
 </script></body></html>`;
 
-async function run(seed, { enabled = 'true', challenged = false, shared = null, discordPosts = null } = {}) {
+async function run(seed, { enabled = 'true', challenged = false, shared = null, discordPosts = null, official = null } = {}) {
   const db = shared?.db || makeDb(seed);
   const r2 = shared?.r2 || new Map();
   const ufcstatsHits = [];
   const dna = [];
+  const officialHits = [];
   globalThis.fetch = async (input, init = {}) => {
     const url = String(input);
+    if (url.startsWith('https://www.ufc.com/event/') || url.startsWith('https://d29dxerjsp82wz.cloudfront.net/')) {
+      officialHits.push(url);
+      if (!official) throw new Error(`official feed fetched while disabled: ${url}`);
+      const body = official.serve(url);
+      if (body == null) return new Response('not found', { status: 404 });
+      return new Response(typeof body === 'string' ? body : JSON.stringify(body), { status: 200 });
+    }
     if (url.startsWith('http://sb.test/rest/v1/')) return db.handle(url, init);
     if (url.startsWith('http://discord.test/') && discordPosts) { discordPosts.push(JSON.parse(init.body).content); return new Response(null, { status: 204 }); }
     if (url.startsWith('http://ufcstats.test/')) {
@@ -141,9 +156,10 @@ async function run(seed, { enabled = 'true', challenged = false, shared = null, 
     },
     INTELLIGENCE: { refreshFightDna: async (a) => { dna.push(a); return { status: 'ok', snapshots: 2 }; } },
     ...(discordPosts ? { DISCORD_WEBHOOK_URL: 'http://discord.test/hook' } : {}),
+    ...(official ? { UFC_OFFICIAL_ROUNDS_ENABLED: 'true', OFFICIAL_MIN_INTERVAL_MS: '0' } : {}),
   };
   const res = await __test.runIngest(env, { invoked: 'test', skipEspn: true });
-  return { res, db, r2, ufcstatsHits, dna, env };
+  return { res, db, r2, ufcstatsHits, officialHits, dna, env };
 }
 const q = (db) => db.T.ufc_round_stat_queue.find((x) => x.bout_id === 'b1');
 
@@ -215,6 +231,83 @@ const q = (db) => db.T.ufc_round_stat_queue.find((x) => x.bout_id === 'b1');
   const health = await (await worker.fetch(new Request('http://worker.test/health'), second.env)).json();
   check(health.round_lane_status === 'degraded' && health.round_archive_gaps?.length === 1 && health.ufcstats_enabled === false, `gap: /health reports degraded ${JSON.stringify({ s: health.round_lane_status, g: health.round_archive_gaps?.length })}`);
   check(health.round_archive_alert?.last_alert?.kind === 'new', 'gap: /health shows the last alert');
+}
+
+/* ---------------------------------------------- official statistics feed */
+const OFX = (f) => JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'test-fixtures', 'official', f), 'utf8'));
+const OFFICIAL_FIGHT = OFX('fight_12975.json');
+const OFFICIAL_EVENT = OFX('event_1331_trimmed.json');
+function nocheWorld({ winner = 'fb', eventName = 'Noche UFC: Silva vs. Delgado' } = {}) {
+  return {
+    ufc_fighters: [
+      { id: 'fw', name: 'Waldo Cortes Acosta', ufcstats_id: null, espn_athlete_id: '10', dob: null, record_w: 14, record_l: 3, record_d: 0 },
+      { id: 'fb', name: 'Curtis Blaydes', ufcstats_id: null, espn_athlete_id: '11', dob: null, record_w: 18, record_l: 5, record_d: 0 },
+    ],
+    ufc_fighter_aliases: [],
+    ufc_events: [{ id: 'ev1', name: eventName, event_date: '2026-09-12', ufcstats_id: null, espn_event_id: '600060772', card_status: 'complete' }],
+    ufc_event_broadcasts: [{ event_id: 'ev1', ufc_slug: 'ufc-fight-night-september-12-2026' }],
+    ufc_bouts: [{ id: 'b1', event_id: 'ev1', fighter_a_id: 'fw', fighter_b_id: 'fb', ufcstats_id: null, espn_competition_id: '401897733', status: 'complete', weight_class: 'HEAVYWEIGHT', scheduled_rounds: 3 }],
+    ufc_bout_results: [{ bout_id: 'b1', winner_id: winner, method: 'DEC_U', round: 3, time_sec: 300, has_stats: false, stats_captured_at: null, result_source: 'espn' }],
+    ufc_bout_round_stats: [], ufc_round_stat_queue: [], ufc_ingest_runs: [], ufc_alias_review_queue: [],
+  };
+}
+const officialServer = (fight = OFFICIAL_FIGHT) => ({
+  serve(url) {
+    if (url === 'https://www.ufc.com/event/ufc-fight-night-september-12-2026') return '<div data-fmid="1331"></div><div class="c-listing-fight" data-fmid="12975"></div>';
+    if (url.endsWith('/event/live/1331.json')) return OFFICIAL_EVENT;
+    if (url.endsWith('/fight/live/12975.json')) return fight;
+    return null;
+  },
+});
+
+/* 7. the recovery path: gap first, then the official feed closes it */
+{
+  const posts = [];
+  const gap = await run(nocheWorld(), { enabled: 'false', discordPosts: posts });
+  check(gap.officialHits.length === 0 && gap.res.notes.round_archive?.round_lane_status === 'degraded', 'official: disabled feed makes no request; gap reported');
+  const resultBefore = JSON.stringify(gap.db.T.ufc_bout_results);
+  const rec = await run(null, { enabled: 'false', discordPosts: posts, shared: { db: gap.db, r2: gap.r2 }, official: officialServer() });
+  const qq = q(rec.db);
+  check(rec.res.status === 'success', `official: run ok ${rec.res.status} ${JSON.stringify(rec.res.assertion_failures)}`);
+  check(qq?.state === 'written' && qq.identity_method === 'ufc_official_feed' && qq.identity_evidence?.official_fight_id === '12975', `official: written ${JSON.stringify(qq)}`);
+  const rows = rec.db.T.ufc_bout_round_stats.filter((r) => r.bout_id === 'b1');
+  check(rows.length === 6 && new Set(rows.map((r) => r.round)).size === 3 && ['fw', 'fb'].every((f) => rows.filter((r) => r.fighter_id === f).length === 3), `official: 3 rounds x both corners (${rows.length})`);
+  check(rows.every((r) => r.source_url === 'https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12975.json' && r.captured_at), 'official: provenance on every row');
+  const r2b = rows.find((r) => r.fighter_id === 'fb' && r.round === 2);
+  check(r2b.sig_str_landed === 9 && r2b.sig_str_att === 24 && r2b.total_str_landed === 16 && r2b.td_landed === 2 && r2b.ctrl_sec === 87, `official: values copied from the feed ${JSON.stringify(r2b)}`);
+  check(rec.ufcstatsHits.length === 0, 'official: UFC Stats never contacted');
+  check(JSON.stringify(rec.db.T.ufc_bout_results) === resultBefore, 'official: results untouched');
+  check(rec.db.T.ufc_bouts[0].ufcstats_id === null && rec.db.T.ufc_events[0].ufcstats_id === null, 'official: no UFC Stats ids invented');
+  check(JSON.parse(rec.r2.get('ufc-raw/_state/official_event/ev1.json')).official_event_id === '1331', 'official: verified card link stored');
+  check(rec.res.notes.round_archive?.round_lane_status === 'ok' && rec.res.notes.round_archive?.alert?.kind === 'cleared', `official: gap cleared ${JSON.stringify(rec.res.notes.round_archive)}`);
+  check(posts.filter((m) => m.includes('ROUND ARCHIVE GAP CLEARED')).length === 1, 'official: one recovery message');
+  check(rec.dna.length === 1, 'official: Fight DNA owner asked once');
+
+  const again = await run(null, { enabled: 'false', discordPosts: posts, shared: { db: rec.db, r2: rec.r2 }, official: officialServer() });
+  check(again.officialHits.length === 0 && again.db.T.ufc_bout_round_stats.length === 6 && (again.res.notes.round_rows_written || 0) === 0, 'official: re-run idempotent, no request, same rows');
+  check(again.res.notes.round_archive?.alert?.kind === 'none' && posts.filter((m) => m.includes('CLEARED')).length === 1, 'official: no duplicate recovery message');
+}
+
+/* 8. the official result disagrees with ours */
+{
+  const { res, db } = await run(nocheWorld({ winner: 'fw' }), { enabled: 'false', official: officialServer() });
+  check(res.status === 'success' && q(db)?.state === 'validation_failed' && /winner disagreement/.test(q(db).last_reason), `official mismatch: validation_failed ${JSON.stringify(q(db))}`);
+  check(db.T.ufc_bout_round_stats.length === 0, 'official mismatch: nothing written');
+}
+
+/* 9. the official fight is not final yet */
+{
+  const live = JSON.parse(JSON.stringify(OFFICIAL_FIGHT)); live.LiveFightDetail.Status = 'Live'; live.LiveFightDetail.OfficialStats = false;
+  const { db } = await run(nocheWorld(), { enabled: 'false', official: officialServer(live) });
+  check(q(db)?.state === 'not_yet_published' && db.T.ufc_bout_round_stats.length === 0, `official live: not_yet_published, nothing written ${JSON.stringify(q(db))}`);
+}
+
+/* 10. a stored card link that points at a different card */
+{
+  const r2 = new Map([['ufc-raw/_state/official_event/ev1.json', JSON.stringify({ official_event_id: '1331', via: 'admin_link' })]]);
+  const seed = nocheWorld({ eventName: 'UFC Fight Night: Somebody vs. Else' });
+  const { db } = await run(null, { enabled: 'false', official: officialServer(), shared: { db: makeDb(seed), r2 } });
+  check(q(db)?.state === 'identity_review' && /not "UFC Fight Night: Somebody vs. Else"/.test(q(db).last_reason) && db.T.ufc_bout_round_stats.length === 0, `official wrong card: identity_review ${JSON.stringify(q(db))}`);
 }
 
 console.log('lane integration:', failures === 0 ? 'OK' : `${failures} FAILURES`);
