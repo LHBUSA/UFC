@@ -54,3 +54,15 @@ v0.7.1 also names each gap card that clears while other gaps remain (`ROUND ARCH
 
 - Contender Series cards are not on UFC.com event pages, so the official feed does not reach the 5 DWCS gap cards (25 bouts). They stay `awaiting_source` for UFC Stats.
 - Issue #49 (two Noche bouts without UFC Stats fight ids): not resolvable from local evidence (no stored event page, no raw HTML, no capture). The official feed does not need those ids; the UFC Stats ids stay open.
+
+## 6. Recovery (production, 2026-09-14)
+
+Evidence: `docs/ops/evidence/round_data_recovery_runs_2026-09-14.json` (per-bout table, mutation check, health).
+
+- **Noche first** (v0.7.1 `9dc990b4`, normal lane `POST /admin/run?espn=false`, 01:54Z): card linked from its UFC.com page to official event 1331; **13/13 bouts written, 70 round rows**, every round with both corners, `source_url` = each official fight document; 0 identity reviews, 0 validation failures, 16 feed requests (all HTTP 200). Two corners matched through aliases stored on 2026-09-06 (Sean King III, Jose Delgado). No Noche bout has a no-round-detail exception.
+- **v0.7.2** (`ea0a0757`): unlinked cards no longer use up the official pass's per-run cap (they starved the older linked cards).
+- **Older cards** (02:04Z): verified links 1327, 1326, 1321; Cornolle vs Syguła (6 rows), Lui vs Santiago (4), Rębecki vs Prepolec (2) written.
+- **Unchanged:** event, bout, result and fighter rows on all four cards (byte-compared before/after); fighter aliases 6,793 before and after. Only `ufc_bout_round_stats` (+82) and queue state changed.
+- **Totals:** round rows 41,930 → 42,012; queue 41 `awaiting_source` → 16 `written` + 25 `awaiting_source`; archive `last_event_date` 2026-09-05 → 2026-09-12; Recent analysis leads with Noche.
+- **Health:** `round_lane_status` degraded for the 5 remaining Contender Series cards only (25 bouts, source disabled); `cleared_events` names Noche once (01:56:26Z) and the three older cards once (02:06:04Z); no duplicate on further reads.
+- **Product:** `/round-by-round` keeps Noche as Latest completed event ("13 results recorded · 13 with round data", archive complete, 13 bouts round-intelligence ready); UFC 331 stays the separate Next event; 0 horizontal overflow at 1440 and 390.
