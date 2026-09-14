@@ -74,9 +74,28 @@ export function extractId(url) {
   return m[1];
 }
 
+/* Response headers that say something about access control or rate limiting.
+ * Cookie VALUES are never recorded, only their names. */
+const SIGNAL_HEADERS = ['server', 'cf-ray', 'cf-cache-status', 'cf-mitigated', 'retry-after', 'content-type', 'content-length', 'location', 'via', 'x-cache',
+  'x-ratelimit-limit', 'x-ratelimit-remaining', 'x-ratelimit-reset', 'ratelimit', 'ratelimit-policy', 'x-frame-options', 'x-robots-tag'];
+export function signalHeaders(headers) {
+  const out = {};
+  for (const h of SIGNAL_HEADERS) { const v = headers.get(h); if (v != null) out[h] = v; }
+  const cookies = typeof headers.getSetCookie === 'function' ? headers.getSetCookie() : [headers.get('set-cookie')].filter(Boolean);
+  if (cookies.length) out.set_cookie_names = cookies.map((c) => String(c).split('=')[0].trim());
+  return out;
+}
+
 export class Fetcher {
-  constructor(env, { minIntervalMs = 1000, solveGate = true } = {}) {
+  constructor(env, { minIntervalMs = 1000, solveGate = true, maxAttempts = 4, useStoredCookie = true, record = false } = {}) {
     this.env = env;
+    /* Canary posture (all three): one attempt per URL, never a stored session
+     * cookie from an earlier solved challenge, and every response recorded
+     * (status, manual redirect chain, anti-bot/rate-limit headers). */
+    this.maxAttempts = Math.max(1, Number(maxAttempts) || 1);
+    this.useStoredCookie = useStoredCookie;
+    this.record = record;
+    this.responses = [];
     /* solveGate=false is the canary posture: report a challenge, never answer
      * it. The scheduled lane keeps the 2026-09-05 decision (solve the exact
      * known shape, abort on anything else). */
@@ -106,7 +125,7 @@ export class Fetcher {
   async loadCookie() {
     if (this.cookieLoaded) return;
     this.cookieLoaded = true;
-    if (!this.env.RAW) return;
+    if (!this.env.RAW || !this.useStoredCookie) return;
     try {
       const obj = await this.env.RAW.get(STATE_KEY);
       if (obj) this.cookie = (await obj.json())?.cookie || null;
@@ -125,27 +144,50 @@ export class Fetcher {
   }
 
   async rawGet(url) {
-    for (let attempt = 0; attempt < 4; attempt += 1) {
+    let last = null;
+    for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
+      if (attempt > 0) await new Promise((r) => setTimeout(r, 2000 * 2 ** (attempt - 1)));
       await this.throttle();
       this.subrequests += 1;
+      const started = Date.now();
+      const entry = this.record ? { url, attempt, redirect_chain: [] } : null;
       let res;
       try {
-        res = await fetch(url, { headers: this.headers(), redirect: 'follow', cf: { cacheTtl: 0 } });
+        if (this.record) {
+          /* Follow redirects by hand so the chain is evidence, not an assumption. */
+          let u = url;
+          for (let hop = 0; hop < 4; hop += 1) {
+            res = await fetch(u, { headers: this.headers(), redirect: 'manual', cf: { cacheTtl: 0 } });
+            const loc = res.headers.get('location');
+            entry.redirect_chain.push({ url: u, status: res.status, location: loc });
+            if (res.status >= 300 && res.status < 400 && loc) { u = new URL(loc, u).toString(); this.subrequests += 1; continue; }
+            break;
+          }
+        } else {
+          res = await fetch(url, { headers: this.headers(), redirect: 'follow', cf: { cacheTtl: 0 } });
+        }
       } catch (e) {
-        console.error(`[fetch] ${url} transport ${String(e?.message || e).slice(0, 100)} attempt=${attempt}`);
-        await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+        last = `transport ${String(e?.message || e).slice(0, 100)}`;
+        console.error(`[fetch] ${url} ${last} attempt=${attempt}`);
+        if (entry) { entry.error = last; entry.ms = Date.now() - started; this.responses.push(entry); }
         continue;
       }
       this.statuses[res.status] = (this.statuses[res.status] || 0) + 1;
+      if (entry) {
+        Object.assign(entry, { status: res.status, ms: Date.now() - started, headers: signalHeaders(res.headers) });
+        this.responses.push(entry);
+      }
       if ([429, 500, 502, 503, 504].includes(res.status)) {
-        console.error(`[fetch] ${url} HTTP ${res.status} attempt=${attempt}`);
-        await new Promise((r) => setTimeout(r, 2000 * 2 ** attempt));
+        last = `HTTP ${res.status}`;
+        console.error(`[fetch] ${url} ${last} attempt=${attempt}`);
         continue;
       }
       if (res.status !== 200) throw new SchemaAssertionError(url, `HTTP ${res.status}`);
-      return res.text();
+      const text = await res.text();
+      if (entry) entry.bytes = text.length;
+      return text;
     }
-    throw new SchemaAssertionError(url, 'gave up after 4 attempts');
+    throw new SchemaAssertionError(url, `gave up after ${this.maxAttempts} attempt(s): ${last}`);
   }
 
   async passGate(html, url) {
