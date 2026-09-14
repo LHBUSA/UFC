@@ -30,7 +30,7 @@ import {
 import { classState, commissionWeights, displayDate, recapWinners, resultState, summarizeBouts, summaryPhrases, type ClassState, type ResultState } from "@/lib/tufBoutState";
 import { stageLabel } from "@/lib/tufFormat";
 import { buildEpisodeViews, rosterMarks, sourceLabel, sourceLabels, type AiredBout } from "@/lib/tufTimeline";
-import type { ShapedBout } from "@/lib/tufFinaleShape";
+import { finalsOnOtherCards, type ShapedBout } from "@/lib/tufFinaleShape";
 
 /* /tuf/[slug] — one season.
  *
@@ -626,8 +626,7 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
                   TUF China 1). The linked card shows only its own finals, so a
                   recorded final from another card is listed here rather than
                   silently dropped. */}
-              {(season.final_bouts ?? [])
-                .filter((f) => f.status !== "scheduled" && !integration.finals.some((x) => x.season_weight_class === f.weight_class))
+              {finalsOnOtherCards(season.final_bouts, integration.event.event_date)
                 .map((f) => (
                   <li className="tuf-bout is-pro" key={`other-${f.weight_class}`}>
                     <span className="tuf-bout-names">

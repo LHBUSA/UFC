@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { shapeBout, shapeFinale, type FinaleBoutRow } from "./tufFinaleShape.ts";
+import { finalsOnOtherCards, shapeBout, shapeFinale, type FinaleBoutRow } from "./tufFinaleShape.ts";
 
 const F = (id: string, name: string) => ({ id, name, espn_athlete_id: null, ufcstats_id: `u${id}` });
 const griffinBonnar: FinaleBoutRow = {
@@ -44,4 +44,15 @@ test("finals, castmate bouts, debuts and the coaches' fight are separated", () =
   assert.deepEqual(r.otherBouts.map((b) => b.id), ["b3"]);
   assert.deepEqual(r.debuts, { contestants: 4, debuted_here: 3 });
   assert.equal(r.coachFight?.winner?.name, "Chuck Liddell");
+});
+
+test("a final is listed separately only when it was decided on a different card from the linked finale", async () => {
+  const { readFileSync } = await import("node:fs");
+  const inv = JSON.parse(readFileSync(new URL("../data/tuf/seasons.json", import.meta.url), "utf8"));
+  const rows: Array<{ slug: string; finale_date?: string; final_bouts?: Array<{ weight_class?: string; status?: string; date?: string }> }> = Array.isArray(inv) ? inv : inv.seasons;
+  const extra = Object.fromEntries(rows.filter((r) => r.finale_date).map((r) => [r.slug, finalsOnOtherCards(r.final_bouts, r.finale_date!).map((f) => f.weight_class)]).filter(([, v]) => (v as unknown[]).length));
+  // Single-division seasons (TUF 6's final carries no bracket weight class) must not repeat the linked final.
+  assert.deepEqual(extra, { "tuf-33": ["Welterweight"], "tuf-china-1": ["Featherweight"] });
+  assert.deepEqual(finalsOnOtherCards([{ date: "2025-09-13", status: "scheduled" }, { date: undefined }], "2025-08-16"), []);
+  assert.deepEqual(finalsOnOtherCards(undefined, "2025-08-16"), []);
 });

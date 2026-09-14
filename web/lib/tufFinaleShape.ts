@@ -60,6 +60,16 @@ export function shapeBout(row: FinaleBoutRow, cards: ScorecardRow[], rounds: Rou
   };
 }
 
+/**
+ * A season's recorded finals that were decided on a card other than the linked
+ * finale (TUF 33, TUF China 1). The linked card already shows its own finals, so
+ * only a final with a recorded date different from that card's date is returned;
+ * a final without a date, or one still scheduled, is not.
+ */
+export function finalsOnOtherCards<T extends { status?: string; date?: string }>(finalBouts: readonly T[] | undefined, linkedEventDate: string): T[] {
+  return (finalBouts ?? []).filter((f) => f.status !== "scheduled" && !!f.date && f.date !== linkedEventDate);
+}
+
 export function shapeFinale(input: {
   event: { id: string; name: string; event_date: string };
   bouts: FinaleBoutRow[];
