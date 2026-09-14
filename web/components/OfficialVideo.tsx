@@ -48,8 +48,23 @@ export function OfficialVideo({ video, feature = false, lang = "unknown", blocke
   const [open, setOpen] = useState(false);
   const [failed, setFailed] = useState<null | "blocked" | "unavailable">(blocked ? "blocked" : null);
   const frame = useRef<HTMLIFrameElement>(null);
+  /* One poster, and only one YouTube is known to have: the thumbnail the
+   * ingest recorded (hqdefault), else hqdefault itself, which YouTube renders
+   * for every public video. The feature card used to guess maxresdefault.jpg,
+   * which exists only for HD uploads; the rest 404ed on every page view and
+   * swapped images after hydration. object-fit: cover crops hqdefault's
+   * letterbox bars, so it fills the 16:9 frame cleanly. */
   const thumb = video.thumbnail_url || `https://i.ytimg.com/vi/${video.provider_video_id}/hqdefault.jpg`;
-  const hq = feature ? `https://i.ytimg.com/vi/${video.provider_video_id}/maxresdefault.jpg` : thumb;
+  /* A poster that fails (removed video, blocked CDN) is dropped, never shown
+   * broken and never replaced with another image: the frame keeps its dark
+   * ground, play control and labels. */
+  const [posterFailed, setPosterFailed] = useState(false);
+  const poster = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    /* An image that failed before hydration never fires onError in React. */
+    const el = poster.current;
+    if (el && el.complete && el.naturalWidth === 0) setPosterFailed(true);
+  }, []);
   const label = VIDEO_TYPE_LABEL[String(video.video_type || "other")] || "Official video";
   const when = fresh(video.published_at);
   const dur = duration(video.duration_sec);
@@ -100,7 +115,7 @@ export function OfficialVideo({ video, feature = false, lang = "unknown", blocke
           />
         ) : failed ? (
           <div className="official-video-fallback" role="status">
-            <img src={thumb} alt="" width={1280} height={720} loading="lazy" decoding="async" />
+            {!posterFailed && <img src={thumb} alt="" width={1280} height={720} loading="lazy" decoding="async" onError={() => setPosterFailed(true)} />}
             <div className="official-video-fallback-copy">
               <b>{failed === "blocked" ? "Not available for embedded playback in your region." : "This video is not available for embedded playback."}</b>
               <a href={video.url} target="_blank" rel="noopener" className="btn gold">Watch on YouTube ↗</a>
@@ -110,7 +125,7 @@ export function OfficialVideo({ video, feature = false, lang = "unknown", blocke
           </div>
         ) : (
           <button type="button" className="official-video-poster" onClick={() => setOpen(true)} aria-label={`Play ${video.title}`}>
-            <img src={hq} alt="" width={1280} height={720} loading={feature ? "eager" : "lazy"} decoding="async" onError={(e) => { const el = e.currentTarget; if (el.src !== thumb) el.src = thumb; }} />
+            {!posterFailed && <img ref={poster} src={thumb} alt="" width={1280} height={720} loading={feature ? "eager" : "lazy"} decoding="async" onError={() => setPosterFailed(true)} />}
             <span className="official-video-play" aria-hidden="true"><i /></span>
             <span className="official-video-label">{label}</span>
             <span className="official-video-lang" title={LANG_LABEL[lang]}>{lang === "unknown" ? "—" : LANG_LABEL[lang].toUpperCase()}</span>
