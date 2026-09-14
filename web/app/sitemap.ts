@@ -31,7 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly",
     priority: 0.65,
   }));
-  const refereePages: MetadataRoute.Sitemap = referees.map((referee) => ({
+  /* Only officials with a profile slug; a null slug rendered as /referees/null. */
+  const refereePages: MetadataRoute.Sitemap = referees.filter((referee) => referee.slug).map((referee) => ({
     url: `${SITE.url}/referees/${referee.slug}`,
     lastModified: referee.bio_verified_at || referee.last_event_date ? new Date(referee.bio_verified_at || `${referee.last_event_date}T00:00:00Z`) : now,
     changeFrequency: "weekly",

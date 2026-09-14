@@ -262,7 +262,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
             <dt>Method</dt>
             <dd>{METHOD_LABEL[r.method] || r.method_raw}{r.finish_detail ? ` (${r.finish_detail})` : ""}</dd>
             {r.round != null && (<><dt>Round · time</dt><dd>Round {r.round}{r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}{r.time_format ? <span className="faint"> · {r.time_format}</span> : null}</dd></>)}
-            {facts.referee && (<><dt>Referee</dt><dd>{refereeProfile ? <Link href={`/referees/${refereeProfile.slug}`}>{facts.referee}</Link> : facts.referee}</dd></>)}
+            {facts.referee && (<><dt>Referee</dt><dd>{refereeProfile?.slug ? <Link href={`/referees/${refereeProfile.slug}`}>{facts.referee}</Link> : facts.referee}</dd></>)}
             {strikes && (<><dt>Sig. strikes</dt><dd>{b.fighter_a.name} {landedOf(strikes.sig.a, strikes.sig.aAtt)} · {b.fighter_b.name} {landedOf(strikes.sig.b, strikes.sig.bAtt)} <span className="faint">· {strikes.source}</span></dd></>)}
             {strikes?.total && (<><dt>Total strikes</dt><dd>{b.fighter_a.name} {landedOf(strikes.total.a, strikes.total.aAtt)} · {b.fighter_b.name} {landedOf(strikes.total.b, strikes.total.bAtt)}</dd></>)}
             <dt>Scorecards</dt>
@@ -291,7 +291,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
               {METHOD_LABEL[r.method] || r.method}{r.finish_detail ? ` (${r.finish_detail})` : ""}{r.round ? ` · Round ${r.round}` : ""}{r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}{r.time_format ? ` · ${r.time_format}` : ""}
             </div>
             <div className="tags mt-3">
-              {r.referee && (refereeProfile ? <Link href={`/referees/${refereeProfile.slug}`} className="tag">Referee · {r.referee}</Link> : <span className="tag">Referee · {r.referee}</span>)}
+              {r.referee && (refereeProfile?.slug ? <Link href={`/referees/${refereeProfile.slug}`} className="tag">Referee · {r.referee}</Link> : <span className="tag">Referee · {r.referee}</span>)}
               <span className="tag dim">Source · {r.result_source === "espn" ? "ESPN" : "UFC Stats"}{r.has_stats ? " · round stats archived" : ""}</span>
             </div>
             {/* The judges leave the flat tag strip and become links into the

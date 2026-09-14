@@ -18,10 +18,14 @@ export const metadata: Metadata = {
 
 const pct = (v: number | null) => (v == null ? "—" : `${Number(v).toFixed(Number(v) % 1 ? 1 : 0)}%`);
 export default async function RefereesPage() {
-  const refs = await getReferees(200);
+  const all = await getReferees(200);
+  /* A directory row without a slug has no profile page: /referees/null answered
+   * "not found" while the index and the sitemap both linked it. Counts still
+   * include every row; only linkable officials are listed. */
+  const refs = all.filter((r) => r.slug);
   const top = refs[0];
-  const totalBouts = refs.reduce((n, r) => n + Number(r.bouts || 0), 0);
-  const titleRefs = refs.filter((r) => r.title_bouts > 0).length;
+  const totalBouts = all.reduce((n, r) => n + Number(r.bouts || 0), 0);
+  const titleRefs = all.filter((r) => r.title_bouts > 0).length;
   return (
     <div className="wrap page">
       <Breadcrumbs items={[{ name: "Referees" }]} />
