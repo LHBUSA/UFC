@@ -60,8 +60,11 @@ UFCSTATS_SOLVE_CHALLENGE = "false"
 # bouts, events or UFC Stats ids. Equivalence before enabling: 23 bouts whose
 # UFC Stats rows were stored, 2,156 cells compared, 0 mismatches
 # (docs/ops/evidence/ufc_official_round_feed_equivalence_2026-09-14.json).
-# Turned on only after POST /admin/official-canary is clean from Cloudflare egress.
-UFC_OFFICIAL_ROUNDS_ENABLED = "false"
+# Turned on only after POST /admin/official-canary is clean from Cloudflare egress:
+#   2026-09-14  v0.7.0 (9aeedd44), official events 1327 + 1326: verdict "clean",
+#               25 bouts, 2,244 cells, 0 mismatches, 0 validation problems
+#               (docs/ops/evidence/ufc_official_canary_2026-09-14.json). Owner approved.
+UFC_OFFICIAL_ROUNDS_ENABLED = "true"
 # Per-run ceiling on official feed requests (UFC.com event page + event + fight documents).
 MAX_OFFICIAL_REQUESTS_PER_RUN = "45"
 OFFICIAL_MIN_INTERVAL_MS = "1000"

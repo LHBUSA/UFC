@@ -44,7 +44,13 @@ Three bouts were not compared because our names did not match the feed exactly (
 - `POST /admin/official-canary` compares the feed to stored rows from Cloudflare egress and writes nothing but its run row.
 - Public copy no longer says round rows come only from UFC Stats (Round-for-Round deck line, About page).
 
-## 4. Coverage limits
+## 4. Production canary and enablement
+
+`POST /admin/official-canary` from Cloudflare egress on Worker v0.7.0 (version `9aeedd44`, flag off), official events 1327 and 1326: **clean**. 25 bouts matched (alias-aware identity also resolved Letho Duclos and Xiong Jingnan), 2,244 cells, 0 mismatches, 0 validation problems, 29 feed requests all HTTP 200 (`docs/ops/evidence/ufc_official_canary_2026-09-14.json`). Owner approved enabling: `UFC_OFFICIAL_ROUNDS_ENABLED = "true"` in v0.7.1; `UFCSTATS_ENABLED` and `UFCSTATS_SOLVE_CHALLENGE` stay `"false"`.
+
+v0.7.1 also names each gap card that clears while other gaps remain (`ROUND ARCHIVE GAP CLEARED · <card>`, sent once, recorded in the alert state's `cleared_events`).
+
+## 5. Coverage limits
 
 - Contender Series cards are not on UFC.com event pages, so the official feed does not reach the 5 DWCS gap cards (25 bouts). They stay `awaiting_source` for UFC Stats.
 - Issue #49 (two Noche bouts without UFC Stats fight ids): not resolvable from local evidence (no stored event page, no raw HTML, no capture). The official feed does not need those ids; the UFC Stats ids stay open.

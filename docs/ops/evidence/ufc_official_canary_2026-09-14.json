@@ -1,0 +1,399 @@
+{
+ "purpose": "POST /admin/official-canary from Cloudflare egress (ufc-stats-ingest v0.7.0, version 9aeedd44), read-only, before enabling UFC_OFFICIAL_ROUNDS_ENABLED",
+ "canaries": {
+  "1326": {
+   "at": "2026-09-14T01:42:21.476Z",
+   "verdict": "clean",
+   "official_event": {
+    "id": "1326",
+    "name": "UFC Fight Night: Nurmagomedov vs. Song",
+    "date": "2026-08-29",
+    "via": "canary_param"
+   },
+   "feed": {
+    "requests": 14,
+    "http_statuses": {
+     "200": 14
+    },
+    "cap": 45
+   },
+   "bouts": [
+    {
+     "fighters": [
+      "Jack Jenkins",
+      "Sean Woodson"
+     ],
+     "official_fight_id": "13005",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Ding Meng",
+      "Cam Nelson"
+     ],
+     "official_fight_id": "13084",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Xiao Long",
+      "Francesco Nuzzi"
+     ],
+     "official_fight_id": "13085",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Bilal Hasan",
+      "Nilson Rojas"
+     ],
+     "official_fight_id": "13068",
+     "matched": 1,
+     "official_rows": 4,
+     "stored_rows": 4,
+     "cells_compared": 88,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Alex Perez",
+      "Sumudaerji"
+     ],
+     "official_fight_id": "12949",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Aoriqileng",
+      "Kai Asakura"
+     ],
+     "official_fight_id": "12959",
+     "matched": 1,
+     "official_rows": 4,
+     "stored_rows": 4,
+     "cells_compared": 88,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Yan Xiaonan",
+      "Denise Gomes"
+     ],
+     "official_fight_id": "12948",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Umar Nurmagomedov",
+      "Song Yadong"
+     ],
+     "official_fight_id": "12947",
+     "matched": 1,
+     "official_rows": 4,
+     "stored_rows": 4,
+     "cells_compared": 88,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Namsrai Batbayar",
+      "Andre Lima"
+     ],
+     "official_fight_id": "13012",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Jingnan Xiong",
+      "Julia Polastri"
+     ],
+     "official_fight_id": "13013",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Liu Ce",
+      "Levi Rodrigues Jr."
+     ],
+     "official_fight_id": "13093",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Rei Tsuruya",
+      "Kevin Borjas"
+     ],
+     "official_fight_id": "12950",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    }
+   ]
+  },
+  "1327": {
+   "at": "2026-09-14T01:42:05.539Z",
+   "verdict": "clean",
+   "official_event": {
+    "id": "1327",
+    "name": "UFC Fight Night: Hooker vs. Parnasse",
+    "date": "2026-09-05",
+    "via": "canary_param"
+   },
+   "feed": {
+    "requests": 15,
+    "http_statuses": {
+     "200": 15
+    },
+    "cap": 45
+   },
+   "bouts": [
+    {
+     "fighters": [
+      "Losene Keita",
+      "Muhammad Naimov"
+     ],
+     "official_fight_id": "13054",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Morgan Charrière",
+      "Felipe Lima"
+     ],
+     "official_fight_id": "13007",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Michael Aljarouj",
+      "Fabia Sintes"
+     ],
+     "official_fight_id": "13094",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Nathaniel Wood",
+      "Pavel Andrusca"
+     ],
+     "official_fight_id": "13115",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Oumar Sy",
+      "Modestas Bukauskas"
+     ],
+     "official_fight_id": "13055",
+     "matched": 1,
+     "official_rows": 4,
+     "stored_rows": 4,
+     "cells_compared": 88,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Mario Pinto",
+      "Ryan Spann"
+     ],
+     "official_fight_id": "12965",
+     "matched": 1,
+     "official_rows": 4,
+     "stored_rows": 4,
+     "cells_compared": 88,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Dan Hooker",
+      "Salahdine Parnasse"
+     ],
+     "official_fight_id": "12999",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Delphine Benouaich",
+      "Sofia Montenegro"
+     ],
+     "official_fight_id": "13077",
+     "matched": 1,
+     "official_rows": 4,
+     "stored_rows": 4,
+     "cells_compared": 88,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Kurtis Campbell",
+      "Trevor Peek"
+     ],
+     "official_fight_id": "12964",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Daniil Donchenko",
+      "Punahele Soriano"
+     ],
+     "official_fight_id": "13100",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Michael Page",
+      "Nursulton Ruziboev"
+     ],
+     "official_fight_id": "12963",
+     "matched": 1,
+     "official_rows": 6,
+     "stored_rows": 6,
+     "cells_compared": 132,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Farés Ziam",
+      "Axel Sola"
+     ],
+     "official_fight_id": "13053",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    },
+    {
+     "fighters": [
+      "Matthieu Letho Duclos",
+      "Luis Felipe Dias"
+     ],
+     "official_fight_id": "13014",
+     "matched": 1,
+     "official_rows": 2,
+     "stored_rows": 2,
+     "cells_compared": 44,
+     "mismatch_count": 0,
+     "validation_problems": [],
+     "stored_rows_not_in_feed": 0
+    }
+   ]
+  }
+ },
+ "totals": {
+  "bouts": 25,
+  "cells": 2244,
+  "mismatches": 0,
+  "validation_problems": 0
+ }
+}

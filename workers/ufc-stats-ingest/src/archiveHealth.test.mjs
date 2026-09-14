@@ -71,3 +71,27 @@ test('alert once, stay quiet on the next 15-minute checks, escalate after 24h, c
   const quiet = gapAlertDecision({ gaps: [], previous: cleared.next, now: at('2026-09-15T02:15:00Z') });
   assert.equal(quiet.send, false, 'cleared is announced once');
 });
+
+test('one card recovers while others remain: one alert naming it, recorded once, then quiet', () => {
+  const now = at('2026-09-14T02:00:00Z');
+  const dwcs = {
+    id: 'dwcs-5', name: 'Contender Series: Season 10, Week 5', event_date: '2026-09-08', card_status: 'complete',
+    bouts: Array.from({ length: 5 }, (_, i) => ({ id: `d${i}`, has_result: true, round_rows: 0, queue_state: 'awaiting_source', queue_reason: 'UFCSTATS_ENABLED=false' })),
+  };
+  const both = roundArchiveGaps({ events: [NOCHE(), dwcs], now, source: DISABLED });
+  /* a stored state written before event names were kept (production, 2026-09-14) */
+  const legacy = { ...gapAlertDecision({ gaps: both, previous: null, now: now - 3600e3 }).next };
+  delete legacy.event_names;
+  delete legacy.cleared_events;
+  const recovered = NOCHE({ bouts: NOCHE().bouts.map((b) => ({ ...b, round_rows: 6, queue_state: 'written' })) });
+  const after = roundArchiveGaps({ events: [recovered, dwcs], now, source: DISABLED });
+  assert.equal(after.length, 1);
+  assert.equal(roundLaneStatus({ gaps: after }), 'degraded', 'still degraded for the card that is still missing');
+  const d = gapAlertDecision({ gaps: after, previous: legacy, now, eventNames: { [NOCHE().id]: 'Noche UFC: Silva vs. Delgado' } });
+  assert.deepEqual([d.send, d.kind], [true, 'changed']);
+  assert.match(d.message, /^ROUND ARCHIVE GAP CLEARED · Noche UFC: Silva vs\. Delgado\nROUND ARCHIVE GAP · Contender Series/);
+  assert.deepEqual(d.next.cleared_events.map((e) => [e.event_name, e.cleared_at]), [['Noche UFC: Silva vs. Delgado', '2026-09-14T02:00:00.000Z']]);
+  const again = gapAlertDecision({ gaps: after, previous: d.next, now: now + 15 * 60e3 });
+  assert.equal(again.send, false, 'no duplicate recovery alert');
+  assert.equal(again.next.cleared_events.length, 1, 'recovery recorded once');
+});

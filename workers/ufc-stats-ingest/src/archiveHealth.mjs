@@ -73,34 +73,49 @@ const signature = (gaps) => gaps.map((g) => `${g.event_id}:${g.with_round_rows}/
 
 /**
  * Decide whether to alert, from the gaps now and the last alert state.
- *   - a gap event not alerted before           -> alert
- *   - a change in counts or cause              -> alert
- *   - the same gaps, older than escalateHours  -> re-alert (escalation)
- *   - the same gaps, recently alerted          -> silent
- *   - gaps cleared after an alerted gap        -> one "cleared" message
+ *   - a gap event not alerted before              -> alert
+ *   - a change in counts or cause                 -> alert
+ *   - the same gaps, older than escalateHours     -> re-alert (escalation)
+ *   - the same gaps, recently alerted             -> silent
+ *   - a gap card cleared while others remain      -> one "changed" alert that names
+ *                                                    the cleared card first
+ *   - all gaps cleared after an alerted gap       -> one "cleared" message
+ * Every cleared card is appended once to `cleared_events` in the stored state, so
+ * /health keeps a record of each recovery. `eventNames` (id -> name) names cleared
+ * cards that the previous state did not name.
  * Returns { send, kind, message, next } where `next` is the state to store.
  */
-export function gapAlertDecision({ gaps, previous, now, escalateHours = DEFAULT_ESCALATE_HOURS }) {
+export function gapAlertDecision({ gaps, previous, now, escalateHours = DEFAULT_ESCALATE_HOURS, eventNames = {} }) {
   const prev = previous || { status: 'ok', signature: '', event_ids: [], last_alert_at: null, alerts_sent: 0 };
   const sig = signature(gaps);
   const at = new Date(now).toISOString();
+  const ids = gaps.map((g) => g.event_id);
+  const names = { ...eventNames, ...(prev.event_names || {}), ...Object.fromEntries(gaps.map((g) => [g.event_id, g.event_name])) };
+  const clearedIds = prev.status === 'degraded' ? (prev.event_ids || []).filter((id) => !ids.includes(id)) : [];
+  const clearedLines = clearedIds.map((id) => `ROUND ARCHIVE GAP CLEARED · ${names[id] || id}`);
+  const clearedEvents = [...(prev.cleared_events || []), ...clearedIds.map((id) => ({ event_id: id, event_name: names[id] || null, cleared_at: at }))].slice(-20);
   if (!gaps.length) {
     if (prev.status === 'degraded') {
-      return { send: true, kind: 'cleared', message: `ROUND ARCHIVE GAP CLEARED · ${prev.event_ids.length} event${prev.event_ids.length === 1 ? '' : 's'} now have their round rows or an explicit no-detail answer`, next: { status: 'ok', signature: '', event_ids: [], last_alert_at: at, cleared_at: at, alerts_sent: (prev.alerts_sent || 0) + 1 } };
+      const n = prev.event_ids.length;
+      return {
+        send: true, kind: 'cleared',
+        message: [...clearedLines, `ROUND ARCHIVE GAP CLEARED · ${n} event${n === 1 ? '' : 's'} now have their round rows or an explicit no-detail answer`].join('\n'),
+        next: { status: 'ok', signature: '', event_ids: [], event_names: {}, last_alert_at: at, cleared_at: at, alerts_sent: (prev.alerts_sent || 0) + 1, cleared_events: clearedEvents },
+      };
     }
     return { send: false, kind: 'none', message: null, next: { ...prev, status: 'ok' } };
   }
-  const ids = gaps.map((g) => g.event_id);
   const isNew = ids.some((id) => !(prev.event_ids || []).includes(id));
   const changed = sig !== prev.signature;
   const stale = !prev.last_alert_at || now - Date.parse(prev.last_alert_at) >= escalateHours * 3600e3;
   const kind = prev.status !== 'degraded' || isNew ? 'new' : changed ? 'changed' : stale ? 'escalation' : 'none';
   const send = kind !== 'none';
   const next = {
-    status: 'degraded', signature: sig, event_ids: ids,
+    status: 'degraded', signature: sig, event_ids: ids, event_names: Object.fromEntries(ids.map((id) => [id, names[id]])),
     first_seen_at: prev.status === 'degraded' && prev.first_seen_at ? prev.first_seen_at : at,
     last_alert_at: send ? at : prev.last_alert_at, alerts_sent: (prev.alerts_sent || 0) + (send ? 1 : 0),
+    cleared_events: clearedEvents,
   };
   const lead = kind === 'escalation' ? `STILL DEGRADED since ${next.first_seen_at} · ` : '';
-  return { send, kind, message: send ? `${lead}${gaps.map(gapLine).join('\n')}` : null, next };
+  return { send, kind, message: send ? [...clearedLines, `${lead}${gaps.map(gapLine).join('\n')}`].join('\n') : null, next };
 }
