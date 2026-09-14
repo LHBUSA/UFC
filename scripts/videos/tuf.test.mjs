@@ -49,3 +49,12 @@ test('kinds: finale, retrospective, preview, free fight, and an unlabelled short
 test('an episode number is read only when the title states one', () => {
   assert.equal(tufTag({ title: 'TUF Rewind: Tresean Gore and Bryan Battle Set to Finally Meet' }).episode, null);
 });
+
+test('an unnumbered edition title yields to a numbered playlist of the same edition', () => {
+  const b4 = tufTag({ title: "The Ultimate Fighter: Brazil - We've Got Visitors", playlistTitle: 'The Ultimate Fighter Brazil 4: Team Nogueira vs Team Shogun' });
+  assert.equal(b4.season, 'tuf-brazil-4');
+  assert.equal(b4.evidence.season.from, 'playlist');
+  assert.equal(tufTag({ title: 'Rapid Fire: Chael Sonnen on The Ultimate Fighter Brazil', playlistTitle: 'The Ultimate Fighter Brazil 3: Team Wanderlei vs Team Sonnen' }).season, 'tuf-brazil-3');
+  assert.equal(tufTag({ title: 'The Ultimate Fighter Brazil 3: So Fresh', playlistTitle: 'The Ultimate Fighter Brazil 4: Team Nogueira vs Team Shogun' }).season, 'tuf-brazil-3', 'a numbered title is never overridden');
+  assert.equal(tufTag({ title: 'The Ultimate Fighter Latin America: Masio Fullen' }).season, 'tuf-latam-1', 'no playlist: the unnumbered first season');
+});

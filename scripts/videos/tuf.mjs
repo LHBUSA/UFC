@@ -32,8 +32,8 @@ for (const s of SEASONS.seasons) {
   BY_PAIRING.get(k).push(s.slug);
 }
 const EDITIONS = [
-  [/\bbrazil\s*(\d)?\b|\bbrasil\s*(\d)?\b/i, (m) => `tuf-brazil-${m[1] || m[2] || 1}`],
-  [/\blatin\s+america\s*(\d)?\b|\blatinoam[eé]rica\s*(\d)?\b/i, (m) => `tuf-latam-${m[1] || m[2] || 1}`],
+  [/\bbrazil\s*(\d)?\b|\bbrasil\s*(\d)?\b/i, (m) => `tuf-brazil-${m[1] || m[2] || 1}`, (m) => Boolean(m[1] || m[2])],
+  [/\blatin\s+america\s*(\d)?\b|\blatinoam[eé]rica\s*(\d)?\b/i, (m) => `tuf-latam-${m[1] || m[2] || 1}`, (m) => Boolean(m[1] || m[2])],
   [/\bnations\b/i, () => 'tuf-nations-1'],
   [/\bchina\b/i, () => 'tuf-china-1'],
   [/\bthe\s+smashes\b/i, () => 'tuf-smashes-1'],
@@ -41,9 +41,12 @@ const EDITIONS = [
 
 function seasonFrom(text) {
   if (!text || !IS_TUF.test(text)) return null;
-  for (const [re, slug] of EDITIONS) {
+  for (const [re, slug, numbered] of EDITIONS) {
     const m = text.match(re);
-    if (m) return { slug: slug(m), rule: 'edition name' };
+    /* The first Brazil and Latin America seasons carried no number, so an
+     * unnumbered edition name reads as season 1 -- unless the playlist names a
+     * numbered season of the same edition (see tufTag). */
+    if (m) return { slug: slug(m), rule: numbered && !numbered(m) ? 'edition name without number' : 'edition name' };
   }
   const num = text.match(/\b(?:the\s+ultimate\s+fighter|tuf)\s*#?(\d{1,2})\b/i) || text.match(/#tuf(\d{1,2})\b/i) || text.match(/\bseason\s+(\d{1,2})\b/i);
   if (num && US.some((s) => s.number === Number(num[1]))) return { slug: `tuf-${Number(num[1])}`, rule: 'season number' };
@@ -76,8 +79,16 @@ export function tufTag({ title, description, playlistTitle, durationSec } = {}) 
 
   const evidence = {};
   let season = seasonFrom(t);
-  if (season) evidence.season = { from: 'title', rule: season.rule };
-  else if ((season = seasonFrom(p))) evidence.season = { from: 'playlist', rule: season.rule };
+  const fromPlaylist = seasonFrom(p);
+  /* "The Ultimate Fighter: Brazil - We've Got Visitors" in the Brazil 4 playlist
+   * is Brazil 4: a numbered season of the same edition from the playlist beats
+   * the unnumbered title's season-1 reading. */
+  if (season?.rule === 'edition name without number' && fromPlaylist?.rule === 'edition name'
+    && fromPlaylist.slug.replace(/-\d+$/, '') === season.slug.replace(/-\d+$/, '')) {
+    season = fromPlaylist;
+    evidence.season = { from: 'playlist', rule: 'numbered edition in playlist over unnumbered title' };
+  } else if (season) evidence.season = { from: 'title', rule: season.rule };
+  else if ((season = fromPlaylist)) evidence.season = { from: 'playlist', rule: season.rule };
   else if ((season = seasonFrom(d))) evidence.season = { from: 'description', rule: season.rule };
 
   const ep = t.match(/\bep(?:isode|\.)?\s*(\d{1,2})\b/i);
