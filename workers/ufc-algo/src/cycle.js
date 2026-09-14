@@ -120,6 +120,32 @@ async function loadCard(q, event) {
   return { bouts, fighters, snapsOf, rowsOf, results, changed, corner, market };
 }
 
+/**
+ * When the prices behind a market comparison were actually taken. The consensus
+ * uses the latest h2h price per book per side at or before `nowIso`; this
+ * reports the newest and oldest of exactly those prices, so a comparison can
+ * never present a days-old snapshot as current.
+ */
+export function marketProvenance(observations, nowIso) {
+  const usable = observations.filter((o) => o.market_key === 'h2h' && o.outcome_fighter_id && o.price != null && o.observed_at && o.observed_at <= nowIso);
+  const latest = new Map();
+  for (const o of usable) {
+    const k = `${o.bookmaker_key}|${o.outcome_fighter_id}`;
+    const prev = latest.get(k);
+    if (!prev || (prev.source_last_update || prev.observed_at) <= (o.source_last_update || o.observed_at)) latest.set(k, o);
+  }
+  const rows = [...latest.values()];
+  if (!rows.length) return null;
+  const obs = rows.map((o) => o.observed_at).sort();
+  const upd = rows.map((o) => o.source_last_update || o.observed_at).sort();
+  return {
+    observed_at: obs[obs.length - 1],
+    oldest_observed_at: obs[0],
+    oldest_book_update: upd[0],
+    age_hours: Math.round(((Date.parse(nowIso) - Date.parse(obs[obs.length - 1])) / 3600e3) * 10) / 10,
+  };
+}
+
 export function lockWindow(eventDate, now) {
   const cutoff = Date.parse(`${eventDate}T00:00:00Z`);
   const opens = cutoff - LOCK_HOURS_BEFORE_EVENT_DAY * 3600e3;
@@ -170,9 +196,10 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
           pickProbability = Math.max(p1, 1 - p1);
           probA = b.fighter_a_id === row.fighter_1_id ? p1 : 1 - p1;
         }
-        const sides = consensusForBout(card.market.filter((o) => o.bout_id === b.id), nowIso);
+        const boutMarket = card.market.filter((o) => o.bout_id === b.id);
+        const sides = consensusForBout(boutMarket, nowIso);
         const m = sides && pickFighter ? sides.find((s) => s.fighter_id === pickFighter) : null;
-        const market = m ? { books: m.books, raw_implied_pick: round(m.implied, 4), devigged_pick: round(m.devigged, 4), pbe_delta_pts: round((pickProbability - m.devigged) * 100, 2), observed_before: nowIso } : null;
+        const market = m ? { books: m.books, raw_implied_pick: round(m.implied, 4), devigged_pick: round(m.devigged, 4), pbe_delta_pts: round((pickProbability - m.devigged) * 100, 2), ...marketProvenance(boutMarket, nowIso) } : null;
 
         const prior = mode === 'armed' ? await q.get(`ufc_model_bout_evaluations?select=pick_probability,evaluated_at&bout_id=eq.${b.id}&decision=eq.ELIGIBLE&model_version=eq.${model.model_version}&order=evaluated_at.desc&limit=6`) : [];
         const drift = prior.length >= 2 && pickProbability != null
@@ -225,6 +252,7 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
               feature_availability: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, Boolean(row.available[i])])),
               sample_context: { ...boutReport.sample, features_available: row.available_count, features_total: FEATURE_KEYS.length, eligibility_version: ELIGIBILITY_VERSION, confidence: decision.confidence, identity: corners },
               market_implied_prob_pick: market?.devigged_pick ?? null, market_books: market?.books ?? null, model_edge_pts: market?.pbe_delta_pts ?? null,
+              market_snapshot_at: market?.observed_at ?? null,
               // The cycle's start, a second early: the schema refuses a generated_at ahead of the database clock.
               generated_at: new Date(now - 1000).toISOString(),
             };

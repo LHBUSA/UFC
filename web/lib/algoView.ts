@@ -13,7 +13,7 @@ import artifact from "@/lib/generated/model-v1.json";
 export type AlgoConfidence = "LEAN" | "MEDIUM" | "HIGH";
 export type AlgoGradeResult = "WIN" | "LOSS" | "DRAW" | "NC" | "VOID";
 
-export type AlgoMarket = { books: number; raw_implied_pick: number; devigged_pick: number; pbe_delta_pts: number; observed_before?: string } | null;
+export type AlgoMarket = { books: number; raw_implied_pick: number; devigged_pick: number; pbe_delta_pts: number; observed_at?: string; age_hours?: number } | null;
 
 /** One bout on a card, as a UFC Pro member sees it. */
 export type AlgoBoutView = {

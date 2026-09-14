@@ -112,3 +112,19 @@ test('lock window: opens 8h before the event day, closes at the 6h database floo
   assert.equal(band(0.644), '60-65');
   assert.equal(band(0.2), '80-100');
 });
+
+test('market provenance reports when the consensus prices were taken, never the run time', async () => {
+  const { marketProvenance } = await import('./cycle.js');
+  const o = (book, side, price, obs, upd) => ({ market_key: 'h2h', bookmaker_key: book, outcome_fighter_id: side, price, observed_at: obs, source_last_update: upd });
+  const rows = [
+    o('dk', 'a', 455, '2026-09-08T12:25:03Z', '2026-09-08T12:22:17Z'),
+    o('dk', 'b', -625, '2026-09-08T12:25:03Z', '2026-09-08T12:22:17Z'),
+    o('fd', 'a', 360, '2026-09-08T12:25:03Z', '2026-09-08T12:22:41Z'),
+    o('fd', 'a', 380, '2026-09-20T00:00:00Z', '2026-09-20T00:00:00Z'), // after the run: ignored
+  ];
+  const p = marketProvenance(rows, '2026-09-14T22:57:48Z');
+  assert.equal(p.observed_at, '2026-09-08T12:25:03Z');
+  assert.equal(p.oldest_book_update, '2026-09-08T12:22:17Z');
+  assert.equal(p.age_hours, 154.5);
+  assert.equal(marketProvenance([], '2026-09-14T00:00:00Z'), null);
+});

@@ -86,7 +86,7 @@ export function AlgoPick({ b, detail = false, showEvent = false }: { b: AlgoBout
             <span>{oppName} {pctText(1 - (prob as number))}</span>
           </div>
           {!p?.locked_at && <p className="algo-note">Provisional. The call regenerates hourly from the latest pre-fight data and locks once, on the database clock, the afternoon before fight day (after official weigh-ins). A provisional call is not part of the record.</p>}
-          {b.market && marketPick != null && <p className="algo-note">Market: de-vigged consensus of {b.market.books} book{b.market.books === 1 ? "" : "s"} (raw implied {pctText(b.market.raw_implied_pick)}). The market is compared with the model after scoring and is never a model input.</p>}
+          {b.market && marketPick != null && <p className="algo-note">Market: de-vigged consensus of {b.market.books} book{b.market.books === 1 ? "" : "s"} (raw implied {pctText(b.market.raw_implied_pick)}){b.market.observed_at ? `, prices observed ${lockedText(b.market.observed_at)}` : ""}. The market is compared with the model after scoring and is never a model input.</p>}
         </>
       ) : b.decision === "NO_MODEL_CALL" ? (
         <div className="algo-nocall">
