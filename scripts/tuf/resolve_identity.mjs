@@ -66,15 +66,18 @@ const VETERAN_SEASONS = new Map([
   ['tuf-25', 'Redemption cast former TUF contestants, several with prior UFC bouts'],
 ]);
 
-/* Duplicate canonical rows proven to be one person, pending a database merge.
- * The archive links to the row that holds the TUF-era UFC bouts; both ids are
- * recorded so the link can be re-pointed when the merge is applied. */
+/* Duplicate rows proven to be one person, keyed by the id that is retired.
+ * While a merge is pending the archive links to the row holding the TUF-era UFC
+ * bouts; once the database merge is applied the key is the deleted duplicate
+ * and canonical_for_archive the surviving row, so any stale link to the old id
+ * is re-pointed and the record of the proof stays with the registry. */
 export const PROVEN_DUPLICATES = {
-  'f5785bba-c6f8-45de-8682-d044d586c8ac': {
-    canonical_for_archive: 'ded1a158-8eed-43bb-8c6e-f950bb97432d',
+  'ded1a158-8eed-43bb-8c6e-f950bb97432d': {
+    canonical_for_archive: 'f5785bba-c6f8-45de-8682-d044d586c8ac',
     names: ['Marcio Alexandre Jr.', 'Marcio Alexandre Junior'],
     proof: 'ESPN athlete 3108776 (the ESPN-keyed row) competed on 2014-05-31, 2014-12-20 and 2015-12-12, losing each time; those are exactly the three UFC bouts held by the UFC Stats-keyed row d53482bef23235ba. On 2015-12-12 the ESPN opponent is athlete 2504639, which is Court McGee in ufc_fighters, the recorded winner of that bout. Both rows carry the nickname "Lyoto"; the birth dates disagree by two days (1989-05-03 ESPN, 1989-05-05 UFC Stats), the source disagreement that created the pair.',
-    status: 'proven, merge not applied',
+    status: 'merged 2026-09-14: UFC Stats row ded1a158 (d53482bef23235ba) folded into ESPN row f5785bba (3108776), which now carries both source ids and all four bouts',
+    reconciliation: 'marcio-alexandre-merge-2026-09-14 (scripts/reconcile/20260914_marcio_alexandre_merge.sql)',
     retrieved: '2026-09-12',
   },
 };

@@ -634,9 +634,12 @@ test("every id on a season page is the id the registry decided", () => {
   }
 });
 
-test("a proven duplicate row is recorded with its proof, and both spellings reach one fighter", () => {
-  const dup = identity.proven_duplicates["f5785bba-c6f8-45de-8682-d044d586c8ac"];
+test("a merged duplicate is recorded with its proof, and every spelling reaches the surviving fighter", () => {
+  const dup = identity.proven_duplicates["ded1a158-8eed-43bb-8c6e-f950bb97432d"];
   assert.ok(dup?.proof.includes("2504639"), "the proof names the shared opponent");
+  assert.equal(dup.canonical_for_archive, "f5785bba-c6f8-45de-8682-d044d586c8ac", "the ESPN-keyed row survives the merge");
+  assert.ok(!JSON.stringify(identityIndex).includes("ded1a158-8eed-43bb-8c6e-f950bb97432d"), "no archive link to the deleted row");
+  assert.equal(identityIndex["tuf-brazil-3"]?.["Marcio Alexandre Junior"], dup.canonical_for_archive);
   const a = identityIndex["tuf-brazil-3"]?.["Márcio Alexandre Jr."];
   const b = identityIndex["tuf-brazil-3"]?.["Márcio Alexandre Júnior"];
   assert.ok(a && a === b && a === dup.canonical_for_archive);
