@@ -63,7 +63,7 @@ const logged = async (candidate, url, opts) => { const r = await get(url, opts);
 const bout = (await db(`ufc_bouts?select=id,event_id,ufcstats_id,espn_competition_id,fighter_a_id,fighter_b_id,status,scheduled_rounds,bout_order&id=eq.${BOUT}`))[0];
 if (!bout) throw new Error('unknown bout');
 const event = (await db(`ufc_events?select=id,name,event_date,ufcstats_id,espn_event_id&id=eq.${bout.event_id}`))[0];
-const fighters = await db(`ufc_fighters?select=id,name,ufcstats_id,espn_athlete_id&id=in.(${bout.fighter_a_id},${bout.fighter_b_id})`);
+const fighters = await db(`ufc_fighters?select=id,name,dob,ufcstats_id,espn_athlete_id&id=in.(${bout.fighter_a_id},${bout.fighter_b_id})`);
 const fa = fighters.find((f) => f.id === bout.fighter_a_id);
 const fb = fighters.find((f) => f.id === bout.fighter_b_id);
 const aliasRows = await db(`ufc_fighter_aliases?select=fighter_id,alias,source&fighter_id=in.(${fa.id},${fb.id})`);

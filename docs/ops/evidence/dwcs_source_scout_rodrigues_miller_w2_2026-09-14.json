@@ -1,0 +1,453 @@
+{
+ "at": "2026-09-14T10:52:30.797Z",
+ "tool": "scripts/sources/dwcs_round_source_scout.mjs",
+ "database_writes": 0,
+ "bout": {
+  "id": "54e1a464-e12c-4dc7-a332-9e635bc845e1",
+  "event": {
+   "id": "ec88ca9f-03d5-49ef-8374-7559b0026dba",
+   "name": "Dana White's Contender Series: Season 10, Week 2",
+   "event_date": "2026-08-18",
+   "contender": {
+    "season": 10,
+    "week": 2
+   },
+   "espn_event_id": "600060733",
+   "ufcstats_id": null
+  },
+  "fighters": [
+   {
+    "id": "30f2c5a7-735f-4c78-9af2-eadf1f8a554f",
+    "name": "Douglas Rodrigues",
+    "ufcstats_id": null,
+    "espn_athlete_id": "5369435",
+    "aliases": [
+     "Douglas Rodrigues",
+     "Blade"
+    ]
+   },
+   {
+    "id": "bd9e6610-764f-42e8-bb6c-abf31553d5fd",
+    "name": "Trent Miller",
+    "ufcstats_id": null,
+    "espn_athlete_id": "5216997",
+    "aliases": [
+     "Trent Miller",
+     "The Terminator"
+    ]
+   }
+  ],
+  "stored_result": {
+   "winner_id": "bd9e6610-764f-42e8-bb6c-abf31553d5fd",
+   "method": "SUB",
+   "round": 2,
+   "time_sec": 64,
+   "result_source": "espn",
+   "referee": "Eric Mcmahon"
+  },
+  "stored_round_rows": 0,
+  "queue": {
+   "state": "identity_review",
+   "last_reason": "official feed: 0 fights on official event 1329 match both corners exactly"
+  }
+ },
+ "candidates": {
+  "ufc_official": {
+   "provider": "UFC (official fight statistics feed behind UFC.com)",
+   "base": "https://d29dxerjsp82wz.cloudfront.net/api/v3",
+   "access": "public JSON, no key; UFC-owned; already used in production (ufc-stats-ingest official lane, v0.7.x)",
+   "event_lookup": [
+    {
+     "id": "1329",
+     "status": 200,
+     "name": "DWCS 10.2",
+     "date": "2026-08-18",
+     "feed_status": "Final",
+     "fights": 5,
+     "match": true,
+     "http": {
+      "date": "Mon, 14 Sep 2026 10:52:37 GMT",
+      "cache": "Miss from cloudfront"
+     }
+    }
+   ],
+   "event_identity": {
+    "official_event_id": "1329",
+    "official_name": "DWCS 10.2",
+    "official_date": "2026-08-18",
+    "our_name": "Dana White's Contender Series: Season 10, Week 2",
+    "our_date": "2026-08-18",
+    "rule": "Contender Series season + week + date (+-1 day)",
+    "deterministic": true
+   },
+   "bout_identity": {
+    "fights_on_card": 5,
+    "exact_corner_matches": 1,
+    "fetch_failures": [],
+    "official_fight_id": "12990",
+    "endpoint": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12990.json",
+    "fighter_identities": [
+     {
+      "official_id": "4573",
+      "official_name": "Douglas Henrique Rodrigues",
+      "fighter_id": "30f2c5a7-735f-4c78-9af2-eadf1f8a554f",
+      "fighter_name": "Douglas Rodrigues",
+      "via": "dob_and_registered_name",
+      "dob": "1999-01-13"
+     },
+     {
+      "official_id": "4475",
+      "official_name": "Trent Miller",
+      "fighter_id": "bd9e6610-764f-42e8-bb6c-abf31553d5fd",
+      "fighter_name": "Trent Miller",
+      "via": "name"
+     }
+    ],
+    "deterministic": true,
+    "ambiguity": "none"
+   },
+   "source_says": {
+    "status": "Final",
+    "official_stats": true,
+    "fighters": [
+     {
+      "official_id": "4573",
+      "name": "Douglas Henrique Rodrigues",
+      "outcome": "Loss"
+     },
+     {
+      "official_id": "4475",
+      "name": "Trent Miller",
+      "outcome": "Win"
+     }
+    ],
+    "result": {
+     "method": "Submission",
+     "round": 2,
+     "time_sec": 64
+    },
+    "possible_rounds": 3
+   },
+   "validation": {
+    "readiness": {
+     "ready": true
+    },
+    "problems": [],
+    "winner_agrees": true,
+    "finish_round_agrees": true,
+    "finish_time_agrees": true
+   },
+   "rounds": {
+    "count": 2,
+    "rounds": [
+     1,
+     2
+    ],
+    "corners_per_round": {
+     "1": 2,
+     "2": 2
+    },
+    "both_corners_every_round": true
+   },
+   "round_stat_fields": [
+    "kd <- Knockdowns",
+    "sig_str_landed <- SigStrikesLanded",
+    "sig_str_att <- SigStrikesAttempted",
+    "total_str_landed <- TotalStrikesLanded",
+    "total_str_att <- TotalStrikesAttempted",
+    "td_landed <- TakedownsLanded",
+    "td_att <- TakedownsAttempted",
+    "sub_att <- SubmissionsAttempted",
+    "rev <- Reversals",
+    "ctrl_sec <- ControlTime",
+    "head_landed <- SigHeadStrikesLanded",
+    "head_att <- SigHeadStrikesAttempted",
+    "body_landed <- SigBodyStrikesLanded",
+    "body_att <- SigBodyStrikesAttempted",
+    "leg_landed <- SigLegStrikesLanded",
+    "leg_att <- SigLegStrikesAttempted",
+    "distance_landed <- SigDistanceStrikesLanded",
+    "distance_att <- SigDistanceStrikesAttempted",
+    "clinch_landed <- SigClinchStrikesLanded",
+    "clinch_att <- SigClinchStrikesAttempted",
+    "ground_landed <- SigGroundStrikesLanded",
+    "ground_att <- SigGroundStrikesAttempted"
+   ],
+   "freshness": {
+    "feed_status": "Final",
+    "official_stats": true,
+    "http_date": "Mon, 14 Sep 2026 10:52:40 GMT",
+    "cache": "Miss from cloudfront",
+    "note": "the feed carries no capture timestamp; OfficialStats marks the numbers final"
+   },
+   "parsed_rows_would_write": [
+    {
+     "round": 1,
+     "kd": 0,
+     "sig_str_landed": 19,
+     "sig_str_att": 33,
+     "total_str_landed": 29,
+     "total_str_att": 45,
+     "td_landed": 0,
+     "td_att": 0,
+     "sub_att": 0,
+     "rev": 0,
+     "ctrl_sec": 11,
+     "head_landed": 11,
+     "head_att": 24,
+     "body_landed": 4,
+     "body_att": 5,
+     "leg_landed": 4,
+     "leg_att": 4,
+     "distance_landed": 13,
+     "distance_att": 21,
+     "clinch_landed": 2,
+     "clinch_att": 2,
+     "ground_landed": 4,
+     "ground_att": 10,
+     "bout_id": "54e1a464-e12c-4dc7-a332-9e635bc845e1",
+     "fighter_id": "30f2c5a7-735f-4c78-9af2-eadf1f8a554f",
+     "source_url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12990.json",
+     "captured_at": "(not written)"
+    },
+    {
+     "round": 2,
+     "kd": 0,
+     "sig_str_landed": 2,
+     "sig_str_att": 6,
+     "total_str_landed": 2,
+     "total_str_att": 6,
+     "td_landed": 0,
+     "td_att": 0,
+     "sub_att": 1,
+     "rev": 0,
+     "ctrl_sec": 0,
+     "head_landed": 1,
+     "head_att": 5,
+     "body_landed": 0,
+     "body_att": 0,
+     "leg_landed": 1,
+     "leg_att": 1,
+     "distance_landed": 2,
+     "distance_att": 6,
+     "clinch_landed": 0,
+     "clinch_att": 0,
+     "ground_landed": 0,
+     "ground_att": 0,
+     "bout_id": "54e1a464-e12c-4dc7-a332-9e635bc845e1",
+     "fighter_id": "30f2c5a7-735f-4c78-9af2-eadf1f8a554f",
+     "source_url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12990.json",
+     "captured_at": "(not written)"
+    },
+    {
+     "round": 1,
+     "kd": 0,
+     "sig_str_landed": 11,
+     "sig_str_att": 26,
+     "total_str_landed": 81,
+     "total_str_att": 113,
+     "td_landed": 1,
+     "td_att": 1,
+     "sub_att": 0,
+     "rev": 0,
+     "ctrl_sec": 165,
+     "head_landed": 8,
+     "head_att": 18,
+     "body_landed": 1,
+     "body_att": 2,
+     "leg_landed": 2,
+     "leg_att": 6,
+     "distance_landed": 6,
+     "distance_att": 19,
+     "clinch_landed": 0,
+     "clinch_att": 0,
+     "ground_landed": 5,
+     "ground_att": 7,
+     "bout_id": "54e1a464-e12c-4dc7-a332-9e635bc845e1",
+     "fighter_id": "bd9e6610-764f-42e8-bb6c-abf31553d5fd",
+     "source_url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12990.json",
+     "captured_at": "(not written)"
+    },
+    {
+     "round": 2,
+     "kd": 0,
+     "sig_str_landed": 2,
+     "sig_str_att": 3,
+     "total_str_landed": 2,
+     "total_str_att": 3,
+     "td_landed": 1,
+     "td_att": 2,
+     "sub_att": 1,
+     "rev": 0,
+     "ctrl_sec": 26,
+     "head_landed": 1,
+     "head_att": 2,
+     "body_landed": 0,
+     "body_att": 0,
+     "leg_landed": 1,
+     "leg_att": 1,
+     "distance_landed": 2,
+     "distance_att": 3,
+     "clinch_landed": 0,
+     "clinch_att": 0,
+     "ground_landed": 0,
+     "ground_att": 0,
+     "bout_id": "54e1a464-e12c-4dc7-a332-9e635bc845e1",
+     "fighter_id": "bd9e6610-764f-42e8-bb6c-abf31553d5fd",
+     "source_url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12990.json",
+     "captured_at": "(not written)"
+    }
+   ],
+   "dwcs_coverage": "Season 10 weeks 1-5 are official events 1328, 1329, 1330, 1333, 1334 (named \"DWCS 10.<week>\"); not on UFC.com event pages, so card identity uses the season/week rule or a verified admin link",
+   "verdict": "round-level official statistics, identity and result verified",
+   "viable": true,
+   "request_cost": 6
+  },
+  "espn": {
+   "provider": "ESPN core API",
+   "access": "public JSON; already the production schedule/result/identity source",
+   "competition": {
+    "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060733/competitions/401903492?lang=en&region=us",
+    "status": 200,
+    "date": "2026-08-18T23:00Z",
+    "competitors": [
+     {
+      "id": "5216997",
+      "winner": true
+     },
+     {
+      "id": "5369435",
+      "winner": false
+     }
+    ]
+   },
+   "statistics": {
+    "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060733/competitions/401903492/competitors/5216997/statistics?lang=en&region=us",
+    "status": 200,
+    "split": {
+     "id": "0",
+     "name": "All Splits",
+     "type": "total"
+    },
+    "split_1_identical_to_split_0": true,
+    "fields": [
+     "knockDowns",
+     "totalStrikesAttempted",
+     "totalStrikesLanded",
+     "sigStrikesAttempted",
+     "sigStrikesLanded",
+     "sigDistanceHeadStrikesAttempted",
+     "sigDistanceHeadStrikesLanded",
+     "sigDistanceBodyStrikesAttempted",
+     "sigDistanceBodyStrikesLanded",
+     "sigDistanceLegStrikesAttempted",
+     "sigDistanceLegStrikesLanded",
+     "sigClinchBodyStrikesAttempted"
+    ]
+   },
+   "dwcs_coverage": "DWCS events and results present (our result_source for these bouts is ESPN)",
+   "verdict": "fight totals only (splits.type \"total\"); no round dimension, so it cannot supply ufc_bout_round_stats",
+   "viable": false,
+   "request_cost": 3
+  },
+  "ufcstats": {
+   "provider": "UFC Stats (ufcstats.com)",
+   "status": "BLOCKED",
+   "request_cost": 0,
+   "evidence": {
+    "source_health": {
+     "status": "challenged",
+     "at": "2026-09-14T10:00:33.538Z",
+     "via": "bout_canary",
+     "detail": "challenge interstitial present (canary does not answer challenges) @ http://ufcstats.com/fighter-details/5182316da3c1d891",
+     "retry_after": "2026-09-14T16:00:33.538Z"
+    },
+    "canaries": "2026-09-10, 2026-09-13, 2026-09-14 00:34Z and 10:00Z (single-bout, 1 request): challenge interstitial every time"
+   },
+   "verdict": "not requested: automated reads are challenged; no bypass, no solver",
+   "viable": false
+  },
+  "wayback": {
+   "provider": "Internet Archive (captures of UFC Stats pages)",
+   "access": "public CDX index; existing scripts/backfill/wayback.py path; ufcstats.com never contacted",
+   "verdict": "no UFC Stats id on either corner or the bout, so there is no page to look up",
+   "viable": false,
+   "request_cost": 0
+  },
+  "licensed": {
+   "provider": "Commercial MMA data (e.g. Sportradar MMA, Stats Perform)",
+   "request_cost": 0,
+   "verdict": "not requested: not in our architecture, needs a contract/key and owner approval; unnecessary while the official feed covers DWCS",
+   "viable": null
+  }
+ },
+ "requests": [
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/event/live/1329.json",
+   "status": 200,
+   "ms": 625,
+   "bytes": 20683
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12989.json",
+   "status": 200,
+   "ms": 545,
+   "bytes": 18033
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12990.json",
+   "status": 200,
+   "ms": 510,
+   "bytes": 14123
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12991.json",
+   "status": 200,
+   "ms": 872,
+   "bytes": 14119
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12992.json",
+   "status": 200,
+   "ms": 475,
+   "bytes": 9922
+  },
+  {
+   "candidate": "ufc_official",
+   "url": "https://d29dxerjsp82wz.cloudfront.net/api/v3/fight/live/12993.json",
+   "status": 200,
+   "ms": 705,
+   "bytes": 18818
+  },
+  {
+   "candidate": "espn",
+   "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060733/competitions/401903492?lang=en&region=us",
+   "status": 200,
+   "ms": 239,
+   "bytes": 3804
+  },
+  {
+   "candidate": "espn",
+   "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060733/competitions/401903492/competitors/5216997/statistics?lang=en&region=us",
+   "status": 200,
+   "ms": 55,
+   "bytes": 10063
+  },
+  {
+   "candidate": "espn",
+   "url": "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/events/600060733/competitions/401903492/competitors/5216997/statistics?lang=en&region=us",
+   "status": 200,
+   "ms": 50,
+   "bytes": 10063
+  }
+ ],
+ "request_cost_total": 9,
+ "viable_sources": [
+  "ufc_official"
+ ]
+}

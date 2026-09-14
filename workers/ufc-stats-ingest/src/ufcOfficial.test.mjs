@@ -118,3 +118,24 @@ test('Contender Series cards match by season AND week AND date, never by a near 
   assert.ok(!sameOfficialEvent({ name: 'UFC Fight Night: X vs. Y', date: '2026-08-11' }, w1), 'a UFC card on the same date is not the DWCS card');
   assert.ok(!sameOfficialEvent({ name: 'DWCS 10.1', date: '2026-08-11' }, { name: 'UFC Fight Night: X vs. Y', event_date: '2026-08-11' }));
 });
+
+test('a longer registered name maps ONE corner only with identical DOB and name tokens, never on name alone', () => {
+  const base = clone(FIGHT);
+  base.LiveFightDetail.Fighters[0].Name = { FirstName: 'Waldo Miguel', LastName: 'Cortes Acosta' };
+  base.LiveFightDetail.Fighters[0].DOB = '1991-06-30';
+  const p = parseOfficialFight(base);
+  const waldo = { id: 'fw', name: 'Waldo Cortes Acosta', dob: '1991-06-30' };
+  const ok = mapOfficialFighters(p, waldo, BLAYDES);
+  assert.ok(ok.map, ok.problem);
+  assert.equal(ok.via.find((v) => v.fighter_id === 'fw').via, 'dob_and_registered_name');
+  assert.equal(ok.via.find((v) => v.fighter_id === 'fb').via, 'name', 'the other corner is still exact');
+  assert.deepEqual(validateOfficialFight({ parsed: p, mapping: ok, result: RESULT }), [], 'result still validated');
+  assert.ok(!mapOfficialFighters(p, { ...waldo, dob: '1991-07-01' }, BLAYDES).map, 'different DOB');
+  assert.ok(!mapOfficialFighters(p, { ...waldo, dob: null }, BLAYDES).map, 'no stored DOB');
+  const noDob = clone(base); delete noDob.LiveFightDetail.Fighters[0].DOB;
+  assert.ok(!mapOfficialFighters(parseOfficialFight(noDob), waldo, BLAYDES).map, 'no official DOB');
+  assert.ok(!mapOfficialFighters(p, { id: 'fw', name: 'Walter Cortes Acosta', dob: '1991-06-30' }, BLAYDES).map, 'first name differs');
+  assert.ok(!mapOfficialFighters(p, { id: 'fw', name: 'Waldo Cortes', dob: '1991-06-30' }, BLAYDES).map, 'last token differs');
+  const both = clone(base); both.LiveFightDetail.Fighters[1].Name = { FirstName: 'Curtis', LastName: 'James Blaydes' }; both.LiveFightDetail.Fighters[1].DOB = '1991-02-18';
+  assert.ok(!mapOfficialFighters(parseOfficialFight(both), waldo, { ...BLAYDES, dob: '1991-02-18' }).map, 'never both corners by the second tier');
+});

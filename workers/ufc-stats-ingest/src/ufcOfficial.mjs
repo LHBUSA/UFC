@@ -75,7 +75,8 @@ export function parseOfficialEvent(doc) {
 export function parseOfficialFight(doc) {
   const f = doc?.LiveFightDetail;
   if (!f || !Array.isArray(f.Fighters)) return { error: 'not an official fight document' };
-  const fighters = f.Fighters.map((x) => ({ official_id: String(x.FighterId), name: fullName(x.Name), first: String(x.Name?.FirstName || '').trim(), last: String(x.Name?.LastName || '').trim(), outcome: x.Outcome?.Outcome || null }));
+  const fighters = f.Fighters.map((x) => ({ official_id: String(x.FighterId), name: fullName(x.Name), first: String(x.Name?.FirstName || '').trim(), last: String(x.Name?.LastName || '').trim(),
+    dob: /^\d{4}-\d{2}-\d{2}$/.test(String(x.DOB || '')) ? String(x.DOB) : null, outcome: x.Outcome?.Outcome || null }));
   const rounds = [];
   const shape = [];
   for (const block of f.RoundStats || []) {
@@ -149,15 +150,38 @@ export function knownNames(fighter, aliases = []) {
 export function mapOfficialFighters(parsed, fighterA, fighterB, aliasesById = new Map()) {
   if (parsed.fighters.length !== 2) return { problem: `official fight lists ${parsed.fighters.length} fighters` };
   const ours = [fighterA, fighterB].map((f) => ({ f, names: knownNames(f, aliasesById.get(f?.id) || []) }));
-  const map = new Map();
-  const via = [];
-  for (const x of parsed.fighters) {
+  const exact = parsed.fighters.map((x) => {
     const forms = [[normalize(x.name), 'name'], [normalize(`${x.last} ${x.first}`), 'family_name_first']].filter(([n]) => n);
     const hits = ours.filter((o) => forms.some(([n]) => o.names.has(n)));
-    if (hits.length !== 1) return { problem: `official fighter "${x.name}" matches ${hits.length} of our corners exactly` };
-    const how = forms.find(([n]) => hits[0].names.has(n))[1];
+    return { x, hits, how: hits.length === 1 ? forms.find(([n]) => hits[0].names.has(n))[1] : null };
+  });
+  if (exact.some((e) => e.hits.length > 1)) return { problem: 'an official fighter matches both of our corners' };
+  /* Second tier, for ONE corner only: the other corner matched exactly, and this
+   * one is the same person under a longer registered name ("Douglas Henrique
+   * Rodrigues" / "Douglas Rodrigues"): identical date of birth on both sides,
+   * same first and last name token, and every token of our name present in the
+   * official name. Never a name-only match; the result must still agree. */
+  const missing = exact.filter((e) => e.hits.length === 0);
+  if (missing.length === 1) {
+    const matched = exact.find((e) => e.hits.length === 1);
+    const other = ours.find((o) => o.f.id !== matched.hits[0].f.id);
+    const x = missing[0].x;
+    const tokOfficial = normalize(x.name).split(' ').filter(Boolean);
+    const tokOurs = normalize(other.f?.name).split(' ').filter(Boolean);
+    const dobOk = Boolean(x.dob && other.f?.dob && x.dob === String(other.f.dob).slice(0, 10));
+    const tokensOk = tokOurs.length >= 2 && tokOfficial.length > tokOurs.length && tokOurs[0] === tokOfficial[0]
+      && tokOurs[tokOurs.length - 1] === tokOfficial[tokOfficial.length - 1] && tokOurs.every((t) => tokOfficial.includes(t));
+    if (dobOk && tokensOk) { missing[0].hits = [other]; missing[0].how = 'dob_and_registered_name'; }
+    else return { problem: `official fighter "${x.name}" matches 0 of our corners exactly${x.dob ? '' : ' (no official DOB)'}` };
+  } else if (missing.length === 2) {
+    return { problem: `official fighter "${missing[0].x.name}" matches 0 of our corners exactly` };
+  }
+  const map = new Map();
+  const via = [];
+  for (const { x, hits, how } of exact) {
     map.set(x.official_id, hits[0].f.id);
-    via.push({ official_id: x.official_id, official_name: x.name, fighter_id: hits[0].f.id, fighter_name: hits[0].f.name, via: how === 'name' && normalize(hits[0].f.name) !== normalize(x.name) ? 'alias' : how });
+    via.push({ official_id: x.official_id, official_name: x.name, fighter_id: hits[0].f.id, fighter_name: hits[0].f.name,
+      via: how === 'name' && normalize(hits[0].f.name) !== normalize(x.name) ? 'alias' : how, ...(how === 'dob_and_registered_name' ? { dob: x.dob } : {}) });
   }
   if (new Set(map.values()).size !== 2) return { problem: 'both official fighters map to the same corner' };
   return { map, via };
