@@ -59,3 +59,24 @@
   .ft-break + .ft-break { border-left: 0; border-top: 1px solid var(--pbe-line-faint); }
   .ft-head { padding: 10px; gap: 8px; }
 }
+
+/* Fight page heading and facts summary.
+ *
+ * The H1 is deliberately modest: the faceoff below is the visual headline, so
+ * this line names the matchup and event without competing with the portraits.
+ * The facts list reuses .kv and only widens it into two label/value pairs per
+ * row on wide screens. */
+.fight-head { align-items: flex-end; }
+.fight-h1 {
+  margin: 0 0 6px; color: var(--pbe-paper);
+  font: 800 var(--fs-h2)/1.12 var(--pbe-font-display); letter-spacing: -.015em;
+  overflow-wrap: anywhere;
+}
+.fight-h1 span { color: var(--pbe-dim); font-weight: 700; font-size: .62em; letter-spacing: 0; }
+
+.fight-facts { grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr); padding-top: var(--s-3); border-top: 1px solid var(--pbe-line-faint); }
+.fight-facts dd { overflow-wrap: anywhere; min-width: 0; }
+.fight-facts a { color: var(--pbe-gold); }
+@media (max-width: 760px) {
+  .fight-facts { grid-template-columns: auto minmax(0, 1fr); }
+}

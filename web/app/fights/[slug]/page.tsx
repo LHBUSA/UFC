@@ -17,7 +17,10 @@ import { BoutWeighIns } from "@/components/WeighInBits";
 import { BoutStatusAlert } from "@/components/StatusBits";
 import { MarketSection } from "@/components/Market";
 import { OfficialScorecards } from "@/components/Scorecard";
-import { buildBoutScorecard } from "@/lib/judgeScoring";
+import { buildBoutScorecard, wentToTheJudges } from "@/lib/judgeScoring";
+import { getRefereeByName } from "@/lib/referees";
+import { fightResultDescription, fightResultSentence, type FightSeoFacts } from "@/lib/seo";
+import type { Bout, Event, FightTotals, RoundStat } from "@/lib/db";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, fmtDate, fmtRecord, fmtTime, METHOD_LABEL, weightClassLabel, totals, pct, archiveSummary, winnerOf, loserOf, daysUntil, locationLine, plural, METHOD_SHORT, eventBrand } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -27,18 +30,86 @@ import { FightTotalsSection } from "@/components/FightTotals";
 
 export const revalidate = 300;
 
+/* Significant and total strikes for the facts summary and the description.
+ * The whole-fight totals are preferred because the page renders them first;
+ * round rows are summed only when no complete totals pair exists. Both corners
+ * or nothing, the same rule FightTotalsSection applies. */
+function strikeFacts(b: Bout, fightTotals: FightTotals[], rounds: RoundStat[]) {
+  const A = fightTotals.find((t) => t.fighter_id === b.fighter_a.id);
+  const B = fightTotals.find((t) => t.fighter_id === b.fighter_b.id);
+  if (A && B && A.sig_str_landed != null && B.sig_str_landed != null) {
+    return {
+      source: A.source_family === "espn" ? "ESPN" : "UFC Stats",
+      sig: { a: A.sig_str_landed, b: B.sig_str_landed, aAtt: A.sig_str_att, bAtt: B.sig_str_att },
+      total: A.total_str_landed != null && B.total_str_landed != null ? { a: A.total_str_landed, b: B.total_str_landed, aAtt: A.total_str_att, bAtt: B.total_str_att } : null,
+    };
+  }
+  const ra = rounds.filter((x) => x.fighter_id === b.fighter_a.id), rb = rounds.filter((x) => x.fighter_id === b.fighter_b.id);
+  if (!ra.length || !rb.length) return null;
+  const ta = totals(ra), tb = totals(rb);
+  return {
+    source: "UFC Stats · round totals",
+    sig: { a: ta.sig_l, b: tb.sig_l, aAtt: ta.sig_a, bAtt: tb.sig_a },
+    total: { a: ta.tot_l, b: tb.tot_l, aAtt: ta.tot_a, bAtt: tb.tot_a },
+  };
+}
+
+/* Winner-first judge scores, only when the bout's own cards say which number
+ * belongs to which fighter. Unattributed pairs stay out of the snippet. */
+function winnerScores(b: Bout): string[] {
+  const r = b.result;
+  if (!r?.winner_id) return [];
+  const sheet = buildBoutScorecard({ method: r.method, scorecards: r.scorecards, winnerId: r.winner_id, fighterAId: b.fighter_a.id, fighterBId: b.fighter_b.id });
+  if (!sheet.hasOfficialScorecard) return [];
+  const aWon = r.winner_id === b.fighter_a.id;
+  return sheet.cards
+    .filter((c) => c.fighterAScore != null && c.fighterBScore != null)
+    .map((c) => (aWon ? `${c.fighterAScore}–${c.fighterBScore}` : `${c.fighterBScore}–${c.fighterAScore}`));
+}
+
+function seoFacts(e: Event, b: Bout, fightTotals: FightTotals[], rounds: RoundStat[], fightDna: boolean): FightSeoFacts {
+  const r = b.result!;
+  const w = winnerOf(b), l = loserOf(b);
+  const strikes = strikeFacts(b, fightTotals, rounds);
+  return {
+    a: b.fighter_a.name, b: b.fighter_b.name, winner: w?.name ?? null, loser: l?.name ?? null,
+    methodCode: r.method, methodLabel: METHOD_LABEL[r.method] || r.method_raw || null, finishDetail: r.finish_detail,
+    round: r.round, time: r.time_sec != null ? fmtTime(r.time_sec) : null,
+    event: e.name, date: e.event_date ? fmtDate(e.event_date, { month: "short", day: "numeric", year: "numeric" }) : null,
+    referee: r.referee?.trim() || null,
+    sigStrikes: strikes ? { a: strikes.sig.a, b: strikes.sig.b } : null,
+    scorecards: winnerScores(b),
+    roundStats: rounds.length > 0,
+    fightDna,
+  };
+}
+
+const landedOf = (n: number, att: number | null) => (att ? `${n}/${att}` : String(n));
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const hit = await resolveFight((await params).slug);
   if (!hit) return { title: "Matchup not found", robots: { index: false } };
   const { e, b } = hit;
   const done = Boolean(b.result);
   const title = `${b.fighter_a.name} vs ${b.fighter_b.name} — ${e.name}`;
+  /* Same reads the page makes; Next dedupes identical fetches within a render,
+   * so the description costs no extra round trip. */
+  let description: string;
+  if (done) {
+    const [rounds, fightTotals, dna] = await Promise.all([
+      getRoundStats(b.id), getFightTotals(b.id).catch(() => []), getMatchupDna(b.fighter_a.id, b.fighter_b.id, e.event_date),
+    ]);
+    description = fightResultDescription(seoFacts(e, b, fightTotals, rounds, dna.status === "ok"));
+  } else {
+    const position = b.card_position ? `, ${cardPositionLabel(b.card_position).toLowerCase()}` : "";
+    description = `${b.fighter_a.name} (${fmtRecord(b.fighter_a)}) vs ${b.fighter_b.name} (${fmtRecord(b.fighter_b)}) at ${e.name} on ${fmtDate(e.event_date)}: ${weightClassLabel(b.weight_class, b.is_womens)}${b.is_title ? " title fight" : ""}${position}. Tale of the tape, height, reach, age, records and recent form.`;
+  }
   return {
     title: done ? `${title} Result, Stats & Scorecards` : `${title} Tale of the Tape, Records & Matchup`,
-    description: `${b.fighter_a.name} (${fmtRecord(b.fighter_a)}) vs ${b.fighter_b.name} (${fmtRecord(b.fighter_b)}) at ${e.name} on ${fmtDate(e.event_date)}: ${weightClassLabel(b.weight_class, b.is_womens)}${b.is_title ? " title fight" : ""}, ${cardPositionLabel(b.card_position).toLowerCase()}. ${done ? "Result, method, round-by-round stats." : "Tale of the tape, height, reach, age, records and recent form."}`,
+    description,
     alternates: { canonical: `/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}` },
-    openGraph: { title, description: `${fmtDate(e.event_date)} · ${weightClassLabel(b.weight_class, b.is_womens)}`, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}` },
-    twitter: { card: "summary_large_image", title },
+    openGraph: { title, description, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}` },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -123,14 +194,27 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   /* Ranking identity for the two corners, from the one shared resolver. The
    * badge answers for THIS bout's division, so a champion fighting outside
    * their weight is not labelled champion in a fight that is not for it. */
-  const ranks = await getRankingMap();
+  const [ranks, refereeProfile] = await Promise.all([
+    getRankingMap(),
+    /* Link the referee only when a profile page exists for them; a name
+     * with no directory row stays plain text rather than a link to a 404. */
+    r?.referee ? getRefereeByName(r.referee.trim()).catch(() => null) : Promise.resolve(null),
+  ]);
+  const facts = r ? seoFacts(e, b, fightTotals, rounds, dna.status === "ok") : null;
+  const strikes = r ? strikeFacts(b, fightTotals, rounds) : null;
+  const sheet = r ? buildBoutScorecard({ method: r.method, scorecards: r.scorecards, winnerId: r.winner_id, fighterAId: b.fighter_a.id, fighterBId: b.fighter_b.id }) : null;
   const boutDivision = { key: b.weight_class, isWomens: b.is_womens };
 
   return (
     <div className="wrap page">
       <Breadcrumbs items={[{ name: "Events", href: "/events" }, { name: e.name, href: `/events/${eventSlug(e)}` }, { name: `${b.fighter_a.name} vs ${b.fighter_b.name}` }]} />
-      <div className="between mb-4">
-        <div className="eyebrow">{weightClassLabel(b.weight_class, b.is_womens)}{b.is_title ? " · Title bout" : ""}{b.scheduled_rounds ? ` · ${b.scheduled_rounds} rounds` : ""} · {cardPositionLabel(b.card_position)}</div>
+      <div className="between mb-4 fight-head">
+        <div>
+          {/* The page's one H1. The faceoff below is a visual; this is the
+              heading a reader and a crawler both read first. */}
+          <h1 className="fight-h1">{b.fighter_a.name} vs {b.fighter_b.name}<span> · {e.name}</span></h1>
+          <div className="eyebrow">{weightClassLabel(b.weight_class, b.is_womens)}{b.is_title ? " · Title bout" : ""}{b.scheduled_rounds ? ` · ${b.scheduled_rounds} rounds` : ""} · {cardPositionLabel(b.card_position)}</div>
+        </div>
         {b.status === "cancelled" ? <span className="tag live">Cancelled</span> : r ? <span className="tag pos">Final</span> : <span className={`tag${d != null && d <= 6 && d >= 0 ? " gold" : ""}`}>{d === 0 ? "Tonight" : d != null && d > 0 ? `In ${d} day${d === 1 ? "" : "s"}` : "Scheduled"}</span>}
       </div>
 
@@ -167,6 +251,33 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
           <div><div className="eyebrow">{e.name}</div><div className="mono dim sm mt-2">{fmtDate(e.event_date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })} · {locationLine(e) || "Venue TBA"}</div></div>
           <Link href={`/events/${eventSlug(e)}`} className="btn">Full card →</Link>
         </div>
+        {/* Fight facts: who won, how, who refereed and what the numbers were,
+            in one scannable list near the top. Every row comes from the rows
+            the sections below render, and a missing fact is a missing row,
+            never a placeholder. */}
+        {r && facts && (
+          <dl className="kv fight-facts mt-4" aria-label="Fight facts">
+            <dt>Result</dt>
+            <dd>{w && l ? `${w.name} def. ${l.name}` : METHOD_LABEL[r.method] || r.method_raw}</dd>
+            <dt>Method</dt>
+            <dd>{METHOD_LABEL[r.method] || r.method_raw}{r.finish_detail ? ` (${r.finish_detail})` : ""}</dd>
+            {r.round != null && (<><dt>Round · time</dt><dd>Round {r.round}{r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}{r.time_format ? <span className="faint"> · {r.time_format}</span> : null}</dd></>)}
+            {facts.referee && (<><dt>Referee</dt><dd>{refereeProfile ? <Link href={`/referees/${refereeProfile.slug}`}>{facts.referee}</Link> : facts.referee}</dd></>)}
+            {strikes && (<><dt>Sig. strikes</dt><dd>{b.fighter_a.name} {landedOf(strikes.sig.a, strikes.sig.aAtt)} · {b.fighter_b.name} {landedOf(strikes.sig.b, strikes.sig.bAtt)} <span className="faint">· {strikes.source}</span></dd></>)}
+            {strikes?.total && (<><dt>Total strikes</dt><dd>{b.fighter_a.name} {landedOf(strikes.total.a, strikes.total.aAtt)} · {b.fighter_b.name} {landedOf(strikes.total.b, strikes.total.bAtt)}</dd></>)}
+            <dt>Scorecards</dt>
+            <dd>
+              {sheet?.hasOfficialScorecard
+                ? <Link href="#scorecards">{facts.scorecards.length ? `${facts.scorecards.join(", ")}${w ? ` for ${w.name}` : ""}` : `${sheet.cardCount} official ${sheet.cardCount === 1 ? "card" : "cards"}`}</Link>
+                : wentToTheJudges(r.method)
+                  ? <Link href="#scorecards">Not on file</Link>
+                  : <>None — the fight ended by {METHOD_LABEL[r.method] || r.method_raw}</>}
+            </dd>
+            {(rounds.length > 0 || dna.status === "ok") && (
+              <><dt>Analysis</dt><dd>{rounds.length > 0 && <Link href="#round-by-round">Round-by-round ({plural(roundsN, "round")})</Link>}{rounds.length > 0 && dna.status === "ok" ? " · " : null}{dna.status === "ok" && <Link href="#dna-matchup">Fight DNA matchup</Link>}</dd></>
+            )}
+          </dl>
+        )}
       </div>
 
       {r && (
@@ -180,7 +291,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
               {METHOD_LABEL[r.method] || r.method}{r.finish_detail ? ` (${r.finish_detail})` : ""}{r.round ? ` · Round ${r.round}` : ""}{r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}{r.time_format ? ` · ${r.time_format}` : ""}
             </div>
             <div className="tags mt-3">
-              {r.referee && <span className="tag">Referee · {r.referee}</span>}
+              {r.referee && (refereeProfile ? <Link href={`/referees/${refereeProfile.slug}`} className="tag">Referee · {r.referee}</Link> : <span className="tag">Referee · {r.referee}</span>)}
               <span className="tag dim">Source · {r.result_source === "espn" ? "ESPN" : "UFC Stats"}{r.has_stats ? " · round stats archived" : ""}</span>
             </div>
             {/* The judges leave the flat tag strip and become links into the
@@ -348,8 +459,8 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
       )}
 
       <JsonLd data={{
-        "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}#bout`, name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: e.event_date, sport: "Mixed Martial Arts",
-        description: `${weightClassLabel(b.weight_class, b.is_womens)}${b.is_title ? " title" : ""} bout at ${e.name}${r && w ? `: ${w.name} won by ${METHOD_LABEL[r.method]}${r.round ? ` in round ${r.round}` : ""}` : ""}.`,
+        "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}#bout`, name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: e.event_date, endDate: e.event_date || undefined, sport: "Mixed Martial Arts",
+        description: `${weightClassLabel(b.weight_class, b.is_womens)}${b.is_title ? " title" : ""} bout at ${e.name}.${facts ? ` ${fightResultSentence(facts, e.name)}` : ""}${facts?.referee ? ` Referee: ${facts.referee}.` : ""}`,
         eventStatus: b.status === "cancelled" ? "https://schema.org/EventCancelled" : "https://schema.org/EventScheduled",
         superEvent: { "@type": "SportsEvent", name: e.name, url: `${SITE.url}/events/${eventSlug(e)}`, startDate: e.event_date },
         location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined,

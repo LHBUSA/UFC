@@ -24,6 +24,7 @@ import { getRoundCoverageFor, isEligible } from "@/lib/roundIndex";
 import { getRankingMap } from "@/lib/rankings";
 import { bestRank } from "@/lib/rankingContext";
 import { RankStack } from "@/components/RankBadge";
+import { fighterDescription, fighterTitle } from "@/lib/seo";
 
 /* Fighters with a written heritage account on the site. Keyed by UFC Stats id
  * rather than by name, so the link survives a display-name correction. */
@@ -40,13 +41,37 @@ export const revalidate = 300;
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const f = await resolveFighter((await params).slug);
   if (!f) return { title: "Fighter not found", robots: { index: false } };
-  const title = `${f.name}${f.nickname ? ` “${f.nickname}”` : ""} — UFC Record, Stats & Next Fight`;
+  /* The page's own reads (deduped within the render), so the snippet can only
+   * claim what the page shows: a next fight only when one is scheduled, stats
+   * only when round rows exist, Fight DNA only when the profile resolves. */
+  const [bouts, rounds, dna] = await Promise.all([getFighterBouts(f.id), getFighterRoundStats(f.id), getFighterDna(f.id)]);
+  const today = new Date().toISOString().slice(0, 10);
+  const next = bouts
+    .filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled")
+    .sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!))[0] || null;
+  const history = bouts.filter((b) => b !== next && b.event?.event_date && b.event.event_date < today);
+  const sum = archiveSummary(f.id, history);
+  const t = totals(rounds);
+  const title = fighterTitle(f.name, f.nickname, Boolean(next));
+  const description = fighterDescription({
+    name: f.name,
+    record: fmtRecord(f),
+    archive: sum.fights ? { fights: sum.fights, w: sum.w, l: sum.l, d: sum.d, ko: sum.ko, sub: sum.sub, dec: sum.dec } : null,
+    sigLanded: t.rounds ? t.sig_l : null,
+    statRounds: t.rounds,
+    fightDna: dna.status === "ok",
+    next: next ? {
+      opponent: (next.fighter_a.id === f.id ? next.fighter_b : next.fighter_a).name,
+      event: next.event.name,
+      date: next.event.event_date ? fmtDate(next.event.event_date, { month: "short", day: "numeric", year: "numeric" }) : null,
+    } : null,
+  });
   return {
     title,
-    description: `${f.name} UFC profile: ${fmtRecord(f)} record, ${fmtHeight(f.height_in)}, ${f.reach_in != null ? `${f.reach_in}" reach` : "reach unlisted"}, ${stanceLabel(f.stance)} stance. Full fight history, round-by-round striking and grappling stats, and next scheduled bout.`,
+    description,
     alternates: { canonical: `/fighters/${fighterSlug(f)}` },
-    openGraph: { type: "profile", title: f.name, description: `${fmtRecord(f)} · ${fmtHeight(f.height_in)} · ${stanceLabel(f.stance)}`, url: `${SITE.url}/fighters/${fighterSlug(f)}` },
-    twitter: { card: "summary_large_image", title: f.name },
+    openGraph: { type: "profile", title: f.name, description, url: `${SITE.url}/fighters/${fighterSlug(f)}` },
+    twitter: { card: "summary_large_image", title: f.name, description },
   };
 }
 
@@ -168,7 +193,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
 
       {rounds.length > 0 && (
         <section className="segment">
-          <h3>Striking & grappling <small>{plural(statsFights, "fight")} · {plural(t.rounds, "round")} of UFC Stats data</small></h3>
+          <h3>{f.name} striking & grappling stats <small>{plural(statsFights, "fight")} · {plural(t.rounds, "round")} of UFC Stats data</small></h3>
           <div className="tiles">
             <div className="tile"><b>{t.rounds ? (t.sig_l / (t.rounds * 5)).toFixed(2) : "—"}</b><span>Sig. strikes / min</span></div>
             <div className="tile"><b>{pct(t.sig_l, t.sig_a)}</b><span>Striking accuracy</span></div>
@@ -195,6 +220,12 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
       )}
 
       {dna.status === "ok" ? <FightDnaSection dna={dna.data} fighterName={f.name} /> : dna.status === "unavailable" ? <FightDnaEmpty reason={dna.reason} /> : null}
+      {/* Fight DNA -> its evidence. The profile is reconstructed from archived
+          bouts, and those bouts are the history table below, each linking to
+          its fight page and, where rounds are stored, its round analysis. */}
+      {dna.status === "ok" && history.length > 0 && (
+        <p className="mono dim sm mt-3">Evidence behind this profile: <Link href="#fight-history">{f.name}&apos;s fight history</Link>, bout by bout, with round analysis where rounds are archived.</p>
+      )}
 
       {(f.career_slpm != null || f.career_td_avg != null || f.career_str_acc != null) && (
         <section className="segment">
@@ -216,8 +247,8 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
         </section>
       )}
 
-      <section className="segment">
-        <h3>Fight history <small>{history.length ? plural(history.length, "bout") : "backfilling"}</small></h3>
+      <section className="segment" id="fight-history">
+        <h3>{f.name} fight history <small>{history.length ? plural(history.length, "bout") : "backfilling"}</small></h3>
         {history.length ? (
           <div className="tbl-wrap">
             <table className="tbl">

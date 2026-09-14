@@ -31,6 +31,7 @@ import { getDwcsGraph } from "@/lib/dwcsGraph";
 import { CardIntelligence } from "@/components/CardIntelligence";
 import { WhereTheyWent } from "@/components/Dwcs";
 import { contenderIdentity } from "@/lib/contenderIdentity";
+import { eventResultsDescription } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -38,15 +39,42 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const e = await resolveEvent((await params).slug);
   if (!e) return { title: "Event not found", robots: { index: false } };
   const where = [e.venue, e.city, e.country].filter(Boolean).join(", ");
-  const done = e.card_status === "complete";
+  /* Same bout read as the page (deduped), so "done" is decided by the same
+   * rule the page renders with: a complete card status, or every live bout
+   * carrying a result. */
+  const bouts = await getEventBouts(e.id);
+  const live = bouts.filter((b) => b.status !== "cancelled");
+  const done = e.card_status === "complete" || (bouts.length > 0 && live.every((b) => b.result));
   const title = done ? `${e.name} — Results, Full Card & Stats` : `${e.name} — Fight Card, Pregame Desk & Matchups`;
   const og = `${SITE.url}/events/${eventSlug(e)}/opengraph-image`;
+  let description: string;
+  if (done) {
+    const main = live[0];
+    const mw = main ? winnerOf(main) : null;
+    const ml = mw && main ? (mw.id === main.fighter_a.id ? main.fighter_b : main.fighter_a) : null;
+    const mainResult = main?.result && mw && ml
+      ? `Main event: ${mw.name} def. ${ml.name} by ${METHOD_LABEL[main.result.method] || main.result.method_raw}${main.result.round && !main.result.method.startsWith("DEC") ? ` in round ${main.result.round}` : ""}.`
+      : null;
+    description = eventResultsDescription({
+      name: e.name,
+      date: e.event_date ? fmtDate(e.event_date, { month: "short", day: "numeric", year: "numeric" }) : null,
+      where: [e.venue, e.city].filter(Boolean).join(", ") || null,
+      bouts: live.filter((b) => b.result).length,
+      finishes: live.filter((b) => b.result && (b.result.method === "KO_TKO" || b.result.method === "SUB")).length,
+      decisions: live.filter((b) => b.result && b.result.method.startsWith("DEC")).length,
+      titleFights: live.filter((b) => b.is_title).length,
+      mainResult,
+      roundStats: live.some((b) => b.result?.has_stats),
+    });
+  } else {
+    description = `${e.name} on ${fmtDate(e.event_date)}${where ? ` at ${where}` : ""}. Full announced fight card, Pregame Desk fight-week intelligence, fighter records, tale of the tape and matchup pages.`;
+  }
   return {
     title,
-    description: `${e.name} on ${fmtDate(e.event_date)}${where ? ` at ${where}` : ""}. ${done ? "Loaded results with method, round, time and round-level stats where available." : "Full announced fight card, Pregame Desk fight-week intelligence, fighter records, tale of the tape and matchup pages."}`,
+    description,
     alternates: { canonical: `/events/${eventSlug(e)}` },
-    openGraph: { title: e.name, description: `${fmtDate(e.event_date)}${where ? ` · ${where}` : ""}`, type: "website", url: `${SITE.url}/events/${eventSlug(e)}`, images: [{ url: og, width: 1200, height: 630, alt: e.name }] },
-    twitter: { card: "summary_large_image", title: e.name, images: [og] },
+    openGraph: { title: e.name, description, type: "website", url: `${SITE.url}/events/${eventSlug(e)}`, images: [{ url: og, width: 1200, height: 630, alt: e.name }] },
+    twitter: { card: "summary_large_image", title: e.name, description, images: [og] },
   };
 }
 
@@ -173,7 +201,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       {others.length > 0 && <section className="segment"><h3>{done || historical ? "More recent cards" : "Also coming up"}</h3><div className="elist">{others.map((x) => <EventRow key={x.id} e={x} />)}</div></section>}
 
-      {/* Structured data. `startDate` is upgraded from a bare date to the
+      {/* Structured data. `eventStatus` is EventScheduled for a finished card
+          too: schema.org's EventStatusType has no "completed" member (the old
+          EventCompleted value failed validation), and a past startDate is how
+          a consumer knows it happened.
+
+          `startDate` is upgraded from a bare date to the
           verified main-card INSTANT when UFC.com has published one — that is a
           legitimate schema.org value and a materially better one, since a date
           alone cannot say when the event begins. `endDate` is dropped in that
@@ -185,7 +218,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           considerably more than "UFC.com listed this carrier on the US events
           page" — so we link the official page instead and claim nothing we
           have not verified. */}
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: broadcast?.main_card_start_utc || e.event_date, endDate: broadcast?.main_card_start_utc ? undefined : e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: done ? "https://schema.org/EventCompleted" : "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, video: videos.length ? videoJsonLd(videos) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: broadcast?.main_card_start_utc || e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: broadcast?.main_card_start_utc || e.event_date, endDate: broadcast?.main_card_start_utc ? undefined : e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, subjectOf: videos.length ? videoJsonLd(videos) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: broadcast?.main_card_start_utc || e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
     </div>
   );
 }

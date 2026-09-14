@@ -14,6 +14,7 @@ import { getMatchupDna } from "@/lib/dna";
 import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
 import { StoryView } from "@/components/StoryView";
+import { newsSearchTitle } from "@/lib/seo";
 import {
   BoutContextModule, ComparisonModule, DnaModule, RecentFormModule, RoundStyleModule,
   MarketModule, OfficialVideoModule, MethodologyModule, FighterCardModule,
@@ -35,8 +36,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const description = a.dek || excerpt(a.body_md);
   const label = STORY_TYPE_LABEL[a.story_type] || a.story_type;
   const ogImage = `${SITE.url}/news/${a.slug}/opengraph-image`;
+  /* The headline stays the H1, the social title and the NewsArticle headline.
+   * Only the search <title> may differ: see newsSearchTitle for the two cases. */
+  const search = newsSearchTitle(a.headline, [...String(a.body_md || "").matchAll(/^##\s+(.+?)\s*$/gm)].map((m) => m[1]));
   return {
-    title: a.headline,
+    title: search.absolute ? { absolute: search.title } : search.title,
     description,
     category: "sports",
     authors: [{ name: SITE.desk, url: `${SITE.url}/about` }],

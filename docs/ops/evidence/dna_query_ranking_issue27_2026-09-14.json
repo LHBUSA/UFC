@@ -926,5 +926,105 @@
    "uuid_after_old_window_boundary": "344c1162-f1da-4333-929c-f74182f91135",
    "in_before_results": false
   }
- ]
+ ],
+ "release": {
+  "migration": "20260914120000_ufc_dna_metric_ranking (proof then apply; stable, security invoker, service_role only; anon 401)",
+  "worker": {
+   "version": "df3ea12f-f0f4-43fb-a291-cfd0b92ad2d2",
+   "api_version": "2026-09-14.1",
+   "main": "1ce68fd",
+   "canary": "1% with version-override: 10/10 probe match, 20/20 other routes byte-identical (request_id normalized)",
+   "rollback": "294548b6-9ca8-4291-bcae-12777840d379 first, then drop the function"
+  },
+  "smoke_live": "green, api_version 2026-09-14.1",
+  "gateway": {
+   "repo": "LHBUSA/ufc-api@ufc-intelligence-v1 d513c7a",
+   "worker_version": "9c437101-495f-4dea-8938-c3772af586f9",
+   "gateway_version": "2026-09-14.1",
+   "api_version_target": "2026-09-14.1",
+   "rollback": "bb820dc3-cc0d-4123-b468-ca4b68101d9e",
+   "checks": "npm test 49/49 + 28/28; contract:check and contract:check:live in sync",
+   "passthrough": "ultra key: dna/query 200, data identical to canonical (candidates 3164, truncated false); developer/pro: 403 plan_required (dna_query is Ultra); dna/metrics and events identical for all plans; no key 401",
+   "assets": "unchanged 2026-09-11 portal build (astro not installed on the C: checkout; portal refresh is a follow-up)"
+  },
+  "website_qa": {
+   "note": "the website reads Fight DNA from Supabase directly, not /v1/ufc/dna/query; QA confirms no regression",
+   "pages": {
+    "home_1440": {
+     "path": "/",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "home_390": {
+     "path": "/",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "rankings_1440": {
+     "path": "/rankings",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "rankings_390": {
+     "path": "/rankings",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "fighter_dna_1440": {
+     "path": "/fighters/sean-strickland-3093653",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "fighter_dna_390": {
+     "path": "/fighters/sean-strickland-3093653",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "fight_matchup_1440": {
+     "path": "/fights/jean-silva-vs-jose-miguel-delgado-noche-ufc-silva-vs-delgado-2026-09-12",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "fight_matchup_390": {
+     "path": "/fights/jean-silva-vs-jose-miguel-delgado-noche-ufc-silva-vs-delgado-2026-09-12",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "learn_fight_dna_1440": {
+     "path": "/learn/fight-dna",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "learn_fight_dna_390": {
+     "path": "/learn/fight-dna",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "model_1440": {
+     "path": "/model",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    },
+    "model_390": {
+     "path": "/model",
+     "status": 200,
+     "overflowX": 0,
+     "console_errors": 0
+    }
+   },
+   "links_checked": 47,
+   "links_non_200": 0
+  }
+ }
 }
