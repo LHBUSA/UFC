@@ -21,6 +21,7 @@ export type RetiredFighterSlug = { retiredSourceId: string; canonicalSlug: strin
 export const RETIRED_FIGHTER_SLUGS: ReadonlyArray<RetiredFighterSlug> = [
   { retiredSourceId: "1eff7bc0f815b270", canonicalSlug: "yorgan-de-castro-4423213", reconciliation: "dwcs-split-identities-2026-09-13" },
   { retiredSourceId: "e530df53922f413e", canonicalSlug: "luis-pajuelo-5144312", reconciliation: "dwcs-split-identities-2026-09-13" },
+  { retiredSourceId: "d53482bef23235ba", canonicalSlug: "marcio-alexandre-jr-3108776", reconciliation: "marcio-alexandre-merge-2026-09-14" },
   /* TUF 2 contestants: ESPN athlete ids attached through their exact finale bouts (no merge). */
   { retiredSourceId: "79899ecf62020f6d", canonicalSlug: "joe-stevenson-2335672", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },
   { retiredSourceId: "6da99156486ed6c2", canonicalSlug: "joshua-burkman-2354104", reconciliation: "tuf2-espn-athlete-ids-2026-09-13" },

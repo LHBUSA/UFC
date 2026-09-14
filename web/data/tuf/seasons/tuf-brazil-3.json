@@ -162,7 +162,7 @@
         {
           "name": "Márcio Alexandre Júnior",
           "weight_class": "Middleweight",
-          "fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d"
+          "fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac"
         },
         {
           "name": "Job Kleber Melo",
@@ -299,7 +299,7 @@
               "episode": 7,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 7 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d",
+              "a_fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac",
               "b_fighter_id": "0b734341-851b-427e-b010-bedc2b15f277"
             },
             {
@@ -312,7 +312,7 @@
               "episode": 12,
               "classification": "exhibition",
               "classification_source": "broadcast in episode 12 of the season, and absent from our fight records for 2014, which are complete for that year — 46 events, 503 bouts, every one carrying a result — so a bout contested on a sanctioned card that year would be in them",
-              "a_fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d",
+              "a_fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac",
               "b_fighter_id": "d4261e55-028f-4107-9328-ce83a1370a04"
             }
           ]
@@ -369,7 +369,7 @@
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "0b734341-851b-427e-b010-bedc2b15f277",
-              "b_fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d"
+              "b_fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac"
             }
           ]
         },
@@ -401,7 +401,7 @@
               "classification": "unverified",
               "classification_source": null,
               "a_fighter_id": "d4261e55-028f-4107-9328-ce83a1370a04",
-              "b_fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d"
+              "b_fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac"
             }
           ]
         },
@@ -423,7 +423,7 @@
               "on_finale_card": true,
               "tournament_deciding": true,
               "a_fighter_id": "7397b005-2a97-4724-9d0e-458d4b3968bb",
-              "b_fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d"
+              "b_fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac"
             }
           ]
         }

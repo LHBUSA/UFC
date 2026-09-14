@@ -24,10 +24,16 @@ test("an id that merely contains the retired id is not captured", () => {
 
 test("one permanent redirect per retired fighter, never Joey Gomez", () => {
   const r = retiredFighterSlugRedirects();
-  assert.equal(r.length, 28, "2 DWCS merges + 16 TUF 1 + 10 TUF 2 ESPN-id attachments");
+  assert.equal(r.length, 29, "2 DWCS merges + the Marcio Alexandre merge + 16 TUF 1 + 10 TUF 2 ESPN-id attachments");
   assert.equal(new Set(RETIRED_FIGHTER_SLUGS.map((x) => x.retiredSourceId)).size, r.length, "one entry per retired id");
   assert.ok(r.every((x) => x.permanent));
   assert.ok(!JSON.stringify(r).includes("0778f94eb5d588a5") && !JSON.stringify(r).includes("4357555"));
+});
+
+test("the Marcio Alexandre Junior UFC Stats URL lands on the merged ESPN-keyed profile", () => {
+  const m = RETIRED_FIGHTER_SLUGS.find((x) => x.retiredSourceId === "d53482bef23235ba");
+  assert.equal(m?.canonicalSlug, "marcio-alexandre-jr-3108776");
+  assert.ok(matches("d53482bef23235ba", "marcio-alexandre-junior-d53482bef23235ba"));
 });
 
 test("a TUF 1 contestant's old UFC Stats URL lands on the ESPN-keyed profile", () => {

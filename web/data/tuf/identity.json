@@ -10,19 +10,20 @@
   },
   "_guard": "A contestant resolved without evidence must have a UFC career within eight years of the season on either side, except in seasons cast from UFC veterans. A namesake a decade away is rejected, not linked.",
   "proven_duplicates": {
-    "f5785bba-c6f8-45de-8682-d044d586c8ac": {
-      "canonical_for_archive": "ded1a158-8eed-43bb-8c6e-f950bb97432d",
+    "ded1a158-8eed-43bb-8c6e-f950bb97432d": {
+      "canonical_for_archive": "f5785bba-c6f8-45de-8682-d044d586c8ac",
       "names": [
         "Marcio Alexandre Jr.",
         "Marcio Alexandre Junior"
       ],
       "proof": "ESPN athlete 3108776 (the ESPN-keyed row) competed on 2014-05-31, 2014-12-20 and 2015-12-12, losing each time; those are exactly the three UFC bouts held by the UFC Stats-keyed row d53482bef23235ba. On 2015-12-12 the ESPN opponent is athlete 2504639, which is Court McGee in ufc_fighters, the recorded winner of that bout. Both rows carry the nickname \"Lyoto\"; the birth dates disagree by two days (1989-05-03 ESPN, 1989-05-05 UFC Stats), the source disagreement that created the pair.",
-      "status": "proven, merge not applied",
+      "status": "merged 2026-09-14: UFC Stats row ded1a158 (d53482bef23235ba) folded into ESPN row f5785bba (3108776), which now carries both source ids and all four bouts",
+      "reconciliation": "marcio-alexandre-merge-2026-09-14 (scripts/reconcile/20260914_marcio_alexandre_merge.sql)",
       "retrieved": "2026-09-12"
     }
   },
   "generated_from": {
-    "fighters": 3178,
+    "fighters": 3177,
     "bouts": 9425
   },
   "entries": {
@@ -9648,28 +9649,40 @@
       ],
       "status": "linked",
       "tier": "normalized",
-      "fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d",
-      "records_name": "Marcio Alexandre Junior",
-      "duplicate_row": "f5785bba-c6f8-45de-8682-d044d586c8ac",
-      "duplicate_note": "proven, merge not applied"
+      "fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac",
+      "records_name": "Marcio Alexandre Jr."
     },
     "tuf-brazil-3|Marcio Alexandre Junior": {
       "roles": [
         "contestant"
       ],
       "status": "linked",
-      "tier": "exact",
-      "fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d",
-      "records_name": "Marcio Alexandre Junior"
+      "tier": "convention",
+      "rule": "suffix-or-initials",
+      "fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac",
+      "records_name": "Marcio Alexandre Jr.",
+      "evidence": {
+        "kind": "castmate",
+        "opponent": "Warlley Alves",
+        "opponent_id": "7397b005-2a97-4724-9d0e-458d4b3968bb",
+        "date": "2014-05-31"
+      }
     },
     "tuf-brazil-3|Márcio Alexandre Júnior": {
       "roles": [
         "contestant"
       ],
       "status": "linked",
-      "tier": "normalized",
-      "fighter_id": "ded1a158-8eed-43bb-8c6e-f950bb97432d",
-      "records_name": "Marcio Alexandre Junior"
+      "tier": "convention",
+      "rule": "suffix-or-initials",
+      "fighter_id": "f5785bba-c6f8-45de-8682-d044d586c8ac",
+      "records_name": "Marcio Alexandre Jr.",
+      "evidence": {
+        "kind": "castmate",
+        "opponent": "Warlley Alves",
+        "opponent_id": "7397b005-2a97-4724-9d0e-458d4b3968bb",
+        "date": "2014-05-31"
+      }
     },
     "tuf-brazil-3|Marcos Rogério de Lima": {
       "roles": [
