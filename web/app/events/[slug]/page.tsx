@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const mw = main ? winnerOf(main) : null;
     const ml = mw && main ? (mw.id === main.fighter_a.id ? main.fighter_b : main.fighter_a) : null;
     const mainResult = main?.result && mw && ml
-      ? `Main event: ${mw.name} def. ${ml.name} by ${METHOD_LABEL[main.result.method] || main.result.method_raw}${main.result.round && !main.result.method.startsWith("DEC") ? ` in round ${main.result.round}` : ""}.`
+      ? `Main event: ${mw.name} def. ${ml.name} by ${main.result.method === "KO_TKO" ? "KO/TKO" : String(METHOD_LABEL[main.result.method] || main.result.method_raw).toLowerCase()}${main.result.round && !main.result.method.startsWith("DEC") ? ` in round ${main.result.round}` : ""}.`
       : null;
     description = eventResultsDescription({
       name: e.name,

@@ -163,13 +163,15 @@ export function fighterTitle(name: string, nickname: string | null, hasNextFight
 export function fighterDescription(f: FighterSeoFacts, max = DESCRIPTION_MAX): string {
   const head = f.record && f.record !== "—" ? `${f.name} UFC record and stats: ${f.record} pro record.` : `${f.name} UFC record and stats.`;
   const a = f.archive;
+  /* Win methods only where non-zero: "(0 KO/TKO, 0 submissions)" is noise. */
+  const how = a ? [a.ko ? `${a.ko} KO/TKO` : null, a.sub ? `${a.sub} by submission` : null, a.dec ? `${a.dec} by decision` : null].filter(Boolean).join(", ") : "";
   const archive = a && a.fights
-    ? `${a.w}-${a.l}${a.d ? `-${a.d}` : ""} in ${a.fights} archived UFC ${a.fights === 1 ? "fight" : "fights"} (${a.ko} KO/TKO, ${a.sub} ${a.sub === 1 ? "submission" : "submissions"}, ${a.dec} ${a.dec === 1 ? "decision" : "decisions"}).`
+    ? `${a.w}-${a.l}${a.d ? `-${a.d}` : ""} in ${a.fights} archived UFC ${a.fights === 1 ? "fight" : "fights"}${how ? ` (wins: ${how})` : ""}.`
     : null;
   const next = f.next ? `Next: vs ${f.next.opponent} at ${shortEventName(f.next.event)}${f.next.date ? ` (${f.next.date})` : ""}.` : null;
-  const strikes = f.sigLanded != null && f.statRounds > 0 ? `${f.sigLanded.toLocaleString("en-US")} significant strikes landed across ${f.statRounds} ${f.statRounds === 1 ? "round" : "rounds"}.` : null;
-  const tools = ["fight history", f.statRounds > 0 ? "round stats" : null, f.fightDna ? "Fight DNA" : null].filter(Boolean) as string[];
-  const toolsLine = `Full ${tools.length > 1 ? `${tools.slice(0, -1).join(", ")} and ${tools[tools.length - 1]}` : tools[0]}.`;
+  const strikes = f.sigLanded != null && f.statRounds > 0 ? `${f.sigLanded.toLocaleString("en-US")} sig. strikes in ${f.statRounds} ${f.statRounds === 1 ? "round" : "rounds"}.` : null;
+  const tools = ["Fight history", f.statRounds > 0 ? "round stats" : null, f.fightDna ? "Fight DNA" : null].filter(Boolean) as string[];
+  const toolsLine = `${tools.join(", ")}.`;
   return fitParts([head, next, archive, strikes, toolsLine], max);
 }
 
