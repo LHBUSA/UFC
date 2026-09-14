@@ -1,0 +1,930 @@
+{
+ "issue": 27,
+ "api": "https://ufc-api.propbetedge.ai/v1/ufc/dna/query",
+ "before_version": "2026-09-11.1 (Cloudflare 294548b6)",
+ "after_version": "2026-09-14.1 (Cloudflare df3ea12f)",
+ "queries": {
+  "Q01_default": {
+   "query": "metric=sig_landed_per_min",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 29629,
+    "truncated": true,
+    "fighters_ranked(matched)": 98,
+    "returned": 50,
+    "worker_ms": 1272,
+    "top5": [
+     [
+      "Kaik Brito",
+      10.5882
+     ],
+     [
+      "Martin Kozák",
+      9.6429
+     ],
+     [
+      "Michael Oliveira",
+      7.7064
+     ],
+     [
+      "Alice Ardelean",
+      6.9971
+     ],
+     [
+      "Brendan Loughnane",
+      6.2333
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 3164,
+    "candidates_total": 3164,
+    "truncated": false,
+    "fighters_ranked(matched)": 2782,
+    "returned": 50,
+    "worker_ms": 411,
+    "top5": [
+     [
+      "Modestino Rodrigues",
+      32
+     ],
+     [
+      "Gable Steveson",
+      16.2914
+     ],
+     [
+      "Levan Chokheli",
+      15.6522
+     ],
+     [
+      "Delphine Benouaich",
+      15.5872
+     ],
+     [
+      "Adam Darby",
+      14.252
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     114.6,
+     102.5,
+     102.8,
+     103,
+     103.2
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 98,
+     "boundary_uuid": "0939d705-f790-43ba-8a79-e7706c77e14c"
+    },
+    "top50_outside_old_window": 47
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q02_medium": {
+   "query": "metric=sig_landed_per_min&min_confidence=medium",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 23696,
+    "truncated": true,
+    "fighters_ranked(matched)": 98,
+    "returned": 50,
+    "worker_ms": 1051,
+    "top5": [
+     [
+      "Jeff Molina",
+      8.164
+     ],
+     [
+      "Alice Ardelean",
+      6.9971
+     ],
+     [
+      "Brendan Loughnane",
+      6.2333
+     ],
+     [
+      "Chris Curtis",
+      5.3915
+     ],
+     [
+      "John Lineker",
+      5.3628
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 3164,
+    "candidates_total": 3164,
+    "truncated": false,
+    "fighters_ranked(matched)": 2160,
+    "returned": 50,
+    "worker_ms": 239,
+    "top5": [
+     [
+      "Tommy McMillen",
+      12.7955
+     ],
+     [
+      "Ty Miller",
+      12.6039
+     ],
+     [
+      "Brando Peričić",
+      11.004
+     ],
+     [
+      "Shanelle Dyer",
+      10.2873
+     ],
+     [
+      "Josh Hokit",
+      10.2772
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     101,
+     98.3,
+     98.8,
+     99,
+     99
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 98,
+     "boundary_uuid": "0b48bd80-fd9a-4d8d-8730-48f9b922a510"
+    },
+    "top50_outside_old_window": 48
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q03_high": {
+   "query": "metric=sig_landed_per_min&min_confidence=high",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 5780,
+    "truncated": true,
+    "fighters_ranked(matched)": 101,
+    "returned": 50,
+    "worker_ms": 888,
+    "top5": [
+     [
+      "Paulo Costa",
+      6.1542
+     ],
+     [
+      "Bill Algeo",
+      5.8795
+     ],
+     [
+      "Gregory Rodrigues",
+      5.7793
+     ],
+     [
+      "Ignacio Bahamondes",
+      5.7316
+     ],
+     [
+      "Manon Fiorot",
+      5.5661
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 3164,
+    "candidates_total": 3164,
+    "truncated": false,
+    "fighters_ranked(matched)": 525,
+    "returned": 50,
+    "worker_ms": 221,
+    "top5": [
+     [
+      "Joshua Van",
+      8.4343
+     ],
+     [
+      "Shane Burgos",
+      7.4021
+     ],
+     [
+      "Daniel Rodriguez",
+      7.184
+     ],
+     [
+      "Billy Quarantillo",
+      7.1824
+     ],
+     [
+      "Joanne Wood",
+      7.1044
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     89.8,
+     83.4,
+     82.4,
+     83.2,
+     83.1
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 101,
+     "boundary_uuid": "344c1162-f1da-4333-929c-f74182f91135"
+    },
+    "top50_outside_old_window": 40
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q04_as_of_2020": {
+   "query": "metric=sig_landed_per_min&as_of=2020-01-01",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 10811,
+    "truncated": true,
+    "fighters_ranked(matched)": 182,
+    "returned": 50,
+    "worker_ms": 585,
+    "top5": [
+     [
+      "Paulo Costa",
+      8.4341
+     ],
+     [
+      "Sean Brady",
+      7.9333
+     ],
+     [
+      "Ottman Azaitar",
+      7.6056
+     ],
+     [
+      "Chris Gruetzemacher",
+      7.1179
+     ],
+     [
+      "Cristiane Justino",
+      7.0733
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 2180,
+    "candidates_total": 2180,
+    "truncated": false,
+    "fighters_ranked(matched)": 1988,
+    "returned": 50,
+    "worker_ms": 211,
+    "top5": [
+     [
+      "Mark Madsen",
+      18.3333
+     ],
+     [
+      "Jon Hess",
+      12.2892
+     ],
+     [
+      "Karol Rosa",
+      11.4
+     ],
+     [
+      "Lara Procopio",
+      11
+     ],
+     [
+      "Abdul-Kerim Edilov",
+      10.2212
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     80.1,
+     75.9,
+     77.1,
+     76,
+     75.7
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 190,
+     "boundary_uuid": "17d4d7cd-17c4-4f34-98ac-9a1f3711e274"
+    },
+    "top50_outside_old_window": 43
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q05_asc": {
+   "query": "metric=sig_absorbed_per_min&order=asc",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 29629,
+    "truncated": true,
+    "fighters_ranked(matched)": 98,
+    "returned": 50,
+    "worker_ms": 1074,
+    "top5": [
+     [
+      "Kelly Dullanty",
+      0.6742
+     ],
+     [
+      "Tony Sims",
+      0.7613
+     ],
+     [
+      "Cezary Oleksiejczuk",
+      0.8
+     ],
+     [
+      "Jutaro Nakao",
+      1.0864
+     ],
+     [
+      "Tommy Gantt",
+      1.1156
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 3164,
+    "candidates_total": 3164,
+    "truncated": false,
+    "fighters_ranked(matched)": 2782,
+    "returned": 50,
+    "worker_ms": 250,
+    "top5": [
+     [
+      "Aaron Wilkinson",
+      0
+     ],
+     [
+      "Anthony Macias",
+      0
+     ],
+     [
+      "Dmitri Stepanov",
+      0
+     ],
+     [
+      "Dorian Price",
+      0
+     ],
+     [
+      "Ernie Verdicia",
+      0
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     105.1,
+     103.1,
+     102,
+     102.2,
+     103.7
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 98,
+     "boundary_uuid": "0939d705-f790-43ba-8a79-e7706c77e14c"
+    },
+    "top50_outside_old_window": 50
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q06_td_accuracy_high": {
+   "query": "metric=td_accuracy&min_confidence=high",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 5780,
+    "truncated": true,
+    "fighters_ranked(matched)": 101,
+    "returned": 50,
+    "worker_ms": 870,
+    "top5": [
+     [
+      "Chuck Liddell",
+      0.875
+     ],
+     [
+      "Georges St-Pierre",
+      0.7377
+     ],
+     [
+      "Rafael Fiziev",
+      0.7143
+     ],
+     [
+      "Rich Franklin",
+      0.6364
+     ],
+     [
+      "Iuri Alcantara",
+      0.6296
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 3164,
+    "candidates_total": 3164,
+    "truncated": false,
+    "fighters_ranked(matched)": 525,
+    "returned": 50,
+    "worker_ms": 211,
+    "top5": [
+     [
+      "Rogerio Nogueira",
+      1
+     ],
+     [
+      "Tim Sylvia",
+      1
+     ],
+     [
+      "Chuck Liddell",
+      0.875
+     ],
+     [
+      "Nordine Taleb",
+      0.7619
+     ],
+     [
+      "Anderson Silva",
+      0.75
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     90.1,
+     83.4,
+     82.9,
+     84,
+     83.8
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 101,
+     "boundary_uuid": "344c1162-f1da-4333-929c-f74182f91135"
+    },
+    "top50_outside_old_window": 37
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q07_stance_southpaw": {
+   "query": "metric=stance_finish_rate&stance=SOUTHPAW",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 4740,
+    "truncated": true,
+    "fighters_ranked(matched)": 84,
+    "returned": 50,
+    "worker_ms": 1322,
+    "top5": [
+     [
+      "Alex Pereira",
+      1
+     ],
+     [
+      "Brian Stann",
+      1
+     ],
+     [
+      "Casey O'Neill",
+      1
+     ],
+     [
+      "David Loiseau",
+      1
+     ],
+     [
+      "Dennis Bermudez",
+      1
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 1682,
+    "candidates_total": 1682,
+    "truncated": false,
+    "fighters_ranked(matched)": 371,
+    "returned": 50,
+    "worker_ms": 203,
+    "top5": [
+     [
+      "Albert Tumenov",
+      1
+     ],
+     [
+      "Alex Pereira",
+      1
+     ],
+     [
+      "Anthony Johnson",
+      1
+     ],
+     [
+      "Anthony Perosh",
+      1
+     ],
+     [
+      "Ben Saunders",
+      1
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     69.2,
+     61.8,
+     61.9,
+     61,
+     61.8
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 84,
+     "boundary_uuid": "3986a037-6bf6-48d6-ba9a-072999f4d2c3"
+    },
+    "top50_outside_old_window": 39
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q08_finish_bounds_active": {
+   "query": "metric=finish_rate&min=0.5&max=1&active=true",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 12362,
+    "truncated": true,
+    "fighters_ranked(matched)": 37,
+    "returned": 37,
+    "worker_ms": 1430,
+    "top5": [
+     [
+      "Abdul Razak Alhassan",
+      1
+     ],
+     [
+      "AJ Fletcher",
+      1
+     ],
+     [
+      "Austin Bashi",
+      1
+     ],
+     [
+      "Austin Vanderford",
+      1
+     ],
+     [
+      "Azamat Bekoev",
+      1
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 3164,
+    "candidates_total": 3164,
+    "truncated": false,
+    "fighters_ranked(matched)": 400,
+    "returned": 50,
+    "worker_ms": 218,
+    "top5": [
+     [
+      "Abdul Razak Alhassan",
+      1
+     ],
+     [
+      "Abdul-Rakhman Yakhyaev",
+      1
+     ],
+     [
+      "AJ Fletcher",
+      1
+     ],
+     [
+      "Alberto Montes",
+      1
+     ],
+     [
+      "Aliaskhab Khizriev",
+      1
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     82.9,
+     79.9,
+     79,
+     79.5,
+     79.1
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 102,
+     "boundary_uuid": "16a2f6d2-118d-48d7-bdc3-28f94dc1af27"
+    },
+    "top50_outside_old_window": 45
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q09_kd_limit200": {
+   "query": "metric=knockdowns_per_15&limit=200",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 29629,
+    "truncated": true,
+    "fighters_ranked(matched)": 98,
+    "returned": 98,
+    "worker_ms": 1093,
+    "top5": [
+     [
+      "Michael Oliveira",
+      16.5138
+     ],
+     [
+      "Jason Fairn",
+      6.7669
+     ],
+     [
+      "Martin Kozák",
+      4.5918
+     ],
+     [
+      "Harold Howard",
+      3.8462
+     ],
+     [
+      "Brian Melancon",
+      2.0225
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 3164,
+    "candidates_total": 3164,
+    "truncated": false,
+    "fighters_ranked(matched)": 2782,
+    "returned": 200,
+    "worker_ms": 304,
+    "top5": [
+     [
+      "Modestino Rodrigues",
+      60
+     ],
+     [
+      "Levan Chokheli",
+      39.1304
+     ],
+     [
+      "Nick Galanti",
+      25.7143
+     ],
+     [
+      "Iwo Baraniewski",
+      17.8218
+     ],
+     [
+      "Michael Oliveira",
+      16.5138
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     108.6,
+     110.8,
+     110.3,
+     110.3,
+     110.1
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 98,
+     "boundary_uuid": "0939d705-f790-43ba-8a79-e7706c77e14c"
+    },
+    "top50_outside_old_window": 46
+   },
+   "after_equals_probe_top10": true
+  },
+  "Q10_insufficient_nulls": {
+   "query": "metric=sig_accuracy&min_confidence=insufficient&limit=200",
+   "before": {
+    "candidates": 1000,
+    "candidates_total": 32786,
+    "truncated": true,
+    "fighters_ranked(matched)": 101,
+    "returned": 101,
+    "worker_ms": 1076,
+    "top5": [
+     [
+      "Jonathan Wiezorek",
+      1
+     ],
+     [
+      "Jason Fairn",
+      0.75
+     ],
+     [
+      "Cezary Oleksiejczuk",
+      0.7368
+     ],
+     [
+      "Brock Lesnar",
+      0.7196
+     ],
+     [
+      "Martin Kozák",
+      0.7159
+     ]
+    ]
+   },
+   "after": {
+    "candidates": 3164,
+    "candidates_total": 3164,
+    "truncated": false,
+    "fighters_ranked(matched)": 3164,
+    "returned": 200,
+    "worker_ms": 303,
+    "top5": [
+     [
+      "Andy Anderson",
+      1
+     ],
+     [
+      "Bill Mahood",
+      1
+     ],
+     [
+      "Carlos Petruzzella",
+      1
+     ],
+     [
+      "Cory Walmsley",
+      1
+     ],
+     [
+      "Derek Downey",
+      1
+     ]
+    ]
+   },
+   "sql": {
+    "function_ms_5_runs": [
+     113.4,
+     110.7,
+     110.2,
+     110.9,
+     111.4
+    ],
+    "oracle_identical": true,
+    "old_window": {
+     "rows": 1000,
+     "fighters": 101,
+     "boundary_uuid": "081304a4-95a2-44ad-810f-b85992d251fe"
+    },
+    "top50_outside_old_window": 45
+   },
+   "after_equals_probe_top10": true
+  }
+ },
+ "newly_reachable_examples": [
+  {
+   "query": "Q02_medium",
+   "fighter": "Tommy McMillen",
+   "fighter_id": "b5bceb9a-635e-4b9f-8426-ca8ea0339ddf",
+   "value": 12.7955,
+   "confidence": "medium",
+   "rank_after": 1,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q02_medium",
+   "fighter": "Ty Miller",
+   "fighter_id": "8e9fb2a2-f378-48c5-88a1-88fa791c59ba",
+   "value": 12.6039,
+   "confidence": "medium",
+   "rank_after": 2,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q02_medium",
+   "fighter": "Brando Peričić",
+   "fighter_id": "d917e808-4a1e-4c3d-8957-aa2effba265a",
+   "value": 11.004,
+   "confidence": "medium",
+   "rank_after": 3,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q02_medium",
+   "fighter": "Shanelle Dyer",
+   "fighter_id": "76a2db6b-835a-4106-ac42-485316c68f54",
+   "value": 10.2873,
+   "confidence": "medium",
+   "rank_after": 4,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q02_medium",
+   "fighter": "Josh Hokit",
+   "fighter_id": "950e2301-ba78-49f5-8350-7ae7ebfaff5a",
+   "value": 10.2772,
+   "confidence": "medium",
+   "rank_after": 5,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q02_medium",
+   "fighter": "Cody Haddon",
+   "fighter_id": "cf97848d-ee24-4a46-8044-3fb9a4711f3d",
+   "value": 8.8805,
+   "confidence": "medium",
+   "rank_after": 6,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q02_medium",
+   "fighter": "Carlos Leal",
+   "fighter_id": "1a7c2ec8-eb58-4c0f-a0c1-ce5f4a418701",
+   "value": 8.7512,
+   "confidence": "medium",
+   "rank_after": 7,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q02_medium",
+   "fighter": "Carli Judice",
+   "fighter_id": "577d17eb-8100-42fc-9919-3cb423e18cbe",
+   "value": 8.7021,
+   "confidence": "medium",
+   "rank_after": 8,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q02_medium",
+   "fighter": "Joshua Van",
+   "fighter_id": "e204408f-aee9-4987-83ca-8a43e8802e3f",
+   "value": 8.4343,
+   "confidence": "high",
+   "rank_after": 9,
+   "uuid_after_old_window_boundary": "0b48bd80-fd9a-4d8d-8730-48f9b922a510",
+   "in_before_results": false
+  },
+  {
+   "query": "Q03_high",
+   "fighter": "Joshua Van",
+   "fighter_id": "e204408f-aee9-4987-83ca-8a43e8802e3f",
+   "value": 8.4343,
+   "confidence": "high",
+   "rank_after": 1,
+   "uuid_after_old_window_boundary": "344c1162-f1da-4333-929c-f74182f91135",
+   "in_before_results": false
+  },
+  {
+   "query": "Q03_high",
+   "fighter": "Shane Burgos",
+   "fighter_id": "abfb67f2-4d00-475e-acb3-69b57eb2e9d2",
+   "value": 7.4021,
+   "confidence": "high",
+   "rank_after": 2,
+   "uuid_after_old_window_boundary": "344c1162-f1da-4333-929c-f74182f91135",
+   "in_before_results": false
+  },
+  {
+   "query": "Q03_high",
+   "fighter": "Daniel Rodriguez",
+   "fighter_id": "49449d18-8339-4464-9c7a-1d6f55b98d2d",
+   "value": 7.184,
+   "confidence": "high",
+   "rank_after": 3,
+   "uuid_after_old_window_boundary": "344c1162-f1da-4333-929c-f74182f91135",
+   "in_before_results": false
+  }
+ ]
+}

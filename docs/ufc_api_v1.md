@@ -1,6 +1,6 @@
 # PropSports UFC API v1
 
-Status: live at `https://ufc-api.propbetedge.ai` (Worker `propbetedge-ufc-api`, `workers/ufc-api`). Contract version `2026-09-11.1`, deployed 2026-09-11 from `main` (`c2eaa8f`, Cloudflare version `294548b6`). Every change since `2026-09-06` is additive: no field was removed or renamed. The machine-readable contract is `docs/openapi.ufc-v1.yaml`; where this page and the OpenAPI file disagree, the OpenAPI file wins.
+Status: live at `https://ufc-api.propbetedge.ai` (Worker `propbetedge-ufc-api`, `workers/ufc-api`). Contract version `2026-09-14.1`, deployed 2026-09-14 from `main` (`1ce68fd`, Cloudflare version `df3ea12f`; previous `294548b6` / 2026-09-11.1 is the rollback). Every change since `2026-09-06` is additive: no field was removed or renamed. The machine-readable contract is `docs/openapi.ufc-v1.yaml`; where this page and the OpenAPI file disagree, the OpenAPI file wins.
 
 ## Architecture
 
