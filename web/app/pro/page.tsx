@@ -3,18 +3,35 @@ import Link from "next/link";
 import { ProPlans, PageHead, JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
 import { Origin } from "@/components/dna";
-import { getCurrentAccount, hasProAccess } from "@/lib/auth";
+import { getUfcAccess } from "@/lib/access";
+import { checkoutReturnState, parseCheckoutReturn } from "@/lib/accessDecision";
+import { PRO_OFFER, offerJsonLd } from "@/lib/proOffer";
+import { CheckoutVerifyRefresh } from "@/components/CheckoutVerifyRefresh";
+import { getCurrentAccount } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "UFC Pro — Fight DNA Intelligence Layer & Fight Week Access",
-  description: "PropBetEdge UFC Pro founding access: the proprietary Fight DNA intelligence layer (matchup DNA, stance splits, striking geography, grappling efficiency, finish patterns, round progression, context splits), Fight Week intelligence and deeper evidence packets. Model pricing and picks stay held back until validated.",
+  description: "PropBetEdge UFC Pro founding season: $9.99/month or $3.99/week, no free trial, cancel anytime. The proprietary Fight DNA intelligence layer (matchup DNA, round intelligence, fight-week desk, market movement, officials tendencies). Model pricing and picks stay held back until validated.",
   alternates: { canonical: "/pro" },
 };
 
-export default async function ProPage() {
-  const account = await getCurrentAccount();
-  const active = hasProAccess(account);
-  const owner = Boolean(account?.unlimited || account?.role === "owner" || account?.plan === "owner");
+const safeNext = (v: string | string[] | undefined) => {
+  const s = Array.isArray(v) ? v[0] : v;
+  return s && s.startsWith("/") && !s.startsWith("//") && !/[\r\n]/.test(s) ? s : null;
+};
+
+export default async function ProPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const params = await searchParams;
+  const [access, account] = await Promise.all([getUfcAccess(), getCurrentAccount()]);
+  const owner = access.tier === "owner";
+  const active = access.pro;
+  /* The query string picks which sentence to show. It is never an input to
+   * access: `access` above was decided from the session and the ledger. */
+  const ret = parseCheckoutReturn(params);
+  const returning = checkoutReturnState(ret, access);
+  const next = safeNext(params.next);
+  const planLabel = ret.plan ? PRO_OFFER.plans[ret.plan].label : "UFC Pro";
+  const signInHref = `/login?next=${encodeURIComponent(ret.success ? `/pro?checkout=success${ret.plan ? `&plan=${ret.plan}` : ""}` : next || "/pro")}`;
 
   return (
     <div className="wrap page">
@@ -24,6 +41,36 @@ export default async function ProPage() {
         title="Fight intelligence first. Model claims only when earned."
         lede="UFC Pro founding access is built around Fight DNA, bettor-grade analysis and fight-week intelligence. Model prices, picks and probabilities remain unavailable until PropBetEdge has a graded out-of-time track record to support them."
       />
+
+      {returning !== "not_returning" && (
+        <section className="checkout-return" role="status" aria-live="polite">
+          {returning === "active" ? (
+            <>
+              <div className="eyebrow">Payment received · access verified</div>
+              <h2>{owner ? "Owner access is active." : "UFC Pro is active on this account."}</h2>
+              <p>Your account&apos;s entitlement was confirmed server-side. Every Pro surface is unlocked.</p>
+              <div className="row mt-3">{next ? <Link href={next} className="btn gold">Back to where you were</Link> : <Link href="/fighters" className="btn gold">Explore Fight DNA</Link>}<Link href="/account" className="btn">Account &amp; billing</Link></div>
+            </>
+          ) : returning === "sign_in" ? (
+            <>
+              <div className="eyebrow">Payment received · verifying UFC Pro access</div>
+              <h2>Sign in with the email you used at checkout.</h2>
+              <p>{planLabel} unlocks on the PropBetEdge UFC account with the same email Stripe collected. Signing in is passwordless; we email you a one-use link.</p>
+              <div className="row mt-3"><Link href={signInHref} className="btn gold">Sign in to activate</Link></div>
+            </>
+          ) : (
+            <>
+              <div className="eyebrow">Payment received · verifying UFC Pro access</div>
+              <h2>Confirming your subscription with Stripe…</h2>
+              <p>
+                This usually takes a few seconds and this page re-checks automatically. Access is granted only when Stripe&apos;s confirmation reaches our billing system, never from this page&apos;s address.
+                {account?.email ? <> You are signed in as <b>{account.email}</b>; if you used a different email at checkout, sign out and sign in with that one.</> : null}
+              </p>
+              <CheckoutVerifyRefresh />
+            </>
+          )}
+        </section>
+      )}
 
       {active ? (
         <section className="card hi pro-access-active">
@@ -43,7 +90,7 @@ export default async function ProPage() {
             <Link href="/fighters" className="btn">Explore Fight DNA</Link>
           </div>
         </section>
-      ) : <ProPlans />}
+      ) : returning === "verifying" || returning === "sign_in" ? null : <ProPlans email={account?.email ?? null} />}
 
       <section className="pro-dna" aria-labelledby="pro-dna-title">
         <div className="pro-dna-grid">
@@ -81,23 +128,20 @@ export default async function ProPage() {
       <div className="card hi mt-6 between">
         <div>
           <div className="eyebrow">Access status</div>
-          <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>{active ? (owner ? "Owner entitlement: unlimited." : "UFC Pro entitlement: active.") : "Stripe checkout is live."}</div>
-          <div className="faint sm">{active ? "Access is controlled server-side by your UFC account entitlement." : "Monthly UFC Pro is $14.99. A one-card pass is $5.99."} Model-only surfaces still require actual validated model output regardless of plan.</div>
+          <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>{active ? (owner ? "Owner entitlement: unlimited." : "UFC Pro entitlement: active.") : "Founding season pricing."}</div>
+          <div className="faint sm">{active ? "Access is controlled server-side by your UFC account entitlement." : `UFC Pro is ${PRO_OFFER.plans.monthly.display}/month or ${PRO_OFFER.plans.weekly.display}/week. No free trial. Cancel anytime.`} Model-only surfaces still require actual validated model output regardless of plan.</div>
         </div>
-        <Link href={account ? "/account" : "/login?next=/pro"} className="btn">{account ? "Account status" : "Sign in"}</Link>
+        <Link href={access.signedIn ? "/account" : signInHref} className="btn">{access.signedIn ? "Account status" : "Sign in"}</Link>
       </div>
 
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "Product",
         name: "PropBetEdge UFC Pro",
-        description: "Founding access to the PropBetEdge Fight DNA intelligence layer, Fight Week intelligence and deeper evidence packets for UFC, with model-derived claims displayed only when validated.",
+        description: "Founding access to the PropBetEdge Fight DNA intelligence layer, Fight Week intelligence and deeper evidence packets for UFC, with model-derived claims displayed only when validated. No free trial; cancel anytime.",
         brand: { "@type": "Brand", name: "PropBetEdge" },
         url: `${SITE.url}/pro`,
-        offers: [
-          { "@type": "Offer", price: "14.99", priceCurrency: "USD", availability: "https://schema.org/InStock", url: SITE.checkout.monthly, description: "Monthly UFC Pro founding access" },
-          { "@type": "Offer", price: "5.99", priceCurrency: "USD", availability: "https://schema.org/InStock", url: SITE.checkout.cardPass, description: "Single card pass" },
-        ],
+        offers: offerJsonLd(SITE.url),
       }} />
     </div>
   );

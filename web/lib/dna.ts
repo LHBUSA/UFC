@@ -41,7 +41,10 @@ export type DnaResult<T> = { status: "ok"; data: T } | { status: "unavailable"; 
 
 async function api<T>(path: string, revalidate = 300): Promise<DnaResult<T>> {
   try {
-    const res = await fetch(`${SITE.api}${path}`, { next: { revalidate }, headers: { accept: "application/json" } });
+    /* Premium DNA routes on ufc-api require a key once PREMIUM_REQUIRE_KEY is
+     * on. The key is server-only; callers ask getUfcAccess() before calling. */
+    const key = process.env.UFC_API_INTERNAL_KEY;
+    const res = await fetch(`${SITE.api}${path}`, { next: { revalidate }, headers: key ? { accept: "application/json", "x-api-key": key } : { accept: "application/json" } });
     const j = (await res.json().catch(() => null)) as { ok?: boolean; data?: T; error?: { code?: string; message?: string } | string } | null;
     if (res.ok && j?.ok && j.data) return { status: "ok", data: j.data };
     const code = typeof j?.error === "string" ? j.error : j?.error?.code || `HTTP ${res.status}`;

@@ -10,7 +10,9 @@ import { storyMedia } from "@/lib/faces";
 import { getFighterDna } from "@/lib/dna";
 import { FightDnaSection, FightDnaEmpty } from "@/components/dna";
 import { resolveFighter } from "@/lib/resolve";
-import { Empty, JsonLd, ProLock, Breadcrumbs, Portrait, Credit, Avatar, TaleOfTheTape } from "@/components/ui";
+import { Empty, JsonLd, Breadcrumbs, Portrait, Credit, Avatar, TaleOfTheTape } from "@/components/ui";
+import { ProPreview } from "@/components/ProPreview";
+import { getUfcAccess } from "@/lib/access";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { VideoRail } from "@/components/VideoRail";
 import { getVideosForFighters } from "@/lib/db";
@@ -84,7 +86,11 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
    * merge), or a stale name, resolves to the same fighter and redirects to the
    * canonical slug instead of serving a duplicate page. */
   if (slug !== fighterSlug(f)) permanentRedirect(`/fighters/${fighterSlug(f)}`);
-  const [bouts, articles, rounds, rankings, dna, videos, statusEvents, dwcsGraph, dwcsClaims, sourceDobs] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), getFighterDna(f.id), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => []), getDwcsGraph(), getOutcomeClaims(), getSourceDobs(f.id).catch(() => [])]);
+  /* Entitlement is decided before any premium read: a free render never
+   * fetches the Fight DNA profile, so it cannot leak into HTML or RSC. */
+  const access = await getUfcAccess();
+  const returnPath = `/fighters/${fighterSlug(f)}`;
+  const [bouts, articles, rounds, rankings, dna, videos, statusEvents, dwcsGraph, dwcsClaims, sourceDobs] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), access.pro ? getFighterDna(f.id) : Promise.resolve(null), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => []), getDwcsGraph(), getOutcomeClaims(), getSourceDobs(f.id).catch(() => [])]);
   const dwcsAlum = dwcsGraph?.byFighter.get(f.id) || null;
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
@@ -179,7 +185,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
                 <Link href={`/fighters/${fighterSlug(opp)}`} className="side"><Avatar f={opp} img={imgs.get(opp.id)} size={84} /><div className="name">{opp.name}</div>{opp.nickname && <div className="nick">“{opp.nickname}”</div>}<div className="rec">{fmtRecord(opp)}</div></Link>
               </div>
               <TaleOfTheTape a={f} b={opp} at={b.event.event_date} />
-              <ProLock />
+              {!access.pro && <ProPreview feature="matchup_dna" access={access} returnPath={returnPath} compact />}
               <div className="between mt-3 sm">
                 <Link href={`/events/${eventSlug(b.event)}`} className="dim">{b.event.name}</Link>
                 <Link href={`/fights/${matchupSlug(b.fighter_a, b.fighter_b, b.event)}`} style={{ color: "var(--pbe-gold)", fontWeight: 600 }}>Full matchup →</Link>
@@ -219,11 +225,13 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
         </section>
       )}
 
-      {dna.status === "ok" ? <FightDnaSection dna={dna.data} fighterName={f.name} /> : dna.status === "unavailable" ? <FightDnaEmpty reason={dna.reason} /> : null}
+      {!access.pro
+        ? <section className="segment" id="fight-dna"><h3>{f.name} Fight DNA</h3><ProPreview feature="fight_dna" access={access} returnPath={returnPath} /></section>
+        : dna?.status === "ok" ? <FightDnaSection dna={dna.data} fighterName={f.name} /> : dna?.status === "unavailable" ? <FightDnaEmpty reason={dna.reason} /> : null}
       {/* Fight DNA -> its evidence. The profile is reconstructed from archived
           bouts, and those bouts are the history table below, each linking to
           its fight page and, where rounds are stored, its round analysis. */}
-      {dna.status === "ok" && history.length > 0 && (
+      {dna?.status === "ok" && history.length > 0 && (
         <p className="mono dim sm mt-3">Evidence behind this profile: <Link href="#fight-history">{f.name}&apos;s fight history</Link>, bout by bout, with round analysis where rounds are archived.</p>
       )}
 

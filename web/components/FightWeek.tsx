@@ -13,6 +13,7 @@ import { cardPositionLabel, fmtDate, fmtRecord, locationLine, plural, weightClas
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { SITE } from "@/lib/site";
+import { ProPreview } from "@/components/ProPreview";
 
 /* Fight Week — Pregame Desk as a product surface, presented as a premium
  * editorial intelligence brief.
@@ -265,7 +266,7 @@ export function FightNavigator({ live }: { live: Bout[] }) {
 }
 
 /* ---- page composition -------------------------------------------------- */
-export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; archive: boolean }) {
+export function FightWeekPage({ packet, archive, locked = null }: { packet: FightWeekPacket; archive: boolean; locked?: { signedIn: boolean; returnPath: string } | null }) {
   const { event, live, briefById, imgs, videos, days, done, updated, slug } = packet;
   const { main, mainCard, prelims, unpositioned } = cardSections(live);
   const mainBrief = main ? briefById.get(main.id) || null : null;
@@ -303,6 +304,8 @@ export function FightWeekPage({ packet, archive }: { packet: FightWeekPacket; ar
       </header>
 
       <FightNavigator live={live} />
+
+      {locked && <ProPreview feature="fight_week" access={{ signedIn: locked.signedIn }} returnPath={locked.returnPath} />}
 
       {main && (mainBrief ? <div className="fw-sec"><MainEventDesk packet={packet} brief={mainBrief} /></div> : (
         <section id="main-event" className="fw-sec"><div className="fw-sec-head"><div><div className="eyebrow">Main event</div><h2>{main.fighter_a.name} vs {main.fighter_b.name}</h2></div></div>{grid([main])}</section>

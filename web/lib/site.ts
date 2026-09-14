@@ -33,14 +33,6 @@ export const SITE = {
     mark240: "https://propbetedge.ai/logo/pbe-mark-240.png",
     full600: "https://propbetedge.ai/logo/pbe-full-600.png",
   },
-  pricing: {
-    monthly: "$14.99/mo",
-    cardPass: "$5.99/card",
-  },
-  checkout: {
-    monthly: "https://buy.stripe.com/cNi00j0nQfKSbRX9ID7wA0r",
-    cardPass: "https://buy.stripe.com/eVqaEX1rUbuC09f5sn7wA0s",
-  },
   publisher: "PropTechUSA.ai",
   desk: "PropBetEdge UFC Desk",
   twitter: "@propbetedge",

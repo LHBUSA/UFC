@@ -221,7 +221,9 @@ async function side(f: Fighter, index: RankingIndex | null, bout: Bout, asOf: st
   return s;
 }
 
-export type DeskBriefOptions = { includeCompleted?: boolean; asOf?: string | null };
+/* `dna` must be the caller's verified UFC Pro decision. It defaults to false,
+ * so a caller that forgets to ask never folds Fight DNA into a free brief. */
+export type DeskBriefOptions = { includeCompleted?: boolean; asOf?: string | null; dna?: boolean };
 
 export async function buildDeskBriefs(event: Event, bouts: Bout[], limit = 3, opts: DeskBriefOptions = {}): Promise<DeskBrief[]> {
   const live = bouts.filter((b) => b.status !== "cancelled" && (opts.includeCompleted || !b.result)).slice(0, limit);
@@ -230,7 +232,7 @@ export async function buildDeskBriefs(event: Event, bouts: Bout[], limit = 3, op
   /* Indexed ONCE for the whole packet, then shared by every side. */
   const rankIndex = buildRankingIndex(snap);
   return Promise.all(live.map(async (bout, index) => {
-    const [A, B, dnaRes] = await Promise.all([side(bout.fighter_a, rankIndex, bout, opts.asOf || null), side(bout.fighter_b, rankIndex, bout, opts.asOf || null), index === 0 ? getMatchupDna(bout.fighter_a.id, bout.fighter_b.id, opts.asOf || null).catch(() => null) : Promise.resolve(null)]);
+    const [A, B, dnaRes] = await Promise.all([side(bout.fighter_a, rankIndex, bout, opts.asOf || null), side(bout.fighter_b, rankIndex, bout, opts.asOf || null), index === 0 && opts.dna === true ? getMatchupDna(bout.fighter_a.id, bout.fighter_b.id, opts.asOf || null).catch(() => null) : Promise.resolve(null)]);
     const dna = dnaRes && dnaRes.status === "ok" ? dnaRes.data : null;
     A.keys = keysFor(A, B); B.keys = keysFor(B, A);
     const thin = (!hasCareer(bout.fighter_a) && A.archive.fights < 2) || (!hasCareer(bout.fighter_b) && B.archive.fights < 2);
@@ -247,7 +249,7 @@ export async function buildDeskBriefs(event: Event, bouts: Bout[], limit = 3, op
       hasCareer(bout.fighter_a) || hasCareer(bout.fighter_b) ? `Career striking/grappling rates: UFC Stats career averages stored per fighter.` : `UFC Stats career averages not on file for both fighters.`,
       `Form and finish profile: ${A.archive.fights + B.archive.fights} archived bouts with results.`,
       snap ? `Rankings: official UFC snapshot ${snap.snapshot_date}.` : `Rankings snapshot unavailable.`,
-      dna ? `Fight DNA matchup comparison loaded (${dna.insights.length} insights).` : index === 0 ? `Fight DNA matchup comparison not available for this pairing.` : `Fight DNA consulted for the marquee fight only.`,
+      dna ? `Fight DNA matchup comparison loaded (${dna.insights.length} insights).` : index === 0 && opts.dna !== true ? `Fight DNA matchup comparison is a UFC Pro read.` : index === 0 ? `Fight DNA matchup comparison not available for this pairing.` : `Fight DNA consulted for the marquee fight only.`,
     ];
     const coverage = thin ? "Limited packet: one fighter has no UFC Stats averages and fewer than two archived results. Showing what to watch, not a full desk read." : "Full packet: career rates, archived results, rankings snapshot" + (dna ? " and Fight DNA" : "") + ".";
     return {

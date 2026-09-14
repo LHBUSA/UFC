@@ -6,6 +6,8 @@ import { PROVISIONAL_IDENTITY_CANDIDATES, SPELLING_VARIANT_EVIDENCE } from "@/li
 import { GAP_LABEL, GAP_REASON_LABEL, MIN_RATE_SAMPLE, dissentRead } from "@/lib/judgeScoring";
 import { fmtDate } from "@/lib/format";
 import { SITE } from "@/lib/site";
+import { getUfcAccess } from "@/lib/access";
+import { ProPreview } from "@/components/ProPreview";
 import styles from "./judges.module.css";
 
 /* /judges — the directory, plus the coverage register.
@@ -33,7 +35,7 @@ const GAP_TINT: Record<string, string> = {
 };
 
 export default async function JudgesPage() {
-  const [archive, coverage] = await Promise.all([getJudgeArchive(), getScorecardCoverage()]);
+  const [archive, coverage, access] = await Promise.all([getJudgeArchive(), getScorecardCoverage(), getUfcAccess()]);
   const judges = archive.judges;
   const { totals } = archive;
   const top = judges[0];
@@ -85,6 +87,7 @@ export default async function JudgesPage() {
         <div className={styles.empty}>Judge scorecards will appear here as completed UFC results are loaded.</div>
       ) : (
         <>
+          {!access.pro && <ProPreview feature="officials" access={access} returnPath="/judges" compact />}
           <section id="by-cards" className={styles.section}>
             <div className={styles.sectionHead}>
               <h2>Most cards in the archive</h2>
@@ -107,7 +110,7 @@ export default async function JudgesPage() {
                       <span><b>{j.dissentCards}</b><span>Dissents</span></span>
                       <span><b>{j.titleCards || "—"}</b><span>Title</span></span>
                     </span>
-                    <span className="jg-read"><strong>{read.headline}.</strong> {read.body}</span>
+                    {access.pro && <span className="jg-read"><strong>{read.headline}.</strong> {read.body}</span>}
                     <span className="jg-more">Open judge profile →</span>
                   </Link>
                 );

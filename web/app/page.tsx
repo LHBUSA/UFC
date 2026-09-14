@@ -11,6 +11,7 @@ import { VideoRail } from "@/components/VideoRail";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
 import { FightDnaShowcase } from "@/components/FightDnaShowcase";
 import { buildDeskBriefs } from "@/lib/pregame";
+import { getUfcAccess } from "@/lib/access";
 import { intelligenceUpdated } from "@/lib/fightweek";
 import { getIngestFreshness } from "@/lib/archive";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
@@ -96,13 +97,14 @@ export default async function Home() {
   const champIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion?.fighter_id).map((x) => x.champion!.fighter_id!);
   /* Same official snapshot the homepage already loaded, indexed by fighter. */
   const ranks = await getRankingMap();
+  const access = await getUfcAccess();
   const [imgs, briefs, media, champs, contenders, dwcsCounts, freshness, videos] = await Promise.all([
     getImagesForFighters([
       ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
       ...[...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
       ...champIds, ...contenderIds,
     ]),
-    next && live.length ? buildDeskBriefs(next, live, 1).catch(() => []) : Promise.resolve([]),
+    next && live.length ? buildDeskBriefs(next, live, 1, { dna: access.pro }).catch(() => []) : Promise.resolve([]),
     storyMedia(articles),
     getFightersByIds(champIds),
     getFightersByIds(contenderIds),
@@ -249,7 +251,7 @@ export default async function Home() {
 
       {headline.length > 0 && (
         <section className="sec">
-          <div className="wrap"><SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" /><div className="grid-3">{headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} ranks={ranks} />)}</div></div>
+          <div className="wrap"><SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" /><div className="grid-3">{headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} ranks={ranks} access={access} />)}</div></div>
         </section>
       )}
 

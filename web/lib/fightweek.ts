@@ -81,12 +81,12 @@ export function packetSources(briefs: DeskBrief[], rankings: RankingsSnapshot | 
   ];
 }
 
-export async function loadFightWeek(event: Event, opts: { archive?: boolean } = {}): Promise<FightWeekPacket> {
+export async function loadFightWeek(event: Event, opts: { archive?: boolean; dna?: boolean } = {}): Promise<FightWeekPacket> {
   const bouts = await getEventBouts(event.id);
   const live = bouts.filter((b) => b.status !== "cancelled");
   const done = event.card_status === "complete" || (live.length > 0 && live.every((b) => b.result));
   const [briefs, imgs, videosRaw, rankings, ingest] = await Promise.all([
-    live.length ? buildDeskBriefs(event, live, live.length, { includeCompleted: done || Boolean(opts.archive), asOf: done ? event.event_date : null }).catch(() => [] as DeskBrief[]) : Promise.resolve([] as DeskBrief[]),
+    live.length ? buildDeskBriefs(event, live, live.length, { includeCompleted: done || Boolean(opts.archive), asOf: done ? event.event_date : null, dna: opts.dna === true }).catch(() => [] as DeskBrief[]) : Promise.resolve([] as DeskBrief[]),
     getImagesForFighters(live.flatMap((b) => [b.fighter_a.id, b.fighter_b.id])),
     getVideosForEvent(event.id, 24).catch(() => [] as OfficialVideoRow[]),
     getRankings().catch(() => null),

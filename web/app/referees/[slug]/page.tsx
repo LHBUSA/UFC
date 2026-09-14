@@ -9,6 +9,8 @@ import { SITE } from "@/lib/site";
 import { RefereePhoto, refereeImage, tenureLine } from "@/components/RefereeBits";
 import { refereePacket, packetMetricsAreCurrent, val, type Claim } from "@/lib/enrichment";
 import styles from "../referees.module.css";
+import { getUfcAccess } from "@/lib/access";
+import { ProPreview } from "@/components/ProPreview";
 
 /* /referees/[slug] — premium intelligence profile: photo (or monogram),
  * name, role line, key stats, what to know, recent and notable assignments
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function RefereeProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
-  const [r, bouts] = await Promise.all([getRefereeBySlug(slug), getRefereeBouts(slug, 80)]);
+  const [r, bouts, access] = await Promise.all([getRefereeBySlug(slug), getRefereeBouts(slug, 80), getUfcAccess()]);
   if (!r) notFound();
   const impact = refereeImpactRead(r);
   const tenure = tenureLine(r);
@@ -55,20 +57,21 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
    * every packet is current: it is the runtime net, not a substitute for
    * regenerating. */
   const metricsCurrent = packetMetricsAreCurrent(pk, r.bouts);
-  const m = metricsCurrent ? pk?.metrics || null : null;
+  /* PBE-derived distributions are officials intelligence: Pro only. */
+  const m = access.pro && metricsCurrent ? pk?.metrics || null : null;
   const methodRows = m ? Object.entries(m.method_distribution).sort((a, b) => b[1] - a[1]).slice(0, 6) : [];
   const roundRows = m ? Object.entries(m.round_distribution).sort((a, b) => Number(a[0]) - Number(b[0])) : [];
   /* Older packets predate this field; treat an absent subset size as covering
    * the whole sample, which is what it meant when every sample was recent. */
   const positionedSample = m ? m.card_position_sample ?? m.sample_bouts : 0;
   const tendencies: string[] = [];
-  if (r.bouts >= 20) {
+  if (access.pro && r.bouts >= 20) {
     if (r.stoppage_rate != null) tendencies.push(`${pct(r.stoppage_rate)} of loaded assignments ended by stoppage (${r.ko_tko} KO/TKO, ${r.submissions} submissions) against a ${pct(r.archive_stoppage_rate)} archive baseline.`);
     if (r.decision_rate != null) tendencies.push(`${pct(r.decision_rate)} reached the judges; ${r.split_decisions} of ${r.decisions} decisions were split (${pct(r.split_decision_share)}).`);
     if (r.avg_stoppage_seconds != null) tendencies.push(`Average elapsed time to a stoppage in this sample: ${duration(r.avg_stoppage_seconds)} of fight time.`);
   }
-  if (r.title_bouts > 0) tendencies.push(`${r.title_bouts} championship assignment${r.title_bouts === 1 ? "" : "s"} and ${r.five_round_bouts} five-round bout${r.five_round_bouts === 1 ? "" : "s"} in the loaded archive.`);
-  else if (r.five_round_bouts > 0) tendencies.push(`${r.five_round_bouts} five-round assignment${r.five_round_bouts === 1 ? "" : "s"} in the loaded archive. Championship status is not yet populated across most archived bouts, so a zero title count reflects archive coverage rather than this official’s record.`);
+  if (access.pro && r.title_bouts > 0) tendencies.push(`${r.title_bouts} championship assignment${r.title_bouts === 1 ? "" : "s"} and ${r.five_round_bouts} five-round bout${r.five_round_bouts === 1 ? "" : "s"} in the loaded archive.`);
+  else if (access.pro && r.five_round_bouts > 0) tendencies.push(`${r.five_round_bouts} five-round assignment${r.five_round_bouts === 1 ? "" : "s"} in the loaded archive. Championship status is not yet populated across most archived bouts, so a zero title count reflects archive coverage rather than this official’s record.`);
   const schema = {
     "@context": "https://schema.org", "@type": "ProfilePage", name: `${r.display_name} UFC referee profile`, url: `${SITE.url}/referees/${r.slug}`, dateModified: r.bio_verified_at || r.last_event_date || undefined,
     mainEntity: { "@type": "Person", name: r.display_name, jobTitle: "Mixed martial arts referee", nationality: r.country || undefined, description: bio, image: r.image_url || undefined, sameAs: r.bio_source_url ? [r.bio_source_url] : undefined },
@@ -99,6 +102,7 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
       </header>
 
       <section className="ref-know">
+        {access.pro ? (
         <div className="hi">
           <div className="eyebrow">What to know</div>
           <h2>{impact.headline}</h2>
@@ -106,6 +110,9 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
           {tendencies.length > 0 && <ul>{tendencies.map((t) => <li key={t}>{t}</li>)}</ul>}
           <p className="faint sm">Descriptive history from the loaded archive. A referee does not choose the matchup, styles or scheduled length, so finish and decision rates are context, not a causal signal.</p>
         </div>
+        ) : (
+        <div className="hi"><ProPreview feature="officials" access={access} returnPath={`/referees/${r.slug}`} /></div>
+        )}
         <div>
           <div className="eyebrow">{sourcedBio || r.bio ? "Verified background" : "Archive biography"}</div>
           <h2>{r.display_name}</h2>

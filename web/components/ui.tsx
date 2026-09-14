@@ -6,9 +6,12 @@ import type { Article, Bout, Event, Fighter, PortraitSet } from "@/lib/db";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, daysUntil, eventBrand, eventHeadline, eventStatusLabel, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, initials, locationLine, METHOD_LABEL, METHOD_SHORT, weightClassLabel, age, stanceLabel, cityLine, winnerOf } from "@/lib/format";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
+import { PRO_OFFER } from "@/lib/proOffer";
 import { OCTAGON } from "./Brand";
 import { FighterRank, BestRank } from "@/components/RankBadge";
 import type { FighterRankingContext } from "@/lib/rankingContext";
+import type { UfcAccess } from "@/lib/accessDecision";
+import { ProPreview } from "@/components/ProPreview";
 
 export type Portraits = Map<string, PortraitSet>;
 
@@ -258,7 +261,8 @@ export function TaleOfTheTape({ a, b, at }: { a: Fighter; b: Fighter; at?: strin
     </div>
   );
 }
-export function MatchupCard({ b, e, imgs, ranks }: { b: Bout; e: Event; imgs?: Portraits; ranks?: Ranks }) {
+/* `access` is the page's verified decision; without it the card shows no Pro slot at all. */
+export function MatchupCard({ b, e, imgs, ranks, access }: { b: Bout; e: Event; imgs?: Portraits; ranks?: Ranks; access?: Pick<UfcAccess, "pro" | "signedIn"> }) {
   const r = b.result;
   const w = winnerOf(b);
   const div = { key: b.weight_class, isWomens: b.is_womens };
@@ -290,7 +294,7 @@ export function MatchupCard({ b, e, imgs, ranks }: { b: Bout; e: Event; imgs?: P
           <div style={{ fontWeight: 700, color: "var(--pbe-paper)", marginTop: 4 }}>{w ? `${w.name} def. ${w.id === b.fighter_a.id ? b.fighter_b.name : b.fighter_a.name}` : METHOD_LABEL[r.method]}</div>
           <div className="mono faint sm">{METHOD_LABEL[r.method] || r.method}{r.round ? ` · Round ${r.round}` : ""}{r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}</div>
         </div>
-      ) : <ProLock />}
+      ) : access && !access.pro ? <ProPreview feature="matchup_dna" access={access} returnPath={`/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`} compact /> : null}
       <div style={{ marginTop: 12, textAlign: "right" }}>
         <Link href={`/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`} style={{ color: "var(--pbe-gold)", fontWeight: 600, fontSize: "var(--fs-sm)" }}>Full matchup →</Link>
       </div>
@@ -298,19 +302,6 @@ export function MatchupCard({ b, e, imgs, ranks }: { b: Bout; e: Event; imgs?: P
   );
 }
 
-/* The funnel slot from the brief: renders as a locked placeholder until the
- * model exists. It never shows a number that was not produced by the model. */
-export function ProLock() {
-  return (
-    <div className="lock">
-      <div>
-        <div className="eyebrow">Algo lean · locked</div>
-        <div className="faint sm">Model pricing arrives with UFC Pro. No pick is shown until the model has produced one.</div>
-      </div>
-      <div className="blur" aria-hidden="true">+0.0%</div>
-    </div>
-  );
-}
 
 /* ---- fighters ---------------------------------------------------------- */
 export function FighterCard({ f, img, meta, ranks }: { f: Fighter; img?: PortraitSet | null; meta?: string; ranks?: Ranks }) {
@@ -381,36 +372,45 @@ function impactOf(a: Article): number | null {
   return typeof v === "number" && v > 0 ? Math.min(5, Math.round(v)) : null;
 }
 
-export function ProPlans() {
+export function ProPlans({ active = false, email = null }: { active?: boolean; email?: string | null } = {}) {
+  const monthly = PRO_OFFER.plans.monthly, weekly = PRO_OFFER.plans.weekly;
+  /* Prefilling the checkout with the signed-in email is what lets the
+   * entitlement Stripe grants land on the account the reader is using. */
+  const checkout = (url: string) => (email ? `${url}?prefilled_email=${encodeURIComponent(email)}` : url);
   return (
-    <div className="plans">
+    <div className="plans pro-offer">
       <div className="plan">
         <div className="eyebrow dim">Free</div>
         <div className="price">$0</div>
         <ul>
           <li>Every upcoming card, main card and prelims</li>
           <li>Fighter pages with records, physicals and fight history</li>
-          <li>Event pages and results with round-level stats</li>
-          <li>A-vs-B matchup pages with tale of the tape</li>
-          <li>Official rankings, newsroom and RSS</li>
+          <li>Fight pages, results and factual round-by-round statistics</li>
+          <li>Tale of the tape, official rankings and official weigh-ins</li>
+          <li>Newsroom, RSS, TUF, Contender Series and Hall of Fame archives</li>
         </ul>
         <Link href="/events" className="btn">Browse the cards</Link>
       </div>
-      <div className="plan pro">
-        <div className="eyebrow">UFC Pro · Founding access</div>
-        <div className="price">{SITE.pricing.monthly} <small>or {SITE.pricing.cardPass} pass</small></div>
+      <div className="plan pro best">
+        <div className="eyebrow">UFC Pro · Founding season</div>
+        <div className="price">{monthly.display}<small>/{monthly.cadence}</small><span className="plan-badge">{monthly.badge}</span></div>
+        <div className="plan-terms">or {weekly.display}/{weekly.cadence} <span className="plan-badge alt">{weekly.badge}</span> · No free trial · Cancel anytime</div>
         <ul>
-          <li>Fight DNA and bettor-grade UFC intelligence as Pro surfaces ship</li>
-          <li>Fight-week card-change, weigh-in and market intelligence as available</li>
-          <li className="locked">Model picks and fair pricing stay locked until validated</li>
-          <li className="locked">Judge/referee intelligence unlocks only from verified source data</li>
-          <li>No fabricated odds, picks, probabilities or unavailable features</li>
+          <li>Fight DNA profiles and Matchup DNA for every fighter and fight</li>
+          <li>Round intelligence: round-over-round signals against each fighter&apos;s Fight DNA baseline</li>
+          <li>Market prices and line movement wherever books are pricing a bout</li>
+          <li>Fight-week desk with Fight DNA reads, plus referee and judge tendency analytics</li>
+          <li className="locked">Model probabilities, fair prices and picks stay unavailable until validated</li>
         </ul>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <a href={SITE.checkout.monthly} className="btn gold">Start UFC Pro · {SITE.pricing.monthly}</a>
-          <a href={SITE.checkout.cardPass} className="btn">Single card · {SITE.pricing.cardPass}</a>
-        </div>
-        <div className="faint label mt-3">Secure checkout by Stripe. The validated model layer remains locked until its track record is ready.</div>
+        {active ? (
+          <Link href="/account" className="btn gold">UFC Pro is active · Account</Link>
+        ) : (
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <a href={checkout(monthly.checkoutUrl)} className="btn gold" data-plan="monthly">Start Monthly · {monthly.display}/mo</a>
+            <a href={checkout(weekly.checkoutUrl)} className="btn" data-plan="weekly">Weekly · {weekly.display}/wk</a>
+          </div>
+        )}
+        <div className="faint label mt-3">Secure checkout by Stripe. Access unlocks on your UFC account once Stripe confirms the subscription; use the same email at checkout.</div>
       </div>
     </div>
   );

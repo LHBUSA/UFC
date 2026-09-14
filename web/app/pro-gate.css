@@ -1,0 +1,28 @@
+/* ---- UFC Pro: locked-module preview + commercial surfaces ---- */
+.pro-preview { margin-top: var(--s-4); border: 1px solid var(--pbe-line-strong); border-left: 3px solid var(--pbe-gold); border-radius: var(--r-sm); padding: var(--s-4); display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); background: var(--pbe-ink-4); }
+.pro-preview-copy { min-width: 0; }
+.pro-preview-title { font: 700 18px/1.25 var(--pbe-font-display); color: var(--pbe-paper); margin-top: 4px; }
+.pro-preview p { color: var(--pbe-dim); font-size: var(--fs-sm); margin-top: 6px; max-width: 64ch; }
+.pro-preview-cta { flex: none; }
+.pro-preview.compact { padding: var(--s-3) var(--s-4); }
+.pro-preview.compact .pro-preview-title { font-size: 16px; }
+@media (max-width: 640px) {
+  .pro-preview { flex-direction: column; align-items: stretch; }
+  .pro-preview-cta { text-align: center; }
+}
+section.segment > .pro-preview:first-child { margin-top: 0; }
+
+.plans.pro-offer .plan.pro.best { position: relative; }
+.plan .plan-badge { display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: var(--pbe-gold); color: var(--pbe-ink-2); font: 800 11px/1.4 var(--pbe-font-data); letter-spacing: .06em; vertical-align: middle; }
+.plan .plan-badge.alt { background: transparent; color: var(--pbe-gold); border: 1px solid var(--pbe-gold); }
+.plan .plan-terms { color: var(--pbe-faint); font-size: var(--fs-sm); margin-top: var(--s-2); }
+.pro-offer-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--s-4); }
+@media (max-width: 800px) { .pro-offer-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.checkout-return { margin-bottom: var(--s-5); border: 1px solid var(--pbe-gold); border-radius: var(--r-lg); padding: var(--s-5); background: var(--pbe-ink-4); }
+.checkout-return h2 { font: 700 22px/1.25 var(--pbe-font-display); color: var(--pbe-paper); margin: 6px 0 8px; }
+.checkout-return p { color: var(--pbe-dim); font-size: var(--fs-sm); max-width: 70ch; }
+
+.billing-rows { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; margin-top: var(--s-3); font-size: var(--fs-sm); }
+.billing-rows dt { color: var(--pbe-faint); }
+.billing-rows dd { color: var(--pbe-paper); margin: 0; }

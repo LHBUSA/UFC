@@ -173,9 +173,5 @@ export async function getCurrentAccount(): Promise<Account | null> {
   }
 }
 
-export function hasProAccess(account: Account | null): boolean {
-  if (!account) return false;
-  if (account.unlimited || account.role === "owner" || account.plan === "owner") return true;
-  if (account.plan !== "pro") return false;
-  return !account.access_expires_at || Date.parse(account.access_expires_at) > Date.now();
-}
+/* Pro access is decided in exactly one place: lib/access.ts (rule in
+ * lib/accessDecision.ts). Do not add a second check here. */

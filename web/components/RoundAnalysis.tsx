@@ -12,6 +12,7 @@
  * No number is derived in this file.
  */
 import { useState } from "react";
+import { ProPreview } from "@/components/ProPreview";
 import type { RoundStat } from "@/lib/db";
 import {
   type AnalysisState, type Corner, type DnaCompare, type RoundEdge, type RoundSignal, type RoundView,
@@ -73,7 +74,7 @@ function DistBar({ label, parts, total }: { label: string; parts: Array<{ key: s
 }
 
 export function RoundAnalysis({
-  state, rounds, nameA, nameB, dnaA, dnaB, signals, edges, finalLine, updatedAt,
+  state, rounds, nameA, nameB, dnaA, dnaB, signals, edges, finalLine, updatedAt, locked = null,
 }: {
   state: AnalysisState;
   rounds: RoundView[];
@@ -85,6 +86,9 @@ export function RoundAnalysis({
   edges: Record<number, RoundEdge[]>;
   finalLine: string | null;
   updatedAt: string | null;
+  /* Set for a reader without UFC Pro. The server then passes no signals,
+   * edges or DNA comparison at all; this only chooses the preview. */
+  locked?: { signedIn: boolean; returnPath: string } | null;
 }) {
   const [active, setActive] = useState<number>(rounds.length ? rounds[rounds.length - 1].round : 1);
 
@@ -209,7 +213,9 @@ export function RoundAnalysis({
           information - it means the fighter's pre-fight sample was too thin to
           compare against - and hiding the section would leave the reader
           assuming we simply had not built it. */}
-      {(
+      {locked ? (
+        <ProPreview feature="round_intelligence" access={{ signedIn: locked.signedIn }} returnPath={locked.returnPath} />
+      ) : (
         <div className="card rba-dna mt-4">
           <div className="eyebrow">Observed fight vs historical Fight DNA</div>
           <p className="rba-note">Compares this fight against each fighter&apos;s pre-fight Fight DNA baseline. Shown only where the historical sample supports it.</p>

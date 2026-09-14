@@ -7,6 +7,8 @@ import { fmtDate, weightClassLabel } from "@/lib/format";
 import { canonicalSlugFor, getJudgeArchive, getJudgeBySlug, judgeArchiveBio, provisionalPairFor, tenureLine, type JudgeCard } from "@/lib/judges";
 import { DECISION_LABEL, DRAW_LABEL, MIN_RATE_SAMPLE, dissentRead, wilsonInterval } from "@/lib/judgeScoring";
 import { SITE } from "@/lib/site";
+import { getUfcAccess } from "@/lib/access";
+import { ProPreview } from "@/components/ProPreview";
 import styles from "../judges.module.css";
 
 /* /judges/[slug] — one official's scorecard history.
@@ -32,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function JudgeProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
-  const [hit, archive] = await Promise.all([getJudgeBySlug(slug), getJudgeArchive()]);
+  const [hit, archive, access] = await Promise.all([getJudgeBySlug(slug), getJudgeArchive(), getUfcAccess()]);
   /* A spelling that has since been merged had its own URL. Send it to the
    * canonical profile rather than letting an identity merge break a live
    * link — the cards are all still there, under the other name. */
@@ -96,6 +98,7 @@ export default async function JudgeProfilePage({ params }: { params: Promise<{ s
       </header>
 
       <section className="jg-know">
+        {access.pro ? (
         <div className="hi">
           <div className="eyebrow">What the sample shows</div>
           <h2>{read.headline}</h2>
@@ -123,6 +126,9 @@ export default async function JudgeProfilePage({ params }: { params: Promise<{ s
           )}
           <p className="faint sm">A dissenting card means this judge&apos;s card went to the fighter who did not win the bout. It does not say the card was wrong, and it is not evidence of a preference for any style, nationality or type of fighter.</p>
         </div>
+        ) : (
+        <div className="hi"><ProPreview feature="officials" access={access} returnPath={`/judges/${judge.slug}`} /></div>
+        )}
         <div>
           <div className="eyebrow">Archive profile</div>
           <h2>{judge.displayName}</h2>

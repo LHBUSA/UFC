@@ -8,7 +8,9 @@ import { RoundAnalysis } from "@/components/RoundAnalysis";
 import { analysisState, buildRounds, compareToDna, roundEdges, roundOverRound } from "@/lib/roundAnalysis";
 import { DnaMatchup } from "@/components/dna";
 import { resolveFight } from "@/lib/resolve";
-import { JsonLd, ProLock, TaleOfTheTape, Breadcrumbs, Portrait, Credit, BoutRow } from "@/components/ui";
+import { JsonLd, TaleOfTheTape, Breadcrumbs, Portrait, Credit, BoutRow } from "@/components/ui";
+import { ProPreview } from "@/components/ProPreview";
+import { getUfcAccess } from "@/lib/access";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { getMarketsFor, marketProviderLive, marketStateFor, unresolvedBouts } from "@/lib/market";
 import { getBoutStatusEvents } from "@/lib/status";
@@ -117,6 +119,12 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   const hit = await resolveFight((await params).slug);
   if (!hit) notFound();
   const { e, b, bouts } = hit;
+  /* Entitlement first. A free render never reads Matchup DNA, the pre-fight
+   * DNA baselines or the market, and never computes the derived round
+   * intelligence, so none of it can reach HTML, the RSC payload (RoundAnalysis
+   * is a client component) or JSON-LD. */
+  const access = await getUfcAccess();
+  const returnPath = `/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`;
   const [imgs, rounds, articles, histA, histB, statusByBout, weighInsByBout, fightTotals] = await Promise.all([
     getImagesForFighters([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
     getBoutStatusEvents([b.id]).catch(() => new Map()),
@@ -127,13 +135,13 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   const boutWeighIns = weighInsByBout.get(b.id) || [];
   const [media, dna, dnaFighterA, dnaFighterB] = await Promise.all([
     storyMedia(articles),
-    getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null),
+    access.pro ? getMatchupDna(b.fighter_a.id, b.fighter_b.id, b.result ? e.event_date : null) : Promise.resolve(null),
     /* Baselines are read as of the event date so the comparison is against the
      * fighter as they were BEFORE this fight, never a snapshot that already
      * contains it. Comparing a performance to itself would flatter every
      * number toward zero deviation. */
-    getFighterDna(b.fighter_a.id, e.event_date),
-    getFighterDna(b.fighter_b.id, e.event_date),
+    access.pro ? getFighterDna(b.fighter_a.id, e.event_date) : Promise.resolve(null),
+    access.pro ? getFighterDna(b.fighter_b.id, e.event_date) : Promise.resolve(null),
   ]);
   const r = b.result;
   const w = winnerOf(b), l = loserOf(b);
@@ -146,11 +154,13 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
    * the client component, which only owns which round is selected. */
   /* Market is an independent layer: fetched separately, rendered in its own
    * section, and never mixed into Fight DNA or the round analysis. */
-  const [markets, providerLive, unresolved] = await Promise.all([
-    getMarketsFor([b.id], new Map([[b.id, { a: b.fighter_a.id, b: b.fighter_b.id }]])),
-    marketProviderLive(),
-    unresolvedBouts([{ id: b.id, a: b.fighter_a.name, b: b.fighter_b.name }], e.event_date),
-  ]);
+  const [markets, providerLive, unresolved] = access.pro
+    ? await Promise.all([
+      getMarketsFor([b.id], new Map([[b.id, { a: b.fighter_a.id, b: b.fighter_b.id }]])),
+      marketProviderLive(),
+      unresolvedBouts([{ id: b.id, a: b.fighter_a.name, b: b.fighter_b.name }], e.event_date),
+    ])
+    : [new Map(), false, new Set<string>()] as const;
   const market = markets.get(b.id);
   const marketState = marketStateFor(market, {
     eventDate: e.event_date, hasResult: Boolean(r), providerLive,
@@ -164,7 +174,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   });
   const rbaSignals: Record<number, ReturnType<typeof roundOverRound>> = {};
   const rbaEdges: Record<number, ReturnType<typeof roundEdges>> = {};
-  for (let i = 0; i < rbaRounds.length; i += 1) {
+  for (let i = 0; access.pro && i < rbaRounds.length; i += 1) {
     const cur = rbaRounds[i];
     rbaEdges[cur.round] = roundEdges(cur, b.fighter_a.name, b.fighter_b.name);
     if (i > 0) {
@@ -174,8 +184,8 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
       ];
     }
   }
-  const snapA = dnaFighterA.status === "ok" ? dnaFighterA.data.snapshot : null;
-  const snapB = dnaFighterB.status === "ok" ? dnaFighterB.data.snapshot : null;
+  const snapA = dnaFighterA?.status === "ok" ? dnaFighterA.data.snapshot : null;
+  const snapB = dnaFighterB?.status === "ok" ? dnaFighterB.data.snapshot : null;
   const rbaFinalLine = r
     ? `${METHOD_LABEL[r.method] || r.method}${r.round ? ` · R${r.round}` : ""}${r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}`
     : null;
@@ -200,7 +210,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
      * with no directory row stays plain text rather than a link to a 404. */
     r?.referee ? getRefereeByName(r.referee.trim()).catch(() => null) : Promise.resolve(null),
   ]);
-  const facts = r ? seoFacts(e, b, fightTotals, rounds, dna.status === "ok") : null;
+  const facts = r ? seoFacts(e, b, fightTotals, rounds, dna?.status === "ok") : null;
   const strikes = r ? strikeFacts(b, fightTotals, rounds) : null;
   const sheet = r ? buildBoutScorecard({ method: r.method, scorecards: r.scorecards, winnerId: r.winner_id, fighterAId: b.fighter_a.id, fighterBId: b.fighter_b.id }) : null;
   const boutDivision = { key: b.weight_class, isWomens: b.is_womens };
@@ -273,8 +283,8 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
                   ? <Link href="#scorecards">Not on file</Link>
                   : <>None — the fight ended by {METHOD_LABEL[r.method] || r.method_raw}</>}
             </dd>
-            {(rounds.length > 0 || dna.status === "ok") && (
-              <><dt>Analysis</dt><dd>{rounds.length > 0 && <Link href="#round-by-round">Round-by-round ({plural(roundsN, "round")})</Link>}{rounds.length > 0 && dna.status === "ok" ? " · " : null}{dna.status === "ok" && <Link href="#dna-matchup">Fight DNA matchup</Link>}</dd></>
+            {(rounds.length > 0 || dna?.status === "ok") && (
+              <><dt>Analysis</dt><dd>{rounds.length > 0 && <Link href="#round-by-round">Round-by-round ({plural(roundsN, "round")})</Link>}{rounds.length > 0 && dna?.status === "ok" ? " · " : null}{dna?.status === "ok" && <Link href="#dna-matchup">Fight DNA matchup</Link>}</dd></>
             )}
           </dl>
         )}
@@ -316,7 +326,9 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
           stated rather than left as a missing section. */}
       {r && <OfficialScorecards result={r} a={b.fighter_a} b={b.fighter_b} sourceUrl={resultSourceUrl} eventDate={e.event_date} />}
 
-      <MarketSection market={market} state={marketState} nameA={b.fighter_a.name} nameB={b.fighter_b.name} />
+      {access.pro
+        ? <MarketSection market={market} state={marketState} nameA={b.fighter_a.name} nameB={b.fighter_b.name} />
+        : !r && b.status !== "cancelled" && <section className="segment" id="market"><h3>Market</h3><ProPreview feature="market" access={access} returnPath={returnPath} /></section>}
 
       {/* Two datasets, two sections, never blurred: ESPN publishes verified
           whole-fight totals with no round dimension, UFC Stats publishes the
@@ -335,12 +347,13 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
         rounds={rbaRounds}
         nameA={b.fighter_a.name}
         nameB={b.fighter_b.name}
-        dnaA={compareToDna(rbaRounds, "a", snapA)}
-        dnaB={compareToDna(rbaRounds, "b", snapB)}
+        dnaA={access.pro ? compareToDna(rbaRounds, "a", snapA) : []}
+        dnaB={access.pro ? compareToDna(rbaRounds, "b", snapB) : []}
         signals={rbaSignals}
         edges={rbaEdges}
         finalLine={rbaFinalLine}
         updatedAt={null}
+        locked={access.pro ? null : { signedIn: access.signedIn, returnPath }}
       />
 
       {rounds.length > 0 && (
@@ -438,11 +451,12 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
               );
             })}
           </div>
-          {!r && <ProLock />}
         </div>
       </section>
 
-      {dna.status === "ok" && <DnaMatchup dna={dna.data} />}
+      {access.pro
+        ? dna?.status === "ok" && <DnaMatchup dna={dna.data} />
+        : <section className="segment" id="dna-matchup"><h3>Fight DNA matchup</h3><ProPreview feature="matchup_dna" access={access} returnPath={returnPath} /></section>}
 
       {articles.length > 0 && (
         <section className="segment">

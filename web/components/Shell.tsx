@@ -7,12 +7,12 @@ import { SITE } from "@/lib/site";
 import { CURRENT_SPORT, NETWORK } from "@/lib/network";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getNextEvent } from "@/lib/db";
-import { getCurrentAccount } from "@/lib/auth";
+import { getUfcAccess } from "@/lib/access";
 import { eventSlug } from "@/lib/slug";
 import { daysUntil, eventShortName, fmtDate } from "@/lib/format";
 
 export async function Header() {
-  const [next, account] = await Promise.all([getNextEvent(), getCurrentAccount()]);
+  const [next, access] = await Promise.all([getNextEvent(), getUfcAccess()]);
   const d = next ? daysUntil(next.event_date) : null;
   const live = d != null && d <= 0 && d >= -1;
   /* Inside fight week the chip is a second door to /fight-week (the page that
@@ -37,8 +37,8 @@ export async function Header() {
             </Link>
           )}
           <StoreCartButton />
-          {account ? <Link href="/account" className="btn account-btn">{account.unlimited ? "Owner" : account.plan === "pro" ? "Pro" : "Account"}</Link> : <Link href="/login" className="btn account-btn">Sign in</Link>}
-          <Link href="/pro" className="btn gold">Go Pro</Link>
+          {access.signedIn ? <Link href="/account" className="btn account-btn">{access.tier === "owner" ? "Owner" : access.pro ? "Pro" : "Account"}</Link> : <Link href="/login" className="btn account-btn">Sign in</Link>}
+          {!access.pro && <Link href="/pro" className="btn gold">Go Pro</Link>}
           <label htmlFor="mnav-toggle" className="menu-btn" aria-label="Open menu"><span /><span /><span /></label>
         </div>
       </div>
@@ -47,8 +47,8 @@ export async function Header() {
         <div className="mnav-foot">
           <StoreCartButton mobile />
           {next && <Link href={nextHref} className="btn">{nextLabel} · {fmtDate(next.event_date, { month: "short", day: "numeric" })}</Link>}
-          <Link href={account ? "/account" : "/login"} className="btn">{account ? "Account" : "Sign in"}</Link>
-          <Link href="/pro" className="btn gold">Go Pro</Link>
+          <Link href={access.signedIn ? "/account" : "/login"} className="btn">{access.signedIn ? "Account" : "Sign in"}</Link>
+          {!access.pro && <Link href="/pro" className="btn gold">Go Pro</Link>}
         </div>
       </MobileNav>
     </header>

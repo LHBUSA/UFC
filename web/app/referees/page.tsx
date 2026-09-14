@@ -5,6 +5,8 @@ import { getReferees, refereeImpactRead } from "@/lib/referees";
 import { SITE } from "@/lib/site";
 import styles from "./referees.module.css";
 import { RefereePhoto, tenureLine } from "@/components/RefereeBits";
+import { getUfcAccess } from "@/lib/access";
+import { ProPreview } from "@/components/ProPreview";
 
 export const revalidate = 900;
 
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
 
 const pct = (v: number | null) => (v == null ? "—" : `${Number(v).toFixed(Number(v) % 1 ? 1 : 0)}%`);
 export default async function RefereesPage() {
-  const all = await getReferees(200);
+  const [all, access] = await Promise.all([getReferees(200), getUfcAccess()]);
   /* A directory row without a slug has no profile page: /referees/null answered
    * "not found" while the index and the sitemap both linked it. Counts still
    * include every row; only linkable officials are listed. */
@@ -49,6 +51,7 @@ export default async function RefereesPage() {
 
       {refs.length ? (
         <>
+          {!access.pro && <ProPreview feature="officials" access={access} returnPath="/referees" compact />}
           <section id="by-assignments" className="ref-grid" aria-label="Referee profiles">
             {refs.map((r, i) => {
               const read = refereeImpactRead(r);
@@ -65,7 +68,9 @@ export default async function RefereesPage() {
                       <span><b>{pct(r.stoppage_rate)}</b><span>Stoppage</span></span>
                       <span><b>{pct(r.decision_rate)}</b><span>Decision</span></span>
                     </span>
-                    <span className="ref-read"><strong>{read.headline}.</strong> {r.bio ? r.bio.slice(0, 140).replace(/\s+\S*$/, "") + "…" : read.body}</span>
+                    {access.pro
+                      ? <span className="ref-read"><strong>{read.headline}.</strong> {r.bio ? r.bio.slice(0, 140).replace(/\s+\S*$/, "") + "…" : read.body}</span>
+                      : r.bio ? <span className="ref-read">{r.bio.slice(0, 140).replace(/\s+\S*$/, "") + "…"}</span> : null}
                     <span className="ref-more">Open referee profile →</span>
                   </span>
                 </Link>

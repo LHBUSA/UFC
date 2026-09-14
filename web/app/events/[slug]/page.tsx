@@ -5,6 +5,8 @@ import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEv
 import { storyMedia } from "@/lib/faces";
 import { resolveEvent } from "@/lib/resolve";
 import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
+import { ProPreview } from "@/components/ProPreview";
+import { getUfcAccess } from "@/lib/access";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { PregameDesk } from "@/components/PregameDesk";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
@@ -81,6 +83,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const e = await resolveEvent((await params).slug);
   if (!e) notFound();
+  /* Entitlement first: market prices and the Fight DNA desk read are Pro and
+   * are never fetched for a free render. */
+  const access = await getUfcAccess();
+  const returnPath = `/events/${eventSlug(e)}`;
   const [bouts, articles, videosRaw, cardChanges] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, 24).catch(() => []), getEventCardChanges(e.id).catch(() => [])]);
   const [weighInSummary, weighIns, broadcast] = await Promise.all([
     getWeighInSummary(e.id).catch(() => null),
@@ -112,7 +118,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const roundCoverage = await getRoundCoverageFor(bouts.map((b) => b.id));
   /* Market only matters for a card that has not happened. A finished bout has
    * no live price and showing one would be meaningless. */
-  const providerLive = await marketProviderLive();
+  const providerLive = access.pro ? await marketProviderLive() : false;
   const marketMap = done || !providerLive
     ? new Map()
     : await getMarketsFor(bouts.map((b) => b.id), new Map(bouts.map((b) => [b.id, { a: b.fighter_a.id, b: b.fighter_b.id }])));
@@ -121,7 +127,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const unresolved = done || !providerLive
     ? new Set<string>()
     : await unresolvedBouts(bouts.map((b) => ({ id: b.id, a: b.fighter_a.name, b: b.fighter_b.name })), e.event_date);
-  const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
+  const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1, { dna: access.pro }).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
   const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
   const isCurrent = !done && nearby[0]?.id === e.id;
   const others = nearby.filter((x) => x.id !== e.id).slice(0, 3);
@@ -180,10 +186,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       {bouts.length ? (
         <>
-          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={providerLive && !done ? marketMap : undefined} unresolved={unresolved} ranks={ranks} />
+          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={access.pro && providerLive && !done ? marketMap : undefined} unresolved={unresolved} ranks={ranks} />
+          {!access.pro && !done && <ProPreview feature="market" access={access} returnPath={returnPath} compact />}
           {done && <CardIntelligence bouts={live} e={e} totals={cardTotals} />}
           {dwcs && dwcsGraph && <WhereTheyWent alumni={dwcsGraph.alumni} imgs={imgs} ranks={ranks} eventId={e.id} />}
-          {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} ranks={ranks} />)}</div></section>}
+          {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} ranks={ranks} access={access} />)}</div></section>}
         </>
       ) : historical ? (
         <div className="mt-6"><Empty title="Historical card not yet loaded" cta={{ href: "/history#archive", label: "Archive coverage" }}>This event exists in the canonical schedule, but its bouts and results have not been backfilled yet. PropBetEdge fills the archive year by year from archived UFC Stats captures and shows this state instead of inventing a card. The official record is at <a href={UFC_OFFICIAL.events} target="_blank" rel="noopener">UFC.com events</a>.</Empty></div>

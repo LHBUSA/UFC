@@ -9,6 +9,7 @@ import { eventSlug } from "@/lib/slug";
 import { daysUntil, fmtDate, locationLine } from "@/lib/format";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { SITE } from "@/lib/site";
+import { getUfcAccess } from "@/lib/access";
 
 /* /pregame/[event-slug] — the permanent Pregame Desk page for one event.
  * Before the card it mirrors the Fight Week hub; after the card it stays as
@@ -35,7 +36,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PregamePage({ params }: { params: Promise<{ slug: string }> }) {
   const e = await resolveEvent((await params).slug);
   if (!e) notFound();
-  const packet = await loadFightWeek(e, { archive: true });
+  const access = await getUfcAccess();
+  const packet = await loadFightWeek(e, { archive: true, dna: access.pro });
   if (!packet.live.length) {
     const d = daysUntil(e.event_date);
     const historical = d != null && d < 0;
@@ -58,5 +60,5 @@ export default async function PregamePage({ params }: { params: Promise<{ slug: 
       </div>
     );
   }
-  return <FightWeekPage packet={packet} archive />;
+  return <FightWeekPage packet={packet} archive locked={access.pro ? null : { signedIn: access.signedIn, returnPath: `/pregame/${eventSlug(e)}` }} />;
 }

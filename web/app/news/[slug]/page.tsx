@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticleBySlug, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor, getVideosForArticle, getVideosForBout, getVideosForEvent } from "@/lib/db";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
-import { JsonLd, ProLock, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/ui";
+import { JsonLd, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { renderMarkdown, renderMarkdownBlocks, excerpt, readingMinutes } from "@/lib/markdown";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";

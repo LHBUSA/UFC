@@ -3,7 +3,9 @@ import { type Article, getImageById, getFightersByIds, getImagesForFighters, get
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
 import { storyImageIds, storyFaces, storySubject, sameFighterName, loadStoryImages } from "@/lib/storyImages";
 import { renderablePlanVideos, railInitialSelection, isViewable, type PlanVideo } from "@/lib/videoPolicy";
-import { JsonLd, ProLock, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/ui";
+import { JsonLd, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/ui";
+import { ProPreview } from "@/components/ProPreview";
+import { getUfcAccess } from "@/lib/access";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { renderMarkdown, renderMarkdownBlocks, excerpt, readingMinutes } from "@/lib/markdown";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
@@ -39,6 +41,10 @@ function materiallyUpdated(published: string | null, updated: string): boolean {
  * off on a page nobody will ever see.
  */
 export async function StoryView({ a, preview = false }: { a: Article; preview?: boolean }) {
+  /* The reporting is free. The Pro modules built for a story (Bettor's Edge,
+   * Fight DNA, market) are decided here, before their data is read. */
+  const access = await getUfcAccess();
+  const returnPath = `/news/${a.slug}`;
   const [hero, fighters, event, bout, moreRes] = await Promise.all([
     a.hero_image_ref ? getImageById(a.hero_image_ref) : null,
     getFightersByIds(a.fighter_ids || []),
@@ -57,13 +63,13 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
    * Server-side, inside the existing render. No client polling was added and
    * the market ingest cadence is untouched. */
   const ranks = await getRankingMap();
-  const editorialMarket = await getEditorialMarket({
+  const editorialMarket = access.pro ? await getEditorialMarket({
     boutId: a.bout_id,
     marketsOfInterest: [
       ...(fb.market_watch?.markets || []),
       ...(fb.bettor_angle?.markets || []),
     ],
-  }).catch(() => null);
+  }).catch(() => null) : null;
   /* Two article generations live in this table at once. Articles written by
    * ufc-news-enrich carry a deterministic content_plan; everything written
    * before it carries the v2 fact block the legacy modules were built for.
@@ -99,7 +105,10 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
   const planNames = { a: fb.primary?.name || subject?.name, b: fb.opponent?.name };
   const legacyAngle = fb.bettor_angle && (fb.bettor_angle.summary || fb.bettor_angle.markets?.length) ? fb.bettor_angle : null;
   const angle = plan ? planAngle(plan) : legacyAngle;
-  const dna = bout && a.story_type === "fight_preview" ? await getMatchupDna(bout.fighter_a.id, bout.fighter_b.id) : null;
+  const dna = access.pro && bout && a.story_type === "fight_preview" ? await getMatchupDna(bout.fighter_a.id, bout.fighter_b.id) : null;
+  /* Whether this story carries anything Pro, judged from which modules exist,
+   * never from their values. */
+  const hasProModules = Boolean(angle || (plan && (moduleOf(plan, "fight_dna") || moduleOf(plan, "market_snapshot"))) || (!plan && fb.market_watch) || (bout && a.story_type === "fight_preview"));
   /* Structured data must describe the page, not the database.
    *
    * The legacy rail showed up to four videos: the story's own, then the bout's,
@@ -176,8 +185,9 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
         <div className="credit mb-5">Photo: {hero.source_url ? <a href={hero.source_url} rel="noopener nofollow" target="_blank">{hero.author || a.hero_credit?.author || "Wikimedia Commons"}</a> : hero.author}{hero.license ? ` · ${hero.license}` : ""} · via Wikimedia Commons</div>
       )}
 
-      {angle && <BettorsEdge em={editorialMarket} angle={angle} />}
-      {!plan && dna && dna.status === "ok" && <DnaEvidence dna={dna.data} />}
+      {access.pro && angle && <BettorsEdge em={editorialMarket} angle={angle} />}
+      {access.pro && !plan && dna && dna.status === "ok" && <DnaEvidence dna={dna.data} />}
+      {!access.pro && hasProModules && <ProPreview feature="article_intel" access={access} returnPath={returnPath} />}
       {mm && <MatchupModule a={mm.a} b={mm.b} imgs={imgs} ranks={ranks} edges={mm.edges} href={bout && event ? `/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}` : null} />}
       {/* The plan owns video when it has one: it resolved the clips against
         * this story's own subject and knows at which tier they matched, which
@@ -200,20 +210,19 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
                 ),
                 <ComparisonModule key="cmp" plan={plan} charts={charts} />,
                 <OfficialVideoModule key="vid" plan={plan} videos={planVideos || []} />,
-                <DnaModule key="dna" plan={plan} charts={charts} />,
+                access.pro ? <DnaModule key="dna" plan={plan} charts={charts} /> : null,
                 <RecentFormModule key="form" plan={plan} charts={charts} names={planNames} />,
                 <RoundStyleModule key="rounds" plan={plan} names={planNames} />,
-                <MarketModule key="mkt" plan={plan} charts={charts} />,
+                access.pro ? <MarketModule key="mkt" plan={plan} charts={charts} /> : null,
               ]}
             />
           ) : (
             <div className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }} />
           )}
-          {!plan && fb.market_watch && <MarketWatch mw={fb.market_watch} em={editorialMarket} />}
+          {access.pro && !plan && fb.market_watch && <MarketWatch mw={fb.market_watch} em={editorialMarket} />}
           {/* Anything the plan built that no module above claimed. Without this
             * a new chart kind would be computed, stored and silently invisible. */}
           {plan && <ChartSet charts={charts.filter((c) => !CLAIMED_CHARTS.has(c.id))} title="Also measured" />}
-          {a.story_type === "fight_preview" && !angle && <div style={{ maxWidth: "72ch" }}><ProLock /></div>}
           {plan ? <MethodologyModule plan={plan} updated={a.updated_at} corroborating={(fb as { corroboration?: { publisher: string; url: string }[] }).corroboration} /> : fb.version ? <Methodology fb={fb} updated={a.updated_at} /> : (
             <p className="faint label mt-6">Written by the {SITE.desk} from PropBetEdge's own fight tables and a stored fact block. Read the <Link href="/about" className="dim">editorial policy</Link>.</p>
           )}

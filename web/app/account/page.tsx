@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getCurrentAccount, hasProAccess } from "@/lib/auth";
+import { getCurrentAccount } from "@/lib/auth";
+import { getUfcAccessWithBilling } from "@/lib/access";
+import { PRO_OFFER } from "@/lib/proOffer";
 import { getCustomerOrders } from "@/lib/store/customer-orders";
 import { formatPrice } from "@/lib/store/types";
 import { Mark } from "@/components/Brand";
@@ -17,13 +19,16 @@ function orderStatus(status: "paid" | "in_production" | "cancelled"): string {
 export default async function AccountPage() {
   const account = await getCurrentAccount();
   if (!account) redirect("/login?next=/account");
-  const [pro, orders] = await Promise.all([
-    Promise.resolve(hasProAccess(account)),
+  const [access, orders] = await Promise.all([
+    getUfcAccessWithBilling(),
     getCustomerOrders(account.email, 20).catch((error) => {
       console.error("[account] order history", String((error as Error)?.message || error).slice(0, 180));
       return [];
     }),
   ]);
+  const sub = access.subscription;
+  const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  const accessThrough = sub?.current_period_end ? fmtDay(sub.current_period_end) : null;
 
   return (
     <div className="wrap page account-page">
@@ -34,11 +39,30 @@ export default async function AccountPage() {
           <h1 className="serif">{account.display_name || account.email}</h1>
           <p className="dim sm">{account.email}</p>
         </div>
-        <span className={`account-plan${account.unlimited ? " owner" : pro ? " pro" : ""}`}>{account.unlimited ? "OWNER · UNLIMITED" : pro ? "UFC PRO" : "FREE"}</span>
+        <span className={`account-plan${access.tier === "owner" ? " owner" : access.pro ? " pro" : ""}`}>{access.tier === "owner" ? "OWNER" : access.pro ? "UFC PRO" : "FREE"}</span>
       </div>
 
       <div className="grid-3 mt-5">
-        <div className="card"><div className="eyebrow dim">Access</div><div className="account-value">{account.unlimited ? "Unlimited" : pro ? "Pro active" : "Free"}</div><p className="faint sm">{account.unlimited ? "No expiry and no usage cap." : account.access_expires_at ? `Expires ${new Date(account.access_expires_at).toLocaleDateString("en-US")}.` : pro ? "Active entitlement." : "Upgrade any time."}</p></div>
+        <div className="card">
+          <div className="eyebrow dim">Access</div>
+          <div className="account-value">{access.tier === "owner" ? "Owner · unlimited" : access.pro ? "UFC Pro active" : "Free"}</div>
+          {access.tier === "owner" ? <p className="faint sm">No expiry and no usage cap.</p>
+            : access.source === "stripe" && sub ? (
+              <dl className="billing-rows">
+                <dt>Plan</dt><dd>{sub.plan === "weekly" ? `${PRO_OFFER.plans.weekly.label} · ${PRO_OFFER.plans.weekly.display}/week` : sub.plan === "monthly" ? `${PRO_OFFER.plans.monthly.label} · ${PRO_OFFER.plans.monthly.display}/month` : "UFC Pro"}</dd>
+                <dt>Status</dt><dd>{sub.cancel_at_period_end ? "Active · cancels at period end" : "Active"}</dd>
+                {accessThrough && <><dt>{sub.cancel_at_period_end ? "Access through" : "Renews"}</dt><dd>{accessThrough}</dd></>}
+              </dl>
+            )
+            : access.source === "legacy" ? <p className="faint sm">Legacy UFC Pro{account.access_expires_at ? ` · access through ${fmtDay(account.access_expires_at)}` : " · no expiry"}.</p>
+            : sub ? <p className="faint sm">Your UFC Pro subscription is {sub.status === "past_due" ? "past due: update your payment method to restore access" : sub.status === "canceled" ? "canceled" : `not active (${sub.status})`}.</p>
+            : access.ledger === "unavailable" ? <p className="faint sm">Billing status could not be checked just now. Refresh in a moment.</p>
+            : <p className="faint sm">Upgrade any time.</p>}
+          <div className="row mt-3">
+            {access.tier !== "owner" && (access.source === "stripe" || sub) ? <a href={PRO_OFFER.customerPortalLoginUrl} className="btn" target="_blank" rel="noopener">Manage billing</a> : null}
+            {!access.pro && <Link href="/pro" className="btn gold">{sub ? "Resubscribe" : "Unlock UFC Pro"}</Link>}
+          </div>
+        </div>
         <div className="card"><div className="eyebrow dim">Role</div><div className="account-value">{account.role === "owner" ? "Owner" : account.role === "admin" ? "Admin" : "Member"}</div><p className="faint sm">Server-side entitlement; never inferred from the browser.</p></div>
         <div className="card"><div className="eyebrow dim">Session</div><div className="account-value">Secure</div><p className="faint sm">Passwordless session established with an HttpOnly cookie.</p></div>
       </div>
