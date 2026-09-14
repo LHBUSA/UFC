@@ -139,3 +139,22 @@ test('a longer registered name maps ONE corner only with identical DOB and name 
   const both = clone(base); both.LiveFightDetail.Fighters[1].Name = { FirstName: 'Curtis', LastName: 'James Blaydes' }; both.LiveFightDetail.Fighters[1].DOB = '1991-02-18';
   assert.ok(!mapOfficialFighters(parseOfficialFight(both), waldo, { ...BLAYDES, dob: '1991-02-18' }).map, 'never both corners by the second tier');
 });
+
+test('a short first name maps to its full registered form only with identical DOB and surname', () => {
+  const doc = clone(FIGHT);
+  doc.LiveFightDetail.Fighters[1].Name = { FirstName: 'Curtis', LastName: 'Blaydes' };
+  doc.LiveFightDetail.Fighters[0].Name = { FirstName: 'Waldo', LastName: 'Cortes Acosta' };
+  const base = (first, dob = '1991-06-30') => { const d = clone(doc); d.LiveFightDetail.Fighters[0].Name = { FirstName: first, LastName: 'Cortes Acosta' }; d.LiveFightDetail.Fighters[0].DOB = dob; return parseOfficialFight(d); };
+  const wal = { id: 'fw', name: 'Wal Cortes Acosta', dob: '1991-06-30' };
+  const ok = mapOfficialFighters(base('Waldo'), wal, BLAYDES);
+  assert.ok(ok.map, ok.problem);
+  assert.equal(ok.via.find((v) => v.fighter_id === 'fw').via, 'dob_and_registered_name');
+  assert.ok(!mapOfficialFighters(base('Waldo', '1991-06-29'), wal, BLAYDES).map, 'DOB differs');
+  assert.ok(!mapOfficialFighters(base('Waldo'), { ...wal, name: 'Wa Cortes Acosta' }, BLAYDES).map, 'prefix shorter than 3 letters');
+  assert.ok(!mapOfficialFighters(base('Waldemar'), { ...wal, name: 'Waldo Cortes Acosta' }, BLAYDES).map, 'different first names are not prefixes');
+  assert.ok(!mapOfficialFighters(base('Waldo'), { ...wal, name: 'Wal Cortes' }, BLAYDES).map, 'surname differs');
+  const nick = mapOfficialFighters(base('Nicholas'), { id: 'fw', name: 'Nick Cortes Acosta', dob: '1991-06-30' }, BLAYDES);
+  assert.ok(nick.map && nick.via.find((v) => v.fighter_id === 'fw').via === 'dob_and_registered_name', 'listed short form (Nick -> Nicholas)');
+  assert.ok(!mapOfficialFighters(base('Nicholas', '1990-01-01'), { id: 'fw', name: 'Nick Cortes Acosta', dob: '1991-06-30' }, BLAYDES).map, 'listed short form still needs the DOB');
+  assert.ok(!mapOfficialFighters(base('Christopher'), { id: 'fw', name: 'Christian Cortes Acosta', dob: '1991-06-30' }, BLAYDES).map, 'two different full names are not short forms');
+});

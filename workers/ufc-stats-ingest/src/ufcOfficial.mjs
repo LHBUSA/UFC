@@ -136,6 +136,19 @@ export function sameOfficialEvent(official, ours) {
   return normalize(official.name) === normalize(ours.name);
 }
 
+/* Common short forms of first names, explicit and reviewable. Used ONLY inside
+ * the DOB-corroborated second tier below, never as identity on its own. */
+const SHORT_FIRST_NAMES = {
+  nick: ['nicholas', 'nicolas', 'nikolas', 'nickolas'], mike: ['michael'], chris: ['christopher', 'christian'], alex: ['alexander', 'alexandre', 'alexis', 'alejandro'],
+  matt: ['matthew'], tom: ['thomas'], tommy: ['thomas'], joe: ['joseph'], dan: ['daniel'], danny: ['daniel'], rob: ['robert'], bob: ['robert'], bobby: ['robert'],
+  bill: ['william'], will: ['william'], jim: ['james'], jimmy: ['james'], tony: ['anthony', 'antonio'], ben: ['benjamin'], sam: ['samuel'], josh: ['joshua'],
+  jon: ['jonathan'], jake: ['jacob'], zach: ['zachary'], andy: ['andrew'], drew: ['andrew'], steve: ['steven', 'stephen'], dave: ['david'], ed: ['edward', 'eduardo'],
+  greg: ['gregory'], jeff: ['jeffrey'], rick: ['richard', 'ricardo'], ricky: ['richard', 'ricardo'], rich: ['richard'], pat: ['patrick'], ron: ['ronald'],
+  tim: ['timothy'], vince: ['vincent'], charlie: ['charles'], nate: ['nathan', 'nathaniel'], manny: ['manuel'], gabe: ['gabriel'], max: ['maxwell', 'maximilian', 'maximiliano'],
+};
+const sameFirstName = (a, b) => a === b || (SHORT_FIRST_NAMES[a] || []).includes(b) || (SHORT_FIRST_NAMES[b] || []).includes(a)
+  || (Math.min(a.length, b.length) >= 3 && (a.startsWith(b) || b.startsWith(a)));
+
 /* The exact names one of our fighters is known by: canonical name and stored aliases. */
 export function knownNames(fighter, aliases = []) {
   return new Set([fighter?.name, ...aliases].map(normalize).filter(Boolean));
@@ -157,10 +170,13 @@ export function mapOfficialFighters(parsed, fighterA, fighterB, aliasesById = ne
   });
   if (exact.some((e) => e.hits.length > 1)) return { problem: 'an official fighter matches both of our corners' };
   /* Second tier, for ONE corner only: the other corner matched exactly, and this
-   * one is the same person under a longer registered name ("Douglas Henrique
-   * Rodrigues" / "Douglas Rodrigues"): identical date of birth on both sides,
-   * same first and last name token, and every token of our name present in the
-   * official name. Never a name-only match; the result must still agree. */
+   * one is the same person under a registered form of the name — a middle name
+   * ("Douglas Henrique Rodrigues" / "Douglas Rodrigues") or the full form of a
+   * short first name ("Nicholas Galanti" / "Nick Galanti"): identical date of
+   * birth on both sides, identical last name token, first name identical, a
+   * listed short form (SHORT_FIRST_NAMES) or a 3+ letter prefix, and every other
+   * token of our name present in the official name. Never a name-only match; the
+   * result must still agree. */
   const missing = exact.filter((e) => e.hits.length === 0);
   if (missing.length === 1) {
     const matched = exact.find((e) => e.hits.length === 1);
@@ -169,8 +185,9 @@ export function mapOfficialFighters(parsed, fighterA, fighterB, aliasesById = ne
     const tokOfficial = normalize(x.name).split(' ').filter(Boolean);
     const tokOurs = normalize(other.f?.name).split(' ').filter(Boolean);
     const dobOk = Boolean(x.dob && other.f?.dob && x.dob === String(other.f.dob).slice(0, 10));
-    const tokensOk = tokOurs.length >= 2 && tokOfficial.length > tokOurs.length && tokOurs[0] === tokOfficial[0]
-      && tokOurs[tokOurs.length - 1] === tokOfficial[tokOfficial.length - 1] && tokOurs.every((t) => tokOfficial.includes(t));
+    const firstOk = sameFirstName(tokOurs[0] || '', tokOfficial[0] || '');
+    const tokensOk = tokOurs.length >= 2 && tokOfficial.length >= 2 && firstOk
+      && tokOurs[tokOurs.length - 1] === tokOfficial[tokOfficial.length - 1] && tokOurs.slice(1).every((t) => tokOfficial.slice(1).includes(t));
     if (dobOk && tokensOk) { missing[0].hits = [other]; missing[0].how = 'dob_and_registered_name'; }
     else return { problem: `official fighter "${x.name}" matches 0 of our corners exactly${x.dob ? '' : ' (no official DOB)'}` };
   } else if (missing.length === 2) {
