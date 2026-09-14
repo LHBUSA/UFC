@@ -128,7 +128,9 @@ export default async function InjuriesPage({ searchParams }: { searchParams: Pro
   const fighterMap = new Map(fighters.map((f) => [f.id, f]));
 
   const active = rows.filter((r) => r.state === "active");
-  const unavailable = active.filter((r) => UNAVAILABLE.has(r.status_type)).length;
+  /* People, not rows: one fighter reported unavailable by three outlets is one
+   * unavailable fighter. Each sourced report stays its own row below. */
+  const unavailable = new Set(active.filter((r) => UNAVAILABLE.has(r.status_type)).map((r) => r.fighter_id)).size;
   const named = rows.filter((r) => hasDiagnosis(r)).length;
   const unnamed = rows.filter(
     (r) => ["injury", "illness", "withdrawal"].includes(r.status_type) && !hasDiagnosis(r),
