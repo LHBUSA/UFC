@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
+import { getFightDnaReady, getEarliestEventDate, getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { Mark } from "@/components/Brand";
@@ -25,6 +25,7 @@ import { ApiCta } from "@/components/ApiCta";
 import { getBroadcastForEvent } from "@/lib/broadcast";
 import { WatchStrip } from "@/components/HowToWatch";
 import { getRankingMap } from "@/lib/rankings";
+import { buildProofRail, type ProofCell } from "@/lib/proofRail";
 
 export const revalidate = 300;
 
@@ -32,47 +33,31 @@ export const metadata: Metadata = {
   alternates: { canonical: "/", types: { "application/rss+xml": [{ url: `${SITE.url}/feed.xml`, title: `${SITE.name} — News` }] } },
 };
 
-/* The four live archive counts, with their glyphs. A table rather than four
- * near-identical JSX blocks: adding a fifth stat is one row, and the icon and
- * the count can never drift apart. Keys are the fields getCounts() returns. */
-const HERO_STATS = [
-  {
-    key: "events" as const,
-    label: "All indexed events",
-    icon: (
-      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="12" height="11" rx="2" /><path d="M2 6.5h12M5.5 1.8v2.4M10.5 1.8v2.4" />
-      </svg>
-    ),
-  },
-  {
-    key: "fighters" as const,
-    label: "Fighters",
-    icon: (
-      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="8" cy="5.2" r="2.6" /><path d="M2.8 13.6c.7-2.7 2.7-4.1 5.2-4.1s4.5 1.4 5.2 4.1" />
-      </svg>
-    ),
-  },
-  {
-    key: "results" as const,
-    label: "Results loaded",
-    icon: (
-      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M2.6 13.4V8.2M6.9 13.4V3.6M11.2 13.4v-6" /><path d="M1.4 13.4h13.2" />
-      </svg>
-    ),
-  },
-  {
-    key: "rounds" as const,
-    label: "Round-stat rows",
-    icon: (
-      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2.6" y="2" width="10.8" height="12" rx="1.8" /><path d="M5.4 5.4h5.2M5.4 8h5.2M5.4 10.6h3.1" />
-      </svg>
-    ),
-  },
-];
+/* Glyphs for the Live Intelligence Proof Rail, keyed by cell. Inline SVG: no
+ * request, no icon font, no layout cost. The cells themselves are built from
+ * live data in lib/proofRail.ts. */
+const PROOF_ICONS: Record<ProofCell["key"], React.ReactNode> = {
+  card: (
+    <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="12" height="11" rx="2" /><path d="M2 6.5h12M5.5 1.8v2.4M10.5 1.8v2.4" />
+    </svg>
+  ),
+  dna: (
+    <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8" cy="5.2" r="2.6" /><path d="M2.8 13.6c.7-2.7 2.7-4.1 5.2-4.1s4.5 1.4 5.2 4.1" />
+    </svg>
+  ),
+  archive: (
+    <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2.6 13.4V8.2M6.9 13.4V3.6M11.2 13.4v-6" /><path d="M1.4 13.4h13.2" />
+    </svg>
+  ),
+  rounds: (
+    <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2.6" y="2" width="10.8" height="12" rx="1.8" /><path d="M5.4 5.4h5.2M5.4 8h5.2M5.4 10.6h3.1" />
+    </svg>
+  ),
+};
 
 export default async function Home() {
   const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire, allUpcoming, recentAll] = await Promise.all([
@@ -112,6 +97,15 @@ export default async function Home() {
     getIngestFreshness().catch(() => null),
     getFightWeekVideos(next?.id || null, 5).catch(() => []),
   ]);
+  const [dnaReady, earliestEventDate] = await Promise.all([
+    next && live.length ? getFightDnaReady(live.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]), next.event_date || new Date().toISOString().slice(0, 10)) : Promise.resolve(new Set<string>()),
+    getEarliestEventDate().catch(() => null),
+  ]);
+  const proof = buildProofRail({
+    next: next ? { name: next.name, event_date: next.event_date || "", slug: eventSlug(next) } : null,
+    liveBouts: live, dnaReady, counts, earliestEventDate,
+    freshness, now: Date.now(),
+  });
   const framing = await getImageFraming(live.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]);
   const champById = new Map(champs.map((f) => [f.id, f]));
   const contenderById = new Map(contenders.map((f) => [f.id, f]));
@@ -155,21 +149,27 @@ export default async function Home() {
             </div>
             </div>
 
-            {/* Same four live counts, presented as information blocks rather
-                than four loose numbers. Icons are inline SVG: no request, no
-                icon font, no layout cost. */}
+            {/* Live Intelligence Proof Rail: current card -> current intelligence
+                -> historical depth, from live data (lib/proofRail.ts). */}
             <div className="hero-stats-block">
-            <div className="hero-stats">
-              {HERO_STATS.map((stat) => (
-                <div className="stat" key={stat.label}>
-                  <span className="stat-ico" aria-hidden="true">{stat.icon}</span>
-                  <span className="stat-val">
-                    <b>{counts[stat.key]?.toLocaleString() ?? "—"}</b>
-                    <span>{stat.label}</span>
-                  </span>
-                </div>
-              ))}
+            <div className="hero-stats hero-proof" aria-label="What PropBetEdge is covering now">
+              {proof.cells.map((cell) => {
+                const inner = (
+                  <>
+                    <span className="stat-ico" aria-hidden="true">{PROOF_ICONS[cell.key]}</span>
+                    <span className="stat-val">
+                      <span className="stat-kicker">{cell.kicker}</span>
+                      <b>{cell.value}{cell.unit && <small> {cell.unit}</small>}</b>
+                      <span className="stat-sub">{cell.sub}</span>
+                    </span>
+                  </>
+                );
+                return cell.href
+                  ? <Link href={cell.href} className={`stat${cell.unavailable ? " unavailable" : ""}`} key={cell.key} data-proof={cell.key}>{inner}</Link>
+                  : <div className={`stat${cell.unavailable ? " unavailable" : ""}`} key={cell.key} data-proof={cell.key}>{inner}</div>;
+              })}
             </div>
+            {proof.line && <p className="hero-proof-line">{proof.line}</p>}
             </div>
           </div>
           <div className="hero-feature-col">

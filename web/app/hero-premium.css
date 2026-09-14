@@ -268,6 +268,23 @@
   overflow-wrap: anywhere;
 }
 
+/* Live Intelligence Proof Rail: kicker, value, context line per cell. */
+.hero.hero-cinematic .hero-proof .stat { text-decoration: none; color: inherit; align-items: start; transition: background .15s ease; }
+.hero.hero-cinematic .hero-proof a.stat:hover { background: linear-gradient(180deg, rgba(34,28,19,.9), rgba(16,13,9,.92)); }
+.hero.hero-cinematic .hero-proof .stat-ico { margin-top: 2px; }
+.hero.hero-cinematic .hero-proof .stat .stat-kicker { margin: 0 0 6px; color: var(--pbe-gold); font-size: 9px; letter-spacing: .14em; }
+.hero.hero-cinematic .hero-proof .stat b { display: block; }
+.hero.hero-cinematic .hero-proof .stat .stat-sub { margin-top: 6px; text-transform: none; letter-spacing: 0; font: 500 12px/1.35 var(--pbe-font-ui); color: var(--pbe-dim); }
+.hero.hero-cinematic .hero-proof .stat.unavailable b { color: var(--pbe-faint); }
+.hero.hero-cinematic .hero-proof-line { margin: 10px 2px 0; font: 500 11px/1.5 var(--pbe-font-data); letter-spacing: .02em; color: var(--pbe-faint); }
+.hero.hero-cinematic .hero-proof .stat b small { font: 700 11px/1 var(--pbe-font-data); letter-spacing: .1em; text-transform: uppercase; color: var(--pbe-dim); }
+/* Desktop: single-line context text, so a late web-font swap cannot change the
+   rail's height and shift the vertically centred hero columns. */
+@media (min-width: 1001px) {
+  .hero.hero-cinematic .hero-proof .stat .stat-sub,
+  .hero.hero-cinematic .hero-proof-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
 /* ------------------------------------------------- the featured event frame */
 
 /* Card + broadcast panel as ONE object. The frame owns the border, the glow

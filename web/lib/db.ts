@@ -617,6 +617,27 @@ export async function getCounts(): Promise<{ fighters: number | null; events: nu
   ]);
   return { fighters: f.count, events: e.count, bouts: b.count, results: r.count, rounds: rs.count, articles: a.count };
 }
+/* Current-card Fight DNA readiness for the homepage proof rail: the fighters
+ * with a Fight DNA snapshot above "insufficient" coverage as of the card date.
+ * Coverage only grows as a fighter's sample grows, so any such snapshot means
+ * the profile is usable. Existence only; no metric is read. Returns null when
+ * the read fails, so the rail can say "unavailable" instead of "0 ready". */
+export async function getFightDnaReady(fighterIds: string[], asOf: string): Promise<Set<string> | null> {
+  const ids = [...new Set(fighterIds.filter(Boolean))];
+  if (!ids.length) return new Set();
+  try {
+    const { data } = await rest<Array<{ fighter_id: string }>>(`ufc_fighter_dna_snapshots?select=fighter_id&definition_version=eq.1&coverage_status=neq.insufficient&as_of_date=lte.${asOf}&fighter_id=in.(${ids.join(",")})&limit=5000`, [], { revalidate: 300, strict: true });
+    return new Set(data.map((r) => r.fighter_id));
+  } catch {
+    return null;
+  }
+}
+/* Date of the earliest indexed event, for the archive range. Changes only when
+ * the archive gains an older event, so a long revalidate is safe. */
+export async function getEarliestEventDate(): Promise<string | null> {
+  const { data } = await rest<Array<{ event_date: string | null }>>("ufc_events?select=event_date&event_date=not.is.null&order=event_date.asc&limit=1", [], { revalidate: 86400 });
+  return data[0]?.event_date ?? null;
+}
 /* ---- art-direction framing (best effort) --------------------------------
  * The framing columns (focal_x/focal_y/face_box/derivatives, migration 007
  * art direction) may not exist on every database. This reader asks for them
