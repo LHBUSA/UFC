@@ -342,10 +342,15 @@ async function fetchPublicPage(url, { method = 'GET', body = null, timeoutMs = 2
  * hidden unavailable videos is reported, never guessed at. */
 export async function discoverPlaylistPublic(playlistId, { now = new Date(), maxPages = 40, delayMs = 1000, retryRounds = 2, retryPauseMs = 60000 } = {}) {
   const base = 'https://www.youtube.com';
-  const r = await fetchPublicPage(`${base}/playlist?list=${encodeURIComponent(playlistId)}&hl=en&gl=US`);
-  if (!r.ok) throw new Error(`playlist page http ${r.status}`);
-  const page = parsePlaylistPage(r.body);
-  if (!page) throw new Error('playlist page carried no ytInitialData');
+  /* Same slow-down answer as a watch page: a listing without ytInitialData is retried before it is a failure. */
+  let page = null; let status = null;
+  for (let round = 0; round <= retryRounds && !page; round += 1) {
+    if (round > 0) await sleep(retryPauseMs * round);
+    const r = await fetchPublicPage(`${base}/playlist?list=${encodeURIComponent(playlistId)}&hl=en&gl=US`);
+    status = r.status;
+    if (r.ok) page = parsePlaylistPage(r.body);
+  }
+  if (!page) throw new Error(status === 200 ? 'playlist page carried no ytInitialData' : `playlist page http ${status}`);
   const listed = [...page.items];
   let token = page.continuation;
   let pages = 1;
