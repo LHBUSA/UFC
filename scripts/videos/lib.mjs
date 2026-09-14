@@ -7,7 +7,7 @@
  * are stored and the embed URL is constructed at render time.
  */
 import { normalize } from '../../shared/alias_resolver.mjs';
-import { decodeEntities, fetchText, isContenderSeries, dedupeEvents, surname } from '../news/lib.mjs';
+import { decodeEntities, fetchText, isContenderSeries, dedupeEvents, surname, USER_AGENT } from '../news/lib.mjs';
 
 export { Supabase, loadEnv, loadFighterIndex, fetchText } from '../news/lib.mjs';
 
@@ -179,24 +179,249 @@ export async function discoverViaDataApi(channelId, { key, since, now = new Date
   return { channel: { id: channelId, title: item.snippet?.title || null, uploads_playlist: uploads }, entries };
 }
 
-/* Every item of one playlist, regardless of age (archive backfill). With a key:
- * playlists.list for the title, playlistItems.list paged to the end (bounded),
- * videos.list for details. Without one: the playlist's public Atom feed, which
- * carries only the newest ~15 items, and `complete: false` says so. Each entry
- * carries the playlist id and title so the TUF tag can read them. */
-export async function discoverPlaylist(playlistId, { key, now = new Date(), maxPages = 40 } = {}) {
-  if (!key) {
-    const r = await fetchText(`https://www.youtube.com/feeds/videos.xml?playlist_id=${encodeURIComponent(playlistId)}`);
-    if (!r.ok) throw new Error(`playlist feed http ${r.status}`);
-    const parsed = parseYoutubeFeed(r.body);
-    const title = parsed.channel.title || null;
+/* ------------------------------------ discovery: public YouTube pages */
+
+/* The JSON object assigned to `var <name> = {...};` in a YouTube page. Scans
+ * braces with string awareness instead of a lazy regex: titles and
+ * descriptions routinely contain "};". */
+export function extractPageJson(html, name) {
+  const text = String(html || '');
+  const marker = text.indexOf(`var ${name} = {`);
+  if (marker < 0) return null;
+  const start = text.indexOf('{', marker);
+  let depth = 0; let inStr = false; let esc = false;
+  for (let i = start; i < text.length; i += 1) {
+    const c = text[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === '\\') esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === '{') depth += 1;
+    else if (c === '}') {
+      depth -= 1;
+      if (depth === 0) {
+        try { return JSON.parse(text.slice(start, i + 1)); } catch { return null; }
+      }
+    }
+  }
+  return null;
+}
+
+function collect(node, pick, out = []) {
+  if (!node || typeof node !== 'object') return out;
+  const hit = pick(node);
+  if (hit) { out.push(hit); return out; }
+  for (const k of Object.keys(node)) collect(node[k], pick, out);
+  return out;
+}
+
+/* One playlist row, from either renderer YouTube has shipped for playlists. */
+function playlistItem(node) {
+  const l = node.lockupViewModel;
+  if (l && l.contentType === 'LOCKUP_CONTENT_TYPE_VIDEO' && l.contentId) {
+    const meta = l.metadata?.lockupMetadataViewModel || {};
+    const channel = collect(meta.metadata, (n) => (typeof n.browseId === 'string' && /^UC/.test(n.browseId) ? n.browseId : null))[0] || null;
+    const badge = collect(l.contentImage, (n) => (n.thumbnailBadgeViewModel ? n.thumbnailBadgeViewModel.text : null))[0] || null;
+    return { video_id: l.contentId, title: meta.title?.content || '', channel_id: channel, length_text: badge };
+  }
+  const p = node.playlistVideoRenderer;
+  if (p && p.videoId) {
     return {
-      discovery: 'atom_feed_playlist',
-      complete: false,
-      playlist: { id: playlistId, title },
-      entries: parsed.entries.map((e) => ({ ...e, playlist_id: playlistId, playlist_title: title })),
+      video_id: p.videoId,
+      title: p.title?.runs?.map((r) => r.text).join('') || p.title?.simpleText || '',
+      channel_id: p.shortBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.browseId || null,
+      length_text: p.lengthText?.simpleText || null,
     };
   }
+  return null;
+}
+
+function continuationToken(node) {
+  return collect(node, (n) => (n.continuationItemRenderer ? (collect(n.continuationItemRenderer, (m) => m.continuationCommand?.token || null)[0] || null) : null))[0] || null;
+}
+
+/* A public playlist page -> title, visible items, the continuation token for
+ * the next batch (playlists longer than ~100), and what YouTube says it hid. */
+export function parsePlaylistPage(html) {
+  const data = extractPageJson(html, 'ytInitialData');
+  if (!data) return null;
+  const list = data.contents?.twoColumnBrowseResultsRenderer?.tabs || [];
+  const items = collect(list, playlistItem);
+  const title = data.microformat?.microformatDataRenderer?.title
+    || data.header?.pageHeaderRenderer?.pageTitle
+    || data.metadata?.playlistMetadataRenderer?.title || null;
+  const text = JSON.stringify(data.header || {}) + JSON.stringify(data.sidebar || {});
+  const count = text.match(/"(\d[\d,]*) videos?"/);
+  const hidden = JSON.stringify(data.alerts || []).match(/(\d[\d,]*) unavailable videos? (?:is|are) hidden/);
+  const cfg = String(html || '');
+  return {
+    title,
+    items,
+    continuation: continuationToken(list),
+    video_count: count ? Number(count[1].replace(/,/g, '')) : null,
+    hidden_unavailable: hidden ? Number(hidden[1].replace(/,/g, '')) : 0,
+    innertube: {
+      key: (cfg.match(/"INNERTUBE_API_KEY":"([^"]+)"/) || [])[1] || null,
+      client_version: (cfg.match(/"INNERTUBE_CLIENT_VERSION":"([^"]+)"/) || [])[1] || null,
+    },
+  };
+}
+
+/* The next batch of a playlist page: the same POST the public page makes when a
+ * reader scrolls. The key is the page's own web-client key, printed in the page
+ * for every visitor; it is not an account credential and carries no quota. */
+export function parsePlaylistContinuation(json) {
+  const actions = [...(json?.onResponseReceivedActions || []), ...(json?.onResponseReceivedEndpoints || [])];
+  const batch = actions.flatMap((a) => a.appendContinuationItemsAction?.continuationItems || []);
+  return { items: collect(batch, playlistItem), continuation: continuationToken(batch) };
+}
+
+/* A public watch page -> the fields the Data API would have given: exact
+ * publish time, uploading channel, duration, description, live state, and the
+ * page's own answer to "may this be embedded". */
+export function parseWatchPage(html) {
+  const p = extractPageJson(html, 'ytInitialPlayerResponse');
+  const vd = p?.videoDetails;
+  if (!vd?.videoId) return null;
+  const mf = p.microformat?.playerMicroformatRenderer || {};
+  const thumbs = vd.thumbnail?.thumbnails || [];
+  let live = 'none';
+  if (vd.isLiveContent || mf.liveBroadcastDetails) {
+    if (mf.liveBroadcastDetails?.isLiveNow) live = 'live';
+    else if (mf.liveBroadcastDetails?.endTimestamp) live = 'completed';
+    else if (vd.isUpcoming) live = 'upcoming';
+    else live = 'completed';
+  }
+  const countries = Array.isArray(mf.availableCountries) ? mf.availableCountries : null;
+  return {
+    video_id: vd.videoId,
+    channel_id: vd.channelId || mf.externalChannelId || null,
+    channel_title: vd.author || mf.ownerChannelName || null,
+    title: vd.title || mf.title?.simpleText || '',
+    description: vd.shortDescription || '',
+    published: mf.publishDate || mf.uploadDate || null,
+    duration_sec: Number.isFinite(Number(vd.lengthSeconds)) && Number(vd.lengthSeconds) > 0 ? Number(vd.lengthSeconds) : null,
+    thumbnail_url: thumbs.length ? thumbs[thumbs.length - 1].url : null,
+    live_broadcast_state: live,
+    privacy_status: vd.isPrivate ? 'private' : mf.isUnlisted ? 'unlisted' : 'public',
+    playability_status: p.playabilityStatus?.status || null,
+    playable_in_embed: typeof p.playabilityStatus?.playableInEmbed === 'boolean' ? p.playabilityStatus.playableInEmbed : null,
+    available_in_us: countries && countries.length ? countries.includes('US') : null,
+  };
+}
+
+async function fetchPublicPage(url, { method = 'GET', body = null, timeoutMs = 25000, attempts = 3 } = {}) {
+  let lastErr;
+  for (let i = 0; i < attempts; i += 1) {
+    const ctl = new AbortController();
+    const t = setTimeout(() => ctl.abort(), timeoutMs);
+    try {
+      const headers = { 'User-Agent': USER_AGENT, 'Accept-Language': 'en-US,en;q=0.9' };
+      if (body) headers['Content-Type'] = 'application/json';
+      const res = await fetch(url, { method, headers, body, redirect: 'follow', signal: ctl.signal });
+      const text = await res.text();
+      if (res.status >= 500 || res.status === 429) { lastErr = new Error(`http ${res.status}`); await sleep(1500 * (i + 1)); continue; }
+      return { ok: res.ok, status: res.status, body: text };
+    } catch (e) {
+      lastErr = e;
+      await sleep(800 * (i + 1));
+    } finally {
+      clearTimeout(t);
+    }
+  }
+  throw lastErr;
+}
+
+/* Every item of a public playlist without any API credential: the playlist
+ * page (and its scroll continuations) lists the items, and each video's public
+ * watch page supplies exact metadata. `complete` is true only when the listing
+ * ran to its end and every listed video's page was read; YouTube's own count of
+ * hidden unavailable videos is reported, never guessed at. */
+export async function discoverPlaylistPublic(playlistId, { now = new Date(), maxPages = 40, delayMs = 1000, retryRounds = 2, retryPauseMs = 60000 } = {}) {
+  const base = 'https://www.youtube.com';
+  const r = await fetchPublicPage(`${base}/playlist?list=${encodeURIComponent(playlistId)}&hl=en&gl=US`);
+  if (!r.ok) throw new Error(`playlist page http ${r.status}`);
+  const page = parsePlaylistPage(r.body);
+  if (!page) throw new Error('playlist page carried no ytInitialData');
+  const listed = [...page.items];
+  let token = page.continuation;
+  let pages = 1;
+  while (token && pages < maxPages && page.innertube.key && page.innertube.client_version) {
+    await sleep(delayMs);
+    const c = await fetchPublicPage(`${base}/youtubei/v1/browse?key=${encodeURIComponent(page.innertube.key)}&prettyPrint=false`, {
+      method: 'POST',
+      body: JSON.stringify({ context: { client: { clientName: 'WEB', clientVersion: page.innertube.client_version, hl: 'en', gl: 'US' } }, continuation: token }),
+    });
+    if (!c.ok) break;
+    let next;
+    try { next = parsePlaylistContinuation(JSON.parse(c.body)); } catch { break; }
+    listed.push(...next.items);
+    token = next.continuation;
+    pages += 1;
+  }
+  const seen = new Set();
+  const unique = listed.filter((it) => (seen.has(it.video_id) ? false : seen.add(it.video_id)));
+
+  const entries = [];
+  const readWatch = async (it) => {
+    try {
+      const wr = await fetchPublicPage(`${base}/watch?v=${encodeURIComponent(it.video_id)}&hl=en&gl=US`);
+      const w = wr.ok ? parseWatchPage(wr.body) : null;
+      return w && w.video_id === it.video_id ? w : null;
+    } catch { return null; }
+  };
+  /* A watch page without player data is YouTube asking us to slow down, not a
+   * missing video (unavailable ones are already hidden from the listing). Such
+   * items get later passes at a slower pace; whatever still fails is reported
+   * and makes the playlist incomplete. */
+  let pending = unique;
+  const got = new Map();
+  for (let round = 0; round <= retryRounds && pending.length; round += 1) {
+    if (round > 0) await sleep(retryPauseMs * round);
+    const failed = [];
+    for (const it of pending) {
+      await sleep(delayMs * (round + 1));
+      const w = await readWatch(it);
+      if (w) got.set(it.video_id, w); else failed.push(it);
+    }
+    pending = failed;
+  }
+  const unreadable = pending.map((it) => it.video_id);
+  for (const it of unique) {
+    const w = got.get(it.video_id);
+    if (!w) continue;
+    entries.push({
+      ...w,
+      link: watchUrl(w.video_id),
+      is_short: null,
+      updated: null,
+      embeddable: null,                /* decided by oEmbed in the ingest, as on the feed path */
+      region_restriction: w.available_in_us === false ? { allowed: null, blocked: [POLICY_REGION], source: 'watch_page_available_countries' } : undefined,
+      watch_page: { playable_in_embed: w.playable_in_embed, playability_status: w.playability_status, available_in_us: w.available_in_us, checked_at: new Date(now).toISOString() },
+      listing_channel_id: it.channel_id,
+      playlist_id: playlistId,
+      playlist_title: page.title,
+    });
+  }
+  return {
+    discovery: 'public_playlist_page',
+    complete: !token && unreadable.length === 0,
+    playlist: { id: playlistId, title: page.title },
+    stats: { listed: unique.length, pages, video_count: page.video_count, hidden_unavailable: page.hidden_unavailable, unread_continuation: Boolean(token), unreadable_watch_pages: unreadable },
+    entries,
+  };
+}
+
+/* Every item of one playlist, regardless of age (archive backfill). Without a
+ * key: the public playlist page (discoverPlaylistPublic). With one:
+ * playlists.list for the title, playlistItems.list paged to the end (bounded),
+ * videos.list for details. Each entry carries the playlist id and title so the
+ * TUF tag can read them. */
+export async function discoverPlaylist(playlistId, { key, now = new Date(), maxPages = 40 } = {}) {
+  if (!key) return discoverPlaylistPublic(playlistId, { now, maxPages });
   const meta = await apiGet('playlists', { part: 'snippet', id: playlistId }, key);
   const title = meta.items?.[0]?.snippet?.title || null;
   const ids = [];
@@ -380,6 +605,42 @@ export async function loadEventContext(sb, { now = new Date(), windowDays = WIND
   if (!events.length) return { events: [], bouts: [], cardFighterIds: new Set(), articlesByBout: new Map(), window: { lo, hi } };
   const ids = events.map((e) => e.id).join(',');
   const bouts = await sb.select('ufc_bouts', `select=id,event_id,fighter_a_id,fighter_b_id,status,bout_order&event_id=in.(${ids})&status=neq.cancelled`);
+  const boutIds = bouts.map((b) => b.id);
+  const articles = [];
+  for (let i = 0; i < boutIds.length; i += 200) {
+    articles.push(...await sb.select('ufc_articles', `select=id,bout_id,published_at&status=eq.published&bout_id=in.(${boutIds.slice(i, i + 200).join(',')})&order=published_at.desc`));
+  }
+  return buildEventContext(events, bouts, articles, { lo, hi });
+}
+
+/* ARCHIVE LINKING. The window above is "the cards around now", which is right
+ * for a feed of new uploads and wrong for a 2014 playlist video: its "UFC
+ * Vegas" would be decided among this month's Vegas cards and its surnames among
+ * this month's card fighters. A backfill loads every event once and links each
+ * video against the cards around ITS OWN publish date (contextAt). */
+export async function loadArchiveEvents(sb) {
+  const [events, bouts, articles] = await Promise.all([
+    sb.select('ufc_events', 'select=id,name,event_date,venue,city,region,country,card_status&order=id.asc'),
+    sb.select('ufc_bouts', 'select=id,event_id,fighter_a_id,fighter_b_id,status,bout_order&status=neq.cancelled&order=id.asc'),
+    sb.select('ufc_articles', 'select=id,bout_id,published_at&status=eq.published&bout_id=not.is.null&order=published_at.desc'),
+  ]);
+  return { events, bouts, articles };
+}
+
+export function contextAt(archive, when, windowDays = WINDOW_DAYS) {
+  if (!when || Number.isNaN(when.getTime())) return { events: [], bouts: [], cardFighterIds: new Set(), articlesByBout: new Map(), window: { lo: null, hi: null }, surnameRequiresEvent: true };
+  const lo = new Date(when.getTime() - windowDays * 86400e3).toISOString().slice(0, 10);
+  const hi = new Date(when.getTime() + windowDays * 86400e3).toISOString().slice(0, 10);
+  const events = archive.events.filter((e) => e.event_date && e.event_date >= lo && e.event_date <= hi);
+  const ids = new Set(events.map((e) => e.id));
+  const bouts = archive.bouts.filter((b) => ids.has(b.event_id)).map((b) => ({ ...b }));
+  const boutIds = new Set(bouts.map((b) => b.id));
+  return { ...buildEventContext(events, bouts, archive.articles.filter((a) => boutIds.has(a.bout_id)), { lo, hi }), surnameRequiresEvent: true };
+}
+
+function buildEventContext(events, bouts, articles, window) {
+  const { lo, hi } = window;
+  if (!events.length) return { events: [], bouts: [], cardFighterIds: new Set(), articlesByBout: new Map(), window: { lo, hi } };
   const boutsByEvent = new Map();
   for (const b of bouts) {
     if (!boutsByEvent.has(b.event_id)) boutsByEvent.set(b.event_id, []);
@@ -390,12 +651,10 @@ export async function loadEventContext(sb, { now = new Date(), windowDays = WIND
   for (const p of primaries) { idMap.set(p.id, p.id); for (const a of p.alt_ids) idMap.set(a, p.id); }
   for (const b of bouts) b.event_id = idMap.get(b.event_id) || b.event_id;
   const cardFighterIds = new Set(bouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]));
-  const boutIds = bouts.map((b) => b.id);
   const articlesByBout = new Map();
-  for (let i = 0; i < boutIds.length; i += 200) {
-    const arts = await sb.select('ufc_articles', `select=id,bout_id,published_at&status=eq.published&bout_id=in.(${boutIds.slice(i, i + 200).join(',')})&order=published_at.desc`);
-    for (const a of arts) if (!articlesByBout.has(a.bout_id)) articlesByBout.set(a.bout_id, []);
-    for (const a of arts) articlesByBout.get(a.bout_id).push(a);
+  for (const a of articles) {
+    if (!articlesByBout.has(a.bout_id)) articlesByBout.set(a.bout_id, []);
+    articlesByBout.get(a.bout_id).push(a);
   }
   return { events: primaries.map((e) => ({ ...e, ...eventKeys(e) })), bouts, cardFighterIds, articlesByBout, window: { lo, hi } };
 }
@@ -474,9 +733,14 @@ export function linkFighters(text, titleText, index, ctx, eventId) {
   /* Candidate names: multi-token only (single-token nicknames tag far too loosely). */
   const nameIndex = new Map();           /* normalized name -> Set(fighter_id) */
   for (const f of index.fighters) {
+    /* A nickname is not a name, however many words it has: "The Best" and
+     * "Main Event" are ring names that ordinary sentences contain. */
+    const nick = f.nickname ? normalize(f.nickname) : null;
+    const own = normalize(f.name);
     for (const raw of [f.name, ...(index.aliasesByFighter.get(f.id) || [])]) {
       const n = normalize(raw);
       if (!n || n.split(' ').length < 2) continue;
+      if (nick && n === nick && n !== own) continue;
       if (!nameIndex.has(n)) nameIndex.set(n, new Set());
       nameIndex.get(n).add(f.id);
     }
@@ -518,8 +782,14 @@ export function linkFighters(text, titleText, index, ctx, eventId) {
     surnameOwners.get(s).add(id);
   }
   const titleTokens = new Set(normTitle.trim().split(' ').filter(Boolean));
+  /* A surname already accounted for by a full-name hit ("Michael Chandler") is
+   * that fighter's, not a card-mate's who shares it. */
+  const claimedSurnames = new Set([...attached.keys()].map((id) => surname(index.byId.get(id)?.name || '')).filter(Boolean));
+  /* Archive context (contextAt): a card window around an old publish date is a
+   * weak scope, so surname-only hits need a linked event. */
+  const surnameAllowed = scoped || !ctx.surnameRequiresEvent;
   for (const [s, owners] of surnameOwners) {
-    if (!titleTokens.has(s)) continue;
+    if (!surnameAllowed || !titleTokens.has(s) || claimedSurnames.has(s)) continue;
     if (owners.size === 1) {
       const id = [...owners][0];
       if (!attached.has(id)) attached.set(id, { method: scopeName, alias: s, in_title: true });
@@ -552,6 +822,20 @@ export function confidenceFor({ eventId, boutId, fighters }) {
   if (eventId || fullName) return 'medium';
   if (methods.length) return 'low';
   return 'none';
+}
+
+/* An event reached only through the shared "The Ultimate Fighter" series head
+ * (every TUF finale card carries it) is a date guess, not a match. For a TUF
+ * video it stands only when a bout on that card was linked from the title, or
+ * the title itself says "finale" and the card's season does not contradict the
+ * video's. House fights, casting clips and coach segments name no card. */
+export function tufSeriesEventSupported(link, { title, videoSeason, eventSeason }) {
+  const ev = link?.linking?.event;
+  if (!link?.event_id || !ev || ev.kind !== 'series') return { supported: true };
+  if (link.bout_id) return { supported: true, basis: 'bout linked from the title' };
+  if (!/\bfinale\b/i.test(String(title || ''))) return { supported: false, reason: 'tuf_series_key_without_finale_in_title' };
+  if (videoSeason && eventSeason && videoSeason !== eventSeason) return { supported: false, reason: 'tuf_series_key_season_conflict', video_season: videoSeason, event_season: eventSeason };
+  return { supported: true, basis: 'finale in title, no season conflict' };
 }
 
 /* One call per video: returns the columns to persist plus the evidence block. */

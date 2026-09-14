@@ -30,9 +30,15 @@
  * are years old by design. Nothing else changes: a video is still written only
  * if its uploading channel is enabled AND verified in ufc_video_channels, so a
  * playlist cannot smuggle in a channel nobody vetted (the FS1-era @tufonfs1
- * channel is not allowlisted and stays out). Full playlists need
- * YOUTUBE_API_KEY; without it only the ~15 newest items the playlist feed
- * exposes are read, and the run says so.
+ * channel is not allowlisted and stays out).
+ *
+ * Discovery is keyless: the public playlist page lists every item (following
+ * its scroll continuations past ~100), each video's public watch page gives the
+ * exact publish time, uploading channel id, duration and description, and
+ * oEmbed confirms embeddability exactly as on the feed path. The uploading
+ * channel is taken from the watch page, not the playlist listing. A video in
+ * several playlists is ingested once (provider_video_id); its playlist-derived
+ * season is used only when those playlists agree.
  *
  * Every row, from any mode, carries source_metadata.tuf (season, episode,
  * kind, evidence) when its title or playlist is about The Ultimate Fighter —
@@ -42,7 +48,7 @@ import { canonicalJson } from '../news/lib.mjs';
 import { detectLanguage,
   Supabase, loadEnv, loadFighterIndex, fetchText,
   PROVIDER, WINDOW_DAYS, feedUrl, watchUrl, parseYoutubeFeed, checkEmbeddable, discoverViaDataApi, discoverPlaylist,
-  classifyVideo, loadEventContext, linkVideo, sleep,
+  classifyVideo, loadEventContext, loadArchiveEvents, contextAt, linkVideo, tufSeriesEventSupported, confidenceFor, sleep,
 } from './lib.mjs';
 import { tufTag } from './tuf.mjs';
 
@@ -144,9 +150,12 @@ function toDbRow(row, entry, existing, now) {
     review: row.review,
     linked_at: now.toISOString(),
   };
-  const playlistTitle = entry.playlist_title || prev.playlist_title || null;
+  if (entry.watch_page) source_metadata.watch_page = entry.watch_page;
+  if (entry.playlists) source_metadata.playlists = entry.playlists;
+  const playlistTitle = entry.playlist_title === undefined ? (prev.playlist_title || null) : entry.playlist_title;
   if (playlistTitle) source_metadata.playlist_title = playlistTitle;
   if (entry.playlist_id || prev.playlist_id) source_metadata.playlist_id = entry.playlist_id || prev.playlist_id;
+  if (entry.playlist_title === null) delete source_metadata.playlist_title;
   const tuf = tufTag({ title: entry.title, description: entry.description, playlistTitle, durationSec: entry.duration_sec ?? null });
   if (tuf) source_metadata.tuf = tuf; else delete source_metadata.tuf;
   const { discovery, classification, linking, review_reason, review, ...cols } = row;
@@ -178,6 +187,54 @@ function changed(dbRow, existing) {
 
 function bump(map, key) { map[key] = (map[key] || 0) + 1; }
 
+/* Archive rows only: drop an event reached through the bare TUF series head
+ * unless the title supports it (lib.tufSeriesEventSupported). The rejected
+ * candidate stays in the evidence. */
+function guardTufSeriesEvent(row, entry, ctx) {
+  if (!row.event_id) return;
+  const event = ctx.events.find((e) => e.id === row.event_id);
+  const video = tufTag({ title: entry.title, description: entry.description, playlistTitle: entry.playlist_title ?? null, durationSec: entry.duration_sec ?? null });
+  if (!video) return;
+  const verdict = tufSeriesEventSupported(
+    { event_id: row.event_id, bout_id: row.bout_id, linking: row.linking },
+    { title: entry.title, videoSeason: video.season, eventSeason: event ? tufTag({ title: event.name })?.season ?? null : null },
+  );
+  if (verdict.supported) return;
+  row.linking = { ...row.linking, event: null, event_rejected: { event_id: row.event_id, name: event?.name || null, ...row.linking?.event, ...verdict } };
+  row.event_id = null; row.bout_id = null; row.article_id = null;
+  const fighters = new Map((row.linking.fighters || []).map((f) => [f.fighter_id, f]));
+  row.resolver_confidence = confidenceFor({ eventId: null, boutId: null, fighters });
+}
+
+/* One entry per provider_video_id across playlists. Every membership is kept;
+ * the playlist title the TUF tag may read is kept only when the playlists that
+ * name a season all name the same one. A video in both "TUF 22" and "TUF 21"
+ * playlists gets no playlist-derived season rather than a guessed one. */
+export function mergePlaylistEntries(entries) {
+  const byId = new Map();
+  for (const e of entries) {
+    if (!byId.has(e.video_id)) byId.set(e.video_id, { ...e, playlists: [] });
+    const m = byId.get(e.video_id);
+    if (!m.playlists.some((p) => p.id === e.playlist_id)) m.playlists.push({ id: e.playlist_id, title: e.playlist_title || null });
+  }
+  for (const m of byId.values()) {
+    const seasons = new Map();
+    for (const p of m.playlists) {
+      const s = p.title ? tufTag({ title: '', playlistTitle: p.title })?.season : null;
+      if (s) seasons.set(s, p);
+    }
+    if (seasons.size === 1) {
+      const p = [...seasons.values()][0];
+      m.playlist_id = p.id; m.playlist_title = p.title;
+    } else if (seasons.size > 1) {
+      m.playlist_id = m.playlists[0].id; m.playlist_title = null;
+      m.playlist_season_conflict = [...seasons.keys()];
+    }
+    if (m.playlists.length === 1) delete m.playlists;
+  }
+  return [...byId.values()];
+}
+
 export async function main(injectedEnv, options = {}) {
   const env = injectedEnv || loadEnv();
   const sb = new Supabase(env);
@@ -191,15 +248,16 @@ export async function main(injectedEnv, options = {}) {
   const now = options.now ? new Date(options.now) : new Date();
   const since = new Date(now.getTime() - SINCE_DAYS * 86400e3);
   const apiKey = env.YOUTUBE_API_KEY || '';
-  const discovery = apiKey ? 'youtube_data_api_v3' : 'atom_feed';
+  const discovery = apiKey ? 'youtube_data_api_v3' : BACKFILL ? 'public_playlist_page' : 'atom_feed';
 
   let channels = await sb.select('ufc_video_channels', `select=provider,channel_id,name,handle,channel_class,verified,enabled&provider=eq.${PROVIDER}&enabled=is.true&verified=is.true&order=channel_class.asc,name.asc`);
   if (ONLY_CHANNEL) channels = channels.filter((c) => c.channel_id === ONLY_CHANNEL);
   if (!channels.length) throw new Error(ONLY_CHANNEL ? `channel ${ONLY_CHANNEL} is not enabled+verified in ufc_video_channels` : 'no enabled, verified channels: run scripts/videos/seed_channels.mjs first');
 
-  const [index, ctx] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb, { now, windowDays: WINDOW_DAYS })]);
+  const [index, ctx, archive] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb, { now, windowDays: WINDOW_DAYS }), BACKFILL ? loadArchiveEvents(sb) : null]);
   console.log(`${DRY ? 'DRY RUN  ' : ''}discovery=${discovery}${RELINK ? ' (relink, no network)' : ''} since=${since.toISOString().slice(0, 10)} channels=${channels.length}`);
   console.log(`index: ${index.fighters.length} fighters, ${ctx.events.length} events within +-${WINDOW_DAYS}d (${ctx.window.lo}..${ctx.window.hi}), ${ctx.bouts.length} bouts, ${ctx.cardFighterIds.size} card fighters`);
+  if (archive) console.log(`archive: ${archive.events.length} events, ${archive.bouts.length} bouts; each playlist video is linked against the cards within +-${WINDOW_DAYS}d of its own publish date`);
 
   const totals = { fetched: 0, skipped_old: 0, new: 0, updated: 0, unchanged: 0, review: 0, embed_checks: 0, failed_channels: 0, skipped_not_allowlisted: 0, tuf_tagged: 0 };
   const byType = {}; const byConfidence = {};
@@ -207,18 +265,28 @@ export async function main(injectedEnv, options = {}) {
 
   /* Backfill: read the playlists once, then hand each allowlisted channel the
    * items it uploaded. Items from any other channel are counted and dropped. */
-  const playlistEntries = [];
+  let playlistEntries = [];
+  const playlistReports = [];
   if (BACKFILL) {
+    const raw = [];
     for (const playlistId of PLAYLISTS) {
       try {
         const d = await discoverPlaylist(playlistId, { key: apiKey, now });
-        playlistEntries.push(...d.entries);
-        console.log(`playlist ${playlistId} "${d.playlist.title || '?'}": ${d.entries.length} item(s) via ${d.discovery}${d.complete ? '' : ' — PARTIAL: the keyless feed shows only the newest items; set YOUTUBE_API_KEY for the full playlist'}`);
+        raw.push(...d.entries);
+        playlistReports.push({ id: playlistId, title: d.playlist.title, discovery: d.discovery, complete: d.complete, entries: d.entries.length, ...(d.stats || {}) });
+        const st = d.stats || {};
+        console.log(`playlist ${playlistId} "${d.playlist.title || '?'}": ${d.entries.length} item(s) via ${d.discovery}; complete=${d.complete}`
+          + `${st.video_count != null ? ` (YouTube count ${st.video_count}, ${st.hidden_unavailable || 0} hidden as unavailable)` : ''}`
+          + `${st.unreadable_watch_pages?.length ? `; unreadable watch pages: ${st.unreadable_watch_pages.join(',')}` : ''}${st.unread_continuation ? '; listing continuation not read' : ''}`);
       } catch (e) {
         totals.failed_channels += 1;
+        playlistReports.push({ id: playlistId, failed: e.message });
         console.log(`playlist ${playlistId} FAILED: ${e.message}`);
       }
     }
+    playlistEntries = mergePlaylistEntries(raw);
+    totals.playlist_items = raw.length;
+    totals.playlist_unique_videos = playlistEntries.length;
     const allowed = new Set(channels.map((c) => c.channel_id));
     for (const e of playlistEntries) if (!allowed.has(e.channel_id)) totals.skipped_not_allowlisted += 1;
   }
@@ -239,7 +307,7 @@ export async function main(injectedEnv, options = {}) {
       }));
     } else if (BACKFILL) {
       entries = playlistEntries.filter((e) => e.channel_id === channel.channel_id);
-      channelDiscovery = apiKey ? 'youtube_data_api_v3_playlist' : 'atom_feed_playlist';
+      channelDiscovery = apiKey ? 'youtube_data_api_v3_playlist' : 'public_playlist_page';
       if (!entries.length) continue;
     } else {
       try {
@@ -272,8 +340,9 @@ export async function main(injectedEnv, options = {}) {
       if (!RELINK && !apiKey && (entry.embeddable == null) && (!existing || existing.embeddable == null)) {
         const chk = await checkEmbeddable(entry.video_id);
         totals.embed_checks += 1;
-        entry.embeddable = chk.embeddable;
-        entry.embed_check = { method: 'oembed', status: chk.status, proves: chk.proves || null, author_name: chk.author_name || null, checked_at: now.toISOString() };
+        /* The watch page's own "not playable in embed" overrides an oEmbed 200. */
+        entry.embeddable = chk.embeddable === true && entry.watch_page?.playable_in_embed === false ? false : chk.embeddable;
+        entry.embed_check = { method: 'oembed', status: chk.status, proves: chk.proves || null, author_name: chk.author_name || null, ...(entry.watch_page ? { watch_page_playable_in_embed: entry.watch_page.playable_in_embed } : {}), checked_at: now.toISOString() };
         await sleep(150);
       } else if (!RELINK && !apiKey && existing) {
         entry.embeddable = existing.embeddable;
@@ -281,7 +350,10 @@ export async function main(injectedEnv, options = {}) {
 
       const row = baseRow(entry, channel, channelDiscovery || existing?.source_metadata?.discovery || discovery);
       applyClassification(row, entry);
-      applyLinks(row, entry, index, ctx, existing);
+      /* A backfilled video is linked against the cards around its own publish date. */
+      const linkCtx = archive ? contextAt(archive, entry.published ? new Date(entry.published) : null, WINDOW_DAYS) : ctx;
+      applyLinks(row, entry, index, linkCtx, existing);
+      if (archive && row.link_status !== 'rejected') guardTufSeriesEvent(row, entry, linkCtx);
       const dbRow = toDbRow(row, entry, existing, now);
       if (dbRow.source_metadata.tuf) totals.tuf_tagged += 1;
       const isNew = !existing;
@@ -290,7 +362,7 @@ export async function main(injectedEnv, options = {}) {
       bump(byType, dbRow.video_type); bump(byConfidence, dbRow.resolver_confidence);
       if (dbRow.link_status === 'review') totals.review += 1;
 
-      const ev = dbRow.event_id ? ctx.events.find((e) => e.id === dbRow.event_id) : null;
+      const ev = dbRow.event_id ? linkCtx.events.find((e) => e.id === dbRow.event_id) : null;
       const names = dbRow.fighter_ids.map((id) => index.byId.get(id)?.name || id.slice(0, 8));
       const flag = isNew ? 'new' : isChanged ? 'upd' : '   ';
       console.log(`  ${flag} ${dbRow.provider_video_id} [${dbRow.video_type}/${dbRow.resolver_confidence}${dbRow.link_status === 'review' ? ' REVIEW' : ''}] emb=${dbRow.embeddable === null ? '?' : dbRow.embeddable ? 'y' : 'n'} ${dbRow.title.slice(0, 64)}`
@@ -314,11 +386,11 @@ export async function main(injectedEnv, options = {}) {
   console.log(`  by type: ${Object.entries(byType).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k}=${v}`).join(', ') || '-'}`);
   console.log(`  by confidence: ${['high', 'medium', 'low', 'none'].map((k) => `${k}=${byConfidence[k] || 0}`).join(', ')}`);
   console.log(`  review: ${totals.review}`);
-  console.log(`  TUF-tagged: ${totals.tuf_tagged}${BACKFILL ? `; playlist items from channels not allowlisted, skipped: ${totals.skipped_not_allowlisted}` : ''}`);
+  console.log(`  TUF-tagged: ${totals.tuf_tagged}${BACKFILL ? `; playlist items ${totals.playlist_items}, unique videos ${totals.playlist_unique_videos}; from channels not allowlisted, skipped: ${totals.skipped_not_allowlisted}` : ''}`);
   if (DRY && plan.length) console.log(`  plan: ${plan.filter((p) => p.action === 'insert').length} inserts, ${plan.filter((p) => p.action === 'update').length} updates, ${plan.filter((p) => p.action === 'unchanged').length} unchanged`);
 
   /* Returned rather than logged-and-grepped, so a Worker can ledger it. */
-  return { discovery, channels: channels.length, totals, by_type: byType, by_confidence: byConfidence, dry: DRY, relink: RELINK, since: since.toISOString() };
+  return { discovery, channels: channels.length, totals, by_type: byType, by_confidence: byConfidence, dry: DRY, relink: RELINK, since: since.toISOString(), ...(BACKFILL ? { playlists: playlistReports } : {}) };
 }
 
 /* CLI ONLY. Importing this module must never call YouTube or write a row. */
