@@ -204,7 +204,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       {/* Structured data. `eventStatus` is EventScheduled for a finished card
           too: schema.org's EventStatusType has no "completed" member (the old
           EventCompleted value failed validation), and a past startDate is how
-          a consumer knows it happened.
+          a consumer knows it happened. Official videos ride on `subjectOf`:
+          `video` belongs to CreativeWork, not Event, and the validator flags it.
 
           `startDate` is upgraded from a bare date to the
           verified main-card INSTANT when UFC.com has published one — that is a
