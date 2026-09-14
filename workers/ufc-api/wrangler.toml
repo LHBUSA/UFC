@@ -12,6 +12,10 @@ custom_domain = true
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
 API_VERSION = "2026-09-14.1"
 REQUIRE_API_KEY = "false"
+# Premium Fight DNA / intelligence routes require INTERNAL_API_KEY (or a KV key)
+# when true. Flip only after the commercial gateway has UPSTREAM_API_KEY and the
+# UFC Vercel server has UFC_API_INTERNAL_KEY.
+PREMIUM_REQUIRE_KEY = "false"
 # Durable first-party media origin: public Supabase Storage bucket `ufc-media`.
 # ufc_images.r2_key ("fighters/<id>/portrait.jpg") resolves to {base}/{r2_key};
 # card.jpg / thumb.jpg derivatives sit beside it; rankings/latest.json lives here too.

@@ -2047,3 +2047,33 @@ test("include=videos adds a compact latest-6 block on fighter detail, event deta
   const i = await call("/v1/ufc");
   for (const k of ["videos", "fighter_videos", "event_videos", "bout_videos"]) assert.ok(i.body.data.endpoints[k], `index missing ${k}`);
 });
+
+/* ---- premium route gate ------------------------------------------------ */
+
+test("premium Fight DNA / intelligence routes require a key once PREMIUM_REQUIRE_KEY is on", async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error("no network in tests"); };
+  try {
+    const env = { SUPABASE_URL: "https://db.test", SUPABASE_SERVICE_ROLE_KEY: "x", REQUIRE_API_KEY: "false", PREMIUM_REQUIRE_KEY: "true", INTERNAL_API_KEY: "internal-test-key" };
+    const call = (path, headers = {}, e = env) => worker.fetch(new Request(`https://ufc-api.test${path}`, { headers }), e);
+    const premium = [
+      "/v1/ufc/dna/query?metric=x", "/v1/ufc/fighters/abc/dna", "/v1/ufc/fighters/abc/dna/", "/v1/ufc/fighters/abc/splits",
+      "/v1/ufc/fighters/abc/round-profile", "/v1/ufc/fighters/abc/finish-profile", "/v1/ufc/fighters/abc/position-profile",
+      "/v1/ufc/matchups/a/b/dna", "/v1/ufc/bouts/abc/ledger", "/v1/ufc/events/abc/intelligence",
+    ];
+    for (const p of premium) {
+      const res = await call(p);
+      assert.equal(res.status, 401, p);
+      assert.equal((await res.json()).error.code, "api_key_required", p);
+      assert.equal((await call(p, { "x-api-key": "wrong" })).status, 401, `${p} wrong key`);
+      assert.notEqual((await call(p, { "x-api-key": "internal-test-key" })).status, 401, `${p} internal key`);
+      assert.notEqual((await call(p, {}, { ...env, PREMIUM_REQUIRE_KEY: "false" })).status, 401, `${p} flag off stays public`);
+    }
+    for (const p of ["/health", "/v1/ufc/dna/metrics", "/v1/ufc/fighters/abc", "/v1/ufc/fighters/abc/history", "/v1/ufc/events/abc/card-changes", "/v1/ufc/wire"]) {
+      assert.notEqual((await call(p)).status, 401, `${p} must stay public`);
+    }
+    assert.equal(__test.isPremiumPath("/v1/ufc/dna/metrics"), false);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});

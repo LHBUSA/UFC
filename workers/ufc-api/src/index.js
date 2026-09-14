@@ -892,6 +892,38 @@ async function authorize(request, env) {
   throw new ApiError(401, "invalid_api_key", "The API key is invalid.");
 }
 
+/* Premium routes: proprietary Fight DNA values, splits, profiles, matchup DNA,
+ * bout ledgers and event intelligence. With PREMIUM_REQUIRE_KEY=true they
+ * require a key (INTERNAL_API_KEY, or a KV customer key) even while the rest of
+ * the API stays public, and their responses are never stored by a shared
+ * cache. The registry (/dna/metrics) is methodology and stays public. */
+const PREMIUM_PATHS = [
+  /^\/v1\/ufc\/dna\/query$/,
+  /^\/v1\/ufc\/fighters\/[^/]+\/(?:dna|splits|round-profile|finish-profile|position-profile)$/,
+  /^\/v1\/ufc\/matchups\/[^/]+\/[^/]+\/dna$/,
+  /^\/v1\/ufc\/bouts\/[^/]+\/ledger$/,
+  /^\/v1\/ufc\/events\/[^/]+\/intelligence$/,
+];
+
+function isPremiumPath(pathname) {
+  return PREMIUM_PATHS.some((re) => re.test(pathname));
+}
+
+function premiumKeyRequired(env) {
+  return String(env.PREMIUM_REQUIRE_KEY || "false").toLowerCase() === "true";
+}
+
+async function authorizeRequest(request, env, rawPathname) {
+  /* Same normalisation route() applies, so a trailing slash cannot reach a
+   * premium handler around the gate. */
+  const pathname = rawPathname.replace(/\/+$/, "") || "/";
+  if (pathname === "/" || pathname === "/health") return { tier: "public" };
+  if (isPremiumPath(pathname) && premiumKeyRequired(env)) {
+    return authorize(request, { ...env, REQUIRE_API_KEY: "true" });
+  }
+  return authorize(request, env);
+}
+
 /* ---- endpoints -------------------------------------------------------- */
 
 async function listEvents(env, url) {
@@ -1548,6 +1580,13 @@ const DNA_ORIGIN = "pbe_derived";
 const DNA_CACHE_HEADERS = {
   "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=900",
   "CDN-Cache-Control": "public, s-maxage=300, stale-while-revalidate=900",
+};
+/* A keyed premium answer must never be replayed by a shared cache to a caller
+ * without the key. */
+const PREMIUM_CACHE_HEADERS = {
+  "Cache-Control": "private, no-store",
+  "CDN-Cache-Control": "no-store",
+  Vary: "X-API-Key, Authorization",
 };
 const DNA_AS_OF_NOTE = "as_of_date is exclusive: the snapshot dated D contains bouts with event_date < D, so a bout fought on D is excluded by the snapshot dated D. ?as_of=D resolves to the latest stored snapshot with as_of_date <= D, which therefore never contains a bout fought on or after D.";
 const DNA_EVIDENCE_NOTE = "Fight DNA is PBE-derived evidence with explicit samples and confidence. It is not a pick, price or probability.";
@@ -2951,7 +2990,8 @@ async function route(request, env, url, access) {
   }
 
   /* Fight DNA routes: same envelope, CORS *, 60 s browser / 300 s edge / 900 s stale. */
-  const dnaOk = (out) => ok(env, requestId, out.data, { ...out.meta, ...tier }, 300, 200, DNA_CACHE_HEADERS);
+  const dnaOk = (out) => ok(env, requestId, out.data, { ...out.meta, ...tier }, 300, 200,
+    isPremiumPath(path) && premiumKeyRequired(env) ? PREMIUM_CACHE_HEADERS : DNA_CACHE_HEADERS);
 
   if (path === "/v1/ufc/dna/metrics") return dnaOk(await dnaMetricsRegistry(env, url));
   if (path === "/v1/ufc/dna/query") return dnaOk(await dnaQuery(env, url));
@@ -2979,6 +3019,7 @@ async function route(request, env, url, access) {
 }
 
 export const __test = {
+  isPremiumPath, premiumKeyRequired,
   clampInt, sanitizeLike, identityFilter, normalizeBout, parseIncludes,
   mediaUrls, decorateImage, primaryImage, compactImage, attachHero, heroImagesForArticles, withHeroMedia,
   rankingsFromSnapshot, rankingsFromTable, loadRankings, rankingsResponse, rankingPositionsForFighter, divisionLabel,
@@ -3006,8 +3047,7 @@ export default {
 
     try {
       const url = new URL(request.url);
-      const publicPath = url.pathname === "/" || url.pathname === "/health";
-      const access = publicPath ? { tier: "public" } : await authorize(request, env);
+      const access = await authorizeRequest(request, env, url.pathname);
       const response = await route(request, env, url, access);
       if (request.method === "HEAD") return new Response(null, { status: response.status, headers: response.headers });
       return response;
