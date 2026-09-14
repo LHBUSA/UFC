@@ -622,6 +622,30 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
             <h3 className="tuf-subhead">Tournament finals</h3>
             <ul className="tuf-bouts">
               {integration.finals.map((f) => <RecordBout key={f.id} b={f} event={integration.event} title={`${f.season_weight_class} final`} />)}
+              {/* A season's divisions can be decided on different cards (TUF 33,
+                  TUF China 1). The linked card shows only its own finals, so a
+                  recorded final from another card is listed here rather than
+                  silently dropped. */}
+              {(season.final_bouts ?? [])
+                .filter((f) => f.status !== "scheduled" && !integration.finals.some((x) => x.season_weight_class === f.weight_class))
+                .map((f) => (
+                  <li className="tuf-bout is-pro" key={`other-${f.weight_class}`}>
+                    <span className="tuf-bout-names">
+                      <Name name={f.a} linked={linked} />
+                      <em>vs</em>
+                      <Name name={f.b} linked={linked} />
+                    </span>
+                    <span className="tuf-bout-meta">
+                      <span className="tuf-res">
+                        {f.winner ? <b>{f.winner}</b> : null}
+                        {f.method ? ` · ${f.method}` : ""}
+                        {f.round ? ` · R${f.round}` : ""}
+                      </span>
+                      <span className="tuf-class tuf-class-professional">{f.weight_class} final</span>
+                      <span className="tuf-ep">{f.event} · {f.date}</span>
+                    </span>
+                  </li>
+                ))}
             </ul>
           </>
         ) : season.final_bouts?.length ? (

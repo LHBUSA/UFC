@@ -1,0 +1,95 @@
+{
+ "_about": "First-party UFC.com statements that establish the TUF 33 tournament finals: which bout, on which card, on which date, and who won. Read 2026-09-13 (short quotes only; pages not redistributed). Used by scripts/tuf/apply_tuf33_finale_links.mjs. The Paramount+ listing title is NOT used as authority.",
+ "retrieved": "2026-09-13",
+ "sources": {
+  "episode_12_recap": {
+   "url": "https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap",
+   "title": "The Ultimate Fighter Season 33 | Episode 12 Recap | UFC",
+   "published_on_site": "2025-08-13T12:21:00-04:00",
+   "family": "ufc_com_recap",
+   "quotes": [
+    "Donchencko and Dixon go head-to-head to see who will face Sezinando in the welterweight finale.",
+    "Finale pairings face off: Morales vs Idiris (flyweight), Sezinando vs Donchenko (welterweight)"
+   ],
+   "states": "the welterweight semi-final is Donchenko vs Dixon; the winner faces Sezinando in the finale; the finale pairings are Morales vs Idiris and Sezinando vs Donchenko"
+  },
+  "ufc319_weigh_in": {
+   "url": "https://www.ufc.com/news/official-weigh-results-ufc-319-du-plessis-vs-chimaev",
+   "title": "Official Weigh-In Results | UFC 319: Du Plessis vs Chimaev | UFC",
+   "published_on_site": "2025-08-15T14:00:00-04:00",
+   "family": "ufc_com_event",
+   "quotes": ["TUF Flyweight Finale Bout: Alibi Idiris (126) vs Joseph Morales (126)", "August 16 at United Center"],
+   "states": "the TUF flyweight finale is Idiris vs Morales on UFC 319, August 16, 2025"
+  },
+  "ufc319_updates": {
+   "url": "https://www.ufc.com/news/updates-ufc-319-du-plessis-vs-chimaev",
+   "title": "Updates to UFC 319: Du Plessis vs Chimaev | UFC",
+   "published_on_site": "2025-08-15T12:38:25-04:00",
+   "family": "ufc_com_event",
+   "quotes": ["Due to injury, the following bouts are being rescheduled to a later date: The Ultimate Fighter season 33 welterweight finale between Rodrigo Sezinando and Daniil Donchenko."],
+   "states": "the welterweight finale was moved off UFC 319"
+  },
+  "noche_weigh_in": {
+   "url": "https://www.ufc.com/news/official-weigh-in-results-noche-lopes-vs-silva",
+   "title": "Official Weigh-In Results | Noche UFC | UFC",
+   "published_on_site": "2025-09-12T10:00:00-04:00",
+   "family": "ufc_com_event",
+   "quotes": ["TUF Welterweight Finale Bout: Rodrigo Sezinando (170.5) vs Daniil Donchenko (171)", "September 13 in San Antonio"],
+   "states": "the TUF welterweight finale is Sezinando vs Donchenko on Noche UFC, September 13, 2025"
+  },
+  "noche_prelim_results": {
+   "url": "https://www.ufc.com/news/prelim-live-results-fight-recaps-highlights-winner-backstage-interviews-noche-ufc-lopes-vs-silva",
+   "title": "Noche UFC: Lopes vs Silva Prelim Results | Fight Recaps, Highlights, Interviews & More From San Antonio",
+   "published_on_site": "2025-09-13T17:30:00-04:00",
+   "family": "ufc_com_event",
+   "quotes": ["Daniil Donchenko defeats Rodrigo Sezinando by TKO (strikes) at 4:27 of Round 1", "Daniel Donchenko is The Ultimate Fighter Season 33 welterweight tournament winner."],
+   "states": "Donchenko won the welterweight final by TKO (strikes), R1 4:27"
+  },
+  "profile_joseph_morales": {
+   "url": "https://www.ufc.com/athlete/joseph-morales",
+   "title": "Joseph Morales | UFC",
+   "family": "ufc_com_athlete",
+   "quotes": ["UFC 319 (8/16/25) Morales submitted Alibi Idiris via triangle choke at 3:04 of the second round to win The Ultimate Fighter Season 33 flyweight final"],
+   "states": "Morales won the flyweight final at UFC 319, triangle choke R2 3:04"
+  },
+  "profile_alibi_idiris": {
+   "url": "https://www.ufc.com/athlete/alibi-idiris",
+   "title": "Alibi Idiris | UFC",
+   "family": "ufc_com_athlete",
+   "quotes": ["UFC 319 (8/16/25) Idiris was submitted by Joseph Morales via triangle choke at 3:04 of the second round in The Ultimate Fighter Season 33 flyweight final"],
+   "states": "Idiris lost the flyweight final at UFC 319"
+  },
+  "profile_daniil_donchenko": {
+   "url": "https://www.ufc.com/athlete/daniil-donchenko",
+   "title": "Daniil Donchenko | UFC",
+   "family": "ufc_com_athlete",
+   "quotes": ["UFC Fight Night (9/13/25) Donchenko stopped Rodrigo Sezinando via strikes at 4:27 of the first round to win The Ultimate Fighter Season 33 welterweight final", "Semifinals – Donchenko defeated Matt Dixon via first-round TKO"],
+   "states": "Donchenko won the welterweight final on 9/13/25; Matt Dixon was his semi-final opponent"
+  },
+  "profile_rodrigo_sezinando": {
+   "url": "https://www.ufc.com/athlete/rodrigo-sezinando",
+   "title": "Rodrigo Sezinando | UFC",
+   "family": "ufc_com_athlete",
+   "quotes": ["UFC Fight Night (9/13/25) Sezinando was stopped by Daniil Donchenko via strikes at 4:27 of the first round in The Ultimate Fighter Season 33 welterweight final"],
+   "states": "Sezinando lost the welterweight final on 9/13/25"
+  }
+ },
+ "finals": {
+  "Flyweight": {
+   "a": "Joseph Morales", "b": "Alibi Idiris", "winner": "Joseph Morales",
+   "ufc_bout_id": "aa7c0491-43f3-4c90-a668-10ccbdc118ac",
+   "event": "UFC 319: Du Plessis vs. Chimaev", "ufc_com_event_title": "UFC 319: Du Plessis vs Chimaev", "event_date": "2025-08-16",
+   "method": "Submission (triangle choke)", "round": 2, "time": "3:04",
+   "designation_sources": ["ufc319_weigh_in", "profile_joseph_morales", "profile_alibi_idiris", "episode_12_recap"],
+   "winner_sources": ["profile_joseph_morales", "profile_alibi_idiris"]
+  },
+  "Welterweight": {
+   "a": "Daniil Donchenko", "b": "Rodrigo Sezinando", "winner": "Daniil Donchenko",
+   "ufc_bout_id": "94616427-2d11-4216-b248-bc57e3ab83e2",
+   "event": "UFC Fight Night: Lopes vs. Silva", "ufc_com_event_title": "Noche UFC: Lopes vs Silva", "event_date": "2025-09-13",
+   "method": "TKO (strikes)", "round": 1, "time": "4:27",
+   "designation_sources": ["noche_weigh_in", "noche_prelim_results", "profile_daniil_donchenko", "profile_rodrigo_sezinando", "ufc319_updates", "episode_12_recap"],
+   "winner_sources": ["noche_prelim_results", "profile_daniil_donchenko", "profile_rodrigo_sezinando"]
+  }
+ }
+}

@@ -1,120 +1,155 @@
-/* TUF 33 finale linkage: the held proposals, tested against the exact verifier and a
- * read-only snapshot of every canonical bout involving a TUF 33 finalist. Nothing here
- * applies a link; each test works on an in-memory copy of the season data. */
+/* TUF 33 finale linkage, as applied from first-party UFC evidence
+ * (scripts/tuf/apply_tuf33_finale_links.mjs). Tested against the exact verifier and
+ * a read-only snapshot of every canonical bout involving a TUF 33 finalist. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import crypto from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { verifyBout } from './boutVerification.mjs';
 
 const read = (rel) => JSON.parse(fs.readFileSync(new URL(rel, import.meta.url), 'utf8'));
 const snapshot = read('./fixtures/tuf33_finalist_bouts_2026-09-13.json');
-const proposal = read('../evidence/tuf33_finale_link_proposal_2026-09-13.json');
-const simulation = read('../evidence/tuf33_finale_links_matrix_simulation_2026-09-13.json');
+const evidence = read('../evidence/tuf33_ufc_first_party_finale_evidence_2026-09-13.json');
 const inventory = read('../../../web/data/tuf/seasons.json');
 const row = inventory.seasons.find((s) => s.slug === 'tuf-33');
-const season = () => read('../../../web/data/tuf/seasons/tuf-33.json');
+const season = read('../../../web/data/tuf/seasons/tuf-33.json');
 const TODAY = '2026-09-13';
 const WELTER = '94616427-2d11-4216-b248-bc57e3ab83e2';
 const FLY = 'aa7c0491-43f3-4c90-a668-10ccbdc118ac';
+const BATCH = 'tuf33-finals-exact-linkage';
 
-const finalsOf = (s) => s.bracket.flatMap((wc) => wc.stages.filter((st) => st.stage === 'final').flatMap((st) => st.bouts.map((b) => ({ ...b, weight_class: wc.weight_class, stage: 'final' }))));
+const stage = (wc, st) => season.bracket.find((b) => b.weight_class === wc).stages.find((s) => s.stage === st).bouts.map((b) => ({ ...b, weight_class: wc, stage: st }));
+const final = (wc) => stage(wc, 'final')[0];
 const pairRows = (b) => Object.values(snapshot.bouts).filter((r) => [r.fighter_a_id, r.fighter_b_id].sort().join('|') === [b.a_fighter_id, b.b_fighter_id].sort().join('|'));
 const verify = (b, seasonRow = row, rows = pairRows(b)) => verifyBout({ bout: b, seasonRow, episodes: null, pairRows: rows, today: TODAY });
-const withLinks = (divisions) => {
-  const s = season();
-  for (const rec of proposal.records.filter((r) => divisions.includes(r.final.weight_class))) {
-    const b = s.bracket.find((wc) => wc.weight_class === rec.final.weight_class).stages.find((st) => st.stage === 'final').bouts.find((x) => x.a === rec.final.a && x.b === rec.final.b);
-    b.verified_against = rec.new;
-  }
-  return finalsOf(s);
-};
+const one = (v) => (Array.isArray(v) ? v[0] : v);
 
-test('TUF 33 today: both finals are unverified for want of an exact link, and the proposal is not applied', () => {
-  const finals = finalsOf(season());
-  assert.equal(finals.length, 2);
-  for (const f of finals) {
+test('Matt Dixon is the welterweight semi-final opponent, not a finalist; Rodrigo Sezinando is the finalist', () => {
+  const semi = stage('Welterweight', 'semi_final').find((b) => [b.a, b.b].includes('Matt Dixon'));
+  assert.deepEqual([semi.a, semi.b, semi.winner], ['Daniil Donchenko', 'Matt Dixon', 'Daniil Donchenko']);
+  const f = final('Welterweight');
+  assert.deepEqual([f.a, f.b], ['Daniil Donchenko', 'Rodrigo Sezinando']);
+  const inv = row.finalists.find((x) => x.weight_class === 'Welterweight');
+  assert.deepEqual(inv.fighters, ['Daniil Donchenko', 'Rodrigo Sezinando']);
+  assert.deepEqual(inv.fighter_ids, [f.a_fighter_id, f.b_fighter_id]);
+  assert.ok(!row.finalists.some((x) => x.fighters.includes('Matt Dixon')));
+  assert.ok(!row.final_bouts.some((x) => [x.a, x.b].includes('Matt Dixon')));
+  const c = row.corrections.find((x) => x.field === 'finalists');
+  assert.equal(c.repair, `${BATCH}/welterweight-finalists`);
+  assert.deepEqual(c.old.find((x) => x.weight_class === 'Welterweight').fighters, ['Daniil Donchenko', 'Matt Dixon'], 'the draft value is kept');
+  assert.ok(c.sources.some((x) => x.url === 'https://www.ufc.com/news/ultimate-fighter-season-33-episode-12-recap'));
+});
+
+test('each final carries the exact explicit bout link and resolves only to its own bout', () => {
+  for (const [wc, id, event, date, winner] of [
+    ['Flyweight', FLY, 'UFC 319: Du Plessis vs. Chimaev', '2025-08-16', 'Joseph Morales'],
+    ['Welterweight', WELTER, 'UFC Fight Night: Lopes vs. Silva', '2025-09-13', 'Daniil Donchenko'],
+  ]) {
+    const f = final(wc);
+    assert.equal(f.verified_against, `ufc_bouts:${id}`);
+    assert.equal(f.ufc_bout_id, undefined, 'one explicit link, not two');
+    const rows = pairRows(f);
+    assert.equal(rows.length, 1, `${wc}: the only bout between the finalists`);
     const v = verify(f);
-    assert.equal(v.result, 'partial', `${f.a} vs ${f.b}`);
-    assert.equal(v.actualFinaleDbBout, null);
-    assert.match(v.finaleLinkReason, /no explicit bout link and no recorded finale date or event/);
-    assert.equal(f.verified_against, undefined, 'no link written to the season');
-    assert.equal(f.ufc_bout_id, undefined);
-  }
-  assert.equal(pairRows(finals.find((f) => f.weight_class === 'Welterweight')).length, 1, 'exactly one canonical bout between the welterweight finalists');
-  assert.equal(pairRows(finals.find((f) => f.weight_class === 'Flyweight')).length, 1, 'exactly one canonical bout between the flyweight finalists');
-});
-
-test('the proposal holds both records: neither final has an exact finale-event record', () => {
-  assert.deepEqual(proposal.records.map((r) => [r.final.weight_class, r.status, r.new]), [['Welterweight', 'held', `ufc_bouts:${WELTER}`], ['Flyweight', 'held', `ufc_bouts:${FLY}`]]);
-  assert.match(proposal.records[0].hold_reason, /NOT PROVEN EXACTLY/);
-  assert.match(proposal.records[1].hold_reason, /CONTRADICTED/);
-  for (const r of proposal.records) {
-    assert.ok(r.repair_key && r.field === 'verified_against' && r.old === null && r.canonical_bout && r.finale_link_provenance, r.repair_key);
-    assert.deepEqual([...r.canonical_bout.fighter_ids].sort(), [...Object.values(snapshot.bouts).find((b) => b.id === r.canonical_bout.ufc_bout_id) ? [snapshot.bouts[r.canonical_bout.ufc_bout_id].fighter_a_id, snapshot.bouts[r.canonical_bout.ufc_bout_id].fighter_b_id] : []].sort());
+    assert.deepEqual([v.result, v.actualFinaleDbBout.id, v.actualFinaleDbBout.linked_by, v.actualFinaleDbBout.event, v.actualFinaleDbBout.date], ['verified', id, 'explicit_bout_id', event, date]);
+    assert.equal(f.winner, winner);
+    const fb = row.final_bouts.find((x) => x.weight_class === wc);
+    assert.deepEqual([fb.ufc_bout_id, fb.verified_against, fb.event, fb.date, fb.winner], [id, `ufc_bouts:${id}`, event, date, winner]);
+    assert.deepEqual(row.winners.find((w) => w.weight_class === wc), { weight_class: wc, fighter: winner, fighter_id: winner === f.a ? f.a_fighter_id : f.b_fighter_id });
   }
 });
 
-test('each proposed explicit link resolves exactly its own final and verifies no other', () => {
-  const welterOnly = withLinks(['Welterweight']);
-  const w = welterOnly.find((f) => f.weight_class === 'Welterweight'), fl = welterOnly.find((f) => f.weight_class === 'Flyweight');
-  const vw = verify(w), vf = verify(fl);
-  assert.deepEqual([vw.result, vw.actualFinaleDbBout.id, vw.actualFinaleDbBout.linked_by], ['verified', WELTER, 'explicit_bout_id']);
-  assert.equal(vf.result, 'partial', 'linking the welterweight final does not verify the flyweight final');
-  const both = withLinks(['Welterweight', 'Flyweight']);
-  assert.deepEqual(both.map((f) => verify(f).actualFinaleDbBout.id).sort(), [FLY, WELTER].sort());
-  /* a link pointed at the other final's bout is not between these ids: fail closed */
-  const crossed = { ...w, verified_against: `ufc_bouts:${FLY}` };
-  assert.equal(verify(crossed, row, [...pairRows(w), snapshot.bouts[FLY]]).actualFinaleDbBout, null);
+test('the evidence, snapshot and first-party result agree for both finals', () => {
+  for (const [wc, ev] of Object.entries(evidence.finals)) {
+    const snap = snapshot.bouts[ev.ufc_bout_id];
+    const r = one(snap.result); const e = one(snap.event);
+    assert.equal(e.name, ev.event); assert.equal(e.event_date, ev.event_date);
+    assert.equal(`${Math.floor(r.time_sec / 60)}:${String(r.time_sec % 60).padStart(2, '0')}`, ev.time);
+    for (const k of ev.designation_sources) assert.match(evidence.sources[k].url, /^https:\/\/www\.ufc\.com\//, `${wc}: first-party only`);
+  }
+  assert.match(evidence.sources.ufc319_weigh_in.quotes[0], /^TUF Flyweight Finale Bout: Alibi Idiris .* vs Joseph Morales/);
+  assert.match(evidence.sources.noche_weigh_in.quotes[0], /^TUF Welterweight Finale Bout: Rodrigo Sezinando .* vs Daniil Donchenko/);
+  assert.match(evidence.sources.ufc319_updates.quotes[0], /welterweight finale between Rodrigo Sezinando and Daniil Donchenko/);
+  assert.ok(!JSON.stringify(evidence.sources).includes('paramountplus'), 'the Paramount+ listing is not an authority');
 });
 
-test('no later or other bout of a finalist can satisfy a final', () => {
-  const [w] = withLinks([]).filter((f) => f.weight_class === 'Welterweight');
-  /* every other canonical bout of either finalist, pointed at by an explicit link */
-  const others = Object.values(snapshot.bouts).filter((b) => b.id !== WELTER && [b.fighter_a_id, b.fighter_b_id].some((id) => [w.a_fighter_id, w.b_fighter_id].includes(id)));
-  assert.ok(others.length >= 3, 'the finalists have later professional bouts');
-  for (const o of others) assert.equal(verify({ ...w, verified_against: `ufc_bouts:${o.id}` }, row, [...pairRows(w), o]).result, 'partial', `other bout ${o.id}`);
-  /* a hypothetical later rematch with the same winner, unlinked, verifies nothing */
-  const rematch = { ...snapshot.bouts[WELTER], id: 'later-rematch', event: { name: 'UFC Later Card', event_date: '2027-01-01' } };
-  assert.equal(verify(w, row, [...pairRows(w), rematch]).result, 'partial');
-  /* with the explicit link, only the linked bout counts even when a rematch exists */
-  assert.equal(verify({ ...w, verified_against: `ufc_bouts:${WELTER}` }, row, [rematch, ...pairRows(w)]).actualFinaleDbBout.id, WELTER);
+test('no later or other bout of a finalist can satisfy either final', () => {
+  for (const wc of ['Flyweight', 'Welterweight']) {
+    const f = { ...final(wc) };
+    const own = f.verified_against.slice('ufc_bouts:'.length);
+    const others = Object.values(snapshot.bouts).filter((b) => b.id !== own && [b.fighter_a_id, b.fighter_b_id].some((id) => [f.a_fighter_id, f.b_fighter_id].includes(id)));
+    assert.ok(others.length >= 1, `${wc}: finalists have other professional bouts`);
+    /* UFC also states the winner (an official source on the bout), so the result is
+     * verified either way. The assertion is on the database LINK: no other bout may
+     * ever become this final's finale row. */
+    for (const o of others) {
+      const v = verify({ ...f, verified_against: `ufc_bouts:${o.id}` }, row, [...pairRows(f), o]);
+      assert.equal(v.actualFinaleDbBout, null, `${wc}: other bout ${o.id} is not linked`);
+      assert.equal(v.dbFinaleVerified, false);
+      assert.ok(!v.evidence.includes('finale_result_row'));
+    }
+    const rematch = { ...snapshot.bouts[own], id: 'later-rematch', event: { name: 'UFC Later Card', event_date: '2027-01-01' } };
+    const unlinked = { ...f }; delete unlinked.verified_against;
+    const vu = verify(unlinked, { ...row, final_bouts: [], finale_event: null, finale_date: null }, [...pairRows(f), rematch]);
+    assert.equal(vu.actualFinaleDbBout, null, `${wc}: an unlinked rematch links nothing`);
+    assert.equal(vu.dbFinaleVerified, false);
+    assert.equal(verify(f, row, [rematch, ...pairRows(f)]).actualFinaleDbBout.id, own, `${wc}: the explicit link wins over a rematch`);
+  }
 });
 
-test('exact event + date + pair fallback still works, and the broadcaster headline alone does not', () => {
-  const [w] = withLinks([]).filter((f) => f.weight_class === 'Welterweight');
-  const exact = { ...row, final_bouts: [{ weight_class: 'Welterweight', a: w.a, b: w.b, event: 'UFC Fight Night: Lopes vs. Silva', date: '2025-09-13' }] };
-  const v = verify(w, exact);
-  assert.deepEqual([v.result, v.actualFinaleDbBout.id, v.actualFinaleDbBout.linked_by], ['verified', WELTER, 'recorded_finale_event_date_pair']);
-  const listingTitle = { ...row, final_bouts: [{ weight_class: 'Welterweight', a: w.a, b: w.b, event: 'TUF 33 Finale: Lopes vs. Silva', date: '2025-09-13' }] };
-  assert.equal(verify(w, listingTitle).actualFinaleDbBout, null, 'a headline correspondence is not an exact event');
-  const listingDate = { ...row, final_bouts: [{ weight_class: 'Welterweight', a: w.a, b: w.b, event: 'UFC Fight Night: Lopes vs. Silva', date: '2026-05-25' }] };
-  assert.equal(verify(w, listingDate).actualFinaleDbBout, null, 'the broadcaster listing date is not the fight date');
-  /* the flyweight bout is not on the only finale card any source names */
-  const [fl] = withLinks([]).filter((f) => f.weight_class === 'Flyweight');
-  assert.equal(verify(fl, { ...row, finale_event: 'UFC Fight Night: Lopes vs. Silva', finale_date: '2025-09-13' }).actualFinaleDbBout, null);
-});
-
-test('recorded explicit bout ids take precedence, and conflicting explicit links fail closed', () => {
-  const [w] = withLinks(['Welterweight']).filter((f) => f.weight_class === 'Welterweight');
-  const misleading = { ...row, final_bouts: [{ weight_class: 'Welterweight', a: w.a, b: w.b, event: 'Some Other Card', date: '2025-01-01' }] };
-  assert.equal(verify(w, misleading).actualFinaleDbBout.id, WELTER, 'the explicit link wins over a recorded event');
-  const conflicting = { ...w, ufc_bout_id: 'ffffffff-0000-0000-0000-000000000000' };
-  const v = verify(conflicting);
+test('conflicting explicit links fail closed', () => {
+  const f = final('Welterweight');
+  const v = verify({ ...f, ufc_bout_id: FLY });
   assert.equal(v.actualFinaleDbBout, null);
   assert.match(v.finaleLinkReason, /conflicting explicit bout links/);
+  const crossed = verify({ ...f, verified_against: `ufc_bouts:${FLY}` }, row, [...pairRows(f), snapshot.bouts[FLY]]);
+  assert.equal(crossed.actualFinaleDbBout, null, 'the other final\'s bout is not between these ids');
+  assert.equal(crossed.dbFinaleVerified, false);
 });
 
-test('simulation: only TUF 33 changes, finals verified moves only by the applied links, hub unchanged', () => {
-  assert.equal(simulation.before_equals_committed_main_matrix, true);
-  const before = simulation.states.before;
-  for (const [name, st] of Object.entries(simulation.states)) {
-    assert.deepEqual(st.other_seasons_changed_vs_before, [], `${name}: no other season changes (TUF 1-32, 24, 34, international, TUF 5/6 included)`);
-    assert.equal(st.totals.finals_verified - before.totals.finals_verified, st.applied.length, `${name}: finals verified change equals applied links`);
-    assert.equal(st.totals.finale_links_verified, before.totals.finale_links_verified, `${name}: professional finale links unchanged (classification still unverified)`);
-    assert.deepEqual(st.hub_cards, { Complete: 42, 'Complete + Verified': 1, 'Season ongoing': 1 }, `${name}: hub cards`);
-    assert.equal(st.tuf33.status, 'PARTIAL');
+test('no fuzzy event-name rule: UFC.com branding and the broadcaster title do not match the canonical event name', () => {
+  const f = { ...final('Welterweight') }; delete f.verified_against;
+  const withEvent = (event) => ({ ...row, final_bouts: [{ weight_class: 'Welterweight', a: f.a, b: f.b, event, date: '2025-09-13' }] });
+  assert.equal(verify(f, withEvent('UFC Fight Night: Lopes vs. Silva')).actualFinaleDbBout.id, WELTER, 'the exact canonical name still links');
+  assert.equal(verify(f, withEvent('Noche UFC: Lopes vs Silva')).actualFinaleDbBout, null, 'UFC.com branding is not a name match');
+  assert.equal(verify(f, withEvent('TUF 33 Finale: Lopes vs. Silva')).actualFinaleDbBout, null, 'the broadcaster title is not a name match');
+  const norm = (p) => crypto.createHash('sha256').update(fs.readFileSync(new URL(p, import.meta.url), 'utf8').replace(/\r\n/g, '\n')).digest('hex');
+  assert.equal(norm('./boutVerification.mjs'), '108d8c143d285ee4e405514ebfc2920bcc0fa4617901c357473b6f0d5edf78d9', 'the exact verifier is unchanged from main 9415fea');
+  assert.equal(norm('../completeness_matrix.mjs'), 'b267434b68f2ab5cec20c5840c425d97e72b8ab296e019ab8272018bcb3039b0', 'the matrix is unchanged from main 9415fea');
+});
+
+test('both finals are professional from the exact finale bout and UFC\'s designation; winners carry an official source', () => {
+  for (const wc of ['Flyweight', 'Welterweight']) {
+    const f = final(wc);
+    assert.equal(f.classification, 'professional');
+    assert.match(f.classification_source, /exact finale bout ufc_bouts/);
+    assert.deepEqual(f.classification_basis.affirmative.map((x) => [x.family, x.evidence_level]), [['our_records', 'canonical'], ['ufc_com_event', 'official']]);
+    const cls = f.corrections.find((c) => c.field === 'classification');
+    assert.deepEqual([cls.old, cls.new, cls.repair], ['unverified', 'professional', `${BATCH}/${wc.toLowerCase()}-final/classification`]);
+    const link = f.corrections.find((c) => c.field === 'verified_against');
+    assert.deepEqual([link.old, link.repair], [null, `${BATCH}/${wc.toLowerCase()}-final/link`]);
+    const ws = f.sources.find((s) => s.fields.includes('winner'));
+    assert.ok(ws.repair.startsWith(BATCH) && /^https:\/\/www\.ufc\.com\//.test(ws.url));
   }
-  assert.equal(before.tuf33.final_not_verified, true);
-  assert.equal(simulation.states.welterweight.tuf33.final_not_verified, true, 'one link does not clear FINAL_NOT_VERIFIED');
-  assert.equal(simulation.states.both.tuf33.final_not_verified, false);
+});
+
+test('re-running the repair is idempotent', () => {
+  const script = fileURLToPath(new URL('../apply_tuf33_finale_links.mjs', import.meta.url));
+  const run = spawnSync(process.execPath, [script, '--check'], { encoding: 'utf8' });
+  assert.equal(run.status, 0, `${run.stdout}\n${run.stderr}`);
+});
+
+test('matrix: only TUF 33 changes, FINAL_NOT_VERIFIED clears, and finals verified moves by exactly two', () => {
+  const before = read('../evidence/tuf_completeness_2026-09-13.after_tuf5_tuf6_nsac.json');
+  const after = read('../evidence/tuf_completeness_2026-09-13.after_tuf33_finale_links.json');
+  const by = (m) => Object.fromEntries(m.seasons.map((s) => [s.slug, s]));
+  const B = by(before), A = by(after);
+  const changed = Object.keys(B).filter((k) => JSON.stringify(B[k]) !== JSON.stringify(A[k]));
+  assert.deepEqual(changed, ['tuf-33'], 'TUF 24, TUF 5, TUF 6 and every other season unchanged');
+  assert.ok(B['tuf-33'].blockers.includes('FINAL_NOT_VERIFIED'));
+  for (const gone of ['FINAL_NOT_VERIFIED', 'WINNER_UNRESOLVED', 'PROFESSIONAL_FINAL_NOT_LINKED']) assert.ok(!A['tuf-33'].blockers.includes(gone), gone);
+  assert.equal(after.totals.finals_verified - before.totals.finals_verified, 2);
+  assert.notEqual(A['tuf-33'].status, 'COMPLETE', 'other TUF 33 blockers remain; nothing is claimed complete');
 });
