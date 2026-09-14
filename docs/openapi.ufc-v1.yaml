@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: PropSports UFC API
-  version: 2026-09-11.1
+  version: 2026-09-14.1
   description: >-
     Read-only normalized UFC event, fighter, bout, result, round-stat, image,
     rankings and editorial data used by ufc.propbetedge.ai and future PropSports
@@ -418,12 +418,19 @@ paths:
     get:
       summary: Filter current Fight DNA snapshots (or stance splits) by one metric
       description: >-
-        North-star filter, e.g. `?metric=pace_retention_r3_vs_r1&min=0.9`. Filters run in PostgREST on the stored
-        MetricObject (`metrics-><key>->value` jsonb ordering, `metrics-><key>->>confidence`); only a fighter's latest
-        snapshot (<= `as_of`) qualifies; the candidate scan is capped at 1000 rows (PostgREST max_rows) (`meta.truncated`). With `stance`
-        the query runs over `ufc_fighter_stance_splits` for that opponent stance and `metric` must be one of
-        finish_rate, ko_rate, sub_rate, sig_diff_per_min, kd_per_15, td_landed_per_15 (registry aliases accepted).
-        Rows are `DnaQueryRow`, sorted by value (`order`, nulls last).
+        North-star filter, e.g. `?metric=pace_retention_r3_vs_r1&min=0.9`. Since 2026-09-14.1 (issue #27) the ranking
+        runs in SQL over the whole eligible population: each fighter's latest snapshot (or, with `stance`, latest split
+        against that stance) at or before `as_of` is resolved first, regardless of the metric filters; then the
+        MetricObject must exist, its confidence must be >= `min_confidence`, its numeric value must satisfy `min`/`max`
+        (an explicit null never satisfies a bound), and the fighter must satisfy `active`; then all matched rows are
+        ordered by value (`order`, nulls last in both directions, ties by fighter name then id); only then is `limit`
+        applied. Meta: `candidates` = fighters evaluated (one latest row each); `candidates_total` = size of that
+        eligible population (equal to `candidates`); `truncated` = whether the ranking saw an incomplete population
+        (always false); `matched` = fighters that passed the filters; `count` = rows returned. Before 2026-09-14.1 the
+        ranking covered only the first 1000 history rows by fighter UUID. With `stance` the query runs over
+        `ufc_fighter_stance_splits` for that opponent stance (and requires `appearances >= min_appearances`) and `metric`
+        must be one of finish_rate, ko_rate, sub_rate, sig_diff_per_min, kd_per_15, td_landed_per_15 (registry aliases
+        accepted). Rows are `DnaQueryRow`.
       tags: [Fight DNA]
       parameters:
         - { name: metric, in: query, required: true, schema: { type: string, pattern: '^[a-z][a-z0-9_]{1,63}$' } }

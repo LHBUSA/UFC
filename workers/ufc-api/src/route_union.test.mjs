@@ -44,7 +44,7 @@ function installStub() {
     if (init.method && init.method !== "GET" && init.method !== "HEAD") {
       throw new Error(`stub: the read API must never write (${init.method} ${url.pathname})`);
     }
-    const m = url.pathname.match(/^\/rest\/v1\/([a-z_]+)$/);
+    const m = url.pathname.match(/^\/rest\/v1\/((?:rpc\/)?[a-z_]+)$/);
     if (!m) return new Response(JSON.stringify({ statusCode: "404" }), { status: 404 });
     seen.push(m[1]);
     let rows = ROWS[m[1]] || [];
@@ -73,7 +73,7 @@ const call = async (path, method = "GET") => {
 const DNA_EMPTY = ["dna_not_available"];
 const LOST_BY_MAIN = [
   ["/v1/ufc/dna/metrics", "ufc_dna_metric_definitions"],
-  ["/v1/ufc/dna/query?metric=sig_landed_per_min&min_confidence=insufficient", "ufc_fighter_dna_snapshots", ["unknown_metric", "dna_not_available"]],
+  ["/v1/ufc/dna/query?metric=sig_landed_per_min&min_confidence=insufficient", "rpc/ufc_dna_metric_ranking", ["unknown_metric", "dna_not_available", "upstream_error"]],
   ["/v1/ufc/videos", "ufc_videos"],
   [`/v1/ufc/bouts/${BOUT}/ledger`, "ufc_fight_state_ledger"],
   [`/v1/ufc/bouts/${BOUT}/videos`, "ufc_videos"],

@@ -297,7 +297,59 @@ function applyParams(rows, params) {
   return { rows: out.slice(offset, offset + limit).map((r) => projectSelect(r, select)), total: out.length };
 }
 
-function installMock({ tables, storage = {}, missingTables = [] }) {
+/* Independent JS reference for public.ufc_dna_metric_ranking (migration
+ * 20260914120000), used only to answer the RPC in these Worker tests. The SQL itself
+ * is proven in supabase/migrations/tests/20260914120000_ufc_dna_metric_ranking.test.sql
+ * and against production data. */
+const CONF_RANK = { insufficient: 0, low: 1, medium: 2, high: 3 };
+function referenceRanking(tables, q) {
+  const metric = q.get("p_metric");
+  const version = Number(q.get("p_definition_version") ?? 1);
+  const asOf = q.get("p_as_of");
+  const floor = CONF_RANK[q.get("p_min_confidence") ?? "low"];
+  const min = q.has("p_min") ? Number(q.get("p_min")) : null;
+  const max = q.has("p_max") ? Number(q.get("p_max")) : null;
+  const active = q.has("p_active") ? q.get("p_active") === "true" : null;
+  const asc = q.get("p_order") === "asc";
+  const limit = Number(q.get("p_limit") ?? 50);
+  const stance = q.get("p_stance");
+  const minApp = Number(q.get("p_min_appearances") ?? 1);
+  const source = stance ? tables.ufc_fighter_stance_splits : tables.ufc_fighter_dna_snapshots;
+  const latest = new Map();
+  for (const r of source) {
+    if (r.definition_version !== version || (asOf && r.as_of_date > asOf) || (stance && r.opponent_stance !== stance)) continue;
+    const prev = latest.get(r.fighter_id);
+    if (!prev || r.as_of_date > prev.as_of_date) latest.set(r.fighter_id, r);
+  }
+  const fighters = new Map(tables.ufc_fighters.map((f) => [f.id, f]));
+  const eligible = [...latest.values()].filter((r) => fighters.has(r.fighter_id) && (!stance || r.appearances >= minApp));
+  const num = (m) => (typeof m?.value === "number" ? m.value : null);
+  const matched = eligible.filter((r) => {
+    const m = r.metrics?.[metric];
+    if (!m || typeof m !== "object" || Array.isArray(m) || !("value" in m)) return false;
+    if (!(m.confidence in CONF_RANK) || CONF_RANK[m.confidence] < floor) return false;
+    if (min !== null && !(num(m) !== null && num(m) >= min)) return false;
+    if (max !== null && !(num(m) !== null && num(m) <= max)) return false;
+    if (active !== null && fighters.get(r.fighter_id).is_active !== active) return false;
+    return true;
+  });
+  matched.sort((x, y) => {
+    const a = num(x.metrics[metric]); const b = num(y.metrics[metric]);
+    if (a === null || b === null) { if (a !== b) return a === null ? 1 : -1; }
+    else if (a !== b) return asc ? a - b : b - a;
+    return String(fighters.get(x.fighter_id).name || "").localeCompare(String(fighters.get(y.fighter_id).name || "")) || String(x.fighter_id).localeCompare(String(y.fighter_id));
+  });
+  const payload = (r) => stance
+    ? { opponent_stance: r.opponent_stance, appearances: r.appearances, wins: r.wins, losses: r.losses, draws: r.draws, no_contests: r.no_contests, ko_tko_wins: r.ko_tko_wins, submission_wins: r.submission_wins, decision_wins: r.decision_wins, stat_bouts: r.stat_bouts, stat_rounds: r.stat_rounds, observed_seconds: r.observed_seconds, confidence: r.confidence }
+    : { sample_bouts: r.sample_bouts, sample_completed_bouts: r.sample_completed_bouts, sample_stat_bouts: r.sample_stat_bouts, sample_rounds: r.sample_rounds, sample_seconds: r.sample_seconds, coverage_status: r.coverage_status };
+  return {
+    rows: matched.slice(0, Math.max(limit, 0)).map((r, i) => ({ ...payload(r), fighter_id: r.fighter_id, as_of_date: r.as_of_date, metric: r.metrics[metric], rank: i + 1 })),
+    eligible: eligible.length,
+    matched: matched.length,
+  };
+}
+
+function installMock({ tables, storage = {}, missingTables = [], rpcOverride = null }) {
   const calls = [];
   globalThis.fetch = async (input, init = {}) => {
     const url = new URL(typeof input === "string" ? input : input.url);
@@ -307,6 +359,15 @@ function installMock({ tables, storage = {}, missingTables = [] }) {
       const key = href.startsWith(`${MEDIA_BASE}/`) ? href.slice(MEDIA_BASE.length + 1) : url.pathname.replace("/storage/v1/object/public/ufc-media/", "");
       if (key in storage) return new Response(JSON.stringify(storage[key]), { status: 200, headers: { "Content-Type": "application/json" } });
       return new Response(JSON.stringify({ statusCode: "404", error: "not_found" }), { status: 400 });
+    }
+    if (url.pathname === "/rest/v1/rpc/ufc_dna_metric_ranking") {
+      assert.equal(init.method ?? "GET", "GET", "mock: the read API calls the STABLE ranking function over GET");
+      assert.equal(init.headers?.apikey, "service-key", "mock: service key must be sent");
+      if (rpcOverride) return rpcOverride(url.searchParams);
+      if (missingTables.includes("ufc_fighter_dna_snapshots")) {
+        return new Response(JSON.stringify({ code: "PGRST202", message: "Could not find the function public.ufc_dna_metric_ranking in the schema cache" }), { status: 404 });
+      }
+      return new Response(JSON.stringify(referenceRanking(tables, url.searchParams)), { status: 200, headers: { "Content-Type": "application/json" } });
     }
     const m = url.pathname.match(/^\/rest\/v1\/([a-z_]+)$/);
     if (!m) return new Response("nope", { status: 404 });
@@ -1523,11 +1584,15 @@ test("dna query filters current snapshots by a metric value and confidence; olde
   assert.equal(row.metric.confidence, "medium");
   assert.equal(row.metric_key, "pace_retention_r3_vs_r1");
   assert.equal(row.sample.coverage_status, "high");
-  assert.equal(body.meta.candidates, 4, "four snapshot rows pass the raw filter before the latest-per-fighter rule");
+  assert.equal(body.meta.candidates, 3, "candidates = eligible population: one latest snapshot per fighter (three fighters have snapshots)");
+  assert.equal(body.meta.candidates_total, 3);
   assert.equal(body.meta.matched, 1);
   assert.equal(body.meta.truncated, false);
-  assert.deepEqual(body.meta.filter.value, ["metrics->pace_retention_r3_vs_r1->value=gte.0.9"]);
-  assert.ok(body.meta.note.includes("capped at 1000"));
+  assert.equal(body.meta.population, "latest_snapshot_per_fighter");
+  assert.deepEqual(body.meta.filter.value, ["value>=0.9"]);
+  assert.equal(body.meta.filter.function, "ufc_dna_metric_ranking");
+  assert.ok(body.meta.note.includes("Ranked in SQL over every eligible fighter"));
+  assert.ok(!body.meta.note.includes("capped"));
 
   const older = await call("/v1/ufc/dna/query?metric=pace_retention_r3_vs_r1&min=0.9&as_of=2025-06-01");
   assert.deepEqual(older.body.data.map((r) => [r.fighter.id, r.as_of_date]), [[F_OPP, "2025-01-01"], [F_MEDIA, "2025-04-14"]], "as_of makes the 2025-01-01 opponent snapshot current; sorted by value desc");
@@ -1556,6 +1621,58 @@ test("dna query filters current snapshots by a metric value and confidence; olde
   const gone = await call("/v1/ufc/dna/query?metric=finish_rate");
   assert.equal(gone.status, 503);
   assert.equal(gone.body.error.code, "dna_not_available");
+});
+
+test("dna query ranks in ONE read-only RPC and never scans snapshot history (issue #27 mutation guard)", async () => {
+  const calls = installMock({ tables: dnaTables });
+  const { status, body } = await call("/v1/ufc/dna/query?metric=sig_landed_per_min&min_confidence=medium&min=1.5&max=9&as_of=2026-09-07&order=asc&active=true&limit=7");
+  assert.equal(status, 200);
+  const rpc = calls.filter((c) => c.startsWith("/rest/v1/rpc/"));
+  assert.equal(rpc.length, 1, "exactly one ranking call");
+  const q = new URL(`https://x${rpc[0]}`).searchParams;
+  assert.deepEqual(Object.fromEntries(q), {
+    p_metric: "sig_landed_per_min", p_definition_version: "1", p_as_of: "2026-09-07", p_min_confidence: "medium",
+    p_min: "1.5", p_max: "9", p_active: "true", p_order: "asc", p_limit: "7",
+  }, "null arguments (stance, min_appearances) are omitted so SQL defaults apply");
+  /* The defect was a capped history scan: any direct read of the snapshot/split tables
+   * from this route (a limit=1000 window, a latest-per-fighter re-read) reintroduces it. */
+  assert.deepEqual(calls.filter((c) => /ufc_fighter_(dna_snapshots|stance_splits)/.test(c)), [], "dna/query must not read DNA history directly");
+  assert.ok(calls.every((c) => !/limit=1000/.test(c)));
+  assert.ok(body.meta.truncated === false && body.meta.candidates === body.meta.candidates_total);
+
+  const stanceCalls = installMock({ tables: dnaTables });
+  await call("/v1/ufc/dna/query?metric=stance_ko_rate&stance=southpaw&min_appearances=3");
+  const sq = new URL(`https://x${stanceCalls.find((c) => c.startsWith("/rest/v1/rpc/"))}`).searchParams;
+  assert.equal(sq.get("p_stance"), "SOUTHPAW");
+  assert.equal(sq.get("p_metric"), "ko_rate");
+  assert.equal(sq.get("p_min_appearances"), "3");
+});
+
+test("dna query keeps SQL rank order, drops non-MetricObjects, and fails loudly on upstream errors", async () => {
+  const rows = [
+    { fighter_id: F_OPP, as_of_date: "2026-09-06", metric: { value: 9, confidence: "high" }, rank: 1, sample_bouts: 1 },
+    { fighter_id: F_MEDIA, as_of_date: "2026-09-06", metric: { value: 1, confidence: "high" }, rank: 2, sample_bouts: 2 },
+    { fighter_id: F_NOMEDIA, as_of_date: "2026-09-06", metric: null, rank: 3 },
+  ];
+  installMock({ tables: dnaTables, rpcOverride: () => new Response(JSON.stringify({ rows, eligible: 40, matched: 12 }), { status: 200 }) });
+  const ok = await call("/v1/ufc/dna/query?metric=sig_landed_per_min");
+  assert.deepEqual(ok.body.data.map((r) => r.fighter.id), [F_OPP, F_MEDIA], "order is SQL's; a non-MetricObject row is dropped, nothing synthesized");
+  assert.deepEqual([ok.body.meta.candidates, ok.body.meta.candidates_total, ok.body.meta.matched, ok.body.meta.count, ok.body.meta.truncated], [40, 40, 12, 2, false]);
+
+  installMock({ tables: dnaTables, rpcOverride: () => new Response(JSON.stringify({ rows: [], eligible: 0, matched: 0 }), { status: 200 }) });
+  const empty = await call("/v1/ufc/dna/query?metric=no_such_metric");
+  assert.equal(empty.status, 200);
+  assert.deepEqual(empty.body.data, []);
+  assert.equal(empty.body.meta.matched, 0);
+
+  installMock({ tables: dnaTables, rpcOverride: () => new Response("boom", { status: 500 }) });
+  const broken = await call("/v1/ufc/dna/query?metric=sig_landed_per_min");
+  assert.equal(broken.status, 502);
+  assert.equal(broken.body.error.code, "upstream_error");
+
+  installMock({ tables: dnaTables, rpcOverride: () => new Response(JSON.stringify([{ fighter_id: F_OPP }]), { status: 200 }) });
+  const shape = await call("/v1/ufc/dna/query?metric=sig_landed_per_min");
+  assert.equal(shape.status, 502, "an unexpected RPC shape is an error, never a partial ranking");
 });
 
 test("dna query with ?stance= runs over stance splits (fighters with >= N appearances vs a stance by KO rate)", async () => {

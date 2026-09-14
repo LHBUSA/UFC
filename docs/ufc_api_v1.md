@@ -57,6 +57,10 @@ Added in `2026-09-06.3` (Fight DNA, video, fight-state ledger; 60 s browser / 30
 - `GET /v1/ufc/videos`, `/v1/ufc/fighters/{id}/videos`, `/v1/ufc/events/{id}/videos`, `/v1/ufc/bouts/{id}/videos` — official-channel video; `?include=videos` on fighter, event and card.
 - `GET /v1/ufc/bouts/{id}/ledger`, `GET /v1/ufc/events/{id}/intelligence` — append-only fight-state ledger reads.
 
+Changed in `2026-09-14.1` (issue #27, ranked output changes; no field removed or renamed):
+
+- `GET /v1/ufc/dna/query` now ranks the full eligible population in SQL (`public.ufc_dna_metric_ranking`): latest snapshot per fighter first, then filters, then ordering, then `limit`. It previously ranked inside the first 1000 history rows by fighter UUID (the default query ranked 98 of 2,782 qualifying fighters). `meta.candidates` / `meta.candidates_total` are now the eligible population (one latest row per fighter), `meta.truncated` is always `false`, and `meta.population = "latest_snapshot_per_fighter"` and `meta.filter.function` are added. A `min`/`max` bound no longer admits an explicit-null value.
+
 Added in `2026-09-11.1` (availability and weigh-ins):
 
 - `GET /v1/ufc/injuries?active=&state=&status_type=&fighter_id=&event_id=` — individually sourced availability events; no inferred diagnoses.
