@@ -174,7 +174,7 @@ async function mergeState(env, key, patchObj, { onlyIfAbsent = [] } = {}) {
 }
 
 /* Exposed for the offline lane tests only. */
-export const __test = { runIngest, runBoutCanary };
+export const __test = { runIngest, runBoutCanary, espnPass, loadContext };
 
 /* The ESPN totals and scorecard lanes, for bounded operator-run repair of
  * cards the daily pass no longer visits (a completed card is never re-walked).
