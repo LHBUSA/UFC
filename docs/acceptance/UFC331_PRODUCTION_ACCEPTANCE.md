@@ -151,7 +151,8 @@ Market freshness contract (fight-week v1, one shared module: `scripts/odds/fight
 
 - Age is measured from `observed_at`: when PropBetEdge last re-checked the market, using only observations at or before the cycle clock. A book that has not moved its price is still current. `source_last_update` is provenance only.
 - CURRENT (stored status `FRESH`): consensus and best American odds, de-vigged market probability and PBE Edge are published.
-- Past its band, STALE: the last observed odds may be shown with their age. No PBE Edge, no market-edge language, no elite tier.
+- Past its band, STALE: never current and never official. `pbe_delta_pts` stays null (the stored value is `stale_delta_pts`), no official columns, no elite tier.
+  PBE Picks may show the last observed odds, the de-vigged probability and the PBE Edge stored with them in the same evaluation, labelled Last observed with their age (owner decision 2026-09-15). The web never recomputes an edge.
 - UNAVAILABLE: no odds and no edge. It is never shown as stale.
 - STALE or UNAVAILABLE never blocks a model call.
 - Consensus odds are the median implied probability across the newest complete snapshot's books, converted back to American odds (vig included). Best odds are the most favourable price in that same snapshot, with its book. No book is carried forward from an older run.

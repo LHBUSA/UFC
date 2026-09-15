@@ -104,6 +104,11 @@ test('a stale market is never presented as a current edge', () => {
   assert.equal(stale.state, 'LAST_OBSERVED');
   assert.equal(stale.delta, null);
   assert.equal(stale.pick.consensus, 491, 'last observed odds stay visible');
+  assert.equal(stale.historicalDelta, null, 'a stored STALE row without a stored stale delta has no historical edge');
+  const storedStale = view.marketView({ status: 'STALE', devigged_pick: 0.1621, stale_delta_pts: 40.98, pbe_delta_pts: null, observed_at: '2026-09-15T13:06:08.935Z' }, { now: NOW });
+  assert.equal(storedStale.delta, null, 'never a current edge');
+  assert.equal(storedStale.historicalDelta, 40.98, 'the edge stored with that same evaluation is shown as history');
+  assert.equal(storedStale.implied, 0.1621);
   assert.equal(view.marketView({ status: 'STALE', devigged_pick: 0.2, pbe_delta_pts: 40 }, { now: NOW }).delta, null, 'even a stored delta is withheld when stale');
   const legacy = view.marketView({ devigged_pick: 0.17, pbe_delta_pts: 39.9 }, { now: NOW });
   assert.equal(legacy.state, 'LAST_OBSERVED', 'a comparison with no status is treated as stale');
@@ -118,6 +123,8 @@ test('a stale market is never presented as a current edge', () => {
   const later = view.marketView(current, { now: Date.parse('2026-09-15T19:16:08.935Z') });
   assert.equal(later.state, 'LAST_OBSERVED');
   assert.equal(later.delta, null);
+  assert.equal(later.historicalDelta, 10.12, 'expired at render: the stored pair becomes history, not a recomputation');
+  assert.equal(cur.historicalDelta, null, 'a current market has no historical edge');
   /* A legacy FRESH row without current_until expires at observed_at + its stored limit. */
   assert.equal(view.marketView({ status: 'FRESH', devigged_pick: 0.5, pbe_delta_pts: 3, observed_at: '2026-09-15T15:40:00Z', fresh_limit_minutes: 60 }, { now: NOW }).state, 'LAST_OBSERVED');
   /* A locked call keeps the comparison it locked with. */
@@ -223,6 +230,14 @@ test('public PBE surfaces carry no stale pre-launch copy and never read a call',
     assert.doesNotMatch(readFileSync(new URL(f, web), 'utf8'), /getAlgoCards|getAlgoBout|getAlgoRecord|AlgoPick|pick_probability|feature_vector|model_edge_pts/, `${f} must not read a call`);
   }
   assert.match(model, /access\.pro\s*\? <Link href="\/algo\/card" className="btn gold mdl-cta-main">Open PBE Picks<\/Link>\s*: <Link href="\/pro" className="btn gold mdl-cta-main">Unlock PBE Picks<\/Link>/);
+});
+
+test('last observed market reads as history, never Hidden, and never recomputes the edge on the web', () => {
+  const card = readFileSync(new URL('../components/AlgoPick.tsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(card, />Hidden<|"Hidden"|Not current<|Not recorded/, 'customer copy uses Last observed / Unavailable');
+  assert.match(card, /Last observed · not current/);
+  assert.match(card, /const histDelta = lastObserved \? mv\.historicalDelta : null;/, 'the historical edge is the stored value');
+  assert.doesNotMatch(card, /pick_probability\s*-\s*mv\.implied|prob\s*-\s*mv\.implied/, 'no web-side edge arithmetic');
 });
 
 test('PBE PICKS nav treatment: flagship class, PRO badge (never LIVE), reduced motion respected', () => {

@@ -19,12 +19,14 @@ export type AlgoGradeResult = "WIN" | "LOSS" | "DRAW" | "NC" | "VOID";
  * <= 730 min at T-7d, <= 370 min at T-72h, <= 60 min in the final 24h, where the
  * lock passes run). current_until is the instant it stops being current, so a
  * render later than the hourly cycle re-checks with a timestamp comparison, not a
- * second copy of the rules. STALE: last observed odds and age shown, no edge.
+ * second copy of the rules. Past it (or stored STALE): LAST OBSERVED - the odds,
+ * de-vigged probability and PBE Edge stored together in that same evaluation
+ * are shown as labelled history, never as current and never official.
  * Older rows (pre-2026-09-15) carry no status and are treated as stale. */
 export type AlgoMarketStatus = "FRESH" | "STALE" | "UNAVAILABLE";
 export type AlgoMarket = {
   status?: AlgoMarketStatus; source?: string; fresh_limit_minutes?: number; freshness_band?: string | null; age_minutes?: number | null;
-  current_until?: string | null; books?: number; raw_implied_pick?: number; devigged_pick?: number; pbe_delta_pts?: number | null;
+  current_until?: string | null; books?: number; raw_implied_pick?: number; devigged_pick?: number; pbe_delta_pts?: number | null; stale_delta_pts?: number | null;
   observed_at?: string; oldest_book_update?: string; newest_book_update?: string;
   opponent_fighter_id?: string | null; raw_implied_opponent?: number | null; devigged_opponent?: number | null;
   pick_consensus_odds?: number | null; pick_best_odds?: number | null; pick_best_book?: string | null;
@@ -41,6 +43,9 @@ export type AlgoMarketView = {
   raw: number | null;
   /** PBE Edge in probability points; only when CURRENT. */
   delta: number | null;
+  /** LAST_OBSERVED only: the PBE Edge stored in the same evaluation as this market
+   *  (model probability and snapshot scored together). History, never current. */
+  historicalDelta: number | null;
   /** Minutes between observation and `now` (or the lock, for a locked call). */
   age: number | null;
   observedAt: string | null;
@@ -84,7 +89,7 @@ export function oddsText(v: number | null | undefined): string {
 export function marketView(m: AlgoMarket, opts: { now?: number; lockedAt?: string | null } = {}): AlgoMarketView {
   const empty = { consensus: null, best: null, book: null };
   if (!m || m.status === "UNAVAILABLE" || m.devigged_pick == null) {
-    return { state: "UNAVAILABLE", implied: null, raw: null, delta: null, age: null, observedAt: null, books: null, band: null, limitMinutes: null, pick: empty, opponent: { fighterId: null, ...empty } };
+    return { state: "UNAVAILABLE", implied: null, raw: null, delta: null, historicalDelta: null, age: null, observedAt: null, books: null, band: null, limitMinutes: null, pick: empty, opponent: { fighterId: null, ...empty } };
   }
   const now = opts.now ?? Date.now();
   const observed = m.observed_at ? Date.parse(m.observed_at) : NaN;
@@ -102,6 +107,7 @@ export function marketView(m: AlgoMarket, opts: { now?: number; lockedAt?: strin
     state: current ? "CURRENT" : "LAST_OBSERVED",
     implied: m.devigged_pick ?? null, raw: m.raw_implied_pick ?? null,
     delta: current ? m.pbe_delta_pts ?? null : null,
+    historicalDelta: current ? null : m.pbe_delta_pts ?? m.stale_delta_pts ?? null,
     age, observedAt: m.observed_at ?? null, books: m.books ?? null, band: m.freshness_band ?? null, limitMinutes: m.fresh_limit_minutes ?? null,
     pick: { consensus: m.pick_consensus_odds ?? null, best: m.pick_best_odds ?? null, book: m.pick_best_book ?? null },
     opponent: { fighterId: m.opponent_fighter_id ?? null, consensus: m.opponent_consensus_odds ?? null, best: m.opponent_best_odds ?? null, book: m.opponent_best_book ?? null },

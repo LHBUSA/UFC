@@ -105,6 +105,12 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
   const delta = lockedOfficial ? p!.model_edge_pts : mv.delta;
   const marketState = lockedOfficial ? "CURRENT" : mv.state;
   const current = marketState === "CURRENT" && marketPick != null;
+  /* LAST OBSERVED: the stored market and the PBE Edge scored with it in the same
+   * evaluation row (a locked call's own row), labelled as history. Never current,
+   * never official, never recomputed against a newer probability. */
+  const lastObserved = marketState === "LAST_OBSERVED";
+  const pairProb = locked ? p!.pick_probability : b.pick_probability;
+  const histDelta = lastObserved ? mv.historicalDelta : null;
   const called = b.decision === "ELIGIBLE" && pickName && prob != null;
   const oddsFor = (id: string) => {
     const v = id === b.pick_fighter_id ? mv.pick.consensus : id === mv.opponent.fighterId ? mv.opponent.consensus : null;
@@ -171,17 +177,17 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
           <dl className={`pp-primary market-${marketState.toLowerCase()}`}>
             <div className="pp-cell pick"><dt>PBE Pick</dt><dd>{pickName}</dd></div>
             <div className="pp-cell"><dt>PBE probability</dt><dd>{pctText(prob)}</dd></div>
-            <div className="pp-cell odds"><dt>{marketState === "LAST_OBSERVED" ? "Last observed" : "Market"}</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.consensus != null ? <>{oddsText(mv.pick.consensus)} <small>consensus</small></> : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Not recorded</span> : "No current market"}</dd></div>
-            <div className="pp-cell odds"><dt>Best odds</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.best != null ? <>{oddsText(mv.pick.best)}{mv.pick.book && <small className="book">{mv.pick.book}</small>}</> : "\u2014"}</dd></div>
-            <div className="pp-cell"><dt>Market implied</dt><dd>{current ? pctText(marketPick) : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Not current</span> : "\u2014"}</dd></div>
-            <div className={`pp-cell delta ${delta == null ? "" : delta >= 0 ? "pos" : "neg"}`}><dt>PBE Edge</dt><dd>{current && delta != null ? deltaText(delta) : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Hidden</span> : "\u2014"}</dd></div>
+            <div className="pp-cell odds"><dt>{marketState === "LAST_OBSERVED" ? "Last observed" : "Market"}</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.consensus != null ? <>{oddsText(mv.pick.consensus)} <small>consensus</small></> : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Unavailable</span> : "No current market"}</dd></div>
+            <div className="pp-cell odds"><dt>Best odds</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.best != null ? <>{oddsText(mv.pick.best)}{mv.pick.book && <small className="book">{mv.pick.book}</small>}</> : <span className="algo-stale">Unavailable</span>}</dd></div>
+            <div className={`pp-cell${lastObserved && mv.implied != null ? " hist" : ""}`}><dt>Market implied</dt><dd>{current ? pctText(marketPick) : lastObserved && mv.implied != null ? <>{pctText(mv.implied)}<small className="hist">Last observed · {agoText(mv.age)}</small></> : <span className="algo-stale">Unavailable</span>}</dd></div>
+            <div className={`pp-cell delta${current && delta != null ? (delta >= 0 ? " pos" : " neg") : histDelta != null ? ` hist ${histDelta >= 0 ? "pos" : "neg"}` : ""}`}><dt>PBE Edge</dt><dd>{current && delta != null ? deltaText(delta) : histDelta != null ? <>{deltaText(histDelta)}<small className="hist">Last observed · not current</small></> : <span className="algo-stale">Unavailable</span>}</dd></div>
           </dl>
 
           <div className={`pp-market ${marketState === "CURRENT" ? "fresh" : marketState === "LAST_OBSERVED" ? "stale" : "unavailable"}`}>
             {current ? (
               <span className="pp-market-flag"><b>{lockedOfficial ? "Market at lock" : "Current market"}</b>{lockedOfficial ? `observed ${ageText(mv.age)} before lock` : `Observed ${agoText(mv.age)}`}{mv.books != null ? ` · ${mv.books} book${mv.books === 1 ? "" : "s"}` : ""}{mv.opponent.consensus != null ? ` · ${oppName} ${oddsText(mv.opponent.consensus)}${mv.opponent.best != null ? ` (best ${oddsText(mv.opponent.best)}${mv.opponent.book ? ` ${mv.opponent.book}` : ""})` : ""}` : ""}</span>
             ) : marketState === "LAST_OBSERVED" ? (
-              <span className="pp-market-flag"><b>Last observed</b>{agoText(mv.age)}, outside the {windowText}. No PBE Edge is published from it.</span>
+              <span className="pp-market-flag"><b>Last observed</b>{agoText(mv.age)}{mv.observedAt ? ` (${lockedText(mv.observedAt)})` : ""}, outside the {windowText}. Shown as history: not current, and never the official lock-time comparison.</span>
             ) : (
               <span className="pp-market-flag"><b>No current market</b>no two-sided price is on file for this bout.</span>
             )}
@@ -198,7 +204,14 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
           {current && delta != null && (
             <p className="algo-note">PBE Edge = PBE probability {pctText(prob)} − de-vigged market probability {pctText(marketPick)} = {deltaText(delta)}. Odds are prices you could take: consensus is the median implied probability across {mv.books ?? "the"} book{mv.books === 1 ? "" : "s"} converted back to American odds, vig included (raw implied {pctText(mv.raw)}); best odds is the most favourable price in the same snapshot. The edge is measured against the de-vigged consensus, never the vigged price. The market is compared after scoring and is never a model input.</p>
           )}
-          {marketState === "LAST_OBSERVED" && <p className="algo-note algo-market-stale">These are the last odds PropBetEdge observed{mv.observedAt ? ` (${lockedText(mv.observedAt)})` : ""}. A fight-week snapshot is current for 12h 10m until 72 hours before lock, 6h 10m until the final day, and 60 minutes in the final 24 hours; past that no PBE Edge is published. The model call does not depend on the market.</p>}
+          {lastObserved && (
+            <p className="algo-note algo-market-stale">
+              {histDelta != null && mv.implied != null
+                ? `Last observed PBE Edge = PBE probability ${pctText(pairProb)} − de-vigged market probability ${pctText(mv.implied)} = ${deltaText(histDelta)}, both stored together in the same evaluation, with the market observed ${mv.observedAt ? lockedText(mv.observedAt) : "earlier"}. `
+                : `These are the last odds PropBetEdge observed${mv.observedAt ? ` (${lockedText(mv.observedAt)})` : ""}. `}
+              A fight-week snapshot is current for 12h 10m until 72 hours before lock, 6h 10m until the final day, and 60 minutes in the final 24 hours. Past that it is history, not a current edge, and only a current market can become the official comparison when a pick locks. The model call does not depend on the market.
+            </p>
+          )}
         </>
       ) : b.decision === "NO_MODEL_CALL" ? (
         <div className="algo-nocall">

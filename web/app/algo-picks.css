@@ -120,6 +120,12 @@
 .pp-primary.market-last_observed .pp-cell.odds dd { color: var(--pbe-dim); }
 .pp-cell dd small.book::before { content: " · "; }
 .pp-cell dd .algo-stale { font: 600 13px/1.25 var(--pbe-font-ui); color: var(--pbe-faint); }
+/* LAST OBSERVED history: same numbers, visibly not current (muted value, dashed frame, explicit label). */
+.pp-cell.hist { box-shadow: inset 0 0 0 1px rgba(212,175,55,.28); background: repeating-linear-gradient(135deg, var(--pbe-ink-4) 0 6px, rgba(255,255,255,.012) 6px 12px); }
+.pp-cell.hist dd { color: var(--pbe-dim); }
+.pp-cell.delta.hist.pos dd { color: rgba(78,163,115,.78); }
+.pp-cell.delta.hist.neg dd { color: rgba(230,57,70,.72); }
+.pp-cell dd small.hist { display: block; margin-top: 4px; font: 700 9.5px/1.25 var(--pbe-font-data); letter-spacing: .06em; text-transform: uppercase; color: var(--pbe-gold); }
 .pp-corner-odds { display: inline-block; margin-top: 2px; padding: 3px 9px; border-radius: var(--r-pill); border: 1px solid var(--pbe-line-strong); font: 800 13px/1 var(--pbe-font-data); color: var(--pbe-paper); font-variant-numeric: tabular-nums; }
 .pp-corner.picked .pp-corner-odds { border-color: rgba(212,175,55,.55); color: var(--pbe-gold-bright); }
 .pp-corner-odds.last { border-style: dashed; color: var(--pbe-dim); }
