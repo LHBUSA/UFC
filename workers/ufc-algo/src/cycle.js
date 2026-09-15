@@ -161,9 +161,12 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
     const model = await resolveModel(q, mode);
     report.model = { source: model.source, live: model.live, model_version: model.model_version ?? null, spec_sha256: model.spec_sha256 ?? null, blocked: model.blocked ?? null };
     /* Shadow track: the single active challenger of this champion, scored beside it. Never an official call. */
-    const challenger = model.live ? await activeChallenger(q, model.model_version) : null;
+    /* Isolated: nothing on the shadow track can fail, delay or alter an official call. */
+    report.writes.shadow = { inserted: 0, updated: 0, locked: 0, skipped_locked: 0, graded: 0, errors: [] };
+    const shadowError = (where, e) => { if (report.writes.shadow.errors.length < 20) report.writes.shadow.errors.push(`${where}: ${String(e?.message || e).slice(0, 200)}`); };
+    let challenger = null;
+    try { challenger = model.live ? await activeChallenger(q, model.model_version) : null; } catch (e) { shadowError('challenger', e); }
     report.challenger = challenger ? { training_run_id: challenger.id, spec_sha256: challenger.spec_sha256, training_bouts: challenger.training_bouts, created_at: challenger.created_at } : null;
-    report.writes.shadow = { inserted: 0, updated: 0, locked: 0, skipped_locked: 0, graded: 0 };
     if (mode === 'armed' && !model.live) {
       report.blocked = model.blocked;
       await q.patch(`ufc_model_runs?id=eq.${run.id}`, { status: 'blocked', finished_at: new Date().toISOString(), counts: report.writes, error: model.blocked }, 'return=minimal');
@@ -185,9 +188,10 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
       const predByBout = new Map(existing.filter((p) => p.model_version === model.model_version).map((p) => [p.bout_id, p]));
       const lockedByBout = new Map(existing.filter((p) => p.locked_at).map((p) => [p.bout_id, p]));
       const staleDrafts = existing.filter((p) => !p.locked_at && p.model_version !== model.model_version);
-      const shadowByBout = mode === 'armed' && challenger && card.bouts.length
-        ? new Map((await q.inChunks('ufc_model_shadow_predictions', 'bout_id', card.bouts.map((b) => b.id), 'id,bout_id,locked_at', `&training_run_id=eq.${challenger.id}`)).map((x) => [x.bout_id, x]))
-        : new Map();
+      let shadowByBout = null;
+      if (mode === 'armed' && challenger && card.bouts.length) {
+        try { shadowByBout = new Map((await q.inChunks('ufc_model_shadow_predictions', 'bout_id', card.bouts.map((b) => b.id), 'id,bout_id,locked_at', `&training_run_id=eq.${challenger.id}`)).map((x) => [x.bout_id, x])); } catch (e) { shadowError('shadow read', e); }
+      }
       if (mode === 'armed') {
         for (const d of staleDrafts) {
           await q.del(`ufc_model_predictions?id=eq.${d.id}&locked_at=is.null`);
@@ -230,10 +234,15 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
         if (!model.live && mode === 'dry_run') decision.model_note = 'scored with the unregistered release artifact; not callable until registered';
         const eligible = decision.decision === 'ELIGIBLE';
         const boutState = { status: b.status, has_result: card.results.has(b.id), fighter_a_id: b.fighter_a_id, fighter_b_id: b.fighter_b_id, active_card_change: card.changed.has(b.id) };
-        const shadow = challenger ? shadowCall({
-          challenger, row, bout: b, event, corners, nowIso, boutState,
-          marketSnapshots: card.snapshots.filter((o) => o.bout_id === b.id), marketObservations: card.market.filter((o) => o.bout_id === b.id),
-        }) : null;
+        let shadow = null;
+        if (challenger) {
+          try {
+            shadow = shadowCall({
+              challenger, row, bout: b, event, corners, nowIso, boutState,
+              marketSnapshots: card.snapshots.filter((o) => o.bout_id === b.id), marketObservations: card.market.filter((o) => o.bout_id === b.id),
+            });
+          } catch (e) { shadowError(`shadow score ${b.id}`, e); }
+        }
 
         const boutReport = {
           bout_id: b.id, order: b.bout_order, fighter_a: corners[0].name, fighter_b: corners[1].name,
@@ -260,14 +269,6 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
             features_available: row ? row.available_count : null, sample: boutReport.sample || {}, identity: { corners }, market: eligible ? market : null,
           }, 'return=minimal');
           report.writes.evaluations += 1;
-
-          if (challenger && shadow) {
-            const w = await writeShadow(q, {
-              challenger, championVersion: model.model_version, eligibilityVersion: ELIGIBILITY_VERSION, event, bout: b, call: shadow,
-              existing: shadowByBout.get(b.id) || null, lockOpen: win.open, minLeadHours: RULES.lockMinLeadHours, generatedAt: new Date(now - 1000).toISOString(),
-            });
-            for (const k of ['inserted', 'updated', 'locked', 'skipped_locked']) report.writes.shadow[k] += w[k];
-          }
 
           const pred = predByBout.get(b.id) || null;
           const lockedAny = lockedByBout.get(b.id) || null;
@@ -308,6 +309,17 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
             await q.del(`ufc_model_predictions?id=eq.${pred.id}&locked_at=is.null`);
             report.writes.drafts_withdrawn += 1;
           }
+
+          /* Shadow after the official work for this bout, and never allowed to throw into it. */
+          if (challenger && shadow && shadowByBout) {
+            try {
+              const w = await writeShadow(q, {
+                challenger, championVersion: model.model_version, eligibilityVersion: ELIGIBILITY_VERSION, event, bout: b, call: shadow,
+                existing: shadowByBout.get(b.id) || null, lockOpen: win.open, minLeadHours: RULES.lockMinLeadHours, generatedAt: new Date(now - 1000).toISOString(),
+              });
+              for (const k of ['inserted', 'updated', 'locked', 'skipped_locked']) report.writes.shadow[k] += w[k];
+            } catch (e) { shadowError(`shadow write ${b.id}`, e); }
+          }
         }
         cardReport.bouts.push(boutReport);
       }
@@ -316,7 +328,7 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
 
     if (mode === 'armed') {
       report.writes.graded = await gradeLocked(q);
-      report.writes.shadow.graded = await gradeShadow(q, gradeFor);
+      try { report.writes.shadow.graded = await gradeShadow(q, gradeFor); } catch (e) { shadowError('shadow grading', e); }
     }
 
     await q.patch(`ufc_model_runs?id=eq.${run.id}`, {

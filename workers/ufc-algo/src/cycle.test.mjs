@@ -199,3 +199,38 @@ test('dry run with an active challenger: shadow is reported, nothing but the run
   assert.ok(r.cards[0].bouts[0].shadow, 'shadow call reported');
   assert.deepEqual(writes, ['POST ufc_model_runs', 'PATCH ufc_model_runs']);
 });
+
+test('armed: a failing shadow track (read, write, lock, grade) never fails or blocks the official cycle', async () => {
+  const { CHALLENGER_LABEL } = await import('./learning/core.js');
+  const coefficients = Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, (i % 2) * 0.07]));
+  const feature_scale = Object.fromEntries(FEATURE_KEYS.map((k) => [k, 1]));
+  const spec = createHash('sha256').update(JSON.stringify({ model_version: CHALLENGER_LABEL, feature_version: FEATURE_VERSION, features: FEATURE_KEYS, coefficients: FEATURE_KEYS.map((k) => coefficients[k]), scale: FEATURE_KEYS.map((k) => feature_scale[k]), lambda: 5 })).digest('hex');
+  const challenger = { id: 'run-c', created_at: '2026-09-15T12:20:00Z', status: 'CHALLENGER', parent_model_version: MODEL_VERSION, superseded_at: null, spec_sha256: spec, coefficients, feature_scale, hyperparameters: { lambda: 5 }, leakage_audit: { all_passed: true } };
+  const eventDate = new Date(Date.now() + 3 * 86400e3).toISOString().slice(0, 10);
+  for (const failing of ['read', 'write']) {
+    const writes = [];
+    const handler = async (url, init = {}) => {
+      const u = new URL(url);
+      const method = (init.method || 'GET').toUpperCase();
+      const path = u.pathname.replace('/rest/v1/', '');
+      const ok = (data) => new Response(JSON.stringify(data), { status: 200 });
+      if (method !== 'GET') writes.push({ method, path, body: init.body ? JSON.parse(init.body) : null });
+      if (path.startsWith('ufc_model_shadow') && (failing === 'read' || method !== 'GET')) return new Response('boom', { status: 500 });
+      if (method === 'POST' && path === 'ufc_model_runs') return ok([{ id: 'run-1' }]);
+      if (method !== 'GET') return new Response(null, { status: 204 });
+      if (path === 'ufc_model_versions') return ok([registered()]);
+      if (path === 'ufc_model_training_runs') return ok([challenger]);
+      if (path === 'ufc_events') return ok([{ id: 'e1', name: 'UFC 999: Test', event_date: eventDate }]);
+      if (path === 'ufc_bouts') return ok(u.searchParams.has('or') ? [] : [{ id: 'b1', event_id: 'e1', fighter_a_id: 'f1', fighter_b_id: 'f2', weight_class: 'LW', bout_order: 1, status: 'announced' }]);
+      if (path === 'ufc_fighters') return ok([{ id: 'f1', name: 'A' }, { id: 'f2', name: 'B' }]);
+      if (path === 'ufc_model_predictions') return ok([{ id: 'pl', bout_id: 'old', locked_at: '2026-09-01T00:00:00Z', model_version: MODEL_VERSION, pick_fighter_id: 'f1', fighter_a_id: 'f1', fighter_b_id: 'f2' }]);
+      return ok([]);
+    };
+    const r = await withFetch(handler, () => runCycle(env({ ALGO_MODE: 'armed' }), { trigger: 'cron', mode: 'armed' }));
+    assert.equal(r.error, undefined, `${failing}: ${r.error}`);
+    assert.equal(r.writes.evaluations, 1, 'the official evaluation was still written');
+    assert.ok(r.writes.shadow.errors.length >= 1, 'the shadow failure is reported');
+    const fin = writes.filter((w) => w.path === 'ufc_model_runs' && w.method === 'PATCH').pop();
+    assert.equal(fin.body.status, 'ok');
+  }
+});
