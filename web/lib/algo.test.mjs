@@ -98,6 +98,14 @@ test('the QA fixture is honoured locally and refused on Vercel', async () => {
   }
 });
 
+test('product claims follow active official calls, not registration', () => {
+  const web = new URL('../', import.meta.url);
+  for (const f of ['app/pro/page.tsx', 'app/fights/[slug]/page.tsx', 'components/StoryView.tsx']) {
+    const src = readFileSync(new URL(f, web), 'utf8');
+    assert.doesNotMatch(src, /algoLive\(/, `${f} must use algoCallsActive(), not algoLive()`);
+  }
+});
+
 test('public surfaces never import a per-call reader or the call card', () => {
   const web = new URL('../', import.meta.url);
   for (const f of ['app/algo/page.tsx', 'app/pro/page.tsx', 'app/about/page.tsx', 'components/Market.tsx']) {

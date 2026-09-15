@@ -11,7 +11,7 @@ import { resolveFight } from "@/lib/resolve";
 import { JsonLd, TaleOfTheTape, Breadcrumbs, Portrait, Credit, BoutRow } from "@/components/ui";
 import { ProPreview } from "@/components/ProPreview";
 import { AlgoPick } from "@/components/AlgoPick";
-import { getAlgoBout, algoLive } from "@/lib/algo";
+import { getAlgoBout, algoCallsActive } from "@/lib/algo";
 import { getUfcAccess } from "@/lib/access";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { getMarketsFor, marketProviderLive, marketStateFor, unresolvedBouts } from "@/lib/market";
@@ -146,7 +146,8 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
     access.pro ? getFighterDna(b.fighter_b.id, e.event_date) : Promise.resolve(null),
     /* PBE Algo: the call itself is Pro-only (getAlgoBout also refuses a free caller). */
     access.pro ? getAlgoBout(access, b.id) : Promise.resolve(null),
-    !access.pro && !b.result && b.status !== "cancelled" ? algoLive() : Promise.resolve(false),
+    /* Upsell only while official calls are active; registration alone is not a product claim. */
+    !access.pro && !b.result && b.status !== "cancelled" ? algoCallsActive() : Promise.resolve(false),
   ]);
   const r = b.result;
   const w = winnerOf(b), l = loserOf(b);

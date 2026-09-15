@@ -8,7 +8,7 @@ import { checkoutReturnState, parseCheckoutReturn } from "@/lib/accessDecision";
 import { PRO_OFFER, offerJsonLd } from "@/lib/proOffer";
 import { CheckoutVerifyRefresh } from "@/components/CheckoutVerifyRefresh";
 import { getCurrentAccount } from "@/lib/auth";
-import { algoLive, getAlgoPublicRecord } from "@/lib/algo";
+import { algoCallsActive, getAlgoPublicRecord } from "@/lib/algo";
 
 export const metadata: Metadata = {
   title: "UFC Pro — Fight DNA Intelligence Layer & Fight Week Access",
@@ -23,7 +23,7 @@ const safeNext = (v: string | string[] | undefined) => {
 
 export default async function ProPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
-  const [access, rawAccount, algoIsLive, algoRecord] = await Promise.all([getUfcAccess(), getCurrentAccount(), algoLive(), getAlgoPublicRecord()]);
+  const [access, rawAccount, algoIsLive, algoRecord] = await Promise.all([getUfcAccess(), getCurrentAccount(), algoCallsActive(), getAlgoPublicRecord()]);
   const account = access.signedIn ? rawAccount : null;
   const owner = access.tier === "owner";
   const active = access.pro;
@@ -95,7 +95,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
       ) : returning === "verifying" || returning === "sign_in" ? null : <ProPlans email={account?.email ?? null} />}
 
       <section className="card hi mt-6 pro-algo" aria-labelledby="pro-algo-title">
-        <div className="eyebrow">UFC Pro flagship · PBE Algo · {algoIsLive ? (algoRecord.locked_predictions ? `${algoRecord.locked_predictions} locked call${algoRecord.locked_predictions === 1 ? "" : "s"}` : "live, first lock pending") : "pre-launch"}</div>
+        <div className="eyebrow">UFC Pro flagship · PBE Algo · {algoIsLive ? (algoRecord.locked_predictions ? `${algoRecord.locked_predictions} locked call${algoRecord.locked_predictions === 1 ? "" : "s"}` : "official calls active, first lock pending") : "pre-launch"}</div>
         <h2 id="pro-algo-title" className="serif" style={{ margin: "7px 0 8px" }}>The call, the probability, the edge and the history.</h2>
         <p className="dim sm" style={{ maxWidth: 760 }}>
           PBE Algo scores every eligible UFC bout from pre-fight data only: pick, win probability, confidence and data quality, the market-implied probability with the vig removed, the PBE delta, and the model&apos;s own drivers for and against. Calls lock on the database clock before the fight and are graded after it; ineligible bouts show NO MODEL CALL with the reason.
