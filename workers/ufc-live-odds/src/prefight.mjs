@@ -26,9 +26,11 @@
  * cap reached, or a sufficiently fresh snapshot already on file -> no spend.
  */
 
-/** Lock window: opens at event_date 00:00Z - 8h, closes (database floor) at - 6h. */
-export const LOCK_WINDOW_OPENS_HOURS = 8;
-export const LOCK_WINDOW_CLOSES_HOURS = 6;
+/* Lock window, lock deadline and the band table are the shared fight-week
+ * contract (scripts/odds/fight_week_cadence.mjs), which ufc-algo also reads to
+ * decide whether a snapshot is CURRENT. Re-exported so existing imports hold. */
+import { FIGHT_WEEK_BANDS, SCHEDULER_TOLERANCE_MINUTES, fightWeekBand, lockDeadlineFor, lockWindowOpensFor, LOCK_WINDOW_OPENS_HOURS, LOCK_WINDOW_CLOSES_HOURS } from '../../../scripts/odds/fight_week_cadence.mjs';
+export { FIGHT_WEEK_BANDS, lockDeadlineFor, lockWindowOpensFor, LOCK_WINDOW_OPENS_HOURS, LOCK_WINDOW_CLOSES_HOURS };
 
 export function readPrefightConfig(env) {
   const num = (v, d) => { const n = Number(v); return Number.isFinite(n) ? n : d; };
@@ -41,15 +43,11 @@ export function readPrefightConfig(env) {
     horizonDays: num(env.PREFIGHT_ODDS_HORIZON_DAYS, 7),
     maxCallsPerDay: num(env.PREFIGHT_ODDS_MAX_CALLS_PER_DAY, 30),
     /* A snapshot this much younger than the cadence interval counts as fresh. */
-    toleranceMinutes: num(env.PREFIGHT_ODDS_TOLERANCE_MINUTES, 10),
+    toleranceMinutes: num(env.PREFIGHT_ODDS_TOLERANCE_MINUTES, SCHEDULER_TOLERANCE_MINUTES),
     finalHourMinute: num(env.PREFIGHT_ODDS_FINAL_HOUR_MINUTE, 25),
     providerTimeoutMs: num(env.LIVE_ODDS_PROVIDER_TIMEOUT_MS, 8000),
   };
 }
-
-export const lockWindowOpensFor = (eventDate) => Date.parse(`${eventDate}T00:00:00Z`) - LOCK_WINDOW_OPENS_HOURS * 3_600_000;
-/** The last moment an official call can lock: captures are scheduled up to here. */
-export const lockDeadlineFor = (eventDate) => Date.parse(`${eventDate}T00:00:00Z`) - LOCK_WINDOW_CLOSES_HOURS * 3_600_000;
 
 /** The cadence band for one card at `now`, or null when no capture is scheduled. */
 export function cadenceFor(eventDate, now, cfg) {
@@ -58,9 +56,8 @@ export function cadenceFor(eventDate, now, cfg) {
   const toLock = lock - now;
   if (toLock <= 0) return null;
   if (toLock > cfg.horizonDays * 86_400_000) return null;
-  if (toLock > 72 * 3_600_000) return { band: 'T-7d', intervalMinutes: 720, lockDeadline: new Date(lock).toISOString() };
-  if (toLock > 24 * 3_600_000) return { band: 'T-72h', intervalMinutes: 360, lockDeadline: new Date(lock).toISOString() };
-  return { band: 'T-24h', intervalMinutes: 60, lockDeadline: new Date(lock).toISOString() };
+  const b = fightWeekBand(eventDate, now);
+  return { band: b.band, intervalMinutes: b.intervalMinutes, lockDeadline: b.lockDeadline };
 }
 
 /**

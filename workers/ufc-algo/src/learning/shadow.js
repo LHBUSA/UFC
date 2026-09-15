@@ -21,7 +21,7 @@ export function shadowCall({ challenger, row, bout, event, corners, nowIso, mark
     pickProbability = Math.max(p1, 1 - p1);
     probA = bout.fighter_a_id === row.fighter_1_id ? p1 : 1 - p1;
   }
-  const market = marketComparison({ snapshots: marketSnapshots, observations: marketObservations, pickFighterId: pickFighter, pickProbability, nowIso });
+  const market = marketComparison({ snapshots: marketSnapshots, observations: marketObservations, pickFighterId: pickFighter, pickProbability, nowIso, eventDate: event?.event_date });
   const decision = evaluateBout({
     event, nowIso, row, corners, pickProbability, modelLive: true, bout: boutState,
     marketStatus: market?.status ?? 'UNAVAILABLE', marketDisagreementPts: market?.status === 'FRESH' ? Math.abs(market.pbe_delta_pts) : null, regenerationDriftPts: null,

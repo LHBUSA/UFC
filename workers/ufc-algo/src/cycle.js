@@ -113,7 +113,7 @@ export async function loadCard(q, event, nowIso = new Date().toISOString()) {
    * bout (all quotes of that fetch), and change history as the fallback. */
   const snapshots = [];
   for (const id of boutIds) {
-    const rows = await q.get(`ufc_market_run_quotes?select=bout_id,run_id,bookmaker_key,market_key,outcome_fighter_id,price,source_last_update,observed_at&bout_id=eq.${id}&market_key=eq.h2h&observed_at=lte.${encodeURIComponent(nowIso)}&order=observed_at.desc&limit=60`);
+    const rows = await q.get(`ufc_market_run_quotes?select=bout_id,run_id,bookmaker_key,bookmaker_name,market_key,outcome_fighter_id,price,source_last_update,observed_at&bout_id=eq.${id}&market_key=eq.h2h&observed_at=lte.${encodeURIComponent(nowIso)}&order=observed_at.desc&limit=60`);
     snapshots.push(...rows);
   }
   const market = boutIds.length ? await q.inChunks('ufc_market_observations', 'bout_id', boutIds, 'bout_id,bookmaker_key,market_key,outcome_fighter_id,price,source_last_update,observed_at', `&market_key=eq.h2h&observed_at=lte.${encodeURIComponent(nowIso)}`) : [];
@@ -221,7 +221,7 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
         const market = marketComparison({
           snapshots: card.snapshots.filter((o) => o.bout_id === b.id),
           observations: card.market.filter((o) => o.bout_id === b.id),
-          pickFighterId: pickFighter, pickProbability, nowIso,
+          pickFighterId: pickFighter, pickProbability, nowIso, eventDate: event.event_date,
         });
 
         const prior = mode === 'armed' ? await q.get(`ufc_model_bout_evaluations?select=pick_probability,evaluated_at&bout_id=eq.${b.id}&decision=eq.ELIGIBLE&model_version=eq.${model.model_version}&order=evaluated_at.desc&limit=6`) : [];
@@ -295,7 +295,7 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
               feature_vector: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, row.x[i]])),
               feature_availability: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, Boolean(row.available[i])])),
               sample_context: { ...boutReport.sample, features_available: row.available_count, features_total: FEATURE_KEYS.length, eligibility_version: ELIGIBILITY_VERSION, confidence: decision.confidence, identity: corners, market },
-              /* Official comparison columns: FRESH market only (<= 60 min at this pass). */
+              /* Official comparison columns: CURRENT market only (fight-week band at this pass; 60 min in the final 24h). */
               ...officialMarketColumns(market),
               // The cycle's start, a second early: the schema refuses a generated_at ahead of the database clock.
               generated_at: new Date(now - 1000).toISOString(),

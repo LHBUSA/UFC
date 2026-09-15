@@ -14,7 +14,7 @@ Nothing below may change unless a scheduled gate reveals a real defect:
 - feature definitions
 - `model_scope`
 - learning and promotion rules
-- market freshness rules
+- market freshness rules (one owner-approved correction on 2026-09-15, see "Why Gate 2 changed")
 - lock timing, grading behaviour and public performance copy
 
 Rules for every gate:
@@ -131,22 +131,45 @@ Then **stop**. Give the owner the exact root-cause evidence and change nothing u
 node scripts/acceptance/gate2_market.mjs --since 2026-09-17T12:00:00Z
 ```
 
-Market freshness rule (frozen):
-- FRESH means at most 60 minutes old, using only observations with `observed_at` at or before the cycle clock.
+### Why Gate 2 changed (owner decision, 2026-09-15)
+
+This is an **owner-approved correction of a cadence/freshness contradiction**, not retroactive acceptance of a failed run.
+
+- Production deliberately captures UFC 331 prices every 12h until 72h before the lock deadline, every 6h until the final day, then hourly (`workers/ufc-live-odds`).
+- The Algo called a snapshot FRESH only within 60 minutes, so every scheduled pre-final-day snapshot read as STALE and PBE Picks hid prices and PBE Edge it legitimately had.
+- The owner approved the fight-week contract below before UFC 331, and Gate 2 now tests that contract instead of the contradiction. It was not simply loosened: it asserts more than before (band-exact status, odds and edge recomputed from raw quotes).
+- Runs evaluated before the change carry no `freshness_band` and are checked only under the 60-minute rule they were produced with. They are never counted as passing the new contract.
+- Gate 3 is unchanged: both lock passes fall in the final 24h, where the limit is still 60 minutes with no tolerance.
+
+Market freshness contract (fight-week v1, one shared module: `scripts/odds/fight_week_cadence.mjs`, imported by both `ufc-live-odds` and `ufc-algo`). Bands are measured against the lock deadline, event_date 00:00Z - 6h:
+
+| Band | Time to lock deadline | Capture cadence | CURRENT while age is at most |
+|---|---|---|---|
+| T-7d | more than 72h | 720 min | 730 min (720 + 10 scheduler tolerance) |
+| T-72h | 72h to 24h | 360 min | 370 min (360 + 10) |
+| T-24h | final 24h, including both lock passes | hourly | 60 min, no tolerance |
+
+- Age is measured from `observed_at`: when PropBetEdge last re-checked the market, using only observations at or before the cycle clock. A book that has not moved its price is still current. `source_last_update` is provenance only.
+- CURRENT (stored status `FRESH`): consensus and best American odds, de-vigged market probability and PBE Edge are published.
+- Past its band, STALE: the last observed odds may be shown with their age. No PBE Edge, no market-edge language, no elite tier.
+- UNAVAILABLE: no odds and no edge. It is never shown as stale.
 - STALE or UNAVAILABLE never blocks a model call.
-- STALE or UNAVAILABLE carries no current PBE delta, no market-edge language and no elite tier, and shows the actual age.
+- Consensus odds are the median implied probability across the newest complete snapshot's books, converted back to American odds (vig included). Best odds are the most favourable price in that same snapshot, with its book. No book is carried forward from an older run.
+- PBE Edge = PBE probability - de-vigged consensus probability. It is never computed against vigged prices.
 
 Prove each of these:
-1. **Fresh snapshots arrive.** List the pre-fight runs in `ufc_market_runs` (`notes.lane = 'prefight'`) with band, lock deadline, status, cost and quota. List the UFC 331 `ufc_market_run_quotes` snapshot times with bout and book counts. Expect one capture per hour at about :25 from 18:25Z.
-2. **Stale → fresh transitions are correct.**
-   - For every armed `ufc_model_runs` row, record the UFC 331 `ufc_model_bout_evaluations.market` status and age.
-   - STALE is expected before the hourly band, FRESH after it.
-   - Every FRESH market must be at most 60 minutes old, with `observed_at <= run started_at`.
-3. **Official market columns only when fresh.** `market_implied_prob_pick`, `market_books`, `model_edge_pts` and `market_snapshot_at` are non-null only when `sample_context.market.status = 'FRESH'`. Otherwise they are null and `pbe_delta_pts` is null.
-4. **No post-lock snapshot alters a locked call.** For a locked row, `market_snapshot_at <= locked_at`. Cite the guards:
+1. **Snapshots arrive on the operated cadence.** List the pre-fight runs in `ufc_market_runs` (`notes.lane = 'prefight'`) with band, lock deadline, status, cost and quota. List the UFC 331 `ufc_market_run_quotes` snapshot times with bout and book counts. Expect one capture per hour at about :25 from 18:25Z on 2026-09-17.
+2. **Status follows the contract exactly.** For every armed `ufc_model_runs` row, and every UFC 331 evaluation:
+   - T-7d current iff age <= 730 min, T-72h current iff age <= 370 min, T-24h current iff age <= 60 min. The stored `freshness_band` and `fresh_limit_minutes` match the shared module.
+   - An overdue snapshot is STALE, and a STALE market carries no `pbe_delta_pts` and no `current_until`.
+   - An UNAVAILABLE market carries no odds and no edge.
+   - `observed_at` is the newest snapshot at or before the cycle clock, so a capture that finds an unchanged sportsbook price still refreshes it. The receipt also counts such unchanged-price re-checks.
+3. **A current market is complete and correct.** Consensus odds, best odds and book, book count, raw implied probability, de-vigged probability and PBE Edge are each recomputed independently from the raw quotes. De-vigged sides sum to 1, and the edge uses the de-vigged probability, never raw implied.
+4. **Official market columns only when current.** `market_implied_prob_pick`, `market_books`, `model_edge_pts` and `market_snapshot_at` are non-null only when `sample_context.market.status = 'FRESH'`, with `model_edge_pts = pbe_delta_pts`. Otherwise they are null and `pbe_delta_pts` is null.
+5. **No post-lock snapshot alters a locked call.** For a locked row, `market_snapshot_at <= locked_at`. Cite the guards:
    - `ufc_model_predictions_write_gate_trg` (migration 011) refuses any change to a locked row.
    - The cycle reads quotes with `observed_at <= clock`.
-5. **No unsupported elite designation.** `elite_candidate` requires a FRESH market and disagreement of at most 15 points. Report `elite_total`.
+6. **No unsupported elite designation.** `elite_candidate` requires a current market and disagreement of at most 15 points. Report `elite_total`.
 
 ## Gate 3: first real lock pass
 

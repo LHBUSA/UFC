@@ -40,7 +40,7 @@ import { readConfig, shouldPoll, readQuotaHeaders, isActive, isImminent, roundFr
 import { readPrefightConfig, shouldCapturePrefight } from './prefight.mjs';
 
 const WORKER = 'ufc-live-odds';
-const VERSION = 'v0.2.1';
+const VERSION = 'v0.2.2';
 const ODDS_BASE = 'https://api.the-odds-api.com/v4';
 const ESPN_CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
 const SPORT = 'mma_mixed_martial_arts';
