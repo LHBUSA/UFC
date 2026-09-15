@@ -96,7 +96,7 @@ export default async function AlgoRecordPage() {
               <tbody>
                 {(["HIGH", "MEDIUM", "LEAN"] as const).map((c) => <SummaryRow key={c} label={`${confidenceCopy(c)} confidence`} s={summarize(rows.filter((r) => r.confidence === c))} />)}
                 {EDGE_BANDS.map(([label, f]) => <SummaryRow key={label} label={label} s={summarize(rows.filter((r) => r.prediction?.model_edge_pts != null && f(Number(r.prediction.model_edge_pts))))} />)}
-                <SummaryRow label="No market line at lock" s={summarize(rows.filter((r) => r.prediction?.model_edge_pts == null))} />
+                <SummaryRow label="No fresh market at lock (stale or no line)" s={summarize(rows.filter((r) => r.prediction?.model_edge_pts == null))} />
               </tbody>
             </table>
           </div>

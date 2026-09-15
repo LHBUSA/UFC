@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText,
+  FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText, marketView, ageText,
   type AlgoBoutView, type Driver,
 } from "@/lib/algoView";
 
@@ -50,8 +50,13 @@ export function AlgoPick({ b, detail = false, showEvent = false }: { b: AlgoBout
   const oppName = pickName === b.fighter_a.name ? b.fighter_b.name : b.fighter_a.name;
   const p = b.prediction;
   const prob = p ? p.pick_probability : b.pick_probability;
-  const marketPick = p ? p.market_implied_prob_pick : b.market?.devigged_pick ?? null;
-  const delta = p ? p.model_edge_pts : b.market?.pbe_delta_pts ?? null;
+  /* A locked call's official comparison is its stored FRESH columns; anything
+   * else is shown with its status and age, never as a current edge. */
+  const mv = marketView(b.market);
+  const lockedOfficial = p?.locked_at && p.model_edge_pts != null;
+  const marketPick = lockedOfficial ? p!.market_implied_prob_pick : mv.implied;
+  const delta = lockedOfficial ? p!.model_edge_pts : mv.delta;
+  const marketStatus = lockedOfficial ? "FRESH" : mv.status;
   const called = b.decision === "ELIGIBLE" && pickName && prob != null;
   const dr = p && called ? drivers(p, b.fighter_a.id, b.fighter_b.id) : null;
   const maxC = dr ? Math.max(1e-9, ...dr.supporting.map((d) => d.contribution), ...dr.opposing.map((d) => -d.contribution)) : 1;
@@ -78,7 +83,7 @@ export function AlgoPick({ b, detail = false, showEvent = false }: { b: AlgoBout
             <div className="algo-cell"><dt>Data quality</dt><dd>{features ?? "—"}/{FEATURES_TOTAL}</dd></div>
             <div className="algo-cell"><dt>Model</dt><dd className="mono">{b.model_version ?? "—"}</dd></div>
             <div className="algo-cell"><dt>Locked</dt><dd>{p?.locked_at ? lockedText(p.locked_at) : "Not yet locked"}</dd></div>
-            <div className="algo-cell"><dt>Market implied</dt><dd>{marketPick != null ? pctText(marketPick) : "No line"}</dd></div>
+            <div className="algo-cell"><dt>Market implied</dt><dd>{marketStatus === "UNAVAILABLE" || marketPick == null ? "No line" : marketStatus === "STALE" ? <>Stale <span className="algo-stale">({ageText(mv.age)} old)</span></> : pctText(marketPick)}</dd></div>
             <div className={`algo-cell delta ${delta == null ? "" : delta >= 0 ? "pos" : "neg"}`}><dt>PBE delta</dt><dd>{delta != null ? deltaText(delta) : "—"}</dd></div>
           </dl>
           <div className="algo-probbar" role="img" aria-label={`${pickName} ${pctText(prob)}, ${oppName} ${pctText(1 - (prob as number))}`}>
@@ -86,7 +91,8 @@ export function AlgoPick({ b, detail = false, showEvent = false }: { b: AlgoBout
             <span>{oppName} {pctText(1 - (prob as number))}</span>
           </div>
           {!p?.locked_at && <p className="algo-note">Provisional. The call regenerates hourly from the latest pre-fight data and locks once, on the database clock, the afternoon before fight day (after official weigh-ins). A provisional call is not part of the record.</p>}
-          {b.market && marketPick != null && <p className="algo-note">Market: de-vigged consensus of {b.market.books} book{b.market.books === 1 ? "" : "s"} (raw implied {pctText(b.market.raw_implied_pick)}){b.market.observed_at ? `, prices observed ${lockedText(b.market.observed_at)}` : ""}. The market is compared with the model after scoring and is never a model input.</p>}
+          {marketStatus === "FRESH" && mv.books != null && <p className="algo-note">Market: de-vigged consensus of {mv.books} book{mv.books === 1 ? "" : "s"} (raw implied {pctText(mv.raw)}), prices observed {mv.observedAt ? lockedText(mv.observedAt) : "—"}. The market is compared with the model after scoring and is never a model input.</p>}
+          {marketStatus === "STALE" && <p className="algo-note algo-market-stale">Market comparison stale: the newest price on file is {ageText(mv.age)} old{mv.observedAt ? ` (observed ${lockedText(mv.observedAt)})` : ""}, beyond the 60-minute limit. No PBE delta is published from it. The model call does not depend on the market.</p>}
         </>
       ) : b.decision === "NO_MODEL_CALL" ? (
         <div className="algo-nocall">

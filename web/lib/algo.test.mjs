@@ -98,6 +98,20 @@ test('the QA fixture is honoured locally and refused on Vercel', async () => {
   }
 });
 
+test('a stale market is never presented as a current edge', () => {
+  const stale = view.marketView({ status: 'STALE', age_minutes: 14900, devigged_pick: 0.17, pbe_delta_pts: null, books: 5, observed_at: '2026-09-08T12:25:03Z' });
+  assert.equal(stale.status, 'STALE');
+  assert.equal(stale.delta, null);
+  assert.equal(view.marketView({ status: 'STALE', devigged_pick: 0.2, pbe_delta_pts: 40 }).delta, null, 'even a stored delta is withheld when stale');
+  const legacy = view.marketView({ devigged_pick: 0.17, pbe_delta_pts: 39.9 });
+  assert.equal(legacy.status, 'STALE', 'a comparison with no status is treated as stale');
+  const fresh = view.marketView({ status: 'FRESH', age_minutes: 15, devigged_pick: 0.52, pbe_delta_pts: 12.6, books: 6 });
+  assert.equal(fresh.delta, 12.6);
+  assert.equal(view.marketView(null).status, 'UNAVAILABLE');
+  assert.equal(view.ageText(14900), '10.3 days');
+  assert.equal(view.ageText(42), '42 min');
+});
+
 test('product claims follow active official calls, not registration', () => {
   const web = new URL('../', import.meta.url);
   for (const f of ['app/pro/page.tsx', 'app/fights/[slug]/page.tsx', 'components/StoryView.tsx']) {

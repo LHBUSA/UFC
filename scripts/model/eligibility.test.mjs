@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { evaluateBout, REASONS, RULES, confidenceLabel } from './eligibility.mjs';
+import { evaluateBout, REASONS, RULES, confidenceLabel, ELIGIBILITY_VERSION } from './eligibility.mjs';
 
 const NOW = '2026-09-15T12:00:00Z';
 const event = { name: 'UFC 331: Van vs. Pantoja 2', event_date: '2026-09-19' };
@@ -66,11 +66,26 @@ test('HIGH needs probability AND sample AND completeness; small samples cap at M
   assert.equal(confidenceLabel(0.58, { min_prior_bouts: 9, available_count: 33 }), 'LEAN');
 });
 
-test('elite candidate requires stability evidence and no extreme market disagreement; never on no-call', () => {
+test('elite candidate requires stability evidence, a FRESH market within disagreement bounds; never on no-call', () => {
   const strong = { row: { min_prior_bouts: 6, min_stat_bouts: 6, available_count: 32 }, pickProbability: 0.78 };
-  assert.equal(evaluateBout(base(strong)).elite_candidate, false, 'no regeneration history yet');
-  assert.equal(evaluateBout(base({ ...strong, regenerationDriftPts: 0.4 })).elite_candidate, true);
-  assert.equal(evaluateBout(base({ ...strong, regenerationDriftPts: 0.4, marketDisagreementPts: 22 })).elite_candidate, false);
-  assert.equal(evaluateBout(base({ ...strong, regenerationDriftPts: 0.4, modelLive: false })).elite_candidate, false);
+  const fresh = { marketStatus: 'FRESH', marketDisagreementPts: 4 };
+  assert.equal(evaluateBout(base({ ...strong, ...fresh })).elite_candidate, false, 'no regeneration history yet');
+  assert.equal(evaluateBout(base({ ...strong, ...fresh, regenerationDriftPts: 0.4 })).elite_candidate, true);
+  assert.equal(evaluateBout(base({ ...strong, regenerationDriftPts: 0.4, marketStatus: 'FRESH', marketDisagreementPts: 22 })).elite_candidate, false, 'extreme disagreement');
+  assert.equal(evaluateBout(base({ ...strong, ...fresh, regenerationDriftPts: 0.4, modelLive: false })).elite_candidate, false);
   assert.equal(RULES.eliteCandidate.minPickProbability, 0.75);
+});
+
+test('v1.1: a stale or missing market never blocks a call, but withholds the elite tier', () => {
+  const strong = { row: { min_prior_bouts: 6, min_stat_bouts: 6, available_count: 32 }, pickProbability: 0.78, regenerationDriftPts: 0.4 };
+  for (const marketStatus of ['STALE', 'UNAVAILABLE', undefined]) {
+    const r = evaluateBout(base({ ...strong, marketStatus, marketDisagreementPts: null }));
+    assert.equal(r.decision, 'ELIGIBLE', `${marketStatus}: model call still eligible`);
+    assert.equal(r.confidence, 'HIGH', 'confidence unaffected by the market');
+    assert.equal(r.elite_candidate, false, `${marketStatus}: no elite/market-aware tier`);
+  }
+  /* Ordinary eligibility is identical with and without a market. */
+  const a = evaluateBout(base({ marketStatus: 'STALE' })), b = evaluateBout(base({ marketStatus: 'FRESH', marketDisagreementPts: 40 }));
+  assert.deepEqual([a.decision, a.reasons, a.confidence], [b.decision, b.reasons, b.confidence]);
+  assert.equal(ELIGIBILITY_VERSION, 'pbe-algo-eligibility-v1.1');
 });

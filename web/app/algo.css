@@ -45,6 +45,8 @@
 .algo-probbar span:first-child { background: var(--pbe-model); color: var(--pbe-ink-4); }
 .algo-probbar span:last-child { flex: 1; text-align: right; color: var(--pbe-dim); }
 .algo-note { color: var(--pbe-faint); font-size: var(--fs-sm); margin-top: var(--s-2); }
+.algo-stale { color: var(--pbe-faint); font-weight: 500; font-size: 12px; }
+.algo-market-stale { color: var(--pbe-dim); border-left: 2px solid var(--pbe-subtle); padding-left: var(--s-2); }
 .algo-nocall b { color: var(--pbe-paper); font: 700 12px/1.4 var(--pbe-font-data); letter-spacing: .08em; text-transform: uppercase; }
 .algo-nocall ul { margin: 4px 0 0; padding-left: 1.2em; color: var(--pbe-dim); font-size: var(--fs-sm); }
 .algo-grade { margin-top: var(--s-2); font-size: var(--fs-sm); color: var(--pbe-dim); }

@@ -19,7 +19,7 @@
 // The cut points were chosen on that same out-of-sample set, so the live
 // record is what validates them; they are deliberately coarse.
 
-export const ELIGIBILITY_VERSION = 'pbe-algo-eligibility-v1';
+export const ELIGIBILITY_VERSION = 'pbe-algo-eligibility-v1.1';
 
 export const RULES = Object.freeze({
   minPriorBoutsPerCorner: 1,
@@ -71,6 +71,7 @@ export function confidenceLabel(pickProbability, row) {
  * @param {number|null} input.pickProbability  max(p, 1-p) from the registered model, or null
  * @param {boolean} input.modelLive
  * @param {string}  input.nowIso
+ * @param {'FRESH'|'STALE'|'UNAVAILABLE'} [input.marketStatus]  lock-time market comparison status (v1.1)
  * @param {number|null} [input.marketDisagreementPts]  |PBE pick prob - de-vigged market prob| * 100, benchmark only
  * @param {number|null} [input.regenerationDriftPts]
  */
@@ -101,7 +102,11 @@ export function evaluateBout(input) {
     && input.pickProbability >= e.minPickProbability
     && row.min_prior_bouts >= e.minPriorBoutsPerCorner
     && row.available_count >= e.minFeaturesAvailable
-    && (input.marketDisagreementPts == null || input.marketDisagreementPts <= e.maxMarketDisagreementPts)
+    /* v1.1 (owner decision 2026-09-15): the elite / market-aware tier needs a
+     * FRESH market comparison. A stale or missing market never affects ordinary
+     * eligibility above; it only withholds this tier. */
+    && input.marketStatus === 'FRESH'
+    && input.marketDisagreementPts != null && input.marketDisagreementPts <= e.maxMarketDisagreementPts
     && (input.regenerationDriftPts != null && input.regenerationDriftPts <= e.maxRegenerationDriftPts);
 
   return {

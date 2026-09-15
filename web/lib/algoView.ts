@@ -13,7 +13,33 @@ import artifact from "@/lib/generated/model-v1.json";
 export type AlgoConfidence = "LEAN" | "MEDIUM" | "HIGH";
 export type AlgoGradeResult = "WIN" | "LOSS" | "DRAW" | "NC" | "VOID";
 
-export type AlgoMarket = { books: number; raw_implied_pick: number; devigged_pick: number; pbe_delta_pts: number; observed_at?: string; age_hours?: number } | null;
+/* Lock-time market comparison (ufc-algo src/market.js). FRESH <= 60 min: the
+ * delta is the official comparison. STALE: age shown, no delta published.
+ * Older rows (pre-2026-09-15) carry no status and are treated as STALE. */
+export type AlgoMarketStatus = "FRESH" | "STALE" | "UNAVAILABLE";
+export type AlgoMarket = {
+  status?: AlgoMarketStatus; source?: string; fresh_limit_minutes?: number; age_minutes?: number | null;
+  books?: number; raw_implied_pick?: number; devigged_pick?: number; pbe_delta_pts?: number | null;
+  observed_at?: string; oldest_book_update?: string;
+} | null;
+
+/** "42 min", "3.5 h", "10.2 days". */
+export function ageText(minutes: number | null | undefined): string {
+  if (minutes == null || !Number.isFinite(minutes)) return "unknown age";
+  if (minutes < 90) return `${Math.round(minutes)} min`;
+  if (minutes < 48 * 60) return `${(minutes / 60).toFixed(1)} h`;
+  return `${(minutes / 1440).toFixed(1)} days`;
+}
+
+/** The comparison a card may present. Never a stale delta as current. */
+export function marketView(m: AlgoMarket): { status: AlgoMarketStatus; implied: number | null; delta: number | null; age: number | null; observedAt: string | null; books: number | null; raw: number | null } {
+  if (!m || m.status === "UNAVAILABLE" || m.devigged_pick == null) return { status: "UNAVAILABLE", implied: null, delta: null, age: null, observedAt: null, books: null, raw: null };
+  const status: AlgoMarketStatus = m.status === "FRESH" ? "FRESH" : "STALE";
+  return {
+    status, implied: m.devigged_pick ?? null, delta: status === "FRESH" ? m.pbe_delta_pts ?? null : null,
+    age: m.age_minutes ?? null, observedAt: m.observed_at ?? null, books: m.books ?? null, raw: m.raw_implied_pick ?? null,
+  };
+}
 
 /** One bout on a card, as a UFC Pro member sees it. */
 export type AlgoBoutView = {
@@ -51,6 +77,8 @@ export type AlgoBoutView = {
     feature_availability: Record<string, boolean>;
     market_implied_prob_pick: number | null;
     model_edge_pts: number | null;
+    /** The lock-time comparison, including its status and age. */
+    market?: AlgoMarket;
   } | null;
   grade: { result: AlgoGradeResult; revision: number; graded_at: string; revision_reason: string | null } | null;
   /** Every grade revision, oldest first. Record page only; superseded entries stay visible. */

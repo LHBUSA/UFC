@@ -19,7 +19,7 @@ import { FEATURE_KEYS, FEATURE_VERSION, MODEL_VERSION } from '../../../scripts/m
 import { SNAPSHOT_SELECT, assembleBoutRow, round } from '../../../scripts/model/features_core.mjs';
 import { evaluateBout, ELIGIBILITY_VERSION, RULES, CARD_CHANGE_BLOCKING } from '../../../scripts/model/eligibility.mjs';
 import { predictOne } from '../../../scripts/model/logistic.mjs';
-import { consensusForBout } from '../../../scripts/model/market_baseline.mjs';
+import { marketComparison, officialMarketColumns } from './market.js';
 import artifact from '../../../web/lib/generated/model-v1.json';
 import { db } from './supabase.js';
 
@@ -64,7 +64,7 @@ export async function resolveModel(q, mode) {
 }
 
 /** Everything needed to assemble and evaluate one card, in bounded reads. */
-async function loadCard(q, event) {
+async function loadCard(q, event, nowIso = new Date().toISOString()) {
   const D = event.event_date;
   const bouts = await q.get(`ufc_bouts?select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status&event_id=eq.${event.id}&order=bout_order.desc`);
   const fighterIds = [...new Set(bouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]))];
@@ -116,8 +116,15 @@ async function loadCard(q, event) {
     };
   };
 
-  const market = boutIds.length ? await q.inChunks('ufc_market_observations', 'bout_id', boutIds, 'bout_id,bookmaker_key,market_key,outcome_fighter_id,price,source_last_update,observed_at', '&market_key=eq.h2h') : [];
-  return { bouts, fighters, snapsOf, rowsOf, results, changed, corner, market };
+  /* Market, read only up to this cycle's clock: the newest provider snapshot per
+   * bout (all quotes of that fetch), and change history as the fallback. */
+  const snapshots = [];
+  for (const id of boutIds) {
+    const rows = await q.get(`ufc_market_run_quotes?select=bout_id,run_id,bookmaker_key,market_key,outcome_fighter_id,price,source_last_update,observed_at&bout_id=eq.${id}&market_key=eq.h2h&observed_at=lte.${encodeURIComponent(nowIso)}&order=observed_at.desc&limit=60`);
+    snapshots.push(...rows);
+  }
+  const market = boutIds.length ? await q.inChunks('ufc_market_observations', 'bout_id', boutIds, 'bout_id,bookmaker_key,market_key,outcome_fighter_id,price,source_last_update,observed_at', `&market_key=eq.h2h&observed_at=lte.${encodeURIComponent(nowIso)}`) : [];
+  return { bouts, fighters, snapsOf, rowsOf, results, changed, corner, market, snapshots };
 }
 
 /**
@@ -173,7 +180,7 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
     const events = await q.get(`ufc_events?select=id,name,event_date,card_status&event_date=gte.${today}&event_date=lte.${until}&order=event_date.asc`);
 
     for (const event of events) {
-      const card = await loadCard(q, event);
+      const card = await loadCard(q, event, nowIso);
       const win = lockWindow(event.event_date, now);
       const cardReport = { event_id: event.id, event: event.name, event_date: event.event_date, lock_window: win, bouts: [] };
       const existing = mode === 'armed' && card.bouts.length
@@ -196,10 +203,11 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
           pickProbability = Math.max(p1, 1 - p1);
           probA = b.fighter_a_id === row.fighter_1_id ? p1 : 1 - p1;
         }
-        const boutMarket = card.market.filter((o) => o.bout_id === b.id);
-        const sides = consensusForBout(boutMarket, nowIso);
-        const m = sides && pickFighter ? sides.find((s) => s.fighter_id === pickFighter) : null;
-        const market = m ? { books: m.books, raw_implied_pick: round(m.implied, 4), devigged_pick: round(m.devigged, 4), pbe_delta_pts: round((pickProbability - m.devigged) * 100, 2), ...marketProvenance(boutMarket, nowIso) } : null;
+        const market = marketComparison({
+          snapshots: card.snapshots.filter((o) => o.bout_id === b.id),
+          observations: card.market.filter((o) => o.bout_id === b.id),
+          pickFighterId: pickFighter, pickProbability, nowIso,
+        });
 
         const prior = mode === 'armed' ? await q.get(`ufc_model_bout_evaluations?select=pick_probability,evaluated_at&bout_id=eq.${b.id}&decision=eq.ELIGIBLE&model_version=eq.${model.model_version}&order=evaluated_at.desc&limit=6`) : [];
         const drift = prior.length >= 2 && pickProbability != null
@@ -209,7 +217,8 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
           event, nowIso, row, corners, pickProbability,
           modelLive: model.live || mode === 'dry_run',
           bout: { status: b.status, has_result: card.results.has(b.id), fighter_a_id: b.fighter_a_id, fighter_b_id: b.fighter_b_id, active_card_change: card.changed.has(b.id) },
-          marketDisagreementPts: market ? Math.abs(market.pbe_delta_pts) : null, regenerationDriftPts: drift,
+          marketStatus: market?.status ?? 'UNAVAILABLE',
+          marketDisagreementPts: market?.status === 'FRESH' ? Math.abs(market.pbe_delta_pts) : null, regenerationDriftPts: drift,
         });
         if (!model.live && mode === 'dry_run') decision.model_note = 'scored with the unregistered release artifact; not callable until registered';
         const eligible = decision.decision === 'ELIGIBLE';
@@ -250,9 +259,9 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
               confidence_band: band(pickProbability),
               feature_vector: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, row.x[i]])),
               feature_availability: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, Boolean(row.available[i])])),
-              sample_context: { ...boutReport.sample, features_available: row.available_count, features_total: FEATURE_KEYS.length, eligibility_version: ELIGIBILITY_VERSION, confidence: decision.confidence, identity: corners },
-              market_implied_prob_pick: market?.devigged_pick ?? null, market_books: market?.books ?? null, model_edge_pts: market?.pbe_delta_pts ?? null,
-              market_snapshot_at: market?.observed_at ?? null,
+              sample_context: { ...boutReport.sample, features_available: row.available_count, features_total: FEATURE_KEYS.length, eligibility_version: ELIGIBILITY_VERSION, confidence: decision.confidence, identity: corners, market },
+              /* Official comparison columns: FRESH market only (<= 60 min at this pass). */
+              ...officialMarketColumns(market),
               // The cycle's start, a second early: the schema refuses a generated_at ahead of the database clock.
               generated_at: new Date(now - 1000).toISOString(),
             };
