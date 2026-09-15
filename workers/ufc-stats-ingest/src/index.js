@@ -954,7 +954,10 @@ async function espnBouts(env, espn, ctx, run, evRow, ev, { roadToUfc = false } =
       allResults = false;
     }
   }
-  await writeFightTotals(env, espn, run, totalsCandidates);
+  /* ESPN publishes no competitor statistics for Road to UFC cards (404 on every
+   * bout, 2026-09-15), and fight totals are not part of that lane's contract. */
+  if (roadToUfc) run.notes.rtu_fight_totals_not_requested = (run.notes.rtu_fight_totals_not_requested || 0) + totalsCandidates.length;
+  else await writeFightTotals(env, espn, run, totalsCandidates);
 
   for (const b of ctx.bouts) {
     if (b.event_id === evRow.id && b.espn_competition_id && !seen.has(b.espn_competition_id) && b.status === 'announced') {
