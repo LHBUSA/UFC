@@ -877,8 +877,10 @@ async function espnBouts(env, espn, ctx, run, evRow, ev, { roadToUfc = false } =
     if (existing?.ufcstats_id) boutRow.ufcstats_id = existing.ufcstats_id;
     let saved;
     if (pairLinked) {
-      /* Corners stay as stored (UFC Stats order); only identity and card fields are filled. */
-      const { fighter_a_id: _a, fighter_b_id: _b, captured_at: _c, ...fill } = boutRow;
+      /* IDENTITY ONLY: attach the ESPN competition id. The stored bout (corners,
+       * division, card order, scheduled rounds) is the V1-contract row and is
+       * never rewritten from ESPN's sparser Road to UFC card. */
+      const fill = { espn_competition_id: b.espn_competition_id, updated_at: nowIso() };
       const patched = await patch(env, 'ufc_bouts', `id=eq.${pairLinked.id}`, fill);
       saved = Array.isArray(patched) && patched[0] ? patched[0] : { ...pairLinked, ...fill };
       Object.assign(pairLinked, saved);
@@ -890,7 +892,16 @@ async function espnBouts(env, espn, ctx, run, evRow, ev, { roadToUfc = false } =
     ctx.boutsByEspn.set(b.espn_competition_id, saved);
     seen.add(b.espn_competition_id);
 
-    if (b.completed && b.result) {
+    if (b.completed && b.result && pairLinked && ctx.resultsByBout.get(saved.id)) {
+      /* A linked bout already holds its UFC Stats result. It stands; ESPN's
+       * outcome is only checked against it, never written over it. */
+      const prior = ctx.resultsByBout.get(saved.id);
+      const espnWinner = b.result.winner_espn_athlete_id ? ctx.byEspnAthlete.get(b.result.winner_espn_athlete_id)?.id ?? null : null;
+      const espnMethod = normMethod(b.result.method_raw, b.source_url);
+      if ((prior.winner_id ?? null) !== espnWinner || prior.method !== espnMethod) {
+        run.assertion_failures.push({ class: 'LinkedResultDisagrees', url: b.source_url, detail: `bout ${saved.id}: stored ${prior.method}/${prior.winner_id} vs ESPN ${espnMethod}/${espnWinner}; stored result kept`, at: nowIso() });
+      }
+    } else if (b.completed && b.result) {
       const method = normMethod(b.result.method_raw, b.source_url);
       const winnerRow = b.result.winner_espn_athlete_id ? ctx.byEspnAthlete.get(b.result.winner_espn_athlete_id) : null;
       if (!winnerRow && !['DRAW', 'NC'].includes(method)) throw new SchemaAssertionError(b.source_url, `completed ${method} bout without a winner`);
