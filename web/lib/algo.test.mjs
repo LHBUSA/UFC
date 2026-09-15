@@ -215,6 +215,7 @@ test('public PBE surfaces carry no stale pre-launch copy and never read a call',
     const src = readFileSync(new URL(f, web), 'utf8');
     assert.doesNotMatch(src, /PBE delta/i, `${f}: customer copy says PBE Edge`);
     assert.doesNotMatch(src, /no live pick/i, `${f}: PBE Picks are live`);
+    assert.doesNotMatch(src, /after (official )?weigh-ins/i, `${f}: weigh-ins are not a lock prerequisite`);
   }
   const model = readFileSync(new URL('app/model/page.tsx', web), 'utf8');
   assert.doesNotMatch(model, /· candidate|picks at 65% or better/, 'no candidate eyebrow or stale threshold on /model');

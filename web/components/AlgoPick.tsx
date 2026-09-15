@@ -194,7 +194,7 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
             <div><dt>Model</dt><dd className="mono">{b.model_version ?? "\u2014"}</dd></div>
           </dl>
 
-          {!locked && <p className="algo-note">Pre-lock. The pick regenerates hourly from the latest pre-fight data and can change until it locks once, on the database clock, the afternoon before fight day (after official weigh-ins). A pre-lock pick is not part of the record.</p>}
+          {!locked && <p className="algo-note">Pre-lock. The pick regenerates hourly from the latest eligible pre-fight data and can change until it locks on the database clock. Once locked, it becomes part of the official PBE record.</p>}
           {current && delta != null && (
             <p className="algo-note">PBE Edge = PBE probability {pctText(prob)} − de-vigged market probability {pctText(marketPick)} = {deltaText(delta)}. Odds are prices you could take: consensus is the median implied probability across {mv.books ?? "the"} book{mv.books === 1 ? "" : "s"} converted back to American odds, vig included (raw implied {pctText(mv.raw)}); best odds is the most favourable price in the same snapshot. The edge is measured against the de-vigged consensus, never the vigged price. The market is compared after scoring and is never a model input.</p>
           )}

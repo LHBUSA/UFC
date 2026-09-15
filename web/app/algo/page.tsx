@@ -33,7 +33,7 @@ const STEPS: Array<[string, string]> = [
   ["Features assembled", `${MODEL_FACTS.featureCount} pre-fight difference features are rebuilt from Fight DNA as of the event date: nothing from the fight itself, and never a sportsbook price.`],
   ["Eligibility decided", "A deterministic rule set decides ELIGIBLE or NO MODEL CALL, and a no-call records its exact reasons."],
   ["Hourly regeneration", "Until the lock, an eligible call is re-scored every hour as the card changes. A provisional call is not part of the record."],
-  ["Locked on the database clock", "The call locks once, the afternoon before fight day after official weigh-ins. The timestamp is the database's own clock, and from that moment nothing about the prediction can be edited."],
+  ["Locked on the database clock", "The call locks once, on the database's own clock, before the fight. From that moment nothing about the prediction can be edited, and it becomes part of the official PBE record."],
   ["Graded after the fight", "Results are bound to the stored official result. Corrections are new, dated revisions that must give a reason; the original stays on file."],
 ];
 
