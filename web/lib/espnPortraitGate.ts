@@ -33,6 +33,17 @@ type EspnAthletePayload = {
 
 export type GateFighter = Pick<Fighter, "id" | "name" | "espn_athlete_id" | "dob">;
 
+/* Fetches ESPN's athlete record. Next.js gets its data cache by default; the
+ * ufc-api Worker, which imports this same gate for its display_image
+ * contract, passes a fetcher that uses the Cloudflare edge cache instead. */
+export type AthleteFetch = (url: string) => Promise<Response>;
+
+const nextAthleteFetch: AthleteFetch = (url) => fetch(url, {
+  headers: { Accept: "application/json" },
+  next: { revalidate: 21600 },
+  signal: AbortSignal.timeout(4000),
+});
+
 /**
  * The ESPN display portrait for a fighter, if and only if ESPN's own athlete
  * record verifies as the same person.
@@ -45,17 +56,14 @@ export type GateFighter = Pick<Fighter, "id" | "name" | "espn_athlete_id" | "dob
 export async function espnVerifiedPortrait(
   fighter: GateFighter,
   fallback: PortraitSet | null,
+  fetchAthlete: AthleteFetch = nextAthleteFetch,
 ): Promise<PortraitSet | null> {
   const athleteId = String(fighter.espn_athlete_id || "").trim();
   if (!/^\d+$/.test(athleteId)) return null;
   if (ESPN_DISPLAY_QUARANTINE.has(athleteId)) return null;
 
   try {
-    const res = await fetch(`${ESPN_ATHLETE}/${athleteId}?lang=en&region=us`, {
-      headers: { Accept: "application/json" },
-      next: { revalidate: 21600 },
-      signal: AbortSignal.timeout(4000),
-    });
+    const res = await fetchAthlete(`${ESPN_ATHLETE}/${athleteId}?lang=en&region=us`);
     if (!res.ok) return res.status === 404 || res.status === 410 ? null : fallback;
 
     const athlete = (await res.json()) as EspnAthletePayload;

@@ -1,6 +1,7 @@
 import { rankVideos, videoLanguage, type LiveVideoState } from "@/lib/videoPolicy";
 import { prefersEspnDisplay, preferredDisplayFighterIds } from "@/lib/displayPortraitPolicy";
 import { espnVerifiedPortrait } from "@/lib/espnPortraitGate";
+import { pickStoredPortraits } from "@/lib/portraitSelection";
 /* Server-only data access. PostgREST over fetch with the service-role key
  * (RLS has no anon policies by design). Every reader is wrapped so that a
  * missing env var, a table that does not exist yet, or a network failure
@@ -336,21 +337,6 @@ export type PortraitSet = {
   fighter_id?: string | null;
 };
 
-const IMAGE_KIND_PRIORITY: Record<string, number> = {
-  licensed_editorial: 500,
-  official_press: 450,
-  public_domain: 400,
-  wikimedia: 350,
-  statcard: 100,
-};
-
-function imagePriority(img: FighterImage): number {
-  let p = IMAGE_KIND_PRIORITY[img.kind] || 0;
-  if (img.stored_first_party === false) p -= 25;
-  if (img.rights_expires_at && Date.parse(img.rights_expires_at) <= Date.now()) p -= 10000;
-  return p;
-}
-
 export function portraitSet(img: FighterImage): PortraitSet {
   const dir = img.r2_key.replace(/\/[^/]+$/, "");
   const firstParty = img.stored_first_party !== false;
@@ -413,29 +399,18 @@ function espnDisplayPortrait(fighter: Pick<Fighter, "id" | "espn_athlete_id">): 
   };
 }
 
-/* Catalog images that stay in ufc_images but are never picked as a fighter's
- * primary portrait. Listed by image id, one reason each; the fighter falls
- * through to the next rule (another stored image, else the display fallback). */
-const NOT_PRIMARY_PORTRAIT = new Set<string>([
-  "73077eea-6c1e-4f3b-88e4-c23a412c11d8", // Petr Yan: Kremlin award ceremony handshake, not a portrait
-]);
-
 export async function getImagesForFighters(ids: string[]): Promise<Map<string, PortraitSet>> {
   const m = new Map<string, PortraitSet>();
-  const chosen = new Map<string, FighterImage>();
   const uniq = [...new Set(ids.filter(Boolean))];
+  const rows: FighterImage[] = [];
   const select = "id,kind,r2_key,license,author,source_url,fighter_id,source_family,attribution_text,rights_label,rights_expires_at,provider_asset_id,stored_first_party,created_at";
   for (let i = 0; i < uniq.length; i += 150) {
     const chunk = uniq.slice(i, i + 150);
-    const rows = (await rest<FighterImage[]>(`ufc_images?select=${select}&fighter_id=in.(${chunk.join(",")})&order=created_at.desc`, [], { revalidate: 300 })).data;
-    for (const r of rows) {
-      if (!r.fighter_id || NOT_PRIMARY_PORTRAIT.has(r.id)) continue;
-      if (r.rights_expires_at && Date.parse(r.rights_expires_at) <= Date.now()) continue;
-      const prev = chosen.get(r.fighter_id);
-      if (!prev || imagePriority(r) > imagePriority(prev)) chosen.set(r.fighter_id, r);
-    }
+    rows.push(...(await rest<FighterImage[]>(`ufc_images?select=${select}&fighter_id=in.(${chunk.join(",")})&order=created_at.desc`, [], { revalidate: 300 })).data);
   }
-  for (const [fighterId, img] of chosen) m.set(fighterId, portraitSet(img));
+  /* Kind priority, rights expiry and the not-a-portrait list: lib/portraitSelection.ts,
+   * shared with the ufc-api display_image contract. */
+  for (const [fighterId, img] of pickStoredPortraits(rows)) m.set(fighterId, portraitSet(img));
 
   /* Every visible fighter surface uses this function. When a rights-cleared
    * PBE asset is not available, fill only the presentation gap with that

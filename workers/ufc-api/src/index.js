@@ -1,3 +1,9 @@
+/* One fighter display portrait for every PropBetEdge surface: the same modules
+ * ufc.propbetedge.ai renders with, bundled by wrangler from web/lib. */
+import { pickStoredPortraits } from "../../../web/lib/portraitSelection.ts";
+import { prefersEspnDisplay } from "../../../web/lib/displayPortraitPolicy.ts";
+import { espnVerifiedPortrait } from "../../../web/lib/espnPortraitGate.ts";
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const UFCSTATS_RE = /^[0-9a-f]{16}$/i;
 
@@ -343,6 +349,120 @@ function attachBoutImages(bouts, imageMap) {
     fighter_a: bout.fighter_a ? { ...bout.fighter_a, images: imageMap.get(bout.fighter_a.id) || [], primary_image: primaryImage(imageMap.get(bout.fighter_a.id)) } : null,
     fighter_b: bout.fighter_b ? { ...bout.fighter_b, images: imageMap.get(bout.fighter_b.id) || [], primary_image: primaryImage(imageMap.get(bout.fighter_b.id)) } : null,
   }));
+}
+
+/* ---- display_image ----------------------------------------------------
+ * The portrait a PropBetEdge surface should SHOW for a fighter: exactly what
+ * ufc.propbetedge.ai shows, decided by the modules the website itself uses.
+ *   1. stored selection   web/lib/portraitSelection.ts (kind priority, rights
+ *                         expiry, not-a-portrait list)
+ *   2. ESPN preference    web/lib/displayPortraitPolicy.ts (by fighter id AND
+ *                         ESPN id); ESPN also fills fighters with no stored image
+ *   3. identity gate      web/lib/espnPortraitGate.ts (athlete id, DOB, name,
+ *                         headshot alt, quarantine)
+ * An ESPN image appears only when the gate verified it; if ESPN cannot be
+ * checked the stored image (or nothing) is used, never an unverified headshot.
+ *
+ * primary_image is untouched for backwards compatibility.
+ *
+ * ESPN headshots are display-only and must never become part of the
+ * commercial API, which proxies this Worker with an API key. display_image is
+ * therefore resolved only for requests WITHOUT a key (first-party browsers);
+ * keyed responses are unchanged, and both Vary on the key headers. */
+
+const ESPN_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
+const DISPLAY_VARY = { Vary: "X-API-Key, Authorization" };
+
+function isDisplayCaller(request) {
+  return !request.headers.get("x-api-key") && !request.headers.get("authorization");
+}
+
+/* The gate's athlete lookup, cached at the edge like the website's 6h data cache. */
+function espnAthleteFetch(url) {
+  return fetch(url, {
+    headers: { Accept: "application/json", "User-Agent": ESPN_UA },
+    signal: AbortSignal.timeout(4000),
+    cf: { cacheTtl: 21600, cacheEverything: true },
+  });
+}
+
+function focalPoint(framing) {
+  if (framing?.focal_x == null || framing?.focal_y == null) return null;
+  const x = Number(framing.focal_x);
+  const y = Number(framing.focal_y);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  return { x: Math.min(1, Math.max(0, x)), y: Math.min(1, Math.max(0, y)) };
+}
+
+function storedDisplayImage(row, framing) {
+  return {
+    id: row.id,
+    image_url: row.image_url ?? null,
+    card_url: row.card_url ?? null,
+    thumb_url: row.thumb_url ?? null,
+    kind: row.kind ?? null,
+    source_family: row.source_family ?? null,
+    display_only: row.stored_first_party === false,
+    focal: focalPoint(framing),
+    author: row.author ?? null,
+    license: row.license ?? null,
+    source_url: row.source_url ?? null,
+    attribution_text: row.attribution_text ?? null,
+    rights_label: row.rights_label ?? null,
+  };
+}
+
+function espnDisplayImage(portrait) {
+  return {
+    id: portrait.id,
+    image_url: portrait.portrait,
+    card_url: portrait.card,
+    thumb_url: portrait.thumb,
+    kind: portrait.kind,
+    source_family: "espn",
+    display_only: true,
+    focal: null,
+    author: portrait.author ?? null,
+    license: null,
+    source_url: portrait.source_url ?? null,
+    attribution_text: portrait.attribution_text ?? null,
+    rights_label: portrait.rights_label ?? null,
+  };
+}
+
+/* Focal points come from the art-direction columns, best effort: without them
+ * the consumer uses its slot default, as the website's variant system does. */
+async function imageFraming(env, imageIds) {
+  const ids = [...new Set(imageIds.filter((id) => id && UUID_RE.test(id)))];
+  if (!ids.length) return new Map();
+  try {
+    const rows = (await sb(env, "ufc_images", new URLSearchParams({ select: "id,focal_x,focal_y", id: `in.(${ids.join(",")})`, limit: String(ids.length) }))).data;
+    return new Map(rows.map((r) => [r.id, r]));
+  } catch {
+    return new Map();
+  }
+}
+
+async function displayImagesForFighters(env, fighters, imageMap) {
+  const byId = new Map();
+  for (const f of fighters) if (f?.id && !byId.has(f.id)) byId.set(f.id, f);
+  const rows = [...byId.keys()].flatMap((id) => (imageMap.get(id) || []).filter((r) => r.image_url));
+  const stored = pickStoredPortraits(rows);
+  const framing = await imageFraming(env, [...stored.values()].map((r) => r.id));
+  const out = new Map();
+  await Promise.all([...byId.values()].map(async (fighter) => {
+    const row = stored.get(fighter.id) || null;
+    const storedImage = row ? storedDisplayImage(row, framing.get(row.id)) : null;
+    if (row && !prefersEspnDisplay(fighter)) { out.set(fighter.id, storedImage); return; }
+    const espn = await espnVerifiedPortrait(fighter, null, espnAthleteFetch).catch(() => null);
+    out.set(fighter.id, espn && espn.source_family === "espn" && espn.portrait ? espnDisplayImage(espn) : storedImage);
+  }));
+  return out;
+}
+
+function withDisplayImages(bouts, displayMap) {
+  const add = (f) => (f ? { ...f, display_image: displayMap.get(f.id) ?? null } : f);
+  return bouts.map((b) => ({ ...b, fighter_a: add(b.fighter_a), fighter_b: add(b.fighter_b) }));
 }
 
 function compactFighter(fighter, imageMap) {
@@ -947,7 +1067,7 @@ async function listEvents(env, url) {
   return { data, meta: { count: data.length, total: count, status, date: date || null } };
 }
 
-async function eventCard(env, eventId, url) {
+async function eventCard(env, eventId, url, { display = false } = {}) {
   const includes = parseIncludes(url, CARD_INCLUDES);
   const event = await resolveEvent(env, eventId);
   if (!event) throw new ApiError(404, "event_not_found", "UFC event not found.");
@@ -962,6 +1082,7 @@ async function eventCard(env, eventId, url) {
     includes.has("videos") ? compactVideosFor(env, { event_id: event.id }) : Promise.resolve(null),
   ]);
   let bouts = attachBoutImages(rows, imageMap);
+  if (display) bouts = withDisplayImages(bouts, await displayImagesForFighters(env, rows.flatMap((b) => [b.fighter_a, b.fighter_b]), imageMap));
   if (roundRows) {
     const byBout = new Map();
     for (const r of roundRows) {
@@ -1010,7 +1131,7 @@ function careerSnapshot(fighter) {
 
 const CAREER_SNAPSHOT_WARNING = "Career snapshot fields are display-only and must not be used as historical model features because they include future information relative to older bouts.";
 
-async function fighterDetail(env, fighterId, url) {
+async function fighterDetail(env, fighterId, url, { display = false } = {}) {
   const includes = parseIncludes(url, FIGHTER_INCLUDES);
   const fighter = await resolveFighter(env, fighterId);
   if (!fighter) throw new ApiError(404, "fighter_not_found", "UFC fighter not found.");
@@ -1028,6 +1149,7 @@ async function fighterDetail(env, fighterId, url) {
   for (const [k, v] of ownImages) imageMap.set(k, v);
 
   const data = { ...fighter, slug_id: slugId(fighter), images: ownImages.get(fighter.id) || [], primary_image: primaryImage(ownImages.get(fighter.id)) };
+  if (display) data.display_image = (await displayImagesForFighters(env, [fighter], ownImages)).get(fighter.id) ?? null;
   if (includes.has("ranking")) data.ranking = ranking ?? null;
   if (includes.has("next")) data.next_bout = nextScheduledBout(bouts, fighter.id, imageMap);
   if (includes.has("history")) data.history = bouts.slice(0, historyLimit).map((b) => historyRow(b, fighter.id, imageMap));
@@ -2841,8 +2963,8 @@ async function route(request, env, url, access) {
 
   let m = path.match(/^\/v1\/ufc\/events\/([^/]+)\/card$/);
   if (m) {
-    const out = await eventCard(env, decodeURIComponent(m[1]), url);
-    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 60);
+    const out = await eventCard(env, decodeURIComponent(m[1]), url, { display: isDisplayCaller(request) });
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 60, 200, DISPLAY_VARY);
   }
 
   m = path.match(/^\/v1\/ufc\/events\/([^/]+)\/articles$/);
@@ -2924,8 +3046,8 @@ async function route(request, env, url, access) {
 
   m = path.match(/^\/v1\/ufc\/fighters\/([^/]+)$/);
   if (m) {
-    const out = await fighterDetail(env, decodeURIComponent(m[1]), url);
-    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 300);
+    const out = await fighterDetail(env, decodeURIComponent(m[1]), url, { display: isDisplayCaller(request) });
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 300, 200, DISPLAY_VARY);
   }
 
   m = path.match(/^\/v1\/ufc\/bouts\/([^/]+)\/stats$/);
@@ -3021,7 +3143,7 @@ async function route(request, env, url, access) {
 export const __test = {
   isPremiumPath, premiumKeyRequired,
   clampInt, sanitizeLike, identityFilter, normalizeBout, parseIncludes,
-  mediaUrls, decorateImage, primaryImage, compactImage, attachHero, heroImagesForArticles, withHeroMedia,
+  mediaUrls, decorateImage, primaryImage, compactImage, displayImagesForFighters, isDisplayCaller, attachHero, heroImagesForArticles, withHeroMedia,
   rankingsFromSnapshot, rankingsFromTable, loadRankings, rankingsResponse, rankingPositionsForFighter, divisionLabel,
   sumMetrics, totalsByFighter, boutElapsedSeconds, computeFighterStats, boutOutcome, nextScheduledBout, historyRow,
   compactFighter, slugId, bulkFighterMedia, rankingsState,

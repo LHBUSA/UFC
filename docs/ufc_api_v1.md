@@ -96,6 +96,31 @@ also carry `image_url`/`card_url`/`thumb_url`), event-card `fighter_a`/`fighter_
 `opponent`, and computed-stats `opponent`. The full `images[]` array stays on fighter detail and event-card fighters only.
 Render `author`, `license`, `source_url` as the credit wherever the image is shown.
 
+### `display_image` (first-party display, requests without an API key only)
+
+`primary_image` is the stored catalog asset. `display_image` is the portrait a PropBetEdge surface should **show**: the
+same decision ufc.propbetedge.ai makes, from the same modules — stored selection `web/lib/portraitSelection.ts`, the ESPN
+display preference `web/lib/displayPortraitPolicy.ts`, and the identity gate `web/lib/espnPortraitGate.ts` (ESPN athlete
+id, DOB, name, headshot alt text, quarantine). An ESPN headshot appears only when the gate verified it on that request;
+otherwise the stored image, or `null`. Where: event-card `fighter_a`/`fighter_b`, fighter detail.
+
+```json
+{
+  "id": "espn:2560746",
+  "image_url": "https://a.espncdn.com/i/headshots/mma/players/full/2560746.png",
+  "card_url": "…same…", "thumb_url": "…same…",
+  "kind": "display_fallback", "source_family": "espn", "display_only": true,
+  "focal": null,
+  "author": "ESPN", "license": null, "source_url": "https://www.espn.com/mma/fighter/_/id/2560746",
+  "attribution_text": "ESPN · identity-verified display portrait", "rights_label": "display_only"
+}
+```
+
+`focal` is `{x, y}` (0–1) from the image's art-direction framing when it exists, else `null` (use a slot default).
+`display_only: true` assets are hotlinked for display and never relicensable. Because of that, `display_image` is
+resolved only for requests carrying **no** `X-API-Key` / `Authorization` header (first-party browsers); keyed responses,
+including everything the commercial gateway proxies, are unchanged. Both variants send `Vary: X-API-Key, Authorization`.
+
 ## Rankings contract (B2)
 
 `/v1/ufc/rankings` serves the verified store written by `scripts/rankings/ingest_rankings.mjs` (see `docs/rankings.md`):

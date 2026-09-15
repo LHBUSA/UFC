@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import worker, { __test } from "./index.js";
+import { DISPLAY_ESPN_PREFERRED } from "../../../web/lib/displayPortraitPolicy.ts";
+import { ESPN_DISPLAY_QUARANTINE } from "../../../web/lib/espnPortraitGate.ts";
+import { NOT_PRIMARY_PORTRAIT } from "../../../web/lib/portraitSelection.ts";
 
 /* ---- pure helpers ----------------------------------------------------- */
 
@@ -2076,4 +2079,134 @@ test("premium Fight DNA / intelligence routes require a key once PREMIUM_REQUIRE
   } finally {
     globalThis.fetch = realFetch;
   }
+});
+
+/* ---- display_image: the website's portrait decision, shared ------------ */
+
+const ESPN_CORE = "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/athletes/";
+
+/* installMock plus ESPN athlete records: { [athleteId]: payload | status number }. */
+function installDisplayMock({ tables, espn = {} }) {
+  const calls = installMock({ tables });
+  const db = globalThis.fetch;
+  const espnCalls = [];
+  globalThis.fetch = async (input, init = {}) => {
+    const href = typeof input === "string" ? input : input.url;
+    if (href.startsWith(ESPN_CORE)) {
+      const id = href.slice(ESPN_CORE.length).split("?")[0];
+      espnCalls.push({ id, init });
+      const entry = espn[id];
+      if (entry === undefined) return new Response("{}", { status: 404 });
+      if (typeof entry === "number") return new Response("{}", { status: entry });
+      return new Response(JSON.stringify(entry), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
+    return db(input, init);
+  };
+  return { calls, espnCalls };
+}
+
+const athlete = (f, overrides = {}) => ({
+  id: f.espn_athlete_id, fullName: f.name, dateOfBirth: `${f.dob}T07:00Z`,
+  headshot: { href: `https://a.espncdn.com/i/headshots/mma/players/full/${f.espn_athlete_id}.png`, alt: f.name },
+  ...overrides,
+});
+
+async function callWith(path, headers = {}) {
+  const res = await worker.fetch(new Request(`https://ufc-api.test${path}`, { headers }), env);
+  return { status: res.status, headers: res.headers, body: await res.json() };
+}
+
+test("display_image: stored portrait uses the website's selection and carries the focal point", async () => {
+  const tables = { ...fullTables, ufc_images: images.map((i) => (i.id === IMG_MEDIA ? { ...i, focal_x: 0.43, focal_y: 0.33 } : i)) };
+  const { espnCalls } = installDisplayMock({ tables, espn: { [fighterNoMedia.espn_athlete_id]: athlete(fighterNoMedia) } });
+  const { status, headers, body } = await callWith(`/v1/ufc/events/600060772/card`);
+  assert.equal(status, 200);
+  assert.equal(headers.get("vary"), "X-API-Key, Authorization");
+  const bout = body.data.bouts[0];
+  assert.deepEqual(bout.fighter_b.display_image, {
+    id: IMG_MEDIA,
+    image_url: `${MEDIA_BASE}/fighters/${F_MEDIA}/portrait.jpg`,
+    card_url: `${MEDIA_BASE}/fighters/${F_MEDIA}/card.jpg`,
+    thumb_url: `${MEDIA_BASE}/fighters/${F_MEDIA}/thumb.jpg`,
+    kind: "wikimedia", source_family: null, display_only: false, focal: { x: 0.43, y: 0.33 },
+    author: "MMAnytt", license: "CC BY-SA 4.0", source_url: "https://commons.wikimedia.org/wiki/File:Sean_Strickland_at_UFN_200.png",
+    attribution_text: null, rights_label: null,
+  });
+  assert.equal("focal_x" in bout.fighter_b.images[0], false, "images[] projection is unchanged");
+  assert.deepEqual(bout.fighter_b.primary_image.id, IMG_MEDIA, "primary_image is preserved");
+  /* No stored image: ESPN fills it only after the identity gate verified the athlete. */
+  assert.equal(bout.fighter_a.display_image.thumb_url, `https://a.espncdn.com/i/headshots/mma/players/full/${fighterNoMedia.espn_athlete_id}.png`);
+  assert.equal(bout.fighter_a.display_image.display_only, true);
+  assert.equal(bout.fighter_a.display_image.source_family, "espn");
+  assert.equal(bout.fighter_a.primary_image, null);
+  assert.deepEqual(espnCalls.map((c) => c.id), [fighterNoMedia.espn_athlete_id], "a fighter with a stored portrait and no preference never calls ESPN");
+  assert.equal(espnCalls[0].init.cf?.cacheTtl, 21600, "athlete lookups use the edge cache");
+});
+
+test("display_image is first-party only: keyed (commercial gateway) responses are unchanged", async () => {
+  installDisplayMock({ tables: fullTables, espn: { [fighterNoMedia.espn_athlete_id]: athlete(fighterNoMedia) } });
+  for (const headers of [{ "x-api-key": "gateway-key" }, { authorization: "Bearer gateway-key" }]) {
+    const card = await callWith(`/v1/ufc/events/600060772/card`, headers);
+    assert.equal(card.status, 200);
+    for (const f of [card.body.data.bouts[0].fighter_a, card.body.data.bouts[0].fighter_b]) assert.equal("display_image" in f, false);
+    assert.equal(card.headers.get("vary"), "X-API-Key, Authorization");
+    const detail = await callWith(`/v1/ufc/fighters/${F_NOMEDIA}`, headers);
+    assert.equal("display_image" in detail.body.data, false);
+  }
+  assert.equal(__test.isDisplayCaller(new Request("https://x/")), true);
+});
+
+test("display_image honours the website's ESPN display preference only through the identity gate", async () => {
+  const [preferredId, preferredEspnId] = [...DISPLAY_ESPN_PREFERRED.entries()][0];
+  const fighter = { ...brief(fighterMedia), id: preferredId, espn_athlete_id: preferredEspnId, name: "Preferred Fighter", dob: "1990-04-16" };
+  const storedRow = { ...images[0], id: "226e6554-f441-4892-8a49-30409d01e52e", fighter_id: preferredId, r2_key: `fighters/${preferredId}/portrait.jpg` };
+  const imageMap = new Map([[preferredId, [{ ...storedRow, image_url: "https://m/portrait.jpg", card_url: "https://m/card.jpg", thumb_url: "https://m/thumb.jpg" }]]]);
+  const tables = { ...fullTables, ufc_images: [...images, storedRow] };
+
+  installDisplayMock({ tables, espn: { [preferredEspnId]: athlete(fighter) } });
+  let out = await __test.displayImagesForFighters(env, [fighter], imageMap);
+  assert.equal(out.get(preferredId).thumb_url, `https://a.espncdn.com/i/headshots/mma/players/full/${preferredEspnId}.png`, "verified: ESPN replaces the stored asset");
+  assert.equal(out.get(preferredId).license, null);
+
+  installDisplayMock({ tables, espn: { [preferredEspnId]: athlete(fighter, { dateOfBirth: "1970-01-01T07:00Z" }) } });
+  out = await __test.displayImagesForFighters(env, [fighter], imageMap);
+  assert.equal(out.get(preferredId).thumb_url, "https://m/thumb.jpg", "DOB disagrees: keep the stored portrait");
+
+  installDisplayMock({ tables, espn: { [preferredEspnId]: athlete(fighter, { headshot: { href: "https://a.espncdn.com/x.png", alt: "Somebody Else" } }) } });
+  out = await __test.displayImagesForFighters(env, [fighter], imageMap);
+  assert.equal(out.get(preferredId).thumb_url, "https://m/thumb.jpg", "headshot alt names someone else: keep the stored portrait");
+
+  installDisplayMock({ tables, espn: { [preferredEspnId]: 503 } });
+  out = await __test.displayImagesForFighters(env, [fighter], imageMap);
+  assert.equal(out.get(preferredId).thumb_url, "https://m/thumb.jpg", "ESPN unreachable: keep the stored portrait");
+
+  const relinked = { ...fighter, espn_athlete_id: "9999999" };
+  const { espnCalls } = installDisplayMock({ tables, espn: { 9999999: athlete(relinked) } });
+  out = await __test.displayImagesForFighters(env, [relinked], imageMap);
+  assert.equal(out.get(preferredId).thumb_url, "https://m/thumb.jpg", "preference needs the fighter id AND the expected ESPN id");
+  assert.equal(espnCalls.length, 0);
+});
+
+test("display_image never shows an unverified ESPN headshot, and follows the shared stored selection", async () => {
+  const f = brief(fighterNoMedia);
+  installDisplayMock({ tables: fullTables, espn: { [f.espn_athlete_id]: 500 } });
+  let out = await __test.displayImagesForFighters(env, [f], new Map());
+  assert.equal(out.get(F_NOMEDIA), null, "ESPN outage with no stored image: fallback chip, not a guessed URL");
+
+  const quarantined = { ...f, espn_athlete_id: [...ESPN_DISPLAY_QUARANTINE][0] };
+  const { espnCalls } = installDisplayMock({ tables: fullTables, espn: { [quarantined.espn_athlete_id]: athlete(quarantined) } });
+  out = await __test.displayImagesForFighters(env, [quarantined], new Map());
+  assert.equal(out.get(F_NOMEDIA), null, "quarantined ESPN asset stays hidden");
+  assert.equal(espnCalls.length, 0);
+
+  /* Same rules as the website: the not-a-portrait list is skipped, licensed editorial beats wikimedia. */
+  const excludedId = [...NOT_PRIMARY_PORTRAIT][0];
+  const row = (id, kind, created_at) => ({ id, kind, fighter_id: F_MEDIA, created_at, image_url: `https://m/${id}.jpg`, thumb_url: `https://m/${id}-t.jpg`, card_url: null });
+  installDisplayMock({ tables: fullTables });
+  out = await __test.displayImagesForFighters(env, [brief(fighterMedia)], new Map([[F_MEDIA, [
+    row(excludedId, "licensed_editorial", "2026-09-10T00:00:00Z"),
+    row("336e6554-f441-4892-8a49-30409d01e52e", "wikimedia", "2026-09-09T00:00:00Z"),
+    row("446e6554-f441-4892-8a49-30409d01e52e", "official_press", "2026-09-01T00:00:00Z"),
+  ]]]));
+  assert.equal(out.get(F_MEDIA).id, "446e6554-f441-4892-8a49-30409d01e52e");
 });
