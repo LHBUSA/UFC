@@ -1,0 +1,13 @@
+/* News index: "More on this story" under the lead story (lib/newsClusters). */
+.news .story-related { grid-column: 1 / -1; margin-top: calc(-1 * var(--s-2)); padding: var(--s-3) var(--s-4); border: 1px solid var(--pbe-line); border-radius: var(--r-lg); background: var(--pbe-ink-2); }
+.news .story-related .eyebrow { color: var(--pbe-faint); }
+.news .story-related ul { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: 2px; }
+.news .story-related li { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); padding: 8px 0; border-top: 1px solid var(--pbe-line-faint); min-width: 0; }
+.news .story-related li:first-child { border-top: 0; }
+.news .story-related a { color: var(--pbe-paper-2); font-weight: 600; font-size: var(--fs-sm); line-height: 1.35; min-width: 0; overflow-wrap: anywhere; }
+.news .story-related a:hover { color: var(--pbe-gold-bright); }
+.news .story-related time { flex: none; color: var(--pbe-faint); font: 12px/1.3 var(--pbe-font-data); white-space: nowrap; }
+@media (max-width: 680px) {
+  .news .story-related li { flex-direction: column; gap: 4px; }
+  .news .story-related time { white-space: normal; }
+}

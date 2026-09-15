@@ -5,7 +5,8 @@ import { storyMedia } from "@/lib/faces";
 import { Empty, PageHead, JsonLd, SectionHead } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
-import { relTime } from "@/lib/format";
+import { fmtDateTime, relTime } from "@/lib/format";
+import { clusterNewsPage } from "@/lib/newsClusters";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
@@ -33,8 +34,14 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
   const [{ rows, count }, typeCounts, wire] = await Promise.all([getArticles(PAGE, type || undefined, (page - 1) * PAGE), getArticleTypeCounts(), getTicker(12)]);
   const media = await storyMedia(rows);
   const pages = count ? Math.ceil(count / PAGE) : 1;
-  const feature = page === 1 && !type ? rows[0] : null;
-  const rest = feature ? rows.slice(1) : rows;
+  /* Front page only: the hero stays the newest story, the first cards prefer
+   * distinct developments (bout / fighters / event ids, lib/newsClusters), and the
+   * hero's own follow-ups sit under it as "More on this story". Filtered and
+   * later pages stay strictly chronological. Every article is still linked. */
+  const clustered = page === 1 && !type ? clusterNewsPage(rows) : null;
+  const feature = clustered?.hero ?? null;
+  const heroRelated = clustered?.heroRelated ?? [];
+  const rest = clustered ? clustered.feed : rows;
   const latestPublished = rows.map((a) => a.published_at).filter(Boolean).sort().at(-1) || undefined;
   const latestModified = rows.map((a) => a.updated_at).filter(Boolean).sort().at(-1) || latestPublished;
 
@@ -53,6 +60,19 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
         <>
           <div className="news">
             {feature && <NewsStoryCard a={feature} feature hero={feature.hero_image_ref ? media.heroes.get(feature.hero_image_ref) : null} faces={media.faces.get(feature.id)} />}
+            {feature && heroRelated.length > 0 && (
+              <aside className="story-related" aria-label="More on this story">
+                <div className="eyebrow">More on this story · {heroRelated.length}</div>
+                <ul>
+                  {heroRelated.map((a) => (
+                    <li key={a.id}>
+                      <Link href={`/news/${a.slug}`}>{a.headline}</Link>
+                      {a.published_at && <time dateTime={a.published_at}>{fmtDateTime(a.published_at)}</time>}
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            )}
             {rest.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}
           </div>
           {pages > 1 && (

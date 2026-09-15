@@ -28,6 +28,7 @@
     "test:display-portrait": "node --experimental-strip-types --test lib/displayPortraitPolicy.test.ts",
     "test:tuf": "node --experimental-strip-types --test lib/tuf.test.ts lib/tufStatus.test.ts lib/tufBoutState.test.ts lib/tufFinaleShape.test.ts lib/retiredFighterSlugs.test.ts ../scripts/tuf/lib/airDates.test.mjs ../scripts/tuf/lib/espnFinaleIdentity.test.mjs ../scripts/tuf/lib/names.test.mjs ../scripts/tuf/lib/boutVerification.test.mjs ../scripts/tuf/lib/tuf33FinaleLinks.test.mjs",
     "test:seo": "node --experimental-strip-types --test lib/seo.test.ts",
+    "test:news-clusters": "node --experimental-strip-types --test lib/newsClusters.test.ts",
     "test:paywall": "node --experimental-strip-types --test lib/accessDecision.test.ts lib/authFlow.test.ts lib/paywall.test.ts",
     "test:sitemap": "node --experimental-strip-types --test lib/sitemapRules.test.ts",
     "test:dwcs": "node --experimental-strip-types --test lib/contenderIdentity.test.ts lib/dwcsAlumni.test.ts lib/retiredFighterSlugs.test.ts lib/outcomeResolution.test.ts lib/dobEvidence.test.ts"
