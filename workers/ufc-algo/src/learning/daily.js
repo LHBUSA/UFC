@@ -9,7 +9,7 @@ import { ELIGIBILITY_VERSION } from '../../../../scripts/model/eligibility.mjs';
 import { resolveChampion } from '../champion.js';
 import { readAll, assembleEvents } from './assemble.js';
 import {
-  CHALLENGER_LABEL, LEARNING_CODE_VERSION, canonicalDataset, coefficientDrift, datasetSha256, decideGate, fromJsonl,
+  CHALLENGER_LABEL, LEARNING_CODE_VERSION, specRound, canonicalDataset, coefficientDrift, datasetSha256, decideGate, fromJsonl,
   leakageAudit, mergeIncrement, predictionDrift, sha256Hex, specCanonical, toJsonl, trainChallenger,
 } from './core.js';
 
@@ -190,7 +190,9 @@ export async function trainStep({ q, env, bucket, gate, dataset, drift = null, n
     audit.checks.push({ name: 'increment completeness', pass: false, detail: `${dataset.not_assembled.length} new bout(s) not assembled, ${dataset.skipped.length} skipped` });
     audit.all_passed = false;
   }
-  const specSha = await sha256Hex(specCanonical({ model_version: CHALLENGER_LABEL, feature_version: FEATURE_VERSION, beta: trained.fit.beta, scale: trained.fit.scale, lambda: trained.fit.lambda }));
+  const beta = trained.fit.beta.map(specRound);
+  const scale = trained.fit.scale.map(specRound);
+  const specSha = await sha256Hex(specCanonical({ model_version: CHALLENGER_LABEL, feature_version: FEATURE_VERSION, beta, scale, lambda: trained.fit.lambda }));
 
   /* Baseline: the same recipe on the champion's dataset, cached in R2 under that dataset's hash. */
   const champData = championDataset(env, champion) || gate.parent;
@@ -207,7 +209,7 @@ export async function trainStep({ q, env, bucket, gate, dataset, drift = null, n
   }
 
   const championSpec = { beta: champion.beta, scale: champion.scale };
-  const challengerSpec = { beta: trained.fit.beta, scale: trained.fit.scale };
+  const challengerSpec = { beta, scale };
   champRows ||= await loadDataset(bucket, champData.uri, champData.sha);
   const bench = champRows.filter((r) => r.event_date >= BENCHMARK_FROM);
   const benchmark = { ...predictionDrift(bench, championSpec, challengerSpec), benchmark_from: BENCHMARK_FROM, benchmark_dataset_sha256: await datasetSha256(bench) };
@@ -225,15 +227,15 @@ export async function trainStep({ q, env, bucket, gate, dataset, drift = null, n
   return {
     status,
     training_window_start: trained.training_window_start, training_window_end: trained.training_window_end, training_bouts: trained.training_bouts,
-    coefficients: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, trained.fit.beta[i]])),
-    feature_scale: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, trained.fit.scale[i]])),
-    hyperparameters: { lambda: trained.fit.lambda, lambda_scan: trained.fit.lambdaScan, converged: trained.fit.converged, iterations: trained.fit.iterations, spec_label: CHALLENGER_LABEL, evidence_uri: `${R2_PREFIX}${evidenceKey}` },
+    coefficients: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, beta[i]])),
+    feature_scale: Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, scale[i]])),
+    hyperparameters: { lambda: trained.fit.lambda, spec_decimals: 10, lambda_scan: trained.fit.lambdaScan, converged: trained.fit.converged, iterations: trained.fit.iterations, spec_label: CHALLENGER_LABEL, evidence_uri: `${R2_PREFIX}${evidenceKey}` },
     spec_sha256: specSha,
     leakage_audit: audit,
     walk_forward: { ...trained.walk_forward, baseline: baseline.walk_forward, baseline_dataset_sha256: baseline.dataset_sha256 },
     calibration: { ece: trained.calibration.ece, slope: trained.calibration.slope, bins: trained.calibration.bins, baseline: baseline.calibration },
     sample_quality: { challenger: trained.sample_quality, baseline: baseline.sample_quality },
-    coefficient_drift: coefficientDrift(champion.beta, trained.fit.beta),
+    coefficient_drift: coefficientDrift(champion.beta, beta),
     benchmark_drift: benchmark,
     upcoming_drift: upcomingDrift,
   };

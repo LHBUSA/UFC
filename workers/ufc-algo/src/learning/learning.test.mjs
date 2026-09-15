@@ -155,6 +155,10 @@ test('identical dataset -> identical model and spec hash; row order does not mat
   const a = C.trainChallenger(rows), b = C.trainChallenger(shuffled);
   const spec = (t) => sha256Hex(specCanonical({ model_version: C.CHALLENGER_LABEL, feature_version: FEATURE_VERSION, beta: t.fit.beta, scale: t.fit.scale, lambda: t.fit.lambda }));
   assert.equal(await spec(a), await spec(b));
+  /* Cross-runtime: a last-bits difference (Node vs workerd measured ~2e-15) does not change the stored spec. */
+  const jitter = (t) => ({ fit: { ...t.fit, beta: t.fit.beta.map((v, i) => v + (i % 2 ? 2e-15 : -2e-15)) } });
+  const stored = (t) => sha256Hex(specCanonical({ model_version: C.CHALLENGER_LABEL, feature_version: FEATURE_VERSION, beta: t.fit.beta.map(C.specRound), scale: t.fit.scale.map(C.specRound), lambda: t.fit.lambda }));
+  assert.equal(await stored({ fit: { ...jitter(a).fit, scale: a.fit.scale, lambda: a.fit.lambda } }), await stored(a));
   const changed = rows.map((r, i) => (i === 100 ? { ...r, label: 1 - r.label } : r));
   assert.notEqual(await C.datasetSha256(changed), await C.datasetSha256(rows));
 });

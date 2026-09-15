@@ -17,6 +17,16 @@ export const REVIEW_VERSION = 'pbe-algo-review-v1';
 /** A challenger has no public name; its spec hash is taken under this fixed label so it depends only on coefficients, scale and lambda. */
 export const CHALLENGER_LABEL = 'pbe-fight-model-challenger';
 
+/**
+ * Coefficients and scale are stored at 10 decimal places. The same fit in Node
+ * and in workerd agrees only to ~2e-15 (measured 2026-09-15: 30 of 33
+ * coefficients differed in the last bits), so a bitwise spec hash would not be
+ * reproducible across runtimes. At 10 dp every stored value, and therefore the
+ * spec hash, re-derives identically from the dataset; predictions move < 1e-9.
+ */
+export const SPEC_DECIMALS = 10;
+export const specRound = (v) => Math.round(v * 10 ** SPEC_DECIMALS) / 10 ** SPEC_DECIMALS;
+
 /* Weekly promotion contract (design section 7). Changing any value is a
  * versioned contract change: bump REVIEW_VERSION. */
 export const REVIEW_THRESHOLDS = Object.freeze({
