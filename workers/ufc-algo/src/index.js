@@ -14,6 +14,11 @@
 //   scheduled  41 * * * *     hourly cycle (champion + shadow)
 //              17 12 * * *    LearnDaily Workflow
 //              23 13 * * 1    weekly promotion review
+//   RPC entrypoint MarketRefresh.refresh({ runId, observedAt })
+//                             service binding only (ufc-live-odds), never an HTTP
+//                             route: after a successful pre-fight snapshot, refresh
+//                             sample_context.market on unlocked champion predictions
+//                             (src/marketRefresh.js, migration 030). Presentation only.
 //
 // ALGO_MODE=dry_run (default) writes only a ufc_model_runs row from the cycle.
 // ALGO_MODE=armed is required for any evaluation, draft, lock, grade or shadow
@@ -21,13 +26,27 @@
 // hash-verified champion exists. Learning never changes the champion; only the
 // owner-approved promote route can.
 
+import { WorkerEntrypoint } from 'cloudflare:workers';
 import { runCycle } from './cycle.js';
+import { refreshMarketContext } from './marketRefresh.js';
 import { db } from './supabase.js';
 import { resolveChampion } from './champion.js';
 import { activeChallenger } from './learning/daily.js';
 import { ownerDecision, runReview, shadowPairs } from './learning/review.js';
 
 export { LearnDaily } from './learning/workflow.js';
+
+/* Reachable only through a Cloudflare service binding that names this entrypoint;
+ * it has no URL. The caller supplies which market run succeeded, never a price,
+ * probability or edge. Armed only: dry_run never writes. */
+export class MarketRefresh extends WorkerEntrypoint {
+  async refresh({ runId, observedAt } = {}) {
+    if (this.env.ALGO_MODE !== 'armed') return { refused: 'dry_run', run_id: runId ?? null };
+    const out = await refreshMarketContext(db(this.env), { runId, observedAt });
+    console.log(`[market-refresh] ${JSON.stringify({ run_id: out.run_id, observed_at: out.observed_at, bouts: out.bouts, predictions: out.predictions, refreshed: out.refreshed, results: out.results, refused: out.refused, errors: out.errors.length })}`);
+    return out;
+  }
+}
 
 export const CRON = Object.freeze({ cycle: '41 * * * *', learn: '17 12 * * *', review: '23 13 * * 1' });
 

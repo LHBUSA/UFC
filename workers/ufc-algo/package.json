@@ -4,6 +4,6 @@
   "type": "module",
   "scripts": {
     "build:check": "wrangler deploy --dry-run --outdir=.wrangler-dryrun",
-    "test": "node --test src/cycle.test.mjs src/market.test.mjs src/cardTruth.test.mjs src/learning/learning.test.mjs ../../scripts/odds/fight_week_cadence.test.mjs"
+    "test": "node --test src/cycle.test.mjs src/market.test.mjs src/cardTruth.test.mjs src/marketRefresh.test.mjs src/learning/learning.test.mjs ../../scripts/odds/fight_week_cadence.test.mjs"
   }
 }

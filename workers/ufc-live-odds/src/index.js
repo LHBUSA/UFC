@@ -38,15 +38,16 @@ import { normalizePayload, snapshotRows, observationRows } from './capture.mjs';
 import { boundariesFrom, dedupeBoundaries } from './boundaries.mjs';
 import { readConfig, shouldPoll, readQuotaHeaders, isActive, isImminent, roundFromStatus } from './gate.mjs';
 import { readPrefightConfig, shouldCapturePrefight } from './prefight.mjs';
+import { notifyMarketRefresh } from './marketRefresh.mjs';
 
 const WORKER = 'ufc-live-odds';
-const VERSION = 'v0.2.2';
+const VERSION = 'v0.3.0';
 const ODDS_BASE = 'https://api.the-odds-api.com/v4';
 const ESPN_CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
 const SPORT = 'mma_mixed_martial_arts';
 
 const health = { last_tick_at: null, last_decision: null, last_paid_call_at: null, paid_calls: 0, observations_written: 0, last_error: null };
-const prefightHealth = { last_check_at: null, last_decision: null, last_capture: null, last_error: null };
+const prefightHealth = { last_check_at: null, last_decision: null, last_capture: null, last_market_refresh: null, last_error: null };
 
 const json = (body, status = 200) => new Response(JSON.stringify(body, null, 2), {
   status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
@@ -565,7 +566,14 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
   };
   await finalize(summary);
   prefightHealth.last_capture = { at: fetchedAt, run_id: runId, matched_bouts: norm.matchedBouts, books: norm.books, snapshot_rows: snapshotWritten, quota_remaining: q.remaining, last_cost: q.last };
-  return { ...decision, paid_calls: 1, run_id: runId, ...summary };
+  /* A+ market context refresh: tell ufc-algo this snapshot exists so PBE Picks shows it
+   * now, not at the next :41 cycle. Identity only; best-effort; the capture above is
+   * already recorded as a success and nothing here can change that. */
+  const refresh = await notifyMarketRefresh(env.ALGO_MARKET, { runId, observedAt: fetchedAt, snapshotRows: snapshotWritten });
+  prefightHealth.last_market_refresh = { at: new Date().toISOString(), run_id: runId, ...refresh };
+  await rest(env, `ufc_market_runs?id=eq.${runId}`, { method: 'PATCH', body: JSON.stringify({ notes: { ...summary.notes, market_refresh: refresh } }) }).catch(() => null);
+  if (!refresh.notified || refresh.refused) console.log(`[prefight] market refresh not applied: ${JSON.stringify(refresh)}`);
+  return { ...decision, paid_calls: 1, run_id: runId, ...summary, market_refresh: refresh };
 }
 
 /** Exact row count, so a run reports what landed rather than what was sent. */

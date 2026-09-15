@@ -2,7 +2,7 @@ import "server-only";
 import fs from "node:fs";
 import type { UfcAccess } from "@/lib/accessDecision";
 import { eventSlug, matchupSlug } from "@/lib/slug";
-import type { AlgoBoutView, AlgoPublicRecord } from "@/lib/algoView";
+import { selectBoutMarket, type AlgoBoutView, type AlgoPublicRecord } from "@/lib/algoView";
 import artifact from "@/lib/generated/model-v1.json";
 
 /* PBE Algo data access. Server only.
@@ -124,7 +124,7 @@ async function assemble(bouts: BoutRow[], evals: EvalRow[], preds: PredRow[], wi
       card_position: b.card_position, order: b.bout_order, fighter_a: b.fighter_a, fighter_b: b.fighter_b,
       decision: p?.locked_at ? "ELIGIBLE" : e?.decision || (p ? "ELIGIBLE" : "NOT_EVALUATED"), reasons: p?.locked_at ? [] : e?.reasons || [], confidence: p?.sample_context?.confidence ?? e?.confidence ?? null,
       pick_fighter_id: p?.pick_fighter_id ?? e?.pick_fighter_id ?? null, pick_probability: p ? Number(p.pick_probability) : e?.pick_probability ?? null,
-      features_available: p?.sample_context?.features_available ?? e?.features_available ?? null, sample: p?.sample_context ? { min_prior_bouts: p.sample_context.min_prior_bouts, min_stat_bouts: p.sample_context.min_stat_bouts } : e?.sample ?? null, market: p?.locked_at ? (p.sample_context?.market ?? null) : e?.market ?? null,
+      features_available: p?.sample_context?.features_available ?? e?.features_available ?? null, sample: p?.sample_context ? { min_prior_bouts: p.sample_context.min_prior_bouts, min_stat_bouts: p.sample_context.min_stat_bouts } : e?.sample ?? null, market: selectBoutMarket(p, e),
       model_version: p?.model_version || e?.model_version || null, feature_version: p?.feature_version || e?.feature_version || null, evaluated_at: e?.evaluated_at ?? null,
       prediction: p ? { id: p.id, generated_at: p.generated_at, locked_at: p.locked_at, prob_a: Number(p.prob_a), prob_b: Number(p.prob_b), pick_fighter_id: p.pick_fighter_id, pick_probability: Number(p.pick_probability), confidence_band: p.confidence_band, feature_vector: p.feature_vector, feature_availability: p.feature_availability, market_implied_prob_pick: p.market_implied_prob_pick, model_edge_pts: p.model_edge_pts } : null,
       grade: g ? { result: g.result, revision: g.revision, graded_at: g.graded_at, revision_reason: g.revision_reason } : null,

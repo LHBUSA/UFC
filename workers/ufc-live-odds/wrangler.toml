@@ -61,6 +61,15 @@ PREFIGHT_ODDS_ENABLED = "true"
 PREFIGHT_ODDS_HORIZON_DAYS = "7"
 PREFIGHT_ODDS_MAX_CALLS_PER_DAY = "30"
 
+# A+ market context refresh (owner decision 2026-09-15). After a successful
+# pre-fight snapshot this Worker calls ufc-algo's MarketRefresh RPC entrypoint
+# (no URL, not public) with the market run id and observed_at only; ufc-algo
+# recomputes the PBE Picks market context. Best-effort: never fails a capture.
+[[services]]
+binding = "ALGO_MARKET"
+service = "ufc-algo"
+entrypoint = "MarketRefresh"
+
 # Every minute. Waking is free: the gate in src/gate.mjs decides whether a tick
 # may spend, and outside an event window it never reaches ESPN or the provider.
 [triggers]

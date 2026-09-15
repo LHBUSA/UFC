@@ -251,3 +251,16 @@ test('PBE PICKS nav treatment: flagship class, PRO badge (never LIVE), reduced m
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.nav-signal \{ animation: none; \}/);
   assert.deepEqual([...css.matchAll(/@keyframes ([\w-]+)/g)].map((m) => m[1]), ['nav-signal-breathe'], 'the signal dot is the only animation');
 });
+
+test('bout market read path: refreshed prediction context first for unlocked calls; locked and no-call rows unchanged', () => {
+  const evalOld = { decision: 'ELIGIBLE', market: { status: 'FRESH', observed_at: '2026-09-15T13:06:08.935Z' } };
+  const refreshed = { status: 'FRESH', observed_at: '2026-09-15T18:57:09.217Z' };
+  assert.equal(view.selectBoutMarket({ locked_at: null, sample_context: { market: refreshed } }, evalOld), refreshed, 'unlocked: the A+ refreshed context wins over the hourly evaluation');
+  assert.equal(view.selectBoutMarket({ locked_at: null, sample_context: {} }, evalOld), evalOld.market, 'falls back to the latest evaluation');
+  assert.equal(view.selectBoutMarket({ locked_at: '2026-09-18T16:41:30Z', sample_context: { market: evalOld.market } }, { decision: 'ELIGIBLE', market: refreshed }), evalOld.market, 'locked: exactly the stored lock-time context');
+  assert.equal(view.selectBoutMarket({ locked_at: null, sample_context: { market: refreshed } }, { decision: 'NO_MODEL_CALL', market: null }), null, 'no-calls stay evaluation-driven');
+  assert.equal(view.selectBoutMarket(null, evalOld), evalOld.market);
+  assert.equal(view.selectBoutMarket(null, undefined), null);
+  const src = readFileSync(new URL('./algo.ts', import.meta.url), 'utf8');
+  assert.match(src, /market: selectBoutMarket\(p, e\),/);
+});

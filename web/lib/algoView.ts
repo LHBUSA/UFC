@@ -33,6 +33,23 @@ export type AlgoMarket = {
   opponent_consensus_odds?: number | null; opponent_best_odds?: number | null; opponent_best_book?: string | null;
 } | null;
 
+/**
+ * Which stored market a bout card presents (read path only; nothing is computed).
+ *   locked prediction      its own sample_context.market (the comparison it locked with)
+ *   latest evaluation is a no-call  the evaluation's market (no-calls stay evaluation-driven)
+ *   unlocked prediction    sample_context.market, which ufc-algo refreshes right after each
+ *                          fight-week snapshot (A+), else the latest evaluation's market
+ */
+export function selectBoutMarket(
+  p: { locked_at: string | null; sample_context?: { market?: AlgoMarket } | null } | null,
+  e: { decision: string; market: AlgoMarket } | null | undefined,
+): AlgoMarket {
+  if (p?.locked_at) return p.sample_context?.market ?? null;
+  if (e && e.decision !== "ELIGIBLE") return e.market ?? null;
+  if (p) return p.sample_context?.market ?? e?.market ?? null;
+  return e?.market ?? null;
+}
+
 /** What PBE Picks may say about the market. */
 export type AlgoMarketState = "CURRENT" | "LAST_OBSERVED" | "UNAVAILABLE";
 export type AlgoMarketView = {

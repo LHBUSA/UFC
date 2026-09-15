@@ -166,6 +166,10 @@ export const APPLIED = new Set([
   // D1: append-only ESPN card observations (current card truth for PBE Algo scheduling). Proven by
   // scripts/db/prove_029.ps1 (6 checks, rolled back), then applied 2026-09-15 via apply_migration.ps1.
   '20260915140000_ufc_event_card_observations.sql',
+  // PBE Picks market context refresh (owner decision 2026-09-15, A+): service-role function that replaces only
+  // sample_context.market on an unlocked live-champion prediction. Proven by scripts/db/prove_030.ps1 (12 checks,
+  // rolled back), then applied 2026-09-15 via apply_migration.ps1.
+  '20260915200000_ufc_model_prediction_market_refresh.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))
