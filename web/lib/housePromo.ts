@@ -4,7 +4,13 @@
  * its NewsArticle structured data: the promo renders after the story and is
  * never described to search engines as part of it.
  *
- * How a campaign is chosen, in order:
+ * CONVERSION FIRST (2026-09-15). For a reader WITHOUT UFC Pro the primary card
+ * is always UFC Pro, with copy chosen by story class; free internal products
+ * never take that slot (the "Also from PropBetEdge" row handles discovery).
+ * Only a reader who already holds UFC Pro (or the owner) gets the rotation
+ * below, and Pro is never advertised back to them.
+ *
+ * How a campaign is chosen for an entitled reader, in order:
  *   1. ELIGIBILITY  every campaign has an explicit rule (product state, reader
  *                   entitlement, context). Ineligible campaigns leave the pool,
  *                   so a reader always gets the next eligible campaign, never
@@ -186,28 +192,72 @@ export type PromoSelection = {
   network: Array<{ key: string; label: string; href: string }>;
 };
 
+/* UFC Pro conversion copy, by story class. Headlines are contextual; the offer
+ * is the same everywhere and its prices come only from PRO_OFFER. */
+const PRO_HEADLINES: Record<StoryClass, readonly string[]> = {
+  fight_week: ["Know what changed — and what it means", "Follow fight week with the full intelligence layer"],
+  preview: ["See the matchup beneath the headline", "Go deeper before the first horn"],
+  results: ["Go beyond the result", "See the fight beneath the scorecard"],
+  rankings: ["Go deeper than the rankings", "See what the rankings don't show"],
+  data: ["Put the numbers to work", "Go deeper than the stat line"],
+  tuf: ["Go deeper on fight night", "Unlock the full PropBetEdge fight intelligence stack"],
+  general: ["Go deeper on fight night", "Unlock the full PropBetEdge fight intelligence stack"],
+};
+
+/** The UFC Pro offer line, from the single source of truth. */
+export function proPriceLine(): string {
+  return `${PRO_OFFER.plans.monthly.display}/month or ${PRO_OFFER.plans.weekly.display}/week · cancel anytime`;
+}
+
+/** The primary card for a reader without UFC Pro. PBE Algo is named only while
+ *  it is actually issuing official calls. */
+export function proConversionCampaign(ctx: PromoContext): Campaign {
+  const stack = ctx.algoActive
+    ? "matchup Fight DNA, PBE Algo calls, market context, round intelligence and the full fight-week desk"
+    : "matchup Fight DNA, market context, round intelligence and the full fight-week desk";
+  const base = CAMPAIGNS.find((c) => c.id === "pro")!;
+  return {
+    ...base,
+    eyebrow: "From PropBetEdge · UFC Pro",
+    headlines: PRO_HEADLINES[classifyStory(ctx)],
+    body: `Unlock ${stack}. ${proPriceLine()}.`,
+    cta: "Get UFC Pro",
+    href: "/pro",
+    external: false,
+  };
+}
+
 /**
- * Weighted rendezvous hashing: every eligible campaign draws a stable score for
- * this article, u^(1/weight), and the highest score wins. Removing a campaign
- * (a Pro reader, a product going dark) moves only the articles that campaign
+ * The primary card.
+ *
+ * Reader without UFC Pro: always UFC Pro (proConversionCampaign).
+ *
+ * Entitled reader: weighted rendezvous hashing over the eligible pool. Every
+ * eligible campaign draws a stable score for this article, u^(1/weight), and
+ * the highest wins. Removing a campaign moves only the articles that campaign
  * had won; adding one (PBE Algo going live) takes only the articles it now
- * outscores. Everyone else keeps their campaign.
+ * outscores. Pro itself is ineligible for these readers.
  */
 export function selectPromo(ctx: PromoContext, version = ROTATION_VERSION): PromoSelection {
   const storyClass = classifyStory(ctx);
-  const draw = (weights: Map<CampaignId, number>) => {
-    let best: Campaign | null = null, bestScore = -1;
-    for (const c of CAMPAIGNS) {
-      const w = weights.get(c.id) ?? 0;
-      if (w <= 0 || !c.eligible(ctx)) continue;
-      const score = Math.pow(stableFraction(`${version}|${ctx.slug}|${c.id}`), 1 / w);
-      if (score > bestScore) { bestScore = score; best = c; }
-    }
-    return best;
-  };
-  // A class whose every campaign is ineligible for this reader falls back to
-  // the general pool rather than rendering nothing.
-  const campaign = draw(weightsFor(storyClass)) ?? draw(weightsFor("general")) ?? CAMPAIGNS[0];
+  let campaign: Campaign;
+  if (!ctx.readerPro) {
+    campaign = proConversionCampaign(ctx);
+  } else {
+    const draw = (weights: Map<CampaignId, number>) => {
+      let best: Campaign | null = null, bestScore = -1;
+      for (const c of CAMPAIGNS) {
+        const w = weights.get(c.id) ?? 0;
+        if (w <= 0 || !c.eligible(ctx)) continue;
+        const score = Math.pow(stableFraction(`${version}|${ctx.slug}|${c.id}`), 1 / w);
+        if (score > bestScore) { bestScore = score; best = c; }
+      }
+      return best;
+    };
+    // A class whose every campaign is ineligible for this reader falls back to
+    // the general pool rather than rendering nothing.
+    campaign = draw(weightsFor(storyClass)) ?? draw(weightsFor("general")) ?? CAMPAIGNS.find((c) => c.id === "ufc_api")!;
+  }
   const headline = campaign.headlines[Math.floor(stableFraction(`${version}|${ctx.slug}|headline|${campaign.id}`) * campaign.headlines.length)];
   const network = NETWORK.sports
     .filter((s) => s.key !== CURRENT_SPORT && s.key !== campaign.sport && /^https:\/\//.test(s.href))

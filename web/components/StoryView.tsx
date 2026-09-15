@@ -139,15 +139,17 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
     : railInitialSelection(videos, 3).filter((v) => isViewable(v));
   const updated = materiallyUpdated(a.published_at, a.updated_at);
   const articleUrl = `${SITE.url}/news/${a.slug}`;
-  /* House promo: chosen deterministically from the article, the reader's
-   * entitlement and live product state. Presentation only: never in the body,
-   * metadata or JSON-LD. PBE Algo state is read only for story classes that can
-   * carry the Algo campaign. Impressions are one server log line per real
+  /* House promo: UFC Pro for every reader without it; for entitled readers a
+   * deterministic campaign from the article and live product state.
+   * Presentation only: never in the body, metadata or JSON-LD. Impressions are
+   * one server log line per real
    * render (no client request); the desk preview neither logs nor tracks. */
   const promoClass = classifyStory({ storyType: a.story_type, slug: a.slug, headline: a.headline });
   const promo = selectPromo({
     storyType: a.story_type, slug: a.slug, headline: a.headline, readerPro: access.pro,
-    algoActive: (weightsFor(promoClass).get("algo") ?? 0) > 0 ? await algoCallsActive().catch(() => false) : false,
+    /* Needed for every free reader (the Pro card names PBE Algo only while it is
+     * live) and for entitled readers whose story class can carry the Algo campaign. */
+    algoActive: !access.pro || (weightsFor(promoClass).get("algo") ?? 0) > 0 ? await algoCallsActive().catch(() => false) : false,
   });
   if (!preview) {
     const ua = (await headers()).get("user-agent") || "";
