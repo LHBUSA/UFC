@@ -37,11 +37,11 @@ const COPY: Record<ProFeature, { title: string; body: string }> = {
   },
   algo: {
     title: "Unlock the PBE Algo call",
-    body: "The PBE Algo pick for this fight: win probability, confidence, data quality, the market-implied probability and the PBE delta, plus the model's own drivers for and against. Locked on the database clock before the fight and graded after it.",
+    body: "The PBE Algo pick for this fight: win probability, confidence, data quality, fight-week odds, the de-vigged market probability and PBE Edge, plus the model's own drivers for and against. Locked on the database clock before the fight and graded after it.",
   },
   picks: {
     title: "Unlock PBE Picks with UFC Pro",
-    body: "Every official PBE Pick on the upcoming UFC cards: the selected fighter, win probability, confidence, data quality, the market-implied probability and PBE edge where a current market exists, the model's own drivers for and against, and the exact reason for every bout the model passes on.",
+    body: "Every official PBE Pick on the upcoming UFC cards: the selected fighter, win probability, confidence, data quality, fight-week consensus and best available odds, the de-vigged market probability and PBE Edge where a current market exists, the model's own drivers for and against, and the exact reason for every bout the model passes on.",
   },
   article_intel: {
     title: "Unlock the Pro modules in this story",

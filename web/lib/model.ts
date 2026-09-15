@@ -124,7 +124,7 @@ export type LiveState = {
    need to know which of them applies, and the honest summary is the same in
    all of them: nothing has been published, so there is nothing to show. */
 export const PRE_LAUNCH_REASON =
-  "No pick has been locked yet. The live record opens on the day the first prediction is published before a fight, and not a day earlier.";
+  "No official call has locked yet. Pre-lock PBE Picks regenerate hourly and are never counted; the live record opens with the first lock and is never backfilled from the backtest.";
 
 export function modelDbConfigured(): boolean {
   return Boolean(URL_ && KEY);

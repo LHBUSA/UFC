@@ -47,12 +47,15 @@ export const SITE = {
  *   cta      rendered as the Go Pro button, not as a text link
  * Removing a link from the bar never removes a route. */
 export type NavPlace = "primary" | "more" | "logo" | "cta";
-export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace; group?: string }> = [
+export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace; group?: string; flagship?: boolean }> = [
   { href: "/", label: "Home", place: "logo" },
   { href: "/fight-week", label: "Fight Week", place: "primary" },
   /* The current official PBE Algo picks. Top level on purpose: /algo is the
-   * method, /algo/card is the picks, /algo/record is the track record. */
-  { href: "/algo/card", label: "PBE PICKS", place: "primary" },
+   * method, /algo/card is the picks, /algo/record is the track record.
+   * flagship: the one primary item with its own treatment (signal dot + PRO
+   * badge, NavLinks + pbe-flagship.css). PRO, never LIVE: the product holds
+   * provisional fight-week calls and locked calls, not live-game odds. */
+  { href: "/algo/card", label: "PBE PICKS", place: "primary", flagship: true },
   { href: "/events", label: "Schedule", place: "primary" },
   { href: "/fighters", label: "Fighters", place: "primary" },
   { href: "/rankings", label: "Rankings", place: "primary" },

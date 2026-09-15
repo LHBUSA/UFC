@@ -9,6 +9,7 @@
  * feature that was unavailable contributes nothing and is never listed. */
 
 import artifact from "@/lib/generated/model-v1.json";
+import { RULE_TEXT } from "@/lib/pbeProduct";
 
 export type AlgoConfidence = "LEAN" | "MEDIUM" | "HIGH";
 export type AlgoGradeResult = "WIN" | "LOSS" | "DRAW" | "NC" | "VOID";
@@ -159,8 +160,8 @@ export const REASON_COPY: Record<string, string> = {
   FEATURES_NOT_ASSEMBLED: "Pre-fight features could not be assembled",
   STALE_FIGHTER_DATA: "Latest fight not yet in Fight DNA",
   DEBUT_CORNER: "A fighter is making their UFC debut",
-  INSUFFICIENT_FEATURES: "Fewer than 20 of 33 features available",
-  LOW_CONFIDENCE: "Too close to call (below 55%)",
+  INSUFFICIENT_FEATURES: `Fewer than ${RULE_TEXT.minFeatures} features available`,
+  LOW_CONFIDENCE: `Too close to call (below ${RULE_TEXT.minPick})`,
   LOCK_WINDOW_CLOSED: "Lock window closed before a call was made",
 };
 

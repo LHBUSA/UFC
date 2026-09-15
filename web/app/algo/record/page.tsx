@@ -5,6 +5,7 @@ import { ProPreview } from "@/components/ProPreview";
 import { getUfcAccess } from "@/lib/access";
 import { getAlgoRecord } from "@/lib/algo";
 import { confidenceCopy, deltaText, lockedText, pctText, type AlgoBoutView } from "@/lib/algoView";
+import { PbeFamilyNav } from "@/components/PbeFamilyNav";
 
 /* UFC Pro: the permanent PBE Algo track record. Every locked call, newest
  * first, with its current grade and every superseded revision. Locked rows are
@@ -35,10 +36,10 @@ function summarize(rows: AlgoBoutView[]): Summary {
 }
 
 const EDGE_BANDS: Array<[string, (d: number) => boolean]> = [
-  ["Model above market by 10+ pts", (d) => d >= 10],
-  ["Model above market by 3–10 pts", (d) => d >= 3 && d < 10],
-  ["Within 3 pts of market", (d) => Math.abs(d) < 3],
-  ["Model below market by 3+ pts", (d) => d <= -3],
+  ["PBE Edge +10 pts or more", (d) => d >= 10],
+  ["PBE Edge +3 to +10 pts", (d) => d >= 3 && d < 10],
+  ["PBE Edge within 3 pts", (d) => Math.abs(d) < 3],
+  ["PBE Edge −3 pts or lower", (d) => d <= -3],
 ];
 
 function SummaryRow({ label, s }: { label: string; s: Summary }) {
@@ -91,12 +92,12 @@ export default async function AlgoRecordPage() {
 
           <div className="tbl-wrap mt-4">
             <table className="tbl">
-              <caption className="sr-only">Record by confidence tier and by model-vs-market delta</caption>
+              <caption className="sr-only">Record by confidence tier and by PBE Edge at lock</caption>
               <thead><tr><th>Slice</th><th className="r">W-L</th><th className="r">Hit</th><th className="r">Brier</th><th className="r">Log loss</th></tr></thead>
               <tbody>
                 {(["HIGH", "MEDIUM", "LEAN"] as const).map((c) => <SummaryRow key={c} label={`${confidenceCopy(c)} confidence`} s={summarize(rows.filter((r) => r.confidence === c))} />)}
                 {EDGE_BANDS.map(([label, f]) => <SummaryRow key={label} label={label} s={summarize(rows.filter((r) => r.prediction?.model_edge_pts != null && f(Number(r.prediction.model_edge_pts))))} />)}
-                <SummaryRow label="No fresh market at lock (stale or no line)" s={summarize(rows.filter((r) => r.prediction?.model_edge_pts == null))} />
+                <SummaryRow label="No current market at lock (stale or no line)" s={summarize(rows.filter((r) => r.prediction?.model_edge_pts == null))} />
               </tbody>
             </table>
           </div>
@@ -105,7 +106,7 @@ export default async function AlgoRecordPage() {
             <table className="tbl algo-record">
               <caption className="sr-only">Every locked PBE Algo call</caption>
               <thead>
-                <tr><th>Event</th><th>Bout</th><th>Pick</th><th className="r">Prob.</th><th>Conf.</th><th>Locked</th><th className="r">Market</th><th className="r">Delta</th><th>Result</th><th>Model</th></tr>
+                <tr><th>Event</th><th>Bout</th><th>Pick</th><th className="r">Prob.</th><th>Conf.</th><th>Locked</th><th className="r">Market</th><th className="r">PBE Edge</th><th>Result</th><th>Model</th></tr>
               </thead>
               <tbody>
                 {rows.map((r) => {
@@ -141,6 +142,8 @@ export default async function AlgoRecordPage() {
           <p className="note mt-4">ROI and closing-line value need the actual price at lock and at close; they are added to this page once both are captured for graded calls rather than estimated.</p>
         </>
       )}
+
+      <PbeFamilyNav current="record" />
     </div>
   );
 }

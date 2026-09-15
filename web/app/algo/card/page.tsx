@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PbeFamilyNav } from "@/components/PbeFamilyNav";
 import { Breadcrumbs } from "@/components/ui";
 import { ProPreview } from "@/components/ProPreview";
 import { AlgoPick, type AlgoFighterContext } from "@/components/AlgoPick";
@@ -85,6 +86,7 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
         <div className="pp-hero-actions">
           <Link href="/algo/record" className="btn gold">Track Record</Link>
           <Link href="/algo" className="btn">How PBE Algo works</Link>
+          <Link href="/model" className="btn ghost">Model evidence</Link>
         </div>
       </header>
 
@@ -142,6 +144,8 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
           })}
         </>
       )}
+
+      <PbeFamilyNav current="picks" />
     </div>
   );
 }

@@ -98,7 +98,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
         <div className="eyebrow">UFC Pro flagship · PBE Algo · {algoIsLive ? (algoRecord.locked_predictions ? `${algoRecord.locked_predictions} locked call${algoRecord.locked_predictions === 1 ? "" : "s"}` : "official calls active, first lock pending") : "pre-launch"}</div>
         <h2 id="pro-algo-title" className="serif" style={{ margin: "7px 0 8px" }}>The call, the probability, the edge and the history.</h2>
         <p className="dim sm" style={{ maxWidth: 760 }}>
-          PBE Algo scores every eligible UFC bout from pre-fight data only: pick, win probability, confidence and data quality, the market-implied probability with the vig removed, the PBE delta, and the model&apos;s own drivers for and against. Calls lock on the database clock before the fight and are graded after it; ineligible bouts show NO MODEL CALL with the reason.
+          PBE Algo scores every eligible UFC bout from pre-fight data only: pick, win probability, confidence and data quality, fight-week consensus and best available odds, the market probability with the vig removed, PBE Edge, and the model&apos;s own drivers for and against. Calls lock on the database clock before the fight and are graded after it; ineligible bouts show NO MODEL CALL with the reason.
           {algoIsLive ? "" : " The first official call has not been locked yet, and the record will start at zero rather than borrow from the backtest."}
         </p>
         <div className="row mt-3">

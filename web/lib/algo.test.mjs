@@ -151,7 +151,7 @@ test('public surfaces never import a per-call reader or the call card', () => {
 test('PBE PICKS is a primary nav item pointing at the existing /algo/card surface; no duplicate route', () => {
   const web = new URL('../', import.meta.url);
   const site = readFileSync(new URL('lib/site.ts', web), 'utf8');
-  assert.match(site, /\{ href: "\/algo\/card", label: "PBE PICKS", place: "primary" \}/);
+  assert.match(site, /\{ href: "\/algo\/card", label: "PBE PICKS", place: "primary", flagship: true \}/);
   assert.doesNotMatch(site, /href: "\/picks"/);
   const card = readFileSync(new URL('app/algo/card/page.tsx', web), 'utf8');
   assert.match(card, /<h1 className="pp-hero-title">PBE PICKS<\/h1>/);
@@ -166,4 +166,72 @@ test('PBE PICKS is a primary nav item pointing at the existing /algo/card surfac
   let picksRoute = true;
   try { readFileSync(new URL('app/picks/page.tsx', web)); } catch { picksRoute = false; }
   assert.equal(picksRoute, false);
+});
+
+/* ---- flagship product copy: pinned to what production runs ---------------- */
+
+test('product copy constants mirror the production eligibility rules and fight-week windows', async () => {
+  const prod = await import('../../scripts/model/eligibility.mjs');
+  const cadence = await import('../../scripts/odds/fight_week_cadence.mjs');
+  const product = await import('./pbeProduct.ts');
+  const R = product.ALGO_RULES;
+  assert.equal(R.minPriorBoutsPerCorner, prod.RULES.minPriorBoutsPerCorner);
+  assert.equal(R.minFeaturesAvailable, prod.RULES.minFeaturesAvailable);
+  assert.equal(R.minPickProbability, prod.RULES.minPickProbability);
+  assert.deepEqual({ ...R.high }, { ...prod.RULES.high });
+  /* Medium has no named constant in production: pin it by behaviour. */
+  const row = { min_prior_bouts: 9, available_count: 33 };
+  assert.equal(prod.confidenceLabel(R.medium.minPickProbability - 1e-9, row), 'LEAN');
+  assert.equal(prod.confidenceLabel(R.medium.minPickProbability, row), 'MEDIUM');
+  assert.equal(prod.confidenceLabel(R.high.minPickProbability, row), 'HIGH');
+  assert.equal(prod.confidenceLabel(0.95, { min_prior_bouts: R.high.minPriorBoutsPerCorner - 1, available_count: 33 }), 'MEDIUM', 'thin samples capped at Medium');
+  assert.deepEqual(product.FIGHT_WEEK_WINDOWS.map((w) => [w.band, w.captureEveryMinutes, w.currentMinutes]), cadence.FIGHT_WEEK_BANDS.map((b) => [b.band, b.intervalMinutes, b.currentMinutes]));
+  assert.equal(product.MODEL_FACTS.featureCount, artifact.features.length);
+  assert.equal(product.MODEL_FACTS.featureCount, 33);
+  assert.equal(product.MODEL_FACTS.sportsbookInputs, 0);
+  assert.match(product.RULE_TEXT.confidence, /Lean below 60%, Medium from 60%, High from 70%/);
+  assert.equal(view.REASON_COPY.INSUFFICIENT_FEATURES, 'Fewer than 20 of 33 features available');
+  assert.equal(view.REASON_COPY.LOW_CONFIDENCE, 'Too close to call (below 55%)');
+});
+
+test('the /model explainer is illustrative, uses the production price math, and reads 64.0 / 54.0 / +10.0', async () => {
+  const product = await import('./pbeProduct.ts');
+  const { impliedFromAmerican } = await import('../../scripts/model/market_baseline.mjs');
+  for (const price of [-130, 108, 100, -100, 491, -700]) assert.equal(product.impliedFromAmerican(price), impliedFromAmerican(price));
+  const x = product.illustrativeEdge();
+  assert.equal((x.modelProbability * 100).toFixed(1), '64.0');
+  assert.equal((x.devigPick * 100).toFixed(1), '54.0');
+  assert.equal(x.edgePts.toFixed(1), '10.0');
+  assert.ok(x.overround > 1, 'raw implied carries the vig');
+  const page = readFileSync(new URL('../app/model/page.tsx', import.meta.url), 'utf8');
+  assert.match(page, /Illustrative example — not a current pick/);
+  assert.match(page, /illustrativeEdge\(\)/);
+});
+
+test('public PBE surfaces carry no stale pre-launch copy and never read a call', () => {
+  const web = new URL('../', import.meta.url);
+  const customer = ['app/model/page.tsx', 'app/algo/page.tsx', 'app/algo/card/page.tsx', 'app/algo/record/page.tsx', 'app/pro/page.tsx', 'components/ProPreview.tsx', 'components/AlgoPick.tsx', 'components/PbeFamilyNav.tsx', 'lib/model.ts'];
+  for (const f of customer) {
+    const src = readFileSync(new URL(f, web), 'utf8');
+    assert.doesNotMatch(src, /PBE delta/i, `${f}: customer copy says PBE Edge`);
+    assert.doesNotMatch(src, /no live pick/i, `${f}: PBE Picks are live`);
+  }
+  const model = readFileSync(new URL('app/model/page.tsx', web), 'utf8');
+  assert.doesNotMatch(model, /· candidate|picks at 65% or better/, 'no candidate eyebrow or stale threshold on /model');
+  for (const f of ['app/model/page.tsx', 'components/PbeFamilyNav.tsx']) {
+    assert.doesNotMatch(readFileSync(new URL(f, web), 'utf8'), /getAlgoCards|getAlgoBout|getAlgoRecord|AlgoPick|pick_probability|feature_vector|model_edge_pts/, `${f} must not read a call`);
+  }
+  assert.match(model, /access\.pro\s*\? <Link href="\/algo\/card" className="btn gold mdl-cta-main">Open PBE Picks<\/Link>\s*: <Link href="\/pro" className="btn gold mdl-cta-main">Unlock PBE Picks<\/Link>/);
+});
+
+test('PBE PICKS nav treatment: flagship class, PRO badge (never LIVE), reduced motion respected', () => {
+  const web = new URL('../', import.meta.url);
+  const nav = readFileSync(new URL('components/NavLinks.tsx', web), 'utf8');
+  assert.match(nav, /className="nav-pbe-picks"/);
+  assert.match(nav, /<span className="nav-pro">PRO<\/span>/);
+  assert.doesNotMatch(nav, />LIVE</);
+  assert.match(nav, /<span>\{n\.label\}<\/span>/, 'the visible label is the registry label, unchanged');
+  const css = readFileSync(new URL('app/pbe-flagship.css', web), 'utf8');
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.nav-signal \{ animation: none; \}/);
+  assert.deepEqual([...css.matchAll(/@keyframes ([\w-]+)/g)].map((m) => m[1]), ['nav-signal-breathe'], 'the signal dot is the only animation');
 });

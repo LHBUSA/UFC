@@ -7,6 +7,8 @@ import { MODEL, pct, num3 } from "@/lib/model";
 import { REASON_COPY } from "@/lib/algoView";
 import { SITE } from "@/lib/site";
 import { PRO_OFFER } from "@/lib/proOffer";
+import { MODEL_FACTS, RULE_TEXT } from "@/lib/pbeProduct";
+import { PbeFamilyNav } from "@/components/PbeFamilyNav";
 
 /* PUBLIC = ACCOUNTABILITY. This page proves the Algo exists, how it works and
  * how it has done in aggregate. It never renders, serializes or links an
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
 const STEPS: Array<[string, string]> = [
   ["Card discovered", "Every UFC card inside a 14-day horizon is picked up hourly by a Cloudflare scheduler. Contender Series and non-UFC events are out of scope."],
   ["Identity verified", "Both corners must resolve to one reconciled fighter record, with no open same-name identity review."],
-  ["Features assembled", "33 pre-fight difference features are rebuilt from Fight DNA as of the event date: nothing from the fight itself, and never a sportsbook price."],
+  ["Features assembled", `${MODEL_FACTS.featureCount} pre-fight difference features are rebuilt from Fight DNA as of the event date: nothing from the fight itself, and never a sportsbook price.`],
   ["Eligibility decided", "A deterministic rule set decides ELIGIBLE or NO MODEL CALL, and a no-call records its exact reasons."],
   ["Hourly regeneration", "Until the lock, an eligible call is re-scored every hour as the card changes. A provisional call is not part of the record."],
   ["Locked on the database clock", "The call locks once, the afternoon before fight day after official weigh-ins. The timestamp is the database's own clock, and from that moment nothing about the prediction can be edited."],
@@ -91,16 +93,17 @@ export default async function AlgoPage() {
         <SectionHead eyebrow="Eligibility" title="No forced picks" />
         <p className="note">Every eligible bout gets a call. A bout that fails any rule gets NO MODEL CALL with the reason on record, and a probability is never nudged to make a bout callable. The rules, in order:</p>
         <ul className="algo-rules">{Object.values(REASON_COPY).map((r) => <li key={r}>{r}</li>)}</ul>
-        <p className="note">Confidence: <b>Lean</b> below 60%, <b>Medium</b> from 60%, <b>High</b> from 70% only when both fighters have at least three prior bouts and at least 31 of 33 features are available. Small samples are capped at Medium however large the number.</p>
+        <p className="note">Confidence: {RULE_TEXT.confidence}</p>
       </section>
 
       <section className="mdl-sec" id="market">
-        <SectionHead eyebrow="Model vs market" title="Killing the vig" />
+        <SectionHead eyebrow="Model vs market" title="Killing the vig" href="/model#edge" cta="See the PBE Edge explainer" />
         <p className="note">
-          Sportsbook prices include a margin, so their implied probabilities add up to more than 100%. PBE Algo removes it (a de-vigged consensus
-          across books, observed before the lock) and reports the difference between its own probability and the market&apos;s as the PBE delta.
-          The market is compared with the model after scoring and is never a model input. Brier score, log loss and calibration are tracked for both,
-          by confidence tier and by delta band, as the graded record accumulates.
+          Sportsbook prices include a margin, so their implied probabilities add up to more than 100%. During fight week PBE Algo reads the
+          current market, shows the consensus and best available American odds, removes the margin (a de-vigged consensus across books) and
+          reports the difference between its own probability and the market&apos;s as PBE Edge. The market is compared with the model after
+          scoring and is never a model input; a market older than its fight-week window shows its age and publishes no edge. Brier score, log
+          loss and calibration are tracked by confidence tier and by PBE Edge band as the graded record accumulates.
         </p>
       </section>
 
@@ -119,10 +122,12 @@ export default async function AlgoPage() {
         <div>
           <div className="eyebrow">UFC Pro</div>
           <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>The calls, the probabilities, the edge and the history.</div>
-          <div className="faint sm">UFC Pro includes every PBE Algo call with win probability, confidence, data quality, market-implied probability and PBE delta, the model&apos;s drivers for and against, every no-call reason, and the complete per-call track record.</div>
+          <div className="faint sm">UFC Pro includes every PBE Algo call with win probability, confidence, data quality, fight-week odds, de-vigged market probability and PBE Edge, the model&apos;s drivers for and against, every no-call reason, and the complete per-call track record.</div>
         </div>
         <Link href={access.pro ? "/algo/card" : "/pro"} className="btn gold">{access.pro ? "Current PBE Picks" : "Unlock UFC Pro"}</Link>
       </section>
+
+      <PbeFamilyNav current="algo" />
 
       <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: "PBE Algo", url: `${SITE.url}/algo`, description: "Method, eligibility rules and aggregate live record for PBE Algo, the PropBetEdge UFC Pro win-probability model.", isPartOf: { "@id": `${SITE.url}/#site` } }} />
     </div>

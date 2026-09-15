@@ -1,27 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageHead, SectionHead, JsonLd } from "@/components/ui";
+import { Breadcrumbs, SectionHead, JsonLd } from "@/components/ui";
 import { ModelProbability } from "@/components/ModelProbability";
+import { PbeFamilyNav } from "@/components/PbeFamilyNav";
 import {
   MODEL, getLiveState, pct, pts, num3, divisionLabel,
   type ModelExample,
 } from "@/lib/model";
+import { MODEL_FACTS, illustrativeEdge } from "@/lib/pbeProduct";
+import { getUfcAccess } from "@/lib/access";
 import { SITE } from "@/lib/site";
+
+/* /model is the evidence page for the PBE Picks product family: what the model
+ * is, why it is different, the proof, then the full method. It never renders a
+ * current call. The live record and the backtest stay separate sections from
+ * separate sources and are never combined. Every product number comes from the
+ * release artifact or lib/pbeProduct.ts, never typed into prose. */
 
 export const revalidate = 300;
 
+const TITLE = "PBE Fight Model — UFC Win Probability Model vs Sportsbook Odds";
+const DESCRIPTION = `${MODEL_FACTS.displayName} is PropBetEdge's independent UFC fight model: a win probability from ${MODEL_FACTS.featureCount} pre-fight Fight DNA features with ${MODEL_FACTS.sportsbookInputs} sportsbook inputs, compared with the de-vigged fight-week market to measure PBE Edge. Live record, walk-forward backtest, calibration and leakage proof.`;
+
 export const metadata: Metadata = {
-  title: "PBE Fight Model — Record, Calibration & Method",
-  description:
-    "The PBE Fight Model v1: an independent UFC win-probability model built from pre-fight Fight DNA only, with no sportsbook odds as an input. Walk-forward backtest, calibration, leakage audit, and a live record that starts at zero.",
+  title: TITLE,
+  description: DESCRIPTION,
+  keywords: ["UFC prediction model", "UFC win probability model", "UFC fight model", "model vs sportsbook odds", "de-vigged market probability", "PBE Edge", "UFC analytics", "PBE Picks", "PropBetEdge"],
   alternates: { canonical: "/model" },
   openGraph: {
-    title: "PBE Fight Model — Record, Calibration & Method",
-    description: "Independent UFC win probabilities from pre-fight data only. Walk-forward evidence, published in full, including where the model is weak.",
+    title: "PBE Fight Model — an independent probability, a real market price, PBE Edge",
+    description: `Independent UFC win probabilities from ${MODEL_FACTS.featureCount} pre-fight features, no sportsbook inputs. Compared with the de-vigged market after scoring. Live record and walk-forward evidence, published in full.`,
     url: `${SITE.url}/model`,
     images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630 }],
   },
-  twitter: { card: "summary_large_image", title: "PBE Fight Model", images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", title: "PBE Fight Model — UFC win probability vs the market", description: "An independent probability. A real market price. The difference is PBE Edge.", images: [`${SITE.url}/opengraph-image`] },
 };
 
 const Stat = ({ label, value, sub, empty }: { label: string; value: string; sub?: string; empty?: boolean }) => (
@@ -50,57 +62,187 @@ function ExampleCard({ e }: { e: ModelExample }) {
         }}
         settled={{ winnerName: e.winner_name, outcome: e.outcome, method: e.result_method }}
         kicker={`Backtest · ${e.event_date} · ${divisionLabel(e.weight_class, e.is_womens)}`}
-        disclaimer="Backtest output. Not a published pick."
+        disclaimer="Backtest output. Not a PBE Pick."
       />
       {e.note && <p className="mdl-example-note">{e.note}</p>}
     </div>
   );
 }
 
+const LIFECYCLE: Array<[string, string]> = [
+  ["Discover", "Every UFC card inside the horizon is picked up by the hourly scheduler."],
+  ["Verify", "Both fighters resolve to one reconciled identity with current Fight DNA."],
+  ["Score", `${MODEL_FACTS.featureCount} pre-fight features become an independent PBE probability.`],
+  ["Compare", "The current fight-week market is de-vigged and PBE Edge is measured."],
+  ["Regenerate", "Until lock, new pre-fight inputs can change the call, every hour."],
+  ["Lock", "The prediction is written on the database clock and becomes immutable."],
+  ["Grade", "The official result enters the record; corrections are dated revisions."],
+];
+
 export default async function ModelPage() {
-  const live = await getLiveState();
+  const [live, access] = await Promise.all([getLiveState(), getUfcAccess()]);
   const ev = MODEL.evidence;
   const m = ev.model;
   const audit = MODEL.leakage_audit;
-
-  const highConf = live.record ? live.record.high_conf_wins + live.record.high_conf_losses : 0;
+  const x = illustrativeEdge();
+  const locked = live.record?.locked_predictions ?? 0;
 
   return (
-    <div className="wrap page">
-      <PageHead
-        crumbs={[{ name: "PBE Model" }]}
-        eyebrow={`${MODEL.model.model_version} · ${MODEL.model.feature_version} · candidate`}
-        title="The PBE Fight Model"
-        lede="An independent win-probability model for UFC bouts. It reads only what was knowable before the fight, from the repaired Fight DNA history, and it never takes a sportsbook price as an input. The market is compared to the model afterwards, never the other way round."
-      />
+    <div className="wrap page mdl-page">
+      {/* ------------------------------------------------------------------
+          1. WHAT IT IS
+      ------------------------------------------------------------------- */}
+      <header className="mdl-hero" id="top">
+        <Breadcrumbs items={[{ name: "PBE Model" }]} />
+        <div className="mdl-hero-grid">
+          <div className="mdl-hero-copy">
+            <p className="mdl-hero-eyebrow"><i aria-hidden="true" />{MODEL_FACTS.displayName}</p>
+            <h1 className="mdl-hero-title">
+              <span>An independent probability.</span>
+              <span>A real market price.</span>
+              <span className="edge">The difference is PBE Edge.</span>
+            </h1>
+            <p className="mdl-hero-lede">
+              PBE builds its own win probability from pre-fight Fight DNA. Sportsbook odds never enter the model. Once the
+              probability exists, PropBetEdge independently reads the fight-week market, removes the vig and measures the disagreement.
+            </p>
+            <ul className="mdl-proof" aria-label="Model facts">
+              <li><b>{MODEL_FACTS.featureCount}</b> pre-fight features</li>
+              <li><b>{MODEL_FACTS.sportsbookInputs}</b> sportsbook inputs</li>
+              <li>Hourly pre-lock</li>
+              <li>Locked before the fight</li>
+              <li>Public live record</li>
+            </ul>
+            <div className="mdl-hero-cta">
+              {access.pro
+                ? <Link href="/algo/card" className="btn gold mdl-cta-main">Open PBE Picks</Link>
+                : <Link href="/pro" className="btn gold mdl-cta-main">Unlock PBE Picks</Link>}
+              <Link href={access.pro ? "/algo/record" : "/algo#record"} className="btn">Track record</Link>
+              <a href="#how-it-works" className="btn ghost">How the model works</a>
+            </div>
+          </div>
+
+          <aside className="mdl-instrument" aria-label="Model identity">
+            <div className="mdl-instrument-head"><span>Model identity</span><span className="mono">{MODEL_FACTS.modelVersion}</span></div>
+            <dl>
+              <div><dt>Inputs</dt><dd>{MODEL_FACTS.featureCount} pre-fight features · {MODEL_FACTS.sportsbookInputs} odds</dd></div>
+              <div><dt>Trained on</dt><dd>{MODEL_FACTS.trainingBouts.toLocaleString("en-US")} graded bouts</dd></div>
+              <div><dt>Out of sample</dt><dd>{MODEL_FACTS.outOfSampleFights.toLocaleString("en-US")} fights · Brier {num3(m.brier)}</dd></div>
+              <div><dt>Calibration</dt><dd>ECE {num3(m.calibration_ece, 4)}</dd></div>
+              <div><dt>Live record</dt><dd>{locked ? `${locked} locked call${locked === 1 ? "" : "s"}` : "Opens at the first lock"}</dd></div>
+              <div><dt>Spec hash</dt><dd className="mono">{MODEL_FACTS.specSha256.slice(0, 12)}…</dd></div>
+            </dl>
+            <p className="mdl-instrument-foot">Walk-forward evidence and the live record are reported separately below and never combined.</p>
+          </aside>
+        </div>
+        <nav className="mdl-jump" aria-label="On this page">
+          <a href="#edge">Why it&apos;s different</a>
+          <a href="#live">Proof</a>
+          <a href="#method-deep">Methodology</a>
+        </nav>
+      </header>
 
       {/* ------------------------------------------------------------------
-          LIVE RECORD. First on the page, because it is the claim that would
-          matter most - and today it is empty, which is the honest thing for it
-          to say. Nothing from the backtest is allowed to fill this space.
+          2. WHY IT'S DIFFERENT
       ------------------------------------------------------------------- */}
-      <section className="mdl-sec" style={{ marginTop: 0 }} id="live">
-        <SectionHead eyebrow="Live record" title="What the model has actually done" />
+      <section className="mdl-sec" id="edge">
+        <SectionHead eyebrow="Why it's different" title="Probability → Market → PBE Edge" />
+        <div className="mdl-flow" role="group" aria-label="Illustrative example, not a current pick">
+          <p className="mdl-illus">Illustrative example — not a current pick</p>
+          <ol className="mdl-flow-steps">
+            <li className="model">
+              <span className="mdl-flow-k">PBE probability</span>
+              <b>{(x.modelProbability * 100).toFixed(1)}%</b>
+              <span className="mdl-flow-s">Built independently</span>
+            </li>
+            <li className="market" aria-label="then">
+              <span className="mdl-flow-k">Market</span>
+              <b>{(x.devigPick * 100).toFixed(1)}%</b>
+              <span className="mdl-flow-s">De-vigged consensus</span>
+            </li>
+            <li className="edge">
+              <span className="mdl-flow-k">PBE Edge</span>
+              <b>{pts(x.edgePts)}</b>
+              <span className="mdl-flow-s">Model − Market</span>
+            </li>
+          </ol>
+          <p className="mdl-flow-math">
+            Books offer <b>{x.pickOdds > 0 ? `+${x.pickOdds}` : x.pickOdds}</b> / <b>+{x.opponentOdds}</b> → raw implied {(x.rawPick * 100).toFixed(1)}% + {(x.rawOpponent * 100).toFixed(1)}% = {(x.overround * 100).toFixed(1)}% → vig removed → <b>{(x.devigPick * 100).toFixed(1)}%</b> → {(x.modelProbability * 100).toFixed(1)}% − {(x.devigPick * 100).toFixed(1)}% = <b>{pts(x.edgePts)}</b>
+          </p>
+        </div>
+        <ul className="mdl-explain">
+          <li><b>American odds</b> are what the books actually offer. PBE Picks shows the consensus price and the best available price with its book.</li>
+          <li><b>Raw implied probability contains vig.</b> Both sides of a fight add up to more than 100%; that excess is the book&apos;s margin.</li>
+          <li><b>PBE removes the vig</b> across the current observed market: the median across books, normalised so both sides sum to 100%.</li>
+          <li><b>PBE Edge</b> compares the model probability with that de-vigged market probability, in percentage points. It is never measured against a vigged price.</li>
+          <li><b>Market data is read only after the model has scored the fight.</b> A price never changes a probability, and a stale price never publishes an edge.</li>
+        </ul>
+      </section>
+
+      <section className="mdl-sec" id="how-it-works">
+        <SectionHead eyebrow="The differentiator" title="The model doesn't follow the market" />
+        <div className="mdl-lanes">
+          <div className="mdl-lane model">
+            <div className="mdl-lane-head">PBE model lane</div>
+            <ol>
+              <li><b>Fight DNA</b><span>As of the event date, from repaired fight history</span></li>
+              <li><b>{MODEL_FACTS.featureCount} pre-fight features</b><span>Differences between the two corners</span></li>
+              <li className="out"><b>PBE probability</b><span>Scored before any price is read</span></li>
+            </ol>
+          </div>
+          <div className="mdl-lane-wall" aria-hidden="true"><span>No data crosses</span></div>
+          <div className="mdl-lane market">
+            <div className="mdl-lane-head">Market lane</div>
+            <ol>
+              <li><b>Sportsbook prices</b><span>Fight-week snapshots of American odds</span></li>
+              <li><b>Multi-book consensus</b><span>Median across the books in one snapshot</span></li>
+              <li className="out"><b>Vig removed</b><span>De-vigged market probability</span></li>
+            </ol>
+          </div>
+          <div className="mdl-lane-join">
+            <span className="model">PBE probability</span><i>−</i><span className="market">market probability</span><i>=</i><span className="edge">PBE Edge</span>
+          </div>
+        </div>
+        <p className="note">
+          The {MODEL_FACTS.featureCount} inputs are all pre-fight Fight DNA differences; {MODEL_FACTS.sportsbookInputs} of them come from a sportsbook.
+          The two lanes meet only at the final subtraction, which is why PBE Edge can disagree with the market at all.
+        </p>
+      </section>
+
+      <section className="mdl-sec" id="lifecycle">
+        <SectionHead eyebrow="Product lifecycle" title="From card to graded record" href="/algo" cta="How PBE Algo calls a fight" />
+        <ol className="mdl-life">
+          {LIFECYCLE.map(([h, p], i) => (
+            <li key={h}><span className="mdl-life-n">{i + 1}</span><b>{h}</b><p>{p}</p></li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ------------------------------------------------------------------
+          3. PROOF. The live record first, never mixed with the backtest.
+      ------------------------------------------------------------------- */}
+      <section className="mdl-sec" id="live">
+        <SectionHead eyebrow="Proof · live record" title="What the model has actually done" />
         <div className="mdl-status">
           <div>
             <h2>
               {live.status === "publishing" ? `${live.record?.wins}-${live.record?.losses}${live.record?.no_decision ? `-${live.record.no_decision}` : ""}`
                 : live.status === "publishing_ungraded" ? "Awaiting the first result"
-                : "Not publishing yet"}
+                : "The record opens at the first lock"}
             </h2>
             <p>
               {live.reason ||
-                `Locked before the fight, graded after it, never edited in between. ${live.record?.locked_predictions ?? 0} picks locked to date.`}
+                `Locked before the fight, graded after it, never edited in between. ${live.record?.locked_predictions ?? 0} calls locked to date.`}
             </p>
             <p style={{ marginTop: "var(--s-3)" }}>
-              A pick enters this record only once it has been written down and locked <em>before</em> the bout — and the lock time
-              is the database&rsquo;s own clock, not a timestamp supplied by whatever wrote the row. From that moment the
-              probability, the pick, the model version and the feature vector are frozen: there is no permitted edit to a published
-              prediction at all. That is a storage-layer guarantee rather than a promise made in application code.
+              A call enters this record only once it has been locked <em>before</em> the bout, and the lock time is the
+              database&rsquo;s own clock, not a timestamp supplied by whatever wrote the row. From that moment the probability, the pick,
+              the model version and the feature vector are frozen: there is no permitted edit to a locked prediction at all. That is a
+              storage-layer guarantee rather than a promise made in application code. Pre-lock picks regenerate and are never counted.
             </p>
             <p style={{ marginTop: "var(--s-3)" }}>
               Results are kept separately, because a result is not a prediction. Combat-sports outcomes get overturned on appeal and
-              corrected by commissions, so a grade can be revised — as a new entry that supersedes the last one and has to say why.
+              corrected by commissions, so a grade can be revised, as a new entry that supersedes the last one and has to say why.
               The record you see follows the current entry; every superseded one stays on file.
               {live.record && live.record.revised_grades > 0
                 ? ` ${live.record.revised_grades} result${live.record.revised_grades === 1 ? " has" : "s have"} been revised so far.`
@@ -110,14 +252,25 @@ export default async function ModelPage() {
         </div>
 
         <div className="mdl-rec">
-          <Stat label="Record" value={live.status === "publishing" ? `${live.record?.wins}-${live.record?.losses}` : "0-0"} empty={live.status !== "publishing"} sub={live.status === "publishing" ? undefined : "no locked picks yet"} />
+          <Stat label="Locked calls" value={String(locked)} empty={!locked} sub={locked ? undefined : "none locked yet"} />
+          <Stat label="Record" value={live.status === "publishing" ? `${live.record?.wins}-${live.record?.losses}` : "0-0"} empty={live.status !== "publishing"} />
           <Stat label="Hit rate" value={pct(live.record?.hit_rate)} empty={live.record?.hit_rate == null} />
-          <Stat label="High confidence" value={highConf ? `${live.record?.high_conf_wins}-${live.record?.high_conf_losses}` : "—"} empty={!highConf} sub="picks at 65% or better" />
           <Stat label="Brier" value={num3(live.record?.brier ?? null)} empty={live.record?.brier == null} sub="lower is better" />
+          <Stat label="Awaiting result" value={live.record ? String(live.record.pending) : "—"} empty={!live.record?.pending} />
           <Stat label="Last 30" value={live.recent ? `${live.recent.wins}-${live.recent.losses}` : "—"} empty={!live.recent} />
           <Stat label="No contest / draw" value={live.record ? String(live.record.no_decision) : "—"} empty={!live.record?.no_decision} />
           <Stat label="Results revised" value={live.record ? String(live.record.revised_grades) : "—"} empty={!live.record?.revised_grades} sub="overturned or corrected" />
         </div>
+
+        {live.calibration.length > 0 && (
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <caption className="sr-only">Live calibration by probability band</caption>
+              <thead><tr><th>Band</th><th className="r">Decided</th><th className="r">Wins</th><th className="r">Claimed</th><th className="r">Happened</th></tr></thead>
+              <tbody>{live.calibration.map((c) => <tr key={c.confidence_band}><td>{c.confidence_band}%</td><td className="r">{c.decided}</td><td className="r">{c.wins}</td><td className="r">{pct(c.predicted)}</td><td className="r">{pct(c.observed)}</td></tr>)}</tbody>
+            </table>
+          </div>
+        )}
 
         <p className="mdl-split-note">
           <b>This record and the backtest below are never combined.</b> They answer different questions. A backtest says what the
@@ -127,11 +280,8 @@ export default async function ModelPage() {
         </p>
       </section>
 
-      {/* ------------------------------------------------------------------
-          BACKTEST
-      ------------------------------------------------------------------- */}
       <section className="mdl-sec" id="backtest">
-        <SectionHead eyebrow="Backtest · walk-forward, out of sample" title="What the model would have done" />
+        <SectionHead eyebrow="Proof · out-of-sample backtest" title="What the model would have done" />
         <p className="note">
           {ev.out_of_sample.n.toLocaleString()} bouts scored between {ev.out_of_sample.first_event} and {ev.out_of_sample.last_event}.
           Every fold trains only on bouts that had already happened and is scored only on bouts that had not; the model is refit from
@@ -157,7 +307,7 @@ export default async function ModelPage() {
             </thead>
             <tbody>
               <tr>
-                <td><b style={{ color: "var(--pbe-model)" }}>PBE Fight Model v1</b></td>
+                <td><b style={{ color: "var(--pbe-model)" }}>{MODEL_FACTS.displayName}</b></td>
                 <td className="r">{m.n.toLocaleString()}</td><td className="r">{num3(m.brier)}</td><td className="r">{num3(m.log_loss)}</td>
                 <td className="r">{pct(m.accuracy, 2)}</td><td className="r">{num3(m.auc, 4)}</td>
               </tr>
@@ -175,7 +325,7 @@ export default async function ModelPage() {
                 <td>Market implied (de-vigged)</td>
                 <td className="r">{ev.market.n ? ev.market.n.toLocaleString() : "0"}</td>
                 <td className="r" colSpan={4} style={{ textAlign: "left", color: "var(--pbe-faint)", fontFamily: "var(--pbe-font-ui)" }}>
-                  {ev.market.n ? `${num3((ev.market as { brier?: number }).brier ?? null)}` : "No completed bout in this database yet carries a market observation recorded before it started. The comparison is built and stays empty until the market ingest has accumulated history against fights that are then graded. It is not estimated in the meantime."}
+                  {ev.market.n ? `${num3((ev.market as { brier?: number }).brier ?? null)}` : "No completed bout in the release backtest carries a market observation recorded before it started, so no market benchmark is shown here. It is not estimated."}
                 </td>
               </tr>
             </tbody>
@@ -188,9 +338,8 @@ export default async function ModelPage() {
         </p>
       </section>
 
-      {/* ---- calibration + bands ---- */}
       <section className="mdl-sec" id="calibration">
-        <SectionHead eyebrow="Calibration" title="Does 62% mean 62%" />
+        <SectionHead eyebrow="Proof · calibration" title="Does 62% mean 62%" />
         <p className="note">
           Both corners of a bout are the same prediction stated two ways, so every row below is folded onto the side the model
           actually picked: confidence is max(p, 1−p) and a hit is that pick winning. The gold line is what happened; the blue block
@@ -237,20 +386,22 @@ export default async function ModelPage() {
         </div>
       </section>
 
-      {/* ---- worked examples ---- */}
       <section className="mdl-sec" id="examples">
-        <SectionHead eyebrow="The card" title="What a model call looks like" />
+        <SectionHead eyebrow="Proof · worked examples" title="What a model call looks like" />
         <p className="note">
           Real bouts, real out-of-sample probabilities, real results — and a deliberate mix of right and wrong. These are backtest
-          output, clearly marked as such. No live pick is published anywhere on this site yet.
+          output, clearly marked as such, and never current PBE Picks; the current calls are in <Link href="/algo/card" style={{ color: "var(--pbe-gold)" }}>PBE Picks</Link> for UFC Pro.
         </p>
         <div className="mdl-examples">
           {MODEL.examples.map((e) => <ExampleCard key={e.bout_id} e={e} />)}
         </div>
-
       </section>
 
-      {/* ---- where it is weak ---- */}
+      {/* ------------------------------------------------------------------
+          4. METHODOLOGY
+      ------------------------------------------------------------------- */}
+      <div className="mdl-divider" id="method-deep"><span>Methodology</span></div>
+
       <section className="mdl-sec" id="limits">
         <SectionHead eyebrow="Limits" title="Where the model has nothing to say" />
         <div className="mdl-two">
@@ -289,11 +440,10 @@ export default async function ModelPage() {
           The debut row is the honest headline of this table. When one corner has never fought inside the promotion, the model has
           almost no signal beyond age, reach and stance, and its AUC there is barely above a coin. It says so by producing
           probabilities near 50% rather than by manufacturing confidence — which is why the calibration above survives including
-          those fights rather than being computed on a flattering subset.
+          those fights rather than being computed on a flattering subset. PBE Picks does not call those fights at all.
         </p>
       </section>
 
-      {/* ---- year by year ---- */}
       <section className="mdl-sec" id="by-year">
         <SectionHead eyebrow="Fold by fold" title="Every year, scored separately" />
         <div className="tbl-wrap">
@@ -318,7 +468,6 @@ export default async function ModelPage() {
         </div>
       </section>
 
-      {/* ---- leakage ---- */}
       <section className="mdl-sec" id="leakage">
         <SectionHead eyebrow="Leakage" title="Proof the model could not see the future" />
         <p className="note">
@@ -344,9 +493,8 @@ export default async function ModelPage() {
         </div>
       </section>
 
-      {/* ---- features ---- */}
       <section className="mdl-sec" id="features">
-        <SectionHead eyebrow="Inputs" title={`${MODEL.model.feature_count} features, and no odds among them`} />
+        <SectionHead eyebrow="Inputs" title={`${MODEL_FACTS.featureCount} features, and no odds among them`} />
         <p className="note">
           Every input is a difference between the two corners, and the model is fitted with no intercept, so swapping the corners
           negates the vector and the two probabilities are exactly complementary. Sportsbook prices are not an input at any stage;
@@ -378,12 +526,14 @@ export default async function ModelPage() {
         </p>
       </section>
 
+      <PbeFamilyNav current="model" />
+
       <JsonLd
         data={{
           "@context": "https://schema.org",
           "@type": "Dataset",
-          name: "PBE Fight Model v1 — walk-forward backtest",
-          description: `Out-of-sample results for an independent UFC win-probability model over ${ev.out_of_sample.n} bouts, ${ev.out_of_sample.first_event} to ${ev.out_of_sample.last_event}. No sportsbook odds are used as model inputs.`,
+          name: `${MODEL_FACTS.displayName} — walk-forward backtest`,
+          description: `Out-of-sample results for an independent UFC win-probability model over ${ev.out_of_sample.n} bouts, ${ev.out_of_sample.first_event} to ${ev.out_of_sample.last_event}. ${MODEL_FACTS.featureCount} pre-fight features; no sportsbook odds are used as model inputs.`,
           url: `${SITE.url}/model`,
           creator: { "@type": "Organization", name: SITE.name },
           variableMeasured: ["Brier score", "log loss", "accuracy", "ROC AUC", "calibration error"],
