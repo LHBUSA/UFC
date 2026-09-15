@@ -37,14 +37,16 @@ import { OBS_CONFLICT } from '../../../scripts/odds/market_match.mjs';
 import { normalizePayload, snapshotRows, observationRows } from './capture.mjs';
 import { boundariesFrom, dedupeBoundaries } from './boundaries.mjs';
 import { readConfig, shouldPoll, readQuotaHeaders, isActive, isImminent, roundFromStatus } from './gate.mjs';
+import { readPrefightConfig, shouldCapturePrefight } from './prefight.mjs';
 
 const WORKER = 'ufc-live-odds';
-const VERSION = 'v0.1.0';
+const VERSION = 'v0.2.0';
 const ODDS_BASE = 'https://api.the-odds-api.com/v4';
 const ESPN_CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
 const SPORT = 'mma_mixed_martial_arts';
 
 const health = { last_tick_at: null, last_decision: null, last_paid_call_at: null, paid_calls: 0, observations_written: 0, last_error: null };
+const prefightHealth = { last_check_at: null, last_decision: null, last_capture: null, last_error: null };
 
 const json = (body, status = 200) => new Response(JSON.stringify(body, null, 2), {
   status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
@@ -428,6 +430,137 @@ async function tick(env, { dry = false } = {}) {
   };
 }
 
+/* ---- pre-fight capture lane ---------------------------------------------
+ * Bulk h2h snapshots in the week before a UFC card (see src/prefight.mjs). The
+ * same provider call, matching module, snapshot + change layers and run ledger
+ * as the live lane; ledger rows carry capture_mode 'descriptive' (the existing
+ * low-cadence bulk mode) with notes.lane = 'prefight'. Never touches live gates. */
+
+/** Free quota reading: /v4/sports is unmetered and returns the x-requests-* headers. */
+async function freeQuota(env, timeoutMs) {
+  const res = await fetch(`${ODDS_BASE}/sports?apiKey=${env.ODDS_API_KEY}`, { signal: AbortSignal.timeout(timeoutMs) });
+  const q = readQuotaHeaders(res.headers);
+  return { ...q, measuredAt: new Date().toISOString(), httpStatus: res.status };
+}
+
+async function prefightTick(env, { dry = false, force = false } = {}) {
+  const now = Date.now();
+  const cfg = readPrefightConfig(env);
+  prefightHealth.last_check_at = new Date(now).toISOString();
+  if (!cfg.enabled && !force) {
+    const d = { capture: false, reason: 'disabled' };
+    prefightHealth.last_decision = d;
+    return d;
+  }
+
+  const today = new Date(now).toISOString().slice(0, 10);
+  const until = new Date(now + (cfg.horizonDays + 2) * 86_400_000).toISOString().slice(0, 10);
+  const events = ((await rest(env, `ufc_events?select=id,name,event_date&event_date=gte.${today}&event_date=lte.${until}&order=event_date.asc`).catch(() => [])) || [])
+    .filter((e) => /^UFC\b/i.test(e.name || '') && !/contender series|road to ufc/i.test(e.name || ''));
+  const lastSnap = (await rest(env, 'ufc_market_run_quotes?select=observed_at&order=observed_at.desc&limit=1').catch(() => null))?.[0]?.observed_at || null;
+  const dayStart = `${today}T00:00:00Z`;
+  const todayRuns = await rest(env, `ufc_market_runs?select=id,notes&started_at=gte.${dayStart}&capture_mode=eq.descriptive`).catch(() => null);
+  const callsToday = Array.isArray(todayRuns) ? todayRuns.filter((r) => r?.notes?.lane === 'prefight').length : NaN;
+
+  const decideWith = (quota) => shouldCapturePrefight({ now, cfg: { ...cfg, enabled: cfg.enabled || force }, events, lastSnapshotAt: lastSnap, callsToday, quota });
+  let decision = decideWith(null);
+  let quota = null;
+  if (decision.reason === 'quota_unknown' && cfg.hasKey) {
+    quota = await freeQuota(env, cfg.providerTimeoutMs).catch((e) => ({ known: false, error: String(e?.message || e).slice(0, 120) }));
+    decision = decideWith(quota);
+  }
+  if (force && !decision.capture && ['fresh_snapshot_on_file', 'waiting_for_capture_minute', 'no_card_in_cadence_window'].includes(decision.reason) && quota?.known) {
+    decision = { ...decision, capture: true, reason: `forced(${decision.reason})` };
+  }
+  prefightHealth.last_decision = { ...decision, quota_remaining: quota?.remaining ?? null, last_snapshot_at: lastSnap, calls_today: callsToday };
+  if (!decision.capture || dry) {
+    return { ...decision, dry, paid_calls: 0, last_snapshot_at: lastSnap, calls_today: callsToday, quota: quota ? { remaining: quota.remaining, used: quota.used, measured_at: quota.measuredAt } : null, events: events.map((e) => e.name) };
+  }
+
+  const created = await rest(env, 'ufc_market_runs', {
+    method: 'POST', headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({ status: 'running', sport_key: SPORT, markets: 'h2h', capture_mode: 'descriptive', notes: { lane: 'prefight', band: decision.band, event: decision.event, lock_at: decision.lock_at, worker: WORKER, version: VERSION } }),
+  }).catch(() => null);
+  const runId = created?.[0]?.id ?? null;
+  if (!runId) {
+    /* No ledger row, no spend: an unattributable paid call is not allowed. */
+    const d = { ...decision, capture: false, reason: 'run_ledger_unwritable', paid_calls: 0 };
+    prefightHealth.last_decision = d;
+    return d;
+  }
+  const finalize = (patch) => rest(env, `ufc_market_runs?id=eq.${runId}`, {
+    method: 'PATCH', body: JSON.stringify({ finished_at: new Date().toISOString(), ...patch }),
+  }).catch(() => null);
+
+  const fetchedAt = new Date().toISOString();
+  let res;
+  try {
+    res = await fetch(`${ODDS_BASE}/sports/${SPORT}/odds?regions=us&markets=h2h&oddsFormat=american&apiKey=${env.ODDS_API_KEY}`,
+      { signal: AbortSignal.timeout(cfg.providerTimeoutMs) });
+  } catch (e) {
+    await finalize({ status: 'failed', error: `provider request failed: ${String(e?.message || e).slice(0, 200)}`, notes: { lane: 'prefight', fetched_at: fetchedAt } });
+    prefightHealth.last_error = 'provider_timeout_or_network';
+    return { ...decision, paid_calls: 1, run_id: runId, error: 'provider_timeout_or_network' };
+  }
+  const q = readQuotaHeaders(res.headers);
+  if (!res.ok) {
+    await finalize({ status: 'failed', error: `provider HTTP ${res.status}`, quota_used: q.used, quota_remaining: q.remaining, last_cost: q.last, notes: { lane: 'prefight', fetched_at: fetchedAt } });
+    return { ...decision, paid_calls: 1, run_id: runId, provider_status: res.status, quota: q };
+  }
+  const payload = await res.json().catch(() => null);
+
+  /* Every canonical upcoming bout on the in-scope cards; a price is attached
+   * only through the shared deterministic matcher. */
+  const eventIds = events.map((e) => e.id);
+  const [boutRows, fighterRows, aliasRows] = await Promise.all([
+    eventIds.length
+      ? rest(env, `ufc_bouts?select=id,event_id,status,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events(id,event_date)&event_id=in.(${eventIds.join(',')})`).catch(() => [])
+      : Promise.resolve([]),
+    rest(env, 'ufc_fighters?select=id,name&limit=6000').catch(() => []),
+    rest(env, 'ufc_fighter_aliases?select=fighter_id,alias,normalized').catch(() => []),
+  ]);
+  const bouts = (boutRows || []).filter((b) => b.status !== 'cancelled' && b.fighter_a && b.fighter_b)
+    .map((b) => ({ id: b.id, eventId: b.event_id, a: b.fighter_a, b: b.fighter_b, eventDate: b.event?.event_date || null }));
+  const norm = normalizePayload({ payload, bouts, fighters: fighterRows || [], aliases: aliasRows || [], observedAt: fetchedAt, eventId: null });
+
+  let snapshotWritten = 0;
+  if (norm.quotes.length) {
+    await rest(env, 'ufc_market_run_quotes?on_conflict=run_id,bout_id,bookmaker_key,market_key,outcome_name', {
+      method: 'POST', headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify(snapshotRows(norm.quotes, runId)),
+    });
+    snapshotWritten = norm.quotes.length;
+  }
+  let observationsWritten = 0;
+  if (norm.quotes.length) {
+    const before = await countRows(env, 'ufc_market_observations');
+    await rest(env, `ufc_market_observations?on_conflict=${encodeURIComponent(OBS_CONFLICT)}`, {
+      method: 'POST', headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify(observationRows(norm.quotes)),
+    }).catch(() => null);
+    observationsWritten = Math.max(0, (await countRows(env, 'ufc_market_observations')) - before);
+  }
+  if (norm.unmatched.length) {
+    await rest(env, 'ufc_market_unmatched?on_conflict=source_event_id,reason', {
+      method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(norm.unmatched.map((u) => ({ ...u, last_seen_at: fetchedAt }))),
+    }).catch(() => null);
+  }
+  const summary = {
+    status: 'success',
+    source_events: Array.isArray(payload) ? payload.length : 0,
+    matched_bouts: norm.matchedBouts,
+    unmatched_events: norm.unmatched.length,
+    observations_written: observationsWritten,
+    books_seen: norm.books,
+    quota_used: q.used, quota_remaining: q.remaining, last_cost: q.last,
+    notes: { lane: 'prefight', band: decision.band, event: decision.event, lock_at: decision.lock_at, fetched_at: fetchedAt, snapshot_rows: snapshotWritten, ambiguous: norm.ambiguous, quotes_normalized: norm.quotes.length, worker: WORKER, version: VERSION },
+  };
+  await finalize(summary);
+  prefightHealth.last_capture = { at: fetchedAt, run_id: runId, matched_bouts: norm.matchedBouts, books: norm.books, snapshot_rows: snapshotWritten, quota_remaining: q.remaining, last_cost: q.last };
+  return { ...decision, paid_calls: 1, run_id: runId, ...summary };
+}
+
 /** Exact row count, so a run reports what landed rather than what was sent. */
 async function countRows(env, table) {
   const { url, key } = sb(env);
@@ -441,7 +574,10 @@ async function countRows(env, table) {
 
 export default {
   async scheduled(_event, env, ctx) {
+    /* Two independent lanes. The live gate never reads PREFIGHT_ODDS_ENABLED and
+     * the pre-fight gate never reads LIVE_ODDS_ENABLED. */
     ctx.waitUntil(tick(env).catch((e) => { health.last_error = String(e?.message || e).slice(0, 200); }));
+    ctx.waitUntil(prefightTick(env).catch((e) => { prefightHealth.last_error = String(e?.message || e).slice(0, 200); }));
   },
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -458,7 +594,17 @@ export default {
         min_remaining: cfg.minRemaining, max_card_cost: cfg.maxCardCost,
         event_window_minutes: cfg.eventWindowMinutes,
         ...health,
+        prefight: { enabled: readPrefightConfig(env).enabled, ...prefightHealth },
       });
+    }
+    if (url.pathname === '/admin/prefight' && req.method === 'POST') {
+      if (!authorized(req, env)) return json({ error: 'unauthorized' }, 404);
+      const dry = url.searchParams.get('dry') !== 'false';
+      try {
+        return json(await prefightTick(env, { dry, force: url.searchParams.get('force') === 'true' }));
+      } catch (e) {
+        return json({ error: String(e?.message || e).slice(0, 300) }, 500);
+      }
     }
     if (url.pathname === '/admin/tick' && req.method === 'POST') {
       if (!authorized(req, env)) return json({ error: 'unauthorized' }, 404);

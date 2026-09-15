@@ -84,7 +84,9 @@ export function normalizePayload({ payload, bouts, fighters, aliases, observedAt
           }
           books.add(bk.key);
           quotes.push({
-            event_id: eventId,
+            /* A bout carries its own card when the caller priced several cards
+             * at once (the pre-fight lane); the live lane passes one eventId. */
+            event_id: bout.eventId ?? eventId,
             bout_id: bout.id,
             fighter_a_id: bout.a.id,
             fighter_b_id: bout.b.id,

@@ -53,6 +53,14 @@ LIVE_ODDS_QUOTA_MAX_AGE_MINUTES = "180"
 # as failed and the cron simply tries again a minute later.
 LIVE_ODDS_PROVIDER_TIMEOUT_MS = "8000"
 
+# PRE-FIGHT capture lane (src/prefight.mjs): bulk h2h snapshots in the 7 days
+# before a UFC card's PBE Algo lock, adaptive cadence (12h / 6h / hourly). A
+# separate switch: enabling it never enables LIVE_ODDS_ENABLED, and the live
+# lane never reads this. Shares the live reserve (LIVE_ODDS_MIN_REMAINING).
+PREFIGHT_ODDS_ENABLED = "true"
+PREFIGHT_ODDS_HORIZON_DAYS = "7"
+PREFIGHT_ODDS_MAX_CALLS_PER_DAY = "30"
+
 # Every minute. Waking is free: the gate in src/gate.mjs decides whether a tick
 # may spend, and outside an event window it never reaches ESPN or the provider.
 [triggers]
