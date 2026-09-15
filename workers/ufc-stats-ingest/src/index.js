@@ -58,6 +58,17 @@ import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBl
 import { roundArchiveGaps, roundArchiveReviewItems, roundLaneStatus, gapAlertDecision, DEFAULT_GRACE_HOURS, DEFAULT_ESCALATE_HOURS } from './archiveHealth.mjs';
 import { OFFICIAL_METHOD, officialFightUrl, officialEventUrl, ufcComEventUrl, fightIdsFromUfcComPage, parseOfficialEvent, parseOfficialFight,
   officialReadiness, sameOfficialEvent, mapOfficialFighters, validateOfficialFight, officialRoundRows, ROUND_COLUMNS, knownNames } from './ufcOfficial.mjs';
+import { RECORD_FIELDS, decideRecordRefresh, planRecordRefresh, fighterOutcome, fmtRecord, storedRecord } from './fighterRecord.mjs';
+
+/* Fighter career records (fighterRecord.mjs). ESPN's career record is the
+ * source; our results only say WHEN to look and how far the source may move.
+ *   RECORD_RECONCILE_DAYS   daily lane re-reads fighters from cards in this window
+ *   RECORD_REFRESH_MAX      per-run ceiling on fighters fetched (2 ESPN requests each)
+ *   RECORD_RECHECK_DAYS     a verified record with no newer result is re-read at most this often
+ *   RECORD_PENDING_RETRY_MINUTES  fight-night lane: pending_source retries at most this often
+ * Each can be overridden by an env var of the same name. */
+const RECORD_DEFAULTS = { RECORD_RECONCILE_DAYS: 30, RECORD_REFRESH_MAX: 60, RECORD_RECHECK_DAYS: 7, RECORD_PENDING_RETRY_MINUTES: 60 };
+const recordSetting = (env, k) => { const n = Number(env?.[k]); return Number.isFinite(n) && n >= 0 ? n : RECORD_DEFAULTS[k]; };
 
 /* Per-run ceiling on fight-total lookups, same idea as the scorecard cap:
  * a daily year-walk must not turn into an unbounded backfill. Each bout costs
@@ -113,7 +124,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.8.6';
+const VERSION = 'v0.8.7';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -139,6 +150,9 @@ const STATE = {
   archiveAlert: 'ufc-raw/_state/round_archive_alert.json',
   officialEvent: (eventId) => `ufc-raw/_state/official_event/${eventId}.json`,
   latency: (boutId) => `ufc-raw/_state/latency/${boutId}.json`,
+  /* Last record-refresh outcome per fighter: pending_source retries, mismatches
+   * awaiting a human, and when a verified record was last re-read. */
+  recordRefresh: 'ufc-raw/_state/record_refresh.json',
 };
 async function getState(env, key) {
   if (!env.RAW) return null;
@@ -181,6 +195,9 @@ export const __test = { runIngest, runBoutCanary, espnPass, loadContext };
  * Exported rather than copied so a backfill cannot drift from the validation
  * the live lane applies. Not reachable over HTTP. */
 export const espnLanes = { writeFightTotals, reconcileScorecard, fightTotalsIncoherence, JUDGED_METHODS };
+
+/* Fighter record refresh, exposed for the offline tests. */
+export const recordRefresh = { refreshEspnFighterProfile, refreshFighterRecords, recordWindow, noteRecordTrigger, STATE_KEY: STATE.recordRefresh };
 
 export default {
   async fetch(req, env) {
@@ -406,6 +423,10 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
     } else {
       await espnPass(env, espn, ctx, run);
     }
+    /* Career records: fighters whose results landed in this pass, plus (daily)
+     * a bounded reconcile of recent cards so a late ESPN update self-heals.
+     * Never fatal; a stale record is a staleness, not a reason to lose the run. */
+    if (!skipEspn) run.notes.record_refresh = await refreshFighterRecords(env, espn, ctx, run, { mode });
     /* The round-stat pass being off is a silent, months-long outage: ESPN
      * keeps writing events and results, so every dashboard looks healthy
      * while no round data lands at all. The flag state is therefore recorded
@@ -519,7 +540,7 @@ async function triggerFightDna(env, run) {
 /* Context: id maps + resolver over every known fighter                      */
 /* ------------------------------------------------------------------------ */
 async function loadContext(env) {
-  const fighters = await selectAll(env, 'ufc_fighters', 'select=id,ufcstats_id,espn_athlete_id,name,nickname,dob,record_w,record_l,record_d');
+  const fighters = await selectAll(env, 'ufc_fighters', 'select=id,ufcstats_id,espn_athlete_id,name,nickname,dob,record_w,record_l,record_d,record_nc,updated_at');
   const aliases = await selectAll(env, 'ufc_fighter_aliases', 'select=fighter_id,alias,source');
   const aliasByFighter = new Map();
   for (const a of aliases) {
@@ -543,13 +564,18 @@ async function loadContext(env) {
   const byEspnAthlete = new Map(fighters.filter((f) => f.espn_athlete_id).map((f) => [f.espn_athlete_id, f]));
   const byUfcstatsFighter = new Map(fighters.filter((f) => f.ufcstats_id).map((f) => [f.ufcstats_id, f]));
   const events = await selectAll(env, 'ufc_events', 'select=id,ufcstats_id,espn_event_id,name,event_date,card_status');
-  const results = await selectAll(env, 'ufc_bout_results', 'select=bout_id,has_stats,winner_id,round,referee,finish_detail,time_format,stats_captured_at,judge_1');
+  const results = await selectAll(env, 'ufc_bout_results', 'select=bout_id,has_stats,winner_id,method,round,referee,finish_detail,time_format,stats_captured_at,judge_1');
   return {
     resolver, byEspnAthlete, byUfcstatsFighter, aliasByFighter,
     fightersById: new Map(fighters.map((f) => [f.id, f])),
     events, eventsByEspn: new Map(events.filter((e) => e.espn_event_id).map((e) => [e.espn_event_id, e])),
     bouts: boutRows, boutsByEspn: new Map(boutRows.filter((b) => b.espn_competition_id).map((b) => [b.espn_competition_id, b])),
     resultsByBout: new Map(results.map((r) => [r.bout_id, r])),
+    /* fighter id -> { results: [{ bout_id, event_date, outcome }] } for results that
+     * landed (or changed) in THIS run; refreshed once each after the ESPN pass. */
+    recordRefresh: new Map(),
+    /* fighter ids whose ESPN athlete document was already read this run. */
+    espnAthletesFetched: new Set(),
     reviewQueued: 0,
     reviewDeduplicated: 0,
   };
@@ -659,6 +685,11 @@ function linkUfcstatsEvent(ctx, name, eventDate) {
   return cands.length === 1 ? cands[0] : undefined;
 }
 
+/* IDENTITY ONLY. Resolves an ESPN athlete to a ufc_fighters row, once. A known
+ * athlete returns immediately and is never re-fetched here: keeping a linked
+ * fighter's career record current is refreshEspnFighterProfile()'s job, driven
+ * by results (see refreshFighterRecords). The first resolution still stores
+ * the record ESPN printed at that moment, parsed by the same record parser. */
 async function ensureEspnFighter(env, espn, ctx, run, f, weightClass, eventId = null) {
   const known = ctx.byEspnAthlete.get(f.espn_athlete_id);
   if (known) return known;
@@ -678,8 +709,13 @@ async function ensureEspnFighter(env, espn, ctx, run, f, weightClass, eventId = 
     stance: a.stance_raw ? normStance(a.stance_raw, a.source_url) : null,
     is_active: a.active, updated_at: nowIso(),
   };
-  const rec = a.record ? a.record.match(/(\d+)-(\d+)-(\d+)/) : null;
-  if (rec) Object.assign(physical, { record_w: +rec[1], record_l: +rec[2], record_d: +rec[3] });
+  const rd = a.record_detail;
+  if (rd && !rd.error) {
+    Object.assign(physical, { record_w: rd.w, record_l: rd.l, record_d: rd.d });
+    /* NC only when the source states it (noContests stat or "(n NC)"); ESPN's
+     * W-L-D summary alone says nothing about no contests. */
+    if (rd.nc != null) physical.record_nc = rd.nc;
+  }
   let row;
   if (res.status === 'matched') {
     /* PATCH, not upsert: a PostgREST upsert on `id` attempts the INSERT
@@ -696,6 +732,7 @@ async function ensureEspnFighter(env, espn, ctx, run, f, weightClass, eventId = 
     if (res.status === 'review') await queueReview(env, ctx, res, a.name, 'espn', { espn_athlete_id: a.espn_athlete_id, created_fighter_id: row.id, url: a.source_url });
   }
   registerFighter(ctx, row);
+  ctx.espnAthletesFetched?.add(row.id);
   await upsert(env, 'ufc_fighter_aliases', [
     ...aliasRowsForFighter(row.id, a.name, a.nickname).map((r) => ({ ...r, source: r.source === 'ufcstats' ? 'espn' : 'espn_nickname' })),
     ...(a.display_name && normalize(a.display_name) !== normalize(a.name) ? [{ fighter_id: row.id, alias: a.display_name, source: 'espn', normalized: normalize(a.display_name) }] : []),
@@ -770,8 +807,15 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
       }
 
       await upsert(env, 'ufc_bout_results', resultRow, 'bout_id');
+      /* A result that is new to us, or whose winner/method changed (an overturn),
+       * makes both corners' career records stale. Draws and no contests count:
+       * they move the record too. Only the trigger — the record itself comes
+       * from ESPN after the pass, never from this row. */
+      if (!prior || (prior.winner_id ?? null) !== resultRow.winner_id || (prior.method != null && prior.method !== method)) {
+        noteRecordTrigger(ctx, [fa.id, fb.id], { bout_id: saved.id, event_date: evRow.event_date, winner_id: resultRow.winner_id, method });
+      }
       ctx.resultsByBout.set(saved.id, { ...(prior || {}), bout_id: saved.id, has_stats: prior?.has_stats || false,
-        winner_id: winnerRow?.id || null, round: b.result.round, judge_1: resultRow.judge_1 ?? prior?.judge_1 ?? null });
+        winner_id: winnerRow?.id || null, method, round: b.result.round, judge_1: resultRow.judge_1 ?? prior?.judge_1 ?? null });
 
       /* Fight totals are gathered here and written after the loop, so one
        * scoped existence query covers the whole card instead of one per bout. */
@@ -799,6 +843,134 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
     await patch(env, 'ufc_events', `id=eq.${evRow.id}`, { card_status: 'complete', updated_at: nowIso() });
     evRow.card_status = 'complete';
   }
+}
+
+/* ------------------------------------------------------------------------ */
+/* Fighter career records                                                    */
+/* ------------------------------------------------------------------------ */
+/* Remember that these fighters' records are stale because a result landed.
+ * Keyed by fighter id, so a fighter on several bouts in one run (or seen by
+ * several passes) is fetched once. */
+function noteRecordTrigger(ctx, fighterIds, { bout_id, event_date, winner_id = null, method = null }) {
+  for (const fid of new Set(fighterIds.filter(Boolean))) {
+    if (!ctx.recordRefresh.has(fid)) ctx.recordRefresh.set(fid, { results: [] });
+    const entry = ctx.recordRefresh.get(fid);
+    if (!entry.results.some((r) => r.bout_id === bout_id)) {
+      entry.results.push({ bout_id, event_date, outcome: fighterOutcome({ winner_id, method }, fid) });
+    }
+  }
+}
+
+/* Our final results on cards dated inside the reconcile window, one row per
+ * corner. Read from the context already loaded for the run: no query. */
+function recordWindow(ctx, now, days) {
+  const to = new Date(now).toISOString().slice(0, 10);
+  const from = new Date(now - days * 86400e3).toISOString().slice(0, 10);
+  const events = new Map(ctx.events.filter((e) => e?.event_date && e.event_date >= from && e.event_date <= to).map((e) => [e.id, e]));
+  const rows = [];
+  for (const b of ctx.bouts) {
+    const ev = events.get(b.event_id);
+    if (!ev || b.status === 'cancelled') continue;
+    const r = ctx.resultsByBout.get(b.id);
+    if (!r) continue;
+    for (const fid of [b.fighter_a_id, b.fighter_b_id]) {
+      if (fid) rows.push({ fighter_id: fid, bout_id: b.id, event_date: ev.event_date, outcome: fighterOutcome(r, fid) });
+    }
+  }
+  return rows;
+}
+
+/**
+ * Refresh ONE linked fighter's career record from ESPN.
+ *
+ * Requires an existing espn_athlete_id; never resolves identity, never merges by
+ * name, never touches identity or profile columns. Reads the athlete through the
+ * same Espn adapter the pass uses, and writes only record_w/l/d/nc + updated_at,
+ * only when decideRecordRefresh() says the source moved in a way our results
+ * explain. The PATCH is filtered on id AND espn_athlete_id so a row relinked
+ * mid-run is not written.
+ */
+async function refreshEspnFighterProfile(env, espn, ctx, fighter, { expected = [], staleProof = false } = {}) {
+  const base = { fighter_id: fighter?.id ?? null, name: fighter?.name ?? null, espn_athlete_id: fighter?.espn_athlete_id ?? null, stored: fmtRecord(storedRecord(fighter)) };
+  if (!fighter?.espn_athlete_id) return { ...base, action: 'skipped', reason: 'no espn_athlete_id' };
+  let a;
+  try {
+    a = await espn.athlete(String(fighter.espn_athlete_id));
+  } catch (e) {
+    return { ...base, action: 'source_unavailable', reason: String(e?.message || e).slice(0, 160) };
+  } finally {
+    ctx.espnAthletesFetched?.add(fighter.id);
+  }
+  if (String(a?.espn_athlete_id) !== String(fighter.espn_athlete_id)) {
+    return { ...base, action: 'mismatch', reason: `identity: asked for athlete ${fighter.espn_athlete_id}, ESPN answered ${a?.espn_athlete_id}` };
+  }
+  const d = decideRecordRefresh({ stored: fighter, source: a.record_detail, expected, staleProof });
+  const out = { ...base, source: a.record_detail && !a.record_detail.error ? fmtRecord(a.record_detail) : null, nc_source: a.record_detail?.nc_source ?? null,
+    action: d.action, reason: d.reason, expected: expected.map((x) => x.outcome ?? '?').join(',') };
+  if (d.action !== 'update') return out;
+  /* Hard guard: nothing but record columns can leave this function. */
+  const changes = Object.fromEntries(Object.entries(d.changes).filter(([k]) => RECORD_FIELDS.includes(k)));
+  if (!Object.keys(changes).length) return { ...out, action: 'unchanged', reason: 'no record field differs' };
+  changes.updated_at = nowIso();
+  const n = await patchCount(env, 'ufc_fighters', `id=eq.${fighter.id}&espn_athlete_id=eq.${encodeURIComponent(fighter.espn_athlete_id)}`, changes);
+  if (n !== 1) return { ...out, action: 'write_skipped', reason: `identity-guarded PATCH matched ${n} rows` };
+  Object.assign(fighter, changes);
+  return { ...out, to: fmtRecord(storedRecord(fighter)), changes };
+}
+
+/**
+ * After the ESPN pass: refresh the fighters whose results landed this run and,
+ * on the daily lane, reconcile fighters from cards in the last
+ * RECORD_RECONCILE_DAYS so a delayed ESPN update heals itself. The fight-night
+ * lane only adds pending_source retries (at most every
+ * RECORD_PENDING_RETRY_MINUTES). Bounded by RECORD_REFRESH_MAX, deduplicated
+ * by fighter, sequential through the adapter's own pacing. Never throws.
+ */
+async function refreshFighterRecords(env, espn, ctx, run, { mode = 'daily', now = Date.now() } = {}) {
+  const days = recordSetting(env, 'RECORD_RECONCILE_DAYS');
+  const summary = { mode, window_days: days, triggered: ctx.recordRefresh.size, planned: 0, capped: 0, skipped: null,
+    update: 0, unchanged: 0, pending_source: 0, mismatch: 0, source_unavailable: 0, write_skipped: 0,
+    updates: [], pending: [], mismatches: [], unavailable: [] };
+  try {
+    const prevState = (await getState(env, STATE.recordRefresh)) || {};
+    const fighters = { ...(prevState.fighters || {}) };
+    const { plan, capped, skipped } = planRecordRefresh({
+      triggered: ctx.recordRefresh, window: recordWindow(ctx, now, days), fighters: ctx.fightersById, state: fighters,
+      skip: ctx.espnAthletesFetched, now, max: recordSetting(env, 'RECORD_REFRESH_MAX'), recheckDays: recordSetting(env, 'RECORD_RECHECK_DAYS'),
+      pendingRetryMinutes: mode === 'fightnight' ? recordSetting(env, 'RECORD_PENDING_RETRY_MINUTES') : 0,
+      retryOnly: mode === 'fightnight',
+    });
+    Object.assign(summary, { planned: plan.length, capped, skipped });
+    for (const p of plan) {
+      const r = await refreshEspnFighterProfile(env, espn, ctx, p.fighter, { expected: p.expected, staleProof: p.stale_proof });
+      summary[r.action] = (summary[r.action] || 0) + 1;
+      const line = { fighter_id: r.fighter_id, name: r.name, stored: r.stored, source: r.source ?? null, reason: r.reason };
+      if (r.action === 'update') { run.fighters_touched += 1; summary.updates.push({ ...line, to: r.to }); }
+      else if (r.action === 'pending_source') summary.pending.push(line);
+      else if (r.action === 'mismatch' || r.action === 'write_skipped') summary.mismatches.push(line);
+      else if (r.action === 'source_unavailable') summary.unavailable.push(line);
+      const prev = fighters[p.fighter_id];
+      /* Scheduling state is stamped on the run's clock (`now`), the same clock
+       * the planner compares against; the database updated_at is wall time. */
+      const stamp = new Date(now).toISOString();
+      fighters[p.fighter_id] = {
+        outcome: r.action, last_checked: stamp, reason: String(r.reason || '').slice(0, 200), stored: r.stored, source: r.source ?? null,
+        attempts: prev?.outcome === r.action ? (prev.attempts || 1) + 1 : 1,
+        first_seen_at: prev?.outcome === r.action ? (prev.first_seen_at || prev.last_checked) : stamp,
+      };
+    }
+    /* Forget fighters not looked at for well past the window. */
+    const keepMs = (days + 15) * 86400e3;
+    for (const [fid, v] of Object.entries(fighters)) if (!(now - Date.parse(v?.last_checked || '') < keepMs)) delete fighters[fid];
+    if (plan.length) await putState(env, STATE.recordRefresh, { updated_at: nowIso(), fighters });
+  } catch (e) {
+    summary.error = String(e?.message || e).slice(0, 200);
+    console.error(`[${SERVICE}] record refresh failed: ${summary.error}`);
+  }
+  for (const k of ['updates', 'pending', 'mismatches', 'unavailable']) {
+    if (summary[k].length > 40) summary[k] = [...summary[k].slice(0, 40), { truncated: summary[k].length - 40 }];
+  }
+  return summary;
 }
 
 /**

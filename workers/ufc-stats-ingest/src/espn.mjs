@@ -13,6 +13,7 @@
  */
 import { SchemaAssertionError } from './ufcstats.mjs';
 import ENUMS from './shared/enums.json' with { type: 'json' };
+import { pickOverallRecord, parseEspnRecordItem } from './fighterRecord.mjs';
 
 const CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
@@ -301,13 +302,18 @@ export class Espn {
     const url = String(refOrId).startsWith('http') ? refOrId : `${CORE}/athletes/${refOrId}?lang=en&region=us`;
     const a = await this.json(url);
     if (!a?.id || !a?.fullName) throw new SchemaAssertionError(url, 'athlete id/fullName missing');
+    /* `record` stays the raw W-L-D summary (the alias resolver compares it as a
+     * second identity key). `record_detail` is the parsed career record incl.
+     * no contests, or { error } — see fighterRecord.mjs for the verified shape. */
     let record = null;
+    let recordDetail = { error: 'athlete has no records $ref' };
     if (a.records?.$ref) {
       try {
         const r = await this.json(a.records.$ref);
-        const overall = (r?.items || []).find((x) => x?.name === 'overall' || x?.type === 'total');
+        const overall = pickOverallRecord(r);
         record = overall?.summary || null;
-      } catch (_) { record = null; }
+        recordDetail = parseEspnRecordItem(overall);
+      } catch (e) { record = null; recordDetail = { error: `records fetch failed: ${String(e?.message || e).slice(0, 120)}` }; }
     }
     return {
       espn_athlete_id: String(a.id),
@@ -324,6 +330,7 @@ export class Espn {
       weight_class_raw: a.weightClass?.text || null,
       active: a.active === true,
       record,
+      record_detail: recordDetail,
       source_url: url,
     };
   }
