@@ -455,7 +455,8 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
 
   const today = new Date(now).toISOString().slice(0, 10);
   const until = new Date(now + (cfg.horizonDays + 2) * 86_400_000).toISOString().slice(0, 10);
-  const events = ((await rest(env, `ufc_events?select=id,name,event_date&event_date=gte.${today}&event_date=lte.${until}&order=event_date.asc`).catch(() => [])) || [])
+  let eventsError = null;
+  const events = ((await rest(env, `ufc_events?select=id,name,event_date&event_date=gte.${today}&event_date=lte.${until}&order=event_date.asc`).catch((e) => { eventsError = String(e?.message || e).slice(0, 160); return []; })) || [])
     .filter((e) => /^UFC\b/i.test(e.name || '') && !/contender series|road to ufc/i.test(e.name || ''));
   const lastSnap = (await rest(env, 'ufc_market_run_quotes?select=observed_at&order=observed_at.desc&limit=1').catch(() => null))?.[0]?.observed_at || null;
   const dayStart = `${today}T00:00:00Z`;
@@ -473,6 +474,7 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
     decision = { ...decision, capture: true, reason: `forced(${decision.reason})` };
   }
   prefightHealth.last_decision = { ...decision, quota_remaining: quota?.remaining ?? null, last_snapshot_at: lastSnap, calls_today: callsToday };
+  if (eventsError) decision = { ...decision, capture: false, reason: 'events_unreadable', error: eventsError };
   if (!decision.capture || dry) {
     return { ...decision, dry, paid_calls: 0, last_snapshot_at: lastSnap, calls_today: callsToday, quota: quota ? { remaining: quota.remaining, used: quota.used, measured_at: quota.measuredAt } : null, events: events.map((e) => e.name) };
   }
@@ -511,7 +513,12 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
 
   /* Every canonical upcoming bout on the in-scope cards; a price is attached
    * only through the shared deterministic matcher. */
-  const eventIds = events.map((e) => e.id);
+  /* Cadence is set by cards inside the lock horizon, but the same paid response
+   * prices later cards too; matching them costs nothing, so candidates span 21 days. */
+  const matchUntil = new Date(now + 21 * 86_400_000).toISOString().slice(0, 10);
+  const matchEvents = ((await rest(env, `ufc_events?select=id,name&event_date=gte.${today}&event_date=lte.${matchUntil}`).catch(() => [])) || [])
+    .filter((e) => /^UFC/i.test(e.name || '') && !/contender series|road to ufc/i.test(e.name || ''));
+  const eventIds = [...new Set([...events, ...matchEvents].map((e) => e.id))];
   const [boutRows, fighterRows, aliasRows] = await Promise.all([
     eventIds.length
       ? rest(env, `ufc_bouts?select=id,event_id,status,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events(id,event_date)&event_id=in.(${eventIds.join(',')})`).catch(() => [])
@@ -577,7 +584,9 @@ export default {
     /* Two independent lanes. The live gate never reads PREFIGHT_ODDS_ENABLED and
      * the pre-fight gate never reads LIVE_ODDS_ENABLED. */
     ctx.waitUntil(tick(env).catch((e) => { health.last_error = String(e?.message || e).slice(0, 200); }));
-    ctx.waitUntil(prefightTick(env).catch((e) => { prefightHealth.last_error = String(e?.message || e).slice(0, 200); }));
+    ctx.waitUntil(prefightTick(env)
+      .then((d) => { if (d?.reason !== 'disabled') console.log(`[prefight] ${JSON.stringify({ capture: d?.capture, reason: d?.reason, error: d?.error ?? null, events: d?.events?.length ?? null, band: d?.band, event: d?.event, paid_calls: d?.paid_calls ?? 0, run_id: d?.run_id ?? null, matched_bouts: d?.matched_bouts ?? null, snapshot_age_minutes: d?.snapshot_age_minutes ?? null })}`); })
+      .catch((e) => { prefightHealth.last_error = String(e?.message || e).slice(0, 200); console.error(`[prefight] failed: ${prefightHealth.last_error}`); }));
   },
   async fetch(req, env) {
     const url = new URL(req.url);
