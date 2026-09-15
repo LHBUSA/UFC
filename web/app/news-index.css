@@ -6,6 +6,7 @@
 .news .story-related li:first-child { border-top: 0; }
 .news .story-related a { color: var(--pbe-paper-2); font-weight: 600; font-size: var(--fs-sm); line-height: 1.35; min-width: 0; overflow-wrap: anywhere; }
 .news .story-related a:hover { color: var(--pbe-gold-bright); }
+.news .story-related .story-related-more { display: inline-block; margin-top: var(--s-2); color: var(--pbe-gold); font: 600 12px/1.3 var(--pbe-font-data); letter-spacing: .04em; }
 .news .story-related time { flex: none; color: var(--pbe-faint); font: 12px/1.3 var(--pbe-font-data); white-space: nowrap; }
 @media (max-width: 680px) {
   .news .story-related li { flex-direction: column; gap: 4px; }

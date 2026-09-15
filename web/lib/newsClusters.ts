@@ -17,6 +17,13 @@
 export type ClusterArticle = { id: string; bout_id: string | null; event_id: string | null; fighter_ids: string[] | null; story_type: string };
 
 export const PRIMARY_SLOTS = 6;
+/* The newest-story pool both surfaces select from: /news page 1 is exactly this
+ * many rows, and the homepage desk picks its cards from the same rows, so the
+ * two can never disagree about what leads or which developments are distinct. */
+export const NEWSROOM_FRONT_POOL = 18;
+/* Homepage "Latest from the desk": hero + six supporting cards. */
+export const HOME_DESK_SLOTS = 7;
+export const HOME_DESK_RELATED_LINKS = 2;
 
 export function developmentKey(a: ClusterArticle): string {
   if (a.bout_id) return `bout:${a.bout_id}`;

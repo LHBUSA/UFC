@@ -1,7 +1,8 @@
 /* Run: node --experimental-strip-types --test lib/newsClusters.test.ts */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { clusterNewsPage, developmentKey, PRIMARY_SLOTS } from "./newsClusters.ts";
+import { readFileSync } from "node:fs";
+import { clusterNewsPage, developmentKey, HOME_DESK_SLOTS, PRIMARY_SLOTS } from "./newsClusters.ts";
 
 const art = (id: string, over: Partial<{ bout_id: string | null; event_id: string | null; fighter_ids: string[]; story_type: string }> = {}) =>
   ({ id, bout_id: null, event_id: null, fighter_ids: [], story_type: "external", ...over });
@@ -57,6 +58,27 @@ test("thin inventory fills primary slots rather than leaving holes; single-devel
   const mixed = [art("a1", { bout_id: "b" }), art("c1", { bout_id: "c" }), art("c2", { bout_id: "c" }), art("c3", { bout_id: "c" })];
   const m = clusterNewsPage(mixed);
   assert.deepEqual(m.feed.map((a) => a.id), ["c1", "c2", "c3"], "c2/c3 fill primary slots when no other development exists");
+});
+
+test("homepage desk: hero + six supporting cards, none repeating the hero's development, at least four developments", () => {
+  const { hero, heroRelated, feed } = clusterNewsPage(live, HOME_DESK_SLOTS);
+  const supporting = feed.slice(0, HOME_DESK_SLOTS - 1);
+  assert.equal(hero?.id, "ortega1");
+  assert.equal(supporting.length, 6);
+  assert.ok(supporting.every((a) => developmentKey(a) !== developmentKey(hero!)), "no supporting card repeats the hero");
+  assert.deepEqual(heroRelated.map((a) => a.id), ["ortega2", "ortega3"]);
+  assert.ok(new Set([hero!, ...supporting].map(developmentKey)).size >= 4);
+});
+
+test("one editorial contract: /news and the homepage select with the same helper and pool", () => {
+  const read = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
+  const news = read("../app/news/page.tsx"), home = read("../app/page.tsx");
+  for (const src of [news, home]) {
+    assert.match(src, /clusterNewsPage\(/);
+    assert.match(src, /NEWSROOM_FRONT_POOL/);
+    assert.match(src, /<StoryRelated /);
+  }
+  assert.doesNotMatch(home, /articles\.slice\(1, 7\)/, "homepage no longer renders the next six chronologically");
 });
 
 test("deterministic: identical input, identical output", () => {

@@ -5,8 +5,9 @@ import { storyMedia } from "@/lib/faces";
 import { Empty, PageHead, JsonLd, SectionHead } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
-import { fmtDateTime, relTime } from "@/lib/format";
-import { clusterNewsPage } from "@/lib/newsClusters";
+import { relTime } from "@/lib/format";
+import { clusterNewsPage, NEWSROOM_FRONT_POOL } from "@/lib/newsClusters";
+import { StoryRelated } from "@/components/StoryRelated";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "UFC News from the PropBetEdge desk", description: "Timestamped UFC previews, results and fight intelligence written from verified data.", images: [`${SITE.url}/opengraph-image`] },
 };
 
-const PAGE = 18;
+const PAGE = NEWSROOM_FRONT_POOL;
 
 export default async function NewsPage({ searchParams }: { searchParams: Promise<{ type?: string; page?: string }> }) {
   const sp = await searchParams;
@@ -60,19 +61,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
         <>
           <div className="news">
             {feature && <NewsStoryCard a={feature} feature hero={feature.hero_image_ref ? media.heroes.get(feature.hero_image_ref) : null} faces={media.faces.get(feature.id)} />}
-            {feature && heroRelated.length > 0 && (
-              <aside className="story-related" aria-label="More on this story">
-                <div className="eyebrow">More on this story · {heroRelated.length}</div>
-                <ul>
-                  {heroRelated.map((a) => (
-                    <li key={a.id}>
-                      <Link href={`/news/${a.slug}`}>{a.headline}</Link>
-                      {a.published_at && <time dateTime={a.published_at}>{fmtDateTime(a.published_at)}</time>}
-                    </li>
-                  ))}
-                </ul>
-              </aside>
-            )}
+            {feature && <StoryRelated items={heroRelated} />}
             {rest.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}
           </div>
           {pages > 1 && (

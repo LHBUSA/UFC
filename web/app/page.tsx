@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getFightDnaReady, getEarliestEventDate, getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
+import { StoryRelated } from "@/components/StoryRelated";
+import { clusterNewsPage, HOME_DESK_RELATED_LINKS, HOME_DESK_SLOTS, NEWSROOM_FRONT_POOL } from "@/lib/newsClusters";
 import { Mark } from "@/components/Brand";
 import { PregameDesk } from "@/components/PregameDesk";
 import { ChampionsShowcase } from "@/components/ChampionsShowcase";
@@ -61,10 +63,16 @@ const PROOF_ICONS: Record<ProofCell["key"], React.ReactNode> = {
 
 export default async function Home() {
   const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire, allUpcoming, recentAll] = await Promise.all([
-    getNextEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(7), getCounts(), getRankings(), getTicker(8),
+    getNextEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(NEWSROOM_FRONT_POOL), getCounts(), getRankings(), getTicker(8),
     getUpcomingEvents(30, { includeContenderSeries: true }), getRecentEvents(20),
   ]);
-  const articles = articlesRes.rows;
+  /* Newest stories, chronological: the ItemList schema below lists these unchanged. */
+  const articles = articlesRes.rows.slice(0, HOME_DESK_SLOTS);
+  /* "Latest from the desk" selects from the same pool as /news page 1 with the
+   * same helper (lib/newsClusters): newest story leads, supporting cards prefer
+   * distinct developments, the lead's follow-ups become text links. */
+  const desk = clusterNewsPage(articlesRes.rows, HOME_DESK_SLOTS);
+  const deskSupporting = desk.feed.slice(0, HOME_DESK_SLOTS - 1);
   const upcoming = upcomingRaw.filter((e) => e.id !== next?.id && !isContenderSeries(e.name)).slice(0, 6);
   const bouts = next ? await getEventBouts(next.id) : [];
   /* Verified start times and carriers for the next card, from our own table.
@@ -90,7 +98,7 @@ export default async function Home() {
       ...champIds, ...contenderIds,
     ]),
     next && live.length ? buildDeskBriefs(next, live, 1, { dna: access.pro }).catch(() => []) : Promise.resolve([]),
-    storyMedia(articles),
+    storyMedia(desk.hero ? [desk.hero, ...deskSupporting] : []),
     getFightersByIds(champIds),
     getFightersByIds(contenderIds),
     getBoutCounts([dwcsNext?.id, dwcsLast?.id].filter(Boolean) as string[]),
@@ -266,7 +274,7 @@ export default async function Home() {
       <section className="sec">
         <div className="wrap">
           <SectionHead eyebrow="Newsroom · timestamped" title="Latest from the desk" href="/news" cta="All stories" />
-          {articles.length ? <div className="news">{articles.slice(0, 1).map((a) => <NewsStoryCard key={a.id} a={a} feature hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}{articles.slice(1, 7).map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}</div> : <Empty title="The newsroom publishes when the data does">Fight previews, results with round stats and card changes are written from our own tables. The first stories land with the next card.</Empty>}
+          {desk.hero ? <div className="news"><NewsStoryCard a={desk.hero} feature hero={desk.hero.hero_image_ref ? media.heroes.get(desk.hero.hero_image_ref) : null} faces={media.faces.get(desk.hero.id)} /><StoryRelated items={desk.heroRelated} limit={HOME_DESK_RELATED_LINKS} moreHref="/news" />{deskSupporting.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} />)}</div> :<Empty title="The newsroom publishes when the data does">Fight previews, results with round stats and card changes are written from our own tables. The first stories land with the next card.</Empty>}
         </div>
       </section>
 
