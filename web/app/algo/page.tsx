@@ -50,7 +50,7 @@ export default async function AlgoPage() {
       >
         <div className="row mt-3">
           {access.pro
-            ? <><Link href="/algo/card" className="btn gold">Open the PBE Algo card</Link><Link href="/algo/record" className="btn">Full track record</Link></>
+            ? <><Link href="/algo/card" className="btn gold">Current PBE Picks</Link><Link href="/algo/record" className="btn">Full track record</Link></>
             : <><Link href="/pro" className="btn gold">Get PBE Algo with UFC Pro</Link><span className="faint sm">{PRO_OFFER.plans.monthly.display}/month or {PRO_OFFER.plans.weekly.display}/week. No free trial.</span></>}
         </div>
       </PageHead>
@@ -121,7 +121,7 @@ export default async function AlgoPage() {
           <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>The calls, the probabilities, the edge and the history.</div>
           <div className="faint sm">UFC Pro includes every PBE Algo call with win probability, confidence, data quality, market-implied probability and PBE delta, the model&apos;s drivers for and against, every no-call reason, and the complete per-call track record.</div>
         </div>
-        <Link href={access.pro ? "/algo/card" : "/pro"} className="btn gold">{access.pro ? "Open the card" : "Unlock UFC Pro"}</Link>
+        <Link href={access.pro ? "/algo/card" : "/pro"} className="btn gold">{access.pro ? "Current PBE Picks" : "Unlock UFC Pro"}</Link>
       </section>
 
       <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: "PBE Algo", url: `${SITE.url}/algo`, description: "Method, eligibility rules and aggregate live record for PBE Algo, the PropBetEdge UFC Pro win-probability model.", isPartOf: { "@id": `${SITE.url}/#site` } }} />

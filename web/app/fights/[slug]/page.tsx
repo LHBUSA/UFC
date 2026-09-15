@@ -333,7 +333,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
       {r && <OfficialScorecards result={r} a={b.fighter_a} b={b.fighter_b} sourceUrl={resultSourceUrl} eventDate={e.event_date} />}
 
       {access.pro
-        ? algo && <section className="segment" id="pbe-algo"><h3>PBE Algo</h3><AlgoPick b={algo} detail /></section>
+        ? algo && <section className="segment" id="pbe-algo"><h3>PBE Pick <small><Link href="/algo/card">All PBE Picks →</Link></small></h3><AlgoPick b={algo} detail imgs={imgs} fighters={new Map([[b.fighter_a.id, b.fighter_a], [b.fighter_b.id, b.fighter_b]])} /></section>
         : algoIsLive && <section className="segment" id="pbe-algo"><h3>PBE Algo</h3><ProPreview feature="algo" access={access} returnPath={returnPath} /></section>}
 
       {access.pro

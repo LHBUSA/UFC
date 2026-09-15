@@ -1,16 +1,26 @@
 import Link from "next/link";
+import type { PortraitSet } from "@/lib/db";
+import { fighterSlug } from "@/lib/slug";
+import { fmtRecord } from "@/lib/format";
 import {
   FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText, marketView, ageText,
   type AlgoBoutView, type Driver,
 } from "@/lib/algoView";
 
-/* PBE Algo call card. UFC Pro only: it is rendered exclusively by pages that
- * fetched the bout through lib/algo.ts, which refuses a non-Pro caller, so a
- * free render has no pick to pass in. */
+/* PBE Picks call card (the UFC Pro PBE Algo call). UFC Pro only: it is rendered
+ * exclusively by pages that fetched the bout through lib/algo.ts, which refuses
+ * a non-Pro caller, so a free render has no pick to pass in.
+ *
+ * Presentation only. Every value shown is read from the AlgoBoutView exactly
+ * as before (pick, probability, confidence, lock state, market status and
+ * delta); portraits come from getImagesForFighters() and records from the
+ * fighter rows the page already reads. Nothing here scores, re-ranks or
+ * decides eligibility. */
 
 const LOG_FEATURES = /log|quality_wins|five_round|title_exp/;
 const RATE_FEATURES = new Set(["winrate_diff", "recent5_winrate_diff", "sig_accuracy_diff", "sig_defense_diff", "td_accuracy_diff", "td_defense_diff", "control_share_diff", "finish_rate_diff", "ko_rate_diff", "sub_rate_diff", "ko_loss_rate_diff", "sub_loss_rate_diff", "sos_diff", "pace_retention_diff"]);
 const signed = (v: number, dp: number, unit = "") => `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(dp)}${unit}`;
+const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
 function driverValue(d: Driver): string | null {
   if (LOG_FEATURES.test(d.key)) return null;
@@ -44,7 +54,37 @@ function DriverList({ title, items, tone, max }: { title: string; items: Driver[
   );
 }
 
-export function AlgoPick({ b, detail = false, showEvent = false }: { b: AlgoBoutView; detail?: boolean; showEvent?: boolean }) {
+export type AlgoFighterContext = { record_w: number | null; record_l: number | null; record_d: number | null; record_nc?: number | null; espn_athlete_id?: string | null; ufcstats_id?: string | null };
+
+function Corner({ f, img, record, picked, called }: { f: { id: string; name: string }; img?: PortraitSet | null; record?: AlgoFighterContext | null; picked: boolean; called: boolean }) {
+  const display = img && (img.kind === "display_fallback" || img.source_family === "espn");
+  const slugId = record?.espn_athlete_id || record?.ufcstats_id;
+  const inner = (
+    <>
+      <span className={`pp-photo${display ? " display" : ""}`}>
+        {img
+          ? <img src={img.card} alt="" width={320} height={400} loading="lazy" decoding="async" />
+          : <span className="pp-initials" aria-hidden="true">{initials(f.name)}</span>}
+        {picked && <span className="pp-pick-tag">PBE Pick</span>}
+      </span>
+      <span className="pp-corner-name">{f.name}</span>
+      {record && record.record_w != null && <span className="pp-corner-rec">{fmtRecord(record)}</span>}
+    </>
+  );
+  const cls = `pp-corner${picked ? " picked" : ""}${called && !picked ? " other" : ""}`;
+  const label = `${f.name}${picked ? ", the PBE pick" : ""}`;
+  return slugId
+    ? <Link href={`/fighters/${fighterSlug({ name: f.name, espn_athlete_id: record?.espn_athlete_id ?? null, ufcstats_id: record?.ufcstats_id ?? null })}`} className={cls} aria-label={label}>{inner}</Link>
+    : <span className={cls} aria-label={label}>{inner}</span>;
+}
+
+export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters }: {
+  b: AlgoBoutView; detail?: boolean; showEvent?: boolean;
+  /** getImagesForFighters() result for this card, if the page read it. */
+  imgs?: Map<string, PortraitSet>;
+  /** Authoritative fighter rows (record) for this card, if the page read them. */
+  fighters?: Map<string, AlgoFighterContext>;
+}) {
   const status = algoStatus(b);
   const pickName = b.pick_fighter_id === b.fighter_a.id ? b.fighter_a.name : b.pick_fighter_id === b.fighter_b.id ? b.fighter_b.name : null;
   const oppName = pickName === b.fighter_a.name ? b.fighter_b.name : b.fighter_a.name;
@@ -62,41 +102,96 @@ export function AlgoPick({ b, detail = false, showEvent = false }: { b: AlgoBout
   const maxC = dr ? Math.max(1e-9, ...dr.supporting.map((d) => d.contribution), ...dr.opposing.map((d) => -d.contribution)) : 1;
   const ev = called ? bandEvidence(prob) : null;
   const features = p ? Object.values(p.feature_availability || {}).filter(Boolean).length : b.features_available;
+  const pickIsA = b.pick_fighter_id === b.fighter_a.id;
+  const probA = called ? (pickIsA ? (prob as number) : 1 - (prob as number)) : null;
+  const locked = Boolean(p?.locked_at);
+  const segment = b.card_position === "main" ? "Main card" : b.card_position === "prelim" ? "Prelims" : b.card_position === "early" ? "Early prelims" : "Card";
+
+  const state = b.grade
+    ? { label: `OFFICIAL PBE PICK · ${b.grade.result}`, sub: `Locked ${lockedText(p?.locked_at ?? null)} · graded`, tone: "graded" }
+    : called && locked
+      ? { label: "OFFICIAL PBE PICK", sub: `LOCKED · ${lockedText(p!.locked_at)}`, tone: "locked" }
+      : called
+        ? { label: "PRE-LOCK PBE PICK", sub: "Updates with new pre-fight data until lock", tone: "provisional" }
+        : b.decision === "NO_MODEL_CALL"
+          ? { label: "NO PBE PICK", sub: "Model passed on this fight", tone: "nocall" }
+          : { label: status.label, sub: "Not evaluated yet", tone: "pending" };
 
   return (
-    <article className={`algo-card ${status.tone}${detail ? " detail" : ""}`} data-algo-bout={b.bout_id}>
-      <header className="algo-card-head">
-        <div className="algo-card-kicker">
-          {showEvent && <><Link href={`/events/${b.event_slug}`}>{b.event_name}</Link> · </>}
-          {b.card_position === "main" ? "Main card" : b.card_position === "prelim" ? "Prelims" : b.card_position === "early" ? "Early prelims" : "Card"}
-        </div>
-        <span className={`algo-status ${status.tone}`}>{status.label}</span>
+    <article className={`pp ${called ? "pp-call" : "pp-pass"} ${state.tone}${detail ? " detail" : ""}`} data-algo-bout={b.bout_id} data-algo-status={status.label}>
+      <header className="pp-top">
+        <span className={`pp-state ${state.tone}`}>{state.label}</span>
+        <span className="pp-state-sub">{state.sub}</span>
+        <span className="pp-pos">{showEvent && <><Link href={`/events/${b.event_slug}`}>{b.event_name}</Link> · </>}{segment}</span>
       </header>
-      <h3 className="algo-matchup"><Link href={`/fights/${b.fight_slug}`}>{b.fighter_a.name} <span>vs</span> {b.fighter_b.name}</Link></h3>
+
+      <div className="pp-face">
+        <Corner f={b.fighter_a} img={imgs?.get(b.fighter_a.id)} record={fighters?.get(b.fighter_a.id)} picked={Boolean(called) && pickIsA} called={Boolean(called)} />
+        <div className="pp-center">
+          {called ? (
+            <>
+              <div className="pp-kicker">PBE Pick</div>
+              <div className="pp-name">{pickName}</div>
+              <div className="pp-prob"><b>{pctText(prob)}</b> win probability</div>
+              <div className={`pp-conf c-${(b.confidence || "").toLowerCase()}`}>{confidenceCopy(b.confidence)} confidence</div>
+            </>
+          ) : b.decision === "NO_MODEL_CALL" ? (
+            <>
+              <div className="pp-kicker muted">No PBE Pick</div>
+              <div className="pp-pass-line">Model passed on this fight</div>
+            </>
+          ) : (
+            <div className="pp-pass-line">Not evaluated yet</div>
+          )}
+        </div>
+        <Corner f={b.fighter_b} img={imgs?.get(b.fighter_b.id)} record={fighters?.get(b.fighter_b.id)} picked={Boolean(called) && !pickIsA} called={Boolean(called)} />
+      </div>
+
+      <h3 className="pp-matchup"><Link href={`/fights/${b.fight_slug}`}>{b.fighter_a.name} <span>vs</span> {b.fighter_b.name}</Link></h3>
 
       {called ? (
         <>
-          <dl className="algo-grid">
-            <div className="algo-cell pick"><dt>Pick</dt><dd>{pickName}</dd></div>
-            <div className="algo-cell"><dt>Win probability</dt><dd>{pctText(prob)}</dd></div>
-            <div className="algo-cell"><dt>Confidence</dt><dd>{confidenceCopy(b.confidence)}</dd></div>
-            <div className="algo-cell"><dt>Data quality</dt><dd>{features ?? "—"}/{FEATURES_TOTAL}</dd></div>
-            <div className="algo-cell"><dt>Model</dt><dd className="mono">{b.model_version ?? "—"}</dd></div>
-            <div className="algo-cell"><dt>Locked</dt><dd>{p?.locked_at ? lockedText(p.locked_at) : "Not yet locked"}</dd></div>
-            <div className="algo-cell"><dt>Market implied</dt><dd>{marketStatus === "UNAVAILABLE" || marketPick == null ? "No line" : marketStatus === "STALE" ? <>Stale <span className="algo-stale">({ageText(mv.age)} old)</span></> : pctText(marketPick)}</dd></div>
-            <div className={`algo-cell delta ${delta == null ? "" : delta >= 0 ? "pos" : "neg"}`}><dt>PBE delta</dt><dd>{delta != null ? deltaText(delta) : "—"}</dd></div>
-          </dl>
-          <div className="algo-probbar" role="img" aria-label={`${pickName} ${pctText(prob)}, ${oppName} ${pctText(1 - (prob as number))}`}>
-            <span style={{ width: `${(prob as number) * 100}%` }}>{pickName}</span>
-            <span>{oppName} {pctText(1 - (prob as number))}</span>
+          <div className="pp-bar" role="img" aria-label={`${pickName} ${pctText(prob)}, ${oppName} ${pctText(1 - (prob as number))}`}>
+            <span className={`seg a${pickIsA ? " pick" : ""}`} style={{ flexBasis: `${(probA as number) * 100}%` }}><em>{b.fighter_a.name}</em><b>{pctText(probA, 0)}</b></span>
+            <span className={`seg b${!pickIsA ? " pick" : ""}`} style={{ flexBasis: `${(1 - (probA as number)) * 100}%` }}><b>{pctText(1 - (probA as number), 0)}</b><em>{b.fighter_b.name}</em></span>
           </div>
-          {!p?.locked_at && <p className="algo-note">Provisional. The call regenerates hourly from the latest pre-fight data and locks once, on the database clock, the afternoon before fight day (after official weigh-ins). A provisional call is not part of the record.</p>}
+
+          <dl className="pp-primary">
+            <div className="pp-cell pick"><dt>Pick</dt><dd>{pickName}</dd></div>
+            <div className="pp-cell"><dt>Win probability</dt><dd>{pctText(prob)}</dd></div>
+            <div className="pp-cell"><dt>Confidence</dt><dd>{confidenceCopy(b.confidence)}</dd></div>
+            <div className={`pp-cell delta ${delta == null ? "" : delta >= 0 ? "pos" : "neg"}`}><dt>PBE edge</dt><dd>{delta != null ? deltaText(delta) : "—"}</dd></div>
+            <div className="pp-cell"><dt>Market</dt><dd>{marketStatus === "FRESH" && marketPick != null ? "Current" : marketStatus === "STALE" ? "Stale" : "No current market"}</dd></div>
+          </dl>
+
+          <div className={`pp-market ${marketStatus.toLowerCase()}`}>
+            {marketStatus === "FRESH" && marketPick != null ? (
+              <>
+                <span><small>Model</small><b>{pctText(prob)}</b></span>
+                <span><small>Market</small><b>{pctText(marketPick)}</b></span>
+                <span className={delta == null ? "" : delta >= 0 ? "pos" : "neg"}><small>PBE edge</small><b>{delta != null ? deltaText(delta) : "—"}</b></span>
+              </>
+            ) : marketStatus === "STALE" ? (
+              <span className="pp-market-flag"><b>Market stale</b> newest price on file is {ageText(mv.age)} old. No PBE edge is published from it.</span>
+            ) : (
+              <span className="pp-market-flag"><b>No current market</b> no two-sided price is on file for this bout.</span>
+            )}
+          </div>
+
+          <dl className="pp-secondary">
+            <div><dt>Data quality</dt><dd>{features ?? "—"}/{FEATURES_TOTAL} features</dd></div>
+            <div><dt>Locked</dt><dd>{locked ? lockedText(p!.locked_at) : "Not yet locked"}</dd></div>
+            <div><dt>Model</dt><dd className="mono">{b.model_version ?? "—"}</dd></div>
+            <div><dt>Market implied</dt><dd>{marketStatus === "UNAVAILABLE" || marketPick == null ? "No line" : marketStatus === "STALE" ? <>Stale <span className="algo-stale">({ageText(mv.age)} old)</span></> : pctText(marketPick)}</dd></div>
+          </dl>
+
+          {!locked && <p className="algo-note">Pre-lock. The pick regenerates hourly from the latest pre-fight data and can change until it locks once, on the database clock, the afternoon before fight day (after official weigh-ins). A pre-lock pick is not part of the record.</p>}
           {marketStatus === "FRESH" && mv.books != null && <p className="algo-note">Market: de-vigged consensus of {mv.books} book{mv.books === 1 ? "" : "s"} (raw implied {pctText(mv.raw)}), prices observed {mv.observedAt ? lockedText(mv.observedAt) : "—"}. The market is compared with the model after scoring and is never a model input.</p>}
           {marketStatus === "STALE" && <p className="algo-note algo-market-stale">Market comparison stale: the newest price on file is {ageText(mv.age)} old{mv.observedAt ? ` (observed ${lockedText(mv.observedAt)})` : ""}, beyond the 60-minute limit. No PBE delta is published from it. The model call does not depend on the market.</p>}
         </>
       ) : b.decision === "NO_MODEL_CALL" ? (
         <div className="algo-nocall">
-          <b>Why there is no call</b>
+          <b>Why there is no pick</b>
           <ul>{b.reasons.map((r) => <li key={r}>{REASON_COPY[r] || r}</li>)}</ul>
         </div>
       ) : (
@@ -111,10 +206,10 @@ export function AlgoPick({ b, detail = false, showEvent = false }: { b: AlgoBout
 
       {called && (
         <details className="algo-why" open={detail}>
-          <summary>Why the Algo leans this way</summary>
+          <summary>Why PBE Picks this fighter</summary>
           {dr ? (
             <div className="algo-why-grid">
-              <DriverList title="Strongest drivers" items={dr.supporting} tone="for" max={maxC} />
+              <DriverList title="Strongest factors" items={dr.supporting} tone="for" max={maxC} />
               <DriverList title="Factors against" items={dr.opposing} tone="against" max={maxC} />
             </div>
           ) : <p className="algo-note">Feature-level drivers appear once a draft with its stored feature vector exists.</p>}

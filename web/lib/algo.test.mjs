@@ -129,3 +129,23 @@ test('public surfaces never import a per-call reader or the call card', () => {
   const card = readFileSync(new URL('app/algo/card/page.tsx', web), 'utf8');
   assert.match(card, /robots: \{ index: false/);
 });
+
+test('PBE PICKS is a primary nav item pointing at the existing /algo/card surface; no duplicate route', () => {
+  const web = new URL('../', import.meta.url);
+  const site = readFileSync(new URL('lib/site.ts', web), 'utf8');
+  assert.match(site, /\{ href: "\/algo\/card", label: "PBE PICKS", place: "primary" \}/);
+  assert.doesNotMatch(site, /href: "\/picks"/);
+  const card = readFileSync(new URL('app/algo/card/page.tsx', web), 'utf8');
+  assert.match(card, /<h1 className="pp-hero-title">PBE PICKS<\/h1>/);
+  assert.match(card, /access\.pro && fighterIds\.length\s*\? await Promise\.all\(\[getImagesForFighters/, 'portraits and fighter rows are read only after the Pro gate');
+  for (const f of ['app/algo/card/page.tsx', 'components/AlgoPick.tsx', 'lib/algo.ts', 'lib/algoView.ts']) {
+    assert.doesNotMatch(readFileSync(new URL(f, web), 'utf8'), /shadow|challenger|training_run/i, `${f} must never touch shadow/challenger data`);
+  }
+  assert.match(card, /Official PropBetEdge model selections/);
+  assert.match(card, /href="\/algo" className="btn">How PBE Algo works/);
+  assert.match(card, /href="\/algo\/record" className="btn gold">Track Record/);
+  assert.match(card, /const cards = access\.pro \? await getAlgoCards\(access\) : \[\];/, 'entitlement read unchanged');
+  let picksRoute = true;
+  try { readFileSync(new URL('app/picks/page.tsx', web)); } catch { picksRoute = false; }
+  assert.equal(picksRoute, false);
+});

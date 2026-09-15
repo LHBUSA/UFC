@@ -102,7 +102,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
           {algoIsLive ? "" : " The first official call has not been locked yet, and the record will start at zero rather than borrow from the backtest."}
         </p>
         <div className="row mt-3">
-          <Link href={active ? "/algo/card" : "/algo"} className="btn gold">{active ? "Open the PBE Algo card" : "How PBE Algo works"}</Link>
+          <Link href={active ? "/algo/card" : "/algo"} className="btn gold">{active ? "Current PBE Picks" : "How PBE Algo works"}</Link>
           {active && <Link href="/algo/record" className="btn">Track record</Link>}
         </div>
       </section>

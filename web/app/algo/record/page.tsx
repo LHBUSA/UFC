@@ -68,7 +68,7 @@ export default async function AlgoRecordPage() {
         title="PBE Algo track record"
         lede="Every official call, locked on the database clock before its fight and graded after it. Nothing is removed and nothing is rewritten after the lock; corrected results appear as dated revisions beside the original."
       >
-        {access.pro && <div className="row mt-3"><Link href="/algo/card" className="btn">Upcoming card</Link></div>}
+        {access.pro && <div className="row mt-3"><Link href="/algo/card" className="btn">Current PBE Picks</Link></div>}
       </PageHead>
 
       {!access.pro ? (

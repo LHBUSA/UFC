@@ -50,6 +50,9 @@ export type NavPlace = "primary" | "more" | "logo" | "cta";
 export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace; group?: string }> = [
   { href: "/", label: "Home", place: "logo" },
   { href: "/fight-week", label: "Fight Week", place: "primary" },
+  /* The current official PBE Algo picks. Top level on purpose: /algo is the
+   * method, /algo/card is the picks, /algo/record is the track record. */
+  { href: "/algo/card", label: "PBE PICKS", place: "primary" },
   { href: "/events", label: "Schedule", place: "primary" },
   { href: "/fighters", label: "Fighters", place: "primary" },
   { href: "/rankings", label: "Rankings", place: "primary" },

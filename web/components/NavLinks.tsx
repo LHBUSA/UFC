@@ -17,6 +17,8 @@ function isActive(path: string, href: string): boolean {
   if (href.includes("#")) return false;
   if (href === "/fight-week") return path.startsWith("/fight-week") || path.startsWith("/pregame");
   if (href === "/#notable-voices") return path.startsWith("/voices");
+  /* /algo (method) must not light up while the reader is on /algo/card (PBE PICKS). */
+  if (href === "/algo") return path === "/algo" || path.startsWith("/algo/record");
   return path.startsWith(href);
 }
 
