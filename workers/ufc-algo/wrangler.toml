@@ -9,7 +9,7 @@ SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
 # dry_run: read, score, report; write only a ufc_model_runs row.
 # armed:   evaluations, drafts, database-clock locks and grades. Flip ONLY after
 #          owner approval AND a registered live model version.
-ALGO_MODE = "dry_run"
+ALGO_MODE = "armed"
 
 # Daily learning lineage root. V1's original training dataset was never hashed
 # and cannot be regenerated; this is the 9,174-row release-window rebuild,
