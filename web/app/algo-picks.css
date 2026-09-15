@@ -107,13 +107,22 @@
 .pp-bar .seg em { font-style: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .pp-bar .seg b { flex: none; font-weight: 800; font-variant-numeric: tabular-nums; }
 
-.pp-primary { margin: var(--s-3) 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: var(--pbe-line); border: 1px solid var(--pbe-line); border-radius: var(--r-sm); overflow: hidden; }
+.pp-primary { margin: var(--s-3) 0 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1px; background: var(--pbe-line); border: 1px solid var(--pbe-line); border-radius: var(--r-sm); overflow: hidden; }
 .pp-cell { background: var(--pbe-ink-4); padding: 10px 12px; min-width: 0; }
 .pp-cell dt { font: 10px/1.4 var(--pbe-font-data); letter-spacing: .1em; text-transform: uppercase; color: var(--pbe-faint); }
 .pp-cell dd { margin: 3px 0 0; font: 700 16px/1.25 var(--pbe-font-ui); color: var(--pbe-paper); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 .pp-cell.pick dd { color: var(--pbe-gold-bright); }
 .pp-cell.delta.pos dd { color: var(--pbe-pos); }
 .pp-cell.delta.neg dd { color: var(--pbe-crimson-bright); }
+/* Market figures: American odds in the data face; qualifiers stay small. */
+.pp-cell.odds dd, .pp-cell.delta dd { font-family: var(--pbe-font-data); font-weight: 800; }
+.pp-cell dd small { font: 600 11px/1.3 var(--pbe-font-ui); color: var(--pbe-dim); letter-spacing: 0; text-transform: none; }
+.pp-primary.market-last_observed .pp-cell.odds dd { color: var(--pbe-dim); }
+.pp-cell dd small.book::before { content: " · "; }
+.pp-cell dd .algo-stale { font: 600 13px/1.25 var(--pbe-font-ui); color: var(--pbe-faint); }
+.pp-corner-odds { display: inline-block; margin-top: 2px; padding: 3px 9px; border-radius: var(--r-pill); border: 1px solid var(--pbe-line-strong); font: 800 13px/1 var(--pbe-font-data); color: var(--pbe-paper); font-variant-numeric: tabular-nums; }
+.pp-corner.picked .pp-corner-odds { border-color: rgba(212,175,55,.55); color: var(--pbe-gold-bright); }
+.pp-corner-odds.last { border-style: dashed; color: var(--pbe-dim); }
 
 .pp-market { margin-top: var(--s-3); display: flex; flex-wrap: wrap; gap: 8px var(--s-5); align-items: baseline; padding: 10px 12px; border-radius: var(--r-sm); border: 1px solid var(--pbe-line); background: rgba(13,11,8,.45); }
 .pp-market > span { display: inline-flex; align-items: baseline; gap: 8px; }
@@ -124,6 +133,8 @@
 .pp-market.stale, .pp-market.unavailable { border-style: dashed; }
 .pp-market > .pp-market-flag { display: block; color: var(--pbe-dim); font-size: 13px; line-height: 1.45; }
 .pp-market-flag b { font: 800 11px/1 var(--pbe-font-data); letter-spacing: .12em; text-transform: uppercase; color: var(--pbe-paper-2); margin-right: 6px; }
+.pp-market.fresh .pp-market-flag b { color: var(--pbe-pos); }
+.pp-market.stale .pp-market-flag b { color: var(--pbe-gold-bright); }
 
 .pp-secondary { margin: var(--s-3) 0 0; display: flex; flex-wrap: wrap; gap: 6px var(--s-5); }
 .pp-secondary div { display: flex; gap: 6px; align-items: baseline; min-width: 0; }
@@ -143,6 +154,9 @@
 .pp.pp-pass .pp-photo { filter: saturate(.75); }
 .pp a:focus-visible, .pp summary:focus-visible, .pp-filter a:focus-visible { outline: 2px solid var(--pbe-gold); outline-offset: 2px; }
 
+@media (max-width: 1100px) and (min-width: 721px) {
+  .pp-primary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 @media (max-width: 720px) {
   .pp { padding: var(--s-3); }
   .pp-pos { margin-left: 0; width: 100%; }
@@ -152,6 +166,9 @@
   .pp-face > .pp-center { grid-area: c; }
   .pp-photo { max-width: 170px; }
   .pp-primary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pp-cell dd small { display: block; }
+  .pp-cell dd small.book::before { content: none; }
+  .pp-primary .pp-cell.delta { grid-column: 1 / -1; }
   .pp-primary .pp-cell.pick { grid-column: 1 / -1; }
   .pp-bar .seg em { display: none; }
   /* Three fixed columns, number over label: a web-font swap cannot re-wrap the bar (layout shift). */

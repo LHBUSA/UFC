@@ -3,7 +3,7 @@ import type { PortraitSet } from "@/lib/db";
 import { fighterSlug } from "@/lib/slug";
 import { fmtRecord } from "@/lib/format";
 import {
-  FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText, marketView, ageText,
+  FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText, marketView, ageText, agoText, oddsText,
   type AlgoBoutView, type Driver,
 } from "@/lib/algoView";
 
@@ -15,7 +15,12 @@ import {
  * as before (pick, probability, confidence, lock state, market status and
  * delta); portraits come from getImagesForFighters() and records from the
  * fighter rows the page already reads. Nothing here scores, re-ranks or
- * decides eligibility. */
+ * decides eligibility.
+ *
+ * Market (owner decision 2026-09-15): the odds a customer can take (consensus
+ * and best available, American, vig included) and the analytical comparison
+ * (PBE Edge = PBE probability - de-vigged consensus probability) are separate
+ * figures with separate labels, both in the primary hierarchy. */
 
 const LOG_FEATURES = /log|quality_wins|five_round|title_exp/;
 const RATE_FEATURES = new Set(["winrate_diff", "recent5_winrate_diff", "sig_accuracy_diff", "sig_defense_diff", "td_accuracy_diff", "td_defense_diff", "control_share_diff", "finish_rate_diff", "ko_rate_diff", "sub_rate_diff", "ko_loss_rate_diff", "sub_loss_rate_diff", "sos_diff", "pace_retention_diff"]);
@@ -56,7 +61,7 @@ function DriverList({ title, items, tone, max }: { title: string; items: Driver[
 
 export type AlgoFighterContext = { record_w: number | null; record_l: number | null; record_d: number | null; record_nc?: number | null; espn_athlete_id?: string | null; ufcstats_id?: string | null };
 
-function Corner({ f, img, record, picked, called }: { f: { id: string; name: string }; img?: PortraitSet | null; record?: AlgoFighterContext | null; picked: boolean; called: boolean }) {
+function Corner({ f, img, record, picked, called, odds }: { f: { id: string; name: string }; img?: PortraitSet | null; record?: AlgoFighterContext | null; picked: boolean; called: boolean; odds?: { value: number; current: boolean } | null }) {
   const display = img && (img.kind === "display_fallback" || img.source_family === "espn");
   const slugId = record?.espn_athlete_id || record?.ufcstats_id;
   const inner = (
@@ -69,6 +74,7 @@ function Corner({ f, img, record, picked, called }: { f: { id: string; name: str
       </span>
       <span className="pp-corner-name">{f.name}</span>
       {record && record.record_w != null && <span className="pp-corner-rec">{fmtRecord(record)}</span>}
+      {odds && <span className={`pp-corner-odds${odds.current ? "" : " last"}`} title={odds.current ? "Current consensus odds" : "Last observed consensus odds"}>{oddsText(odds.value)}</span>}
     </>
   );
   const cls = `pp-corner${picked ? " picked" : ""}${called && !picked ? " other" : ""}`;
@@ -90,21 +96,27 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
   const oppName = pickName === b.fighter_a.name ? b.fighter_b.name : b.fighter_a.name;
   const p = b.prediction;
   const prob = p ? p.pick_probability : b.pick_probability;
-  /* A locked call's official comparison is its stored FRESH columns; anything
-   * else is shown with its status and age, never as a current edge. */
-  const mv = marketView(b.market);
-  const lockedOfficial = p?.locked_at && p.model_edge_pts != null;
+  const locked = Boolean(p?.locked_at);
+  /* A locked call's official comparison is its stored columns; anything else is
+   * CURRENT only inside its fight-week window and never shows a stale edge. */
+  const mv = marketView(b.market, { lockedAt: p?.locked_at ?? null });
+  const lockedOfficial = locked && p!.model_edge_pts != null;
   const marketPick = lockedOfficial ? p!.market_implied_prob_pick : mv.implied;
   const delta = lockedOfficial ? p!.model_edge_pts : mv.delta;
-  const marketStatus = lockedOfficial ? "FRESH" : mv.status;
+  const marketState = lockedOfficial ? "CURRENT" : mv.state;
+  const current = marketState === "CURRENT" && marketPick != null;
   const called = b.decision === "ELIGIBLE" && pickName && prob != null;
+  const oddsFor = (id: string) => {
+    const v = id === b.pick_fighter_id ? mv.pick.consensus : id === mv.opponent.fighterId ? mv.opponent.consensus : null;
+    return called && v != null && marketState !== "UNAVAILABLE" ? { value: v, current } : null;
+  };
+  const windowText = mv.limitMinutes != null ? `${mv.band ? `${mv.band} ` : ""}${mv.limitMinutes >= 120 ? `${Math.floor(mv.limitMinutes / 60)}h${mv.limitMinutes % 60 ? ` ${mv.limitMinutes % 60}m` : ""}` : `${mv.limitMinutes}-minute`} window` : "freshness window";
   const dr = p && called ? drivers(p, b.fighter_a.id, b.fighter_b.id) : null;
   const maxC = dr ? Math.max(1e-9, ...dr.supporting.map((d) => d.contribution), ...dr.opposing.map((d) => -d.contribution)) : 1;
   const ev = called ? bandEvidence(prob) : null;
   const features = p ? Object.values(p.feature_availability || {}).filter(Boolean).length : b.features_available;
   const pickIsA = b.pick_fighter_id === b.fighter_a.id;
   const probA = called ? (pickIsA ? (prob as number) : 1 - (prob as number)) : null;
-  const locked = Boolean(p?.locked_at);
   const segment = b.card_position === "main" ? "Main card" : b.card_position === "prelim" ? "Prelims" : b.card_position === "early" ? "Early prelims" : "Card";
 
   const state = b.grade
@@ -126,7 +138,7 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
       </header>
 
       <div className="pp-face">
-        <Corner f={b.fighter_a} img={imgs?.get(b.fighter_a.id)} record={fighters?.get(b.fighter_a.id)} picked={Boolean(called) && pickIsA} called={Boolean(called)} />
+        <Corner f={b.fighter_a} img={imgs?.get(b.fighter_a.id)} record={fighters?.get(b.fighter_a.id)} picked={Boolean(called) && pickIsA} called={Boolean(called)} odds={oddsFor(b.fighter_a.id)} />
         <div className="pp-center">
           {called ? (
             <>
@@ -144,7 +156,7 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
             <div className="pp-pass-line">Not evaluated yet</div>
           )}
         </div>
-        <Corner f={b.fighter_b} img={imgs?.get(b.fighter_b.id)} record={fighters?.get(b.fighter_b.id)} picked={Boolean(called) && !pickIsA} called={Boolean(called)} />
+        <Corner f={b.fighter_b} img={imgs?.get(b.fighter_b.id)} record={fighters?.get(b.fighter_b.id)} picked={Boolean(called) && !pickIsA} called={Boolean(called)} odds={oddsFor(b.fighter_b.id)} />
       </div>
 
       <h3 className="pp-matchup"><Link href={`/fights/${b.fight_slug}`}>{b.fighter_a.name} <span>vs</span> {b.fighter_b.name}</Link></h3>
@@ -156,38 +168,37 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
             <span className={`seg b${!pickIsA ? " pick" : ""}`} style={{ flexBasis: `${(1 - (probA as number)) * 100}%` }}><b>{pctText(1 - (probA as number), 0)}</b><em>{b.fighter_b.name}</em></span>
           </div>
 
-          <dl className="pp-primary">
-            <div className="pp-cell pick"><dt>Pick</dt><dd>{pickName}</dd></div>
-            <div className="pp-cell"><dt>Win probability</dt><dd>{pctText(prob)}</dd></div>
-            <div className="pp-cell"><dt>Confidence</dt><dd>{confidenceCopy(b.confidence)}</dd></div>
-            <div className={`pp-cell delta ${delta == null ? "" : delta >= 0 ? "pos" : "neg"}`}><dt>PBE edge</dt><dd>{delta != null ? deltaText(delta) : "—"}</dd></div>
-            <div className="pp-cell"><dt>Market</dt><dd>{marketStatus === "FRESH" && marketPick != null ? "Current" : marketStatus === "STALE" ? "Stale" : "No current market"}</dd></div>
+          <dl className={`pp-primary market-${marketState.toLowerCase()}`}>
+            <div className="pp-cell pick"><dt>PBE Pick</dt><dd>{pickName}</dd></div>
+            <div className="pp-cell"><dt>PBE probability</dt><dd>{pctText(prob)}</dd></div>
+            <div className="pp-cell odds"><dt>{marketState === "LAST_OBSERVED" ? "Last observed" : "Market"}</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.consensus != null ? <>{oddsText(mv.pick.consensus)} <small>consensus</small></> : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Not recorded</span> : "No current market"}</dd></div>
+            <div className="pp-cell odds"><dt>Best odds</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.best != null ? <>{oddsText(mv.pick.best)}{mv.pick.book && <small className="book">{mv.pick.book}</small>}</> : "\u2014"}</dd></div>
+            <div className="pp-cell"><dt>Market implied</dt><dd>{current ? pctText(marketPick) : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Not current</span> : "\u2014"}</dd></div>
+            <div className={`pp-cell delta ${delta == null ? "" : delta >= 0 ? "pos" : "neg"}`}><dt>PBE Edge</dt><dd>{current && delta != null ? deltaText(delta) : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Hidden</span> : "\u2014"}</dd></div>
           </dl>
 
-          <div className={`pp-market ${marketStatus.toLowerCase()}`}>
-            {marketStatus === "FRESH" && marketPick != null ? (
-              <>
-                <span><small>Model</small><b>{pctText(prob)}</b></span>
-                <span><small>Market</small><b>{pctText(marketPick)}</b></span>
-                <span className={delta == null ? "" : delta >= 0 ? "pos" : "neg"}><small>PBE edge</small><b>{delta != null ? deltaText(delta) : "—"}</b></span>
-              </>
-            ) : marketStatus === "STALE" ? (
-              <span className="pp-market-flag"><b>Market stale</b> newest price on file is {ageText(mv.age)} old. No PBE edge is published from it.</span>
+          <div className={`pp-market ${marketState === "CURRENT" ? "fresh" : marketState === "LAST_OBSERVED" ? "stale" : "unavailable"}`}>
+            {current ? (
+              <span className="pp-market-flag"><b>{lockedOfficial ? "Market at lock" : "Current market"}</b>{lockedOfficial ? `observed ${ageText(mv.age)} before lock` : `Observed ${agoText(mv.age)}`}{mv.books != null ? ` · ${mv.books} book${mv.books === 1 ? "" : "s"}` : ""}{mv.opponent.consensus != null ? ` · ${oppName} ${oddsText(mv.opponent.consensus)}${mv.opponent.best != null ? ` (best ${oddsText(mv.opponent.best)}${mv.opponent.book ? ` ${mv.opponent.book}` : ""})` : ""}` : ""}</span>
+            ) : marketState === "LAST_OBSERVED" ? (
+              <span className="pp-market-flag"><b>Last observed</b>{agoText(mv.age)}, outside the {windowText}. No PBE Edge is published from it.</span>
             ) : (
-              <span className="pp-market-flag"><b>No current market</b> no two-sided price is on file for this bout.</span>
+              <span className="pp-market-flag"><b>No current market</b>no two-sided price is on file for this bout.</span>
             )}
           </div>
 
           <dl className="pp-secondary">
-            <div><dt>Data quality</dt><dd>{features ?? "—"}/{FEATURES_TOTAL} features</dd></div>
+            <div><dt>Data quality</dt><dd>{features ?? "\u2014"}/{FEATURES_TOTAL} features</dd></div>
+            <div><dt>Confidence</dt><dd>{confidenceCopy(b.confidence)}</dd></div>
             <div><dt>Locked</dt><dd>{locked ? lockedText(p!.locked_at) : "Not yet locked"}</dd></div>
-            <div><dt>Model</dt><dd className="mono">{b.model_version ?? "—"}</dd></div>
-            <div><dt>Market implied</dt><dd>{marketStatus === "UNAVAILABLE" || marketPick == null ? "No line" : marketStatus === "STALE" ? <>Stale <span className="algo-stale">({ageText(mv.age)} old)</span></> : pctText(marketPick)}</dd></div>
+            <div><dt>Model</dt><dd className="mono">{b.model_version ?? "\u2014"}</dd></div>
           </dl>
 
           {!locked && <p className="algo-note">Pre-lock. The pick regenerates hourly from the latest pre-fight data and can change until it locks once, on the database clock, the afternoon before fight day (after official weigh-ins). A pre-lock pick is not part of the record.</p>}
-          {marketStatus === "FRESH" && mv.books != null && <p className="algo-note">Market: de-vigged consensus of {mv.books} book{mv.books === 1 ? "" : "s"} (raw implied {pctText(mv.raw)}), prices observed {mv.observedAt ? lockedText(mv.observedAt) : "—"}. The market is compared with the model after scoring and is never a model input.</p>}
-          {marketStatus === "STALE" && <p className="algo-note algo-market-stale">Market comparison stale: the newest price on file is {ageText(mv.age)} old{mv.observedAt ? ` (observed ${lockedText(mv.observedAt)})` : ""}, beyond the 60-minute limit. No PBE delta is published from it. The model call does not depend on the market.</p>}
+          {current && delta != null && (
+            <p className="algo-note">PBE Edge = PBE probability {pctText(prob)} − de-vigged market probability {pctText(marketPick)} = {deltaText(delta)}. Odds are prices you could take: consensus is the median implied probability across {mv.books ?? "the"} book{mv.books === 1 ? "" : "s"} converted back to American odds, vig included (raw implied {pctText(mv.raw)}); best odds is the most favourable price in the same snapshot. The edge is measured against the de-vigged consensus, never the vigged price. The market is compared after scoring and is never a model input.</p>
+          )}
+          {marketState === "LAST_OBSERVED" && <p className="algo-note algo-market-stale">These are the last odds PropBetEdge observed{mv.observedAt ? ` (${lockedText(mv.observedAt)})` : ""}. A fight-week snapshot is current for 12h 10m until 72 hours before lock, 6h 10m until the final day, and 60 minutes in the final 24 hours; past that no PBE Edge is published. The model call does not depend on the market.</p>}
         </>
       ) : b.decision === "NO_MODEL_CALL" ? (
         <div className="algo-nocall">

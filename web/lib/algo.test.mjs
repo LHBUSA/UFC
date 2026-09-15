@@ -99,15 +99,33 @@ test('the QA fixture is honoured locally and refused on Vercel', async () => {
 });
 
 test('a stale market is never presented as a current edge', () => {
-  const stale = view.marketView({ status: 'STALE', age_minutes: 14900, devigged_pick: 0.17, pbe_delta_pts: null, books: 5, observed_at: '2026-09-08T12:25:03Z' });
-  assert.equal(stale.status, 'STALE');
+  const NOW = Date.parse('2026-09-15T16:41:00Z');
+  const stale = view.marketView({ status: 'STALE', age_minutes: 14900, devigged_pick: 0.17, pbe_delta_pts: null, books: 5, observed_at: '2026-09-08T12:25:03Z', pick_consensus_odds: 491 }, { now: NOW });
+  assert.equal(stale.state, 'LAST_OBSERVED');
   assert.equal(stale.delta, null);
-  assert.equal(view.marketView({ status: 'STALE', devigged_pick: 0.2, pbe_delta_pts: 40 }).delta, null, 'even a stored delta is withheld when stale');
-  const legacy = view.marketView({ devigged_pick: 0.17, pbe_delta_pts: 39.9 });
-  assert.equal(legacy.status, 'STALE', 'a comparison with no status is treated as stale');
-  const fresh = view.marketView({ status: 'FRESH', age_minutes: 15, devigged_pick: 0.52, pbe_delta_pts: 12.6, books: 6 });
-  assert.equal(fresh.delta, 12.6);
-  assert.equal(view.marketView(null).status, 'UNAVAILABLE');
+  assert.equal(stale.pick.consensus, 491, 'last observed odds stay visible');
+  assert.equal(view.marketView({ status: 'STALE', devigged_pick: 0.2, pbe_delta_pts: 40 }, { now: NOW }).delta, null, 'even a stored delta is withheld when stale');
+  const legacy = view.marketView({ devigged_pick: 0.17, pbe_delta_pts: 39.9 }, { now: NOW });
+  assert.equal(legacy.state, 'LAST_OBSERVED', 'a comparison with no status is treated as stale');
+  const current = { status: 'FRESH', age_minutes: 155, devigged_pick: 0.5427, raw_implied_pick: 0.5652, pbe_delta_pts: 10.12, books: 6, observed_at: '2026-09-15T13:06:08.935Z', current_until: '2026-09-15T19:16:08.935Z', freshness_band: 'T-7d', fresh_limit_minutes: 730, pick_consensus_odds: -130, pick_best_odds: -130, pick_best_book: 'BetOnline.ag', opponent_fighter_id: 'p', opponent_consensus_odds: 110, opponent_best_odds: 111, opponent_best_book: 'BetOnline.ag' };
+  const cur = view.marketView(current, { now: NOW });
+  assert.equal(cur.state, 'CURRENT');
+  assert.equal(cur.delta, 10.12);
+  assert.equal(cur.pick.consensus, -130);
+  assert.equal(cur.opponent.consensus, 110);
+  assert.equal(view.agoText(cur.age), '3h 34m ago');
+  /* The same stored comparison rendered after current_until: odds stay, edge goes. */
+  const later = view.marketView(current, { now: Date.parse('2026-09-15T19:16:08.935Z') });
+  assert.equal(later.state, 'LAST_OBSERVED');
+  assert.equal(later.delta, null);
+  /* A legacy FRESH row without current_until expires at observed_at + its stored limit. */
+  assert.equal(view.marketView({ status: 'FRESH', devigged_pick: 0.5, pbe_delta_pts: 3, observed_at: '2026-09-15T15:40:00Z', fresh_limit_minutes: 60 }, { now: NOW }).state, 'LAST_OBSERVED');
+  /* A locked call keeps the comparison it locked with. */
+  assert.equal(view.marketView(current, { now: Date.parse('2026-09-25T00:00:00Z'), lockedAt: '2026-09-18T16:41:30Z' }).delta, 10.12);
+  assert.equal(view.marketView(null).state, 'UNAVAILABLE');
+  assert.equal(view.oddsText(-130), '-130');
+  assert.equal(view.oddsText(110), '+110');
+  assert.equal(view.oddsText(100), '+100');
   assert.equal(view.ageText(14900), '10.3 days');
   assert.equal(view.ageText(42), '42 min');
 });

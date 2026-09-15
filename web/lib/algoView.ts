@@ -13,15 +13,42 @@ import artifact from "@/lib/generated/model-v1.json";
 export type AlgoConfidence = "LEAN" | "MEDIUM" | "HIGH";
 export type AlgoGradeResult = "WIN" | "LOSS" | "DRAW" | "NC" | "VOID";
 
-/* Lock-time market comparison (ufc-algo src/market.js). FRESH <= 60 min: the
- * delta is the official comparison. STALE: age shown, no delta published.
- * Older rows (pre-2026-09-15) carry no status and are treated as STALE. */
+/* Market comparison written by ufc-algo (src/market.js). Stored status 'FRESH'
+ * means CURRENT under the fight-week contract (scripts/odds/fight_week_cadence.mjs:
+ * <= 730 min at T-7d, <= 370 min at T-72h, <= 60 min in the final 24h, where the
+ * lock passes run). current_until is the instant it stops being current, so a
+ * render later than the hourly cycle re-checks with a timestamp comparison, not a
+ * second copy of the rules. STALE: last observed odds and age shown, no edge.
+ * Older rows (pre-2026-09-15) carry no status and are treated as stale. */
 export type AlgoMarketStatus = "FRESH" | "STALE" | "UNAVAILABLE";
 export type AlgoMarket = {
-  status?: AlgoMarketStatus; source?: string; fresh_limit_minutes?: number; age_minutes?: number | null;
-  books?: number; raw_implied_pick?: number; devigged_pick?: number; pbe_delta_pts?: number | null;
-  observed_at?: string; oldest_book_update?: string;
+  status?: AlgoMarketStatus; source?: string; fresh_limit_minutes?: number; freshness_band?: string | null; age_minutes?: number | null;
+  current_until?: string | null; books?: number; raw_implied_pick?: number; devigged_pick?: number; pbe_delta_pts?: number | null;
+  observed_at?: string; oldest_book_update?: string; newest_book_update?: string;
+  opponent_fighter_id?: string | null; raw_implied_opponent?: number | null; devigged_opponent?: number | null;
+  pick_consensus_odds?: number | null; pick_best_odds?: number | null; pick_best_book?: string | null;
+  opponent_consensus_odds?: number | null; opponent_best_odds?: number | null; opponent_best_book?: string | null;
 } | null;
+
+/** What PBE Picks may say about the market. */
+export type AlgoMarketState = "CURRENT" | "LAST_OBSERVED" | "UNAVAILABLE";
+export type AlgoMarketView = {
+  state: AlgoMarketState;
+  /** De-vigged consensus probability for the pick: the basis of PBE Edge. */
+  implied: number | null;
+  /** Raw (vigged) median implied probability for the pick. */
+  raw: number | null;
+  /** PBE Edge in probability points; only when CURRENT. */
+  delta: number | null;
+  /** Minutes between observation and `now` (or the lock, for a locked call). */
+  age: number | null;
+  observedAt: string | null;
+  books: number | null;
+  band: string | null;
+  limitMinutes: number | null;
+  pick: { consensus: number | null; best: number | null; book: string | null };
+  opponent: { fighterId: string | null; consensus: number | null; best: number | null; book: string | null };
+};
 
 /** "42 min", "3.5 h", "10.2 days". */
 export function ageText(minutes: number | null | undefined): string {
@@ -31,13 +58,52 @@ export function ageText(minutes: number | null | undefined): string {
   return `${(minutes / 1440).toFixed(1)} days`;
 }
 
-/** The comparison a card may present. Never a stale delta as current. */
-export function marketView(m: AlgoMarket): { status: AlgoMarketStatus; implied: number | null; delta: number | null; age: number | null; observedAt: string | null; books: number | null; raw: number | null } {
-  if (!m || m.status === "UNAVAILABLE" || m.devigged_pick == null) return { status: "UNAVAILABLE", implied: null, delta: null, age: null, observedAt: null, books: null, raw: null };
-  const status: AlgoMarketStatus = m.status === "FRESH" ? "FRESH" : "STALE";
+/** "14 min ago", "2h 35m ago", "3.2 days ago". */
+export function agoText(minutes: number | null | undefined): string {
+  if (minutes == null || !Number.isFinite(minutes)) return "at an unknown time";
+  const m = Math.max(0, Math.floor(minutes));
+  if (m < 60) return `${m} min ago`;
+  if (m < 48 * 60) return `${Math.floor(m / 60)}h ${m % 60}m ago`;
+  return `${(m / 1440).toFixed(1)} days ago`;
+}
+
+/** American odds as printed: +150, -130, +100. */
+export function oddsText(v: number | null | undefined): string {
+  return typeof v === "number" && Number.isFinite(v) ? (v > 0 ? `+${v}` : `${v}`) : "\u2014";
+}
+
+/**
+ * The comparison a card may present. Never a stale delta as current.
+ *   locked call   the comparison recorded at lock is final: CURRENT if it was
+ *                 current then, with its age at lock.
+ *   otherwise     CURRENT only while `now` is before current_until (legacy rows:
+ *                 observed_at + their stored limit); past it the same odds are
+ *                 LAST_OBSERVED and no edge is shown.
+ */
+export function marketView(m: AlgoMarket, opts: { now?: number; lockedAt?: string | null } = {}): AlgoMarketView {
+  const empty = { consensus: null, best: null, book: null };
+  if (!m || m.status === "UNAVAILABLE" || m.devigged_pick == null) {
+    return { state: "UNAVAILABLE", implied: null, raw: null, delta: null, age: null, observedAt: null, books: null, band: null, limitMinutes: null, pick: empty, opponent: { fighterId: null, ...empty } };
+  }
+  const now = opts.now ?? Date.now();
+  const observed = m.observed_at ? Date.parse(m.observed_at) : NaN;
+  let current: boolean;
+  let age: number | null;
+  if (opts.lockedAt) {
+    current = m.status === "FRESH";
+    age = m.age_minutes ?? null;
+  } else {
+    const until = m.current_until ? Date.parse(m.current_until) : Number.isFinite(observed) ? observed + (m.fresh_limit_minutes ?? 60) * 60_000 : NaN;
+    current = m.status === "FRESH" && Number.isFinite(until) && now < until;
+    age = Number.isFinite(observed) ? Math.max(0, (now - observed) / 60_000) : m.age_minutes ?? null;
+  }
   return {
-    status, implied: m.devigged_pick ?? null, delta: status === "FRESH" ? m.pbe_delta_pts ?? null : null,
-    age: m.age_minutes ?? null, observedAt: m.observed_at ?? null, books: m.books ?? null, raw: m.raw_implied_pick ?? null,
+    state: current ? "CURRENT" : "LAST_OBSERVED",
+    implied: m.devigged_pick ?? null, raw: m.raw_implied_pick ?? null,
+    delta: current ? m.pbe_delta_pts ?? null : null,
+    age, observedAt: m.observed_at ?? null, books: m.books ?? null, band: m.freshness_band ?? null, limitMinutes: m.fresh_limit_minutes ?? null,
+    pick: { consensus: m.pick_consensus_odds ?? null, best: m.pick_best_odds ?? null, book: m.pick_best_book ?? null },
+    opponent: { fighterId: m.opponent_fighter_id ?? null, consensus: m.opponent_consensus_odds ?? null, best: m.opponent_best_odds ?? null, book: m.opponent_best_book ?? null },
   };
 }
 
