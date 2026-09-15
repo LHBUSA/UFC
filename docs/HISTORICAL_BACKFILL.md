@@ -178,3 +178,38 @@ Until that run exists, Round-by-Round Analysis stays post-fight. It has states
 for prefight, pending, unavailable and final, and no "live" state at all. If
 the canary shows rounds appear promptly, a live state is added to
 `web/lib/roundAnalysis.ts` and the surrounding feature does not change.
+
+## Road to UFC cards (2026-09-15)
+
+Owner decision: UFC-promoted Road to UFC cards belong in the UFC data universe
+for fighter histories and career-record reconciliation. They are not a model
+input.
+
+- **Series.** `ufc_events.event_series` is `ufc`, `contender_series` or
+  `road_to_ufc`, set by trigger from the source name (migration 028). A Road to
+  UFC card is never a numbered or Fight Night card.
+- **Model scope.** `ufc_bouts.model_scope` is immutable. Every bout that existed
+  before 028 is `true`: that is V1's contract, which had no series filter and
+  included DWCS, TUF and the two UFC Stats "UFC - Road to UFC 4.6" bouts. Bouts
+  inserted on a `road_to_ufc` card are `false`. Fight DNA, the PBE Algo cycle,
+  learning and the Node training extract read `model_scope = true` only.
+- **Source.** ESPN lists Road to UFC only in its "Other" MMA bucket
+  (`leagues/other/events`), as events whose name begins "Road to UFC". Some
+  final bouts carry no division; they are stored with `weight_class` null.
+  ESPN publishes no competitor statistics for these cards, so no fight totals
+  are requested.
+- **Lanes.** The ufc-stats-ingest daily run scans 21 days back to 45 days
+  ahead. Backfill is by explicit ESPN event id:
+  `POST /admin/run?rtu_events=<ids>&rtu_only=true&rtu_max=6`.
+- **Linking.** A stored UFC Stats Road to UFC card is linked only by date plus
+  a shared ESPN athlete. A stored bout is linked by corner pair and receives
+  the ESPN id only; its fields and result stand.
+- **Backfill 2026-09-15.**
+  - 25 cards and 120 bouts from 2022-06-09 to 2026-08-28: 118 new, plus the 2
+    legacy bouts linked.
+  - Every bout has a result, method, round and time.
+  - One ESPN listing had no competitions (a duplicate "Season 3, Episode 6").
+  - ESPN does not list Shanghai Episodes 2 and 3 (May 2025), so they are
+    absent rather than guessed.
+  - Rongzhu reconciled 27-6 → 29-6 and Victor Martinez 13-6 → 13-7 through the
+    ordinary record refresh.
