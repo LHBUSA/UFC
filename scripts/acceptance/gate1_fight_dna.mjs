@@ -40,7 +40,11 @@ async function snapshotOfFeatureRows() {
   };
 }
 
-const [mode, a, b, ...rest] = process.argv.slice(2);
+const argv = process.argv.slice(2);
+const asOfArg = argv.indexOf('--as-of');
+const positional = argv.filter((x, k) => !x.startsWith('--') && (asOfArg < 0 || k !== asOfArg + 1));
+const [mode, a, b] = positional;
+const rest = asOfArg >= 0 ? ['--as-of', argv[asOfArg + 1]] : [];
 if (mode === 'baseline') {
   const snap = await snapshotOfFeatureRows();
   fs.writeFileSync(a, JSON.stringify(snap));
