@@ -1,6 +1,6 @@
 /* Pre-fight capture decision. Run: node src/prefight.test.mjs
  * Every assertion is about money or about lock-time freshness. */
-import { readPrefightConfig, cadenceFor, shouldCapturePrefight, lockAtFor } from './prefight.mjs';
+import { readPrefightConfig, cadenceFor, shouldCapturePrefight, lockDeadlineFor, lockWindowOpensFor } from './prefight.mjs';
 import { readConfig } from './gate.mjs';
 
 let failures = 0;
@@ -9,12 +9,13 @@ const eq = (a, b, m) => { if (a !== b) fail(`${m}\n  got ${JSON.stringify(a)} ex
 
 const CFG = readPrefightConfig({ PREFIGHT_ODDS_ENABLED: 'true', ODDS_API_KEY: 'k', LIVE_ODDS_MIN_REMAINING: '5000' });
 const CARD = { id: 'e331', name: 'UFC 331: Van vs. Pantoja 2', event_date: '2026-09-19' };
-const LOCK = lockAtFor('2026-09-19');
+const LOCK = lockDeadlineFor('2026-09-19');
 const H = 3_600_000;
 const quotaAt = (now) => ({ known: true, remaining: 90000, used: 10000, measuredAt: new Date(now).toISOString() });
 const decide = (over) => shouldCapturePrefight({ cfg: CFG, events: [CARD], lastSnapshotAt: null, callsToday: 0, quota: null, ...over });
 
-eq(new Date(LOCK).toISOString(), '2026-09-18T16:00:00.000Z', 'lock is event day 00:00Z minus 8h');
+eq(new Date(lockWindowOpensFor('2026-09-19')).toISOString(), '2026-09-18T16:00:00.000Z', 'lock window opens at event day 00:00Z minus 8h');
+eq(new Date(LOCK).toISOString(), '2026-09-18T18:00:00.000Z', 'lock deadline is the database floor, event day 00:00Z minus 6h');
 
 /* ---- switches are independent ------------------------------------------ */
 {
@@ -43,15 +44,35 @@ eq(new Date(LOCK).toISOString(), '2026-09-18T16:00:00.000Z', 'lock is event day 
   eq(decide({ now: LOCK - 5 * 24 * H, lastSnapshotAt: new Date(LOCK - 5 * 24 * H - 8 * H).toISOString(), quota: quotaAt(LOCK) }).reason, 'fresh_snapshot_on_file', '12h band, 8h-old snapshot: no call');
 }
 
-/* ---- final 24h: one capture per hour, before the :41 lock pass --------- */
+/* ---- final 24h: one capture per hour, before every :41 pass ------------ */
 {
   const hour = Date.parse('2026-09-18T15:00:00Z');
   eq(decide({ now: hour + 10 * 60_000, quota: quotaAt(hour + 10 * 60_000) }).reason, 'waiting_for_capture_minute', 'not in the first half of the hour');
   const at = hour + 26 * 60_000;
-  eq(decide({ now: at, lastSnapshotAt: new Date(hour - 34 * 60_000).toISOString(), quota: quotaAt(at) }).capture, true, 'second half of the hour with last hour\'s snapshot: capture');
+  eq(decide({ now: at, lastSnapshotAt: new Date(hour - 34 * 60_000).toISOString(), quota: quotaAt(at) }).capture, true, "second half of the hour with last hour's snapshot: capture");
   eq(decide({ now: hour + 50 * 60_000, lastSnapshotAt: new Date(at).toISOString(), quota: quotaAt(hour + 50 * 60_000) }).reason, 'fresh_snapshot_on_file', 'already captured this hour: no second call');
-  /* A capture at :26 is 15 minutes old at the :41 lock pass. */
-  eq((Date.parse('2026-09-18T15:41:00Z') - at) / 60000 <= 60, true, 'lock pass sees a snapshot under 60 minutes old');
+}
+
+/* ---- both Algo lock passes (16:41Z, 17:41Z) see a snapshot < 60 min old --
+ * Simulate the lane on its real cron (every minute) across the lock day and
+ * check the newest snapshot's age at each :41 pass inside the lock window. */
+{
+  let last = new Date(Date.parse('2026-09-18T11:30:00Z')).toISOString();
+  let calls = 0, passes = 0;
+  for (let t = Date.parse('2026-09-18T12:00:00Z'); t < Date.parse('2026-09-18T19:00:00Z'); t += 60_000) {
+    const d = decide({ now: t, lastSnapshotAt: last, callsToday: calls, quota: quotaAt(t) });
+    if (d.capture) { last = new Date(t).toISOString(); calls += 1; }
+    const iso = new Date(t).toISOString();
+    /* The ufc-algo lock window, stated independently of prefight.mjs: 16:00Z..18:00Z. */
+    if (iso.endsWith(':41:00.000Z') && t >= Date.parse('2026-09-18T16:00:00Z') && t < Date.parse('2026-09-18T18:00:00Z')) {
+      const age = (t - Date.parse(last)) / 60000;
+      passes += 1;
+      eq(age <= 60, true, `lock pass ${iso} sees a snapshot ${age} min old`);
+    }
+  }
+  eq(decide({ now: LOCK + 25 * 60_000, lastSnapshotAt: new Date(LOCK - 35 * 60_000).toISOString(), quota: quotaAt(LOCK + 25 * 60_000) }).reason, 'no_card_in_cadence_window', 'after the deadline: no capture');
+  eq(passes, 2, 'both lock passes checked');
+  eq(calls, 6, 'one capture per hour 12:25..17:25Z, none after the deadline');
 }
 
 /* ---- money guards ------------------------------------------------------- */

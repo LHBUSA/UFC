@@ -10,19 +10,25 @@
  * markets=h2h) prices every listed MMA event at once, so the cadence is set by
  * the single most urgent upcoming UFC card and never multiplied per card.
  *
- * Cadence, relative to the card's PBE Algo lock (event_date 00:00Z - 8h):
+ * Cadence, relative to the card's PBE Algo lock DEADLINE. The lock window opens
+ * at event_date 00:00Z - 8h and the database refuses locks from - 6h; the Algo
+ * lock passes run at :41 inside it (16:41Z and 17:41Z for a Saturday card), so
+ * capture must continue through the whole window, not stop when it opens:
  *   more than 7 days out        no scheduled capture
- *   7d .. 72h before lock       every ~12h
- *   72h .. 24h before lock      every ~6h
- *   final 24h before lock       hourly, captured in the second half of the hour
- *                               so the :41 lock pass sees a snapshot < 60 min old
- *   after the lock              none (the official comparison is already fixed)
+ *   7d .. 72h before deadline   every ~12h
+ *   72h .. 24h before deadline  every ~6h
+ *   final 24h before deadline   hourly, captured in the second half of the hour
+ *                               so EVERY :41 pass, including both lock passes,
+ *                               sees a snapshot < 60 min old
+ *   after the deadline          none (the official comparison is already fixed)
  *
  * Fails closed: disabled, no key, unknown/stale quota, reserve reached, daily
  * cap reached, or a sufficiently fresh snapshot already on file -> no spend.
  */
 
-export const LOCK_HOURS_BEFORE_EVENT_DAY = 8;
+/** Lock window: opens at event_date 00:00Z - 8h, closes (database floor) at - 6h. */
+export const LOCK_WINDOW_OPENS_HOURS = 8;
+export const LOCK_WINDOW_CLOSES_HOURS = 6;
 
 export function readPrefightConfig(env) {
   const num = (v, d) => { const n = Number(v); return Number.isFinite(n) ? n : d; };
@@ -41,18 +47,20 @@ export function readPrefightConfig(env) {
   };
 }
 
-export const lockAtFor = (eventDate) => Date.parse(`${eventDate}T00:00:00Z`) - LOCK_HOURS_BEFORE_EVENT_DAY * 3_600_000;
+export const lockWindowOpensFor = (eventDate) => Date.parse(`${eventDate}T00:00:00Z`) - LOCK_WINDOW_OPENS_HOURS * 3_600_000;
+/** The last moment an official call can lock: captures are scheduled up to here. */
+export const lockDeadlineFor = (eventDate) => Date.parse(`${eventDate}T00:00:00Z`) - LOCK_WINDOW_CLOSES_HOURS * 3_600_000;
 
 /** The cadence band for one card at `now`, or null when no capture is scheduled. */
 export function cadenceFor(eventDate, now, cfg) {
-  const lock = lockAtFor(eventDate);
+  const lock = lockDeadlineFor(eventDate);
   if (!Number.isFinite(lock)) return null;
   const toLock = lock - now;
   if (toLock <= 0) return null;
   if (toLock > cfg.horizonDays * 86_400_000) return null;
-  if (toLock > 72 * 3_600_000) return { band: 'T-7d', intervalMinutes: 720, lockAt: new Date(lock).toISOString() };
-  if (toLock > 24 * 3_600_000) return { band: 'T-72h', intervalMinutes: 360, lockAt: new Date(lock).toISOString() };
-  return { band: 'T-24h', intervalMinutes: 60, lockAt: new Date(lock).toISOString() };
+  if (toLock > 72 * 3_600_000) return { band: 'T-7d', intervalMinutes: 720, lockDeadline: new Date(lock).toISOString() };
+  if (toLock > 24 * 3_600_000) return { band: 'T-72h', intervalMinutes: 360, lockDeadline: new Date(lock).toISOString() };
+  return { band: 'T-24h', intervalMinutes: 60, lockDeadline: new Date(lock).toISOString() };
 }
 
 /**
@@ -71,10 +79,10 @@ export function shouldCapturePrefight({ now, cfg, events, lastSnapshotAt, callsT
   const bands = (events || [])
     .map((e) => ({ event: e, cadence: cadenceFor(e.event_date, now, cfg) }))
     .filter((x) => x.cadence)
-    .sort((a, b) => a.cadence.intervalMinutes - b.cadence.intervalMinutes || Date.parse(a.cadence.lockAt) - Date.parse(b.cadence.lockAt));
+    .sort((a, b) => a.cadence.intervalMinutes - b.cadence.intervalMinutes || Date.parse(a.cadence.lockDeadline) - Date.parse(b.cadence.lockDeadline));
   if (!bands.length) return { capture: false, reason: 'no_card_in_cadence_window' };
   const urgent = bands[0];
-  const ctx = { band: urgent.cadence.band, interval_minutes: urgent.cadence.intervalMinutes, event: urgent.event.name, lock_at: urgent.cadence.lockAt };
+  const ctx = { band: urgent.cadence.band, interval_minutes: urgent.cadence.intervalMinutes, event: urgent.event.name, lock_deadline: urgent.cadence.lockDeadline };
 
   const ageMin = lastSnapshotAt ? (now - Date.parse(lastSnapshotAt)) / 60000 : Infinity;
   if (urgent.cadence.intervalMinutes === 60) {

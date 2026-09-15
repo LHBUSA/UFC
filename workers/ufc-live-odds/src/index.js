@@ -40,7 +40,7 @@ import { readConfig, shouldPoll, readQuotaHeaders, isActive, isImminent, roundFr
 import { readPrefightConfig, shouldCapturePrefight } from './prefight.mjs';
 
 const WORKER = 'ufc-live-odds';
-const VERSION = 'v0.2.0';
+const VERSION = 'v0.2.1';
 const ODDS_BASE = 'https://api.the-odds-api.com/v4';
 const ESPN_CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
 const SPORT = 'mma_mixed_martial_arts';
@@ -481,7 +481,7 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
 
   const created = await rest(env, 'ufc_market_runs', {
     method: 'POST', headers: { Prefer: 'return=representation' },
-    body: JSON.stringify({ status: 'running', sport_key: SPORT, markets: 'h2h', capture_mode: 'descriptive', notes: { lane: 'prefight', band: decision.band, event: decision.event, lock_at: decision.lock_at, worker: WORKER, version: VERSION } }),
+    body: JSON.stringify({ status: 'running', sport_key: SPORT, markets: 'h2h', capture_mode: 'descriptive', notes: { lane: 'prefight', band: decision.band, event: decision.event, lock_deadline: decision.lock_deadline, worker: WORKER, version: VERSION } }),
   }).catch(() => null);
   const runId = created?.[0]?.id ?? null;
   if (!runId) {
@@ -561,7 +561,7 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
     observations_written: observationsWritten,
     books_seen: norm.books,
     quota_used: q.used, quota_remaining: q.remaining, last_cost: q.last,
-    notes: { lane: 'prefight', band: decision.band, event: decision.event, lock_at: decision.lock_at, fetched_at: fetchedAt, snapshot_rows: snapshotWritten, ambiguous: norm.ambiguous, quotes_normalized: norm.quotes.length, worker: WORKER, version: VERSION },
+    notes: { lane: 'prefight', band: decision.band, event: decision.event, lock_deadline: decision.lock_deadline, fetched_at: fetchedAt, snapshot_rows: snapshotWritten, ambiguous: norm.ambiguous, quotes_normalized: norm.quotes.length, worker: WORKER, version: VERSION },
   };
   await finalize(summary);
   prefightHealth.last_capture = { at: fetchedAt, run_id: runId, matched_bouts: norm.matchedBouts, books: norm.books, snapshot_rows: snapshotWritten, quota_remaining: q.remaining, last_cost: q.last };
