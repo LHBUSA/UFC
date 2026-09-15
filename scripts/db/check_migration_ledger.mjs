@@ -163,6 +163,9 @@ export const APPLIED = new Set([
   // ingested for fighter history, never a Fight DNA / PBE Algo input). Proven by scripts/db/prove_028.ps1 (11 checks, rolled
   // back), then applied 2026-09-15 via apply_migration.ps1. Every pre-existing bout keeps model_scope = true (V1 contract).
   '20260915100000_ufc_event_series_model_scope.sql',
+  // D1: append-only ESPN card observations (current card truth for PBE Algo scheduling). Proven by
+  // scripts/db/prove_029.ps1 (6 checks, rolled back), then applied 2026-09-15 via apply_migration.ps1.
+  '20260915140000_ufc_event_card_observations.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))

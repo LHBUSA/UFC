@@ -124,7 +124,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.9.0';
+const VERSION = 'v0.9.1';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -977,6 +977,26 @@ async function espnBouts(env, espn, ctx, run, evRow, ev, { roadToUfc = false } =
    * bout, 2026-09-15), and fight totals are not part of that lane's contract. */
   if (roadToUfc) run.notes.rtu_fight_totals_not_requested = (run.notes.rtu_fight_totals_not_requested || 0) + totalsCandidates.length;
   else await writeFightTotals(env, espn, run, totalsCandidates);
+
+  /* D1 (migration 029): authoritative current card truth for PBE Algo. One
+   * append-only row per completed card pass: every competition ESPN listed as a
+   * bout, and every placeholder. Reached only when the whole card was read and
+   * every listed competition processed (any assertion above aborts first). A
+   * vanished competition is simply absent here; ufc_bouts is not mutated.
+   * Never fatal: without a new row ufc-algo keeps the previous observation. */
+  if (!roadToUfc) {
+    try {
+      await insert(env, 'ufc_event_card_observations', {
+        event_id: evRow.id, source: 'espn',
+        competition_ids: bouts.map((b) => String(b.espn_competition_id)),
+        placeholder_ids: (ev.skipped || []).map(String),
+        complete: true, source_url: ev.url, writer: `${SERVICE} ${VERSION}`,
+      }, { returning: 'minimal' });
+      run.notes.card_observations = (run.notes.card_observations || 0) + 1;
+    } catch (e) {
+      run.notes.card_observation_errors = [...(run.notes.card_observation_errors || []), { event_id: evRow.id, error: String(e?.message || e).slice(0, 160) }];
+    }
+  }
 
   for (const b of ctx.bouts) {
     if (b.event_id === evRow.id && b.espn_competition_id && !seen.has(b.espn_competition_id) && b.status === 'announced') {

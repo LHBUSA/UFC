@@ -21,6 +21,7 @@ import { evaluateBout, ELIGIBILITY_VERSION, RULES, CARD_CHANGE_BLOCKING } from '
 import { predictOne } from '../../../scripts/model/logistic.mjs';
 import { marketComparison, officialMarketColumns } from './market.js';
 import { resolveChampion } from './champion.js';
+import { cardTruth } from './cardTruth.js';
 import { activeChallenger } from './learning/daily.js';
 import { shadowCall, writeShadow, gradeShadow } from './learning/shadow.js';
 import artifact from '../../../web/lib/generated/model-v1.json';
@@ -57,7 +58,7 @@ export async function resolveModel(q, mode) {
 /** Everything needed to assemble and evaluate one card, in bounded reads. */
 export async function loadCard(q, event, nowIso = new Date().toISOString()) {
   const D = event.event_date;
-  const bouts = await q.get(`ufc_bouts?select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status&event_id=eq.${event.id}&model_scope=eq.true&order=bout_order.desc`);
+  const bouts = await q.get(`ufc_bouts?select=id,event_id,espn_competition_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status&event_id=eq.${event.id}&model_scope=eq.true&order=bout_order.desc`);
   const fighterIds = [...new Set(bouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]))];
   const fighters = new Map((await q.inChunks('ufc_fighters', 'id', fighterIds, 'id,name,dob,height_in,reach_in,stance')).map((f) => [f.id, f]));
 
@@ -116,7 +117,9 @@ export async function loadCard(q, event, nowIso = new Date().toISOString()) {
     snapshots.push(...rows);
   }
   const market = boutIds.length ? await q.inChunks('ufc_market_observations', 'bout_id', boutIds, 'bout_id,bookmaker_key,market_key,outcome_fighter_id,price,source_last_update,observed_at', `&market_key=eq.h2h&observed_at=lte.${encodeURIComponent(nowIso)}`) : [];
-  return { bouts, fighters, snapsOf, rowsOf, results, changed, corner, market, snapshots };
+  /* D1: authoritative current card truth, read only up to this cycle's clock (migration 029). */
+  const [cardObservation] = await q.get(`ufc_event_card_observations?select=observed_at,source,competition_ids,placeholder_ids,complete&event_id=eq.${event.id}&source=eq.espn&observed_at=lte.${encodeURIComponent(nowIso)}&order=observed_at.desc&limit=1`);
+  return { bouts, fighters, snapsOf, rowsOf, results, changed, corner, market, snapshots, cardObservation: cardObservation || null };
 }
 
 /**
@@ -225,16 +228,21 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
         const drift = prior.length >= 2 && pickProbability != null
           ? round(Math.max(...prior.map((x) => Math.abs(Number(x.pick_probability) - pickProbability))) * 100, 2) : null;
 
+        /* D1: a matchup the current card no longer lists (or lists ambiguously) is not
+         * scheduled, exactly like an active sourced withdrawal/replacement. It can only
+         * remove a call; a confirmed or not-yet-observed bout is evaluated as before. */
+        const truth = cardTruth(b, card.cardObservation);
+        const activeCardChange = card.changed.has(b.id) || truth.blocking;
         const decision = evaluateBout({
           event, nowIso, row, corners, pickProbability,
           modelLive: model.live || mode === 'dry_run',
-          bout: { status: b.status, has_result: card.results.has(b.id), fighter_a_id: b.fighter_a_id, fighter_b_id: b.fighter_b_id, active_card_change: card.changed.has(b.id) },
+          bout: { status: b.status, has_result: card.results.has(b.id), fighter_a_id: b.fighter_a_id, fighter_b_id: b.fighter_b_id, active_card_change: activeCardChange },
           marketStatus: market?.status ?? 'UNAVAILABLE',
           marketDisagreementPts: market?.status === 'FRESH' ? Math.abs(market.pbe_delta_pts) : null, regenerationDriftPts: drift,
         });
         if (!model.live && mode === 'dry_run') decision.model_note = 'scored with the unregistered release artifact; not callable until registered';
         const eligible = decision.decision === 'ELIGIBLE';
-        const boutState = { status: b.status, has_result: card.results.has(b.id), fighter_a_id: b.fighter_a_id, fighter_b_id: b.fighter_b_id, active_card_change: card.changed.has(b.id) };
+        const boutState = { status: b.status, has_result: card.results.has(b.id), fighter_a_id: b.fighter_a_id, fighter_b_id: b.fighter_b_id, active_card_change: activeCardChange };
         let shadow = null;
         if (challenger) {
           try {
@@ -252,6 +260,7 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
           pick_probability: eligible ? round(pickProbability, 4) : null, band: eligible ? band(pickProbability) : null,
           features_available: row ? row.available_count : null, sample: row ? { min_prior_bouts: row.min_prior_bouts, min_stat_bouts: row.min_stat_bouts } : null,
           market: eligible ? market : null, regeneration_drift_pts: drift, identity: corners,
+          card_truth: truth.state,
           shadow: shadow ? { decision: shadow.decision, reasons: shadow.reasons, pick_fighter_id: shadow.pick_fighter_id, pick_probability: shadow.raw_pick_probability, same_pick_as_champion: shadow.raw_pick_fighter_id === pickFighter } : null,
         };
         // Admin report only: exactly what a draft would store, so a dry run can be audited feature by feature.
@@ -267,7 +276,7 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
             model_version: model.model_version, feature_version: FEATURE_VERSION, eligibility_version: ELIGIBILITY_VERSION,
             decision: decision.decision, reasons: decision.reasons, confidence: decision.confidence, elite_candidate: decision.elite_candidate,
             pick_fighter_id: eligible ? pickFighter : null, pick_probability: eligible ? round(pickProbability, 8) : null,
-            features_available: row ? row.available_count : null, sample: boutReport.sample || {}, identity: { corners }, market: eligible ? market : null,
+            features_available: row ? row.available_count : null, sample: boutReport.sample || {}, identity: { corners, card_truth: truth }, market: eligible ? market : null,
           }, 'return=minimal');
           report.writes.evaluations += 1;
 
