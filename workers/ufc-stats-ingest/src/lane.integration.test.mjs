@@ -52,6 +52,7 @@ function makeDb(seed) {
       const val = row[k] == null ? null : String(row[k]);
       const inList = (s) => s.replace(/^\(|\)$/g, '').split(',');
       if (v.startsWith('eq.')) return val === v.slice(3);
+      if (v.startsWith('neq.')) return val !== v.slice(4);
       if (v.startsWith('in.')) return inList(v.slice(3)).includes(val);
       if (v.startsWith('not.in.')) return !inList(v.slice(7)).includes(val);
       if (v === 'is.null') return val === null;

@@ -57,7 +57,7 @@ export async function resolveModel(q, mode) {
 /** Everything needed to assemble and evaluate one card, in bounded reads. */
 export async function loadCard(q, event, nowIso = new Date().toISOString()) {
   const D = event.event_date;
-  const bouts = await q.get(`ufc_bouts?select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status&event_id=eq.${event.id}&order=bout_order.desc`);
+  const bouts = await q.get(`ufc_bouts?select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status&event_id=eq.${event.id}&model_scope=eq.true&order=bout_order.desc`);
   const fighterIds = [...new Set(bouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]))];
   const fighters = new Map((await q.inChunks('ufc_fighters', 'id', fighterIds, 'id,name,dob,height_in,reach_in,stance')).map((f) => [f.id, f]));
 
@@ -90,7 +90,8 @@ export async function loadCard(q, event, nowIso = new Date().toISOString()) {
 
   const lastCompleted = new Map();
   for (const id of fighterIds) {
-    const done = await q.get(`ufc_bouts?select=id,ufc_events!inner(event_date),ufc_bout_results!inner(bout_id)&or=(fighter_a_id.eq.${id},fighter_b_id.eq.${id})&ufc_events.event_date=lt.${D}`);
+    /* model_scope (migration 028): a Road to UFC bout is fighter history, not a model input, so it can never make a corner's Fight DNA "stale". */
+    const done = await q.get(`ufc_bouts?select=id,ufc_events!inner(event_date),ufc_bout_results!inner(bout_id)&or=(fighter_a_id.eq.${id},fighter_b_id.eq.${id})&model_scope=eq.true&ufc_events.event_date=lt.${D}`);
     lastCompleted.set(id, done.map((b) => b.ufc_events.event_date).sort().pop() || null);
   }
 

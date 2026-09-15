@@ -159,6 +159,10 @@ export const APPLIED = new Set([
   // PBE Algo daily learning / shadow / owner-approved promotion (owner-approved 2026-09-15). Proven by
   // scripts/db/prove_027.ps1 (32 behavioural checks, rolled back), then applied 2026-09-15 via apply_migration.ps1.
   '20260915010000_ufc_algo_learning.sql',
+  // Event series (ufc | contender_series | road_to_ufc) + immutable ufc_bouts.model_scope (owner decision 2026-09-15: Road to UFC
+  // ingested for fighter history, never a Fight DNA / PBE Algo input). Proven by scripts/db/prove_028.ps1 (11 checks, rolled
+  // back), then applied 2026-09-15 via apply_migration.ps1. Every pre-existing bout keeps model_scope = true (V1 contract).
+  '20260915100000_ufc_event_series_model_scope.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))

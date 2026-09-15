@@ -43,7 +43,7 @@ export async function assembleEvents(q, events, { upcoming = false } = {}) {
   if (!events.length) return { rows: [], ungraded: [], integrity: [], skipped: [] };
   const eventById = new Map(events.map((e) => [e.id, e]));
   const bouts = await inChunksAll(q, 'ufc_bouts', 'event_id', events.map((e) => e.id),
-    'id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,status', '', 'id', 20);
+    'id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,status', '&model_scope=eq.true', 'id', 20);
   const results = new Map((await inChunksAll(q, 'ufc_bout_results', 'bout_id', bouts.map((b) => b.id), 'bout_id,winner_id,method', '', 'bout_id', 60)).map((r) => [r.bout_id, r]));
   const graded = upcoming
     ? bouts.filter((b) => !results.has(b.id) && !['cancelled', 'replaced'].includes(b.status))

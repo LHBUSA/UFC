@@ -48,6 +48,42 @@
     [
       "",
       "raise"
+    ],
+    [
+      "Submission (Kimura)",
+      "SUB"
+    ],
+    [
+      "Submission (Rear Naked Choke)",
+      "SUB"
+    ],
+    [
+      "TKO (Knee)",
+      "KO_TKO"
+    ],
+    [
+      "Decision - Split (Draw)",
+      "DRAW"
+    ],
+    [
+      "Decision - Split (Unanimous)",
+      "raise"
+    ],
+    [
+      "Mystery (Kimura)",
+      "raise"
+    ],
+    [
+      "Submission (No Contest)",
+      "raise"
+    ],
+    [
+      "Technical Submission (Anaconda Choke)",
+      "SUB"
+    ],
+    [
+      "Technical Submission",
+      "SUB"
     ]
   ],
   "weight_class": [

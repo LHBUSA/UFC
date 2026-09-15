@@ -35,7 +35,8 @@ const TABLES = [
   ['events', 'ufc_events', 'select=id,name,event_date&order=id.asc'],
   ['fighters', 'ufc_fighters', 'select=id,name,dob,height_in,reach_in,stance&order=id.asc'],
   ['bouts', 'ufc_bouts',
-    'select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status&order=id.asc'],
+    /* model_scope (migration 028): only bouts that are model inputs; unchanged for every bout V1 was trained on. */
+    'select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status&model_scope=eq.true&order=id.asc'],
   ['results', 'ufc_bout_results', 'select=bout_id,winner_id,method,round,time_sec&order=bout_id.asc'],
   ['bout_features', 'ufc_fighter_bout_features',
     'select=fighter_id,bout_id,event_id,opponent_id,event_date,outcome,method,scheduled_rounds,is_title,is_main_event,short_notice_days,observed_seconds,stats_coverage,round_rows,fighter_stance,opponent_stance,stance_context,totals:raw_stats->totals,opp_totals:raw_stats->opp_totals&feature_version=eq.1&order=fighter_id.asc,bout_id.asc'],

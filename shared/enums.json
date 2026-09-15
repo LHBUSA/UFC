@@ -38,7 +38,8 @@
       "Majority Draw": "DRAW",
       "Split Draw": "DRAW",
       "Unanimous Draw": "DRAW",
-      "Disqualification": "DQ"
+      "Disqualification": "DQ",
+      "Technical Submission": "SUB"
     },
     "_note": "UFC Stats prints the method as a two-line cell on event pages (e.g. 'KO/TKO' + 'Punches') and as 'Method: KO/TKO' on fight pages. Only the first token is mapped; the second line goes to finish_detail. Draw/NC are flagged by the W/L column ('draw' / 'nc'), not by the method string, so the parser must consult both.",
     "_espn_note": "ESPN core status.result.displayName values seen 2026-09-05 across 6 events: 'Decision - Unanimous', 'Decision - Split', 'KO/TKO', 'Submission', 'Draw', \"TKO - Doctor's Stoppage\". result.description carries the finish detail ('Punches', 'Armbar', 'Elbows'). Unknown displayName -> assertion failure, by design."

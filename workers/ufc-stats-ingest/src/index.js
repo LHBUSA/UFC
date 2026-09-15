@@ -49,7 +49,7 @@
 import { selectAll, select, insert, insertIgnore, upsert, patch, patchCount, count } from './supabase.mjs';
 import { discord } from './discord.mjs';
 import { Fetcher, SchemaAssertionError, AccessGateError } from './ufcstats.mjs';
-import { Espn } from './espn.mjs';
+import { Espn, ROAD_TO_UFC_EVENT } from './espn.mjs';
 import * as P from './parsers.mjs';
 import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec } from './normalizers.mjs';
 import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_resolver.mjs';
@@ -124,7 +124,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.8.7';
+const VERSION = 'v0.9.0';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -198,6 +198,9 @@ export const espnLanes = { writeFightTotals, reconcileScorecard, fightTotalsInco
 
 /* Fighter record refresh, exposed for the offline tests. */
 export const recordRefresh = { refreshEspnFighterProfile, refreshFighterRecords, recordWindow, noteRecordTrigger, STATE_KEY: STATE.recordRefresh };
+
+/* Road to UFC lane, exposed for the offline tests. */
+export const roadToUfc = { roadToUfcPass, linkRoadToUfcEvent, espnBouts };
 
 export default {
   async fetch(req, env) {
@@ -283,6 +286,13 @@ export default {
        * fast cron runs, so an operator can prove it without waiting for a tick
        * or guessing from a log line. Default stays the full daily pass. */
       mode: url.searchParams.get('mode') === 'fightnight' ? 'fightnight' : 'daily',
+      /* ?rtu_events=<espn ids>&rtu_only=true&rtu_max=n: Road to UFC backfill by
+       * explicit ESPN event id (the "Other" bucket is too large to walk by year). */
+      rtu: url.searchParams.get('rtu_events') || url.searchParams.get('rtu_only') ? {
+        eventIds: (url.searchParams.get('rtu_events') || '').split(',').map((x) => x.trim()).filter((x) => /^\d+$/.test(x)),
+        only: url.searchParams.get('rtu_only') === 'true',
+        maxEvents: Math.min(12, Number(url.searchParams.get('rtu_max') || 3)),
+      } : null,
     });
     return json({ service: SERVICE, version: VERSION, invoked: 'manual', result });
   },
@@ -369,7 +379,7 @@ export async function activeCard(env, now = Date.now()) {
 /* ------------------------------------------------------------------------ */
 /* Run driver                                                                */
 /* ------------------------------------------------------------------------ */
-async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false, onlyBout = null, force = false, mode = 'daily', ufcstatsScope = null } = {}) {
+async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false, onlyBout = null, force = false, mode = 'daily', ufcstatsScope = null, rtu = null } = {}) {
   const scopedUfcstats = ufcstatsScope === 'bout' && Boolean(onlyBout);
   health.last_cron_run = nowIso();
 
@@ -421,7 +431,14 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
        * full archive walk. */
       await espnPass(env, espn, ctx, run, { dates: [card.event_date.replace(/-/g, '')], scope: 'fight-night' });
     } else {
-      await espnPass(env, espn, ctx, run);
+      if (!rtu?.only) await espnPass(env, espn, ctx, run);
+      /* Road to UFC (owner decision 2026-09-15): fighter history and record
+       * reconciliation. Its own lane, never fatal to the UFC pass. */
+      try {
+        run.notes.road_to_ufc = await roadToUfcPass(env, espn, ctx, run, rtu || {});
+      } catch (e) {
+        run.notes.road_to_ufc = { error: `${e?.name || 'Error'}: ${String(e?.message || e).slice(0, 300)}`, url: e?.url || null };
+      }
     }
     /* Career records: fighters whose results landed in this pass, plus (daily)
      * a bounded reconcile of recent cards so a late ESPN update self-heals.
@@ -563,7 +580,7 @@ async function loadContext(env) {
   })));
   const byEspnAthlete = new Map(fighters.filter((f) => f.espn_athlete_id).map((f) => [f.espn_athlete_id, f]));
   const byUfcstatsFighter = new Map(fighters.filter((f) => f.ufcstats_id).map((f) => [f.ufcstats_id, f]));
-  const events = await selectAll(env, 'ufc_events', 'select=id,ufcstats_id,espn_event_id,name,event_date,card_status');
+  const events = await selectAll(env, 'ufc_events', 'select=id,ufcstats_id,espn_event_id,name,event_date,card_status,event_series');
   const results = await selectAll(env, 'ufc_bout_results', 'select=bout_id,has_stats,winner_id,method,round,referee,finish_detail,time_format,stats_captured_at,judge_1');
   return {
     resolver, byEspnAthlete, byUfcstatsFighter, aliasByFighter,
@@ -685,6 +702,92 @@ function linkUfcstatsEvent(ctx, name, eventDate) {
   return cands.length === 1 ? cands[0] : undefined;
 }
 
+/* ------------------------------------------------------------------------ */
+/* Road to UFC lane                                                          */
+/* ------------------------------------------------------------------------ */
+/* UFC-promoted Road to UFC cards (owner decision 2026-09-15). ESPN lists them
+ * only in its "Other" MMA bucket; an event qualifies when its ESPN name begins
+ * with the series name. Everything after that is the ordinary ESPN event/bout
+ * path: same identity resolution (ensureEspnFighter), same result, method,
+ * round/time and provenance fields, same record triggers. The database
+ * classifies the event road_to_ufc and inserts its bouts with model_scope =
+ * false (migration 028), so they never become Fight DNA or PBE Algo inputs.
+ *
+ *   daily:    ESPN "Other" events dated 21 days back .. 45 days ahead
+ *   backfill: explicit ESPN event ids (admin ?rtu_events=)                  */
+export const RTU_WINDOW = { backDays: 21, aheadDays: 45 };
+
+function linkRoadToUfcEvent(ctx, raw, eventDate) {
+  const athletes = new Set(raw.competitions.flatMap((c) => (c.competitors || []).map((x) => String(x.id))));
+  const cands = ctx.events.filter((x) => x.ufcstats_id && !x.espn_event_id && x.event_date && dayDiff(x.event_date, eventDate) <= 1
+    && x.event_series === 'road_to_ufc'
+    && ctx.bouts.some((b) => b.event_id === x.id && [b.fighter_a_id, b.fighter_b_id].some((fid) => athletes.has(String(ctx.fightersById.get(fid)?.espn_athlete_id)))));
+  return cands.length === 1 ? cands[0] : undefined;
+}
+
+async function roadToUfcPass(env, espn, ctx, run, { eventIds = [], maxEvents = null, now = Date.now() } = {}) {
+  const ymd = (ms) => new Date(ms).toISOString().slice(0, 10).replace(/-/g, '');
+  const report = { mode: eventIds.length ? 'explicit' : 'window', listed: 0, fetched: 0, series_events: 0, created: 0, linked: 0, processed: 0, skipped_empty: 0, skipped_settled: 0, deferred: 0, not_series: [], events: [] };
+  let refs;
+  if (eventIds.length) {
+    refs = eventIds.map((id) => espn.otherEventUrl(id));
+  } else {
+    const dates = `${ymd(now - RTU_WINDOW.backDays * 86400e3)}-${ymd(now + RTU_WINDOW.aheadDays * 86400e3)}`;
+    report.window = dates;
+    refs = await espn.otherEventRefs(dates);
+  }
+  report.listed = refs.length;
+  const cap = maxEvents ?? Number(env.MAX_EVENTS_PER_RUN || 3);
+  const cutoff = new Date(now - 14 * 86400e3).toISOString().slice(0, 10);
+  let fullPasses = 0;
+  for (const ref of refs) {
+    const espnId = /events\/(\d+)/.exec(ref)?.[1];
+    const known = espnId ? ctx.eventsByEspn.get(espnId) : null;
+    if (!eventIds.length && known && known.card_status === 'complete' && known.event_date < cutoff) { report.skipped_settled += 1; continue; }
+    const ev = await espn.event(ref);
+    report.fetched += 1;
+    if (!ROAD_TO_UFC_EVENT.test(ev.raw.name)) { if (eventIds.length) report.not_series.push({ espn_event_id: espnId, name: ev.raw.name }); continue; }
+    report.series_events += 1;
+    const eventDate = String(ev.raw.date).slice(0, 10);
+    if (!ev.raw.competitions.length) { report.skipped_empty += 1; report.events.push({ espn_event_id: espnId, name: ev.raw.name, date: eventDate, skipped: 'no competitions on ESPN' }); continue; }
+    const existing = ctx.eventsByEspn.get(String(ev.raw.id)) || linkRoadToUfcEvent(ctx, ev.raw, eventDate);
+    const isComplete = ev.raw.status?.type?.completed === true && ev.raw.status?.type?.state === 'post';
+    const evRow = {
+      espn_event_id: String(ev.raw.id), name: ev.raw.name, event_date: eventDate,
+      venue: ev.venue?.name || null, city: ev.venue?.city || null, region: ev.venue?.region || null, country: ev.venue?.country || null,
+      card_status: existing?.card_status === 'complete' ? 'complete' : (isComplete ? 'locked' : 'announced'),
+      source_url: ev.url, captured_at: nowIso(), updated_at: nowIso(),
+    };
+    if (existing?.ufcstats_id) evRow.ufcstats_id = existing.ufcstats_id;
+    let saved;
+    if (existing && !existing.espn_event_id) {
+      const { source_url: _src, captured_at: _cap, ...fill } = evRow;
+      const patched = await patch(env, 'ufc_events', `id=eq.${existing.id}`, { ...fill, venue: fill.venue ?? undefined, city: fill.city ?? undefined, region: fill.region ?? undefined, country: fill.country ?? undefined });
+      saved = Array.isArray(patched) && patched[0] ? patched[0] : { ...existing, ...fill };
+      Object.assign(existing, saved);
+      report.linked += 1;
+    } else {
+      [saved] = await upsert(env, 'ufc_events', evRow, 'espn_event_id', { returning: 'representation' });
+    }
+    if (!existing) { run.events_new += 1; report.created += 1; ctx.events.push(saved); }
+    ctx.eventsByEspn.set(String(ev.raw.id), saved);
+    const entry = { espn_event_id: String(ev.raw.id), event_id: saved.id, name: saved.name, date: eventDate, series: saved.event_series ?? null, linked_ufcstats: Boolean(existing?.ufcstats_id) };
+    report.events.push(entry);
+    const needsPass = !existing || existing.card_status !== 'complete' || eventDate >= cutoff || eventIds.length > 0;
+    if (!needsPass) continue;
+    if (isComplete && fullPasses >= cap) { report.deferred += 1; entry.deferred = true; continue; }
+    if (isComplete) fullPasses += 1;
+    const before = { bouts: run.bouts_new, linked: run.notes.rtu_bouts_linked || 0 };
+    await espnBouts(env, espn, ctx, run, saved, ev, { roadToUfc: true });
+    entry.bouts_new = run.bouts_new - before.bouts;
+    entry.bouts_linked = (run.notes.rtu_bouts_linked || 0) - before.linked;
+    entry.placeholders_skipped = ev.skipped?.length || 0;
+    report.processed += 1;
+  }
+  if (!report.not_series.length) delete report.not_series;
+  return report;
+}
+
 /* IDENTITY ONLY. Resolves an ESPN athlete to a ufc_fighters row, once. A known
  * athlete returns immediately and is never re-fetched here: keeping a linked
  * fighter's career record current is refreshEspnFighterProfile()'s job, driven
@@ -741,8 +844,8 @@ async function ensureEspnFighter(env, espn, ctx, run, f, weightClass, eventId = 
   return row;
 }
 
-async function espnBouts(env, espn, ctx, run, evRow, ev) {
-  const bouts = await espn.bouts(ev);
+async function espnBouts(env, espn, ctx, run, evRow, ev, { roadToUfc = false } = {}) {
+  const bouts = await espn.bouts(ev, { allowTypeless: roadToUfc });
   if (ev.skipped?.length) run.notes.placeholder_competitions = (run.notes.placeholder_competitions || 0) + ev.skipped.length;
   const seen = new Set();
   const totalsCandidates = [];
@@ -751,7 +854,16 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
     const wc = normWeightClass(b.weight_class_raw, b.source_url);
     const fa = await ensureEspnFighter(env, espn, ctx, run, b.fighters[0], wc.weight_class, evRow.id);
     const fb = await ensureEspnFighter(env, espn, ctx, run, b.fighters[1], wc.weight_class, evRow.id);
-    const existing = ctx.boutsByEspn.get(b.espn_competition_id);
+    let existing = ctx.boutsByEspn.get(b.espn_competition_id);
+    /* Road to UFC: a card UFC Stats already holds ("UFC - Road to UFC 4.6") has
+     * bouts without an ESPN id. The same two corners on the linked card are the
+     * same bout: attach the ESPN id instead of creating a duplicate. */
+    let pairLinked = null;
+    if (!existing && roadToUfc) {
+      const pair = new Set([fa.id, fb.id]);
+      const same = ctx.bouts.filter((x) => x.event_id === evRow.id && !x.espn_competition_id && pair.has(x.fighter_a_id) && pair.has(x.fighter_b_id));
+      if (same.length === 1) { existing = same[0]; pairLinked = same[0]; }
+    }
     const cancelled = /CANCEL|POSTPONED/i.test(b.status_name);
     const boutRow = {
       espn_competition_id: b.espn_competition_id, event_id: evRow.id,
@@ -763,7 +875,17 @@ async function espnBouts(env, espn, ctx, run, evRow, ev) {
       source_url: b.source_url, captured_at: nowIso(), updated_at: nowIso(),
     };
     if (existing?.ufcstats_id) boutRow.ufcstats_id = existing.ufcstats_id;
-    const [saved] = await upsert(env, 'ufc_bouts', boutRow, 'espn_competition_id', { returning: 'representation' });
+    let saved;
+    if (pairLinked) {
+      /* Corners stay as stored (UFC Stats order); only identity and card fields are filled. */
+      const { fighter_a_id: _a, fighter_b_id: _b, captured_at: _c, ...fill } = boutRow;
+      const patched = await patch(env, 'ufc_bouts', `id=eq.${pairLinked.id}`, fill);
+      saved = Array.isArray(patched) && patched[0] ? patched[0] : { ...pairLinked, ...fill };
+      Object.assign(pairLinked, saved);
+      run.notes.rtu_bouts_linked = (run.notes.rtu_bouts_linked || 0) + 1;
+    } else {
+      [saved] = await upsert(env, 'ufc_bouts', boutRow, 'espn_competition_id', { returning: 'representation' });
+    }
     if (!existing) { run.bouts_new += 1; ctx.bouts.push(saved); }
     ctx.boutsByEspn.set(b.espn_competition_id, saved);
     seen.add(b.espn_competition_id);
@@ -1131,7 +1253,8 @@ async function boutsWithRounds(env, boutIds) {
 async function collectRoundArchiveGaps(env, now, sourceHealth) {
   const forwardDays = Number(env.UFCSTATS_FORWARD_DAYS || 45);
   const from = new Date(now - forwardDays * 86400e3).toISOString().slice(0, 10);
-  const events = await selectAll(env, 'ufc_events', `select=id,name,event_date,card_status&card_status=eq.complete&event_date=gte.${from}`);
+  /* Road to UFC cards are fighter history only; round stats are not expected for them (migration 028). */
+  const events = await selectAll(env, 'ufc_events', `select=id,name,event_date,card_status&card_status=eq.complete&event_date=gte.${from}&event_series=neq.road_to_ufc`);
   if (!events.length) return [];
   const bouts = [];
   for (let i = 0; i < events.length; i += 60) {
@@ -1216,7 +1339,7 @@ async function roundStatLane(env, fetcher, ctx, run, { sourceAllowed, sourceReas
   const fetchCap = Number(env.MAX_UFCSTATS_REQUESTS_PER_RUN || 60);
   const events = new Map(ctx.events.map((e) => [e.id, e]));
   const cutoff = new Date(now - forwardDays * 86400000).toISOString().slice(0, 10);
-  const windowBouts = ctx.bouts.filter((b) => (onlyBout ? b.id === onlyBout : (events.get(b.event_id)?.event_date || '') >= cutoff));
+  const windowBouts = ctx.bouts.filter((b) => (onlyBout ? b.id === onlyBout : (events.get(b.event_id)?.event_date || '') >= cutoff && events.get(b.event_id)?.event_series !== 'road_to_ufc'));
   const withRows = force && onlyBout ? new Set() : await boutsWithRounds(env, windowBouts.map((b) => b.id));
   const { candidates, skipped } = selectCandidates({
     bouts: windowBouts, events, results: ctx.resultsByBout, withRows, now, forwardDays: onlyBout ? 36500 : forwardDays,

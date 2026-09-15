@@ -13,6 +13,16 @@ export function normMethod(raw, url) {
   const key = String(raw || '').trim().split(/\r?\n/)[0].trim();
   const m = ENUMS.method.map;
   if (Object.prototype.hasOwnProperty.call(m, key)) return m[key];
+  /* ESPN prints some cards (Road to UFC) with the finish detail in parentheses:
+   * "Submission (Kimura)", "TKO (Knee)", "Decision - Split (Draw)". The base
+   * must itself be a known method; the detail never invents one. A split draw
+   * is the only parenthetical that changes the outcome. */
+  const paren = /^(.+?)\s*\(([^()]+)\)$/.exec(key);
+  if (paren) {
+    const base = paren[1].trim(), detail = paren[2].trim();
+    if (/^draw$/i.test(detail) && /^decision - (split|majority|unanimous)$/i.test(base)) return m['Draw'];
+    if (/^(technical submission|submission|ko\/tko|tko|ko)$/i.test(base) && Object.prototype.hasOwnProperty.call(m, base) && !/draw|no contest/i.test(detail)) return m[base];
+  }
   throw new SchemaAssertionError(url, `unknown method ${JSON.stringify(raw)}`);
 }
 

@@ -16,6 +16,13 @@ import ENUMS from './shared/enums.json' with { type: 'json' };
 import { pickOverallRecord, parseEspnRecordItem } from './fighterRecord.mjs';
 
 const CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
+/* ESPN files UFC-promoted Road to UFC cards in its "Other" MMA league bucket
+ * (league uid l:3359), not under leagues/ufc/events. Verified 2026-09-15:
+ * 26 "Road to UFC..." events 2022-2026 are listed only there. */
+const OTHER = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/other';
+/* Series name as ESPN prints it. Anchored: an event is Road to UFC only when its
+ * name BEGINS with the series name (mirrors public.ufc_event_series_for). */
+export const ROAD_TO_UFC_EVENT = /^\s*Road\s+to\s+UFC\b/i;
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
 
 /* ESPN publishes slot rows named "Judge 1", "Judge 2" for bouts whose
@@ -65,6 +72,15 @@ export class Espn {
     return j.items.map((i) => i.$ref);
   }
 
+  /* Event refs in ESPN's "Other" MMA bucket for a date / range (Road to UFC lives here). */
+  async otherEventRefs(dates) {
+    const j = await this.json(`${OTHER}/events?dates=${dates}&limit=1000`);
+    if (!Array.isArray(j?.items)) throw new SchemaAssertionError(`${OTHER}/events?dates=${dates}`, 'events.items missing');
+    return j.items.map((i) => i.$ref);
+  }
+
+  otherEventUrl(id) { return `${OTHER}/events/${id}?lang=en&region=us`; }
+
   /* Full event with inline competitions. */
   async event(refOrId) {
     const url = String(refOrId).startsWith('http') ? refOrId : `${CORE}/events/${refOrId}?lang=en&region=us`;
@@ -83,7 +99,7 @@ export class Espn {
 
   /* Normalised bout rows from an event payload. Results require one status
    * call per competition (the inline status is only a $ref). */
-  async bouts(evPayload) {
+  async bouts(evPayload, { allowTypeless = false } = {}) {
     const { url, raw } = evPayload;
     const out = [];
     evPayload.skipped = [];
@@ -93,10 +109,15 @@ export class Espn {
        * is not a bout; skip it with a note instead of aborting the run. A
        * COMPLETED competition missing these fields is still an assertion. */
       const completedFlag = c?.status?.type?.completed === true;
-      const placeholder = c?.type === undefined || !Array.isArray(c?.competitors) || c.competitors.length !== 2
+      const incompleteCorners = !Array.isArray(c?.competitors) || c.competitors.length !== 2
         || c.competitors.some((x) => !x?.athlete?.$ref);
+      /* allowTypeless (Road to UFC lane): ESPN omits the division on some FINAL
+       * Road to UFC bouts while both athletes and the result are present. Such
+       * a bout is stored with weight_class null; a typeless bout that is not
+       * final is still a placeholder (checked after the status read below). */
+      const placeholder = (c?.type === undefined && !allowTypeless) || incompleteCorners;
       if (placeholder && !completedFlag) { evPayload.skipped.push(String(c?.id || '?')); continue; }
-      for (const k of ['id', 'competitors', 'type', 'matchNumber', 'status']) {
+      for (const k of ['id', 'competitors', ...(allowTypeless ? [] : ['type']), 'matchNumber', 'status']) {
         if (c?.[k] === undefined) throw new SchemaAssertionError(url, `competition.${k} missing (competition ${c?.id})`);
       }
       if (!Array.isArray(c.competitors) || c.competitors.length !== 2) throw new SchemaAssertionError(url, `competition ${c.id} needs exactly 2 competitors`);
@@ -110,6 +131,7 @@ export class Espn {
       const stType = st?.type?.name;
       if (!stType) throw new SchemaAssertionError(c.status.$ref, 'status.type.name missing');
       const completed = st.type.completed === true && st.type.state === 'post';
+      if (c.type === undefined && !completed) { evPayload.skipped.push(String(c.id)); continue; }
       const seg = c.cardSegment?.description || null;
       const cardPos = seg ? (ENUMS.espn.card_segment_map[seg] ?? null) : null;
       if (seg && cardPos === null) throw new SchemaAssertionError(url, `unknown cardSegment ${JSON.stringify(seg)}`);

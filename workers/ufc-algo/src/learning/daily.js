@@ -74,7 +74,7 @@ export async function gateStep({ q, env, bucket, now = Date.now() }) {
 
   const windowEnd = champion.row.training_window_end;
   const events = await readAll(q, `ufc_events?select=id,name,event_date&event_date=gt.${windowEnd}&event_date=lt.${runDate}`, 'event_date.asc,id.asc');
-  const bouts = events.length ? await q.inChunks('ufc_bouts', 'event_id', events.map((e) => e.id), 'id,event_id,fighter_a_id,fighter_b_id') : [];
+  const bouts = events.length ? await q.inChunks('ufc_bouts', 'event_id', events.map((e) => e.id), 'id,event_id,fighter_a_id,fighter_b_id', '&model_scope=eq.true') : [];
   const winners = new Set((bouts.length ? await q.inChunks('ufc_bout_results', 'bout_id', bouts.map((b) => b.id), 'bout_id,winner_id', '&winner_id=not.is.null') : []).map((r) => r.bout_id));
   const dateOf = new Map(events.map((e) => [e.id, e.event_date]));
   const fresh = bouts.filter((b) => winners.has(b.id) && !parentIds.has(b.id));

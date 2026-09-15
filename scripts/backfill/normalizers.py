@@ -26,6 +26,15 @@ def norm_method(raw: str, url: str) -> str:
     m = ENUMS["method"]["map"]
     if key in m:
         return m[key]
+    # Mirror of normalizers.mjs: ESPN's parenthetical finish detail
+    # ("Submission (Kimura)", "Decision - Split (Draw)"). The base must be known.
+    paren = re.match(r"^(.+?)\s*\(([^()]+)\)$", key)
+    if paren:
+        base, detail = paren.group(1).strip(), paren.group(2).strip()
+        if re.match(r"^draw$", detail, re.I) and re.match(r"^decision - (split|majority|unanimous)$", base, re.I):
+            return m["Draw"]
+        if re.match(r"^(technical submission|submission|ko/tko|tko|ko)$", base, re.I) and base in m and not re.search(r"draw|no contest", detail, re.I):
+            return m[base]
     raise SchemaAssertionError(url, f"unknown method {raw!r}")
 
 

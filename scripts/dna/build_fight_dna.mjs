@@ -581,7 +581,8 @@ async function main() {
   const [fighters, events, bouts, results, roundStats] = await Promise.all([
     selectAll('ufc_fighters', 'select=id,name,stance&order=name.asc'),
     selectAll('ufc_events', `select=id,name,event_date&event_date=lte.${AS_OF}&order=event_date.asc`),
-    selectAll('ufc_bouts', 'select=id,ufcstats_id,espn_competition_id,event_id,fighter_a_id,fighter_b_id,scheduled_rounds,is_title,card_position,bout_order,status,short_notice_days,captured_at,updated_at&status=eq.complete&order=id'),
+    /* model_scope (migration 028): Road to UFC bouts ingested for fighter history are not Fight DNA / PBE Algo inputs. */
+    selectAll('ufc_bouts', 'select=id,ufcstats_id,espn_competition_id,event_id,fighter_a_id,fighter_b_id,scheduled_rounds,is_title,card_position,bout_order,status,short_notice_days,captured_at,updated_at&status=eq.complete&model_scope=eq.true&order=id'),
     selectAll('ufc_bout_results', 'select=bout_id,winner_id,method,method_raw,round,time_sec,time_format,result_source,has_stats,source_url,captured_at,stats_source_url,stats_captured_at&order=bout_id'),
     selectAll('ufc_bout_round_stats', `select=bout_id,fighter_id,round,${ROUND_KEYS.join(',')},source_url,captured_at&order=bout_id,fighter_id,round`),
   ]);
