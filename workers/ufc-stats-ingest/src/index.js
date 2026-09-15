@@ -793,7 +793,7 @@ async function roadToUfcPass(env, espn, ctx, run, { eventIds = [], maxEvents = n
  * fighter's career record current is refreshEspnFighterProfile()'s job, driven
  * by results (see refreshFighterRecords). The first resolution still stores
  * the record ESPN printed at that moment, parsed by the same record parser. */
-async function ensureEspnFighter(env, espn, ctx, run, f, weightClass, eventId = null) {
+async function ensureEspnFighter(env, espn, ctx, run, f, weightClass, eventId = null, { fillMissingOnly = false } = {}) {
   const known = ctx.byEspnAthlete.get(f.espn_athlete_id);
   if (known) return known;
   const a = await espn.athlete(f.athlete_ref);
@@ -826,7 +826,15 @@ async function ensureEspnFighter(env, espn, ctx, run, f, weightClass, eventId = 
      * before the conflict merge runs. */
     const existing = ctx.fightersById.get(res.fighter_id);
     /* On a DOB conflict the stored date stays; the disagreement is in the run notes. */
-    const fill = res.dob_conflict ? (({ dob: _d, ...rest }) => rest)(physical) : physical;
+    let fill = res.dob_conflict ? (({ dob: _d, ...rest }) => rest)(physical) : physical;
+    /* Road to UFC lane: linking an existing fighter must not move a PBE Algo
+     * input. Only values the row does not hold yet are filled; a stored
+     * physical or record is never replaced (or nulled) from that lane. */
+    if (fillMissingOnly) {
+      const held = await select(env, 'ufc_fighters', `select=dob,height_in,reach_in,weight_lbs,stance,is_active,record_w,record_l,record_d,record_nc&id=eq.${existing.id}`);
+      const cur = held?.[0] || {};
+      fill = Object.fromEntries(Object.entries(fill).filter(([k, v]) => k === 'updated_at' || (v != null && cur[k] == null)));
+    }
     await patch(env, 'ufc_fighters', `id=eq.${existing.id}`, { espn_athlete_id: a.espn_athlete_id, ...fill });
     row = { ...existing, espn_athlete_id: a.espn_athlete_id, ...fill };
   } else {
@@ -852,8 +860,8 @@ async function espnBouts(env, espn, ctx, run, evRow, ev, { roadToUfc = false } =
   let allResults = bouts.length > 0;
   for (const b of bouts) {
     const wc = normWeightClass(b.weight_class_raw, b.source_url);
-    const fa = await ensureEspnFighter(env, espn, ctx, run, b.fighters[0], wc.weight_class, evRow.id);
-    const fb = await ensureEspnFighter(env, espn, ctx, run, b.fighters[1], wc.weight_class, evRow.id);
+    const fa = await ensureEspnFighter(env, espn, ctx, run, b.fighters[0], wc.weight_class, evRow.id, { fillMissingOnly: roadToUfc });
+    const fb = await ensureEspnFighter(env, espn, ctx, run, b.fighters[1], wc.weight_class, evRow.id, { fillMissingOnly: roadToUfc });
     let existing = ctx.boutsByEspn.get(b.espn_competition_id);
     /* Road to UFC: a card UFC Stats already holds ("UFC - Road to UFC 4.6") has
      * bouts without an ESPN id. The same two corners on the linked card are the
