@@ -1,6 +1,6 @@
 # PBE Algo: daily learning and controlled promotion
 
-Status: **DESIGN, not implemented.** Nothing in this document is deployed. It needs owner approval before any of it is built, including migration 027 and the Worker changes.
+Status: **APPROVED 2026-09-15 and IMPLEMENTED** (migration 027 applied; `ufc-algo` learning code in `workers/ufc-algo/src/learning/`). `ALGO_MODE` stays `dry_run`; shadow writes, like every official write, happen only when armed. Implementation notes are in section 12.
 
 Author context: written during the 2026-09-14 pre-launch forensic pass, when `pbe-fight-model-v1` was unregistered, `ufc-algo` was in `dry_run`, and no prediction was locked.
 
@@ -201,3 +201,21 @@ The prospective evidence the owner asked for comes from a shadow track.
 | A worse challenger stays shadow only | review test with a Brier regression → `REJECT`/`HOLD`; promote refuses |
 | A newly promoted champion affects only future unlocked evaluations | cycle test: locked v1 rows untouched, unlocked v1 drafts withdrawn, v1.1 drafts created |
 | The prior official record resolves through its historical version | view test: after promotion, the v1 locked row still joins its retired, immutable `ufc_model_versions` row |
+
+## 12. Implementation notes (2026-09-15)
+
+| Design element | Where | Notes |
+|---|---|---|
+| Champion resolution | `src/champion.js` `resolveChampion` | the single `live` row of `pbe-fight-model`, re-hashed every cycle; two live rows block |
+| Gate | `learning/daily.js` `gateStep`, `core.decideGate` | new = graded bouts after the champion window and before today that the parent dataset lacks |
+| Genesis dataset | R2 `model-releases/pbe-fight-model-v1/genesis-dataset-b466d86b….jsonl` + manifest (locked prefix) | the 9,174-row release-window rebuild; **not** V1's original dataset, which cannot be regenerated |
+| Increment assembly | `learning/assemble.js` `assembleEvents` | batched reads into `assembleBoutRow`; verified 18/18 byte-identical to the Node builder on 2026-09-15 |
+| Weekly rebuild | Sunday `LearnDaily`: `rebuild_plan` → `rebuild_shard_N` (12 events each) → `rebuild_compare` | skipped while the gate is `WAITING_FOR_DATA`; drift → `DATA_REPAIR_DRIFT` run trained on the rebuild |
+| Train / audit / drift | `core.trainChallenger`, `core.leakageAudit`, `daily.trainStep` | same `walkforward_core` as V1; baseline = same recipe on the champion's dataset (cached in R2); benchmark = champion dataset rows ≥ 2024-01-01 |
+| Challenger spec hash | `specCanonical` under the fixed label `pbe-fight-model-challenger` | depends only on coefficients, scale, λ; promotion re-hashes under the new version name |
+| Shadow | `learning/shadow.js`, wired into `cycle.js` | armed only; never reads or writes `ufc_model_predictions` (import-graph test) |
+| Review | `learning/review.js` `runReview`, cron `23 13 * * 1` | thresholds in `core.REVIEW_THRESHOLDS` (`pbe-algo-review-v1`) |
+| Owner decision | `POST /admin/promote`, `OWNER_PROMOTE_TOKEN` (distinct from the admin token) | calls `ufc_model_promote()`; nothing else can create a version |
+| Cross-version safety | `cycle.js` | a locked call of any version blocks drafting; unlocked drafts of a non-champion version are withdrawn |
+
+**Before any promotion is approved:** the web read path (`web/lib/algo.ts`) still resolves calls and drivers through the V1 artifact. It must resolve each prediction through its own `model_version` row before a second version can be live. This does not affect V1 operation.

@@ -128,3 +128,74 @@ test('market provenance reports when the consensus prices were taken, never the 
   assert.equal(p.age_hours, 154.5);
   assert.equal(marketProvenance([], '2026-09-14T00:00:00Z'), null);
 });
+
+test('after a promotion: locked calls of the old version never move; its unlocked drafts are withdrawn; nothing locked is patched', async () => {
+  const v1 = { ...registered(), status: 'retired' };
+  const coefficients = Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, (i % 3) * 0.05]));
+  const feature_scale = Object.fromEntries(FEATURE_KEYS.map((k) => [k, 1]));
+  const canonical = JSON.stringify({ model_version: 'pbe-fight-model-v1.1', feature_version: FEATURE_VERSION, features: FEATURE_KEYS, coefficients: FEATURE_KEYS.map((k) => coefficients[k]), scale: FEATURE_KEYS.map((k) => feature_scale[k]), lambda: 5 });
+  const v11 = { model_version: 'pbe-fight-model-v1.1', model_family: 'pbe-fight-model', feature_version: FEATURE_VERSION, status: 'live', coefficients, feature_scale, spec_sha256: createHash('sha256').update(canonical).digest('hex'), hyperparameters: { lambda: 5 } };
+  const eventDate = new Date(Date.now() + 3 * 86400e3).toISOString().slice(0, 10);
+  const event = { id: 'e1', name: 'UFC 999: Test', event_date: eventDate, card_status: 'announced' };
+  const bout = (id, a, b) => ({ id, event_id: 'e1', fighter_a_id: a, fighter_b_id: b, weight_class: 'LW', is_womens: false, is_title: false, scheduled_rounds: 3, card_position: 'main', bout_order: 1, status: 'announced' });
+  const bouts = [bout('bx', 'f1', 'f2'), bout('by', 'f3', 'f4')];
+  const preds = [
+    { id: 'px', bout_id: 'bx', locked_at: '2026-09-18T16:41:00Z', model_version: MODEL_VERSION, prob_a: 0.6, pick_probability: 0.6 },
+    { id: 'py', bout_id: 'by', locked_at: null, model_version: MODEL_VERSION, prob_a: 0.58, pick_probability: 0.58 },
+  ];
+  const writes = [];
+  const handler = async (url, init = {}) => {
+    const u = new URL(url);
+    const method = (init.method || 'GET').toUpperCase();
+    const path = u.pathname.replace('/rest/v1/', '');
+    const ok = (data) => new Response(JSON.stringify(data), { status: 200 });
+    if (method !== 'GET') writes.push({ method, path, query: u.search, body: init.body ? JSON.parse(init.body) : null });
+    if (method === 'POST' && path === 'ufc_model_runs') return ok([{ id: 'run-1' }]);
+    if (method !== 'GET') return new Response(null, { status: 204 });
+    if (path === 'ufc_model_versions') return ok([v1, v11]);
+    if (path === 'ufc_events') return ok([event]);
+    if (path === 'ufc_bouts') return ok(u.searchParams.has('or') ? [] : bouts);
+    if (path === 'ufc_fighters') return ok(['f1', 'f2', 'f3', 'f4'].map((id) => ({ id, name: id })));
+    if (path === 'ufc_model_predictions') return ok(preds);
+    return ok([]);
+  };
+  const r = await withFetch(handler, () => runCycle(env({ ALGO_MODE: 'armed' }), { trigger: 'cron', mode: 'armed' }));
+  assert.equal(r.model.model_version, 'pbe-fight-model-v1.1', 'the live champion is resolved from the registry');
+  const predWrites = writes.filter((w) => w.path === 'ufc_model_predictions');
+  assert.deepEqual(predWrites.map((w) => `${w.method} ${decodeURIComponent(w.query)}`), ['DELETE ?id=eq.py&locked_at=is.null'], 'only the old unlocked draft is withdrawn');
+  assert.equal(writes.filter((w) => w.path.startsWith('rpc/ufc_model_publish')).length, 0);
+  const bx = r.cards[0].bouts.find((b) => b.bout_id === 'bx');
+  assert.equal(bx.locked_model_version, MODEL_VERSION, 'the locked call stays with the version that made it');
+  assert.equal(r.writes.drafts_withdrawn, 1);
+});
+
+test('dry run with an active challenger: shadow is reported, nothing but the run ledger is written, V1 stays champion', async () => {
+  const { CHALLENGER_LABEL } = await import('./learning/core.js');
+  const coefficients = Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, (i % 2) * 0.07]));
+  const feature_scale = Object.fromEntries(FEATURE_KEYS.map((k) => [k, 1]));
+  const spec = createHash('sha256').update(JSON.stringify({ model_version: CHALLENGER_LABEL, feature_version: FEATURE_VERSION, features: FEATURE_KEYS, coefficients: FEATURE_KEYS.map((k) => coefficients[k]), scale: FEATURE_KEYS.map((k) => feature_scale[k]), lambda: 5 })).digest('hex');
+  const challenger = { id: 'run-c', created_at: '2026-09-15T12:20:00Z', status: 'CHALLENGER', parent_model_version: MODEL_VERSION, superseded_at: null, spec_sha256: spec, coefficients, feature_scale, hyperparameters: { lambda: 5 }, leakage_audit: { all_passed: true }, training_bouts: 9192 };
+  const eventDate = new Date(Date.now() + 3 * 86400e3).toISOString().slice(0, 10);
+  const writes = [];
+  const handler = async (url, init = {}) => {
+    const u = new URL(url);
+    const method = (init.method || 'GET').toUpperCase();
+    const path = u.pathname.replace('/rest/v1/', '');
+    const ok = (data) => new Response(JSON.stringify(data), { status: 200 });
+    if (method !== 'GET') writes.push(`${method} ${path}`);
+    if (method === 'POST' && path === 'ufc_model_runs') return ok([{ id: 'run-1' }]);
+    if (method !== 'GET') return new Response(null, { status: 204 });
+    if (path === 'ufc_model_versions') return ok([registered()]);
+    if (path === 'ufc_model_training_runs') return ok([challenger]);
+    if (path === 'ufc_events') return ok([{ id: 'e1', name: 'UFC 999: Test', event_date: eventDate }]);
+    if (path === 'ufc_bouts') return ok(u.searchParams.has('or') ? [] : [{ id: 'b1', event_id: 'e1', fighter_a_id: 'f1', fighter_b_id: 'f2', weight_class: 'LW', bout_order: 1, status: 'announced' }]);
+    if (path === 'ufc_fighters') return ok([{ id: 'f1', name: 'A' }, { id: 'f2', name: 'B' }]);
+    return ok([]);
+  };
+  const r = await withFetch(handler, () => runCycle(env({ ALGO_MODE: 'armed' }), { trigger: 'admin', mode: 'dry_run' }));
+  assert.equal(r.mode, 'dry_run');
+  assert.equal(r.model.model_version, MODEL_VERSION);
+  assert.equal(r.challenger.training_run_id, 'run-c');
+  assert.ok(r.cards[0].bouts[0].shadow, 'shadow call reported');
+  assert.deepEqual(writes, ['POST ufc_model_runs', 'PATCH ufc_model_runs']);
+});

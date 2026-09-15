@@ -11,11 +11,37 @@ SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
 #          owner approval AND a registered live model version.
 ALGO_MODE = "dry_run"
 
+# Daily learning lineage root. V1's original training dataset was never hashed
+# and cannot be regenerated; this is the 9,174-row release-window rebuild,
+# immutable under the model-releases/ R2 lock (manifest beside it). It is the
+# parent dataset for challengers only and never changes V1.
+GENESIS_MODEL_VERSION = "pbe-fight-model-v1"
+GENESIS_DATASET_SHA256 = "b466d86bbfc0154ae04989bca51bc4270ac8b076e4ef25065cc8963936f9bfed"
+GENESIS_DATASET_URI = "r2://ufc-algo-artifacts/model-releases/pbe-fight-model-v1/genesis-dataset-b466d86bbfc0154ae04989bca51bc4270ac8b076e4ef25065cc8963936f9bfed.jsonl"
+
 # Hourly at :41. The lock pass opens at event_date 00:00 UTC - 8h (16:00 UTC the
 # day before) and the database refuses locks from - 6h, so every card gets two
 # scheduled lock attempts (16:41 and 17:41 UTC) after official weigh-ins.
+#
+# 12:17 UTC daily: the LearnDaily Workflow (after ufc-stats-ingest's maintenance
+# window). It can create at most one challenger; it can never change the champion.
+# 13:23 UTC Monday: the deterministic promotion review. Promotion itself needs
+# the owner token (POST /admin/promote); nothing is promoted automatically.
 [triggers]
-crons = ["41 * * * *"]
+crons = ["41 * * * *", "17 12 * * *", "23 13 * * 1"]
+
+# Training + walk-forward + audit runs ~12 s of CPU in a Workflow step.
+[limits]
+cpu_ms = 300000
+
+[[workflows]]
+name = "ufc-algo-learn-daily"
+binding = "LEARN_DAILY"
+class_name = "LearnDaily"
+
+[[r2_buckets]]
+binding = "ARTIFACTS"
+bucket_name = "ufc-algo-artifacts"
 
 [version_metadata]
 binding = "CF_VERSION_METADATA"
@@ -26,3 +52,5 @@ enabled = true
 # Secrets (wrangler secret put), never in this file:
 #   SUPABASE_SERVICE_ROLE_KEY
 #   ADMIN_TRIGGER_TOKEN
+#   OWNER_PROMOTE_TOKEN   (owner only; must differ from the admin token)
+# Deploy with --var CODE_SHA:<git commit> so every training run records its code.

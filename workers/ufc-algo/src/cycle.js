@@ -20,6 +20,9 @@ import { SNAPSHOT_SELECT, assembleBoutRow, round } from '../../../scripts/model/
 import { evaluateBout, ELIGIBILITY_VERSION, RULES, CARD_CHANGE_BLOCKING } from '../../../scripts/model/eligibility.mjs';
 import { predictOne } from '../../../scripts/model/logistic.mjs';
 import { marketComparison, officialMarketColumns } from './market.js';
+import { resolveChampion } from './champion.js';
+import { activeChallenger } from './learning/daily.js';
+import { shadowCall, writeShadow, gradeShadow } from './learning/shadow.js';
 import artifact from '../../../web/lib/generated/model-v1.json';
 import { db } from './supabase.js';
 
@@ -35,36 +38,24 @@ export const band = (p) => {
 const norm = (s) => String(s || '').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]/g, '');
 const dayMs = 86400e3;
 
-async function sha256Hex(text) {
-  const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-/** The model the cycle may score with. Registry first; artifact only for dry runs. */
+/**
+ * The model the cycle may score with: the one live, hash-verified champion of
+ * the family, resolved from the registry every cycle (so an owner-approved
+ * promotion applies from the next cycle, and nothing else can). The bundled
+ * release artifact is used only by a dry run before any version is registered.
+ */
 export async function resolveModel(q, mode) {
-  const rows = await q.get(`ufc_model_versions?select=model_version,feature_version,status,coefficients,feature_scale,spec_sha256,hyperparameters&model_version=eq.${MODEL_VERSION}`);
-  const reg = rows[0] || null;
-  if (reg) {
-    const canonical = JSON.stringify({
-      model_version: reg.model_version, feature_version: reg.feature_version, features: FEATURE_KEYS,
-      coefficients: FEATURE_KEYS.map((k) => reg.coefficients[k]), scale: FEATURE_KEYS.map((k) => reg.feature_scale[k]),
-      lambda: reg.hyperparameters?.lambda,
-    });
-    const recomputed = await sha256Hex(canonical);
-    const verified = recomputed === reg.spec_sha256 && reg.feature_version === FEATURE_VERSION;
-    if (verified && reg.status === 'live') {
-      return { source: 'registry', live: true, model_version: reg.model_version, spec_sha256: reg.spec_sha256, beta: FEATURE_KEYS.map((k) => reg.coefficients[k]), scale: FEATURE_KEYS.map((k) => reg.feature_scale[k]) };
-    }
-    if (!verified) return { source: 'registry', live: false, blocked: `registered spec_sha256 does not re-hash (${recomputed.slice(0, 12)} vs ${String(reg.spec_sha256).slice(0, 12)})` };
-    if (mode === 'armed') return { source: 'registry', live: false, blocked: `model_version status is ${reg.status}, not live` };
-  }
-  if (mode === 'armed') return { source: 'none', live: false, blocked: 'no registered live model version' };
+  const c = await resolveChampion(q);
+  if (c.live) return { source: 'registry', live: true, model_version: c.model_version, spec_sha256: c.spec_sha256, beta: c.beta, scale: c.scale };
+  if (c.row) {
+    if (/re-hash|live versions/.test(c.blocked) || mode === 'armed') return { source: 'registry', live: false, blocked: c.blocked };
+  } else if (mode === 'armed') return { source: 'none', live: false, blocked: c.blocked };
   const a = artifact.model;
   return { source: 'artifact_unregistered', live: false, model_version: a.model_version, spec_sha256: a.spec_sha256, beta: FEATURE_KEYS.map((k) => a.coefficients[k]), scale: FEATURE_KEYS.map((k) => a.feature_scale[k]) };
 }
 
 /** Everything needed to assemble and evaluate one card, in bounded reads. */
-async function loadCard(q, event, nowIso = new Date().toISOString()) {
+export async function loadCard(q, event, nowIso = new Date().toISOString()) {
   const D = event.event_date;
   const bouts = await q.get(`ufc_bouts?select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status&event_id=eq.${event.id}&order=bout_order.desc`);
   const fighterIds = [...new Set(bouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]))];
@@ -169,6 +160,10 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
   try {
     const model = await resolveModel(q, mode);
     report.model = { source: model.source, live: model.live, model_version: model.model_version ?? null, spec_sha256: model.spec_sha256 ?? null, blocked: model.blocked ?? null };
+    /* Shadow track: the single active challenger of this champion, scored beside it. Never an official call. */
+    const challenger = model.live ? await activeChallenger(q, model.model_version) : null;
+    report.challenger = challenger ? { training_run_id: challenger.id, spec_sha256: challenger.spec_sha256, training_bouts: challenger.training_bouts, created_at: challenger.created_at } : null;
+    report.writes.shadow = { inserted: 0, updated: 0, locked: 0, skipped_locked: 0, graded: 0 };
     if (mode === 'armed' && !model.live) {
       report.blocked = model.blocked;
       await q.patch(`ufc_model_runs?id=eq.${run.id}`, { status: 'blocked', finished_at: new Date().toISOString(), counts: report.writes, error: model.blocked }, 'return=minimal');
@@ -183,10 +178,22 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
       const card = await loadCard(q, event, nowIso);
       const win = lockWindow(event.event_date, now);
       const cardReport = { event_id: event.id, event: event.name, event_date: event.event_date, lock_window: win, bouts: [] };
+      /* Every version's rows for these bouts: a locked call of ANY version is permanent and blocks a new draft; an unlocked draft of a non-champion version is withdrawn. */
       const existing = mode === 'armed' && card.bouts.length
-        ? await q.inChunks('ufc_model_predictions', 'bout_id', card.bouts.map((b) => b.id), 'id,bout_id,locked_at,prob_a,pick_probability', `&model_version=eq.${model.model_version}&feature_version=eq.${FEATURE_VERSION}`)
+        ? await q.inChunks('ufc_model_predictions', 'bout_id', card.bouts.map((b) => b.id), 'id,bout_id,locked_at,prob_a,pick_probability,model_version', `&feature_version=eq.${FEATURE_VERSION}`)
         : [];
-      const predByBout = new Map(existing.map((p) => [p.bout_id, p]));
+      const predByBout = new Map(existing.filter((p) => p.model_version === model.model_version).map((p) => [p.bout_id, p]));
+      const lockedByBout = new Map(existing.filter((p) => p.locked_at).map((p) => [p.bout_id, p]));
+      const staleDrafts = existing.filter((p) => !p.locked_at && p.model_version !== model.model_version);
+      const shadowByBout = mode === 'armed' && challenger && card.bouts.length
+        ? new Map((await q.inChunks('ufc_model_shadow_predictions', 'bout_id', card.bouts.map((b) => b.id), 'id,bout_id,locked_at', `&training_run_id=eq.${challenger.id}`)).map((x) => [x.bout_id, x]))
+        : new Map();
+      if (mode === 'armed') {
+        for (const d of staleDrafts) {
+          await q.del(`ufc_model_predictions?id=eq.${d.id}&locked_at=is.null`);
+          report.writes.drafts_withdrawn += 1;
+        }
+      }
 
       for (const b of card.bouts) {
         const corners = [card.corner(b.fighter_a_id), card.corner(b.fighter_b_id)];
@@ -222,6 +229,11 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
         });
         if (!model.live && mode === 'dry_run') decision.model_note = 'scored with the unregistered release artifact; not callable until registered';
         const eligible = decision.decision === 'ELIGIBLE';
+        const boutState = { status: b.status, has_result: card.results.has(b.id), fighter_a_id: b.fighter_a_id, fighter_b_id: b.fighter_b_id, active_card_change: card.changed.has(b.id) };
+        const shadow = challenger ? shadowCall({
+          challenger, row, bout: b, event, corners, nowIso, boutState,
+          marketSnapshots: card.snapshots.filter((o) => o.bout_id === b.id), marketObservations: card.market.filter((o) => o.bout_id === b.id),
+        }) : null;
 
         const boutReport = {
           bout_id: b.id, order: b.bout_order, fighter_a: corners[0].name, fighter_b: corners[1].name,
@@ -230,6 +242,7 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
           pick_probability: eligible ? round(pickProbability, 4) : null, band: eligible ? band(pickProbability) : null,
           features_available: row ? row.available_count : null, sample: row ? { min_prior_bouts: row.min_prior_bouts, min_stat_bouts: row.min_stat_bouts } : null,
           market: eligible ? market : null, regeneration_drift_pts: drift, identity: corners,
+          shadow: shadow ? { decision: shadow.decision, reasons: shadow.reasons, pick_fighter_id: shadow.pick_fighter_id, pick_probability: shadow.raw_pick_probability, same_pick_as_champion: shadow.raw_pick_fighter_id === pickFighter } : null,
         };
         // Admin report only: exactly what a draft would store, so a dry run can be audited feature by feature.
         if (eligible) {
@@ -248,9 +261,20 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
           }, 'return=minimal');
           report.writes.evaluations += 1;
 
+          if (challenger && shadow) {
+            const w = await writeShadow(q, {
+              challenger, championVersion: model.model_version, eligibilityVersion: ELIGIBILITY_VERSION, event, bout: b, call: shadow,
+              existing: shadowByBout.get(b.id) || null, lockOpen: win.open, minLeadHours: RULES.lockMinLeadHours, generatedAt: new Date(now - 1000).toISOString(),
+            });
+            for (const k of ['inserted', 'updated', 'locked', 'skipped_locked']) report.writes.shadow[k] += w[k];
+          }
+
           const pred = predByBout.get(b.id) || null;
-          if (pred?.locked_at) {
-            boutReport.locked_at = pred.locked_at;
+          const lockedAny = lockedByBout.get(b.id) || null;
+          if (lockedAny) {
+            /* A locked call never moves to another model version. */
+            boutReport.locked_at = lockedAny.locked_at;
+            boutReport.locked_model_version = lockedAny.model_version;
           } else if (eligible) {
             const draft = {
               bout_id: b.id, event_id: event.id, fighter_a_id: b.fighter_a_id, fighter_b_id: b.fighter_b_id,
@@ -290,10 +314,13 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
       report.cards.push(cardReport);
     }
 
-    if (mode === 'armed') report.writes.graded = await gradeLocked(q);
+    if (mode === 'armed') {
+      report.writes.graded = await gradeLocked(q);
+      report.writes.shadow.graded = await gradeShadow(q, gradeFor);
+    }
 
     await q.patch(`ufc_model_runs?id=eq.${run.id}`, {
-      status: 'ok', finished_at: new Date().toISOString(),
+      status: 'ok', finished_at: new Date().toISOString(), model_version: report.model.model_version ?? MODEL_VERSION,
       counts: { ...report.writes, cards: report.cards.length, bouts: report.cards.reduce((a, c) => a + c.bouts.length, 0), eligible: report.cards.reduce((a, c) => a + c.bouts.filter((x) => x.decision === 'ELIGIBLE').length, 0), model_source: report.model.source },
     }, 'return=minimal');
     return report;
