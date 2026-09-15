@@ -24,7 +24,8 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { cacheDir, readJsonl, writeJsonl } from './common.mjs';
 import { FEATURES, FEATURE_KEYS, FEATURE_VERSION, MODEL_VERSION } from './feature_spec.mjs';
-import { fitLogistic, fitScale, applyScale, predictOne } from './logistic.mjs';
+import { predictOne } from './logistic.mjs';
+import { fitFold, walkForward, LAMBDA_GRID, INNER_VALIDATION_SHARE } from './walkforward_core.mjs';
 import { summarise, bySlice, byConfidenceBand, calibration, brier, logLoss, accuracy, auc, skill, wilson } from './metrics.mjs';
 import { marketProbForRow } from './market_baseline.mjs';
 
@@ -34,8 +35,6 @@ const opt = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] :
 const FROM_YEAR = Number(opt('--from', 2013));
 const TO_YEAR = Number(opt('--to', 2026));
 const TRAIN_FLOOR = opt('--train-floor', '1994-01-01');
-const LAMBDA_GRID = [1, 2, 5, 10, 20, 40, 80, 160, 320];
-const INNER_VALIDATION_SHARE = 0.2;
 
 /** Simple historical win-rate baseline: no fitting, no coefficients. Each
  *  corner's Laplace-smoothed pre-fight win rate, normalised into a probability.
@@ -46,34 +45,6 @@ function winRateBaseline(row) {
   const b = row.side_2.winrate;
   if (a == null || b == null || a + b <= 0) return 0.5;
   return a / (a + b);
-}
-
-function fitFold(trainRows, { lambdaGrid = LAMBDA_GRID } = {}) {
-  const cut = Math.max(1, Math.floor(trainRows.length * (1 - INNER_VALIDATION_SHARE)));
-  const inner = trainRows.slice(0, cut);
-  const holdout = trainRows.slice(cut);
-
-  let chosen = lambdaGrid[Math.floor(lambdaGrid.length / 2)];
-  let lambdaScan = [];
-  if (holdout.length >= 50 && inner.length >= 200) {
-    const scaleInner = fitScale(inner.map((r) => r.x));
-    const Xi = inner.map((r) => applyScale(r.x, scaleInner));
-    const yi = inner.map((r) => r.label);
-    let best = Infinity;
-    for (const lambda of lambdaGrid) {
-      const { beta } = fitLogistic(Xi, yi, lambda);
-      const scored = holdout.map((r) => ({ p: predictOne(r.x, beta, scaleInner), y: r.label }));
-      const ll = logLoss(scored);
-      lambdaScan.push({ lambda, validation_log_loss: ll });
-      if (ll < best) { best = ll; chosen = lambda; }
-    }
-  }
-
-  const scale = fitScale(trainRows.map((r) => r.x));
-  const X = trainRows.map((r) => applyScale(r.x, scale));
-  const y = trainRows.map((r) => r.label);
-  const fit = fitLogistic(X, y, chosen);
-  return { beta: fit.beta, scale, lambda: chosen, lambdaScan, iterations: fit.iterations, converged: fit.converged, n: trainRows.length };
 }
 
 function main() {
@@ -90,22 +61,9 @@ function main() {
     .filter((r) => r.graded && r.event_date >= TRAIN_FLOOR)
     .sort((a, b) => (a.event_date === b.event_date ? a.bout_id.localeCompare(b.bout_id) : a.event_date.localeCompare(b.event_date)));
 
-  const folds = [];
-  const scored = [];
-
-  for (let year = FROM_YEAR; year <= TO_YEAR; year++) {
-    const boundary = `${year}-01-01`;
-    const nextBoundary = `${year + 1}-01-01`;
-    const train = graded.filter((r) => r.event_date < boundary);
-    const test = graded.filter((r) => r.event_date >= boundary && r.event_date < nextBoundary);
-    if (test.length < 25 || train.length < 500) {
-      folds.push({ year, skipped: true, train_n: train.length, test_n: test.length });
-      continue;
-    }
-
-    const model = fitFold(train);
-    const foldRows = test.map((r) => {
-      const p = predictOne(r.x, model.beta, model.scale);
+  const wf = walkForward(graded, {
+    fromYear: FROM_YEAR, toYear: TO_YEAR,
+    rowFor: (r, p, year) => {
       const market = marketProbForRow(r, observationsByBout);
       return {
         bout_id: r.bout_id,
@@ -130,15 +88,25 @@ function main() {
         p_market: market?.p ?? null,
         market_books: market?.books ?? null,
       };
-    });
-    scored.push(...foldRows);
-
-    folds.push({
-      year,
-      train_n: train.length,
-      train_from: train[0]?.event_date ?? null,
-      train_to: train[train.length - 1]?.event_date ?? null,
-      test_n: test.length,
+    },
+  });
+  const scored = wf.scored;
+  const folds = wf.folds.map((f) => {
+    if (f.skipped) return f;
+    const foldRows = f.test_rows;
+    const model = f.model;
+    process.stdout.write(
+      `${f.year}: train ${String(f.train_n).padStart(5)}  test ${String(f.test_n).padStart(4)}  ` +
+      `lambda ${String(model.lambda).padStart(3)}  brier ${brier(foldRows).toFixed(5)}  ` +
+      `logloss ${logLoss(foldRows).toFixed(5)}  acc ${(accuracy(foldRows) * 100).toFixed(2)}%  auc ${(auc(foldRows) ?? 0).toFixed(4)}
+`,
+    );
+    return {
+      year: f.year,
+      train_n: f.train_n,
+      train_from: f.train_from,
+      train_to: f.train_to,
+      test_n: f.test_n,
       lambda: model.lambda,
       iterations: model.iterations,
       converged: model.converged,
@@ -158,13 +126,8 @@ function main() {
           accuracy: accuracy(foldRows.map((r) => ({ p: r.p_winrate, y: r.y }))),
         },
       },
-    });
-    process.stdout.write(
-      `${year}: train ${String(train.length).padStart(5)}  test ${String(test.length).padStart(4)}  ` +
-      `lambda ${String(model.lambda).padStart(3)}  brier ${brier(foldRows).toFixed(5)}  ` +
-      `logloss ${logLoss(foldRows).toFixed(5)}  acc ${(accuracy(foldRows) * 100).toFixed(2)}%  auc ${(auc(foldRows) ?? 0).toFixed(4)}\n`,
-    );
-  }
+    };
+  });
 
   // ---- pooled out-of-sample scoring ------------------------------------
   const model = summarise(scored, 'PBE Fight Model v1');

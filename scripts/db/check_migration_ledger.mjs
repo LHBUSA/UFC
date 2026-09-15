@@ -156,6 +156,9 @@ export const APPLIED = new Set([
   // vanished bouts, TRUNCATE revoked on the record. Proven by scripts/db/prove_026.ps1 (19 behavioural checks, rolled
   // back) then applied 2026-09-14 via apply_migration.ps1. Creates no model version, prediction or grade.
   '20260914230000_ufc_algo_runtime.sql',
+  // PBE Algo daily learning / shadow / owner-approved promotion (owner-approved 2026-09-15). Proven by
+  // scripts/db/prove_027.ps1 (32 behavioural checks, rolled back), then applied 2026-09-15 via apply_migration.ps1.
+  '20260915010000_ufc_algo_learning.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))
