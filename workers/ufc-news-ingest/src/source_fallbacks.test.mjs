@@ -194,3 +194,35 @@ test('a 304 from a known-frozen primary still checks the live publisher page on 
     globalThis.fetch = orig;
   }
 });
+
+test('a legacy 304 KV record with no content watermark immediately checks the live publisher page', async () => {
+  const primary = 'https://publisher.test/rss';
+  const latest = fallbackPageFor('MMA Fighting');
+  const legacyHealth = {
+    ...emptyHealth(),
+    total_successes: 4000,
+    total_not_modified: 3900,
+    last_etag: 'W/"legacy-frozen"',
+    last_body_success_ts: NOW - 2 * 60 * 1000,
+    last_primary_newest_ts: null,
+  };
+  const kv = fakeKV({ 'feed:health:MMA Fighting': JSON.stringify(legacyHealth) });
+  const { fn, calls } = fakeFetch({
+    [primary]: { status: 304 },
+    [latest]: {
+      body: latestHtml([{ title: 'UFC 331 weigh-in results and breaking fight week updates', link: '/ufc/510700/ufc-331-weigh-in-results-breaking-updates', pub: '2026-09-16T22:59:00Z' }]),
+    },
+  });
+  const orig = globalThis.fetch;
+  globalThis.fetch = fn;
+  try {
+    const { result } = await fetchFeed({ UFC_NEWS_KV: kv }, { name: 'MMA Fighting', url: primary }, { now: NOW });
+    assert.equal(calls[0].headers['If-None-Match'], 'W/"legacy-frozen"');
+    assert.ok(calls.some((c) => c.url === latest), 'legacy production KV must not wait for a future forced 200');
+    assert.equal(result.not_modified, false);
+    assert.equal(result.page_fallback_used, true);
+    assert.equal(result.effective_newest_at, '2026-09-16T22:59:00.000Z');
+  } finally {
+    globalThis.fetch = orig;
+  }
+});
