@@ -25,6 +25,14 @@
  *   once when they have already accumulated 304s. This bounds a bad validator
  *   state instead of allowing the whole newsroom to freeze indefinitely.
  *
+ *   Content watermark migration. The live-page fallback added after the Sep 16
+ *   freeze needs the publication timestamp of the newest item seen in the
+ *   primary feed. Older KV records do not have that field. If such a record has
+ *   already accumulated 304s, we mark its primary-content watermark as
+ *   UNKNOWN_STALE (1ms after epoch). Only sources with an explicit live-page
+ *   fallback consult this value. That makes the very next 304 check the live
+ *   publisher page instead of waiting for a future forced 200 body refresh.
+ *
  *   Latency samples. A rolling window per feed, so "the ingest got slow" can be
  *   answered with which feed rather than a shrug.
  *
@@ -42,6 +50,7 @@ export const CIRCUIT_EXTENDED_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 export const FORCE_BODY_REFRESH_MS = 10 * 60 * 1000;
 export const HEALTH_TTL_SECONDS = 90 * 24 * 60 * 60;
 export const LATENCY_SAMPLES = 20;
+export const UNKNOWN_STALE_PRIMARY_TS = 1;
 
 const key = (name) => `feed:health:${name}`;
 
@@ -53,6 +62,7 @@ export function emptyHealth() {
     total_not_modified: 0,
     last_success_ts: null,
     last_body_success_ts: null,
+    last_primary_newest_ts: null,
     last_failure_ts: null,
     last_failure_reason: null,
     last_etag: null,
@@ -61,6 +71,24 @@ export function emptyHealth() {
     cooldown_until_ts: null,
     latency_samples: [],
   };
+}
+
+/**
+ * Upgrade pre-content-watermark KV records in place.
+ *
+ * A legacy record that has already returned 304s clearly has validators from a
+ * previous body fetch, but we do not know the newest publication timestamp from
+ * that body. Treat that unknown as stale for the narrow purpose of deciding
+ * whether a source-specific live-page fallback should be checked. A later real
+ * 200 body overwrites this sentinel with the true publication timestamp.
+ */
+export function migrateLegacyContentWatermark(health) {
+  const primaryTs = Number(health.last_primary_newest_ts);
+  const hasPrimaryTs = Number.isFinite(primaryTs) && primaryTs > 0;
+  if (!hasPrimaryTs && Number(health.total_not_modified || 0) > 0) {
+    health.last_primary_newest_ts = UNKNOWN_STALE_PRIMARY_TS;
+  }
+  return health;
 }
 
 /**
@@ -94,6 +122,7 @@ export async function loadHealth(kv, name, now = Date.now()) {
   try {
     const raw = await kv.get(key(name));
     const health = raw ? { ...emptyHealth(), ...JSON.parse(raw) } : emptyHealth();
+    migrateLegacyContentWatermark(health);
     return refreshStaleValidators(health, now);
   } catch {
     return emptyHealth();
@@ -182,6 +211,8 @@ export function summarize(name, health, now) {
   const total = health.total_successes + health.total_failures;
   const bodyTs = Number(health.last_body_success_ts);
   const hasBodyTs = Number.isFinite(bodyTs) && bodyTs > 0;
+  const primaryTs = Number(health.last_primary_newest_ts);
+  const hasRealPrimaryTs = Number.isFinite(primaryTs) && primaryTs > UNKNOWN_STALE_PRIMARY_TS;
   return {
     source: name,
     circuit: health.circuit_state,
@@ -197,6 +228,8 @@ export function summarize(name, health, now) {
     last_success_at: health.last_success_ts ? new Date(health.last_success_ts).toISOString() : null,
     last_body_success_at: hasBodyTs ? new Date(bodyTs).toISOString() : null,
     body_freshness_minutes: hasBodyTs ? Math.max(0, Math.round((now - bodyTs) / 60000)) : null,
+    primary_content_newest_at: hasRealPrimaryTs ? new Date(primaryTs).toISOString() : null,
+    primary_content_watermark_known: hasRealPrimaryTs,
     forced_body_refresh_minutes: FORCE_BODY_REFRESH_MS / 60000,
     last_failure_at: health.last_failure_ts ? new Date(health.last_failure_ts).toISOString() : null,
     last_failure_reason: health.last_failure_reason,
