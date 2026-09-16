@@ -27,13 +27,16 @@
  *   6. stable identity      links are distinct; a feed whose items all share a
  *                           URL breaks fingerprinting
  *   7. current content      newest dated item is <= 24h old. A feed that still
- *                           returns 200 but stopped advancing is not healthy.
+ *                           returns 200 but stopped advancing is degraded.
  *
- * A candidate failing any of these is reported with the reason and NOT enabled.
- * The standard does not move to make the count look better.
+ * A publisher whose primary RSS is stale may remain enabled when the ingest
+ * Worker has a same-publisher live-page fallback. Disabling that row would also
+ * disable the recovery path, which is exactly the opposite of what verification
+ * is supposed to accomplish.
  */
 import { parseFeed, parseDate } from '../../../scripts/news/lib.mjs';
 import { classifyFocus } from './ufc_focus.mjs';
+import { fallbackPageFor } from './source_fallbacks.mjs';
 
 const USER_AGENT = 'Mozilla/5.0 (compatible; PropBetEdgeUFCBot/1.0; +https://ufc.propbetedge.ai)';
 const PROBE_TIMEOUT_MS = 10000;
@@ -146,13 +149,18 @@ export async function probeCandidate(candidate, { now = Date.now() } = {}) {
   return { name: candidate.name, weight: candidate.weight, ok: false, chosen: null, attempts };
 }
 
+function staleOnlyFailure(g) {
+  return Boolean(g?.attempts?.length)
+    && g.attempts.every((a) => Array.isArray(a.failures) && a.failures.length > 0 && a.failures.every((f) => /^stale feed:/i.test(f)));
+}
+
 /**
  * Probe every candidate and, unless `dry`, reconcile ufc_news_sources.
  *
- * A source that passes is upserted enabled. A source already in the table that
- * now fails is DISABLED, never deleted: deleting it would orphan the
- * ufc_news_items rows that reference it, and the historical record of where a
- * story came from is worth more than a tidy table.
+ * A source that passes is upserted enabled. A genuinely broken source already
+ * in the table is DISABLED, never deleted. A stale-only publisher with a live
+ * page fallback remains enabled because that source row is the anchor the ingest
+ * Worker uses to invoke recovery.
  */
 export async function verifySources(env, sb, { now = Date.now(), dry = true, only = null } = {}) {
   const list = only ? CANDIDATES.filter((c) => c.name.toLowerCase() === String(only).toLowerCase()) : CANDIDATES;
@@ -164,11 +172,23 @@ export async function verifySources(env, sb, { now = Date.now(), dry = true, onl
   const existing = await sb.select('ufc_news_sources', 'select=id,kind,name,url,enabled,weight&kind=eq.rss');
   const byName = new Map(existing.map((s) => [s.name, s]));
 
-  const plan = { enable: [], update_url: [], disable: [], unchanged: [], rejected: [] };
+  const plan = { enable: [], update_url: [], disable: [], unchanged: [], degraded_recoverable: [], rejected: [] };
   for (const g of graded) {
     const current = byName.get(g.name);
     if (!g.ok) {
       plan.rejected.push({ name: g.name, attempts: g.attempts.map((a) => ({ url: a.url, reason: a.reason })) });
+
+      if (current && current.enabled && fallbackPageFor(g.name) && staleOnlyFailure(g)) {
+        plan.degraded_recoverable.push({
+          name: g.name,
+          id: current.id,
+          url: current.url,
+          recovery: fallbackPageFor(g.name),
+          why: g.attempts[0]?.reason || 'primary feed stale',
+        });
+        continue;
+      }
+
       if (current && current.enabled) plan.disable.push({ name: g.name, id: current.id, why: g.attempts[0]?.reason || 'verification failed' });
       continue;
     }
@@ -180,7 +200,7 @@ export async function verifySources(env, sb, { now = Date.now(), dry = true, onl
 
   if (dry) return { status: 'dry_run', probed: graded.length, plan, graded };
 
-  const applied = { enabled: 0, url_updated: 0, disabled: 0 };
+  const applied = { enabled: 0, url_updated: 0, disabled: 0, degraded_recoverable: plan.degraded_recoverable.length };
   for (const e of plan.enable) {
     const current = byName.get(e.name);
     if (current) { await sb.patch('ufc_news_sources', `id=eq.${current.id}`, { url: e.url, enabled: true, weight: e.weight }); }
