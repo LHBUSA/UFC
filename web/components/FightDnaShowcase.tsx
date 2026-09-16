@@ -89,7 +89,6 @@ export async function FightDnaShowcase({ exploreHref = "/fighters", exploreLabel
 
   const displayName = fighter?.name || "Featured fighter";
   const lastName = fighter?.name?.split(" ").slice(-1)[0] || "fighter";
-  const initials = displayName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
   const fullProfileLabel = fighter ? `Open ${lastName}’s full Fight DNA →` : exploreLabel;
   const locked = !snapshot;
 
@@ -114,7 +113,7 @@ export async function FightDnaShowcase({ exploreHref = "/fighters", exploreLabel
 
       <div className="fdna-top">
         <div className="fdna-fighter">
-          {image ? <img src={image} alt="" width={720} height={900} loading="lazy" decoding="async" /> : <div className="fdna-fallback" aria-hidden="true">{initials || "DNA"}</div>}
+          <img src={image || "/media/fight-dna-featured-fighter.svg"} alt="" width={720} height={900} loading="lazy" decoding="async" />
           <div className="fdna-fighter-copy">
             <span>Featured Fight DNA</span>
             <h3>{displayName}</h3>
