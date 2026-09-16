@@ -1,0 +1,56 @@
+name: Apply Fight DNA featured art
+
+on:
+  push:
+    paths:
+      - .github/workflows/apply-fight-dna-featured-art.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Replace initials fallback with custom art
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('web/components/FightDnaShowcase.tsx')
+          s = p.read_text(encoding='utf-8')
+          old = '          {image ? <img src={image} alt="" width={720} height={900} loading="lazy" decoding="async" /> : <div className="fdna-fallback" aria-hidden="true">{initials || "DNA"}</div>}'
+          new = '          <img src={image || "/media/fight-dna-featured-fighter.svg"} alt="" width={720} height={900} loading="lazy" decoding="async" />'
+          if old not in s:
+              raise SystemExit('Fight DNA fallback anchor not found')
+          s = s.replace(old, new, 1)
+          s = s.replace('  const initials = displayName.split(/\\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();\n', '', 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verify production build
+        shell: bash
+        run: |
+          cd web
+          npm ci
+          npm run build
+
+      - name: Commit patch
+        shell: bash
+        run: |
+          git config user.name "PropBetEdge Build Bot"
+          git config user.email "buildbot@propbetedge.ai"
+          git rm .github/workflows/apply-fight-dna-featured-art.yml
+          git add web/components/FightDnaShowcase.tsx
+          git diff --cached --check
+          git commit -m "Use custom Fight DNA featured fighter art"
+          git push origin HEAD:main
