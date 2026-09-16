@@ -5,10 +5,10 @@
  * Owns: cadence, feed health, conditional fetching, the UFC-focus filter, the
  * initial candidate state, detected_at, and a detect event per accepted item.
  *
- * Does not own: relevance scoring, source-page fetching, the intelligence
- * packet, editorial, validation, publication. Nothing in this Worker calls a
- * model or writes ufc_articles. It is the detection half of the pipeline and
- * ends at a row in ufc_news_items.
+ * Does not own: relevance scoring, source-page fetching for editorial copy, the
+ * intelligence packet, editorial, validation, publication. Nothing in this
+ * Worker calls a model or writes ufc_articles. It is the detection half of the
+ * pipeline and ends at a row in ufc_news_items.
  *
  * ON RUNNING ALONGSIDE THE EXISTING NEWSROOM INGEST
  *
@@ -36,13 +36,14 @@ import {
   loadHealth, saveHealth, isInCooldown, shouldHalfOpen, onSuccess, onFailure,
 } from './feed_health.mjs';
 import {
-  fallbackUrlsFor, fallbackPageFor, parseLatestPage, SOURCE_BODY_MAX_AGE_MS,
+  fallbackUrlsFor, fallbackPagesFor, parseLatestPage, parseArticlePage, SOURCE_BODY_MAX_AGE_MS,
 } from './source_fallbacks.mjs';
 
 export const WORKER = 'ufc-news-ingest';
 export const FETCH_TIMEOUT_MS = 8000;
 export const MAX_AGE_DAYS = 14;
 const USER_AGENT = 'Mozilla/5.0 (compatible; PropBetEdgeUFCBot/1.0; +https://ufc.propbetedge.ai)';
+const PAGE_DETAIL_LIMIT = 12;
 
 const fingerprintOf = (title, url) => sha256(`${normalize(title)}|${domainOf(url)}`);
 
@@ -64,6 +65,13 @@ function mergeFeedItems(...groups) {
     }
   }
   return out;
+}
+
+function currentPublished(item, now, maxAgeMs = 2 * SOURCE_BODY_MAX_AGE_MS) {
+  const d = parseDate(item?.published);
+  if (!d) return false;
+  const ts = d.getTime();
+  return ts <= now + 5 * 60 * 1000 && now - ts <= maxAgeMs;
 }
 
 /**
@@ -113,19 +121,7 @@ async function fetchPublisherFallbacks(sourceName, now) {
   };
 }
 
-/**
- * Fetch the publisher's own live Latest News page and turn its dated article
- * cards into the same shape as RSS items.
- *
- * This is the final discovery fallback, not a new editorial source. It only
- * runs for publishers whose primary RSS content is already known stale. The
- * page parser accepts same-host links with machine-readable timestamps; the
- * normal UFC focus filter, dedupe, entity linker and queue path remain exactly
- * the same after discovery.
- */
-async function fetchPublisherLatestPage(sourceName, now) {
-  const url = fallbackPageFor(sourceName);
-  if (!url) return { url: null, attempted: false, ok: false, items: [], newest_ms: null, fresh: false, error: null };
+async function fetchOnePublisherPage(url) {
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': USER_AGENT, Accept: 'text/html,application/xhtml+xml' },
@@ -133,35 +129,105 @@ async function fetchPublisherLatestPage(sourceName, now) {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       cf: { cacheTtl: 0 },
     });
-    if (!res.ok) return { url, attempted: true, ok: false, items: [], newest_ms: null, fresh: false, error: `http ${res.status}` };
-
-    const parsed = parseLatestPage(await res.text(), url);
-    /* Require a real publication clock for page-discovered items. Navigation,
-     * evergreen modules and unrelated sidebars frequently have article-looking
-     * links but no current <time datetime>. They are not news detection. */
-    const items = parsed.filter((item) => {
-      const d = parseDate(item.published);
-      if (!d) return false;
-      const ts = d.getTime();
-      return ts <= now + 5 * 60 * 1000 && now - ts <= 2 * SOURCE_BODY_MAX_AGE_MS;
-    });
-    const newest_ms = newestPublishedMs(items);
-    return {
-      url, attempted: true, ok: items.length > 0, items, newest_ms,
-      fresh: newest_ms !== null && now - newest_ms <= SOURCE_BODY_MAX_AGE_MS,
-      error: items.length ? null : 'no current dated article cards parsed',
-    };
+    if (!res.ok) return { url, ok: false, items: [], error: `http ${res.status}` };
+    const items = parseLatestPage(await res.text(), url);
+    return { url, ok: items.length > 0, items, error: items.length ? null : 'no article links parsed' };
   } catch (e) {
     return {
-      url, attempted: true, ok: false, items: [], newest_ms: null, fresh: false,
+      url, ok: false, items: [],
       error: e?.name === 'TimeoutError' ? `timeout after ${FETCH_TIMEOUT_MS}ms` : `fetch error: ${String(e?.message || e).slice(0, 120)}`,
     };
   }
 }
 
+async function resolveUndatedPublisherItems(items, now) {
+  const undated = (items || []).filter((item) => !parseDate(item.published)).slice(0, PAGE_DETAIL_LIMIT);
+  if (!undated.length) return { items: [], attempted: 0, ok: 0, errors: [] };
+
+  const settled = await Promise.all(undated.map(async (item) => {
+    try {
+      const res = await fetch(item.link, {
+        headers: { 'User-Agent': USER_AGENT, Accept: 'text/html,application/xhtml+xml' },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+        cf: { cacheTtl: 0 },
+      });
+      if (!res.ok) return { url: item.link, ok: false, error: `http ${res.status}`, item: null };
+      const detail = parseArticlePage(await res.text(), item.link);
+      if (!detail || !currentPublished(detail, now)) {
+        return { url: item.link, ok: false, error: 'no current article publication clock parsed', item: null };
+      }
+      return {
+        url: item.link,
+        ok: true,
+        error: null,
+        item: {
+          ...item,
+          ...detail,
+          title: detail.title || item.title,
+          summary: detail.summary || item.summary || '',
+        },
+      };
+    } catch (e) {
+      return {
+        url: item.link, ok: false, item: null,
+        error: e?.name === 'TimeoutError' ? `timeout after ${FETCH_TIMEOUT_MS}ms` : `fetch error: ${String(e?.message || e).slice(0, 120)}`,
+      };
+    }
+  }));
+
+  return {
+    items: settled.filter((r) => r.ok).map((r) => r.item),
+    attempted: settled.length,
+    ok: settled.filter((r) => r.ok).length,
+    errors: settled.filter((r) => !r.ok).map((r) => ({ url: r.url, error: r.error })),
+  };
+}
+
+/**
+ * Fetch publisher-controlled live discovery surfaces and normalize their
+ * article cards into the same shape as RSS items.
+ *
+ * The live page is a discovery source, not an editorial source. We prefer cards
+ * with a machine-readable timestamp. If the real publisher markup exposes the
+ * article link/headline but not the publication clock, we fetch only a bounded
+ * number of those article pages and read their JSON-LD/meta publication time.
+ * This avoids depending on a CSS class or card layout that Vox can change while
+ * keeping every accepted item tied to a real publisher URL and timestamp.
+ */
+async function fetchPublisherLatestPages(sourceName, now) {
+  const urls = fallbackPagesFor(sourceName);
+  if (!urls.length) {
+    return {
+      urls: [], attempted: 0, pages_ok: 0, items: [], newest_ms: null, fresh: false,
+      detail_attempted: 0, detail_ok: 0, errors: [], detail_errors: [],
+    };
+  }
+
+  const pages = await Promise.all(urls.map((url) => fetchOnePublisherPage(url)));
+  const parsed = mergeFeedItems(...pages.filter((p) => p.ok).map((p) => p.items));
+  const dated = parsed.filter((item) => currentPublished(item, now));
+  const detail = await resolveUndatedPublisherItems(parsed, now);
+  const items = mergeFeedItems(dated, detail.items);
+  const newest_ms = newestPublishedMs(items);
+
+  return {
+    urls,
+    attempted: urls.length,
+    pages_ok: pages.filter((p) => p.ok).length,
+    items,
+    newest_ms,
+    fresh: newest_ms !== null && now - newest_ms <= SOURCE_BODY_MAX_AGE_MS,
+    detail_attempted: detail.attempted,
+    detail_ok: detail.ok,
+    errors: pages.filter((p) => !p.ok).map((p) => ({ url: p.url, error: p.error })),
+    detail_errors: detail.errors,
+  };
+}
+
 async function recoverStalePublisher(sourceName, now, primaryNewestMs) {
   const rss = await fetchPublisherFallbacks(sourceName, now);
-  const page = await fetchPublisherLatestPage(sourceName, now);
+  const page = await fetchPublisherLatestPages(sourceName, now);
   const items = mergeFeedItems(rss.items, page.items);
   const newest_ms = newestPublishedMs(items);
   return {
@@ -207,7 +273,9 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
     items: [], skipped: null, not_modified: false, error: null,
     fallback_used: false, fallback_attempted: 0, fallback_feeds_ok: 0,
     fallback_errors: [], page_fallback_attempted: false, page_fallback_used: false,
-    page_fallback_error: null, primary_newest_at: null, effective_newest_at: null,
+    page_fallback_error: null, page_fallback_pages_attempted: 0,
+    page_fallback_pages_ok: 0, page_detail_attempted: 0, page_detail_ok: 0,
+    primary_newest_at: null, effective_newest_at: null,
   };
 
   if (isInCooldown(health, now)) {
@@ -239,14 +307,19 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
         && now - rememberedPrimaryNewestMs > SOURCE_BODY_MAX_AGE_MS;
 
       /* Once a successful body fetch proved the site-wide RSS content is stale,
-       * a later 304 cannot be allowed to suppress discovery for another ten
-       * minutes. Check the publisher's live Latest page on every 2-minute pass
-       * until the primary feed advances again. */
-      if (rememberedPrimaryStale && fallbackPageFor(source.name)) {
-        const page = await fetchPublisherLatestPage(source.name, now);
-        result.page_fallback_attempted = page.attempted;
-        result.page_fallback_error = page.error;
-        result.primary_newest_at = new Date(rememberedPrimaryNewestMs).toISOString();
+       * a later 304 cannot suppress discovery. Check the publisher's live pages
+       * on every two-minute pass until the primary feed advances again. */
+      if (rememberedPrimaryStale && fallbackPagesFor(source.name).length) {
+        const page = await fetchPublisherLatestPages(source.name, now);
+        result.page_fallback_attempted = page.attempted > 0;
+        result.page_fallback_pages_attempted = page.attempted;
+        result.page_fallback_pages_ok = page.pages_ok;
+        result.page_detail_attempted = page.detail_attempted;
+        result.page_detail_ok = page.detail_ok;
+        result.page_fallback_error = page.fresh
+          ? null
+          : [...page.errors, ...page.detail_errors].slice(0, 4).map((e) => `${e.url}: ${e.error}`).join('; ') || 'no current dated article discovered';
+        result.primary_newest_at = rememberedPrimaryNewestMs > 1 ? new Date(rememberedPrimaryNewestMs).toISOString() : null;
         if (page.fresh && page.newest_ms > rememberedPrimaryNewestMs) {
           result.items = page.items;
           result.fallback_used = true;
@@ -287,16 +360,22 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
      * returned valid, parseable RSS bodies whose article lists had stopped on
      * Sep. 14/15 while their live sites continued publishing Sep. 16 stories.
      * A frozen body is therefore a source failure even though transport is
-     * green. Recover first from official author RSS, then from the publisher's
-     * live Latest page. */
+     * green. Recover first from official author RSS, then from multiple live
+     * publisher pages and, when necessary, a bounded article-detail clock. */
     const primaryStale = primaryNewestMs !== null && now - primaryNewestMs > SOURCE_BODY_MAX_AGE_MS;
-    if (primaryStale && (fallbackUrlsFor(source.name).length || fallbackPageFor(source.name))) {
+    if (primaryStale && (fallbackUrlsFor(source.name).length || fallbackPagesFor(source.name).length)) {
       const fallback = await recoverStalePublisher(source.name, now, primaryNewestMs);
       result.fallback_attempted = fallback.rss.attempted;
       result.fallback_feeds_ok = fallback.rss.feeds_ok;
       result.fallback_errors = fallback.rss.errors;
-      result.page_fallback_attempted = fallback.page.attempted;
-      result.page_fallback_error = fallback.page.error;
+      result.page_fallback_attempted = fallback.page.attempted > 0;
+      result.page_fallback_pages_attempted = fallback.page.attempted;
+      result.page_fallback_pages_ok = fallback.page.pages_ok;
+      result.page_detail_attempted = fallback.page.detail_attempted;
+      result.page_detail_ok = fallback.page.detail_ok;
+      result.page_fallback_error = fallback.page.fresh
+        ? null
+        : [...fallback.page.errors, ...fallback.page.detail_errors].slice(0, 4).map((e) => `${e.url}: ${e.error}`).join('; ') || 'no current dated article discovered';
       if (fallback.fresh && fallback.newer_than_primary) {
         result.items = mergeFeedItems(result.items, fallback.items);
         result.fallback_used = true;
@@ -394,6 +473,10 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
       page_fallback_attempted: result.page_fallback_attempted,
       page_fallback_used: result.page_fallback_used,
       page_fallback_error: result.page_fallback_error,
+      page_fallback_pages_attempted: result.page_fallback_pages_attempted,
+      page_fallback_pages_ok: result.page_fallback_pages_ok,
+      page_detail_attempted: result.page_detail_attempted,
+      page_detail_ok: result.page_detail_ok,
       primary_newest_at: result.primary_newest_at, effective_newest_at: result.effective_newest_at,
     };
     if (result.skipped) { totals.circuit_skipped += 1; perSource.push(row); continue; }
