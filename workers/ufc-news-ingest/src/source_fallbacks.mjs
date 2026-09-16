@@ -1,11 +1,12 @@
-/* Publisher-controlled fallback feeds for sources whose site-wide RSS endpoint
+/* Publisher-controlled fallback inputs for sources whose site-wide RSS endpoint
  * can stay HTTP-healthy while its article list stops advancing.
  *
- * These are not alternate publishers or scraped third parties. They are the RSS
- * hrefs exposed by the publishers on current author profile pages. Ingest uses
- * them only when the primary source body is stale, preserving the cheap primary
- * feed path in normal operation while removing one frozen site-wide endpoint as
- * a single point of failure.
+ * These are not alternate publishers or scraped third parties. RSS fallbacks
+ * are author feeds exposed by the same publisher. Latest-page fallbacks are the
+ * publisher's own current-news index. Ingest uses them only when the primary
+ * source body is stale, preserving the cheap primary-feed path in normal
+ * operation while removing one frozen site-wide endpoint as a single point of
+ * failure.
  */
 
 export const SOURCE_BODY_MAX_AGE_HOURS = 24;
@@ -27,6 +28,15 @@ export const RSS_FALLBACKS = Object.freeze({
   ]),
 });
 
+export const LATEST_PAGES = Object.freeze({
+  'MMA Fighting': 'https://www.mmafighting.com/latest-news',
+  'MMA Mania': 'https://www.mmamania.com/latest-news',
+});
+
 export function fallbackUrlsFor(sourceName) {
   return RSS_FALLBACKS[sourceName] || [];
+}
+
+export function fallbackPageFor(sourceName) {
+  return LATEST_PAGES[sourceName] || null;
 }
