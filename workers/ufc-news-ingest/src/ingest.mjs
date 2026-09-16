@@ -35,6 +35,7 @@ import { classifyFocus, initialState } from './ufc_focus.mjs';
 import {
   loadHealth, saveHealth, isInCooldown, shouldHalfOpen, onSuccess, onFailure,
 } from './feed_health.mjs';
+import { fallbackUrlsFor, SOURCE_BODY_MAX_AGE_MS } from './source_fallbacks.mjs';
 
 export const WORKER = 'ufc-news-ingest';
 export const FETCH_TIMEOUT_MS = 8000;
@@ -42,6 +43,73 @@ export const MAX_AGE_DAYS = 14;
 const USER_AGENT = 'Mozilla/5.0 (compatible; PropBetEdgeUFCBot/1.0; +https://ufc.propbetedge.ai)';
 
 const fingerprintOf = (title, url) => sha256(`${normalize(title)}|${domainOf(url)}`);
+
+function newestPublishedMs(items) {
+  const dates = (items || []).map((i) => parseDate(i.published)).filter(Boolean).map((d) => d.getTime());
+  return dates.length ? Math.max(...dates) : null;
+}
+
+function mergeFeedItems(...groups) {
+  const out = [];
+  const seen = new Set();
+  for (const items of groups) {
+    for (const item of items || []) {
+      if (!item?.title || !item?.link) continue;
+      const k = String(item.link).trim();
+      if (!k || seen.has(k)) continue;
+      seen.add(k);
+      out.push(item);
+    }
+  }
+  return out;
+}
+
+/**
+ * Fetch official publisher-controlled fallback RSS feeds.
+ *
+ * We only call this after a successful primary 200 whose newest dated item is
+ * stale. That distinction matters: a dead primary uses the circuit breaker; a
+ * frozen primary is subtler because transport health is green while editorial
+ * freshness is red. Fallbacks are author feeds exposed by the same publisher,
+ * so source provenance remains the publisher rather than an aggregator.
+ */
+async function fetchPublisherFallbacks(sourceName, now) {
+  const urls = fallbackUrlsFor(sourceName);
+  if (!urls.length) return { items: [], feeds_ok: 0, attempted: 0, newest_ms: null, errors: [] };
+
+  const settled = await Promise.all(urls.map(async (url) => {
+    try {
+      const res = await fetch(url, {
+        headers: { 'User-Agent': USER_AGENT },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+        cf: { cacheTtl: 0 },
+      });
+      if (!res.ok) return { url, ok: false, error: `http ${res.status}`, items: [] };
+      const items = parseFeed(await res.text());
+      if (!items.length) return { url, ok: false, error: 'no items parsed', items: [] };
+      return { url, ok: true, error: null, items };
+    } catch (e) {
+      return {
+        url, ok: false,
+        error: e?.name === 'TimeoutError' ? `timeout after ${FETCH_TIMEOUT_MS}ms` : `fetch error: ${String(e?.message || e).slice(0, 120)}`,
+        items: [],
+      };
+    }
+  }));
+
+  const good = settled.filter((r) => r.ok);
+  const items = mergeFeedItems(...good.map((r) => r.items));
+  const newest_ms = newestPublishedMs(items);
+  return {
+    items,
+    feeds_ok: good.length,
+    attempted: urls.length,
+    newest_ms,
+    errors: settled.filter((r) => !r.ok).map((r) => ({ url: r.url, error: r.error })),
+    fresh: newest_ms !== null && now - newest_ms <= SOURCE_BODY_MAX_AGE_MS,
+  };
+}
 
 /**
  * A KV handle that reads normally and refuses to write.
@@ -74,6 +142,8 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
   const result = {
     source: source.name, url: source.url, status: null, latency_ms: null,
     items: [], skipped: null, not_modified: false, error: null,
+    fallback_used: false, fallback_attempted: 0, fallback_feeds_ok: 0,
+    fallback_errors: [], primary_newest_at: null, effective_newest_at: null,
   };
 
   if (isInCooldown(health, now)) {
@@ -119,6 +189,30 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
       onFailure(health, now, result.error, { wasHalfOpen: halfOpen });
       return { result, health, changed: true };
     }
+
+    const primaryNewestMs = newestPublishedMs(result.items);
+    result.primary_newest_at = primaryNewestMs ? new Date(primaryNewestMs).toISOString() : null;
+
+    /* HTTP 200 is not enough. On 2026-09-16 MMA Fighting and MMA Mania both
+     * returned valid, parseable RSS bodies whose article lists had stopped on
+     * Sep. 14/15 while their live sites continued publishing Sep. 16 stories.
+     * A frozen body is therefore a source failure even though transport is
+     * green. Pull official author feeds only in that case. */
+    const primaryStale = primaryNewestMs !== null && now - primaryNewestMs > SOURCE_BODY_MAX_AGE_MS;
+    if (primaryStale && fallbackUrlsFor(source.name).length) {
+      const fallback = await fetchPublisherFallbacks(source.name, now);
+      result.fallback_attempted = fallback.attempted;
+      result.fallback_feeds_ok = fallback.feeds_ok;
+      result.fallback_errors = fallback.errors;
+      if (fallback.fresh && (primaryNewestMs === null || fallback.newest_ms > primaryNewestMs)) {
+        result.items = mergeFeedItems(result.items, fallback.items);
+        result.fallback_used = true;
+      }
+    }
+
+    const effectiveNewestMs = newestPublishedMs(result.items);
+    result.effective_newest_at = effectiveNewestMs ? new Date(effectiveNewestMs).toISOString() : null;
+
     onSuccess(health, now, {
       latencyMs: result.latency_ms,
       etag: res.headers.get('etag'),
@@ -183,7 +277,7 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
 
   const totals = {
     sources: sources.length, fetched_ok: 0, not_modified: 0, failed: 0, circuit_skipped: 0,
-    parsed: 0, stale: 0, dup_in_run: 0, dup_in_db: 0,
+    fallback_sources: 0, parsed: 0, stale: 0, dup_in_run: 0, dup_in_db: 0,
     focus_rejected: 0, focus_by_reason: {}, candidates: 0, inserted: 0, errors: 0,
   };
   const perSource = [];
@@ -200,11 +294,15 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
       source: result.source, status: result.status, latency_ms: result.latency_ms,
       parsed: result.items.length, fresh: 0, focus_rejected: 0, candidates: 0,
       not_modified: result.not_modified, skipped: result.skipped, error: result.error,
+      fallback_used: result.fallback_used, fallback_attempted: result.fallback_attempted,
+      fallback_feeds_ok: result.fallback_feeds_ok,
+      primary_newest_at: result.primary_newest_at, effective_newest_at: result.effective_newest_at,
     };
     if (result.skipped) { totals.circuit_skipped += 1; perSource.push(row); continue; }
     if (result.not_modified) { totals.not_modified += 1; perSource.push(row); continue; }
     if (result.error) { totals.failed += 1; perSource.push(row); continue; }
     totals.fetched_ok += 1;
+    if (result.fallback_used) totals.fallback_sources += 1;
     totals.parsed += result.items.length;
 
     const src = sources.find((s) => s.name === result.source);
