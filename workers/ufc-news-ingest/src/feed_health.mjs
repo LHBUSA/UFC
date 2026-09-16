@@ -81,12 +81,20 @@ export function refreshStaleValidators(health, now = Date.now()) {
   return health;
 }
 
-export async function loadHealth(kv, name) {
+/**
+ * Load health using the caller's clock.
+ *
+ * In production that clock is Date.now(), but tests, replays and dry-run proofs
+ * deliberately inject a timestamp. Validator freshness must be evaluated
+ * against that same timestamp or a replay can incorrectly look ten minutes old
+ * simply because the wall clock is later than the simulated ingest clock.
+ */
+export async function loadHealth(kv, name, now = Date.now()) {
   if (!kv) return emptyHealth();
   try {
     const raw = await kv.get(key(name));
     const health = raw ? { ...emptyHealth(), ...JSON.parse(raw) } : emptyHealth();
-    return refreshStaleValidators(health);
+    return refreshStaleValidators(health, now);
   } catch {
     return emptyHealth();
   }
