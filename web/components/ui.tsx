@@ -378,38 +378,81 @@ export function ProPlans({ active = false, email = null }: { active?: boolean; e
    * entitlement Stripe grants land on the account the reader is using. */
   const checkout = (url: string) => (email ? `${url}?prefilled_email=${encodeURIComponent(email)}` : url);
   return (
-    <div className="plans pro-offer">
-      <div className="plan">
-        <div className="eyebrow dim">Free</div>
+    <div className="plans pro-offer pro-offer-v2" id="pro">
+      <div className="plan pro-free-plan">
+        <div className="eyebrow dim">Free · Public proof stays public</div>
         <div className="price">$0</div>
+        <p className="pro-free-lede">Follow the sport, inspect the evidence and see how PBE Algo works before paying for a call.</p>
         <ul>
           <li>Every upcoming card, main card and prelims</li>
-          <li>Fighter pages with records, physicals and fight history</li>
+          <li>Fighter records, physicals, fight history and public Fight DNA context</li>
           <li>Fight pages, results and factual round-by-round statistics</li>
-          <li>Tale of the tape, official rankings and official weigh-ins</li>
-          <li>Newsroom, RSS, TUF, Contender Series and Hall of Fame archives</li>
+          <li>Official rankings, official weigh-ins, newsroom and historical archives</li>
+          <li>PBE Algo method, eligibility rules and aggregate model accountability</li>
         </ul>
-        <Link href="/events" className="btn">Browse the cards</Link>
+        <div className="pro-free-actions">
+          <Link href="/events" className="btn">Browse the cards</Link>
+          <Link href="/algo" className="btn">See PBE Algo proof</Link>
+        </div>
       </div>
-      <div className="plan pro best">
-        <div className="eyebrow">UFC Pro · Founding season</div>
-        <div className="price">{monthly.display}<small>/{monthly.cadence}</small><span className="plan-badge">{monthly.badge}</span></div>
-        <div className="plan-terms">or {weekly.display}/{weekly.cadence} <span className="plan-badge alt">{weekly.badge}</span> · No free trial · Cancel anytime</div>
-        <ul>
-          <li>Fight DNA profiles and Matchup DNA for every fighter and fight</li>
-          <li>Round intelligence: round-over-round signals against each fighter&apos;s Fight DNA baseline</li>
-          <li>Market prices and line movement wherever books are pricing a bout</li>
-          <li>Fight-week desk with Fight DNA reads, plus referee and judge tendency analytics</li>
-          <li className="locked">Model probabilities, fair prices and picks stay unavailable until validated</li>
+
+      <div className="plan pro best pro-picks-plan">
+        <div className="pro-picks-kicker">
+          <div className="eyebrow">UFC Pro · Founding season</div>
+          <span className="pro-picks-pill">PBE PICKS · PRO</span>
+        </div>
+
+        <h3 className="pro-picks-title">The model makes the call before the fight. Then it lives with the result.</h3>
+        <p className="pro-picks-lede">
+          PBE Algo scores every eligible UFC bout from pre-fight data, produces its own win probability and confidence, compares that probability with the fight-week market, and locks the official call before the fight. The result is graded afterward. No hindsight and no deleted losses.
+        </p>
+
+        <div className="pro-proof-row" aria-label="PBE Algo accountability">
+          <div><b>LOCKED</b><span>before the fight</span></div>
+          <div><b>GRADED</b><span>after the result</span></div>
+          <div><b>PERMANENT</b><span>record stays on file</span></div>
+        </div>
+
+        <div className="pro-pick-lockbox" aria-label="UFC Pro model outputs">
+          <div className="pro-pick-lockbox-head"><span>PBE PICKS</span><Link href="/algo">How the model works →</Link></div>
+          {[
+            ["PBE Pick", "The fighter the model calls"],
+            ["Win probability + confidence", "Independent model probability and confidence tier"],
+            ["PBE Edge", "Model probability vs the de-vigged market"],
+            ["Model drivers", "The strongest factors for and against the call"],
+          ].map(([label, detail]) => (
+            <div className="pro-pick-lockrow" key={label}>
+              <span><b>{label}</b><small>{detail}</small></span>
+              <span className="pro-lock-chip">PRO</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="pro-picks-price">
+          <div className="price">{monthly.display}<small>/{monthly.cadence}</small><span className="plan-badge">{monthly.badge}</span></div>
+          <div className="plan-terms">or {weekly.display}/{weekly.cadence} <span className="plan-badge alt">{weekly.badge}</span> · No free trial · Cancel anytime</div>
+        </div>
+
+        <ul className="pro-value-list">
+          <li><b>PBE Picks on every eligible bout.</b> Pick, probability, confidence, data quality and no-call reason when a fight is ineligible.</li>
+          <li><b>Market intelligence built around the call.</b> Consensus, best available price, de-vigged market probability, PBE Edge and movement when verified fight-week pricing exists.</li>
+          <li><b>Fight DNA beneath the model.</b> Matchup DNA, round progression, stance, pace, attack distribution, grappling context and fighter tendencies.</li>
+          <li><b>A learning loop with guardrails.</b> Graded fights train challenger models; the live champion never silently changes and promotion requires evidence.</li>
         </ul>
+
         {active ? (
-          <Link href="/account" className="btn gold">UFC Pro is active · Account</Link>
+          <div className="pro-cta-row">
+            <Link href="/algo/card" className="btn gold">Open Current PBE Picks</Link>
+            <Link href="/account" className="btn">Account</Link>
+          </div>
         ) : (
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <a href={checkout(monthly.checkoutUrl)} className="btn gold" data-plan="monthly">Start Monthly · {monthly.display}/mo</a>
-            <a href={checkout(weekly.checkoutUrl)} className="btn" data-plan="weekly">Weekly · {weekly.display}/wk</a>
+          <div className="pro-cta-row">
+            <a href={checkout(monthly.checkoutUrl)} className="btn gold" data-plan="monthly">Unlock PBE Picks · {monthly.display}/mo</a>
+            <a href={checkout(weekly.checkoutUrl)} className="btn" data-plan="weekly">Fight Week · {weekly.display}/wk</a>
           </div>
         )}
+
+        <div className="pro-receipt-line"><b>Every official call has a receipt.</b> Locked before the fight, graded afterward, and never backfilled from the backtest. <Link href="/algo">See the public proof →</Link></div>
         <div className="faint label mt-3">Secure checkout by Stripe. Access unlocks on your UFC account once Stripe confirms the subscription; use the same email at checkout.</div>
       </div>
     </div>

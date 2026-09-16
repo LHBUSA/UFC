@@ -11,8 +11,8 @@ import { getCurrentAccount } from "@/lib/auth";
 import { algoCallsActive, getAlgoPublicRecord } from "@/lib/algo";
 
 export const metadata: Metadata = {
-  title: "UFC Pro — Fight DNA Intelligence Layer & Fight Week Access",
-  description: "PropBetEdge UFC Pro founding season: $9.99/month or $3.99/week, no free trial, cancel anytime. PBE Algo win probabilities with a locked, graded record, plus the proprietary Fight DNA intelligence layer (matchup DNA, round intelligence, fight-week desk, market movement, officials tendencies).",
+  title: "UFC Pro — PBE Picks, UFC Predictions, Fight DNA & Market Edge",
+  description: "UFC Pro unlocks PBE Picks from the PropBetEdge fight model: independent win probabilities, confidence, PBE Edge, model drivers and a locked graded record for eligible UFC bouts, plus Fight DNA and fight-week intelligence. $9.99/month or $3.99/week.",
   alternates: { canonical: "/pro" },
 };
 
@@ -39,9 +39,9 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
     <div className="wrap page">
       <PageHead
         crumbs={[{ name: "Pro" }]}
-        eyebrow="UFC Pro"
-        title="PBE Algo and Fight DNA. Model claims only when earned."
-        lede="UFC Pro is built around PBE Algo, Fight DNA and fight-week intelligence. Every PBE Algo call is locked before the fight and graded after it, and nothing is shown that the model did not produce."
+        eyebrow="UFC Pro · PBE Picks · Proprietary fight model"
+        title="PBE Algo calls the fights. UFC Pro shows you every call."
+        lede="Every eligible bout. Independent win probabilities. Confidence. PBE Edge. Fight DNA. Official calls lock before the fight and are graded afterward — with the record left intact."
       />
 
       {returning !== "not_returning" && (
@@ -94,16 +94,35 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
         </section>
       ) : returning === "verifying" || returning === "sign_in" ? null : <ProPlans email={account?.email ?? null} />}
 
-      <section className="card hi mt-6 pro-algo" aria-labelledby="pro-algo-title">
-        <div className="eyebrow">UFC Pro flagship · PBE Algo · {algoIsLive ? (algoRecord.locked_predictions ? `${algoRecord.locked_predictions} locked call${algoRecord.locked_predictions === 1 ? "" : "s"}` : "official calls active, first lock pending") : "pre-launch"}</div>
-        <h2 id="pro-algo-title" className="serif" style={{ margin: "7px 0 8px" }}>The call, the probability, the edge and the history.</h2>
-        <p className="dim sm" style={{ maxWidth: 760 }}>
-          PBE Algo scores every eligible UFC bout from pre-fight data only: pick, win probability, confidence and data quality, fight-week consensus and best available odds, the market probability with the vig removed, PBE Edge, and the model&apos;s own drivers for and against. Calls lock on the database clock before the fight and are graded after it; ineligible bouts show NO MODEL CALL with the reason.
-          {algoIsLive ? "" : " The first official call has not been locked yet, and the record will start at zero rather than borrow from the backtest."}
+      <section className="card hi mt-6 pro-algo pro-algo-sales" aria-labelledby="pro-algo-title">
+        <div className="eyebrow">UFC Pro flagship · PBE Picks · {algoIsLive ? (algoRecord.locked_predictions ? `${algoRecord.locked_predictions} official call${algoRecord.locked_predictions === 1 ? "" : "s"} locked` : "official calls active · first lock pending") : "official record begins at first lock"}</div>
+        <h2 id="pro-algo-title" className="serif">The call. The probability. The edge. The receipt.</h2>
+        <p className="dim sm pro-algo-sales-lede">
+          PBE Algo scores every eligible UFC bout from pre-fight data only. UFC Pro gets the fighter call, win probability, confidence and data quality, fight-week consensus and best available odds, the de-vigged market probability, PBE Edge, and the model&apos;s own drivers for and against. Ineligible bouts show NO MODEL CALL with the reason instead of forcing a pick.
         </p>
+
+        {algoRecord.locked_predictions > 0 ? (
+          <div className="pro-algo-proof" aria-label="Live PBE Algo record">
+            <div><b>{algoRecord.locked_predictions}</b><span>Locked calls</span></div>
+            <div><b>{algoRecord.decided ? `${algoRecord.wins}-${algoRecord.losses}` : "—"}</b><span>Live record</span></div>
+            <div><b>{algoRecord.hit_rate == null ? "—" : `${(Number(algoRecord.hit_rate) * 100).toFixed(1)}%`}</b><span>Hit rate</span></div>
+            <div><b>{algoRecord.pending}</b><span>Awaiting result</span></div>
+          </div>
+        ) : (
+          <div className="pro-algo-proof-empty">
+            <b>THE LIVE RECORD STARTS AT THE FIRST OFFICIAL LOCK.</b>
+            <span>No backtest result is borrowed into the live record, and provisional calls are not counted as official picks.</span>
+          </div>
+        )}
+
+        <div className="pro-algo-receipt">
+          <div><span className="eyebrow">Accountability by design</span><strong>Every official call has a receipt.</strong></div>
+          <p>Locked on the database clock before the fight. Graded against the stored official result. Corrections are dated revisions; losses do not disappear. Graded fights can train challenger models, but the live champion cannot silently replace itself.</p>
+        </div>
+
         <div className="row mt-3">
-          <Link href={active ? "/algo/card" : "/algo"} className="btn gold">{active ? "Current PBE Picks" : "How PBE Algo works"}</Link>
-          {active && <Link href="/algo/record" className="btn">Track record</Link>}
+          <Link href={active ? "/algo/card" : "/algo"} className="btn gold">{active ? "Open Current PBE Picks" : "See PBE Algo proof"}</Link>
+          {active ? <Link href="/algo/record" className="btn">Full track record</Link> : <Link href="#pro" className="btn">Unlock UFC Pro</Link>}
         </div>
       </section>
 
@@ -111,8 +130,8 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
         <div className="pro-dna-grid">
           <div>
             <div className="eyebrow">Proprietary intelligence · PropBetEdge Fight DNA</div>
-            <h2 id="pro-dna-title">Go beyond the fight record.</h2>
-            <p>UFC Pro is founding access to the Fight DNA intelligence layer as it deepens, not simply more stats. Pro surfaces ship against the same evidence-backed system:</p>
+            <h2 id="pro-dna-title">The intelligence layer beneath the call.</h2>
+            <p>PBE Picks are the decision surface. Fight DNA is the evidence-backed fighter and matchup layer underneath it — versioned context that goes far beyond a record or a raw stat dump:</p>
             <ul>
               <li>Matchup-specific DNA</li><li>Stance splits</li><li>Striking geography</li><li>Grappling efficiency</li><li>Finish patterns</li><li>Round progression</li><li>Context splits</li><li>Fight Week intelligence</li><li>Deeper evidence packets</li>
             </ul>
@@ -129,7 +148,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
 
       <div className="grid-3 mt-6">
         {[
-          ["Fight DNA over surface stats", "Opponent stance, pace, attack distribution, grappling context and as-of historical features are being built as a versioned intelligence layer rather than a stat dump."],
+          ["Fight DNA beneath the model", "Opponent stance, pace, attack distribution, grappling context and as-of historical features are rebuilt as versioned intelligence rather than a stat dump."],
           ["Fight week is part of the product", "Card changes, official weigh-ins, news state and future market snapshots belong in the same bout timeline so the context present when a decision was made is never lost."],
           ["No manufactured edge", "If PropBetEdge does not have a verified line, model output or enough sample to support a claim, the product says so. Locked means locked until the evidence exists."],
         ].map(([h, p]) => (
@@ -153,7 +172,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
         "@context": "https://schema.org",
         "@type": "Product",
         name: "PropBetEdge UFC Pro",
-        description: "Founding access to the PropBetEdge Fight DNA intelligence layer, Fight Week intelligence and deeper evidence packets for UFC, with model-derived claims displayed only when validated. No free trial; cancel anytime.",
+        description: "UFC Pro unlocks PBE Picks from the PropBetEdge fight model: independent win probabilities, confidence, PBE Edge, model drivers and a locked graded record for eligible UFC bouts, plus Fight DNA and fight-week intelligence.",
         brand: { "@type": "Brand", name: "PropBetEdge" },
         url: `${SITE.url}/pro`,
         offers: offerJsonLd(SITE.url),
