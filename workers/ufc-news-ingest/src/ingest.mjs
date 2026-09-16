@@ -35,7 +35,9 @@ import { classifyFocus, initialState } from './ufc_focus.mjs';
 import {
   loadHealth, saveHealth, isInCooldown, shouldHalfOpen, onSuccess, onFailure,
 } from './feed_health.mjs';
-import { fallbackUrlsFor, SOURCE_BODY_MAX_AGE_MS } from './source_fallbacks.mjs';
+import {
+  fallbackUrlsFor, fallbackPageFor, parseLatestPage, SOURCE_BODY_MAX_AGE_MS,
+} from './source_fallbacks.mjs';
 
 export const WORKER = 'ufc-news-ingest';
 export const FETCH_TIMEOUT_MS = 8000;
@@ -75,7 +77,7 @@ function mergeFeedItems(...groups) {
  */
 async function fetchPublisherFallbacks(sourceName, now) {
   const urls = fallbackUrlsFor(sourceName);
-  if (!urls.length) return { items: [], feeds_ok: 0, attempted: 0, newest_ms: null, errors: [] };
+  if (!urls.length) return { items: [], feeds_ok: 0, attempted: 0, newest_ms: null, errors: [], fresh: false };
 
   const settled = await Promise.all(urls.map(async (url) => {
     try {
@@ -112,6 +114,67 @@ async function fetchPublisherFallbacks(sourceName, now) {
 }
 
 /**
+ * Fetch the publisher's own live Latest News page and turn its dated article
+ * cards into the same shape as RSS items.
+ *
+ * This is the final discovery fallback, not a new editorial source. It only
+ * runs for publishers whose primary RSS content is already known stale. The
+ * page parser accepts same-host links with machine-readable timestamps; the
+ * normal UFC focus filter, dedupe, entity linker and queue path remain exactly
+ * the same after discovery.
+ */
+async function fetchPublisherLatestPage(sourceName, now) {
+  const url = fallbackPageFor(sourceName);
+  if (!url) return { url: null, attempted: false, ok: false, items: [], newest_ms: null, fresh: false, error: null };
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': USER_AGENT, Accept: 'text/html,application/xhtml+xml' },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      cf: { cacheTtl: 0 },
+    });
+    if (!res.ok) return { url, attempted: true, ok: false, items: [], newest_ms: null, fresh: false, error: `http ${res.status}` };
+
+    const parsed = parseLatestPage(await res.text(), url);
+    /* Require a real publication clock for page-discovered items. Navigation,
+     * evergreen modules and unrelated sidebars frequently have article-looking
+     * links but no current <time datetime>. They are not news detection. */
+    const items = parsed.filter((item) => {
+      const d = parseDate(item.published);
+      if (!d) return false;
+      const ts = d.getTime();
+      return ts <= now + 5 * 60 * 1000 && now - ts <= 2 * SOURCE_BODY_MAX_AGE_MS;
+    });
+    const newest_ms = newestPublishedMs(items);
+    return {
+      url, attempted: true, ok: items.length > 0, items, newest_ms,
+      fresh: newest_ms !== null && now - newest_ms <= SOURCE_BODY_MAX_AGE_MS,
+      error: items.length ? null : 'no current dated article cards parsed',
+    };
+  } catch (e) {
+    return {
+      url, attempted: true, ok: false, items: [], newest_ms: null, fresh: false,
+      error: e?.name === 'TimeoutError' ? `timeout after ${FETCH_TIMEOUT_MS}ms` : `fetch error: ${String(e?.message || e).slice(0, 120)}`,
+    };
+  }
+}
+
+async function recoverStalePublisher(sourceName, now, primaryNewestMs) {
+  const rss = await fetchPublisherFallbacks(sourceName, now);
+  const page = await fetchPublisherLatestPage(sourceName, now);
+  const items = mergeFeedItems(rss.items, page.items);
+  const newest_ms = newestPublishedMs(items);
+  return {
+    items,
+    newest_ms,
+    fresh: newest_ms !== null && now - newest_ms <= SOURCE_BODY_MAX_AGE_MS,
+    rss,
+    page,
+    newer_than_primary: newest_ms !== null && (!Number.isFinite(primaryNewestMs) || newest_ms > primaryNewestMs),
+  };
+}
+
+/**
  * A KV handle that reads normally and refuses to write.
  *
  * Used only for dry runs. Writes are counted and dropped rather than thrown,
@@ -143,7 +206,8 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
     source: source.name, url: source.url, status: null, latency_ms: null,
     items: [], skipped: null, not_modified: false, error: null,
     fallback_used: false, fallback_attempted: 0, fallback_feeds_ok: 0,
-    fallback_errors: [], primary_newest_at: null, effective_newest_at: null,
+    fallback_errors: [], page_fallback_attempted: false, page_fallback_used: false,
+    page_fallback_error: null, primary_newest_at: null, effective_newest_at: null,
   };
 
   if (isInCooldown(health, now)) {
@@ -169,6 +233,31 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
     result.status = res.status;
 
     if (res.status === 304) {
+      const rememberedPrimaryNewestMs = Number(health.last_primary_newest_ts);
+      const rememberedPrimaryStale = Number.isFinite(rememberedPrimaryNewestMs)
+        && rememberedPrimaryNewestMs > 0
+        && now - rememberedPrimaryNewestMs > SOURCE_BODY_MAX_AGE_MS;
+
+      /* Once a successful body fetch proved the site-wide RSS content is stale,
+       * a later 304 cannot be allowed to suppress discovery for another ten
+       * minutes. Check the publisher's live Latest page on every 2-minute pass
+       * until the primary feed advances again. */
+      if (rememberedPrimaryStale && fallbackPageFor(source.name)) {
+        const page = await fetchPublisherLatestPage(source.name, now);
+        result.page_fallback_attempted = page.attempted;
+        result.page_fallback_error = page.error;
+        result.primary_newest_at = new Date(rememberedPrimaryNewestMs).toISOString();
+        if (page.fresh && page.newest_ms > rememberedPrimaryNewestMs) {
+          result.items = page.items;
+          result.fallback_used = true;
+          result.page_fallback_used = true;
+          result.not_modified = false;
+          result.effective_newest_at = new Date(page.newest_ms).toISOString();
+          onSuccess(health, now, { latencyMs: result.latency_ms, notModified: true });
+          return { result, health, changed: true };
+        }
+      }
+
       result.not_modified = true;
       onSuccess(health, now, { latencyMs: result.latency_ms, notModified: true });
       return { result, health, changed: true };
@@ -192,21 +281,26 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
 
     const primaryNewestMs = newestPublishedMs(result.items);
     result.primary_newest_at = primaryNewestMs ? new Date(primaryNewestMs).toISOString() : null;
+    if (Number.isFinite(primaryNewestMs)) health.last_primary_newest_ts = primaryNewestMs;
 
     /* HTTP 200 is not enough. On 2026-09-16 MMA Fighting and MMA Mania both
      * returned valid, parseable RSS bodies whose article lists had stopped on
      * Sep. 14/15 while their live sites continued publishing Sep. 16 stories.
      * A frozen body is therefore a source failure even though transport is
-     * green. Pull official author feeds only in that case. */
+     * green. Recover first from official author RSS, then from the publisher's
+     * live Latest page. */
     const primaryStale = primaryNewestMs !== null && now - primaryNewestMs > SOURCE_BODY_MAX_AGE_MS;
-    if (primaryStale && fallbackUrlsFor(source.name).length) {
-      const fallback = await fetchPublisherFallbacks(source.name, now);
-      result.fallback_attempted = fallback.attempted;
-      result.fallback_feeds_ok = fallback.feeds_ok;
-      result.fallback_errors = fallback.errors;
-      if (fallback.fresh && (primaryNewestMs === null || fallback.newest_ms > primaryNewestMs)) {
+    if (primaryStale && (fallbackUrlsFor(source.name).length || fallbackPageFor(source.name))) {
+      const fallback = await recoverStalePublisher(source.name, now, primaryNewestMs);
+      result.fallback_attempted = fallback.rss.attempted;
+      result.fallback_feeds_ok = fallback.rss.feeds_ok;
+      result.fallback_errors = fallback.rss.errors;
+      result.page_fallback_attempted = fallback.page.attempted;
+      result.page_fallback_error = fallback.page.error;
+      if (fallback.fresh && fallback.newer_than_primary) {
         result.items = mergeFeedItems(result.items, fallback.items);
         result.fallback_used = true;
+        result.page_fallback_used = fallback.page.fresh && fallback.page.newest_ms > primaryNewestMs;
       }
     }
 
@@ -277,7 +371,8 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
 
   const totals = {
     sources: sources.length, fetched_ok: 0, not_modified: 0, failed: 0, circuit_skipped: 0,
-    fallback_sources: 0, parsed: 0, stale: 0, dup_in_run: 0, dup_in_db: 0,
+    fallback_sources: 0, page_fallback_sources: 0,
+    parsed: 0, stale: 0, dup_in_run: 0, dup_in_db: 0,
     focus_rejected: 0, focus_by_reason: {}, candidates: 0, inserted: 0, errors: 0,
   };
   const perSource = [];
@@ -296,6 +391,9 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
       not_modified: result.not_modified, skipped: result.skipped, error: result.error,
       fallback_used: result.fallback_used, fallback_attempted: result.fallback_attempted,
       fallback_feeds_ok: result.fallback_feeds_ok,
+      page_fallback_attempted: result.page_fallback_attempted,
+      page_fallback_used: result.page_fallback_used,
+      page_fallback_error: result.page_fallback_error,
       primary_newest_at: result.primary_newest_at, effective_newest_at: result.effective_newest_at,
     };
     if (result.skipped) { totals.circuit_skipped += 1; perSource.push(row); continue; }
@@ -303,6 +401,7 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
     if (result.error) { totals.failed += 1; perSource.push(row); continue; }
     totals.fetched_ok += 1;
     if (result.fallback_used) totals.fallback_sources += 1;
+    if (result.page_fallback_used) totals.page_fallback_sources += 1;
     totals.parsed += result.items.length;
 
     const src = sources.find((s) => s.name === result.source);
