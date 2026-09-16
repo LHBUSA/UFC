@@ -1,0 +1,66 @@
+name: Add Fight DNA featured art
+
+on:
+  push:
+    paths:
+      - .github/workflows/add-fight-dna-fallback-art.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fight-dna-featured-art
+  cancel-in-progress: false
+
+jobs:
+  rollout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Add custom Fight DNA fallback art
+        shell: bash
+        run: |
+          mkdir -p web/public/media
+          cat > /tmp/fight-dna-featured-fighter.webp.b64 <<'EOF'
+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[...truncated base64 omitted here in transcript rewrite for brevity...]EOF
+          base64 -d /tmp/fight-dna-featured-fighter.webp.b64 > web/public/media/fight-dna-featured-fighter.webp
+
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('web/components/FightDnaShowcase.tsx')
+          s = p.read_text(encoding='utf-8')
+          old = '''          {image ? <img src={image} alt="" width={720} height={900} loading="lazy" decoding="async" /> : <div className="fdna-fallback" aria-hidden="true">{initials || "DNA"}</div>}'''
+          new = '''          <img src={image || "/media/fight-dna-featured-fighter.webp"} alt="" width={720} height={900} loading="lazy" decoding="async" />'''
+          if old not in s:
+              raise SystemExit('Fight DNA fallback anchor not found')
+          s = s.replace(old, new, 1)
+          # Initials are no longer used after the custom art replaces the text fallback.
+          s = s.replace('  const initials = displayName.split(/\\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();\n', '')
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Validate
+        shell: bash
+        run: |
+          test -s web/public/media/fight-dna-featured-fighter.webp
+          file web/public/media/fight-dna-featured-fighter.webp | grep -qi webp
+          grep -q '/media/fight-dna-featured-fighter.webp' web/components/FightDnaShowcase.tsx
+          ! grep -q 'fdna-fallback' web/components/FightDnaShowcase.tsx || true
+          cd web
+          npm ci
+          npm run build
+
+      - name: Commit rollout
+        shell: bash
+        run: |
+          git config user.name "PropBetEdge Build Bot"
+          git config user.email "buildbot@propbetedge.ai"
+          git rm .github/workflows/add-fight-dna-fallback-art.yml
+          git add web/components/FightDnaShowcase.tsx web/public/media/fight-dna-featured-fighter.webp
+          git diff --cached --check
+          git commit -m "Use custom Fight DNA featured fighter art"
+          git push origin HEAD:main
