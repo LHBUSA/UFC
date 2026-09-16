@@ -18,6 +18,13 @@
  *   no parse and no database write. Most feeds are unchanged most of the time,
  *   and at this cadence that is the difference between polite and abusive.
  *
+ *   Forced body refresh. Conditional validators are an optimization, never an
+ *   authority. Some RSS/CDN stacks can keep returning 304 after the underlying
+ *   feed has changed. We therefore force one real body fetch at least every ten
+ *   minutes. Existing KV records from before this field existed are also forced
+ *   once when they have already accumulated 304s. This bounds a bad validator
+ *   state instead of allowing the whole newsroom to freeze indefinitely.
+ *
  *   Latency samples. A rolling window per feed, so "the ingest got slow" can be
  *   answered with which feed rather than a shrug.
  *
@@ -32,6 +39,7 @@
 export const CIRCUIT_FAILURE_THRESHOLD = 5;
 export const CIRCUIT_COOLDOWN_MS = 6 * 60 * 60 * 1000;
 export const CIRCUIT_EXTENDED_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+export const FORCE_BODY_REFRESH_MS = 10 * 60 * 1000;
 export const HEALTH_TTL_SECONDS = 90 * 24 * 60 * 60;
 export const LATENCY_SAMPLES = 20;
 
@@ -44,6 +52,7 @@ export function emptyHealth() {
     total_failures: 0,
     total_not_modified: 0,
     last_success_ts: null,
+    last_body_success_ts: null,
     last_failure_ts: null,
     last_failure_reason: null,
     last_etag: null,
@@ -54,11 +63,30 @@ export function emptyHealth() {
   };
 }
 
+/**
+ * Validators are only a bandwidth optimization. If we have not seen a parsed
+ * 200 body recently, drop them from the in-memory health record so the caller's
+ * next request must fetch the body. The returned record is later persisted by
+ * the normal ingest path, so a successful refresh establishes a new baseline.
+ */
+export function refreshStaleValidators(health, now = Date.now()) {
+  const bodyTs = Number(health.last_body_success_ts);
+  const hasBodyTs = Number.isFinite(bodyTs) && bodyTs > 0;
+  const legacyWedged = !hasBodyTs && Number(health.total_not_modified || 0) > 0;
+  const bodyTooOld = hasBodyTs && now - bodyTs >= FORCE_BODY_REFRESH_MS;
+  if (legacyWedged || bodyTooOld) {
+    health.last_etag = null;
+    health.last_modified = null;
+  }
+  return health;
+}
+
 export async function loadHealth(kv, name) {
   if (!kv) return emptyHealth();
   try {
     const raw = await kv.get(key(name));
-    return raw ? { ...emptyHealth(), ...JSON.parse(raw) } : emptyHealth();
+    const health = raw ? { ...emptyHealth(), ...JSON.parse(raw) } : emptyHealth();
+    return refreshStaleValidators(health);
   } catch {
     return emptyHealth();
   }
@@ -111,6 +139,7 @@ export function onSuccess(health, now, { latencyMs, etag, lastModified, notModif
   health.total_successes += 1;
   if (notModified) health.total_not_modified += 1;
   health.last_success_ts = now;
+  if (!notModified) health.last_body_success_ts = now;
   health.circuit_state = 'closed';
   health.cooldown_until_ts = null;
   /* Only overwrite validators we were actually given: a 304 carries no ETag on
@@ -143,6 +172,8 @@ export function onFailure(health, now, reason, { wasHalfOpen = false } = {}) {
 /** A compact, human-readable view for /feeds/health. */
 export function summarize(name, health, now) {
   const total = health.total_successes + health.total_failures;
+  const bodyTs = Number(health.last_body_success_ts);
+  const hasBodyTs = Number.isFinite(bodyTs) && bodyTs > 0;
   return {
     source: name,
     circuit: health.circuit_state,
@@ -156,6 +187,9 @@ export function summarize(name, health, now) {
     success_rate: total ? Number((health.total_successes / total).toFixed(3)) : null,
     latency_ms: { p50: percentile(health.latency_samples, 50), p95: percentile(health.latency_samples, 95) },
     last_success_at: health.last_success_ts ? new Date(health.last_success_ts).toISOString() : null,
+    last_body_success_at: hasBodyTs ? new Date(bodyTs).toISOString() : null,
+    body_freshness_minutes: hasBodyTs ? Math.max(0, Math.round((now - bodyTs) / 60000)) : null,
+    forced_body_refresh_minutes: FORCE_BODY_REFRESH_MS / 60000,
     last_failure_at: health.last_failure_ts ? new Date(health.last_failure_ts).toISOString() : null,
     last_failure_reason: health.last_failure_reason,
     has_etag: Boolean(health.last_etag),
