@@ -4,6 +4,7 @@ import { PageHead, JsonLd } from "@/components/ui";
 import { editions, inventoryConflicts, inventoryProvenance, seasonStatuses, seasons, statusReport, type SeasonRow } from "@/lib/tuf";
 import type { HubStatus } from "@/lib/tufStatus";
 import { SITE } from "@/lib/site";
+import styles from "./tufHero.module.css";
 
 /* /tuf — the archive hub.
  *
@@ -93,36 +94,46 @@ export default function TufHub() {
 
   return (
     <>
-      <div className="wrap">
-        <div className="page">
-          <PageHead
-            eyebrow="Archive"
-            title="The Ultimate Fighter"
-            lede="Every season across every edition, with the coaches who ran the teams and the fighters who won the tournaments. Where a source is thin or two sources disagree, this archive says so rather than picking one."
-            crumbs={[{ name: "The Ultimate Fighter" }]}
-          />
-        </div>
-      </div>
+      <section className={styles.hero} aria-label="The Ultimate Fighter archive introduction">
+        <div className={`wrap ${styles.inner}`}>
+          <div className={styles.copy}>
+            <PageHead
+              eyebrow="Archive"
+              title="The Ultimate Fighter"
+              lede="Every season across every edition, with the coaches who ran the teams and the fighters who won the tournaments. Where a source is thin or two sources disagree, this archive says so rather than picking one."
+              crumbs={[{ name: "The Ultimate Fighter" }]}
+            />
 
-      <nav className="wrap tuf-hubnav" aria-label="TUF archive sections">
-        <Link href="/tuf/champions">Champions</Link>
-        <Link href="/tuf/alumni">Alumni</Link>
-        <Link href="/tuf/coaches">Coaches</Link>
-      </nav>
+            <nav className={`tuf-hubnav ${styles.nav}`} aria-label="TUF archive sections">
+              <Link href="/tuf/champions">Champions</Link>
+              <Link href="/tuf/alumni">Alumni</Link>
+              <Link href="/tuf/coaches">Coaches</Link>
+            </nav>
+          </div>
 
-      <section className="wrap tuf-cov">
-        <div className="tuf-cov-grid">
-          <div className="tuf-cov-cell"><b>{report.complete}</b><span>complete seasons</span></div>
-          <div className="tuf-cov-cell"><b>{report.ongoing}</b><span>ongoing</span></div>
-          {report.partial > 0 && <div className="tuf-cov-cell"><b>{report.partial}</b><span>partial</span></div>}
-          <div className="tuf-cov-cell"><b>{report.verified}</b><span>verified by primary records</span></div>
-          <div className="tuf-cov-cell is-total"><b>{report.seasons}</b><span>seasons catalogued</span></div>
+          <div className={styles.art} aria-hidden="true">
+            <div className={styles.wordmark}>
+              <span className={styles.kicker}>THE</span>
+              <strong>ULTIMATE</strong>
+              <strong>FIGHTER</strong>
+              <span className={styles.tagline}>REAL FIGHTERS · REAL OPPORTUNITY</span>
+            </div>
+          </div>
+
+          <div className={styles.stats} aria-label="TUF archive coverage">
+            <div className={styles.stat}><b>{report.complete}</b><span>complete seasons</span></div>
+            <div className={styles.stat}><b>{report.ongoing}</b><span>ongoing</span></div>
+            {report.partial > 0 && <div className={styles.stat}><b>{report.partial}</b><span>partial</span></div>}
+            <div className={styles.stat}><b>{report.verified}</b><span>verified by primary records</span></div>
+            <div className={`${styles.stat} ${styles.total}`}><b>{report.seasons}</b><span>seasons catalogued</span></div>
+          </div>
+
+          <p className={styles.note}>
+            A season is <strong>complete</strong> when the competition it actually ran is fully represented in its own format.
+            <strong> Verified</strong> is an extra layer on top: every house result and classification is also backed by a primary
+            record, such as the athletic commission&apos;s own results. Where sources still disagree, the season page says so.
+          </p>
         </div>
-        <p className="tuf-note">
-          A season is <strong>complete</strong> when the competition it actually ran is fully represented in its own format.
-          <strong> Verified</strong> is an extra layer on top: every house result and classification is also backed by a primary
-          record, such as the athletic commission&apos;s own results. Where sources still disagree, the season page says so.
-        </p>
       </section>
 
       {conflicts.length > 0 && (
