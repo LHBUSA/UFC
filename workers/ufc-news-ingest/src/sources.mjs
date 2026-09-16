@@ -26,6 +26,8 @@
  *                           which is what keeps a boxing feed off the list
  *   6. stable identity      links are distinct; a feed whose items all share a
  *                           URL breaks fingerprinting
+ *   7. current content      newest dated item is <= 24h old. A feed that still
+ *                           returns 200 but stopped advancing is not healthy.
  *
  * A candidate failing any of these is reported with the reason and NOT enabled.
  * The standard does not move to make the count look better.
@@ -39,13 +41,17 @@ const PROBE_TIMEOUT_MS = 10000;
 export const MIN_ITEMS = 3;
 export const MIN_DATED_RATIO = 0.5;
 export const MIN_UFC_RATIO = 0.4;
+export const MAX_NEWEST_ITEM_AGE_HOURS = 24;
 
 /* The five already in production, plus the candidates. Each entry may list
  * several URLs; the first that passes wins, because feeds move (MMA Fighting
- * and MMA Junkie have each moved once already). */
+ * and MMA Junkie have each moved once already).
+ *
+ * For Vox-style feeds prefer /rss/current over /rss/index.xml. Production
+ * proved that index.xml can keep serving a perfectly parseable but frozen body. */
 export const CANDIDATES = [
   /* incumbent */
-  { name: 'MMA Fighting', urls: ['https://www.mmafighting.com/rss/index.xml', 'https://www.mmafighting.com/rss/current'], weight: 1 },
+  { name: 'MMA Fighting', urls: ['https://www.mmafighting.com/rss/current', 'https://www.mmafighting.com/rss/index.xml'], weight: 1 },
   { name: 'ESPN MMA', urls: ['https://www.espn.com/espn/rss/mma/news'], weight: 1 },
   { name: 'UFC.com News', urls: ['https://www.ufc.com/rss/news'], weight: 1.2 },
   { name: 'Bloody Elbow', urls: ['https://www.bloodyelbow.com/feed', 'https://bloodyelbow.com/feed/'], weight: 0.9 },
@@ -99,6 +105,7 @@ export async function probeUrl(url, { now = Date.now() } = {}) {
   for (const f of focus) for (const p of f.foreign) foreign[p] = (foreign[p] || 0) + 1;
 
   const newestMs = dated.length ? Math.max(...dated.map((d) => d.getTime())) : null;
+  const newestItemAgeHours = newestMs === null ? null : (now - newestMs) / 3600e3;
   const grade = {
     url, latency_ms, status: res.status,
     items: items.length,
@@ -109,7 +116,8 @@ export async function probeUrl(url, { now = Date.now() } = {}) {
     ufc_focused: ufc,
     ufc_ratio: Number((ufc / sample.length).toFixed(2)),
     foreign_promotions: foreign,
-    newest_item_age_hours: newestMs === null ? null : Number(((now - newestMs) / 3600e3).toFixed(1)),
+    newest_item_at: newestMs === null ? null : new Date(newestMs).toISOString(),
+    newest_item_age_hours: newestItemAgeHours === null ? null : Number(newestItemAgeHours.toFixed(1)),
     has_etag: Boolean(res.headers.get('etag')),
     has_last_modified: Boolean(res.headers.get('last-modified')),
     conditional_support: Boolean(res.headers.get('etag') || res.headers.get('last-modified')),
@@ -119,6 +127,9 @@ export async function probeUrl(url, { now = Date.now() } = {}) {
   if (linked.length !== sample.length) failures.push(`${sample.length - linked.length}/${sample.length} items have no absolute link`);
   if (distinctLinks !== linked.length) failures.push(`links are not distinct (${distinctLinks}/${linked.length})`);
   if (dated.length / sample.length < MIN_DATED_RATIO) failures.push(`only ${dated.length}/${sample.length} items carry a parseable date`);
+  if (newestItemAgeHours !== null && newestItemAgeHours > MAX_NEWEST_ITEM_AGE_HOURS) {
+    failures.push(`stale feed: newest dated item is ${newestItemAgeHours.toFixed(1)}h old (max ${MAX_NEWEST_ITEM_AGE_HOURS}h)`);
+  }
   if (grade.ufc_ratio < MIN_UFC_RATIO) failures.push(`only ${Math.round(grade.ufc_ratio * 100)}% of sampled items are UFC-focused (need ${Math.round(MIN_UFC_RATIO * 100)}%)`);
 
   return { ...grade, ok: failures.length === 0, reason: failures.length ? failures.join('; ') : null, failures };
