@@ -29,11 +29,18 @@ section.segment > .pro-preview:first-child { margin-top: 0; }
 
 
 /* ---- UFC Pro sales v2: PBE Picks first ---- */
-.pro-offer-v2 { grid-template-columns: minmax(0, .82fr) minmax(0, 1.35fr); align-items: stretch; gap: clamp(14px, 2vw, 22px); }
-.pro-offer-v2 .plan { min-width: 0; }
-.pro-free-plan { background: linear-gradient(180deg, rgba(255,255,255,.018), transparent 42%), var(--pbe-ink-2); }
-.pro-free-lede { color: var(--pbe-dim); font-size: var(--fs-sm); margin: 0 0 var(--s-3); max-width: 52ch; }
+.pro-offer-v2 { grid-template-columns: minmax(0, .78fr) minmax(0, 1.35fr); align-items: start; gap: clamp(14px, 2vw, 22px); }
+.pro-offer-v2 .plan { min-width: 0; align-self: start; }
+.pro-free-plan { position: relative; overflow: hidden; border-color: rgba(255,255,255,.1); background: radial-gradient(circle at 8% -10%, rgba(255,255,255,.05), transparent 34%), linear-gradient(180deg, rgba(255,255,255,.018), transparent 42%), var(--pbe-ink-2); box-shadow: 0 16px 34px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.025); }
+.pro-free-plan::before { content: ""; position: absolute; inset: 0 0 auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.24), transparent); opacity: .55; pointer-events: none; }
+.pro-free-plan .eyebrow { color: var(--pbe-faint); }
+.pro-free-plan .price { margin: 8px 0 6px; }
+.pro-free-lede { color: var(--pbe-dim); font-size: var(--fs-sm); line-height: 1.6; margin: 0 0 var(--s-3); max-width: 52ch; }
+.pro-free-plan ul { margin-bottom: 0; }
+.pro-free-plan li { line-height: 1.45; }
 .pro-free-actions, .pro-cta-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pro-free-actions { margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--pbe-line); }
+.pro-free-actions .btn { flex: 1 1 132px; justify-content: center; text-align: center; }
 
 .pro-picks-plan { overflow: hidden; isolation: isolate; background: radial-gradient(circle at 82% -12%, rgba(212,175,55,.16), transparent 36%), linear-gradient(155deg, rgba(212,175,55,.055), transparent 46%), var(--pbe-ink-2); box-shadow: 0 0 0 1px var(--pbe-gold-soft), 0 22px 52px rgba(0,0,0,.28); }
 .pro-picks-plan::before { content: ""; position: absolute; inset: 0 0 auto; height: 2px; background: linear-gradient(90deg, transparent, var(--pbe-gold), transparent); opacity: .9; pointer-events: none; }
@@ -85,6 +92,7 @@ section.segment > .pro-preview:first-child { margin-top: 0; }
 
 @media (max-width: 800px) {
   .pro-offer-v2 { grid-template-columns: minmax(0,1fr); }
+  .pro-free-plan { width: 100%; }
   .pro-picks-title { max-width: 24ch; }
   .pro-algo-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pro-algo-receipt { grid-template-columns: minmax(0,1fr); }
@@ -93,4 +101,5 @@ section.segment > .pro-preview:first-child { margin-top: 0; }
   .pro-proof-row { grid-template-columns: minmax(0,1fr); }
   .pro-pick-lockbox-head { align-items: flex-start; flex-direction: column; }
   .pro-cta-row .btn { flex: 1 1 100%; text-align: center; }
+  .pro-free-actions .btn { flex-basis: 100%; }
 }
