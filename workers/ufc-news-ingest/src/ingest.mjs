@@ -70,7 +70,7 @@ export function countingReadOnlyKV(kv, counter) {
  * one dead feed must not cost the other fourteen their run.
  */
 export async function fetchFeed(env, source, { now = Date.now() } = {}) {
-  const health = await loadHealth(env.UFC_NEWS_KV, source.name);
+  const health = await loadHealth(env.UFC_NEWS_KV, source.name, now);
   const result = {
     source: source.name, url: source.url, status: null, latency_ms: null,
     items: [], skipped: null, not_modified: false, error: null,
