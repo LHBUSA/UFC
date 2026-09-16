@@ -1,0 +1,243 @@
+/* Cinematic treatment for /weigh-ins only.
+ *
+ * The data desk remains unchanged; this file upgrades the hero into the same
+ * full-bleed visual language as the TUF archive. It uses the site's existing
+ * cage photography rather than baking UI into a mock image. */
+
+/* Pull the breadcrumb visually into the hero without changing its semantic
+ * position or the page component's data flow. */
+.page > .crumbs {
+  position: relative;
+  z-index: 8;
+  margin-bottom: -28px;
+  transform: translateY(54px);
+  color: rgba(245, 241, 230, .55);
+}
+
+.page > .crumbs a:hover { color: var(--pbe-gold); }
+
+/* The first section on this route is the official weigh-in hero. */
+.page > section:first-of-type {
+  position: relative !important;
+  isolation: isolate;
+  left: 50%;
+  width: 100vw;
+  max-width: none;
+  min-height: 520px;
+  margin-left: -50vw;
+  margin-bottom: 34px;
+  padding:
+    clamp(88px, 8vw, 118px)
+    max(var(--s-5), calc((100vw - var(--max)) / 2 + var(--s-5)))
+    clamp(34px, 4vw, 48px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr) !important;
+  gap: clamp(28px, 5vw, 72px) !important;
+  align-items: end !important;
+  overflow: hidden;
+  border-top: 1px solid rgba(212, 175, 55, .1);
+  border-bottom: 1px solid rgba(212, 175, 55, .2);
+  background:
+    linear-gradient(90deg, rgba(7, 7, 6, .98) 0%, rgba(7, 7, 6, .88) 34%, rgba(7, 7, 6, .32) 66%, rgba(7, 7, 6, .82) 100%),
+    linear-gradient(180deg, rgba(7, 7, 6, .16) 0%, rgba(7, 7, 6, .08) 42%, rgba(7, 7, 6, .98) 100%),
+    url('/media/ufc-cage-bg-1600.webp') center 40% / cover no-repeat;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.015),
+    inset 0 -90px 110px rgba(0,0,0,.44);
+}
+
+.page > section:first-of-type::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 73% 16%, rgba(242, 208, 111, .22), transparent 17%),
+    radial-gradient(circle at 86% 26%, rgba(255,255,255,.07), transparent 18%),
+    linear-gradient(110deg, transparent 38%, rgba(212,175,55,.045) 55%, transparent 72%);
+  mix-blend-mode: screen;
+}
+
+/* Graphic scale-day treatment on the image side. It is deliberately text and
+ * CSS over the real cage asset, so the live data never becomes part of an
+ * image that can go stale. */
+.page > section:first-of-type::after {
+  content: "OFFICIAL\A WEIGH-INS";
+  white-space: pre;
+  position: absolute;
+  z-index: 0;
+  right: max(var(--s-5), calc((100vw - var(--max)) / 2 + var(--s-5)));
+  top: clamp(92px, 10vw, 142px);
+  width: min(44vw, 620px);
+  color: rgba(245, 241, 230, .12);
+  font: 900 clamp(52px, 6vw, 92px)/.78 var(--pbe-font-ui);
+  font-style: italic;
+  letter-spacing: -.065em;
+  text-align: center;
+  text-transform: uppercase;
+  transform: skewX(-5deg) rotate(-2deg);
+  -webkit-text-stroke: 1px rgba(255,255,255,.10);
+  text-shadow: 0 10px 36px rgba(0,0,0,.5);
+  pointer-events: none;
+}
+
+.page > section:first-of-type > div:first-child {
+  position: relative;
+  z-index: 3;
+  max-width: 720px;
+  min-width: 0;
+  align-self: center;
+}
+
+.page > section:first-of-type h1 {
+  margin: 12px 0 12px !important;
+  max-width: 9ch;
+  color: var(--pbe-paper);
+  font: 900 clamp(52px, 6.1vw, 88px)/.88 var(--pbe-font-display) !important;
+  letter-spacing: -.052em !important;
+  text-wrap: balance;
+  text-shadow: 0 6px 28px rgba(0,0,0,.76);
+}
+
+.page > section:first-of-type > div:first-child > p:first-of-type {
+  max-width: 62ch;
+  color: rgba(245, 241, 230, .94) !important;
+  font-size: clamp(18px, 1.7vw, 23px) !important;
+  line-height: 1.28 !important;
+  text-shadow: 0 2px 14px rgba(0,0,0,.78);
+}
+
+.page > section:first-of-type > div:first-child p:not(:first-of-type) {
+  max-width: 72ch;
+  color: rgba(245, 241, 230, .68) !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,.78);
+}
+
+.page > section:first-of-type > div:first-child strong {
+  color: var(--pbe-paper) !important;
+}
+
+.page > section:first-of-type aside[aria-label="Weigh-in coverage"] {
+  position: relative;
+  z-index: 4;
+  align-self: end;
+  margin-top: auto;
+  padding: 14px !important;
+  border: 1px solid rgba(212,175,55,.32) !important;
+  border-radius: 18px !important;
+  background:
+    linear-gradient(145deg, rgba(64,52,18,.50), rgba(8,8,7,.72)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.03),
+    0 18px 48px rgba(0,0,0,.34) !important;
+  backdrop-filter: blur(12px);
+}
+
+.page > section:first-of-type aside[aria-label="Weigh-in coverage"] > div {
+  min-height: 70px;
+  display: grid;
+  align-content: center;
+  border-color: rgba(245,241,230,.10) !important;
+  background: rgba(7,7,6,.42) !important;
+}
+
+.page > section:first-of-type aside[aria-label="Weigh-in coverage"] b {
+  font-size: clamp(25px, 2.2vw, 34px) !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,.55);
+}
+
+.page > section:first-of-type aside[aria-label="Weigh-in coverage"] span {
+  color: rgba(245,241,230,.58) !important;
+  letter-spacing: .15em !important;
+}
+
+/* A thin visual scale line binds the copy and coverage panel together. */
+.page > section:first-of-type > div:first-child::after {
+  content: "";
+  display: block;
+  width: min(100%, 520px);
+  height: 1px;
+  margin-top: 24px;
+  background:
+    linear-gradient(90deg, var(--pbe-gold), rgba(212,175,55,.15) 68%, transparent),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 1px, transparent 1px 18px);
+  box-shadow: 0 0 18px rgba(212,175,55,.16);
+}
+
+@media (max-width: 980px) {
+  .page > .crumbs {
+    transform: translateY(44px);
+  }
+
+  .page > section:first-of-type {
+    min-height: 0;
+    grid-template-columns: 1fr !important;
+    gap: 26px !important;
+    padding-top: 82px !important;
+    background:
+      linear-gradient(90deg, rgba(7,7,6,.96), rgba(7,7,6,.58)),
+      linear-gradient(180deg, rgba(7,7,6,.08), rgba(7,7,6,.96)),
+      url('/media/ufc-cage-bg-960.webp') center 34% / cover no-repeat;
+  }
+
+  .page > section:first-of-type::after {
+    right: 24px;
+    top: 92px;
+    width: 48vw;
+    font-size: clamp(40px, 8vw, 68px);
+    opacity: .65;
+  }
+
+  .page > section:first-of-type > div:first-child {
+    max-width: 680px;
+  }
+
+  .page > section:first-of-type aside[aria-label="Weigh-in coverage"] {
+    width: min(100%, 720px);
+  }
+}
+
+@media (max-width: 640px) {
+  .page > .crumbs {
+    transform: translateY(34px);
+    margin-bottom: -20px;
+  }
+
+  .page > section:first-of-type {
+    width: 100vw;
+    min-height: 0;
+    padding: 66px var(--s-4) 28px !important;
+    gap: 22px !important;
+  }
+
+  .page > section:first-of-type::after {
+    top: 70px;
+    right: -16px;
+    width: 68vw;
+    font-size: 42px;
+    opacity: .36;
+  }
+
+  .page > section:first-of-type h1 {
+    max-width: 8ch;
+    font-size: clamp(45px, 14vw, 62px) !important;
+  }
+
+  .page > section:first-of-type > div:first-child > p:first-of-type {
+    font-size: 17px !important;
+  }
+
+  .page > section:first-of-type aside[aria-label="Weigh-in coverage"] {
+    grid-template-columns: repeat(5, minmax(56px, 1fr)) !important;
+    gap: 5px !important;
+    padding: 8px !important;
+    overflow-x: auto;
+  }
+
+  .page > section:first-of-type aside[aria-label="Weigh-in coverage"] > div {
+    min-width: 58px;
+    min-height: 62px;
+    padding-inline: 2px !important;
+  }
+}
