@@ -8,7 +8,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   emptyHealth, onSuccess, onFailure, isInCooldown, shouldHalfOpen, percentile, summarize,
-  CIRCUIT_FAILURE_THRESHOLD, CIRCUIT_COOLDOWN_MS, CIRCUIT_EXTENDED_COOLDOWN_MS, LATENCY_SAMPLES,
+  refreshStaleValidators, CIRCUIT_FAILURE_THRESHOLD, CIRCUIT_COOLDOWN_MS,
+  CIRCUIT_EXTENDED_COOLDOWN_MS, FORCE_BODY_REFRESH_MS, LATENCY_SAMPLES,
 } from './feed_health.mjs';
 
 const T0 = Date.parse('2026-09-09T12:00:00Z');
@@ -56,16 +57,42 @@ test('a recovered feed closes its circuit completely', () => {
   assert.equal(isInCooldown(h, T0 + CIRCUIT_COOLDOWN_MS + 2), false);
 });
 
-test('304 counts as success and does not erase cached validators', () => {
-  /* Some origins answer 304 with no ETag. Clearing it would turn every
-   * subsequent request back into a full fetch - the exact cost 304 avoids. */
+test('304 counts as success, preserves body watermark and does not erase cached validators', () => {
   const h = emptyHealth();
   onSuccess(h, T0, { latencyMs: 100, etag: 'W/"v1"', lastModified: 'Tue, 09 Sep 2026 12:00:00 GMT' });
+  assert.equal(h.last_body_success_ts, T0);
   onSuccess(h, T0 + 120_000, { latencyMs: 30, notModified: true });
   assert.equal(h.last_etag, 'W/"v1"');
   assert.equal(h.last_modified, 'Tue, 09 Sep 2026 12:00:00 GMT');
+  assert.equal(h.last_body_success_ts, T0, '304 must not pretend a response body was refreshed');
   assert.equal(h.total_not_modified, 1);
   assert.equal(h.total_successes, 2);
+});
+
+test('stale validators are cleared after the forced-body interval', () => {
+  const h = emptyHealth();
+  onSuccess(h, T0, { latencyMs: 100, etag: 'W/"v1"', lastModified: 'Tue, 09 Sep 2026 12:00:00 GMT' });
+  refreshStaleValidators(h, T0 + FORCE_BODY_REFRESH_MS - 1);
+  assert.equal(h.last_etag, 'W/"v1"');
+  assert.ok(h.last_modified);
+  refreshStaleValidators(h, T0 + FORCE_BODY_REFRESH_MS);
+  assert.equal(h.last_etag, null);
+  assert.equal(h.last_modified, null);
+});
+
+test('legacy health that already accumulated 304s gets one unconditional recovery fetch', () => {
+  const h = {
+    ...emptyHealth(),
+    total_successes: 91,
+    total_not_modified: 90,
+    last_success_ts: T0,
+    last_etag: 'W/"stuck"',
+    last_modified: 'Tue, 09 Sep 2026 10:00:00 GMT',
+    last_body_success_ts: null,
+  };
+  refreshStaleValidators(h, T0 + 1);
+  assert.equal(h.last_etag, null);
+  assert.equal(h.last_modified, null);
 });
 
 test('latency samples stay bounded and percentiles are usable', () => {
@@ -86,4 +113,5 @@ test('summarize reports the operator-facing truth', () => {
   assert.equal(s.cooldown_remaining_minutes, 359);
   assert.equal(s.last_failure_reason, 'http 404');
   assert.equal(s.success_rate, 0);
+  assert.equal(s.forced_body_refresh_minutes, FORCE_BODY_REFRESH_MS / 60000);
 });
