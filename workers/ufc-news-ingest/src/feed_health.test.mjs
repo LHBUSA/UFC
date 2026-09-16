@@ -8,8 +8,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   emptyHealth, onSuccess, onFailure, isInCooldown, shouldHalfOpen, percentile, summarize,
-  refreshStaleValidators, CIRCUIT_FAILURE_THRESHOLD, CIRCUIT_COOLDOWN_MS,
-  CIRCUIT_EXTENDED_COOLDOWN_MS, FORCE_BODY_REFRESH_MS, LATENCY_SAMPLES,
+  refreshStaleValidators, migrateLegacyContentWatermark, CIRCUIT_FAILURE_THRESHOLD,
+  CIRCUIT_COOLDOWN_MS, CIRCUIT_EXTENDED_COOLDOWN_MS, FORCE_BODY_REFRESH_MS,
+  LATENCY_SAMPLES, UNKNOWN_STALE_PRIMARY_TS,
 } from './feed_health.mjs';
 
 const T0 = Date.parse('2026-09-09T12:00:00Z');
@@ -95,6 +96,32 @@ test('legacy health that already accumulated 304s gets one unconditional recover
   assert.equal(h.last_modified, null);
 });
 
+test('legacy 304 health gets an immediate stale-content watermark for live-page recovery', () => {
+  const h = {
+    ...emptyHealth(),
+    total_successes: 4100,
+    total_not_modified: 3900,
+    last_success_ts: T0,
+    last_body_success_ts: T0 - 60_000,
+    last_etag: 'W/"legacy"',
+    last_modified: 'Tue, 09 Sep 2026 11:59:00 GMT',
+    last_primary_newest_ts: null,
+  };
+  migrateLegacyContentWatermark(h);
+  assert.equal(h.last_primary_newest_ts, UNKNOWN_STALE_PRIMARY_TS,
+    'a deployed pre-watermark KV record must trigger page fallback on its next 304');
+});
+
+test('a real primary-content watermark is never replaced by the migration sentinel', () => {
+  const h = {
+    ...emptyHealth(),
+    total_not_modified: 50,
+    last_primary_newest_ts: T0,
+  };
+  migrateLegacyContentWatermark(h);
+  assert.equal(h.last_primary_newest_ts, T0);
+});
+
 test('latency samples stay bounded and percentiles are usable', () => {
   const h = emptyHealth();
   for (let i = 1; i <= LATENCY_SAMPLES + 15; i += 1) onSuccess(h, T0, { latencyMs: i });
@@ -114,4 +141,5 @@ test('summarize reports the operator-facing truth', () => {
   assert.equal(s.last_failure_reason, 'http 404');
   assert.equal(s.success_rate, 0);
   assert.equal(s.forced_body_refresh_minutes, FORCE_BODY_REFRESH_MS / 60000);
+  assert.equal(s.primary_content_watermark_known, false);
 });
