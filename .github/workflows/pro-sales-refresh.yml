@@ -30,6 +30,9 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
 
+      - name: Correct one-shot CSS token
+        run: sed -i 's/--pbe-font-body/--pbe-font-data/g' scripts/ci/pro_sales_refresh.py
+
       - name: Rewrite UFC Pro sales surfaces
         run: python scripts/ci/pro_sales_refresh.py
 
