@@ -2,8 +2,8 @@
  * can stay HTTP-healthy while its article list stops advancing.
  *
  * These are not alternate publishers or scraped third parties. RSS fallbacks
- * are author feeds exposed by the same publisher. Latest-page fallbacks are the
- * publisher's own current-news index. Ingest uses them only when the primary
+ * are author feeds exposed by the same publisher. Live-page fallbacks are the
+ * publisher's own current-news surfaces. Ingest uses them only when the primary
  * source body is stale, preserving the cheap primary-feed path in normal
  * operation while removing one frozen site-wide endpoint as a single point of
  * failure.
@@ -28,17 +28,32 @@ export const RSS_FALLBACKS = Object.freeze({
   ]),
 });
 
+/* More than one page on purpose. On 2026-09-16 MMA Mania's /latest-news
+ * surface itself lagged while its homepage and archive page were current. One
+ * publisher page must not become the new single point of failure we just
+ * removed from RSS. */
 export const LATEST_PAGES = Object.freeze({
-  'MMA Fighting': 'https://www.mmafighting.com/latest-news',
-  'MMA Mania': 'https://www.mmamania.com/latest-news',
+  'MMA Fighting': Object.freeze([
+    'https://www.mmafighting.com/latest-news',
+    'https://www.mmafighting.com/archives/full',
+  ]),
+  'MMA Mania': Object.freeze([
+    'https://www.mmamania.com/latest-news',
+    'https://www.mmamania.com/',
+  ]),
 });
 
 export function fallbackUrlsFor(sourceName) {
   return RSS_FALLBACKS[sourceName] || [];
 }
 
+export function fallbackPagesFor(sourceName) {
+  return LATEST_PAGES[sourceName] || [];
+}
+
+/* Kept for callers/tests that only need the preferred page. */
 export function fallbackPageFor(sourceName) {
-  return LATEST_PAGES[sourceName] || null;
+  return fallbackPagesFor(sourceName)[0] || null;
 }
 
 const HTML_ENTITIES = Object.freeze({
@@ -62,6 +77,22 @@ function visibleText(s) {
     .trim();
 }
 
+function articlePathLooksReal(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./i, '').toLowerCase();
+    /* Both current fallback publishers are Vox properties whose article URLs
+     * contain a durable numeric story id. Requiring it eliminates category,
+     * navigation, tag and archive links before they can reach detail fetching. */
+    if (host === 'mmafighting.com' || host === 'mmamania.com') {
+      return /\/\d{5,}(?:\/|$)/.test(u.pathname);
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function samePublisherArticleUrl(href, pageUrl) {
   try {
     const base = new URL(pageUrl);
@@ -71,9 +102,10 @@ function samePublisherArticleUrl(href, pageUrl) {
     if (host(u.hostname) !== host(base.hostname)) return null;
     const path = u.pathname.replace(/\/+$/, '') || '/';
     if (path === '/' || path === '/latest-news') return null;
-    if (/\/(?:authors?|login|signup|search|rss|about|contact|masthead|community-guidelines|privacy|terms|pages)(?:\/|$)/i.test(path)) return null;
+    if (/\/(?:authors?|login|signup|search|rss|about|contact|masthead|community-guidelines|privacy|terms|pages|archives)(?:\/|$)/i.test(path)) return null;
     u.hash = '';
-    return u.toString();
+    const out = u.toString();
+    return articlePathLooksReal(out) ? out : null;
   } catch {
     return null;
   }
@@ -92,7 +124,10 @@ function nearestPublished(timeMarkers, index) {
   let bestDistance = Infinity;
   for (const marker of timeMarkers) {
     const distance = Math.abs(marker.index - index);
-    if (distance <= 2200 && distance < bestDistance) {
+    /* Real Vox cards can put metadata after image wrappers, so give the clock a
+     * generous but still card-local radius. Detail-page enrichment below is the
+     * fallback when the list page still provides no usable timestamp. */
+    if (distance <= 6000 && distance < bestDistance) {
       best = marker.value;
       bestDistance = distance;
     }
@@ -100,47 +135,94 @@ function nearestPublished(timeMarkers, index) {
   return best;
 }
 
-function collectJsonLdArticles(html, pageUrl, add) {
+function jsonLdNodes(html) {
+  const nodes = [];
   const scriptRe = /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
   let m;
-  while ((m = scriptRe.exec(html))) {
-    let parsed;
-    try { parsed = JSON.parse(m[1].trim()); }
-    catch { continue; }
+  while ((m = scriptRe.exec(String(html || '')))) {
+    try { nodes.push(JSON.parse(m[1].trim())); } catch { /* malformed publisher block */ }
+  }
+  return nodes;
+}
 
-    const walk = (node) => {
-      if (!node) return;
-      if (Array.isArray(node)) { for (const v of node) walk(v); return; }
-      if (typeof node !== 'object') return;
+function walkJson(node, fn) {
+  if (!node) return;
+  if (Array.isArray(node)) { for (const v of node) walkJson(v, fn); return; }
+  if (typeof node !== 'object') return;
+  fn(node);
+  for (const value of Object.values(node)) walkJson(value, fn);
+}
 
+function collectJsonLdArticles(html, pageUrl, add) {
+  for (const parsed of jsonLdNodes(html)) {
+    walkJson(parsed, (node) => {
       const type = Array.isArray(node['@type']) ? node['@type'].join(' ') : String(node['@type'] || '');
-      if (/\b(?:NewsArticle|Article|BlogPosting)\b/i.test(type)) {
-        const rawUrl = typeof node.url === 'string'
-          ? node.url
-          : (typeof node.mainEntityOfPage === 'string' ? node.mainEntityOfPage : node.mainEntityOfPage?.['@id']);
-        const link = samePublisherArticleUrl(rawUrl, pageUrl);
-        const title = visibleText(node.headline || node.name || '');
-        if (link && validHeadline(title)) {
-          add({ title, link, published: node.datePublished || node.dateCreated || node.dateModified || null, summary: '' });
-        }
+      if (!/\b(?:NewsArticle|Article|BlogPosting)\b/i.test(type)) return;
+      const rawUrl = typeof node.url === 'string'
+        ? node.url
+        : (typeof node.mainEntityOfPage === 'string' ? node.mainEntityOfPage : node.mainEntityOfPage?.['@id']);
+      const link = samePublisherArticleUrl(rawUrl, pageUrl);
+      const title = visibleText(node.headline || node.name || '');
+      if (link && validHeadline(title)) {
+        add({ title, link, published: node.datePublished || node.dateCreated || node.dateModified || null, summary: visibleText(node.description || '') });
       }
-
-      for (const value of Object.values(node)) walk(value);
-    };
-    walk(parsed);
+    });
   }
 }
 
+function metaContent(html, key) {
+  const text = String(html || '');
+  const esc = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const patterns = [
+    new RegExp(`<meta\\b[^>]*(?:property|name)=["']${esc}["'][^>]*content=["']([^"']+)["'][^>]*>`, 'i'),
+    new RegExp(`<meta\\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["']${esc}["'][^>]*>`, 'i'),
+  ];
+  for (const re of patterns) {
+    const m = text.match(re);
+    if (m) return decodeHtml(m[1]).trim();
+  }
+  return null;
+}
+
 /**
- * Parse a publisher's live Latest News HTML into the same item shape as RSS.
+ * Parse one actual article page for headline + publication time. This is used
+ * only when a live listing exposes a real article link but its card markup does
+ * not carry a machine-readable timestamp close enough for parseLatestPage.
+ */
+export function parseArticlePage(html, articleUrl) {
+  let best = null;
+  for (const parsed of jsonLdNodes(html)) {
+    walkJson(parsed, (node) => {
+      if (best) return;
+      const type = Array.isArray(node['@type']) ? node['@type'].join(' ') : String(node['@type'] || '');
+      if (!/\b(?:NewsArticle|Article|BlogPosting)\b/i.test(type)) return;
+      const title = visibleText(node.headline || node.name || '');
+      const published = node.datePublished || node.dateCreated || null;
+      if (validHeadline(title) && published) best = { title, link: articleUrl, published, summary: visibleText(node.description || '') };
+    });
+  }
+  if (best) return best;
+
+  const title = visibleText(metaContent(html, 'og:title') || metaContent(html, 'twitter:title') || '');
+  const published = metaContent(html, 'article:published_time') || metaContent(html, 'datePublished');
+  if (validHeadline(title) && published) {
+    return { title, link: articleUrl, published, summary: visibleText(metaContent(html, 'og:description') || '') };
+  }
+
+  const time = String(html || '').match(/<time\b[^>]*datetime\s*=\s*["']([^"']+)["'][^>]*>/i)?.[1] || null;
+  const h1 = String(html || '').match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '';
+  const h1Title = visibleText(h1);
+  return validHeadline(h1Title) && time
+    ? { title: h1Title, link: articleUrl, published: decodeHtml(time).trim(), summary: '' }
+    : null;
+}
+
+/**
+ * Parse a publisher's live news HTML into the same item shape as RSS.
  *
- * This deliberately does NOT try to understand every element on the page. It
- * accepts only same-publisher article-looking links with real headline text and
- * pairs them with the nearest machine-readable <time datetime="..."> marker.
- * JSON-LD articles are accepted first when the publisher exposes them. The
- * normal UFC-focus filter and database dedupe still run after this parser, so a
- * boxing/sidebar link cannot become a scored UFC candidate merely by appearing
- * on the page.
+ * Dated cards and JSON-LD are preferred. Real same-publisher article links are
+ * still returned when the list card has no machine-readable date; the ingest
+ * layer may resolve those few undated links against their own article pages.
  */
 export function parseLatestPage(html, pageUrl, { limit = 80 } = {}) {
   const text = String(html || '');
