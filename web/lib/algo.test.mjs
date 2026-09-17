@@ -178,11 +178,13 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(radar, /pbe-upset-rail-window/, 'PBE Picks uses the compact side-window variant');
   assert.match(radar, /UPSET RADAR[\s\S]*WATCHING/, 'the rail keeps a visible status tab even when no live signal exists');
   assert.match(picksPage, /imgs=\{imgs\}/, 'PBE Picks passes its rights-cleared fighter portraits into Upset Radar');
-  assert.match(radar, /pbe-upset-radar-scope/, 'Upset Radar includes the implemented radar scope visual');
-  assert.match(radar, /primaryImg\.card/, 'the live signal uses the selected fighter portrait already approved for PBE Picks');
+  assert.match(radar, /pbe-upset-radar-svg/, 'Upset Radar includes the implemented radar visualization');
+  assert.match(radar, /primaryImg\.card \|\| primaryImg\.portrait/, 'the live signal uses the selected fighter portrait already approved for PBE Picks');
+  assert.match(radar, /getVerifiedDisplayImagesForFighters/, 'a live upset signal gets one targeted verified portrait fallback instead of text-only degradation');
   const picksCss = readFileSync(new URL('app/algo-picks.css', web), 'utf8');
-  assert.match(picksCss, /@keyframes pbe-upset-radar-sweep/, 'the side window has a real radar sweep');
-  assert.match(picksCss, /prefers-reduced-motion: reduce[\s\S]*pbe-upset-radar-scope \.sweep/, 'radar animation respects reduced-motion');
+  assert.match(picksCss, /@keyframes pbe-upset-radar-spin/, 'the side window has a real radar sweep');
+  assert.match(picksCss, /\.pbe-upset-radar-scan-copy,[\s\S]*display: none !important/, 'the old text-only scanning placeholder is retired');
+  assert.match(picksCss, /prefers-reduced-motion: reduce[\s\S]*pbe-upset-radar-svg \.scope-sweep/, 'radar animation respects reduced-motion');
 
   assert.match(radar, /if \(access\.pro === true\) \{\s*const cards = providedCards \?\? await getAlgoCards\(access\);/, 'current fighter identities are fetched only after verified Pro access');
   assert.match(radar, /public ledger shows only already-graded historical proof/i);
