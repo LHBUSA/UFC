@@ -155,6 +155,28 @@ test('public surfaces never import a per-call reader or the call card', () => {
   assert.match(card, /robots: \{ index: false/);
 });
 
+test('PBE Upset Radar exposes only graded locked history publicly and gates current fighter calls behind Pro', () => {
+  const web = new URL('../', import.meta.url);
+  const data = readFileSync(new URL('lib/algo.ts', web), 'utf8');
+  const page = readFileSync(new URL('app/pro/page.tsx', web), 'utf8');
+  const radar = readFileSync(new URL('components/PbeUpsetRadar.tsx', web), 'utf8');
+
+  assert.match(data, /export async function getAlgoUpsetProof\(\)/);
+  assert.match(data, /locked_at=not\.is\.null/, 'historical proof can only come from locked predictions');
+  assert.match(data, /ufc_model_prediction_current_grade/, 'historical proof requires an official current grade');
+  assert.match(data, /odds <= UPSET_THRESHOLD_ODDS/, 'underdog classification is mechanical: consensus must be longer than +100');
+  assert.match(data, /result === "WIN" && r\.consensus_odds >= UPSET_SHOWCASE_THRESHOLD_ODDS/, 'showcase cards are +120-or-longer wins');
+  assert.match(data, /The record above includes every graded PBE underdog call|every graded underdog call so losses cannot disappear/i, 'losses stay in the aggregate');
+
+  assert.match(page, /getAlgoUpsetProof\(\)/);
+  assert.match(page, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} \/>/);
+  assert.doesNotMatch(page, /getAlgoCards|getAlgoBout|getAlgoRecord|pick_probability|feature_vector/, 'public /pro does not directly read an upcoming call');
+
+  assert.match(radar, /if \(access\.pro === true\) \{\s*const cards = await getAlgoCards\(access\);/, 'current fighter identities are fetched only after verified Pro access');
+  assert.match(radar, /Historical receipts are public\. Upcoming fighter calls are not\./);
+  assert.match(radar, /No hindsight\. No backfill\. No edited losses\./);
+});
+
 test('PBE PICKS is a primary nav item pointing at the existing /algo/card surface; no duplicate route', () => {
   const web = new URL('../', import.meta.url);
   const site = readFileSync(new URL('lib/site.ts', web), 'utf8');
