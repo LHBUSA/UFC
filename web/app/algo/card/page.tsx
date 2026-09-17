@@ -5,7 +5,8 @@ import { Breadcrumbs } from "@/components/ui";
 import { ProPreview } from "@/components/ProPreview";
 import { AlgoPick, type AlgoFighterContext } from "@/components/AlgoPick";
 import { getUfcAccess } from "@/lib/access";
-import { getAlgoCards } from "@/lib/algo";
+import { getAlgoCards, getAlgoUpsetProof } from "@/lib/algo";
+import { PbeUpsetRadar } from "@/components/PbeUpsetRadar";
 import { getImagesForFighters, getFightersByIds, getEventById, type Event } from "@/lib/db";
 import { lockedText, type AlgoBoutView } from "@/lib/algoView";
 import { fmtDate, locationLine } from "@/lib/format";
@@ -39,7 +40,10 @@ const modelLabel = (v: string | null | undefined) => (v ? v.replace(/^pbe-fight-
 
 export default async function AlgoCardPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const access = await getUfcAccess();
-  const cards = access.pro ? await getAlgoCards(access) : [];
+  const [cards, upsetProof] = await Promise.all([
+    access.pro ? getAlgoCards(access) : Promise.resolve([]),
+    getAlgoUpsetProof(),
+  ]);
   const params = await searchParams;
   const view: View = params.view === "nocalls" || params.view === "all" ? params.view : "picks";
 
@@ -89,6 +93,8 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
           <Link href="/model" className="btn ghost">Model evidence</Link>
         </div>
       </header>
+
+      <PbeUpsetRadar access={access} proof={upsetProof} cards={cards} />
 
       {!access.pro ? (
         <section className="pp-free">
