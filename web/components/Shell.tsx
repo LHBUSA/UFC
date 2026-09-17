@@ -73,6 +73,7 @@ export function Footer() {
             <h4>PropBetEdge</h4>
             <a href={NETWORK.news.href}>{NETWORK.news.label}</a>
             <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>
+            <a href={SITE.billingPortal} target="_blank" rel="noopener noreferrer">Manage billing ↗</a>
             {NETWORK.discord && <a href={NETWORK.discord} target="_blank" rel="noopener">Discord ↗</a>}
           </div>
           <div className="col">
@@ -93,7 +94,7 @@ export function Footer() {
             <Link href="/methodology">Editorial &amp; Data Methodology</Link>
             <a href="/feed.xml">RSS feed</a>
             <Link href="/pro">UFC Pro</Link>
-            <a href={`mailto:${SITE.contact}`}>Contact the desk</a>
+            <a href={`mailto:${SITE.contact}`}>Contact us</a>
           </div>
           <div className="col">
             <h4>Developers</h4>
