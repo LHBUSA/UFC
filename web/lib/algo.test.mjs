@@ -174,6 +174,9 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.doesNotMatch(page, /getAlgoCards|getAlgoBout|getAlgoRecord|pick_probability|feature_vector/, 'public /pro does not directly read an upcoming call');
   assert.match(picksPage, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} cards=\{cards\} surface="picks" \/>/, 'Upset Radar must render its PBE Picks-native variant on the actual PBE PICKS route');
   assert.match(picksPage, /getAlgoUpsetProof\(\)/, 'PBE PICKS loads the historical upset ledger');
+  assert.match(picksPage, /<aside className="pp-picks-sidecar" aria-label="PBE Upset Radar">/, 'Upset Radar is a sidecar, not the PBE Picks hero');
+  assert.match(radar, /pbe-upset-rail-window/, 'PBE Picks uses the compact side-window variant');
+  assert.match(radar, /UPSET RADAR[\s\S]*WATCHING/, 'the rail keeps a visible status tab even when no live signal exists');
 
   assert.match(radar, /if \(access\.pro === true\) \{\s*const cards = providedCards \?\? await getAlgoCards\(access\);/, 'current fighter identities are fetched only after verified Pro access');
   assert.match(radar, /public ledger shows only already-graded historical proof/i);
