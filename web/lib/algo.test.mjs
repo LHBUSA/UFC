@@ -159,6 +159,7 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   const web = new URL('../', import.meta.url);
   const data = readFileSync(new URL('lib/algo.ts', web), 'utf8');
   const page = readFileSync(new URL('app/pro/page.tsx', web), 'utf8');
+  const picksPage = readFileSync(new URL('app/algo/card/page.tsx', web), 'utf8');
   const radar = readFileSync(new URL('components/PbeUpsetRadar.tsx', web), 'utf8');
 
   assert.match(data, /export async function getAlgoUpsetProof\(\)/);
@@ -171,6 +172,8 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(page, /getAlgoUpsetProof\(\)/);
   assert.match(page, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} \/>/);
   assert.doesNotMatch(page, /getAlgoCards|getAlgoBout|getAlgoRecord|pick_probability|feature_vector/, 'public /pro does not directly read an upcoming call');
+  assert.match(picksPage, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} cards=\{cards\} \/>/, 'Upset Radar must render on the actual PBE PICKS route');
+  assert.match(picksPage, /getAlgoUpsetProof\(\)/, 'PBE PICKS loads the historical upset ledger');
 
   assert.match(radar, /if \(access\.pro === true\) \{\s*const cards = await getAlgoCards\(access\);/, 'current fighter identities are fetched only after verified Pro access');
   assert.match(radar, /Historical receipts are public\. Upcoming fighter calls are not\./);
