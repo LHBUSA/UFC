@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { UfcAccess } from "@/lib/accessDecision";
 import type { PortraitSet } from "@/lib/db";
+import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import { getAlgoCards, type AlgoUpsetProof } from "@/lib/algo";
 import { deltaText, marketView, oddsText, pctText } from "@/lib/algoView";
 
@@ -76,7 +77,16 @@ export async function PbeUpsetRadar({
 
   const onPicksPage = surface === "picks";
   const primary = current[0] ?? null;
-  const primaryImg = primary ? imgs?.get(primary.fighterId) ?? null : null;
+  let primaryImg = primary ? imgs?.get(primary.fighterId) ?? null : null;
+
+  // The sidecar is a high-visibility surface. If the page-level portrait map
+  // missed the selected underdog, make one targeted identity-verified lookup
+  // rather than degrading a real signal into a text-only placeholder.
+  if (primary && !primaryImg) {
+    const fallback = await getVerifiedDisplayImagesForFighters([primary.fighterId]);
+    primaryImg = fallback.get(primary.fighterId) ?? null;
+  }
+
   const primaryDisplay = primaryImg && (primaryImg.kind === "display_fallback" || primaryImg.source_family === "espn");
 
   if (onPicksPage) {
@@ -89,39 +99,51 @@ export async function PbeUpsetRadar({
         </div>
 
         <div className="pbe-upset-rail-body">
-          <div className="pbe-upset-radar-visual" aria-hidden="true">
-            <div className="pbe-upset-radar-scope">
-              <span className="ring r1" />
-              <span className="ring r2" />
-              <span className="ring r3" />
-              <span className="cross h" />
-              <span className="cross v" />
-              <span className="sweep" />
-              <span className="blip b1" />
-              <span className="blip b2" />
-              <span className="origin" />
-            </div>
+          <div className={`pbe-upset-radar-visual${primary ? " signal" : " idle"}`}>
+            <svg className="pbe-upset-radar-svg" viewBox="0 0 240 240" aria-hidden="true">
+              <circle cx="120" cy="120" r="92" className="scope-ring outer" />
+              <circle cx="120" cy="120" r="68" className="scope-ring" />
+              <circle cx="120" cy="120" r="44" className="scope-ring" />
+              <circle cx="120" cy="120" r="20" className="scope-ring" />
+              <line x1="28" y1="120" x2="212" y2="120" className="scope-axis" />
+              <line x1="120" y1="28" x2="120" y2="212" className="scope-axis" />
+              <g className="scope-sweep">
+                <path d="M120 120 L120 28 A92 92 0 0 1 190 60 Z" className="scope-beam" />
+                <line x1="120" y1="120" x2="190" y2="60" className="scope-sweep-line" />
+              </g>
+              <circle cx="76" cy="145" r="4" className="scope-blip" />
+              <circle cx="164" cy="82" r="3" className="scope-blip faint" />
+              <circle cx="120" cy="120" r="5" className="scope-origin" />
+            </svg>
+
             {primary && primaryImg ? (
               <div className={`pbe-upset-radar-fighter${primaryDisplay ? " display" : ""}`}>
-                <img src={primaryImg.card} alt="" width={260} height={325} loading="eager" decoding="async" />
-                <span>{primary.pickName}</span>
+                <img src={primaryImg.card || primaryImg.portrait} alt={primary.pickName} width={260} height={325} loading="eager" decoding="async" />
               </div>
-            ) : (
-              <div className="pbe-upset-radar-scan-copy">
-                <b>{access.pro ? "SCANNING ACTIVE PBE PICKS" : "LIVE SIGNALS LOCKED"}</b>
-                <span>{access.pro ? "Watching for a plus-money PBE selection." : "UFC Pro reveals the current fighter when the signal fires."}</span>
-              </div>
-            )}
+            ) : null}
+
             <div className="pbe-upset-radar-visual-label">
               <i />
-              <span>{primary ? "SIGNAL DETECTED" : "RADAR ACTIVE"}</span>
+              <span>{primary ? `LIVE UPSET · ${oddsText(primary.odds)}` : "NO CURRENT UPSET"}</span>
             </div>
+
+            {primary ? (
+              <div className="pbe-upset-radar-visual-name">
+                <b>{primary.pickName}</b>
+                <span>vs {primary.opponentName}</span>
+              </div>
+            ) : (
+              <div className="pbe-upset-radar-visual-name quiet">
+                <b>Radar clear</b>
+                <span>No plus-money PBE pick on the active board.</span>
+              </div>
+            )}
           </div>
 
           <header className="pbe-upset-rail-head">
             <div className="eyebrow">PBE Picks · model vs market</div>
             <h3 id="pbe-upset-rail-title">Upset Radar</h3>
-            <p>Only plus-money fighters that PBE independently selects. No forced dog pick.</p>
+            <p>Plus-money PBE picks only. The visual lights up when the model and market split.</p>
           </header>
 
           <div className="pbe-upset-rail-rule">
