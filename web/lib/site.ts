@@ -15,6 +15,7 @@ export const SITE = {
   description:
     "PropBetEdge UFC: live fight-week intelligence, complete card context, fighter dossiers, Fight DNA, official rankings, results, history and a source-disciplined MMA newsroom.",
   parent: "https://propbetedge.ai",
+  billingPortal: "https://billing.stripe.com/p/login/cNi3cv2vY7em3lr4oj7wA00",
   network: {
     mlb: "https://mlb.propbetedge.ai",
     nfl: "https://nfl.propbetedge.ai",
@@ -36,7 +37,7 @@ export const SITE = {
   publisher: "PropTechUSA.ai",
   desk: "PropBetEdge UFC Desk",
   twitter: "@propbetedge",
-  contact: "sales@localhomebuyersusa.com",
+  contact: "sales@proptechusa.ai",
 } as const;
 
 /* Primary navigation registry. Every route below stays live; `place` decides
