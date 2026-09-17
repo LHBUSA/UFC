@@ -172,12 +172,15 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(page, /getAlgoUpsetProof\(\)/);
   assert.match(page, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} \/>/);
   assert.doesNotMatch(page, /getAlgoCards|getAlgoBout|getAlgoRecord|pick_probability|feature_vector/, 'public /pro does not directly read an upcoming call');
-  assert.match(picksPage, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} cards=\{cards\} \/>/, 'Upset Radar must render on the actual PBE PICKS route');
+  assert.match(picksPage, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} cards=\{cards\} surface="picks" \/>/, 'Upset Radar must render its PBE Picks-native variant on the actual PBE PICKS route');
   assert.match(picksPage, /getAlgoUpsetProof\(\)/, 'PBE PICKS loads the historical upset ledger');
 
-  assert.match(radar, /if \(access\.pro === true\) \{\s*const cards = await getAlgoCards\(access\);/, 'current fighter identities are fetched only after verified Pro access');
-  assert.match(radar, /Historical receipts are public\. Upcoming fighter calls are not\./);
+  assert.match(radar, /if \(access\.pro === true\) \{\s*const cards = providedCards \?\? await getAlgoCards\(access\);/, 'current fighter identities are fetched only after verified Pro access');
+  assert.match(radar, /public ledger shows only already-graded historical proof/i);
   assert.match(radar, /No hindsight\. No backfill\. No edited losses\./);
+  assert.doesNotMatch(radar, /Open full PBE Picks/, 'the PBE Picks page must never link to itself from Upset Radar');
+  assert.match(radar, /AUTO-RANKED · EDGE FIRST/, 'the native PBE Picks surface shows signal state instead of redundant navigation');
+  assert.match(radar, /PBE PICK[\s\S]*PLUS MONEY[\s\S]*CURRENT SNAPSHOT/, 'the signal standard is explicit');
 });
 
 test('PBE PICKS is a primary nav item pointing at the existing /algo/card surface; no duplicate route', () => {
@@ -194,7 +197,7 @@ test('PBE PICKS is a primary nav item pointing at the existing /algo/card surfac
   assert.match(card, /Official PropBetEdge model selections/);
   assert.match(card, /href="\/algo" className="btn">How PBE Algo works/);
   assert.match(card, /href="\/algo\/record" className="btn gold">Track Record/);
-  assert.match(card, /const cards = access\.pro \? await getAlgoCards\(access\) : \[\];/, 'entitlement read unchanged');
+  assert.match(card, /access\.pro \? getAlgoCards\(access\) : Promise\.resolve\(\[\]\)/, 'entitlement gate remains in front of the PBE Picks read');
   let picksRoute = true;
   try { readFileSync(new URL('app/picks/page.tsx', web)); } catch { picksRoute = false; }
   assert.equal(picksRoute, false);
