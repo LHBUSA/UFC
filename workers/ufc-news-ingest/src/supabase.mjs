@@ -29,6 +29,8 @@ export const CONFLICT_TARGETS = {
   ufc_articles: 'slug',
 };
 
+const isDuplicateError = (e) => /23505|duplicate key|unique constraint/i.test(String(e?.message || e));
+
 export class Supabase {
   constructor(env) {
     this.url = String(env.SUPABASE_URL || '').replace(/\/+$/, '');
@@ -121,21 +123,47 @@ export class Supabase {
   }
 
   /**
-   * Insert rows, ignoring ones that already exist.
+   * Insert rows while treating every unique constraint as a duplicate boundary.
    *
-   * `table` must appear in CONFLICT_TARGETS: an upsert with no named target is
-   * refused rather than silently degraded, because the degraded form looks
-   * identical until it fails in production.
+   * PostgREST can name ONE `on_conflict` target. `ufc_news_items` deliberately
+   * has TWO independent unique identities: fingerprint and URL. A publisher is
+   * allowed to edit a headline without changing its URL; that changes our
+   * fingerprint but not the URL. In a bulk upsert targeted at fingerprint, one
+   * such row raises 23505 on the URL constraint and PostgreSQL aborts the WHOLE
+   * statement. That means one edited old headline can poison every genuinely
+   * new story in the same two-minute ingest forever.
+   *
+   * Fast path stays one bulk request. Only when PostgreSQL reports a duplicate
+   * on some other unique constraint do we replay the batch row-by-row. The row
+   * with the secondary conflict is ignored; unrelated new rows still land. Any
+   * non-duplicate error still fails closed and is re-thrown.
    */
   async insertIgnoringDuplicates(table, rows) {
     if (!rows?.length) return 0;
     const target = CONFLICT_TARGETS[table];
     if (!target) throw new Error(`refusing to upsert ${table} without a declared conflict target`);
+
     const before = await this.count(table);
-    await this.request('POST', `${table}?on_conflict=${target}`, {
-      body: rows,
-      prefer: 'resolution=ignore-duplicates,return=minimal',
-    });
+    const path = `${table}?on_conflict=${target}`;
+    const options = { prefer: 'resolution=ignore-duplicates,return=minimal' };
+
+    try {
+      await this.request('POST', path, { ...options, body: rows });
+    } catch (e) {
+      if (!isDuplicateError(e)) throw e;
+
+      /* The bulk statement is atomic, so after a 23505 none of its rows landed.
+       * Replay independently to isolate the secondary-key duplicate instead of
+       * allowing it to starve the entire newsroom. */
+      for (const row of rows) {
+        try {
+          await this.request('POST', path, { ...options, body: [row] });
+        } catch (rowError) {
+          if (!isDuplicateError(rowError)) throw rowError;
+        }
+      }
+    }
+
     const after = await this.count(table);
     /* What landed, not what was offered. On a repeat ingest this is zero, and
      * reporting the offered count instead would make a no-op look like news. */
