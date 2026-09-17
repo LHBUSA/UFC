@@ -15,12 +15,14 @@
  * safe to run concurrently with anything because it only ever offers rows to
  * two unique constraints and lets the database arbitrate.
  *
- * THE QUEUE PRODUCER IS OFF
+ * QUEUE PRODUCER
  *
- * QUEUE_PRODUCER_ENABLED is "false" and there is no queue binding in
- * wrangler.toml. Both are deliberate for this phase: the detection path is
- * proven against production traffic before anything downstream can consume it.
- * /health reports the flag so the state is a fact rather than a memory.
+ * When QUEUE_PRODUCER_ENABLED=true and UFC_NEWS_QUEUE is bound, runIngest
+ * sends newly inserted scoreable items to ufc-news-enrich immediately. The
+ * database row remains the durable source of truth; queue delivery is best
+ * effort because the enricher's claim loop can recover anything a queue outage
+ * misses. /health reports both the flag and binding so the production state is
+ * observable instead of inferred from deployment history.
  *
  * ENDPOINTS
  *   GET  /health          unauthenticated, no side effects, no writes
@@ -41,7 +43,7 @@ import { verifySources, probeUrl, CANDIDATES, MIN_ITEMS, MIN_DATED_RATIO, MIN_UF
 import { loadHealth, resetHealth, summarize, CIRCUIT_FAILURE_THRESHOLD, CIRCUIT_COOLDOWN_MS } from './feed_health.mjs';
 import { statusPass, statusDue, loadStatusHealth, STATUS_PERIOD_MIN, STATUS_WINDOW_HOURS } from './status.mjs';
 
-const VERSION = 'v0.2.0';
+const VERSION = 'v0.2.1';
 
 /* In-memory only: survives a warm isolate and nothing more. The durable record
  * is ufc_news_pipeline_events; this is a convenience for whoever curls it. */
@@ -79,7 +81,6 @@ export default {
         version: VERSION,
         ...health,
         cron: '*/2 * * * *',
-        /* The single most important fact about this deployment. */
         queue_producer_enabled: queueProducerEnabled(env),
         queue_binding_present: Boolean(env.UFC_NEWS_QUEUE),
         enabled_rss_sources: sourceCount,
@@ -203,14 +204,8 @@ async function run(env, { dry = false, cron = null } = {}) {
     health.last_duration_ms = result.duration_ms ?? null;
     health.last_error = null;
     const t = result.totals || {};
-    console.log(`[${WORKER}] ${result.status} cron=${cron} ${result.duration_ms}ms sources=${t.sources} ok=${t.fetched_ok} 304=${t.not_modified} fail=${t.failed} parsed=${t.parsed} candidates=${t.candidates} focus_rejected=${t.focus_rejected} inserted=${t.inserted}`);
-
-    /* The producer stays off in this phase. The check is here, ahead of the
-     * code it will guard, so that turning it on is a config change with an
-     * obvious blast radius rather than a new code path written under pressure. */
-    if (queueProducerEnabled(env) && env.UFC_NEWS_QUEUE) {
-      console.warn(`[${WORKER}] queue producer flag is on but this build does not enqueue; ignoring`);
-    }
+    console.log(`[${WORKER}] ${result.status} cron=${cron} ${result.duration_ms}ms sources=${t.sources} ok=${t.fetched_ok} 304=${t.not_modified} fail=${t.failed} parsed=${t.parsed} candidates=${t.candidates} focus_rejected=${t.focus_rejected} inserted=${t.inserted} enqueued=${t.enqueued || 0}`);
+    if (t.enqueue_error) console.error(`[${WORKER}] queue enqueue failed: ${t.enqueue_error}`);
     return result;
   } catch (e) {
     health.last_status = 'failed';
