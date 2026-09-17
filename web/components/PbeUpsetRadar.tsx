@@ -95,6 +95,12 @@ export async function PbeUpsetRadar({
         </div>
       </div>
 
+      <div className="pbe-upset-standard" aria-label="Upset Radar signal standard">
+        <span><i>01</i><b>PBE PICK</b><small>The model independently selects the fighter.</small></span>
+        <span><i>02</i><b>PLUS MONEY</b><small>Consensus market price is +101 or longer.</small></span>
+        <span><i>03</i><b>CURRENT SNAPSHOT</b><small>The comparison uses a recorded, still-current market.</small></span>
+      </div>
+
       {access.pro === true ? (
         <div className="pbe-upset-current">
           <div className="pbe-upset-current-head">
@@ -103,7 +109,9 @@ export async function PbeUpsetRadar({
               <strong>{onPicksPage ? "Plus-money PBE Picks with real model disagreement." : "Current PBE underdog calls"}</strong>
               {onPicksPage ? <small>Ranked by PBE Edge, then market price. No forced upset pick.</small> : null}
             </div>
-            <Link href="/algo/record" className="btn">{onPicksPage ? "View Track Record" : "Full Track Record"}</Link>
+            {onPicksPage
+              ? <span className="pbe-upset-mode-chip">AUTO-RANKED · EDGE FIRST</span>
+              : <Link href="/algo/record" className="btn">Full Track Record</Link>}
           </div>
 
           {current.length > 0 ? (
