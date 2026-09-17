@@ -7,7 +7,8 @@ import artifact from "@/lib/generated/model-v1.json";
 
 /* PBE Algo data access. Server only.
  *
- * PUBLIC functions return aggregate proof and nothing actionable.
+ * PUBLIC functions return aggregate proof plus sanitized, graded historical
+ * proof only — never an upcoming or provisional fighter call.
  * PRO functions take the request's verified access decision and refuse to read
  * a single pick for anyone without it: the check is inside the data layer, so a
  * page that forgets to gate still cannot fetch the data, let alone render it.
@@ -79,6 +80,168 @@ export async function getAlgoPublicRecord(): Promise<AlgoPublicRecord> {
     first_locked_at: r?.first_locked_at ?? null,
     last_locked_at: r?.last_locked_at ?? null,
     calibration: cal.map((c) => ({ band: c.confidence_band, decided: Number(c.decided || 0), predicted: c.predicted, observed: c.observed })),
+  };
+}
+
+
+export type AlgoUpsetProof = {
+  threshold_odds: number;
+  showcase_threshold_odds: number;
+  total: number;
+  decided: number;
+  wins: number;
+  losses: number;
+  no_decision: number;
+  hit_rate: number | null;
+  average_consensus_odds: number | null;
+  biggest_wins: Array<{
+    prediction_id: string;
+    event_name: string;
+    event_date: string;
+    pick_name: string;
+    opponent_name: string;
+    consensus_odds: number;
+    best_odds: number | null;
+    pick_probability: number;
+    market_implied_prob: number | null;
+    model_edge_pts: number | null;
+    result: "WIN";
+    locked_at: string;
+  }>;
+};
+
+type UpsetPredRow = {
+  id: string;
+  bout_id: string;
+  locked_at: string;
+  pick_fighter_id: string;
+  pick_probability: number | string;
+  market_implied_prob_pick: number | string | null;
+  model_edge_pts: number | string | null;
+  sample_context: { market?: AlgoBoutView["market"] } | null;
+};
+type UpsetGradeRow = {
+  prediction_id: string;
+  result: NonNullable<AlgoBoutView["grade"]>["result"];
+};
+type UpsetBoutRow = {
+  id: string;
+  fighter_a: { id: string; name: string };
+  fighter_b: { id: string; name: string };
+  event: { name: string; event_date: string };
+};
+
+const UPSET_THRESHOLD_ODDS = 100;
+const UPSET_SHOWCASE_THRESHOLD_ODDS = 120;
+const EMPTY_UPSET_PROOF = (): AlgoUpsetProof => ({
+  threshold_odds: UPSET_THRESHOLD_ODDS,
+  showcase_threshold_odds: UPSET_SHOWCASE_THRESHOLD_ODDS,
+  total: 0, decided: 0, wins: 0, losses: 0, no_decision: 0,
+  hit_rate: null, average_consensus_odds: null, biggest_wins: [],
+});
+
+/**
+ * Public sales proof for PBE Upset Radar.
+ *
+ * This reader is intentionally historical-only: a row must be LOCKED and have
+ * a current official grade before its fighter identity can leave the data
+ * layer. Upcoming/provisional calls remain behind getAlgoCards/getAlgoBout.
+ * An underdog is mechanical, not editorial: lock-time consensus > +100.
+ * Showcase cards are wins at +120 or longer, while the aggregate includes
+ * every graded underdog call so losses cannot disappear from the record.
+ */
+export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
+  const fx = fixture();
+  if (fx) {
+    const rows = fx.bouts
+      .filter((b) => b.prediction?.locked_at && b.grade)
+      .map((b) => {
+        const odds = Number(b.market?.pick_consensus_odds);
+        if (!Number.isFinite(odds) || odds <= UPSET_THRESHOLD_ODDS) return null;
+        const pick = b.pick_fighter_id === b.fighter_a.id ? b.fighter_a : b.fighter_b;
+        const opponent = b.pick_fighter_id === b.fighter_a.id ? b.fighter_b : b.fighter_a;
+        return {
+          prediction_id: b.prediction!.id,
+          event_name: b.event_name, event_date: b.event_date,
+          pick_name: pick.name, opponent_name: opponent.name,
+          consensus_odds: odds,
+          best_odds: b.market?.pick_best_odds == null ? null : Number(b.market.pick_best_odds),
+          pick_probability: Number(b.prediction!.pick_probability),
+          market_implied_prob: b.prediction!.market_implied_prob_pick == null ? null : Number(b.prediction!.market_implied_prob_pick),
+          model_edge_pts: b.prediction!.model_edge_pts == null ? null : Number(b.prediction!.model_edge_pts),
+          result: b.grade!.result,
+          locked_at: b.prediction!.locked_at!,
+        };
+      })
+      .filter(Boolean) as Array<Record<string, any>>;
+    const wins = rows.filter((r) => r.result === "WIN").length;
+    const losses = rows.filter((r) => r.result === "LOSS").length;
+    const decided = wins + losses;
+    return {
+      threshold_odds: UPSET_THRESHOLD_ODDS, showcase_threshold_odds: UPSET_SHOWCASE_THRESHOLD_ODDS,
+      total: rows.length, decided, wins, losses, no_decision: rows.length - decided,
+      hit_rate: decided ? wins / decided : null,
+      average_consensus_odds: rows.length ? rows.reduce((n, r) => n + r.consensus_odds, 0) / rows.length : null,
+      biggest_wins: rows.filter((r) => r.result === "WIN" && r.consensus_odds >= UPSET_SHOWCASE_THRESHOLD_ODDS)
+        .sort((a, b) => b.consensus_odds - a.consensus_odds).slice(0, 3),
+    } as AlgoUpsetProof;
+  }
+
+  const preds = await rest<UpsetPredRow>(
+    `ufc_model_predictions?model_version=eq.${encodeURIComponent(MODEL_VERSION)}&locked_at=not.is.null&select=id,bout_id,locked_at,pick_fighter_id,pick_probability,market_implied_prob_pick,model_edge_pts,sample_context&order=locked_at.desc&limit=1000`
+  );
+  if (!preds.length) return EMPTY_UPSET_PROOF();
+
+  const predictionIds = inList(preds.map((p) => p.id));
+  const boutIds = inList(preds.map((p) => p.bout_id));
+  const [grades, bouts] = await Promise.all([
+    rest<UpsetGradeRow>(`ufc_model_prediction_current_grade?prediction_id=in.${predictionIds}&select=prediction_id,result`),
+    rest<UpsetBoutRow>(`ufc_bouts?id=in.${boutIds}&select=id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events!inner(name,event_date)`),
+  ]);
+  const gradeBy = new Map(grades.map((g) => [g.prediction_id, g]));
+  const boutBy = new Map(bouts.map((b) => [b.id, b]));
+
+  const rows = preds.flatMap((p) => {
+    const grade = gradeBy.get(p.id);
+    const bout = boutBy.get(p.bout_id);
+    const odds = Number(p.sample_context?.market?.pick_consensus_odds);
+    if (!grade || !bout || !Number.isFinite(odds) || odds <= UPSET_THRESHOLD_ODDS) return [];
+    const pick = p.pick_fighter_id === bout.fighter_a.id ? bout.fighter_a : p.pick_fighter_id === bout.fighter_b.id ? bout.fighter_b : null;
+    if (!pick) return [];
+    const opponent = pick.id === bout.fighter_a.id ? bout.fighter_b : bout.fighter_a;
+    return [{
+      prediction_id: p.id,
+      event_name: bout.event.name,
+      event_date: bout.event.event_date,
+      pick_name: pick.name,
+      opponent_name: opponent.name,
+      consensus_odds: odds,
+      best_odds: p.sample_context?.market?.pick_best_odds == null ? null : Number(p.sample_context.market.pick_best_odds),
+      pick_probability: Number(p.pick_probability),
+      market_implied_prob: p.market_implied_prob_pick == null ? null : Number(p.market_implied_prob_pick),
+      model_edge_pts: p.model_edge_pts == null ? null : Number(p.model_edge_pts),
+      result: grade.result,
+      locked_at: p.locked_at,
+    }];
+  });
+
+  const wins = rows.filter((r) => r.result === "WIN").length;
+  const losses = rows.filter((r) => r.result === "LOSS").length;
+  const decided = wins + losses;
+  return {
+    threshold_odds: UPSET_THRESHOLD_ODDS,
+    showcase_threshold_odds: UPSET_SHOWCASE_THRESHOLD_ODDS,
+    total: rows.length,
+    decided,
+    wins,
+    losses,
+    no_decision: rows.length - decided,
+    hit_rate: decided ? wins / decided : null,
+    average_consensus_odds: rows.length ? rows.reduce((n, r) => n + r.consensus_odds, 0) / rows.length : null,
+    biggest_wins: rows
+      .filter((r): r is typeof r & { result: "WIN" } => r.result === "WIN" && r.consensus_odds >= UPSET_SHOWCASE_THRESHOLD_ODDS)
+      .sort((a, b) => b.consensus_odds - a.consensus_odds)
+      .slice(0, 3),
   };
 }
 
