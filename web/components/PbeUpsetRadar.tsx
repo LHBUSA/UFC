@@ -13,6 +13,7 @@ type CurrentUnderdog = {
   pickName: string;
   opponentName: string;
   odds: number;
+  opponentOdds: number | null;
   bestOdds: number | null;
   probability: number;
   marketImplied: number | null;
@@ -88,6 +89,7 @@ export async function PbeUpsetRadar({
         pickName: pick.name,
         opponentName: opponent.name,
         odds,
+        opponentOdds: mv.opponent.consensus,
         bestOdds: mv.pick.best,
         probability: Number(p.pick_probability),
         marketImplied: mv.implied,
@@ -148,7 +150,7 @@ export async function PbeUpsetRadar({
 
               <div className="pbe-upset-radar-visual-label">
                 <i />
-                <span>{primary ? `${primary.marketState === "CURRENT" ? "LIVE" : "LAST"} · ${oddsText(primary.odds)}` : "CLEAR"}</span>
+                <span>{primary ? `MARKET DOG · ${oddsText(primary.odds)}` : "CLEAR"}</span>
               </div>
             </div>
 
@@ -163,7 +165,7 @@ export async function PbeUpsetRadar({
             {primary ? (
               <div className="pbe-upset-radar-visual-name">
                 <b>{primary.pickName}</b>
-                <span>vs {primary.opponentName}</span>
+                <span>{pctText(primary.probability)} PBE favorite · vs {primary.opponentName}</span>
               </div>
             ) : (
               <div className="pbe-upset-radar-visual-name quiet">
@@ -176,12 +178,12 @@ export async function PbeUpsetRadar({
           <header className="pbe-upset-rail-head">
             <div className="eyebrow">PBE Picks · model vs market</div>
             <h3 id="pbe-upset-rail-title">Upset Radar</h3>
-            <p>Plus-money PBE picks only. The visual lights up when the model and market split.</p>
+            <p>Market underdogs that PBE rates as the more likely winner. The point is the disagreement.</p>
           </header>
 
           <div className="pbe-upset-rail-rule">
-            <span><b>+101+</b> consensus</span>
-            <span><b>PBE PICK</b> required</span>
+            <span><b>MARKET DOG</b> +101+</span>
+            <span><b>PBE FAVORITE</b> model &gt; opponent</span>
             <span><b>AUTO</b> freshness</span>
           </div>
 
@@ -191,7 +193,7 @@ export async function PbeUpsetRadar({
                 {current.slice(0, 2).map((x, i) => (
                   <article className="pbe-upset-rail-signal" key={x.boutId}>
                     <div className="pbe-upset-rail-signal-top">
-                      <span>#{i + 1} · {x.locked ? "LOCKED" : "PROVISIONAL"} · {x.marketState === "CURRENT" ? "CURRENT" : "LAST OBSERVED"}</span>
+                      <span>#{i + 1} · {x.locked ? "LOCKED" : "PROVISIONAL"} · MARKET UNDERDOG</span>
                       <b>{oddsText(x.odds)}</b>
                     </div>
                     <h4>{x.pickName}</h4>
@@ -210,8 +212,8 @@ export async function PbeUpsetRadar({
                           <b>MODEL DRIVERS</b>
                         </div>
                         <div className="pbe-upset-rail-gap">
-                          <b>{pctText(x.probability)} PBE</b>
-                          <span>vs {pctText(x.marketImplied)} market · {deltaText(x.edgePts)} {x.marketState === "CURRENT" ? "edge" : "stored gap"}</span>
+                          <b>{pctText(x.probability)} PBE favorite</b>
+                          <span>Market: {x.pickName} {oddsText(x.odds)} · {x.opponentName} {oddsText(x.opponentOdds)} · {deltaText(x.edgePts)} {x.marketState === "CURRENT" ? "edge" : "stored gap"}</span>
                         </div>
                         {x.supporting.length > 0 ? (
                           <div className="pbe-upset-rail-driver-list">
