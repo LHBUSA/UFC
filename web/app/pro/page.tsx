@@ -8,7 +8,8 @@ import { checkoutReturnState, parseCheckoutReturn } from "@/lib/accessDecision";
 import { PRO_OFFER, offerJsonLd } from "@/lib/proOffer";
 import { CheckoutVerifyRefresh } from "@/components/CheckoutVerifyRefresh";
 import { getCurrentAccount } from "@/lib/auth";
-import { algoCallsActive, getAlgoPublicRecord } from "@/lib/algo";
+import { algoCallsActive, getAlgoPublicRecord, getAlgoUpsetProof } from "@/lib/algo";
+import { PbeUpsetRadar } from "@/components/PbeUpsetRadar";
 
 export const metadata: Metadata = {
   title: "UFC Pro — PBE Picks, UFC Predictions, Fight DNA & Market Edge",
@@ -23,7 +24,7 @@ const safeNext = (v: string | string[] | undefined) => {
 
 export default async function ProPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
-  const [access, rawAccount, algoIsLive, algoRecord] = await Promise.all([getUfcAccess(), getCurrentAccount(), algoCallsActive(), getAlgoPublicRecord()]);
+  const [access, rawAccount, algoIsLive, algoRecord, upsetProof] = await Promise.all([getUfcAccess(), getCurrentAccount(), algoCallsActive(), getAlgoPublicRecord(), getAlgoUpsetProof()]);
   const account = access.signedIn ? rawAccount : null;
   const owner = access.tier === "owner";
   const active = access.pro;
@@ -114,6 +115,8 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
             <span>No backtest result is borrowed into the live record, and provisional calls are not counted as official picks.</span>
           </div>
         )}
+
+        <PbeUpsetRadar access={access} proof={upsetProof} />
 
         <div className="pro-algo-receipt">
           <div><span className="eyebrow">Accountability by design</span><strong>Every official call has a receipt.</strong></div>
