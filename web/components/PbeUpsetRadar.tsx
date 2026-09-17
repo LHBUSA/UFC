@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { UfcAccess } from "@/lib/accessDecision";
+import type { PortraitSet } from "@/lib/db";
 import { getAlgoCards, type AlgoUpsetProof } from "@/lib/algo";
 import { deltaText, marketView, oddsText, pctText } from "@/lib/algoView";
 
@@ -7,6 +8,7 @@ type CurrentUnderdog = {
   boutId: string;
   eventName: string;
   eventDate: string;
+  fighterId: string;
   pickName: string;
   opponentName: string;
   odds: number;
@@ -29,11 +31,13 @@ export async function PbeUpsetRadar({
   access,
   proof,
   cards: providedCards,
+  imgs,
   surface = "pro",
 }: {
   access: Pick<UfcAccess, "pro">;
   proof: AlgoUpsetProof;
   cards?: AlgoCards;
+  imgs?: Map<string, PortraitSet>;
   surface?: Surface;
 }) {
   let current: CurrentUnderdog[] = [];
@@ -55,6 +59,7 @@ export async function PbeUpsetRadar({
         boutId: b.bout_id,
         eventName: card.event_name,
         eventDate: card.event_date,
+        fighterId: pick.id,
         pickName: pick.name,
         opponentName: opponent.name,
         odds,
@@ -70,6 +75,9 @@ export async function PbeUpsetRadar({
   }
 
   const onPicksPage = surface === "picks";
+  const primary = current[0] ?? null;
+  const primaryImg = primary ? imgs?.get(primary.fighterId) ?? null : null;
+  const primaryDisplay = primaryImg && (primaryImg.kind === "display_fallback" || primaryImg.source_family === "espn");
 
   if (onPicksPage) {
     return (
@@ -81,6 +89,35 @@ export async function PbeUpsetRadar({
         </div>
 
         <div className="pbe-upset-rail-body">
+          <div className="pbe-upset-radar-visual" aria-hidden="true">
+            <div className="pbe-upset-radar-scope">
+              <span className="ring r1" />
+              <span className="ring r2" />
+              <span className="ring r3" />
+              <span className="cross h" />
+              <span className="cross v" />
+              <span className="sweep" />
+              <span className="blip b1" />
+              <span className="blip b2" />
+              <span className="origin" />
+            </div>
+            {primary && primaryImg ? (
+              <div className={`pbe-upset-radar-fighter${primaryDisplay ? " display" : ""}`}>
+                <img src={primaryImg.card} alt="" width={260} height={325} loading="eager" decoding="async" />
+                <span>{primary.pickName}</span>
+              </div>
+            ) : (
+              <div className="pbe-upset-radar-scan-copy">
+                <b>{access.pro ? "SCANNING ACTIVE PBE PICKS" : "LIVE SIGNALS LOCKED"}</b>
+                <span>{access.pro ? "Watching for a plus-money PBE selection." : "UFC Pro reveals the current fighter when the signal fires."}</span>
+              </div>
+            )}
+            <div className="pbe-upset-radar-visual-label">
+              <i />
+              <span>{primary ? "SIGNAL DETECTED" : "RADAR ACTIVE"}</span>
+            </div>
+          </div>
+
           <header className="pbe-upset-rail-head">
             <div className="eyebrow">PBE Picks · model vs market</div>
             <h3 id="pbe-upset-rail-title">Upset Radar</h3>
