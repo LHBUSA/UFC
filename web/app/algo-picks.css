@@ -1086,6 +1086,11 @@
 .pbe-upset-radar-visual.compact .pbe-upset-radar-visual-label {
   left: 7px;
   top: 7px;
+  right: auto;
+  bottom: auto;
+  width: max-content;
+  height: auto;
+  min-height: 0;
   gap: 4px;
   padding: 4px 6px;
   border-radius: 999px;
