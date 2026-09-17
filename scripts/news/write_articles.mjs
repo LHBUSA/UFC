@@ -120,7 +120,7 @@ async function loadWorld(sb) {
     sb.select('ufc_bout_results', 'select=bout_id,winner_id,method,method_raw,round,time_sec,time_format,referee,scorecards,finish_detail,has_stats'),
     sb.select('ufc_bout_round_stats', 'select=bout_id,fighter_id,round,kd,sig_str_landed,sig_str_att,total_str_landed,total_str_att,td_landed,td_att,sub_att,ctrl_sec'),
     sb.select('ufc_images', 'select=id,kind,r2_key,license,author,source_url,fighter_id&kind=eq.wikimedia'),
-    sb.select('ufc_articles', 'select=id,slug,headline,story_type,status,sources,needs_human'),
+    sb.select('ufc_articles', 'select=id,slug,headline,story_type,status,sources,needs_human,fighter_ids,bout_id,event_id,published_at'),
   ]);
 
   const boutsByEvent = new Map();
@@ -1143,6 +1143,13 @@ async function generateExternal(world, sb, today, now) {
   const items = await sb.select('ufc_news_items', `select=id,source_id,url,title,published_at,summary,taxonomy,fighter_ids,bout_id,event_id,captured_at&or=(published_at.gte.${since},and(published_at.is.null,captured_at.gte.${since}))&order=published_at.desc.nullslast`);
   const sources = new Map((await sb.select('ufc_news_sources', 'select=id,name,url')).map((s) => [s.id, s]));
   const out = [];
+  /* A URL/title fingerprint answers "is this the same feed item?". It does
+   * not answer "is this the same story?" Multiple outlets can describe one
+   * withdrawal with unrelated wording, which previously produced several
+   * public articles. Keep one canonical article per strongly-linked news
+   * topic and let the newest report refresh it. */
+  const existingExternal = [...world.articles.values()].filter((a) => a.story_type === 'external');
+  const claimedTopics = [];
   for (const it of items) {
     const scores = (it.taxonomy && it.taxonomy.scores) || {};
     const qualifying = Object.keys(scores).filter((l) => EXTERNAL_STORY_LABELS.has(l) && scores[l] >= 0.6);
@@ -1154,6 +1161,9 @@ async function generateExternal(world, sb, today, now) {
       return f ? { fighter_id: f.fighter_id, name: f.name, slug: f.slug, record: recStr(f), next_bout: nextBoutFor(world, fid, today), last: f.archive.last[0] || null } : null;
     }).filter(Boolean);
     if (!fighters.length) continue;
+    const topic = { bout_id: it.bout_id, event_id: it.event_id, fighter_ids: fighters.map((f) => f.fighter_id) };
+    if (claimedTopics.some((seen) => externalTopicsMatch(seen, topic))) continue;
+    claimedTopics.push(topic);
     let bout = null;
     if (it.bout_id) {
       const b = world.bouts.find((x) => x.id === it.bout_id);
@@ -1172,7 +1182,8 @@ async function generateExternal(world, sb, today, now) {
     const { angle, market_watch } = externalAngle(fb);
     fb.bettor_angle = angle; fb.market_watch = market_watch;
     fb.depth = { class: 'external', target: DEPTH.external, short: true, short_reason: 'external wire item with limited verified context' };
-    const slug = slugify(it.title).slice(0, 80).replace(/-+$/, '');
+    const canonical = existingExternal.find((a) => externalTopicsMatch(a, topic));
+    const slug = canonical?.slug || slugify(it.title).slice(0, 80).replace(/-+$/, '');
     if (!slug) continue;
     /* EMERGENCY CONTAINMENT 2026-09-09. An external draft is a ~76-101 word
      * deterministic fact packet -- "Contract report from Bloody Elbow: the table
@@ -1373,6 +1384,21 @@ function bodyWords(md) { return wordCount(md.replace(/^#+ .*$/gm, '')); }
 function tokenSet(s) { return new Set(normalize(s).split(' ').filter((t) => t.length > 2)); }
 function jaccard(a, b) { let inter = 0; for (const t of a) if (b.has(t)) inter += 1; const uni = a.size + b.size - inter; return uni ? inter / uni : 0; }
 
+function idSet(value) { return new Set((Array.isArray(value) ? value : []).filter(Boolean).map(String)); }
+
+/** Strong semantic identity for outside reports. A shared fighter alone is
+ * deliberately insufficient: two unrelated developments about Brian Ortega
+ * must remain two stories. A shared bout is conclusive; otherwise require the
+ * same event and at least two shared fighters. */
+export function externalTopicsMatch(a, b) {
+  if (a?.bout_id != null && b?.bout_id != null && String(a.bout_id) === String(b.bout_id)) return true;
+  if (a?.event_id == null || b?.event_id == null || String(a.event_id) !== String(b.event_id)) return false;
+  const left = idSet(a.fighter_ids); const right = idSet(b.fighter_ids);
+  let shared = 0;
+  for (const id of left) if (right.has(id)) shared += 1;
+  return shared >= 2;
+}
+
 /* Addendum §11 gates. Returns problems; an empty list means publishable. */
 function gateArticle(art, world, batch) {
   const problems = [];
@@ -1495,7 +1521,7 @@ async function persist(sb, world, art, env, stats, batch, opts) {
   const depthTag = `${words}w${art.fact_block.depth && art.fact_block.depth.short ? ' short' : ''}`;
 
   if (existing) {
-    const refreshable = art.story_type === 'results' || art.story_type === 'fight_preview';
+    const refreshable = art.story_type === 'results' || art.story_type === 'fight_preview' || art.story_type === 'external';
     const oldHash = (Array.isArray(existing.sources) ? existing.sources : []).find((s) => s && s.kind === 'fact_block');
     if (!refreshable || (!opts.force && oldHash && oldHash.hash === hash)) { stats.unchanged += 1; return; }
     stats.refreshed += 1;
