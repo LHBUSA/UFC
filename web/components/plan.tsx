@@ -26,6 +26,7 @@ import { Chart, ChartSet, type ChartSpec } from "@/components/charts";
 import { fmtDate } from "@/lib/format";
 import { readableFamilies, familiesSentence } from "@/lib/provenance";
 import { renderMarkdownBlocks } from "@/lib/markdown";
+import { buildEditorialEvidence } from "@/lib/editorialEvidence";
 import { OfficialVideo } from "@/components/OfficialVideo";
 import { renderablePlanVideos, type PlanVideo, type RenderablePlanVideo } from "@/lib/videoPolicy";
 
@@ -584,6 +585,16 @@ export function MethodologyModule({ plan, updated, corroborating }: { plan: Cont
   const familySentence = familiesSentence(d.first_party_tables);
   const corroboration = (corroborating || []).filter((c) => c?.url && c?.publisher).slice(0, 6);
   const oddsConnected = d.odds_status === "available";
+  const evidence = buildEditorialEvidence({
+    gate: d.gate,
+    sourceLinked: Boolean(d.trigger?.url),
+    chartCount: plan?.chart_count ?? chartsOf(plan).length,
+    oddsStatus: d.odds_status,
+    modelStatus: d.model_status,
+    dataFamilies: families,
+    corroborationCount: corroboration.length,
+    omitted: plan?.omitted,
+  });
   return (
     <Module eyebrow="Sources and method" className="method">
       <p className="method-lede">
@@ -618,6 +629,40 @@ export function MethodologyModule({ plan, updated, corroborating }: { plan: Cont
           <div className="chips">{families.map((f) => <span key={f} className="tag">{f}</span>)}</div>
         </div>
       )}
+
+      <section className="evidence-panel" aria-labelledby="editorial-evidence-title">
+        <div className="evidence-head">
+          <div>
+            <span className="evidence-kicker">Evidence ledger</span>
+            <h3 id="editorial-evidence-title">What this article knows—and what it cannot know.</h3>
+          </div>
+          <div className="evidence-badges" aria-label="Publication evidence">
+            {evidence.badges.map((badge) => (
+              <span key={badge.label} className={`evidence-badge ${badge.tone}`}>{badge.label}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="evidence-grid">
+          <div className="evidence-column">
+            <span className="k">Evidence attached</span>
+            {evidence.receipts.length > 0 ? (
+              <ul>{evidence.receipts.map((receipt) => <li key={receipt}>{receipt}</li>)}</ul>
+            ) : (
+              <p>No additional evidence receipt is displayed because the stored article record does not prove one.</p>
+            )}
+          </div>
+          <div className="evidence-column limitation">
+            <span className="k">Known limits</span>
+            <ul>{evidence.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul>
+          </div>
+        </div>
+
+        <p className="evidence-foot">
+          <b>Publication method:</b> automated editorial analysis from a fixed evidence packet. Human review is not
+          implied unless it is explicitly stated on the article.
+        </p>
+      </section>
 
       <div className="method-row">
         <span className="k">Editorial method</span>

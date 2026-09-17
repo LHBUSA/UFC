@@ -31,7 +31,8 @@
     "test:news-clusters": "node --experimental-strip-types --test lib/newsClusters.test.ts",
     "test:paywall": "node --experimental-strip-types --test lib/accessDecision.test.ts lib/authFlow.test.ts lib/paywall.test.ts",
     "test:sitemap": "node --experimental-strip-types --test lib/sitemapRules.test.ts",
-    "test:dwcs": "node --experimental-strip-types --test lib/contenderIdentity.test.ts lib/dwcsAlumni.test.ts lib/retiredFighterSlugs.test.ts lib/outcomeResolution.test.ts lib/dobEvidence.test.ts"
+    "test:dwcs": "node --experimental-strip-types --test lib/contenderIdentity.test.ts lib/dwcsAlumni.test.ts lib/retiredFighterSlugs.test.ts lib/outcomeResolution.test.ts lib/dobEvidence.test.ts",
+    "test:editorial-evidence": "node --experimental-strip-types --test lib/editorialEvidence.test.ts"
   },
   "dependencies": {
     "next": "^15.5.25",
