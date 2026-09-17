@@ -3,7 +3,7 @@ import type { UfcAccess } from "@/lib/accessDecision";
 import type { PortraitSet } from "@/lib/db";
 import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import { getAlgoCards, type AlgoUpsetProof } from "@/lib/algo";
-import { deltaText, marketView, oddsText, pctText } from "@/lib/algoView";
+import { agoText, deltaText, drivers, marketView, oddsText, pctText } from "@/lib/algoView";
 
 type CurrentUnderdog = {
   boutId: string;
@@ -18,11 +18,34 @@ type CurrentUnderdog = {
   marketImplied: number | null;
   edgePts: number | null;
   locked: boolean;
+  marketState: "CURRENT" | "LAST_OBSERVED";
+  generatedAt: string;
+  marketAgeMinutes: number | null;
+  supporting: Array<{ key: string; label: string; doc: string; pickMinusOpponent: number }>;
+  opposing: Array<{ key: string; label: string; doc: string; pickMinusOpponent: number }>;
 };
 
 function eventDateLabel(v: string): string {
   const d = new Date(`${v}T12:00:00Z`);
   return Number.isNaN(d.getTime()) ? v : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+}
+
+function modelTimeLabel(v: string): string {
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" }) + " ET";
+}
+
+function driverDeltaText(d: { key: string; pickMinusOpponent: number; doc: string }): string {
+  const v = Number(d.pickMinusOpponent);
+  if (!Number.isFinite(v)) return d.doc;
+  const signed = (n: number, dp = 1) => `${n >= 0 ? "+" : "−"}${Math.abs(n).toFixed(dp)}`;
+  if (d.key === "reach_diff_in" || d.key === "height_diff_in") return `${signed(v)} in vs opponent`;
+  if (d.key === "age_diff_years") return `${Math.abs(v).toFixed(1)} yrs ${v >= 0 ? "older" : "younger"}`;
+  if (d.key === "streak_diff") return `${signed(v, 0)} fight streak gap`;
+  if (d.key.includes("per15")) return `${signed(v, 2)} per 15 vs opponent`;
+  if (d.key.includes("per_min") || d.key === "slpm_diff" || d.key === "sapm_diff") return `${signed(v, 2)} per min vs opponent`;
+  if (/rate|accuracy|defense|share|retention/.test(d.key)) return `${signed(v * 100)} pts vs opponent`;
+  return d.doc;
 }
 
 type AlgoCards = Awaited<ReturnType<typeof getAlgoCards>>;
@@ -53,9 +76,10 @@ export async function PbeUpsetRadar({
       if (!p || !b.pick_fighter_id || b.decision !== "ELIGIBLE") return [];
       const mv = marketView(b.market, { lockedAt: p.locked_at });
       const odds = mv.pick.consensus;
-      if (mv.state !== "CURRENT" || odds == null || odds <= proof.threshold_odds) return [];
+      if (mv.state === "UNAVAILABLE" || odds == null || odds <= proof.threshold_odds) return [];
       const pick = b.pick_fighter_id === b.fighter_a.id ? b.fighter_a : b.fighter_b;
       const opponent = pick.id === b.fighter_a.id ? b.fighter_b : b.fighter_a;
+      const modelDrivers = drivers(p, b.fighter_a.id, b.fighter_b.id);
       return [{
         boutId: b.bout_id,
         eventName: card.event_name,
@@ -67,11 +91,16 @@ export async function PbeUpsetRadar({
         bestOdds: mv.pick.best,
         probability: Number(p.pick_probability),
         marketImplied: mv.implied,
-        edgePts: p.model_edge_pts == null ? mv.delta : Number(p.model_edge_pts),
+        edgePts: mv.state === "CURRENT" ? (mv.delta ?? (p.model_edge_pts == null ? null : Number(p.model_edge_pts))) : mv.historicalDelta,
         locked: Boolean(p.locked_at),
+        marketState: mv.state,
+        generatedAt: p.generated_at,
+        marketAgeMinutes: mv.age,
+        supporting: modelDrivers.supporting.slice(0, 3).map((d) => ({ key: d.key, label: d.label, doc: d.doc, pickMinusOpponent: d.pickMinusOpponent })),
+        opposing: modelDrivers.opposing.slice(0, 1).map((d) => ({ key: d.key, label: d.label, doc: d.doc, pickMinusOpponent: d.pickMinusOpponent })),
       }];
     }))
-      .sort((a, b) => (b.edgePts ?? -999) - (a.edgePts ?? -999) || b.odds - a.odds)
+      .sort((a, b) => Number(b.marketState === "CURRENT") - Number(a.marketState === "CURRENT") || (b.edgePts ?? -999) - (a.edgePts ?? -999) || b.odds - a.odds)
       .slice(0, 3);
   }
 
@@ -95,7 +124,7 @@ export async function PbeUpsetRadar({
         <div className="pbe-upset-rail-tab">
           <i aria-hidden="true" />
           <span>UPSET RADAR</span>
-          <b>{access.pro && current.length ? `${current.length} LIVE` : "WATCHING"}</b>
+          <b>AUTO · 60S</b>
         </div>
 
         <div className="pbe-upset-rail-body">
@@ -124,7 +153,7 @@ export async function PbeUpsetRadar({
 
             <div className="pbe-upset-radar-visual-label">
               <i />
-              <span>{primary ? `LIVE UPSET · ${oddsText(primary.odds)}` : "NO CURRENT UPSET"}</span>
+              <span>{primary ? `${primary.marketState === "CURRENT" ? "LIVE UPSET" : "LAST OBSERVED"} · ${oddsText(primary.odds)}` : "NO CURRENT UPSET"}</span>
             </div>
 
             {primary ? (
@@ -149,7 +178,7 @@ export async function PbeUpsetRadar({
           <div className="pbe-upset-rail-rule">
             <span><b>+101+</b> consensus</span>
             <span><b>PBE PICK</b> required</span>
-            <span><b>CURRENT</b> market</span>
+            <span><b>AUTO</b> freshness</span>
           </div>
 
           {access.pro ? (
@@ -158,7 +187,7 @@ export async function PbeUpsetRadar({
                 {current.slice(0, 2).map((x, i) => (
                   <article className="pbe-upset-rail-signal" key={x.boutId}>
                     <div className="pbe-upset-rail-signal-top">
-                      <span>#{i + 1} · {x.locked ? "LOCKED" : "PROVISIONAL"}</span>
+                      <span>#{i + 1} · {x.locked ? "LOCKED" : "PROVISIONAL"} · {x.marketState === "CURRENT" ? "CURRENT" : "LAST OBSERVED"}</span>
                       <b>{oddsText(x.odds)}</b>
                     </div>
                     <h4>{x.pickName}</h4>
@@ -167,7 +196,47 @@ export async function PbeUpsetRadar({
                     <div className="pbe-upset-rail-metrics">
                       <span><em>MODEL</em><b>{pctText(x.probability)}</b></span>
                       <span><em>MARKET</em><b>{pctText(x.marketImplied)}</b></span>
-                      <span><em>EDGE</em><b>{deltaText(x.edgePts)}</b></span>
+                      <span><em>{x.marketState === "CURRENT" ? "EDGE" : "LAST EDGE"}</em><b>{deltaText(x.edgePts)}</b></span>
+                    </div>
+
+                    {i === 0 ? (
+                      <div className="pbe-upset-rail-why">
+                        <div className="pbe-upset-rail-why-head">
+                          <span>WHY PBE SEES THE UPSET</span>
+                          <b>MODEL DRIVERS</b>
+                        </div>
+                        <div className="pbe-upset-rail-gap">
+                          <b>{pctText(x.probability)} PBE</b>
+                          <span>vs {pctText(x.marketImplied)} market · {deltaText(x.edgePts)} {x.marketState === "CURRENT" ? "edge" : "stored gap"}</span>
+                        </div>
+                        {x.supporting.length > 0 ? (
+                          <div className="pbe-upset-rail-driver-list">
+                            {x.supporting.map((d, n) => (
+                              <div className="pbe-upset-rail-driver" key={`${d.key}-${n}`}>
+                                <i>{n + 1}</i>
+                                <span>
+                                  <b>{d.label}</b>
+                                  <small>{driverDeltaText(d)}</small>
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="pbe-upset-rail-driver-none">No individual feature driver is available for this stored prediction.</p>
+                        )}
+                        {x.opposing[0] ? (
+                          <div className="pbe-upset-rail-counter">
+                            <span>COUNTER-SIGNAL</span>
+                            <b>{x.opposing[0].label}</b>
+                          </div>
+                        ) : null}
+                        <p className="pbe-upset-rail-method">Derived from the stored pre-fight feature vector × the live model coefficients. No generated narrative.</p>
+                      </div>
+                    ) : null}
+
+                    <div className="pbe-upset-rail-freshness">
+                      <span>MODEL {modelTimeLabel(x.generatedAt)}</span>
+                      <span>MARKET {agoText(x.marketAgeMinutes)}</span>
                     </div>
                   </article>
                 ))}

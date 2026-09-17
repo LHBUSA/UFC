@@ -7,6 +7,7 @@ import { AlgoPick, type AlgoFighterContext } from "@/components/AlgoPick";
 import { getUfcAccess } from "@/lib/access";
 import { getAlgoCards, getAlgoUpsetProof } from "@/lib/algo";
 import { PbeUpsetRadar } from "@/components/PbeUpsetRadar";
+import { PbePicksAutoRefresh } from "@/components/PbePicksAutoRefresh";
 import { getImagesForFighters, getFightersByIds, getEventById, type Event } from "@/lib/db";
 import { lockedText, type AlgoBoutView } from "@/lib/algoView";
 import { fmtDate, locationLine } from "@/lib/format";
@@ -62,6 +63,7 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
 
   return (
     <div className="wrap page algo-page pp-page">
+      <PbePicksAutoRefresh intervalMs={60_000} />
       <Breadcrumbs items={[{ name: "PBE Algo", href: "/algo" }, { name: "PBE Picks" }]} />
 
       <header className="pp-hero">

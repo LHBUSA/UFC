@@ -882,3 +882,130 @@
 @media (prefers-reduced-motion: reduce) {
   .pbe-upset-radar-svg .scope-sweep { animation: none; transform: rotate(34deg); }
 }
+
+
+/* ---- Upset Radar v4: auto freshness + model-driver explainer ----------- */
+.pbe-upset-rail-why {
+  margin-top: 10px;
+  padding: 11px;
+  border: 1px solid rgba(212,175,55,.24);
+  border-radius: var(--r-sm);
+  background:
+    linear-gradient(180deg, rgba(212,175,55,.045), transparent 55%),
+    rgba(3,5,7,.62);
+}
+.pbe-upset-rail-why-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.pbe-upset-rail-why-head span,
+.pbe-upset-rail-why-head b {
+  font: 900 7px/1 var(--pbe-font-data);
+  letter-spacing: .10em;
+}
+.pbe-upset-rail-why-head span { color: var(--pbe-gold); }
+.pbe-upset-rail-why-head b { color: var(--pbe-faint); }
+
+.pbe-upset-rail-gap {
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--pbe-line);
+}
+.pbe-upset-rail-gap b {
+  color: var(--pbe-paper);
+  font: 900 14px/1 var(--pbe-font-data);
+}
+.pbe-upset-rail-gap span {
+  color: var(--pbe-dim);
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.pbe-upset-rail-driver-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 9px;
+}
+.pbe-upset-rail-driver {
+  display: grid;
+  grid-template-columns: 20px minmax(0,1fr);
+  gap: 8px;
+  align-items: center;
+}
+.pbe-upset-rail-driver > i {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(212,175,55,.35);
+  border-radius: 50%;
+  color: var(--pbe-gold);
+  background: rgba(212,175,55,.04);
+  font: 900 8px/1 var(--pbe-font-data);
+  font-style: normal;
+}
+.pbe-upset-rail-driver > span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.pbe-upset-rail-driver b {
+  color: var(--pbe-paper);
+  font: 800 9px/1.2 var(--pbe-font-ui);
+}
+.pbe-upset-rail-driver small {
+  color: var(--pbe-faint);
+  font-size: 8px;
+  line-height: 1.35;
+}
+.pbe-upset-rail-driver-none,
+.pbe-upset-rail-method {
+  margin: 8px 0 0;
+  color: var(--pbe-faint);
+  font-size: 7px;
+  line-height: 1.45;
+}
+.pbe-upset-rail-method {
+  padding-top: 8px;
+  border-top: 1px solid var(--pbe-line);
+}
+
+.pbe-upset-rail-counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 7px 8px;
+  border-left: 2px solid rgba(154,168,189,.45);
+  background: rgba(255,255,255,.018);
+}
+.pbe-upset-rail-counter span {
+  color: var(--pbe-faint);
+  font: 800 6px/1 var(--pbe-font-data);
+  letter-spacing: .09em;
+}
+.pbe-upset-rail-counter b {
+  color: var(--pbe-dim);
+  font: 800 8px/1.2 var(--pbe-font-ui);
+  text-align: right;
+}
+
+.pbe-upset-rail-freshness {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--pbe-faint);
+  font: 800 6px/1.25 var(--pbe-font-data);
+  letter-spacing: .06em;
+}
+.pbe-upset-rail-freshness span:last-child { text-align: right; }
+
+@media (max-width: 900px) {
+  .pbe-upset-rail-why { max-width: 520px; }
+}

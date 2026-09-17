@@ -172,11 +172,11 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(page, /getAlgoUpsetProof\(\)/);
   assert.match(page, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} \/>/);
   assert.doesNotMatch(page, /getAlgoCards|getAlgoBout|getAlgoRecord|pick_probability|feature_vector/, 'public /pro does not directly read an upcoming call');
-  assert.match(picksPage, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} cards=\{cards\} surface="picks" \/>/, 'Upset Radar must render its PBE Picks-native variant on the actual PBE PICKS route');
+  assert.match(picksPage, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} cards=\{cards\} imgs=\{imgs\} surface="picks" \/>/, 'Upset Radar must render its PBE Picks-native variant on the actual PBE PICKS route');
   assert.match(picksPage, /getAlgoUpsetProof\(\)/, 'PBE PICKS loads the historical upset ledger');
   assert.match(picksPage, /<aside className="pp-picks-sidecar" aria-label="PBE Upset Radar">/, 'Upset Radar is a sidecar, not the PBE Picks hero');
   assert.match(radar, /pbe-upset-rail-window/, 'PBE Picks uses the compact side-window variant');
-  assert.match(radar, /UPSET RADAR[\s\S]*WATCHING/, 'the rail keeps a visible status tab even when no live signal exists');
+  assert.match(radar, /UPSET RADAR[\s\S]*AUTO · 60S/, 'the rail advertises its automatic one-minute page refresh');
   assert.match(picksPage, /imgs=\{imgs\}/, 'PBE Picks passes its rights-cleared fighter portraits into Upset Radar');
   assert.match(radar, /pbe-upset-radar-svg/, 'Upset Radar includes the implemented radar visualization');
   assert.match(radar, /primaryImg\.card \|\| primaryImg\.portrait/, 'the live signal uses the selected fighter portrait already approved for PBE Picks');
@@ -185,6 +185,16 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(picksCss, /@keyframes pbe-upset-radar-spin/, 'the side window has a real radar sweep');
   assert.match(picksCss, /\.pbe-upset-radar-scan-copy,[\s\S]*display: none !important/, 'the old text-only scanning placeholder is retired');
   assert.match(picksCss, /prefers-reduced-motion: reduce[\s\S]*pbe-upset-radar-svg \.scope-sweep/, 'radar animation respects reduced-motion');
+  assert.match(radar, /WHY PBE SEES THE UPSET/, 'the live signal explains the model disagreement');
+  assert.match(radar, /drivers\(p, b\.fighter_a\.id, b\.fighter_b\.id\)/, 'the explainer comes from model coefficient math, not generated copy');
+  assert.match(radar, /stored pre-fight feature vector × the live model coefficients/, 'the explainer states its provenance');
+  assert.match(radar, /mv\.state === "UNAVAILABLE"/, 'last-observed plus-money calls stay visible instead of dropping the fighter photo during a freshness handoff');
+  assert.match(radar, /marketState === "CURRENT" \? "LIVE UPSET" : "LAST OBSERVED"/, 'stale market state is labeled, never presented as live');
+  const refresh = readFileSync(new URL('components/PbePicksAutoRefresh.tsx', web), 'utf8');
+  assert.match(picksPage, /<PbePicksAutoRefresh intervalMs=\{60_000\} \/>/, 'PBE Picks refreshes the server tree every minute');
+  assert.match(refresh, /router\.refresh\(\)/);
+  assert.match(refresh, /visibilitychange/);
+  assert.match(refresh, /navigator\.onLine/);
 
   assert.match(radar, /if \(access\.pro === true\) \{\s*const cards = providedCards \?\? await getAlgoCards\(access\);/, 'current fighter identities are fetched only after verified Pro access');
   assert.match(radar, /public ledger shows only already-graded historical proof/i);
