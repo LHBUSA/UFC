@@ -12,6 +12,7 @@ type CurrentUnderdog = {
   odds: number;
   bestOdds: number | null;
   probability: number;
+  marketImplied: number | null;
   edgePts: number | null;
   locked: boolean;
 };
@@ -22,8 +23,19 @@ function eventDateLabel(v: string): string {
 }
 
 type AlgoCards = Awaited<ReturnType<typeof getAlgoCards>>;
+type Surface = "pro" | "picks";
 
-export async function PbeUpsetRadar({ access, proof, cards: providedCards }: { access: Pick<UfcAccess, "pro">; proof: AlgoUpsetProof; cards?: AlgoCards }) {
+export async function PbeUpsetRadar({
+  access,
+  proof,
+  cards: providedCards,
+  surface = "pro",
+}: {
+  access: Pick<UfcAccess, "pro">;
+  proof: AlgoUpsetProof;
+  cards?: AlgoCards;
+  surface?: Surface;
+}) {
   let current: CurrentUnderdog[] = [];
 
   // Critical boundary: upcoming fighter identities are read only after the
@@ -48,29 +60,103 @@ export async function PbeUpsetRadar({ access, proof, cards: providedCards }: { a
         odds,
         bestOdds: mv.pick.best,
         probability: Number(p.pick_probability),
+        marketImplied: mv.implied,
         edgePts: p.model_edge_pts == null ? mv.delta : Number(p.model_edge_pts),
         locked: Boolean(p.locked_at),
       }];
     }))
-      .sort((a, b) => b.odds - a.odds)
+      .sort((a, b) => (b.edgePts ?? -999) - (a.edgePts ?? -999) || b.odds - a.odds)
       .slice(0, 3);
   }
 
+  const onPicksPage = surface === "picks";
+
   return (
-    <section className="pbe-upset-radar" aria-labelledby="pbe-upset-title">
+    <section className={`pbe-upset-radar ${onPicksPage ? "picks-surface" : "pro-surface"}`} aria-labelledby="pbe-upset-title">
+      <div className="pbe-upset-signalbar">
+        <span>PBE UPSET RADAR</span>
+        <i aria-hidden="true" />
+        <b>{access.pro ? "LIVE MODEL DISAGREEMENT" : "HISTORICAL PROOF + PRO LIVE BOARD"}</b>
+      </div>
+
       <div className="pbe-upset-head">
         <div>
-          <div className="eyebrow">PBE Upset Radar · market disagreement</div>
-          <h3 id="pbe-upset-title">When the model backs the underdog.</h3>
+          <div className="eyebrow">{onPicksPage ? "PBE Picks · plus-money model calls" : "PBE Upset Radar · market disagreement"}</div>
+          <h3 id="pbe-upset-title">{onPicksPage ? "The market says underdog. PBE may still say pick." : "When the model backs the underdog."}</h3>
           <p>
-            The favorite is not automatically the PBE Pick. Upset Radar isolates calls where the model&apos;s selected fighter
-            was a market underdog at the recorded decision point.
+            {onPicksPage
+              ? "This is not a list of underdogs. It is the subset of official PBE selections where the model independently backs a fighter the market prices at plus money. If the signal is not there, the board stays empty."
+              : "The favorite is not automatically the PBE Pick. Upset Radar isolates calls where the model's selected fighter was a market underdog at the recorded decision point."}
           </p>
         </div>
         <div className="pbe-upset-rule">
-          <b>UNDERDOG = +101 OR LONGER</b>
-          <span>Mechanical rule. Not an editorial label.</span>
+          <b>TRIGGER · +101 OR LONGER</b>
+          <span>Consensus price at the recorded model snapshot. Mechanical rule — never an editorial label.</span>
         </div>
+      </div>
+
+      {access.pro === true ? (
+        <div className="pbe-upset-current">
+          <div className="pbe-upset-current-head">
+            <div>
+              <span className="eyebrow">{onPicksPage ? "Live on this PBE Picks board" : "UFC Pro only · current board"}</span>
+              <strong>{onPicksPage ? "Plus-money PBE Picks with real model disagreement." : "Current PBE underdog calls"}</strong>
+              {onPicksPage ? <small>Ranked by PBE Edge, then market price. No forced upset pick.</small> : null}
+            </div>
+            <Link href="/algo/record" className="btn">{onPicksPage ? "View Track Record" : "Full Track Record"}</Link>
+          </div>
+
+          {current.length > 0 ? (
+            <div className="pbe-upset-current-grid">
+              {current.map((x, i) => (
+                <article className="pbe-upset-current-card" key={x.boutId}>
+                  <div className="pbe-upset-current-rank">#{String(i + 1).padStart(2, "0")} · UPSET SIGNAL</div>
+                  <div className="between pbe-upset-current-top">
+                    <span className={x.locked ? "pbe-upset-state locked" : "pbe-upset-state"}>{x.locked ? "OFFICIAL · LOCKED" : "PROVISIONAL"}</span>
+                    <b>PBE PICK · {oddsText(x.odds)}</b>
+                  </div>
+                  <h4>{x.pickName}</h4>
+                  <p>vs {x.opponentName}</p>
+                  <small>{x.eventName} · {eventDateLabel(x.eventDate)}</small>
+
+                  <div className="pbe-upset-current-metrics">
+                    <span><em>MODEL</em><b>{pctText(x.probability)}</b></span>
+                    <span><em>MARKET</em><b>{pctText(x.marketImplied)}</b></span>
+                    <span><em>PBE EDGE</em><b>{deltaText(x.edgePts)}</b></span>
+                    <span><em>BEST LINE</em><b>{x.bestOdds == null ? "—" : oddsText(x.bestOdds)}</b></span>
+                  </div>
+
+                  <div className="pbe-upset-thesis">
+                    <span>MODEL VS MARKET</span>
+                    <b>{x.edgePts == null ? "Price disagreement recorded" : `${deltaText(x.edgePts)} probability-point gap`}</b>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="pbe-upset-current-none">
+              <b>NO LIVE UPSET SIGNAL RIGHT NOW.</b>
+              <span>The model is not currently backing a plus-money fighter on the active board. That is a valid output — Upset Radar never invents a dog just to fill the module.</span>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="pbe-upset-gate">
+          <div>
+            <span className="eyebrow">Current signals stay UFC Pro</span>
+            <strong>See the fighter, model probability, market probability and PBE Edge when a live upset signal appears.</strong>
+            <p>The public ledger shows only already-graded historical proof. Upcoming fighter calls remain behind the verified UFC Pro entitlement.</p>
+          </div>
+          <Link href="#pro" className="btn gold">Unlock Live Upset Radar</Link>
+        </div>
+      )}
+
+      <div className="pbe-upset-history-head">
+        <div>
+          <span className="eyebrow">Permanent proof</span>
+          <strong>Every graded underdog call stays on the ledger.</strong>
+        </div>
+        <span>No cherry-picked record. Showcase wins sit on top of the complete graded result set.</span>
       </div>
 
       {proof.total > 0 ? (
@@ -112,52 +198,9 @@ export async function PbeUpsetRadar({ access, proof, cards: providedCards }: { a
           )}
         </>
       ) : (
-        <div className="pbe-upset-empty">
-          <b>THE LIVE UPSET LEDGER OPENS WITH THE FIRST GRADED UNDERDOG CALL.</b>
-          <span>No backtest winner is being passed off as live proof, and no provisional pick is counted here.</span>
-        </div>
-      )}
-
-      {access.pro === true ? (
-        <div className="pbe-upset-current">
-          <div className="pbe-upset-current-head">
-            <div>
-              <span className="eyebrow">UFC Pro only · current board</span>
-              <strong>Current PBE underdog calls</strong>
-            </div>
-            <Link href="/algo/card" className="btn gold">Open full PBE Picks</Link>
-          </div>
-          {current.length > 0 ? (
-            <div className="pbe-upset-current-grid">
-              {current.map((x) => (
-                <div className="pbe-upset-current-card" key={x.boutId}>
-                  <div className="between">
-                    <span className={x.locked ? "pbe-upset-state locked" : "pbe-upset-state"}>{x.locked ? "LOCKED" : "PROVISIONAL"}</span>
-                    <b>{oddsText(x.odds)}</b>
-                  </div>
-                  <h4>{x.pickName}</h4>
-                  <p>vs {x.opponentName}</p>
-                  <small>{x.eventName} · {eventDateLabel(x.eventDate)}</small>
-                  <div className="pbe-upset-current-metrics">
-                    <span><b>{pctText(x.probability)}</b> model</span>
-                    <span><b>{deltaText(x.edgePts)}</b> edge</span>
-                    <span><b>{x.bestOdds == null ? "—" : oddsText(x.bestOdds)}</b> best</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="pbe-upset-current-none">No current PBE call is a live market underdog right now. Upset Radar does not force one.</p>
-          )}
-        </div>
-      ) : (
-        <div className="pbe-upset-gate">
-          <div>
-            <span className="eyebrow">Current upset calls stay Pro</span>
-            <strong>Historical receipts are public. Upcoming fighter calls are not.</strong>
-            <p>UFC Pro unlocks the current underdog board with the model probability, recorded market price and PBE Edge.</p>
-          </div>
-          <Link href="#pro" className="btn gold">Unlock current PBE Picks</Link>
+        <div className="pbe-upset-empty compact">
+          <b>LIVE LEDGER · WAITING FOR THE FIRST GRADED UNDERDOG CALL</b>
+          <span>The model has not produced a graded official underdog call yet. We are not substituting a backtest winner for live proof.</span>
         </div>
       )}
 
