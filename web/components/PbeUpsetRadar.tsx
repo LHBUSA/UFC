@@ -21,13 +21,16 @@ function eventDateLabel(v: string): string {
   return Number.isNaN(d.getTime()) ? v : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 }
 
-export async function PbeUpsetRadar({ access, proof }: { access: Pick<UfcAccess, "pro">; proof: AlgoUpsetProof }) {
+type AlgoCards = Awaited<ReturnType<typeof getAlgoCards>>;
+
+export async function PbeUpsetRadar({ access, proof, cards: providedCards }: { access: Pick<UfcAccess, "pro">; proof: AlgoUpsetProof; cards?: AlgoCards }) {
   let current: CurrentUnderdog[] = [];
 
   // Critical boundary: upcoming fighter identities are read only after the
-  // verified server-side Pro entitlement has already resolved true.
+  // verified server-side Pro entitlement has already resolved true. The PBE
+  // Picks page can pass its already-gated cards to avoid a duplicate read.
   if (access.pro === true) {
-    const cards = await getAlgoCards(access);
+    const cards = providedCards ?? await getAlgoCards(access);
     current = cards.flatMap((card) => card.bouts.flatMap((b) => {
       const p = b.prediction;
       if (!p || !b.pick_fighter_id || b.decision !== "ELIGIBLE") return [];
