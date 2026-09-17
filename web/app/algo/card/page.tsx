@@ -94,7 +94,7 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
         </div>
       </header>
 
-      <PbeUpsetRadar access={access} proof={upsetProof} cards={cards} />
+      <PbeUpsetRadar access={access} proof={upsetProof} cards={cards} surface="picks" />
 
       {!access.pro ? (
         <section className="pp-free">
