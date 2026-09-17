@@ -71,6 +71,79 @@ export async function PbeUpsetRadar({
 
   const onPicksPage = surface === "picks";
 
+  if (onPicksPage) {
+    return (
+      <section className="pbe-upset-rail-window" aria-labelledby="pbe-upset-rail-title">
+        <div className="pbe-upset-rail-tab">
+          <i aria-hidden="true" />
+          <span>UPSET RADAR</span>
+          <b>{access.pro && current.length ? `${current.length} LIVE` : "WATCHING"}</b>
+        </div>
+
+        <div className="pbe-upset-rail-body">
+          <header className="pbe-upset-rail-head">
+            <div className="eyebrow">PBE Picks · model vs market</div>
+            <h3 id="pbe-upset-rail-title">Upset Radar</h3>
+            <p>Only plus-money fighters that PBE independently selects. No forced dog pick.</p>
+          </header>
+
+          <div className="pbe-upset-rail-rule">
+            <span><b>+101+</b> consensus</span>
+            <span><b>PBE PICK</b> required</span>
+            <span><b>CURRENT</b> market</span>
+          </div>
+
+          {access.pro ? (
+            current.length > 0 ? (
+              <div className="pbe-upset-rail-signals">
+                {current.slice(0, 2).map((x, i) => (
+                  <article className="pbe-upset-rail-signal" key={x.boutId}>
+                    <div className="pbe-upset-rail-signal-top">
+                      <span>#{i + 1} · {x.locked ? "LOCKED" : "PROVISIONAL"}</span>
+                      <b>{oddsText(x.odds)}</b>
+                    </div>
+                    <h4>{x.pickName}</h4>
+                    <p>vs {x.opponentName}</p>
+                    <small>{x.eventName} · {eventDateLabel(x.eventDate)}</small>
+                    <div className="pbe-upset-rail-metrics">
+                      <span><em>MODEL</em><b>{pctText(x.probability)}</b></span>
+                      <span><em>MARKET</em><b>{pctText(x.marketImplied)}</b></span>
+                      <span><em>EDGE</em><b>{deltaText(x.edgePts)}</b></span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="pbe-upset-rail-empty">
+                <b>NO LIVE UPSET SIGNAL</b>
+                <span>The active PBE board is not backing a plus-money fighter right now.</span>
+              </div>
+            )
+          ) : (
+            <div className="pbe-upset-rail-gate">
+              <b>LIVE SIGNALS ARE UFC PRO</b>
+              <span>Historical proof stays public. Current fighter calls stay behind the Pro entitlement.</span>
+              <Link href="#pro" className="btn gold">Unlock Radar</Link>
+            </div>
+          )}
+
+          <div className="pbe-upset-rail-ledger">
+            <div>
+              <span>GRADED UNDERDOG LEDGER</span>
+              <b>{proof.total > 0 ? (proof.decided ? `${proof.wins}-${proof.losses}` : `${proof.total} graded`) : "First grade pending"}</b>
+            </div>
+            {proof.total > 0 && proof.hit_rate != null ? <strong>{(proof.hit_rate * 100).toFixed(1)}%</strong> : <strong>—</strong>}
+          </div>
+
+          <div className="pbe-upset-rail-foot">
+            <span>No hindsight · no backfill · losses stay.</span>
+            <Link href="/algo/record">Receipt ledger →</Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className={`pbe-upset-radar ${onPicksPage ? "picks-surface" : "pro-surface"}`} aria-labelledby="pbe-upset-title">
       <div className="pbe-upset-signalbar">
