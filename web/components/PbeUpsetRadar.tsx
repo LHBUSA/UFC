@@ -128,32 +128,36 @@ export async function PbeUpsetRadar({
         </div>
 
         <div className="pbe-upset-rail-body">
-          <div className={`pbe-upset-radar-visual${primary ? " signal" : " idle"}`}>
-            <svg className="pbe-upset-radar-svg" viewBox="0 0 240 240" aria-hidden="true">
-              <circle cx="120" cy="120" r="92" className="scope-ring outer" />
-              <circle cx="120" cy="120" r="68" className="scope-ring" />
-              <circle cx="120" cy="120" r="44" className="scope-ring" />
-              <circle cx="120" cy="120" r="20" className="scope-ring" />
-              <line x1="28" y1="120" x2="212" y2="120" className="scope-axis" />
-              <line x1="120" y1="28" x2="120" y2="212" className="scope-axis" />
-              <g className="scope-sweep">
-                <path d="M120 120 L120 28 A92 92 0 0 1 190 60 Z" className="scope-beam" />
-                <line x1="120" y1="120" x2="190" y2="60" className="scope-sweep-line" />
-              </g>
-              <circle cx="76" cy="145" r="4" className="scope-blip" />
-              <circle cx="164" cy="82" r="3" className="scope-blip faint" />
-              <circle cx="120" cy="120" r="5" className="scope-origin" />
-            </svg>
+          <div className={`pbe-upset-radar-visual compact${primary ? " signal" : " idle"}`}>
+            <div className="pbe-upset-radar-pane">
+              <svg className="pbe-upset-radar-svg" viewBox="0 0 240 240" aria-hidden="true">
+                <circle cx="120" cy="120" r="92" className="scope-ring outer" />
+                <circle cx="120" cy="120" r="68" className="scope-ring" />
+                <circle cx="120" cy="120" r="44" className="scope-ring" />
+                <circle cx="120" cy="120" r="20" className="scope-ring" />
+                <line x1="28" y1="120" x2="212" y2="120" className="scope-axis" />
+                <line x1="120" y1="28" x2="120" y2="212" className="scope-axis" />
+                <g className="scope-sweep">
+                  <path d="M120 120 L120 28 A92 92 0 0 1 190 60 Z" className="scope-beam" />
+                  <line x1="120" y1="120" x2="190" y2="60" className="scope-sweep-line" />
+                </g>
+                <circle cx="76" cy="145" r="4" className="scope-blip" />
+                <circle cx="164" cy="82" r="3" className="scope-blip faint" />
+                <circle cx="120" cy="120" r="5" className="scope-origin" />
+              </svg>
 
-            {primary && primaryImg ? (
-              <div className={`pbe-upset-radar-fighter${primaryDisplay ? " display" : ""}`}>
-                <img src={primaryImg.card || primaryImg.portrait} alt={primary.pickName} width={260} height={325} loading="eager" decoding="async" />
+              <div className="pbe-upset-radar-visual-label">
+                <i />
+                <span>{primary ? `${primary.marketState === "CURRENT" ? "LIVE" : "LAST"} · ${oddsText(primary.odds)}` : "CLEAR"}</span>
               </div>
-            ) : null}
+            </div>
 
-            <div className="pbe-upset-radar-visual-label">
-              <i />
-              <span>{primary ? `${primary.marketState === "CURRENT" ? "LIVE UPSET" : "LAST OBSERVED"} · ${oddsText(primary.odds)}` : "NO CURRENT UPSET"}</span>
+            <div className="pbe-upset-radar-photo-pane">
+              {primary && primaryImg ? (
+                <div className={`pbe-upset-radar-fighter${primaryDisplay ? " display" : ""}`}>
+                  <img src={primaryImg.card || primaryImg.portrait} alt={primary.pickName} width={260} height={325} loading="eager" decoding="async" />
+                </div>
+              ) : null}
             </div>
 
             {primary ? (

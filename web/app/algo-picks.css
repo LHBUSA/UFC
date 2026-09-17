@@ -1009,3 +1009,146 @@
 @media (max-width: 900px) {
   .pbe-upset-rail-why { max-width: 520px; }
 }
+
+
+/* ---- Upset Radar v5: compact split visual ------------------------------ */
+.pbe-upset-rail-tab {
+  right: calc(100% - 1px);
+  top: 18px;
+  width: 24px;
+  min-height: 96px;
+  gap: 6px;
+  padding: 7px 0;
+}
+.pbe-upset-rail-tab span {
+  font-size: 7px;
+  letter-spacing: .11em;
+}
+.pbe-upset-rail-tab b {
+  font-size: 6px;
+  letter-spacing: .06em;
+}
+
+.pbe-upset-radar-visual.compact {
+  display: grid;
+  grid-template-columns: 56% 44%;
+  grid-template-rows: 132px auto;
+  min-height: 0;
+  margin: -2px -2px 12px;
+  overflow: hidden;
+  background: #070809;
+}
+.pbe-upset-radar-visual.compact::after {
+  height: 44px;
+  z-index: 4;
+}
+.pbe-upset-radar-pane,
+.pbe-upset-radar-photo-pane {
+  position: relative;
+  min-width: 0;
+  height: 132px;
+  overflow: hidden;
+}
+.pbe-upset-radar-pane {
+  border-right: 1px solid rgba(212,175,55,.18);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(212,175,55,.08), transparent 60%),
+    #08090a;
+}
+.pbe-upset-radar-photo-pane {
+  background: #0a0a0b;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-svg {
+  left: 50%;
+  top: 50%;
+  width: 124px;
+  height: 124px;
+  transform: translate(-50%,-50%);
+  opacity: 1;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-fighter {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: none;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-fighter::after {
+  background: linear-gradient(180deg, transparent 55%, rgba(7,8,9,.45) 100%);
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-fighter img,
+.pbe-upset-radar-visual.compact .pbe-upset-radar-fighter.display img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-visual-label {
+  left: 7px;
+  top: 7px;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 999px;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-visual-label i {
+  width: 4px;
+  height: 4px;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-visual-label span {
+  font-size: 6px;
+  letter-spacing: .06em;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-visual-name {
+  grid-column: 1 / -1;
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  z-index: 5;
+  max-width: none;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 9px;
+  background: rgba(5,6,7,.96);
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-visual-name b {
+  font-size: 15px;
+  line-height: 1;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-visual-name span {
+  font-size: 8px;
+  white-space: nowrap;
+}
+.pbe-upset-radar-visual.compact .pbe-upset-radar-visual-name.quiet {
+  max-width: none;
+}
+
+@media (max-width: 1120px) and (min-width: 901px) {
+  .pbe-upset-radar-visual.compact {
+    grid-template-rows: 120px auto;
+  }
+  .pbe-upset-radar-pane,
+  .pbe-upset-radar-photo-pane { height: 120px; }
+  .pbe-upset-radar-visual.compact .pbe-upset-radar-svg { width: 112px; height: 112px; }
+}
+@media (max-width: 900px) {
+  .pbe-upset-radar-visual.compact {
+    grid-template-columns: 52% 48%;
+    grid-template-rows: 138px auto;
+    min-height: 0;
+    margin: 0 0 12px;
+  }
+  .pbe-upset-radar-pane,
+  .pbe-upset-radar-photo-pane { height: 138px; }
+  .pbe-upset-radar-visual.compact .pbe-upset-radar-svg { width: 128px; height: 128px; left: 50%; top: 50%; }
+}
+@media (max-width: 620px) {
+  .pbe-upset-radar-visual.compact {
+    grid-template-rows: 122px auto;
+  }
+  .pbe-upset-radar-pane,
+  .pbe-upset-radar-photo-pane { height: 122px; }
+  .pbe-upset-radar-visual.compact .pbe-upset-radar-svg { width: 112px; height: 112px; }
+}
