@@ -95,6 +95,10 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
       </header>
 
       <div className="pp-picks-layout">
+        <aside className="pp-picks-sidecar" aria-label="PBE Upset Radar">
+          <PbeUpsetRadar access={access} proof={upsetProof} cards={cards} surface="picks" />
+        </aside>
+
         <main className="pp-picks-main">
       {!access.pro ? (
         <section className="pp-free">
@@ -151,10 +155,6 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
         </>
       )}
         </main>
-
-        <aside className="pp-picks-sidecar" aria-label="PBE Upset Radar">
-          <PbeUpsetRadar access={access} proof={upsetProof} cards={cards} surface="picks" />
-        </aside>
       </div>
 
       <PbeFamilyNav current="picks" />
