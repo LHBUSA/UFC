@@ -233,3 +233,114 @@ test('article links and status flips are held on relink unless asked for by name
   const opted = await relink([withArticle], { dry: true, explain: true, allowArticleChange: true });
   assert.deepEqual(proposedFor(opted, 'article00001').fields.includes('article_id'), true);
 });
+
+/* ---- LIVE DISCOVERY ----------------------------------------------------
+ * The same module the ufc-video-autopilot Worker imports, run the way the Worker
+ * runs it (no --relink): a YouTube feed is discovered, linked and upserted.
+ * A surname by itself is not a fighter identity. It becomes usable only after the
+ * video is already scoped to the fighter's actual event/card. */
+const LIVE_EVENTS = [
+  ev('ev-331', 'UFC 331: Van vs. Pantoja 2', '2026-09-19', 'Los Angeles'),
+  ev('ev-vegas-sep', 'UFC Fight Night: Rosas Jr. vs. Barcelos', '2026-09-26', 'Las Vegas'),
+  ev('ev-333', 'UFC 333: Volkanovski vs. Evloev', '2026-10-24', 'Las Vegas'),
+];
+const LIVE_FIGHTERS = [
+  F('f-van', 'Joshua Van'), F('f-pantoja', 'Alexandre Pantoja'), F('f-rafa', 'Rafa Garcia'), F('f-opp', 'Some Opponent'),
+  F('f-chelsea', 'Chelsea Chandler'), F('f-smith', 'Hunter Smith'), F('f-rodriguez', 'Imanol Rodriguez'), F('f-morales', 'Joseph Morales'), F('f-pitbull', 'Patricio Pitbull'),
+  F('f-tsarukyan', 'Arman Tsarukyan'), F('f-ruffy', 'Mauricio Ruffy'), F('f-bisping', 'Michael Bisping'), F('f-volk', 'Alexander Volkanovski'), F('f-evloev', 'Movsar Evloev'),
+];
+const LIVE_BOUTS = [
+  bout('b-331-main', 'ev-331', 'f-van', 'f-pantoja'), bout('b-331-co', 'ev-331', 'f-tsarukyan', 'f-ruffy'), bout('b-331-pit', 'ev-331', 'f-pitbull', 'f-morales'),
+  /* Rafa Garcia is the ONLY Garcia on any UFC card in the window; Chelsea the only Chandler; and so on. */
+  bout('b-vegas-rafa', 'ev-vegas-sep', 'f-rafa', 'f-opp'), bout('b-vegas-2', 'ev-vegas-sep', 'f-chelsea', 'f-smith'), bout('b-vegas-3', 'ev-vegas-sep', 'f-rodriguez', 'f-bisping'),
+  bout('b-333', 'ev-333', 'f-volk', 'f-evloev'),
+];
+const feedEntry = (id, title, published, description = '') => `<entry><yt:videoId>${id}</yt:videoId><yt:channelId>UC-ufc</yt:channelId><title>${title}</title><link rel="alternate" href="https://www.youtube.com/watch?v=${id}"/><published>${published}</published><updated>${published}</updated><media:group><media:thumbnail url="https://i.ytimg.com/vi/${id}/hqdefault.jpg"/><media:description>${description}</media:description></media:group></entry>`;
+const FEED = [
+  ['garcia00001', 'Garcia vs Benn | Cold Open', '2026-09-10T18:00:00+00:00'],
+  ['garcia00002', 'Garcia vs Benn: Pre-Fight Press Conference', '2026-09-11T20:00:00+00:00'],
+  ['garcia00003', 'Garcia vs Benn: Ceremonial Weigh-In', '2026-09-12T20:00:00+00:00'],
+  ['garcia00004', 'Melhores Momentos | Garcia x Benn', '2026-09-13T20:00:00+00:00'],
+  ['garcia00005', 'Jon Jones had Ryan Garcia nervous (via ryangarcia/IG)', '2026-09-15T20:00:00+00:00'],
+  ['chandler001', 'After TUF: Team McGregor vs Team Chandler - Episode 9', '2026-09-14T02:00:00+00:00'],
+  ['generic0001', 'Smith, Rodriguez, Morales and Pitbull react to fight week', '2026-09-16T02:00:00+00:00'],
+  ['host0000001', 'Joshua Van Octagon Interview | UFC 331', '2026-09-16T05:00:00+00:00', 'Listen to Joshua Van talk with Michael Bisping after his win at UFC 331.'],
+  ['legit000001', 'UFC 331 Countdown: Joshua Van vs Alexandre Pantoja', '2026-09-13T11:45:00+00:00'],
+  ['legit000002', 'Crypto.com UFC 331: Ceremonial Weigh-In', '2026-09-14T18:07:00+00:00'],
+  ['legit000003', 'Tsarukyan vs Ruffy staredown', '2026-09-17T01:00:00+00:00'],
+  ['legit000004', 'Pantoja is confident #ufc331', '2026-09-18T00:50:00+00:00'],
+  ['evloev00001', 'Volk preparing for Evloev', '2026-09-02T12:00:00+00:00'],
+];
+const FEED_XML = `<?xml version="1.0"?><feed xmlns:yt="x" xmlns:media="y"><yt:channelId>UC-ufc</yt:channelId><title>UFC</title>${FEED.map((e) => feedEntry(...e)).join('')}</feed>`;
+
+async function discover(options = {}) {
+  const writes = [];
+  const tables = { ufc_video_channels: [{ provider: 'youtube', channel_id: 'UC-ufc', name: 'UFC', handle: '@ufc', channel_class: 'ufc_official', verified: true, enabled: true }], ufc_fighters: LIVE_FIGHTERS, ufc_fighter_aliases: [], ufc_events: LIVE_EVENTS, ufc_bouts: LIVE_BOUTS, ufc_articles: [], ufc_videos: [] };
+  const real = globalThis.fetch;
+  const res = (body, status = 200) => ({ ok: status < 400, status, url: '', headers: { get: () => 'text/plain' }, text: async () => body });
+  globalThis.fetch = async (url, init = {}) => {
+    const u = String(url);
+    if (u.includes('/feeds/videos.xml')) return res(FEED_XML);
+    if (u.includes('/oembed')) return res(JSON.stringify({ author_name: 'UFC' }));
+    if (!u.includes('/rest/v1/')) return res('', 404);
+    const table = u.split('/rest/v1/')[1].split('?')[0];
+    if ((init.method || 'GET') !== 'GET') { writes.push(...JSON.parse(init.body)); return res(init.body, 201); }
+    return res(JSON.stringify(tables[table] || []));
+  };
+  try { await quiet(() => main(ENV, { now: '2026-09-18T15:00:00Z', sinceDays: 30, ...options })); } finally { globalThis.fetch = real; }
+  return new Map(writes.map((r) => [r.provider_video_id, r]));
+}
+
+test('LIVE: a fresh "Garcia vs Benn" upload never becomes Rafa Garcia, though he is the only Garcia on any UFC card in the window', async () => {
+  const rows = await discover();
+  assert.equal(rows.size, FEED.length, 'every feed entry is ingested');
+  for (const id of ['garcia00001', 'garcia00002', 'garcia00003', 'garcia00004', 'garcia00005']) {
+    const r = rows.get(id);
+    assert.deepEqual([r.fighter_ids, r.event_id, r.bout_id, r.link_status], [[], null, null, 'published'], `${id} ${r.title}`);
+    assert.ok(!(r.source_metadata.linking.fighters || []).some((f) => /^surname/.test(f.method)), 'no surname-only attachment');
+  }
+  assert.deepEqual(rows.get('garcia00001').source_metadata.linking.surnames_withheld.map((w) => [w.alias, w.fighter_id]), [['garcia', 'f-rafa']], 'the collision is recorded as evidence, not as a link');
+});
+
+test('LIVE: Chandler, and generic Smith / Rodriguez / Morales / Pitbull, attach nobody without an event scope', async () => {
+  const rows = await discover();
+  assert.deepEqual(rows.get('chandler001').fighter_ids, [], 'Team Chandler is not Chelsea Chandler');
+  const g = rows.get('generic0001');
+  assert.deepEqual([g.fighter_ids, g.event_id], [[], null]);
+  assert.deepEqual(g.source_metadata.linking.surnames_withheld.map((w) => w.alias).sort(), ['morales', 'pitbull', 'rodriguez', 'smith']);
+});
+
+test('LIVE: the interviewer in a description is not attached; the subject in the title is', async () => {
+  const r = (await discover()).get('host0000001');
+  assert.deepEqual([r.fighter_ids, r.event_id], [['f-van'], 'ev-331']);
+  assert.deepEqual(r.source_metadata.linking.hosts_ignored, ['michael bisping']);
+});
+
+test('LIVE: legitimate fight-week videos still get their event, bout and fighters', async () => {
+  const rows = await discover();
+  const c = rows.get('legit000001');
+  assert.deepEqual([c.event_id, c.bout_id, c.fighter_ids.slice().sort(), c.resolver_confidence, c.video_type], ['ev-331', 'b-331-main', ['f-pantoja', 'f-van'], 'high', 'countdown']);
+  const w = rows.get('legit000002');
+  assert.deepEqual([w.event_id, w.video_type], ['ev-331', 'weigh_in']);
+  /* No event key, but the two corners of exactly one bout: the pairing resolves the card, then the surnames. */
+  const s = rows.get('legit000003');
+  assert.deepEqual([s.event_id, s.bout_id, s.fighter_ids.slice().sort(), s.source_metadata.linking.event.method], ['ev-331', 'b-331-co', ['f-ruffy', 'f-tsarukyan'], 'via_title_pairing']);
+  /* A lone surname WITH an event key is scoped to that card and attaches. */
+  const p = rows.get('legit000004');
+  assert.deepEqual([p.event_id, p.fighter_ids, p.source_metadata.linking.fighters[0].method], ['ev-331', ['f-pantoja'], 'surname_unique_event_card']);
+});
+
+test('LIVE: a lone surname with no event is withheld, Evloev included; the window is not widened to win that case', async () => {
+  const r = (await discover()).get('evloev00001');
+  assert.deepEqual([r.fighter_ids, r.event_id], [[], null], 'UFC 333 is 52 days from the upload: a false negative is better than a false identity');
+  assert.equal(WINDOW_DAYS, 45);
+});
+
+test('LIVE: discovery reasons from the upload date, not the run date', async () => {
+  /* Read the feed sixty days later with a long lookback: the UFC 331 countdown still finds UFC 331 ... */
+  const late = await discover({ now: '2026-11-17T15:00:00Z', sinceDays: 90 });
+  assert.equal(late.get('legit000001').event_id, 'ev-331');
+  /* ... and the same upload is linked identically whatever day the feed is read. */
+  const early = await discover({ now: '2026-09-14T00:00:00Z' });
+  assert.deepEqual([early.get('legit000001').event_id, early.get('legit000001').bout_id], [late.get('legit000001').event_id, late.get('legit000001').bout_id]);
+});

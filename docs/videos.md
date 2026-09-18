@@ -97,6 +97,17 @@ after a fighter/event load. `--relink --ids a,b,c` recomputes only the named vid
 relink also applies every link change the current card context implies (216 rows on
 2026-09-18), which a targeted repair such as a language rule should not carry with it.
 
+**A surname by itself is not a fighter identity.** Live discovery and relink share one rule: a surname-only
+match attaches a fighter ONLY when an event is already resolved and the surname is unique on THAT card
+(`surname_unique_event_card`). With no event nothing attaches; what would have is kept as
+`linking.surnames_withheld` (evidence, never a review item). `surname_unique_window` no longer writes: it tagged
+eleven *Garcia vs Benn* boxing videos with UFC's Rafa Garcia. A title pairing (`A vs B` / `A x B` naming both
+corners of exactly one bout in the video's window) resolves that bout's event first
+(`via_title_pairing`), and the surnames then attach on that card. Full-name rules are unchanged. Discovery, like
+relink, links each upload against the cards around ITS OWN publish date. One known-correct link the resolver
+cannot re-prove is kept on purpose (`7HUYpQ5OyGU`, Evloev, 52 days from UFC 333): it blocks an un-targeted full
+relink, which is intended. Receipt: `docs/evidence/video-surname-invariant-2026-09-18.md`.
+
 **Relink resolves each video in its own historical context.** `--relink` loads the archive once and links every
 stored row against the cards within ±45 days of THAT VIDEO's publish date (`contextAt`), exactly as a playlist
 backfill does; the run date never decides which event a video belongs to. A row with no valid `published_at`

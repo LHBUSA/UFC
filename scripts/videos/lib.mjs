@@ -634,11 +634,14 @@ export function eventKeys(e) {
   return { keys, cityKeys, headliners: headliners.length === 2 ? headliners : [] };
 }
 
-export async function loadEventContext(sb, { now = new Date(), windowDays = WINDOW_DAYS } = {}) {
-  const lo = new Date(now.getTime() - windowDays * 86400e3).toISOString().slice(0, 10);
+/* `lookbackDays` widens the LOAD, not the match: discovery links each upload against the cards around that upload's
+ * own publish date (contextAt over `raw`), so a feed run on the 18th handling a video from the 2nd needs the cards
+ * from 45 days before the 2nd. The returned top-level context is still "the cards around now" for callers that want it. */
+export async function loadEventContext(sb, { now = new Date(), windowDays = WINDOW_DAYS, lookbackDays = 0 } = {}) {
+  const lo = new Date(now.getTime() - (windowDays + lookbackDays) * 86400e3).toISOString().slice(0, 10);
   const hi = new Date(now.getTime() + windowDays * 86400e3).toISOString().slice(0, 10);
   const events = await sb.select('ufc_events', `select=id,name,event_date,venue,city,region,country,card_status&event_date=gte.${lo}&event_date=lte.${hi}`);
-  if (!events.length) return { events: [], bouts: [], cardFighterIds: new Set(), articlesByBout: new Map(), window: { lo, hi } };
+  if (!events.length) return { events: [], bouts: [], cardFighterIds: new Set(), articlesByBout: new Map(), window: { lo, hi }, raw: { events: [], bouts: [], articles: [] } };
   const ids = events.map((e) => e.id).join(',');
   const bouts = await sb.select('ufc_bouts', `select=id,event_id,fighter_a_id,fighter_b_id,status,bout_order&event_id=in.(${ids})&status=neq.cancelled`);
   const boutIds = bouts.map((b) => b.id);
@@ -646,7 +649,9 @@ export async function loadEventContext(sb, { now = new Date(), windowDays = WIND
   for (let i = 0; i < boutIds.length; i += 200) {
     articles.push(...await sb.select('ufc_articles', `select=id,bout_id,published_at&status=eq.published&bout_id=in.(${boutIds.slice(i, i + 200).join(',')})&order=published_at.desc`));
   }
-  return buildEventContext(events, bouts, articles, { lo, hi });
+  /* buildEventContext rewrites bout.event_id while de-duplicating events; `raw` is taken first. */
+  const raw = { events, bouts: bouts.map((b) => ({ ...b })), articles };
+  return { ...buildEventContext(events, bouts, articles, { lo, hi }), raw };
 }
 
 /* ARCHIVE LINKING. The window above is "the cards around now", which is right
@@ -771,8 +776,9 @@ export function linkEvent(text, titleText, ctx, publishedAt) {
  *      exactly one fighter carries that name in the pool;
  *   2. the same full-name scan over the whole table, attached only when the
  *      alias resolver's exact-normalized candidate set has one member;
- *   3. surname (>= 4 chars, title only), attached only when it belongs to exactly
- *      one +-45d card fighter and is not on the stoplist.
+ *   3. surname (>= 4 chars, title only), attached ONLY when an event is already
+ *      linked and the surname belongs to exactly one fighter on THAT card, and is
+ *      not on the stoplist. No event, no surname attachment (live or relink).
  * Anything with 2+ candidates is a review item, never an attachment. */
 export function linkFighters(text, titleText, index, ctx, eventId) {
   const normAll = prepText(text);
@@ -842,11 +848,20 @@ export function linkFighters(text, titleText, index, ctx, eventId) {
   /* A surname already accounted for by a full-name hit ("Michael Chandler") is
    * that fighter's, not a card-mate's who shares it. */
   const claimedSurnames = new Set([...attached.keys()].map((id) => surname(index.byId.get(id)?.name || '')).filter(Boolean));
-  /* Archive context (contextAt): a card window around an old publish date is a
-   * weak scope, so surname-only hits need a linked event. */
-  const surnameAllowed = scoped || !ctx.surnameRequiresEvent;
+  /* A SURNAME BY ITSELF IS NOT A FIGHTER IDENTITY. It becomes usable only after
+   * the video is already scoped to that fighter's actual card: event resolved ->
+   * the surname must be unique on THAT card. With no event there is no scope, and
+   * "the only Garcia on any UFC card this month" is how eleven Garcia vs Benn
+   * boxing videos were tagged with UFC lightweight Rafa Garcia. This holds for
+   * live discovery and for relink alike; `surname_unique_window` is no longer a
+   * method that writes. What it would have attached is kept as evidence only. */
+  const withheld = [];
   for (const [s, owners] of surnameOwners) {
-    if (!surnameAllowed || !titleTokens.has(s) || claimedSurnames.has(s)) continue;
+    if (!titleTokens.has(s) || claimedSurnames.has(s)) continue;
+    if (!scoped) {
+      if (owners.size === 1 && !attached.has([...owners][0])) withheld.push({ alias: s, fighter_id: [...owners][0], reason: 'surname_without_event_scope' });
+      continue;
+    }
     if (owners.size === 1) {
       const id = [...owners][0];
       if (!attached.has(id)) attached.set(id, { method: scopeName, alias: s, in_title: true });
@@ -854,7 +869,7 @@ export function linkFighters(text, titleText, index, ctx, eventId) {
       review.push({ reason: 'ambiguous_surname', alias: s, scope: scopeName, candidate_fighter_ids: [...owners].slice(0, 6) });
     }
   }
-  return { fighters: attached, review, hosts };
+  return { fighters: attached, review, hosts, withheld };
 }
 
 const HOST_VERBS = '(?:talks?|talking|talked|speaks?|speaking|spoke|chats?|chatting|chatted|sits? down|sat down|catch(?:es)? up|caught up|interviewed|joined|hosted)';
@@ -877,6 +892,21 @@ export function linkBout(fighters, ctx, eventId, publishedAt) {
   const when = publishedAt || new Date();
   const byDate = (b) => { const e = ctx.events.find((x) => x.id === b.event_id); return e ? daysFrom(e.event_date, when) : 1e9; };
   return hits.sort((a, b) => byDate(a) - byDate(b))[0];
+}
+
+/* TITLE PAIRING. One surname is not an identity; two surnames that are the two
+ * corners of exactly ONE bout in the video's window are a fight. "Silva vs White
+ * staredown" names a bout even with no event key in the title, so the pairing
+ * resolves that bout's event first and the surname pass then works inside that
+ * card. "Garcia vs Benn" can never satisfy it: there is no UFC bout with a Benn. */
+export function linkPairing(titleText, index, ctx) {
+  const tokens = new Set(prepText(titleText).trim().split(' ').filter(Boolean));
+  /* A pairing is written as one: "A vs B", "A x B", "A versus B". A roundup that
+   * merely lists both names ("Smith, Morales and Pitbull react") is not a fight. */
+  if (!['vs', 'v', 'x', 'versus'].some((t) => tokens.has(t))) return null;
+  const usable = (id) => { const s = surname(index.byId.get(id)?.name || ''); return s.length >= 4 && !SURNAME_STOPLIST.has(s) && tokens.has(s) ? s : null; };
+  const hits = ctx.bouts.filter((b) => { const a = usable(b.fighter_a_id), c = usable(b.fighter_b_id); return a && c && a !== c; });
+  return hits.length === 1 ? hits[0] : null;
 }
 
 export function confidenceFor({ eventId, boutId, fighters }) {
@@ -908,10 +938,13 @@ export function linkVideo(entry, index, ctx) {
   const text = `${entry.title}\n${entry.description || ''}`;
   const ev = linkEvent(text, entry.title, ctx, publishedAt);
   let eventId = ev.event ? ev.event.id : null;
+  /* No event key: a title pairing may still name one bout, which scopes the surname pass to its card. */
+  const pairing = !eventId && !ev.review ? linkPairing(entry.title, index, ctx) : null;
+  if (pairing) eventId = pairing.event_id;
   const fl = linkFighters(text, entry.title, index, ctx, eventId);
   const fighterIds = [...fl.fighters.keys()].sort();
   const bout = linkBout(fl.fighters, ctx, eventId, publishedAt);
-  let eventEvidence = ev.evidence;
+  let eventEvidence = ev.evidence || (pairing ? { method: 'via_title_pairing', bout_id: pairing.id } : null);
   if (bout && !eventId) { eventId = bout.event_id; eventEvidence = { method: 'via_bout', bout_id: bout.id }; }
   const articles = bout ? ctx.articlesByBout.get(bout.id) || [] : [];
   const articleId = articles.length === 1 ? articles[0].id : null;
@@ -931,6 +964,7 @@ export function linkVideo(entry, index, ctx) {
       /* Audit evidence, written only when it exists so an unaffected row's linking is unchanged. */
       ...(ev.refused && !eventId ? { event_refused: ev.refused } : {}),
       ...(fl.hosts && fl.hosts.length ? { hosts_ignored: fl.hosts } : {}),
+      ...(fl.withheld && fl.withheld.length ? { surnames_withheld: fl.withheld } : {}),
     },
     review_reason: reviews.length ? reviews.map((r) => r.reason).join(',') : null,
     review: reviews.length ? reviews : null,

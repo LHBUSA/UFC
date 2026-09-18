@@ -80,7 +80,7 @@ test('event: number, series, city, headliners, nearest-date and review', () => {
   assert.equal(linkEvent('a random clip', 'a random clip', ctx, at('2026-09-06')).event, null);
 });
 
-test('fighters: full name unique, ambiguous to review, surname only when unique in window, stoplist', () => {
+test('fighters: full name unique, ambiguous to review, surname ONLY inside a linked event card, stoplist', () => {
   const a = linkFighters('Salahdine Parnasse Octagon Interview', 'Salahdine Parnasse Octagon Interview', index, ctx, null);
   assert.deepEqual([...a.fighters.keys()], ['f_parnasse']);
   assert.equal(a.fighters.get('f_parnasse').method, 'full_name_window_card');
@@ -90,9 +90,21 @@ test('fighters: full name unique, ambiguous to review, surname only when unique 
   const c = linkFighters('Bruno Silva promises a finish', 'Bruno Silva promises a finish', index, ctx, 'enoche');
   assert.deepEqual([...c.fighters.keys()], ['f_silva1']);
   assert.equal(c.fighters.get('f_silva1').method, 'full_name_event_card');
+  /* A surname by itself is not a fighter identity: with no event there is no scope, so nothing attaches,
+   * however unique the surname is among this month's cards. What would have attached is kept as evidence. */
   const d = linkFighters('PARNASSE KNOCKS OUT HOOKER', 'PARNASSE KNOCKS OUT HOOKER', index, ctx, null);
-  assert.deepEqual([...d.fighters.keys()].sort(), ['f_hooker', 'f_parnasse']);
-  assert.equal(d.fighters.get('f_hooker').method, 'surname_unique_window');
+  assert.equal(d.fighters.size, 0);
+  assert.deepEqual(d.withheld.map((w) => [w.alias, w.reason]).sort(), [['hooker', 'surname_without_event_scope'], ['parnasse', 'surname_without_event_scope']]);
+  assert.equal(d.review.length, 0, 'a withheld surname is evidence, not a review item: it must not hide the video');
+  /* The same title through linkVideo: the PAIRING names one bout, which resolves the event and scopes the surnames. */
+  const dv = linkVideo({ title: 'PARNASSE KNOCKS OUT HOOKER', description: '', published: '2026-09-06' }, index, ctx);
+  assert.deepEqual([dv.event_id, dv.bout_id, dv.fighter_ids.slice().sort()], ['eparis', 'b_paris', ['f_hooker', 'f_parnasse']], 'headliners resolve the event; the surnames then attach on that card');
+  assert.ok(dv.linking.fighters.every((f) => f.method === 'surname_unique_event_card'));
+  /* An undercard pairing has no event key at all: two corners of exactly one bout in the window name the fight. */
+  const under = linkVideo({ title: 'Silva vs Prepolec staredown', description: '', published: '2026-09-24' }, index, ctx);
+  assert.deepEqual([under.event_id, under.bout_id, under.fighter_ids.slice().sort(), under.linking.event.method], ['evegas', 'b_silva2', ['f_prepolec', 'f_silva2'], 'via_title_pairing']);
+  /* Half a pairing is a lone surname again. */
+  assert.deepEqual(linkVideo({ title: 'Prepolec vs Benn staredown', description: '', published: '2026-09-24' }, index, ctx).fighter_ids, []);
   const e = linkFighters('Dana White reacts', 'Dana White reacts', index, ctx, null);
   assert.equal(e.fighters.size, 0);
   const f = linkFighters('Taira is back', 'Taira is back', index, ctx, null);
@@ -118,7 +130,8 @@ test('bout needs both fighters in the title; confidence tiers', () => {
   assert.equal(viaBout.event_id, 'eparis');
   assert.equal(viaBout.bout_id, 'b_paris');
   const low = linkVideo({ title: 'Parnasse made it look easy!', description: '', published: '2026-09-06' }, index, ctx);
-  assert.equal(low.resolver_confidence, 'low');
+  assert.deepEqual([low.fighter_ids, low.resolver_confidence, low.link_status], [[], 'none', 'published'], 'a lone surname attaches nobody: a false negative is better than a false identity');
+  assert.deepEqual(low.linking.surnames_withheld.map((w) => w.alias), ['parnasse'], 'and what was withheld stays on the row as evidence');
   const none = linkVideo({ title: 'Get this cat in the gym', description: '', published: '2026-09-06' }, index, ctx);
   assert.equal(none.resolver_confidence, 'none');
   assert.equal(none.link_status, 'published');

@@ -168,7 +168,7 @@ test('surname hits: never a card-mate of a full-name hit, and archive needs a li
   const index = { fighters, byId: new Map(fighters.map((f) => [f.id, f])), aliasesByFighter: new Map() };
   const live = { events: [], bouts: [{ id: 'b', event_id: 'e', fighter_a_id: 'cc', fighter_b_id: 'ht' }], cardFighterIds: new Set(['cc', 'ht']) };
   assert.deepEqual([...linkFighters("At Home With UFC's Michael Chandler", "At Home With UFC's Michael Chandler", index, live, null).fighters.keys()], ['mc']);
-  assert.deepEqual([...linkFighters('McGregor vs Chandler coaches challenge', 'McGregor vs Chandler coaches challenge', index, live, null).fighters.keys()], ['cc'], 'live feed behaviour unchanged');
+  assert.deepEqual([...linkFighters('McGregor vs Chandler coaches challenge', 'McGregor vs Chandler coaches challenge', index, live, null).fighters.keys()], [], 'live feed too: the only Chandler on this month\'s cards is not the Chandler in the title');
   assert.deepEqual([...linkFighters('McGregor vs Chandler coaches challenge', 'McGregor vs Chandler coaches challenge', index, { ...live, surnameRequiresEvent: true }, null).fighters.keys()], []);
   assert.deepEqual([...linkFighters('Turcios vs Hiestand | Fight Preview', 'Turcios vs Hiestand | Fight Preview', index, { ...live, surnameRequiresEvent: true }, 'e').fighters.keys()], ['ht'], 'scoped to a linked card it still attaches');
 });

@@ -308,7 +308,7 @@ export async function main(injectedEnv, options = {}) {
   if (ONLY_CHANNEL) channels = channels.filter((c) => c.channel_id === ONLY_CHANNEL);
   if (!channels.length) throw new Error(ONLY_CHANNEL ? `channel ${ONLY_CHANNEL} is not enabled+verified in ufc_video_channels` : 'no enabled, verified channels: run scripts/videos/seed_channels.mjs first');
 
-  const [index, ctx, archive] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb, { now, windowDays: WINDOW_DAYS }), (BACKFILL || RELINK) ? loadArchiveEvents(sb) : null]);
+  const [index, ctx, archive] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb, { now, windowDays: WINDOW_DAYS, lookbackDays: SINCE_DAYS }), (BACKFILL || RELINK) ? loadArchiveEvents(sb) : null]);
   console.log(`${DRY ? 'DRY RUN  ' : ''}discovery=${discovery}${RELINK ? ' (relink, no network)' : ''} since=${since.toISOString().slice(0, 10)} channels=${channels.length}`);
   console.log(`index: ${index.fighters.length} fighters, ${ctx.events.length} events within +-${WINDOW_DAYS}d (${ctx.window.lo}..${ctx.window.hi}), ${ctx.bouts.length} bouts, ${ctx.cardFighterIds.size} card fighters`);
   if (archive) console.log(`archive: ${archive.events.length} events, ${archive.bouts.length} bouts; each playlist video is linked against the cards within +-${WINDOW_DAYS}d of its own publish date`);
@@ -409,7 +409,10 @@ export async function main(injectedEnv, options = {}) {
        * command happens to run must never change which event a video belongs to: a relink used to score all
        * stored rows against the cards around today, which detached the archive and re-attached 2021 videos
        * to 2026 cards (docs/evidence/video-relink-drift-2026-09-18.md). */
-      const linkCtx = archive ? contextAt(archive, entry.published ? new Date(entry.published) : null, WINDOW_DAYS) : ctx;
+      /* Discovery too: a feed run on the 18th handling an upload from the 2nd reasons about the 2nd. Only an entry
+       * that arrives with no date at all is treated as published now (it was just discovered). */
+      const pubDate = validDate(entry.published) ? new Date(entry.published) : null;
+      const linkCtx = archive ? contextAt(archive, pubDate, WINDOW_DAYS) : contextAt(ctx.raw, pubDate || now, WINDOW_DAYS);
       applyLinks(row, entry, index, linkCtx, existing, { relink: RELINK, allowArticleChange: Boolean(options.allowArticleChange), allowStatusChange: Boolean(options.allowStatusChange) });
       const held = row.held || null; delete row.held;
       if (held) { heldRows.push({ id: entry.video_id, title: entry.title, published_at: entry.published || null, ...held }); if (held.publish_date_unavailable) totals.publish_date_unavailable = (totals.publish_date_unavailable || 0) + 1; }
