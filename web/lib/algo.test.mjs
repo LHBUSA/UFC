@@ -155,6 +155,137 @@ test('public surfaces never import a per-call reader or the call card', () => {
   assert.match(card, /robots: \{ index: false/);
 });
 
+/* Upset Radar semantics, exercised through the real reader on a fixture.
+ * A "market-opposite" call: the de-vigged market makes the OPPONENT the
+ * favourite while PBE picks this fighter at better than 50%. */
+const upsetBout = (n, { result, odds, devig, prob = 0.58, locked = true, graded = true }) => {
+  const a = { id: `a-${n}`, name: `Pick ${n}` };
+  const b = { id: `b-${n}`, name: `Opponent ${n}` };
+  return {
+    bout_id: `bout-${n}`, event_id: 'e', event_name: 'UFC X', event_date: '2026-09-19', event_slug: 'ufc-x', fight_slug: `f-${n}`,
+    fighter_a: a, fighter_b: b, decision: 'ELIGIBLE', reasons: [], pick_fighter_id: a.id,
+    market: { pick_consensus_odds: odds, pick_best_odds: odds, devigged_pick: devig, devigged_opponent: 1 - devig },
+    prediction: { ...pred(a.id), id: `pred-${n}`, pick_probability: prob, locked_at: locked ? '2026-09-18T16:41:00Z' : null, market_implied_prob_pick: devig, model_edge_pts: (prob - devig) * 100 },
+    grade: graded ? { result, revision: 1, graded_at: '2026-09-20T05:00:00Z', revision_reason: null } : null,
+  };
+};
+async function upsetProofFor(bouts) {
+  const file = join(mkdtempSync(join(tmpdir(), 'algo-upset-')), 'fx.json');
+  writeFileSync(file, JSON.stringify({ bouts, record: { locked_predictions: bouts.length } }));
+  process.env.PBE_ALGO_FIXTURE_FILE = file;
+  try { return await algo.getAlgoUpsetProof(); } finally { delete process.env.PBE_ALGO_FIXTURE_FILE; }
+}
+
+test('PBE Upset Radar aggregate: a graded market-opposite LOSS can never drop out, and the showcase never edits the ledger', async () => {
+  const WIN = upsetBout('win', { result: 'WIN', odds: 180, devig: 0.34 });
+  const LOSS = upsetBout('loss', { result: 'LOSS', odds: 150, devig: 0.38 });
+  const controls = [
+    upsetBout('chalk', { result: 'WIN', odds: -200, devig: 0.64, prob: 0.7 }),        // market agrees with PBE: not an upset call
+    upsetBout('unlocked', { result: 'WIN', odds: 200, devig: 0.32, locked: false }),   // never locked: not history
+    upsetBout('ungraded', { result: 'WIN', odds: 200, devig: 0.32, graded: false }),   // no official grade yet: not history
+  ];
+
+  const proof = await upsetProofFor([WIN, LOSS, ...controls]);
+  assert.equal(proof.total, 2, 'the WIN and the LOSS, and none of the controls');
+  assert.equal(proof.wins, 1);
+  assert.equal(proof.losses, 1);
+  assert.equal(proof.decided, 2);
+  assert.equal(proof.no_decision, 0);
+  assert.equal(proof.hit_rate, 0.5, 'the hit rate carries the loss');
+  assert.equal(proof.average_consensus_odds, 165, 'average price is over the whole ledger, loss included');
+  assert.deepEqual(proof.biggest_wins.map((w) => w.prediction_id), ['pred-win'], 'the showcase is wins only');
+  assert.ok(!JSON.stringify(proof.biggest_wins).includes('Opponent loss'), 'a loss is never a showcase card');
+
+  /* The loss cannot be made to disappear: taking it out is the only way to get 1-0. */
+  const withoutLoss = await upsetProofFor([WIN, ...controls]);
+  assert.deepEqual([withoutLoss.total, withoutLoss.wins, withoutLoss.losses, withoutLoss.hit_rate], [1, 1, 0, 1]);
+  assert.notDeepEqual([proof.total, proof.losses, proof.hit_rate], [withoutLoss.total, withoutLoss.losses, withoutLoss.hit_rate]);
+
+  /* Showcase filtering (+120 or longer, wins only, top three) does not touch the aggregate:
+   * a market-opposite WIN below the threshold is counted but not showcased. */
+  const SHORT = upsetBout('short', { result: 'WIN', odds: 105, devig: 0.47, prob: 0.55 });
+  const draw = upsetBout('draw', { result: 'DRAW', odds: 140, devig: 0.4 });
+  const wider = await upsetProofFor([WIN, LOSS, SHORT, draw, ...controls]);
+  assert.equal(wider.showcase_threshold_odds, 120);
+  assert.deepEqual([wider.total, wider.wins, wider.losses, wider.decided, wider.no_decision], [4, 2, 1, 3, 1]);
+  assert.equal(wider.hit_rate, 2 / 3);
+  assert.deepEqual(wider.biggest_wins.map((w) => w.prediction_id), ['pred-win'], '+105 is in the record and not on the showcase');
+  assert.ok(wider.biggest_wins.every((w) => w.result === 'WIN' && w.consensus_odds >= wider.showcase_threshold_odds));
+
+  /* Many big wins: the showcase caps at three, the ledger keeps all of them and the loss. */
+  const many = [200, 300, 400, 500].map((o, i) => upsetBout(`big${i}`, { result: 'WIN', odds: o, devig: 0.3 }));
+  const capped = await upsetProofFor([...many, LOSS]);
+  assert.deepEqual(capped.biggest_wins.map((w) => w.consensus_odds), [500, 400, 300]);
+  assert.deepEqual([capped.total, capped.wins, capped.losses], [5, 4, 1]);
+  assert.equal(capped.hit_rate, 0.8);
+
+  /* The definition itself. */
+  assert.equal(algo.isMarketOppositePick({ devigged_pick: 0.34, devigged_opponent: 0.66 }, 0.58), true);
+  assert.equal(algo.isMarketOppositePick({ devigged_pick: 0.64, devigged_opponent: 0.36 }, 0.7), false, 'market already favours the pick');
+  assert.equal(algo.isMarketOppositePick({ devigged_pick: 0.34, devigged_opponent: 0.66 }, 0.5), false, 'PBE must actually pick the fighter');
+  assert.equal(algo.isMarketOppositePick(null, 0.58), false, 'no market, no upset call');
+});
+
+test('PBE Upset Radar aggregate, production read path: the same ledger rules over PostgREST rows', async () => {
+  /* The fixture branch above and the database branch aggregate separately, so the
+   * database branch gets the same proof: a second module instance with a database
+   * configured, and fetch answered from rows shaped like the three real reads. */
+  const rowsFor = (bouts) => ({
+    ufc_model_predictions: bouts.filter((b) => b.prediction.locked_at).map((b) => ({
+      id: b.prediction.id, bout_id: b.bout_id, locked_at: b.prediction.locked_at, pick_fighter_id: b.pick_fighter_id,
+      pick_probability: String(b.prediction.pick_probability), market_implied_prob_pick: b.prediction.market_implied_prob_pick,
+      model_edge_pts: b.prediction.model_edge_pts, sample_context: { market: b.market },
+    })),
+    ufc_model_prediction_current_grade: bouts.filter((b) => b.grade).map((b) => ({ prediction_id: b.prediction.id, result: b.grade.result })),
+    ufc_bouts: bouts.map((b) => ({ id: b.bout_id, fighter_a: b.fighter_a, fighter_b: b.fighter_b, event: { name: b.event_name, event_date: b.event_date } })),
+  });
+  const realFetch = globalThis.fetch;
+  const asked = [];
+  let tables = {};
+  process.env.SUPABASE_URL = 'https://db.invalid';
+  process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
+  try {
+    globalThis.fetch = async (url) => {
+      const path = String(url).split('/rest/v1/')[1];
+      asked.push(path);
+      return { ok: true, status: 200, json: async () => tables[path.split('?')[0]] ?? [] };
+    };
+    const db = await import('./algo.ts?production-read-path');
+
+    const WIN = upsetBout('win', { result: 'WIN', odds: 180, devig: 0.34 });
+    const LOSS = upsetBout('loss', { result: 'LOSS', odds: 150, devig: 0.38 });
+    const SHORT = upsetBout('short', { result: 'WIN', odds: 105, devig: 0.47, prob: 0.55 });
+    const controls = [
+      upsetBout('chalk', { result: 'WIN', odds: -200, devig: 0.64, prob: 0.7 }),
+      upsetBout('ungraded', { result: 'WIN', odds: 200, devig: 0.32, graded: false }),
+    ];
+
+    tables = rowsFor([WIN, LOSS, ...controls]);
+    const proof = await db.getAlgoUpsetProof();
+    assert.deepEqual([proof.total, proof.wins, proof.losses, proof.decided, proof.hit_rate], [2, 1, 1, 2, 0.5]);
+    assert.equal(proof.average_consensus_odds, 165);
+    assert.deepEqual(proof.biggest_wins.map((w) => [w.prediction_id, w.pick_name, w.result]), [['pred-win', 'Pick win', 'WIN']]);
+
+    /* Only locked predictions are ever requested, and grades come from the official current-grade view. */
+    assert.match(asked[0], /^ufc_model_predictions\?.*locked_at=not\.is\.null/);
+    assert.ok(asked.some((q) => q.startsWith('ufc_model_prediction_current_grade?')));
+
+    tables = rowsFor([WIN, LOSS, SHORT, ...controls]);
+    const wider = await db.getAlgoUpsetProof();
+    assert.deepEqual([wider.total, wider.wins, wider.losses], [3, 2, 1], 'the sub-threshold win is in the ledger');
+    assert.equal(wider.hit_rate, 2 / 3);
+    assert.deepEqual(wider.biggest_wins.map((w) => w.prediction_id), ['pred-win'], 'and the showcase is unchanged by it');
+
+    tables = rowsFor([LOSS]);
+    const onlyLoss = await db.getAlgoUpsetProof();
+    assert.deepEqual([onlyLoss.total, onlyLoss.wins, onlyLoss.losses, onlyLoss.hit_rate, onlyLoss.biggest_wins.length], [1, 0, 1, 0, 0], 'a ledger of one loss reads 0-1, not empty');
+  } finally {
+    globalThis.fetch = realFetch;
+    process.env.SUPABASE_URL = '';
+    process.env.SUPABASE_SERVICE_ROLE_KEY = '';
+  }
+});
+
 test('PBE Upset Radar exposes only graded locked history publicly and gates current fighter calls behind Pro', () => {
   const web = new URL('../', import.meta.url);
   const data = readFileSync(new URL('lib/algo.ts', web), 'utf8');
@@ -167,7 +298,7 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(data, /ufc_model_prediction_current_grade/, 'historical proof requires an official current grade');
   assert.match(data, /marketOpponent > marketPick[\s\S]*modelPick > 0\.5/, 'Upset Radar requires the market to favor the opponent while PBE picks the opposite fighter');
   assert.match(data, /result === "WIN" && r\.consensus_odds >= UPSET_SHOWCASE_THRESHOLD_ODDS/, 'showcase cards are +120-or-longer wins');
-  assert.match(data, /The record above includes every graded PBE underdog call|every graded underdog call so losses cannot disappear/i, 'losses stay in the aggregate');
+  /* 'Losses stay in the aggregate' is proven by behavior in the next test, not by matching a comment. */
 
   assert.match(page, /getAlgoUpsetProof\(\)/);
   assert.match(page, /<PbeUpsetRadar access=\{access\} proof=\{upsetProof\} \/>/);
@@ -191,7 +322,12 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(radar, /drivers\(p, b\.fighter_a\.id, b\.fighter_b\.id\)/, 'the explainer comes from model coefficient math, not generated copy');
   assert.match(radar, /stored pre-fight feature vector × the live model coefficients/, 'the explainer states its provenance');
   assert.match(radar, /mv\.state === "UNAVAILABLE"/, 'last-observed plus-money calls stay visible instead of dropping the fighter photo during a freshness handoff');
-  assert.match(radar, /marketState === "CURRENT" \? "LIVE UPSET" : "LAST OBSERVED"/, 'stale market state is labeled, never presented as live');
+  /* The "LIVE UPSET / LAST OBSERVED" badge left with the compact rail (1098013). On the PBE Picks rail a
+   * stale market is now labelled three ways, and its number is only ever the edge stored with that evaluation. */
+  assert.match(radar, /edgePts: mv\.state === "CURRENT" \? \(mv\.delta \?\? [^\n]*\) : mv\.historicalDelta,/, 'a last-observed market never gets a current edge, only the stored one');
+  assert.match(radar, /<em>\{x\.marketState === "CURRENT" \? "EDGE" : "LAST EDGE"\}<\/em>/, 'stale market state is labeled, never presented as live');
+  assert.match(radar, /\{x\.marketState === "CURRENT" \? "edge" : "stored gap"\}/, 'the explainer sentence names a stored gap, not an edge');
+  assert.match(radar, /<span>MARKET \{agoText\(x\.marketAgeMinutes\)\}<\/span>/, 'the age of the market is on the signal');
   const refresh = readFileSync(new URL('components/PbePicksAutoRefresh.tsx', web), 'utf8');
   assert.match(picksPage, /<PbePicksAutoRefresh intervalMs=\{60_000\} \/>/, 'PBE Picks refreshes the server tree every minute');
   assert.match(refresh, /router\.refresh\(\)/);

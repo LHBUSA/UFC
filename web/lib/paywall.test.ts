@@ -85,10 +85,23 @@ const GUARDS: Record<string, RegExp[]> = {
     /access\.pro \? getAlgoBout\(access, b\.id\) : Promise\.resolve\(null\)/,
   ],
   "app/algo/page.tsx": [/const nextCard = access\.pro \? await getAlgoNextCardSummary\(access\)\.catch\(\(\) => null\) : null;/],
-  "app/algo/card/page.tsx": [/const cards = access\.pro \? await getAlgoCards\(access\) : \[\];/],
+  /* The picks read shares one Promise.all with the public Upset Radar ledger, so the
+   * guard is pinned in place: the access decision is awaited on the line before, and
+   * the free branch is a resolved empty list, never a call. */
+  "app/algo/card/page.tsx": [/const access = await getUfcAccess\(\);\s*const \[cards, upsetProof\] = await Promise\.all\(\[\s*access\.pro \? getAlgoCards\(access\) : Promise\.resolve\(\[\]\),\s*getAlgoUpsetProof\(\),\s*\]\);/],
   "app/algo/record/page.tsx": [/const rows = access\.pro \? await getAlgoRecord\(access\) : \[\];/],
   "app/events/[slug]/page.tsx": [/const providerLive = access\.pro \? await marketProviderLive\(\) : false;/, /const marketMap = done \|\| !providerLive/, /const unresolved = done \|\| !providerLive/],
+  /* Home-page showcase: access is resolved in the component, and the DNA read sits inside `if (pro)`. */
+  "components/FightDnaShowcase.tsx": [/pro = Boolean\(access\.pro\);[\s\S]{0,160}?if \(pro\) \{\s*const dna = await getFighterDna\(fighterId\)/],
+  /* Upset Radar takes the caller's access decision as a prop (see ACCESS_BY_PROP) and reads upcoming calls only on === true. */
+  "components/PbeUpsetRadar.tsx": [/if \(access\.pro === true\) \{\s*const cards = providedCards \?\? await getAlgoCards\(access\);/],
   "components/StoryView.tsx": [/const editorialMarket = access\.pro \? await getEditorialMarket/, /const dna = access\.pro && bout && a\.story_type === "fight_preview" \? await getMatchupDna/],
+};
+/* Components that do not call getUfcAccess() themselves because they are handed
+ * the decision. Every file that renders one must be listed, must have made the
+ * decision itself, and must pass that same object down. */
+const ACCESS_BY_PROP: Record<string, { tag: string; prop: RegExp; callers: string[] }> = {
+  "components/PbeUpsetRadar.tsx": { tag: "<PbeUpsetRadar", prop: /access: Pick<UfcAccess, "pro">;/, callers: ["app/pro/page.tsx", "app/algo/card/page.tsx"] },
 };
 /* generateMetadata reads DNA only to say whether a profile exists in the
  * snippet; the value is never rendered. */
@@ -98,12 +111,60 @@ test("every premium read site asks getUfcAccess first and carries a written guar
   for (const { file, text } of source) {
     if (PREMIUM_READ_ALLOW.has(file) || !PREMIUM_READS.test(text)) continue;
     assert.ok(GUARDS[file], `${file} reads premium data but has no guard registered in paywall.test.ts`);
-    assert.match(text, /getUfcAccess\(\)/, `${file} reads premium data without the access decision`);
+    const handed = ACCESS_BY_PROP[file];
+    if (handed) {
+      assert.match(text, handed.prop, `${file} must take the verified access decision as a typed prop`);
+      const renderers = source.filter((s) => s.file !== file && s.text.includes(handed.tag)).map((s) => s.file).sort();
+      assert.deepEqual(renderers, [...handed.callers].sort(), `${file} is rendered somewhere its access hand-off has not been reviewed`);
+      for (const caller of handed.callers) {
+        const c = source.find((s) => s.file === caller)!.text;
+        assert.match(c, /const (access|\[[^\]]*\baccess\b[^\]]*\]) = await (getUfcAccess\(\)|Promise\.all\(\[[\s\S]*?getUfcAccess\(\))/, `${caller} renders ${handed.tag} without resolving getUfcAccess()`);
+        assert.ok(c.split(`${handed.tag} access={access}`).length - 1 === c.split(handed.tag).length - 1, `${caller} must pass its own access decision to every ${handed.tag}`);
+      }
+    } else {
+      assert.match(text, /getUfcAccess\(\)/, `${file} reads premium data without the access decision`);
+    }
     for (const g of GUARDS[file]) assert.match(text, g, `${file} lost guard ${g}`);
     const reads = [...text.matchAll(new RegExp(PREMIUM_READS.source, "g"))].length;
     const guarded = GUARDS[file].length + METADATA_ONLY.filter((m) => m.test(text)).length;
     assert.ok(reads <= guarded + (file === "app/events/[slug]/page.tsx" ? 1 : 0), `${file}: ${reads} premium reads but ${guarded} guards`);
   }
+});
+
+test("PBE Picks: a free render resolves access first, never calls getAlgoCards and holds no pick value", () => {
+  const page = source.find((s) => s.file === "app/algo/card/page.tsx")!.text;
+  const body = page.slice(page.indexOf("export default async function AlgoCardPage"));
+
+  /* 1. The access decision is the first await of the render, before any read. */
+  const firstAwait = body.indexOf("await ");
+  assert.equal(body.slice(firstAwait, firstAwait + "await getUfcAccess()".length), "await getUfcAccess()", "getUfcAccess() is the first thing the page awaits");
+  assert.ok(body.indexOf("getUfcAccess()") < body.indexOf("getAlgoCards("), "access resolves before the picks read is even mentioned");
+
+  /* 2. Exactly one getAlgoCards call, and it sits in the Pro arm of a ternary whose free arm is an empty list. */
+  assert.equal([...page.matchAll(/getAlgoCards\(/g)].length, 1, "one picks read on the page");
+  assert.match(body, /access\.pro \? getAlgoCards\(access\) : Promise\.resolve\(\[\]\)/);
+  assert.doesNotMatch(body, /await getAlgoCards\(|[^?] getAlgoCards\(access\)\s*[,;\]]\s*$/m, "no unguarded picks read");
+
+  /* 3. Fighter, image and event reads happen only on the Pro decision, and only from the gated cards. */
+  assert.match(body, /const fighterIds = cards\.flatMap\(/, "fighter ids come from the gated cards, so a free render has none");
+  assert.match(body, /const \[imgs, fighterRows, events\] = access\.pro && fighterIds\.length\s*\? await Promise\.all\(\[getImagesForFighters\(fighterIds\), getFightersByIds\(\[\.\.\.new Set\(fighterIds\)\]\), Promise\.all\(cards\.map\(\(c\) => getEventById\(c\.event_id\)\)\)\]\)\s*: \[new Map\(\), \[\], \[\] as Array<Event \| null>\];/);
+  for (const read of ["getImagesForFighters(", "getFightersByIds(", "getEventById("]) {
+    assert.equal(body.split(read).length - 1, 1, `${read} appears once, inside the Pro branch above`);
+  }
+
+  /* 4. The free branch renders the teaser and ProPreview and nothing derived from a call. */
+  const freeStart = body.indexOf("{!access.pro ? (");
+  const freeEnd = body.indexOf(") : cards.length === 0 ? (");
+  assert.ok(freeStart > 0 && freeEnd > freeStart, "the free branch is the first arm of the main render");
+  const free = body.slice(freeStart, freeEnd);
+  assert.match(free, /<ProPreview feature="picks" access=\{access\} returnPath="\/algo\/card" \/>/);
+  assert.doesNotMatch(free, /AlgoPick|cards|\bbouts?\b|pick_|probab|fighter_|market|edge|imgs|fighters\.get/i, "no pick, fighter, probability or market value in the free render");
+  assert.ok(body.indexOf("<AlgoPick") > freeEnd, "the call card is only ever rendered in the Pro arm");
+
+  /* 5. The sidecar Upset Radar reads upcoming calls only behind its own === true check. */
+  const radar = source.find((s) => s.file === "components/PbeUpsetRadar.tsx")!.text;
+  assert.match(radar, /if \(access\.pro === true\) \{\s*const cards = providedCards \?\? await getAlgoCards\(access\);/);
+  assert.equal([...radar.matchAll(/getAlgoCards\(/g)].length, 1);
 });
 
 test("desk briefs fold in Fight DNA only when the caller passes its Pro decision", () => {
