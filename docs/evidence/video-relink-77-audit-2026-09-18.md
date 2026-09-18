@@ -119,3 +119,38 @@ run). Not changed.
 | title-key vs description-key | a title key is trusted for surnames; a description key links the event but lends no card. Whether a description key should link an event against a competing title tag is §5c, awaiting a decision |
 | fighter removal without event destruction | proven on T3G and the 11 Garcia rows: `fighter_ids` + `linking` only; event, bout, article, status, type identical |
 | evidence ownership on removal | the removed fighter leaves `linking.fighters` and is recorded in `linking.surnames_withheld` with a reason, so the row keeps the evidence of what was withheld and why |
+
+## Description-only event links, read one by one (41 rows)
+
+| verdict | rows | |
+|---|---|---|
+| correct | 32 | UFC 331 fight-week features (12), UFC Vegas 35 / Barboza–Chikadze (8), Noche UFC fighter features and the event's own weigh-in / preview streams (7), TUF finales (4), a DWCS clip |
+| ambiguous | 2 | `AmOFdZaI9ug` *Moreno vs Figueiredo 2 — The Walk* → Noche UFC; `SjFuXM1WkyQ` *UFC Unfiltered* with Kai Kara-France |
+| false | 7 | the five `#GarciaBenn` rows; `ysRi2-0iy3Q` (a UFC Brasil voting promo, attached to Noche UFC by the promo tag; no title hashtag, so the opt-in guard would NOT catch it); `gs5HepE_DRs` (*Inside the Octagon – Edgar vs. Mendes* attached to the *Namajunas vs VanZant* card of the same weekend) |
+
+## Natural-run canary — first scheduled run on v0.2.4
+
+`ufc_ingest_runs` a47cea48, invoked `cron` `13,43 * * * *`, 2026-09-18T17:13:35Z → 17:13:47Z,
+`success`, assertion failures `[]`, failed channels 0. Deployed version `1cdcbcd9` (created
+16:52:12Z), `/health` v0.2.4, `last_error: null`.
+
+Against a full-table snapshot taken at 17:04Z:
+
+| check | result |
+|---|---|
+| rows | 729 → 733: **4 inserted, 0 deleted, 2 existing rows rewritten** |
+| duplicate provider ids | 0 |
+| fighters / events / bouts / articles tables | 3285 / 924 / 9549 / 212 — unchanged (the Worker writes only `ufc_videos`) |
+| the 4 new uploads | all UFC 331 weigh-in day: title `#ufc331` → event by TITLE; one carries a surname on that title-trusted card (*Arman and Ruffy make weight! #ufc331* → Ruffy); one *UFC Connected* has a description-only event and FULL-NAME fighters only; none has a surname on a description-only event |
+| the 2 rewrites | `-aWT-0qmwmc`, `jTOp7srvO6U`: `linking.article_candidates 3 → 4` + `feed_updated`; no column changed. Explained: a fourth Tsarukyan–Ruffy article was published at 16:50Z. Predicted by the pre-deploy dry run |
+| **T3G-YgpFjlQ** | `updated_at` unchanged since the correction (16:52:21Z); fighters 0; event intact; status `published`; `surnames_withheld` still records `garcia / event_scope_not_title_trusted` |
+| rows with a surname fighter on a description-only event | **0** in the whole table |
+| rows written by the run carrying `surname_unique_window` | 0 |
+| Hangul titles stored `en` | 0 of 37 |
+| UFC 331 | 145 → 149 linked rows; 0 existing rows moved |
+| Evloev `7HUYpQ5OyGU` | untouched |
+| relink plan, before vs after the run | 70 vs 70, identical ids; non-low still only Evloev (high, blocked) and `XA0XV_cWvII` (medium) |
+| `/fight-week` 1440 + 390 | 9 English stage cards, 0 Korean in the default view, 26 Korean labelled KOREAN under All, no overflow, no console errors |
+
+Production rows changed after the T3G correction: **only what that scheduled run wrote** — 4 new
+uploads and 2 `article_candidates` bumps. No row was written by hand or by a relink.
