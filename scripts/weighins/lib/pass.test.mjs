@@ -307,3 +307,46 @@ test('counters always add up', async () => {
   const { offered, inserted, duplicate_noop: dup, rejected } = r.counters;
   assert.equal(inserted + dup + rejected, offered);
 });
+
+/* ================= the expected card is the EFFECTIVE card (migration 031) ================= */
+
+test('the expected card comes from ufc_bouts_effective: a removed bout is not expected, a reported withdrawal still is', async () => {
+  const { loadExpectedCard, EXPECTED_CARD_SOURCE } = await import('./pass_core.mjs');
+  const { eventAnchors } = await import('./discover.mjs');
+  const b = (id, a, c, order, over = {}) => ({ id, event_id: 'e331', fighter_a_id: a, fighter_b_id: c, bout_order: order, card_position: 'main', effective_status: 'announced', is_active: true, withdrawal_reported: false, ...over });
+  /* what the view returns (its SQL proof asserts these columns for these situations) */
+  const VIEW = [
+    b('removed', 'moicano', 'ortega', 99, { effective_status: 'cancelled', is_active: false }),   // stored announced; official card dropped it; ALSO the highest bout_order
+    b('main', 'van', 'pantoja', 13),
+    b('warned', 'allen', 'pico', 11, { withdrawal_reported: true }),                                // reported out, still officially listed
+    b('incomplete-read', 'x', 'y', 5),                                                              // ambiguous official read: the view leaves it active
+    b('stored-cancelled', 'p', 'q', 4, { effective_status: 'cancelled', is_active: false }),
+  ];
+  const calls = [];
+  const sb = { async select(table, query) {
+    calls.push({ table, query });
+    assert.equal(table, 'ufc_bouts_effective', 'never the raw ufc_bouts table');
+    const p = new URLSearchParams(query);
+    let rows = VIEW.filter((r) => `eq.${r.event_id}` === p.get('event_id'));
+    if (p.get('is_active') === 'is.true') rows = rows.filter((r) => r.is_active === true);
+    return rows.map((r) => ({ ...r, status: r.effective_status }));
+  } };
+  const card = await loadExpectedCard(sb, 'e331');
+  assert.equal(EXPECTED_CARD_SOURCE, 'ufc_bouts_effective');
+  assert.deepEqual(card.map((x) => x.id), ['main', 'warned', 'incomplete-read']);
+  const expected = [...new Set(card.flatMap((x) => [x.fighter_a_id, x.fighter_b_id]))];
+  assert.equal(expected.length, 6, 'removed fighters are not counted as expected');
+  assert.ok(!expected.includes('ortega') && !expected.includes('moicano'));
+  assert.ok(expected.includes('allen') && expected.includes('pico'), 'a reported withdrawal is still expected on the scale');
+  assert.match(calls[0].query, /[?&]is_active=is\.true(&|$)/);
+  assert.match(calls[0].query, /status:effective_status/);
+  /* a removed bout can never anchor source discovery as the "main event" */
+  const fighters = [{ id: 'van', name: 'Joshua Van' }, { id: 'pantoja', name: 'Alexandre Pantoja' }, { id: 'moicano', name: 'Renato Moicano' }, { id: 'ortega', name: 'Brian Ortega' }];
+  const anchors = JSON.stringify(eventAnchors({ name: 'UFC 331: Van vs. Pantoja 2' }, card, fighters));
+  assert.match(anchors, /pantoja/); assert.doesNotMatch(anchors, /ortega|moicano/);
+  /* if the SQL filter is ever dropped, the in-code guard still holds */
+  const leaky = { async select() { return VIEW.map((r) => ({ ...r, status: r.effective_status })); } };
+  assert.deepEqual((await loadExpectedCard(leaky, 'e331')).map((x) => x.id), ['main', 'warned', 'incomplete-read']);
+  /* and a row that does not say it is active is not expected */
+  assert.deepEqual(await loadExpectedCard({ async select() { return [{ id: 'z', status: 'announced' }]; } }, 'e331'), []);
+});

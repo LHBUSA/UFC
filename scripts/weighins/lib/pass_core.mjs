@@ -44,6 +44,23 @@ const zero = () => ({
  * One pass. The window decision comes FIRST and before any source fetch: out
  * of window it costs one indexed query for the next event and stops.
  */
+/* The bouts a weigh-in is expected from: the card by EFFECTIVE truth (public.ufc_bouts_effective, migration 031).
+ *
+ * ufc_bouts.status is never rewritten when a bout leaves a card (migration 029). Filtering the stored word kept
+ * Moicano vs Ortega on the UFC 331 roster after the official card dropped it: every pass on weigh-in day recorded
+ * coverage { expected: 26, sourced_fighters: 24 }, a reading could still attach to the removed bout, and a removed
+ * main event could still anchor source discovery. Only a CONFIRMED removal leaves (is_active = false); a REPORTED
+ * withdrawal while the official card still lists the bout stays expected, and an incomplete official read removes
+ * nobody. `status` is the effective status, so downstream `status !== 'cancelled'` checks (eventAnchors) agree.
+ * This reads the NEXT card only; historical ingestion and PBE Algo keep reading the stored status. */
+export const EXPECTED_CARD_SOURCE = 'ufc_bouts_effective';
+export async function loadExpectedCard(sb, eventId) {
+  const rows = await sb.select(EXPECTED_CARD_SOURCE,
+    `select=id,event_id,fighter_a_id,fighter_b_id,weight_class,weight_class_raw,is_womens,is_title,card_position,bout_order,status:effective_status,is_active,withdrawal_reported&event_id=eq.${eventId}&is_active=is.true`);
+  /* Defence in depth: never trust the filter alone for who steps on the scale. */
+  return (rows || []).filter((b) => b.is_active === true && b.status !== 'cancelled' && b.status !== 'replaced');
+}
+
 export async function runWeighInPass({ sb, log = console }, options = {}) {
   const opts = resolveOptions(options);
   const started = Date.now();
@@ -72,9 +89,7 @@ export async function runWeighInPass({ sb, log = console }, options = {}) {
   }
 
   try {
-    const bouts = (await sb.select('ufc_bouts',
-      `select=id,event_id,fighter_a_id,fighter_b_id,weight_class,weight_class_raw,is_womens,is_title,card_position,bout_order,status&event_id=eq.${event.id}`))
-      .filter((b) => b.status !== 'cancelled');
+    const bouts = await loadExpectedCard(sb, event.id);
     const fighterIds = [...new Set(bouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]).filter(Boolean))];
     const fighters = fighterIds.length ? await sb.select('ufc_fighters', `select=id,name&id=in.(${fighterIds.join(',')})`) : [];
 
