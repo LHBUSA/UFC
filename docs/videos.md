@@ -95,7 +95,15 @@ nothing. `--since-days` (default 30) drops older uploads. `--relink` recomputes
 classification and links for the stored rows without touching YouTube; run it
 after a fighter/event load. `--relink --ids a,b,c` recomputes only the named videos: a full
 relink also applies every link change the current card context implies (216 rows on
-2026-09-18), which a targeted repair such as a language rule should not carry with it. Upserts are on `(provider, provider_video_id)`;
+2026-09-18), which a targeted repair such as a language rule should not carry with it.
+
+**Do not run a full `--relink`.** It scores every stored row against the cards within
+±45 days of TODAY, so backfilled archive rows lose their (correct) event links or are
+re-attached to a current card by a generic key. Read the plan first:
+`--relink --dry-run --explain [--explain-out f.json]` emits a field-level diff with
+buckets and a risk level per row (`relink_diff.mjs`; refused without `--dry-run`), and
+`relink_drift_report.mjs f.json` turns it into a receipt. Audit of 2026-09-18:
+`docs/evidence/video-relink-drift-2026-09-18.md` (216 rows, 99 high risk, 115 better as stored). Upserts are on `(provider, provider_video_id)`;
 rows whose persisted columns, links or evidence did not change are not
 rewritten, so a rerun is a no-op. A row a human set to `link_status='rejected'`
 keeps its links and status across reruns.

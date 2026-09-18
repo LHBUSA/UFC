@@ -2,7 +2,7 @@
 /* Pull the newest uploads of every enabled, verified channel in
  * ufc_video_channels into ufc_videos (docs/videos.md).
  *
- *   node scripts/videos/ingest_youtube.mjs [--dry-run] [--since-days N] [--channel <id>] [--relink [--ids a,b,c]]
+ *   node scripts/videos/ingest_youtube.mjs [--dry-run] [--since-days N] [--channel <id>] [--relink [--ids a,b,c] [--explain [--explain-out file.json]]]
  *
  * Discovery (docs/UFC_MEDIA_VIDEO_ADDENDUM.md section 6):
  *   YOUTUBE_API_KEY set   -> Data API v3: channels.list -> uploads playlist ->
@@ -51,6 +51,7 @@ import { detectLanguage,
   classifyVideo, loadEventContext, loadArchiveEvents, contextAt, linkVideo, tufSeriesEventSupported, confidenceFor, sleep,
 } from './lib.mjs';
 import { tufTag } from './tuf.mjs';
+import { diffRow, project } from './relink_diff.mjs';
 
 const MAX_DESCRIPTION = 6000;
 
@@ -68,6 +69,10 @@ export function parseCliOptions(argv = []) {
     /* --relink --ids a,b,c: recompute only these provider video ids. A full relink also applies every link
      * change the current card context implies; a targeted repair (a language rule) should not ride along with that. */
     ids: argv.includes('--ids') ? new Set(String(argv[argv.indexOf('--ids') + 1] || '').split(',').map((x) => x.trim()).filter(Boolean)) : null,
+    /* --explain: a field-level diff of every row the run would rewrite (relink_diff.mjs). READ-ONLY by construction:
+     * it is refused without --dry-run, so asking what a relink would do can never be the thing that does it. */
+    explain: argv.includes('--explain'),
+    explainOut: argv.includes('--explain-out') ? argv[argv.indexOf('--explain-out') + 1] : null,
     playlists: argv.flatMap((a, i) => (a === '--playlist' && argv[i + 1] ? [argv[i + 1]] : [])),
   };
 }
@@ -248,6 +253,9 @@ export async function main(injectedEnv, options = {}) {
   const PLAYLISTS = Array.isArray(options.playlists) ? options.playlists.filter(Boolean) : [];
   const BACKFILL = PLAYLISTS.length > 0;
   if (BACKFILL && RELINK) throw new Error('--playlist and --relink are separate modes');
+  const EXPLAIN = Boolean(options.explain);
+  if (EXPLAIN && !DRY) throw new Error('--explain is a read-only report and requires --dry-run');
+  const explained = [];
   const now = options.now ? new Date(options.now) : new Date();
   const since = new Date(now.getTime() - SINCE_DAYS * 86400e3);
   const apiKey = env.YOUTUBE_API_KEY || '';
@@ -372,6 +380,9 @@ export async function main(injectedEnv, options = {}) {
       console.log(`  ${flag} ${dbRow.provider_video_id} [${dbRow.video_type}/${dbRow.resolver_confidence}${dbRow.link_status === 'review' ? ' REVIEW' : ''}] emb=${dbRow.embeddable === null ? '?' : dbRow.embeddable ? 'y' : 'n'} ${dbRow.title.slice(0, 64)}`
         + `${ev ? ` | ev=${ev.name.slice(0, 32)}` : ''}${names.length ? ` | f=${names.join(', ')}` : ''}${dbRow.bout_id ? ' | bout' : ''}${dbRow.source_metadata.review_reason ? ` | review: ${dbRow.source_metadata.review_reason}` : ''}`);
       if (isNew || isChanged) rows.push(dbRow);
+      if (EXPLAIN && isChanged && existing) {
+        explained.push({ id: dbRow.provider_video_id, channel: channel.name, title: dbRow.title, published_at: dbRow.published_at, stored: project(existing), proposed: project(dbRow), ...diffRow(existing, dbRow) });
+      }
       plan.push({ channel: channel.name, id: dbRow.provider_video_id, action: isNew ? 'insert' : isChanged ? 'update' : 'unchanged', type: dbRow.video_type, confidence: dbRow.resolver_confidence, status: dbRow.link_status });
     }
 
@@ -393,8 +404,14 @@ export async function main(injectedEnv, options = {}) {
   console.log(`  TUF-tagged: ${totals.tuf_tagged}${BACKFILL ? `; playlist items ${totals.playlist_items}, unique videos ${totals.playlist_unique_videos}; from channels not allowlisted, skipped: ${totals.skipped_not_allowlisted}` : ''}`);
   if (DRY && plan.length) console.log(`  plan: ${plan.filter((p) => p.action === 'insert').length} inserts, ${plan.filter((p) => p.action === 'update').length} updates, ${plan.filter((p) => p.action === 'unchanged').length} unchanged`);
 
+  if (EXPLAIN) {
+    const byRisk = {}; for (const e of explained) byRisk[e.risk] = (byRisk[e.risk] || 0) + 1;
+    console.log(`  explain: ${explained.length} row(s) would change; risk ${JSON.stringify(byRisk)}; stamp-only rewrites (no projected field differs): ${explained.filter((e) => !e.fields.length).length}`);
+    if (options.explainOut) { const { writeFileSync } = await import('node:fs'); writeFileSync(options.explainOut, `${JSON.stringify({ generated_at: now.toISOString(), window: ctx.window, events_in_window: ctx.events.map((e) => ({ id: e.id, name: e.name, event_date: e.event_date })), rows: explained }, null, 1)}\n`); console.log(`  explain: wrote ${options.explainOut}`); }
+  }
+
   /* Returned rather than logged-and-grepped, so a Worker can ledger it. */
-  return { discovery, channels: channels.length, totals, by_type: byType, by_confidence: byConfidence, dry: DRY, relink: RELINK, since: since.toISOString(), ...(BACKFILL ? { playlists: playlistReports } : {}) };
+  return { discovery, channels: channels.length, totals, by_type: byType, by_confidence: byConfidence, dry: DRY, relink: RELINK, ...(EXPLAIN ? { explained } : {}), since: since.toISOString(), ...(BACKFILL ? { playlists: playlistReports } : {}) };
 }
 
 /* CLI ONLY. Importing this module must never call YouTube or write a row. */
