@@ -32,6 +32,22 @@
 import { FIGHT_WEEK_BANDS, SCHEDULER_TOLERANCE_MINUTES, fightWeekBand, lockDeadlineFor, lockWindowOpensFor, LOCK_WINDOW_OPENS_HOURS, LOCK_WINDOW_CLOSES_HOURS } from '../../../scripts/odds/fight_week_cadence.mjs';
 export { FIGHT_WEEK_BANDS, lockDeadlineFor, lockWindowOpensFor, LOCK_WINDOW_OPENS_HOURS, LOCK_WINDOW_CLOSES_HOURS };
 
+/* Which bouts a price may attach to. Read through public.ufc_bouts_effective (migration 031): ufc_bouts.status is
+ * never rewritten when a bout leaves a card (029), so filtering the stored word kept a bout the official card had
+ * dropped as a match candidate. is_active is false only on CONFIRMED removal; a reported withdrawal while the card
+ * still lists the bout leaves it a candidate, because the books still price it. */
+const CANDIDATE_SELECT = 'id,event_id,is_active,status:effective_status,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events(id,event_date)';
+export function boutCandidatesQuery(eventIds) {
+  const ids = [...new Set((eventIds || []).filter(Boolean))];
+  if (!ids.length) return null;
+  return `ufc_bouts_effective?select=${CANDIDATE_SELECT}&event_id=${ids.length === 1 ? `eq.${ids[0]}` : `in.(${ids.join(',')})`}`;
+}
+/* Defence in depth: the row must say it is active AND not read cancelled/replaced, and have both corners. A row that
+ * does not carry is_active at all is NOT a candidate: no price is attached on an unknown card state. */
+export function matchableBouts(rows) {
+  return (rows || []).filter((b) => b && b.is_active === true && b.status !== 'cancelled' && b.status !== 'replaced' && b.fighter_a && b.fighter_b);
+}
+
 export function readPrefightConfig(env) {
   const num = (v, d) => { const n = Number(v); return Number.isFinite(n) ? n : d; };
   return {

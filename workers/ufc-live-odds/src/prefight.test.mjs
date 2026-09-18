@@ -1,6 +1,6 @@
 /* Pre-fight capture decision. Run: node src/prefight.test.mjs
  * Every assertion is about money or about lock-time freshness. */
-import { readPrefightConfig, cadenceFor, shouldCapturePrefight, lockDeadlineFor, lockWindowOpensFor } from './prefight.mjs';
+import { readPrefightConfig, cadenceFor, shouldCapturePrefight, lockDeadlineFor, lockWindowOpensFor, boutCandidatesQuery, matchableBouts } from './prefight.mjs';
 import { readConfig } from './gate.mjs';
 
 let failures = 0;
@@ -93,6 +93,30 @@ eq(new Date(LOCK).toISOString(), '2026-09-18T18:00:00.000Z', 'lock deadline is t
   const d = shouldCapturePrefight({ now, cfg: CFG, events: [later, CARD], lastSnapshotAt: new Date(now - 3 * H).toISOString(), callsToday: 0, quota: quotaAt(now) });
   eq(d.band, 'T-72h', 'nearest lock sets the band');
   eq(d.reason, 'fresh_snapshot_on_file', '3h-old snapshot is fresh for the 6h band');
+}
+
+/* Card truth (migration 031): a price is never attached to a bout the official card dropped. */
+{
+  const q = boutCandidatesQuery(['e1', 'e2', 'e1', null]);
+  eq(q.startsWith('ufc_bouts_effective?'), true, 'candidates are read through the effective view, never raw ufc_bouts');
+  eq(q.includes('event_id=in.(e1,e2)'), true, 'event ids are de-duplicated');
+  eq(/[?&,]status(?!:)/.test(q.replace('status:effective_status', '')), false, 'no bare status column is requested (the view has none)');
+  eq(boutCandidatesQuery(['e1']).includes('event_id=eq.e1'), true, 'single card is an eq filter');
+  eq(boutCandidatesQuery([]), null, 'no events, no query');
+  const F = (n) => ({ id: n, name: n });
+  const rows = [
+    { id: 'listed', is_active: true, status: 'announced', fighter_a: F('a'), fighter_b: F('b') },
+    /* UFC 331 Moicano vs Ortega: stored announced, official card dropped it */
+    { id: 'dropped', is_active: false, status: 'cancelled', fighter_a: F('c'), fighter_b: F('d') },
+    /* UFC 333 Allen vs Pico: withdrawal reported, still officially listed: the books still price it */
+    { id: 'warned', is_active: true, status: 'announced', withdrawal_reported: true, fighter_a: F('e'), fighter_b: F('f') },
+    { id: 'replaced', is_active: false, status: 'replaced', fighter_a: F('g'), fighter_b: F('h') },
+    { id: 'no-corner', is_active: true, status: 'announced', fighter_a: F('i'), fighter_b: null },
+    { id: 'unknown-state', status: 'announced', fighter_a: F('j'), fighter_b: F('k') },
+    { id: 'disagree', is_active: true, status: 'cancelled', fighter_a: F('l'), fighter_b: F('m') },
+  ];
+  eq(matchableBouts(rows).map((b) => b.id).join(','), 'listed,warned', 'only active, listed bouts with both corners are candidates');
+  eq(matchableBouts(null).length, 0, 'a failed read matches nothing');
 }
 
 if (failures) { console.log(`\n${failures} failure(s)`); process.exit(1); }

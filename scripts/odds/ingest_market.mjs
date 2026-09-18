@@ -193,7 +193,9 @@ const main = async () => {
     const [fighters, aliases, boutRows, eventRows] = await Promise.all([
       all('ufc_fighters?select=id,name'),
       all('ufc_fighter_aliases?select=fighter_id,alias,normalized').catch(() => []),
-      all('ufc_bouts?select=id,event_id,fighter_a_id,fighter_b_id,status'),
+      /* Effective status (migration 031): ufc_bouts.status is never rewritten when the official card drops a bout, so the
+       * stored word kept a removed bout as a price candidate. Ordered, because this read is paged. */
+      all('ufc_bouts_effective?select=id,event_id,fighter_a_id,fighter_b_id,status:effective_status&order=id.asc'),
       all('ufc_events?select=id,name,event_date'),
     ]);
     const fById = new Map(fighters.map((f) => [f.id, f]));

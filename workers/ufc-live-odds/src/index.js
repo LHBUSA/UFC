@@ -37,7 +37,7 @@ import { OBS_CONFLICT } from '../../../scripts/odds/market_match.mjs';
 import { normalizePayload, snapshotRows, observationRows } from './capture.mjs';
 import { boundariesFrom, dedupeBoundaries } from './boundaries.mjs';
 import { readConfig, shouldPoll, readQuotaHeaders, isActive, isImminent, roundFromStatus } from './gate.mjs';
-import { readPrefightConfig, shouldCapturePrefight } from './prefight.mjs';
+import { readPrefightConfig, shouldCapturePrefight, boutCandidatesQuery, matchableBouts } from './prefight.mjs';
 import { notifyMarketRefresh } from './marketRefresh.mjs';
 
 const WORKER = 'ufc-live-odds';
@@ -367,11 +367,11 @@ async function tick(env, { dry = false } = {}) {
   /* Resolution inputs, scoped to this card: a price is never attached to a
    * bout on another event. */
   const [boutRows, fighterRows, aliasRows] = await Promise.all([
-    rest(env, `ufc_bouts?select=id,event_id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events(id,event_date)&event_id=eq.${card.event_id}`).catch(() => []),
+    rest(env, boutCandidatesQuery([card.event_id])).catch(() => []),
     rest(env, 'ufc_fighters?select=id,name&limit=6000').catch(() => []),
     rest(env, 'ufc_fighter_aliases?select=fighter_id,alias,normalized').catch(() => []),
   ]);
-  const bouts = (boutRows || []).map((b) => ({ id: b.id, a: b.fighter_a, b: b.fighter_b, eventDate: b.event?.event_date || null }));
+  const bouts = matchableBouts(boutRows).map((b) => ({ id: b.id, a: b.fighter_a, b: b.fighter_b, eventDate: b.event?.event_date || null }));
 
   const norm = normalizePayload({
     payload, bouts, fighters: fighterRows || [], aliases: aliasRows || [],
@@ -522,12 +522,12 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
   const eventIds = [...new Set([...events, ...matchEvents].map((e) => e.id))];
   const [boutRows, fighterRows, aliasRows] = await Promise.all([
     eventIds.length
-      ? rest(env, `ufc_bouts?select=id,event_id,status,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events(id,event_date)&event_id=in.(${eventIds.join(',')})`).catch(() => [])
+      ? rest(env, boutCandidatesQuery(eventIds)).catch(() => [])
       : Promise.resolve([]),
     rest(env, 'ufc_fighters?select=id,name&limit=6000').catch(() => []),
     rest(env, 'ufc_fighter_aliases?select=fighter_id,alias,normalized').catch(() => []),
   ]);
-  const bouts = (boutRows || []).filter((b) => b.status !== 'cancelled' && b.fighter_a && b.fighter_b)
+  const bouts = matchableBouts(boutRows)
     .map((b) => ({ id: b.id, eventId: b.event_id, a: b.fighter_a, b: b.fighter_b, eventDate: b.event?.event_date || null }));
   const norm = normalizePayload({ payload, bouts, fighters: fighterRows || [], aliases: aliasRows || [], observedAt: fetchedAt, eventId: null });
 
