@@ -56,6 +56,50 @@ so, and a status row with no sentence behind it is exactly the unsourced claim
 this design exists to prevent. If card-page diffing is added later it should
 produce a *flag for review*, not a row.
 
+## Episodes and receipts: what `/injuries` shows
+
+A row in `ufc_fighter_status_events` is a **source receipt**: one publisher
+saying one thing about one fighter. Six outlets reporting that a fighter is off
+a card are six valid receipts and **one availability episode**. The board shows
+the episode once and keeps every receipt under it (`Sources (n)`).
+
+This is presentation only. `web/lib/status-groups.ts` is pure, reads the feed
+rows unchanged and writes nothing. No row is deleted, merged or rewritten in the
+database, and corroboration from different publishers is never treated as
+duplicate data. Tests: `npm run test:status` in `web/`.
+
+**Grouping is conservative** - a wrong merge hides a real problem, a missed merge
+costs one extra card:
+
+| rows | grouped when |
+|---|---|
+| `injury` / `illness` / `withdrawal`, card-linked | same `fighter_id` + same event (a bout-only receipt resolves to its event through a sibling receipt) + same `state` |
+| `cleared` / `return` | same fighter, same card; or, with no card, reported in the same stretch of days |
+| anything with no `event_id`/`bout_id` | same fighter + **same `status_type`** only, chained while each report is within 45 days of the last |
+| `suspension`, `visa_travel`, `weight_miss`, `replacement`, `other` | only with their own type; never folded into an injury or withdrawal, even on the same card |
+
+Identity is `fighter_id`. A name is a fallback only for a row without one, and is
+matched exactly. Rows with the same `source_url` (query string ignored), card and
+`status_type` are one receipt in presentation; the better-sourced copy is shown.
+
+**Primary receipt** (headline, lead source), deterministic: within an episode a
+`withdrawal` leads over the `injury`/`illness` behind it (being off the card is
+the availability fact); then `official` > `commission` > `manual` > `news`; then
+higher `confidence`; then newer `occurred_at`; then `id`.
+
+**Medical detail at episode level** is taken whole from ONE receipt, never
+assembled. If receipts name different diagnoses, body parts or sides, the card
+shows no diagnosis and says the sources differ. A side from one report is never
+attached to a diagnosis from another. The quote renders beside the receipt that
+supplied it. An `expected_return_note` shows on the card only when every receipt
+that gives one agrees. `diagnosisLine()` / `hasDiagnosis()` are unchanged.
+
+**Counts** on the hero are fighters and episodes; receipts are counted
+separately. **Sort** (active): unavailable fighters on the nearest upcoming card
+first, then other unavailable fighters, then other changes, newest update as the
+tie-break. Source count never ranks anything. `?type=` filters episodes, not
+rows: a withdrawal caused by an injury is found under both.
+
 ## Access control
 
 The migration is `supabase/migrations/20260908000011_ufc_fighter_status.sql`.
