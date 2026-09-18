@@ -366,6 +366,8 @@ export async function buildContentPlan(sb, { packet, article, hero, videos = nul
         opponent: packet.bout.opponent, weight_class: packet.bout.weight_class,
         is_title: packet.bout.is_title, scheduled_rounds: packet.bout.scheduled_rounds,
         card_position: packet.bout.card_position, status: packet.bout.status, event: packet.bout.event,
+        /* A sourced withdrawal report on a bout the official card still lists: a warning, never a removal. */
+        withdrawal_reported: packet.bout.card_truth?.withdrawal_reported === true,
       },
     });
   } else skip('bout_context', 'this fighter has no upcoming bout in our schedule');

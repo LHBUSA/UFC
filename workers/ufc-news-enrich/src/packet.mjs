@@ -228,11 +228,23 @@ async function ranking(sb, fighterId) {
     }));
 }
 
-async function nextBout(sb, fighterId, today) {
-  const bouts = await sb.select('ufc_bouts',
-    `select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_title,is_womens,scheduled_rounds,card_position,status,`
+/* The fighter's next bout, by EFFECTIVE truth (public.ufc_bouts_effective, migration 031).
+ *
+ * ufc_bouts.status is never rewritten when a bout leaves a card (migration 029), so filtering the stored word told
+ * the newsroom Brian Ortega was booked against Renato Moicano for three days after the official card dropped it.
+ *   is_active=is.true    only a CONFIRMED removal takes a bout out (stored status, or missing from the newest
+ *                        complete official card). An incomplete or placeholder read removes nobody.
+ *   is_settled=is.false  a fought bout is history, never a next bout, even on a card dated today.
+ * A REPORTED withdrawal while the official card still lists the bout stays the next bout; it rides along as
+ * card_truth.withdrawal_reported so copy can carry the warning. reason is the view's sourced category key or null:
+ * nothing here infers one. This Worker only READS; it writes no cancellation story (owner decision 2026-09-18). */
+export const NEXT_BOUT_SOURCE = 'ufc_bouts_effective';
+export async function nextBout(sb, fighterId, today) {
+  const bouts = await sb.select(NEXT_BOUT_SOURCE,
+    `select=id,event_id,fighter_a_id,fighter_b_id,weight_class,is_title,is_womens,scheduled_rounds,card_position,`
+    + `status:effective_status,stored_status,withdrawal_reported,withdrawn_fighter_id,removal_reported_at,official_card_present,reason,source_receipt_count,`
     + `event:ufc_events(id,name,event_date,venue,city,country)`
-    + `&or=(fighter_a_id.eq.${fighterId},fighter_b_id.eq.${fighterId})&status=neq.cancelled&limit=40`);
+    + `&or=(fighter_a_id.eq.${fighterId},fighter_b_id.eq.${fighterId})&is_active=is.true&is_settled=is.false&limit=40`);
   const upcoming = bouts
     .filter((b) => b.event?.event_date && b.event.event_date >= today)
     .sort((a, b) => a.event.event_date.localeCompare(b.event.event_date));
@@ -249,6 +261,15 @@ async function nextBout(sb, fighterId, today) {
     scheduled_rounds: b.scheduled_rounds,
     card_position: b.card_position,
     status: b.status,
+    card_truth: {
+      stored_status: b.stored_status ?? null,
+      withdrawal_reported: b.withdrawal_reported === true,
+      withdrawn_fighter_id: b.withdrawn_fighter_id ?? null,
+      withdrawal_reported_at: b.removal_reported_at ?? null,
+      official_card_present: b.official_card_present ?? null,
+      reason: b.reason ?? null,
+      source_receipt_count: b.source_receipt_count ?? 0,
+    },
     event: b.event ? {
       id: b.event.id, name: b.event.name, date: b.event.event_date,
       venue: b.event.venue, city: b.event.city, country: b.event.country,
