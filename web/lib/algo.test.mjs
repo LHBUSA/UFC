@@ -328,6 +328,18 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(radar, /<em>\{x\.marketState === "CURRENT" \? "EDGE" : "LAST EDGE"\}<\/em>/, 'stale market state is labeled, never presented as live');
   assert.match(radar, /\{x\.marketState === "CURRENT" \? "edge" : "stored gap"\}/, 'the explainer sentence names a stored gap, not an edge');
   assert.match(radar, /<span>MARKET \{agoText\(x\.marketAgeMinutes\)\}<\/span>/, 'the age of the market is on the signal');
+  /* The full /pro surface makes the same distinction as the rail: same stored number, different words. */
+  assert.match(radar, /<em>\{x\.marketState === "CURRENT" \? "PBE EDGE" : "LAST EDGE"\}<\/em><b>\{deltaText\(x\.edgePts\)\}<\/b>/, '/pro: a current market says PBE EDGE, a last-observed one says LAST EDGE');
+  assert.match(radar, /\$\{x\.marketState === "CURRENT" \? "probability-point gap" : "stored probability-point gap"\}/, '/pro: the stale thesis says stored');
+  assert.match(radar, /x\.marketState === "CURRENT" \? "CURRENT MARKET" : `LAST OBSERVED · \$\{agoText\(x\.marketAgeMinutes\)\}`/, '/pro: the market state and its age are on the card');
+  assert.doesNotMatch(radar, /<em>PBE EDGE<\/em>/, 'no surface labels an edge without checking the market state');
+
+  /* Behavior behind those labels: what the component receives for each market state. */
+  const NOW_ = Date.parse('2026-09-15T16:41:00Z');
+  const staleMv = view.marketView({ status: 'STALE', devigged_pick: 0.1621, stale_delta_pts: 40.98, pbe_delta_pts: null, observed_at: '2026-09-15T13:06:08.935Z' }, { now: NOW_ });
+  assert.deepEqual([staleMv.state, staleMv.delta, staleMv.historicalDelta], ['LAST_OBSERVED', null, 40.98], 'stale: no current edge exists, only the stored one');
+  const freshMv = view.marketView({ status: 'FRESH', devigged_pick: 0.54, pbe_delta_pts: 10.12, observed_at: '2026-09-15T16:00:00Z', current_until: '2026-09-15T19:00:00Z' }, { now: NOW_ });
+  assert.deepEqual([freshMv.state, freshMv.delta, freshMv.historicalDelta], ['CURRENT', 10.12, null]);
   const refresh = readFileSync(new URL('components/PbePicksAutoRefresh.tsx', web), 'utf8');
   assert.match(picksPage, /<PbePicksAutoRefresh intervalMs=\{60_000\} \/>/, 'PBE Picks refreshes the server tree every minute');
   assert.match(refresh, /router\.refresh\(\)/);

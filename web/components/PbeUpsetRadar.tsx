@@ -337,13 +337,14 @@ export async function PbeUpsetRadar({
                   <div className="pbe-upset-current-metrics">
                     <span><em>MODEL</em><b>{pctText(x.probability)}</b></span>
                     <span><em>MARKET</em><b>{pctText(x.marketImplied)}</b></span>
-                    <span><em>PBE EDGE</em><b>{deltaText(x.edgePts)}</b></span>
+                    <span><em>{x.marketState === "CURRENT" ? "PBE EDGE" : "LAST EDGE"}</em><b>{deltaText(x.edgePts)}</b></span>
                     <span><em>BEST LINE</em><b>{x.bestOdds == null ? "—" : oddsText(x.bestOdds)}</b></span>
                   </div>
 
                   <div className="pbe-upset-thesis">
-                    <span>MODEL VS MARKET</span>
-                    <b>{x.edgePts == null ? "Price disagreement recorded" : `${deltaText(x.edgePts)} probability-point gap`}</b>
+                    {/* A last-observed market keeps its stored comparison on the board, labelled as such and never as current. */}
+                    <span>MODEL VS MARKET · {x.marketState === "CURRENT" ? "CURRENT MARKET" : `LAST OBSERVED · ${agoText(x.marketAgeMinutes)}`}</span>
+                    <b>{x.edgePts == null ? "Price disagreement recorded" : `${deltaText(x.edgePts)} ${x.marketState === "CURRENT" ? "probability-point gap" : "stored probability-point gap"}`}</b>
                   </div>
                 </article>
               ))}
