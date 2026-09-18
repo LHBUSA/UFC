@@ -51,7 +51,7 @@ import { detectLanguage,
   classifyVideo, loadEventContext, loadArchiveEvents, contextAt, linkVideo, tufSeriesEventSupported, confidenceFor, sleep,
 } from './lib.mjs';
 import { tufTag } from './tuf.mjs';
-import { diffRow, project, destructiveReasons } from './relink_diff.mjs';
+import { diffRow, project, destructiveReasons, normLinking } from './relink_diff.mjs';
 
 const MAX_DESCRIPTION = 6000;
 
@@ -77,6 +77,8 @@ export function parseCliOptions(argv = []) {
      * flip hides or publishes a video. Held values are reported, never written. */
     allowArticleChange: argv.includes('--allow-article-change'),
     allowStatusChange: argv.includes('--allow-status-change'),
+    /* PROPOSED event policy, off by default: a matchup-shaped title hashtag overrules a description-only event. */
+    titleTagGuard: argv.includes('--title-tag-guard'),
     explainOut: argv.includes('--explain-out') ? argv[argv.indexOf('--explain-out') + 1] : null,
     playlists: argv.flatMap((a, i) => (a === '--playlist' && argv[i + 1] ? [argv[i + 1]] : [])),
   };
@@ -141,7 +143,7 @@ function applyLinks(row, entry, index, ctx, existing, policy = {}) {
     row.review = existing.source_metadata?.review || null;
     return row;
   }
-  const l = linkVideo(entry, index, ctx);
+  const l = linkVideo(entry, index, ctx, { titleTagGuard: Boolean(policy.titleTagGuard) });
   Object.assign(row, {
     fighter_ids: l.fighter_ids, event_id: l.event_id, bout_id: l.bout_id, article_id: l.article_id,
     resolver_confidence: l.resolver_confidence, link_status: l.link_status,
@@ -224,7 +226,8 @@ function changed(dbRow, existing) {
   if ((sm.review_reason || null) !== (dbRow.source_metadata.review_reason || null)) return true;
   /* jsonb reorders object keys, so compare canonical (sorted-key) forms. */
   if (canonicalJson(sm.classification?.evidence || null) !== canonicalJson(dbRow.source_metadata.classification?.evidence || null)) return true;
-  if (canonicalJson(sm.linking || null) !== canonicalJson(dbRow.source_metadata.linking || null)) return true;
+  /* Order of the fighter evidence is not a change (normLinking). */
+  if (canonicalJson(normLinking(sm.linking || null)) !== canonicalJson(normLinking(dbRow.source_metadata.linking || null))) return true;
   if (canonicalJson(sm.review || null) !== canonicalJson(dbRow.source_metadata.review || null)) return true;
   if (canonicalJson(sm.tuf || null) !== canonicalJson(dbRow.source_metadata.tuf || null)) return true;
   return false;
@@ -413,7 +416,7 @@ export async function main(injectedEnv, options = {}) {
        * that arrives with no date at all is treated as published now (it was just discovered). */
       const pubDate = validDate(entry.published) ? new Date(entry.published) : null;
       const linkCtx = archive ? contextAt(archive, pubDate, WINDOW_DAYS) : contextAt(ctx.raw, pubDate || now, WINDOW_DAYS);
-      applyLinks(row, entry, index, linkCtx, existing, { relink: RELINK, allowArticleChange: Boolean(options.allowArticleChange), allowStatusChange: Boolean(options.allowStatusChange) });
+      applyLinks(row, entry, index, linkCtx, existing, { relink: RELINK, allowArticleChange: Boolean(options.allowArticleChange), allowStatusChange: Boolean(options.allowStatusChange), titleTagGuard: Boolean(options.titleTagGuard) });
       const held = row.held || null; delete row.held;
       if (held) { heldRows.push({ id: entry.video_id, title: entry.title, published_at: entry.published || null, ...held }); if (held.publish_date_unavailable) totals.publish_date_unavailable = (totals.publish_date_unavailable || 0) + 1; }
       if (archive && row.link_status !== 'rejected' && !(held && held.publish_date_unavailable)) guardTufSeriesEvent(row, entry, linkCtx, existing);

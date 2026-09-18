@@ -944,10 +944,39 @@ export function tufSeriesEventSupported(link, { title, videoSeason, eventSeason 
 }
 
 /* One call per video: returns the columns to persist plus the evidence block. */
-export function linkVideo(entry, index, ctx) {
+/* A TITLE THAT NAMES ANOTHER EVENT. UFC channels stamp the weekend's promo tag into every description
+ * ("#NocheUFC ESTELARES 5pm ET"), including the descriptions of videos about something else: five
+ * `#GarciaBenn` boxing uploads were attached to the Noche UFC card that way. A matchup-shaped hashtag in the
+ * TITLE (two or more capitalised words joined, "#GarciaBenn", "#ZuffaBoxing") that is not a key of the
+ * event is the title saying what the video is about; an event found ONLY in the description does not
+ * overrule it. Tags the expander already understands (#UFC331, #NocheUFC, #UFCParis, #DWCS) are event keys,
+ * not competitors, and a sponsor tag is not an event. */
+const SPONSOR_TAGS = new Set(['cryptocom']);
+export function competingTitleTag(title, event) {
+  for (const m of String(title || '').matchAll(/#([A-Za-z][A-Za-z0-9]+)/g)) {
+    const tag = m[1];
+    if (SPONSOR_TAGS.has(tag.toLowerCase())) continue;
+    if (expandHashtags(`#${tag}`).trim() !== `#${tag}`) continue;            /* an event key the expander knows */
+    const words = tag.match(/[A-Z][a-z]{2,}/g) || [];
+    if (words.length < 2 || words.join('') !== tag) continue;               /* not matchup-shaped: #ufc, #mma, #shorts */
+    const phrase = words.join(' ').toLowerCase();
+    const keys = [...(event.keys || []).map((k) => k.key), ...(event.cityKeys || []), (event.headliners || []).join(' ')];
+    if (keys.some((k) => k && (k.includes(phrase) || words.every((w) => k.includes(w.toLowerCase()))))) continue;
+    return tag;
+  }
+  return null;
+}
+
+/* opts.titleTagGuard: OFF unless asked for. It is an EVENT-policy change awaiting an owner decision, so the
+ * deployed behaviour is unchanged by its presence in the source (see competingTitleTag). */
+export function linkVideo(entry, index, ctx, opts = {}) {
   const publishedAt = entry.published ? new Date(entry.published) : null;
   const text = `${entry.title}\n${entry.description || ''}`;
-  const ev = linkEvent(text, entry.title, ctx, publishedAt);
+  let ev = linkEvent(text, entry.title, ctx, publishedAt);
+  if (opts.titleTagGuard && ev.event && ev.evidence?.in_title === false) {
+    const tag = competingTitleTag(entry.title, ev.event);
+    if (tag) ev = { event: null, evidence: null, review: null, refused: { reason: 'description_event_overruled_by_title_tag', title_tag: tag, key: ev.evidence.key, kind: ev.evidence.kind, event_id: ev.event.id, name: ev.event.name } };
+  }
   let eventId = ev.event ? ev.event.id : null;
   /* No event key: a title pairing may still name one bout, which scopes the surname pass to its card. */
   const pairing = !eventId && !ev.review ? linkPairing(entry.title, index, ctx) : null;

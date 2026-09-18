@@ -88,3 +88,15 @@ test('--explain is read-only by construction, and --ids is intact', async () => 
   assert.doesNotMatch(readFileSync(new URL('./relink_diff.mjs', import.meta.url), 'utf8'), /\bfetch\(|Supabase|writeFile/, 'the diff module does no I/O');
   assert.doesNotMatch(readFileSync(new URL('./relink_drift_report.mjs', import.meta.url), 'utf8'), /sb\.(upsert|insert|update|delete|patch)\(/, 'the receipt script only selects');
 });
+
+test('the order of fighter evidence is not drift; a changed method or a different fighter still is', async () => {
+  const { normLinking } = await import('./relink_diff.mjs');
+  const f = (id, method = 'full_name_event_card') => ({ fighter_id: id, alias: id, method, in_title: true });
+  const a = row({}, { linking: { event: null, fighters: [f('f-2'), f('f-1')], bout: null, article_candidates: 0, surnames_withheld: [{ alias: 'b', fighter_id: 'x2' }, { alias: 'a', fighter_id: 'x1' }] } });
+  const b = row({}, { linking: { event: null, fighters: [f('f-1'), f('f-2')], bout: null, article_candidates: 0, surnames_withheld: [{ alias: 'a', fighter_id: 'x1' }, { alias: 'b', fighter_id: 'x2' }] } });
+  assert.deepEqual(diffRow(a, b).fields, [], 'same fighters, same evidence, different order');
+  assert.deepEqual(diffRow(a, row({}, { linking: { ...b.source_metadata.linking, fighters: [f('f-1'), f('f-2', 'full_name_unique')] } })).fields, ['linking'], 'a method change is still seen');
+  assert.deepEqual(diffRow(a, row({}, { linking: { ...b.source_metadata.linking, fighters: [f('f-1'), f('f-3')] } })).fields, ['linking'], 'and so is a different fighter');
+  assert.equal(normLinking(null), null);
+  assert.deepEqual(a.source_metadata.linking.fighters.map((x) => x.fighter_id), ['f-2', 'f-1'], 'the input is not mutated');
+});

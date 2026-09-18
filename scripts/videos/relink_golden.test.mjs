@@ -409,3 +409,39 @@ test('T3G on the live discovery path: a fresh upload of the same shape is ingest
   assert.deepEqual([writes[0].fighter_ids, writes[0].event_id, writes[0].bout_id, writes[0].source_metadata.language], [[], 'ev-noche', null, 'es']);
   assert.equal(writes[0].source_metadata.linking.surnames_withheld[0].reason, 'event_scope_not_title_trusted');
 });
+
+/* ---- PROPOSED, OPT-IN: a title that names another event ----------------
+ * Found while auditing T3G: it is one of FIVE `#GarciaBenn` UFC Espanol uploads attached to the Noche UFC
+ * card, all through the weekend promo tag every description carries ("#NocheUFC ESTELARES 5pm ET"). The
+ * fighter was the visible symptom; the event link is the same mistake. `titleTagGuard` is OFF by default
+ * because it changes EVENT policy and awaits an owner decision; these tests pin both states. */
+const PROMO = 'Conor Benn y Ryan Garcia calientan el combate previo al 12 de Septiembre. En vivo por Paramount Plus #NocheUFC ESTELARES 5pm ET / PRELIMS 2pm ET';
+const tagCase = (title, description = PROMO, published = '2026-09-09T20:00:00Z') => ({ title, description, published });
+
+test('title-tag guard (opt-in): a #GarciaBenn title is not put on the Noche UFC card by a promo tag in the description', async () => {
+  const { competingTitleTag } = await import('./lib.mjs');
+  for (const title of ['#GarciaBenn Empezaron las palabras de ambos', '#GarciaBenn Conteo Regresivo', '#GarciaBenn "La presion esta en Ryan" Conor Benn', T3G.title]) {
+    const off = linkVideo(tagCase(title), t3gIndex, t3gCtx('2026-09-09T20:00:00Z'));
+    assert.deepEqual([off.event_id, off.linking.event.in_title], ['ev-noche', false], 'default behaviour is unchanged: this is what production does today');
+    const on = linkVideo(tagCase(title), t3gIndex, t3gCtx('2026-09-09T20:00:00Z'), { titleTagGuard: true });
+    assert.deepEqual([on.event_id, on.bout_id, on.fighter_ids, on.link_status], [null, null, [], 'published'], title);
+    assert.deepEqual([on.linking.event_refused.reason, on.linking.event_refused.title_tag, on.linking.event_refused.event_id], ['description_event_overruled_by_title_tag', 'GarciaBenn', 'ev-noche'], 'the refusal and the event it refused are recorded');
+  }
+  assert.equal(competingTitleTag('#ZuffaBoxing Garcia vs Benn', { keys: [{ key: 'noche ufc' }], cityKeys: [], headliners: ['silva', 'delgado'] }), 'ZuffaBoxing');
+});
+
+test('title-tag guard (opt-in) leaves every legitimate shape alone', () => {
+  const on = (title, description, published = '2026-09-10T20:00:00Z') => linkVideo({ title, description, published }, t3gIndex, t3gCtx(published), { titleTagGuard: true });
+  /* the event's own tag in the title is a title key, not a competitor */
+  assert.deepEqual([on('#NocheUFC Rafa Garcia listo', '').event_id, on('#NocheUFC Rafa Garcia listo', '').fighter_ids], ['ev-noche', ['f-rafa']]);
+  assert.equal(on('#CryptoCom #UFC331 Embedded Espanol: Episodio 4', PROMO, '2026-09-17T00:00:00Z').event_id, 'ev-331', 'a sponsor tag beside a title event key');
+  /* ...and a sponsor tag ALONE, with the event only in the description, is still not a competing event */
+  assert.equal(on('#CryptoCom Behind the scenes', 'Do not miss Noche UFC this Saturday.').event_id, 'ev-noche');
+  /* generic tags are not matchup-shaped */
+  assert.equal(on('NEVER take a punch like this #ufc #mma #knockout', 'Do not miss Noche UFC this Saturday.').event_id, 'ev-noche');
+  assert.equal(on('Fight week vlog #shorts', PROMO).event_id, 'ev-noche');
+  /* no hashtag at all: description-only events still link, as before */
+  assert.equal(on('Previa del Evento EN VIVO', 'Todo listo para Noche UFC.').event_id, 'ev-noche');
+  /* a matchup tag that IS the event (its headliners) does not compete with it */
+  assert.equal(on('#SilvaDelgado fight week', 'Noche UFC this Saturday.').event_id, 'ev-noche');
+});

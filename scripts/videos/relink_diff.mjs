@@ -31,6 +31,18 @@ export function stable(value) {
   return JSON.stringify(value ?? null);
 }
 
+/* `linking.fighters` and `linking.surnames_withheld` are SETS that happen to be stored as arrays: their order
+ * follows the order the fighters table came back in, which is not stable. Compared as arrays, seven rows looked
+ * changed on 2026-09-18 when every fighter, method and alias was identical. Compare them sorted. */
+export function normLinking(linking) {
+  if (!linking || typeof linking !== 'object') return linking ?? null;
+  const byId = (x, y) => String(x.fighter_id || '').localeCompare(String(y.fighter_id || '')) || String(x.alias || '').localeCompare(String(y.alias || ''));
+  const out = { ...linking };
+  if (Array.isArray(out.fighters)) out.fighters = [...out.fighters].sort(byId);
+  if (Array.isArray(out.surnames_withheld)) out.surnames_withheld = [...out.surnames_withheld].sort(byId);
+  return out;
+}
+
 const nn = (v) => v ?? null;
 const idSet = (v) => [...new Set(Array.isArray(v) ? v : [])].sort();
 
@@ -41,7 +53,7 @@ export function project(row) {
     event_id: nn(row?.event_id), bout_id: nn(row?.bout_id), article_id: nn(row?.article_id),
     fighter_ids: idSet(row?.fighter_ids),
     resolver_confidence: nn(row?.resolver_confidence), link_status: nn(row?.link_status), video_type: nn(row?.video_type),
-    linking: sm.linking ?? null, review_reason: nn(sm.review_reason), review: sm.review ?? null, tuf: sm.tuf ?? null,
+    linking: normLinking(sm.linking), review_reason: nn(sm.review_reason), review: sm.review ?? null, tuf: sm.tuf ?? null,
     language: nn(sm.language), classification_evidence: sm.classification?.evidence ?? null,
   };
 }
