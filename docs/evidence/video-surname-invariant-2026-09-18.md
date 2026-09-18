@@ -129,3 +129,29 @@ in the feeds kept its links.
 A full relink remains **not authorized and not possible**: the plan is refused with
 one destructive change. Failing closed on one reviewed disagreement is preferable to
 deleting known-correct information.
+
+## 7. Post-deploy canary (first scheduled run on v0.2.3)
+
+`ufc_ingest_runs` 9c54e0d5, cron `13,43 * * * *`, 2026-09-18T16:43:35Z → 16:43:46Z, `success`:
+fetched 60, **new 0, updated 0, unchanged 60**, failed channels 0, assertion failures none.
+The Garcia row still in ESPN MMA's feed (`8NYz8GLgRT8`) was re-scored and left alone.
+
+| check | result |
+|---|---|
+| Hangul titles stored as `en` | 0 of 37 |
+| rows written since deploy carrying `surname_unique_window` | 0 |
+| UFC 331 linked rows | 145, none rewritten |
+| Evloev row `7HUYpQ5OyGU` | untouched (last updated 2026-09-09) |
+| `/fight-week` | unchanged: curated English desk, Korean under All |
+| Worker `/health` | v0.2.3, `last_error: null` |
+
+## 8. Known residual — found by the canary, NOT changed
+
+`T3G-YgpFjlQ` (UFC Espanol, 2026-09-11, *#GarciaBenn "Listo para hacer mi trabajo" Ryan Garcia*)
+still carries a fighter through `garcia: surname_unique_event_card`. It satisfies the invariant as
+written — an event IS resolved — but the event comes from a `"noche ufc"` series key found only in
+the DESCRIPTION (`in_title: false`; the boxing card shared that weekend's promotion), and the
+surname then matches that card. It was not in the reviewed batch, so it was not written. It is a
+different class from the eleven: a description-only event key lending its card to a title surname.
+The narrow fix, if wanted later, is to let a surname use an event's card only when the event key is
+in the title or the event came from a title pairing. One row; a relink plans no change to it.
