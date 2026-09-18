@@ -1,0 +1,2052 @@
+{
+ "summary": {
+  "generated_at": "2026-09-18T15:57:26.469Z",
+  "resolver_window": {
+   "lo": "2026-08-04",
+   "hi": "2026-11-02",
+   "days": 45,
+   "events": 24
+  },
+  "total_changed": 73,
+  "risk": {
+   "low": 61,
+   "high": 12
+  },
+  "buckets": {
+   "harmless_normalization": 38,
+   "tuf_metadata_only": 23,
+   "fighters_lost": 12,
+   "confidence_changed": 11
+  },
+  "fields": {
+   "language": 29,
+   "linking": 23,
+   "tuf": 23,
+   "fighter_ids": 12,
+   "resolver_confidence": 11
+  },
+  "causes": {
+   "language_restated": 29,
+   "tuf_tag_recomputed": 23,
+   "fighter_scope_recomputed": 12,
+   "linking_evidence_shape_only": 9
+  },
+  "language_moves": {
+   "null->en": 13,
+   "null->pt": 10,
+   "null->es": 3,
+   "null->ko": 3
+  },
+  "age": {
+   "8-30d": 42,
+   ">90d": 23,
+   "0-7d": 8
+  },
+  "channel": {
+   "UFC": 42,
+   "UFC Brasil": 23,
+   "UFC Espanol": 5,
+   "ESPN MMA": 3
+  },
+  "risk_by_age": {
+   "8-30d low": 36,
+   ">90d low": 23,
+   "0-7d high": 6,
+   "8-30d high": 6,
+   "0-7d low": 2
+  },
+  "risk_by_channel": {
+   "UFC low": 39,
+   "UFC Brasil low": 16,
+   "UFC Brasil high": 7,
+   "UFC Espanol low": 5,
+   "UFC high": 3,
+   "ESPN MMA high": 2,
+   "ESPN MMA low": 1
+  },
+  "oldest_published": "2014-04-30T01:14:19.000Z",
+  "newest_published": "2026-09-15T20:18:41.000Z",
+  "stored_event_top": {},
+  "proposed_event_top": {},
+  "event_lost": {
+   "total": 0,
+   "stored_event_outside_window": 0
+  },
+  "event_changed": {
+   "total": 0,
+   "stored_event_outside_window": 0
+  },
+  "destructive": {
+   "fighter_lost": 12
+  },
+  "blocked_by_write_guard": 12,
+  "held": {
+   "article_links": 13,
+   "status_flips": 0,
+   "publish_date_unavailable": 0
+  },
+  "confidence_moves": {
+   "low->none": 11
+  },
+  "status_moves": {},
+  "appears_correct": {
+   "CURRENT": 1,
+   "EQUIVALENT": 61,
+   "PROPOSED": 11
+  },
+  "applied": false,
+  "before": {
+   "total_changed": 216,
+   "risk": {
+    "high": 99,
+    "low": 79,
+    "medium": 38
+   },
+   "buckets": {
+    "event_lost": 74,
+    "harmless_normalization": 63,
+    "fighters_gained": 25,
+    "confidence_changed": 21,
+    "tuf_metadata_only": 16,
+    "event_changed": 15,
+    "article_changed": 13,
+    "fighters_lost": 10,
+    "bout_lost": 4,
+    "event_gained": 2,
+    "link_status_changed": 2,
+    "review_reason_changed": 2
+   }
+  },
+  "held_article_links": [
+   {
+    "id": "VcTYK_3eXC8",
+    "title": "Parnasse KO's Dan Hooker in his Debut! #ufcparis",
+    "published_at": "2026-09-05T22:06:13+00:00",
+    "stored": "aa42bad3-1904-479f-97f0-a8cd48055e15",
+    "proposed": null
+   },
+   {
+    "id": "NheYo7M6W18",
+    "title": "PARNASSE KNOCKS OUT DAN HOOKER #ufcparis",
+    "published_at": "2026-09-05T21:54:22+00:00",
+    "stored": "aa42bad3-1904-479f-97f0-a8cd48055e15",
+    "proposed": null
+   },
+   {
+    "id": "lCitiDouBPs",
+    "title": "Joshua Van vs Alexandre Pantoja | The Timeline",
+    "published_at": "2026-09-15T11:45:20+00:00",
+    "stored": "70686d92-e61d-49dc-ace0-1261a0b229cf",
+    "proposed": null
+   },
+   {
+    "id": "VUlxkw7wf1E",
+    "title": "Veja o nocaute de Salahdine Parnasse sobre Dan Hooker na luta principal do #UFCParis!",
+    "published_at": "2026-09-05T21:59:39+00:00",
+    "stored": "aa42bad3-1904-479f-97f0-a8cd48055e15",
+    "proposed": null
+   },
+   {
+    "id": "cr-yfqITLE8",
+    "title": "Noche UFC: Silva x Delgado | 12 de Setembro | Só no Paramount+",
+    "published_at": "2026-09-06T13:00:16+00:00",
+    "stored": "b10fc93a-680a-42be-9be1-e70b8d62c01b",
+    "proposed": null
+   },
+   {
+    "id": "L151qRmWf68",
+    "title": "Pós-Show | UFC Paris: Hooker x Parnasse",
+    "published_at": "2026-09-05T22:17:08+00:00",
+    "stored": "aa42bad3-1904-479f-97f0-a8cd48055e15",
+    "proposed": null
+   },
+   {
+    "id": "yBzQ51LvGBY",
+    "title": "Pré-Show | UFC Paris: Hooker x Parnasse",
+    "published_at": "2026-09-05T16:04:22+00:00",
+    "stored": "aa42bad3-1904-479f-97f0-a8cd48055e15",
+    "proposed": null
+   },
+   {
+    "id": "i94CXREq47g",
+    "title": "Encaradas da Pesagem | UFC Paris: Hooker x Parnasse",
+    "published_at": "2026-09-04T17:10:02+00:00",
+    "stored": "aa42bad3-1904-479f-97f0-a8cd48055e15",
+    "proposed": null
+   },
+   {
+    "id": "jtCh0gLyaM4",
+    "title": "Por outro ângulo, veja a encarada entre Dan Hooker e Salahdine Parnasse 👀 #UFCParis",
+    "published_at": "2026-09-04T17:04:56+00:00",
+    "stored": "aa42bad3-1904-479f-97f0-a8cd48055e15",
+    "proposed": null
+   },
+   {
+    "id": "zXreigOX1wQ",
+    "title": "O Djorden Santos comentou sobre a expectativa para enfrentar Yousri Belgaroui no #NocheUFC! 👊",
+    "published_at": "2026-09-10T19:00:06+00:00",
+    "stored": "dcd3b00a-13db-4d15-adeb-33fa92b2ce80",
+    "proposed": null
+   },
+   {
+    "id": "s0DdolrERWs",
+    "title": "A primeira encarada de Arman Tsarukyan e Mauricio Ruffy foi assim 🔥 #UFC331",
+    "published_at": "2026-09-14T11:00:28+00:00",
+    "stored": "582f3c13-44a4-41e7-a68c-9b3125cd1429",
+    "proposed": null
+   },
+   {
+    "id": "jo-34zrxHUE",
+    "title": "Essa revanche entre Joshua Van e Alexandre Pantoja promete ser ELETRIZANTE 👊 #UFC331",
+    "published_at": "2026-09-14T13:00:34+00:00",
+    "stored": "70686d92-e61d-49dc-ace0-1261a0b229cf",
+    "proposed": null
+   },
+   {
+    "id": "tOlqX0v8BX4",
+    "title": "#NocheUFC Maratón: Silva vs Delgado",
+    "published_at": "2026-09-06T15:00:06+00:00",
+    "stored": "b10fc93a-680a-42be-9be1-e70b8d62c01b",
+    "proposed": null
+   }
+  ]
+ },
+ "rows": [
+  {
+   "id": "7HUYpQ5OyGU",
+   "url": "https://www.youtube.com/watch?v=7HUYpQ5OyGU",
+   "channel": "ESPN MMA",
+   "title": "Volk preparing for Evloev 😤(via alexvolkanovski/TT)",
+   "published_at": "2026-09-02T20:27:40.000Z",
+   "age": "8-30d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Movsar Evloev"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "CURRENT",
+   "why": "Evloev in the title is Movsar Evloev (UFC 333: Volkanovski vs. Evloev, 2026-10-24); the card is 52 days from the publish date, outside the +-45d window, and a relink does not attach surnames without a linked event"
+  },
+  {
+   "id": "6uEqI7J_TTw",
+   "url": "https://www.youtube.com/watch?v=6uEqI7J_TTw",
+   "channel": "ESPN MMA",
+   "title": "He wanted to get involved 😭 (via acbjj_/TT)",
+   "published_at": "2026-09-01T00:32:23.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "8NYz8GLgRT8",
+   "url": "https://www.youtube.com/watch?v=8NYz8GLgRT8",
+   "channel": "ESPN MMA",
+   "title": "Jon Jones had Ryan Garcia nervous 😭 (via ryangarcia/IG)",
+   "published_at": "2026-09-15T20:18:41.000Z",
+   "age": "0-7d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost"
+   ],
+   "fields": [
+    "fighter_ids",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "4Bt6BZ-WlTc",
+   "url": "https://www.youtube.com/watch?v=4Bt6BZ-WlTc",
+   "channel": "UFC",
+   "title": "Parnasse vs Holloway??? #ufcparis",
+   "published_at": "2026-09-06T14:15:08.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "NJPZ53NvBNM",
+   "url": "https://www.youtube.com/watch?v=NJPZ53NvBNM",
+   "channel": "UFC",
+   "title": "Joshua Van vs Tatsuro Taira | FULL FIGHT | Crypto.com UFC 331",
+   "published_at": "2026-09-06T14:00:38.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC 331: Van vs. Pantoja 2 (2026-09-19)",
+   "proposed_event": "UFC 331: Van vs. Pantoja 2 (2026-09-19)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "OraJxNt3BdM",
+   "url": "https://www.youtube.com/watch?v=OraJxNt3BdM",
+   "channel": "UFC",
+   "title": "Greatest Mexican Fighters Of All Time 🇲🇽 | Noche UFC",
+   "published_at": "2026-09-06T11:45:10.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "LSNHW4x0BAk",
+   "url": "https://www.youtube.com/watch?v=LSNHW4x0BAk",
+   "channel": "UFC",
+   "title": "데뷔전에서 증명한 남자! 앞으로도 계속? #UFCParis",
+   "published_at": "2026-09-05T23:51:07.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->ko",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "1ePwZXF8arI",
+   "url": "https://www.youtube.com/watch?v=1ePwZXF8arI",
+   "channel": "UFC",
+   "title": "드림 파이트는 '레전드' 맥스 할로웨이 #UFCParis",
+   "published_at": "2026-09-05T23:50:21.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->ko",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "lyCaScONJNs",
+   "url": "https://www.youtube.com/watch?v=lyCaScONJNs",
+   "channel": "UFC",
+   "title": "살라딘 파르나스 옥타곤 인터뷰 | UFC Paris",
+   "published_at": "2026-09-05T23:49:02.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->ko",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "XCNaLgqYJ8E",
+   "url": "https://www.youtube.com/watch?v=XCNaLgqYJ8E",
+   "channel": "UFC",
+   "title": "🔴 UFC Paris: Post-Fight Press Conference",
+   "published_at": "2026-09-05T22:54:25.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "u1ljLp6E5L4",
+   "url": "https://www.youtube.com/watch?v=u1ljLp6E5L4",
+   "channel": "UFC",
+   "title": "Every Knockout and Submission From UFC Paris| UFC Highlights",
+   "published_at": "2026-09-05T22:11:59.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "rcG5OCkk3wg",
+   "url": "https://www.youtube.com/watch?v=rcG5OCkk3wg",
+   "channel": "UFC",
+   "title": "OH MY WHAT A KNOCKOUT #ufcparis",
+   "published_at": "2026-09-05T21:33:23.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "VcTYK_3eXC8",
+   "url": "https://www.youtube.com/watch?v=VcTYK_3eXC8",
+   "channel": "UFC",
+   "title": "Parnasse KO's Dan Hooker in his Debut! #ufcparis",
+   "published_at": "2026-09-05T22:06:13.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "YHdsGHEdgPE",
+   "url": "https://www.youtube.com/watch?v=YHdsGHEdgPE",
+   "channel": "UFC",
+   "title": "Salahdine Parnasse made it look easy! #ufcparis",
+   "published_at": "2026-09-05T22:03:17.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "c44IaeD85Fg",
+   "url": "https://www.youtube.com/watch?v=c44IaeD85Fg",
+   "channel": "UFC",
+   "title": "Salahdine Parnasse Octagon Interview | UFC Paris",
+   "published_at": "2026-09-05T22:01:27.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking",
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "NheYo7M6W18",
+   "url": "https://www.youtube.com/watch?v=NheYo7M6W18",
+   "channel": "UFC",
+   "title": "PARNASSE KNOCKS OUT DAN HOOKER #ufcparis",
+   "published_at": "2026-09-05T21:54:22.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "GrGigJz9goQ",
+   "url": "https://www.youtube.com/watch?v=GrGigJz9goQ",
+   "channel": "UFC",
+   "title": "AXEL SOLA OH MYYYYYYY #ufcparis",
+   "published_at": "2026-09-05T21:32:01.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "F_Jg-J5MzuM",
+   "url": "https://www.youtube.com/watch?v=F_Jg-J5MzuM",
+   "channel": "UFC",
+   "title": "Axel Sola Octagon Interview | UFC Paris",
+   "published_at": "2026-09-05T21:30:53.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking",
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->en",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "35QMmEPfbx8",
+   "url": "https://www.youtube.com/watch?v=35QMmEPfbx8",
+   "channel": "UFC",
+   "title": "Garcia vs Benn: Ceremonial Weigh-In",
+   "published_at": "2026-09-12T01:22:44.000Z",
+   "age": "0-7d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "Z2zN2w5tTaw",
+   "url": "https://www.youtube.com/watch?v=Z2zN2w5tTaw",
+   "channel": "UFC",
+   "title": "Garcia vs Benn: Pre-Fight Press Conference",
+   "published_at": "2026-09-11T00:46:35.000Z",
+   "age": "8-30d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "XpMB690IcNg",
+   "url": "https://www.youtube.com/watch?v=XpMB690IcNg",
+   "channel": "UFC",
+   "title": "UFC Special Announcement Press Conference",
+   "published_at": "2014-04-30T01:14:19.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "SF9Rva8pikI",
+   "url": "https://www.youtube.com/watch?v=SF9Rva8pikI",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Coach Fabricio Werdum",
+   "published_at": "2014-08-26T03:41:15.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "Vj-tMf4jVhA",
+   "url": "https://www.youtube.com/watch?v=Vj-tMf4jVhA",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Coach Cain Velasquez",
+   "published_at": "2014-08-27T00:03:03.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "r1BYQU8j3YE",
+   "url": "https://www.youtube.com/watch?v=r1BYQU8j3YE",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Jose \"Teco\" Quinones",
+   "published_at": "2014-10-01T23:14:03.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "0iNvYj_CoPg",
+   "url": "https://www.youtube.com/watch?v=0iNvYj_CoPg",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Bentley \"Bolivia\" Syler",
+   "published_at": "2014-10-01T23:15:16.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "pP8hnMlUvhs",
+   "url": "https://www.youtube.com/watch?v=pP8hnMlUvhs",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Gabriel \"Moggly\" Benitez",
+   "published_at": "2014-10-01T23:16:22.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "S6cLkxH25fg",
+   "url": "https://www.youtube.com/watch?v=S6cLkxH25fg",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Diego \"Pitbull\" Rivas",
+   "published_at": "2014-10-01T23:21:08.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "ZEiAqPPQhOo",
+   "url": "https://www.youtube.com/watch?v=ZEiAqPPQhOo",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Fredy \"El Profe\" Serrano",
+   "published_at": "2014-10-01T23:21:49.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "YMdY8z1njjU",
+   "url": "https://www.youtube.com/watch?v=YMdY8z1njjU",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Alejandro \"El Diablito\" Perez",
+   "published_at": "2014-10-01T23:22:22.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "cJo6_JgbPwQ",
+   "url": "https://www.youtube.com/watch?v=cJo6_JgbPwQ",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Yair \"Pantera\" Rodriguez",
+   "published_at": "2014-10-01T23:23:01.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "qfMSu0B9jY4",
+   "url": "https://www.youtube.com/watch?v=qfMSu0B9jY4",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Humberto \"El Gato\" Brown",
+   "published_at": "2014-10-01T23:23:29.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "pBKUO-rctzg",
+   "url": "https://www.youtube.com/watch?v=pBKUO-rctzg",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Henry \"Bure\" Briones",
+   "published_at": "2014-10-01T23:23:50.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "CyLOqsdfMgs",
+   "url": "https://www.youtube.com/watch?v=CyLOqsdfMgs",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Marlon \"Chito\" Vera",
+   "published_at": "2014-10-01T23:24:23.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "0q7KhAjP0_Y",
+   "url": "https://www.youtube.com/watch?v=0q7KhAjP0_Y",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Alexander \"Rolo\" Torres",
+   "published_at": "2014-10-01T23:24:48.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "zQWx-QbgbcI",
+   "url": "https://www.youtube.com/watch?v=zQWx-QbgbcI",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Rodolfo \"Fito\" Rubio",
+   "published_at": "2014-10-01T23:25:18.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "-Bhb_PzjzH0",
+   "url": "https://www.youtube.com/watch?v=-Bhb_PzjzH0",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Marcos \"Psycho\" Beltran",
+   "published_at": "2014-10-01T23:25:37.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "q3qplbYztqc",
+   "url": "https://www.youtube.com/watch?v=q3qplbYztqc",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Guido \"Ninja\" Canetti",
+   "published_at": "2014-10-01T23:26:03.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "gk8TjZGd7T4",
+   "url": "https://www.youtube.com/watch?v=gk8TjZGd7T4",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Masio Fullen",
+   "published_at": "2014-10-13T21:13:18.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "V_5BSq59iV0",
+   "url": "https://www.youtube.com/watch?v=V_5BSq59iV0",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Leonardo \"Chimmy\" Morales",
+   "published_at": "2014-10-13T21:13:22.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "9Mg5vLCijss",
+   "url": "https://www.youtube.com/watch?v=9Mg5vLCijss",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Yair \"El Pantera\" Rodriguez",
+   "published_at": "2014-10-20T20:11:42.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "tvY97LNnCJU",
+   "url": "https://www.youtube.com/watch?v=tvY97LNnCJU",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Rodolfo \"Fito\" Rubio",
+   "published_at": "2014-10-20T20:11:22.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "mzA0TKM0_Nc",
+   "url": "https://www.youtube.com/watch?v=mzA0TKM0_Nc",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: Coaches Challenge",
+   "published_at": "2014-10-20T20:11:09.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "ouJ0x5FalbM",
+   "url": "https://www.youtube.com/watch?v=ouJ0x5FalbM",
+   "channel": "UFC",
+   "title": "The Ultimate Fighter Latin America: The First Faceoff",
+   "published_at": "2014-11-12T22:36:18.000Z",
+   "age": ">90d",
+   "risk": "low",
+   "buckets": [
+    "tuf_metadata_only"
+   ],
+   "fields": [
+    "tuf"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC 180: Werdum vs Hunt (2014-11-15)",
+   "proposed_event": "UFC 180: Werdum vs Hunt (2014-11-15)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "LmdnDSV66dE",
+   "url": "https://www.youtube.com/watch?v=LmdnDSV66dE",
+   "channel": "UFC",
+   "title": "Jean Silva vs Arnold Allen | FULL FIGHT | Noche UFC",
+   "published_at": "2026-09-07T16:00:11.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "k370XZTj4yQ",
+   "url": "https://www.youtube.com/watch?v=k370XZTj4yQ",
+   "channel": "UFC",
+   "title": "Garcia vs Benn | Cold Open",
+   "published_at": "2026-09-10T22:57:55.000Z",
+   "age": "8-30d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "-pJyH0sxHek",
+   "url": "https://www.youtube.com/watch?v=-pJyH0sxHek",
+   "channel": "UFC Brasil",
+   "title": "Encarada entre Matthieu Duclos e Luis Felipe Dias na pesagem do #UFCParis 👊",
+   "published_at": "2026-09-04T16:54:03.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "VUlxkw7wf1E",
+   "url": "https://www.youtube.com/watch?v=VUlxkw7wf1E",
+   "channel": "UFC Brasil",
+   "title": "Veja o nocaute de Salahdine Parnasse sobre Dan Hooker na luta principal do #UFCParis!",
+   "published_at": "2026-09-05T21:59:39.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "WV8Secs4II4",
+   "url": "https://www.youtube.com/watch?v=WV8Secs4II4",
+   "channel": "UFC Brasil",
+   "title": "Quentin Pasley nocauteia Arlind Berisha no Contender Series! #DWCS",
+   "published_at": "2026-09-09T01:25:59.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Dana White's Contender Series: Season 10, Week 5 (2026-09-08)",
+   "proposed_event": "Dana White's Contender Series: Season 10, Week 5 (2026-09-08)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "Ao3lTGOzFUk",
+   "url": "https://www.youtube.com/watch?v=Ao3lTGOzFUk",
+   "channel": "UFC Brasil",
+   "title": "Nocauteou e foi para a plateia aplaudir a própria vitória! Que figura o Losene Keita 😂 #UFCParis",
+   "published_at": "2026-09-05T19:35:37.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "bgziIQ1w6Dw",
+   "url": "https://www.youtube.com/watch?v=bgziIQ1w6Dw",
+   "channel": "UFC Brasil",
+   "title": "Entrevista de Octógono com Felipe Lima | UFC Paris",
+   "published_at": "2026-09-05T19:16:26.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "wGHzMPeA3jg",
+   "url": "https://www.youtube.com/watch?v=wGHzMPeA3jg",
+   "channel": "UFC Brasil",
+   "title": "Veja a finalização de Delphine Benouaich em Sofia Montenegro no #UFCParis!",
+   "published_at": "2026-09-05T16:23:35.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "yBzQ51LvGBY",
+   "url": "https://www.youtube.com/watch?v=yBzQ51LvGBY",
+   "channel": "UFC Brasil",
+   "title": "Pré-Show | UFC Paris: Hooker x Parnasse",
+   "published_at": "2026-09-05T16:04:22.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "bzsopbq0Z28",
+   "url": "https://www.youtube.com/watch?v=bzsopbq0Z28",
+   "channel": "UFC Brasil",
+   "title": "Arnold Allen x Jean Silva | LUTA COMPLETA | Noche UFC",
+   "published_at": "2026-09-07T15:00:31.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "tyTzu9VXcQ8",
+   "url": "https://www.youtube.com/watch?v=tyTzu9VXcQ8",
+   "channel": "UFC Brasil",
+   "title": "Farmar aura? Six-Seven? Pedimos pro Renato Moicanio explicar algumas das gírias Gen Z #UFC331",
+   "published_at": "2026-09-05T12:00:01.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC 331: Van vs. Pantoja 2 (2026-09-19)",
+   "proposed_event": "UFC 331: Van vs. Pantoja 2 (2026-09-19)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "i94CXREq47g",
+   "url": "https://www.youtube.com/watch?v=i94CXREq47g",
+   "channel": "UFC Brasil",
+   "title": "Encaradas da Pesagem | UFC Paris: Hooker x Parnasse",
+   "published_at": "2026-09-04T17:10:02.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "jtCh0gLyaM4",
+   "url": "https://www.youtube.com/watch?v=jtCh0gLyaM4",
+   "channel": "UFC Brasil",
+   "title": "Por outro ângulo, veja a encarada entre Dan Hooker e Salahdine Parnasse 👀 #UFCParis",
+   "published_at": "2026-09-04T17:04:56.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "mZRDfEvn4aM",
+   "url": "https://www.youtube.com/watch?v=mZRDfEvn4aM",
+   "channel": "UFC Brasil",
+   "title": "Encarada entre Morgan Charriere e Felipe Lima na pesagem do #UFCParis 👊",
+   "published_at": "2026-09-04T16:52:40.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->pt",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "YofWJr_3Dro",
+   "url": "https://www.youtube.com/watch?v=YofWJr_3Dro",
+   "channel": "UFC Brasil",
+   "title": "Veja o que Ryan Garcia e Conor Benn falaram após a encarada na Coletiva de Imprensa! #GarciaBenn",
+   "published_at": "2026-09-11T01:50:34.000Z",
+   "age": "8-30d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "WdNdWpcp9LQ",
+   "url": "https://www.youtube.com/watch?v=WdNdWpcp9LQ",
+   "channel": "UFC Brasil",
+   "title": "TODOS OS NOCAUTES E FINALIZAÇÕES DE JEAN SILVA | Noche UFC",
+   "published_at": "2026-09-10T23:00:22.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "NHeIzmfbykE",
+   "url": "https://www.youtube.com/watch?v=NHeIzmfbykE",
+   "channel": "UFC Brasil",
+   "title": "Por outro ângulo: a encarada de Ryan Garcia e Conor Benn na Coletiva de Imprensa! #GarciaBenn",
+   "published_at": "2026-09-11T00:58:40.000Z",
+   "age": "8-30d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "BU6urLFjFlU",
+   "url": "https://www.youtube.com/watch?v=BU6urLFjFlU",
+   "channel": "UFC Brasil",
+   "title": "Veja como foi a encarada de Ryan Garcia e Conor Benn na Coletiva de Imprensa! #GarciaBenn",
+   "published_at": "2026-09-11T00:55:28.000Z",
+   "age": "8-30d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "ucWfDgTfnUE",
+   "url": "https://www.youtube.com/watch?v=ucWfDgTfnUE",
+   "channel": "UFC Brasil",
+   "title": "Veja como foi a encarada de Ryan Garcia e Conor Benn na Cerimônia de Pesagem! #GarciaBenn",
+   "published_at": "2026-09-12T00:52:33.000Z",
+   "age": "0-7d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "H3CPKzY34CY",
+   "url": "https://www.youtube.com/watch?v=H3CPKzY34CY",
+   "channel": "UFC Brasil",
+   "title": "O MELHOR DE JEAN SILVA E JOSE MIGUEL DELGADO | Noche UFC",
+   "published_at": "2026-09-11T15:00:07.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "Q8zyH9mCvOY",
+   "url": "https://www.youtube.com/watch?v=Q8zyH9mCvOY",
+   "channel": "UFC Brasil",
+   "title": "Vitória de Ryan Garcia por nocaute técnico na luta principal do #ZuffaBoxing! #GarciaBenn 🥊",
+   "published_at": "2026-09-13T03:46:44.000Z",
+   "age": "0-7d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "Uc4bPbbBno0",
+   "url": "https://www.youtube.com/watch?v=Uc4bPbbBno0",
+   "channel": "UFC Brasil",
+   "title": "TODOS OS NOCAUTES E FINALIZAÇÕES DO NOCHE UFC",
+   "published_at": "2026-09-13T01:50:55.000Z",
+   "age": "0-7d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "S88T7mg1yZE",
+   "url": "https://www.youtube.com/watch?v=S88T7mg1yZE",
+   "channel": "UFC Brasil",
+   "title": "Melhores Momentos | Noche UFC: Silva x Delgado",
+   "published_at": "2026-09-13T17:00:23.000Z",
+   "age": "0-7d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "Jc13C6uYnp8",
+   "url": "https://www.youtube.com/watch?v=Jc13C6uYnp8",
+   "channel": "UFC Brasil",
+   "title": "Pós-Show | Garcia x Benn",
+   "published_at": "2026-09-13T20:00:29.000Z",
+   "age": "0-7d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "umHWg_7Iy0U",
+   "url": "https://www.youtube.com/watch?v=umHWg_7Iy0U",
+   "channel": "UFC Brasil",
+   "title": "Melhores Momentos | Garcia x Benn",
+   "published_at": "2026-09-13T21:00:19.000Z",
+   "age": "0-7d",
+   "risk": "high",
+   "buckets": [
+    "fighters_lost",
+    "confidence_changed"
+   ],
+   "fields": [
+    "fighter_ids",
+    "resolver_confidence",
+    "linking"
+   ],
+   "blocked_by_write_guard": [
+    "fighter_lost"
+   ],
+   "stored_event": null,
+   "proposed_event": null,
+   "fighters_removed": [
+    "Rafa Garcia"
+   ],
+   "fighters_added": [],
+   "confidence": "low->none",
+   "language": null,
+   "appears_correct": "PROPOSED",
+   "why": "the title is about boxer Ryan Garcia (Garcia vs Benn, Zuffa Boxing); the stored link is UFC lightweight Rafa Garcia, attached by surname_unique_window"
+  },
+  {
+   "id": "ymybYMacLnU",
+   "url": "https://www.youtube.com/watch?v=ymybYMacLnU",
+   "channel": "UFC Espanol",
+   "title": "#NocheUFC David Martínez: Buscando Una Gran Victoria Más 🇲🇽",
+   "published_at": "2026-09-07T20:00:06.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "dH-mYfF1mkU",
+   "url": "https://www.youtube.com/watch?v=dH-mYfF1mkU",
+   "channel": "UFC Espanol",
+   "title": "#NocheUFC Maratón: Alexa Grasso",
+   "published_at": "2026-09-05T17:00:06.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->es",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "O1EiI0IXGkg",
+   "url": "https://www.youtube.com/watch?v=O1EiI0IXGkg",
+   "channel": "UFC Espanol",
+   "title": "UFC Paris | Previa del Evento ¡EN VIVO!",
+   "published_at": "2026-09-05T16:24:09.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->es",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "HlqxelJdzyk",
+   "url": "https://www.youtube.com/watch?v=HlqxelJdzyk",
+   "channel": "UFC Espanol",
+   "title": "#UFCParis Fabia Sintes: Otro Español Más En UFC 🇪🇸",
+   "published_at": "2026-09-03T05:00:06.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "language"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "proposed_event": "UFC Fight Night: Hooker vs. Parnasse (2026-09-05)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": "null->es",
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  },
+  {
+   "id": "oFRbt1tMnIg",
+   "url": "https://www.youtube.com/watch?v=oFRbt1tMnIg",
+   "channel": "UFC Espanol",
+   "title": "#NocheUFC Waldo Cortes Acosta Pelea Ante Su Gente 🌵",
+   "published_at": "2026-09-11T03:11:01.000Z",
+   "age": "8-30d",
+   "risk": "low",
+   "buckets": [
+    "harmless_normalization"
+   ],
+   "fields": [
+    "linking"
+   ],
+   "blocked_by_write_guard": [],
+   "stored_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "proposed_event": "Noche UFC: Silva vs. Delgado (2026-09-12)",
+   "fighters_removed": [],
+   "fighters_added": [],
+   "confidence": null,
+   "language": null,
+   "appears_correct": "EQUIVALENT",
+   "why": "no link, status, type or fighter differs: a language that was never stored, a TUF rule label, or fighter evidence wording"
+  }
+ ]
+}

@@ -97,13 +97,22 @@ after a fighter/event load. `--relink --ids a,b,c` recomputes only the named vid
 relink also applies every link change the current card context implies (216 rows on
 2026-09-18), which a targeted repair such as a language rule should not carry with it.
 
-**Do not run a full `--relink`.** It scores every stored row against the cards within
-±45 days of TODAY, so backfilled archive rows lose their (correct) event links or are
-re-attached to a current card by a generic key. Read the plan first:
-`--relink --dry-run --explain [--explain-out f.json]` emits a field-level diff with
-buckets and a risk level per row (`relink_diff.mjs`; refused without `--dry-run`), and
-`relink_drift_report.mjs f.json` turns it into a receipt. Audit of 2026-09-18:
-`docs/evidence/video-relink-drift-2026-09-18.md` (216 rows, 99 high risk, 115 better as stored). Upserts are on `(provider, provider_video_id)`;
+**Relink resolves each video in its own historical context.** `--relink` loads the archive once and links every
+stored row against the cards within ±45 days of THAT VIDEO's publish date (`contextAt`), exactly as a playlist
+backfill does; the run date never decides which event a video belongs to. A row with no valid `published_at`
+keeps its stored links (`publish_date_unavailable`). `nearest_date` has a hard limit of `WINDOW_DAYS` and records
+`linking.event_refused` beyond it. The TUF series guard runs on relink (using the stored TUF tag when the
+playlist title is gone). Under an *interview* title, a name found only in the description as the object of
+talk-with / interviewed-by is the host, not a fighter (`linking.hosts_ignored`).
+
+Relink write policy: `article_id` and `published ↔ review` flips are **held** (reported, not written) unless
+`--allow-article-change` / `--allow-status-change`. A relink without `--ids` is planned in full and **refused in
+full** if any row would lose or change an event or bout, lose or replace a fighter, flip status, or take an
+event from outside the window; there is no override, reviewed rows go by `--ids`. Read a plan with
+`--relink --dry-run --explain [--explain-out f.json]` (refused without `--dry-run`) and
+`relink_drift_report.mjs f.json`. Receipts: `docs/evidence/video-relink-drift-2026-09-18.md` (before: 216 rows,
+99 high) and `docs/evidence/video-relink-after-fix-2026-09-18.md` (after: 73 rows, 0 event or bout moves).
+Golden cases: `scripts/videos/relink_golden.test.mjs`. Upserts are on `(provider, provider_video_id)`;
 rows whose persisted columns, links or evidence did not change are not
 rewritten, so a rerun is a no-op. A row a human set to `link_status='rejected'`
 keeps its links and status across reruns.

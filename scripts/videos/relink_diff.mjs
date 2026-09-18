@@ -99,6 +99,37 @@ export function riskOf(a, b, buckets, fields = []) {
   return 'low';
 }
 
+/**
+ * Why a full relink must not write this row, or [] when it may. This is the write
+ * guard's definition of destructive, narrower than `risk: high` on purpose: it is
+ * the list of moves that silently destroy or invent a canonical link.
+ *   event_lost          stored event disappears (allowed only when the TUF series guard
+ *                       recorded the refusal: that is stronger evidence, not a lost window)
+ *   event_changed       event A -> event B
+ *   bout_lost / bout_changed
+ *   fighter_replaced    a fighter removed AND another added
+ *   status_flip         published <-> review (or anything touching rejected)
+ *   event_outside_window  the proposed event was picked by date from further than the window
+ */
+export function destructiveReasons(stored, proposed, windowDays = 45) {
+  const a = project(stored), b = project(proposed);
+  const why = [];
+  if (a.event_id && !b.event_id && !b.linking?.event_rejected) why.push('event_lost');
+  if (a.event_id && b.event_id && a.event_id !== b.event_id) why.push('event_changed');
+  if (a.bout_id && !b.bout_id && !b.linking?.event_rejected) why.push('bout_lost');
+  if (a.bout_id && b.bout_id && a.bout_id !== b.bout_id) why.push('bout_changed');
+  const removed = a.fighter_ids.filter((id) => !b.fighter_ids.includes(id));
+  const added = b.fighter_ids.filter((id) => !a.fighter_ids.includes(id));
+  if (removed.length && added.length) why.push('fighter_replaced');
+  /* A removal can be right (a surname that belonged to a boxer, not the UFC fighter) or a
+   * real loss. Either way it is a reviewed --ids batch, never a side effect of a sweep. */
+  else if (removed.length) why.push('fighter_lost');
+  if (a.link_status !== b.link_status) why.push('status_flip');
+  const d = Number(b.linking?.event?.distance_days);
+  if (b.event_id && b.event_id !== a.event_id && Number.isFinite(d) && d > windowDays) why.push('event_outside_window');
+  return why;
+}
+
 /** Age bands used by the drift receipt, from the video's own publish date. */
 export function ageBand(publishedAt, now) {
   const t = Date.parse(publishedAt || '');

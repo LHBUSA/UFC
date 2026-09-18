@@ -51,7 +51,7 @@ import { detectLanguage,
   classifyVideo, loadEventContext, loadArchiveEvents, contextAt, linkVideo, tufSeriesEventSupported, confidenceFor, sleep,
 } from './lib.mjs';
 import { tufTag } from './tuf.mjs';
-import { diffRow, project } from './relink_diff.mjs';
+import { diffRow, project, destructiveReasons } from './relink_diff.mjs';
 
 const MAX_DESCRIPTION = 6000;
 
@@ -72,6 +72,11 @@ export function parseCliOptions(argv = []) {
     /* --explain: a field-level diff of every row the run would rewrite (relink_diff.mjs). READ-ONLY by construction:
      * it is refused without --dry-run, so asking what a relink would do can never be the thing that does it. */
     explain: argv.includes('--explain'),
+    /* A relink repairs event / bout / fighter links. Two other columns ride on the same resolver and are HELD unless
+     * asked for by name: article_id follows newsroom coverage (a separate editorial decision), and a published<->review
+     * flip hides or publishes a video. Held values are reported, never written. */
+    allowArticleChange: argv.includes('--allow-article-change'),
+    allowStatusChange: argv.includes('--allow-status-change'),
     explainOut: argv.includes('--explain-out') ? argv[argv.indexOf('--explain-out') + 1] : null,
     playlists: argv.flatMap((a, i) => (a === '--playlist' && argv[i + 1] ? [argv[i + 1]] : [])),
   };
@@ -110,7 +115,22 @@ function applyClassification(row, entry) {
   return row;
 }
 
-function applyLinks(row, entry, index, ctx, existing) {
+function keepStoredLinks(row, existing) {
+  row.fighter_ids = existing.fighter_ids || [];
+  row.event_id = existing.event_id; row.bout_id = existing.bout_id; row.article_id = existing.article_id;
+  row.resolver_confidence = existing.resolver_confidence; row.link_status = existing.link_status;
+  row.linking = existing.source_metadata?.linking || null;
+  row.review_reason = existing.source_metadata?.review_reason || null;
+  row.review = existing.source_metadata?.review || null;
+  return row;
+}
+
+export const validDate = (s) => Boolean(s) && !Number.isNaN(new Date(s).getTime());
+
+function applyLinks(row, entry, index, ctx, existing, policy = {}) {
+  /* RELINK with no usable publish date: there is no historical context to resolve in, and today's cards are not
+   * a substitute. The stored links stand; the row is counted as publish_date_unavailable. */
+  if (policy.relink && existing && !validDate(entry.published)) { row.held = { publish_date_unavailable: true }; return keepStoredLinks(row, existing); }
   if (existing && existing.link_status === 'rejected') {
     /* A human rejection sticks: keep the stored links and status untouched. */
     row.fighter_ids = existing.fighter_ids || [];
@@ -127,6 +147,23 @@ function applyLinks(row, entry, index, ctx, existing) {
     resolver_confidence: l.resolver_confidence, link_status: l.link_status,
     linking: l.linking, review_reason: l.review_reason, review: l.review,
   });
+  if (policy.relink && existing) {
+    const held = {};
+    /* The candidate count is article policy too: frozen with the link it describes. */
+    if (!policy.allowArticleChange && row.linking && existing.source_metadata?.linking && 'article_candidates' in existing.source_metadata.linking) row.linking = { ...row.linking, article_candidates: existing.source_metadata.linking.article_candidates };
+    if (!policy.allowArticleChange && (row.article_id ?? null) !== (existing.article_id ?? null)) {
+      held.article_id = { stored: existing.article_id ?? null, proposed: row.article_id ?? null };
+      row.article_id = existing.article_id ?? null;
+      if (row.linking) row.linking = { ...row.linking, article_candidates: existing.source_metadata?.linking?.article_candidates ?? row.linking.article_candidates };
+    }
+    if (!policy.allowStatusChange && row.link_status !== existing.link_status) {
+      held.link_status = { stored: existing.link_status, proposed: row.link_status, proposed_review_reason: row.review_reason };
+      row.link_status = existing.link_status;
+      row.review_reason = existing.source_metadata?.review_reason || null;
+      row.review = existing.source_metadata?.review || null;
+    }
+    if (Object.keys(held).length) row.held = held;
+  }
   return row;
 }
 
@@ -198,14 +235,18 @@ function bump(map, key) { map[key] = (map[key] || 0) + 1; }
 /* Archive rows only: drop an event reached through the bare TUF series head
  * unless the title supports it (lib.tufSeriesEventSupported). The rejected
  * candidate stays in the evidence. */
-function guardTufSeriesEvent(row, entry, ctx) {
+function guardTufSeriesEvent(row, entry, ctx, existing = null) {
   if (!row.event_id) return;
   const event = ctx.events.find((e) => e.id === row.event_id);
   const video = tufTag({ title: entry.title, description: entry.description, playlistTitle: entry.playlist_title ?? null, durationSec: entry.duration_sec ?? null });
-  if (!video) return;
+  /* A relink has no playlist title, and the playlist is often what said this video is TUF at all. The tag stored
+   * with the row is the same fact: without it the guard would stand down and a rejection made at backfill would
+   * be erased simply because a relink happened. */
+  const tag = video || existing?.source_metadata?.tuf || null;
+  if (!tag) return;
   const verdict = tufSeriesEventSupported(
     { event_id: row.event_id, bout_id: row.bout_id, linking: row.linking },
-    { title: entry.title, videoSeason: video.season, eventSeason: event ? tufTag({ title: event.name })?.season ?? null : null },
+    { title: entry.title, videoSeason: tag.season, eventSeason: event ? tufTag({ title: event.name })?.season ?? null : null },
   );
   if (verdict.supported) return;
   row.linking = { ...row.linking, event: null, event_rejected: { event_id: row.event_id, name: event?.name || null, ...row.linking?.event, ...verdict } };
@@ -256,6 +297,8 @@ export async function main(injectedEnv, options = {}) {
   const EXPLAIN = Boolean(options.explain);
   if (EXPLAIN && !DRY) throw new Error('--explain is a read-only report and requires --dry-run');
   const explained = [];
+  const heldRows = [];
+  const deferred = [];
   const now = options.now ? new Date(options.now) : new Date();
   const since = new Date(now.getTime() - SINCE_DAYS * 86400e3);
   const apiKey = env.YOUTUBE_API_KEY || '';
@@ -265,7 +308,7 @@ export async function main(injectedEnv, options = {}) {
   if (ONLY_CHANNEL) channels = channels.filter((c) => c.channel_id === ONLY_CHANNEL);
   if (!channels.length) throw new Error(ONLY_CHANNEL ? `channel ${ONLY_CHANNEL} is not enabled+verified in ufc_video_channels` : 'no enabled, verified channels: run scripts/videos/seed_channels.mjs first');
 
-  const [index, ctx, archive] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb, { now, windowDays: WINDOW_DAYS }), BACKFILL ? loadArchiveEvents(sb) : null]);
+  const [index, ctx, archive] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb, { now, windowDays: WINDOW_DAYS }), (BACKFILL || RELINK) ? loadArchiveEvents(sb) : null]);
   console.log(`${DRY ? 'DRY RUN  ' : ''}discovery=${discovery}${RELINK ? ' (relink, no network)' : ''} since=${since.toISOString().slice(0, 10)} channels=${channels.length}`);
   console.log(`index: ${index.fighters.length} fighters, ${ctx.events.length} events within +-${WINDOW_DAYS}d (${ctx.window.lo}..${ctx.window.hi}), ${ctx.bouts.length} bouts, ${ctx.cardFighterIds.size} card fighters`);
   if (archive) console.log(`archive: ${archive.events.length} events, ${archive.bouts.length} bouts; each playlist video is linked against the cards within +-${WINDOW_DAYS}d of its own publish date`);
@@ -362,10 +405,15 @@ export async function main(injectedEnv, options = {}) {
 
       const row = baseRow(entry, channel, channelDiscovery || existing?.source_metadata?.discovery || discovery);
       applyClassification(row, entry);
-      /* A backfilled video is linked against the cards around its own publish date. */
+      /* A backfilled OR RELINKED video is linked against the cards around its own publish date. The date this
+       * command happens to run must never change which event a video belongs to: a relink used to score all
+       * stored rows against the cards around today, which detached the archive and re-attached 2021 videos
+       * to 2026 cards (docs/evidence/video-relink-drift-2026-09-18.md). */
       const linkCtx = archive ? contextAt(archive, entry.published ? new Date(entry.published) : null, WINDOW_DAYS) : ctx;
-      applyLinks(row, entry, index, linkCtx, existing);
-      if (archive && row.link_status !== 'rejected') guardTufSeriesEvent(row, entry, linkCtx);
+      applyLinks(row, entry, index, linkCtx, existing, { relink: RELINK, allowArticleChange: Boolean(options.allowArticleChange), allowStatusChange: Boolean(options.allowStatusChange) });
+      const held = row.held || null; delete row.held;
+      if (held) { heldRows.push({ id: entry.video_id, title: entry.title, published_at: entry.published || null, ...held }); if (held.publish_date_unavailable) totals.publish_date_unavailable = (totals.publish_date_unavailable || 0) + 1; }
+      if (archive && row.link_status !== 'rejected' && !(held && held.publish_date_unavailable)) guardTufSeriesEvent(row, entry, linkCtx, existing);
       const dbRow = toDbRow(row, entry, existing, now);
       if (dbRow.source_metadata.tuf) totals.tuf_tagged += 1;
       const isNew = !existing;
@@ -381,17 +429,35 @@ export async function main(injectedEnv, options = {}) {
         + `${ev ? ` | ev=${ev.name.slice(0, 32)}` : ''}${names.length ? ` | f=${names.join(', ')}` : ''}${dbRow.bout_id ? ' | bout' : ''}${dbRow.source_metadata.review_reason ? ` | review: ${dbRow.source_metadata.review_reason}` : ''}`);
       if (isNew || isChanged) rows.push(dbRow);
       if (EXPLAIN && isChanged && existing) {
-        explained.push({ id: dbRow.provider_video_id, channel: channel.name, title: dbRow.title, published_at: dbRow.published_at, stored: project(existing), proposed: project(dbRow), ...diffRow(existing, dbRow) });
+        explained.push({ id: dbRow.provider_video_id, channel: channel.name, title: dbRow.title, published_at: dbRow.published_at, stored: project(existing), proposed: project(dbRow), ...diffRow(existing, dbRow), destructive: destructiveReasons(existing, dbRow, WINDOW_DAYS) });
       }
       plan.push({ channel: channel.name, id: dbRow.provider_video_id, action: isNew ? 'insert' : isChanged ? 'update' : 'unchanged', type: dbRow.video_type, confidence: dbRow.resolver_confidence, status: dbRow.link_status });
     }
 
     if (!rows.length) continue;
     if (DRY) { console.log(`  would upsert ${rows.length} rows`); continue; }
+    /* A full relink writes nothing until the whole plan has passed the safety guard below. */
+    if (RELINK && !options.ids) { deferred.push({ channel: channel.name, rows, existingById }); continue; }
     for (let i = 0; i < rows.length; i += 100) {
       const written = await sb.upsert('ufc_videos', rows.slice(i, i + 100), 'provider,provider_video_id');
       console.log(`  upserted ${written.length} rows`);
     }
+  }
+
+  /* FULL-RELINK SAFETY GUARD. A relink without --ids is planned in full first and refused in full if any row
+   * would make a destructive move: an event lost or changed, a bout lost or changed, a fighter replaced, a
+   * published<->review flip, or an event matched outside the date window. There is no override flag: a
+   * destructive change that has been reviewed is applied by naming its rows with --ids. */
+  if (deferred.length) {
+    const blocked = [];
+    for (const d of deferred) for (const r of d.rows) { const ex = d.existingById.get(r.provider_video_id); if (!ex) continue; const why = destructiveReasons(ex, r, WINDOW_DAYS); if (why.length) blocked.push({ id: r.provider_video_id, title: r.title, reasons: why }); }
+    if (blocked.length) {
+      for (const b of blocked.slice(0, 25)) console.log(`  BLOCKED ${b.id} ${b.reasons.join(',')} | ${String(b.title).slice(0, 70)}`);
+      const err = new Error(`full relink refused: ${blocked.length} destructive change(s); nothing was written. Review with --dry-run --explain, then apply reviewed rows with --ids`);
+      err.blocked = blocked;
+      throw err;
+    }
+    for (const d of deferred) for (let i = 0; i < d.rows.length; i += 100) { const written = await sb.upsert('ufc_videos', d.rows.slice(i, i + 100), 'provider,provider_video_id'); console.log(`  upserted ${written.length} rows (${d.channel})`); }
   }
 
   console.log('\nsummary');
@@ -404,14 +470,15 @@ export async function main(injectedEnv, options = {}) {
   console.log(`  TUF-tagged: ${totals.tuf_tagged}${BACKFILL ? `; playlist items ${totals.playlist_items}, unique videos ${totals.playlist_unique_videos}; from channels not allowlisted, skipped: ${totals.skipped_not_allowlisted}` : ''}`);
   if (DRY && plan.length) console.log(`  plan: ${plan.filter((p) => p.action === 'insert').length} inserts, ${plan.filter((p) => p.action === 'update').length} updates, ${plan.filter((p) => p.action === 'unchanged').length} unchanged`);
 
+  if (heldRows.length) console.log(`  held (reported, not written): ${heldRows.filter((h) => h.article_id).length} article link(s), ${heldRows.filter((h) => h.link_status).length} status flip(s), ${heldRows.filter((h) => h.publish_date_unavailable).length} without a publish date`);
   if (EXPLAIN) {
     const byRisk = {}; for (const e of explained) byRisk[e.risk] = (byRisk[e.risk] || 0) + 1;
     console.log(`  explain: ${explained.length} row(s) would change; risk ${JSON.stringify(byRisk)}; stamp-only rewrites (no projected field differs): ${explained.filter((e) => !e.fields.length).length}`);
-    if (options.explainOut) { const { writeFileSync } = await import('node:fs'); writeFileSync(options.explainOut, `${JSON.stringify({ generated_at: now.toISOString(), window: ctx.window, events_in_window: ctx.events.map((e) => ({ id: e.id, name: e.name, event_date: e.event_date })), rows: explained }, null, 1)}\n`); console.log(`  explain: wrote ${options.explainOut}`); }
+    if (options.explainOut) { const { writeFileSync } = await import('node:fs'); writeFileSync(options.explainOut, `${JSON.stringify({ generated_at: now.toISOString(), window: ctx.window, events_in_window: ctx.events.map((e) => ({ id: e.id, name: e.name, event_date: e.event_date })), held: heldRows, rows: explained }, null, 1)}\n`); console.log(`  explain: wrote ${options.explainOut}`); }
   }
 
   /* Returned rather than logged-and-grepped, so a Worker can ledger it. */
-  return { discovery, channels: channels.length, totals, by_type: byType, by_confidence: byConfidence, dry: DRY, relink: RELINK, ...(EXPLAIN ? { explained } : {}), since: since.toISOString(), ...(BACKFILL ? { playlists: playlistReports } : {}) };
+  return { discovery, channels: channels.length, totals, by_type: byType, by_confidence: byConfidence, dry: DRY, relink: RELINK, ...(EXPLAIN ? { explained } : {}), held: heldRows, since: since.toISOString(), ...(BACKFILL ? { playlists: playlistReports } : {}) };
 }
 
 /* CLI ONLY. Importing this module must never call YouTube or write a row. */

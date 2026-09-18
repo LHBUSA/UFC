@@ -80,7 +80,10 @@ test('--explain is read-only by construction, and --ids is intact', async () => 
   await assert.rejects(() => main({ SUPABASE_URL: 'https://db.invalid', SUPABASE_SERVICE_ROLE_KEY: 'k' }, { relink: true, explain: true, dry: false }), /requires --dry-run/);
   /* The single upsert in the ingest sits behind the DRY guard. */
   const src = readFileSync(new URL('./ingest_youtube.mjs', import.meta.url), 'utf8');
-  assert.equal([...src.matchAll(/sb\.(upsert|insert|update|delete|patch)\(/g)].length, 1, 'one write call in the ingest');
+  /* Two write calls: the per-channel upsert (feed / backfill / --ids) behind the DRY guard, and the full-relink
+   * upsert that only runs after the whole plan has passed the destructive-change guard. */
+  assert.equal([...src.matchAll(/sb\.(upsert|insert|update|delete|patch)\(/g)].length, 2, 'two write calls in the ingest');
+  assert.ok(src.indexOf('full relink refused') < src.lastIndexOf('sb.upsert('), 'the full-relink write comes after the refusal');
   assert.ok(src.indexOf("if (DRY) { console.log(`  would upsert") < src.indexOf('sb.upsert(') && src.indexOf('sb.upsert(') - src.indexOf("if (DRY) { console.log(`  would upsert") < 400, 'and it follows the dry-run `continue`');
   assert.doesNotMatch(readFileSync(new URL('./relink_diff.mjs', import.meta.url), 'utf8'), /\bfetch\(|Supabase|writeFile/, 'the diff module does no I/O');
   assert.doesNotMatch(readFileSync(new URL('./relink_drift_report.mjs', import.meta.url), 'utf8'), /sb\.(upsert|insert|update|delete|patch)\(/, 'the receipt script only selects');

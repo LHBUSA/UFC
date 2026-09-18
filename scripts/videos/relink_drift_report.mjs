@@ -13,7 +13,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { Supabase, loadEnv, WINDOW_DAYS } from './lib.mjs';
 import { ageBand, tally, BUCKETS } from './relink_diff.mjs';
 
-const [, , inFile, outFile] = process.argv;
+const [inFile, outFile] = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 if (!inFile) { console.error('usage: relink_drift_report.mjs <explain.json> [out.json]'); process.exit(2); }
 const explain = JSON.parse(readFileSync(inFile, 'utf8'));
 const now = explain.generated_at;
@@ -32,7 +32,15 @@ const events = await byIds('ufc_events', 'id,name,event_date', rows.flatMap((r) 
 const fighters = await byIds('ufc_fighters', 'id,name', rows.flatMap((r) => [...r.removed_fighters, ...r.added_fighters]));
 const bouts = await byIds('ufc_bouts', 'id,event_id,fighter_a_id,fighter_b_id', rows.flatMap((r) => [r.stored.bout_id, r.proposed.bout_id]));
 
-const inWindow = (d) => Boolean(d) && d >= explain.window.lo && d <= explain.window.hi;
+/* A stored event is 'in the window' relative to the VIDEO's publish date, which is what a relink now resolves against
+ * (pass --run-date-window to reproduce the pre-fix audit, which measured against the run date's window). */
+const RUN_DATE_WINDOW = process.argv.includes('--run-date-window');
+const inWindow = (d, publishedAt) => {
+  if (!d) return false;
+  if (RUN_DATE_WINDOW) return d >= explain.window.lo && d <= explain.window.hi;
+  const t = Date.parse(publishedAt || ''); if (!Number.isFinite(t)) return false;
+  return Math.abs(Date.parse(`${d}T00:00:00Z`) - t) / 86400e3 <= WINDOW_DAYS;
+};
 const evName = (id) => (id ? `${events.get(id)?.name || id} (${events.get(id)?.event_date || '?'})` : null);
 const daysFromEvent = (r, id) => { const e = events.get(id); return e && r.published_at ? Math.round((Date.parse(r.published_at) - Date.parse(`${e.event_date}T00:00:00Z`)) / 86400e3) : null; };
 
@@ -40,9 +48,9 @@ const daysFromEvent = (r, id) => { const e = events.get(id); return e && r.publi
 function causeOf(r) {
   const causes = [];
   const se = events.get(r.stored.event_id), pe = events.get(r.proposed.event_id);
-  if (r.buckets.includes(BUCKETS.B)) causes.push(se && !inWindow(se.event_date) ? 'stored_event_outside_todays_window' : 'event_lost_inside_window');
-  if (r.buckets.includes(BUCKETS.C)) causes.push(se && !inWindow(se.event_date) ? 'stored_event_outside_todays_window_then_rematched' : 'event_rematched_inside_window');
-  if (r.buckets.includes(BUCKETS.E) || r.buckets.includes(BUCKETS.F)) causes.push(se && !inWindow(se.event_date) ? 'bout_followed_event_out_of_window' : 'bout_changed_inside_window');
+  if (r.buckets.includes(BUCKETS.B)) causes.push(se && !inWindow(se.event_date, r.published_at) ? 'stored_event_outside_todays_window' : 'event_lost_inside_window');
+  if (r.buckets.includes(BUCKETS.C)) causes.push(se && !inWindow(se.event_date, r.published_at) ? 'stored_event_outside_todays_window_then_rematched' : 'event_rematched_inside_window');
+  if (r.buckets.includes(BUCKETS.E) || r.buckets.includes(BUCKETS.F)) causes.push(se && !inWindow(se.event_date, r.published_at) ? 'bout_followed_event_out_of_window' : 'bout_changed_inside_window');
   if (r.buckets.includes(BUCKETS.A)) causes.push('new_event_match');
   if (r.buckets.includes(BUCKETS.G) || r.buckets.includes(BUCKETS.H) || r.buckets.includes(BUCKETS.I)) causes.push('fighter_scope_recomputed');
   if (r.buckets.includes(BUCKETS.J)) causes.push('article_link_recomputed');
@@ -56,7 +64,7 @@ function causeOf(r) {
 const enriched = rows.map((r) => ({
   id: r.id, channel: r.channel, title: r.title, published_at: r.published_at, age: ageBand(r.published_at, now), risk: r.risk, buckets: r.buckets, fields: r.fields, causes: causeOf(r),
   stored_event: evName(r.stored.event_id), proposed_event: evName(r.proposed.event_id),
-  stored_event_in_window: r.stored.event_id ? inWindow(events.get(r.stored.event_id)?.event_date) : null,
+  stored_event_in_window: r.stored.event_id ? inWindow(events.get(r.stored.event_id)?.event_date, r.published_at) : null,
   published_days_from_stored_event: daysFromEvent(r, r.stored.event_id), published_days_from_proposed_event: daysFromEvent(r, r.proposed.event_id),
   bout: r.stored.bout_id === r.proposed.bout_id ? undefined : { stored: r.stored.bout_id, proposed: r.proposed.bout_id, stored_bout_event: evName(bouts.get(r.stored.bout_id)?.event_id) },
   fighters_removed: r.removed_fighters.map((id) => fighters.get(id)?.name || id), fighters_added: r.added_fighters.map((id) => fighters.get(id)?.name || id),
@@ -64,7 +72,7 @@ const enriched = rows.map((r) => ({
   link_status: r.stored.link_status === r.proposed.link_status ? undefined : `${r.stored.link_status}->${r.proposed.link_status}`,
   review_reason: r.stored.review_reason === r.proposed.review_reason ? undefined : `${r.stored.review_reason}->${r.proposed.review_reason}`,
   language: r.stored.language === r.proposed.language ? undefined : `${r.stored.language}->${r.proposed.language}`,
-  stored_linking: r.stored.linking, proposed_linking: r.proposed.linking,
+  destructive: r.destructive || [], stored_linking: r.stored.linking, proposed_linking: r.proposed.linking,
 }));
 
 const pub = enriched.map((r) => r.published_at).filter(Boolean).sort();
@@ -79,6 +87,7 @@ const summary = {
   proposed_event_top: tally(enriched.filter((r) => r.fields.includes('event_id')), (r) => r.proposed_event || '(none)'),
   event_lost: { total: enriched.filter((r) => r.buckets.includes(BUCKETS.B)).length, stored_event_outside_window: enriched.filter((r) => r.buckets.includes(BUCKETS.B) && r.stored_event_in_window === false).length },
   event_changed: { total: enriched.filter((r) => r.buckets.includes(BUCKETS.C)).length, stored_event_outside_window: enriched.filter((r) => r.buckets.includes(BUCKETS.C) && r.stored_event_in_window === false).length },
+  destructive: tally(enriched, (r) => r.destructive), blocked_by_write_guard: enriched.filter((r) => r.destructive.length).length, held: { article_links: (explain.held || []).filter((h) => h.article_id).length, status_flips: (explain.held || []).filter((h) => h.link_status).length, publish_date_unavailable: (explain.held || []).filter((h) => h.publish_date_unavailable).length },
   confidence_moves: tally(enriched, (r) => r.confidence || []), status_moves: tally(enriched, (r) => r.link_status || []),
 };
 console.log(JSON.stringify(summary, null, 1));

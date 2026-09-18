@@ -737,9 +737,23 @@ export function linkEvent(text, titleText, ctx, publishedAt) {
     const h = best[0];
     return { event: h.event, evidence: { key: h.key, kind: h.kind, in_title: h.in_title, method: 'unique_key' }, review: null };
   }
-  const when = publishedAt || new Date();
+  /* Several cards share the key, so the publish date has to choose. Without one
+   * there is nothing to choose with: "nearest to the day this command ran" is not
+   * a fact about the video, so no event is linked. */
+  if (!publishedAt || Number.isNaN(publishedAt.getTime())) {
+    return { event: null, evidence: null, review: null, refused: { reason: 'publish_date_unavailable', key: best[0].key, kind: best[0].kind, candidates: byEvent.size } };
+  }
+  const when = publishedAt;
   const ranked = [...byEvent.values()].map((h) => ({ h, dist: daysFrom(h.event.event_date, when) })).sort((a, b) => a.dist - b.dist);
   const sameKey = ranked.every((r) => r.h.key === ranked[0].h.key);
+  /* HARD LIMIT. The context window should already keep distant cards out, and a
+   * relink once did not: "ufc vegas" sent sixteen 2021 videos to a 2026 card at
+   * 1,805 days and "contender series" sent a 2017 video to DWCS 2026 at 3,176.
+   * The nearest card is only a match when it is actually near. */
+  if (ranked[0].dist > WINDOW_DAYS) {
+    const h = ranked[0].h;
+    return { event: null, evidence: null, review: null, refused: { reason: 'nearest_date_outside_window', key: h.key, kind: h.kind, event_id: h.event.id, name: h.event.name, distance_days: Math.round(ranked[0].dist), limit_days: WINDOW_DAYS } };
+  }
   if (sameKey && (ranked.length === 1 || ranked[1].dist - ranked[0].dist >= 2)) {
     const h = ranked[0].h;
     return { event: h.event, evidence: { key: h.key, kind: h.kind, in_title: h.in_title, method: 'nearest_date', distance_days: Math.round(ranked[0].dist) }, review: null };
@@ -783,10 +797,17 @@ export function linkFighters(text, titleText, index, ctx, eventId) {
   }
   const eventBoutFighters = eventId ? new Set(ctx.bouts.filter((b) => b.event_id === eventId).flatMap((b) => [b.fighter_a_id, b.fighter_b_id])) : null;
 
+  const hosts = [];
   for (const [n, ids] of nameIndex) {
     if (!hasPhrase(normAll, n)) continue;
     /* Longer names win over their own prefixes ("Bruno Silva" vs "Bruno Silva de ..."). */
     const inTitle = hasPhrase(normTitle, n);
+    /* The interviewer is not the subject. UFC interview uploads are written
+     * "Listen to <fighter> talk with Michael Bisping after his win": a name that
+     * appears ONLY in the description, as the object of a talk-with / interviewed-by
+     * phrase, under a title that says interview, is the host. Descriptions still
+     * attach full names everywhere else. */
+    if (!inTitle && /\binterviews?\b/.test(normTitle) && isHostMention(normAll, n)) { hosts.push(n); continue; }
     const all = [...ids];
     const inWindow = all.filter((id) => ctx.cardFighterIds.has(id));
     const onEvent = eventBoutFighters ? all.filter((id) => eventBoutFighters.has(id)) : [];
@@ -833,7 +854,14 @@ export function linkFighters(text, titleText, index, ctx, eventId) {
       review.push({ reason: 'ambiguous_surname', alias: s, scope: scopeName, candidate_fighter_ids: [...owners].slice(0, 6) });
     }
   }
-  return { fighters: attached, review };
+  return { fighters: attached, review, hosts };
+}
+
+const HOST_VERBS = '(?:talks?|talking|talked|speaks?|speaking|spoke|chats?|chatting|chatted|sits? down|sat down|catch(?:es)? up|caught up|interviewed|joined|hosted)';
+/** `normAll` is prepText output (lowercase, punctuation folded to spaces). */
+export function isHostMention(normAll, name) {
+  const n = String(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`\\b${HOST_VERBS}(?: (?:with|to|by))? (?:ufc )?(?:hall of famer )?${n}\\b`).test(normAll);
 }
 
 /* Bout: both fighters of one announced bout attached FROM THE TITLE (descriptions
@@ -900,6 +928,9 @@ export function linkVideo(entry, index, ctx) {
       fighters: [...fl.fighters.entries()].map(([id, f]) => ({ fighter_id: id, ...f })),
       bout: bout ? { bout_id: bout.id, event_id: bout.event_id } : null,
       article_candidates: articles.length,
+      /* Audit evidence, written only when it exists so an unaffected row's linking is unchanged. */
+      ...(ev.refused && !eventId ? { event_refused: ev.refused } : {}),
+      ...(fl.hosts && fl.hosts.length ? { hosts_ignored: fl.hosts } : {}),
     },
     review_reason: reviews.length ? reviews.map((r) => r.reason).join(',') : null,
     review: reviews.length ? reviews : null,
