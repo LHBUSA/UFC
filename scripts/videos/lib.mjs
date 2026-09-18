@@ -780,7 +780,9 @@ export function linkEvent(text, titleText, ctx, publishedAt) {
  *      linked and the surname belongs to exactly one fighter on THAT card, and is
  *      not on the stoplist. No event, no surname attachment (live or relink).
  * Anything with 2+ candidates is a review item, never an attachment. */
-export function linkFighters(text, titleText, index, ctx, eventId) {
+export function linkFighters(text, titleText, index, ctx, eventId, opts = {}) {
+  /* false only when the caller knows the event came from the description alone (linkVideo). */
+  const trusted = opts.surnameScopeTrusted !== false;
   const normAll = prepText(text);
   const normTitle = prepText(titleText);
   const attached = new Map();            /* fighter_id -> {method, alias} */
@@ -862,6 +864,15 @@ export function linkFighters(text, titleText, index, ctx, eventId) {
       if (owners.size === 1 && !attached.has([...owners][0])) withheld.push({ alias: s, fighter_id: [...owners][0], reason: 'surname_without_event_scope' });
       continue;
     }
+    /* The card is only a surname scope when the TITLE put the video on it: an
+     * event key in the title, or a title pairing. An event found only in the
+     * description may still be the video's event, but it cannot lend its card to
+     * a title surname: `#GarciaBenn ... Ryan Garcia` mentioned "Noche UFC" in its
+     * description, and the Garcia on that card is Rafa. */
+    if (!trusted) {
+      if (owners.size === 1 && !attached.has([...owners][0])) withheld.push({ alias: s, fighter_id: [...owners][0], reason: 'event_scope_not_title_trusted' });
+      continue;
+    }
     if (owners.size === 1) {
       const id = [...owners][0];
       if (!attached.has(id)) attached.set(id, { method: scopeName, alias: s, in_title: true });
@@ -941,7 +952,9 @@ export function linkVideo(entry, index, ctx) {
   /* No event key: a title pairing may still name one bout, which scopes the surname pass to its card. */
   const pairing = !eventId && !ev.review ? linkPairing(entry.title, index, ctx) : null;
   if (pairing) eventId = pairing.event_id;
-  const fl = linkFighters(text, entry.title, index, ctx, eventId);
+  /* TITLE-TRUSTED SCOPE: the event key is in the title, or a title pairing named the bout. */
+  const surnameScopeTrusted = Boolean(pairing) || ev.evidence?.in_title === true;
+  const fl = linkFighters(text, entry.title, index, ctx, eventId, { surnameScopeTrusted });
   const fighterIds = [...fl.fighters.keys()].sort();
   const bout = linkBout(fl.fighters, ctx, eventId, publishedAt);
   let eventEvidence = ev.evidence || (pairing ? { method: 'via_title_pairing', bout_id: pairing.id } : null);

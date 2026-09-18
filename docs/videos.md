@@ -99,7 +99,9 @@ relink also applies every link change the current card context implies (216 rows
 
 **A surname by itself is not a fighter identity.** Live discovery and relink share one rule: a surname-only
 match attaches a fighter ONLY when an event is already resolved and the surname is unique on THAT card
-(`surname_unique_event_card`). With no event nothing attaches; what would have is kept as
+(`surname_unique_event_card`) **and the event is title-trusted**: its key is in the title, or a title pairing
+named the bout. A description-only event may be linked but never lends its card to a surname
+(`event_scope_not_title_trusted`). With no event nothing attaches; what would have is kept as
 `linking.surnames_withheld` (evidence, never a review item). `surname_unique_window` no longer writes: it tagged
 eleven *Garcia vs Benn* boxing videos with UFC's Rafa Garcia. A title pairing (`A vs B` / `A x B` naming both
 corners of exactly one bout in the video's window) resolves that bout's event first

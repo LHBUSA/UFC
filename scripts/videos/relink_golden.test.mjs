@@ -344,3 +344,68 @@ test('LIVE: discovery reasons from the upload date, not the run date', async () 
   const early = await discover({ now: '2026-09-14T00:00:00Z' });
   assert.deepEqual([early.get('legit000001').event_id, early.get('legit000001').bout_id], [late.get('legit000001').event_id, late.get('legit000001').bout_id]);
 });
+
+/* ---- TITLE-TRUSTED SURNAME SCOPE --------------------------------------
+ * T3G-YgpFjlQ, UFC Espanol, 2026-09-11. "Noche UFC" appeared only in the
+ * description; linkEvent resolved it (in_title: false); the resolved card then
+ * lent itself to the surname pass, and the only Garcia on it is Rafa. An event
+ * found in the description may be the video's event. It may not bootstrap a
+ * surname identity: the card is a surname scope only when the TITLE put the
+ * video on it (an event key in the title, or a title pairing). */
+const T3G_EVENTS = [ev('ev-noche', 'Noche UFC: Silva vs. Delgado', '2026-09-12', 'Glendale'), ev('ev-331', 'UFC 331: Van vs. Pantoja 2', '2026-09-19', 'Los Angeles')];
+const T3G_FIGHTERS = [F('f-rafa', 'Rafa Garcia'), F('f-opp', 'Some Opponent'), F('f-silva', 'Jean Silva'), F('f-delgado', 'Jose Delgado'), F('f-van', 'Joshua Van'), F('f-pantoja', 'Alexandre Pantoja'), F('f-tsarukyan', 'Arman Tsarukyan'), F('f-ruffy', 'Mauricio Ruffy')];
+const T3G_BOUTS = [bout('b-noche-main', 'ev-noche', 'f-silva', 'f-delgado'), bout('b-noche-rafa', 'ev-noche', 'f-rafa', 'f-opp'), bout('b-331-main', 'ev-331', 'f-van', 'f-pantoja'), bout('b-331-co', 'ev-331', 'f-tsarukyan', 'f-ruffy')];
+const t3gIndex = { fighters: T3G_FIGHTERS, byId: new Map(T3G_FIGHTERS.map((f) => [f.id, f])), aliasesByFighter: new Map() };
+const t3gCtx = (published) => contextAt({ events: T3G_EVENTS, bouts: T3G_BOUTS, articles: [] }, new Date(published), WINDOW_DAYS);
+const T3G = { title: '#GarciaBenn "Listo para hacer mi trabajo" Ryan Garcia', description: 'La super estrella Ryan Garcia esta listo para defender su titulo y enfrentar a Conor Benn este 12 de Septiembre. No te pierdas Noche UFC el mismo fin de semana.', published: '2026-09-11T20:00:00Z' };
+
+test('T3G: a description-only event may link, but it never lends its card to a title surname', () => {
+  const l = linkVideo(T3G, t3gIndex, t3gCtx(T3G.published));
+  assert.deepEqual([l.event_id, l.linking.event.in_title, l.linking.event.key], ['ev-noche', false, 'noche ufc'], 'the event still resolves under the existing event policy');
+  assert.deepEqual(l.fighter_ids, [], 'Rafa Garcia does not attach; nobody does');
+  assert.ok(!l.linking.fighters.some((f) => /^surname/.test(f.method)));
+  assert.deepEqual(l.linking.surnames_withheld, [{ alias: 'garcia', fighter_id: 'f-rafa', reason: 'event_scope_not_title_trusted' }], 'what was withheld, and why, stays on the row');
+  assert.equal(l.bout_id, null);
+  assert.equal(l.link_status, 'published', 'a withheld surname never sends the video to review');
+  /* "Ryan Garcia" is a full name, and he is not a UFC fighter: full-name matching attaches nobody and is unchanged. */
+  assert.deepEqual(linkFighters('Ryan Garcia', 'Ryan Garcia', t3gIndex, t3gCtx(T3G.published), null).fighters.size, 0);
+});
+
+test('T3G, positive side: the same surname attaches when the TITLE carries the event', () => {
+  const at = '2026-09-10T20:00:00Z';
+  /* event key in the title + a surname unique on that card */
+  const keyed = linkVideo({ title: 'Garcia is ready to go | Noche UFC', description: '', published: at }, t3gIndex, t3gCtx(at));
+  assert.deepEqual([keyed.event_id, keyed.linking.event.in_title, keyed.fighter_ids, keyed.linking.fighters[0].method], ['ev-noche', true, ['f-rafa'], 'surname_unique_event_card']);
+  /* a hashtag in the title is a title key */
+  const tagged = linkVideo({ title: 'Pantoja is confident #UFC331', description: '', published: '2026-09-17T00:00:00Z' }, t3gIndex, t3gCtx('2026-09-17T00:00:00Z'));
+  assert.deepEqual([tagged.event_id, tagged.linking.event.in_title, tagged.fighter_ids], ['ev-331', true, ['f-pantoja']]);
+  /* a title pairing resolves A vs B and is trusted by construction */
+  const paired = linkVideo({ title: 'Tsarukyan vs Ruffy staredown', description: 'Watch UFC on Paramount Plus', published: '2026-09-17T00:00:00Z' }, t3gIndex, t3gCtx('2026-09-17T00:00:00Z'));
+  assert.deepEqual([paired.event_id, paired.bout_id, paired.fighter_ids.slice().sort(), paired.linking.event.method], ['ev-331', 'b-331-co', ['f-ruffy', 'f-tsarukyan'], 'via_title_pairing']);
+  /* headliners in the title are title evidence too */
+  const headliners = linkVideo({ title: 'Silva vs Delgado: the full breakdown', description: '', published: at }, t3gIndex, t3gCtx(at));
+  assert.deepEqual([headliners.event_id, headliners.fighter_ids.slice().sort()], ['ev-noche', ['f-delgado', 'f-silva']]);
+  /* and a full name in the description still attaches on a description-only event: this patch is surname-only */
+  const full = linkVideo({ title: 'Fight week vlog', description: 'Rafa Garcia trains ahead of Noche UFC.', published: at }, t3gIndex, t3gCtx(at));
+  assert.deepEqual([full.event_id, full.linking.event.in_title, full.fighter_ids, full.linking.fighters[0].method], ['ev-noche', false, ['f-rafa'], 'full_name_event_card']);
+});
+
+test('T3G on the live discovery path: a fresh upload of the same shape is ingested without Rafa Garcia', async () => {
+  const writes = [];
+  const tables = { ufc_video_channels: [{ provider: 'youtube', channel_id: 'UC-es', name: 'UFC Espanol', handle: '@ufcespanol', channel_class: 'ufc_regional', verified: true, enabled: true }], ufc_fighters: T3G_FIGHTERS, ufc_fighter_aliases: [], ufc_events: T3G_EVENTS, ufc_bouts: T3G_BOUTS, ufc_articles: [], ufc_videos: [] };
+  const xml = `<?xml version="1.0"?><feed><yt:channelId>UC-es</yt:channelId><title>UFC Espanol</title><entry><yt:videoId>t3gfresh0001</yt:videoId><yt:channelId>UC-es</yt:channelId><title>#GarciaBenn "Listo para hacer mi trabajo" Ryan Garcia</title><link rel="alternate" href="https://www.youtube.com/watch?v=t3gfresh0001"/><published>2026-09-11T20:00:00+00:00</published><updated>2026-09-11T20:00:00+00:00</updated><media:group><media:description>${T3G.description}</media:description></media:group></entry></feed>`;
+  const real = globalThis.fetch;
+  const res = (body, status = 200) => ({ ok: status < 400, status, url: '', headers: { get: () => 'text/plain' }, text: async () => body });
+  globalThis.fetch = async (url, init = {}) => {
+    const u = String(url);
+    if (u.includes('/feeds/videos.xml')) return res(xml);
+    if (u.includes('/oembed')) return res(JSON.stringify({ author_name: 'UFC Espanol' }));
+    const table = u.split('/rest/v1/')[1].split('?')[0];
+    if ((init.method || 'GET') !== 'GET') { writes.push(...JSON.parse(init.body)); return res(init.body, 201); }
+    return res(JSON.stringify(tables[table] || []));
+  };
+  try { await quiet(() => main(ENV, { now: '2026-09-18T15:00:00Z', sinceDays: 30 })); } finally { globalThis.fetch = real; }
+  assert.equal(writes.length, 1);
+  assert.deepEqual([writes[0].fighter_ids, writes[0].event_id, writes[0].bout_id, writes[0].source_metadata.language], [[], 'ev-noche', null, 'es']);
+  assert.equal(writes[0].source_metadata.linking.surnames_withheld[0].reason, 'event_scope_not_title_trusted');
+});

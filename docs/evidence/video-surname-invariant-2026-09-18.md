@@ -155,3 +155,30 @@ surname then matches that card. It was not in the reviewed batch, so it was not 
 different class from the eleven: a description-only event key lending its card to a title surname.
 The narrow fix, if wanted later, is to let a surname use an event's card only when the event key is
 in the title or the event came from a title pairing. One row; a relink plans no change to it.
+
+## 9. Residual closed — title-trusted surname scope (autopilot v0.2.4)
+
+§8's loophole is closed. **A surname may use an event's card only when the TITLE put the
+video on that card**: an event key found in the title (`linking.event.in_title === true`,
+hashtags and headliners included) or a title pairing (`via_title_pairing`). An event found
+only in the description may still be linked under the existing event policy; it cannot
+bootstrap a surname identity. Withheld matches are recorded as
+`surnames_withheld[].reason = "event_scope_not_title_trusted"`. Full-name matching is
+untouched: a full name in a description still attaches on a description-only event.
+
+**The class, measured across all 729 stored rows:** 40 rows carry a
+`surname_unique_event_card` fighter; **1** of them has description-only event evidence —
+`T3G-YgpFjlQ`. A clearly false 1, B clearly correct 0, C ambiguous 0. The other 39 all have
+the event key in the title and are unaffected.
+
+`T3G-YgpFjlQ` — dry-run: 1 row, fields `fighter_ids + linking`; Rafa Garcia removed, 0 added;
+event (Noche UFC, description), bout (none), article, `link_status`, `video_type` and
+`resolver_confidence` all identical. Applied after the Worker deploy; rerun `0 updates`.
+
+Worker: v0.2.3 `7f461aca` (**rollback**) → **v0.2.4 `1cdcbcd9-eba9-441c-83ca-a95dbf083292`**,
+schedule `13,43 * * * *` unchanged, `/health` v0.2.4, no error. Pre-deploy dry discovery on the
+real feeds: 3 new uploads, 55 unchanged, 2 evidence-only (`article_candidates` 3→4), no fighter
+removed from any row in a feed window.
+
+Full relink plan afterwards (dry, NOT applied): 77 rows — 1 high (Evloev, intentional, blocked),
+1 medium (the correct 2021 pairing gain), 75 low, 13 article links held, 0 event or bout moves.
