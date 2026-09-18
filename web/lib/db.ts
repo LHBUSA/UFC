@@ -1,4 +1,5 @@
 import { rankVideos, videoLanguage, type LiveVideoState } from "@/lib/videoPolicy";
+import { splitCard, type CardChange, type CardObservation, type CardStatusEvent } from "@/lib/cardTruth";
 import { prefersEspnDisplay, preferredDisplayFighterIds } from "@/lib/displayPortraitPolicy";
 import { espnVerifiedPortrait } from "@/lib/espnPortraitGate";
 import { pickStoredPortraits } from "@/lib/portraitSelection";
@@ -108,6 +109,10 @@ export type Bout = {
   id: string; ufcstats_id: string | null; espn_competition_id: string | null; event_id: string; weight_class: string | null;
   is_womens: boolean; is_title: boolean; scheduled_rounds: number | null; card_position: string | null; bout_order: number; status: string;
   fighter_a: Fighter; fighter_b: Fighter; result: Result | null;
+  /** The status stored on ufc_bouts. `status` is the EFFECTIVE status: a bout the card no longer lists reads `cancelled`. */
+  stored_status?: string;
+  /** Present when card truth took this bout off the active card (lib/cardTruth.ts): why, and what the sources said. */
+  card_change?: CardChange | null;
 };
 export type RoundStat = {
   bout_id: string; fighter_id: string; round: number; kd: number | null;
@@ -191,7 +196,30 @@ export async function getEventById(id: string): Promise<Event | null> {
 }
 export async function getEventBouts(eventId: string, revalidate?: number, strict = false): Promise<Bout[]> {
   const rows = (await rest<RawBout[]>(`ufc_bouts?select=${BOUT_SELECT}&event_id=eq.${eventId}&order=bout_order.desc`, [], { revalidate, strict })).data;
-  return rows.map(flattenResult);
+  return applyCardTruth(eventId, rows.map(flattenResult), revalidate);
+}
+
+/* CARD TRUTH (lib/cardTruth.ts). ufc_bouts.status alone is not the card: a competition ESPN dropped stays
+ * `announced` by design (migration 029) and the fact lives in ufc_event_card_observations. Every page asks
+ * `status !== "cancelled"`, so the effective status is set HERE, once, for all of them: Fight Week, the event
+ * page, its OG image, the weigh-in desk. The stored row is never written; `stored_status` keeps what it says.
+ * A fully fought card is history and is left alone (no extra reads). Failures degrade to the stored status. */
+export async function getCardObservations(eventId: string, limit = 12, revalidate = 120): Promise<CardObservation[]> {
+  return (await rest<CardObservation[]>(`ufc_event_card_observations?select=observed_at,source,competition_ids,placeholder_ids,complete&event_id=eq.${eventId}&source=eq.espn&order=observed_at.desc&limit=${limit}`, [], { revalidate })).data;
+}
+export async function getCardStatusEvents(eventId: string, revalidate = 120): Promise<CardStatusEvent[]> {
+  return (await rest<CardStatusEvent[]>(`ufc_fighter_status_feed?select=id,fighter_id,fighter_name,status_type,state,event_id,bout_id,replacement_fighter_name,source_url,source_name,source_kind,source_published_at,confidence,occurred_at&event_id=eq.${eventId}&order=occurred_at.desc.nullslast&limit=200`, [], { revalidate })).data;
+}
+export async function applyCardTruth(eventId: string, bouts: Bout[], revalidate?: number, eventName?: string | null): Promise<Bout[]> {
+  if (!bouts.length || bouts.every((b) => b.result || b.status === "complete")) return bouts;
+  const [observations, statusEvents] = await Promise.all([
+    getCardObservations(eventId, 12, revalidate ?? 120).catch(() => [] as CardObservation[]),
+    getCardStatusEvents(eventId, revalidate ?? 120).catch(() => [] as CardStatusEvent[]),
+  ]);
+  const { changes } = splitCard(bouts.map((b) => ({ id: b.id, espn_competition_id: b.espn_competition_id, status: b.status, fighter_a_id: b.fighter_a?.id ?? null, fighter_b_id: b.fighter_b?.id ?? null, card_position: b.card_position, bout_order: b.bout_order, weight_class: b.weight_class, has_result: Boolean(b.result) })), observations, statusEvents, { eventId, eventName });
+  if (!changes.length) return bouts;
+  const byId = new Map(changes.map((c) => [c.bout.id, c]));
+  return bouts.map((b) => (byId.has(b.id) ? { ...b, stored_status: b.status, status: "cancelled", card_change: byId.get(b.id)! } : b));
 }
 /* Events in a date window with the two counts Round-for-Round selects on:
  * bouts on the card (cancelled excluded) and bouts with a STORED RESULT. Whether

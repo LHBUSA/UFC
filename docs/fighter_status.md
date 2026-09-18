@@ -100,6 +100,40 @@ first, then other unavailable fighters, then other changes, newest update as the
 tie-break. Source count never ranks anything. `?type=` filters episodes, not
 rows: a withdrawal caused by an injury is found under both.
 
+## Card truth on the web: a removed bout tells the story
+
+`ufc_bouts.status` is not the whole card. When ESPN drops a competition the ingest does not rewrite
+the bout (migration 029, defect D1): the row stays `announced` and the fact lives in
+`ufc_event_card_observations`. PBE Algo has read that ledger since D1; the web did not, so on
+2026-09-18 the weigh-in desk read "24 weighed / 26 expected / 2 pending: Renato Moicano, Brian
+Ortega" for a bout that had been off UFC 331 for three days.
+
+`web/lib/cardTruth.ts` (pure; `npm run test:card-truth`) decides, for every page at once. A bout is
+off the active card when ANY of: its stored status is `cancelled` / `replaced` / `withdrawn`; the
+newest COMPLETE card observation no longer lists its competition (same rule as
+`workers/ufc-algo/src/cardTruth.js`, parity-tested); or an active sourced `withdrawal` names the
+bout, or its event and one of its two fighters. An incomplete read, a placeholder or a bout
+without a source id is ambiguous and removes nobody. A fought bout is history and is never touched.
+
+- **Nothing is deleted or rewritten.** `getEventBouts` returns the bout with an EFFECTIVE status
+  of `cancelled` (the stored value is kept in `stored_status`) plus `card_change`, so every
+  consumer's existing `status !== "cancelled"` filter follows: Fight Week, the event page and its
+  OG image, the weigh-in desk (`getBookedCardSplit`). A removed bout is not expected, not pending,
+  and does not keep the desk polling. It is shown under **Card changes**.
+- **The reason is sourced or absent.** "…after Brian Ortega withdrew due to injury" needs a
+  `withdrawal` event AND an `injury` event for the same fighter on the same card; `injury` licenses
+  that one word, never a diagnosis. No cause event: "The sources do not state a reason." No report
+  at all: "A specific reason is not recorded in our verified sources." Sources that disagree on the
+  fighter or on the kind of cause say less, not more.
+- **Reported is not removed.** If a withdrawal is reported while the official card still lists the
+  bout, the story says "is reported to have withdrawn … The official card still lists this bout",
+  never "removed". It still stops being expected, as it stops being callable for the Algo.
+
+Not covered (they filter `ufc_bouts.status` in SQL, so they still see `announced`): the fighter
+profile's next bout, schedule/rollover bout counts, `ufc-api`, `ufc-live-odds`. The durable fix is
+an effective-status view over `ufc_bouts` + the newest observation that all of them read; that is
+a migration and an owner decision.
+
 ## Access control
 
 The migration is `supabase/migrations/20260908000011_ufc_fighter_status.sql`.

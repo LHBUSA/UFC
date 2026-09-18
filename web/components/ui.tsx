@@ -212,8 +212,13 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState
 }
 export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolved, ranks }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }>; markets?: Map<string, BoutMarket>; unresolved?: Set<string>; ranks?: Ranks }) {
   const order = ["main", "prelim", "early", null] as const;
-  const groups = order.map((p) => ({ p, rows: bouts.filter((b) => (b.card_position || null) === p) })).filter((g) => g.rows.length);
-  const mainId = bouts[0]?.id;
+  /* A bout that came off the card (stored status, or card truth: lib/cardTruth.ts) is not a row of the card.
+   * It is not dropped either: it gets its own segment, with the reason the sources gave. */
+  const off = (b: Bout) => b.status === "cancelled" || b.status === "replaced";
+  const onCard = bouts.filter((b) => !off(b));
+  const removed = bouts.filter(off);
+  const groups = order.map((p) => ({ p, rows: onCard.filter((b) => (b.card_position || null) === p) })).filter((g) => g.rows.length);
+  const mainId = onCard[0]?.id;
   return (
     <div>
       {groups.map((g) => (
@@ -224,6 +229,23 @@ export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolve
           </div>
         </section>
       ))}
+      {removed.length > 0 && (
+        <section className="segment card-removed" data-testid="card-removed">
+          <h3>Card changes <small>{removed.length} {removed.length === 1 ? "bout" : "bouts"} · {removed.every((b) => b.card_change?.confirmed !== false) ? "scheduled, then removed" : "scheduled, then changed"}</small></h3>
+          <ul>
+            {removed.map((b) => {
+              const c = b.card_change || null;
+              return (
+                <li key={b.id}>
+                  <b><Link href={`/fighters/${fighterSlug(b.fighter_a)}`}>{b.fighter_a.name}</Link> vs <Link href={`/fighters/${fighterSlug(b.fighter_b)}`}>{b.fighter_b.name}</Link></b>
+                  <span>{c ? c.story : "Bout removed from the card. A specific reason is not recorded in our verified sources."}</span>
+                  {c?.source && <a href={c.source.url} target="_blank" rel="noopener noreferrer nofollow">{c.source.name} ↗{c.receipts > 1 ? ` · ${c.receipts} receipts` : ""}</a>}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

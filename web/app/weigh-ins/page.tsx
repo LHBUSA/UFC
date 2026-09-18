@@ -7,13 +7,14 @@ import {
 } from "@/lib/db";
 import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import {
-  getWeighIns, getWeighInSummary, getWeighInHistory, getWeighInEvents, pickDeskEvent, getBookedCard,
+  getWeighIns, getWeighInSummary, getWeighInHistory, getWeighInEvents, pickDeskEvent, getBookedCardSplit,
   deskWindow, bookedCoverage, shouldPoll, supersessionLabel,
   RESULT_LABEL, RESULT_TONE, SOURCE_KIND_LABEL,
   weightCell, limitCell, deltaCell, classCell, sortForTable, isLive, freshness,
   updateLine, timelineKind, clockTime, WEIGHIN_REVALIDATE,
   type WeighIn,
 } from "@/lib/weighins";
+import { BASIS_LABEL, type CardChange } from "@/lib/cardTruth";
 import { fighterSlug } from "@/lib/slug";
 import { fmtDate, fmtHeight, fmtReach, fmtRecord, stanceLabel } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -149,14 +150,18 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
       }
     : pickDeskEvent(upcomingDesk, covered);
 
-  const [rows, summary, fullHistory, booked] = desk
+  const [rows, summary, fullHistory, card] = desk
     ? await Promise.all([
         getWeighIns(desk.eventId).catch(() => []),
         getWeighInSummary(desk.eventId).catch(() => null),
         getWeighInHistory(desk.eventId, 400).catch(() => []),
-        getBookedCard(desk.eventId).catch(() => []),
+        getBookedCardSplit(desk.eventId, desk.eventName).catch(() => ({ active: [], changes: [] as CardChange[], all: [] })),
       ])
-    : [[], null, [], []];
+    : [[], null, [], { active: [], changes: [] as CardChange[], all: [] }];
+  /* CARD TRUTH: a bout that came off the card is not expected and not pending. It is not dropped either:
+   * it is shown below, under Card changes, with the reason the sources gave. */
+  const booked = card.active;
+  const cardChanges = card.changes;
   const history = fullHistory.slice(0, 18);
 
   const table = sortForTable(rows);
@@ -187,7 +192,8 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
     return timelineKind({ ...(h as unknown as WeighIn), is_correction: kind === "correction", is_confirmation: kind === "confirmation" });
   };
 
-  const fighterIds = [...new Set([...table.map((r) => r.fighter_id), ...bookedIds].filter(Boolean))];
+  const removedIds = cardChanges.flatMap((c) => [c.bout.fighter_a_id, c.bout.fighter_b_id]).filter((x): x is string => Boolean(x));
+  const fighterIds = [...new Set([...table.map((r) => r.fighter_id), ...bookedIds, ...removedIds].filter(Boolean))];
   const [fighters, images] = await Promise.all([
     getFightersByIds(fighterIds).catch(() => []),
     getVerifiedDisplayImagesForFighters(fighterIds).catch(() => new Map<string, PortraitSet>()),
@@ -299,6 +305,58 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
         <Empty title="Official weigh-in result not recorded yet">
           No sourced scale readings are on file for this card yet. The desk stays empty rather than guessing a weight or contractual limit.
         </Empty>
+      )}
+
+      {cardChanges.length > 0 && (
+        <section className={styles.changes} aria-labelledby="card-changes-heading" data-testid="weighin-card-changes">
+          <div className="eyebrow">Card changes · scheduled, then removed</div>
+          <h2 id="card-changes-heading">Card changes</h2>
+          <p className={styles.panelNote}>
+            {cardChanges.length === 1 ? "This bout was" : "These bouts were"} on the announced card and later came off it. No official weigh-in was expected after the removal,
+            so {cardChanges.length === 1 ? "its fighters are" : "their fighters are"} not counted as expected or pending above. The reason is the one our sources gave; where none is recorded, none is shown.
+          </p>
+          <div className={styles.changeList}>
+            {cardChanges.map((c) => {
+              const a = c.bout.fighter_a_id ? fighterMap.get(c.bout.fighter_a_id) : null;
+              const b = c.bout.fighter_b_id ? fighterMap.get(c.bout.fighter_b_id) : null;
+              const first = c.withdrew && c.withdrew.fighter_id === c.bout.fighter_b_id ? b : a;
+              const second = first === a ? b : a;
+              const kept = c.still_on_card.map((id) => fighterMap.get(id)?.name).filter(Boolean);
+              return (
+                <article key={c.bout.id} className={styles.change} data-testid="weighin-card-change">
+                  <div className={styles.changeBadges}>
+                    <span className={styles.badge} data-tone="alert">{c.withdrew ? "Withdrawn" : "Removed"}</span>
+                    <span className={styles.badge} data-tone="neutral">{c.confirmed ? "Bout removed" : "Withdrawal reported"}</span>
+                    {c.source?.kind === "official" && <span className={styles.badge} data-tone="ok">Official</span>}
+                  </div>
+                  <h3>
+                    {first ? <Link href={`/fighters/${fighterSlug(first)}`}>{first.name}</Link> : "Fighter"}
+                    <span> vs </span>
+                    {second ? <Link href={`/fighters/${fighterSlug(second)}`}>{second.name}</Link> : "Fighter"}
+                  </h3>
+                  <p className={styles.changeStory}>{c.story}</p>
+                  <p className={styles.panelNote}>{c.confirmed ? "No official weigh-in was expected after the bout was removed." : "No official weigh-in is expected while the withdrawal stands."}</p>
+                  {c.replacement_fighter_name && <p className={styles.panelNote}>Sourced replacement: <strong>{c.replacement_fighter_name}</strong></p>}
+                  {kept.length > 0 && <p className={styles.panelNote}>{kept.join(" and ")} {kept.length === 1 ? "remains" : "remain"} on the card in another bout.</p>}
+                  <dl className={styles.changeFacts}>
+                    <div><dt>Originally</dt><dd>{[c.bout.card_position ? `${c.bout.card_position[0].toUpperCase()}${c.bout.card_position.slice(1)} card` : null, c.bout.weight_class ? c.bout.weight_class.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (ch) => ch.toUpperCase()) : null].filter(Boolean).join(" · ") || "Position not recorded"}</dd></div>
+                    {c.reported_at && <div><dt>First reported</dt><dd>{fmtDate(c.reported_at)} · {clockTime(c.reported_at)}</dd></div>}
+                    {c.off_card_since && <div><dt>Off the official card since</dt><dd>{fmtDate(c.off_card_since)} · {clockTime(c.off_card_since)}</dd></div>}
+                    <div><dt>Basis</dt><dd>{c.basis.map((x) => BASIS_LABEL[x]).join(" · ")}</dd></div>
+                    <div>
+                      <dt>Source</dt>
+                      <dd>
+                        {c.source
+                          ? <><a href={c.source.url} target="_blank" rel="noopener noreferrer nofollow">{SOURCE_KIND_LABEL[c.source.kind]} · {c.source.name} ↗</a>{c.receipts > 1 && <> · <Link href="/injuries">{c.receipts} source receipts</Link></>}</>
+                          : "Official card listing (ESPN card observation); no report on file"}
+                      </dd>
+                    </div>
+                  </dl>
+                </article>
+              );
+            })}
+          </div>
+        </section>
       )}
 
       <section className={styles.archive} aria-labelledby="recent-weighins-heading">
