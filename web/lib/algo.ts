@@ -85,7 +85,6 @@ export async function getAlgoPublicRecord(): Promise<AlgoPublicRecord> {
 
 
 export type AlgoUpsetProof = {
-  threshold_odds: number;
   showcase_threshold_odds: number;
   total: number;
   decided: number;
@@ -131,10 +130,23 @@ type UpsetBoutRow = {
   event: { name: string; event_date: string };
 };
 
-const UPSET_THRESHOLD_ODDS = 100;
 const UPSET_SHOWCASE_THRESHOLD_ODDS = 120;
+
+export function isMarketOppositePick(
+  market: AlgoBoutView["market"],
+  pickProbability: number | string | null | undefined,
+): boolean {
+  const marketPick = Number(market?.devigged_pick);
+  const marketOpponent = Number(market?.devigged_opponent);
+  const modelPick = Number(pickProbability);
+  return Number.isFinite(marketPick)
+    && Number.isFinite(marketOpponent)
+    && Number.isFinite(modelPick)
+    && marketOpponent > marketPick
+    && modelPick > 0.5;
+}
+
 const EMPTY_UPSET_PROOF = (): AlgoUpsetProof => ({
-  threshold_odds: UPSET_THRESHOLD_ODDS,
   showcase_threshold_odds: UPSET_SHOWCASE_THRESHOLD_ODDS,
   total: 0, decided: 0, wins: 0, losses: 0, no_decision: 0,
   hit_rate: null, average_consensus_odds: null, biggest_wins: [],
@@ -146,9 +158,11 @@ const EMPTY_UPSET_PROOF = (): AlgoUpsetProof => ({
  * This reader is intentionally historical-only: a row must be LOCKED and have
  * a current official grade before its fighter identity can leave the data
  * layer. Upcoming/provisional calls remain behind getAlgoCards/getAlgoBout.
- * An underdog is mechanical, not editorial: lock-time consensus > +100.
- * Showcase cards are wins at +120 or longer, while the aggregate includes
- * every graded underdog call so losses cannot disappear from the record.
+ * An Upset Radar call is mechanical, not editorial: the de-vigged market
+ * probability makes the OPPONENT the favorite, while PBE selects the opposite
+ * fighter as its pick (>50% model probability). Showcase cards are wins at
+ * +120 or longer, while the aggregate includes every graded market-opposite
+ * call so losses cannot disappear from the record.
  */
 export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
   const fx = fixture();
@@ -157,7 +171,7 @@ export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
       .filter((b) => b.prediction?.locked_at && b.grade)
       .map((b) => {
         const odds = Number(b.market?.pick_consensus_odds);
-        if (!Number.isFinite(odds) || odds <= UPSET_THRESHOLD_ODDS) return null;
+        if (!Number.isFinite(odds) || !isMarketOppositePick(b.market, b.prediction!.pick_probability)) return null;
         const pick = b.pick_fighter_id === b.fighter_a.id ? b.fighter_a : b.fighter_b;
         const opponent = b.pick_fighter_id === b.fighter_a.id ? b.fighter_b : b.fighter_a;
         return {
@@ -178,7 +192,7 @@ export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
     const losses = rows.filter((r) => r.result === "LOSS").length;
     const decided = wins + losses;
     return {
-      threshold_odds: UPSET_THRESHOLD_ODDS, showcase_threshold_odds: UPSET_SHOWCASE_THRESHOLD_ODDS,
+      showcase_threshold_odds: UPSET_SHOWCASE_THRESHOLD_ODDS,
       total: rows.length, decided, wins, losses, no_decision: rows.length - decided,
       hit_rate: decided ? wins / decided : null,
       average_consensus_odds: rows.length ? rows.reduce((n, r) => n + r.consensus_odds, 0) / rows.length : null,
@@ -205,7 +219,7 @@ export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
     const grade = gradeBy.get(p.id);
     const bout = boutBy.get(p.bout_id);
     const odds = Number(p.sample_context?.market?.pick_consensus_odds);
-    if (!grade || !bout || !Number.isFinite(odds) || odds <= UPSET_THRESHOLD_ODDS) return [];
+    if (!grade || !bout || !Number.isFinite(odds) || !isMarketOppositePick(p.sample_context?.market ?? null, p.pick_probability)) return [];
     const pick = p.pick_fighter_id === bout.fighter_a.id ? bout.fighter_a : p.pick_fighter_id === bout.fighter_b.id ? bout.fighter_b : null;
     if (!pick) return [];
     const opponent = pick.id === bout.fighter_a.id ? bout.fighter_b : bout.fighter_a;
@@ -229,7 +243,6 @@ export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
   const losses = rows.filter((r) => r.result === "LOSS").length;
   const decided = wins + losses;
   return {
-    threshold_odds: UPSET_THRESHOLD_ODDS,
     showcase_threshold_odds: UPSET_SHOWCASE_THRESHOLD_ODDS,
     total: rows.length,
     decided,

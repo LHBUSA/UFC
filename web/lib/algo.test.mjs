@@ -165,7 +165,7 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(data, /export async function getAlgoUpsetProof\(\)/);
   assert.match(data, /locked_at=not\.is\.null/, 'historical proof can only come from locked predictions');
   assert.match(data, /ufc_model_prediction_current_grade/, 'historical proof requires an official current grade');
-  assert.match(data, /odds <= UPSET_THRESHOLD_ODDS/, 'underdog classification is mechanical: consensus must be longer than +100');
+  assert.match(data, /marketOpponent > marketPick[\s\S]*modelPick > 0\.5/, 'Upset Radar requires the market to favor the opponent while PBE picks the opposite fighter');
   assert.match(data, /result === "WIN" && r\.consensus_odds >= UPSET_SHOWCASE_THRESHOLD_ODDS/, 'showcase cards are +120-or-longer wins');
   assert.match(data, /The record above includes every graded PBE underdog call|every graded underdog call so losses cannot disappear/i, 'losses stay in the aggregate');
 
@@ -186,6 +186,8 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(picksCss, /\.pbe-upset-radar-scan-copy,[\s\S]*display: none !important/, 'the old text-only scanning placeholder is retired');
   assert.match(picksCss, /prefers-reduced-motion: reduce[\s\S]*pbe-upset-radar-svg \.scope-sweep/, 'radar animation respects reduced-motion');
   assert.match(radar, /WHY PBE SEES THE UPSET/, 'the live signal explains the model disagreement');
+  assert.match(radar, /isMarketOppositePick\(b\.market, p\.pick_probability\)/, 'live Upset Radar uses the same market-opposite definition as the historical ledger');
+  assert.match(radar, /Market favorite:/, 'the UI names the market favorite explicitly instead of using ambiguous favorite/underdog copy');
   assert.match(radar, /drivers\(p, b\.fighter_a\.id, b\.fighter_b\.id\)/, 'the explainer comes from model coefficient math, not generated copy');
   assert.match(radar, /stored pre-fight feature vector × the live model coefficients/, 'the explainer states its provenance');
   assert.match(radar, /mv\.state === "UNAVAILABLE"/, 'last-observed plus-money calls stay visible instead of dropping the fighter photo during a freshness handoff');
@@ -201,7 +203,7 @@ test('PBE Upset Radar exposes only graded locked history publicly and gates curr
   assert.match(radar, /No hindsight\. No backfill\. No edited losses\./);
   assert.doesNotMatch(radar, /Open full PBE Picks/, 'the PBE Picks page must never link to itself from Upset Radar');
   assert.match(radar, /AUTO-RANKED · EDGE FIRST/, 'the native PBE Picks surface shows signal state instead of redundant navigation');
-  assert.match(radar, /PBE PICK[\s\S]*PLUS MONEY[\s\S]*CURRENT SNAPSHOT/, 'the signal standard is explicit');
+  assert.match(radar, /MARKET[\s\S]*favors opponent[\s\S]*PBE[\s\S]*picks opposite/, 'the signal standard is explicit');
 });
 
 test('PBE PICKS is a primary nav item pointing at the existing /algo/card surface; no duplicate route', () => {

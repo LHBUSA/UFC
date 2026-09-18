@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { UfcAccess } from "@/lib/accessDecision";
 import type { PortraitSet } from "@/lib/db";
 import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
-import { getAlgoCards, type AlgoUpsetProof } from "@/lib/algo";
+import { getAlgoCards, isMarketOppositePick, type AlgoUpsetProof } from "@/lib/algo";
 import { agoText, deltaText, drivers, marketView, oddsText, pctText } from "@/lib/algoView";
 
 type CurrentUnderdog = {
@@ -77,7 +77,7 @@ export async function PbeUpsetRadar({
       if (!p || !b.pick_fighter_id || b.decision !== "ELIGIBLE") return [];
       const mv = marketView(b.market, { lockedAt: p.locked_at });
       const odds = mv.pick.consensus;
-      if (mv.state === "UNAVAILABLE" || odds == null || odds <= proof.threshold_odds) return [];
+      if (mv.state === "UNAVAILABLE" || odds == null || !isMarketOppositePick(b.market, p.pick_probability)) return [];
       const pick = b.pick_fighter_id === b.fighter_a.id ? b.fighter_a : b.fighter_b;
       const opponent = pick.id === b.fighter_a.id ? b.fighter_b : b.fighter_a;
       const modelDrivers = drivers(p, b.fighter_a.id, b.fighter_b.id);
@@ -150,7 +150,7 @@ export async function PbeUpsetRadar({
 
               <div className="pbe-upset-radar-visual-label">
                 <i />
-                <span>{primary ? `MARKET DOG · ${oddsText(primary.odds)}` : "CLEAR"}</span>
+                <span>{primary ? `UPSET PICK · ${oddsText(primary.odds)}` : "CLEAR"}</span>
               </div>
             </div>
 
@@ -165,7 +165,7 @@ export async function PbeUpsetRadar({
             {primary ? (
               <div className="pbe-upset-radar-visual-name">
                 <b>{primary.pickName}</b>
-                <span>{pctText(primary.probability)} PBE favorite · vs {primary.opponentName}</span>
+                <span>Market favorite: {primary.opponentName} {oddsText(primary.opponentOdds)}</span>
               </div>
             ) : (
               <div className="pbe-upset-radar-visual-name quiet">
@@ -178,12 +178,12 @@ export async function PbeUpsetRadar({
           <header className="pbe-upset-rail-head">
             <div className="eyebrow">PBE Picks · model vs market</div>
             <h3 id="pbe-upset-rail-title">Upset Radar</h3>
-            <p>Market underdogs that PBE rates as the more likely winner. The point is the disagreement.</p>
+            <p>Upset Radar fires only when the market favors one fighter and PBE picks the opposite fighter to win.</p>
           </header>
 
           <div className="pbe-upset-rail-rule">
-            <span><b>MARKET DOG</b> +101+</span>
-            <span><b>PBE FAVORITE</b> model &gt; opponent</span>
+            <span><b>MARKET</b> favors opponent</span>
+            <span><b>PBE</b> picks opposite</span>
             <span><b>AUTO</b> freshness</span>
           </div>
 
@@ -193,7 +193,7 @@ export async function PbeUpsetRadar({
                 {current.slice(0, 2).map((x, i) => (
                   <article className="pbe-upset-rail-signal" key={x.boutId}>
                     <div className="pbe-upset-rail-signal-top">
-                      <span>#{i + 1} · {x.locked ? "LOCKED" : "PROVISIONAL"} · MARKET UNDERDOG</span>
+                      <span>#{i + 1} · {x.locked ? "LOCKED" : "PROVISIONAL"} · PBE UPSET PICK</span>
                       <b>{oddsText(x.odds)}</b>
                     </div>
                     <h4>{x.pickName}</h4>
@@ -212,8 +212,8 @@ export async function PbeUpsetRadar({
                           <b>MODEL DRIVERS</b>
                         </div>
                         <div className="pbe-upset-rail-gap">
-                          <b>{pctText(x.probability)} PBE favorite</b>
-                          <span>Market: {x.pickName} {oddsText(x.odds)} · {x.opponentName} {oddsText(x.opponentOdds)} · {deltaText(x.edgePts)} {x.marketState === "CURRENT" ? "edge" : "stored gap"}</span>
+                          <b>PBE picks {x.pickName} · {pctText(x.probability)}</b>
+                          <span>Market favorite: {x.opponentName} {oddsText(x.opponentOdds)} · PBE upset pick: {x.pickName} {oddsText(x.odds)} · {deltaText(x.edgePts)} {x.marketState === "CURRENT" ? "edge" : "stored gap"}</span>
                         </div>
                         {x.supporting.length > 0 ? (
                           <div className="pbe-upset-rail-driver-list">
