@@ -15,11 +15,18 @@
  * -aware surfacing can grow later without a locale-routed page tree. */
 import type { OfficialVideoRow } from "@/lib/db";
 
-export type VideoLang = "en" | "es" | "pt" | "unknown";
+export type VideoLang = "en" | "es" | "pt" | "ko" | "ja" | "other" | "unknown";
+/* The toolbar stays All / English / Spanish / Portuguese. Korean, Japanese and
+ * other-script uploads are reachable under All and always carry a truthful
+ * label; they do not each get a button. */
 export type LangFilter = "all" | "en" | "es" | "pt";
 
-export const LANG_LABEL: Record<VideoLang, string> = { en: "English", es: "Spanish", pt: "Portuguese", unknown: "Language unlisted" };
-export const LANG_SHORT: Record<VideoLang, string> = { en: "EN", es: "ES", pt: "PT", unknown: "—" };
+/* "other": the title is written in a script we can see is not English, Spanish
+ * or Portuguese but do not name (Han-only, Cyrillic, Arabic, Thai ...). It is a
+ * statement about what the title is NOT, which is all the evidence supports. */
+export const LANG_LABEL: Record<VideoLang, string> = { en: "English", es: "Spanish", pt: "Portuguese", ko: "Korean", ja: "Japanese", other: "Other language", unknown: "Language unlisted" };
+export const LANG_SHORT: Record<VideoLang, string> = { en: "EN", es: "ES", pt: "PT", ko: "KO", ja: "JA", other: "INTL", unknown: "—" };
+export const LANG_FILTERS: LangFilter[] = ["all", "en", "es", "pt"];
 
 /* Channel → default language and tier (docs/videos.md §channels). */
 const CHANNEL_LANG: Array<[RegExp, VideoLang]> = [[/brasil|\bbr\b|portugu/i, "pt"], [/espa[nñ]ol|latino|\bes\b/i, "es"], [/^ufc$|ufc fight pass|espn|ufc europe|ufc uk|ufc australia|ufc asia|ufc japan|ufc eurasia|ufc quebec/i, "en"]];
@@ -28,9 +35,39 @@ const CHANNEL_TIER: Array<[RegExp, number]> = [[/^ufc$/i, 1], [/espn mma/i, 1], 
 const ES_HINT = /\b(el|la|los|las|del|con|contra|pelea|peleador|entrevista|conferencia|resumen|noche|hoy|semana|previa|mejores|momentos|así|más|será|todo|nuevo)\b|ñ/i;
 const PT_HINT = /\b(luta|lutador|lutadora|entrevista|coletiva|melhores|momentos|noite|semana|prévia|contra|não|você|também|história|campeão|pesagem)\b|ção|ções/i;
 
+/* SCRIPT BEATS CHANNEL. The main UFC channel uploads Korean- and Japanese-titled
+ * clips (UFC Korea / UFC Japan programming) beside its English ones, so "this is
+ * the UFC channel" says nothing about one upload's language. A title's writing
+ * system is direct evidence and is checked before the channel default AND before
+ * a stored source_metadata.language, because rows ingested before this rule hold
+ * language:"en" for Hangul titles. Latin-script titles fall through unchanged.
+ *
+ *   Hangul                     -> ko   (used by no other language)
+ *   Hiragana / Katakana        -> ja      (kana is Japanese; Han alone is not)
+ *   Han with no kana           -> unknown (Chinese or Japanese: not decidable here)
+ *   Cyrillic, Arabic, Thai,
+ *   Devanagari, Hebrew         -> other   (clearly not en/es/pt; not named further)
+ *
+ * Two characters is the floor: one stray symbol never relabels a title. */
+const SCRIPT_RULES: Array<[RegExp, VideoLang]> = [
+  [/[\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F]/g, "ko"],
+  [/[\u3040-\u309F\u30A0-\u30FF\uFF66-\uFF9F]/g, "ja"],
+  [/[\u4E00-\u9FFF\u3400-\u4DBF]/g, "unknown"],
+  [/[\u0400-\u04FF\u0600-\u06FF\u0E00-\u0E7F\u0900-\u097F\u0590-\u05FF]/g, "other"],
+];
+export function scriptLanguage(title: string | null | undefined): VideoLang | null {
+  const t = String(title || "");
+  for (const [re, lang] of SCRIPT_RULES) if ((t.match(re) || []).length >= 2) return lang;
+  return null;
+}
+
+const STORED: ReadonlySet<string> = new Set(["en", "es", "pt", "ko", "ja", "other"]);
+
 export function videoLanguage(v: Pick<OfficialVideoRow, "channel_name" | "title" | "description" | "source_metadata">): VideoLang {
+  const byScript = scriptLanguage(v.title);
+  if (byScript) return byScript;
   const meta = (v.source_metadata || {}) as { language?: string };
-  if (meta.language === "en" || meta.language === "es" || meta.language === "pt") return meta.language;
+  if (meta.language && STORED.has(meta.language)) return meta.language as VideoLang;
   const ch = v.channel_name || "";
   const channelLang = CHANNEL_LANG.find(([re]) => re.test(ch))?.[1] || "unknown";
   if (channelLang === "es" || channelLang === "pt") return channelLang;
@@ -193,5 +230,5 @@ export function defaultLanguage(videos: Array<Pick<OfficialVideoRow, "channel_na
 }
 
 export function parseLang(v: string | null | undefined): LangFilter | null {
-  return v === "en" || v === "es" || v === "pt" || v === "all" ? v : null;
+  return LANG_FILTERS.includes(v as LangFilter) ? (v as LangFilter) : null;
 }

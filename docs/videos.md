@@ -214,8 +214,8 @@ release branch), the 30-minute cadence is live with no further change.
 
 ## Content language (V1 strategy)
 
-Every row carries `source_metadata.language` (`en` · `es` · `pt` · `unknown`, with
-`language_method` = channel | title | none) written by the ingest from the channel
+Every row carries `source_metadata.language` (`en` · `es` · `pt` · `ko` · `ja` · `other` · `unknown`, with
+`language_method` = script | channel | title | none) written by the ingest from the channel
 (UFC Brasil → pt, UFC Espanol → es, UFC / ESPN MMA / other official English
 channels → en) with a title check for the rare Spanish/Portuguese-titled clip on an
 English channel. When the Data API key is present, `source_metadata.region_restriction`
@@ -232,6 +232,37 @@ least two English clips exist, otherwise All, always labelled). The filter can b
 preset from the URL: `?lang=en|es|pt|all`. This is content-language filtering only —
 no locale-routed page tree, no application translation. A later language-aware
 surfacing layer can read the same `lang` state.
+
+**Script beats channel.** The main UFC channel uploads Korean- and Japanese-titled
+clips beside its English ones, so the channel says nothing about one upload. The
+title's writing system is checked first, before the channel default and before a
+stored `language` (rows ingested before 2026-09-18 hold `en` for Hangul titles):
+Hangul → `ko`, kana → `ja`, Han without kana → `unknown` (Chinese or Japanese is not
+decidable from Han alone), Cyrillic / Arabic / Thai / Devanagari / Hebrew → `other`.
+Two characters is the floor. `language_method` is `script` for these. The rule lives
+twice — `scripts/videos/lib.mjs` (`scriptLanguage`, `detectLanguage`) and
+`web/lib/videoPolicy.ts` — and `web/lib/videoCuration.test.ts` asserts parity on real
+titles. The toolbar stays All · English · Spanish · Portuguese: `ko` / `ja` / `other`
+are truthful card labels reachable under All, not extra buttons. A Korean title can
+never carry an ENGLISH badge.
+
+### Fight-week curation (`web/lib/videoCuration.ts`)
+
+The `timeline` rail is a curated desk, not the event's inventory (UFC 331 had 142
+linked rows; the newest 24 were one afternoon of Shorts). The page reads the whole
+inventory (`EVENT_VIDEO_INVENTORY`) and `curateFightWeekVideos` narrows it, in order:
+eligibility (region-blocked and unembeddable rows never reach the desk) → language
+(All when the language has no clips) → localized variants folded (All only) → the
+best clip per stage, breadth first then depth, under caps: **9 cards, 2 per type,
+2 `other`, 3 per clock hour**. Stage order: Embedded, Countdown, press conference,
+media day, weigh-in, faceoff, preview, interview, full fight, highlights, post-fight,
+analysis, other (`phase: "post"` leads with the aftermath). Inside a stage:
+region-verified first, then language preference, channel tier, latest episode,
+recency, id. Variants fold only across DIFFERENT languages with the same type and
+the same episode number (Embedded) or the same linked bout / exact fighter set,
+within 48h; interviews, highlights, analysis and `other` are never folded. Everything
+not on the desk is behind "See all official videos". JSON-LD advertises the curated
+set only (`curatedEventVideos`). Phones show the lead plus four until expanded.
 
 Embed fallback: the player is created with `enablejsapi=1`; if YouTube reports error
 100/101/150 (removed, embedding disabled, region-restricted) the card keeps its poster,

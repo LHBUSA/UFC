@@ -20,7 +20,7 @@
     "test:proof-rail": "node --experimental-strip-types --test lib/proofRail.test.mjs",
     "test:round-index": "node --experimental-strip-types --test lib/roundIndex.test.mjs",
     "test:round-rollover": "node --experimental-strip-types --test lib/roundRollover.test.ts lib/broadcast-display.test.ts",
-    "test:story-media": "node --experimental-strip-types --test lib/storyImages.test.ts lib/videoPolicy.test.ts",
+    "test:story-media": "node --experimental-strip-types --test lib/storyImages.test.ts lib/videoPolicy.test.ts lib/videoCuration.test.ts",
     "test:portrait": "node --experimental-strip-types --test lib/portraitIdentity.test.ts",
     "check:css-tokens": "node scripts/check-css-tokens.mjs",
     "check:route-css": "node scripts/check-route-css-scope.mjs",

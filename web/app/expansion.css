@@ -323,5 +323,27 @@
 .video-group h4 small { color: var(--pbe-faint); }
 .video-group-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 10px; }
 .video-group-grid .official-video-copy h3 { font-size: 13px; }
+/* Curated fight-week desk: an explicit grid. The rail's auto-fit template gives the feature column minmax(0, ...),
+ * which collapses to nothing once eight supporting cards claim 220px each. Lead = 2x2, then eight cards around it. */
+.video-rail-grid.video-curated { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.video-rail-grid.video-curated > .official-video.feature { grid-column: span 2; grid-row: span 2; }
+@media (max-width: 1000px) {
+  .video-rail-grid.video-curated { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .video-rail-grid.video-curated > .official-video.feature { grid-column: 1 / -1; grid-row: auto; }
+}
+/* Phone: video stays secondary to the card. One lead, then a two-up grid of four; the rest of the curated desk
+ * opens with the same "See all official videos" control. */
+@media (max-width: 640px) {
+  .video-rail-grid.video-curated { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .video-rail-grid.video-curated > .official-video.feature { grid-column: 1 / -1; }
+  .video-rail-grid.video-curated:not(.expanded) > .official-video:nth-child(n+6) { display: none; }
+  .video-rail-grid.video-curated > .official-video:not(.feature) .official-video-copy h3 { font-size: 13px; }
+  .video-more-btn { width: 100%; justify-content: center; }
+}
+.video-more { margin-top: 16px; }
+.video-more-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border: 1px solid var(--pbe-line-strong); border-radius: var(--r-sm); background: transparent; color: var(--pbe-paper); font: 600 var(--fs-sm)/1 var(--pbe-font-ui); cursor: pointer; }
+.video-more-btn:hover { border-color: var(--pbe-gold); color: var(--pbe-gold-bright); }
+.video-more-btn:focus-visible { outline: 2px solid var(--pbe-gold); outline-offset: 2px; }
+.video-more-btn small { color: var(--pbe-faint); font: 600 11px/1 var(--pbe-font-data); letter-spacing: .06em; text-transform: uppercase; }
 @media (max-width: 900px) { .video-desk-grid { grid-template-columns: 1fr; } .video-desk-side { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .video-desk-side { grid-template-columns: 1fr; } }

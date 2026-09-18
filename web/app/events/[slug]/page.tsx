@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent, getImageFraming, sortVideosTimeline, getRankings } from "@/lib/db";
+import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent, EVENT_VIDEO_INVENTORY, getImageFraming, sortVideosTimeline, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { resolveEvent } from "@/lib/resolve";
 import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
@@ -9,7 +9,7 @@ import { ProPreview } from "@/components/ProPreview";
 import { getUfcAccess } from "@/lib/access";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { PregameDesk } from "@/components/PregameDesk";
-import { VideoRail, videoJsonLd } from "@/components/VideoRail";
+import { VideoRail, videoJsonLd, curatedEventVideos } from "@/components/VideoRail";
 import { OfficialDestinations } from "@/components/OfficialDestinations";
 import { buildDeskBriefs } from "@/lib/pregame";
 import { intelligenceUpdated } from "@/lib/fightweek";
@@ -87,7 +87,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
    * are never fetched for a free render. */
   const access = await getUfcAccess();
   const returnPath = `/events/${eventSlug(e)}`;
-  const [bouts, articles, videosRaw, cardChanges] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, 24).catch(() => []), getEventCardChanges(e.id).catch(() => [])]);
+  const [bouts, articles, videosRaw, cardChanges] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, EVENT_VIDEO_INVENTORY).catch(() => []), getEventCardChanges(e.id).catch(() => [])]);
   const [weighInSummary, weighIns, broadcast] = await Promise.all([
     getWeighInSummary(e.id).catch(() => null),
     getWeighIns(e.id).catch(() => []),
@@ -202,7 +202,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       <EventCardChanges changes={cardChanges} />
 
-      <VideoRail variant="timeline" videos={videos} title={done ? "Official video from this card" : "Fight-week video"} eyebrow="Official channels · event relevance first" note="Videos are attached to this event by the resolver only when the title or description names it · embedded from YouTube, not hosted by PropBetEdge" />
+      <VideoRail variant="timeline" phase={done ? "post" : "pre"} videos={videos} title={done ? "Official video from this card" : "Fight-week video"} eyebrow="Official channels · event relevance first" note="Videos are attached to this event by the resolver only when the title or description names it · embedded from YouTube, not hosted by PropBetEdge" />
 
       {articles.length > 0 && <section className="segment"><h3>{done ? "Post-fight desk" : "Pregame reading"} <small>{plural(articles.length, "story", "stories")} · timestamped</small></h3><div className="news">{articles.map((a) => <NewsStoryCard key={a.id} a={a} hero={a.hero_image_ref ? media.heroes.get(a.hero_image_ref) : null} faces={media.faces.get(a.id)} kicker={eventBrand(e.name)} />)}</div></section>}
 
@@ -226,7 +226,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           considerably more than "UFC.com listed this carrier on the US events
           page" — so we link the official page instead and claim nothing we
           have not verified. */}
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: broadcast?.main_card_start_utc || e.event_date, endDate: broadcast?.main_card_start_utc ? undefined : e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, subjectOf: videos.length ? videoJsonLd(videos) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: broadcast?.main_card_start_utc || e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: broadcast?.main_card_start_utc || e.event_date, endDate: broadcast?.main_card_start_utc ? undefined : e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, subjectOf: videos.length ? videoJsonLd(curatedEventVideos(videos, done ? "post" : "pre")) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: broadcast?.main_card_start_utc || e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
     </div>
   );
 }

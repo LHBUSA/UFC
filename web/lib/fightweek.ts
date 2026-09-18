@@ -1,6 +1,6 @@
 import "server-only";
 import { getRoundCoverageFor } from "@/lib/roundIndex";
-import { getEventBouts, getImagesForFighters, getImageFraming, getVideosForEvent, getRankings, getNextEvent, sortVideosTimeline, type Bout, type Event, type FramingRow, type OfficialVideoRow, type PortraitSet, type RankingsSnapshot } from "@/lib/db";
+import { getEventBouts, getImagesForFighters, getImageFraming, getVideosForEvent, EVENT_VIDEO_INVENTORY, getRankings, getNextEvent, sortVideosTimeline, type Bout, type Event, type FramingRow, type OfficialVideoRow, type PortraitSet, type RankingsSnapshot } from "@/lib/db";
 import { buildDeskBriefs, type DeskBrief, type DeskSide } from "@/lib/pregame";
 import { getIngestFreshness, type IngestFreshness } from "@/lib/archive";
 import { eventSlug } from "@/lib/slug";
@@ -88,7 +88,7 @@ export async function loadFightWeek(event: Event, opts: { archive?: boolean; dna
   const [briefs, imgs, videosRaw, rankings, ingest] = await Promise.all([
     live.length ? buildDeskBriefs(event, live, live.length, { includeCompleted: done || Boolean(opts.archive), asOf: done ? event.event_date : null, dna: opts.dna === true }).catch(() => [] as DeskBrief[]) : Promise.resolve([] as DeskBrief[]),
     getImagesForFighters(live.flatMap((b) => [b.fighter_a.id, b.fighter_b.id])),
-    getVideosForEvent(event.id, 24).catch(() => [] as OfficialVideoRow[]),
+    getVideosForEvent(event.id, EVENT_VIDEO_INVENTORY).catch(() => [] as OfficialVideoRow[]),
     getRankings().catch(() => null),
     getIngestFreshness().catch(() => null),
   ]);

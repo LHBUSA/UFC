@@ -646,6 +646,9 @@ export const VIDEO_TIMELINE_ORDER = ["fight_preview", "countdown", "embedded_epi
 const VIDEO_HOME_PRIORITY = ["embedded_episode", "countdown", "press_conference", "weigh_in", "faceoff", "media_day", "fight_preview", "interview", "highlights", "analysis", "post_fight", "full_fight", "other"];
 export function sortVideosTimeline(v: OfficialVideoRow[]): OfficialVideoRow[] { return [...v].sort((a, b) => VIDEO_TIMELINE_ORDER.indexOf(a.video_type) - VIDEO_TIMELINE_ORDER.indexOf(b.video_type) || String(a.published_at).localeCompare(String(b.published_at))); }
 export function rankVideosForHome(v: OfficialVideoRow[]): OfficialVideoRow[] { return [...v].sort((a, b) => VIDEO_HOME_PRIORITY.indexOf(a.video_type) - VIDEO_HOME_PRIORITY.indexOf(b.video_type) || String(b.published_at).localeCompare(String(a.published_at))); }
+/* A timeline curates from the event's whole inventory (lib/videoCuration.ts). The newest 24 rows were one
+ * afternoon of Shorts during UFC 331 week, and Countdown and Embedded Ep. 1 never reached the page at all. */
+export const EVENT_VIDEO_INVENTORY = 250;
 export async function getVideosForEvent(eventId: string, limit = 6): Promise<OfficialVideoRow[]> {
   return (await rest<OfficialVideoRow[]>(`${VIDEO_BASE}&event_id=eq.${eventId}&limit=${limit}`, [], { revalidate: 300 })).data;
 }

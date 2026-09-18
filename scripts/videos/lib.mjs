@@ -504,10 +504,22 @@ const TITLE_RULES = [
 ];
 const DESCRIPTION_RULES = TITLE_RULES.filter(([t]) => ['embedded_episode', 'countdown', 'press_conference', 'media_day', 'weigh_in', 'full_fight'].includes(t));
 
+/* Korean / Japanese uploads on the main UFC channel. This is NOT translation: it
+ * is a closed list of the programme-format names the UFC itself transliterates
+ * ("풀 파이트" is the words "full fight" in Hangul). A sentence that merely talks
+ * about a press conference or a face-off is commentary and stays `other`, which
+ * is why those two families are deliberately absent. CJK has no \b. */
+const LOCALIZED_FORMAT_RULES = [
+  ['embedded_episode', /임베디드|エンベデッド/],
+  ['countdown', /카운트다운|カウントダウン/],
+  ['weigh_in', /계체|計量/],
+  ['full_fight', /풀\s?파이트|フルファイト/],
+];
+
 export function classifyVideo(title, description) {
   const evidence = [];
   let type = null;
-  for (const [t, re] of TITLE_RULES) {
+  for (const [t, re] of [...TITLE_RULES, ...LOCALIZED_FORMAT_RULES]) {
     const m = String(title || '').match(re);
     if (!m) continue;
     evidence.push({ video_type: t, source: 'title', match: m[0] });
@@ -532,7 +544,26 @@ export function classifyVideo(title, description) {
 const CHANNEL_LANG = [[/brasil|portugu/i, 'pt'], [/espa[nñ]ol|latino/i, 'es'], [/^ufc$|fight pass|espn|europe|\buk\b|australia|asia|japan|eurasia|quebec/i, 'en']];
 const ES_HINT = /\b(el|la|los|las|del|con|contra|pelea|peleador|entrevista|conferencia|resumen|noche|hoy|semana|previa|mejores|momentos|así|más|será|todo|nuevo)\b|ñ|¿|¡/i;
 const PT_HINT = /\b(luta|lutador|lutadora|entrevista|coletiva|melhores|momentos|noite|semana|prévia|contra|não|você|também|história|campeão|pesagem)\b|ção|ções/i;
+/* SCRIPT BEATS CHANNEL -- mirrored exactly by web/lib/videoPolicy.ts scriptLanguage
+ * (parity is tested in web/lib/videoPolicy.test.ts). The main UFC channel uploads
+ * Korean- and Japanese-titled clips beside its English ones; a Hangul title stored
+ * as language:"en" is what put an ENGLISH badge under Korean text. Two characters
+ * is the floor. Han without kana is Chinese-or-Japanese and stays `unknown`. */
+const SCRIPT_RULES = [
+  [/[가-힯ᄀ-ᇿ㄰-㆏]/g, 'ko'],
+  [/[぀-ゟ゠-ヿｦ-ﾟ]/g, 'ja'],
+  [/[一-鿿㐀-䶿]/g, 'unknown'],
+  [/[Ѐ-ӿ؀-ۿ฀-๿ऀ-ॿ֐-׿]/g, 'other'],
+];
+export function scriptLanguage(title) {
+  const t = String(title || '');
+  for (const [re, lang] of SCRIPT_RULES) if ((t.match(re) || []).length >= 2) return lang;
+  return null;
+}
+
 export function detectLanguage(channelName, title, description) {
+  const byScript = scriptLanguage(title);
+  if (byScript) return { language: byScript, method: 'script' };
   const ch = String(channelName || '');
   const byChannel = (CHANNEL_LANG.find(([re]) => re.test(ch)) || [])[1] || 'unknown';
   if (byChannel === 'es' || byChannel === 'pt') return { language: byChannel, method: 'channel' };
