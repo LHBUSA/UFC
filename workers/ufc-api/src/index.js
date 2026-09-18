@@ -36,8 +36,18 @@ const RESULT_COLS = [
 const BOUT_BASE_COLS = [
   "id", "ufcstats_id", "espn_competition_id", "event_id", "weight_class",
   "weight_class_raw", "is_womens", "is_title", "scheduled_rounds",
-  "card_position", "bout_order", "status", "replaced_bout_id", "short_notice_days"
+  "card_position", "bout_order", "replaced_bout_id", "short_notice_days",
+  /* Bouts are read through public.ufc_bouts_effective (migration 031), which has no bare `status`: the API's
+   * `status` is the EFFECTIVE status, and the stored word plus the evidence ship as `card_truth`. */
+  "effective_status", "stored_status", "is_active", "withdrawal_reported", "removal_basis", "removal_reported_at",
+  "off_card_since", "official_card_present", "reason", "source_receipt_count"
 ].join(",");
+
+/* ufc_bouts is never rewritten when a bout leaves a card (migration 029); the view combines the stored row with the
+ * official card-observation ledger and sourced withdrawals. Confirmed removal => status "cancelled", is_active false.
+ * A reported withdrawal while the official card still lists the bout => still active, withdrawal_reported true. */
+const BOUTS = "ufc_bouts_effective";
+const CARD_TRUTH_COLS = ["stored_status", "is_active", "withdrawal_reported", "removal_basis", "removal_reported_at", "off_card_since", "official_card_present", "reason", "source_receipt_count"];
 
 const BOUT_SELECT = `${BOUT_BASE_COLS},` +
   `fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(${FIGHTER_BRIEF_COLS}),` +
@@ -127,7 +137,15 @@ function normalizeOne(value) {
 
 function normalizeBout(row) {
   if (!row) return row;
-  return { ...row, result: normalizeOne(row.result) };
+  const { effective_status, ...rest } = row;
+  const card_truth = {};
+  for (const k of CARD_TRUTH_COLS) { card_truth[k] = rest[k] ?? null; delete rest[k]; }
+  const status = effective_status ?? rest.status ?? null;
+  card_truth.stored_status ??= rest.status ?? status;
+  card_truth.is_active ??= !["cancelled", "replaced"].includes(status);
+  card_truth.withdrawal_reported ??= false;
+  card_truth.source_receipt_count ??= 0;
+  return { ...rest, status, card_truth, result: normalizeOne(row.result) };
 }
 
 function slugId(fighter) {
@@ -264,7 +282,7 @@ async function resolveFighter(env, id) {
 async function resolveBout(env, id) {
   const [col, filter] = identityFilter(id, "id", "ufcstats_id", "espn_competition_id");
   const p = new URLSearchParams({ select: BOUT_WITH_EVENT_SELECT, [col]: filter, limit: "1" });
-  const rows = (await sb(env, "ufc_bouts", p)).data;
+  const rows = (await sb(env, BOUTS, p)).data;
   return normalizeBout(rows[0] || null);
 }
 
@@ -963,7 +981,7 @@ async function fighterBoutRows(env, fighterId, limit = 250) {
     or: `(fighter_a_id.eq.${fighterId},fighter_b_id.eq.${fighterId})`,
     limit: String(limit),
   });
-  return (await sb(env, "ufc_bouts", p)).data.map(normalizeBout)
+  return (await sb(env, BOUTS, p)).data.map(normalizeBout)
     .sort((a, b) => String(b.event?.event_date || "").localeCompare(String(a.event?.event_date || "")));
 }
 
@@ -981,6 +999,8 @@ function historyRow(bout, fighterId, imageMap) {
 
 function nextScheduledBout(bouts, fighterId, imageMap) {
   const t = today();
+  /* b.status is the effective status: a bout the official card dropped is not a next bout. A reported withdrawal
+   * alone does not remove it; the row carries card_truth.withdrawal_reported instead. */
   const upcoming = bouts.filter((b) => !b.result && b.event?.event_date && b.event.event_date >= t && !["cancelled", "replaced", "complete"].includes(b.status));
   upcoming.sort((a, b) => String(a.event.event_date).localeCompare(String(b.event.event_date)));
   return upcoming.length ? historyRow(upcoming[0], fighterId, imageMap) : null;
@@ -1072,7 +1092,7 @@ async function eventCard(env, eventId, url, { display = false } = {}) {
   const event = await resolveEvent(env, eventId);
   if (!event) throw new ApiError(404, "event_not_found", "UFC event not found.");
   const p = new URLSearchParams({ select: BOUT_SELECT, event_id: `eq.${event.id}`, order: "bout_order.desc" });
-  const rows = (await sb(env, "ufc_bouts", p)).data.map(normalizeBout);
+  const rows = (await sb(env, BOUTS, p)).data.map(normalizeBout);
   const fighterIds = rows.flatMap((b) => [b.fighter_a?.id, b.fighter_b?.id]);
   const [imageMap, roundRows, videos] = await Promise.all([
     imagesForFighters(env, fighterIds),
@@ -1183,7 +1203,7 @@ async function fighterStats(env, fighterId) {
   const roundRows = await fighterRoundRows(env, fighter.id);
   const boutIds = [...new Set(roundRows.map((r) => r.bout_id))];
   const bouts = boutIds.length
-    ? (await sb(env, "ufc_bouts", new URLSearchParams({ select: BOUT_WITH_EVENT_SELECT, id: `in.(${boutIds.join(",")})`, limit: String(boutIds.length) }))).data.map(normalizeBout)
+    ? (await sb(env, BOUTS, new URLSearchParams({ select: BOUT_WITH_EVENT_SELECT, id: `in.(${boutIds.join(",")})`, limit: String(boutIds.length) }))).data.map(normalizeBout)
     : [];
   const boutsById = new Map(bouts.map((b) => [b.id, b]));
   const opponentIds = bouts.flatMap((b) => [b.fighter_a?.id, b.fighter_b?.id]).filter((id) => id && id !== fighter.id);
@@ -1230,7 +1250,7 @@ async function listResults(env, url) {
   if (!results.length) return [];
   const boutIds = results.map((r) => r.bout_id);
   const bp = new URLSearchParams({ select: BOUT_WITH_EVENT_SELECT, id: `in.(${boutIds.join(",")})` });
-  const bouts = (await sb(env, "ufc_bouts", bp)).data.map(normalizeBout);
+  const bouts = (await sb(env, BOUTS, bp)).data.map(normalizeBout);
   const byId = new Map(bouts.map((b) => [b.id, b]));
   return results.map((result) => ({ ...result, bout: byId.get(result.bout_id) || null }));
 }
@@ -2650,7 +2670,7 @@ async function eventIntelligence(env, eventId, url, now = new Date()) {
   const bp = new URLSearchParams({ select: BOUT_SELECT, event_id: `eq.${event.id}`, order: "bout_order.desc" });
   const lp = new URLSearchParams({ select: LEDGER_SUMMARY_COLS, event_id: `eq.${event.id}`, order: "captured_at.desc,id.asc", limit: String(LEDGER_MAX_ROWS) });
   const [boutRows, ledger] = await Promise.all([
-    sb(env, "ufc_bouts", bp).then((r) => r.data.map(normalizeBout)),
+    sb(env, BOUTS, bp).then((r) => r.data.map(normalizeBout)),
     sb(env, "ufc_fight_state_ledger", lp, { optional: true, count: true }),
   ]);
   if (ledger === null) throw ledgerSchemaMissing();

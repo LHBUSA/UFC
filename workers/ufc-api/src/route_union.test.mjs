@@ -47,7 +47,8 @@ function installStub() {
     const m = url.pathname.match(/^\/rest\/v1\/((?:rpc\/)?[a-z_]+)$/);
     if (!m) return new Response(JSON.stringify({ statusCode: "404" }), { status: 404 });
     seen.push(m[1]);
-    let rows = ROWS[m[1]] || [];
+    /* ufc_bouts_effective (migration 031) is a view over ufc_bouts */
+    let rows = m[1] === "ufc_bouts_effective" ? ROWS.ufc_bouts.map((r) => ({ effective_status: r.status, stored_status: r.status, is_active: true, ...r })) : ROWS[m[1]] || [];
     const idf = url.searchParams.get("id");
     if (idf?.startsWith("eq.")) rows = rows.filter((r) => r.id === idf.slice(3));
     else if (idf?.startsWith("in.(")) { const ids = idf.slice(4, -1).split(","); rows = rows.filter((r) => ids.includes(r.id)); }
@@ -103,10 +104,10 @@ const MISSING_FROM_PRODUCTION = [
 
 /* Routes both sides already served: they must still dispatch after the merge. */
 const SHARED = [
-  ["/v1/ufc"], ["/v1/ufc/events", "ufc_events"], [`/v1/ufc/events/${EVENT}`, "ufc_events"], [`/v1/ufc/events/${EVENT}/card`, "ufc_bouts"],
+  ["/v1/ufc"], ["/v1/ufc/events", "ufc_events"], [`/v1/ufc/events/${EVENT}`, "ufc_events"], [`/v1/ufc/events/${EVENT}/card`, "ufc_bouts_effective"],
   [`/v1/ufc/events/${EVENT}/articles`, "ufc_articles"], ["/v1/ufc/fighters", "ufc_fighters"], [`/v1/ufc/fighters/media?ids=${FIGHTER_A}`, "ufc_images"],
-  [`/v1/ufc/fighters/${FIGHTER_A}`, "ufc_fighters"], [`/v1/ufc/fighters/${FIGHTER_A}/history`, "ufc_bouts"], [`/v1/ufc/fighters/${FIGHTER_A}/stats`, "ufc_bout_round_stats"],
-  [`/v1/ufc/fighters/${FIGHTER_A}/articles`, "ufc_articles"], [`/v1/ufc/bouts/${BOUT}`, "ufc_bouts"], [`/v1/ufc/bouts/${BOUT}/stats`, "ufc_bout_round_stats"],
+  [`/v1/ufc/fighters/${FIGHTER_A}`, "ufc_fighters"], [`/v1/ufc/fighters/${FIGHTER_A}/history`, "ufc_bouts_effective"], [`/v1/ufc/fighters/${FIGHTER_A}/stats`, "ufc_bout_round_stats"],
+  [`/v1/ufc/fighters/${FIGHTER_A}/articles`, "ufc_articles"], [`/v1/ufc/bouts/${BOUT}`, "ufc_bouts_effective"], [`/v1/ufc/bouts/${BOUT}/stats`, "ufc_bout_round_stats"],
   ["/v1/ufc/results", "ufc_bout_results"], ["/v1/ufc/rankings", "ufc_rankings", ["rankings_not_available"]], ["/v1/ufc/news", "ufc_articles"],
   ["/v1/ufc/wire", "ufc_news_items"], ["/v1/ufc/search?q=alpha", "ufc_fighters"], ["/v1/ufc/counts", "ufc_fighters"],
 ];

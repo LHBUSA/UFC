@@ -34,8 +34,23 @@ test("identityFilter routes UUID, UFCStats ids, and ESPN ids", () => {
 });
 
 test("normalizeBout turns embedded result arrays into one result", () => {
-  assert.deepEqual(__test.normalizeBout({ id: "x", result: [{ bout_id: "x" }] }), { id: "x", result: { bout_id: "x" } });
-  assert.deepEqual(__test.normalizeBout({ id: "x", result: [] }), { id: "x", result: null });
+  assert.deepEqual(__test.normalizeBout({ id: "x", result: [{ bout_id: "x" }] }).result, { bout_id: "x" });
+  assert.equal(__test.normalizeBout({ id: "x", result: [] }).result, null);
+});
+
+test("normalizeBout: status is the EFFECTIVE status, and the stored word + evidence ship as card_truth", () => {
+  /* a row of public.ufc_bouts_effective for a bout the official card dropped (UFC 331 Moicano vs Ortega shape) */
+  const removed = __test.normalizeBout({ id: "x", effective_status: "cancelled", stored_status: "announced", is_active: false, withdrawal_reported: false,
+    removal_basis: ["card_observation", "withdrawal"], removal_reported_at: "2026-09-14T20:16:13Z", off_card_since: "2026-09-15T14:53:21Z", official_card_present: false, reason: "injury", source_receipt_count: 7, result: [] });
+  assert.equal(removed.status, "cancelled");
+  assert.deepEqual(removed.card_truth, { stored_status: "announced", is_active: false, withdrawal_reported: false, removal_basis: ["card_observation", "withdrawal"],
+    removal_reported_at: "2026-09-14T20:16:13Z", off_card_since: "2026-09-15T14:53:21Z", official_card_present: false, reason: "injury", source_receipt_count: 7 });
+  assert.ok(!("effective_status" in removed) && !("is_active" in removed), "view columns do not leak as top-level fields");
+  /* a reported withdrawal while the card still lists the bout (UFC 333 Allen vs Pico shape): ACTIVE, with the warning */
+  const warned = __test.normalizeBout({ id: "y", effective_status: "announced", stored_status: "announced", is_active: true, withdrawal_reported: true, official_card_present: true, reason: null, source_receipt_count: 2, result: [] });
+  assert.deepEqual([warned.status, warned.card_truth.is_active, warned.card_truth.withdrawal_reported, warned.card_truth.reason], ["announced", true, true, null]);
+  /* a reason is passed through or null: never synthesised */
+  assert.equal(__test.normalizeBout({ id: "z", effective_status: "cancelled", result: [] }).card_truth.reason, null);
 });
 
 test("parseIncludes accepts known values and rejects unknown ones", () => {
@@ -374,12 +389,13 @@ function installMock({ tables, storage = {}, missingTables = [], rpcOverride = n
     }
     const m = url.pathname.match(/^\/rest\/v1\/([a-z_]+)$/);
     if (!m) return new Response("nope", { status: 404 });
-    const table = m[1];
+    const view = m[1] === "ufc_bouts_effective";
+    const table = view ? "ufc_bouts" : m[1];
     if (missingTables.includes(table) || !(table in tables)) {
       return new Response(JSON.stringify({ code: "42P01", message: `relation "public.${table}" does not exist` }), { status: 404 });
     }
     assert.equal(init.headers?.apikey, "service-key", "mock: service key must be sent");
-    const { rows, total } = applyParams(tables[table], url.searchParams);
+    const { rows, total } = applyParams(view ? tables[table].map(effectiveRow) : tables[table], url.searchParams);
     const headers = { "Content-Type": "application/json" };
     if (init.headers?.Prefer === "count=exact") headers["Content-Range"] = `0-${Math.max(rows.length - 1, 0)}/${total}`;
     return new Response(JSON.stringify(rows), { status: 200, headers });
@@ -387,6 +403,10 @@ function installMock({ tables, storage = {}, missingTables = [], rpcOverride = n
   return calls;
 }
 
+/* public.ufc_bouts_effective (migration 031) is a view OVER ufc_bouts: the mock derives it from the bout fixtures the
+ * same way. A fixture may set effective_status / is_active / withdrawal_reported to play a removed or warned bout. */
+const effectiveRow = (r) => ({ effective_status: r.status ?? null, stored_status: r.status ?? null, is_active: !["cancelled", "replaced"].includes(r.effective_status ?? r.status),
+  withdrawal_reported: false, removal_basis: null, removal_reported_at: null, off_card_since: null, official_card_present: null, reason: null, source_receipt_count: 0, ...r });
 const env = { SUPABASE_URL: "https://db.example", SUPABASE_SERVICE_ROLE_KEY: "service-key", UFC_IMAGE_BASE_URL: MEDIA_BASE, API_VERSION: "test" };
 const fullTables = {
   ufc_fighters: [fighterMedia, fighterNoMedia, fighterOpp],
@@ -609,6 +629,33 @@ test("event and fighter article routes filter correctly and resolve hero media",
 });
 
 /* ---- B4 composite contracts ------------------------------------------- */
+
+test("card truth through the API: a bout the official card dropped is not a next bout; a reported withdrawal stays, with the warning", async () => {
+  resetRankings();
+  const play = (over) => ({ ...fullTables, ufc_bouts: fullTables.ufc_bouts.map((b) => (b.id === B_NEXT ? { ...b, ...over } : b)) });
+  const nextOf = async () => (await call(`/v1/ufc/fighters/${F_MEDIA}?include=next`)).body.data;
+
+  /* baseline: the stored row says announced and nothing contradicts it */
+  installMock({ tables: fullTables, missingTables: ["ufc_rankings"] });
+  const base = await nextOf();
+  assert.equal(base.next_bout.id, B_NEXT);
+  assert.deepEqual([base.next_bout.status, base.next_bout.card_truth.is_active, base.next_bout.card_truth.withdrawal_reported], ["announced", true, false]);
+
+  /* ufc_bouts still says announced; the view says the official card dropped it */
+  installMock({ tables: play({ effective_status: "cancelled", is_active: false, removal_basis: ["card_observation", "withdrawal"], official_card_present: false, reason: "injury", source_receipt_count: 7 }), missingTables: ["ufc_rankings"] });
+  assert.equal((await nextOf()).next_bout, null, "a removed bout is never the next bout");
+  const removed = (await call(`/v1/ufc/bouts/${B_NEXT}`)).body.data;
+  assert.deepEqual([removed.status, removed.card_truth.stored_status, removed.card_truth.is_active, removed.card_truth.reason], ["cancelled", "announced", false, "injury"]);
+  const card = (await call(`/v1/ufc/events/${E_NEXT}/card`)).body.data;
+  const onCard = (card.bouts || card).find((b) => b.id === B_NEXT);
+  assert.equal(onCard.status, "cancelled", "the card keeps the bout (history is not deleted) and says it is off");
+
+  /* reported withdrawal, official card still lists it: ACTIVE, still the next bout, carries the warning, no reason invented */
+  installMock({ tables: play({ withdrawal_reported: true, official_card_present: true, source_receipt_count: 2 }), missingTables: ["ufc_rankings"] });
+  const warned = await nextOf();
+  assert.equal(warned.next_bout.id, B_NEXT);
+  assert.deepEqual([warned.next_bout.status, warned.next_bout.card_truth.is_active, warned.next_bout.card_truth.withdrawal_reported, warned.next_bout.card_truth.reason], ["announced", true, true, null]);
+});
 
 test("fighter include=media,ranking,next,history,stats returns every additive block", async () => {
   resetRankings();
