@@ -109,11 +109,13 @@ the bout (migration 029, defect D1): the row stays `announced` and the fact live
 Ortega" for a bout that had been off UFC 331 for three days.
 
 `web/lib/cardTruth.ts` (pure; `npm run test:card-truth`) decides, for every page at once. A bout is
-off the active card when ANY of: its stored status is `cancelled` / `replaced` / `withdrawn`; the
-newest COMPLETE card observation no longer lists its competition (same rule as
-`workers/ufc-algo/src/cardTruth.js`, parity-tested); or an active sourced `withdrawal` names the
-bout, or its event and one of its two fighters. An incomplete read, a placeholder or a bout
-without a source id is ambiguous and removes nobody. A fought bout is history and is never touched.
+off the active card only on CONFIRMED evidence: its stored status is `cancelled` / `replaced` /
+`withdrawn`, or the newest card observation is COMPLETE and no longer lists its competition (same
+rule as `workers/ufc-algo/src/cardTruth.js`, parity-tested). An active sourced `withdrawal` naming
+the bout (or its event and one of its two fighters) CONTRIBUTES evidence: it joins the basis of a
+confirmed removal, dates it and may license a reason, but on its own it removes nothing. An
+incomplete read, a placeholder or a bout without a source id is ambiguous and removes nobody. A
+fought bout is history and is never touched.
 
 - **Nothing is deleted or rewritten.** `getEventBouts` returns the bout with an EFFECTIVE status
   of `cancelled` (the stored value is kept in `stored_status`) plus `card_change`, so every
@@ -126,13 +128,58 @@ without a source id is ambiguous and removes nobody. A fought bout is history an
   at all: "A specific reason is not recorded in our verified sources." Sources that disagree on the
   fighter or on the kind of cause say less, not more.
 - **Reported is not removed.** If a withdrawal is reported while the official card still lists the
-  bout, the story says "is reported to have withdrawn … The official card still lists this bout",
-  never "removed". It still stops being expected, as it stops being callable for the Algo.
+  bout, the bout stays ACTIVE: still a row of the card, still the fighter's next bout, both corners
+  still expected on the scale. It carries a warning (`splitCard().warnings`, `withdrawal_reported`
+  in the view): "is reported to have withdrawn … The official card still lists this bout", never
+  "removed". (PBE Algo separately declines to CALL a bout with an active card change. That is an
+  eligibility rule, not a statement that the bout is off.) Owner decision, 2026-09-18.
 
-Not covered (they filter `ufc_bouts.status` in SQL, so they still see `announced`): the fighter
-profile's next bout, schedule/rollover bout counts, `ufc-api`, `ufc-live-odds`. The durable fix is
-an effective-status view over `ufc_bouts` + the newest observation that all of them read; that is
-a migration and an owner decision.
+### `public.ufc_bouts_effective` (migration 031): the same rule, in SQL
+
+Consumers that filter in the database cannot call `cardTruth.ts`, so the rule also exists as a view:
+`ufc_bouts` + the newest official card observation + sourced withdrawals. It is read-only. It
+creates no table and never writes, replaces or renames `ufc_bouts`; dropping it loses nothing.
+`service_role` only, `security_invoker`. There is deliberately no bare `status` column.
+
+| column | meaning |
+|---|---|
+| `stored_status` | `ufc_bouts.status`, untouched |
+| `effective_status` | the stored word, except `cancelled` when the newest complete official card no longer lists an unsettled bout |
+| `is_active` | `false` only on confirmed removal. A reported withdrawal alone never makes it false |
+| `is_settled` | fought or stored `complete`: never removed, carries no evidence columns |
+| `removal_basis` | `status`, `card_observation`, `withdrawal` (contributing). NULL while active |
+| `withdrawal_reported` | a sourced withdrawal on a bout that is still active: the warning |
+| `removal_reported_at` / `off_card_since` | when a withdrawal was first reported / start of the unbroken run of official reads without the bout |
+| `official_card_present` | `true` listed, `false` confirmed not listed, NULL for every ambiguous read |
+| `official_card_state` / `official_card_observed_at` | `confirmed`, `missing`, `placeholder`, `incomplete`, `no_source_id`, `unobserved` |
+| `withdrawn_fighter_id` | the one fighter every withdrawal names, else NULL |
+| `reason` | category key of a sourced cause event for that fighter on this card (`injury`, `illness`, `visa_travel`, `suspension`, `weight_miss`), else NULL. Never inferred, never a diagnosis |
+| `source_receipt_count` | distinct source URLs behind the withdrawal and its cause |
+
+Proof: `pwsh scripts/db/prove_bouts_effective.ps1` runs the migration body and 13 fixture cases
+(`supabase/migrations/tests/20260918120000_ufc_bouts_effective.test.sql`) in one transaction that is
+rolled back. Three mutations (a report alone removes; an incomplete read removes; a fought bout is
+removed) each fail it. `effectiveStory()` in `cardTruth.ts` writes the same sentence from a view row
+as `describe()` writes from the ledgers, and a test pins them word for word.
+
+Readers of the view: `web/lib/db.ts` (`getFighterBouts` = fighter next bout, `getBoutById`,
+`getMainEvents`, `getBoutCounts` = schedule counts, `getRolloverEvents`, `getBookedFighterIds`),
+`web/lib/sitemap.ts`, `web/lib/tuf.ts` (`scheduledBoutsNow`), `web/lib/dwcsGraph.ts`,
+`workers/ufc-api` (`status` = effective, plus an additive `card_truth` object on every bout),
+`workers/ufc-live-odds` (`boutCandidatesQuery` / `matchableBouts`), `scripts/odds/ingest_market.mjs`.
+The event card itself (`getEventBouts`, `getBookedCardSplit`) still reads the ledgers through
+`cardTruth.ts`, because it needs every receipt to write the story.
+
+Deliberately NOT migrated, and why: `ufc-stats-ingest` and `combat-wikipedia-ingest` write or
+reconcile the canonical row and must see the stored word; `ufc-algo` and `scripts/model/*` have
+their own card truth and are frozen; `scripts/videos/lib.mjs` (video work is stopped);
+`scripts/weighins/lib/*` (the collector was live on weigh-in day); `ufc-news-enrich` `nextBout`,
+`ufc-media` and `scripts/news/write_articles.mjs` (autopilot Workers are frozen: ask first. The
+last one would also start auto-writing card-change articles from effective status, which is an
+editorial decision, not a plumbing one).
+
+Rollback: redeploy the consumers first, then
+`supabase/migrations/rollback/20260918120000_ufc_bouts_effective.down.sql` (`drop view`).
 
 ## Access control
 

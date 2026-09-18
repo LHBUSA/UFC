@@ -155,13 +155,16 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
         getWeighIns(desk.eventId).catch(() => []),
         getWeighInSummary(desk.eventId).catch(() => null),
         getWeighInHistory(desk.eventId, 400).catch(() => []),
-        getBookedCardSplit(desk.eventId, desk.eventName).catch(() => ({ active: [], changes: [] as CardChange[], all: [] })),
+        getBookedCardSplit(desk.eventId, desk.eventName).catch(() => ({ active: [], changes: [] as CardChange[], warnings: [] as CardChange[], all: [] })),
       ])
-    : [[], null, [], { active: [], changes: [] as CardChange[], all: [] }];
+    : [[], null, [], { active: [], changes: [] as CardChange[], warnings: [] as CardChange[], all: [] }];
   /* CARD TRUTH: a bout that came off the card is not expected and not pending. It is not dropped either:
    * it is shown below, under Card changes, with the reason the sources gave. */
   const booked = card.active;
-  const cardChanges = card.changes;
+  /* Confirmed removals first, then reported withdrawals. A reported withdrawal is a WARNING: that bout is still in
+   * card.active, and both fighters are still expected on the scale, until the official card drops it. */
+  const cardChanges = [...card.changes, ...card.warnings];
+  const removedCount = card.changes.length;
   const history = fullHistory.slice(0, 18);
 
   const table = sortForTable(rows);
@@ -309,12 +312,19 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
 
       {cardChanges.length > 0 && (
         <section className={styles.changes} aria-labelledby="card-changes-heading" data-testid="weighin-card-changes">
-          <div className="eyebrow">Card changes · scheduled, then removed</div>
+          <div className="eyebrow">Card changes · {removedCount === cardChanges.length ? "scheduled, then removed" : removedCount ? "removals and reported withdrawals" : "reported, not confirmed"}</div>
           <h2 id="card-changes-heading">Card changes</h2>
-          <p className={styles.panelNote}>
-            {cardChanges.length === 1 ? "This bout was" : "These bouts were"} on the announced card and later came off it. No official weigh-in was expected after the removal,
-            so {cardChanges.length === 1 ? "its fighters are" : "their fighters are"} not counted as expected or pending above. The reason is the one our sources gave; where none is recorded, none is shown.
-          </p>
+          {removedCount > 0 && (
+            <p className={styles.panelNote}>
+              {removedCount === 1 ? "One bout was" : `${removedCount} bouts were`} on the announced card and later came off it. No official weigh-in was expected after the removal,
+              so {removedCount === 1 ? "its fighters are" : "their fighters are"} not counted as expected or pending above. The reason is the one our sources gave; where none is recorded, none is shown.
+            </p>
+          )}
+          {removedCount < cardChanges.length && (
+            <p className={styles.panelNote}>
+              A reported withdrawal is a warning, not a removal. While the official card still lists the bout, it stays on the card and its fighters are still counted as expected above.
+            </p>
+          )}
           <div className={styles.changeList}>
             {cardChanges.map((c) => {
               const a = c.bout.fighter_a_id ? fighterMap.get(c.bout.fighter_a_id) : null;
@@ -325,7 +335,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
               return (
                 <article key={c.bout.id} className={styles.change} data-testid="weighin-card-change">
                   <div className={styles.changeBadges}>
-                    <span className={styles.badge} data-tone="alert">{c.withdrew ? "Withdrawn" : "Removed"}</span>
+                    <span className={styles.badge} data-tone="alert">{!c.confirmed ? "Warning" : c.withdrew ? "Withdrawn" : "Removed"}</span>
                     <span className={styles.badge} data-tone="neutral">{c.confirmed ? "Bout removed" : "Withdrawal reported"}</span>
                     {c.source?.kind === "official" && <span className={styles.badge} data-tone="ok">Official</span>}
                   </div>
@@ -335,11 +345,11 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
                     {second ? <Link href={`/fighters/${fighterSlug(second)}`}>{second.name}</Link> : "Fighter"}
                   </h3>
                   <p className={styles.changeStory}>{c.story}</p>
-                  <p className={styles.panelNote}>{c.confirmed ? "No official weigh-in was expected after the bout was removed." : "No official weigh-in is expected while the withdrawal stands."}</p>
+                  <p className={styles.panelNote}>{c.confirmed ? "No official weigh-in was expected after the bout was removed." : "Still on the official card: both fighters remain expected on the scale until the listing changes."}</p>
                   {c.replacement_fighter_name && <p className={styles.panelNote}>Sourced replacement: <strong>{c.replacement_fighter_name}</strong></p>}
                   {kept.length > 0 && <p className={styles.panelNote}>{kept.join(" and ")} {kept.length === 1 ? "remains" : "remain"} on the card in another bout.</p>}
                   <dl className={styles.changeFacts}>
-                    <div><dt>Originally</dt><dd>{[c.bout.card_position ? `${c.bout.card_position[0].toUpperCase()}${c.bout.card_position.slice(1)} card` : null, c.bout.weight_class ? c.bout.weight_class.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (ch) => ch.toUpperCase()) : null].filter(Boolean).join(" · ") || "Position not recorded"}</dd></div>
+                    <div><dt>{c.confirmed ? "Originally" : "Scheduled"}</dt><dd>{[c.bout.card_position ? `${c.bout.card_position[0].toUpperCase()}${c.bout.card_position.slice(1)} card` : null, c.bout.weight_class ? c.bout.weight_class.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (ch) => ch.toUpperCase()) : null].filter(Boolean).join(" · ") || "Position not recorded"}</dd></div>
                     {c.reported_at && <div><dt>First reported</dt><dd>{fmtDate(c.reported_at)} · {clockTime(c.reported_at)}</dd></div>}
                     {c.off_card_since && <div><dt>Off the official card since</dt><dd>{fmtDate(c.off_card_since)} · {clockTime(c.off_card_since)}</dd></div>}
                     <div><dt>Basis</dt><dd>{c.basis.map((x) => BASIS_LABEL[x]).join(" · ")}</dd></div>

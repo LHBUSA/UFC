@@ -44,7 +44,8 @@ async function eventPopulation() {
   return restAllRows<PopEvent>("ufc_events", "id,name,event_date", "id", "", SITEMAP_REVALIDATE);
 }
 async function boutPopulation() {
-  return restAllRows<PopBout>("ufc_bouts", "id,event_id,status,bout_order,fighter_a_id,fighter_b_id", "id", "", SITEMAP_REVALIDATE);
+  /* Effective status (migration 031): a bout the official card dropped is excluded exactly like a stored cancellation. */
+  return restAllRows<PopBout>("ufc_bouts_effective", "id,event_id,status:effective_status,bout_order,fighter_a_id,fighter_b_id", "id", "", SITEMAP_REVALIDATE);
 }
 
 export async function fighterEligibility(): Promise<Eligibility & { population: number }> {

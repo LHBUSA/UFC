@@ -113,6 +113,10 @@ export type Bout = {
   stored_status?: string;
   /** Present when card truth took this bout off the active card (lib/cardTruth.ts): why, and what the sources said. */
   card_change?: CardChange | null;
+  /** From public.ufc_bouts_effective, on reads that go through the view. withdrawal_reported: a sourced withdrawal
+   *  while the official card still lists the bout: a warning on an ACTIVE bout, never a removal. */
+  withdrawal_reported?: boolean | null; withdrawn_fighter_id?: string | null; removal_basis?: string[] | null;
+  removal_reported_at?: string | null; off_card_since?: string | null; reason?: string | null; source_receipt_count?: number | null;
 };
 export type RoundStat = {
   bout_id: string; fighter_id: string; round: number; kd: number | null;
@@ -150,6 +154,13 @@ const RESULT_COLS = "bout_id,winner_id,method,method_raw,round,time_sec,time_for
 const BOUT_SELECT = `id,ufcstats_id,espn_competition_id,event_id,weight_class,is_womens,is_title,scheduled_rounds,card_position,bout_order,status,` +
   `fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(${FIGHTER_COLS}),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(${FIGHTER_COLS}),` +
   `result:ufc_bout_results(${RESULT_COLS})`;
+/* The same bout, read through public.ufc_bouts_effective (migration 031): `status` is the EFFECTIVE status, so a
+ * bout the official card no longer lists reads `cancelled` for every `status !== "cancelled"` consumer, and the
+ * stored word stays readable as `stored_status`. The view has no bare `status` column, on purpose. The event card
+ * itself (getEventBouts) still goes through applyCardTruth, which also builds the sourced story; the two are the
+ * same rule and supabase/migrations/tests proves it case for case. */
+const BOUTS_EFFECTIVE = "ufc_bouts_effective";
+const EFFECTIVE_BOUT_SELECT = BOUT_SELECT.replace(",status,", ",status:effective_status,stored_status,withdrawal_reported,withdrawn_fighter_id,removal_basis,removal_reported_at,off_card_since,reason,source_receipt_count,");
 
 /* Dana White's Contender Series runs inside ESPN's UFC league feed. It is
  * real and stays in the archive, but it is not a UFC card. */
@@ -212,14 +223,20 @@ export async function getCardStatusEvents(eventId: string, revalidate = 120): Pr
 }
 export async function applyCardTruth(eventId: string, bouts: Bout[], revalidate?: number, eventName?: string | null): Promise<Bout[]> {
   if (!bouts.length || bouts.every((b) => b.result || b.status === "complete")) return bouts;
-  const [observations, statusEvents] = await Promise.all([
+  /* The story names the card ("removed from UFC 331: ..."). A caller that only has the id gets the name read here, so the
+   * event page and the fighter page (which reads the view) say the same sentence. */
+  const [observations, statusEvents, named] = await Promise.all([
     getCardObservations(eventId, 12, revalidate ?? 120).catch(() => [] as CardObservation[]),
     getCardStatusEvents(eventId, revalidate ?? 120).catch(() => [] as CardStatusEvent[]),
+    eventName ? Promise.resolve(eventName) : rest<Array<{ name: string }>>(`ufc_events?select=name&id=eq.${eventId}&limit=1`, [], { revalidate: 3600 }).then((r) => r.data[0]?.name ?? null).catch(() => null),
   ]);
-  const { changes } = splitCard(bouts.map((b) => ({ id: b.id, espn_competition_id: b.espn_competition_id, status: b.status, fighter_a_id: b.fighter_a?.id ?? null, fighter_b_id: b.fighter_b?.id ?? null, card_position: b.card_position, bout_order: b.bout_order, weight_class: b.weight_class, has_result: Boolean(b.result) })), observations, statusEvents, { eventId, eventName });
-  if (!changes.length) return bouts;
+  const { changes, warnings } = splitCard(bouts.map((b) => ({ id: b.id, espn_competition_id: b.espn_competition_id, status: b.status, fighter_a_id: b.fighter_a?.id ?? null, fighter_b_id: b.fighter_b?.id ?? null, card_position: b.card_position, bout_order: b.bout_order, weight_class: b.weight_class, has_result: Boolean(b.result) })), observations, statusEvents, { eventId, eventName: named });
+  if (!changes.length && !warnings.length) return bouts;
   const byId = new Map(changes.map((c) => [c.bout.id, c]));
-  return bouts.map((b) => (byId.has(b.id) ? { ...b, stored_status: b.status, status: "cancelled", card_change: byId.get(b.id)! } : b));
+  /* A reported withdrawal is a warning, not a removal: the bout keeps its status and its place on the card. */
+  const warnById = new Map(warnings.map((c) => [c.bout.id, c]));
+  return bouts.map((b) => (byId.has(b.id) ? { ...b, stored_status: b.status, status: "cancelled", card_change: byId.get(b.id)! }
+    : warnById.has(b.id) ? { ...b, card_change: warnById.get(b.id)! } : b));
 }
 /* Events in a date window with the two counts Round-for-Round selects on:
  * bouts on the card (cancelled excluded) and bouts with a STORED RESULT. Whether
@@ -228,7 +245,7 @@ export type RolloverEventRow = { id: string; name: string; event_date: string | 
 export async function getRolloverEvents(fromDate: string, toDate: string, revalidate?: number): Promise<RolloverEventRow[]> {
   type Raw = { id: string; name: string; event_date: string | null; card_status: string; bouts: Array<{ status: string; result: Array<{ bout_id: string }> | { bout_id: string } | null }> };
   const rows = (await rest<Raw[]>(
-    `ufc_events?select=id,name,event_date,card_status,bouts:ufc_bouts(status,result:ufc_bout_results(bout_id))&event_date=gte.${fromDate}&event_date=lte.${toDate}&order=event_date.desc&limit=80`,
+    `ufc_events?select=id,name,event_date,card_status,bouts:${BOUTS_EFFECTIVE}(status:effective_status,result:ufc_bout_results(bout_id))&event_date=gte.${fromDate}&event_date=lte.${toDate}&order=event_date.desc&limit=80`,
     [], { revalidate },
   )).data;
   return rows.map((e) => {
@@ -248,26 +265,26 @@ export async function getRoundQueueStates(boutIds: string[], revalidate?: number
   for (const r of rows) m.set(r.bout_id, r.state);
   return m;
 }
-/* Bout counts for a list of events (one request). */
+/* Bout counts for a list of events (one request): bouts that are ON the card, by effective truth. */
 export async function getBoutCounts(eventIds: string[]): Promise<Map<string, number>> {
   const m = new Map<string, number>();
   if (!eventIds.length) return m;
-  const rows = (await rest<Array<{ event_id: string }>>(`ufc_bouts?select=event_id&event_id=in.(${eventIds.join(",")})&limit=5000`, [])).data;
+  const rows = (await rest<Array<{ event_id: string }>>(`${BOUTS_EFFECTIVE}?select=event_id&event_id=in.(${eventIds.join(",")})&is_active=is.true&limit=5000`, [])).data;
   for (const r of rows) m.set(r.event_id, (m.get(r.event_id) || 0) + 1);
   return m;
 }
-/* Main events (highest bout_order) for a list of events, one request. */
+/* Main events (highest bout_order still ON the card) for a list of events, one request. */
 export async function getMainEvents(eventIds: string[]): Promise<Map<string, Bout>> {
   const m = new Map<string, Bout>();
   if (!eventIds.length) return m;
-  const rows = (await rest<RawBout[]>(`ufc_bouts?select=${BOUT_SELECT}&event_id=in.(${eventIds.join(",")})&order=bout_order.desc&limit=5000`, [])).data;
+  const rows = (await rest<RawBout[]>(`${BOUTS_EFFECTIVE}?select=${EFFECTIVE_BOUT_SELECT}&event_id=in.(${eventIds.join(",")})&is_active=is.true&order=bout_order.desc&limit=5000`, [])).data;
   for (const b of rows.map(flattenResult)) if (!m.has(b.event_id)) m.set(b.event_id, b);
   return m;
 }
 
 /* ---- bouts / stats ---------------------------------------------------- */
 export async function getBoutById(id: string): Promise<Bout | null> {
-  const rows = (await rest<RawBout[]>(`ufc_bouts?select=${BOUT_SELECT}&id=eq.${id}&limit=1`, [])).data;
+  const rows = (await rest<RawBout[]>(`${BOUTS_EFFECTIVE}?select=${EFFECTIVE_BOUT_SELECT}&id=eq.${id}&limit=1`, [])).data;
   return rows[0] ? flattenResult(rows[0]) : null;
 }
 export async function getRoundStats(boutId: string): Promise<RoundStat[]> {
@@ -341,7 +358,7 @@ export async function getFightersByIds(ids: string[]): Promise<Fighter[]> {
 }
 export async function getFighterBouts(fighterId: string): Promise<Array<Bout & { event: Event }>> {
   const rows = (await rest<Array<RawBout & { event: Event }>>(
-    `ufc_bouts?select=${BOUT_SELECT},event:ufc_events(${EVENT_COLS})&or=(fighter_a_id.eq.${fighterId},fighter_b_id.eq.${fighterId})&limit=200`, [])).data;
+    `${BOUTS_EFFECTIVE}?select=${EFFECTIVE_BOUT_SELECT},event:ufc_events(${EVENT_COLS})&or=(fighter_a_id.eq.${fighterId},fighter_b_id.eq.${fighterId})&limit=200`, [])).data;
   return rows
     .map((b) => ({ ...flattenResult(b), event: b.event }))
     .sort((a, b) => String(b.event?.event_date || "").localeCompare(String(a.event?.event_date || "")));
@@ -350,7 +367,7 @@ export async function getFighterBouts(fighterId: string): Promise<Array<Bout & {
 export async function getBookedFighterIds(): Promise<string[]> {
   const events = await getUpcomingEvents(6);
   if (!events.length) return [];
-  const rows = (await rest<Array<{ fighter_a_id: string; fighter_b_id: string }>>(`ufc_bouts?select=fighter_a_id,fighter_b_id&event_id=in.(${events.map((e) => e.id).join(",")})&status=neq.cancelled&limit=2000`, [])).data;
+  const rows = (await rest<Array<{ fighter_a_id: string; fighter_b_id: string }>>(`${BOUTS_EFFECTIVE}?select=fighter_a_id,fighter_b_id&event_id=in.(${events.map((e) => e.id).join(",")})&is_active=is.true&limit=2000`, [])).data;
   return [...new Set(rows.flatMap((r) => [r.fighter_a_id, r.fighter_b_id]))];
 }
 

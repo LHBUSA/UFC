@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getDwcsGraph, getOutcomeClaims } from "@/lib/dwcsGraph";
 import { getSourceDobs } from "@/lib/db";
+import { effectiveStory } from "@/lib/cardTruth";
 import { ageRange, dobDispute } from "@/lib/dobEvidence";
 import { DwcsLineage } from "@/components/Dwcs";
 import { getFighterBouts, getImagesForFighters, getArticlesForFighter, getFighterRoundStats, getRankings } from "@/lib/db";
@@ -94,6 +95,10 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
   const dwcsAlum = dwcsGraph?.byFighter.get(f.id) || null;
   const today = new Date().toISOString().slice(0, 10);
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
+  /* A bout that was booked and then came off the card (effective status, migration 031) is not the next fight,
+   * and it is not silently dropped either: it is listed under Next fight with what the sources said. */
+  const offCard = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status === "cancelled");
+  const storyFor = (b: (typeof bouts)[number]) => effectiveStory(b, { eventName: b.event?.name, nameOf: (id) => (id === b.fighter_a.id ? b.fighter_a.name : id === b.fighter_b.id ? b.fighter_b.name : null) });
   /* Coverage for this fighter's completed bouts, same rule as the index. */
   const roundCoverage = await getRoundCoverageFor(bouts.map((b) => b.id));
   const history = bouts.filter((b) => !upcoming.includes(b) && b.event?.event_date && b.event.event_date < today);
@@ -184,6 +189,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
                 <div className="vs">vs</div>
                 <Link href={`/fighters/${fighterSlug(opp)}`} className="side"><Avatar f={opp} img={imgs.get(opp.id)} size={84} /><div className="name">{opp.name}</div>{opp.nickname && <div className="nick">“{opp.nickname}”</div>}<div className="rec">{fmtRecord(opp)}</div></Link>
               </div>
+              {b.withdrawal_reported && <p className="bout-note warn" data-testid="next-bout-withdrawal-reported"><b>Withdrawal reported.</b> {storyFor(b)?.story}</p>}
               <TaleOfTheTape a={f} b={opp} at={b.event.event_date} />
               {!access.pro && <ProPreview feature="matchup_dna" access={access} returnPath={returnPath} compact />}
               <div className="between mt-3 sm">
@@ -193,6 +199,16 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
             </div>
           );
         }) : <Empty title="No bout scheduled">When a bout is announced it appears here with the tale of the tape, and Pro members get the alert the moment it changes.</Empty>}
+        {offCard.map((b) => {
+          const opp = b.fighter_a.id === f.id ? b.fighter_b : b.fighter_a;
+          return (
+            <p key={b.id} className="bout-note off" data-testid="next-bout-removed">
+              <b>No longer on the card:</b> vs <Link href={`/fighters/${fighterSlug(opp)}`}>{opp.name}</Link>, {fmtDate(b.event.event_date)}.{" "}
+              {storyFor(b)?.story ?? "Bout removed from the card. A specific reason is not recorded in our verified sources."}{" "}
+              <Link href={`/events/${eventSlug(b.event)}`}>Card changes →</Link>
+            </p>
+          );
+        })}
       </section>
 
       {dwcsAlum && dwcsGraph && <DwcsLineage alum={dwcsAlum} ctx={rankCtx} opponents={dwcsGraph.fighters} claims={dwcsClaims.get(f.id)} />}

@@ -187,6 +187,7 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState
       </div>
       <div className="mid">
         <div className="wc">{weightClassLabel(b.weight_class, b.is_womens)}{b.is_title ? " · Title" : ""}{!r && b.scheduled_rounds ? ` · ${b.scheduled_rounds}R` : ""}</div>
+        {!off && !r && b.card_change && !b.card_change.confirmed ? <div className="bout-warn" data-testid="bout-withdrawal-reported">Withdrawal reported</div> : null}
         {off ? <div className="res" style={{ color: "var(--pbe-crimson-bright)" }}>Cancelled</div>
           : r ? <><div className="res">{METHOD_LABEL[r.method] || r.method}</div><div className="sub">{r.round ? `Round ${r.round}` : ""}{r.time_sec != null ? ` · ${fmtTime(r.time_sec)}` : ""}{!r.winner_id && r.method !== "DRAW" && r.method !== "NC" ? "" : ""}</div></>
           : <div className="vs">vs</div>}
@@ -216,7 +217,9 @@ export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolve
    * It is not dropped either: it gets its own segment, with the reason the sources gave. */
   const off = (b: Bout) => b.status === "cancelled" || b.status === "replaced";
   const onCard = bouts.filter((b) => !off(b));
-  const removed = bouts.filter(off);
+  /* Confirmed removals, then reported withdrawals. A warned bout is STILL a row of the card above; it is listed here
+   * as well so the report and its source are readable, and it is never called a removal. */
+  const removed = [...bouts.filter(off), ...onCard.filter((b) => !b.result && b.card_change && !b.card_change.confirmed)];
   const groups = order.map((p) => ({ p, rows: onCard.filter((b) => (b.card_position || null) === p) })).filter((g) => g.rows.length);
   const mainId = onCard[0]?.id;
   return (

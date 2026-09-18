@@ -638,7 +638,7 @@ export async function scheduledBoutsNow(boutIds: string[]): Promise<Map<string, 
   const out = new Map<string, ScheduledBoutNow>();
   if (!ids.length) return out;
   const rows = await rest<Array<{ id: string; status: string; result: unknown }>>(
-    `ufc_bouts?select=id,status,result:ufc_bout_results(winner_id)&id=in.(${ids.join(",")})`,
+    `ufc_bouts_effective?select=id,status:effective_status,result:ufc_bout_results(winner_id)&id=in.(${ids.join(",")})`,
     [],
   );
   for (const r of rows) {

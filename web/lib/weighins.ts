@@ -175,14 +175,14 @@ export async function getBookedCard(eventId: string): Promise<BookedBout[]> {
 /** The booked card split by CARD TRUTH (lib/cardTruth.ts): the bouts a weigh-in is expected from, and the bouts
  *  that were scheduled and then came off the card, each with the reason the sources gave. A removed bout is
  *  never expected and never pending; it is also never dropped from the page. */
-export async function getBookedCardSplit(eventId: string, eventName?: string | null): Promise<{ active: BookedBout[]; changes: CardChange[]; all: BookedBout[] }> {
+export async function getBookedCardSplit(eventId: string, eventName?: string | null): Promise<{ active: BookedBout[]; changes: CardChange[]; warnings: CardChange[]; all: BookedBout[] }> {
   const id = encodeURIComponent(eventId);
   const [bouts, observations, statusEvents] = await Promise.all([
     read<BookedBout[]>(`ufc_bouts?select=id,espn_competition_id,fighter_a_id,fighter_b_id,weight_class,weight_class_raw,card_position,bout_order,status&event_id=eq.${id}&order=bout_order.desc.nullslast`, []),
     read<CardObservation[]>(`ufc_event_card_observations?select=observed_at,source,competition_ids,placeholder_ids,complete&event_id=eq.${id}&source=eq.espn&order=observed_at.desc&limit=12`, []),
     read<CardStatusEvent[]>(`ufc_fighter_status_feed?select=id,fighter_id,fighter_name,status_type,state,event_id,bout_id,replacement_fighter_name,source_url,source_name,source_kind,source_published_at,confidence,occurred_at&event_id=eq.${id}&order=occurred_at.desc.nullslast&limit=200`, []),
   ]);
-  const { active, changes } = splitCard(bouts, observations, statusEvents, { eventId, eventName });
+  const { active, changes, warnings } = splitCard(bouts, observations, statusEvents, { eventId, eventName });
   const activeIds = new Set(active.map((b) => b.id));
-  return { active: bouts.filter((b) => activeIds.has(b.id)), changes, all: bouts };
+  return { active: bouts.filter((b) => activeIds.has(b.id)), changes, warnings, all: bouts };
 }

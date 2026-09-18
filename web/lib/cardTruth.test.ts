@@ -5,7 +5,7 @@
  * had reported Ortega's withdrawal - and the weigh-in desk read "26 expected", with both men pending. */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { cardTruth, splitCard, expectedFighterIds, type CardBout, type CardObservation, type CardStatusEvent } from "./cardTruth.ts";
+import { cardTruth, splitCard, expectedFighterIds, effectiveStory, type CardBout, type CardObservation, type CardStatusEvent } from "./cardTruth.ts";
 import { bookedCoverage, shouldPoll } from "./weighins-display.ts";
 // @ts-expect-error -- plain JS shared with the ufc-algo Worker
 import { cardTruth as algoCardTruth } from "../../workers/ufc-algo/src/cardTruth.js";
@@ -96,15 +96,20 @@ test("an unknown reason is never invented", () => {
   for (const c of [bare, who, split, both]) assert.doesNotMatch(c.story, /injur|illness|visa|suspen/i);
 });
 
-test("every basis removes a bout, and an ambiguous card removes nobody", () => {
+test("confirmed evidence removes a bout; a report alone and an ambiguous card remove nobody", () => {
   /* canonical status */
   assert.deepEqual(splitCard(card({ "b-4": { status: "cancelled" } }), [obs([])], [], EVENT).changes.map((c) => [c.bout.id, c.basis]), [["b-4", ["status"]]]);
   assert.deepEqual(splitCard(card({ "b-4": { status: "replaced" } }), [], [], EVENT).changes.map((c) => c.bout.id), ["b-4"]);
-  /* sourced withdrawal while the official card still lists the bout (news ahead of the listing) */
-  assert.deepEqual(splitCard(card(), [obs([])], [evt()], EVENT).changes.map((c) => [c.bout.id, c.basis]), [[REMOVED, ["withdrawal"]]]);
+  /* sourced withdrawal while the official card still lists the bout (news ahead of the listing): a WARNING on an active bout */
+  const ahead = splitCard(card(), [obs([])], [evt()], EVENT);
+  assert.deepEqual([ahead.changes.length, ahead.active.length, ahead.warnings.map((c) => [c.bout.id, c.basis])], [0, 13, [[REMOVED, ["withdrawal"]]]]);
   /* an event-level withdrawal (no bout_id) still finds its bout through the fighter */
-  assert.deepEqual(splitCard(card(), [obs([])], [evt({ bout_id: null })], EVENT).changes.map((c) => c.bout.id), [REMOVED]);
-  /* NOT removals: an injury alone, a resolved withdrawal, a withdrawal from another card, a fought bout */
+  assert.deepEqual(splitCard(card(), [obs([])], [evt({ bout_id: null })], EVENT).warnings.map((c) => c.bout.id), [REMOVED]);
+  /* once the card drops it, the withdrawal joins the basis of the confirmed removal */
+  assert.deepEqual(splitCard(card(), [obs(["401910"])], [evt()], EVENT).changes.map((c) => [c.bout.id, c.basis]), [[REMOVED, ["card_observation", "withdrawal"]]]);
+  /* NOT even warnings: an injury alone, a resolved withdrawal, a withdrawal from another card, a fought bout */
+  for (const e of [evt({ status_type: "injury" }), evt({ state: "resolved" }), evt({ bout_id: null, event_id: "ev-999" })]) assert.equal(splitCard(card(), [obs([])], [e], EVENT).warnings.length, 0);
+  assert.equal(splitCard(card({ [REMOVED]: { has_result: true, status: "complete" } }), [obs(["401910"])], [evt()], EVENT).warnings.length, 0, "a fought bout carries no warning");
   assert.equal(splitCard(card(), [obs([])], [evt({ status_type: "injury" })], EVENT).changes.length, 0);
   assert.equal(splitCard(card(), [obs([])], [evt({ state: "resolved" })], EVENT).changes.length, 0);
   assert.equal(splitCard(card(), [obs([])], [evt({ bout_id: null, event_id: "ev-999" })], EVENT).changes.length, 0);
@@ -144,16 +149,36 @@ test("the web reads card truth exactly as PBE Algo does", () => {
 
 test("a REPORTED withdrawal is never called a removal while the official card still lists the bout", () => {
   /* UFC 333, 2026-09-18: two outlets report Arnold Allen out; ESPN still lists Allen vs Pico. */
-  const reported = splitCard(card(), [obs([])], [evt(), evt({ status_type: "injury", bout_id: null })], EVENT).changes[0];
-  assert.deepEqual([reported.confirmed, reported.basis], [false, ["withdrawal"]]);
+  const reportedSplit = splitCard(card(), [obs([])], [evt(), evt({ status_type: "injury", bout_id: null })], EVENT);
+  const reported = reportedSplit.warnings[0];
+  assert.equal(reportedSplit.changes.length, 0, "a report is not a removal");
+  assert.deepEqual([reported.confirmed, reported.basis, reported.still_on_card], [false, ["withdrawal"], []]);
   assert.equal(reported.story, "Brian Ortega is reported to have withdrawn from UFC 331: Van vs. Pantoja 2 due to injury. The official card still lists this bout.");
   assert.doesNotMatch(reported.story, /removed/i);
   assert.equal(reported.off_card_since, null);
-  /* It still stops being expected, exactly as PBE Algo stops calling it. */
-  assert.equal(expectedFighterIds(splitCard(card(), [obs([])], [evt()], EVENT).active).length, 24);
+  /* The bout stays ACTIVE while officially listed: both corners are still expected. (PBE Algo separately declines to
+   * call a bout with an active card change; that is an eligibility rule, not a statement that the bout is off.) */
+  assert.equal(reportedSplit.active.length, 13);
+  assert.equal(expectedFighterIds(reportedSplit.active).length, 26);
+  assert.ok(expectedFighterIds(reportedSplit.active).includes("f-10b"));
   /* Once the official card drops it, the same bout reads as removed. */
   const confirmed = splitCard(card(), [obs(["401910"])], [evt()], EVENT).changes[0];
   assert.equal(confirmed.confirmed, true);
   assert.match(confirmed.story, /^Bout removed from/);
   assert.equal(splitCard(card({ [REMOVED]: { status: "cancelled" } }), [obs([])], [], EVENT).changes[0].confirmed, true);
+});
+
+test("a row of ufc_bouts_effective tells the same story, word for word, as the ledger path", () => {
+  /* What migration 031 returns for each case (its SQL proof asserts these columns); the sentence must not fork. */
+  const nameOf = (id: string) => (id === "f-10b" ? "Brian Ortega" : null);
+  const ctx = { eventName: EVENT.eventName, nameOf };
+  const removed = splitCard(card(), [obs(["401910"])], [evt(), evt({ status_type: "injury", bout_id: null })], EVENT).changes[0];
+  assert.deepEqual(effectiveStory({ status: "cancelled", withdrawn_fighter_id: "f-10b", reason: "injury" }, ctx), { confirmed: true, story: removed.story });
+  const warned = splitCard(card(), [obs([])], [evt()], EVENT).warnings[0];
+  assert.deepEqual(effectiveStory({ status: "announced", withdrawal_reported: true, withdrawn_fighter_id: "f-10b", reason: null }, ctx), { confirmed: false, story: warned.story });
+  const bare = splitCard(card(), [obs(["401910"])], [], EVENT).changes[0];
+  assert.equal(effectiveStory({ status: "cancelled" }, ctx)!.story, bare.story);
+  /* on the card, nothing reported: no story at all. An unknown reason key licenses no words. */
+  assert.equal(effectiveStory({ status: "announced", withdrawal_reported: false }, ctx), null);
+  assert.doesNotMatch(effectiveStory({ status: "cancelled", withdrawn_fighter_id: "f-10b", reason: "torn_acl" }, ctx)!.story, /torn|acl|due to/i);
 });

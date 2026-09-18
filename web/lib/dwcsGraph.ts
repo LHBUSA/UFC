@@ -139,7 +139,8 @@ function toGraphBout(b: RawBout, fighterId: string, ev: RawEvent): GraphBout {
 
 const byDate = (a: GraphBout, b: GraphBout) => String(a.event.eventDate || "").localeCompare(String(b.event.eventDate || "")) || a.event.name.localeCompare(b.event.name);
 
-const BOUT_COLS = "id,event_id,fighter_a_id,fighter_b_id,status,weight_class,is_womens,is_title,result:ufc_bout_results(winner_id,method,round,time_sec)";
+/* Read through public.ufc_bouts_effective (migration 031): `status` is the effective status. */
+const BOUT_COLS = "id,event_id,fighter_a_id,fighter_b_id,status:effective_status,weight_class,is_womens,is_title,result:ufc_bout_results(winner_id,method,round,time_sec)";
 
 export const getDwcsGraph = cache(async (): Promise<DwcsGraph | null> => {
   try {
@@ -151,7 +152,7 @@ export const getDwcsGraph = cache(async (): Promise<DwcsGraph | null> => {
     const dwcsBouts: RawBout[] = [];
     const ids = events.map((e) => e.id);
     for (let i = 0; i < ids.length; i += 60) {
-      dwcsBouts.push(...await restAll<RawBout>(`ufc_bouts?select=${BOUT_COLS}&event_id=in.(${ids.slice(i, i + 60).join(",")})&order=id.asc`));
+      dwcsBouts.push(...await restAll<RawBout>(`ufc_bouts_effective?select=${BOUT_COLS}&event_id=in.(${ids.slice(i, i + 60).join(",")})&order=id.asc`));
     }
     const fighterIds = [...new Set(dwcsBouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]))];
 
@@ -164,7 +165,7 @@ export const getDwcsGraph = cache(async (): Promise<DwcsGraph | null> => {
     const career = new Map<string, RawBout>();
     for (let i = 0; i < fighterIds.length; i += 50) {
       const chunk = fighterIds.slice(i, i + 50).join(",");
-      for (const b of await restAll<RawBout>(`ufc_bouts?select=${BOUT_COLS},event:ufc_events(id,name,event_date,card_status)&or=(fighter_a_id.in.(${chunk}),fighter_b_id.in.(${chunk}))&order=id.asc`)) career.set(b.id, b);
+      for (const b of await restAll<RawBout>(`ufc_bouts_effective?select=${BOUT_COLS},event:ufc_events(id,name,event_date,card_status)&or=(fighter_a_id.in.(${chunk}),fighter_b_id.in.(${chunk}))&order=id.asc`)) career.set(b.id, b);
     }
     const boutsByFighter = new Map<string, RawBout[]>();
     for (const b of career.values()) {
