@@ -208,7 +208,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
   const sourceStampIsPublisher = Boolean(summary?.newest_source_published_at);
 
   return (
-    <div className={`wrap page ${styles.desk}`}>
+    <div className={`wrap page weighins-cinematic-page ${styles.desk}`}>
       <Breadcrumbs items={[{ name: "Weigh-Ins" }]} />
       <WeighInAutoRefresh seconds={WEIGHIN_REVALIDATE} enabled={poll} />
 
@@ -292,12 +292,12 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
         </div>
       ) : win.open && expectedCount > 0 ? (
         <Empty title="Waiting for verified scale readings">
-          <p data-testid="weighin-waiting">{weighedCount} weighed / {expectedCount} expected. Readings appear here as soon as a verified source reports them — this page checks every {WEIGHIN_REVALIDATE} seconds, no refresh needed. No weight or contractual limit is ever guessed.</p>
-          {pendingNames.length > 0 && <p className={styles.panelNote}>On the scale: {pendingNames.join(", ")}</p>}
+          <span data-testid="weighin-waiting">{weighedCount} weighed / {expectedCount} expected. Readings appear here as soon as a verified source reports them — this page checks every {WEIGHIN_REVALIDATE} seconds, no refresh needed. No weight or contractual limit is ever guessed.</span>
+          {pendingNames.length > 0 && <span className={styles.panelNote} style={{ display: "block" }}>On the scale: {pendingNames.join(", ")}</span>}
         </Empty>
       ) : (
         <Empty title="Official weigh-in result not recorded yet">
-          <p>No sourced scale readings are on file for this card yet. The desk stays empty rather than guessing a weight or contractual limit.</p>
+          No sourced scale readings are on file for this card yet. The desk stays empty rather than guessing a weight or contractual limit.
         </Empty>
       )}
 

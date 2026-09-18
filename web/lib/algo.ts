@@ -339,6 +339,20 @@ export async function getAlgoCards(access: Pick<UfcAccess, "pro">): Promise<Arra
   return [...byEvent.values()].sort((a, b) => a.event_date.localeCompare(b.event_date));
 }
 
+/** Counts for the next card, for the /algo overview. Pro only, and counts only:
+ *  no fighter, side, probability or reason leaves this function, so the public
+ *  method page can show that a card is being worked without ever holding a call. */
+export type AlgoCardSummary = { event_name: string; event_date: string; bouts: number; locked: number; provisional: number; no_call: number; pending: number };
+export async function getAlgoNextCardSummary(access: Pick<UfcAccess, "pro">): Promise<AlgoCardSummary | null> {
+  requirePro(access);
+  const card = (await getAlgoCards(access))[0];
+  if (!card) return null;
+  const locked = card.bouts.filter((b) => b.prediction?.locked_at).length;
+  const provisional = card.bouts.filter((b) => !b.prediction?.locked_at && b.decision === "ELIGIBLE").length;
+  const no_call = card.bouts.filter((b) => !b.prediction?.locked_at && b.decision === "NO_MODEL_CALL").length;
+  return { event_name: card.event_name, event_date: card.event_date, bouts: card.bouts.length, locked, provisional, no_call, pending: card.bouts.length - locked - provisional - no_call };
+}
+
 export async function getAlgoBout(access: Pick<UfcAccess, "pro">, boutId: string): Promise<AlgoBoutView | null> {
   requirePro(access);
   const fx = fixture();

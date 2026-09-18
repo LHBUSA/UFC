@@ -29,6 +29,7 @@ import "./dwcs-alumni.css";
 import "./pro-gate.css";
 import "./algo.css";
 import "./algo-picks.css";
+import "./algo-flagship.css";
 import "./news-index.css";
 import "./pbe-flagship.css";
 import "./house-promo.css";
