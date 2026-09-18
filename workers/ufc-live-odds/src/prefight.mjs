@@ -32,6 +32,17 @@
 import { FIGHT_WEEK_BANDS, SCHEDULER_TOLERANCE_MINUTES, fightWeekBand, lockDeadlineFor, lockWindowOpensFor, LOCK_WINDOW_OPENS_HOURS, LOCK_WINDOW_CLOSES_HOURS } from '../../../scripts/odds/fight_week_cadence.mjs';
 export { FIGHT_WEEK_BANDS, lockDeadlineFor, lockWindowOpensFor, LOCK_WINDOW_OPENS_HOURS, LOCK_WINDOW_CLOSES_HOURS };
 
+/* Which events are UFC cards the market lane may price: a name that starts with the WORD "UFC" (numbered cards and
+ * Fight Nights), never Contender Series or Road to UFC. One predicate for the capture horizon and for the 21-day
+ * match window: the window's own copy of this regex once carried a literal 0x08 byte where the word boundary
+ * belonged (e860f01), matched nothing, and silently shrank the window to the horizon. */
+const UFC_CARD_RE = /^UFC\b/i;
+const NOT_A_UFC_CARD_RE = /contender series|road to ufc/i;
+export function isUfcCard(e) {
+  const name = String(e?.name || '');
+  return UFC_CARD_RE.test(name) && !NOT_A_UFC_CARD_RE.test(name);
+}
+
 /* Which bouts a price may attach to. Read through public.ufc_bouts_effective (migration 031): ufc_bouts.status is
  * never rewritten when a bout leaves a card (029), so filtering the stored word kept a bout the official card had
  * dropped as a match candidate. is_active is false only on CONFIRMED removal; a reported withdrawal while the card

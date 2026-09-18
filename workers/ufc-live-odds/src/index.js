@@ -37,7 +37,7 @@ import { OBS_CONFLICT } from '../../../scripts/odds/market_match.mjs';
 import { normalizePayload, snapshotRows, observationRows } from './capture.mjs';
 import { boundariesFrom, dedupeBoundaries } from './boundaries.mjs';
 import { readConfig, shouldPoll, readQuotaHeaders, isActive, isImminent, roundFromStatus } from './gate.mjs';
-import { readPrefightConfig, shouldCapturePrefight, boutCandidatesQuery, matchableBouts } from './prefight.mjs';
+import { readPrefightConfig, shouldCapturePrefight, boutCandidatesQuery, matchableBouts, isUfcCard } from './prefight.mjs';
 import { notifyMarketRefresh } from './marketRefresh.mjs';
 
 const WORKER = 'ufc-live-odds';
@@ -458,7 +458,7 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
   const until = new Date(now + (cfg.horizonDays + 2) * 86_400_000).toISOString().slice(0, 10);
   let eventsError = null;
   const events = ((await rest(env, `ufc_events?select=id,name,event_date&event_date=gte.${today}&event_date=lte.${until}&order=event_date.asc`).catch((e) => { eventsError = String(e?.message || e).slice(0, 160); return []; })) || [])
-    .filter((e) => /^UFC\b/i.test(e.name || '') && !/contender series|road to ufc/i.test(e.name || ''));
+    .filter(isUfcCard);
   const lastSnap = (await rest(env, 'ufc_market_run_quotes?select=observed_at&order=observed_at.desc&limit=1').catch(() => null))?.[0]?.observed_at || null;
   const dayStart = `${today}T00:00:00Z`;
   const todayRuns = await rest(env, `ufc_market_runs?select=id,notes&started_at=gte.${dayStart}&capture_mode=eq.descriptive`).catch(() => null);
@@ -518,7 +518,7 @@ async function prefightTick(env, { dry = false, force = false } = {}) {
    * prices later cards too; matching them costs nothing, so candidates span 21 days. */
   const matchUntil = new Date(now + 21 * 86_400_000).toISOString().slice(0, 10);
   const matchEvents = ((await rest(env, `ufc_events?select=id,name&event_date=gte.${today}&event_date=lte.${matchUntil}`).catch(() => [])) || [])
-    .filter((e) => /^UFC/i.test(e.name || '') && !/contender series|road to ufc/i.test(e.name || ''));
+    .filter(isUfcCard);
   const eventIds = [...new Set([...events, ...matchEvents].map((e) => e.id))];
   const [boutRows, fighterRows, aliasRows] = await Promise.all([
     eventIds.length

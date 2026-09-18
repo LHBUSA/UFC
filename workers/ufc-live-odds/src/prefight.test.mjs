@@ -1,6 +1,7 @@
 /* Pre-fight capture decision. Run: node src/prefight.test.mjs
  * Every assertion is about money or about lock-time freshness. */
-import { readPrefightConfig, cadenceFor, shouldCapturePrefight, lockDeadlineFor, lockWindowOpensFor, boutCandidatesQuery, matchableBouts } from './prefight.mjs';
+import { readFileSync, readdirSync } from 'node:fs';
+import { readPrefightConfig, cadenceFor, shouldCapturePrefight, lockDeadlineFor, lockWindowOpensFor, boutCandidatesQuery, matchableBouts, isUfcCard } from './prefight.mjs';
 import { readConfig } from './gate.mjs';
 
 let failures = 0;
@@ -93,6 +94,23 @@ eq(new Date(LOCK).toISOString(), '2026-09-18T18:00:00.000Z', 'lock deadline is t
   const d = shouldCapturePrefight({ now, cfg: CFG, events: [later, CARD], lastSnapshotAt: new Date(now - 3 * H).toISOString(), callsToday: 0, quota: quotaAt(now) });
   eq(d.band, 'T-72h', 'nearest lock sets the band');
   eq(d.reason, 'fresh_snapshot_on_file', '3h-old snapshot is fresh for the 6h band');
+}
+
+/* Which events are UFC cards. The 21-day match window once used /^UFC<0x08>/ and admitted nothing. */
+{
+  const admit = ['UFC 331: Van vs. Pantoja 2', 'UFC Fight Night: Rosas Jr. vs. Barcelos', 'UFC 332: Silva vs. Wang', 'ufc 400'];
+  const reject = ["Dana White's Contender Series: Season 10, Week 7", 'Road to UFC: Shanghai', 'UFC: Road to UFC Season 5', 'UFCW Local 7 Charity Night', 'Bellator 300', 'The UFC Story', '', null, undefined];
+  for (const n of admit) eq(isUfcCard({ name: n }), true, `admits ${n}`);
+  for (const n of reject) eq(isUfcCard({ name: n }), false, `rejects ${n}`);
+  eq(isUfcCard(null), false, 'a missing event is not a card');
+  /* No source file in this Worker may carry a control byte: that is how a word boundary became a backspace. */
+  const dir = new URL('.', import.meta.url);
+  for (const f of readdirSync(dir).filter((x) => /[.](m?js)$/.test(x))) {
+    const bad = [...readFileSync(new URL(f, dir))].findIndex((c) => c < 9 || (c > 13 && c < 32));
+    eq(bad, -1, `${f} contains a control byte at offset ${bad}`);
+  }
+  /* and the event filter exists exactly once, here: index.js must not grow its own copy again */
+  eq(readFileSync(new URL('index.js', dir), 'utf8').includes('/^UFC'), false, 'index.js carries no private UFC-card regex');
 }
 
 /* Card truth (migration 031): a price is never attached to a bout the official card dropped. */
