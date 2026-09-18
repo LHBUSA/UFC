@@ -175,3 +175,16 @@ test('availability rank: proven first, unverified global next, unverified region
   const order = [regionalUnverified, globalUnverified, proven].sort((a, b) => availabilityRank(a) - availabilityRank(b));
   assert.deepEqual(order, [proven, globalUnverified, regionalUnverified]);
 });
+
+test('relink --ids restricts a repair to named videos; script beats channel at ingest', async () => {
+  const { parseCliOptions } = await import('./ingest_youtube.mjs');
+  const o = parseCliOptions(['--relink', '--ids', 'abc, def,,ghi', '--dry-run']);
+  assert.deepEqual([o.relink, o.dry, [...o.ids]], [true, true, ['abc', 'def', 'ghi']]);
+  assert.equal(parseCliOptions(['--relink']).ids, null, 'no --ids means the whole stored set, as before');
+  const { detectLanguage } = await import('./lib.mjs');
+  assert.deepEqual(detectLanguage('UFC', '최두호 vs 티아고 타바레스 | 풀 파이트 | Crypto.com UFC 331', ''), { language: 'ko', method: 'script' });
+  assert.deepEqual(detectLanguage('UFC', '平良達郎 vs ジョシュア・ヴァン', ''), { language: 'ja', method: 'script' });
+  assert.equal(detectLanguage('UFC', '張偉麗 對 閆曉楠', '').language, 'unknown');
+  assert.deepEqual(detectLanguage('UFC', 'Crypto.com UFC 331: Pre-Fight Press Conference', ''), { language: 'en', method: 'channel' });
+  assert.equal(detectLanguage('UFC Brasil', 'Coletiva de Imprensa', '').language, 'pt');
+});

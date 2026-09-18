@@ -86,14 +86,16 @@ Usage:
 
 ```
 node scripts/videos/seed_channels.mjs [--dry-run]
-node scripts/videos/ingest_youtube.mjs [--dry-run] [--since-days N] [--channel <id>] [--relink]
+node scripts/videos/ingest_youtube.mjs [--dry-run] [--since-days N] [--channel <id>] [--relink [--ids a,b,c]]
 node --test scripts/videos/lib.test.mjs
 ```
 
 `--dry-run` prints the plan (new / updated / unchanged per video) and writes
 nothing. `--since-days` (default 30) drops older uploads. `--relink` recomputes
 classification and links for the stored rows without touching YouTube; run it
-after a fighter/event load. Upserts are on `(provider, provider_video_id)`;
+after a fighter/event load. `--relink --ids a,b,c` recomputes only the named videos: a full
+relink also applies every link change the current card context implies (216 rows on
+2026-09-18), which a targeted repair such as a language rule should not carry with it. Upserts are on `(provider, provider_video_id)`;
 rows whose persisted columns, links or evidence did not change are not
 rewritten, so a rerun is a no-op. A row a human set to `link_status='rejected'`
 keeps its links and status across reruns.

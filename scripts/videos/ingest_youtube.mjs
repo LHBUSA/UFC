@@ -2,7 +2,7 @@
 /* Pull the newest uploads of every enabled, verified channel in
  * ufc_video_channels into ufc_videos (docs/videos.md).
  *
- *   node scripts/videos/ingest_youtube.mjs [--dry-run] [--since-days N] [--channel <id>] [--relink]
+ *   node scripts/videos/ingest_youtube.mjs [--dry-run] [--since-days N] [--channel <id>] [--relink [--ids a,b,c]]
  *
  * Discovery (docs/UFC_MEDIA_VIDEO_ADDENDUM.md section 6):
  *   YOUTUBE_API_KEY set   -> Data API v3: channels.list -> uploads playlist ->
@@ -65,6 +65,9 @@ export function parseCliOptions(argv = []) {
     relink: argv.includes('--relink'),
     sinceDays: Number(argv[argv.indexOf('--since-days') + 1] || 30) || 30,
     onlyChannel: argv.includes('--channel') ? argv[argv.indexOf('--channel') + 1] : null,
+    /* --relink --ids a,b,c: recompute only these provider video ids. A full relink also applies every link
+     * change the current card context implies; a targeted repair (a language rule) should not ride along with that. */
+    ids: argv.includes('--ids') ? new Set(String(argv[argv.indexOf('--ids') + 1] || '').split(',').map((x) => x.trim()).filter(Boolean)) : null,
     playlists: argv.flatMap((a, i) => (a === '--playlist' && argv[i + 1] ? [argv[i + 1]] : [])),
   };
 }
@@ -334,6 +337,7 @@ export async function main(injectedEnv, options = {}) {
     for (const entry of entries) {
       const pub = entry.published ? new Date(entry.published) : null;
       if (!RELINK && !BACKFILL && pub && pub < since) { totals.skipped_old += 1; continue; }
+      if (RELINK && options.ids && !options.ids.has(entry.video_id)) continue;
       const existing = existingById.get(entry.video_id) || null;
 
       /* Feed path: oEmbed once per new video (or whenever the stored answer is still null). */

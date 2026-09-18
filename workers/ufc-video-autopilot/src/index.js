@@ -31,7 +31,7 @@ import { main as ingestYoutube } from '../../../scripts/videos/ingest_youtube.mj
 import { videoAvailability, availabilityRank, POLICY_REGION } from '../../../scripts/videos/lib.mjs';
 
 const WORKER = 'ufc-video-autopilot';
-const VERSION = 'v0.2.1';
+const VERSION = 'v0.2.2';
 const PROVIDER = 'youtube';
 
 const health = { last_run_at: null, last_status: null, last_result: null, last_error: null };
