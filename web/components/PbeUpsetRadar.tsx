@@ -3,7 +3,7 @@ import type { UfcAccess } from "@/lib/accessDecision";
 import type { PortraitSet } from "@/lib/db";
 import { getVerifiedDisplayImagesForFighters } from "@/lib/verifiedPortraits";
 import { getAlgoCards, isMarketOppositePick, type AlgoUpsetProof } from "@/lib/algo";
-import { agoText, deltaText, drivers, marketView, oddsWithRole, pctText } from "@/lib/algoView";
+import { agoText, deltaText, drivers, marketView, oddsText, pctText } from "@/lib/algoView";
 
 type CurrentUnderdog = {
   boutId: string;
@@ -150,7 +150,7 @@ export async function PbeUpsetRadar({
 
               <div className="pbe-upset-radar-visual-label">
                 <i />
-                <span>{primary ? `UPSET PICK · ${oddsWithRole(primary.odds)}` : "CLEAR"}</span>
+                <span>{primary ? `UPSET PICK · ${oddsText(primary.odds)}` : "CLEAR"}</span>
               </div>
             </div>
 
@@ -165,7 +165,7 @@ export async function PbeUpsetRadar({
             {primary ? (
               <div className="pbe-upset-radar-visual-name">
                 <b>{primary.pickName}</b>
-                <span>Market favorite: {primary.opponentName} {oddsWithRole(primary.opponentOdds)}</span>
+                <span>Market favorite: {primary.opponentName} {oddsText(primary.opponentOdds)}</span>
               </div>
             ) : (
               <div className="pbe-upset-radar-visual-name quiet">
@@ -194,7 +194,7 @@ export async function PbeUpsetRadar({
                   <article className="pbe-upset-rail-signal" key={x.boutId}>
                     <div className="pbe-upset-rail-signal-top">
                       <span>#{i + 1} · {x.locked ? "LOCKED" : "PROVISIONAL"} · PBE UPSET PICK</span>
-                      <b>{oddsWithRole(x.odds)}</b>
+                      <b>{oddsText(x.odds)}</b>
                     </div>
                     <h4>{x.pickName}</h4>
                     <p>vs {x.opponentName}</p>
@@ -213,7 +213,7 @@ export async function PbeUpsetRadar({
                         </div>
                         <div className="pbe-upset-rail-gap">
                           <b>PBE picks {x.pickName} · {pctText(x.probability)}</b>
-                          <span>Market favorite: {x.opponentName} {oddsWithRole(x.opponentOdds)} · PBE upset pick: {x.pickName} {oddsWithRole(x.odds)} · {deltaText(x.edgePts)} {x.marketState === "CURRENT" ? "edge" : "stored gap"}</span>
+                          <span>Market favorite: {x.opponentName} {oddsText(x.opponentOdds)} · PBE upset pick: {x.pickName} {oddsText(x.odds)} · {deltaText(x.edgePts)} {x.marketState === "CURRENT" ? "edge" : "stored gap"}</span>
                         </div>
                         {x.supporting.length > 0 ? (
                           <div className="pbe-upset-rail-driver-list">
@@ -328,7 +328,7 @@ export async function PbeUpsetRadar({
                   <div className="pbe-upset-current-rank">#{String(i + 1).padStart(2, "0")} · UPSET SIGNAL</div>
                   <div className="between pbe-upset-current-top">
                     <span className={x.locked ? "pbe-upset-state locked" : "pbe-upset-state"}>{x.locked ? "OFFICIAL · LOCKED" : "PROVISIONAL"}</span>
-                    <b>PBE PICK · {oddsWithRole(x.odds)}</b>
+                    <b>PBE PICK · {oddsText(x.odds)}</b>
                   </div>
                   <h4>{x.pickName}</h4>
                   <p>vs {x.opponentName}</p>
@@ -338,7 +338,7 @@ export async function PbeUpsetRadar({
                     <span><em>MODEL</em><b>{pctText(x.probability)}</b></span>
                     <span><em>MARKET</em><b>{pctText(x.marketImplied)}</b></span>
                     <span><em>{x.marketState === "CURRENT" ? "PBE EDGE" : "LAST EDGE"}</em><b>{deltaText(x.edgePts)}</b></span>
-                    <span><em>BEST LINE</em><b>{x.bestOdds == null ? "—" : oddsWithRole(x.bestOdds)}</b></span>
+                    <span><em>BEST LINE</em><b>{x.bestOdds == null ? "—" : oddsText(x.bestOdds)}</b></span>
                   </div>
 
                   <div className="pbe-upset-thesis">
@@ -381,7 +381,7 @@ export async function PbeUpsetRadar({
             <div><b>{proof.total}</b><span>Graded underdog calls</span></div>
             <div><b>{proof.decided ? `${proof.wins}-${proof.losses}` : "—"}</b><span>Decided record</span></div>
             <div><b>{proof.hit_rate == null ? "—" : `${(proof.hit_rate * 100).toFixed(1)}%`}</b><span>Hit rate</span></div>
-            <div><b>{proof.average_consensus_odds == null ? "—" : oddsWithRole(Math.round(proof.average_consensus_odds))}</b><span>Avg locked price</span></div>
+            <div><b>{proof.average_consensus_odds == null ? "—" : oddsText(Math.round(proof.average_consensus_odds))}</b><span>Avg locked price</span></div>
           </div>
 
           {proof.biggest_wins.length > 0 && (
@@ -392,7 +392,7 @@ export async function PbeUpsetRadar({
                   <article className="pbe-upset-card" key={x.prediction_id}>
                     <div className="pbe-upset-card-top">
                       <span className="pbe-upset-win">RESULT · WIN</span>
-                      <b>{oddsWithRole(x.consensus_odds)} UNDERDOG</b>
+                      <b>{oddsText(x.consensus_odds)} UNDERDOG</b>
                     </div>
                     <h4>{x.pick_name}</h4>
                     <p className="pbe-upset-vs">vs {x.opponent_name}</p>
