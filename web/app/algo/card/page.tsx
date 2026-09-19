@@ -5,9 +5,10 @@ import { Breadcrumbs } from "@/components/ui";
 import { ProPreview } from "@/components/ProPreview";
 import { AlgoPick, type AlgoFighterContext } from "@/components/AlgoPick";
 import { getUfcAccess } from "@/lib/access";
-import { getAlgoCards, getAlgoUpsetProof } from "@/lib/algo";
+import { getAlgoCards, getAlgoPerformanceProof, getAlgoUpsetProof } from "@/lib/algo";
 import { PbeUpsetRadar } from "@/components/PbeUpsetRadar";
 import { PbePicksAutoRefresh } from "@/components/PbePicksAutoRefresh";
+import { PbePerformanceTracker } from "@/components/PbePerformanceTracker";
 import { getImagesForFighters, getFightersByIds, getEventById, type Event } from "@/lib/db";
 import { lockedText, type AlgoBoutView } from "@/lib/algoView";
 import { fmtDate, locationLine } from "@/lib/format";
@@ -41,9 +42,10 @@ const modelLabel = (v: string | null | undefined) => (v ? v.replace(/^pbe-fight-
 
 export default async function AlgoCardPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const access = await getUfcAccess();
-  const [cards, upsetProof] = await Promise.all([
+  const [cards, upsetProof, performance] = await Promise.all([
     access.pro ? getAlgoCards(access) : Promise.resolve([]),
     getAlgoUpsetProof(),
+    getAlgoPerformanceProof(),
   ]);
   const params = await searchParams;
   const view: View = params.view === "nocalls" || params.view === "all" ? params.view : "picks";
@@ -95,6 +97,8 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
           <Link href="/model" className="btn ghost">Model evidence</Link>
         </div>
       </header>
+
+      <PbePerformanceTracker proof={performance} />
 
       <div className="pp-picks-layout">
         <aside className="pp-picks-sidecar" aria-label="PBE Upset Radar">
