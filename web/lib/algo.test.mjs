@@ -133,6 +133,9 @@ test('a stale market is never presented as a current edge', () => {
   assert.equal(view.oddsText(-130), '-130');
   assert.equal(view.oddsText(110), '+110');
   assert.equal(view.oddsText(100), '+100');
+  assert.equal(view.oddsWithRole(-130), '-130 · FAV');
+  assert.equal(view.oddsWithRole(110), '+110 · DOG');
+  assert.equal(view.oddsWithRole(100), '+100 · DOG');
   assert.equal(view.ageText(14900), '10.3 days');
   assert.equal(view.ageText(42), '42 min');
 });
