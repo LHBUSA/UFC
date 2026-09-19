@@ -52,6 +52,7 @@ const num = (v: unknown): number | null => {
   return v === null || v === undefined || v === "" || !Number.isFinite(n) ? null : n;
 };
 const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(n < 10 ? 2 : 1).replace(/\.?0+$/, ""));
+const oddsLabel = (n: number) => `${n > 0 ? "+" : ""}${n} · ${n < 0 ? "FAV" : n > 0 ? "DOG" : "EVEN"}`;
 
 /** Keys that carry a plotted value, as opposed to a label or provenance. */
 const META = new Set(["label", "trait", "metric_key", "confidence", "sample_bouts", "sample_rounds", "rounds_sampled", "round", "books", "best_book", "best_price"]);
@@ -162,7 +163,7 @@ function Bars({ spec }: { spec: ChartSpec }) {
                       </div>
                       <span className="chart-val">
                         {shown}
-                        {price !== null ? <em>{price > 0 ? "+" : ""}{price}{row.best_book ? ` ${row.best_book}` : ""}</em> : null}
+                        {price !== null ? <em>{oddsLabel(price)}{row.best_book ? ` ${row.best_book}` : ""}</em> : null}
                       </span>
                     </div>
                   );
