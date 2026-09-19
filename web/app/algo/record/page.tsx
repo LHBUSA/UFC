@@ -5,7 +5,7 @@ import { PbeFamilyNav } from "@/components/PbeFamilyNav";
 import { PbePerformanceTracker } from "@/components/PbePerformanceTracker";
 import { PbePicksAutoRefresh } from "@/components/PbePicksAutoRefresh";
 import { getAlgoPerformanceProof, getAlgoPublicGradedRecord } from "@/lib/algo";
-import { confidenceCopy, deltaText, lockedText, oddsText, pctText, type AlgoBoutView } from "@/lib/algoView";
+import { confidenceCopy, deltaText, lockedText, oddsWithRole, pctText, type AlgoBoutView } from "@/lib/algoView";
 
 /* Public receipt ledger for official PBE Picks.
  *
@@ -162,7 +162,7 @@ export default async function AlgoRecordPage() {
                         <td className="nowrap">{lockedText(p.locked_at)}</td>
                         <td className="r">{p.market_implied_prob_pick == null ? "—" : pctText(Number(p.market_implied_prob_pick))}</td>
                         <td className="r nowrap">{p.model_edge_pts == null ? "—" : deltaText(Number(p.model_edge_pts))}</td>
-                        <td className="r nowrap">{oddsText(lockPrice)}{lockBook ? <div className="faint sm">{lockBook}</div> : null}</td>
+                        <td className="r nowrap">{oddsWithRole(lockPrice)}{lockBook ? <div className="faint sm">{lockBook}</div> : null}</td>
                         <td className="r nowrap"><b>{unitsText(resultUnits)}</b></td>
                         <td>
                           {r.grade ? <span className={`algo-result ${r.grade.result.toLowerCase()}`}>{r.grade.result}</span> : <span className="faint">Pending</span>}
