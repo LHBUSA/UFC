@@ -27,7 +27,7 @@ import {
   localTime, zoneLabel, localDay, countdown, verifiedAgo, isStale, firstStartMs,
   type EventBroadcast,
 } from "@/lib/broadcast-display";
-import { LocalTime, LocalTimeInline, Countdown, VerifiedAgo } from "@/components/HowToWatchClient";
+import { Countdown, VerifiedAgo } from "@/components/HowToWatchClient";
 import styles from "@/app/how-to-watch.module.css";
 
 /* The server renders in US Eastern — the promotion's own reference zone, and a
@@ -125,11 +125,10 @@ export function HowToWatchPanel({ b, now = Date.now() }: { b: EventBroadcast | n
             {lines.map((l) => (
               <div key={l.key} className={styles.slot} data-main={l.key === "main_card" ? "true" : undefined}>
                 <span className={styles.slotLabel}>{l.label}</span>
-                <LocalTime
-                  utc={l.utc}
-                  initial={localTime(l.utc, SERVER_ZONE)}
-                  initialZone={zoneLabel(l.utc, SERVER_ZONE)}
-                />
+                <span className={styles.slotTime}>
+                  <time dateTime={l.utc} title={zoneLabel(l.utc, SERVER_ZONE)}>{localTime(l.utc, SERVER_ZONE)}</time>
+                </span>
+                <span className={styles.slotZone}>ET</span>
               </div>
             ))}
           </div>
@@ -138,8 +137,7 @@ export function HowToWatchPanel({ b, now = Date.now() }: { b: EventBroadcast | n
            * published yet. The panel still renders, with the carrier and the
            * official link, because both are useful before the clock is set. */
           <p className={styles.pending}>
-            Start times for this card have not been published by UFC.com yet. They appear here, in your local
-            timezone, as soon as they are.
+            Start times for this card have not been published by UFC.com yet. They appear here in Eastern Time as soon as they are.
           </p>
         )}
 
@@ -217,7 +215,7 @@ export function WatchStrip({
           {lines.map((l) => (
             <div key={l.key} className={styles.stripSlot}>
               <span>{l.label}</span>
-              <b><LocalTimeInline utc={l.utc} initial={localTime(l.utc, SERVER_ZONE)} /></b>
+              <b><time dateTime={l.utc} title={zoneLabel(l.utc, SERVER_ZONE)}>{localTime(l.utc, SERVER_ZONE)} ET</time></b>
             </div>
           ))}
         </div>
