@@ -747,6 +747,42 @@ async function rankingsFromSnapshot(env) {
 /* Verified store only: the ufc_rankings table when migration 003 is applied
  * and populated, otherwise the Storage snapshot written by the same ingest.
  * Returns null when neither exists. Never synthesizes. */
+const ASPINALL_VACANCY = Object.freeze({
+  type: "vacated_title",
+  division: "HEAVYWEIGHT",
+  former_champion: "Tom Aspinall",
+  effective_date: "2026-09-14",
+  source_urls: [
+    "https://www.mmafighting.com/ufc/510226/tom-aspinall-vacates-ufc-heavyweight-title-absolute-nightmare",
+    "https://www.mmafighting.com/ufc/511027/dana-white-says-ciryl-gane-wont-be-promoted-to-undisputed-champion-hes-still-got-to-fight",
+  ],
+  note: "Tom Aspinall vacated the heavyweight title. Dana White subsequently said Ciryl Gane would not be automatically promoted to undisputed champion.",
+});
+
+function applyCurrentTitleCorrections(rankings) {
+  if (!rankings?.divisions?.length) return rankings;
+  let changed = false;
+  const divisions = rankings.divisions.map((d) => {
+    if (!d.is_womens && !d.is_p4p && d.key === "HEAVYWEIGHT" && d.champion?.name === "Tom Aspinall") {
+      changed = true;
+      return { ...d, champion: null };
+    }
+    return d;
+  });
+  if (!changed) return rankings;
+  const corrections = Array.isArray(rankings.corrections) ? rankings.corrections : [];
+  const exists = corrections.some((x) =>
+    x?.type === ASPINALL_VACANCY.type
+    && x?.division === ASPINALL_VACANCY.division
+    && x?.effective_date === ASPINALL_VACANCY.effective_date
+  );
+  return {
+    ...rankings,
+    divisions,
+    corrections: exists ? corrections : [...corrections, ASPINALL_VACANCY],
+  };
+}
+
 async function loadRankings(env) {
   const now = Date.now();
   if (rankingsState.memo && now - rankingsState.memoAt < RANKINGS_MEMO_TTL_MS) return rankingsState.memo;
@@ -754,6 +790,7 @@ async function loadRankings(env) {
   if (await rankingsTablePresent(env)) out = await rankingsFromTable(env);
   if (!out) out = await rankingsFromSnapshot(env);
   if (out) {
+    out = applyCurrentTitleCorrections(out);
     rankingsState.memo = out;
     rankingsState.memoAt = now;
   }
@@ -804,6 +841,7 @@ async function rankingsResponse(env, url) {
     source_url: rankings.source_url,
     snapshot_date: rankings.snapshot_date,
     captured_at: rankings.captured_at,
+    corrections: Array.isArray(rankings.corrections) ? rankings.corrections : [],
     divisions: divisions.map((d) => ({
       ...d,
       champion: d.champion ? { ...d.champion, fighter: linkedIdentity(d.champion.fighter_id, identityMap) } : null,
