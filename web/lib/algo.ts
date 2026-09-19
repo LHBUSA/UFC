@@ -258,6 +258,96 @@ export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
   };
 }
 
+export type AlgoFreeSample = {
+  contract: "pbe-free-sample-v1";
+  sport: "UFC";
+  generated_at: string;
+  pick: null | {
+    lifecycle: "LOCKED" | "PROVISIONAL";
+    event_name: string;
+    event_date: string;
+    matchup: string;
+    pick_name: string;
+    opponent_name: string;
+    model_probability: number;
+    consensus_odds: number;
+    best_odds: number | null;
+    best_book: string | null;
+    market_probability: number | null;
+    edge_pts: number | null;
+    confidence: AlgoBoutView["confidence"];
+    observed_at: string | null;
+  };
+  full_product_url: string;
+};
+
+/** One deliberately small public top-of-funnel call. Never returns more than
+ * one fighter selection and never exposes feature vectors, the rest of the
+ * card, historical rows or any account-only payload. Locked calls keep their
+ * lock-time market; provisional calls require a market that is still current. */
+export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
+  type SampleBout = { id: string; fighter_a: { id: string; name: string }; fighter_b: { id: string; name: string }; event: { id: string; name: string; event_date: string } };
+  type SampleEval = { bout_id: string; decision: string; confidence: AlgoBoutView["confidence"]; pick_fighter_id: string | null; pick_probability: number | null; market: AlgoBoutView["market"]; evaluated_at: string };
+  type SamplePred = { bout_id: string; locked_at: string | null; pick_fighter_id: string; pick_probability: number | string; market_implied_prob_pick: number | string | null; model_edge_pts: number | string | null; sample_context: { confidence?: AlgoBoutView["confidence"]; market?: AlgoBoutView["market"] } | null };
+
+  const generated_at = new Date().toISOString();
+  const empty = (): AlgoFreeSample => ({ contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: null, full_product_url: "https://ufc.propbetedge.ai/algo" });
+  if (!(await algoLive())) return empty();
+
+  const today = generated_at.slice(0, 10);
+  const until = new Date(Date.now() + 14 * 86400e3).toISOString().slice(0, 10);
+  const bouts = await rest<SampleBout>(
+    `ufc_bouts?select=id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events!inner(id,name,event_date)&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`
+  );
+  if (!bouts.length) return empty();
+  const ids = inList(bouts.map((b) => b.id));
+  const [evals, preds] = await Promise.all([
+    rest<SampleEval>(`ufc_model_card_current?bout_id=in.${ids}&model_version=eq.${encodeURIComponent(MODEL_VERSION)}&select=bout_id,decision,confidence,pick_fighter_id,pick_probability,market,evaluated_at`),
+    rest<SamplePred>(`ufc_model_predictions?bout_id=in.${ids}&model_version=eq.${encodeURIComponent(MODEL_VERSION)}&select=bout_id,locked_at,pick_fighter_id,pick_probability,market_implied_prob_pick,model_edge_pts,sample_context`),
+  ]);
+  const boutBy = new Map(bouts.map((b) => [b.id, b]));
+  const evalBy = new Map(evals.map((e) => [e.bout_id, e]));
+  const candidates = bouts.flatMap((bout) => {
+    const p = preds.find((row) => row.bout_id === bout.id) || null;
+    const e = evalBy.get(bout.id) || null;
+    const locked = Boolean(p?.locked_at);
+    const market = locked ? p?.sample_context?.market ?? null : p?.sample_context?.market ?? e?.market ?? null;
+    const pickId = p?.pick_fighter_id ?? e?.pick_fighter_id ?? null;
+    const probability = Number(p?.pick_probability ?? e?.pick_probability);
+    const confidence = p?.sample_context?.confidence ?? e?.confidence ?? null;
+    const currentUntil = market?.current_until ? Date.parse(market.current_until) : NaN;
+    const current = market?.status === "FRESH" && (locked || (Number.isFinite(currentUntil) && currentUntil > Date.now()));
+    const odds = Number(market?.pick_consensus_odds);
+    if (!current || !pickId || !Number.isFinite(probability) || !Number.isFinite(odds)) return [];
+    if (!locked && e?.decision !== "ELIGIBLE") return [];
+    const pick = pickId === bout.fighter_a.id ? bout.fighter_a : pickId === bout.fighter_b.id ? bout.fighter_b : null;
+    if (!pick) return [];
+    const opponent = pick.id === bout.fighter_a.id ? bout.fighter_b : bout.fighter_a;
+    const edge = p?.model_edge_pts ?? market?.pbe_delta_pts ?? null;
+    return [{
+      lifecycle: locked ? "LOCKED" as const : "PROVISIONAL" as const,
+      event_name: bout.event.name,
+      event_date: bout.event.event_date,
+      matchup: `${bout.fighter_a.name} vs ${bout.fighter_b.name}`,
+      pick_name: pick.name,
+      opponent_name: opponent.name,
+      model_probability: probability,
+      consensus_odds: odds,
+      best_odds: market?.pick_best_odds == null ? null : Number(market.pick_best_odds),
+      best_book: market?.pick_best_book ?? null,
+      market_probability: p?.market_implied_prob_pick == null ? (market?.devigged_pick == null ? null : Number(market.devigged_pick)) : Number(p.market_implied_prob_pick),
+      edge_pts: edge == null ? null : Number(edge),
+      confidence,
+      observed_at: market?.observed_at ?? null,
+    }];
+  }).sort((a, b) => {
+    if (a.lifecycle !== b.lifecycle) return a.lifecycle === "LOCKED" ? -1 : 1;
+    return (b.edge_pts ?? -999) - (a.edge_pts ?? -999);
+  });
+
+  return { contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: candidates[0] ?? null, full_product_url: "https://ufc.propbetedge.ai/algo" };
+}
+
 /** PBE Algo is issuing official calls: the release is registered live AND the
  *  scheduler has completed an armed cycle in the last 48 hours. Product state,
  *  not a route: marketing surfaces use this, never the existence of /algo.
