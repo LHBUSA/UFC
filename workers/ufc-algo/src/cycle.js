@@ -369,7 +369,7 @@ export function gradeFor(pred, result, bout) {
   return null;
 }
 
-async function gradeLocked(q) {
+export async function gradeLocked(q) {
   const locked = await q.get('ufc_model_predictions?select=id,bout_id,pick_fighter_id,fighter_a_id,fighter_b_id&locked_at=not.is.null&limit=1000');
   if (!locked.length) return 0;
   const current = new Map((await q.inChunks('ufc_model_prediction_current_grade', 'prediction_id', locked.map((p) => p.id), 'prediction_id,result,winner_id')).map((g) => [g.prediction_id, g]));
