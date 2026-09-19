@@ -292,6 +292,7 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
   type SampleBout = { id: string; fighter_a: { id: string; name: string }; fighter_b: { id: string; name: string }; event: { id: string; name: string; event_date: string } };
   type SampleEval = { bout_id: string; decision: string; confidence: AlgoBoutView["confidence"]; pick_fighter_id: string | null; pick_probability: number | null; market: AlgoBoutView["market"]; evaluated_at: string };
   type SamplePred = { bout_id: string; locked_at: string | null; pick_fighter_id: string; pick_probability: number | string; market_implied_prob_pick: number | string | null; model_edge_pts: number | string | null; sample_context: { confidence?: AlgoBoutView["confidence"]; market?: AlgoBoutView["market"] } | null };
+  type SampleResult = { bout_id: string };
 
   const generated_at = new Date().toISOString();
   const empty = (): AlgoFreeSample => ({ contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: null, full_product_url: "https://ufc.propbetedge.ai/algo" });
@@ -304,13 +305,20 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
   );
   if (!bouts.length) return empty();
   const ids = inList(bouts.map((b) => b.id));
-  const [evals, preds] = await Promise.all([
+  const [evals, preds, results] = await Promise.all([
     rest<SampleEval>(`ufc_model_card_current?bout_id=in.${ids}&model_version=eq.${encodeURIComponent(MODEL_VERSION)}&select=bout_id,decision,confidence,pick_fighter_id,pick_probability,market,evaluated_at`),
     rest<SamplePred>(`ufc_model_predictions?bout_id=in.${ids}&model_version=eq.${encodeURIComponent(MODEL_VERSION)}&select=bout_id,locked_at,pick_fighter_id,pick_probability,market_implied_prob_pick,model_edge_pts,sample_context`),
+    rest<SampleResult>(`ufc_bout_results?bout_id=in.${ids}&select=bout_id`),
   ]);
   const boutBy = new Map(bouts.map((b) => [b.id, b]));
   const evalBy = new Map(evals.map((e) => [e.bout_id, e]));
+  const completed = new Set(results.map((r) => r.bout_id));
   const candidates = bouts.flatMap((bout) => {
+    // The public sample is a current-call surface, not a receipt ledger. As
+    // soon as a verified result lands, retire that bout and advance to the
+    // next eligible pick. Completed picks remain permanently visible in the
+    // public track record instead of occupying the live sample.
+    if (completed.has(bout.id)) return [];
     const p = preds.find((row) => row.bout_id === bout.id) || null;
     const e = evalBy.get(bout.id) || null;
     const locked = Boolean(p?.locked_at);
