@@ -10,6 +10,7 @@ import {
 import { MODEL_FACTS, illustrativeEdge } from "@/lib/pbeProduct";
 import { getUfcAccess } from "@/lib/access";
 import { SITE } from "@/lib/site";
+import { oddsWithRole } from "@/lib/algoView";
 
 /* /model is the evidence page for the PBE Picks product family: what the model
  * is, why it is different, the proof, then the full method. It never renders a
@@ -167,7 +168,7 @@ export default async function ModelPage() {
             </li>
           </ol>
           <p className="mdl-flow-math">
-            Books offer <b>{x.pickOdds > 0 ? `+${x.pickOdds}` : x.pickOdds}</b> / <b>+{x.opponentOdds}</b> → raw implied {(x.rawPick * 100).toFixed(1)}% + {(x.rawOpponent * 100).toFixed(1)}% = {(x.overround * 100).toFixed(1)}% → vig removed → <b>{(x.devigPick * 100).toFixed(1)}%</b> → {(x.modelProbability * 100).toFixed(1)}% − {(x.devigPick * 100).toFixed(1)}% = <b>{pts(x.edgePts)}</b>
+            Books offer <b>{oddsWithRole(x.pickOdds)}</b> / <b>{oddsWithRole(x.opponentOdds)}</b> → raw implied {(x.rawPick * 100).toFixed(1)}% + {(x.rawOpponent * 100).toFixed(1)}% = {(x.overround * 100).toFixed(1)}% → vig removed → <b>{(x.devigPick * 100).toFixed(1)}%</b> → {(x.modelProbability * 100).toFixed(1)}% − {(x.devigPick * 100).toFixed(1)}% = <b>{pts(x.edgePts)}</b>
           </p>
         </div>
         <ul className="mdl-explain">
