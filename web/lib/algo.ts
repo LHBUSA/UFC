@@ -277,6 +277,9 @@ export type AlgoFreeSample = {
     edge_pts: number | null;
     confidence: AlgoBoutView["confidence"];
     observed_at: string | null;
+    is_upset_pick: boolean;
+    upset_rank: number | null;
+    is_top_upset: boolean;
   };
   full_product_url: string;
 };
@@ -339,13 +342,33 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
       edge_pts: edge == null ? null : Number(edge),
       confidence,
       observed_at: market?.observed_at ?? null,
+      is_upset_pick: isMarketOppositePick(market, probability),
+      upset_rank: null as number | null,
+      is_top_upset: false,
     }];
-  }).sort((a, b) => {
-    if (a.lifecycle !== b.lifecycle) return a.lifecycle === "LOCKED" ? -1 : 1;
-    return (b.edge_pts ?? -999) - (a.edge_pts ?? -999);
   });
 
-  return { contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: candidates[0] ?? null, full_product_url: "https://ufc.propbetedge.ai/algo" };
+  // Use the same mechanical Upset Radar definition as the UFC product:
+  // market favors the opponent, while PBE gives the selected fighter >50%.
+  // Ranking is edge-first, then longer odds, matching the current radar.
+  const upsetRank = new Map(
+    candidates
+      .filter((c) => c.is_upset_pick)
+      .sort((a, b) => (b.edge_pts ?? -999) - (a.edge_pts ?? -999) || b.consensus_odds - a.consensus_odds)
+      .map((c, index) => [`${c.event_name}|${c.pick_name}|${c.opponent_name}`, index + 1])
+  );
+
+  const ranked = candidates
+    .map((c) => {
+      const rank = upsetRank.get(`${c.event_name}|${c.pick_name}|${c.opponent_name}`) ?? null;
+      return { ...c, upset_rank: rank, is_top_upset: rank === 1 };
+    })
+    .sort((a, b) => {
+      if (a.lifecycle !== b.lifecycle) return a.lifecycle === "LOCKED" ? -1 : 1;
+      return (b.edge_pts ?? -999) - (a.edge_pts ?? -999);
+    });
+
+  return { contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: ranked[0] ?? null, full_product_url: "https://ufc.propbetedge.ai/algo" };
 }
 
 /** PBE Algo is issuing official calls: the release is registered live AND the
