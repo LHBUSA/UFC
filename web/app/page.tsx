@@ -92,10 +92,11 @@ export default async function Home() {
   /* Same official snapshot the homepage already loaded, indexed by fighter. */
   const ranks = await getRankingMap();
   const access = await getUfcAccess();
-  /* Homepage moneylines preserve the existing UFC Pro boundary: a free render
-   * never fetches or serializes market prices. The featured card uses the same
-   * moneyline observations and consensus math as the fight/event pages. */
-  const mainMarketPromise = access.pro && mainEvent
+  /* The featured fight exposes only its two consensus moneylines publicly.
+   * Full market intelligence (book range, movement, etc.) remains UFC Pro.
+   * This keeps the homepage legible to casual readers without exposing the
+   * deeper market product. */
+  const mainMarketPromise = mainEvent
     ? Promise.all([
         marketProviderLive(),
         getMarketsFor(
