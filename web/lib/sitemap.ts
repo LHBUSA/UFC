@@ -29,7 +29,7 @@ const SECTION_PATHS = [
   "/weigh-ins", "/injuries", "/contender-series", "/contender-series/alumni",
   "/tuf", "/tuf/alumni", "/tuf/champions", "/tuf/coaches",
   "/history", "/history/gracie-influence", "/hall-of-fame",
-  "/referees", "/judges", "/algo", "/model", "/learn/fight-dna", "/pro", "/about", "/methodology",
+  "/referees", "/judges", "/algo", "/algo/record", "/model", "/learn/fight-dna", "/pro", "/about", "/methodology",
 ];
 
 type PopArticle = { id: string; slug: string; updated_at: string | null; published_at: string | null };
