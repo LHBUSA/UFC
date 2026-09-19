@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PageHead } from "@/components/ui";
 import { PbeFamilyNav } from "@/components/PbeFamilyNav";
 import { PbePerformanceTracker } from "@/components/PbePerformanceTracker";
+import { PbePicksAutoRefresh } from "@/components/PbePicksAutoRefresh";
 import { getAlgoPerformanceProof, getAlgoPublicGradedRecord } from "@/lib/algo";
 import { confidenceCopy, deltaText, lockedText, oddsText, pctText, type AlgoBoutView } from "@/lib/algoView";
 
@@ -81,6 +82,7 @@ export default async function AlgoRecordPage() {
 
   return (
     <div className="wrap page algo-page">
+      <PbePicksAutoRefresh intervalMs={60_000} />
       <PageHead
         crumbs={[{ name: "PBE Picks", href: "/algo/card" }, { name: "Track record" }]}
         eyebrow="PropBetEdge UFC · Official live record"
