@@ -1,6 +1,6 @@
 import {
   CONSENSUS_NOTE, FIRST_OBSERVED_NOTE, MARKET_STATE_COPY,
-  describeAge, formatAmerican, movement,
+  describeAge, formatAmericanWithRole, movement,
   type BoutMarket, type MarketState, type SidePrices,
 } from "@/lib/market";
 
@@ -36,7 +36,7 @@ const Delta = ({ side, name }: { side: SidePrices | null; name: string }) => {
   const toward = m.direction === "toward";
   return (
     <span className={`mk-move ${toward ? "toward" : "away"}`}>
-      {toward ? "Moved toward" : "Moved away from"} {name} · {formatAmerican(m.from)} → {formatAmerican(m.to)}
+      {toward ? "Moved toward" : "Moved away from"} {name} · {formatAmericanWithRole(m.from)} → {formatAmericanWithRole(m.to)}
     </span>
   );
 };
@@ -53,12 +53,12 @@ export function MarketInline({
     <div className="mk-inline" aria-label="Current market">
       <span className="mk-side">
         <span className="mk-nm">{nameA}</span>
-        <b>{formatAmerican(market?.a?.consensus)}</b>
+        <b>{formatAmericanWithRole(market?.a?.consensus)}</b>
       </span>
       <span className="mk-sep" aria-hidden="true" />
       <span className="mk-side">
         <span className="mk-nm">{nameB}</span>
-        <b>{formatAmerican(market?.b?.consensus)}</b>
+        <b>{formatAmericanWithRole(market?.b?.consensus)}</b>
       </span>
       {state === "partial" ? <span className="mk-partial">One corner priced</span> : null}
       {market?.stale ? <span className="mk-stale-tag">Last observed {describeAge(market.ageMinutes)}</span> : null}
@@ -79,12 +79,12 @@ function Side({ side, name, label }: { side: SidePrices | null; name: string; la
   return (
     <div className="mk-col">
       <div className="mk-col-h">{label}</div>
-      <div className="mk-price">{formatAmerican(side.consensus)}</div>
+      <div className="mk-price">{formatAmericanWithRole(side.consensus)}</div>
       <dl className="mk-rows">
-        <div><dt>Best available</dt><dd>{formatAmerican(side.best)}</dd></div>
-        <div><dt>Book range</dt><dd>{formatAmerican(side.worst)} to {formatAmerican(side.best)}</dd></div>
+        <div><dt>Best available</dt><dd>{formatAmericanWithRole(side.best)}</dd></div>
+        <div><dt>Book range</dt><dd>{formatAmericanWithRole(side.worst)} to {formatAmericanWithRole(side.best)}</dd></div>
         <div><dt>Books</dt><dd>{side.bookCount}</dd></div>
-        <div><dt>First observed</dt><dd>{formatAmerican(side.firstObserved?.price ?? null)}</dd></div>
+        <div><dt>First observed</dt><dd>{formatAmericanWithRole(side.firstObserved?.price ?? null)}</dd></div>
       </dl>
       <Delta side={side} name={name} />
     </div>
@@ -151,8 +151,8 @@ export function MarketSection({
               {[...books.entries()].map(([key, v]) => (
                 <div className="mk-book" key={key}>
                   <span className="mk-book-n">{v.name || key}</span>
-                  <span className="mk-book-p">{formatAmerican(v.a ?? null)}</span>
-                  <span className="mk-book-p">{formatAmerican(v.b ?? null)}</span>
+                  <span className="mk-book-p">{formatAmericanWithRole(v.a ?? null)}</span>
+                  <span className="mk-book-p">{formatAmericanWithRole(v.b ?? null)}</span>
                 </div>
               ))}
             </div>
