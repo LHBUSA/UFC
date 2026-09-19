@@ -3,7 +3,7 @@ import type { PortraitSet } from "@/lib/db";
 import { fighterSlug } from "@/lib/slug";
 import { fmtRecord } from "@/lib/format";
 import {
-  FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText, marketView, ageText, agoText, oddsWithRole,
+  FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText, marketView, ageText, agoText, oddsText,
   type AlgoBoutView, type Driver,
 } from "@/lib/algoView";
 
@@ -74,7 +74,7 @@ function Corner({ f, img, record, picked, called, odds }: { f: { id: string; nam
       </span>
       <span className="pp-corner-name">{f.name}</span>
       {record && record.record_w != null && <span className="pp-corner-rec">{fmtRecord(record)}</span>}
-      {odds && <span className={`pp-corner-odds${odds.current ? "" : " last"}`} title={odds.current ? "Current consensus odds" : "Last observed consensus odds"}>{oddsWithRole(odds.value)}</span>}
+      {odds && <span className={`pp-corner-odds${odds.current ? "" : " last"}`} title={odds.current ? "Current consensus odds" : "Last observed consensus odds"}>{oddsText(odds.value)}</span>}
     </>
   );
   const cls = `pp-corner${picked ? " picked" : ""}${called && !picked ? " other" : ""}`;
@@ -177,15 +177,15 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
           <dl className={`pp-primary market-${marketState.toLowerCase()}`}>
             <div className="pp-cell pick"><dt>PBE Pick</dt><dd>{pickName}</dd></div>
             <div className="pp-cell"><dt>PBE probability</dt><dd>{pctText(prob)}</dd></div>
-            <div className="pp-cell odds"><dt>{marketState === "LAST_OBSERVED" ? "Last observed" : "Market"}</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.consensus != null ? <>{oddsWithRole(mv.pick.consensus)} <small>consensus</small></> : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Unavailable</span> : "No current market"}</dd></div>
-            <div className="pp-cell odds"><dt>Best odds</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.best != null ? <>{oddsWithRole(mv.pick.best)}{mv.pick.book && <small className="book">{mv.pick.book}</small>}</> : <span className="algo-stale">Unavailable</span>}</dd></div>
+            <div className="pp-cell odds"><dt>{marketState === "LAST_OBSERVED" ? "Last observed" : "Market"}</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.consensus != null ? <>{oddsText(mv.pick.consensus)} <small>consensus</small></> : marketState === "LAST_OBSERVED" ? <span className="algo-stale">Unavailable</span> : "No current market"}</dd></div>
+            <div className="pp-cell odds"><dt>Best odds</dt><dd>{marketState !== "UNAVAILABLE" && mv.pick.best != null ? <>{oddsText(mv.pick.best)}{mv.pick.book && <small className="book">{mv.pick.book}</small>}</> : <span className="algo-stale">Unavailable</span>}</dd></div>
             <div className={`pp-cell${lastObserved && mv.implied != null ? " hist" : ""}`}><dt>Market implied</dt><dd>{current ? pctText(marketPick) : lastObserved && mv.implied != null ? <>{pctText(mv.implied)}<small className="hist">Last observed · {agoText(mv.age)}</small></> : <span className="algo-stale">Unavailable</span>}</dd></div>
             <div className={`pp-cell delta${current && delta != null ? (delta >= 0 ? " pos" : " neg") : histDelta != null ? ` hist ${histDelta >= 0 ? "pos" : "neg"}` : ""}`}><dt>PBE Edge</dt><dd>{current && delta != null ? deltaText(delta) : histDelta != null ? <>{deltaText(histDelta)}<small className="hist">Last observed · not current</small></> : <span className="algo-stale">Unavailable</span>}</dd></div>
           </dl>
 
           <div className={`pp-market ${marketState === "CURRENT" ? "fresh" : marketState === "LAST_OBSERVED" ? "stale" : "unavailable"}`}>
             {current ? (
-              <span className="pp-market-flag"><b>{lockedOfficial ? "Market at lock" : "Current market"}</b>{lockedOfficial ? `observed ${ageText(mv.age)} before lock` : `Observed ${agoText(mv.age)}`}{mv.books != null ? ` · ${mv.books} book${mv.books === 1 ? "" : "s"}` : ""}{mv.opponent.consensus != null ? ` · ${oppName} ${oddsWithRole(mv.opponent.consensus)}${mv.opponent.best != null ? ` (best ${oddsWithRole(mv.opponent.best)}${mv.opponent.book ? ` ${mv.opponent.book}` : ""})` : ""}` : ""}</span>
+              <span className="pp-market-flag"><b>{lockedOfficial ? "Market at lock" : "Current market"}</b>{lockedOfficial ? `observed ${ageText(mv.age)} before lock` : `Observed ${agoText(mv.age)}`}{mv.books != null ? ` · ${mv.books} book${mv.books === 1 ? "" : "s"}` : ""}{mv.opponent.consensus != null ? ` · ${oppName} ${oddsText(mv.opponent.consensus)}${mv.opponent.best != null ? ` (best ${oddsText(mv.opponent.best)}${mv.opponent.book ? ` ${mv.opponent.book}` : ""})` : ""}` : ""}</span>
             ) : marketState === "LAST_OBSERVED" ? (
               <span className="pp-market-flag"><b>Last observed</b>{agoText(mv.age)}{mv.observedAt ? ` (${lockedText(mv.observedAt)})` : ""}, outside the {windowText}. Shown as history: not current, and never the official lock-time comparison.</span>
             ) : (
