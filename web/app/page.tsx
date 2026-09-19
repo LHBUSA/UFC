@@ -28,6 +28,7 @@ import { getBroadcastForEvent } from "@/lib/broadcast";
 import { WatchStrip } from "@/components/HowToWatch";
 import { getRankingMap } from "@/lib/rankings";
 import { buildProofRail, type ProofCell } from "@/lib/proofRail";
+import { formatAmerican, getMarketsFor, marketProviderLive } from "@/lib/market";
 
 export const revalidate = 300;
 
@@ -91,7 +92,19 @@ export default async function Home() {
   /* Same official snapshot the homepage already loaded, indexed by fighter. */
   const ranks = await getRankingMap();
   const access = await getUfcAccess();
-  const [imgs, briefs, media, champs, contenders, dwcsCounts, freshness, videos] = await Promise.all([
+  /* Homepage moneylines preserve the existing UFC Pro boundary: a free render
+   * never fetches or serializes market prices. The featured card uses the same
+   * moneyline observations and consensus math as the fight/event pages. */
+  const mainMarketPromise = access.pro && mainEvent
+    ? Promise.all([
+        marketProviderLive(),
+        getMarketsFor(
+          [mainEvent.id],
+          new Map([[mainEvent.id, { a: mainEvent.fighter_a.id, b: mainEvent.fighter_b.id }]]),
+        ),
+      ]).then(([providerLive, markets]) => providerLive ? (markets.get(mainEvent.id) ?? null) : null).catch(() => null)
+    : Promise.resolve(null);
+  const [imgs, briefs, media, champs, contenders, dwcsCounts, freshness, videos, mainMarket] = await Promise.all([
     getImagesForFighters([
       ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
       ...[...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
@@ -104,6 +117,7 @@ export default async function Home() {
     getBoutCounts([dwcsNext?.id, dwcsLast?.id].filter(Boolean) as string[]),
     getIngestFreshness().catch(() => null),
     getFightWeekVideos(next?.id || null, 5).catch(() => []),
+    mainMarketPromise,
   ]);
   const [dnaReady, earliestEventDate] = await Promise.all([
     next && live.length ? getFightDnaReady(live.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]), next.event_date || new Date().toISOString().slice(0, 10)) : Promise.resolve(new Set<string>()),
@@ -207,8 +221,34 @@ export default async function Home() {
                       <div className="vs" style={{ gridColumn: 2, gridRow: 1 }}>VS</div>
                     </div>
                     <div className="poster-names">
-                      <div className="a"><div className="n">{mainEvent.fighter_a.name}</div><div className="r">{fmtRecord(mainEvent.fighter_a)}</div></div>
-                      <div className="b"><div className="n">{mainEvent.fighter_b.name}</div><div className="r">{fmtRecord(mainEvent.fighter_b)}</div></div>
+                      <div className="a">
+                        <div className="n">{mainEvent.fighter_a.name}</div>
+                        <div className="r">
+                          {fmtRecord(mainEvent.fighter_a)}
+                          {mainMarket?.a?.consensus != null && (
+                            <span
+                              className="hero-moneyline"
+                              title={`${mainMarket.stale ? "Last observed" : "Consensus"} moneyline · ${mainMarket.bookCount} book${mainMarket.bookCount === 1 ? "" : "s"}`}
+                            >
+                              ML {formatAmerican(mainMarket.a.consensus)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="b">
+                        <div className="n">{mainEvent.fighter_b.name}</div>
+                        <div className="r">
+                          {fmtRecord(mainEvent.fighter_b)}
+                          {mainMarket?.b?.consensus != null && (
+                            <span
+                              className="hero-moneyline"
+                              title={`${mainMarket.stale ? "Last observed" : "Consensus"} moneyline · ${mainMarket.bookCount} book${mainMarket.bookCount === 1 ? "" : "s"}`}
+                            >
+                              ML {formatAmerican(mainMarket.b.consensus)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </>
                 ) : (
