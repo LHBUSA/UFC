@@ -95,6 +95,19 @@ export function oddsText(v: number | null | undefined): string {
   return typeof v === "number" && Number.isFinite(v) ? (v > 0 ? `+${v}` : `${v}`) : "\u2014";
 }
 
+/** Plain-English moneyline role for readers who do not speak American odds. */
+export function oddsRole(v: number | null | undefined): "FAVORITE" | "UNDERDOG" | "EVEN" | null {
+  if (typeof v !== "number" || !Number.isFinite(v)) return null;
+  if (v < 0) return "FAVORITE";
+  if (v > 0) return "UNDERDOG";
+  return "EVEN";
+}
+
+export function oddsWithRole(v: number | null | undefined): string {
+  const role = oddsRole(v);
+  return role ? `${oddsText(v)} · ${role}` : oddsText(v);
+}
+
 /**
  * The comparison a card may present. Never a stale delta as current.
  *   locked call   the comparison recorded at lock is final: CURRENT if it was
