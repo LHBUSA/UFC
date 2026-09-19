@@ -175,6 +175,18 @@ export function probabilityToAmerican(p: number): number {
 export const formatAmerican = (v: number | null | undefined): string =>
   typeof v === "number" && Number.isFinite(v) ? (v > 0 ? `+${v}` : String(v)) : "—";
 
+export const americanRole = (v: number | null | undefined): "FAV" | "DOG" | "EVEN" | null => {
+  if (typeof v !== "number" || !Number.isFinite(v)) return null;
+  if (v < 0) return "FAV";
+  if (v > 0) return "DOG";
+  return "EVEN";
+};
+
+export const formatAmericanWithRole = (v: number | null | undefined): string => {
+  const role = americanRole(v);
+  return role ? `${formatAmerican(v)} · ${role}` : formatAmerican(v);
+};
+
 function median(xs: number[]): number | null {
   if (!xs.length) return null;
   const s = [...xs].sort((a, b) => a - b);
