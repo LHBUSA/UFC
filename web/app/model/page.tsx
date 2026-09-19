@@ -10,7 +10,6 @@ import {
 import { MODEL_FACTS, illustrativeEdge } from "@/lib/pbeProduct";
 import { getUfcAccess } from "@/lib/access";
 import { SITE } from "@/lib/site";
-import { oddsWithRole } from "@/lib/algoView";
 
 /* /model is the evidence page for the PBE Picks product family: what the model
  * is, why it is different, the proof, then the full method. It never renders a
@@ -19,6 +18,8 @@ import { oddsWithRole } from "@/lib/algoView";
  * release artifact or lib/pbeProduct.ts, never typed into prose. */
 
 export const revalidate = 300;
+
+const moneylineLabel = (n: number) => `${n > 0 ? "+" : ""}${n} · ${Math.abs(n) === 100 || n === 0 ? "EVEN" : n < 0 ? "FAV" : "DOG"}`;
 
 const TITLE = "PBE Fight Model — UFC Win Probability Model vs Sportsbook Odds";
 const DESCRIPTION = `${MODEL_FACTS.displayName} is PropBetEdge's independent UFC fight model: a win probability from ${MODEL_FACTS.featureCount} pre-fight Fight DNA features with ${MODEL_FACTS.sportsbookInputs} sportsbook inputs, compared with the de-vigged fight-week market to measure PBE Edge. Live record, walk-forward backtest, calibration and leakage proof.`;
@@ -168,7 +169,7 @@ export default async function ModelPage() {
             </li>
           </ol>
           <p className="mdl-flow-math">
-            Books offer <b>{oddsWithRole(x.pickOdds)}</b> / <b>{oddsWithRole(x.opponentOdds)}</b> → raw implied {(x.rawPick * 100).toFixed(1)}% + {(x.rawOpponent * 100).toFixed(1)}% = {(x.overround * 100).toFixed(1)}% → vig removed → <b>{(x.devigPick * 100).toFixed(1)}%</b> → {(x.modelProbability * 100).toFixed(1)}% − {(x.devigPick * 100).toFixed(1)}% = <b>{pts(x.edgePts)}</b>
+            Books offer <b>{moneylineLabel(x.pickOdds)}</b> / <b>{moneylineLabel(x.opponentOdds)}</b> → raw implied {(x.rawPick * 100).toFixed(1)}% + {(x.rawOpponent * 100).toFixed(1)}% = {(x.overround * 100).toFixed(1)}% → vig removed → <b>{(x.devigPick * 100).toFixed(1)}%</b> → {(x.modelProbability * 100).toFixed(1)}% − {(x.devigPick * 100).toFixed(1)}% = <b>{pts(x.edgePts)}</b>
           </p>
         </div>
         <ul className="mdl-explain">
