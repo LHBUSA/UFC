@@ -70,6 +70,7 @@ function Module({ eyebrow, title, note, children, className = "" }: { eyebrow: s
 
 const pctOf = (v: unknown) => (v === null || v === undefined ? "—" : `${Math.round(Number(v) * 100)}%`);
 const signed = (n: number) => (n > 0 ? `+${n}` : String(n));
+const oddsLabel = (n: number) => `${signed(n)} · ${n < 0 ? "FAV" : n > 0 ? "DOG" : "EVEN"}`;
 const titleCase = (s: string) => s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 /* ------------------------------------------------------------- modules */
@@ -484,7 +485,7 @@ export function MarketModule({ plan, charts }: { plan: ContentPlan | null; chart
                 {outcomes.map((o) => {
                   const p = prices.find((x) => x.book === b && x.outcome === o);
                   const isBest = p && best.get(o) === p.price;
-                  return <td key={o} className={`mono${isBest ? " best" : ""}`}>{p ? signed(p.price) : "—"}{isBest ? <em title="Best available price">best</em> : null}</td>;
+                  return <td key={o} className={`mono${isBest ? " best" : ""}`}>{p ? oddsLabel(p.price) : "—"}{isBest ? <em title="Best available price">best</em> : null}</td>;
                 })}
               </tr>
             ))}
