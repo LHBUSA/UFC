@@ -46,6 +46,13 @@ test('the stale threshold survives a late run but not a skipped one', () => {
   assert.ok(M.STALE_AFTER_MINUTES < 2 * cadence, 'a fully skipped run is always stale');
 });
 
+test('customer-facing American odds include FAV/DOG role labels', () => {
+  assert.equal(M.formatAmericanWithRole(-230), '-230 · FAV');
+  assert.equal(M.formatAmericanWithRole(180), '+180 · DOG');
+  assert.equal(M.formatAmericanWithRole(100), '+100 · EVEN');
+  assert.equal(M.formatAmericanWithRole(-100), '-100 · EVEN');
+});
+
 test('american odds survive conversion to probability and back', () => {
   for (const p of [-450, -110, 100, 250, 340]) {
     assert.equal(M.probabilityToAmerican(M.impliedProbability(p)), p);
