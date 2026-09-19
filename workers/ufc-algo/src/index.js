@@ -27,7 +27,7 @@
 // owner-approved promote route can.
 
 import { WorkerEntrypoint } from 'cloudflare:workers';
-import { runCycle } from './cycle.js';
+import { gradeLocked, runCycle } from './cycle.js';
 import { refreshMarketContext } from './marketRefresh.js';
 import { db } from './supabase.js';
 import { resolveChampion } from './champion.js';
@@ -48,7 +48,20 @@ export class MarketRefresh extends WorkerEntrypoint {
   }
 }
 
-export const CRON = Object.freeze({ cycle: '41 * * * *', learn: '17 12 * * *', review: '23 13 * * 1' });
+/* Live-card receipt updater. This never scores, evaluates, regenerates or locks a
+ * prediction. It only grades already-locked calls against stored bout results.
+ * Called by ufc-stats-ingest immediately after its fight-night result pass and
+ * also by the minute cron as a fail-safe. */
+export class GradeRefresh extends WorkerEntrypoint {
+  async refresh({ trigger = 'service' } = {}) {
+    if (this.env.ALGO_MODE !== 'armed') return { refused: 'dry_run', trigger, graded: 0 };
+    const graded = await gradeLocked(db(this.env));
+    console.log(`[grade-refresh] ${JSON.stringify({ trigger, graded })}`);
+    return { trigger, graded };
+  }
+}
+
+export const CRON = Object.freeze({ grade: '* * * * *', cycle: '41 * * * *', learn: '17 12 * * *', review: '23 13 * * 1' });
 
 const json = (data, status = 200) => new Response(JSON.stringify(data, null, 2), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
 
@@ -143,6 +156,14 @@ export default {
   },
 
   async scheduled(controller, env, ctx) {
+    if (controller.cron === CRON.grade) {
+      ctx.waitUntil((async () => {
+        if (env.ALGO_MODE !== 'armed') return;
+        const graded = await gradeLocked(db(env));
+        if (graded) console.log(`[grade-cron] graded ${graded}`);
+      })().catch((e) => console.log(`[grade-cron] failed: ${e?.message || e}`)));
+      return;
+    }
     if (controller.cron === CRON.learn) {
       ctx.waitUntil(startLearn(env, { trigger: 'cron' }).then((r) => console.log(`[learn] started ${r.id}`)).catch((e) => console.log(`[learn] start failed: ${e?.message || e}`)));
       return;
