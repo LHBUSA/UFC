@@ -145,7 +145,48 @@ export type FighterImage = {
 export type ImageRef = FighterImage & { image_url: string | null; created_at?: string };
 export type RankingEntry = { rank: number; name: string; ufc_slug: string | null; fighter_id: string | null; change: number | null; is_new: boolean };
 export type RankingDivision = { key: string; label: string; is_womens: boolean; is_p4p: boolean; champion: { name: string; ufc_slug: string | null; fighter_id: string | null } | null; entries: RankingEntry[] };
-export type RankingsSnapshot = { captured_at: string; source_url: string; snapshot_date: string; divisions: RankingDivision[] };
+export type RankingsCorrection = {
+  type: "vacated_title";
+  division: string;
+  former_champion: string;
+  effective_date: string;
+  source_urls: string[];
+  note: string;
+};
+export type RankingsSnapshot = {
+  captured_at: string;
+  source_url: string;
+  snapshot_date: string;
+  divisions: RankingDivision[];
+  corrections?: RankingsCorrection[];
+};
+
+const ASPINALL_VACANCY: RankingsCorrection = {
+  type: "vacated_title",
+  division: "HEAVYWEIGHT",
+  former_champion: "Tom Aspinall",
+  effective_date: "2026-09-14",
+  source_urls: [
+    "https://www.mmafighting.com/ufc/510226/tom-aspinall-vacates-ufc-heavyweight-title-absolute-nightmare",
+    "https://www.mmafighting.com/ufc/511027/dana-white-says-ciryl-gane-wont-be-promoted-to-undisputed-champion-hes-still-got-to-fight",
+  ],
+  note: "Aspinall announced he vacated the heavyweight title; subsequent reporting quoting Dana White says the interim champion was not automatically promoted to undisputed champion.",
+};
+
+function applyCurrentTitleCorrections(snapshot: RankingsSnapshot): RankingsSnapshot {
+  let changed = false;
+  const divisions = snapshot.divisions.map((d) => {
+    if (!d.is_womens && !d.is_p4p && d.key === "HEAVYWEIGHT" && d.champion?.name === "Tom Aspinall") {
+      changed = true;
+      return { ...d, champion: null };
+    }
+    return d;
+  });
+  if (!changed) return snapshot;
+  const corrections = snapshot.corrections || [];
+  const has = corrections.some((x) => x.type === ASPINALL_VACANCY.type && x.division === ASPINALL_VACANCY.division && x.effective_date === ASPINALL_VACANCY.effective_date);
+  return { ...snapshot, divisions, corrections: has ? corrections : [...corrections, ASPINALL_VACANCY] };
+}
 
 const FIGHTER_COLS = "id,ufcstats_id,espn_athlete_id,name,nickname,dob,height_in,reach_in,weight_lbs,stance,record_w,record_l,record_d,record_nc,is_active," +
   "career_slpm,career_str_acc,career_sapm,career_str_def,career_td_avg,career_td_acc,career_td_def,career_sub_avg";
@@ -533,7 +574,7 @@ export async function getRankings(): Promise<RankingsSnapshot | null> {
     const res = await fetch(mediaUrl("rankings/latest.json"), { next: { revalidate: 1800 } });
     if (!res.ok) return null;
     const j = (await res.json()) as RankingsSnapshot;
-    return Array.isArray(j?.divisions) ? j : null;
+    return Array.isArray(j?.divisions) ? applyCurrentTitleCorrections(j) : null;
   } catch (e) {
     console.error(`[db] rankings snapshot failed: ${String((e as Error)?.message || e).slice(0, 120)}`);
     return null;
