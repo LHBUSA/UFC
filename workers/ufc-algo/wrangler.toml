@@ -19,7 +19,7 @@ GENESIS_MODEL_VERSION = "pbe-fight-model-v1"
 GENESIS_DATASET_SHA256 = "b466d86bbfc0154ae04989bca51bc4270ac8b076e4ef25065cc8963936f9bfed"
 GENESIS_DATASET_URI = "r2://ufc-algo-artifacts/model-releases/pbe-fight-model-v1/genesis-dataset-b466d86bbfc0154ae04989bca51bc4270ac8b076e4ef25065cc8963936f9bfed.jsonl"
 
-# Hourly at :41. The lock pass opens at event_date 00:00 UTC - 8h (16:00 UTC the
+# Every minute: lightweight grade-only pass for already-locked picks whose official result has landed.\n# Hourly at :41. The scoring/lock pass opens at event_date 00:00 UTC - 8h (16:00 UTC the
 # day before) and the database refuses locks from - 6h, so every card gets two
 # scheduled lock attempts (16:41 and 17:41 UTC) after official weigh-ins.
 #
@@ -28,7 +28,7 @@ GENESIS_DATASET_URI = "r2://ufc-algo-artifacts/model-releases/pbe-fight-model-v1
 # 13:23 UTC Monday: the deterministic promotion review. Promotion itself needs
 # the owner token (POST /admin/promote); nothing is promoted automatically.
 [triggers]
-crons = ["41 * * * *", "17 12 * * *", "23 13 * * 1"]
+crons = ["* * * * *", "41 * * * *", "17 12 * * *", "23 13 * * 1"]
 
 # Training + walk-forward + audit runs ~12 s of CPU in a Workflow step.
 [limits]
