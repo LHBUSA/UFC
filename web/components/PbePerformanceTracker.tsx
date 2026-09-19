@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { AlgoPerformanceProof, AlgoPerformanceSlice } from "@/lib/algo";
-import { oddsWithRole } from "@/lib/algoView";
+import { oddsText } from "@/lib/algoView";
 
 function pct(value: number | null): string {
   return value == null || !Number.isFinite(value) ? "—" : `${(value * 100).toFixed(1)}%`;
