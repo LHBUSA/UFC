@@ -88,8 +88,7 @@ const GUARDS: Record<string, RegExp[]> = {
   /* The picks read shares one Promise.all with the public Upset Radar ledger, so the
    * guard is pinned in place: the access decision is awaited on the line before, and
    * the free branch is a resolved empty list, never a call. */
-  "app/algo/card/page.tsx": [/const access = await getUfcAccess\(\);\s*const \[cards, upsetProof\] = await Promise\.all\(\[\s*access\.pro \? getAlgoCards\(access\) : Promise\.resolve\(\[\]\),\s*getAlgoUpsetProof\(\),\s*\]\);/],
-  "app/algo/record/page.tsx": [/const rows = access\.pro \? await getAlgoRecord\(access\) : \[\];/],
+  "app/algo/card/page.tsx": [/const access = await getUfcAccess\(\);\s*const \[cards, upsetProof, performance\] = await Promise\.all\(\[\s*access\.pro \? getAlgoCards\(access\) : Promise\.resolve\(\[\]\),\s*getAlgoUpsetProof\(\),\s*getAlgoPerformanceProof\(\),\s*\]\);/],
   "app/events/[slug]/page.tsx": [/const providerLive = access\.pro \? await marketProviderLive\(\) : false;/, /const marketMap = done \|\| !providerLive/, /const unresolved = done \|\| !providerLive/],
   /* Home-page showcase: access is resolved in the component, and the DNA read sits inside `if (pro)`. */
   "components/FightDnaShowcase.tsx": [/pro = Boolean\(access\.pro\);[\s\S]{0,160}?if \(pro\) \{\s*const dna = await getFighterDna\(fighterId\)/],
