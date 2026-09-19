@@ -172,9 +172,6 @@ export function probabilityToAmerican(p: number): number {
   return p > 0.5 ? -Math.round((p / (1 - p)) * 100) : Math.round(((1 - p) / p) * 100);
 }
 
-export const formatAmerican = (v: number | null | undefined): string =>
-  typeof v === "number" && Number.isFinite(v) ? (v > 0 ? `+${v}` : String(v)) : "—";
-
 export const americanRole = (v: number | null | undefined): "FAV" | "DOG" | "EVEN" | null => {
   if (typeof v !== "number" || !Number.isFinite(v)) return null;
   if (Math.abs(v) === 100 || v === 0) return "EVEN";
@@ -182,10 +179,13 @@ export const americanRole = (v: number | null | undefined): "FAV" | "DOG" | "EVE
   return "DOG";
 };
 
-export const formatAmericanWithRole = (v: number | null | undefined): string => {
-  const role = americanRole(v);
-  return role ? `${formatAmerican(v)} · ${role}` : formatAmerican(v);
+export const formatAmerican = (v: number | null | undefined): string => {
+  if (typeof v !== "number" || !Number.isFinite(v)) return "—";
+  const raw = v > 0 ? `+${v}` : String(v);
+  return `${raw} · ${americanRole(v)}`;
 };
+
+export const formatAmericanWithRole = formatAmerican;
 
 function median(xs: number[]): number | null {
   if (!xs.length) return null;
