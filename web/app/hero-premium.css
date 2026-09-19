@@ -345,6 +345,22 @@
 }
 .hero .hero-feature .poster-names .n { text-shadow: 0 2px 16px rgba(0,0,0,.92), 0 1px 3px rgba(0,0,0,.8); }
 .hero .hero-feature .poster-names .r { color: var(--pbe-paper-2); text-shadow: 0 1px 8px rgba(0,0,0,.9); }
+.hero .hero-feature .hero-moneyline {
+  display: block;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 4px 7px;
+  border: 1px solid rgba(212,175,55,.28);
+  border-radius: 999px;
+  background: rgba(13,11,8,.74);
+  color: var(--pbe-gold-bright);
+  font: 800 10px/1 var(--pbe-font-data);
+  letter-spacing: .045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: none;
+}
+.hero .hero-feature .poster-names .b .hero-moneyline { margin-left: auto; }
 
 /* The VS mark sits between the two portraits, so it must clear the plate too. */
 .hero .hero-feature .poster-faces .vs { padding-bottom: 92px; }
