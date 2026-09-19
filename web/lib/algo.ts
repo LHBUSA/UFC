@@ -100,6 +100,7 @@ export type AlgoUpsetProof = {
     pick_name: string;
     opponent_name: string;
     consensus_odds: number;
+    opponent_consensus_odds: number | null;
     best_odds: number | null;
     pick_probability: number;
     market_implied_prob: number | null;
@@ -336,6 +337,7 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
       opponent_name: opponent.name,
       model_probability: probability,
       consensus_odds: odds,
+      opponent_consensus_odds: market?.opponent_consensus_odds == null ? null : Number(market.opponent_consensus_odds),
       best_odds: market?.pick_best_odds == null ? null : Number(market.pick_best_odds),
       best_book: market?.pick_best_book ?? null,
       market_probability: p?.market_implied_prob_pick == null ? (market?.devigged_pick == null ? null : Number(market.devigged_pick)) : Number(p.market_implied_prob_pick),
