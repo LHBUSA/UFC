@@ -100,6 +100,14 @@ export type AlgoUpsetProof = {
     pick_fighter_id: string;
     pick_name: string;
     opponent_name: string;
+    fighter_image?: {
+      image_url: string | null;
+      card_url: string | null;
+      thumb_url: string | null;
+      attribution_text: string | null;
+      source_url: string | null;
+      license: string | null;
+    } | null;
     consensus_odds: number;
     best_odds: number | null;
     pick_probability: number;
