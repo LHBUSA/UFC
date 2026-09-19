@@ -383,6 +383,185 @@ export async function algoCallsActive(): Promise<boolean> {
   return runs.length > 0;
 }
 
+
+export type AlgoPerformanceSlice = {
+  locked: number;
+  decided: number;
+  wins: number;
+  losses: number;
+  no_decision: number;
+  pending: number;
+  hit_rate: number | null;
+  priced_decided: number;
+  net_units: number | null;
+  roi: number | null;
+  streak: { result: "WIN" | "LOSS"; count: number } | null;
+};
+
+export type AlgoPerformanceProof = {
+  generated_at: string;
+  lifetime: AlgoPerformanceSlice;
+  fight_week: (AlgoPerformanceSlice & {
+    event_id: string;
+    event_name: string;
+    event_date: string;
+  }) | null;
+  last_result: {
+    prediction_id: string;
+    event_name: string;
+    event_date: string;
+    matchup: string;
+    pick_name: string;
+    opponent_name: string;
+    result: "WIN" | "LOSS" | "DRAW" | "NC" | "VOID";
+    graded_at: string;
+    locked_at: string;
+    best_odds: number | null;
+    net_units: number | null;
+  } | null;
+};
+
+type PerfPredRow = {
+  id: string;
+  event_id: string;
+  bout_id: string;
+  locked_at: string;
+  pick_fighter_id: string;
+  sample_context: { market?: AlgoBoutView["market"] } | null;
+};
+type PerfGradeRow = {
+  prediction_id: string;
+  result: NonNullable<AlgoBoutView["grade"]>["result"];
+  graded_at: string;
+};
+type PerfEventRow = { id: string; name: string; event_date: string };
+
+function oneUnitReturn(result: PerfGradeRow["result"], odds: number | null): number | null {
+  if (result !== "WIN" && result !== "LOSS") return null;
+  if (odds == null || !Number.isFinite(odds) || odds === 0) return null;
+  if (result === "LOSS") return -1;
+  return odds > 0 ? odds / 100 : 100 / Math.abs(odds);
+}
+
+function summarizePerformance(preds: PerfPredRow[], gradeBy: Map<string, PerfGradeRow>): AlgoPerformanceSlice {
+  const graded = preds
+    .map((p) => ({ p, g: gradeBy.get(p.id) || null }))
+    .filter((x): x is { p: PerfPredRow; g: PerfGradeRow } => Boolean(x.g));
+  const decided = graded.filter((x) => x.g.result === "WIN" || x.g.result === "LOSS");
+  const wins = decided.filter((x) => x.g.result === "WIN").length;
+  const losses = decided.length - wins;
+  const noDecision = graded.length - decided.length;
+  const priced = decided.flatMap(({ p, g }) => {
+    const raw = p.sample_context?.market?.pick_best_odds;
+    const odds = raw == null ? null : Number(raw);
+    const units = oneUnitReturn(g.result, odds);
+    return units == null ? [] : [units];
+  });
+  const net = priced.length ? priced.reduce((sum, v) => sum + v, 0) : null;
+
+  const ordered = decided.slice().sort((a, b) => b.g.graded_at.localeCompare(a.g.graded_at));
+  let streak: AlgoPerformanceSlice["streak"] = null;
+  if (ordered.length) {
+    const result = ordered[0].g.result as "WIN" | "LOSS";
+    let count = 0;
+    for (const row of ordered) {
+      if (row.g.result !== result) break;
+      count += 1;
+    }
+    streak = { result, count };
+  }
+
+  return {
+    locked: preds.length,
+    decided: decided.length,
+    wins,
+    losses,
+    no_decision: noDecision,
+    pending: preds.length - graded.length,
+    hit_rate: decided.length ? wins / decided.length : null,
+    priced_decided: priced.length,
+    net_units: net,
+    roi: net == null || !priced.length ? null : net / priced.length,
+    streak,
+  };
+}
+
+/**
+ * Public, aggregate live proof for the PBE Picks product.
+ *
+ * Upcoming fighter identities never leave this function. The only identity
+ * returned is the latest already-GRADED historical call. ROI is a flat 1-unit
+ * stake at the best available price frozen in the lock-time market snapshot.
+ * A W/L call without a real lock-time best price is excluded from ROI rather
+ * than reconstructed from model or implied probability.
+ */
+export async function getAlgoPerformanceProof(): Promise<AlgoPerformanceProof> {
+  const generated_at = new Date().toISOString();
+  const preds = await rest<PerfPredRow>(
+    `ufc_model_predictions?locked_at=not.is.null&select=id,event_id,bout_id,locked_at,pick_fighter_id,sample_context&order=locked_at.desc&limit=1000`
+  );
+  if (!preds.length) {
+    const empty = summarizePerformance([], new Map());
+    return { generated_at, lifetime: empty, fight_week: null, last_result: null };
+  }
+
+  const ids = inList(preds.map((p) => p.id));
+  const eventIds = inList(preds.map((p) => p.event_id));
+  const [grades, events] = await Promise.all([
+    rest<PerfGradeRow>(`ufc_model_prediction_current_grade?prediction_id=in.${ids}&select=prediction_id,result,graded_at`),
+    rest<PerfEventRow>(`ufc_events?id=in.${eventIds}&select=id,name,event_date`),
+  ]);
+  const gradeBy = new Map(grades.map((g) => [g.prediction_id, g]));
+  const eventBy = new Map(events.map((e) => [e.id, e]));
+  const lifetime = summarizePerformance(preds, gradeBy);
+
+  const today = generated_at.slice(0, 10);
+  const usedEvents = events.filter((e) => preds.some((p) => p.event_id === e.id));
+  const focus = usedEvents
+    .slice()
+    .sort((a, b) => {
+      const aFuture = a.event_date >= today ? 0 : 1;
+      const bFuture = b.event_date >= today ? 0 : 1;
+      if (aFuture !== bFuture) return aFuture - bFuture;
+      return aFuture === 0 ? a.event_date.localeCompare(b.event_date) : b.event_date.localeCompare(a.event_date);
+    })[0] || null;
+  const fightWeek = focus
+    ? { ...summarizePerformance(preds.filter((p) => p.event_id === focus.id), gradeBy), event_id: focus.id, event_name: focus.name, event_date: focus.event_date }
+    : null;
+
+  const latestGrade = grades.slice().sort((a, b) => b.graded_at.localeCompare(a.graded_at))[0] || null;
+  let last_result: AlgoPerformanceProof["last_result"] = null;
+  if (latestGrade) {
+    const pred = preds.find((p) => p.id === latestGrade.prediction_id) || null;
+    if (pred) {
+      const [bout] = await rest<BoutRow>(`ufc_bouts?select=${BOUT_SELECT}&id=eq.${pred.bout_id}`);
+      if (bout) {
+        const pick = pred.pick_fighter_id === bout.fighter_a.id ? bout.fighter_a : pred.pick_fighter_id === bout.fighter_b.id ? bout.fighter_b : null;
+        if (pick) {
+          const opponent = pick.id === bout.fighter_a.id ? bout.fighter_b : bout.fighter_a;
+          const rawOdds = pred.sample_context?.market?.pick_best_odds;
+          const bestOdds = rawOdds == null ? null : Number(rawOdds);
+          last_result = {
+            prediction_id: pred.id,
+            event_name: eventBy.get(pred.event_id)?.name || bout.event.name,
+            event_date: eventBy.get(pred.event_id)?.event_date || bout.event.event_date,
+            matchup: `${bout.fighter_a.name} vs ${bout.fighter_b.name}`,
+            pick_name: pick.name,
+            opponent_name: opponent.name,
+            result: latestGrade.result,
+            graded_at: latestGrade.graded_at,
+            locked_at: pred.locked_at,
+            best_odds: Number.isFinite(bestOdds) ? bestOdds : null,
+            net_units: oneUnitReturn(latestGrade.result, Number.isFinite(bestOdds) ? bestOdds : null),
+          };
+        }
+      }
+    }
+  }
+
+  return { generated_at, lifetime, fight_week: fightWeek, last_result };
+}
+
 /* ---- UFC Pro ------------------------------------------------------------ */
 
 type EvalRow = { bout_id: string; event_id: string; decision: "ELIGIBLE" | "NO_MODEL_CALL"; reasons: string[]; confidence: AlgoBoutView["confidence"]; pick_fighter_id: string | null; pick_probability: number | null; features_available: number | null; sample: AlgoBoutView["sample"]; market: AlgoBoutView["market"]; model_version: string; feature_version: string; evaluated_at: string };
@@ -491,4 +670,27 @@ export async function getAlgoRecord(access: Pick<UfcAccess, "pro">): Promise<Alg
   const evals = await rest<EvalRow>(`ufc_model_card_current?bout_id=in.${inList(preds.map((p) => p.bout_id))}&select=bout_id,event_id,decision,reasons,confidence,pick_fighter_id,pick_probability,features_available,sample,market,model_version,feature_version,evaluated_at`);
   const views = await assemble(bouts, evals, preds, true);
   return views.sort((a, b) => (b.prediction?.locked_at || "").localeCompare(a.prediction?.locked_at || ""));
+}
+
+
+/**
+ * Public receipt ledger: only predictions with an official current grade are
+ * materialized with fighter identity. Pending/upcoming locked calls never enter
+ * the bout query, so this cannot leak a current PBE Pick.
+ */
+export async function getAlgoPublicGradedRecord(): Promise<AlgoBoutView[]> {
+  const fx = fixture();
+  if (fx) return fx.bouts.filter((b) => b.prediction?.locked_at && b.grade).sort((a, b) => (b.grade?.graded_at || "").localeCompare(a.grade?.graded_at || ""));
+
+  const preds = await rest<PredRow>(`ufc_model_predictions?locked_at=not.is.null&select=${PRED_SELECT}&order=locked_at.desc&limit=1000`);
+  if (!preds.length) return [];
+  const ids = inList(preds.map((p) => p.id));
+  const grades = await rest<GradeRow>(`ufc_model_prediction_current_grade?prediction_id=in.${ids}&select=prediction_id,result,revision,graded_at,revision_reason`);
+  const gradedIds = new Set(grades.map((g) => g.prediction_id));
+  const gradedPreds = preds.filter((p) => gradedIds.has(p.id));
+  if (!gradedPreds.length) return [];
+
+  const bouts = await rest<BoutRow>(`ufc_bouts?select=${BOUT_SELECT}&id=in.${inList(gradedPreds.map((p) => p.bout_id))}`);
+  const views = await assemble(bouts, [], gradedPreds, true);
+  return views.filter((v) => Boolean(v.grade)).sort((a, b) => (b.grade?.graded_at || "").localeCompare(a.grade?.graded_at || ""));
 }
