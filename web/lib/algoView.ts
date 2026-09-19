@@ -90,12 +90,7 @@ export function agoText(minutes: number | null | undefined): string {
   return `${(m / 1440).toFixed(1)} days ago`;
 }
 
-/** American odds as printed: +150, -130, +100. */
-export function oddsText(v: number | null | undefined): string {
-  return typeof v === "number" && Number.isFinite(v) ? (v > 0 ? `+${v}` : `${v}`) : "\u2014";
-}
-
-/** Plain-English moneyline role for readers who do not speak American odds. */
+/** American moneyline odds with reader-facing role: -230 · FAV, +180 · DOG. */
 export function oddsRole(v: number | null | undefined): "FAV" | "DOG" | "EVEN" | null {
   if (typeof v !== "number" || !Number.isFinite(v)) return null;
   if (Math.abs(v) === 100 || v === 0) return "EVEN";
@@ -103,9 +98,15 @@ export function oddsRole(v: number | null | undefined): "FAV" | "DOG" | "EVEN" |
   return "DOG";
 }
 
+export function oddsText(v: number | null | undefined): string {
+  if (typeof v !== "number" || !Number.isFinite(v)) return "\u2014";
+  const raw = v > 0 ? `+${v}` : `${v}`;
+  return `${raw} · ${oddsRole(v)}`;
+}
+
+/** Compatibility alias for callers that explicitly ask for the labeled form. */
 export function oddsWithRole(v: number | null | undefined): string {
-  const role = oddsRole(v);
-  return role ? `${oddsText(v)} · ${role}` : oddsText(v);
+  return oddsText(v);
 }
 
 /**
