@@ -97,6 +97,7 @@ export type AlgoUpsetProof = {
     prediction_id: string;
     event_name: string;
     event_date: string;
+    pick_fighter_id: string;
     pick_name: string;
     opponent_name: string;
     consensus_odds: number;
@@ -329,6 +330,7 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
       event_name: bout.event.name,
       event_date: bout.event.event_date,
       matchup: `${bout.fighter_a.name} vs ${bout.fighter_b.name}`,
+      pick_fighter_id: pick.id,
       pick_name: pick.name,
       opponent_name: opponent.name,
       model_probability: probability,
