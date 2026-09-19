@@ -16,7 +16,7 @@ export type FighterFacts = {
     last?: Array<{ date: string; opponent: string; opponent_slug?: string | null; result: string; method: string; round?: number | null; event?: string }> } | null;
 };
 import type { EditorialMarket } from "@/lib/editorialMarket";
-import { formatAmericanWithRole, describeAge, movement, type SidePrices, type Movement } from "@/lib/market";
+import { formatAmerican, describeAge, movement, type SidePrices, type Movement } from "@/lib/market";
 import { fmtDateTime } from "@/lib/format";
 import { BestRank } from "@/components/RankBadge";
 import type { FighterRankingContext } from "@/lib/rankingContext";
@@ -201,13 +201,13 @@ function PriceBlock({ name, side }: { name: string; side: SidePrices | null }) {
     <div className="mkt-side">
       <div className="mkt-side-n">{name}</div>
       <dl className="mkt-rows">
-        <div><dt>Consensus</dt><dd className="mono strong">{formatAmericanWithRole(side.consensus)}</dd></div>
-        {side.best != null && <div><dt>Best</dt><dd className="mono">{formatAmericanWithRole(side.best)}</dd></div>}
-        {side.firstObserved && <div><dt>First seen</dt><dd className="mono">{formatAmericanWithRole(side.firstObserved.price)}</dd></div>}
+        <div><dt>Consensus</dt><dd className="mono strong">{formatAmerican(side.consensus)}</dd></div>
+        {side.best != null && <div><dt>Best</dt><dd className="mono">{formatAmerican(side.best)}</dd></div>}
+        {side.firstObserved && <div><dt>First seen</dt><dd className="mono">{formatAmerican(side.firstObserved.price)}</dd></div>}
         {spread && (
           <div className="mkt-range">
             <dt>Range</dt>
-            <dd className="mono">{formatAmericanWithRole(side.worst)} to {formatAmericanWithRole(side.best)}</dd>
+            <dd className="mono">{formatAmerican(side.worst)} to {formatAmerican(side.best)}</dd>
           </div>
         )}
       </dl>
@@ -245,7 +245,7 @@ function MovementLine({ ml, nameA, nameB, stale }: { ml: { a: SidePrices | null;
     <div className="mkt-move" data-dir={m.direction}>
       {/* A stale snapshot describes history, not today's market. */}
       <span>{stale ? `${n} · first observed to last recorded` : heading}</span>
-      <b className="mono">{formatAmericanWithRole(m.from)} <i>→</i> {formatAmericanWithRole(m.to)}</b>
+      <b className="mono">{formatAmerican(m.from)} <i>→</i> {formatAmerican(m.to)}</b>
     </div>
   );
 }
