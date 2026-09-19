@@ -309,7 +309,20 @@ export default {
      * Without the fast cron, ESPN knows a bout is final within seconds and our
      * database does not learn it until the next morning. */
     const mode = event.cron === DAILY_CRON ? 'daily' : 'fightnight';
-    ctx.waitUntil(runIngest(env, { invoked: 'cron', cron: event.cron, mode }));
+    ctx.waitUntil((async () => {
+      const result = await runIngest(env, { invoked: 'cron', cron: event.cron, mode });
+      if (mode === 'fightnight' && result?.status !== 'skipped' && env.ALGO_GRADER) {
+        try {
+          const grade = await env.ALGO_GRADER.refresh({ trigger: 'fightnight-result-ingest' });
+          if (grade?.graded) console.log(`[${SERVICE}] PBE grade refresh: ${grade.graded} graded`);
+        } catch (e) {
+          /* Result ingestion is canonical and must never fail because the
+           * downstream receipt refresh is unavailable. The algo minute cron is
+           * the independent fallback. */
+          console.error(`[${SERVICE}] PBE grade refresh failed: ${String(e?.message || e).slice(0, 160)}`);
+        }
+      }
+    })());
   },
 };
 
@@ -317,7 +330,7 @@ export default {
 /* Fight-night window                                                        */
 /* ------------------------------------------------------------------------ */
 export const DAILY_CRON = '0 6 * * *';
-export const FAST_CRON = '*/15 * * * *';
+export const FAST_CRON = '* * * * *';
 
 /* How wide the fast lane stays open around a card. Opens before the first
  * published segment so the first prelim result is never missed, and holds past
@@ -384,7 +397,7 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
   health.last_cron_run = nowIso();
 
   /* ---- fight-night short circuit -------------------------------------
-   * The fast cron fires 96 times a day and must be free on the ~95 of those
+   * The fast cron fires every minute and must be cheap whenever nothing is happening
    * when nothing is happening: one indexed query, no ESPN request, no run row
    * (96 rows a day of "nothing to do" is not a ledger, it is noise). */
   let card = null;
