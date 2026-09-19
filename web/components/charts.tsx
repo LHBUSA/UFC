@@ -52,7 +52,7 @@ const num = (v: unknown): number | null => {
   return v === null || v === undefined || v === "" || !Number.isFinite(n) ? null : n;
 };
 const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(n < 10 ? 2 : 1).replace(/\.?0+$/, ""));
-const oddsLabel = (n: number) => `${n > 0 ? "+" : ""}${n} · ${n < 0 ? "FAV" : n > 0 ? "DOG" : "EVEN"}`;
+const oddsLabel = (n: number) => `${n > 0 ? "+" : ""}${n} · ${Math.abs(n) === 100 || n === 0 ? "EVEN" : n < 0 ? "FAV" : "DOG"}`;
 
 /** Keys that carry a plotted value, as opposed to a label or provenance. */
 const META = new Set(["label", "trait", "metric_key", "confidence", "sample_bouts", "sample_rounds", "rounds_sampled", "round", "books", "best_book", "best_price"]);
