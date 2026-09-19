@@ -100,7 +100,6 @@ export type AlgoUpsetProof = {
     pick_name: string;
     opponent_name: string;
     consensus_odds: number;
-    opponent_consensus_odds: number | null;
     best_odds: number | null;
     pick_probability: number;
     market_implied_prob: number | null;
