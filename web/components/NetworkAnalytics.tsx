@@ -61,7 +61,7 @@ function initAnalytics(surface: string) {
       trigger();
       return result;
     };
-    wrapped.__pbeAnalyticsWrapped = true;
+    (wrapped as any).__pbeAnalyticsWrapped = true;
     historyAny[method] = wrapped;
   }
 
