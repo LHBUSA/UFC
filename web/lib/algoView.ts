@@ -96,10 +96,10 @@ export function oddsText(v: number | null | undefined): string {
 }
 
 /** Plain-English moneyline role for readers who do not speak American odds. */
-export function oddsRole(v: number | null | undefined): "FAVORITE" | "UNDERDOG" | "EVEN" | null {
+export function oddsRole(v: number | null | undefined): "FAV" | "DOG" | "EVEN" | null {
   if (typeof v !== "number" || !Number.isFinite(v)) return null;
-  if (v < 0) return "FAVORITE";
-  if (v > 0) return "UNDERDOG";
+  if (v < 0) return "FAV";
+  if (v > 0) return "DOG";
   return "EVEN";
 }
 
