@@ -130,9 +130,9 @@ test('a stale market is never presented as a current edge', () => {
   /* A locked call keeps the comparison it locked with. */
   assert.equal(view.marketView(current, { now: Date.parse('2026-09-25T00:00:00Z'), lockedAt: '2026-09-18T16:41:30Z' }).delta, 10.12);
   assert.equal(view.marketView(null).state, 'UNAVAILABLE');
-  assert.equal(view.oddsText(-130), '-130');
-  assert.equal(view.oddsText(110), '+110');
-  assert.equal(view.oddsText(100), '+100');
+  assert.equal(view.oddsText(-130), '-130 · FAV');
+  assert.equal(view.oddsText(110), '+110 · DOG');
+  assert.equal(view.oddsText(100), '+100 · EVEN');
   assert.equal(view.oddsWithRole(-130), '-130 · FAV');
   assert.equal(view.oddsWithRole(110), '+110 · DOG');
   assert.equal(view.oddsWithRole(100), '+100 · EVEN');
