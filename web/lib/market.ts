@@ -177,9 +177,9 @@ export const formatAmerican = (v: number | null | undefined): string =>
 
 export const americanRole = (v: number | null | undefined): "FAV" | "DOG" | "EVEN" | null => {
   if (typeof v !== "number" || !Number.isFinite(v)) return null;
+  if (Math.abs(v) === 100 || v === 0) return "EVEN";
   if (v < 0) return "FAV";
-  if (v > 0) return "DOG";
-  return "EVEN";
+  return "DOG";
 };
 
 export const formatAmericanWithRole = (v: number | null | undefined): string => {
