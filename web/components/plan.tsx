@@ -70,7 +70,7 @@ function Module({ eyebrow, title, note, children, className = "" }: { eyebrow: s
 
 const pctOf = (v: unknown) => (v === null || v === undefined ? "—" : `${Math.round(Number(v) * 100)}%`);
 const signed = (n: number) => (n > 0 ? `+${n}` : String(n));
-const oddsLabel = (n: number) => `${signed(n)} · ${n < 0 ? "FAV" : n > 0 ? "DOG" : "EVEN"}`;
+const oddsLabel = (n: number) => `${signed(n)} · ${Math.abs(n) === 100 || n === 0 ? "EVEN" : n < 0 ? "FAV" : "DOG"}`;
 const titleCase = (s: string) => s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 /* ------------------------------------------------------------- modules */
