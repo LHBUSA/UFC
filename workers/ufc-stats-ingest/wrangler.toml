@@ -84,7 +84,7 @@ OFFICIAL_MIN_INTERVAL_MS = "1000"
 #
 #   0 6 * * *     daily maintenance. Unchanged: full ESPN window walk, archive
 #                 passes, queue maintenance.
-#   */15 * * * *  FIGHT NIGHT. ESPN marks a bout final within seconds; without
+#   * * * * *     FIGHT NIGHT. ESPN marks a bout final within seconds; without
 #                 this the database did not learn it until the next morning.
 #                 The handler resolves the active card from stored broadcast
 #                 times (ufc_event_broadcasts, falling back to ufc_events) and
@@ -93,7 +93,7 @@ OFFICIAL_MIN_INTERVAL_MS = "1000"
 #                 live it refreshes ONLY that card, from its own single-day
 #                 ESPN window, with the same identity validation and idempotent
 #                 writes as the daily pass. It runs no archive maintenance.
-crons = ["0 6 * * *", "*/15 * * * *"]
+crons = ["0 6 * * *", "* * * * *"]
 
 # Fight DNA owner. After new round rows land, ask ufc-intelligence to run its
 # fingerprint-gated build instead of waiting for the 07:17 UTC one. RPC over a
@@ -102,6 +102,14 @@ crons = ["0 6 * * *", "*/15 * * * *"]
 binding = "INTELLIGENCE"
 service = "ufc-intelligence"
 entrypoint = "DnaTrigger"
+
+
+# Live PBE receipt grading. After a fight-night result pass, trigger a
+# grade-only refresh in ufc-algo; this does not score, regenerate or lock picks.
+[[services]]
+binding = "ALGO_GRADER"
+service = "ufc-algo"
+entrypoint = "GradeRefresh"
 
 # Raw HTML archive: ufc-raw/{events|fights|fighters}/{id}.html on first fetch.
 # Create the bucket first: wrangler r2 bucket create ufc-raw
