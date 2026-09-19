@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
 
 const GA_ID = "G-BRS48R8PG9";
 
@@ -15,32 +14,19 @@ function isProductionHost(host: string): boolean {
     && h !== "127.0.0.1";
 }
 
-function sendPageView(surface: string) {
-  if (typeof window === "undefined" || !isProductionHost(window.location.hostname)) return;
-  const w = window as any;
-  const current = window.location.href;
-  if (w.__pbeGaLastLocation === current) return;
-  w.__pbeGaLastLocation = current;
-  w.gtag?.("event", "page_view", {
-    page_title: document.title,
-    page_location: current,
-    page_path: window.location.pathname + window.location.search + window.location.hash,
-    pbe_surface: surface,
-  });
-}
-
 function initAnalytics(surface: string) {
   if (typeof window === "undefined" || !isProductionHost(window.location.hostname)) return;
   const w = window as any;
   if (w.__pbeGaInitialized) return;
   w.__pbeGaInitialized = true;
+
   w.dataLayer = w.dataLayer || [];
   w.gtag = w.gtag || function () { w.dataLayer.push(arguments); };
   w.gtag("js", new Date());
+  w.gtag("set", { pbe_surface: surface });
   w.gtag("config", GA_ID, {
     cookie_domain: ".propbetedge.ai",
     cookie_flags: "SameSite=Lax;Secure",
-    send_page_view: false,
   });
 
   if (!document.querySelector('script[data-pbe-ga4="1"]')) {
@@ -50,23 +36,6 @@ function initAnalytics(surface: string) {
     script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_ID)}`;
     document.head.appendChild(script);
   }
-
-  const trigger = () => setTimeout(() => sendPageView(surface), 0);
-  for (const method of ["pushState", "replaceState"] as const) {
-    const historyAny = history as any;
-    const original = historyAny[method];
-    if (!original || original.__pbeAnalyticsWrapped) continue;
-    const wrapped = function (this: History, ...args: any[]) {
-      const result = original.apply(this, args);
-      trigger();
-      return result;
-    };
-    (wrapped as any).__pbeAnalyticsWrapped = true;
-    historyAny[method] = wrapped;
-  }
-
-  addEventListener("popstate", trigger);
-  addEventListener("hashchange", trigger);
 
   document.addEventListener("click", (event) => {
     const node = event.target as Element | null;
@@ -90,16 +59,9 @@ function initAnalytics(surface: string) {
 }
 
 export function NetworkAnalytics({ surface }: { surface: string }) {
-  const pathname = usePathname();
-
   useEffect(() => {
     initAnalytics(surface);
-    sendPageView(surface);
   }, [surface]);
-
-  useEffect(() => {
-    setTimeout(() => sendPageView(surface), 0);
-  }, [pathname, surface]);
 
   return null;
 }
