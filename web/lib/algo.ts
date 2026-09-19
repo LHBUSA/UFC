@@ -97,17 +97,8 @@ export type AlgoUpsetProof = {
     prediction_id: string;
     event_name: string;
     event_date: string;
-    pick_fighter_id: string;
     pick_name: string;
     opponent_name: string;
-    fighter_image?: {
-      image_url: string | null;
-      card_url: string | null;
-      thumb_url: string | null;
-      attribution_text: string | null;
-      source_url: string | null;
-      license: string | null;
-    } | null;
     consensus_odds: number;
     best_odds: number | null;
     pick_probability: number;
@@ -338,7 +329,6 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
       event_name: bout.event.name,
       event_date: bout.event.event_date,
       matchup: `${bout.fighter_a.name} vs ${bout.fighter_b.name}`,
-      pick_fighter_id: pick.id,
       pick_name: pick.name,
       opponent_name: opponent.name,
       model_probability: probability,
