@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getFightDnaReady, getEarliestEventDate, getNextEvent, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
+import { getFightDnaReady, getEarliestEventDate, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { StoryRelated } from "@/components/StoryRelated";
@@ -27,6 +27,7 @@ import { ApiCta } from "@/components/ApiCta";
 import { getBroadcastForEvent } from "@/lib/broadcast";
 import { WatchStrip } from "@/components/HowToWatch";
 import { getRankingMap } from "@/lib/rankings";
+import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { buildProofRail, type ProofCell } from "@/lib/proofRail";
 import { formatAmerican, getMarketsFor, marketProviderLive } from "@/lib/market";
 
@@ -64,7 +65,7 @@ const PROOF_ICONS: Record<ProofCell["key"], React.ReactNode> = {
 
 export default async function Home() {
   const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire, allUpcoming, recentAll] = await Promise.all([
-    getNextEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(NEWSROOM_FRONT_POOL), getCounts(), getRankings(), getTicker(8),
+    getCurrentOrNextUfcEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(NEWSROOM_FRONT_POOL), getCounts(), getRankings(), getTicker(8),
     getUpcomingEvents(30, { includeContenderSeries: true }), getRecentEvents(20),
   ]);
   /* Newest stories, chronological: the ItemList schema below lists these unchanged. */
