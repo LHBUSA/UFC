@@ -58,6 +58,8 @@ export function normName(s) {
 /* Nicknames arrive quoted inside a name often enough to be worth removing. */
 export const stripNickname = (s) => String(s || '').replace(/["“”].*?["“”]/g, ' ').replace(/\s+/g, ' ').trim();
 
+const compactName = (s) => normName(s).replace(/\s+/g, '');
+
 export function buildIndex(fighters, aliases) {
   const byNorm = new Map();
   const add = (key, id) => {
@@ -66,13 +68,27 @@ export function buildIndex(fighters, aliases) {
     if (!set) { set = new Set(); byNorm.set(key, set); }
     set.add(id);
   };
+  const addName = (name, id) => {
+    const normalized = normName(name);
+    add(normalized, id);
+    // Provider feeds sometimes split or join a given name (JooSang / Joo Sang).
+    // Keep this as a SECONDARY key only. Values remain sets and every resolver
+    // is still scoped to the actual bout, so a compact-name collision fails
+    // closed instead of selecting a fighter by guess.
+    const compact = compactName(name);
+    if (compact && compact !== normalized) add(compact, id);
+  };
   for (const f of fighters) {
-    add(normName(f.name), f.id);
-    add(normName(stripNickname(f.name)), f.id);
+    addName(f.name, f.id);
+    addName(stripNickname(f.name), f.id);
   }
   for (const a of aliases || []) {
-    if (a.normalized && a.fighter_id) add(String(a.normalized), a.fighter_id);
-    if (a.alias && a.fighter_id) add(normName(a.alias), a.fighter_id);
+    if (a.normalized && a.fighter_id) {
+      add(String(a.normalized), a.fighter_id);
+      const compact = compactName(a.normalized);
+      if (compact && compact !== String(a.normalized)) add(compact, a.fighter_id);
+    }
+    if (a.alias && a.fighter_id) addName(a.alias, a.fighter_id);
   }
   return byNorm;
 }
@@ -95,7 +111,7 @@ export function resolveOutcome(outcomeName, boutFighters, byNorm) {
   if (exact.length > 1) return { status: 'ambiguous', reason: 'both_corners_match_exactly' };
 
   /* Alias table, still scoped to this bout. */
-  const ids = byNorm.get(want);
+  const ids = byNorm.get(want) || byNorm.get(compactName(want));
   if (ids) {
     const inBout = boutFighters.filter((f) => ids.has(f.id));
     if (inBout.length === 1) return { status: 'ok', fighterId: inBout[0].id, method: 'alias' };
@@ -133,9 +149,17 @@ export function matchBout(srcEvent, bouts, byNorm) {
     : bouts;
 
   const hits = near.filter((x) => {
-    const names = [normName(x.a.name), normName(x.b.name), normName(stripNickname(x.a.name)), normName(stripNickname(x.b.name))];
-    const aHit = names.includes(a) || (byNorm.get(a) && (byNorm.get(a).has(x.a.id) || byNorm.get(a).has(x.b.id)));
-    const bHit = names.includes(b) || (byNorm.get(b) && (byNorm.get(b).has(x.a.id) || byNorm.get(b).has(x.b.id)));
+    const names = [
+      normName(x.a.name), normName(x.b.name),
+      normName(stripNickname(x.a.name)), normName(stripNickname(x.b.name)),
+      compactName(x.a.name), compactName(x.b.name),
+      compactName(stripNickname(x.a.name)), compactName(stripNickname(x.b.name)),
+    ];
+    const idsFor = (name) => byNorm.get(name) || byNorm.get(compactName(name));
+    const aIds = idsFor(a);
+    const bIds = idsFor(b);
+    const aHit = names.includes(a) || names.includes(compactName(a)) || (aIds && (aIds.has(x.a.id) || aIds.has(x.b.id)));
+    const bHit = names.includes(b) || names.includes(compactName(b)) || (bIds && (bIds.has(x.a.id) || bIds.has(x.b.id)));
     return aHit && bHit;
   });
 
