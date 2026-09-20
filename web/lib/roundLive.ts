@@ -163,9 +163,10 @@ export async function getRoundForRoundState(now = Date.now()): Promise<RoundLive
               : null;
             return { bout: b, coverage, roundReady, noRoundDetail: !roundReady && queue.get(b.id) === "no_round_detail", scorecard };
           })
-          /* Newest first: bout_order descends down the card, so the most
-           * recently contested bout is the LOWEST order still completed. */
-          .sort((x, y) => (x.bout.bout_order ?? 0) - (y.bout.bout_order ?? 0));
+          /* Newest completed bout first. Canonical UFC card ordering is
+           * chronological here: early prelims start at low bout_order values
+           * and the card advances toward the main event at higher values. */
+          .sort((x, y) => (y.bout.bout_order ?? 0) - (x.bout.bout_order ?? 0));
       }
     } catch {
       completedResults = [];
