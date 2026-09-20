@@ -7,7 +7,7 @@
  * strict: a failed page fails the sitemap (5xx, retried by crawlers) instead
  * of publishing a silently shorter one. */
 import "server-only";
-import { isContenderSeries, restAllRows } from "@/lib/db";
+import { isContenderSeries, restAllRows, today } from "@/lib/db";
 import { getJudgeArchive } from "@/lib/judges";
 import { RETIRED_FIGHTER_SLUGS } from "@/lib/retiredFighterSlugs";
 import { eventSlug } from "@/lib/slug";
@@ -65,10 +65,10 @@ export async function eventUrls(): Promise<SitemapUrl[]> {
   /* Pregame Desk pages: upcoming UFC cards plus the twelve most recent, the
    * same selection as before, limited to cards that have bouts (an empty desk
    * is a placeholder, not a page). Contender Series weeks have no desk. */
-  const today = new Date().toISOString().slice(0, 10);
+  const siteToday = today();
   const desk = events.filter((e) => e.event_date && !isContenderSeries(e.name) && withBouts.has(e.id));
-  const upcoming = desk.filter((e) => e.event_date! >= today);
-  const recent = desk.filter((e) => e.event_date! < today).sort((a, b) => b.event_date!.localeCompare(a.event_date!)).slice(0, 12);
+  const upcoming = desk.filter((e) => e.event_date! >= siteToday);
+  const recent = desk.filter((e) => e.event_date! < siteToday).sort((a, b) => b.event_date!.localeCompare(a.event_date!)).slice(0, 12);
   const pregame = [...upcoming, ...recent].map((e) => `/pregame/${eventSlug(e)}`).filter(isCleanPath);
   return [...paths, ...new Set(pregame)].map((p) => ({ loc: abs(p) }));
 }
