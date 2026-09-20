@@ -10,7 +10,6 @@ import { Dropdown } from "@/components/Menu";
 import { cardSections, fightRead, fightReadParts, whatToWatch, thingsThatMatter, fightPhases, phaseHeadlines, fmtStamp, compactRead, compactSignals, type FightWeekPacket, type Factor } from "@/lib/fightweek";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, fmtDate, fmtRecord, locationLine, plural, weightClassLabel } from "@/lib/format";
-import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { SITE } from "@/lib/site";
 import { ProPreview } from "@/components/ProPreview";
@@ -315,7 +314,6 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
   const { event, live, briefById, imgs, videos, days, done, updated, slug } = packet;
   const { main, mainCard, prelims, unpositioned } = cardSections(live);
   const mainBrief = main ? briefById.get(main.id) || null : null;
-  const dwcs = isDanaWhiteContenderSeries(event.name);
   const liveNight = days != null && days <= 0 && days >= -1 && !done;
   const countdown = done ? "Final" : days == null ? "Date TBA" : days === 0 ? "Fight night" : days === 1 ? "Tomorrow" : days < 0 ? "Awaiting results" : `${days} days out`;
   const crumbs = archive ? [{ name: "Fight Week", href: "/fight-week" }, { name: event.name }] : [{ name: "Fight Week" }];
@@ -410,7 +408,7 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
             <section className="fw-rail-card fw-rail-video">
               <div className="fw-h">Official event video</div>
               <a href="#fw-video" className="fw-rail-video-thumb" aria-label="Open official fight-week video">
-                {leadVideo.thumbnail_url ? <img src={leadVideo.thumbnail_url} alt="" loading="lazy" decoding="async" /> : <span className="fw-rail-play">▶</span>}
+                {leadVideo.thumbnail_url && <img src={leadVideo.thumbnail_url} alt="" loading="lazy" decoding="async" />}
                 <span className="fw-rail-play">▶</span>
               </a>
               <strong>{leadVideo.title}</strong>
