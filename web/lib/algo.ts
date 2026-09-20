@@ -4,6 +4,7 @@ import type { UfcAccess } from "@/lib/accessDecision";
 import { eventSlug, matchupSlug } from "@/lib/slug";
 import { selectBoutMarket, type AlgoBoutView, type AlgoPublicRecord } from "@/lib/algoView";
 import artifact from "@/lib/generated/model-v1.json";
+import { ufcSiteDate } from "@/lib/siteClock";
 
 /* PBE Algo data access. Server only.
  *
@@ -298,7 +299,7 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
   const empty = (): AlgoFreeSample => ({ contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: null, full_product_url: "https://ufc.propbetedge.ai/algo" });
   if (!(await algoLive())) return empty();
 
-  const today = generated_at.slice(0, 10);
+  const today = ufcSiteDate(Date.parse(generated_at));
   const until = new Date(Date.now() + 14 * 86400e3).toISOString().slice(0, 10);
   const bouts = await rest<SampleBout>(
     `ufc_bouts?select=id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events!inner(id,name,event_date)&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`
@@ -523,7 +524,7 @@ export async function getAlgoPerformanceProof(): Promise<AlgoPerformanceProof> {
   const eventBy = new Map(events.map((e) => [e.id, e]));
   const lifetime = summarizePerformance(preds, gradeBy);
 
-  const today = generated_at.slice(0, 10);
+  const today = ufcSiteDate(Date.parse(generated_at));
   const usedEvents = events.filter((e) => preds.some((p) => p.event_id === e.id));
   const focus = usedEvents
     .slice()
@@ -619,7 +620,7 @@ export async function getAlgoCards(access: Pick<UfcAccess, "pro">): Promise<Arra
   if (fx) {
     views = fx.bouts.filter((b) => !b.grade);
   } else {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = ufcSiteDate();
     const until = new Date(Date.now() + 14 * 86400e3).toISOString().slice(0, 10);
     const bouts = await rest<BoutRow>(`ufc_bouts?select=${BOUT_SELECT}&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`);
     const ids = bouts.map((b) => b.id);
