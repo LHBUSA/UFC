@@ -5,6 +5,7 @@ import { eventSlug, matchupSlug } from "@/lib/slug";
 import { selectBoutMarket, type AlgoBoutView, type AlgoPublicRecord } from "@/lib/algoView";
 import artifact from "@/lib/generated/model-v1.json";
 import { ufcSiteDate } from "@/lib/siteClock";
+import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 
 /* PBE Algo data access. Server only.
  *
@@ -620,8 +621,9 @@ export async function getAlgoCards(access: Pick<UfcAccess, "pro">): Promise<Arra
   if (fx) {
     views = fx.bouts.filter((b) => !b.grade);
   } else {
-    const today = ufcSiteDate();
-    const until = new Date(Date.now() + 14 * 86400e3).toISOString().slice(0, 10);
+    const focusEvent = await getCurrentOrNextUfcEvent();
+    const today = focusEvent?.event_date || ufcSiteDate();
+    const until = new Date(Date.parse(`${today}T12:00:00Z`) + 14 * 86400e3).toISOString().slice(0, 10);
     const bouts = await rest<BoutRow>(`ufc_bouts?select=${BOUT_SELECT}&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`);
     const ids = bouts.map((b) => b.id);
     const [evals, preds] = ids.length
