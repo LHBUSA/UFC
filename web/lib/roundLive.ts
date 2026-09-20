@@ -36,10 +36,10 @@ import { getRankingMap } from "@/lib/rankings";
 import type { FighterRankingContext } from "@/lib/rankingContext";
 import { cardCoverage, selectRoundForRound, LATEST_COMPLETED_RETENTION_DAYS, type CardCoverage } from "@/lib/roundRollover";
 
-/* Fight-night cache TTL. Short enough that a completed bout surfaces on the
- * next poll, long enough that traffic during a card costs one read a minute
- * rather than one per visitor. */
-const LIVE_TTL = 60;
+/* Fight-night cache TTL. Result ingestion now runs every minute during an
+ * active card; keep the shared server read tight enough that the next client
+ * poll sees a newly stored result without waiting behind a minute-long cache. */
+const LIVE_TTL = 15;
 /* How far ahead to look for the next card. */
 const NEXT_LOOKAHEAD_DAYS = 45;
 
@@ -219,5 +219,5 @@ export async function getRoundForRoundState(now = Date.now()): Promise<RoundLive
  * rows arrive over hours, and a page that polls all week to learn that is cost.
  */
 export function livePollMs(state: Pick<RoundLiveState, "isLive">): number | null {
-  return state.isLive ? 90_000 : null;
+  return state.isLive ? 30_000 : null;
 }
