@@ -380,20 +380,26 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
     });
 
   // Public board slots:
-  // 1) BEST BET is the strongest current model call.
+  // 1) BEST BET prefers the strongest non-upset call so the sampler shows a
+  //    conventional model play alongside the dog.
   // 2) UNDERDOG VALUE is the strongest distinct +money market-opposite call
   //    with positive model edge. We never manufacture a dog just to fill space.
-  //    If none qualifies, NEXT BEST keeps the sampler at two distinct calls.
-  const bestBet = ranked[0] ? { ...ranked[0], slot: "BEST_BET" as const } : null;
-  const bestKey = bestBet ? `${bestBet.event_name}|${bestBet.pick_name}|${bestBet.opponent_name}` : null;
-  const distinct = ranked.filter((c) => `${c.event_name}|${c.pick_name}|${c.opponent_name}` !== bestKey);
-  const underdog = distinct
+  //    If no dog qualifies, NEXT BEST keeps the sampler at two distinct calls.
+  const keyOf = (c: typeof ranked[number]) => `${c.event_name}|${c.pick_name}|${c.opponent_name}`;
+  const underdog = ranked
     .filter((c) => c.is_upset_pick && c.consensus_odds > 0 && (c.edge_pts ?? 0) > 0)
     .sort((a, b) => (b.edge_pts ?? -999) - (a.edge_pts ?? -999) || b.consensus_odds - a.consensus_odds)[0] || null;
-  const second = underdog
+  const underdogKey = underdog ? keyOf(underdog) : null;
+  const regular = ranked.find((c) => !c.is_upset_pick && keyOf(c) !== underdogKey)
+    || ranked.find((c) => keyOf(c) !== underdogKey)
+    || ranked[0]
+    || null;
+  const bestBet = regular ? { ...regular, slot: "BEST_BET" as const } : null;
+  const bestKey = regular ? keyOf(regular) : null;
+  const second = underdog && keyOf(underdog) !== bestKey
     ? { ...underdog, slot: "UNDERDOG_VALUE" as const }
-    : distinct[0]
-      ? { ...distinct[0], slot: "NEXT_BEST" as const }
+    : ranked.find((c) => keyOf(c) !== bestKey)
+      ? { ...ranked.find((c) => keyOf(c) !== bestKey)!, slot: "NEXT_BEST" as const }
       : null;
   const picks: AlgoFreeSamplePick[] = [bestBet, second].filter((p): p is AlgoFreeSamplePick => Boolean(p));
 
