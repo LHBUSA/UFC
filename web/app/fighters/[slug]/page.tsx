@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getDwcsGraph, getOutcomeClaims } from "@/lib/dwcsGraph";
-import { getSourceDobs } from "@/lib/db";
+import { getSourceDobs, today } from "@/lib/db";
 import { effectiveStory } from "@/lib/cardTruth";
 import { ageRange, dobDispute } from "@/lib/dobEvidence";
 import { DwcsLineage } from "@/components/Dwcs";
@@ -48,11 +48,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
    * claim what the page shows: a next fight only when one is scheduled, stats
    * only when round rows exist, Fight DNA only when the profile resolves. */
   const [bouts, rounds, dna] = await Promise.all([getFighterBouts(f.id), getFighterRoundStats(f.id), getFighterDna(f.id)]);
-  const today = new Date().toISOString().slice(0, 10);
+  const siteToday = today();
   const next = bouts
-    .filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled")
+    .filter((b) => b.event?.event_date && b.event.event_date >= siteToday && !b.result && b.status !== "cancelled")
     .sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!))[0] || null;
-  const history = bouts.filter((b) => b !== next && b.event?.event_date && b.event.event_date < today);
+  const history = bouts.filter((b) => b !== next && b.event?.event_date && b.event.event_date < siteToday);
   const sum = archiveSummary(f.id, history);
   const t = totals(rounds);
   const title = fighterTitle(f.name, f.nickname, Boolean(next));
@@ -93,15 +93,15 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
   const returnPath = `/fighters/${fighterSlug(f)}`;
   const [bouts, articles, rounds, rankings, dna, videos, statusEvents, dwcsGraph, dwcsClaims, sourceDobs] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), access.pro ? getFighterDna(f.id) : Promise.resolve(null), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => []), getDwcsGraph(), getOutcomeClaims(), getSourceDobs(f.id).catch(() => [])]);
   const dwcsAlum = dwcsGraph?.byFighter.get(f.id) || null;
-  const today = new Date().toISOString().slice(0, 10);
-  const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
+  const siteToday = today();
+  const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= siteToday && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
   /* A bout that was booked and then came off the card (effective status, migration 031) is not the next fight,
    * and it is not silently dropped either: it is listed under Next fight with what the sources said. */
-  const offCard = bouts.filter((b) => b.event?.event_date && b.event.event_date >= today && !b.result && b.status === "cancelled");
+  const offCard = bouts.filter((b) => b.event?.event_date && b.event.event_date >= siteToday && !b.result && b.status === "cancelled");
   const storyFor = (b: (typeof bouts)[number]) => effectiveStory(b, { eventName: b.event?.name, nameOf: (id) => (id === b.fighter_a.id ? b.fighter_a.name : id === b.fighter_b.id ? b.fighter_b.name : null) });
   /* Coverage for this fighter's completed bouts, same rule as the index. */
   const roundCoverage = await getRoundCoverageFor(bouts.map((b) => b.id));
-  const history = bouts.filter((b) => !upcoming.includes(b) && b.event?.event_date && b.event.event_date < today);
+  const history = bouts.filter((b) => !upcoming.includes(b) && b.event?.event_date && b.event.event_date < siteToday);
   const opponents = bouts.map((b) => (b.fighter_a.id === f.id ? b.fighter_b : b.fighter_a));
   const imgs = await getImagesForFighters([f.id, ...opponents.map((o) => o.id)]);
   const img = imgs.get(f.id) || null;
