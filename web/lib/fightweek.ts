@@ -1,10 +1,11 @@
 import "server-only";
 import { getRoundCoverageFor } from "@/lib/roundIndex";
-import { getEventBouts, getImagesForFighters, getImageFraming, getVideosForEvent, EVENT_VIDEO_INVENTORY, getRankings, getNextEvent, sortVideosTimeline, type Bout, type Event, type FramingRow, type OfficialVideoRow, type PortraitSet, type RankingsSnapshot } from "@/lib/db";
+import { getEventBouts, getImagesForFighters, getImageFraming, getVideosForEvent, EVENT_VIDEO_INVENTORY, getRankings, sortVideosTimeline, type Bout, type Event, type FramingRow, type OfficialVideoRow, type PortraitSet, type RankingsSnapshot } from "@/lib/db";
 import { buildDeskBriefs, type DeskBrief, type DeskSide } from "@/lib/pregame";
 import { getIngestFreshness, type IngestFreshness } from "@/lib/archive";
 import { eventSlug } from "@/lib/slug";
 import { daysUntil, fmtReach } from "@/lib/format";
+import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 
 /* Fight Week — the Pregame Desk as a product surface.
  *
@@ -47,7 +48,7 @@ const last = (s: DeskSide) => s.fighter.name.split(" ").slice(-1)[0] || s.fighte
 
 /* The canonical card for the hub. */
 export async function resolveFightWeekEvent(): Promise<Event | null> {
-  return getNextEvent();
+  return getCurrentOrNextUfcEvent();
 }
 
 /* Latest timestamp across the intelligence inputs, used for the quiet
