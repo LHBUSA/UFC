@@ -264,7 +264,7 @@ export async function PbeUpsetRadar({
           <div className="pbe-upset-rail-ledger">
             <div>
               <span>GRADED UNDERDOG LEDGER</span>
-              <b>{proof.total > 0 ? (proof.decided ? `${proof.wins}-${proof.losses}` : `${proof.total} graded`) : "First grade pending"}</b>
+              <b>{proof.unavailable ? "Ledger unavailable" : proof.total > 0 ? (proof.decided ? `${proof.wins}-${proof.losses}` : `${proof.total} graded`) : "First grade pending"}</b>
             </div>
             {proof.total > 0 && proof.hit_rate != null ? <strong>{(proof.hit_rate * 100).toFixed(1)}%</strong> : <strong>—</strong>}
           </div>
@@ -415,8 +415,8 @@ export async function PbeUpsetRadar({
         </>
       ) : (
         <div className="pbe-upset-empty compact">
-          <b>LIVE LEDGER · WAITING FOR THE FIRST GRADED UNDERDOG CALL</b>
-          <span>The model has not produced a graded official underdog call yet. We are not substituting a backtest winner for live proof.</span>
+          <b>{proof.unavailable ? "LIVE LEDGER · TEMPORARILY UNAVAILABLE" : "LIVE LEDGER · WAITING FOR THE FIRST GRADED UNDERDOG CALL"}</b>
+          <span>{proof.unavailable ? "The official record could not be read just now, so no numbers are shown rather than an empty ledger. Stored picks and grades are unaffected." : "The model has not produced a graded official underdog call yet. We are not substituting a backtest winner for live proof."}</span>
         </div>
       )}
 

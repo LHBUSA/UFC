@@ -232,26 +232,35 @@ test('PBE Upset Radar aggregate: a graded market-opposite LOSS can never drop ou
 test('PBE Upset Radar aggregate, production read path: the same ledger rules over PostgREST rows', async () => {
   /* The fixture branch above and the database branch aggregate separately, so the
    * database branch gets the same proof: a second module instance with a database
-   * configured, and fetch answered from rows shaped like the three real reads. */
-  const rowsFor = (bouts) => ({
-    ufc_model_predictions: bouts.filter((b) => b.prediction.locked_at).map((b) => ({
-      id: b.prediction.id, bout_id: b.bout_id, locked_at: b.prediction.locked_at, pick_fighter_id: b.pick_fighter_id,
-      pick_probability: String(b.prediction.pick_probability), market_implied_prob_pick: b.prediction.market_implied_prob_pick,
-      model_edge_pts: b.prediction.model_edge_pts, sample_context: { market: b.market },
+   * configured, and fetch answered by the archive's PostgREST stand-in. The ledger
+   * is now a subset of the canonical full-history index (lib/algoArchive.ts), so
+   * the store carries what that index reads: locked predictions, every grade
+   * revision, events, and (for the showcase identities only) bouts and fighters. */
+  const { reader } = await import('./algoArchive.fixture.mjs');
+  const storeFor = (bouts) => ({
+    preds: bouts.filter((b) => b.prediction.locked_at).map((b) => ({
+      id: b.prediction.id, bout_id: b.bout_id, event_id: 'e', fighter_a_id: b.fighter_a.id, fighter_b_id: b.fighter_b.id,
+      model_version: 'pbe-fight-model-v1', feature_version: 'pbe-fight-features-v1', locked_at: b.prediction.locked_at, pick_fighter_id: b.pick_fighter_id,
+      pick_probability: String(b.prediction.pick_probability), confidence_band: '55-60', market_implied_prob_pick: b.prediction.market_implied_prob_pick,
+      model_edge_pts: b.prediction.model_edge_pts, market_books: null, market_snapshot_at: null, sample_context: { market: b.market },
     })),
-    ufc_model_prediction_current_grade: bouts.filter((b) => b.grade).map((b) => ({ prediction_id: b.prediction.id, result: b.grade.result })),
-    ufc_bouts: bouts.map((b) => ({ id: b.bout_id, fighter_a: b.fighter_a, fighter_b: b.fighter_b, event: { name: b.event_name, event_date: b.event_date } })),
+    drafts: [],
+    grades: bouts.filter((b) => b.grade).map((b) => ({ id: `grade-${b.prediction.id}`, prediction_id: b.prediction.id, revision: 1, result: b.grade.result, graded_at: b.grade.graded_at, revision_reason: null, source: 'test', method: null, graded_by: 'test' })),
+    events: [{ id: 'e', name: 'UFC X', event_date: '2026-09-19' }],
+    bouts: bouts.map((b) => ({ id: b.bout_id, event_id: 'e', card_position: 'main', bout_order: 1, fighter_a: b.fighter_a, fighter_b: b.fighter_b, event: { id: 'e', name: b.event_name, event_date: b.event_date } })),
+    fighters: bouts.flatMap((b) => [b.fighter_a, b.fighter_b]),
   });
   const realFetch = globalThis.fetch;
   const asked = [];
-  let tables = {};
+  let tables = storeFor([]);
+  const rowsFor = storeFor;
   process.env.SUPABASE_URL = 'https://db.invalid';
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
   try {
     globalThis.fetch = async (url) => {
       const path = String(url).split('/rest/v1/')[1];
       asked.push(path);
-      return { ok: true, status: 200, json: async () => tables[path.split('?')[0]] ?? [] };
+      return { ok: true, status: 200, json: async () => reader(tables)(path) };
     };
     const db = await import('./algo.ts?production-read-path');
 
@@ -269,9 +278,13 @@ test('PBE Upset Radar aggregate, production read path: the same ledger rules ove
     assert.equal(proof.average_consensus_odds, 165);
     assert.deepEqual(proof.biggest_wins.map((w) => [w.prediction_id, w.pick_name, w.result]), [['pred-win', 'Pick win', 'WIN']]);
 
-    /* Only locked predictions are ever requested, and grades come from the official current-grade view. */
-    assert.match(asked[0], /^ufc_model_predictions\?.*locked_at=not\.is\.null/);
-    assert.ok(asked.some((q) => q.startsWith('ufc_model_prediction_current_grade?')));
+    /* Only locked predictions are ever requested; grades are the append-only revisions,
+     * reduced to the revision in force; identity is asked for the showcase win alone. */
+    for (const q of asked.filter((x) => x.startsWith('ufc_model_predictions?'))) assert.match(q, /locked_at=not\.is\.null/);
+    assert.ok(asked.some((q) => q.startsWith('ufc_model_prediction_grades?')));
+    assert.ok(!asked.some((q) => /shadow|backtest|card_current|limit=1000&/.test(q) && !q.includes('order=id.asc')), 'no capped or non-official read');
+    for (const q of asked.filter((x) => x.startsWith('ufc_fighters?'))) assert.doesNotMatch(decodeURIComponent(q), /ungraded|a-loss|a-chalk/, 'identity is read for the showcase only');
+    assert.deepEqual(proof.official_lifetime.locked, 4, 'the ledger is cut from the canonical lifetime index');
 
     tables = rowsFor([WIN, LOSS, SHORT, ...controls]);
     const wider = await db.getAlgoUpsetProof();

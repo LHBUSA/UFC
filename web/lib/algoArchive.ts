@@ -42,6 +42,10 @@ export type IndexPred = {
   model_edge_pts: number | string | null;
   confidence: string | null;
   best_odds: number | string | null;
+  /* Lock-time market, for the Upset Radar subset (lib/algo.ts). Frozen with the lock. */
+  consensus_odds: number | string | null;
+  devigged_pick: number | string | null;
+  devigged_opponent: number | string | null;
 };
 export type IndexGradeRow = { id: string; prediction_id: string; revision: number; result: GradeResult; graded_at: string };
 export type IndexEvent = { id: string; name: string; event_date: string };
@@ -57,9 +61,17 @@ export const ARCHIVE_PAGE_SIZE = 10;
 export const UNRESOLVED_EVENT = "unresolved";
 /** A card whose picks are still ungraded this many days after its date is overdue. */
 export const GRADING_OVERDUE_DAYS = 2;
+/** The UFC site day rolls over at 05:00 UTC (lib/siteClock.ts; pinned by a test). */
+export const SITE_DAY_ROLLOVER_UTC_HOUR = 5;
+/** Hours since the END of the event's site day. A card is GRADING_OVERDUE exactly
+ *  when this reaches GRADING_OVERDUE_DAYS * 24, i.e. more than 48 hours after the event. */
+export function pendingAgeHours(eventDate: string, nowIso: string): number {
+  const end = Date.parse(`${eventDate}T00:00:00Z`) + (24 + SITE_DAY_ROLLOVER_UTC_HOUR) * 3600e3;
+  return Math.max(0, Math.floor((Date.parse(nowIso) - end) / 3600e3));
+}
 const MAX_SCAN_PAGES = 500;
 
-export const PRED_INDEX_SELECT = "id,event_id,bout_id,locked_at,model_version,pick_probability,model_edge_pts,confidence:sample_context->>confidence,best_odds:sample_context->market->>pick_best_odds";
+export const PRED_INDEX_SELECT = "id,event_id,bout_id,locked_at,model_version,pick_probability,model_edge_pts,confidence:sample_context->>confidence,best_odds:sample_context->market->>pick_best_odds,consensus_odds:sample_context->market->>pick_consensus_odds,devigged_pick:sample_context->market->>devigged_pick,devigged_opponent:sample_context->market->>devigged_opponent";
 export const GRADE_INDEX_SELECT = "id,prediction_id,revision,result,graded_at";
 
 /** Walk a table by primary key until a page comes back empty. */
@@ -194,7 +206,7 @@ export type ArchiveIndex = {
   events: EventSummary[];
   model_versions: string[];
   integrity: ArchiveIntegrity;
-  overdue: Array<{ event_id: string; event_name: string; event_date: string; pending: number; days_overdue: number }>;
+  overdue: Array<{ event_id: string; event_name: string; event_date: string; pending: number; days_overdue: number; pending_age_hours: number }>;
 };
 
 const dayDiff = (from: string, to: string) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400e3);
@@ -254,7 +266,7 @@ export function buildIndex(p: { preds: IndexPred[]; grades: IndexGradeRow[]; eve
       unresolved_event_picks: unresolved, orphan_grade_predictions: orphan,
       duplicate_prediction_ids: p.duplicates?.preds || [], duplicate_grade_ids: p.duplicates?.grades || [],
     },
-    overdue: events.filter((e) => e.status === "GRADING_OVERDUE" && e.event_date).map((e) => ({ event_id: e.event_id, event_name: e.event_name, event_date: e.event_date!, pending: e.pending, days_overdue: dayDiff(e.event_date!, p.today) - GRADING_OVERDUE_DAYS })),
+    overdue: events.filter((e) => e.status === "GRADING_OVERDUE" && e.event_date).map((e) => ({ event_id: e.event_id, event_name: e.event_name, event_date: e.event_date!, pending: e.pending, days_overdue: dayDiff(e.event_date!, p.today) - GRADING_OVERDUE_DAYS, pending_age_hours: pendingAgeHours(e.event_date!, p.generated_at) })),
   };
 }
 

@@ -8,7 +8,7 @@ import artifact from "@/lib/generated/model-v1.json";
 import { ufcSiteDate } from "@/lib/siteClock";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import {
-  ArchiveReadError, UNRESOLVED_EVENT, calibrationSummary, eventOfPrediction, loadIndex, lockPrice, oneUnitReturn, pageOfEvent, paginate, readByIds, recentGradedIds,
+  ArchiveReadError, UNRESOLVED_EVENT, calibrationSummary, eventOfPrediction, loadIndex, lockPrice, oneUnitReturn, pageOfEvent, paginate, readByIds, recentGradedIds, summarizePerformance,
   type ArchiveIndex, type ArchiveIntegrity, type CalibrationSummary, type EventSummary, type GradeResult, type IndexPred, type PerformanceSlice,
 } from "@/lib/algoArchive";
 
@@ -114,6 +114,11 @@ export type AlgoUpsetProof = {
   no_decision: number;
   hit_rate: number | null;
   average_consensus_odds: number | null;
+  /** True when the record could not be read; the counts are then placeholders. */
+  unavailable?: boolean;
+  /** The canonical lifetime slice this subset was cut from: the same object the
+   *  archive and the tracker report, so every surface reconciles. */
+  official_lifetime?: PerformanceSlice;
   biggest_wins: Array<{
     prediction_id: string;
     event_name: string;
@@ -128,27 +133,6 @@ export type AlgoUpsetProof = {
     result: "WIN";
     locked_at: string;
   }>;
-};
-
-type UpsetPredRow = {
-  id: string;
-  bout_id: string;
-  locked_at: string;
-  pick_fighter_id: string;
-  pick_probability: number | string;
-  market_implied_prob_pick: number | string | null;
-  model_edge_pts: number | string | null;
-  sample_context: { market?: AlgoBoutView["market"] } | null;
-};
-type UpsetGradeRow = {
-  prediction_id: string;
-  result: NonNullable<AlgoBoutView["grade"]>["result"];
-};
-type UpsetBoutRow = {
-  id: string;
-  fighter_a: { id: string; name: string };
-  fighter_b: { id: string; name: string };
-  event: { name: string; event_date: string };
 };
 
 const UPSET_SHOWCASE_THRESHOLD_ODDS = 120;
@@ -222,60 +206,50 @@ export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
     } as AlgoUpsetProof;
   }
 
-  const preds = await rest<UpsetPredRow>(
-    `ufc_model_predictions?model_version=eq.${encodeURIComponent(MODEL_VERSION)}&locked_at=not.is.null&select=id,bout_id,locked_at,pick_fighter_id,pick_probability,market_implied_prob_pick,model_edge_pts,sample_context&order=locked_at.desc&limit=1000`
-  );
-  if (!preds.length) return EMPTY_UPSET_PROOF();
-
-  const predictionIds = inList(preds.map((p) => p.id));
-  const boutIds = inList(preds.map((p) => p.bout_id));
-  const [grades, bouts] = await Promise.all([
-    rest<UpsetGradeRow>(`ufc_model_prediction_current_grade?prediction_id=in.${predictionIds}&select=prediction_id,result`),
-    rest<UpsetBoutRow>(`ufc_bouts?id=in.${boutIds}&select=id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events!inner(name,event_date)`),
-  ]);
-  const gradeBy = new Map(grades.map((g) => [g.prediction_id, g]));
-  const boutBy = new Map(bouts.map((b) => [b.id, b]));
-
-  const rows = preds.flatMap((p) => {
-    const grade = gradeBy.get(p.id);
-    const bout = boutBy.get(p.bout_id);
-    const odds = Number(p.sample_context?.market?.pick_consensus_odds);
-    if (!grade || !bout || !Number.isFinite(odds) || !isMarketOppositePick(p.sample_context?.market ?? null, p.pick_probability)) return [];
-    const pick = p.pick_fighter_id === bout.fighter_a.id ? bout.fighter_a : p.pick_fighter_id === bout.fighter_b.id ? bout.fighter_b : null;
-    if (!pick) return [];
-    const opponent = pick.id === bout.fighter_a.id ? bout.fighter_b : bout.fighter_a;
-    return [{
-      prediction_id: p.id,
-      event_name: bout.event.name,
-      event_date: bout.event.event_date,
-      pick_name: pick.name,
-      opponent_name: opponent.name,
-      consensus_odds: odds,
-      best_odds: p.sample_context?.market?.pick_best_odds == null ? null : Number(p.sample_context.market.pick_best_odds),
-      pick_probability: Number(p.pick_probability),
-      market_implied_prob: p.market_implied_prob_pick == null ? null : Number(p.market_implied_prob_pick),
-      model_edge_pts: p.model_edge_pts == null ? null : Number(p.model_edge_pts),
-      result: grade.result,
-      locked_at: p.locked_at,
-    }];
-  });
-
-  const wins = rows.filter((r) => r.result === "WIN").length;
-  const losses = rows.filter((r) => r.result === "LOSS").length;
-  const decided = wins + losses;
+  /* The Upset Radar record is a SUBSET of the canonical full-history index, never
+   * its own read: every officially locked pick of every official model version,
+   * graded by the revision in force, counted by the same summarizePerformance()
+   * the archive and the tracker use. A failed read is reported as unavailable
+   * rather than as an empty record. */
+  let index: ArchiveIndex;
+  try {
+    index = await archiveIndex(null);
+  } catch (e) {
+    console.error(`[algo-record] upset proof read failed: ${String((e as Error)?.message || e)}`);
+    return { ...EMPTY_UPSET_PROOF(), unavailable: true };
+  }
+  const market = (p: IndexPred): AlgoBoutView["market"] => ({ devigged_pick: p.devigged_pick == null ? undefined : Number(p.devigged_pick), devigged_opponent: p.devigged_opponent == null ? null : Number(p.devigged_opponent) });
+  const upset = index.preds.filter((p) => index.gradeBy.has(p.id) && lockPrice(p.consensus_odds) != null && isMarketOppositePick(market(p), p.pick_probability));
+  if (!upset.length) return { ...EMPTY_UPSET_PROOF(), official_lifetime: index.lifetime };
+  const slice = summarizePerformance(upset, index.gradeBy);
+  const odds = (p: IndexPred) => lockPrice(p.consensus_odds)!;
+  const showcase = upset
+    .filter((p) => index.gradeBy.get(p.id)!.result === "WIN" && odds(p) >= UPSET_SHOWCASE_THRESHOLD_ODDS)
+    .sort((a, b) => odds(b) - odds(a) || a.id.localeCompare(b.id))
+    .slice(0, 3);
+  let biggest_wins: AlgoUpsetProof["biggest_wins"] = [];
+  try {
+    const picks = await archivePicks(index, showcase.map((p) => p.id));
+    biggest_wins = showcase.flatMap((p) => {
+      const v = picks.find((x) => x.prediction_id === p.id);
+      const ev = index.events.find((e) => e.graded_prediction_ids.includes(p.id)) || null;
+      if (!v || v.result !== "WIN") return [];
+      return [{
+        prediction_id: v.prediction_id, event_name: ev?.event_name || "Event not resolved", event_date: ev?.event_date || "",
+        pick_name: v.pick.name, opponent_name: v.opponent.name, consensus_odds: odds(p), best_odds: v.lock_price,
+        pick_probability: v.pick_probability, market_implied_prob: v.market_implied_prob, model_edge_pts: v.model_edge_pts,
+        result: "WIN" as const, locked_at: v.locked_at,
+      }];
+    });
+  } catch (e) {
+    console.error(`[algo-record] upset showcase read failed: ${String((e as Error)?.message || e)}`);
+  }
   return {
     showcase_threshold_odds: UPSET_SHOWCASE_THRESHOLD_ODDS,
-    total: rows.length,
-    decided,
-    wins,
-    losses,
-    no_decision: rows.length - decided,
-    hit_rate: decided ? wins / decided : null,
-    average_consensus_odds: rows.length ? rows.reduce((n, r) => n + r.consensus_odds, 0) / rows.length : null,
-    biggest_wins: rows
-      .filter((r): r is typeof r & { result: "WIN" } => r.result === "WIN" && r.consensus_odds >= UPSET_SHOWCASE_THRESHOLD_ODDS)
-      .sort((a, b) => b.consensus_odds - a.consensus_odds)
-      .slice(0, 3),
+    total: upset.length, decided: slice.decided, wins: slice.wins, losses: slice.losses, no_decision: slice.no_decision, hit_rate: slice.hit_rate,
+    average_consensus_odds: upset.reduce((n, p) => n + odds(p), 0) / upset.length,
+    biggest_wins,
+    official_lifetime: index.lifetime,
   };
 }
 
@@ -634,15 +608,23 @@ export async function getAlgoRecentGradedPicks(n = 5): Promise<Array<ArchivePick
 }
 
 /** Aggregate-only health of the public record, for /api/ufc/record-health. */
-export async function getAlgoRecordHealth(): Promise<{ ok: boolean; generated_at: string; read_error: string | null; integrity: ArchiveIntegrity | null; overdue: ArchiveIndex["overdue"]; events: number }> {
+export type AlgoRecordHealthIntegrity = Omit<ArchiveIntegrity, "duplicate_prediction_ids" | "duplicate_grade_ids"> & { duplicate_predictions: number; duplicate_grades: number };
+export async function getAlgoRecordHealth(): Promise<{ ok: boolean; state: "PASS" | "FAIL"; generated_at: string; read_error: string | null; integrity: AlgoRecordHealthIntegrity | null; overdue: ArchiveIndex["overdue"]; oldest_pending_hours: number | null; events: number }> {
   const generated_at = new Date().toISOString();
   try {
     const index = await archiveIndex(null);
     const i = index.integrity;
     const clean = !i.orphan_grade_predictions && !i.duplicate_prediction_ids.length && !i.duplicate_grade_ids.length;
-    return { ok: clean && index.overdue.length === 0, generated_at, read_error: null, integrity: i, overdue: index.overdue, events: index.events.length };
+    const ok = clean && index.overdue.length === 0;
+    const { duplicate_prediction_ids, duplicate_grade_ids, ...counts } = i;
+    return {
+      ok, state: ok ? "PASS" : "FAIL", generated_at, read_error: null,
+      integrity: { ...counts, duplicate_predictions: duplicate_prediction_ids.length, duplicate_grades: duplicate_grade_ids.length },
+      overdue: index.overdue, oldest_pending_hours: index.overdue.length ? Math.max(...index.overdue.map((o) => o.pending_age_hours)) : null, events: index.events.length,
+    };
   } catch (e) {
-    return { ok: false, generated_at, read_error: String((e as Error)?.message || e).slice(0, 200), integrity: null, overdue: [], events: 0 };
+    /* The class of failure only: an upstream message can carry a query string. */
+    return { ok: false, state: "FAIL", generated_at, read_error: e instanceof ArchiveReadError ? "record_store_unreadable" : "record_assembly_failed", integrity: null, overdue: [], oldest_pending_hours: null, events: 0 };
   }
 }
 
@@ -709,9 +691,14 @@ type BoutRow = { id: string; event_id: string; card_position: string | null; bou
 
 const PRED_SELECT = "id,bout_id,event_id,fighter_a_id,fighter_b_id,model_version,feature_version,generated_at,locked_at,prob_a,prob_b,pick_fighter_id,pick_probability,confidence_band,feature_vector,feature_availability,sample_context,market_implied_prob_pick,model_edge_pts";
 
-async function assemble(bouts: BoutRow[], evals: EvalRow[], preds: PredRow[], withHistory = false): Promise<AlgoBoutView[]> {
+/* `revisions`: every grade revision for these predictions, already read by the
+ * caller through the archive's strict reader. The grade in force is then the
+ * highest revision, the same rule as the index, and nothing is read here. */
+async function assemble(bouts: BoutRow[], evals: EvalRow[], preds: PredRow[], withHistory = false, revisions: GradeRow[] | null = null): Promise<AlgoBoutView[]> {
   const ids = inList(preds.map((p) => p.id));
-  const [grades, history] = preds.length
+  const [grades, history] = revisions
+    ? [[...revisions.reduce((m, g) => (!m.has(g.prediction_id) || m.get(g.prediction_id)!.revision < g.revision ? m.set(g.prediction_id, g) : m), new Map<string, GradeRow>()).values()], revisions.slice().sort((a, b) => a.revision - b.revision)]
+    : preds.length
     ? await Promise.all([
       rest<GradeRow>(`ufc_model_prediction_current_grade?prediction_id=in.${ids}&select=prediction_id,result,revision,graded_at,revision_reason`),
       withHistory ? rest<GradeRow>(`ufc_model_prediction_grades?prediction_id=in.${ids}&select=prediction_id,result,revision,graded_at,revision_reason&order=revision.asc`) : Promise.resolve([] as GradeRow[]),
@@ -798,15 +785,38 @@ export async function getAlgoBout(access: Pick<UfcAccess, "pro">, boutId: string
   return (await assemble([bout], evals, preds))[0];
 }
 
-/** Every officially LOCKED prediction, newest first, with its current grade. Drafts never appear. */
+/** Every officially LOCKED prediction, newest first, with its current grade.
+ *  Drafts never appear. The ids come from the canonical full-history index (every
+ *  official model version, no row cap) and the rows are read in URL-safe chunks,
+ *  so this list and getAlgoRecordTotals() cover exactly the population the public
+ *  archive aggregates. Throws on a failed read rather than returning a short list. */
 export async function getAlgoRecord(access: Pick<UfcAccess, "pro">): Promise<AlgoBoutView[]> {
   requirePro(access);
   const fx = fixture();
   if (fx) return fx.bouts.filter((b) => b.prediction?.locked_at).sort((a, b) => b.prediction!.locked_at!.localeCompare(a.prediction!.locked_at!));
-  const preds = await rest<PredRow>(`ufc_model_predictions?locked_at=not.is.null&select=${PRED_SELECT}&order=locked_at.desc&limit=1000`);
-  if (!preds.length) return [];
-  const bouts = await rest<BoutRow>(`ufc_bouts?select=${BOUT_SELECT}&id=in.${inList(preds.map((p) => p.bout_id))}`);
-  const evals = await rest<EvalRow>(`ufc_model_card_current?bout_id=in.${inList(preds.map((p) => p.bout_id))}&select=bout_id,event_id,decision,reasons,confidence,pick_fighter_id,pick_probability,features_available,sample,market,model_version,feature_version,evaluated_at`);
-  const views = await assemble(bouts, evals, preds, true);
-  return views.sort((a, b) => (b.prediction?.locked_at || "").localeCompare(a.prediction?.locked_at || ""));
+  const index = await archiveIndex(null);
+  const ids = index.preds.map((p) => p.id);
+  const views: AlgoBoutView[] = [];
+  for (let i = 0; i < ids.length; i += 100) {
+    const preds = await readByIds<PredRow>(restStrict, "ufc_model_predictions", PRED_SELECT, "id", ids.slice(i, i + 100), "locked_at=not.is.null");
+    const boutIds = preds.map((p) => p.bout_id);
+    const [bouts, evals, revisions] = await Promise.all([
+      readByIds<BoutRow>(restStrict, "ufc_bouts", BOUT_SELECT, "id", boutIds),
+      readByIds<EvalRow>(restStrict, "ufc_model_card_current", "bout_id,event_id,decision,reasons,confidence,pick_fighter_id,pick_probability,features_available,sample,market,model_version,feature_version,evaluated_at", "bout_id", boutIds),
+      readByIds<GradeRow>(restStrict, "ufc_model_prediction_grades", "prediction_id,result,revision,graded_at,revision_reason", "prediction_id", preds.map((p) => p.id)),
+    ]);
+    /* One view per PREDICTION: two official versions may have locked the same bout. */
+    for (const p of preds) {
+      const bout = bouts.find((b) => b.id === p.bout_id);
+      if (bout) views.push(...await assemble([bout], evals.filter((e) => e.bout_id === p.bout_id && e.model_version === p.model_version), [p], true, revisions.filter((g) => g.prediction_id === p.id)));
+    }
+  }
+  return views.sort((a, b) => (b.prediction?.locked_at || "").localeCompare(a.prediction?.locked_at || "") || (b.prediction?.id || "").localeCompare(a.prediction?.id || ""));
+}
+
+/** The Pro record's totals: the canonical lifetime slice itself, not a recount. */
+export async function getAlgoRecordTotals(access: Pick<UfcAccess, "pro">): Promise<{ lifetime: PerformanceSlice; integrity: ArchiveIntegrity; model_versions: string[] }> {
+  requirePro(access);
+  const index = await archiveIndex(null);
+  return { lifetime: index.lifetime, integrity: index.integrity, model_versions: index.model_versions };
 }

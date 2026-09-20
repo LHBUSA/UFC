@@ -37,14 +37,14 @@ export function buildStore(now = Date.now()) {
       const bout = { id: uuid('bbbbbbbb', n), event_id: event.id, card_position: k < 5 ? 'main' : 'prelim', bout_order: picks - k, fighter_a: a, fighter_b: b, event };
       bouts.push(bout);
       const priced = n % 7 !== 3;                       // every seventh pick has no lock-time price
-      const odds = n % 2 ? 150 + (n % 9) * 10 : -(110 + (n % 9) * 10);
+      const odds = n % 4 < 2 ? 150 + (n % 9) * 10 : -(110 + (n % 9) * 10);   // underdog picks land on every result type
       const locked_at = new Date(Date.parse(`${event.event_date}T00:00:00Z`) - 8 * 3600e3 + k * 1000).toISOString();
       preds.push({
         id: uuid('cccccccc', n), bout_id: bout.id, event_id: event.id, fighter_a_id: a.id, fighter_b_id: b.id,
         model_version: i < 60 ? 'pbe-fight-model-v1' : 'pbe-fight-model-v2', feature_version: 'pbe-fight-features-v1',
         locked_at, generated_at: locked_at, pick_fighter_id: n % 3 ? a.id : b.id, pick_probability: 0.52 + (n % 40) / 100, confidence_band: '55-60',
         market_implied_prob_pick: priced ? 0.5 : null, model_edge_pts: priced ? (n % 25) - 8 : null, market_books: priced ? 6 : null, market_snapshot_at: priced ? locked_at : null,
-        sample_context: { confidence: ['HIGH', 'MEDIUM', 'LEAN'][n % 3], market: priced ? { status: 'FRESH', source: 'the-odds-api', books: 6, observed_at: locked_at, pick_best_odds: odds, pick_best_book: 'FixtureBook', pick_consensus_odds: odds - 5 } : { status: 'UNAVAILABLE' } },
+        sample_context: { confidence: ['HIGH', 'MEDIUM', 'LEAN'][n % 3], market: priced ? { status: 'FRESH', source: 'the-odds-api', books: 6, observed_at: locked_at, pick_best_odds: odds, pick_best_book: 'FixtureBook', pick_consensus_odds: odds - 5, devigged_pick: odds > 0 ? 0.4 : 0.6, devigged_opponent: odds > 0 ? 0.6 : 0.4 } : { status: 'UNAVAILABLE' } },
       });
       if (k < gradedCount) {
         const at = new Date(Date.parse(`${event.event_date}T23:00:00Z`) + k * 60e3).toISOString();
@@ -69,7 +69,7 @@ export function buildStore(now = Date.now()) {
   return { events, fighters, bouts, preds, drafts, grades, shadow: [{ id: uuid('99999999', 1) }], backtest: [{ id: uuid('99999999', 2) }] };
 }
 
-const LEAN = (p) => ({ id: p.id, event_id: p.event_id, bout_id: p.bout_id, locked_at: p.locked_at, model_version: p.model_version, pick_probability: p.pick_probability, model_edge_pts: p.model_edge_pts, confidence: p.sample_context?.confidence ?? null, best_odds: p.sample_context?.market?.pick_best_odds == null ? null : String(p.sample_context.market.pick_best_odds) });
+const LEAN = (p) => ({ id: p.id, event_id: p.event_id, bout_id: p.bout_id, locked_at: p.locked_at, model_version: p.model_version, pick_probability: p.pick_probability, model_edge_pts: p.model_edge_pts, confidence: p.sample_context?.confidence ?? null, best_odds: p.sample_context?.market?.pick_best_odds == null ? null : String(p.sample_context.market.pick_best_odds), consensus_odds: p.sample_context?.market?.pick_consensus_odds == null ? null : String(p.sample_context.market.pick_consensus_odds), devigged_pick: p.sample_context?.market?.devigged_pick == null ? null : String(p.sample_context.market.devigged_pick), devigged_opponent: p.sample_context?.market?.devigged_opponent == null ? null : String(p.sample_context.market.devigged_opponent) });
 
 /** A PostgREST-shaped reader over the store. `maxRows` is the server cap. */
 export function reader(store, { maxRows = 1000, fail = null, log = [] } = {}) {
@@ -85,6 +85,7 @@ export function reader(store, { maxRows = 1000, fail = null, log = [] } = {}) {
     else if (table === 'ufc_events') rows = store.events;
     else if (table === 'ufc_bouts') rows = store.bouts;
     else if (table === 'ufc_fighters') rows = store.fighters;
+    else if (table === 'ufc_model_card_current') rows = [];            // Pro reader only; evaluations are not part of the record
     else throw new Error(`fixture: unexpected table ${table}`);
     for (const [k, v] of params) {
       if (['select', 'order', 'limit'].includes(k)) continue;

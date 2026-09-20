@@ -307,4 +307,99 @@ test('the public archive surfaces never import a Pro reader, a draft source or a
   const perf = algoSrc.slice(algoSrc.indexOf('export async function getAlgoPerformanceProof'), algoSrc.indexOf('/* ---- UFC Pro'));
   assert.doesNotMatch(perf, /limit=1000/, 'the tracker is no longer computed from a capped read');
   assert.doesNotMatch(algoSrc, /getAlgoPublicGradedRecord/, 'the capped public ledger reader is gone');
+  assert.doesNotMatch(algoSrc, /limit=1000/, 'no reader in lib/algo.ts caps history at 1,000 rows');
+});
+
+/* ---- one lifetime record on every surface -------------------------------- */
+
+const PRO = { pro: true };
+function upsetTruth(store) {
+  const truth = authoritative(store);
+  let total = 0, wins = 0, losses = 0, sum = 0;
+  for (const p of store.preds) {
+    const g = truth.current.get(p.id);
+    const m = p.sample_context?.market;
+    if (!g || m?.pick_consensus_odds == null || !(Number(m.devigged_opponent) > Number(m.devigged_pick)) || !(Number(p.pick_probability) > 0.5)) continue;
+    total += 1; sum += Number(m.pick_consensus_odds);
+    if (g.result === 'WIN') wins += 1; else if (g.result === 'LOSS') losses += 1;
+  }
+  return { total, wins, losses, average: total ? sum / total : null };
+}
+
+test('with more than 1,000 official picks, Archive, Upset Proof and the Pro reader report one identical lifetime record', async () => {
+  const s = buildStore(NOW);
+  assert.ok(s.preds.length > 1000);
+  const truth = authoritative(s);
+  await withStore(s, {}, async () => {
+    const archive = await algo.getAlgoArchive({ page: 1 });
+    const lastPage = await algo.getAlgoArchive({ page: archive.pages });
+    const tracker = await algo.getAlgoPerformanceProof();
+    const upset = await algo.getAlgoUpsetProof();
+    const pro = await algo.getAlgoRecordTotals(PRO);
+    const rows = await algo.getAlgoRecord(PRO);
+    for (const [name, slice] of [['archive p1', archive.lifetime], ['archive last page', lastPage.lifetime], ['tracker', tracker.lifetime], ['upset proof', upset.official_lifetime], ['pro totals', pro.lifetime]]) {
+      assert.deepEqual(slice, archive.lifetime, `${name} lifetime differs`);
+    }
+    assert.deepEqual([archive.lifetime.locked, archive.lifetime.wins, archive.lifetime.losses, archive.lifetime.no_decision, archive.lifetime.pending, archive.lifetime.priced_decided],
+      [truth.locked, truth.wins, truth.losses, truth.no_decision, truth.pending, truth.priced_decided], 'and it is the database');
+    assert.ok(near(archive.lifetime.net_units, truth.net_units));
+    // the Pro list is the same population, row for row, recounted independently
+    assert.equal(rows.length, truth.locked);
+    assert.equal(new Set(rows.map((r) => r.prediction.id)).size, rows.length);
+    assert.ok(rows.every((r) => r.prediction.locked_at), 'no draft in the Pro record');
+    assert.deepEqual([rows.filter((r) => r.grade?.result === 'WIN').length, rows.filter((r) => r.grade?.result === 'LOSS').length, rows.filter((r) => !r.grade).length], [truth.wins, truth.losses, truth.pending]);
+    assert.deepEqual(pro.model_versions, ['pbe-fight-model-v1', 'pbe-fight-model-v2'], 'every official version is included');
+    // the Upset subset reconciles with independent arithmetic over all >1,000 rows
+    const ut = upsetTruth(s);
+    assert.ok(ut.total > 400, `upset subset ${ut.total}`);
+    assert.deepEqual([upset.total, upset.wins, upset.losses], [ut.total, ut.wins, ut.losses]);
+    assert.ok(near(upset.average_consensus_odds, ut.average));
+    assert.equal(upset.biggest_wins.length, 3);
+    assert.ok(upset.biggest_wins.every((w) => w.result === 'WIN' && w.consensus_odds >= 120));
+  });
+});
+
+test('a correction reconciles identically on every surface', async () => {
+  const s = buildStore(NOW);
+  const target = s.preds.find((p) => Number(p.sample_context.market.pick_consensus_odds) > 0 && authoritative(s).current.get(p.id)?.result === 'LOSS');
+  const read = async () => withStore(s, {}, async () => ({ archive: await algo.getAlgoArchive({ page: 1 }), upset: await algo.getAlgoUpsetProof(), pro: await algo.getAlgoRecordTotals(PRO), tracker: await algo.getAlgoPerformanceProof() }));
+  const before = await read();
+  s.grades.push({ id: 'ffffffff-0000-4000-8000-999999999998', prediction_id: target.id, revision: 2, result: 'WIN', graded_at: new Date(NOW).toISOString(), revision_reason: 'scorecard corrected', source: 'fixture', method: null, graded_by: 'fixture' });
+  const after = await read();
+  for (const k of ['archive', 'pro', 'tracker']) {
+    const slice = (x) => (k === 'archive' ? x.archive.lifetime : k === 'pro' ? x.pro.lifetime : x.tracker.lifetime);
+    assert.deepEqual([slice(after).wins - slice(before).wins, slice(after).losses - slice(before).losses], [1, -1], k);
+  }
+  assert.deepEqual([after.upset.wins - before.upset.wins, after.upset.losses - before.upset.losses, after.upset.total - before.upset.total], [1, -1, 0]);
+  assert.deepEqual(after.upset.official_lifetime, after.archive.lifetime);
+});
+
+test('the Pro reader still refuses a caller without UFC Pro, and an upstream failure is never an empty Pro record', async () => {
+  const s = buildStore(NOW);
+  await withStore(s, {}, async () => {
+    await assert.rejects(() => algo.getAlgoRecord({ pro: false }), algo.ProRequiredError);
+    await assert.rejects(() => algo.getAlgoRecordTotals({ pro: false }), algo.ProRequiredError);
+  });
+  await withStore(s, { fail: (t) => t === 'ufc_model_prediction_grades' }, async () => {
+    await assert.rejects(() => algo.getAlgoRecord(PRO));
+    assert.equal((await algo.getAlgoUpsetProof()).unavailable, true);
+  });
+});
+
+test('record health is aggregates only: no prediction id, no fighter, and an overdue card carries its pending age', async () => {
+  const s = buildStore(NOW);
+  await withStore(s, {}, async () => {
+    const h = await algo.getAlgoRecordHealth();
+    const text = JSON.stringify(h);
+    assert.doesNotMatch(text, /cccccccc-|ffffffff-|Fighter /, 'no pick id or fighter in the health payload');
+    assert.deepEqual([h.state, h.integrity.duplicate_predictions, h.integrity.orphan_grade_predictions], ['FAIL', 0, 1]);
+    assert.ok(h.overdue[0].pending_age_hours >= 48, `overdue implies more than 48h: ${h.overdue[0].pending_age_hours}`);
+    assert.equal(h.oldest_pending_hours, h.overdue[0].pending_age_hours);
+  });
+  const clock = await import('./siteClock.ts');
+  assert.equal(A.SITE_DAY_ROLLOVER_UTC_HOUR, clock.UFC_SITE_ROLLOVER_UTC_HOUR, 'the archive and the site agree on when a day ends');
+  assert.equal(A.pendingAgeHours('2026-09-19', '2026-09-22T05:00:00Z'), 48);
+  assert.equal(A.pendingAgeHours('2026-09-19', '2026-09-22T04:59:00Z'), 47);
+  assert.equal(A.eventStatus({ locked: 2, pending: 2 }, '2026-09-19', '2026-09-21'), 'AWAITING_RESULTS');
+  assert.equal(A.eventStatus({ locked: 2, pending: 2 }, '2026-09-19', '2026-09-22'), 'GRADING_OVERDUE');
 });
