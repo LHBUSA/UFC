@@ -42,8 +42,20 @@ async function pickMedia(name: string) {
 export async function GET() {
   try {
     const body = await getAlgoFreeSample();
-    const media = body.pick?.pick_name ? await pickMedia(body.pick.pick_name) : null;
-    const enriched = body.pick ? { ...body, pick: { ...body.pick, media } } : body;
+    const sourcePicks = Array.isArray(body.picks) && body.picks.length
+      ? body.picks
+      : body.pick
+        ? [body.pick]
+        : [];
+    const picks = await Promise.all(sourcePicks.map(async (pick) => ({
+      ...pick,
+      media: pick.pick_name ? await pickMedia(pick.pick_name) : null,
+    })));
+    const enriched = {
+      ...body,
+      picks,
+      pick: picks[0] || null,
+    };
     return new Response(JSON.stringify(enriched), { status: 200, headers: HEADERS });
   } catch (error) {
     console.error("[ufc-free-sample]", error instanceof Error ? error.message : String(error));
