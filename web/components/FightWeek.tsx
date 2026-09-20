@@ -105,9 +105,10 @@ export function MainEventDesk({ packet, brief }: { packet: FightWeekPacket; brie
 
       <DeskArt brief={brief} event={event} imgs={imgs} framing={framing as Map<string, Framing>} />
 
-      <Read brief={brief} />
-
-      <KeyComparison brief={brief} event={event} />
+      <div className="fw-main-intel-grid">
+        <Read brief={brief} />
+        <KeyComparison brief={brief} event={event} />
+      </div>
 
       {factors.length > 0 && (
         <div className="fw-sec-block">
@@ -128,28 +129,33 @@ export function MainEventDesk({ packet, brief }: { packet: FightWeekPacket; brie
         </div>
       )}
 
-      <div className="fw-sec-block">
-        <div className="fw-h">How they win</div>
-        <div className="fw-win">
-          {[a, b].map((side) => (
-            <div className="fw-win-side" key={side.fighter.id}>
-              <header><span>How {lastName(side.fighter)} wins</span><strong>{side.fighter.name}</strong><b>{fmtRecord(side.fighter)}</b></header>
-              <ul>{side.keys.slice(0, 3).map((k) => <li key={k}>{k}</li>)}</ul>
+      <details className="fw-deep-read">
+        <summary><span>Deep matchup read</span><small>How they win · Fight phase</small></summary>
+        <div className="fw-deep-body">
+          <div className="fw-sec-block">
+            <div className="fw-h">How they win</div>
+            <div className="fw-win">
+              {[a, b].map((side) => (
+                <div className="fw-win-side" key={side.fighter.id}>
+                  <header><span>How {lastName(side.fighter)} wins</span><strong>{side.fighter.name}</strong><b>{fmtRecord(side.fighter)}</b></header>
+                  <ul>{side.keys.slice(0, 3).map((k) => <li key={k}>{k}</li>)}</ul>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {phases && heads && (
-        <div className="fw-sec-block">
-          <div className="fw-h">Fight phase</div>
-          <ol className="fw-phase">
-            <li><span className="ph">Early</span><strong>{heads.early}</strong><p>{phases.early}</p></li>
-            <li><span className="ph">Middle</span><strong>{heads.middle}</strong><p>{phases.middle}</p></li>
-            <li><span className="ph">Late</span><strong>{heads.late}</strong><p>{phases.late}</p></li>
-          </ol>
+          {phases && heads && (
+            <div className="fw-sec-block">
+              <div className="fw-h">Fight phase</div>
+              <ol className="fw-phase">
+                <li><span className="ph">Early</span><strong>{heads.early}</strong><p>{phases.early}</p></li>
+                <li><span className="ph">Middle</span><strong>{heads.middle}</strong><p>{phases.middle}</p></li>
+                <li><span className="ph">Late</span><strong>{heads.late}</strong><p>{phases.late}</p></li>
+              </ol>
+            </div>
+          )}
         </div>
-      )}
+      </details>
 
       <div className="fw-foot">
         <div className="fw-coverage"><i />{full ? "Full packet" : "Limited packet"}<small> · {brief.coverage.replace(/^(Full|Limited) packet: /, "")}</small></div>
@@ -219,6 +225,45 @@ export function MatchupIntel({ bout, brief, event, imgs, roundCoverage }: { bout
   );
 }
 
+
+/* ---- flagship scan tile ------------------------------------------------
+ * Fight Week is a card overview first. Deep reads stay on the matchup page;
+ * this surface gives identity, records and one evidence-led signal. */
+function FightWeekBoutTile({ bout, brief, event, imgs, compact = false }: {
+  bout: Bout;
+  brief?: DeskBrief | null;
+  event: Event;
+  imgs: Portraits;
+  compact?: boolean;
+}) {
+  const read = brief ? compactRead(brief) : null;
+  const top = brief ? thingsThatMatter(brief, 1)[0] : null;
+  const signal = top ? `${top.label}: ${top.hook}` : read?.read || (brief ? "Verified matchup packet" : "Card intelligence pending");
+  return (
+    <article id={`bout-${bout.id}`} className={`fw-bout-tile${compact ? " compact" : ""}`}>
+      <div className="fw-bout-tile-meta">
+        <span>{weightClassLabel(bout.weight_class, bout.is_womens)}{bout.is_title ? " · Title" : ""}</span>
+        <small>{brief ? (brief.tier === "watch" ? "Limited packet" : "Full packet") : "Card only"}</small>
+      </div>
+      <div className="fw-bout-tile-fighters">
+        <Link href={`/fighters/${fighterSlug(bout.fighter_a)}`} className="fw-bout-side a">
+          <Avatar f={bout.fighter_a} img={imgs.get(bout.fighter_a.id)} size={compact ? 44 : 52} />
+          <span><strong>{bout.fighter_a.name}</strong><small>{fmtRecord(bout.fighter_a)}{brief?.a.rank ? ` · ${brief.a.rank}` : ""}</small></span>
+        </Link>
+        <span className="fw-bout-vs">VS</span>
+        <Link href={`/fighters/${fighterSlug(bout.fighter_b)}`} className="fw-bout-side b">
+          <Avatar f={bout.fighter_b} img={imgs.get(bout.fighter_b.id)} size={compact ? 44 : 52} />
+          <span><strong>{bout.fighter_b.name}</strong><small>{fmtRecord(bout.fighter_b)}{brief?.b.rank ? ` · ${brief.b.rank}` : ""}</small></span>
+        </Link>
+      </div>
+      <div className="fw-bout-tile-signal">{signal}</div>
+      <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`} className="fw-bout-tile-cta">
+        Read matchup <span aria-hidden="true">→</span>
+      </Link>
+    </article>
+  );
+}
+
 /* ---- compact prelim row with expand ----------------------------------- */
 export function PrelimRow({ bout, brief, event, imgs, roundCoverage }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits; roundCoverage?: { rounds: number; bothCorners: boolean } | null }) {
   const top = brief ? thingsThatMatter(brief, 1)[0] : null;
@@ -277,76 +322,134 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
   const url = archive ? `${SITE.url}/pregame/${slug}` : `${SITE.url}/fight-week`;
   const grid = (list: Bout[]) => <div className="fw-grid">{list.map((b) => <MatchupIntel key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} roundCoverage={packet.roundCoverage?.get(b.id) || null} />)}</div>;
 
+  const leadVideo = videos[0] || null;
+  const watch = mainBrief ? (fightRead(mainBrief)[0] || whatToWatch(mainBrief)[0] || null) : null;
+  const eventHref = `/events/${eventSlug(event)}`;
+
   return (
-    <div className="wrap fw-page">
-      <Breadcrumbs items={crumbs} />
-      <header className="fw-head">
-        <div className="fw-head-main">
-          <div className="fw-kicker"><i className={liveNight ? "live" : ""} />Pregame Desk</div>
-          <div className="fw-kicker-2">{done ? "Pregame archive" : "Fight week"}{dwcs ? " · Contender Series" : ""}</div>
-          <h1>{event.name}</h1>
-          <div className="fw-meta">
-            <span><time dateTime={event.event_date || undefined}>{fmtDate(event.event_date, { weekday: "long", month: "long", day: "numeric" })}</time></span>
-            <span>{locationLine(event) || "Venue TBA"}</span>
-            <span>{plural(live.length, "announced bout")}{main ? ` · ${weightClassLabel(main.weight_class, main.is_womens)}${main.is_title ? " title" : ""} main event` : ""}</span>
+    <div className="wrap fw-page fw-flagship">
+      {archive && <Breadcrumbs items={crumbs} />}
+
+      <header className="fw-flagship-hero">
+        <div className="fw-flagship-hero-copy">
+          <div className="fw-flagship-mark">UFC</div>
+          <div className="fw-flagship-title">Fight <span>Week</span></div>
+          <div className="fw-flagship-sub">
+            {main ? `${weightClassLabel(main.weight_class, main.is_womens)} main event` : "UFC fight intelligence"}
           </div>
-          {done && <div className="fw-archive-note">This is the pregame read as it stood before the card, kept as a permanent record. Fighter records are shown as currently stored; archived form is limited to results before the event date. Results and round stats live on the event page.</div>}
-        </div>
-        <aside className="fw-head-side">
-          <div className="fw-updated"><span>Intelligence updated</span><b>{fmtStamp(updated)}</b><small>Built from <Link href="/learn/fight-dna">Fight DNA</Link> + verified fight record</small></div>
-          <div className="fw-countdown"><b>{countdown}</b></div>
-          <div className="fw-actions">
-            <Link href={`/events/${eventSlug(event)}`} className="btn gold">{done ? "Results & full card" : "Full card"}</Link>
-            <a href={dwcs ? UFC_OFFICIAL.contenderSeries : UFC_OFFICIAL.events} className="btn" target="_blank" rel="noopener">Official UFC ↗</a>
+          <div className="fw-flagship-meta">
+            <span><time dateTime={event.event_date || undefined}>{fmtDate(event.event_date, { weekday: "short", month: "short", day: "numeric" })}</time></span>
+            <span>{locationLine(event) || "Venue TBA"}</span>
+            <span>{plural(live.length, "bout")}</span>
+          </div>
+          <h1>{event.name}</h1>
+          <p className="fw-flagship-dek">Real analysis. Smarter reads. A deeper understanding of the card.</p>
+          <div className="fw-flagship-actions">
+            <Link href={eventHref} className="btn gold">View full card →</Link>
+            <Link href="/algo/card" className="btn">PBE Picks</Link>
             {videos.length ? <a href="#fw-video" className="btn">Official video</a> : <a href={UFC_OFFICIAL.youtube} className="btn" target="_blank" rel="noopener">Official video ↗</a>}
           </div>
-        </aside>
+        </div>
+        <div className="fw-flagship-hero-side">
+          <div className="fw-flagship-status"><i className={liveNight ? "live" : ""} /><span>{countdown}</span><b>{fmtStamp(updated)}</b></div>
+          <div className="fw-flagship-mantra">Same fights.<br />Deeper insights.</div>
+        </div>
       </header>
 
       <FightNavigator live={live} />
 
       {locked && <ProPreview feature="fight_week" access={{ signedIn: locked.signedIn }} returnPath={locked.returnPath} />}
 
-      {main && (mainBrief ? <div className="fw-sec"><MainEventDesk packet={packet} brief={mainBrief} /></div> : (
+      {main && (mainBrief ? <div className="fw-sec fw-main-wrap"><MainEventDesk packet={packet} brief={mainBrief} /></div> : (
         <section id="main-event" className="fw-sec"><div className="fw-sec-head"><div><div className="eyebrow">Main event</div><h2>{main.fighter_a.name} vs {main.fighter_b.name}</h2></div></div>{grid([main])}</section>
       ))}
 
-      {mainCard.length > 0 && (
-        <section id="main-card" className="fw-sec">
-          <div className="fw-sec-head"><div><div className="eyebrow">{plural(mainCard.length, "matchup")} · scan the card</div><h2>Main card</h2></div><small>One matchup read. The signals that matter.</small></div>
-          {grid(mainCard)}
-        </section>
-      )}
+      <div className="fw-flagship-lower">
+        <main className="fw-card-column">
+          {mainCard.length > 0 && (
+            <section id="main-card" className="fw-sec fw-card-section">
+              <div className="fw-sec-head flagship">
+                <div><div className="eyebrow">Main card</div><h2>Main card</h2></div>
+                <small>{plural(mainCard.length + (main ? 1 : 0), "bout")} · scan the card</small>
+              </div>
+              <div className="fw-bout-grid">{mainCard.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} />)}</div>
+            </section>
+          )}
 
-      {unpositioned.length > 0 && (
-        <section id="announced" className="fw-sec">
-          <div className="fw-sec-head"><div><div className="eyebrow">Announced bouts</div><h2>Card position pending</h2></div><small>{plural(unpositioned.length, "matchup")}</small></div>
-          {grid(unpositioned)}
-        </section>
-      )}
+          {unpositioned.length > 0 && (
+            <section id="announced" className="fw-sec fw-card-section">
+              <div className="fw-sec-head flagship"><div><div className="eyebrow">Announced bouts</div><h2>Card position pending</h2></div><small>{plural(unpositioned.length, "matchup")}</small></div>
+              <div className="fw-bout-grid">{unpositioned.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} compact />)}</div>
+            </section>
+          )}
 
-      {prelims.length > 0 && (
-        <section id="prelims" className="fw-sec">
-          <div className="fw-sec-head"><div><div className="eyebrow">Compact</div><h2>Prelims</h2></div><small>{plural(prelims.length, "bout")} · expand for the read</small></div>
-          <div className="fw-prelims">{prelims.map((b) => <PrelimRow key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} roundCoverage={packet.roundCoverage?.get(b.id) || null} />)}</div>
-        </section>
-      )}
+          {prelims.length > 0 && (
+            <section id="prelims" className="fw-sec fw-card-section">
+              <div className="fw-sec-head flagship">
+                <div><div className="eyebrow">Prelims</div><h2>Prelims</h2></div>
+                <small>{plural(prelims.length, "bout")} · quick intelligence</small>
+              </div>
+              <div className="fw-bout-grid prelims">{prelims.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} compact />)}</div>
+            </section>
+          )}
+        </main>
+
+        <aside className="fw-event-rail">
+          <section className="fw-rail-card fw-rail-event">
+            <div className="fw-h">Event snapshot</div>
+            <dl>
+              <div><dt>Date</dt><dd>{fmtDate(event.event_date, { weekday: "short", month: "short", day: "numeric" })}</dd></div>
+              <div><dt>Location</dt><dd>{locationLine(event) || "Venue TBA"}</dd></div>
+              <div><dt>Card</dt><dd>{plural(live.length, "announced bout")}</dd></div>
+              <div><dt>Updated</dt><dd>{fmtStamp(updated)}</dd></div>
+            </dl>
+            <Link href={eventHref}>Open event page →</Link>
+          </section>
+
+          {leadVideo && (
+            <section className="fw-rail-card fw-rail-video">
+              <div className="fw-h">Official event video</div>
+              <a href="#fw-video" className="fw-rail-video-thumb" aria-label="Open official fight-week video">
+                {leadVideo.thumbnail_url ? <img src={leadVideo.thumbnail_url} alt="" loading="lazy" decoding="async" /> : <span className="fw-rail-play">▶</span>}
+                <span className="fw-rail-play">▶</span>
+              </a>
+              <strong>{leadVideo.title}</strong>
+              <small>Official channel · embedded below</small>
+            </section>
+          )}
+
+          {watch && (
+            <section className="fw-rail-card fw-rail-watch">
+              <div className="fw-h">What to watch for</div>
+              <p>{watch}</p>
+            </section>
+          )}
+
+          <section className="fw-rail-card fw-rail-brand">
+            <span>Fight intelligence</span>
+            <strong>Same fights.<br />Deeper insights.</strong>
+            <small>PropBetEdge UFC</small>
+          </section>
+        </aside>
+      </div>
 
       {videos.length > 0 && (
-        <section id="fw-video" className="fw-sec fw-video">
-          <VideoRail variant="timeline" phase={done ? "post" : "pre"} videos={videos} title={done ? "Official video from this card" : "Fight-week video"} eyebrow="Secondary · official channels · poster-first" note="Embedded, Countdown, press conference, media day, weigh-in and faceoff clips from allowlisted official channels · embedded from YouTube, not hosted by PropBetEdge · no endorsement implied" />
+        <section id="fw-video" className="fw-sec fw-video fw-video-secondary">
+          <VideoRail variant="timeline" phase={done ? "post" : "pre"} videos={videos} title={done ? "Official video from this card" : "Fight-week video"} eyebrow="Official channels" note="Embedded from YouTube, not hosted by PropBetEdge · no endorsement implied" />
         </section>
       )}
 
-      <footer className="fw-sources">
+      <footer className="fw-sources fw-flagship-sources">
         <div>
-          <h4>Sources in this packet</h4>
+          <h4>Sources</h4>
           <ul>{packet.sources.map((s) => <li key={s}>{s}</li>)}</ul>
         </div>
         <div>
-          <h4>Intelligence updated {fmtStamp(updated)}</h4>
-          <p>Pregame Desk is evidence-led commentary, not a pick generator. Odds, model output, injuries, camps and referee assignments appear only when a verified source exists. Missing facts stay unpublished instead of being guessed. {packet.rankingsDate ? `Rankings reflect the official snapshot dated ${packet.rankingsDate}.` : ""}</p>
+          <h4>Last updated</h4>
+          <p><strong>{fmtStamp(updated)}</strong></p>
+          <p>Pregame Desk is evidence-led commentary, not a pick generator. Missing facts stay unpublished instead of being guessed. {packet.rankingsDate ? `Rankings reflect the official snapshot dated ${packet.rankingsDate}.` : ""}</p>
         </div>
+        <div className="fw-source-mantra">Bet smarter.<br />Watch deeper.<br />Know more.</div>
       </footer>
 
       <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${url}#event`, name: event.name, startDate: event.event_date, endDate: event.event_date, sport: "Mixed Martial Arts", description: `${event.name} pregame intelligence: ${plural(live.length, "bout")}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(event)}/opengraph-image`, location: event.venue || event.city ? { "@type": "Place", name: event.venue || event.city, address: { "@type": "PostalAddress", addressLocality: event.city, addressRegion: event.region, addressCountry: event.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url, subjectOf: videos.length ? videoJsonLd(curatedEventVideos(videos, done ? "post" : "pre")) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: event.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, event)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
