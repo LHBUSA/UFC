@@ -292,7 +292,7 @@ export type AlgoFreeSample = {
  * card, historical rows or any account-only payload. Locked calls keep their
  * lock-time market; provisional calls require a market that is still current. */
 export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
-  type SampleBout = { id: string; fighter_a: { id: string; name: string }; fighter_b: { id: string; name: string }; event: { id: string; name: string; event_date: string } };
+  type SampleBout = { id: string; card_position: string | null; bout_order: number | null; fighter_a: { id: string; name: string }; fighter_b: { id: string; name: string }; event: { id: string; name: string; event_date: string } };
   type SampleEval = { bout_id: string; decision: string; confidence: AlgoBoutView["confidence"]; pick_fighter_id: string | null; pick_probability: number | null; market: AlgoBoutView["market"]; evaluated_at: string };
   type SamplePred = { bout_id: string; locked_at: string | null; pick_fighter_id: string; pick_probability: number | string; market_implied_prob_pick: number | string | null; model_edge_pts: number | string | null; sample_context: { confidence?: AlgoBoutView["confidence"]; market?: AlgoBoutView["market"] } | null };
   type SampleResult = { bout_id: string };
@@ -304,7 +304,7 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
   const today = ufcSiteDate(Date.parse(generated_at));
   const until = new Date(Date.now() + 14 * 86400e3).toISOString().slice(0, 10);
   const bouts = await rest<SampleBout>(
-    `ufc_bouts?select=id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events!inner(id,name,event_date)&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`
+    `ufc_bouts?select=id,card_position,bout_order,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events!inner(id,name,event_date)&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`
   );
   if (!bouts.length) return empty();
   const ids = inList(bouts.map((b) => b.id));
@@ -316,12 +316,33 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
   const boutBy = new Map(bouts.map((b) => [b.id, b]));
   const evalBy = new Map(evals.map((e) => [e.bout_id, e]));
   const completed = new Set(results.map((r) => r.bout_id));
+
+  // Never expose the event headliner on the public free sampler. The canonical
+  // card order runs from prelims into the main event, so the highest bout_order
+  // is the headliner. If order is missing, fail closed by excluding the first
+  // row for that event from this desc-ordered query rather than risk leaking it.
+  const headlinerBoutIds = new Set<string>();
+  const byEvent = new Map<string, SampleBout[]>();
+  for (const bout of bouts) {
+    const rows = byEvent.get(bout.event.id) || [];
+    rows.push(bout);
+    byEvent.set(bout.event.id, rows);
+  }
+  for (const rows of byEvent.values()) {
+    const explicit = rows.find((bout) => /main[ _-]?event/i.test(String(bout.card_position || "")));
+    const ordered = rows
+      .filter((bout) => Number.isFinite(Number(bout.bout_order)))
+      .sort((a, b) => Number(b.bout_order) - Number(a.bout_order));
+    const headliner = explicit || ordered[0] || rows[0] || null;
+    if (headliner) headlinerBoutIds.add(headliner.id);
+  }
+
   const candidates = bouts.flatMap((bout) => {
     // The public sample is a current-call surface, not a receipt ledger. As
     // soon as a verified result lands, retire that bout and advance to the
     // next eligible pick. Completed picks remain permanently visible in the
     // public track record instead of occupying the live sample.
-    if (completed.has(bout.id)) return [];
+    if (completed.has(bout.id) || headlinerBoutIds.has(bout.id)) return [];
     const p = preds.find((row) => row.bout_id === bout.id) || null;
     const e = evalBy.get(bout.id) || null;
     const locked = Boolean(p?.locked_at);
