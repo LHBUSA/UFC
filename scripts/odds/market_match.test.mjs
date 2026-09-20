@@ -25,7 +25,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { normName, resolveOutcome, observationKey, OBS_CONFLICT_COLUMNS, buildIndex, stripNickname } from './market_match.mjs';
+import { normName, resolveOutcome, observationKey, OBS_CONFLICT_COLUMNS, buildIndex, stripNickname, matchBout } from './market_match.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const FIX = path.join(HERE, 'fixtures');
@@ -84,6 +84,22 @@ console.log(`corpus: ${corpus.length} names · exact ${exact} · alias ${alias} 
   const bout = [{ id: 'a', name: 'Fighter One' }, { id: 'b', name: 'Fighter Two' }];
   const idx = new Map([['the champ', new Set(['a', 'b'])]]);
   eq(resolveOutcome('The Champ', bout, idx).status, 'ambiguous', 'an alias matching both corners must fail closed');
+}
+
+/* Provider spacing drift: canonical JooSang Yoo vs source Joo Sang Yoo.
+ * This exact production miss left UFC 331 odds unresolved for four days. The
+ * compact key may help only when the actual bout still resolves uniquely. */
+{
+  const yoo = { id: 'yoo', name: 'JooSang Yoo' };
+  const aswell = { id: 'aswell', name: 'Michael Aswell' };
+  const idx = buildIndex([yoo, aswell], []);
+  const bout = { id: 'ufc331', a: aswell, b: yoo, eventDate: '2026-09-19' };
+  const m = matchBout({ home_team: 'Joo Sang Yoo', away_team: 'Michael Aswell', commence_time: '2026-09-19T23:45:00Z' }, [bout], idx);
+  eq(m.status, 'ok', 'joined/split given-name spacing resolves the actual bout');
+  eq(m.bout?.id, 'ufc331', 'spacing repair resolves the correct bout');
+  const o = resolveOutcome('Joo Sang Yoo', [aswell, yoo], idx);
+  eq(o.status, 'ok', 'spacing repair resolves the outcome inside the bout');
+  eq(o.fighterId, 'yoo', 'spacing repair never changes fighter identity');
 }
 
 /* ---- normalisation keeps identity ------------------------------------- */
