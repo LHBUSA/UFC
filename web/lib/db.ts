@@ -3,6 +3,7 @@ import { splitCard, type CardChange, type CardObservation, type CardStatusEvent 
 import { prefersEspnDisplay, preferredDisplayFighterIds } from "@/lib/displayPortraitPolicy";
 import { espnVerifiedPortrait } from "@/lib/espnPortraitGate";
 import { pickStoredPortraits } from "@/lib/portraitSelection";
+import { ufcSiteDate } from "@/lib/siteClock";
 /* Server-only data access. PostgREST over fetch with the service-role key
  * (RLS has no anon policies by design). Every reader is wrapped so that a
  * missing env var, a table that does not exist yet, or a network failure
@@ -210,8 +211,8 @@ export function isContenderSeries(name: string): boolean {
 }
 const NOT_DWCS = "&name=not.ilike.*Contender%20Series*&name=not.ilike.*Road%20to%20UFC*";
 
-export function today(): string {
-  return new Date().toISOString().slice(0, 10);
+export function today(now = Date.now()): string {
+  return ufcSiteDate(now);
 }
 
 type RawBout = Omit<Bout, "result"> & { result: Result[] | Result | null };
