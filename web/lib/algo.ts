@@ -253,34 +253,42 @@ export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
   };
 }
 
+export type AlgoFreeSamplePick = {
+  slot: "BEST_BET" | "UNDERDOG_VALUE" | "NEXT_BEST";
+  lifecycle: "LOCKED" | "PROVISIONAL";
+  event_name: string;
+  event_date: string;
+  matchup: string;
+  pick_name: string;
+  opponent_name: string;
+  model_probability: number;
+  consensus_odds: number;
+  best_odds: number | null;
+  best_book: string | null;
+  market_probability: number | null;
+  edge_pts: number | null;
+  confidence: AlgoBoutView["confidence"];
+  observed_at: string | null;
+  is_upset_pick: boolean;
+  upset_rank: number | null;
+  is_top_upset: boolean;
+};
+
 export type AlgoFreeSample = {
   contract: "pbe-free-sample-v1";
   sport: "UFC";
   generated_at: string;
-  pick: null | {
-    lifecycle: "LOCKED" | "PROVISIONAL";
-    event_name: string;
-    event_date: string;
-    matchup: string;
-    pick_name: string;
-    opponent_name: string;
-    model_probability: number;
-    consensus_odds: number;
-    best_odds: number | null;
-    best_book: string | null;
-    market_probability: number | null;
-    edge_pts: number | null;
-    confidence: AlgoBoutView["confidence"];
-    observed_at: string | null;
-    is_upset_pick: boolean;
-    upset_rank: number | null;
-    is_top_upset: boolean;
-  };
+  /** Backward-compatible primary pick: always the BEST_BET slot when available. */
+  pick: AlgoFreeSamplePick | null;
+  /** Public sampler: best bet plus a qualifying +money underdog when one exists.
+   * If no underdog qualifies, the second slot is simply the next-best model call. */
+  picks: AlgoFreeSamplePick[];
+  underdog_available: boolean;
   full_product_url: string;
 };
 
-/** One deliberately small public top-of-funnel call. Never returns more than
- * one fighter selection and never exposes feature vectors, the rest of the
+/** Deliberately small public top-of-funnel sampler. Never returns more than
+ * two fighter selections and never exposes feature vectors, the rest of the
  * card, historical rows or any account-only payload. Locked calls keep their
  * lock-time market; provisional calls require a market that is still current. */
 export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
@@ -290,7 +298,7 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
   type SampleResult = { bout_id: string };
 
   const generated_at = new Date().toISOString();
-  const empty = (): AlgoFreeSample => ({ contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: null, full_product_url: "https://ufc.propbetedge.ai/algo" });
+  const empty = (): AlgoFreeSample => ({ contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: null, picks: [], underdog_available: false, full_product_url: "https://ufc.propbetedge.ai/algo" });
   if (!(await algoLive())) return empty();
 
   const today = ufcSiteDate(Date.parse(generated_at));
@@ -371,7 +379,33 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
       return (b.edge_pts ?? -999) - (a.edge_pts ?? -999);
     });
 
-  return { contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: ranked[0] ?? null, full_product_url: "https://ufc.propbetedge.ai/algo" };
+  // Public board slots:
+  // 1) BEST BET is the strongest current model call.
+  // 2) UNDERDOG VALUE is the strongest distinct +money market-opposite call
+  //    with positive model edge. We never manufacture a dog just to fill space.
+  //    If none qualifies, NEXT BEST keeps the sampler at two distinct calls.
+  const bestBet = ranked[0] ? { ...ranked[0], slot: "BEST_BET" as const } : null;
+  const bestKey = bestBet ? `${bestBet.event_name}|${bestBet.pick_name}|${bestBet.opponent_name}` : null;
+  const distinct = ranked.filter((c) => `${c.event_name}|${c.pick_name}|${c.opponent_name}` !== bestKey);
+  const underdog = distinct
+    .filter((c) => c.is_upset_pick && c.consensus_odds > 0 && (c.edge_pts ?? 0) > 0)
+    .sort((a, b) => (b.edge_pts ?? -999) - (a.edge_pts ?? -999) || b.consensus_odds - a.consensus_odds)[0] || null;
+  const second = underdog
+    ? { ...underdog, slot: "UNDERDOG_VALUE" as const }
+    : distinct[0]
+      ? { ...distinct[0], slot: "NEXT_BEST" as const }
+      : null;
+  const picks: AlgoFreeSamplePick[] = [bestBet, second].filter((p): p is AlgoFreeSamplePick => Boolean(p));
+
+  return {
+    contract: "pbe-free-sample-v1",
+    sport: "UFC",
+    generated_at,
+    pick: bestBet,
+    picks,
+    underdog_available: Boolean(underdog),
+    full_product_url: "https://ufc.propbetedge.ai/algo",
+  };
 }
 
 /** PBE Algo is issuing official calls: the release is registered live AND the
