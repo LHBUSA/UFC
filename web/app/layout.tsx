@@ -20,6 +20,7 @@ import "./model.css";
 import "./fighter-dna-polish.css";
 import "./matchup-dna-polish.css";
 import "./fightweek-roster-polish.css";
+import "./fightweek-flagship.css";
 import "./home-fightweek-poster.css";
 import "./hero-premium.css";
 import "./footer-network-polish.css";
