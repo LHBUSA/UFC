@@ -13,6 +13,7 @@ import { cardPositionLabel, fmtDate, fmtRecord, locationLine, plural, weightClas
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { SITE } from "@/lib/site";
 import { ProPreview } from "@/components/ProPreview";
+import { eventSnapshot, watchForNote } from "@/lib/fightWeekSnapshot";
 
 /* Fight Week — Pregame Desk as a product surface, presented as a premium
  * editorial intelligence brief.
@@ -321,8 +322,11 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
   const grid = (list: Bout[]) => <div className="fw-grid">{list.map((b) => <MatchupIntel key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} roundCoverage={packet.roundCoverage?.get(b.id) || null} />)}</div>;
 
   const leadVideo = videos[0] || null;
-  const watch = mainBrief ? (fightRead(mainBrief)[0] || whatToWatch(mainBrief)[0] || null) : null;
+  /* The desk's own note for this card when one is on file; otherwise the read
+   * the packet derives. */
+  const watch = watchForNote(event.id) || (mainBrief ? (fightRead(mainBrief)[0] || whatToWatch(mainBrief)[0] || null) : null);
   const eventHref = `/events/${eventSlug(event)}`;
+  const snapshot = eventSnapshot({ event, stored: packet.broadcast, bouts: live.length, updated, done });
 
   return (
     <div className="wrap fw-page fw-flagship">
@@ -393,15 +397,15 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
         </main>
 
         <aside className="fw-event-rail">
-          <section className="fw-rail-card fw-rail-event">
-            <div className="fw-h">Event snapshot</div>
+          <section className="fw-rail-card fw-rail-event" aria-labelledby="fw-rail-event-h">
+            <div className="fw-h" id="fw-rail-event-h">Event snapshot</div>
             <dl>
-              <div><dt>Date</dt><dd>{fmtDate(event.event_date, { weekday: "short", month: "short", day: "numeric" })}</dd></div>
-              <div><dt>Location</dt><dd>{locationLine(event) || "Venue TBA"}</dd></div>
-              <div><dt>Card</dt><dd>{plural(live.length, "announced bout")}</dd></div>
-              <div><dt>Updated</dt><dd>{fmtStamp(updated)}</dd></div>
+              {snapshot.rows.map((r) => <div key={r.label}><dt>{r.label}</dt><dd>{r.value}</dd></div>)}
             </dl>
-            <Link href={eventHref}>Open event page →</Link>
+            <div className="fw-rail-links">
+              {snapshot.watch && <a href={snapshot.watch.href} className="primary" target="_blank" rel="noopener">{snapshot.watch.label} <span aria-hidden="true">→</span></a>}
+              <Link href={eventHref}>Open event page <span aria-hidden="true">→</span></Link>
+            </div>
           </section>
 
           {leadVideo && (
@@ -423,11 +427,22 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
             </section>
           )}
 
-          <section className="fw-rail-card fw-rail-brand">
+          {/* Conversion slot: only a reader without Pro is sold Pro. */}
+          {locked && (
+            <section className="fw-rail-card fw-rail-pro" aria-labelledby="fw-rail-pro-h">
+              <div className="fw-h">PBE Pro</div>
+              <strong id="fw-rail-pro-h">Unlock deeper fight intelligence.</strong>
+              <p>Get premium picks, deeper matchup reads, and full fight-week tools.</p>
+              <Link href="/pro" className="btn gold">Go Pro <span aria-hidden="true">→</span></Link>
+            </section>
+          )}
+
+          <Link href={locked ? "/pro" : "/algo/card"} className="fw-rail-card fw-rail-brand">
             <span>Fight intelligence</span>
             <strong>Same fights.<br />Deeper insights.</strong>
-            <small>PropBetEdge UFC</small>
-          </section>
+            <p>{locked ? "Premium UFC analysis, picks, and fight-week tools." : "Your Pro picks, reads and fight-week tools for this card."}</p>
+            <b>{locked ? "Explore Pro" : "Open PBE Picks"} <i aria-hidden="true">→</i></b>
+          </Link>
         </aside>
       </div>
 

@@ -76,7 +76,7 @@ export function PageHead({ eyebrow, title, lede, crumbs, children }: { eyebrow?:
 /* ---- fighter imagery --------------------------------------------------- */
 export function Avatar({ f, img, size = 46, className = "" }: { f: Pick<Fighter, "name">; img?: PortraitSet | null; size?: number; className?: string }) {
   return (
-    <span className={`avatar ${className}`} style={{ width: size, height: size, fontSize: size }} aria-hidden="true">
+    <span className={`avatar${img ? "" : " ph"} ${className}`} style={{ width: size, height: size, fontSize: size }} aria-hidden="true">
       {img ? <img src={img.thumb} alt="" width={size} height={size} loading="lazy" decoding="async" /> : (
         <>
           <svg viewBox="0 0 64 64"><polygon points={OCTAGON} fill="none" stroke="#d4af37" strokeWidth="2" strokeLinejoin="round" /></svg>

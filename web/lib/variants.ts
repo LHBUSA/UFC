@@ -36,7 +36,7 @@ export type Variant = {
   objectPosition: string;
   width: number;
   height: number;
-  mode: "cover" | "staged" | "badge";
+  mode: "cover" | "staged" | "badge" | "fitted";
   confidence: "high" | "medium" | "low";
   slot: ArtSlot;
   source_url: string | null;
@@ -81,10 +81,12 @@ export function pickVariant(img: PortraitSet | null | undefined, slot: ArtSlot, 
 
   /* Art-directed derivative for this slot, when the framing run produced one. */
   const derivs = framing?.derivatives || null;
+  const fitted = slot === "desk" && isTightSource(framing);
   if (derivs) {
     for (const key of DERIVATIVE_PREFERENCE[slot]) {
       const d = derivs[key];
       if (d?.key) {
+        if (fitted) return { ...base, src: mediaUrl(d.key), objectPosition: "50% 0%", width: d.w || 800, height: d.h || 1000, mode: "fitted", confidence: "medium" };
         const focal = d.focal ? `${pct(d.focal.x)} ${pct(d.focal.y)}` : SLOT_DEFAULT_FOCAL[slot];
         return { ...base, src: mediaUrl(d.key), objectPosition: focal, width: d.w || 800, height: d.h || 1000, mode: d.mode === "staged" ? "staged" : "cover", confidence: framing?.framing_status === "ok" ? "high" : "medium" };
       }
@@ -96,7 +98,19 @@ export function pickVariant(img: PortraitSet | null | undefined, slot: ArtSlot, 
   const conf: Variant["confidence"] = framing?.framing_status === "ok" ? "high" : framing?.framing_status === "no_face" ? "low" : "medium";
   const src = slot === "avatar" ? img.thumb : slot === "hero" ? img.portrait : img.card;
   const size = slot === "avatar" ? { width: 200, height: 200 } : slot === "hero" ? { width: 1200, height: 1500 } : { width: 800, height: 1000 };
+  if (fitted) return { ...base, src, objectPosition: "50% 0%", ...size, mode: "fitted", confidence: "medium" };
   return { ...base, src, objectPosition: focal, ...size, mode: "cover", confidence: conf };
+}
+
+/* A TIGHT source: the head already spans most of the frame (a cropped video
+ * still, a passport-style headshot). Cover-cropping it into a panel wider than
+ * the photo can only zoom further in and cut the hair, so the desk panel fits
+ * the whole photo instead, anchored centre-top. Measured from the detected
+ * head box; an unmeasured photo is never called tight. */
+export const TIGHT_FACE_WIDTH = 0.42;
+export function isTightSource(framing?: Framing | null): boolean {
+  const w = framing?.face_box?.w;
+  return w != null && Number(w) >= TIGHT_FACE_WIDTH;
 }
 
 /* Composition decision for a two-fighter module. */

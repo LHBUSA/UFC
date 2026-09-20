@@ -232,7 +232,8 @@ main { flex: 1; }
 .avatar { position: relative; flex: none; border-radius: 50%; overflow: hidden; background: var(--pbe-ink-3); border: 1px solid var(--pbe-line-strong); display: grid; place-items: center; color: var(--pbe-gold); font: 700 .38em/1 var(--pbe-font-display); letter-spacing: .02em; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 .avatar svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .5; }
-.avatar span { position: relative; }
+/* The inline font-size (the avatar's own size) beats the .38em in the shorthand above, so the monogram is scaled here. */
+.avatar span { position: relative; font-size: .38em; }
 .portrait { position: relative; overflow: hidden; border-radius: var(--r-lg); background: linear-gradient(180deg, var(--pbe-ink-3), var(--pbe-ink-4)); border: 1px solid var(--pbe-line-strong); aspect-ratio: 4 / 5; }
 .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 .portrait .fallback { position: absolute; inset: 0; display: grid; place-items: center; }

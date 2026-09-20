@@ -666,8 +666,12 @@
 }
 
 .fw-rail-card .fw-h {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   color: var(--fw-gold);
+}
+
+.fw-rail-event {
+  padding: 18px 18px 16px;
 }
 
 .fw-rail-event dl {
@@ -678,32 +682,82 @@
 
 .fw-rail-event dl > div {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  gap: 10px;
-  padding: 9px 0;
-  border-top: 1px solid rgba(255,255,255,.065);
+  grid-template-columns: 78px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,.06);
 }
 
 .fw-rail-event dt {
   color: #817b72;
-  font: 650 8px/1.25 var(--pbe-font-data);
-  letter-spacing: .09em;
+  font: 650 8px/1.4 var(--pbe-font-data);
+  letter-spacing: .1em;
   text-transform: uppercase;
 }
 
 .fw-rail-event dd {
   margin: 0;
-  color: #d2cbc0;
-  font: 650 10px/1.35 var(--pbe-font-data);
+  color: #ded7cb;
+  font: 650 11px/1.4 var(--pbe-font-data);
+  text-wrap: balance;
 }
 
-.fw-rail-event > a {
-  display: inline-flex;
-  margin-top: 11px;
-  color: var(--fw-gold);
-  font: 750 9px/1 var(--pbe-font-data);
-  letter-spacing: .08em;
+/* The two facts a reader came for lead the hierarchy; the stamp recedes. */
+.fw-rail-event dl > div:first-child dd {
+  color: var(--fw-paper);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.fw-rail-event dl > div:last-child dd {
+  color: #8f897f;
+  font-weight: 600;
+}
+
+.fw-rail-links {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(212,175,55,.2);
+}
+
+.fw-rail-links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 9px;
+  color: #d2cbc0;
+  font: 750 9px/1.2 var(--pbe-font-data);
+  letter-spacing: .09em;
   text-transform: uppercase;
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+
+.fw-rail-links a.primary {
+  border-color: rgba(212,175,55,.5);
+  color: var(--fw-gold);
+  background: rgba(212,175,55,.07);
+}
+
+.fw-rail-links a:hover,
+.fw-rail-links a:focus-visible {
+  border-color: rgba(212,175,55,.7);
+  color: #fff074;
+  background: rgba(212,175,55,.1);
+}
+
+.fw-rail-links a span {
+  transition: transform .15s ease;
+}
+
+.fw-rail-links a:hover span {
+  transform: translateX(3px);
 }
 
 .fw-rail-video-thumb {
@@ -753,23 +807,78 @@
   font: 600 9px/1.35 var(--pbe-font-data);
 }
 
+.fw-rail-watch {
+  border-left: 2px solid rgba(212,175,55,.55);
+}
+
 .fw-rail-watch p {
-  color: #c5beb1;
-  font: 520 13px/1.55 var(--pbe-font-ui);
+  color: #d2cbc0;
+  font: 520 13.5px/1.6 var(--pbe-font-ui);
+  text-wrap: pretty;
+}
+
+.fw-rail-pro {
+  border-color: rgba(212,175,55,.42);
+  background:
+    radial-gradient(260px 140px at 100% 0%, rgba(212,175,55,.16), transparent 70%),
+    linear-gradient(180deg, #16110b, #0b0907);
+}
+
+.fw-rail-pro .fw-h {
+  margin-bottom: 9px;
+  letter-spacing: .2em;
+}
+
+.fw-rail-pro strong {
+  display: block;
+  color: var(--fw-paper);
+  font: 800 17px/1.2 var(--pbe-font-display);
+  letter-spacing: -.01em;
+  text-wrap: balance;
+}
+
+.fw-rail-pro p {
+  margin: 7px 0 14px;
+  color: #b9b2a6;
+  font: 520 12.5px/1.5 var(--pbe-font-ui);
+}
+
+.fw-rail-pro .btn {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font: 800 10px/1 var(--pbe-font-data);
+  letter-spacing: .12em;
+  text-transform: uppercase;
 }
 
 .fw-rail-brand {
-  min-height: 150px;
+  position: relative;
+  min-height: 190px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  color: inherit;
+  text-decoration: none;
   background:
-    linear-gradient(180deg, rgba(10,9,7,.3), rgba(10,9,7,.96)),
+    linear-gradient(180deg, rgba(10,9,7,.25), rgba(10,9,7,.9) 58%, rgba(10,9,7,.98)),
     url("/media/ufc-fence-1400.webp") center / cover no-repeat;
+  transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
 }
 
-.fw-rail-brand span,
-.fw-rail-brand small {
+.fw-rail-brand:hover,
+.fw-rail-brand:focus-visible {
+  border-color: rgba(212,175,55,.6);
+  transform: translateY(-2px);
+  box-shadow: 0 28px 60px -40px rgba(212,175,55,.35);
+}
+
+.fw-rail-brand:focus-visible {
+  outline: 2px solid var(--fw-gold);
+  outline-offset: 2px;
+}
+
+.fw-rail-brand > span {
   color: var(--fw-gold);
   font: 750 8px/1 var(--pbe-font-data);
   letter-spacing: .14em;
@@ -782,6 +891,60 @@
   font: 800 20px/1.22 var(--pbe-font-data);
   letter-spacing: .14em;
   text-transform: uppercase;
+}
+
+.fw-rail-brand p {
+  margin: 0 0 12px;
+  color: #c5beb1;
+  font: 520 12px/1.5 var(--pbe-font-ui);
+}
+
+.fw-rail-brand b {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 11px;
+  border-top: 1px solid rgba(212,175,55,.28);
+  color: var(--fw-gold);
+  font: 750 9px/1 var(--pbe-font-data);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.fw-rail-brand b i {
+  font-style: normal;
+  transition: transform .15s ease;
+}
+
+.fw-rail-brand:hover b i {
+  transform: translateX(3px);
+}
+
+/* A fighter with no rights-cleared portrait yet: a deliberate monogram plate
+ * in the desk's own palette rather than an empty ring. */
+.fw-flagship .avatar.ph {
+  border-color: rgba(212,175,55,.45);
+  color: var(--fw-paper);
+  font-weight: 800;
+  letter-spacing: .04em;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(212,175,55,.2), transparent 68%),
+    linear-gradient(160deg, #1b150e, #0b0907);
+  box-shadow: inset 0 0 0 2px rgba(10,9,7,.9), inset 0 0 0 3px rgba(212,175,55,.16);
+}
+
+.fw-flagship .avatar.ph svg {
+  inset: 9%;
+  width: 82%;
+  height: 82%;
+  opacity: .32;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fw-rail-brand,
+  .fw-rail-brand b i,
+  .fw-rail-links a span { transition: none; }
+  .fw-rail-brand:hover { transform: none; }
 }
 
 /* ------------------------------------------------------------ VIDEO */

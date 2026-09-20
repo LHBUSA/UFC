@@ -6,6 +6,7 @@ import { getIngestFreshness, type IngestFreshness } from "@/lib/archive";
 import { eventSlug } from "@/lib/slug";
 import { daysUntil, fmtReach } from "@/lib/format";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
+import { getBroadcastForEvent, type EventBroadcast } from "@/lib/broadcast";
 
 /* Fight Week — the Pregame Desk as a product surface.
  *
@@ -35,6 +36,9 @@ export type FightWeekPacket = {
   roundCoverage: Map<string, { rounds: number; bothCorners: boolean }>;
   rankingsDate: string | null;
   sources: string[];
+  /* The stored broadcast row, when the collector has linked one. The Event
+   * Snapshot reads start times and carriers from it (lib/fightWeekSnapshot). */
+  broadcast?: EventBroadcast | null;
 };
 
 /* `hook` is the evidence in a few words (e.g. "6.1 vs 4.8 landed / min") so a
@@ -86,12 +90,13 @@ export async function loadFightWeek(event: Event, opts: { archive?: boolean; dna
   const bouts = await getEventBouts(event.id);
   const live = bouts.filter((b) => b.status !== "cancelled");
   const done = event.card_status === "complete" || (live.length > 0 && live.every((b) => b.result));
-  const [briefs, imgs, videosRaw, rankings, ingest] = await Promise.all([
+  const [briefs, imgs, videosRaw, rankings, ingest, broadcast] = await Promise.all([
     live.length ? buildDeskBriefs(event, live, live.length, { includeCompleted: done || Boolean(opts.archive), asOf: done ? event.event_date : null, dna: opts.dna === true }).catch(() => [] as DeskBrief[]) : Promise.resolve([] as DeskBrief[]),
     getImagesForFighters(live.flatMap((b) => [b.fighter_a.id, b.fighter_b.id])),
     getVideosForEvent(event.id, EVENT_VIDEO_INVENTORY).catch(() => [] as OfficialVideoRow[]),
     getRankings().catch(() => null),
     getIngestFreshness().catch(() => null),
+    getBroadcastForEvent(event).catch(() => null),
   ]);
   const framing = await getImageFraming(live.slice(0, 1).flatMap((b) => [imgs.get(b.fighter_a.id)?.id, imgs.get(b.fighter_b.id)?.id]).filter(Boolean) as string[]).catch(() => new Map<string, FramingRow>());
   const videos = sortVideosTimeline(videosRaw);
@@ -99,7 +104,7 @@ export async function loadFightWeek(event: Event, opts: { archive?: boolean; dna
    * skipped entirely for an upcoming one rather than issuing a request that
    * can only come back empty. */
   const roundCoverage = done ? await getRoundCoverageFor(bouts.map((b) => b.id)) : new Map();
-  return assemblePacket({ event, bouts, live, briefs, imgs, framing, videos, done, roundCoverage, updated: intelligenceUpdated(ingest, rankings, videos), rankingsDate: rankings?.snapshot_date || null, sources: packetSources(briefs, rankings, ingest) });
+  return assemblePacket({ event, bouts, live, briefs, imgs, framing, videos, done, roundCoverage, updated: intelligenceUpdated(ingest, rankings, videos), rankingsDate: rankings?.snapshot_date || null, sources: packetSources(briefs, rankings, ingest), broadcast });
 }
 
 /* Pure assembler, shared with the /qa/preview fixtures. */

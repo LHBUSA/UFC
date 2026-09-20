@@ -2,9 +2,8 @@ import Link from "next/link";
 import type { Bout, Event, PortraitSet } from "@/lib/db";
 import type { DeskBrief } from "@/lib/pregame";
 import { fighterSlug } from "@/lib/slug";
-import { fmtDate, fmtRecord, weightClassLabel } from "@/lib/format";
-import { Avatar } from "@/components/ui";
-import { Mark } from "@/components/Brand";
+import { fmtDate, fmtRecord, initials, weightClassLabel } from "@/lib/format";
+import { Mark, OCTAGON } from "@/components/Brand";
 import { pickVariant, type Framing } from "@/lib/variants";
 import styles from "./PregameDesk.module.css";
 
@@ -43,13 +42,21 @@ export function stance(v: string | null): string {
 
 export function FighterPanel({ side, fighter, rank, img, framing }: { side: "a" | "b"; fighter: Bout["fighter_a"]; rank: string | null; img?: PortraitSet | null; framing?: Framing | null }) {
   const variant = pickVariant(img, "desk", framing);
-  const staged = !variant || variant.mode !== "cover" || variant.confidence === "low";
+  /* fitted: a tight source shown whole, centre-top, over its own blurred
+   * backdrop, so the full head and hair stay in frame with room above. */
+  const fitted = variant?.mode === "fitted";
+  const staged = !fitted && (!variant || variant.mode !== "cover" || variant.confidence === "low");
   return (
-    <div className={`${styles.fighterPanel} ${styles[side]}${staged ? ` ${styles.staged}` : ""}`}>
+    <div className={`${styles.fighterPanel} ${styles[side]}${staged ? ` ${styles.staged}` : ""}${fitted ? ` ${styles.fitted}` : ""}`}>
+      {fitted && variant && <div className={styles.fitBackdrop} style={{ backgroundImage: `url("${variant.src}")` }} aria-hidden="true" />}
       {variant ? (
-        <img src={variant.src} alt={fighter.name} width={variant.width} height={variant.height} loading="lazy" decoding="async" style={{ objectPosition: variant.objectPosition }} />
+        <img src={variant.src} alt={fighter.name} width={variant.width} height={variant.height} loading="lazy" decoding="async" style={fitted ? { aspectRatio: `${variant.width} / ${variant.height}` } : { objectPosition: variant.objectPosition }} />
       ) : (
-        <div className={styles.fighterFallback}><Avatar f={fighter} img={img || undefined} size={126} /></div>
+        <div className={styles.fighterFallback} aria-hidden="true">
+          <svg viewBox="0 0 64 64"><polygon points={OCTAGON} /><polygon points={OCTAGON} transform="translate(32 32) scale(.74) translate(-32 -32)" /></svg>
+          <b>{initials(fighter.name)}</b>
+          <small>Portrait pending</small>
+        </div>
       )}
       <div className={styles.fighterShade} aria-hidden="true" />
       <div className={styles.fighterInfo}>
