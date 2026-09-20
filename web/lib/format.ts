@@ -1,4 +1,5 @@
 import type { Bout, Event, Fighter, Result, RoundStat } from "@/lib/db";
+import { ufcDaysUntil } from "@/lib/siteClock";
 
 export const WEIGHT_LABEL: Record<string, string> = {
   STRAWWEIGHT: "Strawweight",
@@ -97,11 +98,7 @@ export function age(dob: string | null, at?: string | null): number | null {
 }
 
 export function daysUntil(iso: string | null): number | null {
-  if (!iso) return null;
-  const d = new Date(`${iso}T00:00:00Z`).getTime();
-  const today = new Date();
-  const t = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
-  return Math.round((d - t) / 86400e3);
+  return ufcDaysUntil(iso);
 }
 
 export function stanceLabel(s: string | null): string {
