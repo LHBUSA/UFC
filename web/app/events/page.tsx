@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getUpcomingEvents, getEventsInYear, getEventYears, getMainEvents, getImagesForFighters, getBoutCounts, isContenderSeries, type Event, type Bout, type PortraitSet } from "@/lib/db";
+import { getUpcomingEvents, getEventsInYear, getEventYears, getMainEvents, getImagesForFighters, getBoutCounts, isContenderSeries, today, type Event, type Bout, type PortraitSet } from "@/lib/db";
 import { getArchiveCoverage, getArchiveYearCoverage, getIngestFreshness } from "@/lib/archive";
 import { isDanaWhiteContenderSeries } from "@/lib/contender";
 import { Avatar, Empty, EventCard, EventRow, PageHead, SectionHead, JsonLd } from "@/components/ui";
@@ -45,8 +45,8 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   const thisYear = new Date().getUTCFullYear();
   const year = Number(sp.year) && years.some((y) => y.year === Number(sp.year)) ? Number(sp.year) : (years[0]?.year || thisYear);
   const [upcoming, inYear] = await Promise.all([getUpcomingEvents(40, { includeContenderSeries: true }), getEventsInYear(year)]);
-  const today = new Date().toISOString().slice(0, 10);
-  const past = inYear.filter((e) => e.event_date && e.event_date < today && !isContenderSeries(e.name));
+  const siteToday = today();
+  const past = inYear.filter((e) => e.event_date && e.event_date < siteToday && !isContenderSeries(e.name));
   const ufcUpcoming = upcoming.filter((e) => !isContenderSeries(e.name));
   const dwcs = upcoming.filter((e) => isDanaWhiteContenderSeries(e.name));
   const ids = [...ufcUpcoming, ...dwcs, ...past.slice(0, 80)].map((e) => e.id);
