@@ -124,7 +124,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.9.1';
+const VERSION = 'v0.9.2';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
