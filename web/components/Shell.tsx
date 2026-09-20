@@ -6,13 +6,13 @@ import { StoreCartButton } from "./store/StoreCartButton";
 import { SITE } from "@/lib/site";
 import { CURRENT_SPORT, NETWORK } from "@/lib/network";
 import { UFC_OFFICIAL } from "@/lib/heritage";
-import { getNextEvent } from "@/lib/db";
+import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { getUfcAccess } from "@/lib/access";
 import { eventSlug } from "@/lib/slug";
 import { daysUntil, eventShortName, fmtDate } from "@/lib/format";
 
 export async function Header() {
-  const [next, access] = await Promise.all([getNextEvent(), getUfcAccess()]);
+  const [next, access] = await Promise.all([getCurrentOrNextUfcEvent(), getUfcAccess()]);
   const d = next ? daysUntil(next.event_date) : null;
   const live = d != null && d <= 0 && d >= -1;
   /* Inside fight week the chip is a second door to /fight-week (the page that
