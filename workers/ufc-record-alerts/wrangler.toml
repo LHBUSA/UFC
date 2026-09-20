@@ -1,0 +1,39 @@
+name = "ufc-record-alerts"
+main = "src/index.js"
+compatibility_date = "2026-09-14"
+account_id = "fd3a233edadd0a60916413c1199f71ee"
+workers_dev = true
+
+# PBE record alerts: overdue grading, a grade with no locked prediction, a
+# duplicated record, or an unreadable record store -> Discord. Read
+# src/recordAlerts.js first.
+#
+# A Worker of its own ON PURPOSE. It has no database binding, no service binding
+# and no secret that can read or write a pick: its only input is the public,
+# aggregate-only https://ufc.propbetedge.ai/api/ufc/record-health, its only
+# outputs are a Discord message and its own state object. It therefore cannot
+# evaluate, lock or grade, and nothing it does (or fails to do) can reach
+# ufc-algo. It also means shipping or changing an alert never redeploys the model
+# Worker.
+
+[vars]
+RECORD_HEALTH_URL = "https://ufc.propbetedge.ai/api/ufc/record-health"
+
+# Every five minutes. "Overdue" is a 48-hour condition; one-minute polling would
+# only buy noise and 1,440 health reads a day.
+[triggers]
+crons = ["*/5 * * * *"]
+
+# Alert state (what is active, what was delivered, when). R2 because it is
+# strongly consistent: a check must see the alert the previous check sent.
+# Create first: wrangler r2 bucket create ufc-record-alerts-state
+[[r2_buckets]]
+binding = "ARTIFACTS"
+bucket_name = "ufc-record-alerts-state"
+
+[observability]
+enabled = true
+
+# Secrets (wrangler secret put), never in this file:
+#   DISCORD_WEBHOOK_URL   the ops channel webhook. Unset = every alert is logged and
+#                         kept UNDELIVERED in state, then sent once the secret exists.
