@@ -256,7 +256,6 @@ export async function getAlgoUpsetProof(): Promise<AlgoUpsetProof> {
 export type AlgoFreeSamplePick = {
   slot: "BEST_BET" | "UNDERDOG_VALUE" | "NEXT_BEST";
   lifecycle: "LOCKED" | "PROVISIONAL";
-  grade: { result: "WIN" | "LOSS" | "NO_DECISION"; graded_at: string } | null;
   event_name: string;
   event_date: string;
   matchup: string;
@@ -295,54 +294,28 @@ export type AlgoFreeSample = {
 export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
   type SampleBout = { id: string; card_position: string | null; bout_order: number | null; fighter_a: { id: string; name: string }; fighter_b: { id: string; name: string }; event: { id: string; name: string; event_date: string } };
   type SampleEval = { bout_id: string; decision: string; confidence: AlgoBoutView["confidence"]; pick_fighter_id: string | null; pick_probability: number | null; market: AlgoBoutView["market"]; evaluated_at: string };
-  type SamplePred = { id: string; bout_id: string; locked_at: string | null; pick_fighter_id: string; pick_probability: number | string; market_implied_prob_pick: number | string | null; model_edge_pts: number | string | null; sample_context: { confidence?: AlgoBoutView["confidence"]; market?: AlgoBoutView["market"] } | null };
+  type SamplePred = { bout_id: string; locked_at: string | null; pick_fighter_id: string; pick_probability: number | string; market_implied_prob_pick: number | string | null; model_edge_pts: number | string | null; sample_context: { confidence?: AlgoBoutView["confidence"]; market?: AlgoBoutView["market"] } | null };
   type SampleResult = { bout_id: string };
-  type SampleGrade = { prediction_id: string; result: "WIN" | "LOSS" | "NO_DECISION"; graded_at: string };
 
   const generated_at = new Date().toISOString();
   const empty = (): AlgoFreeSample => ({ contract: "pbe-free-sample-v1", sport: "UFC", generated_at, pick: null, picks: [], underdog_available: false, full_product_url: "https://ufc.propbetedge.ai/algo" });
   if (!(await algoLive())) return empty();
 
   const today = ufcSiteDate(Date.parse(generated_at));
-  const todayMs = Date.parse(`${today}T12:00:00Z`);
-  const mondayOffset = (new Date(todayMs).getUTCDay() + 6) % 7;
-  const weekStart = new Date(todayMs - mondayOffset * 86400e3).toISOString().slice(0, 10);
-  const weekEnd = new Date(todayMs + (6 - mondayOffset) * 86400e3).toISOString().slice(0, 10);
-  const lookahead = new Date(todayMs + 14 * 86400e3).toISOString().slice(0, 10);
-
-  const allBouts = await rest<SampleBout>(
-    `ufc_bouts?select=id,card_position,bout_order,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events!inner(id,name,event_date)&event.event_date=gte.${weekStart}&event.event_date=lte.${lookahead}&event.name=like.UFC*&order=bout_order.desc`
+  const until = new Date(Date.now() + 14 * 86400e3).toISOString().slice(0, 10);
+  const bouts = await rest<SampleBout>(
+    `ufc_bouts?select=id,card_position,bout_order,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name),event:ufc_events!inner(id,name,event_date)&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`
   );
-  if (!allBouts.length) return empty();
-
-  // Keep one fight-week card stable. If this calendar week has a UFC event,
-  // that event remains the free board even after it finishes. Otherwise use
-  // the next upcoming UFC event so the sampler can open before fight week.
-  const eventMap = new Map<string, SampleBout["event"]>();
-  for (const bout of allBouts) eventMap.set(bout.event.id, bout.event);
-  const events = [...eventMap.values()];
-  const thisWeek = events
-    .filter((event) => event.event_date >= weekStart && event.event_date <= weekEnd)
-    .sort((a, b) => a.event_date.localeCompare(b.event_date));
-  const next = events
-    .filter((event) => event.event_date >= today)
-    .sort((a, b) => a.event_date.localeCompare(b.event_date));
-  const focusEvent = thisWeek[0] || next[0] || null;
-  if (!focusEvent) return empty();
-
-  const bouts = allBouts.filter((bout) => bout.event.id === focusEvent.id);
+  if (!bouts.length) return empty();
   const ids = inList(bouts.map((b) => b.id));
   const [evals, preds, results] = await Promise.all([
     rest<SampleEval>(`ufc_model_card_current?bout_id=in.${ids}&model_version=eq.${encodeURIComponent(MODEL_VERSION)}&select=bout_id,decision,confidence,pick_fighter_id,pick_probability,market,evaluated_at`),
-    rest<SamplePred>(`ufc_model_predictions?bout_id=in.${ids}&model_version=eq.${encodeURIComponent(MODEL_VERSION)}&select=id,bout_id,locked_at,pick_fighter_id,pick_probability,market_implied_prob_pick,model_edge_pts,sample_context`),
+    rest<SamplePred>(`ufc_model_predictions?bout_id=in.${ids}&model_version=eq.${encodeURIComponent(MODEL_VERSION)}&select=bout_id,locked_at,pick_fighter_id,pick_probability,market_implied_prob_pick,model_edge_pts,sample_context`),
     rest<SampleResult>(`ufc_bout_results?bout_id=in.${ids}&select=bout_id`),
   ]);
-  const grades = preds.length
-    ? await rest<SampleGrade>(`ufc_model_prediction_current_grade?prediction_id=in.${inList(preds.map((p) => p.id))}&select=prediction_id,result,graded_at`)
-    : [];
+  const boutBy = new Map(bouts.map((b) => [b.id, b]));
   const evalBy = new Map(evals.map((e) => [e.bout_id, e]));
   const completed = new Set(results.map((r) => r.bout_id));
-  const gradeBy = new Map(grades.map((g) => [g.prediction_id, g]));
 
   // Never expose the event headliner on the public free sampler. The canonical
   // card order runs from prelims into the main event, so the highest bout_order
@@ -365,13 +338,13 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
   }
 
   const candidates = bouts.flatMap((bout) => {
-    // Fight-week free picks do not disappear when the bout finishes. A locked
-    // pick remains eligible for the same two public slots through grading so
-    // the weekly tracker can show both wins and losses without rotation.
-    if (headlinerBoutIds.has(bout.id)) return [];
+    // The public sample is a current-call surface, not a receipt ledger. As
+    // soon as a verified result lands, retire that bout and advance to the
+    // next eligible pick. Completed picks remain permanently visible in the
+    // public track record instead of occupying the live sample.
+    if (completed.has(bout.id) || headlinerBoutIds.has(bout.id)) return [];
     const p = preds.find((row) => row.bout_id === bout.id) || null;
     const e = evalBy.get(bout.id) || null;
-    const g = p ? gradeBy.get(p.id) || null : null;
     const locked = Boolean(p?.locked_at);
     const market = locked ? p?.sample_context?.market ?? null : p?.sample_context?.market ?? e?.market ?? null;
     const pickId = p?.pick_fighter_id ?? e?.pick_fighter_id ?? null;
@@ -379,7 +352,6 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
     const confidence = p?.sample_context?.confidence ?? e?.confidence ?? null;
     const currentUntil = market?.current_until ? Date.parse(market.current_until) : NaN;
     const current = market?.status === "FRESH" && (locked || (Number.isFinite(currentUntil) && currentUntil > Date.now()));
-    if (completed.has(bout.id) && !locked) return [];
     const odds = Number(market?.pick_consensus_odds);
     if (!current || !pickId || !Number.isFinite(probability) || !Number.isFinite(odds)) return [];
     if (!locked && e?.decision !== "ELIGIBLE") return [];
@@ -389,7 +361,6 @@ export async function getAlgoFreeSample(): Promise<AlgoFreeSample> {
     const edge = p?.model_edge_pts ?? market?.pbe_delta_pts ?? null;
     return [{
       lifecycle: locked ? "LOCKED" as const : "PROVISIONAL" as const,
-      grade: g ? { result: g.result, graded_at: g.graded_at } : null,
       event_name: bout.event.name,
       event_date: bout.event.event_date,
       matchup: `${bout.fighter_a.name} vs ${bout.fighter_b.name}`,
