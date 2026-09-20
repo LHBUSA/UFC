@@ -424,6 +424,37 @@ export type PortraitSet = {
   fighter_id?: string | null;
 };
 
+const VERIFIED_FREE_DISPLAY_PORTRAITS: Record<string, PortraitSet> = {
+  /* Manually reviewed Wikimedia Commons fallback for Mehemmedeli Osmanli.
+   * The source page identifies the 2024 Osmanli vs Shamil Boraev bout and the
+   * uploader released the original photograph under CC BY-SA 4.0. Keep this
+   * as a remote, rights-safe display fallback until the normal Commons media
+   * sync persists its card/thumb derivatives into ufc-media. */
+  "13dd06fe-1f79-401b-9a8a-23c61a907745": {
+    id: "commons:08-shamil-boraev-vs-mehemmedeli-osmanli-8916",
+    fighter_id: "13dd06fe-1f79-401b-9a8a-23c61a907745",
+    portrait: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/08_-_Shamil_Boraev_vs_Mehemmedeli_Osmanli-8916.jpg/500px-08_-_Shamil_Boraev_vs_Mehemmedeli_Osmanli-8916.jpg",
+    card: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/08_-_Shamil_Boraev_vs_Mehemmedeli_Osmanli-8916.jpg/500px-08_-_Shamil_Boraev_vs_Mehemmedeli_Osmanli-8916.jpg",
+    thumb: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/08_-_Shamil_Boraev_vs_Mehemmedeli_Osmanli-8916.jpg/500px-08_-_Shamil_Boraev_vs_Mehemmedeli_Osmanli-8916.jpg",
+    license: "CC BY-SA 4.0",
+    author: "Gismat",
+    source_url: "https://commons.wikimedia.org/wiki/File:08_-_Shamil_Boraev_vs_Mehemmedeli_Osmanli-8916.jpg",
+    kind: "wikimedia",
+    source_family: "wikimedia_commons",
+    rights_label: "verified_free",
+    attribution_text: "Gismat, CC BY-SA 4.0, via Wikimedia Commons",
+    stored_first_party: false,
+  },
+};
+
+function applyVerifiedFreeDisplayPortraits(m: Map<string, PortraitSet>, ids: string[]): void {
+  for (const id of ids) {
+    if (m.has(id)) continue;
+    const portrait = VERIFIED_FREE_DISPLAY_PORTRAITS[id];
+    if (portrait) m.set(id, portrait);
+  }
+}
+
 export function portraitSet(img: FighterImage): PortraitSet {
   const dir = img.r2_key.replace(/\/[^/]+$/, "");
   const firstParty = img.stored_first_party !== false;
@@ -459,6 +490,11 @@ export async function getImagesForFighters(ids: string[]): Promise<Map<string, P
   /* Kind priority, rights expiry and the not-a-portrait list: lib/portraitSelection.ts,
    * shared with the ufc-api display_image contract. */
   for (const [fighterId, img] of pickStoredPortraits(rows)) m.set(fighterId, portraitSet(img));
+
+  /* A manually reviewed free-license Commons source beats any display-only
+   * provider fallback. This stays fail-closed: only explicit, provenance-rich
+   * entries from VERIFIED_FREE_DISPLAY_PORTRAITS can fill a missing image. */
+  applyVerifiedFreeDisplayPortraits(m, uniq);
 
   /* Every visible fighter surface uses this function. When a rights-cleared
    * PBE asset is not available, fill only the presentation gap with that
