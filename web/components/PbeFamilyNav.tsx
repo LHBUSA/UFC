@@ -7,7 +7,7 @@ export type PbeFamilyPage = "model" | "algo" | "picks" | "record";
 
 const FAMILY: ReadonlyArray<{ key: PbeFamilyPage; href: string; name: string; role: string; pro?: boolean }> = [
   { key: "picks", href: "/algo/card", name: "PBE Picks", role: "The current calls: probability, odds and PBE Edge", pro: true },
-  { key: "record", href: "/algo/record", name: "Track Record", role: "Public receipts: graded calls, units and ROI" },
+  { key: "record", href: "/algo/record", name: "Track Record & Past Picks", role: "Public archive: every graded pick, units and ROI" },
   { key: "algo", href: "/algo", name: "How PBE Algo calls a fight", role: "Eligibility, no-call rules, lock and grading" },
   { key: "model", href: "/model", name: "PBE Fight Model", role: "The evidence: backtest, calibration, leakage proof" },
 ];

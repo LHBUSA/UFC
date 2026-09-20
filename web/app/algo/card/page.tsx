@@ -9,6 +9,7 @@ import { getAlgoCards, getAlgoPerformanceProof, getAlgoUpsetProof } from "@/lib/
 import { PbeUpsetRadar } from "@/components/PbeUpsetRadar";
 import { PbePicksAutoRefresh } from "@/components/PbePicksAutoRefresh";
 import { PbePerformanceTracker } from "@/components/PbePerformanceTracker";
+import { RecentGradedPicks } from "@/components/PbePastPicks";
 import { getImagesForFighters, getFightersByIds, getEventById, type Event } from "@/lib/db";
 import { lockedText, type AlgoBoutView } from "@/lib/algoView";
 import { fmtDate, locationLine } from "@/lib/format";
@@ -92,13 +93,16 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
           <p className="pp-hero-lede">Every eligible UFC bout gets a pick with its win probability and confidence, locked on the database clock before the fight and graded after it. A bout the model will not call shows the exact reason.</p>
         )}
         <div className="pp-hero-actions">
-          <Link href="/algo/record" className="btn gold">Track Record</Link>
+          <Link href="/algo/record" className="btn gold">Track Record &amp; Past Picks</Link>
           <Link href="/algo" className="btn">How PBE Algo works</Link>
           <Link href="/model" className="btn ghost">Model evidence</Link>
         </div>
       </header>
 
       <PbePerformanceTracker proof={performance} />
+      {/* Public and graded-only: the same five rows for a free reader and a Pro reader. It reads
+       * its own data, so this page still performs exactly one portrait read, inside the Pro branch. */}
+      <RecentGradedPicks />
 
       <div className="pp-picks-layout">
         <aside className="pp-picks-sidecar" aria-label="PBE Upset Radar">

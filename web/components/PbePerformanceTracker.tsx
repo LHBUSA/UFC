@@ -68,10 +68,16 @@ export function PbePerformanceTracker({
           <h2>Every call. Every result. No edits.</h2>
           <p>Official locked PBE Picks are graded into the ledger as results arrive. Current calls stay Pro; the receipts stay visible.</p>
         </div>
-        <Link href="/algo/record" className="btn gold">Full Record &amp; ROI →</Link>
+        <Link href="/algo/record" className="btn gold">Track Record &amp; Past Picks →</Link>
       </header>
 
-      <div className="pbe-proof-grid">
+      {proof.unavailable && (
+        <p className="pbe-proof-unavailable" role="alert">
+          <b>Record temporarily unavailable.</b> The official record could not be read just now, so no numbers are shown rather than a misleading 0-0. Stored picks and grades are unaffected; this tracker retries automatically.
+        </p>
+      )}
+
+      {!proof.unavailable && <div className="pbe-proof-grid">
         {week ? (
           <Scope eyebrow="THIS FIGHT WEEK" title={week.event_name} slice={week} />
         ) : (
@@ -106,7 +112,7 @@ export function PbePerformanceTracker({
             <p className="pbe-proof-empty">The first officially graded locked call will appear here automatically.</p>
           )}
         </article>
-      </div>
+      </div>}
 
       <footer className="pbe-proof-note">
         <b>ROI standard:</b> flat 1-unit stake per decided call using the best available price stored in the immutable lock-time market snapshot. A decided call without a valid stored price remains in W-L and hit rate but is excluded from ROI. Draws, no contests and voids are not wins or losses.

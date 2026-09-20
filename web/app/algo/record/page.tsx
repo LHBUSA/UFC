@@ -4,61 +4,35 @@ import { PageHead } from "@/components/ui";
 import { PbeFamilyNav } from "@/components/PbeFamilyNav";
 import { PbePerformanceTracker } from "@/components/PbePerformanceTracker";
 import { PbePicksAutoRefresh } from "@/components/PbePicksAutoRefresh";
-import { getAlgoPerformanceProof, getAlgoPublicGradedRecord } from "@/lib/algo";
-import { confidenceCopy, deltaText, lockedText, oddsText, pctText, type AlgoBoutView } from "@/lib/algoView";
+import { PastPicksEvent, PastPicksPager } from "@/components/PbePastPicks";
+import { getAlgoArchive, getAlgoPerformanceProof, type AlgoArchiveSlices } from "@/lib/algo";
+import { getImagesForFighters, type PortraitSet } from "@/lib/db";
+import { confidenceCopy, pctText } from "@/lib/algoView";
 
-/* Public receipt ledger for official PBE Picks.
+/* Track Record & Past Picks: the public, permanent archive of official PBE Picks.
  *
- * Only already-graded, officially locked calls expose fighter identity here.
- * Pending/current calls remain behind UFC Pro on /algo/card. Locked predictions
- * are immutable; grade corrections remain revisioned instead of overwriting
- * history. Backtest output never appears on this page. */
+ * Order: lifetime tracker, then the event/pick archive, then calibration and
+ * confidence breakdowns. Only officially locked AND currently graded calls
+ * expose a selection; pending and current calls remain behind UFC Pro on
+ * /algo/card and an event awaiting grades shows counts only. Locked predictions
+ * are immutable; a grade correction is a visible revision, never an overwrite.
+ * Backtest, shadow and draft output never appears here.
+ *
+ * Ten events per page, paginated on the server from the full-history index
+ * (lib/algoArchive.ts), so nothing here is capped or recomputed per page.
+ * ?event= and ?pick= are permanent addresses and resolve their own page.
+ * Dynamic and uncached: a new official grade is on the next render. */
 
 export const metadata: Metadata = {
-  title: "PBE Picks Track Record, Units & ROI — UFC",
-  description: "The public receipt ledger for official PBE Picks: every graded locked UFC call, W-L record, hit rate, net units and ROI from stored lock-time prices.",
+  title: "PBE Picks Track Record & Past Picks — Units, ROI and Every Graded UFC Call",
+  description: "The permanent public archive of official PBE Picks: every graded locked UFC call by event, with the original locked odds, result, net units, ROI and grading revisions.",
   alternates: { canonical: "/algo/record" },
   robots: { index: true, follow: true },
 };
 
-type Summary = { n: number; wins: number; losses: number; brier: number | null; logLoss: number | null; hit: number | null };
-
-function summarize(rows: AlgoBoutView[]): Summary {
-  const decided = rows.filter((r) => r.grade && (r.grade.result === "WIN" || r.grade.result === "LOSS"));
-  const wins = decided.filter((r) => r.grade!.result === "WIN").length;
-  const n = decided.length;
-  if (!n) return { n: 0, wins: 0, losses: 0, brier: null, logLoss: null, hit: null };
-  let b = 0, l = 0;
-  for (const r of decided) {
-    const p = r.prediction!.pick_probability;
-    const y = r.grade!.result === "WIN" ? 1 : 0;
-    b += (p - y) ** 2;
-    l += -(y * Math.log(p) + (1 - y) * Math.log(1 - p));
-  }
-  return { n, wins, losses: n - wins, brier: b / n, logLoss: l / n, hit: wins / n };
-}
-
-function oneUnitReturn(row: AlgoBoutView): number | null {
-  const result = row.grade?.result;
-  if (result !== "WIN" && result !== "LOSS") return null;
-  const raw = row.market?.pick_best_odds;
-  const price = raw == null ? null : Number(raw);
-  if (price == null || !Number.isFinite(price) || price === 0) return null;
-  if (result === "LOSS") return -1;
-  return price > 0 ? price / 100 : 100 / Math.abs(price);
-}
-
-function unitsText(value: number | null): string {
-  if (value == null || !Number.isFinite(value)) return "—";
-  return `${value > 0 ? "+" : ""}${value.toFixed(2)}u`;
-}
-
-const EDGE_BANDS: Array<[string, (d: number) => boolean]> = [
-  ["PBE Edge +10 pts or more", (d) => d >= 10],
-  ["PBE Edge +3 to +10 pts", (d) => d >= 3 && d < 10],
-  ["PBE Edge within 3 pts", (d) => Math.abs(d) < 3],
-  ["PBE Edge −3 pts or lower", (d) => d <= -3],
-];
+type Summary = AlgoArchiveSlices["overall"];
+const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || null;
+const modelLabel = (v: string) => v.replace(/^pbe-fight-model-v/i, "PBE Fight Model V");
 
 function SummaryRow({ label, s }: { label: string; s: Summary }) {
   return (
@@ -72,50 +46,104 @@ function SummaryRow({ label, s }: { label: string; s: Summary }) {
   );
 }
 
-export default async function AlgoRecordPage() {
-  const [rows, proof] = await Promise.all([
-    getAlgoPublicGradedRecord(),
+export default async function AlgoRecordPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const params = await searchParams;
+  const [archive, proof] = await Promise.all([
+    getAlgoArchive({ page: Number(one(params.page)) || 1, event: one(params.event), pick: one(params.pick), model: one(params.model) }),
     getAlgoPerformanceProof(),
   ]);
-  const all = summarize(rows);
-  const noDecision = rows.filter((r) => r.grade && !["WIN", "LOSS"].includes(r.grade.result)).length;
+
+  const fighterIds = archive.ok ? [...new Set(archive.events.flatMap((e) => e.picks.map((p) => p.pick.id)))] : [];
+  const imgs: Map<string, PortraitSet> = fighterIds.length ? await getImagesForFighters(fighterIds).catch(() => new Map<string, PortraitSet>()) : new Map();
+
+  /* Open by default: the addressed event, else the newest card that has a public pick. */
+  const openId = archive.ok ? archive.focus_event_id || (archive.page === 1 ? (archive.events.find((e) => e.picks.length > 0) || archive.events[0])?.event_id : null) || null : null;
 
   return (
     <div className="wrap page algo-page">
       <PbePicksAutoRefresh intervalMs={60_000} />
       <PageHead
-        crumbs={[{ name: "PBE Picks", href: "/algo/card" }, { name: "Track record" }]}
+        crumbs={[{ name: "PBE Picks", href: "/algo/card" }, { name: "Track Record & Past Picks" }]}
         eyebrow="PropBetEdge UFC · Official live record"
-        title="PBE Picks track record"
-        lede="The public receipt ledger. Every officially locked call stays in the record and every official grade stays attached to it. Current picks remain Pro; completed receipts are public."
+        title="Track Record & Past Picks"
+        lede="The permanent public archive. Every officially locked call stays in the record and every official grade stays attached to it. Current picks remain Pro; once a bout is graded, the pick is public for good."
       >
         <div className="row mt-3">
           <Link href="/algo/card" className="btn gold">Open Current PBE Picks</Link>
+          <a href="#past-picks" className="btn">Browse Past Picks</a>
           <Link href="/algo" className="btn">How PBE Algo Works</Link>
         </div>
       </PageHead>
 
       <PbePerformanceTracker proof={proof} compact />
 
-      {rows.length === 0 ? (
-        <section className="card algo-record-empty mt-4">
-          <div className="eyebrow">Awaiting the first official grade</div>
-          <h2>The ledger is live before the result is.</h2>
-          <p className="dim">Locked calls are already counted by the tracker above. Fighter identity appears in this public receipt table only after the official grading path records a result.</p>
-        </section>
-      ) : (
-        <>
-          <div className="mdl-rec mt-4">
-            <div className="stat model"><b>{rows.length}</b><span>Graded receipts</span></div>
-            <div className="stat model"><b>{all.n ? `${all.wins}-${all.losses}` : "—"}</b><span>Decided W-L</span></div>
-            <div className="stat model"><b>{pctText(all.hit)}</b><span>Hit rate</span></div>
-            <div className="stat model"><b>{all.brier == null ? "—" : all.brier.toFixed(3)}</b><span>Brier score</span></div>
-            <div className="stat model"><b>{all.logLoss == null ? "—" : all.logLoss.toFixed(3)}</b><span>Log loss</span></div>
-            <div className="stat model"><b>{proof.lifetime.priced_decided}</b><span>ROI-priced decisions</span>{noDecision > 0 && <span className="faint">{noDecision} draw / NC / void</span>}</div>
+      <section id="past-picks" className="mdl-sec pp-past" aria-labelledby="past-picks-h">
+        <div className="eyebrow">Permanent archive</div>
+        <h2 id="past-picks-h">Past picks by event</h2>
+        <p className="note">Newest card first. Each event keeps its own record, units and ROI, computed from every official pick on that card. Odds are the price frozen with the prediction at database lock and are never replaced with a later line.</p>
+
+        {!archive.ok ? (
+          <div className="card pp-past-error" role="alert">
+            <div className="eyebrow">Archive temporarily unavailable</div>
+            <h3>The record could not be read just now.</h3>
+            <p className="dim">{archive.error} Nothing has been lost or changed: official picks and grades are stored permanently and this page reads them live. It retries automatically every minute.</p>
           </div>
+        ) : archive.total_events === 0 ? (
+          <div className="card algo-record-empty">
+            <div className="eyebrow">Awaiting the first official lock</div>
+            <h3>The archive opens with the first locked card.</h3>
+            <p className="dim">Events appear here as soon as official picks are locked, and each pick becomes public when its bout is officially graded.</p>
+          </div>
+        ) : (
+          <>
+            {archive.model_versions.length > 1 && (
+              <nav className="pp-filter pp-past-filter" aria-label="Filter by official model version">
+                <Link href="/algo/record#past-picks" aria-current={archive.model ? undefined : "page"} scroll={false}>All official versions</Link>
+                {archive.model_versions.map((v) => <Link key={v} href={`/algo/record?model=${encodeURIComponent(v)}#past-picks`} aria-current={archive.model === v ? "page" : undefined} scroll={false}>{modelLabel(v)}</Link>)}
+              </nav>
+            )}
+            {archive.not_found && (
+              <p className="pp-past-pending" role="status">
+                {archive.not_found === "pick" ? "That link does not match a publicly graded pick. A pick gets its permanent address once it is officially graded." : "That link does not match an event in the archive."} Showing the newest events instead.
+              </p>
+            )}
+            <div className="pp-past-meta">
+              <span><b>{archive.total_events}</b> event{archive.total_events === 1 ? "" : "s"}</span>
+              <span><b>{archive.integrity.locked}</b> official pick{archive.integrity.locked === 1 ? "" : "s"}</span>
+              <span><b>{archive.integrity.graded}</b> graded</span>
+              <span><b>{archive.integrity.pending}</b> pending</span>
+              <span>Page {archive.page} of {archive.pages}</span>
+              {archive.model && <span>{modelLabel(archive.model)} only</span>}
+            </div>
+            <div className="pp-past-events">
+              {archive.events.map((e) => <PastPicksEvent key={e.event_id} event={e} open={e.event_id === openId} imgs={imgs} focusPick={archive.focus_prediction_id} />)}
+            </div>
+            <PastPicksPager page={archive.page} pages={archive.pages} model={archive.model} />
+            {archive.integrity.unresolved_event_picks > 0 && (
+              <p className="pp-past-pending">{archive.integrity.unresolved_event_picks} official pick{archive.integrity.unresolved_event_picks === 1 ? " names" : "s name"} an event that could not be resolved. {archive.integrity.unresolved_event_picks === 1 ? "It is" : "They are"} counted in every total and listed under “Event not resolved” rather than left out.</p>
+            )}
+          </>
+        )}
+      </section>
+
+      {archive.ok && archive.integrity.graded > 0 && (
+        <>
+          <section className="mdl-sec">
+            <div className="eyebrow">Calibration</div>
+            <h2>How well the stated probabilities held up.</h2>
+            <p className="note">Computed over the full official history{archive.model ? ` of ${modelLabel(archive.model)}` : ""}, not the events shown above.</p>
+            <div className="mdl-rec mt-4">
+              <div className="stat model"><b>{archive.integrity.graded}</b><span>Graded picks</span></div>
+              <div className="stat model"><b>{archive.slices.overall.n ? `${archive.slices.overall.wins}-${archive.slices.overall.losses}` : "—"}</b><span>Decided W-L</span></div>
+              <div className="stat model"><b>{pctText(archive.slices.overall.hit)}</b><span>Hit rate</span></div>
+              <div className="stat model"><b>{archive.slices.overall.brier == null ? "—" : archive.slices.overall.brier.toFixed(3)}</b><span>Brier score</span></div>
+              <div className="stat model"><b>{archive.slices.overall.logLoss == null ? "—" : archive.slices.overall.logLoss.toFixed(3)}</b><span>Log loss</span></div>
+              <div className="stat model"><b>{archive.lifetime.priced_decided}</b><span>ROI-priced decisions</span>{archive.lifetime.no_decision > 0 && <span className="faint">{archive.lifetime.no_decision} draw / NC / void</span>}</div>
+            </div>
+          </section>
 
           <section className="mdl-sec">
-            <div className="eyebrow">Performance slices</div>
+            <div className="eyebrow">Confidence &amp; edge breakdowns</div>
             <h2>Where the live record is hitting — and where it is not.</h2>
             <p className="note">These are live official calls only. They are not backtest rows and they are never blended with historical model research.</p>
             <div className="tbl-wrap mt-4">
@@ -123,70 +151,19 @@ export default async function AlgoRecordPage() {
                 <caption className="sr-only">Record by confidence tier and by PBE Edge at lock</caption>
                 <thead><tr><th>Slice</th><th className="r">W-L</th><th className="r">Hit</th><th className="r">Brier</th><th className="r">Log loss</th></tr></thead>
                 <tbody>
-                  {(["HIGH", "MEDIUM", "LEAN"] as const).map((c) => <SummaryRow key={c} label={`${confidenceCopy(c)} confidence`} s={summarize(rows.filter((r) => r.confidence === c))} />)}
-                  {EDGE_BANDS.map(([label, predicate]) => <SummaryRow key={label} label={label} s={summarize(rows.filter((r) => r.prediction?.model_edge_pts != null && predicate(Number(r.prediction.model_edge_pts))))} />)}
-                  <SummaryRow label="No current market at lock (stale or no line)" s={summarize(rows.filter((r) => r.prediction?.model_edge_pts == null))} />
+                  {archive.slices.byConfidence.map(({ key, s }) => <SummaryRow key={key} label={`${confidenceCopy(key)} confidence`} s={s} />)}
+                  {archive.slices.byEdge.map(({ label, s }) => <SummaryRow key={label} label={label} s={s} />)}
+                  <SummaryRow label="No current market at lock (stale or no line)" s={archive.slices.noMarket} />
                 </tbody>
               </table>
             </div>
           </section>
-
-          <section className="mdl-sec">
-            <div className="eyebrow">Immutable receipt ledger</div>
-            <h2>Every graded official PBE Pick.</h2>
-            <p className="note">Price and unit return use the best available market price frozen with the official prediction at database lock. If no valid lock-time price exists, the call stays in W-L but shows no unit return.</p>
-            <div className="tbl-wrap mt-4">
-              <table className="tbl algo-record">
-                <caption className="sr-only">Every graded locked PBE Algo call</caption>
-                <thead>
-                  <tr>
-                    <th>Event</th><th>Bout</th><th>Pick</th><th className="r">Prob.</th><th>Conf.</th><th>Locked</th>
-                    <th className="r">Market</th><th className="r">PBE Edge</th><th className="r">Lock price</th><th className="r">Units</th><th>Result</th><th>Model</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((r) => {
-                    const p = r.prediction!;
-                    const pick = p.pick_fighter_id === r.fighter_a.id ? r.fighter_a.name : r.fighter_b.name;
-                    const superseded = (r.grade_history || []).filter((h) => h.revision !== r.grade?.revision);
-                    const lockPrice = r.market?.pick_best_odds == null ? null : Number(r.market.pick_best_odds);
-                    const lockBook = r.market?.pick_best_book || null;
-                    const resultUnits = oneUnitReturn(r);
-                    return (
-                      <tr key={p.id} data-algo-bout={r.bout_id}>
-                        <td><Link href={`/events/${r.event_slug}`}>{r.event_name}</Link><div className="faint sm">{r.event_date}</div></td>
-                        <td><Link href={`/fights/${r.fight_slug}`}>{r.fighter_a.name} vs {r.fighter_b.name}</Link></td>
-                        <td><b>{pick}</b></td>
-                        <td className="r">{pctText(p.pick_probability)}</td>
-                        <td>{confidenceCopy(r.confidence)}</td>
-                        <td className="nowrap">{lockedText(p.locked_at)}</td>
-                        <td className="r">{p.market_implied_prob_pick == null ? "—" : pctText(Number(p.market_implied_prob_pick))}</td>
-                        <td className="r nowrap">{p.model_edge_pts == null ? "—" : deltaText(Number(p.model_edge_pts))}</td>
-                        <td className="r nowrap">{oddsText(lockPrice)}{lockBook ? <div className="faint sm">{lockBook}</div> : null}</td>
-                        <td className="r nowrap"><b>{unitsText(resultUnits)}</b></td>
-                        <td>
-                          {r.grade ? <span className={`algo-result ${r.grade.result.toLowerCase()}`}>{r.grade.result}</span> : <span className="faint">Pending</span>}
-                          {superseded.length > 0 && (
-                            <details className="algo-revisions">
-                              <summary>{superseded.length} earlier revision{superseded.length === 1 ? "" : "s"}</summary>
-                              <ul>{[...superseded, ...(r.grade ? [r.grade] : [])].map((h) => <li key={h.revision}>r{h.revision} {h.result} · {h.graded_at.slice(0, 10)}{h.revision_reason ? ` · ${h.revision_reason}` : ""}</li>)}</ul>
-                            </details>
-                          )}
-                        </td>
-                        <td className="mono sm">{r.model_version}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <div className="mdl-split-note mt-4">
-            <b>ROI methodology:</b> flat 1-unit stake on each decided call at the best available price captured in that call&apos;s frozen lock-time market snapshot. W/L calls without a valid stored price remain in record and hit-rate calculations but are excluded from the ROI denominator. Draws, no contests and voids are excluded from W-L and ROI. Closing-line value remains separate and will only appear when a verified closing snapshot exists.
-          </div>
         </>
       )}
+
+      <div className="mdl-split-note mt-4">
+        <b>ROI methodology:</b> flat 1-unit stake on each decided call at the best available price captured in that call&apos;s frozen lock-time market snapshot. W/L calls without a valid stored price remain in record and hit-rate calculations but are excluded from the ROI denominator. Draws, no contests and voids are excluded from W-L and ROI. Closing-line value remains separate and will only appear when a verified closing snapshot exists.
+      </div>
 
       <PbeFamilyNav current="record" />
     </div>
