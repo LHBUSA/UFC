@@ -14,24 +14,24 @@ register("../scripts/test-tsx-hooks.mjs", import.meta.url);
 const web = new URL("../", import.meta.url);
 const read = (rel: string) => readFileSync(new URL(rel, web), "utf8");
 
-test("desktop primary order: Fight Week, PBE PICKS, Schedule, Fighters, Rankings, News (Fight Simulator joins after PBE PICKS once live)", () => {
-  assert.deepEqual(navFor("primary").map((n) => n.label), ["Fight Week", "PBE PICKS", "Schedule", "Fighters", "Rankings", "News"]);
-  const all = NAV.filter((n) => (n.place || "primary") === "primary").map((n) => n.label);
-  assert.deepEqual(all, ["Fight Week", "PBE PICKS", "FIGHT SIMULATOR", "Schedule", "Fighters", "Rankings", "News"], "the reserved slot sits directly after PBE PICKS");
+test("desktop primary order: Fight Week, PBE PICKS, FIGHT SIMULATOR, Schedule, Fighters, Rankings, News", () => {
+  assert.deepEqual(navFor("primary").map((n) => n.label), ["Fight Week", "PBE PICKS", "FIGHT SIMULATOR", "Schedule", "Fighters", "Rankings", "News"]);
+  assert.ok(!NAV.some((n) => n.pending), "no pending slot remains in the registry");
 });
 
-test("Fight Simulator slot: pending, LABS badge, flagship treatment, never rendered while app/simulator/page.tsx is absent", () => {
+test("Fight Simulator ships: route exists, LABS badge, flagship treatment, primary (never More); pending items would still be filtered", () => {
   const sim = NAV.find((n) => n.href === "/simulator");
-  assert.ok(sim, "slot reserved");
-  assert.equal(sim!.pending, true);
+  assert.ok(sim);
+  assert.equal(sim!.pending, undefined);
   assert.equal(sim!.badge, "LABS");
   assert.equal(sim!.flagship, true);
   assert.equal(sim!.place, "primary");
-  assert.ok(!navFor("primary").some((n) => n.href === "/simulator"), "pending slot is filtered out of the bar");
-  assert.ok(!navFor("more").some((n) => n.href === "/simulator"), "and out of More");
-  const routeExists = existsSync(fileURLToPath(new URL("app/simulator/page.tsx", web)));
-  assert.equal(routeExists, false, "when the Phase 4 route ships, drop pending in lib/site.ts (the preservation check enforces this)");
-  /* NavLinks renders every primary/more list through navFor, so a pending item cannot leak as a link. */
+  assert.ok(existsSync(fileURLToPath(new URL("app/simulator/page.tsx", web))), "the route exists (the preservation check refuses a rendered nav item without a page)");
+  assert.ok(navFor("primary").some((n) => n.href === "/simulator"));
+  assert.ok(!navFor("more").some((n) => n.href === "/simulator"));
+  /* The pending mechanism stays: a synthetic pending item is filtered everywhere. */
+  (NAV as unknown as Array<Record<string, unknown>>).push({ href: "/labs-next", label: "NEXT", place: "primary", pending: true });
+  try { assert.ok(!navFor("primary").some((n) => n.href === "/labs-next")); } finally { (NAV as unknown as unknown[]).pop(); }
   const nav = read("components/NavLinks.tsx");
   assert.match(nav, /const byPlace = navFor;/);
   assert.doesNotMatch(nav, /NAV\.filter/);
@@ -45,7 +45,7 @@ test("Store is in More (Shop), All Access has no bar slot, PBE PICKS keeps its e
   assert.match(read("lib/site.ts"), /\{ href: "\/algo\/card", label: "PBE PICKS", place: "primary", flagship: true \}/);
 });
 
-test("mobile drawer: primary items first (the simulator appears there first-class once live), then More; no All Access row", () => {
+test("mobile drawer: primary items first (Fight Simulator among them), then More; no All Access row", () => {
   const nav = read("components/NavLinks.tsx");
   assert.match(nav, /variant === "mobile"[^]*primary\.map\(\(n\) => <PrimaryLink[^]*<div className="mnav-group" aria-label="More">/);
   const shell = read("components/Shell.tsx");
@@ -67,38 +67,24 @@ async function renderNav(variant: "desktop" | "mobile") {
 }
 const hrefs = (html: string) => [...html.matchAll(/<a[^>]*href="([^"]+)"/g)].map((m) => m[1]);
 
-test("rendered desktop bar: exact link order, PBE PICKS flagship, More holds Store, no simulator link, no All Access", async () => {
+test("rendered desktop bar: exact link order with FIGHT SIMULATOR after PBE PICKS, More holds Store, no All Access", async () => {
   const html = await renderNav("desktop");
   const bar = html.slice(0, html.indexOf("nav-more") > 0 ? html.indexOf("nav-more") : html.length);
-  assert.deepEqual(hrefs(bar), ["/fight-week", "/algo/card", "/events", "/fighters", "/rankings", "/news"]);
+  assert.deepEqual(hrefs(bar), ["/fight-week", "/algo/card", "/simulator", "/events", "/fighters", "/rankings", "/news"]);
   assert.match(html, /class="nav-pbe-picks"[^>]*>[^]*?PBE PICKS[^]*?<span class="nav-pro">PRO<\/span>/);
+  assert.match(bar, /FIGHT SIMULATOR<\/span><span class="nav-pro">LABS<\/span>/);
   assert.ok(hrefs(html).includes("/store"), "Store reachable from the More menu");
-  assert.ok(!hrefs(html).includes("/simulator"), "no dead Fight Simulator link");
-  assert.doesNotMatch(html, /All Access|propbetedge\.ai\/pro|FIGHT SIMULATOR/);
+  assert.doesNotMatch(html, /All Access|propbetedge\.ai\/pro/);
 });
 
-test("rendered mobile drawer: primary routes first, then More (with Store); no simulator link, no All Access row", async () => {
+test("rendered mobile drawer: Fight Simulator third, above the fold, then More (with Store); no All Access row", async () => {
   const html = await renderNav("mobile");
   const i = html.indexOf('class="mnav-group"');
   assert.ok(i > 0, "More group rendered");
-  assert.deepEqual(hrefs(html.slice(0, i)), ["/fight-week", "/algo/card", "/events", "/fighters", "/rankings", "/news"]);
+  assert.deepEqual(hrefs(html.slice(0, i)), ["/fight-week", "/algo/card", "/simulator", "/events", "/fighters", "/rankings", "/news"]);
   assert.ok(hrefs(html.slice(i)).includes("/store"));
-  assert.ok(!hrefs(html).includes("/simulator"));
-  assert.doesNotMatch(html, /All Access|propbetedge\.ai\/pro|FIGHT SIMULATOR/);
+  assert.ok(!hrefs(html.slice(i)).includes("/simulator"), "never inside More");
+  assert.doesNotMatch(html, /All Access|propbetedge\.ai\/pro/);
 });
 
-test("rendered: flipping the slot live (pending off) places FIGHT SIMULATOR directly after PBE PICKS with the LABS badge", async () => {
-  const sim = NAV.find((n) => n.href === "/simulator") as { pending?: boolean };
-  sim.pending = false;
-  try {
-    const html = await renderNav("desktop");
-    const bar = html.slice(0, html.indexOf("nav-more"));
-    assert.deepEqual(hrefs(bar), ["/fight-week", "/algo/card", "/simulator", "/events", "/fighters", "/rankings", "/news"]);
-    const simTag = bar.match(/<a[^>]*href="\/simulator"[^>]*>/)![0];
-    assert.match(simTag, /class="nav-pbe-picks"/);
-    assert.match(simTag, /data-nav-badge="LABS"/);
-    assert.match(bar, /FIGHT SIMULATOR<\/span><span class="nav-pro">LABS<\/span>/);
-    const mobile = await renderNav("mobile");
-    assert.deepEqual(hrefs(mobile.slice(0, mobile.indexOf('class="mnav-group"'))).slice(0, 3), ["/fight-week", "/algo/card", "/simulator"], "first-class in the drawer, never in More");
-  } finally { sim.pending = true; }
-});
+

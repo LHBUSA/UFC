@@ -63,11 +63,10 @@ export const NAV: ReadonlyArray<NavItem> = [
    * badge, NavLinks + pbe-flagship.css). PRO, never LIVE: the product holds
    * provisional fight-week calls and locked calls, not live-game odds. */
   { href: "/algo/card", label: "PBE PICKS", place: "primary", flagship: true },
-  /* PBE Fight Simulator (PBE Labs): the prime slot after PBE PICKS. Reserved
-   * while the Phase 4 production route is built; `pending` keeps it out of
-   * every menu until app/simulator/page.tsx exists, then the flag comes off
-   * and it renders first-class on desktop and at the top of the drawer. */
-  { href: "/simulator", label: "FIGHT SIMULATOR", place: "primary", flagship: true, badge: "LABS", pending: true },
+  /* PBE Fight Simulator (PBE Labs): the prime slot after PBE PICKS, first-class
+   * on desktop and high in the drawer (app/simulator/page.tsx). LABS, never PRO:
+   * it is not a UFC Pro feature (lib/labsAccess.ts). */
+  { href: "/simulator", label: "FIGHT SIMULATOR", place: "primary", flagship: true, badge: "LABS" },
   { href: "/events", label: "Schedule", place: "primary" },
   { href: "/fighters", label: "Fighters", place: "primary" },
   { href: "/rankings", label: "Rankings", place: "primary" },

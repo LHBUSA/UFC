@@ -41,7 +41,9 @@
     "test:status": "node --experimental-strip-types --test lib/status.test.ts lib/status-groups.test.ts",
     "test:fight-week-snapshot": "node --experimental-strip-types --test lib/fightWeekSnapshot.test.ts",
     "test:editorial-evidence": "node --experimental-strip-types --test lib/editorialEvidence.test.ts",
-    "test:nav": "node --experimental-strip-types --test lib/nav.test.ts"
+    "test:nav": "node --experimental-strip-types --test lib/nav.test.ts",
+    "test:simulator": "node --experimental-strip-types --test lib/simulator.test.ts lib/simulatorEngine.test.ts",
+    "sync:simulator": "node scripts/sync-simulator-engine.mjs"
   },
   "dependencies": {
     "next": "^15.5.25",

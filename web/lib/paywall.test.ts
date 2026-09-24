@@ -67,9 +67,9 @@ test("no second Pro check exists outside the access decision", () => {
   }
 });
 
-const PREMIUM_READS = /\b(getFighterDna|getMatchupDna|getMarketsFor|getEditorialMarket|marketProviderLive|unresolvedBouts|getAlgoBout|getAlgoCards|getAlgoRecord|getAlgoNextCardSummary)\s*\(/;
+const PREMIUM_READS = /\b(getFighterDna|getMatchupDna|getMarketsFor|getEditorialMarket|marketProviderLive|unresolvedBouts|getAlgoBout|getAlgoCards|getAlgoRecord|getAlgoNextCardSummary|runSimulation)\s*\(/;
 /* Data libraries define the reads; the QA fixture page 404s in production. */
-const PREMIUM_READ_ALLOW = new Set(["lib/dna.ts", "lib/market.ts", "lib/editorialMarket.ts", "lib/pregame.ts", "lib/algo.ts", "app/qa/preview/page.tsx"]);
+const PREMIUM_READ_ALLOW = new Set(["lib/dna.ts", "lib/market.ts", "lib/editorialMarket.ts", "lib/pregame.ts", "lib/algo.ts", "lib/simulator.ts", "app/qa/preview/page.tsx"]);
 /* Every file that performs a premium read, with the exact guard that keeps a
  * free render from performing it. A new premium read site fails this test
  * until its guard is written down here. */
@@ -102,6 +102,9 @@ const GUARDS: Record<string, RegExp[]> = {
     /const mainMarketPromise = mainEvent\s*\? Promise\.all\(\[\s*marketProviderLive\(\),/,
     /getMarketsFor\(\s*\[mainEvent\.id\],\s*new Map\(\[\[mainEvent\.id, \{ a: mainEvent\.fighter_a\.id, b: mainEvent\.fighter_b\.id \}\]\]\),\s*\)/,
   ],
+  /* PBE Labs Fight Simulator: results are computed only when the Labs decision (lib/labsAccess.ts, built on
+   * access.pro) allows them; the decision is made before the read and a free render never simulates. */
+  "app/simulator/page.tsx": [/const labs = labsSimulatorAccess\(access\);[\s\S]*?if \(selection && labs\.allowed\) \{\s*try \{ result = await runSimulation\(/],
   "components/StoryView.tsx": [/const editorialMarket = access\.pro \? await getEditorialMarket/, /const dna = access\.pro && bout && a\.story_type === "fight_preview" \? await getMatchupDna/],
 };
 /* Components that do not call getUfcAccess() themselves because they are handed
