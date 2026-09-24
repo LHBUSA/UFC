@@ -83,26 +83,6 @@
 .fw-rail-pro .fw-rail-aa { margin: 2px 0 10px; }
 @media (max-width: 640px) { .pro-preview-actions { min-width: 0; } }
 
-/* ---- navigation: first-class ALL ACCESS ----------------------------------- */
-.hdr-cta .hdr-aa {
-  gap: 6px; padding: 9px 13px; color: var(--pbe-ink, #14110d); border-color: var(--pbe-gold, #d4af37);
-  background: linear-gradient(135deg, var(--pbe-gold-bright, #e9c75a), var(--pbe-gold, #d4af37));
-  font: 800 11px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase;
-  box-shadow: 0 8px 22px rgba(212,175,55,.22);
-}
-.hdr-cta .hdr-aa::before { content: "★"; font-size: 10px; }
-.hdr-cta .hdr-aa:hover { filter: brightness(1.06); color: var(--pbe-ink, #14110d); border-color: var(--pbe-gold-bright, #e9c75a); }
-/* Under the desktop bar's breakpoint the drawer carries the link (below). */
-@media (max-width: 1080px) { .hdr-cta .hdr-aa { display: none; } }
-
-.mnav .mnav-aa {
-  min-height: 48px; color: var(--pbe-gold-bright, #e9c75a);
-  font: 800 14px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase;
-  background: linear-gradient(180deg, rgba(212,175,55,.16), rgba(212,175,55,.05)); border-bottom: 1px solid rgba(212,175,55,.35);
-}
-.mnav .mnav-aa span::before { content: "★ "; }
-.mnav .mnav-aa small { color: var(--pbe-paper-2, #e8e1d4); }
-.mnav .mnav-aa::after { color: var(--pbe-gold-bright, #e9c75a); }
 
 /* ---- footer: ALL ACCESS + WHAT'S INCLUDED ---------------------------------- */
 .ftr .ftr-aa-link { color: var(--pbe-gold-bright, #e9c75a); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }

@@ -46,12 +46,10 @@ export const SITE = {
  *   more     the accessible "More ▾" menu (grouped) and the mobile "More" group
  *   logo     the wordmark already links here (no duplicate text link on desktop)
  *   cta      rendered as the Go Pro button, not as a text link
- *   network  the PropBetEdge All Access door: a first-class gold link in the
- *            header (desktop) and at the top of the mobile drawer, rendered by
- *            Shell.tsx for readers who can still be sold the network; never in
- *            the More group
+ * All Access is sold on /pro, the account page, the purchase surfaces and the
+ * footer, never from the header bar (owner decision).
  * Removing a link from the bar never removes a route. */
-export type NavPlace = "primary" | "more" | "logo" | "cta" | "network";
+export type NavPlace = "primary" | "more" | "logo" | "cta";
 export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace; group?: string; flagship?: boolean }> = [
   { href: "/", label: "Home", place: "logo" },
   { href: "/fight-week", label: "Fight Week", place: "primary" },
@@ -87,10 +85,6 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
    * would read as a duplicate. Same-tab: propbetedge.ai is first-party.
    * Literal (not NETWORK.news.href) so scripts/preservation-diff.mjs sees it. */
   { href: "https://propbetedge.ai/", label: "Sports News", place: "more", group: "PropBetEdge" },
-  /* All Access first: the network umbrella is a first-class destination, not a
-   * More item. Literal URL (== ALL_ACCESS_URL in lib/pbe-membership.js, pinned
-   * by lib/allAccessHero.test.ts) so the preservation scripts can see it. */
-  { href: "https://propbetedge.ai/pro", label: "All Access", place: "network" },
   { href: "/pro", label: "Pro", place: "cta" },
 ] as const;
 

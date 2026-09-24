@@ -166,6 +166,11 @@ test("UI reads the derived flags, never re-derives from plan names or prices", (
   assert.match(shell, /<MembershipBadge m=\{access\.membership\} href="\/account"/);
   assert.equal((shell.match(/access\.membership\.show_purchase_cta && <Link href="\/pro" className="btn gold">Go Pro<\/Link>/g) || []).length, 2, "header and drawer both gate Go Pro on show_purchase_cta");
   assert.doesNotMatch(shell, /access\.tier === "owner" \? "Owner" : access\.pro \? "Pro"/);
+  /* Owner decision: the header and drawer carry no All Access item; the footer does. */
+  assert.doesNotMatch(shell, /hdr-aa|mnav-aa|data-ufc-all-access="nav/);
+  assert.match(shell, /data-ufc-footer-all-access=""/);
+  assert.match(shell, /data-ufc-footer-all-access-included=""/);
+  assert.doesNotMatch(read("lib/site.ts"), /place: "network"/);
   const acct = read("app/account/page.tsx");
   assert.match(acct, /<MembershipBadge m=\{m\} className="account-plan" \/>/);
   assert.match(acct, /m\.show_purchase_cta && <Link href="\/pro"/);

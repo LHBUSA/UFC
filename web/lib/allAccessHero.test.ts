@@ -187,29 +187,28 @@ test("purchase surfaces are inline: no nested scroll container wraps them", () =
 
 /* ---- nav + footer ----------------------------------------------------------- */
 
-test("NAV: a first-class 'network' entry for All Access; every required href kept", () => {
-  const aa = NAV.find((n) => n.place === "network");
-  assert.ok(aa, "NAV has a network entry");
-  assert.equal(aa!.href, ALL_ACCESS_URL);
-  assert.equal(aa!.label, "All Access");
+test("NAV: no All Access item in the header or drawer (owner decision); every required href kept; Go Pro stays the CTA", () => {
+  assert.equal(NAV.find((n) => n.href === ALL_ACCESS_URL || /all access/i.test(n.label)), undefined, "NAV carries no All Access entry");
+  assert.ok(!NAV.some((n) => (n as { place?: string }).place === "network"), "no 'network' NavPlace remains");
   for (const h of ["/", "/fight-week", "/events", "/contender-series", "/fighters", "/rankings", "/history", "/news", "/pro"]) assert.ok(NAV.some((n) => n.href === h), `NAV kept ${h}`);
   assert.ok(NAV.some((n) => n.href === "/pro" && n.place === "cta"), "Go Pro stays the CTA");
+  assert.doesNotMatch(read("lib/site.ts"), /"network"|propbetedge\.ai\/pro/);
 });
 
-test("Shell: gold ALL ACCESS link in the header (desktop) and first in the drawer, gated on the derived flags; footer carries ALL ACCESS + WHAT'S INCLUDED", () => {
+test("Shell: the header and drawer carry no All Access item; the footer carries ALL ACCESS + WHAT'S INCLUDED", () => {
   const shell = read("components/Shell.tsx");
-  assert.match(shell, /const allAccessNav = NAV\.find\(\(n\) => n\.place === "network"\)/);
-  assert.match(shell, /const showAllAccess = access\.membership\.show_purchase_cta \|\| access\.membership\.show_all_access_upgrade;/);
-  assert.match(shell, /\{showAllAccess && <a href=\{allAccessNav\.href\} className="btn hdr-aa" rel="noopener" data-ufc-all-access="nav"/);
-  assert.match(shell, /<MobileNav>\s*\{\/\*[^]*?\*\/\}\s*\{showAllAccess && <a href=\{allAccessNav\.href\} className="mnav-aa" rel="noopener" data-ufc-all-access="nav-mobile">/);
-  assert.ok(shell.indexOf('data-ufc-all-access="nav-mobile"') < shell.indexOf('<NavLinks className="" variant="mobile" />'), "drawer link precedes the primary list, never inside More");
+  const header = shell.slice(0, shell.indexOf("export function Footer"));
+  assert.doesNotMatch(header, /hdr-aa|mnav-aa|data-ufc-all-access=|allAccessNav|showAllAccess|"network"/, "no header pill, no drawer row");
+  assert.doesNotMatch(header, /ALL_ACCESS_OFFER|propbetedge\.ai\/pro/, "the header sells nothing but Go Pro");
+  assert.doesNotMatch(read("components/NavLinks.tsx"), /propbetedge\.ai\/pro|All Access|network/);
   const footer = shell.slice(shell.indexOf("export function Footer"));
   assert.match(footer, /<a href=\{ALL_ACCESS_URL\} className="ftr-aa-link" rel="noopener" data-ufc-footer-all-access="">All Access<\/a>/);
   assert.match(footer, /<a href=\{ALL_ACCESS_URL\} rel="noopener" data-ufc-footer-all-access-included="">What&apos;s included<\/a>/);
-  /* the desktop link is a header item, not a More group entry */
-  assert.doesNotMatch(read("components/NavLinks.tsx"), /propbetedge\.ai\/pro|All Access/);
   const css = read("app/all-access.css");
-  assert.match(css, /\.hdr-cta \.hdr-aa \{/);
-  assert.match(css, /@media \(max-width: 1080px\) \{ \.hdr-cta \.hdr-aa \{ display: none; \} \}/);
-  assert.match(css, /\.mnav \.mnav-aa \{[^}]*min-height: 48px/);
+  assert.doesNotMatch(css, /hdr-aa|mnav-aa/, "no nav/drawer rules remain");
+  assert.match(css, /\.ftr \.ftr-aa-link \{/);
+  /* the commercial surfaces are untouched */
+  assert.match(read("app/pro/page.tsx"), /<ProPlans email=\{account\?\.email \?\? null\} membership=\{membership\} \/>/);
+  assert.match(read("components/ui.tsx"), /<AllAccessHero m=\{membership\} variant="surface" email=\{email\} \/>/);
+  assert.match(read("app/account/page.tsx"), /m\.show_all_access_upgrade && <div className="mt-5"><AllAccessHero m=\{m\} variant="panel" email=\{m\.email\} \/><\/div>/);
 });
