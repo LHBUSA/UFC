@@ -21,6 +21,9 @@
  */
 
 import { isCanonicalOwner } from "./authPolicy.ts";
+import { deriveMembership, type AccessSource, type Membership } from "./pbe-membership.js";
+
+export type { AccessSource, Membership };
 
 export type AccessTier = "free" | "pro" | "owner";
 
@@ -38,10 +41,14 @@ export type LedgerSubscription = {
   status: string;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
+  /** The product actually subscribed (ufc_pro, pbe_all_access, …); display only. */
+  product_key?: string | null;
 };
 
 export type LedgerRead =
-  | { state: "ok"; entitled: boolean; subscription: LedgerSubscription | null }
+  /* `accessSource` is the billing Worker's own word for WHICH grant is behind
+   * `entitled`. It never widens access: `entitled` alone decides that. */
+  | { state: "ok"; entitled: boolean; subscription: LedgerSubscription | null; accessSource?: AccessSource | null }
   | { state: "unavailable" }
   | { state: "skipped" };
 
@@ -52,15 +59,39 @@ export type UfcAccess = {
   source: "owner" | "stripe" | null;
   /** The ledger subscription behind a Stripe grant, for the account page. */
   subscription: LedgerSubscription | null;
+  /** The shared PropBetEdge membership state (FREE / UFC PRO ACTIVE / ALL
+   *  ACCESS ACTIVE / OWNER), derived here from the verdict's access_source and
+   *  nothing else. Browser-safe; the session route returns it as is. */
+  membership: Membership;
   ledger: LedgerRead["state"];
   /** True when the session belongs to a non-owner with no current entitlement:
    *  the caller must revoke it. Never set when the ledger was unreachable. */
   revokeSession: boolean;
 };
 
+const SPORT = "ufc";
+
 export const FREE_SIGNED_OUT: UfcAccess = Object.freeze({
-  tier: "free", pro: false, signedIn: false, source: null, subscription: null, ledger: "skipped", revokeSession: false,
+  tier: "free", pro: false, signedIn: false, source: null, subscription: null, membership: deriveMembership({ sport: SPORT, entitled: false }), ledger: "skipped", revokeSession: false,
 });
+
+/** The membership object for an entitled account. The canonical owner path is
+ *  access_source 'owner'; a ledger grant carries the Worker's access_source
+ *  ('sport' | 'all_access'), and an older verdict without one is the sport's
+ *  own plan. Plan names and prices never enter the decision. */
+function memberOf(account: AccountInput, ledger: LedgerRead, accessSource: AccessSource | null): Membership {
+  const sub = ledger.state === "ok" ? ledger.subscription : null;
+  return deriveMembership({
+    sport: SPORT,
+    entitled: true,
+    accessSource,
+    productKey: sub?.product_key ?? null,
+    plan: sub?.plan ?? null,
+    email: account.email,
+    currentPeriodEnd: sub?.current_period_end ?? null,
+    cancelAtPeriodEnd: sub?.cancel_at_period_end ?? false,
+  });
+}
 
 export function isOwner(account: AccountInput | null, ownerEmail: string | undefined | null): boolean {
   if (!account) return false;
@@ -79,10 +110,10 @@ export function needsLedger(account: AccountInput | null, ownerEmail: string | u
 export function decideUfcAccess(account: AccountInput | null, ledger: LedgerRead, ownerEmail: string | undefined | null): UfcAccess {
   if (!account) return FREE_SIGNED_OUT;
   if (isOwner(account, ownerEmail)) {
-    return { tier: "owner", pro: true, signedIn: true, source: "owner", subscription: ledger.state === "ok" ? ledger.subscription : null, ledger: ledger.state, revokeSession: false };
+    return { tier: "owner", pro: true, signedIn: true, source: "owner", subscription: ledger.state === "ok" ? ledger.subscription : null, membership: memberOf(account, ledger, "owner"), ledger: ledger.state, revokeSession: false };
   }
   if (ledger.state === "ok" && ledger.entitled === true) {
-    return { tier: "pro", pro: true, signedIn: true, source: "stripe", subscription: ledger.subscription, ledger: ledger.state, revokeSession: false };
+    return { tier: "pro", pro: true, signedIn: true, source: "stripe", subscription: ledger.subscription, membership: memberOf(account, ledger, ledger.accessSource ?? null), ledger: ledger.state, revokeSession: false };
   }
   return { ...FREE_SIGNED_OUT, ledger: ledger.state, revokeSession: ledger.state === "ok" };
 }

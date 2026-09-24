@@ -10,6 +10,7 @@ import { CheckoutVerifyRefresh } from "@/components/CheckoutVerifyRefresh";
 import { getCurrentAccount } from "@/lib/auth";
 import { algoCallsActive, getAlgoPublicRecord, getAlgoUpsetProof } from "@/lib/algo";
 import { PbeUpsetRadar } from "@/components/PbeUpsetRadar";
+import { ManageLink, MembershipBadge } from "@/components/Membership";
 
 export const metadata: Metadata = {
   title: "UFC Pro — PBE Picks, UFC Predictions, Fight DNA & Market Edge",
@@ -28,6 +29,8 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
   const account = access.signedIn ? rawAccount : null;
   const owner = access.tier === "owner";
   const active = access.pro;
+  const membership = access.membership;
+  const allAccess = membership.state === "all_access";
   /* The query string picks which sentence to show. It is never an input to
    * access: `access` above was decided from the session and the ledger. */
   const ret = parseCheckoutReturn(params);
@@ -50,7 +53,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
           {returning === "active" ? (
             <>
               <div className="eyebrow">Payment received · access verified</div>
-              <h2>{owner ? "Owner access is active." : "UFC Pro is active on this account."}</h2>
+              <h2>{owner ? "Owner access is active." : allAccess ? "All Access is active on this account." : "UFC Pro is active on this account."}</h2>
               <p>Your account&apos;s entitlement was confirmed server-side. Every Pro surface is unlocked.</p>
               <div className="row mt-3">{next ? <Link href={next} className="btn gold">Back to where you were</Link> : <Link href="/fighters" className="btn gold">Explore Fight DNA</Link>}<Link href="/account" className="btn">Account &amp; billing</Link></div>
             </>
@@ -79,21 +82,22 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
         <section className="card hi pro-access-active">
           <div className="between" style={{ gap: 18, alignItems: "flex-start" }}>
             <div>
-              <div className="eyebrow">{owner ? "Owner access" : "UFC Pro"}</div>
-              <h2 className="serif" style={{ margin: "7px 0 8px" }}>{owner ? "Unlimited UFC access is active." : "Your UFC Pro access is active."}</h2>
+              <div className="eyebrow">{owner ? "Owner access" : allAccess ? "PropBetEdge All Access" : "UFC Pro"}</div>
+              <h2 className="serif" style={{ margin: "7px 0 8px" }}>{owner ? "Unlimited UFC access is active." : allAccess ? "All Access covers UFC Pro on this account." : "Your UFC Pro access is active."}</h2>
               <p className="dim sm" style={{ maxWidth: 720 }}>
-                {owner ? "No usage cap. No expiry. No checkout required." : "Your server-side entitlement is active for this account."} Fight DNA and every released Pro surface are available to your account; features that do not yet have verified source/model output remain truthfully unavailable rather than being fabricated.
+                {owner ? "No usage cap. No expiry. No checkout required." : allAccess ? "Every current and future PropBetEdge Pro sport is active for this account." : "Your server-side entitlement is active for this account."} Fight DNA and every released Pro surface are available to your account; features that do not yet have verified source/model output remain truthfully unavailable rather than being fabricated.
               </p>
             </div>
-            <span className="account-plan owner">{owner ? "OWNER · UNLIMITED" : "UFC PRO · ACTIVE"}</span>
+            <MembershipBadge m={membership} className="account-plan" />
           </div>
           <div className="row mt-4">
             <Link href="/account" className="btn gold">Account &amp; access</Link>
             <Link href="/events" className="btn">Open fight cards</Link>
             <Link href="/fighters" className="btn">Explore Fight DNA</Link>
+            <ManageLink m={membership} label="Manage subscription" className="btn" />
           </div>
         </section>
-      ) : returning === "verifying" || returning === "sign_in" ? null : <ProPlans email={account?.email ?? null} />}
+      ) : returning === "verifying" || returning === "sign_in" ? null : <ProPlans email={account?.email ?? null} membership={membership} />}
 
       <section className="card hi mt-6 pro-algo pro-algo-sales" aria-labelledby="pro-algo-title">
         <div className="eyebrow">UFC Pro flagship · PBE Picks · {algoIsLive ? (algoRecord.locked_predictions ? `${algoRecord.locked_predictions} official call${algoRecord.locked_predictions === 1 ? "" : "s"} locked` : "official calls active · first lock pending") : "official record begins at first lock"}</div>
@@ -165,7 +169,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
       <div className="card hi mt-6 between">
         <div>
           <div className="eyebrow">Access status</div>
-          <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>{active ? (owner ? "Owner entitlement: unlimited." : "UFC Pro entitlement: active.") : "Founding season pricing."}</div>
+          <div style={{ fontWeight: 700, color: "var(--pbe-paper)", fontSize: 18 }}>{active ? (owner ? "Owner entitlement: unlimited." : allAccess ? "All Access entitlement: active." : "UFC Pro entitlement: active.") : "Founding season pricing."}</div>
           <div className="faint sm">{active ? "Access is controlled server-side by your UFC account entitlement." : `UFC Pro is ${PRO_OFFER.plans.monthly.display}/month or ${PRO_OFFER.plans.weekly.display}/week. No free trial. Cancel anytime.`} Model-only surfaces still require actual validated model output regardless of plan.</div>
         </div>
         <Link href={access.signedIn ? "/account" : signInHref} className="btn">{access.signedIn ? "Account status" : "Sign in"}</Link>

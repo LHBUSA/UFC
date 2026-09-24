@@ -7,6 +7,8 @@ import { PRO_OFFER } from "@/lib/proOffer";
 import { getCustomerOrders } from "@/lib/store/customer-orders";
 import { formatPrice } from "@/lib/store/types";
 import { Mark } from "@/components/Brand";
+import { planText } from "@/lib/pbe-membership.js";
+import { AllAccessCard, ManageLink, MembershipBadge, NetworkLink, NetworkRow } from "@/components/Membership";
 
 export const metadata: Metadata = { title: "UFC Account", description: "Your PropBetEdge UFC access, entitlements and store orders.", robots: { index: false, follow: false } };
 
@@ -26,6 +28,10 @@ export default async function AccountPage() {
     }),
   ]);
   const sub = access.subscription;
+  /* The shared membership state (FREE / UFC PRO ACTIVE / ALL ACCESS ACTIVE /
+   * OWNER) was derived server-side from the billing verdict's access_source. */
+  const m = access.membership;
+  const sportPrice = sub?.plan === "weekly" ? `${PRO_OFFER.plans.weekly.display}/week` : sub?.plan === "monthly" ? `${PRO_OFFER.plans.monthly.display}/month` : null;
   const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
   const accessThrough = sub?.current_period_end ? fmtDay(sub.current_period_end) : null;
 
@@ -38,17 +44,17 @@ export default async function AccountPage() {
           <h1 className="serif">{account.display_name || account.email}</h1>
           <p className="dim sm">{account.email}</p>
         </div>
-        <span className={`account-plan${access.tier === "owner" ? " owner" : access.pro ? " pro" : ""}`}>{access.tier === "owner" ? "OWNER" : access.pro ? "UFC PRO" : "FREE"}</span>
+        <MembershipBadge m={m} className="account-plan" />
       </div>
 
       <div className="grid-3 mt-5">
         <div className="card">
           <div className="eyebrow dim">Access</div>
-          <div className="account-value">{access.tier === "owner" ? "Owner · unlimited" : access.pro ? "UFC Pro active" : "Free"}</div>
-          {access.tier === "owner" ? <p className="faint sm">No expiry and no usage cap.</p>
-            : access.source === "stripe" && sub ? (
+          <div className="account-value">{m.state === "owner" ? "Owner · unlimited" : m.state === "all_access" ? "All Access active" : m.state === "sport_pro" ? "UFC Pro active" : "Free"}</div>
+          {m.state === "owner" ? <p className="faint sm">No expiry and no usage cap.</p>
+            : m.show_manage && sub ? (
               <dl className="billing-rows">
-                <dt>Plan</dt><dd>{sub.plan === "weekly" ? `${PRO_OFFER.plans.weekly.label} · ${PRO_OFFER.plans.weekly.display}/week` : sub.plan === "monthly" ? `${PRO_OFFER.plans.monthly.label} · ${PRO_OFFER.plans.monthly.display}/month` : "UFC Pro"}</dd>
+                <dt>Plan</dt><dd>{m.state === "all_access" ? planText(m) : sportPrice ? `${planText(m)} · ${sportPrice}` : planText(m)}</dd>
                 <dt>Status</dt><dd>{sub.cancel_at_period_end ? "Active · cancels at period end" : "Active"}</dd>
                 {accessThrough && <><dt>{sub.cancel_at_period_end ? "Access through" : "Renews"}</dt><dd>{accessThrough}</dd></>}
               </dl>
@@ -57,13 +63,25 @@ export default async function AccountPage() {
             : access.ledger === "unavailable" ? <p className="faint sm">Billing status could not be checked just now. Refresh in a moment.</p>
             : <p className="faint sm">Upgrade any time.</p>}
           <div className="row mt-3">
-            {access.tier !== "owner" && (access.source === "stripe" || sub) ? <a href={PRO_OFFER.customerPortalLoginUrl} className="btn" target="_blank" rel="noopener">Manage billing</a> : null}
-            {!access.pro && <Link href="/pro" className="btn gold">{sub ? "Resubscribe" : "Unlock UFC Pro"}</Link>}
+            {/* Manage billing follows the shared rule: UFC Pro and All Access
+                members manage a subscription; the owner has none. A lapsed
+                subscription (entitled:false) still gets the portal to fix it. */}
+            {m.show_manage ? <ManageLink m={m} label="Manage billing" className="btn" />
+              : m.state === "free" && sub ? <a href={PRO_OFFER.customerPortalLoginUrl} className="btn" target="_blank" rel="noopener noreferrer">Manage billing ↗</a> : null}
+            {m.show_purchase_cta && <Link href="/pro" className="btn gold">{sub ? "Resubscribe" : "Unlock UFC Pro"}</Link>}
+          </div>
+          <div className="pbe-mbr-panel mt-4">
+            <div className="pbe-mbr-links"><NetworkLink m={m} /></div>
+            <NetworkRow current="ufc" />
           </div>
         </div>
         <div className="card"><div className="eyebrow dim">Role</div><div className="account-value">{account.role === "owner" ? "Owner" : account.role === "admin" ? "Admin" : "Member"}</div><p className="faint sm">Server-side entitlement; never inferred from the browser.</p></div>
         <div className="card"><div className="eyebrow dim">Session</div><div className="account-value">Secure</div><p className="faint sm">Passwordless session established with an HttpOnly cookie.</p></div>
       </div>
+
+      {/* UFC Pro members see the network umbrella as an optional upgrade; All
+          Access members and the owner are never sold anything here. */}
+      {m.show_all_access_upgrade && <div className="mt-5"><AllAccessCard m={m} /></div>}
 
       <section id="orders" className="card mt-5">
         <div className="between" style={{ gap: 18, alignItems: "flex-start" }}>

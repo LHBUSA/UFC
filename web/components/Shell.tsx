@@ -8,6 +8,7 @@ import { CURRENT_SPORT, NETWORK } from "@/lib/network";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { getUfcAccess } from "@/lib/access";
+import { MembershipBadge } from "./Membership";
 import { eventSlug } from "@/lib/slug";
 import { daysUntil, eventShortName, fmtDate } from "@/lib/format";
 
@@ -37,8 +38,11 @@ export async function Header() {
             </Link>
           )}
           <StoreCartButton />
-          {access.signedIn ? <Link href="/account" className="btn account-btn">{access.tier === "owner" ? "Owner" : access.pro ? "Pro" : "Account"}</Link> : <Link href="/login" className="btn account-btn">Sign in</Link>}
-          {!access.pro && <Link href="/pro" className="btn gold">Go Pro</Link>}
+          {/* Signed-in members see their shared membership badge (UFC PRO ACTIVE /
+              ALL ACCESS ACTIVE / OWNER) as the account door; "Go Pro" is sold only
+              to a reader the server says has nothing yet. */}
+          {access.signedIn ? <MembershipBadge m={access.membership} href="/account" className="account-btn" title="Account" /> : <Link href="/login" className="btn account-btn">Sign in</Link>}
+          {access.membership.show_purchase_cta && <Link href="/pro" className="btn gold">Go Pro</Link>}
           <label htmlFor="mnav-toggle" className="menu-btn" aria-label="Open menu"><span /><span /><span /></label>
         </div>
       </div>
@@ -47,8 +51,8 @@ export async function Header() {
         <div className="mnav-foot">
           <StoreCartButton mobile />
           {next && <Link href={nextHref} className="btn">{nextLabel} · {fmtDate(next.event_date, { month: "short", day: "numeric" })}</Link>}
-          <Link href={access.signedIn ? "/account" : "/login"} className="btn">{access.signedIn ? "Account" : "Sign in"}</Link>
-          {!access.pro && <Link href="/pro" className="btn gold">Go Pro</Link>}
+          {access.signedIn ? <MembershipBadge m={access.membership} href="/account" title="Account" /> : <Link href="/login" className="btn">Sign in</Link>}
+          {access.membership.show_purchase_cta && <Link href="/pro" className="btn gold">Go Pro</Link>}
         </div>
       </MobileNav>
     </header>

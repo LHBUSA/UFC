@@ -25,9 +25,18 @@ export async function readUfcEntitlement(email: string): Promise<Exclude<LedgerR
       console.error(`[entitlement] read HTTP ${res.status}`);
       return { state: "unavailable" };
     }
-    const body = (await res.json()) as { entitled?: unknown; product_key?: unknown; subscription?: LedgerSubscription | null };
+    /* The verdict body: the top-level product_key must echo what we asked for,
+     * `access_source` says WHICH grant is behind `entitled` ('sport' = ufc_pro
+     * itself, 'all_access' = the network umbrella, 'owner'), and
+     * subscription.product_key names the product actually subscribed. Both are
+     * kept for the shared membership contract; neither decides access here. */
+    const body = (await res.json()) as { entitled?: unknown; product_key?: unknown; access_source?: unknown; subscription?: LedgerSubscription | null };
     if (body.product_key !== PRODUCT_KEY || typeof body.entitled !== "boolean") return { state: "unavailable" };
-    return { state: "ok", entitled: body.entitled, subscription: body.subscription ?? null };
+    const accessSource = body.access_source === "sport" || body.access_source === "all_access" || body.access_source === "owner" ? body.access_source : null;
+    const subscription = body.subscription && typeof body.subscription === "object"
+      ? { ...body.subscription, product_key: typeof body.subscription.product_key === "string" ? body.subscription.product_key : null }
+      : null;
+    return { state: "ok", entitled: body.entitled, accessSource, subscription };
   } catch (error) {
     console.error("[entitlement] read failed", String((error as Error)?.message || error).slice(0, 160));
     return { state: "unavailable" };

@@ -7,6 +7,8 @@ import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, daysUntil, eventBrand, eventHeadline, eventStatusLabel, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, initials, locationLine, METHOD_LABEL, METHOD_SHORT, weightClassLabel, age, stanceLabel, cityLine, winnerOf } from "@/lib/format";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
 import { PRO_OFFER } from "@/lib/proOffer";
+import { planText, type Membership } from "@/lib/pbe-membership.js";
+import { AllAccessCard, ManageLink, MembershipBadge, NetworkLink } from "./Membership";
 import { OCTAGON } from "./Brand";
 import { FighterRank, BestRank } from "@/components/RankBadge";
 import type { FighterRankingContext } from "@/lib/rankingContext";
@@ -397,12 +399,27 @@ function impactOf(a: Article): number | null {
   return typeof v === "number" && v > 0 ? Math.min(5, Math.round(v)) : null;
 }
 
-export function ProPlans({ active = false, email = null }: { active?: boolean; email?: string | null } = {}) {
+export function ProPlans({ active = false, email = null, membership = null }: { active?: boolean; email?: string | null; membership?: Membership | null } = {}) {
   const monthly = PRO_OFFER.plans.monthly, weekly = PRO_OFFER.plans.weekly;
   /* Prefilling the checkout with the signed-in email is what lets the
    * entitlement Stripe grants land on the account the reader is using. */
   const checkout = (url: string) => (email ? `${url}?prefilled_email=${encodeURIComponent(email)}` : url);
+  /* Shared membership rule: an All Access member or the owner is never sold a
+   * plan again, so the whole block gives way to their badge and manage link. */
+  if (membership && (membership.state === "all_access" || membership.state === "owner")) {
+    return (
+      <div className="plans pro-offer pro-offer-member" id="pro">
+        <div className="plan pro pbe-mbr-panel">
+          <div className="pbe-mbr-row"><MembershipBadge m={membership} />{membership.email ? <span className="pbe-mbr-email">{membership.email}</span> : null}</div>
+          <p className="pbe-mbr-plan">{planText(membership)}</p>
+          <div className="pbe-mbr-links"><ManageLink m={membership} /><NetworkLink m={membership} /></div>
+          <div className="pro-cta-row"><Link href="/algo/card" className="btn gold">Open Current PBE Picks</Link><Link href="/account" className="btn">Account</Link></div>
+        </div>
+      </div>
+    );
+  }
   return (
+    <>
     <div className="plans pro-offer pro-offer-v2" id="pro">
       <div className="plan pro-free-plan">
         <div className="eyebrow dim">Free · Public proof stays public</div>
@@ -481,5 +498,9 @@ export function ProPlans({ active = false, email = null }: { active?: boolean; e
         <div className="faint label mt-3">Secure checkout by Stripe. Access unlocks on your UFC account once Stripe confirms the subscription; use the same email at checkout.</div>
       </div>
     </div>
+    {/* The network umbrella sits beneath the UFC plans, never in place of them:
+        "All Access" for a free reader, "Upgrade to All Access" for UFC Pro. */}
+    <div className="pro-offer-aa mt-4"><AllAccessCard m={membership} /></div>
+    </>
   );
 }

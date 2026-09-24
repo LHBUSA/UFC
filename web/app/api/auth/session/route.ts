@@ -20,5 +20,8 @@ export async function GET() {
     } : null,
     pro: access.pro,
     tier: access.tier,
+    /* The shared PropBetEdge membership contract: browser-safe object only,
+     * derived server-side in lib/accessDecision.ts from the billing verdict. */
+    membership: access.membership,
   }, { headers: { "Cache-Control": "no-store" } });
 }

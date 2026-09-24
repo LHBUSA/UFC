@@ -427,10 +427,11 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
             </section>
           )}
 
-          {/* Conversion slot: only a reader without Pro is sold Pro. */}
+          {/* Conversion slot: only a reader without Pro is sold Pro. `locked` is
+              null for every member (UFC Pro, All Access and owner alike). */}
           {locked && (
             <section className="fw-rail-card fw-rail-pro" aria-labelledby="fw-rail-pro-h">
-              <div className="fw-h">PBE Pro</div>
+              <div className="fw-h">UFC Pro</div>
               <strong id="fw-rail-pro-h">Unlock deeper fight intelligence.</strong>
               <p>Get premium picks, deeper matchup reads, and full fight-week tools.</p>
               <Link href="/pro" className="btn gold">Go Pro <span aria-hidden="true">→</span></Link>

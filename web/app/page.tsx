@@ -352,7 +352,7 @@ export default async function Home() {
 
       <section className="sec"><div className="wrap"><ApiCta /></div></section>
 
-      <section className="sec"><div className="wrap"><SectionHead eyebrow="Free vs Pro" title="Public proof is free. PBE Picks are Pro." /><ProPlans /></div></section>
+      <section className="sec"><div className="wrap"><SectionHead eyebrow="Free vs Pro" title="Public proof is free. PBE Picks are Pro." /><ProPlans membership={access.membership} /></div></section>
 
       <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", "@id": `${SITE.url}/#home`, url: SITE.url, name: `${SITE.name} — Live UFC Fight Intelligence`, description: SITE.description, isPartOf: { "@id": `${SITE.url}/#site` }, primaryImageOfPage: `${SITE.url}/opengraph-image`, ...(next ? { mainEntity: { "@type": "SportsEvent", name: next.name, startDate: next.event_date, url: `${SITE.url}/events/${eventSlug(next)}`, sport: "Mixed Martial Arts" } } : {}) }} />
       {articles.length > 0 && <JsonLd data={{ "@context": "https://schema.org", "@type": "ItemList", name: "Latest UFC stories", itemListElement: articles.map((a, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "NewsArticle", url: `${SITE.url}/news/${a.slug}`, headline: a.headline, datePublished: a.published_at || undefined, dateModified: a.updated_at } })) }} />}
