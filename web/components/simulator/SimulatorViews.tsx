@@ -3,7 +3,7 @@
  * simulator artifact; outputs Phase 3 did not validate are never rendered. */
 import Link from "next/link";
 import type { SimArtifact } from "@/lib/vendor/sim-engine/simulate.mjs";
-import {
+import { anchorCompare,
   COVERAGE_LABEL, MODEL_CARD, RANGE_STATS, UNAVAILABLE_COPY, coverageLine, gateReasons, methodRows, pathView, pct, roundRanges, simGate, winView,
   type SimGate,
 } from "@/lib/simulatorView";
@@ -18,6 +18,15 @@ export function GateBadge({ gate }: { gate: SimGate }) {
   return <span className={`${s.gate} ${gate === "FULL" ? s.gateFull : gate === "LIMITED" ? s.gateLimited : s.gateNone}`} data-sim-gate={gate}>{label}</span>;
 }
 
+/** Pre-simulation evidence for a list row: the two corners' Fight DNA coverage, nothing result-level. */
+export function DnaCoverage({ tiers }: { tiers: [string | null, string | null] }) {
+  return (
+    <span className={s.rowTiers} data-sim-dna-coverage="" aria-label={`Fight DNA coverage: ${COVERAGE_LABEL[tiers[0] || "none"]} and ${COVERAGE_LABEL[tiers[1] || "none"]}`}>
+      <span className={s.coverageLabel}>DNA COVERAGE</span><TierChip tier={tiers[0]} /><span className={s.faint} aria-hidden="true">·</span><TierChip tier={tiers[1]} />
+    </span>
+  );
+}
+
 export function TierChip({ tier }: { tier: string | null }) {
   const t = tier || "none";
   return <span className={`${s.tier} ${s[`tier_${t}`] || ""}`} data-sim-tier={t}>{COVERAGE_LABEL[t] || t}</span>;
@@ -25,6 +34,7 @@ export function TierChip({ tier }: { tier: string | null }) {
 
 export function WinProbability({ a, left, names }: { a: SimArtifact; left: Side; names: Record<Side, string> }) {
   const w = winView(a);
+  const cmp = anchorCompare(a);
   const lp = left === "fighter_1" ? w.f1 : w.f2, rp = left === "fighter_1" ? w.f2 : w.f1;
   return (
     <section className={`${s.card} ${s.win}`} aria-labelledby="sim-win">
@@ -38,7 +48,13 @@ export function WinProbability({ a, left, names }: { a: SimArtifact; left: Side;
         <span className={s.barD} style={{ width: `${w.draw * 100}%` }} />
         <span className={s.barR} style={{ width: `${rp * 100}%` }} />
       </div>
-      <p className={s.note}>Draw {pct(w.draw)} of 10,000 simulated fights. The simulator is anchored to the PBE Fight Model&apos;s pre-fight probability ({pct(a.anchor?.champion_probability)} for {names.fighter_1}), so the winner split and the official model agree; the fight engine adds how the fight tends to unfold.</p>
+      {cmp && (
+        <dl className={s.anchorCmp} data-sim-anchor="">
+          <div><dt>PBE Fight Model</dt><dd data-sim-model-prob="">{pct(cmp.model)} {names[cmp.side]}</dd></div>
+          <div><dt>Simulation outcome share</dt><dd data-sim-outcome-share="">{pct(cmp.simulation)} {names[cmp.side]}</dd></div>
+        </dl>
+      )}
+      <p className={s.note}>Draw {pct(w.draw)} of 10,000 simulated fights. Simulator outcomes are calibrated toward the PBE Fight Model while preserving the simulated method and fight-state distribution, so the two figures are close but not identical.</p>
     </section>
   );
 }

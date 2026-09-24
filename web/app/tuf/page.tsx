@@ -120,7 +120,7 @@ export default function TufHub() {
             </div>
           </div>
 
-          <div className={styles.stats} aria-label="TUF archive coverage">
+          <div className={styles.stats} aria-label="TUF archive at a glance">
             <div className={styles.stat}><b>{report.complete}</b><span>complete seasons</span></div>
             <div className={styles.stat}><b>{report.ongoing}</b><span>ongoing</span></div>
             {report.partial > 0 && <div className={styles.stat}><b>{report.partial}</b><span>partial</span></div>}

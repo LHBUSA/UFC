@@ -37,7 +37,7 @@
     "test:all-access": "node --experimental-strip-types --test lib/allAccessHero.test.ts",
     "test:sitemap": "node --experimental-strip-types --test lib/sitemapRules.test.ts",
     "test:dwcs": "node --experimental-strip-types --test lib/contenderIdentity.test.ts lib/dwcsAlumni.test.ts lib/retiredFighterSlugs.test.ts lib/outcomeResolution.test.ts lib/dobEvidence.test.ts",
-    "test:card-truth": "node --experimental-strip-types --test lib/cardTruth.test.ts",
+    "test:card-truth": "node --experimental-strip-types --test lib/cardTruth.test.ts lib/cardReplacement.test.ts",
     "test:status": "node --experimental-strip-types --test lib/status.test.ts lib/status-groups.test.ts",
     "test:fight-week-snapshot": "node --experimental-strip-types --test lib/fightWeekSnapshot.test.ts",
     "test:editorial-evidence": "node --experimental-strip-types --test lib/editorialEvidence.test.ts",

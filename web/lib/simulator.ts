@@ -10,7 +10,7 @@ import { getEventBouts, getUpcomingEvents, type Bout, type Event } from "./db";
 import { SNAPSHOT_SELECT } from "./vendor/pbe-model/features_core.mjs";
 import { SIMULATOR_VERSION } from "./vendor/sim-engine/params.mjs";
 import { runSimulationFromRows, type BoutFeatureRow, type CornerRows, type FighterRow, type MatchupSpec, type SimulationResult, type SnapshotRow } from "./simulatorRun";
-import { expectedGate, type SimGate } from "./simulatorView";
+import { isSimulatableBout } from "./simulatorView";
 
 const URL_ = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
@@ -58,7 +58,9 @@ export async function getCoverage(): Promise<{ date: string | null; map: Map<str
 }
 
 /* ---- upcoming bouts ---- */
-export type UpcomingSimBout = { event: Event; bout: Bout; gate: SimGate; tiers: [string | null, string | null] };
+/** A list row states pre-simulation FACTS only: each corner's Fight DNA coverage tier. FULL / LIMITED is a RESULT-level
+ * state (coverage + anchor strain + validity) and exists only after a simulation has run (simGate). */
+export type UpcomingSimBout = { event: Event; bout: Bout; tiers: [string | null, string | null] };
 
 export async function getUpcomingSimulatorBouts(): Promise<UpcomingSimBout[]> {
   const [events, coverage] = await Promise.all([getUpcomingEvents(6), getCoverage()]);
@@ -66,10 +68,10 @@ export async function getUpcomingSimulatorBouts(): Promise<UpcomingSimBout[]> {
   const out: UpcomingSimBout[] = [];
   for (const { e, bouts } of cards) {
     for (const b of bouts) {
-      if (b.status === "cancelled" || b.result || !b.fighter_a?.id || !b.fighter_b?.id) continue;
+      if (!isSimulatableBout(b)) continue;
       const t1 = coverage.map.get(b.fighter_a.id)?.tier ?? null;
       const t2 = coverage.map.get(b.fighter_b.id)?.tier ?? null;
-      out.push({ event: e, bout: b, gate: expectedGate(t1, t2), tiers: [t1, t2] });
+      out.push({ event: e, bout: b, tiers: [t1, t2] });
     }
   }
   return out;

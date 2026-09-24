@@ -16,7 +16,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { register } from "node:module";
 import { runSimulationFromRows, pickValidSnapshot, type CornerRows, type SnapshotRow } from "./simulatorRun.ts";
 import { simulate } from "./vendor/sim-engine/simulate.mjs";
-import { simGate, methodRows, winView, pathView, roundRanges, expectedGate, gateReasons, anchorStrained, MODEL_CARD, UNAVAILABLE_COPY } from "./simulatorView.ts";
+import { simGate, methodRows, winView, pathView, roundRanges, gateReasons, anchorStrained, anchorCompare, MODEL_CARD, UNAVAILABLE_COPY } from "./simulatorView.ts";
 import { labsSimulatorAccess } from "./labsAccess.ts";
 
 register("../scripts/test-tsx-hooks.mjs", import.meta.url);
@@ -77,10 +77,6 @@ test("gates: FULL, LIMITED and INSUFFICIENT_DATA; insufficient carries no distri
   assert.equal(INSUFFICIENT.probabilities, null);
   assert.equal(INSUFFICIENT.canonical_projection, null);
   assert.equal(simGate(null), "INSUFFICIENT_DATA");
-  assert.equal(expectedGate("high", "medium"), "FULL");
-  assert.equal(expectedGate("low", "high"), "LIMITED");
-  assert.equal(expectedGate(null, "high"), "INSUFFICIENT_DATA");
-  assert.equal(expectedGate("insufficient", "high"), "INSUFFICIENT_DATA");
 });
 
 test("an anchor strained beyond the validated tilt is never shown as FULL, and the reason is stated", async () => {
@@ -215,4 +211,67 @@ test("the locked panel renders no simulation output and sells membership only th
 test("route exists and is not pending", () => {
   assert.ok(existsSync(new URL("app/simulator/page.tsx", web)));
   assert.match(read("lib/site.ts"), /\{ href: "\/simulator", label: "FIGHT SIMULATOR", place: "primary", flagship: true, badge: "LABS" \}/);
+});
+
+/* ---- confidence contract: FULL / LIMITED is a RESULT; the list states Fight DNA coverage only ---- */
+const strainedArtifact = () => {
+  const fx = eng("ufc333_volkanovski_evloev");
+  return simulate({ fighter_a: fx.fighter_a, fighter_b: fx.fighter_b, anchor: { ...fx.anchor, prob: 0.985 }, settings: { scheduled_rounds: 5 }, n_sims: 3000 } as never).artifact;
+};
+const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+test("upcoming list rows state Fight DNA coverage only, never FULL or LIMITED (those exist only after a run)", async () => {
+  const { createElement: h } = await import("react");
+  const V = await views();
+  const out = await html(h(V.DnaCoverage, { tiers: ["medium", "high"] }));
+  assert.match(out, /data-sim-dna-coverage=""/);
+  assert.match(out, /DNA COVERAGE/);
+  assert.match(out, /data-sim-tier="medium">Medium</);
+  assert.match(out, /data-sim-tier="high">High</);
+  assert.doesNotMatch(out, /data-sim-gate|FULL|LIMITED|INSUFFICIENT/);
+  const page = read("app/simulator/page.tsx");
+  const list = page.slice(page.indexOf("function UpcomingList"), page.indexOf("function ManualForm"));
+  assert.match(list, /<DnaCoverage tiers=\{r\.tiers\} \/>/);
+  assert.doesNotMatch(list, /GateBadge|\.gate\b/, "no gate in list rows");
+  assert.match(page, /const gate: SimGate \| null = artifact \? simGate\(artifact\) : null;/, "no pre-run gate anywhere on the page");
+  assert.doesNotMatch(read("lib/simulator.ts"), /expectedGate|gate:/, "the upcoming list carries no gate field");
+  assert.doesNotMatch(read("lib/simulatorView.ts"), /export function expectedGate/, "the coverage-predicted gate is gone");
+});
+
+test("DNA tiers high on both corners but the anchor strained: the list does not claim FULL; the result renders LIMITED with its explanation", async () => {
+  const strained = strainedArtifact();
+  assert.equal(strained.coverage!.gate, "FULL", "coverage alone would pass");
+  const { createElement: h } = await import("react");
+  const V = await views();
+  assert.doesNotMatch(await html(h(V.DnaCoverage, { tiers: ["high", "high"] })), /FULL/);
+  const result = await renderResult(strained);
+  assert.match(result, /data-sim-limited=""/);
+  assert.match(result, /data-sim-gate="LIMITED"/);
+  assert.doesNotMatch(result, /data-sim-gate="FULL"/);
+  assert.match(result, /disagrees strongly with the PBE Fight Model/);
+});
+
+test("win probability states the PBE Fight Model and the simulation outcome share separately, and never says they are identical", async () => {
+  const strained = strainedArtifact();
+  for (const a of [LIVE.artifact, strained]) {
+    const c = anchorCompare(a)!;
+    const fav = esc(names(a)[c.side]);
+    const out = await renderResult(a);
+    assert.match(out, new RegExp(`PBE Fight Model</dt><dd data-sim-model-prob="">${(c.model * 100).toFixed(1)}% ${fav}<`));
+    assert.match(out, new RegExp(`Simulation outcome share</dt><dd data-sim-outcome-share="">${(c.simulation * 100).toFixed(1)}% ${fav}<`));
+    assert.match(out, /Simulator outcomes are calibrated toward the PBE Fight Model while preserving the simulated method and fight-state distribution/);
+    assert.doesNotMatch(out, /official model agree|winner split follows the PBE Fight Model|identical to the PBE Fight Model/);
+  }
+  const c = anchorCompare(strained)!;
+  assert.equal(c.model, 0.985);
+});
+
+test("Rosas Jr. vs Barcelos contract (live values 2026-09-24): model 76.3% and simulation share 74.4% render as two distinct figures, LIMITED", async () => {
+  const base = LIVE.artifact;
+  const a = { ...base, anchor: { ...base.anchor!, champion_probability: 0.7632, status: "excessive_tilt" }, probabilities: { ...base.probabilities!, fighter_1_win: 0.744, fighter_2_win: 0.236, draw: 0.02 } } as typeof base;
+  const out = await renderResult(a);
+  assert.match(out, /data-sim-model-prob="">76\.3% /);
+  assert.match(out, /data-sim-outcome-share="">74\.4% /);
+  assert.match(out, /data-sim-gate="LIMITED"/);
+  assert.match(out, /data-sim-limited=""/);
 });

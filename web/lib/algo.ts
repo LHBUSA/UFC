@@ -800,7 +800,9 @@ export async function getAlgoCards(access: Pick<UfcAccess, "pro">): Promise<Arra
     const focusEvent = await getCurrentOrNextUfcEvent();
     const today = focusEvent?.event_date || ufcSiteDate();
     const until = new Date(Date.parse(`${today}T12:00:00Z`) + 14 * 86400e3).toISOString().slice(0, 10);
-    const bouts = await rest<BoutRow>(`ufc_bouts?select=${BOUT_SELECT}&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`);
+    /* Card truth: the upcoming cards come from public.ufc_bouts_effective, active bouts only, so a bout the official
+     * card no longer lists (a confirmed removal) leaves /algo when it leaves the event page, Fight Week and the simulator. */
+    const bouts = await rest<BoutRow>(`ufc_bouts_effective?select=${BOUT_SELECT}&is_active=is.true&event.event_date=gte.${today}&event.event_date=lte.${until}&event.name=like.UFC*&order=bout_order.desc`);
     const ids = bouts.map((b) => b.id);
     const [evals, preds] = ids.length
       ? await Promise.all([

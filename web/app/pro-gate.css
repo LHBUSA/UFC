@@ -78,6 +78,8 @@ section.segment > .pro-preview:first-child { margin-top: 0; }
 .pro-algo-sales > * { position: relative; z-index: 1; }
 .pro-algo-sales h2 { margin: 7px 0 8px; font-size: clamp(26px, 3.6vw, 42px); line-height: 1.04; max-width: 18ch; }
 .pro-algo-sales-lede { max-width: 82ch !important; line-height: 1.7; }
+/* 320px: the two actions share a non-wrapping .row inside an overflow:hidden card; let them wrap instead of clipping. */
+.pro-algo-sales .row { flex-wrap: wrap; }
 .pro-algo-proof { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin: var(--s-4) 0; overflow: hidden; border: 1px solid var(--pbe-line-strong); border-radius: var(--r-sm); background: var(--pbe-line); }
 .pro-algo-proof > div { display: grid; gap: 3px; padding: 14px; background: rgba(8,8,7,.8); }
 .pro-algo-proof b { color: var(--pbe-paper); font: 800 clamp(18px, 2.4vw, 28px)/1 var(--pbe-font-data); }

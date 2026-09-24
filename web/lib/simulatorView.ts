@@ -135,13 +135,24 @@ export function gateReasons(a: SimArtifact | null): string[] {
     else if (code === "anchor_missing") out.push("The PBE Fight Model could not assemble a pre-fight probability for this pairing.");
     else if (code === "snapshot_contains_bout_on_or_after_as_of") out.push("A Fight DNA snapshot failed the as-of integrity check.");
   }
-  if (anchorStrained(a)) out.push("The fight engine, on Fight DNA alone, disagrees strongly with the PBE Fight Model on this matchup, beyond the correction validated in testing. The winner split follows the PBE Fight Model; treat the outcome mix and volume detail with extra caution.");
+  if (anchorStrained(a)) out.push("The fight engine, on Fight DNA alone, disagrees strongly with the PBE Fight Model on this matchup, beyond the correction validated in testing. Simulator outcomes are still calibrated toward the PBE Fight Model, but the simulated outcome share can sit further from it than usual; treat the outcome mix and volume detail with extra caution.");
   return [...new Set(out)];
 }
 
-/** Coverage-based availability for list rows, mirroring the engine gate's tier thresholds (FULL: both medium+; LIMITED: both low+). */
-export function expectedGate(t1: string | null, t2: string | null): SimGate {
-  const rank = (t: string | null) => (t === "high" ? 3 : t === "medium" ? 2 : t === "low" ? 1 : 0);
-  const lo = Math.min(rank(t1), rank(t2));
-  return lo >= 2 ? "FULL" : lo >= 1 ? "LIMITED" : "INSUFFICIENT_DATA";
+/** The two numbers the win-probability panel keeps apart, for the side the PBE Fight Model favours.
+ *  `model`: the PBE Fight Model's pre-fight probability (the anchor). `simulation`: that side's share of the 10,000
+ *  simulated fights (draws count against it). They are close by construction but not identical: the simulator is
+ *  calibrated toward the model, bounded by the validated correction, while keeping its own method and fight-state mix. */
+export type AnchorCompare = { side: "fighter_1" | "fighter_2"; model: number; simulation: number };
+export function anchorCompare(a: SimArtifact | null): AnchorCompare | null {
+  const p = a?.anchor?.champion_probability;
+  if (!a?.probabilities || typeof p !== "number" || !Number.isFinite(p)) return null;
+  const side: AnchorCompare["side"] = p >= 0.5 ? "fighter_1" : "fighter_2";
+  return { side, model: side === "fighter_1" ? p : 1 - p, simulation: side === "fighter_1" ? a.probabilities.fighter_1_win : a.probabilities.fighter_2_win };
+}
+
+/** Which bouts the simulator lists: ON the effective card (card truth already applied: a confirmed removal is
+ *  status "cancelled"), not yet fought, both corners identified. The simulator never re-derives the card. */
+export function isSimulatableBout(b: { status: string; result?: unknown; fighter_a?: { id?: string | null } | null; fighter_b?: { id?: string | null } | null }): boolean {
+  return b.status !== "cancelled" && !b.result && Boolean(b.fighter_a?.id) && Boolean(b.fighter_b?.id);
 }

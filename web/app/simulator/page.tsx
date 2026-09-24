@@ -10,7 +10,7 @@ import { simGate, type SimGate } from "@/lib/simulatorView";
 import { FITTED_PROVENANCE_V1 } from "@/lib/vendor/sim-engine/params_fitted_v1.mjs";
 import type { SimulationResult, MatchupSpec } from "@/lib/simulatorRun";
 import {
-  GateBadge, GoesDistance, HowItWorks, LimitedNote, LockedPanel, ModelCard, OutcomeDistribution, Provenance, RepresentativePath, TierChip, Unavailable, VolumeRanges, WinProbability,
+  DnaCoverage, GateBadge, GoesDistance, HowItWorks, LimitedNote, LockedPanel, ModelCard, OutcomeDistribution, Provenance, RepresentativePath, TierChip, Unavailable, VolumeRanges, WinProbability,
   type Side,
 } from "@/components/simulator/SimulatorViews";
 import { FighterStrip, type StripFighter } from "@/components/simulator/SimulatorStrip";
@@ -89,7 +89,8 @@ export default async function SimulatorPage({ searchParams }: { searchParams: Pr
   };
 
   const artifact = result?.artifact ?? null;
-  const gate: SimGate | null = artifact ? simGate(artifact) : selection && selection.upcoming ? selection.upcoming.gate : null;
+  /* FULL / LIMITED is a result: it exists only once a simulation has run. Before that the page states Fight DNA coverage. */
+  const gate: SimGate | null = artifact ? simGate(artifact) : null;
   const leftSide: Side = artifact?.fighters && selection ? (artifact.fighters.fighter_1.id === selection.aId ? "fighter_1" : "fighter_2") : "fighter_1";
   const names: Record<Side, string> = { fighter_1: artifact?.fighters?.fighter_1.name || "", fighter_2: artifact?.fighters?.fighter_2.name || "" };
 
@@ -177,8 +178,7 @@ function UpcomingList({ rows, selected }: { rows: UpcomingSimBout[]; selected: s
               <span className={s.rowNames}><span>{r.bout.fighter_a.name}</span><span className={s.faint}> vs </span><span>{r.bout.fighter_b.name}</span></span>
               <span className={s.rowMeta}>
                 <span>{WC(r.bout.weight_class) || "—"}</span>
-                <span className={s.rowTiers}><TierChip tier={r.tiers[0]} /><TierChip tier={r.tiers[1]} /></span>
-                <GateBadge gate={r.gate} />
+                <DnaCoverage tiers={r.tiers} />
               </span>
             </Link>
           ))}

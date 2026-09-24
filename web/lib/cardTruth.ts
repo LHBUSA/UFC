@@ -237,3 +237,32 @@ export const BASIS_LABEL: Record<RemovalBasis, string> = {
   card_observation: "No longer listed on the official card",
   withdrawal: "Sourced withdrawal",
 };
+
+/** The web's bout shape, as far as card truth needs it (lib/db Bout satisfies it). */
+export type MarkableBout = {
+  id: string; espn_competition_id: string | null; status: string; card_position: string | null; bout_order: number | null;
+  weight_class: string | null; fighter_a?: { id: string } | null; fighter_b?: { id: string } | null; result?: unknown;
+};
+
+/**
+ * Card truth applied to a list of bouts, pure. This is the ONE place the effective status is set for every web
+ * consumer (lib/db applyCardTruth wraps it with the reads): a confirmed removal becomes status "cancelled" with the
+ * sourced story in `card_change` and the stored status kept in `stored_status`; a reported-only withdrawal keeps
+ * its status and carries a warning. Nothing is dropped: the removed bout is still in the list, so its record and
+ * provenance survive; consumers decide what is ON the card with `status !== "cancelled"`.
+ */
+export function markCardTruth<B extends MarkableBout>(
+  bouts: readonly B[],
+  observations: readonly CardObservation[],
+  statusEvents: readonly CardStatusEvent[],
+  ctx: { eventId: string; eventName?: string | null },
+): Array<B & { stored_status?: string; card_change?: CardChange }> {
+  if (!bouts.length || bouts.every((b) => b.result || b.status === "complete")) return [...bouts];
+  const { changes, warnings } = splitCard(bouts.map((b) => ({ id: b.id, espn_competition_id: b.espn_competition_id, status: b.status, fighter_a_id: b.fighter_a?.id ?? null, fighter_b_id: b.fighter_b?.id ?? null, card_position: b.card_position, bout_order: b.bout_order, weight_class: b.weight_class, has_result: Boolean(b.result) })), observations, statusEvents, ctx);
+  if (!changes.length && !warnings.length) return [...bouts];
+  const byId = new Map(changes.map((c) => [c.bout.id, c]));
+  /* A reported withdrawal is a warning, not a removal: the bout keeps its status and its place on the card. */
+  const warnById = new Map(warnings.map((c) => [c.bout.id, c]));
+  return bouts.map((b) => (byId.has(b.id) ? { ...b, stored_status: b.status, status: "cancelled", card_change: byId.get(b.id)! }
+    : warnById.has(b.id) ? { ...b, card_change: warnById.get(b.id)! } : b));
+}

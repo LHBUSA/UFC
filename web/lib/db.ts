@@ -1,5 +1,5 @@
 import { rankVideos, videoLanguage, type LiveVideoState } from "@/lib/videoPolicy";
-import { splitCard, type CardChange, type CardObservation, type CardStatusEvent } from "@/lib/cardTruth";
+import { markCardTruth, type CardChange, type CardObservation, type CardStatusEvent } from "@/lib/cardTruth";
 import { prefersEspnDisplay, preferredDisplayFighterIds } from "@/lib/displayPortraitPolicy";
 import { espnVerifiedPortrait } from "@/lib/espnPortraitGate";
 import { pickStoredPortraits } from "@/lib/portraitSelection";
@@ -272,13 +272,7 @@ export async function applyCardTruth(eventId: string, bouts: Bout[], revalidate?
     getCardStatusEvents(eventId, revalidate ?? 120).catch(() => [] as CardStatusEvent[]),
     eventName ? Promise.resolve(eventName) : rest<Array<{ name: string }>>(`ufc_events?select=name&id=eq.${eventId}&limit=1`, [], { revalidate: 3600 }).then((r) => r.data[0]?.name ?? null).catch(() => null),
   ]);
-  const { changes, warnings } = splitCard(bouts.map((b) => ({ id: b.id, espn_competition_id: b.espn_competition_id, status: b.status, fighter_a_id: b.fighter_a?.id ?? null, fighter_b_id: b.fighter_b?.id ?? null, card_position: b.card_position, bout_order: b.bout_order, weight_class: b.weight_class, has_result: Boolean(b.result) })), observations, statusEvents, { eventId, eventName: named });
-  if (!changes.length && !warnings.length) return bouts;
-  const byId = new Map(changes.map((c) => [c.bout.id, c]));
-  /* A reported withdrawal is a warning, not a removal: the bout keeps its status and its place on the card. */
-  const warnById = new Map(warnings.map((c) => [c.bout.id, c]));
-  return bouts.map((b) => (byId.has(b.id) ? { ...b, stored_status: b.status, status: "cancelled", card_change: byId.get(b.id)! }
-    : warnById.has(b.id) ? { ...b, card_change: warnById.get(b.id)! } : b));
+  return markCardTruth(bouts, observations, statusEvents, { eventId, eventName: named });
 }
 /* Events in a date window with the two counts Round-for-Round selects on:
  * bouts on the card (cancelled excluded) and bouts with a STORED RESULT. Whether
