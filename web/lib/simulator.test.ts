@@ -16,7 +16,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { register } from "node:module";
 import { runSimulationFromRows, pickValidSnapshot, type CornerRows, type SnapshotRow } from "./simulatorRun.ts";
 import { simulate } from "./vendor/sim-engine/simulate.mjs";
-import { simGate, methodRows, winView, pathView, roundRanges, expectedGate, MODEL_CARD, UNAVAILABLE_COPY } from "./simulatorView.ts";
+import { simGate, methodRows, winView, pathView, roundRanges, expectedGate, gateReasons, anchorStrained, MODEL_CARD, UNAVAILABLE_COPY } from "./simulatorView.ts";
 import { labsSimulatorAccess } from "./labsAccess.ts";
 
 register("../scripts/test-tsx-hooks.mjs", import.meta.url);
@@ -81,6 +81,20 @@ test("gates: FULL, LIMITED and INSUFFICIENT_DATA; insufficient carries no distri
   assert.equal(expectedGate("low", "high"), "LIMITED");
   assert.equal(expectedGate(null, "high"), "INSUFFICIENT_DATA");
   assert.equal(expectedGate("insufficient", "high"), "INSUFFICIENT_DATA");
+});
+
+test("an anchor strained beyond the validated tilt is never shown as FULL, and the reason is stated", async () => {
+  const fx = eng("ufc333_volkanovski_evloev");
+  const strained = simulate({ fighter_a: fx.fighter_a, fighter_b: fx.fighter_b, anchor: { ...fx.anchor, prob: 0.985 }, settings: { scheduled_rounds: 5 }, n_sims: 3000 } as never).artifact;
+  assert.equal(strained.coverage!.gate, "FULL", "coverage alone would pass");
+  assert.notEqual(strained.anchor!.status, "ok");
+  assert.equal(anchorStrained(strained), true);
+  assert.equal(simGate(strained), "LIMITED");
+  assert.ok(gateReasons(strained).some((r) => /disagrees strongly with the PBE Fight Model/.test(r)));
+  assert.equal(anchorStrained(LIVE.artifact), false, "UFC 333 needs no correction (tilt 0)");
+  const { createElement: h } = await import("react");
+  const V = await views();
+  assert.match(await html(h(V.LimitedNote, { a: strained })), /disagrees strongly/);
 });
 
 test("method shares come from artifact.methods and normalise with the draw share; goes-distance is the artifact's value", () => {

@@ -31,10 +31,18 @@ export const MODEL_CARD = Object.freeze({
   ],
 });
 
-/** Gate as the reader sees it. The engine calls a clean pass OFFICIAL; the page calls it FULL. */
+/** True when the champion anchor needed more correction than Phase 3 validated (engine status excessive_tilt / not_bracketed). */
+export function anchorStrained(a: SimArtifact | null): boolean {
+  return Boolean(a?.anchor && a.anchor.status !== "ok");
+}
+
+/** Gate as the reader sees it. The engine calls a clean pass OFFICIAL; the page calls it FULL. A clean coverage pass whose
+ *  anchor was strained beyond the validated tilt is shown as LIMITED: the winner split still equals the PBE Fight Model,
+ *  but the fight engine on its own disagrees, so method and volume detail are less reliable. Never the other way round. */
 export function simGate(a: SimArtifact | null): SimGate {
   if (!a || a.status === "INSUFFICIENT_DATA" || a.status === "REJECTED_SNAPSHOT" || !a.probabilities) return "INSUFFICIENT_DATA";
-  return a.status === "LIMITED" ? "LIMITED" : "FULL";
+  if (a.status === "LIMITED" || anchorStrained(a)) return "LIMITED";
+  return "FULL";
 }
 
 export const pct = (p: number | null | undefined, digits = 1): string => (p == null || !Number.isFinite(p) ? "—" : `${(p * 100).toFixed(digits)}%`);
@@ -127,6 +135,7 @@ export function gateReasons(a: SimArtifact | null): string[] {
     else if (code === "anchor_missing") out.push("The PBE Fight Model could not assemble a pre-fight probability for this pairing.");
     else if (code === "snapshot_contains_bout_on_or_after_as_of") out.push("A Fight DNA snapshot failed the as-of integrity check.");
   }
+  if (anchorStrained(a)) out.push("The fight engine, on Fight DNA alone, disagrees strongly with the PBE Fight Model on this matchup, beyond the correction validated in testing. The winner split follows the PBE Fight Model; treat the outcome mix and volume detail with extra caution.");
   return [...new Set(out)];
 }
 
