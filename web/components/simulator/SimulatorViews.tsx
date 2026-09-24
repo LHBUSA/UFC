@@ -27,7 +27,7 @@ export function WinProbability({ a, left, names }: { a: SimArtifact; left: Side;
   const w = winView(a);
   const lp = left === "fighter_1" ? w.f1 : w.f2, rp = left === "fighter_1" ? w.f2 : w.f1;
   return (
-    <section className={s.card} aria-labelledby="sim-win">
+    <section className={`${s.card} ${s.win}`} aria-labelledby="sim-win">
       <div className={s.cardHead}><h2 id="sim-win" className={s.h2}>Win probability</h2><span className={s.model}>MODEL</span></div>
       <div className={s.winNums}>
         <div><div className={s.bigPct} data-sim-win={left}>{pct(lp)}</div><div className={s.winName}>{names[left]}</div></div>
