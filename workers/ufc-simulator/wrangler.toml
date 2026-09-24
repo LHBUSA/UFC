@@ -1,0 +1,14 @@
+# PARITY HARNESS ONLY. NOT DEPLOYED.
+#
+# This config exists so `wrangler dev` (local workerd) can run the engine for
+# the runtime parity gate (npm run parity:worker). It has no routes, no custom
+# domain, no bindings and workers_dev is off. The production ufc-simulator
+# Worker is a Phase 4 deliverable with its own reviewed config.
+name = "ufc-simulator-parity"
+main = "src/worker.js"
+compatibility_date = "2026-09-14"
+workers_dev = false
+preview_urls = false
+
+[limits]
+cpu_ms = 60000

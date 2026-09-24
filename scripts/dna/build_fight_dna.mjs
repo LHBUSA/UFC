@@ -13,7 +13,8 @@
 //
 // Rules:
 //   * no current-career UFCStats profile fields are used for historical features
-//   * no future bout is included in an as-of snapshot
+//   * no future bout is included in an as-of snapshot: as_of_date is EXCLUSIVE
+//     (a snapshot dated D contains bouts with event_date < D, never = D)
 //   * result DNA works without round stats
 //   * round DNA requires observed round rows; missing == null, never zero
 //   * all writes are idempotent upserts on the versioned table keys
@@ -38,8 +39,16 @@
  * The 700 lines of DNA logic below are untouched: they read these bindings by
  * name exactly as before. Rewriting the builder to move a schedule would risk
  * changing what a metric MEANS, and every historical snapshot was computed by
- * the current definition. */
-const BUILDER = 'ufc-intelligence/build_fight_dna@v1.1';
+ * the current definition.
+ *
+ * v1.2: exclusive as-of cutoff restored. v1.1 selected events dated on or
+ * before AS_OF (inclusive), so a snapshot dated D absorbed bouts fought ON D,
+ * contradicting docs/FIGHT_DNA_CONTRACT.md, the API's as_of note and the
+ * PBE Algo consumer (which resolves as_of_date <= event_date and relies on
+ * that snapshot never containing the target bout). The historical repair
+ * script had been patching the cutoff at runtime; the daily builder had not.
+ * No metric definition changed, so DEFINITION_VERSION stays 1. */
+const BUILDER = 'ufc-intelligence/build_fight_dna@v1.2';
 const DEFINITION_VERSION = 1;
 const FEATURE_VERSION = 1;
 
@@ -49,6 +58,9 @@ let DRY_RUN = false;
 let SUPABASE_URL = null;
 let SERVICE_KEY = null;
 let HEADERS = {};
+/* Optional observer for rows handed to writeBatch (tests capture dry-run
+ * output through it). Null in production: writeBatch behaves exactly as before. */
+let ON_ROWS = null;
 
 /* One build at a time per isolate. The bindings above are module-level, so two
  * concurrent runs would read each other's as-of date and write snapshots
@@ -65,6 +77,9 @@ let inFlight = null;
  * @param {string} [cfg.asOf]       YYYY-MM-DD, defaults to today UTC
  * @param {string} [cfg.fighterId]  rebuild one fighter only
  * @param {boolean}[cfg.dry]
+ * @param {(table: string, rows: object[]) => void} [cfg.onRows]
+ *        observer called with every batch handed to writeBatch, BEFORE the
+ *        dry-run early return; used by tests to inspect dry-run output
  */
 export async function buildFightDna(cfg = {}) {
   if (inFlight) return { ok: false, skipped: 'a build is already running in this isolate' };
@@ -80,6 +95,7 @@ export async function buildFightDna(cfg = {}) {
   SUPABASE_URL = url;
   SERVICE_KEY = key;
   HEADERS = { apikey: key, Authorization: `Bearer ${key}` };
+  ON_ROWS = typeof cfg.onRows === 'function' ? cfg.onRows : null;
 
   inFlight = main();
   try { return await inFlight; } finally { inFlight = null; }
@@ -104,6 +120,16 @@ const median = (values) => {
   const m = Math.floor(xs.length / 2);
   return xs.length % 2 ? xs[m] : round4((xs[m - 1] + xs[m]) / 2);
 };
+
+/**
+ * THE as-of invariant, in one place. A bout contributes to the snapshot dated
+ * asOf only when its event_date is strictly BEFORE asOf (exclusive cutoff, per
+ * docs/FIGHT_DNA_CONTRACT.md). A bout fought on asOf itself never contributes.
+ * Both YYYY-MM-DD strings, so lexical comparison is chronological.
+ */
+export function boutContributes(eventDate, asOf) {
+  return Boolean(eventDate) && String(eventDate) < String(asOf);
+}
 
 function stance(v) {
   const s = String(v || '').trim().toUpperCase();
@@ -288,6 +314,7 @@ async function selectAll(table, query) {
 }
 
 async function writeBatch(table, rows, conflict, batch = 200) {
+  if (ON_ROWS) ON_ROWS(table, rows);
   if (DRY_RUN || !rows.length) return;
   for (let i = 0; i < rows.length; i += batch) {
     const part = rows.slice(i, i + batch);
@@ -580,7 +607,10 @@ async function main() {
    */
   const [fighters, events, bouts, results, roundStats] = await Promise.all([
     selectAll('ufc_fighters', 'select=id,name,stance&order=name.asc'),
-    selectAll('ufc_events', `select=id,name,event_date&event_date=lte.${AS_OF}&order=event_date.asc`),
+    /* EXCLUSIVE cutoff (event_date < AS_OF, never <=): the snapshot dated D must
+     * not contain a bout fought on D. Mirrors boutContributes() below; the
+     * id tiebreak keeps Range paging deterministic across same-day events. */
+    selectAll('ufc_events', `select=id,name,event_date&event_date=lt.${AS_OF}&order=event_date.asc,id.asc`),
     /* model_scope (migration 028): Road to UFC bouts ingested for fighter history are not Fight DNA / PBE Algo inputs. */
     selectAll('ufc_bouts', 'select=id,ufcstats_id,espn_competition_id,event_id,fighter_a_id,fighter_b_id,scheduled_rounds,is_title,card_position,bout_order,status,short_notice_days,captured_at,updated_at&status=eq.complete&model_scope=eq.true&order=id'),
     selectAll('ufc_bout_results', 'select=bout_id,winner_id,method,method_raw,round,time_sec,time_format,result_source,has_stats,source_url,captured_at,stats_source_url,stats_captured_at&order=bout_id'),
@@ -598,7 +628,9 @@ async function main() {
 
   const relevantBouts = bouts.filter((b) => {
     const e = eventMap.get(b.event_id);
-    return e?.event_date && e.event_date <= AS_OF && fighterMap.has(b.fighter_a_id) && fighterMap.has(b.fighter_b_id) && (!ONLY_FIGHTER || b.fighter_a_id === ONLY_FIGHTER || b.fighter_b_id === ONLY_FIGHTER);
+    /* boutContributes() re-applies the exclusive cutoff (event_date < AS_OF) so
+     * the rule holds even if the events query above ever widens. */
+    return boutContributes(e?.event_date, AS_OF) && fighterMap.has(b.fighter_a_id) && fighterMap.has(b.fighter_b_id) && (!ONLY_FIGHTER || b.fighter_a_id === ONLY_FIGHTER || b.fighter_b_id === ONLY_FIGHTER);
   });
   const maxOrderByEvent = new Map();
   for (const b of relevantBouts) maxOrderByEvent.set(b.event_id, Math.max(maxOrderByEvent.get(b.event_id) || 0, n(b.bout_order)));

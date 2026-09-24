@@ -1,0 +1,14 @@
+{
+  "name": "ufc-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "PBE Fight Simulator engine (pbe-fight-simulator family). Phase 2: pure deterministic engine only. No deploy, no API, no UI.",
+  "scripts": {
+    "test": "node --test src/engine/*.test.mjs",
+    "test:cross-process": "node src/engine/cross_process.check.mjs",
+    "bench": "node bench/bench.mjs",
+    "check": "node --check src/engine/index.mjs && node --check src/worker.js",
+    "parity:worker": "node src/parity/run_parity.mjs"
+  }
+}
