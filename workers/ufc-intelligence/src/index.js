@@ -39,10 +39,13 @@ import { WorkerEntrypoint } from 'cloudflare:workers';
 import { main as ingestRankings } from '../../../scripts/rankings/ingest_rankings.mjs';
 
 import { buildFightDna } from '../../../scripts/dna/build_fight_dna.mjs';
+import { dnaGuardDecision } from './dnaGuard.js';
 
 const DNA_CRON = '17 7 * * *';
+/* Hourly completion guard: resumes today's Fight DNA build when no success is recorded (src/dnaGuard.js). */
+const DNA_GUARD_CRON = '47 * * * *';
 const WORKER = 'ufc-intelligence';
-const VERSION = 'v0.1.0';
+const VERSION = 'v0.2.0';
 const LANES = ['rankings', 'fight_dna'];
 
 const health = { last_run_at: null, last_status: null, last_lane: null, last_result: null, last_error: null };
@@ -126,12 +129,13 @@ export default {
           ADMIN_TRIGGER_TOKEN: Boolean(env.ADMIN_TRIGGER_TOKEN),
         },
         writes: 'ufc_rankings, ufc_fighter_dna_snapshots, ufc_fighter_bout_features, ufc_fighter_stance_splits, ufc_dna_build_runs, the ufc-media storage bucket (rankings/*.json), ufc_ingest_runs.',
-        crons: { rankings: env.CRON_DESCRIPTION || '25 11 * * *', fight_dna: DNA_CRON },
+        crons: { rankings: env.CRON_DESCRIPTION || '25 11 * * *', fight_dna: DNA_CRON, fight_dna_guard: DNA_GUARD_CRON },
         fight_dna: {
           replaces: 'fight-dna-build.yml cron "17 7 * * *", previously run on a GitHub runner',
           skips_when_inputs_unchanged: Boolean(env.INTEL_STATE),
           definition_versioned: true,
           historical_snapshots_preserved: true,
+          freshness: await dnaFreshness(env).catch((e) => ({ error: String(e.message).slice(0, 160) })),
         },
       });
     }
@@ -153,6 +157,7 @@ export default {
           asOf: url.searchParams.get('as_of'),
           fighterId: url.searchParams.get('fighter'),
           force: url.searchParams.get('force') === 'true',
+          resume: url.searchParams.get('resume') === 'true',
         })),
       });
     }
@@ -164,6 +169,7 @@ export default {
      * 07:17 -- the hour the GitHub workflow used, kept deliberately so the DNA
      * build still lands after the 06:00 stats ingest it depends on. */
     if (event.cron === DNA_CRON) ctx.waitUntil(runFightDna(env, { invoked: 'cron' }));
+    else if (event.cron === DNA_GUARD_CRON) ctx.waitUntil(runDnaGuard(env));
     else ctx.waitUntil(runRankings(env, { invoked: 'cron', cron: event.cron }));
   },
 };
@@ -247,7 +253,7 @@ async function sbCount(env, table) {
  * touch yesterday's row, and a definition change writes a new row beside the
  * old one rather than silently restating history under a new meaning.
  */
-async function runFightDna(env, { dry = false, invoked = 'cron', asOf = null, fighterId = null, force = false } = {}) {
+async function runFightDna(env, { dry = false, invoked = 'cron', asOf = null, fighterId = null, force = false, resume = false } = {}) {
   health.last_run_at = new Date().toISOString();
   health.last_lane = 'fight_dna';
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -274,6 +280,7 @@ async function runFightDna(env, { dry = false, invoked = 'cron', asOf = null, fi
       asOf: asOf || undefined,
       fighterId: fighterId || undefined,
       dry,
+      resume,
     });
     if (!dry && fingerprint && env.INTEL_STATE) {
       /* Written only after a successful build, so a crash mid-run leaves the
@@ -334,4 +341,49 @@ async function runRankings(env, { dry = false, invoked = 'cron', cron = null } =
     await closeRun(env, runId, 'failed', { lane: 'rankings', invoked, cron, error: detail });
     return { status: 'failed', error: detail };
   }
+}
+
+/* --- Fight DNA completion guard ------------------------------------------- */
+
+async function todaysDnaRuns(env, today) {
+  return (await sb(env, 'GET', `ufc_dna_build_runs?select=id,as_of_date,status,started_at,finished_at&as_of_date=eq.${today}&order=started_at.desc&limit=20`)) || [];
+}
+
+/** Last successful build and today's state, for /health. A consumer that sees `today_complete: false` after 08:00Z knows the simulator is on yesterday's snapshot. */
+async function dnaFreshness(env) {
+  const today = new Date().toISOString().slice(0, 10);
+  const [last] = (await sb(env, 'GET', 'ufc_dna_build_runs?select=id,as_of_date,finished_at&status=eq.success&as_of_date=not.is.null&order=as_of_date.desc,finished_at.desc&limit=1')) || [];
+  const runs = await todaysDnaRuns(env, today);
+  return {
+    last_success_as_of: last?.as_of_date ?? null, last_success_at: last?.finished_at ?? null, last_success_run: last?.id ?? null,
+    today, today_complete: runs.some((r) => r.status === 'success'), today_runs: runs.map((r) => ({ id: r.id, status: r.status, started_at: r.started_at })),
+  };
+}
+
+/* Resume (never restart) today's build when no success is recorded. Resume keeps every row an interrupted run already
+ * wrote for today and writes the rest; the builder reconciles and records success only when the population is whole.
+ * Attempts are counted in KV so a build that can never succeed is surfaced as `exhausted` instead of retried forever. */
+async function runDnaGuard(env) {
+  const nowIso = new Date().toISOString();
+  const today = nowIso.slice(0, 10);
+  const key = `dna:guard_attempts:${today}`;
+  let attempts = 0;
+  try { attempts = Number((env.INTEL_STATE && (await env.INTEL_STATE.get(key))) || 0); } catch { /* treated as 0 */ }
+  let runs;
+  try { runs = await todaysDnaRuns(env, today); } catch (e) {
+    console.error(`[${WORKER}] dna_guard could not read build runs: ${String(e.message).slice(0, 200)}`);
+    return { lane: 'fight_dna_guard', status: 'unreadable' };
+  }
+  const d = dnaGuardDecision({ nowIso, runs, attempts });
+  if (d.action === 'none') return { lane: 'fight_dna_guard', ...d };
+  if (d.action === 'exhausted') {
+    health.last_status = 'dna_guard_exhausted';
+    health.last_error = `Fight DNA ${today}: no successful build after ${attempts} guard resumes (${d.reason})`;
+    console.error(`[${WORKER}] ${health.last_error}`);
+    return { lane: 'fight_dna_guard', ...d };
+  }
+  try { if (env.INTEL_STATE) await env.INTEL_STATE.put(key, String(attempts + 1), { expirationTtl: 172800 }); } catch { /* best effort */ }
+  console.log(`[${WORKER}] dna_guard resuming ${today}: ${d.reason} (attempt ${attempts + 1})`);
+  const r = await runFightDna(env, { invoked: `guard:${d.reason}`, force: true, resume: true });
+  return { lane: 'fight_dna_guard', ...d, result: r.status, error: r.error ?? null };
 }

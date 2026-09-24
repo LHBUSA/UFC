@@ -47,8 +47,14 @@
  * PBE Algo consumer (which resolves as_of_date <= event_date and relies on
  * that snapshot never containing the target bout). The historical repair
  * script had been patching the cutoff at runtime; the daily builder had not.
- * No metric definition changed, so DEFINITION_VERSION stays 1. */
-const BUILDER = 'ufc-intelligence/build_fight_dna@v1.2';
+ * No metric definition changed, so DEFINITION_VERSION stays 1.
+ *
+ * v1.3: write hardening. Batches retry transient failures (statement timeout
+ * 57014, 5xx, 429, network) with backoff and split in half when a batch keeps
+ * timing out; resume mode preserves rows an interrupted run already wrote for
+ * the same as-of date; every full run reconciles the rows present against the
+ * rows expected and is recorded `partial` (never `success`) when they differ. */
+const BUILDER = 'ufc-intelligence/build_fight_dna@v1.3';
 const DEFINITION_VERSION = 1;
 const FEATURE_VERSION = 1;
 
@@ -61,6 +67,13 @@ let HEADERS = {};
 /* Optional observer for rows handed to writeBatch (tests capture dry-run
  * output through it). Null in production: writeBatch behaves exactly as before. */
 let ON_ROWS = null;
+/* v1.3 write hardening (2026-09-24 incident: one 57014 statement timeout on a
+ * 100-row snapshot upsert ended the run after 700 of 3,180 snapshots, with no
+ * retry until the next day's cron). RESUME keeps rows already written for this
+ * as-of date; WRITE_STATS is recorded on the run row; SLEEP is injectable for tests. */
+let RESUME = false;
+let WRITE_STATS = {};
+let SLEEP = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* One build at a time per isolate. The bindings above are module-level, so two
  * concurrent runs would read each other's as-of date and write snapshots
@@ -80,6 +93,9 @@ let inFlight = null;
  * @param {(table: string, rows: object[]) => void} [cfg.onRows]
  *        observer called with every batch handed to writeBatch, BEFORE the
  *        dry-run early return; used by tests to inspect dry-run output
+ * @param {boolean}[cfg.resume]     keep snapshot / stance rows already present
+ *        for this as-of date (a partial earlier run) and write only the rest
+ * @param {(ms: number) => Promise<void>} [cfg.sleep]  backoff clock (tests)
  */
 export async function buildFightDna(cfg = {}) {
   if (inFlight) return { ok: false, skipped: 'a build is already running in this isolate' };
@@ -96,6 +112,9 @@ export async function buildFightDna(cfg = {}) {
   SERVICE_KEY = key;
   HEADERS = { apikey: key, Authorization: `Bearer ${key}` };
   ON_ROWS = typeof cfg.onRows === 'function' ? cfg.onRows : null;
+  RESUME = Boolean(cfg.resume);
+  SLEEP = typeof cfg.sleep === 'function' ? cfg.sleep : (ms) => new Promise((r) => setTimeout(r, ms));
+  WRITE_STATS = {};
 
   inFlight = main();
   try { return await inFlight; } finally { inFlight = null; }
@@ -313,18 +332,72 @@ async function selectAll(table, query) {
   return out;
 }
 
-async function writeBatch(table, rows, conflict, batch = 200) {
-  if (ON_ROWS) ON_ROWS(table, rows);
-  if (DRY_RUN || !rows.length) return;
-  for (let i = 0; i < rows.length; i += batch) {
-    const part = rows.slice(i, i + batch);
+/** Retry transient PostgREST / Postgres failures: statement timeout (57014), 5xx, 429 and network errors. */
+export function isRetryableWrite(status, bodyText = '') {
+  if (status === 0 || status === 429 || status >= 500) return true;
+  return /57014|statement timeout|canceling statement/i.test(String(bodyText));
+}
+
+const RETRY_DELAYS_MS = [1000, 3000, 8000];
+
+async function postChunk(table, conflict, part) {
+  try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?on_conflict=${encodeURIComponent(conflict)}`, {
       method: 'POST',
       headers: { ...HEADERS, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify(part),
     });
-    if (!res.ok) throw new Error(`upsert ${table} ${res.status}: ${await res.text()}`);
+    if (res.ok) return { ok: true };
+    return { ok: false, status: res.status, text: await res.text() };
+  } catch (error) {
+    return { ok: false, status: 0, text: String(error?.message || error) };
   }
+}
+
+/* Write one chunk with retries; if it keeps failing on a retryable error, split it in half and write each half.
+ * A single row that still cannot be written after retries is a hard failure (thrown with counts). */
+async function writeChunk(table, conflict, part, stats) {
+  let last = null;
+  for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt += 1) {
+    const r = await postChunk(table, conflict, part);
+    if (r.ok) { stats.written += part.length; return; }
+    last = r;
+    if (!isRetryableWrite(r.status, r.text)) break;
+    if (attempt < RETRY_DELAYS_MS.length) { stats.retries += 1; await SLEEP(RETRY_DELAYS_MS[attempt]); }
+  }
+  if (part.length > 1 && last && isRetryableWrite(last.status, last.text)) {
+    stats.splits += 1;
+    const mid = Math.ceil(part.length / 2);
+    await writeChunk(table, conflict, part.slice(0, mid), stats);
+    await writeChunk(table, conflict, part.slice(mid), stats);
+    return;
+  }
+  stats.failed += part.length;
+  throw new Error(`upsert ${table} ${last?.status}: ${String(last?.text || '').slice(0, 400)} (written ${stats.written}/${stats.attempted})`);
+}
+
+async function writeBatch(table, rows, conflict, batch = 200) {
+  if (ON_ROWS) ON_ROWS(table, rows);
+  const stats = (WRITE_STATS[table] = WRITE_STATS[table] || { attempted: 0, written: 0, retries: 0, splits: 0, failed: 0 });
+  if (DRY_RUN || !rows.length) return;
+  stats.attempted += rows.length;
+  for (let i = 0; i < rows.length; i += batch) await writeChunk(table, conflict, rows.slice(i, i + batch), stats);
+}
+
+/** Fighter ids that already have a row for this as-of date and definition version (Range-paged like selectAll: no row cap). */
+async function fightersPresentAt(table) {
+  const out = new Set();
+  for (let from = 0; from < 1e6; from += 1000) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=fighter_id&as_of_date=eq.${AS_OF}&definition_version=eq.${DEFINITION_VERSION}&order=fighter_id.asc`, {
+      headers: { ...HEADERS, Range: `${from}-${from + 999}`, 'Range-Unit': 'items' },
+    });
+    if (res.status === 416) return out;
+    if (!res.ok) throw new Error(`select ${table} ${res.status}: ${await res.text()}`);
+    const rows = await res.json();
+    for (const r of rows) out.add(r.fighter_id);
+    if (rows.length < 1000) return out;
+  }
+  throw new Error(`select ${table}: pagination did not terminate`);
 }
 
 async function startRun(sourceCounts) {
@@ -788,9 +861,34 @@ async function main() {
       }
     }
 
-    console.log(`snapshots=${snapshots.length} stance rows=${stanceRows.length}`);
-    await writeBatch('ufc_fighter_dna_snapshots', snapshots, 'fighter_id,as_of_date,definition_version', 100);
-    await writeBatch('ufc_fighter_stance_splits', stanceRows, 'fighter_id,as_of_date,opponent_stance,definition_version', 150);
+    console.log(`snapshots=${snapshots.length} stance rows=${stanceRows.length}${RESUME ? ' [RESUME]' : ''}`);
+    /* Resume: rows an interrupted run already wrote for THIS as-of date are kept, not rewritten. Rows for other dates are
+     * never touched by any run (the key includes as_of_date), so a partial run can never overwrite last-known-good data. */
+    let snapToWrite = snapshots, stanceToWrite = stanceRows;
+    const preserved = { snapshots: 0, stance_fighters: 0 };
+    if (RESUME && !DRY_RUN) {
+      const haveSnap = await fightersPresentAt('ufc_fighter_dna_snapshots');
+      const haveStance = await fightersPresentAt('ufc_fighter_stance_splits');
+      snapToWrite = snapshots.filter((x) => !haveSnap.has(x.fighter_id));
+      stanceToWrite = stanceRows.filter((x) => !haveStance.has(x.fighter_id));
+      preserved.snapshots = snapshots.length - snapToWrite.length;
+      preserved.stance_fighters = new Set(stanceRows.filter((x) => haveStance.has(x.fighter_id)).map((x) => x.fighter_id)).size;
+      console.log(`resume: preserving ${preserved.snapshots} snapshots and stance rows for ${preserved.stance_fighters} fighters already written for ${AS_OF}`);
+    }
+    await writeBatch('ufc_fighter_dna_snapshots', snapToWrite, 'fighter_id,as_of_date,definition_version', 50);
+    await writeBatch('ufc_fighter_stance_splits', stanceToWrite, 'fighter_id,as_of_date,opponent_stance,definition_version', 150);
+
+    /* Reconciliation: a full run is `success` only when every expected snapshot and stance fighter is present for AS_OF. */
+    let reconciliation = null;
+    if (!DRY_RUN && !ONLY_FIGHTER) {
+      const expectedSnap = new Set(snapshots.map((x) => x.fighter_id));
+      const expectedStance = new Set(stanceRows.map((x) => x.fighter_id));
+      const presentSnap = await fightersPresentAt('ufc_fighter_dna_snapshots');
+      const presentStance = await fightersPresentAt('ufc_fighter_stance_splits');
+      const missingSnap = [...expectedSnap].filter((id) => !presentSnap.has(id));
+      const missingStance = [...expectedStance].filter((id) => !presentStance.has(id));
+      reconciliation = { expected_snapshots: expectedSnap.size, present_snapshots: presentSnap.size, missing_snapshots: missingSnap.length, expected_stance_fighters: expectedStance.size, present_stance_fighters: presentStance.size, missing_stance_fighters: missingStance.length, complete: missingSnap.length === 0 && missingStance.length === 0 };
+    }
 
     const output = {
       feature_rows: featureRows.length,
@@ -800,7 +898,15 @@ async function main() {
       stat_bouts_in_snapshots: snapshots.reduce((a, s) => a + s.sample_stat_bouts, 0),
       round_rows_source: roundStats.length,
       elapsed_ms: Date.now() - started,
+      resume: RESUME,
+      preserved,
+      writes: WRITE_STATS,
+      reconciliation,
     };
+    if (reconciliation && !reconciliation.complete) {
+      await finishRun(runId, 'partial', output, [], [`reconciliation failed: ${JSON.stringify(reconciliation)}`]);
+      throw new Error(`Fight DNA ${AS_OF} incomplete: ${JSON.stringify(reconciliation)}`);
+    }
     await finishRun(runId, 'success', output);
     const summary = { ok: true, build_run_id: runId, as_of: AS_OF, ...output };
     console.log(JSON.stringify(summary, null, 2));
@@ -809,7 +915,9 @@ async function main() {
     console.error(error);
     /* The run row is closed as failed before rethrowing, so a crashed build is
      * visible in ufc_dna_build_runs rather than leaving a row open forever. */
-    try { await finishRun(runId, 'failed', {}, [], [String(error?.stack || error)]); } catch (e) { console.error(`failed to close build run: ${e.message}`); }
+    if (!/ incomplete: /.test(String(error?.message))) {
+      try { await finishRun(runId, 'failed', { writes: WRITE_STATS, resume: RESUME }, [], [String(error?.stack || error)]); } catch (e) { console.error(`failed to close build run: ${e.message}`); }
+    }
     throw error;
   }
 }
@@ -838,6 +946,7 @@ if (isCli) {
       asOf: opt('--as-of'),
       fighterId: opt('--fighter'),
       dry: argv.includes('--dry-run'),
+      resume: argv.includes('--resume'),
     });
   } catch (error) {
     console.error(error);

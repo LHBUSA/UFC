@@ -20,7 +20,7 @@ CRON_DESCRIPTION = "25 11 * * * (daily)"
 # a day when nothing changed costs one page fetch and writes an identical row.
 # A missed Tuesday used to mean waiting a week.
 [triggers]
-crons = ["25 11 * * *", "17 7 * * *"]
+crons = ["25 11 * * *", "17 7 * * *", "47 * * * *"]
 
 [observability]
 enabled = true

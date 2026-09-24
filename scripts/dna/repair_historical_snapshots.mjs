@@ -73,8 +73,8 @@ export function patchBuilderSource(source) {
   /* --- patches --- */
   src = replaceOnce(
     src,
-    "const BUILDER = 'ufc-intelligence/build_fight_dna@v1.2';",
-    "const BUILDER = 'ufc-intelligence/build_fight_dna@v1.2-history-repair';",
+    "const BUILDER = 'ufc-intelligence/build_fight_dna@v1.3';",
+    "const BUILDER = 'ufc-intelligence/build_fight_dna@v1.3-history-repair';",
     'builder provenance',
   );
   src = replaceOnce(

@@ -244,7 +244,7 @@ test('(a) snapshot dated D contains only the D-7 bout and none of D\'s stats', a
     assert.ok(snap, `snapshot for ${fid}`);
     assert.equal(snap.as_of_date, D);
     assert.equal(snap.definition_version, 1, 'bug fix, not a metric change: definition_version stays 1');
-    assert.equal(snap.provenance.builder, 'ufc-intelligence/build_fight_dna@v1.2');
+    assert.equal(snap.provenance.builder, 'ufc-intelligence/build_fight_dna@v1.3');
     assert.deepEqual(snap.provenance.bouts, [BOUT.before]);
     assert.equal(snap.sample_bouts, 1);
     assert.equal(snap.sample_completed_bouts, 1);
@@ -350,7 +350,7 @@ test('(f) repair script anchors resolve against the current builder and keep exc
   assert.doesNotMatch(patched, /event_date=lte\./);
   assert.doesNotMatch(patched, /e\.event_date <= AS_OF/);
   assert.doesNotMatch(patched, /event_date <= /, 'no inclusive bout cutoff anywhere in the patched builder');
-  assert.ok(patched.includes("build_fight_dna@v1.2-history-repair'"));
+  assert.ok(patched.includes("build_fight_dna@v1.3-history-repair'"));
   assert.ok(patched.includes(".endsWith('scripts/dna/.history-repair-builder.tmp.mjs')"), 'temp builder CLI guard retargeted');
 
   /* CRLF checkouts must patch identically. */
@@ -401,4 +401,113 @@ test('PBE Algo consumer: latestAsOf(as_of_date <= event_date) never resolves to 
   const plain = [{ as_of_date: D_MINUS_6 }, { as_of_date: D_PLUS_1 }];
   assert.equal(latestAsOf(plain, D).as_of_date, D_MINUS_6);
   assert.equal(latestAsOf(plain, addDays(D_MINUS_6, -1)), null);
+});
+
+/* ------------------------------------------- v1.3 write hardening (2026-09-24 incident) --- */
+// Writable stub: reads of source tables go through the strict read stub; the snapshot / stance tables and the build-run
+// table are held in memory so retry, split, resume and reconciliation can be proven without a network.
+import { isRetryableWrite } from './build_fight_dna.mjs';
+
+function writableStub(tables, store, { failSnapshotChunksAbove = Infinity, failTimes = Infinity, permanentFailFighter = null, dropSnapshots = false } = {}) {
+  const readStub = postgrestStub(tables, []);
+  let failures = 0;
+  const keyOf = (t, r) => (t === 'ufc_fighter_stance_splits' ? `${r.fighter_id}|${r.as_of_date}|${r.opponent_stance}` : t === 'ufc_fighter_bout_features' ? `${r.fighter_id}|${r.bout_id}` : `${r.fighter_id}|${r.as_of_date}`);
+  const timeout = () => new Response('{"code":"57014","message":"canceling statement due to statement timeout"}', { status: 500 });
+  return async function (input, init = {}) {
+    const url = new URL(String(input));
+    const method = String(init.method || 'GET').toUpperCase();
+    const table = url.pathname.replace('/rest/v1/', '');
+    if (table === 'ufc_dna_build_runs') {
+      if (method === 'POST') { store.runs.push({ id: `run-${store.runs.length + 1}`, status: 'running' }); return new Response(JSON.stringify([store.runs.at(-1)]), { status: 201 }); }
+      if (method === 'PATCH') { Object.assign(store.runs.at(-1), JSON.parse(init.body)); return new Response(null, { status: 204 }); }
+    }
+    if (method === 'POST') {
+      const rows = JSON.parse(init.body);
+      if (table === 'ufc_fighter_dna_snapshots') {
+        if (permanentFailFighter && rows.some((r) => r.fighter_id === permanentFailFighter)) return timeout();
+        if (rows.length > failSnapshotChunksAbove && failures < failTimes) { failures += 1; return timeout(); }
+        if (dropSnapshots) return new Response('', { status: 201 });
+      }
+      store.writes[table] = (store.writes[table] || 0) + rows.length;
+      const m = (store.rows[table] = store.rows[table] || new Map());
+      for (const r of rows) m.set(keyOf(table, r), r);
+      return new Response('', { status: 201 });
+    }
+    if (table === 'ufc_fighter_dna_snapshots' || table === 'ufc_fighter_stance_splits') {
+      const asOf = (url.searchParams.get('as_of_date') || '').replace('eq.', '');
+      const [from, to] = String(init.headers?.Range || '0-999').split('-').map(Number);
+      const ids = [...new Set([...(store.rows[table] || new Map()).values()].filter((r) => r.as_of_date === asOf).map((r) => r.fighter_id))].sort();
+      if (from > 0 && from >= ids.length) return new Response(null, { status: 416 });
+      return new Response(JSON.stringify(ids.slice(from, to + 1).map((fighter_id) => ({ fighter_id }))), { status: 200 });
+    }
+    return readStub(input, init);
+  };
+}
+
+async function writeBuild(asOf, store, opts = {}, cfg = {}) {
+  const realFetch = globalThis.fetch, realLog = console.log, realErr = console.error;
+  globalThis.fetch = writableStub(fixture(), store, opts);
+  console.log = () => {}; console.error = () => {};
+  try { return await buildFightDna({ supabaseUrl: 'http://stub', serviceKey: 'x', asOf, sleep: async () => {}, ...cfg }); }
+  finally { globalThis.fetch = realFetch; console.log = realLog; console.error = realErr; }
+}
+const newStore = () => ({ runs: [], rows: {}, writes: {} });
+const AS_OF_W = addDays(D, 8);
+
+test('write hardening: transient 57014 statement timeouts are retried and oversized chunks split; the run still succeeds and reconciles', async () => {
+  const store = newStore();
+  const summary = await writeBuild(AS_OF_W, store, { failSnapshotChunksAbove: 0, failTimes: 4 });
+  assert.equal(summary.ok, true);
+  const run = store.runs.at(-1);
+  assert.equal(run.status, 'success');
+  const w = run.output_counts.writes.ufc_fighter_dna_snapshots;
+  assert.ok(w.retries >= 3, `retried (${w.retries})`);
+  assert.equal(w.written, w.attempted);
+  assert.equal(run.output_counts.reconciliation.complete, true);
+  assert.equal(run.output_counts.reconciliation.missing_snapshots, 0);
+});
+
+test('write hardening: a row that can never be written fails the run (not success) with counts, and other dates are untouched', async () => {
+  const store = newStore();
+  store.rows.ufc_fighter_dna_snapshots = new Map([['F1|2026-09-01', { fighter_id: 'F1', as_of_date: '2026-09-01', marker: 'last-known-good' }]]);
+  const firstFighter = fixture().ufc_fighters.map((f) => f.id).sort()[0];
+  await assert.rejects(() => writeBuild(AS_OF_W, store, { permanentFailFighter: firstFighter }));
+  const run = store.runs.at(-1);
+  assert.equal(run.status, 'failed');
+  assert.ok(run.output_counts.writes.ufc_fighter_dna_snapshots.failed >= 1);
+  assert.equal(store.rows.ufc_fighter_dna_snapshots.get('F1|2026-09-01').marker, 'last-known-good', 'a failed run never overwrites another date');
+});
+
+test('resume: rows already written for the same as-of date are preserved (not rewritten); the remainder is written and the run reconciles', async () => {
+  const store = newStore();
+  await writeBuild(AS_OF_W, store);
+  const all = [...store.rows.ufc_fighter_dna_snapshots.values()].filter((r) => r.as_of_date === AS_OF_W);
+  assert.ok(all.length >= 2);
+  const keep = all[0];
+  store.rows.ufc_fighter_dna_snapshots = new Map([[`${keep.fighter_id}|${AS_OF_W}`, { ...keep, marker: 'from-interrupted-run' }]]);
+  store.rows.ufc_fighter_stance_splits = new Map();
+  store.writes = {};
+  const summary = await writeBuild(AS_OF_W, store, {}, { resume: true });
+  assert.equal(summary.ok, true);
+  const run = store.runs.at(-1);
+  assert.equal(run.output_counts.preserved.snapshots, 1);
+  assert.equal(store.rows.ufc_fighter_dna_snapshots.get(`${keep.fighter_id}|${AS_OF_W}`).marker, 'from-interrupted-run', 'preserved row not rewritten');
+  assert.equal(store.writes.ufc_fighter_dna_snapshots, all.length - 1);
+  assert.equal(run.output_counts.reconciliation.complete, true);
+});
+
+test('reconciliation: a run whose rows do not all land is recorded partial, never success', async () => {
+  const store = newStore();
+  await assert.rejects(() => writeBuild(AS_OF_W, store, { dropSnapshots: true }), /incomplete/);
+  assert.equal(store.runs.at(-1).status, 'partial');
+  assert.ok(store.runs.at(-1).output_counts.reconciliation.missing_snapshots > 0);
+});
+
+test('retry classification: 57014 / 5xx / 429 / network retry; 4xx client errors do not', () => {
+  assert.equal(isRetryableWrite(500, '{"code":"57014"}'), true);
+  assert.equal(isRetryableWrite(503, ''), true);
+  assert.equal(isRetryableWrite(429, ''), true);
+  assert.equal(isRetryableWrite(0, 'fetch failed'), true);
+  assert.equal(isRetryableWrite(400, '{"code":"23502"}'), false);
+  assert.equal(isRetryableWrite(409, 'conflict'), false);
 });
