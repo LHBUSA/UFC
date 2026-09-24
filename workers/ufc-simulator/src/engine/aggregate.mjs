@@ -68,8 +68,8 @@ export function summarize(batch) {
     else if (w === 2) methods[m === 0 ? 'f2_ko' : m === 1 ? 'f2_sub' : 'f2_dec']++;
   }
   // Fight totals per fighter for medians (sum over rounds fought).
-  const totalsBy = { f1: { sig_l: [], sig_a: [], td_l: [], ctrl: [], kd: [], sub: [] }, f2: { sig_l: [], sig_a: [], td_l: [], ctrl: [], kd: [], sub: [] } };
-  const keys = ['sig_l', 'sig_a', 'td_l', 'ctrl', 'kd', 'sub'];
+  const totalsBy = { f1: { sig_l: [], sig_a: [], td_l: [], td_a: [], ctrl: [], kd: [], sub: [] }, f2: { sig_l: [], sig_a: [], td_l: [], td_a: [], ctrl: [], kd: [], sub: [] } };
+  const keys = ['sig_l', 'sig_a', 'td_l', 'td_a', 'ctrl', 'kd', 'sub'];
   for (let i = 0; i < n; i++) {
     for (let side = 0; side < 2; side++) {
       const acc = Object.fromEntries(keys.map((k) => [k, 0]));
@@ -83,7 +83,7 @@ export function summarize(batch) {
   const perRound = [];
   for (let r = 0; r < R; r++) {
     const row = { round: r + 1, fights_reaching: 0, f1: {}, f2: {} };
-    const cols = { f1: { sig_l: [], sig_a: [], td_l: [], ctrl: [], kd: [] }, f2: { sig_l: [], sig_a: [], td_l: [], ctrl: [], kd: [] } };
+    const cols = { f1: { sig_l: [], sig_a: [], td_l: [], td_a: [], ctrl: [], kd: [], sub: [] }, f2: { sig_l: [], sig_a: [], td_l: [], td_a: [], ctrl: [], kd: [], sub: [] } };
     let f1Rounds = 0, f2Rounds = 0, drawRounds = 0;
     for (let i = 0; i < n; i++) {
       if (batch.endRound[i] < r + 1) continue;

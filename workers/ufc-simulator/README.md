@@ -1,8 +1,10 @@
 # ufc-simulator — PBE Fight Simulator engine
 
-Family `pbe-fight-simulator`. **Phase 2: engine only.** Pure, deterministic, no I/O. Nothing here is deployed; `wrangler.toml` exists solely so `wrangler dev` can run the runtime-parity gate.
+Family `pbe-fight-simulator`. Pure, deterministic engine plus the Phase 3 backtest/calibration harness. Nothing here is deployed; `wrangler.toml` exists solely so `wrangler dev` can run the runtime-parity gate.
 
-Design and evidence: `docs/FIGHT_SIMULATOR_PHASE1_REPORT.md`, `docs/FIGHT_SIMULATOR_PHASE2.md`.
+Phase 3 (branch `fight-simulator-phase3`): component models are fitted GLMs (`src/engine/models.mjs` defines every feature once for the fitter and the simulator); the frozen `pbe-fight-simulator-v1.0-rc1` set lives in `src/engine/params_fitted_v1.mjs` with provenance; results in `docs/FIGHT_SIMULATOR_PHASE3.md`. `phase3/` holds `extract` (read-only), `dataset` (cohort, strictly as-of inputs, truth, per-round observations), `leakage_audit`, `glm` + `fit` (walk-forward folds, in-fold hazard calibration), `guard` (refuses the all-data fit for historical bouts), `evaluate`, `report`, `report_md`, `freeze`. Local caches under `.cache/` are gitignored.
+
+Design and evidence: `docs/FIGHT_SIMULATOR_PHASE1_REPORT.md`, `docs/FIGHT_SIMULATOR_PHASE2.md`, `docs/FIGHT_SIMULATOR_PHASE3.md`.
 
 ## What it does
 
@@ -24,7 +26,10 @@ src/engine/sha256.mjs      pure SHA-256 (identical in Node and workerd)
 src/engine/canonical.mjs   canonical JSON + rounding
 src/engine/rng.mjs         splitmix32 -> xoshiro128**, per-fight sub-streams
 src/engine/dist.mjs        Poisson/binomial by inversion, gamma, negative binomial, multinomial
-src/engine/params.mjs      engine PRIORS (documented, replaced by Phase 3 fits) + versions
+src/engine/params.mjs      structural params + versions; models come from params_fitted_v1.mjs (PRIOR_MODELS kept for reference)
+src/engine/models.mjs      component model feature definitions shared by fitter and simulator
+src/engine/params_fitted_v1.mjs  GENERATED frozen v1.0-rc1 coefficients + provenance (phase3/freeze.mjs)
+phase3/                    backtest, calibration, fitting, leakage audit, report, freeze
 src/engine/inputs.mjs      profiles from snapshot + ladder, as-of validation, coverage gate
 src/engine/fingerprint.mjs identity, simulation_id, engine spec hash, inputs digest
 src/engine/fight.mjs       the round-state engine (one fight)
@@ -53,4 +58,4 @@ npm run parity:worker    # needs wrangler; starts wrangler dev locally, compares
 - The anchor is a single log-odds tilt (hazards, round margin, and mildly exchange efficiency, opposite signs per corner). Beyond `params.tilt.max_tilt` (1.0) the artifact is flagged; nothing is hidden or forced silently.
 - Ending rounds carry stats scaled to the elapsed time with group-consistent rounding (targets and positions always sum to landed strikes).
 - Numbers are rounded before hashing (probabilities 4 dp, counts and seconds integers), so floating-point minutiae between runtimes cannot change bytes; the parity gate proves Node and workerd agree on every fixture.
-- Every parameter is a prior until Phase 3 registers fitted coefficients under `ufc_model_versions` family `pbe-fight-simulator`. The engine spec hash covers the parameter object, so a parameter change is a new engine spec by construction.
+- Component coefficients are the Phase 3 walk-forward fit (`v1.0-rc1`, not yet registered in `ufc_model_versions`); tilt weights, the round-score rule, shrinkage and gate thresholds remain documented structural priors. The engine spec hash covers the parameter object, so a parameter change is a new engine spec by construction.

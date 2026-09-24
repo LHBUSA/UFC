@@ -2,11 +2,13 @@
 //
 // Round N feeds round N+1 through: cumulative significant strikes absorbed
 // (the damage proxy: there is no licensed damage measure, and the artifact
-// says so), knockdowns taken, fatigue, control suffered, and the finish
-// hazard. Nothing resets between rounds.
+// says so), knockdowns taken, control suffered, and the finish hazard.
+// Nothing resets between rounds.
 //
-// Order inside a round, per fighter, in a fixed sequence so the RNG stream is
-// consumed identically every time:
+// Every rate, probability and hazard is a fitted component model from
+// models.mjs (features shared with the Phase 3 fitter) with coefficients in
+// params.models. Order inside a round, per fighter, is fixed so the RNG
+// stream is consumed identically every time:
 //   takedowns -> control -> strike attempts -> landed -> targets/positions ->
 //   knockdowns -> submission attempts -> finish hazards -> round score.
 //
@@ -16,21 +18,20 @@
 
 import { negbin, binomial, poisson, gamma, multinomial } from './dist.mjs';
 import { clamp } from './canonical.mjs';
+import { COMPONENTS, linear, sigmoid } from './models.mjs';
 
 export const STAT = Object.freeze({ sig_l: 0, sig_a: 1, head_l: 2, body_l: 3, leg_l: 4, dist_l: 5, clinch_l: 6, ground_l: 7, td_l: 8, td_a: 9, ctrl: 10, kd: 11, sub: 12 });
 export const NSTAT = 13;
 export const STAT_KEYS = Object.freeze(['sig_l', 'sig_a', 'head_l', 'body_l', 'leg_l', 'dist_l', 'clinch_l', 'ground_l', 'td_l', 'td_a', 'ctrl', 'kd', 'sub']);
 export const METHOD = Object.freeze({ KO: 'KO_TKO', SUB: 'SUB', DEC: 'DEC', DRAW: 'DRAW' });
 
-/** Precompute everything a fight needs from two profiles. */
-export function prepareContext(p1, p2, scheduledRounds, params) {
-  const L = params.round_seconds;
-  const R = clamp(scheduledRounds | 0, 1, params.max_rounds);
+/** Engine-facing side numerics from a profile (shared with the Phase 3 fitter so observed rounds use identical inputs). */
+export function sideFromProfile(p, params) {
   const lg = params.league;
   const rel = (v, base) => (base > 0 ? v / base : 1);
-  const sides = [p1, p2].map((p) => ({
+  return {
     id: p.id,
-    att_rate: p.att_rate.slice(0, R),
+    att_rate: p.att_rate.slice(),
     accuracy: p.accuracy, defense: p.defense, drift_rel: p.drift_rel,
     shares: [p.shares.head, p.shares.body, p.shares.leg],
     positions: [p.positions.distance, p.positions.clinch, p.positions.ground],
@@ -38,11 +39,18 @@ export function prepareContext(p1, p2, scheduledRounds, params) {
     kd15: p.kd15, kdabs15: p.kdabs15,
     ko_prop: rel(p.ko_win, lg.ko_win_rate), sub_prop: rel(p.sub_win, lg.sub_win_rate),
     ko_vuln: rel(p.ko_loss, lg.ko_loss_rate), sub_vuln: rel(p.sub_loss, lg.sub_loss_rate),
-  }));
-  return { sides, L, R, params };
+  };
 }
 
-
+/** Precompute everything a fight needs from two profiles. */
+export function prepareContext(p1, p2, scheduledRounds, params) {
+  const L = params.round_seconds;
+  const R = clamp(scheduledRounds | 0, 1, params.max_rounds);
+  const sides = [p1, p2].map((p) => sideFromProfile(p, params));
+  const M = params.models;
+  for (const name of Object.keys(COMPONENTS)) if (!M?.[name]?.beta) throw new Error(`params.models.${name} missing`);
+  return { sides, L, R, params, M };
+}
 
 /** PBE round score (published rule): 10-9 to the higher weighted total, 10-8 on a wide margin or a knockdown with a clear margin, 10-10 only on an exact tie. */
 function scoreRound(stats, base, P, tilt) {
@@ -77,92 +85,81 @@ function scaleGroup(stats, o0, idx, total) {
  * winner: 1 | 2 | 0 (draw). stats laid out [round][side][stat]. scores laid out [round][side] as 10/9/8.
  */
 export function simulateFight(ctx, rng, tilt = 0) {
-  const { sides, L, R, params: P } = ctx;
-  const lg = P.league;
+  const { sides, L, R, params: P, M } = ctx;
   const stats = new Int16Array(R * 2 * NSTAT);
   const scores = new Uint8Array(R * 2);
-  const absorbed = [0, 0];
-  const kdTaken = [0, 0];
-  const tiltSign = [1, -1];
-  const effMul = [Math.exp(tilt * P.tilt.efficiency_w), Math.exp(-tilt * P.tilt.efficiency_w)];
-  const tdMul = [Math.exp(tilt * P.tilt.td_w), Math.exp(-tilt * P.tilt.td_w)];
-  const hazMul = [Math.exp(tilt * P.tilt.hazard_w), Math.exp(-tilt * P.tilt.hazard_w)];
-  let totals = [0, 0];
+  const state = [{ absorbed: 0, kdTaken: 0 }, { absorbed: 0, kdTaken: 0 }];
+  const effT = [tilt * P.tilt.efficiency_w, -tilt * P.tilt.efficiency_w];
+  const tdT = [tilt * P.tilt.td_w, -tilt * P.tilt.td_w];
+  const hazT = [tilt * P.tilt.hazard_w, -tilt * P.tilt.hazard_w];
+  const totals = [0, 0];
+  const offAtt = COMPONENTS.att.offset(L), offTd = COMPONENTS.td_att.offset(L), off900 = COMPONENTS.kd.offset(L), offHaz = COMPONENTS.ko_haz.offset(L);
 
   for (let r = 0; r < R; r++) {
     const base = r * 2 * NSTAT;
     const roundNo = r + 1;
-    const fat = [0, 1].map((i) => clamp(1 - P.fatigue_absorbed * (absorbed[i] / 100) - P.fatigue_kd * kdTaken[i], P.fatigue_floor, 1));
-    const rate = [0, 1].map((i) => sides[i].att_rate[r] ?? sides[i].att_rate[sides[i].att_rate.length - 1]);
-    const pressure = [0, 1].map((i) => clamp(1 + P.pressure_k * (rate[1 - i] / lg.sig_att_per_min - 1), P.pressure_min, P.pressure_max));
+    const v = [{ td_l: 0, td_a: 0, ctrl: 0, head_l: 0, kd: 0, sub: 0, landed: 0 }, { td_l: 0, td_a: 0, ctrl: 0, head_l: 0, kd: 0, sub: 0, landed: 0 }];
 
     // Takedowns and control.
-    const tdL = [0, 0], tdA = [0, 0], ctrl = [0, 0];
     for (let i = 0; i < 2; i++) {
-      const j = 1 - i, s = sides[i], o = sides[j];
-      const mu = s.td15 * (L / 900) * pressure[i] * fat[i];
-      tdA[i] = negbin(rng, mu, P.k_td_att);
-      const q = clamp((s.tdacc * (1 - o.tddef)) / (lg.td_accuracy * (1 - lg.td_defense)) * lg.td_accuracy * tdMul[i], 0.03, 0.95);
-      tdL[i] = binomial(rng, tdA[i], q);
-      if (tdL[i] > 0) {
-        ctrl[i] = Math.min(L * P.control_cap_share, gamma(rng, P.control_shape, (s.ctrl_per_td * tdL[i]) / P.control_shape));
-      } else if (rng.nextFloat() < s.ctrl_share * P.control_base_prob_k) {
-        ctrl[i] = Math.min(60, gamma(rng, 1, P.control_base_mean));
+      const j = 1 - i, s = sides[i], o = sides[j], st = state[i], ot = state[j];
+      const mu = Math.exp(linear(M.td_att.beta, COMPONENTS.td_att.x(s, o, st, ot, roundNo)) + offTd);
+      v[i].td_a = negbin(rng, mu, M.td_att.k);
+      const q = sigmoid(linear(M.td_acc.beta, COMPONENTS.td_acc.x(s, o, st, ot, roundNo)) + tdT[i]);
+      v[i].td_l = binomial(rng, v[i].td_a, q);
+      const pAny = sigmoid(linear(M.ctrl_any.beta, COMPONENTS.ctrl_any.x(s, o, st, ot, roundNo, v[i])));
+      if (rng.nextFloat() < pAny) {
+        const mean = Math.exp(linear(M.ctrl_len.beta, COMPONENTS.ctrl_len.x(s, o, st, ot, roundNo, v[i], L)));
+        v[i].ctrl = Math.min(L * P.control_cap_share, gamma(rng, M.ctrl_len.shape, mean / M.ctrl_len.shape));
       }
     }
-    if (ctrl[0] + ctrl[1] > L) { const k = L / (ctrl[0] + ctrl[1]); ctrl[0] *= k; ctrl[1] *= k; }
-    for (let i = 0; i < 2; i++) ctrl[i] = Math.round(ctrl[i]);
+    if (v[0].ctrl + v[1].ctrl > L) { const k = L / (v[0].ctrl + v[1].ctrl); v[0].ctrl *= k; v[1].ctrl *= k; }
+    for (let i = 0; i < 2; i++) v[i].ctrl = Math.round(v[i].ctrl);
 
     // Strikes.
-    const landed = [0, 0], headL = [0, 0], kd = [0, 0], subA = [0, 0];
     for (let i = 0; i < 2; i++) {
-      const j = 1 - i, s = sides[i], o = sides[j];
-      const mu = rate[i] * (L / 60) * fat[i] * pressure[i];
-      const att = negbin(rng, mu, P.k_sig_att);
-      let p = (s.accuracy * (1 - o.defense)) / (1 - lg.sig_defense);
-      if (roundNo >= 3) p *= 1 + P.drift_k * o.drift_rel;
-      p = clamp(p * effMul[i], 0.05, 0.9);
+      const j = 1 - i, s = sides[i], o = sides[j], st = state[i], ot = state[j];
+      const mu = Math.exp(linear(M.att.beta, COMPONENTS.att.x(s, o, st, ot, roundNo)) + offAtt);
+      const att = negbin(rng, mu, M.att.k);
+      const p = clamp(sigmoid(linear(M.acc.beta, COMPONENTS.acc.x(s, o, st, ot, roundNo, v[i])) + effT[i]), 0.02, 0.95);
       const l = binomial(rng, att, p);
-      landed[i] = l;
+      v[i].landed = l;
       const tgt = multinomial(rng, l, s.shares);
-      const ctrlMin = ctrl[i] / 60;
-      const gShare = clamp(s.positions[2] + P.ground_boost_per_min * ctrlMin, 0, 0.95);
+      const gShare = clamp(s.positions[2] + P.ground_boost_per_min * (v[i].ctrl / 60), 0, 0.95);
       const rest = 1 - gShare;
       const dc = s.positions[0] + s.positions[1];
       const pos = multinomial(rng, l, [dc > 0 ? rest * (s.positions[0] / dc) : rest, dc > 0 ? rest * (s.positions[1] / dc) : 0, gShare]);
-      headL[i] = tgt[0];
+      v[i].head_l = tgt[0];
       const o0 = base + i * NSTAT;
       stats[o0 + STAT.sig_l] = l; stats[o0 + STAT.sig_a] = att;
       stats[o0 + STAT.head_l] = tgt[0]; stats[o0 + STAT.body_l] = tgt[1]; stats[o0 + STAT.leg_l] = tgt[2];
       stats[o0 + STAT.dist_l] = pos[0]; stats[o0 + STAT.clinch_l] = pos[1]; stats[o0 + STAT.ground_l] = pos[2];
-      stats[o0 + STAT.td_l] = tdL[i]; stats[o0 + STAT.td_a] = tdA[i]; stats[o0 + STAT.ctrl] = ctrl[i];
+      stats[o0 + STAT.td_l] = v[i].td_l; stats[o0 + STAT.td_a] = v[i].td_a; stats[o0 + STAT.ctrl] = v[i].ctrl;
     }
-    // Knockdowns and submission attempts (after both strike lines so head counts exist).
+    // Knockdowns and submission attempts.
     for (let i = 0; i < 2; i++) {
-      const j = 1 - i, s = sides[i], o = sides[j];
-      const kdRate = Math.sqrt(Math.max(1e-9, s.kd15 * o.kdabs15)) / Math.max(1e-9, lg.kd_per_15) * lg.kd_per_15;
-      const lam = kdRate * (L / 900) * (1 - P.kd_head_k + P.kd_head_k * (headL[i] / P.kd_head_ref)) * effMul[i];
-      kd[i] = Math.min(P.kd_cap, poisson(rng, lam));
-      const subLam = s.sub15 * (L / 900) * (1 + P.sub_control_k * Math.min(P.sub_control_cap_min, ctrl[i] / 60));
-      subA[i] = poisson(rng, subLam);
+      const j = 1 - i, s = sides[i], o = sides[j], st = state[i], ot = state[j];
+      const lam = Math.exp(linear(M.kd.beta, COMPONENTS.kd.x(s, o, st, ot, roundNo, v[i])) + off900 + effT[i]);
+      v[i].kd = Math.min(P.kd_cap, poisson(rng, lam));
+      const subLam = Math.exp(linear(M.sub.beta, COMPONENTS.sub.x(s, o, st, ot, roundNo, v[i])) + off900);
+      v[i].sub = poisson(rng, subLam);
       const o0 = base + i * NSTAT;
-      stats[o0 + STAT.kd] = kd[i]; stats[o0 + STAT.sub] = subA[i];
+      stats[o0 + STAT.kd] = v[i].kd; stats[o0 + STAT.sub] = v[i].sub;
     }
 
     // Finish hazards.
     const hz = new Array(4); // [ko1, sub1, ko2, sub2]
     for (let i = 0; i < 2; i++) {
-      const j = 1 - i, s = sides[i], o = sides[j];
-      const koIntensity = (P.ko_base * s.ko_prop * o.ko_vuln + P.ko_kd * kd[i] + P.ko_head_k * Math.max(0, headL[i] - P.ko_head_ref) + P.ko_damage_k * ((absorbed[j] + landed[i]) / 100) * o.ko_vuln) * hazMul[i];
-      const subIntensity = (P.sub_base * s.sub_prop * o.sub_vuln + P.sub_att_k * subA[i] * o.sub_vuln + P.sub_control_min_k * (ctrl[i] / 60) * o.sub_vuln) * hazMul[i];
-      hz[i * 2] = 1 - Math.exp(-Math.max(0, koIntensity));
-      hz[i * 2 + 1] = 1 - Math.exp(-Math.max(0, subIntensity));
+      const j = 1 - i, s = sides[i], o = sides[j], st = state[i], ot = state[j];
+      const eKo = Math.exp(Math.min(30, linear(M.ko_haz.beta, COMPONENTS.ko_haz.x(s, o, st, ot, roundNo, v[i])) + offHaz + hazT[i]));
+      const eSub = Math.exp(Math.min(30, linear(M.sub_haz.beta, COMPONENTS.sub_haz.x(s, o, st, ot, roundNo, v[i])) + offHaz + hazT[i]));
+      hz[i * 2] = 1 - Math.exp(-eKo);
+      hz[i * 2 + 1] = 1 - Math.exp(-eSub);
     }
     const pEnd = 1 - (1 - hz[0]) * (1 - hz[1]) * (1 - hz[2]) * (1 - hz[3]);
     const uEnd = rng.nextFloat();
     const uWhich = rng.nextFloat();
     const uTime = rng.nextFloat();
-    // Round score on the full round; an ending round is re-scored below on its elapsed-time stats so the record stays coherent.
     const [s1, s2] = scoreRound(stats, base, P, tilt);
     scores[r * 2] = s1; scores[r * 2 + 1] = s2;
     totals[0] += s1; totals[1] += s2;
@@ -173,7 +170,7 @@ export function simulateFight(ctx, rng, tilt = 0) {
       for (let k = 0; k < 4; k++) { acc += hz[k] / total; if (uWhich < acc) { which = k; break; } }
       const winner = which < 2 ? 1 : 2;
       const method = which % 2 === 0 ? METHOD.KO : METHOD.SUB;
-      const shape = method === METHOD.KO && kd[winner - 1] > 0 ? P.finish_time_shape_kd : P.finish_time_shape;
+      const shape = method === METHOD.KO && v[winner - 1].kd > 0 ? P.finish_time_shape_kd : P.finish_time_shape;
       const t = clamp(Math.round(L * Math.pow(uTime, shape)), P.finish_time_min, L - 1);
       // The ending round's stats are scaled to the elapsed time so the record never claims a full round of output.
       const k = t / L;
@@ -195,8 +192,8 @@ export function simulateFight(ctx, rng, tilt = 0) {
     }
 
     // Carry state.
-    absorbed[0] += landed[1]; absorbed[1] += landed[0];
-    kdTaken[0] += kd[1]; kdTaken[1] += kd[0];
+    state[0].absorbed += v[1].landed; state[1].absorbed += v[0].landed;
+    state[0].kdTaken += v[1].kd; state[1].kdTaken += v[0].kd;
   }
 
   const winner = totals[0] > totals[1] ? 1 : totals[1] > totals[0] ? 2 : 0;

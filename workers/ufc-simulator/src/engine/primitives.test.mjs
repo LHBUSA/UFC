@@ -90,6 +90,6 @@ test('fingerprint: identity is canonical, order-insensitive by construction, and
   assert.notEqual(id1, simulationId(buildIdentity({ ...base, fighter_1_as_of: '2026-09-03' })));
   assert.throws(() => buildIdentity({ ...base, fighter_1_id: '2222', fighter_2_id: '1111' }));
   assert.deepEqual(canonicalOrder('b', 'a'), ['a', 'b']);
-  const tweaked = JSON.parse(JSON.stringify(DEFAULT_PARAMS)); tweaked.ko_base += 0.001;
+  const tweaked = JSON.parse(JSON.stringify(DEFAULT_PARAMS)); tweaked.models.att.k += 0.001;
   assert.notEqual(engineSpecSha256(tweaked), engineSpecSha256());
 });

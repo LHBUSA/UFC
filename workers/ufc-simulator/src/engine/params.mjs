@@ -1,6 +1,8 @@
 // Engine parameters for pbe-fight-simulator v1.0.
 //
-// STATUS: PRIORS. Every number below is a documented starting value chosen from
+// STATUS: v1.0-rc1. Component models and finish-time shapes come from params_fitted_v1.mjs (walk-forward validated,
+// docs/FIGHT_SIMULATOR_PHASE3.md). The remaining scalars below are structural priors, documented in that report.
+// Original note: every number below was a documented starting value chosen from
 // the Phase 1 measurements over 42,166 fighter-rounds (means, dispersion) and
 // the 2015-2026 finish distribution, NOT a fitted coefficient. Phase 3
 // (walk-forward calibration) replaces them and the fitted set becomes the
@@ -9,11 +11,27 @@
 //
 // Units: strikes per minute, takedowns/subs/knockdowns per 15 minutes, seconds.
 
+import { FITTED_MODELS_V1, FITTED_FINISH_TIME_V1 } from './params_fitted_v1.mjs';
+
 export const SIMULATOR_FAMILY = 'pbe-fight-simulator';
-export const SIMULATOR_VERSION = 'pbe-fight-simulator-v1.0-dev';
+export const SIMULATOR_VERSION = 'pbe-fight-simulator-v1.0-rc1';
 export const RULES_VERSION = 'pbe-sim-rules-v1';
 export const DNA_DEFINITION_VERSION = 1;
 export const FEATURE_VERSION = 1;
+
+/** GLM-form priors equivalent to the Phase 2 multiplicative priors at league inputs (starting values only). */
+export const PRIOR_MODELS = Object.freeze({
+  att: { beta: [0, 1, 0, -0.06, -0.05, 0, 0, 0], k: 2.1, provenance: 'phase2-prior' },
+  acc: { beta: [0.205, 1, 1, 0.5, 0, 0], provenance: 'phase2-prior' },
+  td_att: { beta: [0, 1, 0, 0, 0, 0], k: 1.0, provenance: 'phase2-prior' },
+  td_acc: { beta: [0.51, 1, 1], provenance: 'phase2-prior' },
+  ctrl_any: { beta: [-0.85, 0, 3, 0], provenance: 'phase2-prior' },
+  ctrl_len: { beta: [-0.69, 1, 1, 0, 0], shape: 1.2, provenance: 'phase2-prior' },
+  kd: { beta: [1.31, 1, 1, 0], provenance: 'phase2-prior' },
+  sub: { beta: [0, 1, 0, 0.6], provenance: 'phase2-prior' },
+  ko_haz: { beta: [-3.4, 1, 1, 2.1, 0.1, 0.2, 0], provenance: 'phase2-prior' },
+  sub_haz: { beta: [-4.05, 1, 1, 1.2, 0.2, 0.1], provenance: 'phase2-prior' },
+});
 
 export const DEFAULT_PARAMS = Object.freeze({
   // League priors (Phase 1 table: sig att 35.2 and landed 15.8 per round; TD att 1.20 and landed 0.45 per round; sub 0.16; KD 0.09; control 55.8 s).
@@ -29,30 +47,15 @@ export const DEFAULT_PARAMS = Object.freeze({
   // Shrinkage toward the league prior: weight of the prior in "rounds" of evidence.
   shrink_rounds: 6,
   shrink_bouts: 4,
-  // Dispersion (negative binomial k): var = mu + mu^2/k. From var/mean 17.4 at mu 35 -> k ~ 2.1; TD var/mean 2.2 at mu 1.2 -> k ~ 1.
-  k_sig_att: 2.1,
-  k_td_att: 1.0,
-  // Exchange coupling: how much an opponent's volume raises your own attempts (clamped).
-  pressure_k: 0.15, pressure_min: 0.8, pressure_max: 1.25,
-  // Fatigue: attempt multiplier = 1 - f_absorbed * absorbed_cum/100 - f_kd * kd_taken, floored.
-  fatigue_absorbed: 0.06, fatigue_kd: 0.05, fatigue_floor: 0.55,
-  // Defensive drift: relative accuracy uplift opponents get from round 3 (scaled by the fighter's drift metric).
-  drift_k: 0.5, drift_cap: 0.25,
-  // Ground share boost per minute of control this round.
+  // Exchange coupling and control caps kept from Phase 2 (structural, not fitted).
   ground_boost_per_min: 0.12,
-  // Control time: gamma shape when a TD landed; baseline control probability scale without a TD.
-  control_shape: 1.2, control_cap_share: 0.85, control_base_prob_k: 0.5, control_base_mean: 20,
-  // Submission attempt coupling to control (per minute of control).
-  sub_control_k: 0.6, sub_control_cap_min: 2,
-  // Knockdown coupling to head strikes landed this round (relative to league ~10 per round).
-  kd_head_ref: 10, kd_head_k: 0.5, kd_cap: 3,
-  // Finish hazards (per round, per fighter, per method). Tuned so a league-average pair over three rounds reproduces the
-  // 2015-2026 marginals: finish 51% (KO/TKO 32%, SUB 19%), conditional finish hazard by round 0.22 / 0.17 / 0.13
-  // (observed 0.27 / 0.22 / 0.15), draws 2% (observed 0.7%; the residual comes from offsetting 10-8 rounds).
-  ko_base: 0.036, ko_kd: 0.28, ko_head_ref: 12, ko_head_k: 0.006, ko_damage_k: 0.015,
-  sub_base: 0.019, sub_att_k: 0.08, sub_control_min_k: 0.02,
+  control_cap_share: 0.85,
+  kd_cap: 3,
+  // Component models (models.mjs). PRIOR_MODELS below reproduces the Phase 2 league-average behaviour in GLM form;
+  // Phase 3 replaces `models` with walk-forward fitted coefficients carrying provenance.
+  models: FITTED_MODELS_V1,
   // Finish timing within the round: t = L * u^shape (shape < 1 tilts late, > 1 tilts early). KD finishes tilt earlier.
-  finish_time_shape: 0.9, finish_time_shape_kd: 1.4, finish_time_min: 8,
+  finish_time_shape: FITTED_FINISH_TIME_V1.finish_time_shape, finish_time_shape_kd: FITTED_FINISH_TIME_V1.finish_time_shape_kd, finish_time_min: 8,
   // Round scoring weights (a published PBE rule, not a judge model).
   score: { head: 1.0, body: 0.8, leg: 0.6, kd: 6.0, td: 2.5, ctrl_per_min: 1.5, sub: 1.0, ten_eight_margin: 40, ten_eight_kd_margin: 14, draw_eps: 1e-9 },
   // Champion anchor tilt: log-odds style scalar applied to hazards, round margin, and mildly to exchange efficiency.

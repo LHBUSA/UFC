@@ -1,0 +1,42 @@
+{
+ "cohort": 4899,
+ "excluded": {
+  "round_stats_incomplete": 376,
+  "corner_without_snapshot_debut": 873,
+  "method_DRAW": 48,
+  "method_DQ": 14,
+  "method_NC": 66,
+  "nonstandard_time_format": 35,
+  "snapshot_provenance_unverifiable": 10,
+  "scheduled_rounds_not_3_or_5": 1,
+  "no_result": 4
+ },
+ "by_year": {
+  "2015": 380,
+  "2016": 381,
+  "2017": 349,
+  "2018": 398,
+  "2019": 420,
+  "2020": 373,
+  "2021": 442,
+  "2022": 466,
+  "2023": 436,
+  "2024": 465,
+  "2025": 458,
+  "2026": 331
+ },
+ "by_series": {
+  "ufc": 4896,
+  "road_to_ufc": 1,
+  "contender_series": 2
+ },
+ "by_scheduled_rounds": {
+  "3": 4348,
+  "5": 551
+ },
+ "by_method": {
+  "DEC": 2455,
+  "KO_TKO": 1584,
+  "SUB": 860
+ }
+}
