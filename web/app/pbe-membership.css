@@ -15,6 +15,8 @@
 .pbe-mbr-badge.is-sport_pro { color: var(--pbe-gold-bright, #e9c75a); border-color: rgba(212,175,55,.45); background: rgba(212,175,55,.10); }
 .pbe-mbr-badge.is-all_access { color: #17120a; background: linear-gradient(135deg, var(--pbe-gold-bright, #e9c75a), var(--pbe-gold, #d4af37)); border-color: transparent; box-shadow: 0 6px 18px rgba(212,175,55,.25); }
 .pbe-mbr-badge.is-all_access::before { background: #17120a; }
+.pbe-mbr-badge.is-founding { color: #f7e2a0; border-color: rgba(247,226,160,.5); background: rgba(212,175,55,.14); }
+.pbe-mbr-badge.is-season_pass { color: var(--pbe-gold-bright, #e9c75a); border-color: rgba(212,175,55,.45); background: rgba(212,175,55,.10); }
 .pbe-mbr-badge.is-owner { color: #7fe0a4; border-color: rgba(127,224,164,.4); background: rgba(127,224,164,.08); }
 
 .pbe-mbr-panel { display: grid; gap: 12px; color: var(--pbe-paper, #f5f1eb); font-family: var(--pbe-font-ui, var(--font-sans, Inter, system-ui, sans-serif)); }

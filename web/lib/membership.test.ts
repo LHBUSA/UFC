@@ -30,7 +30,7 @@ const verdict = (over: Partial<Extract<LedgerRead, { state: "ok" }>> & { plan?: 
 /* ---- the contract itself ---------------------------------------------- */
 
 test("contract: version, states and the four labels exactly", () => {
-  assert.equal(CONTRACT_VERSION, "1.0.0");
+  assert.equal(CONTRACT_VERSION, "1.1.0");
   assert.deepEqual([...STATES], ["free", "sport_pro", "all_access", "owner"]);
   assert.equal(membershipLabel("free", "ufc"), "FREE");
   assert.equal(membershipLabel("sport_pro", "ufc"), "UFC PRO ACTIVE");
@@ -158,7 +158,7 @@ test("the session route returns the browser-safe membership object and nothing l
   assert.doesNotMatch(src, /stripe|webhook|ledger_id|service_role/i);
   /* The object itself carries no secrets: exactly the contract's keys. */
   const keys = Object.keys(deriveMembership({ sport: "ufc", entitled: true, accessSource: "all_access" })).sort();
-  assert.deepEqual(keys, ["access_source", "cancel_at_period_end", "contract", "current_period_end", "email", "entitled", "label", "manage_url", "network_url", "plan", "product_key", "show_all_access_upgrade", "show_manage", "show_purchase_cta", "sport", "state"]);
+  assert.deepEqual(keys, ["access_source", "cancel_at_period_end", "contract", "current_period_end", "email", "entitled", "label", "legacy_tier", "manage_url", "network_url", "plan", "product_key", "show_all_access_upgrade", "show_manage", "show_purchase_cta", "sport", "state", "sublabel"]);
 });
 
 test("UI reads the derived flags, never re-derives from plan names or prices", () => {

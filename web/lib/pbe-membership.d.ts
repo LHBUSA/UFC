@@ -6,12 +6,16 @@ export type MembershipState = "free" | "sport_pro" | "all_access" | "owner";
 export type AccessSource = "sport" | "all_access" | "owner";
 export type SportKey = "mlb" | "nfl" | "nba" | "nhl" | "wnba" | "ufc";
 
+export type LegacyTier = "founding" | "season_pass";
+
 /** The browser-safe object a session/account endpoint returns. */
 export type Membership = {
   contract: string;
   sport: string;
   state: MembershipState;
+  legacy_tier: LegacyTier | null;
   label: string;
+  sublabel: string | null;
   entitled: boolean;
   access_source: AccessSource | null;
   product_key: string | null;
@@ -28,6 +32,8 @@ export type Membership = {
 
 export type DeriveMembershipInput = {
   sport: string;
+  legacyTier?: LegacyTier | null;
+  hasBilling?: boolean | null;
   entitled?: boolean;
   accessSource?: string | null;
   productKey?: string | null;
@@ -56,9 +62,10 @@ export const ALL_ACCESS_OFFER: Readonly<{
 }>;
 export const NETWORK: ReadonlyArray<NetworkEntry>;
 export const STATES: ReadonlyArray<MembershipState>;
+export const LEGACY_TIERS: ReadonlyArray<LegacyTier>;
 
 export function deriveMembership(input?: DeriveMembershipInput): Membership;
-export function membershipLabel(state: MembershipState | string, sport?: string | null): string;
+export function membershipLabel(state: MembershipState | string, sport?: string | null, legacyTier?: LegacyTier | null): string;
 export function readMembership(value: unknown, sport: string): Membership;
 export function planText(m: Membership | null | undefined): string;
 export function membershipBadgeHtml(m: Membership | null | undefined): string;

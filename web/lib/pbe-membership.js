@@ -14,7 +14,7 @@
  *   OWNER       — verified owner identity (access_source 'owner')
  */
 
-export const CONTRACT_VERSION = '1.0.0';
+export const CONTRACT_VERSION = '1.1.0';
 
 export const SPORT_LABELS = Object.freeze({ mlb: 'MLB', nfl: 'NFL', nba: 'NBA', nhl: 'NHL', wnba: 'WNBA', ufc: 'UFC' });
 
@@ -46,21 +46,31 @@ export const NETWORK = Object.freeze([
 
 export const STATES = Object.freeze(['free', 'sport_pro', 'all_access', 'owner']);
 const SOURCES = new Set(['sport', 'all_access', 'owner']);
+/* Legacy tiers inside sport_pro. 'founding' = a lifetime/grandfathered sport
+   entitlement with no recurring billing (MLB founding_member and the pre-
+   paywall lifetime cohort); 'season_pass' = a one-time pass with an end date.
+   Decided server-side from the sport's own ledger, never by the browser. */
+export const LEGACY_TIERS = Object.freeze(['founding', 'season_pass']);
 
 /** Server side. Turn the authoritative verdict into the browser-safe object.
  *  `entitled` and `accessSource` come from the entitlement decision, nothing
  *  else. Unknown/absent source with entitled=true is treated as the sport's
  *  own plan (legacy ledgers that predate access_source). */
-export function deriveMembership({ sport, entitled = false, accessSource = null, productKey = null, plan = null, email = null, currentPeriodEnd = null, cancelAtPeriodEnd = false } = {}) {
+export function deriveMembership({ sport, entitled = false, accessSource = null, productKey = null, plan = null, email = null, currentPeriodEnd = null, cancelAtPeriodEnd = false, legacyTier = null, hasBilling = null } = {}) {
   const sportKey = String(sport || '').toLowerCase();
-  const sportLabel = SPORT_LABELS[sportKey] || sportKey.toUpperCase() || 'SPORT';
   const source = SOURCES.has(accessSource) ? accessSource : (entitled ? 'sport' : null);
   const state = !entitled ? 'free' : source === 'owner' ? 'owner' : source === 'all_access' ? 'all_access' : 'sport_pro';
+  const tier = state === 'sport_pro' && LEGACY_TIERS.includes(legacyTier) ? legacyTier : null;
+  /* A founding/lifetime member has nothing to manage unless the ledger says a
+     paid subscription also exists (hasBilling). Season passes are one-time. */
+  const billed = hasBilling === null ? tier === null : Boolean(hasBilling);
   return {
     contract: CONTRACT_VERSION,
     sport: sportKey,
     state,
-    label: membershipLabel(state, sportKey),
+    legacy_tier: tier,
+    label: membershipLabel(state, sportKey, tier),
+    sublabel: tier === 'founding' ? `Lifetime ${SPORT_LABELS[sportKey] || sportKey.toUpperCase()} access` : tier === 'season_pass' ? 'Season pass' : null,
     entitled: Boolean(entitled),
     access_source: entitled ? source : null,
     product_key: entitled ? (productKey || null) : null,
@@ -73,16 +83,20 @@ export function deriveMembership({ sport, entitled = false, accessSource = null,
     /* UI rules, decided once here so no sport re-derives them */
     show_purchase_cta: state === 'free',
     show_all_access_upgrade: state === 'sport_pro',
-    show_manage: state === 'sport_pro' || state === 'all_access',
+    show_manage: state === 'all_access' || (state === 'sport_pro' && billed),
   };
 }
 
-/** The four labels, exactly. */
-export function membershipLabel(state, sport) {
+/** The labels, exactly. A legacy tier only refines the sport_pro label. */
+export function membershipLabel(state, sport, legacyTier = null) {
   const sportLabel = SPORT_LABELS[String(sport || '').toLowerCase()] || String(sport || '').toUpperCase() || 'SPORT';
   if (state === 'owner') return 'OWNER';
   if (state === 'all_access') return 'ALL ACCESS ACTIVE';
-  if (state === 'sport_pro') return `${sportLabel} PRO ACTIVE`;
+  if (state === 'sport_pro') {
+    if (legacyTier === 'founding') return 'FOUNDING MEMBER';
+    if (legacyTier === 'season_pass') return `${sportLabel} SEASON PASS`;
+    return `${sportLabel} PRO ACTIVE`;
+  }
   return 'FREE';
 }
 
@@ -101,6 +115,8 @@ export function readMembership(value, sport) {
     email: m.email,
     currentPeriodEnd: m.current_period_end,
     cancelAtPeriodEnd: m.cancel_at_period_end,
+    legacyTier: m.legacy_tier || null,
+    hasBilling: typeof m.show_manage === 'boolean' && m.state === 'sport_pro' ? m.show_manage : null,
   });
 }
 
@@ -109,6 +125,8 @@ export function planText(m) {
   if (!m || !m.entitled) return '';
   if (m.state === 'owner') return 'Owner access';
   if (m.state === 'all_access') return 'All Access · every PropBetEdge sport';
+  if (m.legacy_tier === 'founding') return m.sublabel || 'Lifetime access';
+  if (m.legacy_tier === 'season_pass') return `${SPORT_LABELS[m.sport] || m.sport.toUpperCase()} season pass${m.current_period_end ? ` · through ${String(m.current_period_end).slice(0, 10)}` : ''}`;
   const plan = String(m.plan || '').replace(/_/g, ' ').trim();
   return plan ? `${SPORT_LABELS[m.sport] || m.sport.toUpperCase()} Pro · ${plan}` : `${SPORT_LABELS[m.sport] || m.sport.toUpperCase()} Pro`;
 }
@@ -120,7 +138,8 @@ const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 /** The membership badge. Class hooks: .pbe-mbr-badge.is-{state} */
 export function membershipBadgeHtml(m) {
   const state = STATES.includes(m?.state) ? m.state : 'free';
-  return `<span class="pbe-mbr-badge is-${state}" data-pbe-membership="${state}">${esc(membershipLabel(state, m?.sport))}</span>`;
+  const tier = LEGACY_TIERS.includes(m?.legacy_tier) ? m.legacy_tier : null;
+  return `<span class="pbe-mbr-badge is-${state}${tier ? ` is-${tier}` : ''}" data-pbe-membership="${state}">${esc(membershipLabel(state, m?.sport, tier))}</span>`;
 }
 
 /** Manage-subscription link (only when the member has a subscription). */
