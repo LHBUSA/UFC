@@ -5,10 +5,18 @@
   "type": "module",
   "description": "PBE Fight Simulator engine (pbe-fight-simulator family). Phase 2: pure deterministic engine only. No deploy, no API, no UI.",
   "scripts": {
-    "test": "node --test src/engine/*.test.mjs",
+    "test": "node --test src/engine/*.test.mjs phase3/glm.test.mjs",
     "test:cross-process": "node src/engine/cross_process.check.mjs",
     "bench": "node bench/bench.mjs",
     "check": "node --check src/engine/index.mjs && node --check src/worker.js",
-    "parity:worker": "node src/parity/run_parity.mjs"
+    "parity:worker": "node src/parity/run_parity.mjs",
+    "phase3:extract": "node phase3/extract.mjs",
+    "phase3:cohort": "node --max-old-space-size=8192 phase3/dataset.mjs",
+    "phase3:leakage": "node --max-old-space-size=8192 phase3/leakage_audit.mjs",
+    "phase3:fit": "node --max-old-space-size=8192 phase3/fit.mjs",
+    "phase3:evaluate": "node --max-old-space-size=8192 phase3/evaluate.mjs --n 2000 --from 2016 --to 2026",
+    "phase3:report": "node --max-old-space-size=8192 phase3/report.mjs --n 2000 --prior-n 2000 --uncal-n 2000 && node --max-old-space-size=8192 phase3/report_md.mjs --n 2000",
+    "phase3:freeze": "node phase3/freeze.mjs",
+    "test:glm": "node --test phase3/glm.test.mjs"
   }
 }

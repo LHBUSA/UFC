@@ -1,0 +1,3806 @@
+{
+ "2016": {
+  "models": {
+   "att": {
+    "beta": [
+     0.414241,
+     0.544684,
+     0.24214,
+     0.820544,
+     -0.040068,
+     -0.060703,
+     -0.201181,
+     -0.373936
+    ],
+    "provenance": "fold-2016-train-lt-2016",
+    "k": 3.577
+   },
+   "acc": {
+    "beta": [
+     -0.181745,
+     0.6096,
+     0.337534,
+     -0.034704,
+     0.072588,
+     0.179091
+    ],
+    "provenance": "fold-2016-train-lt-2016"
+   },
+   "td_att": {
+    "beta": [
+     0.609018,
+     1.012614,
+     -0.476088,
+     -0.426065,
+     0.085863,
+     0.19391
+    ],
+    "provenance": "fold-2016-train-lt-2016",
+    "k": 2.5663
+   },
+   "td_acc": {
+    "beta": [
+     -0.403784,
+     -0.196272,
+     0.592111
+    ],
+    "provenance": "fold-2016-train-lt-2016"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.210885,
+     3.621376,
+     0.493369,
+     3.206047
+    ],
+    "provenance": "fold-2016-train-lt-2016"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.156519,
+     0.962653,
+     0.107376,
+     1.445206,
+     0.947791
+    ],
+    "provenance": "fold-2016-train-lt-2016",
+    "shape": 1.2001
+   },
+   "kd": {
+    "beta": [
+     -0.810562,
+     0.500143,
+     0.388039,
+     0.468037
+    ],
+    "provenance": "fold-2016-train-lt-2016"
+   },
+   "sub": {
+    "beta": [
+     -0.733664,
+     0.657612,
+     0.483965,
+     0.288423
+    ],
+    "provenance": "fold-2016-train-lt-2016"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.903144,
+     0.387642,
+     0.662114,
+     2.852541,
+     0.323377,
+     1.999246,
+     -0.981258
+    ],
+    "provenance": "fold-2016-train-lt-2016"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.517967,
+     0.306139,
+     0.250734,
+     2.036057,
+     -0.300036,
+     -0.186145
+    ],
+    "provenance": "fold-2016-train-lt-2016"
+   }
+  },
+  "finish_time_shape": 0.6697,
+  "finish_time_shape_kd": 1.1338,
+  "provenance": {
+   "fold": "fold-2016-train-lt-2016",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2015-12-19"
+   },
+   "training_bouts": 380,
+   "training_observations": 1830,
+   "finish_time_samples": {
+    "kd": 85,
+    "other": 113
+   },
+   "components": {
+    "att": {
+     "n_rows": 1830,
+     "deviance": 20560.15,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 1826,
+     "deviance": 4681.88,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 1830,
+     "deviance": 2864.17,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 1053,
+     "deviance": 1701.88,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 1830,
+     "deviance": 1699.9,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 1339,
+     "deviance": 1394.75,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 1830,
+     "deviance": 905.31,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 1830,
+     "deviance": 1089.49,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 1830,
+     "events": 123,
+     "deviance": 749.27,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 1830,
+     "events": 75,
+     "deviance": 538.56,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 380,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3624,
+       "sub": 0.1787
+      },
+      "observed": {
+       "ko": 0.3237,
+       "sub": 0.1974
+      },
+      "delta": {
+       "ko": -0.1131,
+       "sub": 0.0994
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3362,
+       "sub": 0.1963
+      },
+      "observed": {
+       "ko": 0.3237,
+       "sub": 0.1974
+      },
+      "delta": {
+       "ko": -0.0379,
+       "sub": 0.0054
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3288,
+       "sub": 0.1986
+      },
+      "observed": {
+       "ko": 0.3237,
+       "sub": 0.1974
+      },
+      "delta": {
+       "ko": -0.0158,
+       "sub": -0.0062
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3263,
+       "sub": 0.198
+      },
+      "observed": {
+       "ko": 0.3237,
+       "sub": 0.1974
+      },
+      "delta": {
+       "ko": -0.0079,
+       "sub": -0.0033
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.903144,
+     "sub_haz": -3.517967
+    }
+   }
+  }
+ },
+ "2017": {
+  "models": {
+   "att": {
+    "beta": [
+     0.465875,
+     0.538561,
+     0.223474,
+     0.662822,
+     0.078519,
+     -0.050353,
+     -0.154824,
+     -0.142297
+    ],
+    "provenance": "fold-2017-train-lt-2017",
+    "k": 3.6377
+   },
+   "acc": {
+    "beta": [
+     -0.2155,
+     0.553542,
+     0.35637,
+     -0.082924,
+     0.114252,
+     0.198026
+    ],
+    "provenance": "fold-2017-train-lt-2017"
+   },
+   "td_att": {
+    "beta": [
+     0.313738,
+     1.071783,
+     -0.361092,
+     -0.44239,
+     0.093919,
+     0.169215
+    ],
+    "provenance": "fold-2017-train-lt-2017",
+    "k": 2.7083
+   },
+   "td_acc": {
+    "beta": [
+     -0.207486,
+     0.044956,
+     0.591249
+    ],
+    "provenance": "fold-2017-train-lt-2017"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.410952,
+     0.882069,
+     2.901957,
+     3.734752
+    ],
+    "provenance": "fold-2017-train-lt-2017"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.271455,
+     0.987606,
+     0.060857,
+     1.638664,
+     0.899211
+    ],
+    "provenance": "fold-2017-train-lt-2017",
+    "shape": 1.1689
+   },
+   "kd": {
+    "beta": [
+     -0.505287,
+     0.669321,
+     0.4134,
+     0.386544
+    ],
+    "provenance": "fold-2017-train-lt-2017"
+   },
+   "sub": {
+    "beta": [
+     -0.845176,
+     0.637987,
+     0.278623,
+     0.30888
+    ],
+    "provenance": "fold-2017-train-lt-2017"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.740863,
+     0.184485,
+     0.786675,
+     2.574272,
+     0.351752,
+     0.785381,
+     -0.444225
+    ],
+    "provenance": "fold-2017-train-lt-2017"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.383883,
+     0.52024,
+     0.543091,
+     1.404374,
+     -0.29505,
+     0.051413
+    ],
+    "provenance": "fold-2017-train-lt-2017"
+   }
+  },
+  "finish_time_shape": 0.6595,
+  "finish_time_shape_kd": 1.0844,
+  "provenance": {
+   "fold": "fold-2017-train-lt-2017",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2016-12-30"
+   },
+   "training_bouts": 761,
+   "training_observations": 3744,
+   "finish_time_samples": {
+    "kd": 166,
+    "other": 215
+   },
+   "components": {
+    "att": {
+     "n_rows": 3744,
+     "deviance": 42558.96,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 3735,
+     "deviance": 9320.98,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 3744,
+     "deviance": 5624.21,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 2106,
+     "deviance": 3308.37,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 3744,
+     "deviance": 3567.25,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 2667,
+     "deviance": 2793.85,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 3744,
+     "deviance": 1876.45,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 3744,
+     "deviance": 2160.89,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 3744,
+     "events": 242,
+     "deviance": 1536.66,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 3744,
+     "events": 139,
+     "deviance": 1028.27,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 761,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3503,
+       "sub": 0.1715
+      },
+      "observed": {
+       "ko": 0.318,
+       "sub": 0.1827
+      },
+      "delta": {
+       "ko": -0.0968,
+       "sub": 0.0629
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3284,
+       "sub": 0.183
+      },
+      "observed": {
+       "ko": 0.318,
+       "sub": 0.1827
+      },
+      "delta": {
+       "ko": -0.0321,
+       "sub": -0.002
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3224,
+       "sub": 0.1832
+      },
+      "observed": {
+       "ko": 0.318,
+       "sub": 0.1827
+      },
+      "delta": {
+       "ko": -0.0137,
+       "sub": -0.0032
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3198,
+       "sub": 0.1831
+      },
+      "observed": {
+       "ko": 0.318,
+       "sub": 0.1827
+      },
+      "delta": {
+       "ko": -0.0057,
+       "sub": -0.0023
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.740863,
+     "sub_haz": -3.383883
+    }
+   }
+  }
+ },
+ "2018": {
+  "models": {
+   "att": {
+    "beta": [
+     0.54032,
+     0.525842,
+     0.214474,
+     0.698178,
+     0.055737,
+     -0.051296,
+     -0.14572,
+     -0.232536
+    ],
+    "provenance": "fold-2018-train-lt-2018",
+    "k": 3.6663
+   },
+   "acc": {
+    "beta": [
+     -0.192937,
+     0.577144,
+     0.395965,
+     -0.031677,
+     0.105651,
+     0.197363
+    ],
+    "provenance": "fold-2018-train-lt-2018"
+   },
+   "td_att": {
+    "beta": [
+     0.182986,
+     1.132507,
+     -0.356531,
+     -0.356852,
+     0.098645,
+     0.14413
+    ],
+    "provenance": "fold-2018-train-lt-2018",
+    "k": 2.9201
+   },
+   "td_acc": {
+    "beta": [
+     -0.20505,
+     0.116333,
+     0.547992
+    ],
+    "provenance": "fold-2018-train-lt-2018"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.431589,
+     -0.064724,
+     4.177824,
+     3.560458
+    ],
+    "provenance": "fold-2018-train-lt-2018"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.133526,
+     1.012756,
+     0.082147,
+     1.650494,
+     0.876624
+    ],
+    "provenance": "fold-2018-train-lt-2018",
+    "shape": 1.0805
+   },
+   "kd": {
+    "beta": [
+     -0.503969,
+     0.594419,
+     0.406821,
+     0.368649
+    ],
+    "provenance": "fold-2018-train-lt-2018"
+   },
+   "sub": {
+    "beta": [
+     -0.743292,
+     0.698799,
+     0.355134,
+     0.274374
+    ],
+    "provenance": "fold-2018-train-lt-2018"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.493612,
+     0.201818,
+     0.687719,
+     2.419077,
+     0.142886,
+     1.20931,
+     -0.465188
+    ],
+    "provenance": "fold-2018-train-lt-2018"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.689989,
+     0.535864,
+     0.506526,
+     1.653106,
+     -0.112734,
+     0.048359
+    ],
+    "provenance": "fold-2018-train-lt-2018"
+   }
+  },
+  "finish_time_shape": 0.6631,
+  "finish_time_shape_kd": 1.0304,
+  "provenance": {
+   "fold": "fold-2018-train-lt-2018",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2017-12-30"
+   },
+   "training_bouts": 1110,
+   "training_observations": 5450,
+   "finish_time_samples": {
+    "kd": 259,
+    "other": 302
+   },
+   "components": {
+    "att": {
+     "n_rows": 5450,
+     "deviance": 62734.07,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 5434,
+     "deviance": 13671.52,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 5450,
+     "deviance": 7971.77,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 2998,
+     "deviance": 4697.59,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 5450,
+     "deviance": 5288.49,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 3804,
+     "deviance": 4224.57,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 5450,
+     "deviance": 2836.11,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 5450,
+     "deviance": 3084.29,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 5450,
+     "events": 360,
+     "deviance": 2402.54,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 5450,
+     "events": 201,
+     "deviance": 1456.72,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 1110,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3538,
+       "sub": 0.1641
+      },
+      "observed": {
+       "ko": 0.3243,
+       "sub": 0.1811
+      },
+      "delta": {
+       "ko": -0.0871,
+       "sub": 0.0987
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3332,
+       "sub": 0.179
+      },
+      "observed": {
+       "ko": 0.3243,
+       "sub": 0.1811
+      },
+      "delta": {
+       "ko": -0.0271,
+       "sub": 0.0115
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.327,
+       "sub": 0.1817
+      },
+      "observed": {
+       "ko": 0.3243,
+       "sub": 0.1811
+      },
+      "delta": {
+       "ko": -0.0081,
+       "sub": -0.0036
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3253,
+       "sub": 0.1815
+      },
+      "observed": {
+       "ko": 0.3243,
+       "sub": 0.1811
+      },
+      "delta": {
+       "ko": -0.0031,
+       "sub": -0.002
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.493612,
+     "sub_haz": -3.689989
+    }
+   }
+  }
+ },
+ "2019": {
+  "models": {
+   "att": {
+    "beta": [
+     0.456848,
+     0.55204,
+     0.23771,
+     0.731604,
+     0.038973,
+     -0.065007,
+     -0.167529,
+     -0.274887
+    ],
+    "provenance": "fold-2019-train-lt-2019",
+    "k": 3.7254
+   },
+   "acc": {
+    "beta": [
+     -0.156717,
+     0.648609,
+     0.410533,
+     -0.043968,
+     0.098593,
+     0.192802
+    ],
+    "provenance": "fold-2019-train-lt-2019"
+   },
+   "td_att": {
+    "beta": [
+     0.158839,
+     1.139086,
+     -0.349492,
+     -0.253795,
+     0.066413,
+     0.131542
+    ],
+    "provenance": "fold-2019-train-lt-2019",
+    "k": 2.685
+   },
+   "td_acc": {
+    "beta": [
+     -0.189622,
+     0.165376,
+     0.554103
+    ],
+    "provenance": "fold-2019-train-lt-2019"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.4583,
+     0.002419,
+     4.089915,
+     3.488951
+    ],
+    "provenance": "fold-2019-train-lt-2019"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.108606,
+     1.026002,
+     0.09076,
+     1.561967,
+     0.877428
+    ],
+    "provenance": "fold-2019-train-lt-2019",
+    "shape": 1.0765
+   },
+   "kd": {
+    "beta": [
+     -0.444896,
+     0.587399,
+     0.437945,
+     0.340624
+    ],
+    "provenance": "fold-2019-train-lt-2019"
+   },
+   "sub": {
+    "beta": [
+     -0.697493,
+     0.687535,
+     0.426422,
+     0.263795
+    ],
+    "provenance": "fold-2019-train-lt-2019"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.610554,
+     0.252476,
+     0.713726,
+     2.50214,
+     0.163684,
+     1.53915,
+     -0.571105
+    ],
+    "provenance": "fold-2019-train-lt-2019"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.803561,
+     0.636372,
+     0.495839,
+     1.675707,
+     -0.124405,
+     0.161149
+    ],
+    "provenance": "fold-2019-train-lt-2019"
+   }
+  },
+  "finish_time_shape": 0.6382,
+  "finish_time_shape_kd": 0.9796,
+  "provenance": {
+   "fold": "fold-2019-train-lt-2019",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2018-12-29"
+   },
+   "training_bouts": 1508,
+   "training_observations": 7408,
+   "finish_time_samples": {
+    "kd": 351,
+    "other": 410
+   },
+   "components": {
+    "att": {
+     "n_rows": 7408,
+     "deviance": 86635.36,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 7389,
+     "deviance": 18800.73,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 7408,
+     "deviance": 11008.21,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 4008,
+     "deviance": 6213,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 7408,
+     "deviance": 7305.95,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 5078,
+     "deviance": 5621.25,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 7408,
+     "deviance": 3840.85,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 7408,
+     "deviance": 4182.74,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 7408,
+     "events": 488,
+     "deviance": 3168.05,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 7408,
+     "events": 273,
+     "deviance": 1953.16,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 1508,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3548,
+       "sub": 0.1645
+      },
+      "observed": {
+       "ko": 0.3236,
+       "sub": 0.181
+      },
+      "delta": {
+       "ko": -0.092,
+       "sub": 0.0959
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.333,
+       "sub": 0.1794
+      },
+      "observed": {
+       "ko": 0.3236,
+       "sub": 0.181
+      },
+      "delta": {
+       "ko": -0.0286,
+       "sub": 0.0092
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.327,
+       "sub": 0.1814
+      },
+      "observed": {
+       "ko": 0.3236,
+       "sub": 0.181
+      },
+      "delta": {
+       "ko": -0.0105,
+       "sub": -0.0018
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3251,
+       "sub": 0.1813
+      },
+      "observed": {
+       "ko": 0.3236,
+       "sub": 0.181
+      },
+      "delta": {
+       "ko": -0.0046,
+       "sub": -0.0016
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.610554,
+     "sub_haz": -3.803561
+    }
+   }
+  }
+ },
+ "2020": {
+  "models": {
+   "att": {
+    "beta": [
+     0.435015,
+     0.553104,
+     0.246391,
+     0.676249,
+     0.03948,
+     -0.054312,
+     -0.136621,
+     -0.298332
+    ],
+    "provenance": "fold-2020-train-lt-2020",
+    "k": 3.7762
+   },
+   "acc": {
+    "beta": [
+     -0.147386,
+     0.640875,
+     0.427575,
+     -0.038261,
+     0.092005,
+     0.194276
+    ],
+    "provenance": "fold-2020-train-lt-2020"
+   },
+   "td_att": {
+    "beta": [
+     0.152539,
+     1.125181,
+     -0.337486,
+     -0.280777,
+     0.056748,
+     0.134986
+    ],
+    "provenance": "fold-2020-train-lt-2020",
+    "k": 2.4589
+   },
+   "td_acc": {
+    "beta": [
+     -0.189398,
+     0.173307,
+     0.559318
+    ],
+    "provenance": "fold-2020-train-lt-2020"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.42019,
+     0.011239,
+     4.265434,
+     3.343439
+    ],
+    "provenance": "fold-2020-train-lt-2020"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.332296,
+     1.003582,
+     0.040848,
+     1.650192,
+     0.881596
+    ],
+    "provenance": "fold-2020-train-lt-2020",
+    "shape": 1.0731
+   },
+   "kd": {
+    "beta": [
+     -0.475714,
+     0.584693,
+     0.432713,
+     0.353323
+    ],
+    "provenance": "fold-2020-train-lt-2020"
+   },
+   "sub": {
+    "beta": [
+     -0.735831,
+     0.700775,
+     0.431801,
+     0.275294
+    ],
+    "provenance": "fold-2020-train-lt-2020"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.552609,
+     0.281563,
+     0.711134,
+     2.512936,
+     0.140904,
+     1.264701,
+     -0.596439
+    ],
+    "provenance": "fold-2020-train-lt-2020"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.823404,
+     0.64526,
+     0.470686,
+     1.691275,
+     -0.174785,
+     0.19789
+    ],
+    "provenance": "fold-2020-train-lt-2020"
+   }
+  },
+  "finish_time_shape": 0.6448,
+  "finish_time_shape_kd": 0.9746,
+  "provenance": {
+   "fold": "fold-2020-train-lt-2020",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2019-12-21"
+   },
+   "training_bouts": 1928,
+   "training_observations": 9486,
+   "finish_time_samples": {
+    "kd": 455,
+    "other": 500
+   },
+   "components": {
+    "att": {
+     "n_rows": 9486,
+     "deviance": 111778.44,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 9461,
+     "deviance": 23976.56,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 9486,
+     "deviance": 14291.04,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 5009,
+     "deviance": 7655.26,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 9486,
+     "deviance": 9407.35,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 6483,
+     "deviance": 7196.35,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 9486,
+     "deviance": 4917.72,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 9486,
+     "deviance": 5227.58,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 9486,
+     "events": 621,
+     "deviance": 4055.5,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 9486,
+     "events": 334,
+     "deviance": 2445.82,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 1928,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3537,
+       "sub": 0.1569
+      },
+      "observed": {
+       "ko": 0.3221,
+       "sub": 0.1732
+      },
+      "delta": {
+       "ko": -0.0937,
+       "sub": 0.0993
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3317,
+       "sub": 0.1716
+      },
+      "observed": {
+       "ko": 0.3221,
+       "sub": 0.1732
+      },
+      "delta": {
+       "ko": -0.0293,
+       "sub": 0.0092
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3254,
+       "sub": 0.1737
+      },
+      "observed": {
+       "ko": 0.3221,
+       "sub": 0.1732
+      },
+      "delta": {
+       "ko": -0.0103,
+       "sub": -0.0026
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3237,
+       "sub": 0.1735
+      },
+      "observed": {
+       "ko": 0.3221,
+       "sub": 0.1732
+      },
+      "delta": {
+       "ko": -0.0048,
+       "sub": -0.0016
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.552609,
+     "sub_haz": -3.823404
+    }
+   }
+  }
+ },
+ "2021": {
+  "models": {
+   "att": {
+    "beta": [
+     0.467461,
+     0.540839,
+     0.240616,
+     0.687776,
+     0.03022,
+     -0.058196,
+     -0.147647,
+     -0.303174
+    ],
+    "provenance": "fold-2021-train-lt-2021",
+    "k": 3.7961
+   },
+   "acc": {
+    "beta": [
+     -0.109142,
+     0.660913,
+     0.449318,
+     0.018688,
+     0.085655,
+     0.189001
+    ],
+    "provenance": "fold-2021-train-lt-2021"
+   },
+   "td_att": {
+    "beta": [
+     0.092947,
+     1.13919,
+     -0.316567,
+     -0.222834,
+     0.067306,
+     0.120833
+    ],
+    "provenance": "fold-2021-train-lt-2021",
+    "k": 2.3582
+   },
+   "td_acc": {
+    "beta": [
+     -0.181545,
+     0.16981,
+     0.554656
+    ],
+    "provenance": "fold-2021-train-lt-2021"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.480387,
+     0.087226,
+     4.237829,
+     3.616523
+    ],
+    "provenance": "fold-2021-train-lt-2021"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.278044,
+     0.991572,
+     0.051399,
+     1.720282,
+     0.86809
+    ],
+    "provenance": "fold-2021-train-lt-2021",
+    "shape": 1.0744
+   },
+   "kd": {
+    "beta": [
+     -0.514934,
+     0.593565,
+     0.414849,
+     0.353224
+    ],
+    "provenance": "fold-2021-train-lt-2021"
+   },
+   "sub": {
+    "beta": [
+     -0.733257,
+     0.700654,
+     0.430651,
+     0.281224
+    ],
+    "provenance": "fold-2021-train-lt-2021"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.469202,
+     0.238817,
+     0.617843,
+     2.420655,
+     0.127576,
+     1.039576,
+     -0.621532
+    ],
+    "provenance": "fold-2021-train-lt-2021"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.740373,
+     0.701501,
+     0.526272,
+     1.614539,
+     -0.272472,
+     0.299394
+    ],
+    "provenance": "fold-2021-train-lt-2021"
+   }
+  },
+  "finish_time_shape": 0.667,
+  "finish_time_shape_kd": 0.9827,
+  "provenance": {
+   "fold": "fold-2021-train-lt-2021",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2020-12-19"
+   },
+   "training_bouts": 2301,
+   "training_observations": 11364,
+   "finish_time_samples": {
+    "kd": 526,
+    "other": 607
+   },
+   "components": {
+    "att": {
+     "n_rows": 11364,
+     "deviance": 134610.16,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 11334,
+     "deviance": 28828.97,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 11364,
+     "deviance": 17186.31,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 5940,
+     "deviance": 9016.09,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 11364,
+     "deviance": 11257.33,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 7729,
+     "deviance": 8529.53,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 11364,
+     "deviance": 5809.18,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 11364,
+     "deviance": 6332.26,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 11364,
+     "events": 726,
+     "deviance": 4836.06,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 11364,
+     "events": 407,
+     "deviance": 2951.1,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 2301,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3417,
+       "sub": 0.1609
+      },
+      "observed": {
+       "ko": 0.3155,
+       "sub": 0.1769
+      },
+      "delta": {
+       "ko": -0.0796,
+       "sub": 0.0947
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3225,
+       "sub": 0.1753
+      },
+      "observed": {
+       "ko": 0.3155,
+       "sub": 0.1769
+      },
+      "delta": {
+       "ko": -0.0218,
+       "sub": 0.0088
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3179,
+       "sub": 0.1771
+      },
+      "observed": {
+       "ko": 0.3155,
+       "sub": 0.1769
+      },
+      "delta": {
+       "ko": -0.0075,
+       "sub": -0.0011
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3165,
+       "sub": 0.1771
+      },
+      "observed": {
+       "ko": 0.3155,
+       "sub": 0.1769
+      },
+      "delta": {
+       "ko": -0.0032,
+       "sub": -0.0012
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.469202,
+     "sub_haz": -3.740373
+    }
+   }
+  }
+ },
+ "2022": {
+  "models": {
+   "att": {
+    "beta": [
+     0.483814,
+     0.536753,
+     0.236553,
+     0.615356,
+     0.038639,
+     -0.04527,
+     -0.128753,
+     -0.305912
+    ],
+    "provenance": "fold-2022-train-lt-2022",
+    "k": 3.6867
+   },
+   "acc": {
+    "beta": [
+     -0.081032,
+     0.684991,
+     0.463087,
+     0.023521,
+     0.083099,
+     0.182151
+    ],
+    "provenance": "fold-2022-train-lt-2022"
+   },
+   "td_att": {
+    "beta": [
+     0.123266,
+     1.128422,
+     -0.332085,
+     -0.227181,
+     0.078163,
+     0.126557
+    ],
+    "provenance": "fold-2022-train-lt-2022",
+    "k": 2.3059
+   },
+   "td_acc": {
+    "beta": [
+     -0.166067,
+     0.179002,
+     0.553827
+    ],
+    "provenance": "fold-2022-train-lt-2022"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.490501,
+     0.137705,
+     4.293109,
+     3.674289
+    ],
+    "provenance": "fold-2022-train-lt-2022"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.203593,
+     1.003667,
+     0.064839,
+     1.773793,
+     0.88396
+    ],
+    "provenance": "fold-2022-train-lt-2022",
+    "shape": 1.0684
+   },
+   "kd": {
+    "beta": [
+     -0.531915,
+     0.584471,
+     0.408956,
+     0.333787
+    ],
+    "provenance": "fold-2022-train-lt-2022"
+   },
+   "sub": {
+    "beta": [
+     -0.711883,
+     0.732029,
+     0.413306,
+     0.276937
+    ],
+    "provenance": "fold-2022-train-lt-2022"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.45104,
+     0.228461,
+     0.537167,
+     2.383083,
+     0.140458,
+     0.874256,
+     -0.599387
+    ],
+    "provenance": "fold-2022-train-lt-2022"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.777132,
+     0.679134,
+     0.481433,
+     1.627526,
+     -0.294548,
+     0.337322
+    ],
+    "provenance": "fold-2022-train-lt-2022"
+   }
+  },
+  "finish_time_shape": 0.656,
+  "finish_time_shape_kd": 1.0021,
+  "provenance": {
+   "fold": "fold-2022-train-lt-2022",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2021-12-18"
+   },
+   "training_bouts": 2743,
+   "training_observations": 13596,
+   "finish_time_samples": {
+    "kd": 627,
+    "other": 718
+   },
+   "components": {
+    "att": {
+     "n_rows": 13596,
+     "deviance": 165457.99,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 13557,
+     "deviance": 34331.89,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 13596,
+     "deviance": 20624.93,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 7061,
+     "deviance": 10680.66,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 13596,
+     "deviance": 13426.46,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 9237,
+     "deviance": 10200.74,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 13596,
+     "deviance": 6943.16,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 13596,
+     "deviance": 7602.27,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 13596,
+     "events": 874,
+     "deviance": 5829.11,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 13596,
+     "events": 471,
+     "deviance": 3441.51,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 2743,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3427,
+       "sub": 0.1549
+      },
+      "observed": {
+       "ko": 0.3186,
+       "sub": 0.1717
+      },
+      "delta": {
+       "ko": -0.0729,
+       "sub": 0.1029
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3245,
+       "sub": 0.1699
+      },
+      "observed": {
+       "ko": 0.3186,
+       "sub": 0.1717
+      },
+      "delta": {
+       "ko": -0.0183,
+       "sub": 0.0105
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3206,
+       "sub": 0.1716
+      },
+      "observed": {
+       "ko": 0.3186,
+       "sub": 0.1717
+      },
+      "delta": {
+       "ko": -0.0062,
+       "sub": 0.0006
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3192,
+       "sub": 0.1719
+      },
+      "observed": {
+       "ko": 0.3186,
+       "sub": 0.1717
+      },
+      "delta": {
+       "ko": -0.0019,
+       "sub": -0.0012
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.45104,
+     "sub_haz": -3.777132
+    }
+   }
+  }
+ },
+ "2023": {
+  "models": {
+   "att": {
+    "beta": [
+     0.517336,
+     0.52616,
+     0.230812,
+     0.639073,
+     0.037765,
+     -0.050005,
+     -0.143858,
+     -0.321638
+    ],
+    "provenance": "fold-2023-train-lt-2023",
+    "k": 3.6804
+   },
+   "acc": {
+    "beta": [
+     -0.058813,
+     0.710553,
+     0.493242,
+     0.002532,
+     0.092117,
+     0.179469
+    ],
+    "provenance": "fold-2023-train-lt-2023"
+   },
+   "td_att": {
+    "beta": [
+     0.110751,
+     1.142509,
+     -0.330212,
+     -0.191887,
+     0.0749,
+     0.118202
+    ],
+    "provenance": "fold-2023-train-lt-2023",
+    "k": 2.3164
+   },
+   "td_acc": {
+    "beta": [
+     -0.139579,
+     0.18118,
+     0.574053
+    ],
+    "provenance": "fold-2023-train-lt-2023"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.459777,
+     0.231135,
+     4.244583,
+     3.524893
+    ],
+    "provenance": "fold-2023-train-lt-2023"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.225591,
+     1.007366,
+     0.060475,
+     1.75092,
+     0.881805
+    ],
+    "provenance": "fold-2023-train-lt-2023",
+    "shape": 1.0737
+   },
+   "kd": {
+    "beta": [
+     -0.511011,
+     0.569585,
+     0.418223,
+     0.332572
+    ],
+    "provenance": "fold-2023-train-lt-2023"
+   },
+   "sub": {
+    "beta": [
+     -0.721123,
+     0.720992,
+     0.381075,
+     0.286368
+    ],
+    "provenance": "fold-2023-train-lt-2023"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.452376,
+     0.261181,
+     0.593635,
+     2.395419,
+     0.140341,
+     0.887849,
+     -0.625771
+    ],
+    "provenance": "fold-2023-train-lt-2023"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.759918,
+     0.643675,
+     0.461795,
+     1.644222,
+     -0.294601,
+     0.365714
+    ],
+    "provenance": "fold-2023-train-lt-2023"
+   }
+  },
+  "finish_time_shape": 0.6622,
+  "finish_time_shape_kd": 0.9933,
+  "provenance": {
+   "fold": "fold-2023-train-lt-2023",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2022-12-17"
+   },
+   "training_bouts": 3209,
+   "training_observations": 15862,
+   "finish_time_samples": {
+    "kd": 737,
+    "other": 857
+   },
+   "components": {
+    "att": {
+     "n_rows": 15862,
+     "deviance": 194925.11,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 15815,
+     "deviance": 39811.48,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 15862,
+     "deviance": 24173.17,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 8206,
+     "deviance": 12420.2,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 15862,
+     "deviance": 15642.29,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 10776,
+     "deviance": 11843.14,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 15862,
+     "deviance": 8238,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 15862,
+     "deviance": 8890.25,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 15862,
+     "events": 1032,
+     "deviance": 6873.63,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 15862,
+     "events": 562,
+     "deviance": 4038.36,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 3209,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3488,
+       "sub": 0.1577
+      },
+      "observed": {
+       "ko": 0.3216,
+       "sub": 0.1751
+      },
+      "delta": {
+       "ko": -0.0811,
+       "sub": 0.1051
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3289,
+       "sub": 0.1731
+      },
+      "observed": {
+       "ko": 0.3216,
+       "sub": 0.1751
+      },
+      "delta": {
+       "ko": -0.0225,
+       "sub": 0.0115
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3238,
+       "sub": 0.1754
+      },
+      "observed": {
+       "ko": 0.3216,
+       "sub": 0.1751
+      },
+      "delta": {
+       "ko": -0.0068,
+       "sub": -0.0014
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3224,
+       "sub": 0.1754
+      },
+      "observed": {
+       "ko": 0.3216,
+       "sub": 0.1751
+      },
+      "delta": {
+       "ko": -0.0026,
+       "sub": -0.0015
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.452376,
+     "sub_haz": -3.759918
+    }
+   }
+  }
+ },
+ "2024": {
+  "models": {
+   "att": {
+    "beta": [
+     0.545683,
+     0.514827,
+     0.229247,
+     0.648637,
+     0.034075,
+     -0.058434,
+     -0.14958,
+     -0.333452
+    ],
+    "provenance": "fold-2024-train-lt-2024",
+    "k": 3.6733
+   },
+   "acc": {
+    "beta": [
+     -0.047654,
+     0.735718,
+     0.48553,
+     -0.00099,
+     0.086925,
+     0.177931
+    ],
+    "provenance": "fold-2024-train-lt-2024"
+   },
+   "td_att": {
+    "beta": [
+     0.128092,
+     1.124274,
+     -0.328148,
+     -0.220981,
+     0.082185,
+     0.142727
+    ],
+    "provenance": "fold-2024-train-lt-2024",
+    "k": 2.2481
+   },
+   "td_acc": {
+    "beta": [
+     -0.13761,
+     0.175255,
+     0.586043
+    ],
+    "provenance": "fold-2024-train-lt-2024"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.448693,
+     0.231148,
+     4.37539,
+     3.449904
+    ],
+    "provenance": "fold-2024-train-lt-2024"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.156033,
+     1.01353,
+     0.079343,
+     1.673692,
+     0.884009
+    ],
+    "provenance": "fold-2024-train-lt-2024",
+    "shape": 1.0701
+   },
+   "kd": {
+    "beta": [
+     -0.471682,
+     0.569024,
+     0.45216,
+     0.334888
+    ],
+    "provenance": "fold-2024-train-lt-2024"
+   },
+   "sub": {
+    "beta": [
+     -0.714789,
+     0.735008,
+     0.386758,
+     0.288479
+    ],
+    "provenance": "fold-2024-train-lt-2024"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.443697,
+     0.266854,
+     0.620089,
+     2.438801,
+     0.132726,
+     0.870389,
+     -0.665422
+    ],
+    "provenance": "fold-2024-train-lt-2024"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.758671,
+     0.614679,
+     0.42709,
+     1.663552,
+     -0.279585,
+     0.378098
+    ],
+    "provenance": "fold-2024-train-lt-2024"
+   }
+  },
+  "finish_time_shape": 0.6556,
+  "finish_time_shape_kd": 0.9799,
+  "provenance": {
+   "fold": "fold-2024-train-lt-2024",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2023-12-16"
+   },
+   "training_bouts": 3645,
+   "training_observations": 17970,
+   "finish_time_samples": {
+    "kd": 844,
+    "other": 981
+   },
+   "components": {
+    "att": {
+     "n_rows": 17970,
+     "deviance": 222717.49,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 17918,
+     "deviance": 45005,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 17970,
+     "deviance": 27525.68,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 9289,
+     "deviance": 13959.84,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 17970,
+     "deviance": 17703.62,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 12195,
+     "deviance": 13391.67,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 17970,
+     "deviance": 9275.71,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 17970,
+     "deviance": 10012.81,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 17970,
+     "events": 1175,
+     "deviance": 7697.65,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 17970,
+     "events": 650,
+     "deviance": 4645.1,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 3645,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3507,
+       "sub": 0.1605
+      },
+      "observed": {
+       "ko": 0.3224,
+       "sub": 0.1783
+      },
+      "delta": {
+       "ko": -0.0842,
+       "sub": 0.1055
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3302,
+       "sub": 0.1762
+      },
+      "observed": {
+       "ko": 0.3224,
+       "sub": 0.1783
+      },
+      "delta": {
+       "ko": -0.024,
+       "sub": 0.012
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3249,
+       "sub": 0.1785
+      },
+      "observed": {
+       "ko": 0.3224,
+       "sub": 0.1783
+      },
+      "delta": {
+       "ko": -0.008,
+       "sub": -0.0007
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3234,
+       "sub": 0.1786
+      },
+      "observed": {
+       "ko": 0.3224,
+       "sub": 0.1783
+      },
+      "delta": {
+       "ko": -0.0032,
+       "sub": -0.0013
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.443697,
+     "sub_haz": -3.758671
+    }
+   }
+  }
+ },
+ "2025": {
+  "models": {
+   "att": {
+    "beta": [
+     0.557362,
+     0.502495,
+     0.231951,
+     0.649063,
+     0.033088,
+     -0.049079,
+     -0.146843,
+     -0.318897
+    ],
+    "provenance": "fold-2025-train-lt-2025",
+    "k": 3.649
+   },
+   "acc": {
+    "beta": [
+     -0.035182,
+     0.737407,
+     0.504815,
+     0.016707,
+     0.062168,
+     0.174074
+    ],
+    "provenance": "fold-2025-train-lt-2025"
+   },
+   "td_att": {
+    "beta": [
+     0.138786,
+     1.116799,
+     -0.327284,
+     -0.212346,
+     0.086115,
+     0.133308
+    ],
+    "provenance": "fold-2025-train-lt-2025",
+    "k": 2.1625
+   },
+   "td_acc": {
+    "beta": [
+     -0.144119,
+     0.173652,
+     0.570138
+    ],
+    "provenance": "fold-2025-train-lt-2025"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.459113,
+     0.235406,
+     4.508618,
+     3.450957
+    ],
+    "provenance": "fold-2025-train-lt-2025"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.217674,
+     1.010636,
+     0.066798,
+     1.677655,
+     0.883826
+    ],
+    "provenance": "fold-2025-train-lt-2025",
+    "shape": 1.0792
+   },
+   "kd": {
+    "beta": [
+     -0.486156,
+     0.555728,
+     0.475579,
+     0.332089
+    ],
+    "provenance": "fold-2025-train-lt-2025"
+   },
+   "sub": {
+    "beta": [
+     -0.719051,
+     0.740693,
+     0.381916,
+     0.289386
+    ],
+    "provenance": "fold-2025-train-lt-2025"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.490319,
+     0.286321,
+     0.618026,
+     2.490523,
+     0.132099,
+     0.905386,
+     -0.647831
+    ],
+    "provenance": "fold-2025-train-lt-2025"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.772603,
+     0.566913,
+     0.430562,
+     1.662707,
+     -0.274986,
+     0.40283
+    ],
+    "provenance": "fold-2025-train-lt-2025"
+   }
+  },
+  "finish_time_shape": 0.6549,
+  "finish_time_shape_kd": 0.9745,
+  "provenance": {
+   "fold": "fold-2025-train-lt-2025",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2024-12-14"
+   },
+   "training_bouts": 4110,
+   "training_observations": 20382,
+   "finish_time_samples": {
+    "kd": 936,
+    "other": 1096
+   },
+   "components": {
+    "att": {
+     "n_rows": 20382,
+     "deviance": 255023.98,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 20327,
+     "deviance": 50617.38,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 20382,
+     "deviance": 31676.7,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 10475,
+     "deviance": 15773.38,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 20382,
+     "deviance": 20033.04,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 13793,
+     "deviance": 15101.18,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 20382,
+     "deviance": 10306.45,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 20382,
+     "deviance": 11284,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 20382,
+     "events": 1308,
+     "deviance": 8518.85,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 20382,
+     "events": 724,
+     "deviance": 5170.22,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 4110,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3467,
+       "sub": 0.1574
+      },
+      "observed": {
+       "ko": 0.3182,
+       "sub": 0.1762
+      },
+      "delta": {
+       "ko": -0.0857,
+       "sub": 0.1124
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.326,
+       "sub": 0.1741
+      },
+      "observed": {
+       "ko": 0.3182,
+       "sub": 0.1762
+      },
+      "delta": {
+       "ko": -0.024,
+       "sub": 0.0118
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3209,
+       "sub": 0.1763
+      },
+      "observed": {
+       "ko": 0.3182,
+       "sub": 0.1762
+      },
+      "delta": {
+       "ko": -0.0083,
+       "sub": -0.0007
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3192,
+       "sub": 0.1763
+      },
+      "observed": {
+       "ko": 0.3182,
+       "sub": 0.1762
+      },
+      "delta": {
+       "ko": -0.0031,
+       "sub": -0.0011
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.490319,
+     "sub_haz": -3.772603
+    }
+   }
+  }
+ },
+ "2026": {
+  "models": {
+   "att": {
+    "beta": [
+     0.54248,
+     0.496521,
+     0.241599,
+     0.68997,
+     0.031788,
+     -0.055177,
+     -0.161848,
+     -0.337062
+    ],
+    "provenance": "fold-2026-train-lt-2026",
+    "k": 3.6052
+   },
+   "acc": {
+    "beta": [
+     -0.034043,
+     0.735495,
+     0.508339,
+     0.02344,
+     0.057627,
+     0.172474
+    ],
+    "provenance": "fold-2026-train-lt-2026"
+   },
+   "td_att": {
+    "beta": [
+     0.143125,
+     1.114186,
+     -0.325688,
+     -0.207883,
+     0.094285,
+     0.134776
+    ],
+    "provenance": "fold-2026-train-lt-2026",
+    "k": 2.1856
+   },
+   "td_acc": {
+    "beta": [
+     -0.135489,
+     0.187472,
+     0.582645
+    ],
+    "provenance": "fold-2026-train-lt-2026"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.440239,
+     0.245321,
+     4.622583,
+     3.264583
+    ],
+    "provenance": "fold-2026-train-lt-2026"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.188546,
+     1.017192,
+     0.071849,
+     1.671117,
+     0.884165
+    ],
+    "provenance": "fold-2026-train-lt-2026",
+    "shape": 1.0836
+   },
+   "kd": {
+    "beta": [
+     -0.44189,
+     0.55628,
+     0.510224,
+     0.336537
+    ],
+    "provenance": "fold-2026-train-lt-2026"
+   },
+   "sub": {
+    "beta": [
+     -0.729121,
+     0.726016,
+     0.398083,
+     0.293253
+    ],
+    "provenance": "fold-2026-train-lt-2026"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.467282,
+     0.298083,
+     0.629203,
+     2.488426,
+     0.125337,
+     0.822003,
+     -0.625722
+    ],
+    "provenance": "fold-2026-train-lt-2026"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.788491,
+     0.554763,
+     0.438559,
+     1.682689,
+     -0.269268,
+     0.418951
+    ],
+    "provenance": "fold-2026-train-lt-2026"
+   }
+  },
+  "finish_time_shape": 0.6517,
+  "finish_time_shape_kd": 0.9712,
+  "provenance": {
+   "fold": "fold-2026-train-lt-2026",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2025-12-14"
+   },
+   "training_bouts": 4568,
+   "training_observations": 22600,
+   "finish_time_samples": {
+    "kd": 1048,
+    "other": 1213
+   },
+   "components": {
+    "att": {
+     "n_rows": 22600,
+     "deviance": 285048.32,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 22536,
+     "deviance": 55618.09,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 22600,
+     "deviance": 35247.63,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 11672,
+     "deviance": 17492.69,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 22600,
+     "deviance": 22171.97,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 15250,
+     "deviance": 16564.03,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 22600,
+     "deviance": 11441.52,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 22600,
+     "deviance": 12379.76,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 22600,
+     "events": 1459,
+     "deviance": 9466.4,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 22600,
+     "events": 802,
+     "deviance": 5681.74,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 4568,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3484,
+       "sub": 0.1573
+      },
+      "observed": {
+       "ko": 0.3194,
+       "sub": 0.1756
+      },
+      "delta": {
+       "ko": -0.0869,
+       "sub": 0.1097
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3274,
+       "sub": 0.1736
+      },
+      "observed": {
+       "ko": 0.3194,
+       "sub": 0.1756
+      },
+      "delta": {
+       "ko": -0.0248,
+       "sub": 0.0112
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3221,
+       "sub": 0.1757
+      },
+      "observed": {
+       "ko": 0.3194,
+       "sub": 0.1756
+      },
+      "delta": {
+       "ko": -0.0084,
+       "sub": -0.0008
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3205,
+       "sub": 0.1758
+      },
+      "observed": {
+       "ko": 0.3194,
+       "sub": 0.1756
+      },
+      "delta": {
+       "ko": -0.0033,
+       "sub": -0.0012
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.467282,
+     "sub_haz": -3.788491
+    }
+   }
+  }
+ },
+ "all": {
+  "models": {
+   "att": {
+    "beta": [
+     0.534268,
+     0.498725,
+     0.242787,
+     0.698797,
+     0.027809,
+     -0.057909,
+     -0.165692,
+     -0.347326
+    ],
+    "provenance": "all-2015-2026",
+    "k": 3.5816
+   },
+   "acc": {
+    "beta": [
+     -0.030005,
+     0.733783,
+     0.514926,
+     0.014806,
+     0.0519,
+     0.169622
+    ],
+    "provenance": "all-2015-2026"
+   },
+   "td_att": {
+    "beta": [
+     0.148802,
+     1.117525,
+     -0.333609,
+     -0.183931,
+     0.089882,
+     0.131564
+    ],
+    "provenance": "all-2015-2026",
+    "k": 2.2103
+   },
+   "td_acc": {
+    "beta": [
+     -0.136495,
+     0.200561,
+     0.569668
+    ],
+    "provenance": "all-2015-2026"
+   },
+   "ctrl_any": {
+    "beta": [
+     -0.45481,
+     0.274705,
+     4.624077,
+     3.312442
+    ],
+    "provenance": "all-2015-2026"
+   },
+   "ctrl_len": {
+    "beta": [
+     3.127652,
+     1.006313,
+     0.083322,
+     1.71316,
+     0.879462
+    ],
+    "provenance": "all-2015-2026",
+    "shape": 1.0847
+   },
+   "kd": {
+    "beta": [
+     -0.404674,
+     0.558043,
+     0.527745,
+     0.337571
+    ],
+    "provenance": "all-2015-2026"
+   },
+   "sub": {
+    "beta": [
+     -0.743599,
+     0.708203,
+     0.38438,
+     0.297534
+    ],
+    "provenance": "all-2015-2026"
+   },
+   "ko_haz": {
+    "beta": [
+     -3.439238,
+     0.29675,
+     0.630932,
+     2.474574,
+     0.121675,
+     0.758795,
+     -0.629666
+    ],
+    "provenance": "all-2015-2026"
+   },
+   "sub_haz": {
+    "beta": [
+     -3.786366,
+     0.55849,
+     0.40109,
+     1.672097,
+     -0.254217,
+     0.401823
+    ],
+    "provenance": "all-2015-2026"
+   }
+  },
+  "finish_time_shape": 0.6511,
+  "finish_time_shape_kd": 0.9573,
+  "provenance": {
+   "fold": "all-2015-2026",
+   "code": "workers/ufc-simulator/phase3/fit.mjs",
+   "code_sha": "211fca8",
+   "objective": "penalised maximum likelihood per component (Newton/IRLS, ridge 0.01 on non-intercept terms); NB k and gamma shape by moments; finish-time shape by MLE",
+   "training_window": {
+    "start": "2015-01-03",
+    "end": "2026-09-19"
+   },
+   "training_bouts": 4899,
+   "training_observations": 24146,
+   "finish_time_samples": {
+    "kd": 1148,
+    "other": 1296
+   },
+   "components": {
+    "att": {
+     "n_rows": 24146,
+     "deviance": 305791.2,
+     "features": [
+      "1",
+      "log_dna_att_r",
+      "log_opp_dna_att_r",
+      "absorbed_cum",
+      "kd_taken",
+      "r2",
+      "r3plus",
+      "r4plus"
+     ]
+    },
+    "acc": {
+     "n_rows": 24075,
+     "deviance": 59456.25,
+     "features": [
+      "1",
+      "logit_acc",
+      "logit_opp_miss",
+      "r3_drift_opp",
+      "absorbed_cum",
+      "ctrl_min"
+     ]
+    },
+    "td_att": {
+     "n_rows": 24146,
+     "deviance": 37603.44,
+     "features": [
+      "1",
+      "log_td15",
+      "log_opp_td15",
+      "absorbed_cum",
+      "r2plus",
+      "r3plus"
+     ]
+    },
+    "td_acc": {
+     "n_rows": 12476,
+     "deviance": 18734.96,
+     "features": [
+      "1",
+      "logit_tdacc",
+      "logit_opp_tdmiss"
+     ]
+    },
+    "ctrl_any": {
+     "n_rows": 24146,
+     "deviance": 23693.03,
+     "features": [
+      "1",
+      "td_l",
+      "td_landed_any",
+      "ctrl_share"
+     ]
+    },
+    "ctrl_len": {
+     "n_rows": 16260,
+     "deviance": 17605.09,
+     "features": [
+      "1",
+      "log1p_td_l",
+      "log_ctrl_per_td",
+      "ctrl_share",
+      "log_L_300"
+     ]
+    },
+    "kd": {
+     "n_rows": 24146,
+     "deviance": 12341.48,
+     "features": [
+      "1",
+      "log_kd15",
+      "log_opp_kdabs15",
+      "head_l_10"
+     ]
+    },
+    "sub": {
+     "n_rows": 24146,
+     "deviance": 13208.51,
+     "features": [
+      "1",
+      "log_sub15",
+      "log_opp_sub_vuln",
+      "ctrl_min"
+     ]
+    },
+    "ko_haz": {
+     "n_rows": 24146,
+     "events": 1584,
+     "deviance": 10149.21,
+     "features": [
+      "1",
+      "log_ko_prop",
+      "log_opp_ko_vuln",
+      "kd",
+      "head_l_10",
+      "opp_absorbed_cum",
+      "r3plus"
+     ]
+    },
+    "sub_haz": {
+     "n_rows": 24146,
+     "events": 860,
+     "deviance": 6093.75,
+     "features": [
+      "1",
+      "log_sub_prop",
+      "log_opp_sub_vuln",
+      "sub_att",
+      "ctrl_min",
+      "td_l"
+     ]
+    }
+   },
+   "hazard_calibration": {
+    "method": "intercept shift by log(observed/simulated) on training bouts, tilt 0",
+    "bouts": 4899,
+    "n_sims": 200,
+    "iterations": 4,
+    "trace": [
+     {
+      "iteration": 0,
+      "simulated": {
+       "ko": 0.3512,
+       "sub": 0.1567
+      },
+      "observed": {
+       "ko": 0.3233,
+       "sub": 0.1755
+      },
+      "delta": {
+       "ko": -0.0827,
+       "sub": 0.1134
+      }
+     },
+     {
+      "iteration": 1,
+      "simulated": {
+       "ko": 0.3307,
+       "sub": 0.1736
+      },
+      "observed": {
+       "ko": 0.3233,
+       "sub": 0.1755
+      },
+      "delta": {
+       "ko": -0.0225,
+       "sub": 0.0114
+      }
+     },
+     {
+      "iteration": 2,
+      "simulated": {
+       "ko": 0.3258,
+       "sub": 0.1757
+      },
+      "observed": {
+       "ko": 0.3233,
+       "sub": 0.1755
+      },
+      "delta": {
+       "ko": -0.0077,
+       "sub": -0.0007
+      }
+     },
+     {
+      "iteration": 3,
+      "simulated": {
+       "ko": 0.3243,
+       "sub": 0.1758
+      },
+      "observed": {
+       "ko": 0.3233,
+       "sub": 0.1755
+      },
+      "delta": {
+       "ko": -0.0031,
+       "sub": -0.0012
+      }
+     }
+    ],
+    "final_intercepts": {
+     "ko_haz": -3.439238,
+     "sub_haz": -3.786366
+    }
+   }
+  }
+ }
+}

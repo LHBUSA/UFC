@@ -1,0 +1,11 @@
+{
+ "cohort": 4899,
+ "checked": 4899,
+ "failures": {},
+ "fallback_corners": 8,
+ "truncation_sample": 169,
+ "truncation_diffs": 0,
+ "closest_included_bout_days_before_event": 7,
+ "min_snapshot_as_of_gap_days": 0,
+ "all_passed": true
+}
