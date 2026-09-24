@@ -48,6 +48,7 @@
 
 import { selectAll, select, insert, insertIgnore, upsert, patch, patchCount, count } from './supabase.mjs';
 import { discord } from './discord.mjs';
+import { cardWatchDue, cardWatchDates, cardContradictions, contradictionAlertDecision, CARD_WATCH } from './cardWatch.mjs';
 import { Fetcher, SchemaAssertionError, AccessGateError } from './ufcstats.mjs';
 import { Espn, ROAD_TO_UFC_EVENT } from './espn.mjs';
 import * as P from './parsers.mjs';
@@ -124,7 +125,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.9.2';
+const VERSION = 'v0.9.3';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -148,6 +149,8 @@ function adminAuthorized(req, env) {
 const STATE = {
   health: 'ufc-raw/_state/source_health.json',
   archiveAlert: 'ufc-raw/_state/round_archive_alert.json',
+  /* Card watch: last pass + card-contradiction guard state (src/cardWatch.mjs). */
+  cardWatch: 'ufc-raw/_state/card_watch.json',
   officialEvent: (eventId) => `ufc-raw/_state/official_event/${eventId}.json`,
   latency: (boutId) => `ufc-raw/_state/latency/${boutId}.json`,
   /* Last record-refresh outcome per fighter: pending_source retries, mismatches
@@ -238,6 +241,7 @@ export default {
         official_rounds_enabled: officialRoundsEnabled(env),
         forward_days: Number(env.UFCSTATS_FORWARD_DAYS || 45),
         source_health: await getState(env, STATE.health),
+        card_watch: await getState(env, STATE.cardWatch),
         last_success: lastSuccess ? { started_at: lastSuccess.started_at, finished_at: lastSuccess.finished_at, round_rows: lastSuccess.notes?.round_rows ?? null, ufcstats_pass: lastSuccess.notes?.ufcstats_pass ?? null } : null,
         last_round_write: lastRoundWrite,
         last_worker_round_write: lastWorkerRoundWrite,
@@ -255,7 +259,7 @@ export default {
         },
       });
     }
-    if (req.method !== 'POST' || !['/admin/run', '/admin/canary', '/admin/official-canary', '/admin/official-link', '/admin/ufcstats-bout-canary'].includes(url.pathname)) {
+    if (req.method !== 'POST' || !['/admin/run', '/admin/canary', '/admin/official-canary', '/admin/official-link', '/admin/ufcstats-bout-canary', '/admin/card-watch'].includes(url.pathname)) {
       return json({ error: 'not_found', service: SERVICE, version: VERSION }, 404);
     }
     if (!adminAuthorized(req, env)) return json({ error: 'not_found' }, 404);
@@ -269,6 +273,9 @@ export default {
     if (url.pathname === '/admin/official-link') {
       return json({ service: SERVICE, version: VERSION, invoked: 'manual', official_link: await linkOfficialEvent(env, {
         eventId: url.searchParams.get('event_id'), officialEventId: url.searchParams.get('official_event_id') }) });
+    }
+    if (url.pathname === '/admin/card-watch') {
+      return json({ service: SERVICE, version: VERSION, invoked: 'manual', card_watch: await runCardWatch(env, { invoked: 'manual', checkOnly: url.searchParams.get('check_only') === 'true' }) });
     }
     if (url.pathname === '/admin/canary') {
       return json({ service: SERVICE, version: VERSION, invoked: 'manual', canary: await runCanary(env, { n: Number(url.searchParams.get('n') || 3) }) });
@@ -309,6 +316,10 @@ export default {
      * Without the fast cron, ESPN knows a bout is final within seconds and our
      * database does not learn it until the next morning. */
     const mode = event.cron === DAILY_CRON ? 'daily' : 'fightnight';
+    /* Fight-week card watch (2026-09-24 Gall vs Dumas): twice an hour, re-read every
+     * card inside the next 7 days so a change ESPN publishes mid-week reaches the
+     * effective card within 30 minutes instead of at the next 06:00Z pass. */
+    if (event.cron === FAST_CRON && cardWatchDue(Date.now())) ctx.waitUntil(runCardWatch(env, { invoked: 'cron' }));
     ctx.waitUntil((async () => {
       const result = await runIngest(env, { invoked: 'cron', cron: event.cron, mode });
       if (mode === 'fightnight' && result?.status !== 'skipped' && env.ALGO_GRADER) {
@@ -647,7 +658,7 @@ async function espnPass(env, espn, ctx, run, { dates: datesOverride = null, scop
   run.notes.espn_events_listed = refs.length;
   /* The fast lane is already scoped to a single day, so it must never defer
    * the card it was woken for; the daily lane keeps its subrequest ceiling. */
-  const maxEvents = scope === 'fight-night' ? 99 : Number(env.MAX_EVENTS_PER_RUN || 3);
+  const maxEvents = scope === 'fight-night' || scope === 'card-watch' ? 99 : Number(env.MAX_EVENTS_PER_RUN || 3);
   const cutoff = new Date(Date.now() - 14 * 86400e3).toISOString().slice(0, 10);
   let fullPasses = 0;
   for (const ref of refs) {
@@ -2193,4 +2204,74 @@ async function linkUfcstatsFighter(env, fetcher, ctx, run, ufcstatsId, name, fro
   await upsert(env, 'ufc_fighter_aliases', aliasRowsForFighter(saved.id, p.name, p.nickname), 'fighter_id,source,normalized');
   run.fighters_touched += 1;
   return saved;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Fight-week card watch + card-contradiction guard (src/cardWatch.mjs)      */
+/* ------------------------------------------------------------------------ */
+/* The ordinary ESPN pass over a 7-day window: same identity validation, same idempotent upserts, same append-only
+ * card observation. Its own run row (mode card-watch) and no "ok" Discord line, because it runs 48 times a day; the
+ * only message it can send is the contradiction guard's, deduplicated in R2. checkOnly skips ESPN (guard only). */
+async function runCardWatch(env, { invoked = 'cron', checkOnly = false } = {}) {
+  const now = Date.now();
+  const dates = cardWatchDates(now);
+  const run = { events_new: 0, bouts_new: 0, fighters_touched: 0, scorecards_reconciled: 0, scorecards_written: 0, scorecard_cards_written: 0, totals_reconciled: 0, totals_bouts_written: 0, totals_rows_written: 0, assertion_failures: [], notes: { invoked, mode: 'card-watch', version: VERSION, dates } };
+  let runId = null;
+  let status = 'success';
+  try {
+    if (!checkOnly) {
+      const created = await insert(env, 'ufc_ingest_runs', { worker: SERVICE, status: 'running', notes: { invoked, mode: 'card-watch', version: VERSION } });
+      runId = created?.[0]?.id || null;
+      const ctx = await loadContext(env);
+      await espnPass(env, new Espn(), ctx, run, { dates, scope: 'card-watch' });
+    }
+  } catch (e) {
+    status = 'failed';
+    run.assertion_failures.push({ class: e?.name || 'Error', url: e?.url || null, detail: String(e?.message || e).slice(0, 400), at: nowIso() });
+    console.error(`[${SERVICE}] card-watch ${e?.name || 'Error'}: ${String(e?.message || e).slice(0, 200)}`);
+  }
+  try {
+    run.notes.card_contradictions = await checkCardContradictions(env, { now: Date.now() });
+  } catch (e) {
+    run.notes.card_contradictions = { status: 'unknown', error: String(e?.message || e).slice(0, 160) };
+  }
+  if (runId) {
+    try {
+      await patch(env, 'ufc_ingest_runs', `id=eq.${runId}`, { finished_at: nowIso(), status, events_new: run.events_new, bouts_new: run.bouts_new, fighters_touched: run.fighters_touched, assertion_failures: run.assertion_failures, notes: run.notes });
+    } catch (e2) { console.error(`[${SERVICE}] could not close card-watch run: ${String(e2?.message || e2).slice(0, 120)}`); }
+  }
+  const vanished = run.assertion_failures.filter((a) => a.class === 'AnnouncedBoutVanished').map((a) => a.detail);
+  const summary = { status, at: nowIso(), invoked, dates, run_id: runId, card_observations: run.notes.card_observations || 0, vanished, contradictions: run.notes.card_contradictions };
+  if (!checkOnly) await mergeState(env, STATE.cardWatch, { last_pass: { status, at: summary.at, invoked, dates, run_id: runId, card_observations: summary.card_observations, vanished } });
+  console.log(`[${SERVICE}] card-watch ${status} observations=${summary.card_observations} vanished=${vanished.length} stale=${summary.contradictions?.stale ?? '?'}`);
+  return summary;
+}
+
+/* Newsroom replacement / withdrawal items linked (by fighter id) to an ACTIVE upcoming effective bout, compared with the
+ * newest card observation of that bout's event. Database reads only. */
+async function checkCardContradictions(env, { now }) {
+  const today = new Date(now).toISOString().slice(0, 10);
+  const until = new Date(now + 14 * 86400e3).toISOString().slice(0, 10);
+  const since = new Date(now - CARD_WATCH.newsLookbackDays * 86400e3).toISOString();
+  const events = await selectAll(env, 'ufc_events', `select=id,name,event_date&event_date=gte.${today}&event_date=lte.${until}`);
+  const eventMap = Object.fromEntries(events.map((e) => [e.id, e]));
+  const ids = events.map((e) => e.id);
+  let bouts = [], items = [], lastObserved = {};
+  if (ids.length) {
+    bouts = await selectAll(env, 'ufc_bouts_effective', `select=id,event_id,fighter_a_id,fighter_b_id&is_active=is.true&is_settled=is.false&event_id=in.(${ids.join(',')})`);
+    items = await selectAll(env, 'ufc_news_items', `select=id,title,story_kind,fighter_ids,primary_fighter_id,secondary_fighter_ids,entity_confidence,detected_at&story_kind=in.(${CARD_WATCH.kinds.join(',')})&detected_at=gte.${since}`);
+    for (const id of ids) {
+      const rows = await select(env, 'ufc_event_card_observations', `select=observed_at&event_id=eq.${id}&complete=is.true&order=observed_at.desc&limit=1`);
+      if (rows?.[0]?.observed_at) lastObserved[id] = rows[0].observed_at;
+    }
+  }
+  const fighterIds = [...new Set(bouts.flatMap((b) => [b.fighter_a_id, b.fighter_b_id]).filter(Boolean))];
+  const names = fighterIds.length ? await selectAll(env, 'ufc_fighters', `select=id,name&id=in.(${fighterIds.join(',')})`) : [];
+  const found = cardContradictions({ now, items, bouts, events: eventMap, lastObserved, fighterNames: Object.fromEntries(names.map((f) => [f.id, f.name])) });
+  const previous = (await getState(env, STATE.cardWatch))?.contradictions || null;
+  const decision = contradictionAlertDecision({ found, previous, now });
+  if (decision.send) await discord(env, decision.message, { loud: decision.loud });
+  await mergeState(env, STATE.cardWatch, { contradictions: decision.next });
+  const count = (st) => found.filter((c) => c.state === st).length;
+  return { status: decision.next.status, stale: count('stale_card'), awaiting: count('awaiting_observation'), reported_unconfirmed: count('reported_unconfirmed'), alerted: decision.send, found };
 }
