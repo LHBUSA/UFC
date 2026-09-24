@@ -1,16 +1,18 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NAV, type NavPlace } from "@/lib/site";
+import { NAV, navFor } from "@/lib/site";
 import { Dropdown, type MenuGroup } from "./Menu";
 
 /* Primary navigation.
  *
- * Desktop: Fight Week · Schedule · Fighters · Rankings · News · More ▾.
- * "Home" is the logo; "Pro" is the Go Pro CTA — both routes stay, only the
- * duplicate text links leave the bar. Secondary destinations live in an
- * accessible More menu grouped by purpose. Mobile: primary items, then the
- * same secondary routes under a "More" heading, all with large tap targets. */
+ * Desktop: Fight Week · PBE PICKS · (FIGHT SIMULATOR, once its route ships) ·
+ * Schedule · Fighters · Rankings · News · More ▾. "Home" is the logo; "Pro" is
+ * the Go Pro CTA — both routes stay, only the duplicate text links leave the
+ * bar. Store and the other secondary destinations live in an accessible More
+ * menu grouped by purpose. Mobile: primary items, then the same secondary
+ * routes under a "More" heading, all with large tap targets. Pending slots
+ * (lib/site.ts) are filtered by navFor and never render as links. */
 
 function isActive(path: string, href: string): boolean {
   if (href === "/") return path === "/";
@@ -22,12 +24,21 @@ function isActive(path: string, href: string): boolean {
   return path.startsWith(href);
 }
 
-const byPlace = (place: NavPlace) => NAV.filter((n) => (n.place || "primary") === place);
+const byPlace = navFor;
 
 /* PBE PICKS keeps its exact label and route; only its presentation differs. */
 function PrimaryLink({ n, path, onNavigate }: { n: (typeof NAV)[number]; path: string; onNavigate?: () => void }) {
   const current = isActive(path, n.href) ? "page" : undefined;
   if (!n.flagship) return <Link href={n.href} aria-current={current} onClick={onNavigate}>{n.label}</Link>;
+  if (n.badge) {
+    return (
+      <Link href={n.href} aria-current={current} onClick={onNavigate} className="nav-pbe-picks" data-nav-badge={n.badge}>
+        <i className="nav-signal" aria-hidden="true" />
+        <span>{n.label}</span>
+        <span className="nav-pro">{n.badge}</span>
+      </Link>
+    );
+  }
   return (
     <Link href={n.href} aria-current={current} onClick={onNavigate} className="nav-pbe-picks">
       <i className="nav-signal" aria-hidden="true" />

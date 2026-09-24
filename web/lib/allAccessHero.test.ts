@@ -187,28 +187,27 @@ test("purchase surfaces are inline: no nested scroll container wraps them", () =
 
 /* ---- nav + footer ----------------------------------------------------------- */
 
-test("NAV: no All Access item in the header or drawer (owner decision); every required href kept; Go Pro stays the CTA", () => {
-  assert.equal(NAV.find((n) => n.href === ALL_ACCESS_URL || /all access/i.test(n.label)), undefined, "NAV carries no All Access entry");
-  assert.ok(!NAV.some((n) => (n as { place?: string }).place === "network"), "no 'network' NavPlace remains");
-  for (const h of ["/", "/fight-week", "/events", "/contender-series", "/fighters", "/rankings", "/history", "/news", "/pro"]) assert.ok(NAV.some((n) => n.href === h), `NAV kept ${h}`);
+test("NAV: All Access has no header slot; it is sold on /pro, the account page, the purchase surfaces and the footer; every required href kept", () => {
+  assert.equal(NAV.find((n) => n.href === ALL_ACCESS_URL), undefined, "no All Access entry in the nav registry");
+  assert.ok(!NAV.some((n) => (n as { place?: string }).place === "network"), "the 'network' nav place is gone");
+  for (const h of ["/", "/fight-week", "/events", "/contender-series", "/fighters", "/rankings", "/history", "/news", "/pro", "/store"]) assert.ok(NAV.some((n) => n.href === h), `NAV kept ${h}`);
   assert.ok(NAV.some((n) => n.href === "/pro" && n.place === "cta"), "Go Pro stays the CTA");
-  assert.doesNotMatch(read("lib/site.ts"), /"network"|propbetedge\.ai\/pro/);
+  assert.ok(NAV.some((n) => n.href === "/store" && n.place === "more"), "Store lives in More");
 });
 
-test("Shell: the header and drawer carry no All Access item; the footer carries ALL ACCESS + WHAT'S INCLUDED", () => {
+test("Shell: no ALL ACCESS button in the header or the drawer; footer still carries ALL ACCESS + WHAT'S INCLUDED; /pro and the purchase surfaces still sell it", () => {
   const shell = read("components/Shell.tsx");
-  const header = shell.slice(0, shell.indexOf("export function Footer"));
-  assert.doesNotMatch(header, /hdr-aa|mnav-aa|data-ufc-all-access=|allAccessNav|showAllAccess|"network"/, "no header pill, no drawer row");
-  assert.doesNotMatch(header, /ALL_ACCESS_OFFER|propbetedge\.ai\/pro/, "the header sells nothing but Go Pro");
-  assert.doesNotMatch(read("components/NavLinks.tsx"), /propbetedge\.ai\/pro|All Access|network/);
+  assert.doesNotMatch(shell, /hdr-aa|mnav-aa|data-ufc-all-access="nav/);
+  assert.doesNotMatch(shell, /allAccessNav|showAllAccess/);
   const footer = shell.slice(shell.indexOf("export function Footer"));
   assert.match(footer, /<a href=\{ALL_ACCESS_URL\} className="ftr-aa-link" rel="noopener" data-ufc-footer-all-access="">All Access<\/a>/);
   assert.match(footer, /<a href=\{ALL_ACCESS_URL\} rel="noopener" data-ufc-footer-all-access-included="">What&apos;s included<\/a>/);
+  assert.doesNotMatch(read("components/NavLinks.tsx"), /propbetedge\.ai\/pro|All Access/);
   const css = read("app/all-access.css");
-  assert.doesNotMatch(css, /hdr-aa|mnav-aa/, "no nav/drawer rules remain");
-  assert.match(css, /\.ftr \.ftr-aa-link \{/);
+  assert.doesNotMatch(css, /\.hdr-aa|\.mnav-aa/);
   /* the commercial surfaces are untouched */
   assert.match(read("app/pro/page.tsx"), /<ProPlans email=\{account\?\.email \?\? null\} membership=\{membership\} \/>/);
   assert.match(read("components/ui.tsx"), /<AllAccessHero m=\{membership\} variant="surface" email=\{email\} \/>/);
   assert.match(read("app/account/page.tsx"), /m\.show_all_access_upgrade && <div className="mt-5"><AllAccessHero m=\{m\} variant="panel" email=\{m\.email\} \/><\/div>/);
 });
+

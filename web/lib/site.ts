@@ -46,11 +46,15 @@ export const SITE = {
  *   more     the accessible "More ▾" menu (grouped) and the mobile "More" group
  *   logo     the wordmark already links here (no duplicate text link on desktop)
  *   cta      rendered as the Go Pro button, not as a text link
- * All Access is sold on /pro, the account page, the purchase surfaces and the
- * footer, never from the header bar (owner decision).
+ * `pending: true` reserves a slot for a product whose production route does not
+ * exist yet: it is never rendered (desktop, drawer or More) and the preservation
+ * check refuses a pending item that has a page or a live primary item that has
+ * none, so the bar can never carry a dead link. All Access is sold on /pro, the
+ * account page, the purchase surfaces and the footer, not from the header bar.
  * Removing a link from the bar never removes a route. */
 export type NavPlace = "primary" | "more" | "logo" | "cta";
-export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace; group?: string; flagship?: boolean }> = [
+export type NavItem = { href: string; label: string; place?: NavPlace; group?: string; flagship?: boolean; badge?: string; pending?: boolean };
+export const NAV: ReadonlyArray<NavItem> = [
   { href: "/", label: "Home", place: "logo" },
   { href: "/fight-week", label: "Fight Week", place: "primary" },
   /* The current official PBE Algo picks. Top level on purpose: /algo is the
@@ -59,11 +63,15 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
    * badge, NavLinks + pbe-flagship.css). PRO, never LIVE: the product holds
    * provisional fight-week calls and locked calls, not live-game odds. */
   { href: "/algo/card", label: "PBE PICKS", place: "primary", flagship: true },
+  /* PBE Fight Simulator (PBE Labs): the prime slot after PBE PICKS. Reserved
+   * while the Phase 4 production route is built; `pending` keeps it out of
+   * every menu until app/simulator/page.tsx exists, then the flag comes off
+   * and it renders first-class on desktop and at the top of the drawer. */
+  { href: "/simulator", label: "FIGHT SIMULATOR", place: "primary", flagship: true, badge: "LABS", pending: true },
   { href: "/events", label: "Schedule", place: "primary" },
   { href: "/fighters", label: "Fighters", place: "primary" },
   { href: "/rankings", label: "Rankings", place: "primary" },
   { href: "/news", label: "News", place: "primary" },
-  { href: "/store", label: "Store", place: "primary" },
   /* Keep time-sensitive fight-week utilities easy to reach without forcing
    * two long labels into the top-level bar. They render first in More and stay
    * fully exposed in the mobile menu. */
@@ -80,6 +88,9 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
   { href: "/judges", label: "Judges & Scorecards", place: "more", group: "Intelligence" },
   { href: "/#notable-voices", label: "Notable Voices", place: "more", group: "Intelligence" },
   { href: "/learn/fight-dna", label: "How Fight DNA works", place: "more", group: "Intelligence" },
+  /* Store moved out of the bar to make room for the simulator slot; the cart
+   * button and the footer keep it one tap away. */
+  { href: "/store", label: "Store", place: "more", group: "Shop" },
   /* The parent network, last and alone. Kept out of the primary bar on
    * purpose: "News" there is the UFC newsroom, and a second news link beside it
    * would read as a duplicate. Same-tab: propbetedge.ai is first-party.
@@ -87,6 +98,9 @@ export const NAV: ReadonlyArray<{ href: string; label: string; place?: NavPlace;
   { href: "https://propbetedge.ai/", label: "Sports News", place: "more", group: "PropBetEdge" },
   { href: "/pro", label: "Pro", place: "cta" },
 ] as const;
+
+/** Items that actually render for a place: pending slots never appear anywhere. */
+export const navFor = (place: NavPlace): NavItem[] => NAV.filter((n) => (n.place || "primary") === place && !n.pending);
 
 export const STORY_TYPE_LABEL: Record<string, string> = {
   card_change: "Card change",

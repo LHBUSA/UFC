@@ -32,7 +32,7 @@
     "test:tuf": "node --experimental-strip-types --test lib/tuf.test.ts lib/tufStatus.test.ts lib/tufBoutState.test.ts lib/tufFinaleShape.test.ts lib/retiredFighterSlugs.test.ts ../scripts/tuf/lib/airDates.test.mjs ../scripts/tuf/lib/espnFinaleIdentity.test.mjs ../scripts/tuf/lib/names.test.mjs ../scripts/tuf/lib/boutVerification.test.mjs ../scripts/tuf/lib/tuf33FinaleLinks.test.mjs",
     "test:seo": "node --experimental-strip-types --test lib/seo.test.ts",
     "test:news-clusters": "node --experimental-strip-types --test lib/newsClusters.test.ts",
-    "test:paywall": "node --experimental-strip-types --test lib/accessDecision.test.ts lib/authFlow.test.ts lib/paywall.test.ts lib/membership.test.ts lib/allAccessHero.test.ts",
+    "test:paywall": "node --experimental-strip-types --test lib/accessDecision.test.ts lib/authFlow.test.ts lib/paywall.test.ts lib/membership.test.ts lib/allAccessHero.test.ts lib/nav.test.ts",
     "test:membership": "node --experimental-strip-types --test lib/membership.test.ts",
     "test:all-access": "node --experimental-strip-types --test lib/allAccessHero.test.ts",
     "test:sitemap": "node --experimental-strip-types --test lib/sitemapRules.test.ts",
@@ -40,7 +40,8 @@
     "test:card-truth": "node --experimental-strip-types --test lib/cardTruth.test.ts",
     "test:status": "node --experimental-strip-types --test lib/status.test.ts lib/status-groups.test.ts",
     "test:fight-week-snapshot": "node --experimental-strip-types --test lib/fightWeekSnapshot.test.ts",
-    "test:editorial-evidence": "node --experimental-strip-types --test lib/editorialEvidence.test.ts"
+    "test:editorial-evidence": "node --experimental-strip-types --test lib/editorialEvidence.test.ts",
+    "test:nav": "node --experimental-strip-types --test lib/nav.test.ts"
   },
   "dependencies": {
     "next": "^15.5.25",

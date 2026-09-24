@@ -40,7 +40,7 @@ export function inventory() {
   const routes = walk(appDir).filter((p) => /[\\/]page\.tsx$/.test(p)).map((p) => "/" + rel(p).replace(/^app\//, "").replace(/\/?page\.tsx$/, "")).map((r) => (r === "/" ? "/" : r.replace(/\/$/, ""))).map((r) => (r === "" ? "/" : r)).sort();
   const site = readFileSync(join(ROOT, "lib", "site.ts"), "utf8");
   const navBlock = site.slice(site.indexOf("export const NAV"), site.indexOf("] as const", site.indexOf("export const NAV")));
-  const nav = [...navBlock.matchAll(/href:\s*"([^"]+)"[^}]*label:\s*"([^"]+)"/g)].map((m) => ({ href: m[1], label: m[2] }));
+  const nav = [...navBlock.matchAll(/\{[^}]*href:\s*"([^"]+)"[^}]*label:\s*"([^"]+)"[^}]*\}/g)].map((m) => ({ href: m[1], label: m[2], place: (m[0].match(/place:\s*"([^"]+)"/) || [])[1] || "primary", pending: /pending:\s*true/.test(m[0]) }));
   const home = readFileSync(join(ROOT, "app", "page.tsx"), "utf8");
   const homeModules = REQUIRED_HOME_MODULES.concat(["Octagon", "SectionHead", "ProPlans", "JsonLd"]).filter((c) => new RegExp(`<${c}[\\s/>]`).test(home)).sort();
   const publicDir = join(ROOT, "public");
@@ -55,6 +55,14 @@ const inv = inventory();
 const problems = [];
 for (const r of REQUIRED_ROUTES) if (!inv.routes.includes(r)) problems.push(`required route missing: ${r}`);
 for (const h of REQUIRED_NAV) if (!inv.nav.some((n) => n.href === h)) problems.push(`required NAV item missing: ${h}`);
+/* Dead-link guard: a pending slot must not have a route yet (drop the flag when it ships), and every rendered
+ * internal nav item must resolve to a page under app/. */
+for (const n of inv.nav) {
+  if (!n.href.startsWith("/") || n.href.includes("#")) continue;
+  const hasRoute = inv.routes.includes(n.href);
+  if (n.pending && hasRoute) problems.push(`NAV item ${n.label} (${n.href}) is marked pending but its route exists: remove the pending flag`);
+  if (!n.pending && !hasRoute) problems.push(`NAV item ${n.label} (${n.href}) renders but has no page route (dead link)`);
+}
 if (!inv.nav.some((n) => n.href === "/contender-series" || /contender|dwcs/i.test(n.label))) problems.push("primary navigation must contain Contender Series / DWCS");
 for (const m of REQUIRED_HOME_MODULES) if (!inv.homeModules.includes(m)) problems.push(`homepage module no longer mounted: <${m}>`);
 for (const f of REQUIRED_FEATURES) if (!inv.features.includes(f)) problems.push(`feature file missing: ${f}`);
