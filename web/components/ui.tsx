@@ -8,7 +8,7 @@ import { cardPositionLabel, daysUntil, eventBrand, eventHeadline, eventStatusLab
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
 import { PRO_OFFER } from "@/lib/proOffer";
 import { planText, type Membership } from "@/lib/pbe-membership.js";
-import { AllAccessCard, ManageLink, MembershipBadge, NetworkLink } from "./Membership";
+import { AllAccessDivider, AllAccessHero, ManageLink, MembershipBadge, NetworkLink } from "./Membership";
 import { OCTAGON } from "./Brand";
 import { FighterRank, BestRank } from "@/components/RankBadge";
 import type { FighterRankingContext } from "@/lib/rankingContext";
@@ -405,40 +405,34 @@ export function ProPlans({ active = false, email = null, membership = null }: { 
    * entitlement Stripe grants land on the account the reader is using. */
   const checkout = (url: string) => (email ? `${url}?prefilled_email=${encodeURIComponent(email)}` : url);
   /* Shared membership rule: an All Access member or the owner is never sold a
-   * plan again, so the whole block gives way to their badge and manage link. */
-  if (membership && (membership.state === "all_access" || membership.state === "owner")) {
+   * plan again, so the whole block gives way to their badge and manage link.
+   * A UFC Pro member keeps the same member panel and is offered only the
+   * network umbrella (UPGRADE TO ALL ACCESS), never a second UFC checkout. */
+  if (membership && (membership.state === "all_access" || membership.state === "owner" || membership.state === "sport_pro")) {
     return (
-      <div className="plans pro-offer pro-offer-member" id="pro">
-        <div className="plan pro pbe-mbr-panel">
-          <div className="pbe-mbr-row"><MembershipBadge m={membership} />{membership.email ? <span className="pbe-mbr-email">{membership.email}</span> : null}</div>
-          <p className="pbe-mbr-plan">{planText(membership)}</p>
-          <div className="pbe-mbr-links"><ManageLink m={membership} /><NetworkLink m={membership} /></div>
-          <div className="pro-cta-row"><Link href="/algo/card" className="btn gold">Open Current PBE Picks</Link><Link href="/account" className="btn">Account</Link></div>
+      <div className="pro-offer-stack" id="pro" data-ufc-purchase-surface={membership.state}>
+        <div className="plans pro-offer pro-offer-member">
+          <div className="plan pro pbe-mbr-panel">
+            <div className="pbe-mbr-row"><MembershipBadge m={membership} />{membership.email ? <span className="pbe-mbr-email">{membership.email}</span> : null}</div>
+            <p className="pbe-mbr-plan">{planText(membership)}</p>
+            <div className="pbe-mbr-links"><ManageLink m={membership} /><NetworkLink m={membership} /></div>
+            <div className="pro-cta-row"><Link href="/algo/card" className="btn gold">Open Current PBE Picks</Link><Link href="/account" className="btn">Account</Link></div>
+          </div>
         </div>
+        {/* UFC Pro only: AllAccessHero renders nothing for ALL ACCESS ACTIVE / OWNER. */}
+        {membership.state === "sport_pro" && <div className="pro-offer-aa mt-4"><AllAccessHero m={membership} variant="panel" email={email ?? membership.email} /></div>}
       </div>
     );
   }
+  /* All Access first. The network umbrella is the PRIMARY offer; the UFC
+   * plans follow beneath the "ONLY WANT UFC?" seam, unchanged. The $0 card
+   * stays on the surface but after the UFC Pro plan, never above All Access. */
   return (
-    <>
-    <div className="plans pro-offer pro-offer-v2" id="pro">
-      <div className="plan pro-free-plan">
-        <div className="eyebrow dim">Free · Public proof stays public</div>
-        <div className="price">$0</div>
-        <p className="pro-free-lede">Follow the sport, inspect the evidence and see how PBE Algo works before paying for a call.</p>
-        <ul>
-          <li>Every upcoming card, main card and prelims</li>
-          <li>Fighter records, physicals, fight history and public Fight DNA context</li>
-          <li>Fight pages, results and factual round-by-round statistics</li>
-          <li>Official rankings, official weigh-ins, newsroom and historical archives</li>
-          <li>PBE Algo method, eligibility rules and aggregate model accountability</li>
-        </ul>
-        <div className="pro-free-actions">
-          <Link href="/events" className="btn">Browse the cards</Link>
-          <Link href="/algo" className="btn">See PBE Algo proof</Link>
-        </div>
-      </div>
-
-      <div className="plan pro best pro-picks-plan">
+    <div className="pro-offer-stack" id="pro" data-ufc-purchase-surface="free">
+      <AllAccessHero m={membership} variant="surface" email={email} />
+      <AllAccessDivider />
+      <div className="plans pro-offer pro-offer-v2">
+      <div className="plan pro best pro-picks-plan" data-ufc-plan="ufc_pro">
         <div className="pro-picks-kicker">
           <div className="eyebrow">UFC Pro · Founding season</div>
           <span className="pro-picks-pill">PBE PICKS · PRO</span>
@@ -471,7 +465,8 @@ export function ProPlans({ active = false, email = null, membership = null }: { 
         </div>
 
         <div className="pro-picks-price">
-          <div className="price">{monthly.display}<small>/{monthly.cadence}</small><span className="plan-badge">{monthly.badge}</span></div>
+          {/* The single-sport plan is labelled for what it is; the value badge belongs to All Access. */}
+          <div className="price">{monthly.display}<small>/{monthly.cadence}</small><span className="plan-badge">UFC ONLY</span></div>
           <div className="plan-terms">or {weekly.display}/{weekly.cadence} <span className="plan-badge alt">{weekly.badge}</span> · No free trial · Cancel anytime</div>
         </div>
 
@@ -497,10 +492,24 @@ export function ProPlans({ active = false, email = null, membership = null }: { 
         <div className="pro-receipt-line"><b>Every official call has a receipt.</b> Locked before the fight, graded afterward, and never backfilled from the backtest. <Link href="/algo">See the public proof →</Link></div>
         <div className="faint label mt-3">Secure checkout by Stripe. Access unlocks on your UFC account once Stripe confirms the subscription; use the same email at checkout.</div>
       </div>
+
+      <div className="plan pro-free-plan" data-ufc-plan="free">
+        <div className="eyebrow dim">Free · Public proof stays public</div>
+        <div className="price">$0</div>
+        <p className="pro-free-lede">Follow the sport, inspect the evidence and see how PBE Algo works before paying for a call.</p>
+        <ul>
+          <li>Every upcoming card, main card and prelims</li>
+          <li>Fighter records, physicals, fight history and public Fight DNA context</li>
+          <li>Fight pages, results and factual round-by-round statistics</li>
+          <li>Official rankings, official weigh-ins, newsroom and historical archives</li>
+          <li>PBE Algo method, eligibility rules and aggregate model accountability</li>
+        </ul>
+        <div className="pro-free-actions">
+          <Link href="/events" className="btn">Browse the cards</Link>
+          <Link href="/algo" className="btn">See PBE Algo proof</Link>
+        </div>
+      </div>
+      </div>
     </div>
-    {/* The network umbrella sits beneath the UFC plans, never in place of them:
-        "All Access" for a free reader, "Upgrade to All Access" for UFC Pro. */}
-    <div className="pro-offer-aa mt-4"><AllAccessCard m={membership} /></div>
-    </>
   );
 }

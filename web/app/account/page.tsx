@@ -8,7 +8,7 @@ import { getCustomerOrders } from "@/lib/store/customer-orders";
 import { formatPrice } from "@/lib/store/types";
 import { Mark } from "@/components/Brand";
 import { planText } from "@/lib/pbe-membership.js";
-import { AllAccessCard, ManageLink, MembershipBadge, NetworkLink, NetworkRow } from "@/components/Membership";
+import { AllAccessHero, ManageLink, MembershipBadge, NetworkLink, NetworkRow } from "@/components/Membership";
 
 export const metadata: Metadata = { title: "UFC Account", description: "Your PropBetEdge UFC access, entitlements and store orders.", robots: { index: false, follow: false } };
 
@@ -81,7 +81,7 @@ export default async function AccountPage() {
 
       {/* UFC Pro members see the network umbrella as an optional upgrade; All
           Access members and the owner are never sold anything here. */}
-      {m.show_all_access_upgrade && <div className="mt-5"><AllAccessCard m={m} /></div>}
+      {m.show_all_access_upgrade && <div className="mt-5"><AllAccessHero m={m} variant="panel" email={m.email} /></div>}
 
       <section id="orders" className="card mt-5">
         <div className="between" style={{ gap: 18, alignItems: "flex-start" }}>

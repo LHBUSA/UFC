@@ -1,0 +1,122 @@
+/* ---- PropBetEdge "All Access first" — UFC presentation ----------------------
+ *
+ * The network umbrella is the PRIMARY offer on every purchase surface; UFC Pro
+ * is the single-sport alternative beneath the "ONLY WANT UFC?" seam. The hero
+ * never renders for ALL ACCESS ACTIVE or OWNER (components/Membership.tsx +
+ * lib/allAccessHero.ts decide that; this sheet only draws it).
+ *
+ * Geometry rule: the purchase surface is inline page content. Nothing here
+ * creates a nested scroll container; the page stays the one scroll context.
+ * Root-layout stylesheet (global by design; see scripts/check-route-css-scope). */
+
+/* ---- the purchase stack: hero -> seam -> UFC plans ------------------------ */
+.pro-offer-stack { display: grid; gap: var(--s-4); scroll-margin-top: calc(var(--hdr-h, 64px) + 16px); }
+/* The UFC Pro plan leads the single-sport row; the $0 card follows it. */
+.pro-offer-stack .pro-offer-v2 { grid-template-columns: minmax(0, 1.35fr) minmax(0, .78fr); }
+@media (max-width: 800px) { .pro-offer-stack .pro-offer-v2 { grid-template-columns: minmax(0, 1fr); } }
+.pro-offer-stack .pro-offer-aa { margin-top: 0; }
+
+/* ---- the hero ------------------------------------------------------------- */
+.ufc-aa-hero {
+  position: relative; display: grid; gap: 8px; padding: 22px 24px 20px; border-radius: var(--r-lg, 14px);
+  color: var(--pbe-paper, #f5f1eb); font-family: var(--pbe-font-ui, Inter, system-ui, sans-serif);
+  border: 1px solid rgba(233,199,90,.62);
+  background: radial-gradient(120% 140% at 100% 0%, rgba(212,175,55,.26), rgba(212,175,55,.04) 60%), linear-gradient(160deg, rgba(38,31,17,.98), rgba(18,15,10,.98));
+  box-shadow: 0 18px 44px rgba(212,175,55,.14), inset 0 1px 0 rgba(255,236,180,.18);
+  overflow: hidden; isolation: isolate;
+}
+.ufc-aa-hero::before { content: ""; position: absolute; inset: 0 0 auto; height: 2px; background: linear-gradient(90deg, transparent, var(--pbe-gold-bright, #e9c75a), transparent); pointer-events: none; }
+.ufc-aa-hero::after { content: ""; position: absolute; width: 360px; height: 360px; right: -160px; bottom: -220px; border: 1px solid rgba(212,175,55,.14); transform: rotate(22.5deg); box-shadow: 0 0 0 28px rgba(212,175,55,.02), 0 0 0 56px rgba(212,175,55,.014); pointer-events: none; z-index: -1; }
+.ufc-aa-hero > * { min-width: 0; }
+.ufc-aa-top { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; }
+.ufc-aa-eyebrow { font: 800 10px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .2em; text-transform: uppercase; color: var(--pbe-gold-bright, #e9c75a); }
+.ufc-aa-badge {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 999px; white-space: nowrap;
+  background: linear-gradient(135deg, var(--pbe-gold-bright, #e9c75a), var(--pbe-gold, #d4af37)); color: #17120a;
+  font: 900 9px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase;
+  box-shadow: 0 6px 16px rgba(212,175,55,.28);
+}
+.ufc-aa-badge::before { content: "★"; font-size: 9px; }
+.ufc-aa-title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; }
+.ufc-aa-title { margin: 0; color: #fff; font: 900 clamp(28px, 3.2vw, 40px)/1 var(--pbe-font-display, 'Playfair Display', Georgia, serif); letter-spacing: -.01em; text-transform: uppercase; }
+.ufc-aa-price { display: inline-flex; align-items: baseline; gap: 2px; color: var(--pbe-gold-bright, #e9c75a); font: 800 13px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .04em; white-space: nowrap; }
+.ufc-aa-price strong { color: #fff; font: 900 clamp(26px, 2.6vw, 34px)/1 var(--pbe-font-ui, Inter, system-ui, sans-serif); letter-spacing: -.04em; }
+.ufc-aa-tagline { margin: 0; color: var(--pbe-paper, #f5f1eb); font: 600 15px/1.35 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-sports { margin: 0; color: var(--pbe-paper-2, #e8e1d4); font: 500 12px/1.45 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-sports b { color: #fff; font: 800 12px/1.45 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .06em; }
+.ufc-aa-promo { margin: 0; color: var(--pbe-gold-bright, #e9c75a); font: 700 12px/1.45 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-code { margin-left: 2px; padding: 1px 7px; border: 1px solid rgba(233,199,90,.55); border-radius: 6px; background: rgba(233,199,90,.12); color: #fff; font: 800 11px/1.45 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .1em; }
+.ufc-aa-actions { display: flex; align-items: center; gap: 10px 18px; flex-wrap: wrap; margin-top: 4px; }
+.ufc-aa-cta {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border-radius: 9px; text-decoration: none; white-space: nowrap;
+  background: linear-gradient(135deg, var(--pbe-gold-bright, #e9c75a), var(--pbe-gold, #d4af37)); color: #17120a;
+  font: 900 12px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .1em; text-transform: uppercase;
+  box-shadow: 0 12px 30px rgba(212,175,55,.24); transition: transform .15s ease, filter .15s ease;
+}
+.ufc-aa-cta:hover { transform: translateY(-1px); filter: brightness(1.06); color: #17120a; }
+.ufc-aa-learn { display: inline-flex; align-items: center; min-height: 44px; color: #fff; font: 700 11px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .1em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(233,199,90,.6); }
+.ufc-aa-learn:hover { color: var(--pbe-gold-bright, #e9c75a); }
+
+/* Member panel variant (UFC PRO ACTIVE → UPGRADE TO ALL ACCESS): quieter title. */
+.ufc-aa-hero.is-panel { padding: 18px 20px 16px; gap: 7px; }
+.ufc-aa-hero.is-panel .ufc-aa-title { font-size: clamp(22px, 2.2vw, 28px); }
+.ufc-aa-hero.is-panel .ufc-aa-price strong { font-size: 24px; }
+
+/* the seam between the umbrella and the single-sport alternative */
+.ufc-aa-divider { display: flex; align-items: center; gap: 12px; margin: 2px 0; color: var(--pbe-dim, #b8b3a8); font: 800 10px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .16em; text-transform: uppercase; text-align: center; }
+.ufc-aa-divider::before, .ufc-aa-divider::after { content: ""; flex: 1; height: 1px; background: rgba(255,245,220,.12); }
+.ufc-aa-divider span { padding: 0 2px; white-space: nowrap; }
+
+/* ---- the one-line entry (locked-module previews, fight-week rail) --------- */
+.ufc-aa-mini {
+  display: grid; grid-template-columns: auto auto; gap: 2px 10px; align-items: center; padding: 9px 11px;
+  border: 1px solid rgba(233,199,90,.5); border-radius: 8px; text-decoration: none; color: var(--pbe-paper, #f5f1eb);
+  background: linear-gradient(135deg, rgba(233,199,90,.18), rgba(233,199,90,.05));
+}
+.ufc-aa-mini:hover { border-color: var(--pbe-gold-bright, #e9c75a); }
+.ufc-aa-mini span { color: var(--pbe-gold-bright, #e9c75a); font: 900 10px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .14em; text-transform: uppercase; }
+.ufc-aa-mini span::before { content: "★ "; }
+.ufc-aa-mini b { justify-self: end; color: #fff; font: 900 12px/1 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-mini i { grid-column: 1 / -1; color: var(--pbe-dim, #b8b3a8); font: 600 10px/1.2 var(--pbe-font-ui, Inter, system-ui, sans-serif); font-style: normal; }
+.pro-preview-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; flex: none; min-width: 200px; }
+.pro-preview-actions .pro-preview-cta { text-align: center; }
+.fw-rail-pro .fw-rail-aa { margin: 2px 0 10px; }
+@media (max-width: 640px) { .pro-preview-actions { min-width: 0; } }
+
+/* ---- navigation: first-class ALL ACCESS ----------------------------------- */
+.hdr-cta .hdr-aa {
+  gap: 6px; padding: 9px 13px; color: var(--pbe-ink, #14110d); border-color: var(--pbe-gold, #d4af37);
+  background: linear-gradient(135deg, var(--pbe-gold-bright, #e9c75a), var(--pbe-gold, #d4af37));
+  font: 800 11px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase;
+  box-shadow: 0 8px 22px rgba(212,175,55,.22);
+}
+.hdr-cta .hdr-aa::before { content: "★"; font-size: 10px; }
+.hdr-cta .hdr-aa:hover { filter: brightness(1.06); color: var(--pbe-ink, #14110d); border-color: var(--pbe-gold-bright, #e9c75a); }
+/* Under the desktop bar's breakpoint the drawer carries the link (below). */
+@media (max-width: 1080px) { .hdr-cta .hdr-aa { display: none; } }
+
+.mnav .mnav-aa {
+  min-height: 48px; color: var(--pbe-gold-bright, #e9c75a);
+  font: 800 14px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase;
+  background: linear-gradient(180deg, rgba(212,175,55,.16), rgba(212,175,55,.05)); border-bottom: 1px solid rgba(212,175,55,.35);
+}
+.mnav .mnav-aa span::before { content: "★ "; }
+.mnav .mnav-aa small { color: var(--pbe-paper-2, #e8e1d4); }
+.mnav .mnav-aa::after { color: var(--pbe-gold-bright, #e9c75a); }
+
+/* ---- footer: ALL ACCESS + WHAT'S INCLUDED ---------------------------------- */
+.ftr .ftr-aa-link { color: var(--pbe-gold-bright, #e9c75a); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.ftr .ftr-aa-link:hover { color: #fff; }
+
+/* ---- phones ----------------------------------------------------------------- */
+@media (max-width: 620px) {
+  .ufc-aa-hero { padding: 18px 16px 16px; }
+  .ufc-aa-actions { flex-direction: column; align-items: stretch; }
+  .ufc-aa-cta { min-height: 48px; }
+  .ufc-aa-learn { justify-content: center; }
+}
+@media (max-width: 360px) {
+  .ufc-aa-title-row, .ufc-aa-top { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .ufc-aa-title { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) { .ufc-aa-cta { transition: none; } .ufc-aa-cta:hover { transform: none; } }

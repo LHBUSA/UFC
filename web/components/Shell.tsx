@@ -3,8 +3,9 @@ import { NavLinks } from "./NavLinks";
 import { MobileNav } from "./MobileNav";
 import { Logo, Mark } from "./Brand";
 import { StoreCartButton } from "./store/StoreCartButton";
-import { SITE } from "@/lib/site";
+import { NAV, SITE } from "@/lib/site";
 import { CURRENT_SPORT, NETWORK } from "@/lib/network";
+import { ALL_ACCESS_OFFER, ALL_ACCESS_URL } from "@/lib/pbe-membership.js";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { getUfcAccess } from "@/lib/access";
@@ -21,6 +22,11 @@ export async function Header() {
   const inWeek = d != null && d <= 6 && d >= -1;
   const nextLabel = live ? "Fight night" : inWeek ? "Fight week" : "Next card";
   const nextHref = next ? (inWeek ? "/fight-week" : `/events/${eventSlug(next)}`) : "/events";
+  /* All Access first: the network umbrella is a first-class destination for
+   * every reader who can still be sold it (FREE and UFC PRO ACTIVE). An All
+   * Access member or the owner already carries the network in their badge. */
+  const allAccessNav = NAV.find((n) => n.place === "network") ?? { href: ALL_ACCESS_URL, label: "All Access" };
+  const showAllAccess = access.membership.show_purchase_cta || access.membership.show_all_access_upgrade;
   return (
     <header className="hdr">
       <input id="mnav-toggle" type="checkbox" aria-hidden="true" />
@@ -38,6 +44,7 @@ export async function Header() {
             </Link>
           )}
           <StoreCartButton />
+          {showAllAccess && <a href={allAccessNav.href} className="btn hdr-aa" rel="noopener" data-ufc-all-access="nav" title={`PropBetEdge All Access · ${ALL_ACCESS_OFFER.price}`}>{allAccessNav.label}</a>}
           {/* Signed-in members see their shared membership badge (UFC PRO ACTIVE /
               ALL ACCESS ACTIVE / OWNER) as the account door; "Go Pro" is sold only
               to a reader the server says has nothing yet. */}
@@ -47,6 +54,8 @@ export async function Header() {
         </div>
       </div>
       <MobileNav>
+        {/* First-class in the drawer, above the primary routes and never inside More. */}
+        {showAllAccess && <a href={allAccessNav.href} className="mnav-aa" rel="noopener" data-ufc-all-access="nav-mobile"><span>{allAccessNav.label}</span><small>PropBetEdge · {ALL_ACCESS_OFFER.price}</small></a>}
         <NavLinks className="" variant="mobile" />
         <div className="mnav-foot">
           <StoreCartButton mobile />
@@ -75,6 +84,8 @@ export function Footer() {
           </div>
           <div className="col">
             <h4>PropBetEdge</h4>
+            <a href={ALL_ACCESS_URL} className="ftr-aa-link" rel="noopener" data-ufc-footer-all-access="">All Access</a>
+            <a href={ALL_ACCESS_URL} rel="noopener" data-ufc-footer-all-access-included="">What&apos;s included</a>
             <a href={NETWORK.news.href}>{NETWORK.news.label}</a>
             <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>
             <a href={SITE.billingPortal} target="_blank" rel="noopener noreferrer">Manage billing ↗</a>

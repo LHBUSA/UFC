@@ -169,12 +169,15 @@ test("UI reads the derived flags, never re-derives from plan names or prices", (
   const acct = read("app/account/page.tsx");
   assert.match(acct, /<MembershipBadge m=\{m\} className="account-plan" \/>/);
   assert.match(acct, /m\.show_purchase_cta && <Link href="\/pro"/);
-  assert.match(acct, /m\.show_all_access_upgrade && <div className="mt-5"><AllAccessCard m=\{m\} \/><\/div>/);
+  /* All Access first (lib/allAccessHero.test.ts pins the order and the copy):
+   * the account page offers UFC Pro members the UPGRADE TO ALL ACCESS hero. */
+  assert.match(acct, /m\.show_all_access_upgrade && <div className="mt-5"><AllAccessHero m=\{m\} variant="panel" email=\{m\.email\} \/><\/div>/);
   assert.match(acct, /<NetworkRow current="ufc" \/>/);
   assert.match(acct, /planText\(m\)/);
   const plans = read("components/ui.tsx");
   assert.match(plans, /membership\.state === "all_access" \|\| membership\.state === "owner"/);
-  assert.match(plans, /<AllAccessCard m=\{membership\} \/>/);
+  assert.match(plans, /<AllAccessHero m=\{membership\} variant="surface" email=\{email\} \/>/);
+  assert.match(plans, /membership\.state === "sport_pro" && <div className="pro-offer-aa mt-4"><AllAccessHero m=\{membership\} variant="panel"/);
   const pro = read("app/pro/page.tsx");
   assert.match(pro, /<ProPlans email=\{account\?\.email \?\? null\} membership=\{membership\} \/>/);
   assert.match(pro, /<MembershipBadge m=\{membership\} className="account-plan" \/>/);

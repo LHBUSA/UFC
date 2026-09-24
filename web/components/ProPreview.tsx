@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { unlockHref, type UfcAccess } from "@/lib/accessDecision";
+import { AllAccessMini } from "@/components/Membership";
 
 /* The compact UFC Pro preview that sits where a premium module belongs.
  *
@@ -64,7 +65,12 @@ export function ProPreview({ feature, access, returnPath, compact = false, id }:
         <div className="pro-preview-title">{copy.title}</div>
         {!compact && <p>{copy.body}</p>}
       </div>
-      <Link href={unlockHref(access, returnPath)} className="btn gold pro-preview-cta">Unlock UFC Pro</Link>
+      {/* All Access first: the network umbrella leads, the single-sport unlock
+          follows. This preview only ever renders for a reader without Pro. */}
+      <div className="pro-preview-actions">
+        <AllAccessMini />
+        <Link href={unlockHref(access, returnPath)} className="btn gold pro-preview-cta">Unlock UFC Pro</Link>
+      </div>
     </aside>
   );
 }

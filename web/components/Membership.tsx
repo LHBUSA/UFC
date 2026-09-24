@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ALL_ACCESS_OFFER, ALL_ACCESS_URL, MANAGE_URL, NETWORK, STATES, membershipLabel, type Membership } from "@/lib/pbe-membership.js";
+import { ALL_ACCESS_DIVIDER, allAccessHeroModel, promoParts } from "@/lib/allAccessHero";
 
 /* React renderings of the shared PropBetEdge membership contract
  * (lib/pbe-membership.js). Same class hooks and copy as the contract's own
@@ -42,6 +43,64 @@ export function AllAccessCard({ m, compact = false }: { m: Membership | null | u
         <a className="pbe-mbr-aa-learn" href={ALL_ACCESS_URL} rel="noopener">What&apos;s included</a>
       </div>
     </aside>
+  );
+}
+
+/* ---- All Access first ------------------------------------------------------
+ * The network umbrella is the PRIMARY offer on every purchase surface; UFC Pro
+ * is the single-sport alternative beneath the "ONLY WANT UFC?" seam. What the
+ * hero says per state is decided in lib/allAccessHero.ts; this only lays it
+ * out. Never renders for ALL ACCESS ACTIVE or OWNER (nothing to sell). */
+
+export type AllAccessHeroVariant = "surface" | "home" | "panel";
+
+/** The All Access hero: FREE readers get ALL ACCESS, UFC Pro members get UPGRADE TO ALL ACCESS. */
+export function AllAccessHero({ m, variant = "surface", email = null }: { m: Membership | null | undefined; variant?: AllAccessHeroVariant; email?: string | null }) {
+  const model = allAccessHeroModel(m);
+  if (!model) return null;
+  const promo = promoParts(model);
+  /* Prefilling the checkout with the signed-in email keeps the All Access grant
+   * on the account the reader is using; a signed-out reader gets the bare link. */
+  const checkout = email ? `${model.checkoutUrl}?prefilled_email=${encodeURIComponent(email)}` : model.checkoutUrl;
+  return (
+    <aside
+      className={`ufc-aa-hero is-${variant}${model.upgrade ? " is-upgrade" : ""}`}
+      aria-label="PropBetEdge All Access"
+      data-ufc-all-access="hero"
+      data-ufc-all-access-state={model.state}
+    >
+      <div className="ufc-aa-top">
+        <span className="ufc-aa-eyebrow">{model.eyebrow}</span>
+        <span className="ufc-aa-badge">{model.badge}</span>
+      </div>
+      <div className="ufc-aa-title-row">
+        <h3 className="ufc-aa-title">{model.title}</h3>
+        <span className="ufc-aa-price" aria-label={model.price}><strong>{model.amount}</strong>/{model.cadence}</span>
+      </div>
+      <p className="ufc-aa-tagline">{model.tagline}</p>
+      <p className="ufc-aa-sports"><b>{model.sportsLine}</b> <span>{model.sportsNext}</span></p>
+      <p className="ufc-aa-promo">Launch offer: {promo.before}<b className="ufc-aa-code">{promo.code}</b>{promo.after}</p>
+      <div className="ufc-aa-actions">
+        <a className="ufc-aa-cta" href={checkout} rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access-cta="checkout">{model.ctaLabel}</a>
+        <a className="ufc-aa-learn" href={model.learnUrl} rel="noopener" data-ufc-all-access-cta="learn">{model.learnLabel}</a>
+      </div>
+    </aside>
+  );
+}
+
+/** The seam between the umbrella and the single-sport alternative. */
+export function AllAccessDivider({ label = ALL_ACCESS_DIVIDER }: { label?: string }) {
+  return <div className="ufc-aa-divider" role="separator" aria-label={label} data-ufc-all-access="divider"><span>{label}</span></div>;
+}
+
+/** One-line gold entry for compact chrome (locked-module previews, rails). */
+export function AllAccessMini({ m = null, className = "" }: { m?: Membership | null | undefined; className?: string }) {
+  const model = allAccessHeroModel(m);
+  if (!model) return null;
+  return (
+    <a className={`ufc-aa-mini${className ? ` ${className}` : ""}`} href={model.checkoutUrl} rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access="mini">
+      <span>{model.title}</span><b>{model.price}</b><i>every Pro sport →</i>
+    </a>
   );
 }
 

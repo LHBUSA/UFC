@@ -35,6 +35,7 @@ import "./news-index.css";
 import "./pbe-flagship.css";
 import "./house-promo.css";
 import "./pbe-membership.css";
+import "./all-access.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";

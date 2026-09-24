@@ -10,7 +10,7 @@ import { CheckoutVerifyRefresh } from "@/components/CheckoutVerifyRefresh";
 import { getCurrentAccount } from "@/lib/auth";
 import { algoCallsActive, getAlgoPublicRecord, getAlgoUpsetProof } from "@/lib/algo";
 import { PbeUpsetRadar } from "@/components/PbeUpsetRadar";
-import { ManageLink, MembershipBadge } from "@/components/Membership";
+import { AllAccessHero, ManageLink, MembershipBadge } from "@/components/Membership";
 
 export const metadata: Metadata = {
   title: "UFC Pro — PBE Picks, UFC Predictions, Fight DNA & Market Edge",
@@ -98,6 +98,10 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
           </div>
         </section>
       ) : returning === "verifying" || returning === "sign_in" ? null : <ProPlans email={account?.email ?? null} membership={membership} />}
+      {/* UFC Pro members are offered the network umbrella beneath their member
+          panel (UPGRADE TO ALL ACCESS). AllAccessHero renders nothing for
+          ALL ACCESS ACTIVE / OWNER, so those accounts see no purchase CTA here. */}
+      {active && <div className="mt-4"><AllAccessHero m={membership} variant="panel" email={account?.email ?? null} /></div>}
 
       <section className="card hi mt-6 pro-algo pro-algo-sales" aria-labelledby="pro-algo-title">
         <div className="eyebrow">UFC Pro flagship · PBE Picks · {algoIsLive ? (algoRecord.locked_predictions ? `${algoRecord.locked_predictions} official call${algoRecord.locked_predictions === 1 ? "" : "s"} locked` : "official calls active · first lock pending") : "official record begins at first lock"}</div>

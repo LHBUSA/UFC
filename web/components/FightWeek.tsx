@@ -13,6 +13,7 @@ import { cardPositionLabel, fmtDate, fmtRecord, locationLine, plural, weightClas
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { SITE } from "@/lib/site";
 import { ProPreview } from "@/components/ProPreview";
+import { AllAccessMini } from "@/components/Membership";
 import { eventSnapshot, watchForNote } from "@/lib/fightWeekSnapshot";
 
 /* Fight Week — Pregame Desk as a product surface, presented as a premium
@@ -434,6 +435,8 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
               <div className="fw-h">UFC Pro</div>
               <strong id="fw-rail-pro-h">Unlock deeper fight intelligence.</strong>
               <p>Get premium picks, deeper matchup reads, and full fight-week tools.</p>
+              {/* All Access first: the network umbrella leads the single-sport door. */}
+              <AllAccessMini className="fw-rail-aa" />
               <Link href="/pro" className="btn gold">Go Pro <span aria-hidden="true">→</span></Link>
             </section>
           )}
