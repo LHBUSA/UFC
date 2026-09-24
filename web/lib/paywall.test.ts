@@ -94,6 +94,14 @@ const GUARDS: Record<string, RegExp[]> = {
   "components/FightDnaShowcase.tsx": [/pro = Boolean\(access\.pro\);[\s\S]{0,160}?if \(pro\) \{\s*const dna = await getFighterDna\(fighterId\)/],
   /* Upset Radar takes the caller's access decision as a prop (see ACCESS_BY_PROP) and reads upcoming calls only on === true. */
   "components/PbeUpsetRadar.tsx": [/if \(access\.pro === true\) \{\s*const cards = providedCards \?\? await getAlgoCards\(access\);/],
+  /* Homepage hero: the owner made the MAIN EVENT's two consensus moneylines public (6ad5117,
+   * 2026-09-19); full market intelligence stays UFC Pro (/fights, /events). Pinned to exactly one
+   * bout, read only when the provider is live; the fields it may render are pinned by the
+   * "homepage hero moneyline" test below. */
+  "app/page.tsx": [
+    /const mainMarketPromise = mainEvent\s*\? Promise\.all\(\[\s*marketProviderLive\(\),/,
+    /getMarketsFor\(\s*\[mainEvent\.id\],\s*new Map\(\[\[mainEvent\.id, \{ a: mainEvent\.fighter_a\.id, b: mainEvent\.fighter_b\.id \}\]\]\),\s*\)/,
+  ],
   "components/StoryView.tsx": [/const editorialMarket = access\.pro \? await getEditorialMarket/, /const dna = access\.pro && bout && a\.story_type === "fight_preview" \? await getMatchupDna/],
 };
 /* Components that do not call getUfcAccess() themselves because they are handed
@@ -215,4 +223,13 @@ test("paid-only auth: no free-member creation path, no pre-authorization token o
   const order = ["deps.countRecentAttempts(", "deps.recordAttempt(", "decideLoginEligibility(", "deps.createLoginToken(", "deps.sendLoginEmail("].map((k) => body.indexOf(k));
   assert.ok(order.every((i) => i > 0), `request flow missing a step: ${order}`);
   assert.deepEqual([...order].sort((a, b) => a - b), order, "authorization must precede token creation and email");
+});
+
+test("homepage hero moneyline: public exposure is the main event's two consensus prices only", () => {
+  const page = source.find((x) => x.file === "app/page.tsx")!.text;
+  assert.doesNotMatch(page, /^\s*["']use client["']/m, "app/page.tsx stays a server component, so the market object never reaches a client payload");
+  const fields = [...new Set([...page.matchAll(/mainMarket\??\.([A-Za-z_]+)(?:\??\.([A-Za-z_]+))?/g)].map((m) => (m[2] ? `${m[1]}.${m[2]}` : m[1])))].sort();
+  assert.deepEqual(fields, ["a.consensus", "b.consensus", "bookCount", "stale"], "only the two consensus moneylines (plus staleness and book count in the tooltip) may render publicly");
+  assert.doesNotMatch(page, /=\{mainMarket\}|\{\.\.\.mainMarket\}/, "the market object is never handed to another component");
+  assert.equal((page.match(/getMarketsFor\(/g) || []).length, 1, "exactly one market read on the homepage");
 });

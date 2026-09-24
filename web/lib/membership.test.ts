@@ -42,7 +42,11 @@ test("contract: the copy of pbe-membership.js and .css is byte-identical to the 
   for (const [local, canonical] of [["lib/pbe-membership.js", "shared/membership/pbe-membership.js"], ["app/pbe-membership.css", "shared/membership/pbe-membership.css"]]) {
     let src: string | null = null;
     try { src = readFileSync(join(WEB, "..", "..", "propbetedge-workers", canonical), "utf8"); } catch { /* other repo not checked out here */ }
-    if (src != null) assert.equal(read(local), src, `${local} drifted from ${canonical}`);
+    /* Compare content, not checkout artifacts: the sibling repo has no eol rule, so a Windows
+     * checkout (core.autocrlf=true) writes CRLF while this repo's .gitattributes pins LF. Line
+     * endings are normalised; every other byte must still match exactly. */
+    const lf = (t: string) => t.replace(/\r\n/g, "\n");
+    if (src != null) assert.equal(lf(read(local)), lf(src), `${local} drifted from ${canonical}`);
   }
 });
 
