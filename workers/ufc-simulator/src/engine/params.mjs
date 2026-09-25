@@ -1,6 +1,6 @@
 // Engine parameters for pbe-fight-simulator v1.0.
 //
-// STATUS: v1.0-rc1. Component models and finish-time shapes come from params_fitted_v1.mjs (walk-forward validated,
+// STATUS: v1.0-rc2. Component models and finish-time shapes come from params_fitted_v1.mjs (walk-forward validated,
 // docs/FIGHT_SIMULATOR_PHASE3.md). The remaining scalars below are structural priors, documented in that report.
 // Original note: every number below was a documented starting value chosen from
 // the Phase 1 measurements over 42,166 fighter-rounds (means, dispersion) and
@@ -14,7 +14,7 @@
 import { FITTED_MODELS_V1, FITTED_FINISH_TIME_V1 } from './params_fitted_v1.mjs';
 
 export const SIMULATOR_FAMILY = 'pbe-fight-simulator';
-export const SIMULATOR_VERSION = 'pbe-fight-simulator-v1.0-rc1';
+export const SIMULATOR_VERSION = 'pbe-fight-simulator-v1.0-rc2';
 export const RULES_VERSION = 'pbe-sim-rules-v1';
 export const DNA_DEFINITION_VERSION = 1;
 export const FEATURE_VERSION = 1;
