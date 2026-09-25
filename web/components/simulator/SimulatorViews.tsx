@@ -102,7 +102,7 @@ export function RoundOutcomeMatrix({ a, left, names }: { a: SimArtifact; left: S
     <section className={`${s.card} ${s.roundOutcomes}`} aria-labelledby="sim-round-outcomes">
       <div className={s.cardHead}>
         <h2 id="sim-round-outcomes" className={s.h2}>Round-by-round outcome map</h2>
-        <span className={s.limited}>LABS</span>
+        <span className={s.limited}>EXPERIMENTAL</span>
       </div>
       <div className={s.roundOutcomeGrid}>
         {rows.map((r) => {
@@ -130,7 +130,7 @@ export function RoundOutcomeMatrix({ a, left, names }: { a: SimArtifact; left: S
           );
         })}
       </div>
-      <p className={s.note}>Direct frequency from the 10,000 simulated fight paths. Finish shares are unconditional percentages of all simulations; “reaches this round” shows how often the fight is still alive entering that round. This is a distribution view, not a claim that a specific round will produce the finish.</p>
+      <p className={s.note}>Direct frequency from the 10,000 simulated fight paths. Finish shares are unconditional percentages of all simulations; “reaches this round” shows how often the fight is still alive entering that round. Round-specific finish calibration has not yet passed a separate historical validation gate, so this is an experimental distribution view, not a pick for a specific finish round.</p>
     </section>
   );
 }
