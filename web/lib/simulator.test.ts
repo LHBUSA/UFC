@@ -16,7 +16,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { register } from "node:module";
 import { runSimulationFromRows, pickValidSnapshot, type CornerRows, type SnapshotRow } from "./simulatorRun.ts";
 import { simulate } from "./vendor/sim-engine/simulate.mjs";
-import { simGate, methodRows, winView, pathView, roundRanges, gateReasons, anchorStrained, anchorCompare, MODEL_CARD, UNAVAILABLE_COPY } from "./simulatorView.ts";
+import { simGate, methodRows, winView, pathView, roundOutcomeRows, roundRanges, gateReasons, anchorStrained, anchorCompare, MODEL_CARD, UNAVAILABLE_COPY } from "./simulatorView.ts";
 import { labsSimulatorAccess } from "./labsAccess.ts";
 
 register("../scripts/test-tsx-hooks.mjs", import.meta.url);
@@ -49,7 +49,7 @@ test("end to end on real rows: live PBE Fight Model anchor and the Phase 3 simul
   const a = LIVE.artifact;
   assert.equal(a.status, "OFFICIAL");
   assert.equal(simGate(a), "FULL");
-  assert.equal(a.simulator_version, "pbe-fight-simulator-v1.0-rc1");
+  assert.equal(a.simulator_version, "pbe-fight-simulator-v1.0-rc2");
   assert.equal(a.simulation_id!.slice(0, 12), "aff152b32ee4", "same identity as the Phase 3 fixture: the vendored engine is the engine");
   assert.equal(a.n_sims, 10000);
   assert.ok(Math.abs(a.anchor!.post_anchor_probability - a.anchor!.champion_probability) <= 0.015, "winner split agrees with the champion");
@@ -104,6 +104,24 @@ test("method shares come from artifact.methods and normalise with the draw share
   }
 });
 
+test("round-by-round outcome matrix is a direct simulation frequency table and renders as EXPERIMENTAL", async () => {
+  const rows = roundOutcomeRows(LIVE.artifact);
+  assert.equal(rows.length, LIVE.artifact.scheduled_rounds);
+  for (const r of rows) {
+    assert.ok(r.reachesRound >= 0 && r.reachesRound <= 1);
+    assert.ok(r.anyFinish >= 0 && r.anyFinish <= 1);
+    const sum = r.f1ko + r.f1sub + r.f2ko + r.f2sub;
+    assert.ok(Math.abs(sum - r.anyFinish) < 2e-4, "round method shares sum to any-finish share");
+  }
+  const { createElement: h } = await import("react");
+  const V = await views();
+  const out = await html(h(V.RoundOutcomeMatrix, { a: LIVE.artifact, left: "fighter_1", names: names(LIVE.artifact) }));
+  assert.match(out, /Round-by-round outcome map/);
+  assert.match(out, /EXPERIMENTAL/);
+  assert.match(out, /data-sim-round-outcome="1"/);
+  assert.match(out, /has not yet passed a separate historical validation gate/);
+});
+
 test("representative path exposes only winner, method and strike / takedown-attempt counts", () => {
   const p = pathView(LIVE.artifact)!;
   assert.ok(p.rounds.length >= 1);
@@ -147,7 +165,7 @@ async function renderResult(a: typeof LIVE.artifact) {
   return html(h("div", null,
     simGate(a) === "LIMITED" ? h(V.LimitedNote, { a }) : null,
     h(V.WinProbability, { a, left: "fighter_1", names: n }), h(V.GoesDistance, { a }), h(V.OutcomeDistribution, { a, left: "fighter_1", names: n }),
-    h(V.VolumeRanges, { a, left: "fighter_1", names: n }), h(V.RepresentativePath, { a, left: "fighter_1", names: n }),
+    h(V.RoundOutcomeMatrix, { a, left: "fighter_1", names: n }), h(V.VolumeRanges, { a, left: "fighter_1", names: n }), h(V.RepresentativePath, { a, left: "fighter_1", names: n }),
     h(V.Provenance, { a, trainingWindow: { start: "2015-01-03", end: "2026-09-19" }, asOfNames: n })));
 }
 
