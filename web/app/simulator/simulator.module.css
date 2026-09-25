@@ -86,6 +86,16 @@
 .table tbody th { color: var(--pbe-paper-2); font-weight: 600; }
 .num { font-family: var(--pbe-font-data); color: var(--pbe-paper); }
 
+.roundOutcomeGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--s-3); }
+.roundOutcomeCard { border: 1px solid var(--pbe-line-faint); border-radius: var(--r-md); padding: var(--s-3); background: var(--pbe-ink-3); display: flex; flex-direction: column; gap: var(--s-2); min-width: 0; }
+.roundOutcomeHead { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); font: 700 var(--fs-label)/1.2 var(--pbe-font-data); text-transform: uppercase; letter-spacing: .06em; color: var(--pbe-paper-2); }
+.roundOutcomeHead b { color: var(--pbe-gold); font-size: var(--fs-micro); }
+.roundOutcomeReach { color: var(--pbe-faint); font-size: var(--fs-label); }
+.roundOutcomeSides { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+.roundOutcomeSides > div { min-width: 0; padding-top: var(--s-2); border-top: 1px solid var(--pbe-line-faint); display: flex; flex-direction: column; gap: 4px; }
+.roundOutcomeSides strong { color: var(--pbe-paper); font-size: var(--fs-label); overflow-wrap: anywhere; }
+.roundOutcomeSides span { color: var(--pbe-dim); font: 600 var(--fs-label)/1.25 var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+
 .rangeGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s-3); }
 .rangeRound { border: 1px solid var(--pbe-line-faint); border-radius: var(--r-md); padding: var(--s-3); display: flex; flex-direction: column; gap: var(--s-2); }
 .rangeHead { font: 700 var(--fs-label)/1 var(--pbe-font-data); letter-spacing: .08em; text-transform: uppercase; color: var(--pbe-gold); }
