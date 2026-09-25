@@ -18,6 +18,14 @@ import { canonicalOrder } from '../src/engine/fingerprint.mjs';
 const argv = process.argv.slice(2);
 const opt = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const SAMPLE = Number(opt('--sample', 600)), N = Number(opt('--n', 400)), FROM = Number(opt('--from', 2019)), TO = Number(opt('--to', 2026));
+/* --walk-forward: each bout uses its own fold's parameters (params_fold_<year>) and the tilt that variant's own evaluation calibrated
+ * (eval_fold_n2000 for rho 0, eval_fold_rho<rho>_n2000 for rho > 0). Default: frozen params + the Phase 3 tilt (the 2016-2020 fit). */
+const WF = argv.includes('--walk-forward');
+const tiltFile = (rho) => path.join(CACHE, rho ? `eval_fold_rho${rho}_n2000.jsonl` : 'eval_fold_n2000.jsonl');
+const tiltCache = new Map();
+function tiltsFor(rho) { const k = WF ? rho : 0; if (!tiltCache.has(k)) tiltCache.set(k, new Map(fs.readFileSync(tiltFile(k), 'utf8').trim().split(/\r?\n/).map(JSON.parse).filter((r) => r.anchor && Number.isFinite(r.anchor.tilt)).map((r) => [r.bout_id, r.anchor.tilt]))); return tiltCache.get(k); }
+const foldParams = new Map();
+function paramsFor(year) { if (!WF) return DEFAULT_PARAMS; if (!foldParams.has(year)) foldParams.set(year, JSON.parse(fs.readFileSync(path.join(CACHE, `params_fold_${year}.json`), 'utf8'))); return foldParams.get(year); }
 const tilts = new Map(fs.readFileSync(path.join(CACHE, 'eval_fold_n2000.jsonl'), 'utf8').trim().split('\n').map(JSON.parse).filter((r) => r.anchor && Number.isFinite(r.anchor.tilt)).map((r) => [r.bout_id, r.anchor.tilt]));
 const { cohort } = buildCohort();
 // Deterministic sample: every k-th eligible bout, both formats represented.
@@ -29,7 +37,8 @@ const sample = [...pick(three, Math.round(SAMPLE * 0.75)), ...pick(five, Math.ro
 const variants = (opt('--variants', '40:14,50:20,60:25,70:30,80:35')).split(',').map((v) => { const [m, k, rho = 0] = v.split(':').map(Number); return { m, k, rho }; });
 const rows = [];
 for (const v of variants) {
-  const P = { ...DEFAULT_PARAMS, score: { ...DEFAULT_PARAMS.score, ten_eight_margin: v.m, ten_eight_kd_margin: v.k }, ...(v.rho ? { persistence: { rho: v.rho } } : {}) };
+  const mk = (base) => ({ ...base, score: { ...base.score, ten_eight_margin: v.m, ten_eight_kd_margin: v.k }, ...(v.rho ? { persistence: { rho: v.rho } } : {}) });
+  const vt = tiltsFor(v.rho);
   const t = { 3: { fights: 0, dec: 0, draw: 0, rounds: 0, r108: 0 }, 5: { fights: 0, dec: 0, draw: 0, rounds: 0, r108: 0 } };
   const shapes = { 3: {}, 5: {} };
   for (const c of sample) {
@@ -38,8 +47,10 @@ for (const v of variants) {
     const in1 = input.fighter_a.fighter.id === id1 ? input.fighter_a : input.fighter_b;
     const in2 = in1 === input.fighter_a ? input.fighter_b : input.fighter_a;
     const R = c.scheduled_rounds === 5 ? 5 : 3;
+    const P = mk(paramsFor(c.year));
     const ctx = prepareContext(profileFromSnapshot(in1, P), profileFromSnapshot(in2, P), R, P);
-    const tilt = tilts.get(c.bout_id);
+    const tilt = vt.get(c.bout_id);
+    if (!Number.isFinite(tilt)) continue;
     const g = t[R];
     for (let i = 0; i < N; i++) {
       const f = simulateFight(ctx, fightRng(c.bout_id.replace(/-/g, '').padEnd(64, '0').slice(0, 64), i), tilt);

@@ -67,3 +67,12 @@ export const DEFAULT_PARAMS = Object.freeze({
 });
 
 export const TIER_RANK = Object.freeze({ insufficient: 0, low: 1, medium: 2, high: 3 });
+
+/* ---- pbe-fight-simulator-v1.0-rc2 CANDIDATE (Phase 3B draw calibration). NOT the default: production runs rc1. ----
+ * Identical to rc1 (every fitted coefficient, score rule, tilt and gate threshold) plus fight-level persistence:
+ * a share rho of each fitted attempt model's extra-Poisson variance becomes a per-fighter, per-fight gamma frailty
+ * (src/engine/fight.mjs), so each round's fitted mean and variance are unchanged. rho was chosen on 2016-2020 judge
+ * card shapes only and never revisited on the 2021-2026 holdout (docs/FIGHT_SIMULATOR_PHASE3B.md). */
+export const SIMULATOR_VERSION_RC2 = 'pbe-fight-simulator-v1.0-rc2';
+export const PERSISTENCE_RC2 = Object.freeze({ rho: 0.7, applies_to: Object.freeze(['att', 'td_att']), selected_on: 'judge card shapes 2016-01-01..2020-12-31', holdout: '2021-2026 walk-forward, fold params' });
+export const PARAMS_V1_0_RC2 = Object.freeze({ ...DEFAULT_PARAMS, persistence: PERSISTENCE_RC2 });

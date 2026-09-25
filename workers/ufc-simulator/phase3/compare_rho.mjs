@@ -29,11 +29,26 @@ function block(rs) {
     over_max_pct: rs.some((r) => r.anchor) ? r4(rs.filter((r) => r.anchor && r.anchor.status !== 'ok').length / rs.filter((r) => r.anchor).length * 100) : null,
   };
 }
+/* Paired bootstrap on per-bout differences (candidate minus base): 95% CI for the change in each loss. Deterministic resampling. */
+function lcg(seed) { let x = seed >>> 0; return () => ((x = (Math.imul(x, 1664525) + 1013904223) >>> 0) / 4294967296); }
+const perBout = {
+  winner: (r) => brier(winP(r), r.truth.winner === 1 ? 1 : 0),
+  method: (r) => multiLogLoss(methodProbs(r), r.truth.method),
+  distance: (r) => brier(r.probabilities.goes_distance, r.truth.method === 'DEC' ? 1 : 0),
+};
+function pairedCI(sel, key, B = 2000) {
+  const ps = pairs.filter(([b]) => sel(b)); if (!ps.length) return null;
+  const d = ps.map(([b, c]) => perBout[key](c) - perBout[key](b)); const n = d.length; const m = mean(d);
+  const u = lcg(12345 + n); const bs = [];
+  for (let i = 0; i < B; i++) { let s = 0; for (let j = 0; j < n; j++) s += d[Math.floor(u() * n)]; bs.push(s / n); }
+  bs.sort((a, b) => a - b);
+  return { delta: +m.toFixed(5), lo: +bs[Math.floor(0.025 * B)].toFixed(5), hi: +bs[Math.floor(0.975 * B)].toFixed(5) };
+}
 const side = (sel) => { const b = block(pairs.map((p) => p[0]).filter(sel)), c = block(pairs.map((p) => p[1]).filter(sel)); return { b, c }; };
 const line = (label, { b, c }) => [label, b.n, b.winner_brier, c.winner_brier, b.method_logloss, c.method_logloss, b.distance_brier, c.distance_brier, b.mean_draw_pct, c.mean_draw_pct, b.tilt_median, c.tilt_median, b.over_max_pct, c.over_max_pct];
 const rows = [line('all', side(() => true))];
 for (const R of [3, 5]) rows.push(line(`${R} rounds`, side((r) => (r.scheduled_rounds === 5 ? 5 : 3) === R)));
-for (const y of [...new Set(pairs.map((p) => p[0].year))].sort()) rows.push(line(`fold ${y}`, side((r) => r.year === y)));
+for (const y of [...new Set(pairs.map((p) => p[0].year))].sort()) { rows.push(line(`fold ${y}`, side((r) => r.year === y))); for (const R of [3, 5]) rows.push(line(`fold ${y} ${R}rd`, side((r) => r.year === y && (r.scheduled_rounds === 5 ? 5 : 3) === R))); }
 for (const g of ['FULL', 'LIMITED']) rows.push(line(g, side((r) => r.gate === g)));
 const hdr = ['slice', 'n', 'winBrier base', 'winBrier ρ', 'methodLL base', 'methodLL ρ', 'distBrier base', 'distBrier ρ', 'draw% base', 'draw% ρ', 'tilt med base', 'tilt med ρ', 'over-max% base', 'over-max% ρ'];
 console.log(`paired bouts: ${pairs.length} (candidate rows ${cand.length}); rho ${RHO}; n_sims ${N}`);
@@ -46,4 +61,8 @@ const gates = {
   distance_brier_no_material_degradation: all.c.distance_brier <= all.b.distance_brier + 0.001,
 };
 console.log('gates', JSON.stringify(gates));
-fs.writeFileSync(path.join(CACHE, `compare_rho${RHO}_n${N}.json`), JSON.stringify({ rho: Number(RHO), n_sims: Number(N), paired: pairs.length, header: hdr, rows, gates }, null, 1));
+const ciSlices = [['all', () => true], ['3 rounds', (r) => r.scheduled_rounds !== 5], ['5 rounds', (r) => r.scheduled_rounds === 5], ...[...new Set(pairs.map((p) => p[0].year))].sort().map((y) => [`fold ${y}`, (r) => r.year === y])];
+const cis = {};
+console.log('paired 95% CI of change (candidate - base; negative = better)');
+for (const [label, sel] of ciSlices) { cis[label] = { winner: pairedCI(sel, 'winner'), method: pairedCI(sel, 'method'), distance: pairedCI(sel, 'distance') }; console.log(label, JSON.stringify(cis[label])); }
+fs.writeFileSync(path.join(CACHE, `compare_rho${RHO}_n${N}.json`), JSON.stringify({ rho: Number(RHO), n_sims: Number(N), paired: pairs.length, header: hdr, rows, gates, paired_ci: cis }, null, 1));
