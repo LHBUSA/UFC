@@ -4,7 +4,7 @@
 import Link from "next/link";
 import type { SimArtifact } from "@/lib/vendor/sim-engine/simulate.mjs";
 import { anchorCompare,
-  COVERAGE_LABEL, MODEL_CARD, RANGE_STATS, UNAVAILABLE_COPY, coverageLine, gateReasons, methodRows, pathView, pct, roundRanges, simGate, winView,
+  COVERAGE_LABEL, MODEL_CARD, RANGE_STATS, UNAVAILABLE_COPY, coverageLine, gateReasons, methodRows, pathView, pct, roundOutcomeRows, roundRanges, simGate, winView,
   type SimGate,
 } from "@/lib/simulatorView";
 import s from "@/app/simulator/simulator.module.css";
@@ -88,6 +88,49 @@ export function GoesDistance({ a }: { a: SimArtifact }) {
       <div className={s.cardHead}><h2 id="sim-distance" className={s.h2}>Goes the distance</h2><span className={s.limited}>LIMITED</span></div>
       <div className={s.bigPct} data-sim-distance="">{pct(a.probabilities?.goes_distance)}</div>
       <p className={s.note}>Share of simulated fights reaching the judges ({a.scheduled_rounds} rounds scheduled). Includes draws.</p>
+    </section>
+  );
+}
+
+export function RoundOutcomeMatrix({ a, left, names }: { a: SimArtifact; left: Side; names: Record<Side, string> }) {
+  const rows = roundOutcomeRows(a);
+  if (!rows.length) return null;
+  const side = (r: (typeof rows)[number], x: Side) => x === "fighter_1"
+    ? { ko: r.f1ko, sub: r.f1sub }
+    : { ko: r.f2ko, sub: r.f2sub };
+  return (
+    <section className={`${s.card} ${s.roundOutcomes}`} aria-labelledby="sim-round-outcomes">
+      <div className={s.cardHead}>
+        <h2 id="sim-round-outcomes" className={s.h2}>Round-by-round outcome map</h2>
+        <span className={s.limited}>EXPERIMENTAL</span>
+      </div>
+      <div className={s.roundOutcomeGrid}>
+        {rows.map((r) => {
+          const L = side(r, left), R = side(r, other(left));
+          return (
+            <article key={r.round} className={s.roundOutcomeCard} data-sim-round-outcome={r.round}>
+              <div className={s.roundOutcomeHead}>
+                <span>Round {r.round}</span>
+                <b>{pct(r.anyFinish)} finish share</b>
+              </div>
+              <div className={s.roundOutcomeReach}>{pct(r.reachesRound)} of simulations reach this round</div>
+              <div className={s.roundOutcomeSides}>
+                <div>
+                  <strong>{names[left]}</strong>
+                  <span>KO/TKO {pct(L.ko)}</span>
+                  <span>SUB {pct(L.sub)}</span>
+                </div>
+                <div>
+                  <strong>{names[other(left)]}</strong>
+                  <span>KO/TKO {pct(R.ko)}</span>
+                  <span>SUB {pct(R.sub)}</span>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      <p className={s.note}>Direct frequency from the 10,000 simulated fight paths. Finish shares are unconditional percentages of all simulations; “reaches this round” shows how often the fight is still alive entering that round. Round-specific finish calibration has not yet passed a separate historical validation gate, so this is an experimental distribution view, not a pick for a specific finish round.</p>
     </section>
   );
 }

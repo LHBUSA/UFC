@@ -58,12 +58,29 @@ export function summarize(batch) {
   const counts = { w1: 0, w2: 0, draw: 0, dist: 0 };
   const methods = { f1_ko: 0, f1_sub: 0, f1_dec: 0, f2_ko: 0, f2_sub: 0, f2_dec: 0 };
   const finishRounds = Array.from({ length: R }, () => ({ f1: 0, f2: 0 }));
+  // Experimental round-by-outcome matrix. This is a direct frequency table
+  // from the simulated fights, not a separate round-winner model. It lets the
+  // product show where KO/TKO and submission endings occurred while keeping
+  // decisions/draws at the scheduled distance.
+  const outcomeByRound = Array.from({ length: R }, (_, i) => ({
+    round: i + 1,
+    fighter_1_ko: 0, fighter_1_sub: 0,
+    fighter_2_ko: 0, fighter_2_sub: 0,
+    reaches_round: 0,
+  }));
   const endTimes = [];
   for (let i = 0; i < n; i++) {
     const w = batch.winner[i], m = batch.method[i];
     if (w === 1) counts.w1++; else if (w === 2) counts.w2++; else counts.draw++;
     if (m >= 2) counts.dist++;
-    if (w && m < 2) { finishRounds[batch.endRound[i] - 1][w === 1 ? 'f1' : 'f2']++; endTimes.push((batch.endRound[i] - 1) * 300 + batch.endTime[i]); }
+    for (let r = 0; r < R; r++) if (batch.endRound[i] >= r + 1) outcomeByRound[r].reaches_round++;
+    if (w && m < 2) {
+      const rr = batch.endRound[i] - 1;
+      finishRounds[rr][w === 1 ? 'f1' : 'f2']++;
+      if (w === 1) outcomeByRound[rr][m === 0 ? 'fighter_1_ko' : 'fighter_1_sub']++;
+      else outcomeByRound[rr][m === 0 ? 'fighter_2_ko' : 'fighter_2_sub']++;
+      endTimes.push(rr * 300 + batch.endTime[i]);
+    }
     if (w === 1) methods[m === 0 ? 'f1_ko' : m === 1 ? 'f1_sub' : 'f1_dec']++;
     else if (w === 2) methods[m === 0 ? 'f2_ko' : m === 1 ? 'f2_sub' : 'f2_dec']++;
   }
@@ -103,6 +120,15 @@ export function summarize(batch) {
     probabilities: { fighter_1_win: round4(counts.w1 / n), fighter_2_win: round4(counts.w2 / n), draw: round4(counts.draw / n), goes_distance: round4(counts.dist / n) },
     methods: Object.fromEntries(Object.entries(methods).map(([k, v]) => [k.replace('f1_', 'fighter_1_').replace('f2_', 'fighter_2_'), round4(v / n)])),
     finish_distribution: finishRounds.map((fr, i) => ({ round: i + 1, fighter_1: round4(fr.f1 / n), fighter_2: round4(fr.f2 / n), any: round4((fr.f1 + fr.f2) / n) })),
+    outcome_by_round: outcomeByRound.map((row) => ({
+      round: row.round,
+      reaches_round: round4(row.reaches_round / n),
+      fighter_1_ko: round4(row.fighter_1_ko / n),
+      fighter_1_sub: round4(row.fighter_1_sub / n),
+      fighter_2_ko: round4(row.fighter_2_ko / n),
+      fighter_2_sub: round4(row.fighter_2_sub / n),
+      any_finish: round4((row.fighter_1_ko + row.fighter_1_sub + row.fighter_2_ko + row.fighter_2_sub) / n),
+    })),
     finish_time: sortedEnd.length ? { median_elapsed_sec: int(median(sortedEnd)), p25_elapsed_sec: int(quantile(sortedEnd, 0.25)), p75_elapsed_sec: int(quantile(sortedEnd, 0.75)), finishes: sortedEnd.length } : null,
     fight_totals: {
       fighter_1: Object.fromEntries(keys.map((k) => [k, { median: int(med(totalsBy.f1[k])), p25: int(q(totalsBy.f1[k], 0.25)), p75: int(q(totalsBy.f1[k], 0.75)) }])),

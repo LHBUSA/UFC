@@ -1,6 +1,6 @@
 // Engine parameters for pbe-fight-simulator v1.0.
 //
-// STATUS: v1.0-rc1. Component models and finish-time shapes come from params_fitted_v1.mjs (walk-forward validated,
+// STATUS: v1.0-rc2. Component models and finish-time shapes come from params_fitted_v1.mjs (walk-forward validated,
 // docs/FIGHT_SIMULATOR_PHASE3.md). The remaining scalars below are structural priors, documented in that report.
 // Original note: every number below was a documented starting value chosen from
 // the Phase 1 measurements over 42,166 fighter-rounds (means, dispersion) and
@@ -14,7 +14,7 @@
 import { FITTED_MODELS_V1, FITTED_FINISH_TIME_V1 } from './params_fitted_v1.mjs';
 
 export const SIMULATOR_FAMILY = 'pbe-fight-simulator';
-export const SIMULATOR_VERSION = 'pbe-fight-simulator-v1.0-rc1';
+export const SIMULATOR_VERSION = 'pbe-fight-simulator-v1.0-rc2';
 export const RULES_VERSION = 'pbe-sim-rules-v1';
 export const DNA_DEFINITION_VERSION = 1;
 export const FEATURE_VERSION = 1;
@@ -68,11 +68,12 @@ export const DEFAULT_PARAMS = Object.freeze({
 
 export const TIER_RANK = Object.freeze({ insufficient: 0, low: 1, medium: 2, high: 3 });
 
-/* ---- pbe-fight-simulator-v1.0-rc2 CANDIDATE (Phase 3B draw calibration). NOT the default: production runs rc1. ----
- * Identical to rc1 (every fitted coefficient, score rule, tilt and gate threshold) plus fight-level persistence:
+/* ---- pbe-fight-simulator-v1.0-rc3 CANDIDATE (Phase 3B draw calibration). NOT the default: production runs
+ * v1.0-rc2 (= rc1 calibration + the round-by-outcome table, another session, 2026-09-24). ----
+ * Identical to the production default (every fitted coefficient, score rule, tilt and gate threshold) plus fight-level persistence:
  * a share rho of each fitted attempt model's extra-Poisson variance becomes a per-fighter, per-fight gamma frailty
  * (src/engine/fight.mjs), so each round's fitted mean and variance are unchanged. rho was chosen on 2016-2020 judge
  * card shapes only and never revisited on the 2021-2026 holdout (docs/FIGHT_SIMULATOR_PHASE3B.md). */
-export const SIMULATOR_VERSION_RC2 = 'pbe-fight-simulator-v1.0-rc2';
-export const PERSISTENCE_RC2 = Object.freeze({ rho: 0.7, applies_to: Object.freeze(['att', 'td_att']), selected_on: 'judge card shapes 2016-01-01..2020-12-31', holdout: '2021-2026 walk-forward, fold params' });
-export const PARAMS_V1_0_RC2 = Object.freeze({ ...DEFAULT_PARAMS, persistence: PERSISTENCE_RC2 });
+export const SIMULATOR_VERSION_RC3 = 'pbe-fight-simulator-v1.0-rc3';
+export const PERSISTENCE_RC3 = Object.freeze({ rho: 0.7, applies_to: Object.freeze(['att', 'td_att']), selected_on: 'judge card shapes 2016-01-01..2020-12-31', holdout: '2021-2026 walk-forward, fold params' });
+export const PARAMS_V1_0_RC3 = Object.freeze({ ...DEFAULT_PARAMS, persistence: PERSISTENCE_RC3 });

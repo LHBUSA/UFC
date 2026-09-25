@@ -71,7 +71,12 @@ Fix candidate (structural, no fitted coefficient changes): a share ρ of the sam
 frailty drawn once; the round-level dispersion is re-solved, k' = (k + ρ)/(1 − ρ), so every round's marginal mean and variance equal the fitted
 ones exactly. ρ = 0.7 was fitted on 2016-2020 card shapes only; the gate evaluation below is 2021-2026 walk-forward.
 
-### 3.1 Full 2021-2026 holdout (candidate `pbe-fight-simulator-v1.0-rc2`)
+### 3.1 Full 2021-2026 holdout (candidate `pbe-fight-simulator-v1.0-rc3`)
+
+Naming: while this evaluation ran, another session released `pbe-fight-simulator-v1.0-rc2` to production (main 5bf25c6..6fe9b13): the rc1
+calibration plus an experimental round-by-outcome table in the artifact (`aggregate.mjs`, additive output only; probabilities, methods and
+draws are computed exactly as in rc1). The draw-calibration candidate is therefore `v1.0-rc3` = the production default plus persistence. In the
+tables below "rc1" is the persistence-free engine, whose metrics rc2 shares exactly.
 
 Run: `phase3/evaluate.mjs --n 2000 --rho 0.7`, fold parameters (`params_fold_<year>`, walk-forward guard on every bout), the Phase 3 seed and
 determinism contract, resumed in bounded chunks (2023 remainder, 2024, 2025, 2026; peak RSS under 700 MB per chunk). 2021, 2022 and the first
@@ -79,7 +84,7 @@ determinism contract, resumed in bounded chunks (2023 remainder, 2024, 2025, 202
 to the Phase 3 baseline, with an identical gate partition (939 FULL, 1,397 LIMITED, 262 insufficient); 2,336 simulated bouts paired bout for bout.
 rho was fixed at 0.7 from 2016-2020 card shapes before any holdout row existed and was not revisited.
 
-| slice | n | winner Brier rc1 / rc2 | method LL rc1 / rc2 | distance Brier rc1 / rc2 | draw % rc1 / rc2 | over-max % rc1 / rc2 |
+| slice | n | winner Brier rc1 / rc3 | method LL rc1 / rc3 | distance Brier rc1 / rc3 | draw % rc1 / rc3 | over-max % rc1 / rc3 |
 |---|---:|---|---|---|---|---|
 | all 2021-2026 | 2,336 | 0.2285 / 0.2285 | 0.9823 / 0.9808 | 0.2405 / 0.2405 | 2.77 / 0.93 | 0.86 / 1.28 |
 | 3 rounds | 2,047 | 0.2275 / 0.2276 | 0.9811 / 0.9801 | 0.2389 / 0.2389 | 2.74 / 0.93 | 0.98 / 1.47 |
@@ -96,7 +101,7 @@ Per fold and format (3 rd / 5 rd), from `phase3/compare_rho.mjs`: 2024 5-round b
 degradations are +0.0019 method LL (2025 3-round) and +0.0016 distance Brier (2024 3-round); every larger move is an improvement (2021
 5-round method LL 1.0543 -> 1.0385, 2026 3-round 0.9998 -> 0.9934, 2021 5-round distance 0.2959 -> 0.2913). Full grid in `.cache/phase3/compare_rho0.7_n2000.json`.
 
-Paired bootstrap, 95% CI of the per-bout change (rc2 minus rc1; negative is better; 2,000 resamples, fixed seed):
+Paired bootstrap, 95% CI of the per-bout change (rc3 minus rc1; negative is better; 2,000 resamples, fixed seed):
 
 | slice | winner Brier | method log loss | distance Brier |
 |---|---|---|---|
@@ -124,7 +129,7 @@ Findings:
 
 Draw realism (holdout, walk-forward params, each variant with its own calibrated tilts; 800-bout sample x 300 fights):
 
-| | real 2021-2026 | rc1 | rc2 |
+| | real 2021-2026 | rc1 | rc3 |
 |---|---:|---:|---:|
 | 3-round draws, all bouts / decisions | 0.68% / 1.41% | 2.74% / 5.39% | 0.94% / 1.86% |
 | 5-round draws, all bouts / decisions | 0.68% / 1.43% | 2.81% / 8.25% | 0.92% / 2.70% |
@@ -132,7 +137,7 @@ Draw realism (holdout, walk-forward params, each variant with its own calibrated
 
 Card shapes (single PBE card, holdout):
 
-| 3-round card | real | rc1 | rc2 | 5-round card | real | rc1 | rc2 |
+| 3-round card | real | rc1 | rc3 | 5-round card | real | rc1 | rc3 |
 |---|---:|---:|---:|---|---:|---:|---:|
 | 29-28 | 54.6% | 61.8% | 47.9% | 48-47 | 31.2% | 42.8% | 32.0% |
 | 30-27 | 35.9% | 18.0% | 35.8% | 49-46 | 30.5% | 19.9% | 27.2% |
@@ -140,13 +145,13 @@ Card shapes (single PBE card, holdout):
 | 29-27 | 3.0% | 9.4% | 5.0% | 48-46 | 3.1% | 12.5% | 5.7% |
 | 28-28 | 1.5% | 5.4% | 1.9% | 47-47 | 1.4% | 8.1% | 2.7% |
 
-rc2 overshoots 10-8 sweeps (30-26: 7.9% vs 3.5% real). With persistence a dominant round is now usually won by the fighter who wins the others,
-as in real fights, but the unfitted 10-8 margin (40) awards 10-8s more often than modern judges (real <= 5.0% of judge-rounds; rc2 6.0%). That is a
+rc3 overshoots 10-8 sweeps (30-26: 7.9% vs 3.5% real). With persistence a dominant round is now usually won by the fighter who wins the others,
+as in real fights, but the unfitted 10-8 margin (40) awards 10-8s more often than modern judges (real <= 5.0% of judge-rounds; rc3 6.0%). That is a
 separate, unfitted score-rule parameter and was deliberately left unchanged.
 
 Model card (same 2,336 holdout bouts; the published card is Phase 3, 2016-2026, 4,149 bouts):
 
-| metric | rc1 holdout | rc2 holdout | baseline |
+| metric | rc1 holdout | rc3 holdout | baseline |
 |---|---|---|---|
 | Winner Brier | 0.2285 | 0.2285 | 0.2286 (PBE Fight Model alone) |
 | Method log loss | 0.9823 | 0.9808 | 1.0084 (weight-class frequency) |
@@ -156,17 +161,18 @@ Model card (same 2,336 holdout bouts; the published card is Phase 3, 2016-2026, 
 | Finish-round CRPS (not shown in product) | 0.4273 | 0.4283 | 0.4206 historical |
 | Clean-sweep round-winner accuracy (not shown) | 0.686 | 0.695 | 0.722 favourite every round |
 
-Candidate: `pbe-fight-simulator-v1.0-rc2` = rc1 + `persistence { rho: 0.7, applies_to: [att, td_att] }` (`PARAMS_V1_0_RC2` in
-`src/engine/params.mjs`). Engine spec SHA-256: rc1 `c0a4c915329c183ced7c673ec7069d69b1e943efd6c2f2d76373eb2ef32db73d` (unchanged, still the
-default), rc2 `e91467694a97c94cb276423cd2a4b4df1f7f5e2ecdc3559a353c8fd7ed256dc6`. Proofs (`src/engine/rc2.test.mjs`, 6 tests): rc1 default and
-hash pinned; rc2 = rc1 plus one frozen block; determinism (two in-process runs and a fresh process give identical artifact bytes); corner swap
+Candidate: `pbe-fight-simulator-v1.0-rc3` = rc1 + `persistence { rho: 0.7, applies_to: [att, td_att] }` (`PARAMS_V1_0_RC2` in
+`src/engine/params.mjs`). Engine spec SHA-256: production default v1.0-rc2 `e0ae2a4aad1673433adb458552ff7d6553efbe49299b551cbaa2944b95a37716` (unchanged by
+this candidate; rc1 was `c0a4c915329c183ced7c673ec7069d69b1e943efd6c2f2d76373eb2ef32db73d`), candidate rc3
+`92a2aed25a18cd122571479b038e9b1624bca4af5a74045a00806e949fed336e`. Proofs (`src/engine/rc3.test.mjs`, 6 tests): production default and
+hash pinned; rc3 = the default plus one frozen block; determinism (two in-process runs and a fresh process give identical artifact bytes); corner swap
 (identical id and bytes on two fixtures); aggregate antisymmetry inside the engine; anchored winner equals the champion. Leakage: Phase 3 audit
 (`.cache/phase3/leakage_audit.json`: 4,899 checked, 0 failures, 0 truncation diffs); every holdout bout passed `assertWalkForwardParams`; rho
 selected on 2016-2020 only. Engine suite 32/32.
 
 Recommendation against the predefined gates: the three overall gates pass (winner, method and distance not degraded), and draw and card-shape
 realism improve materially. Two findings sit outside those gates and are the owner's call before release: the significant 2024 distance
-degradation (+0.0019, concentrated in five-round bouts) and the higher anchor-strain rate (0.86% -> 1.28%). Production stays on rc1.
+degradation (+0.0019, concentrated in five-round bouts) and the higher anchor-strain rate (0.86% -> 1.28%). Production stays on the persistence-free engine (v1.0-rc2).
 
 ## 4. P2
 

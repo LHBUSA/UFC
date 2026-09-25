@@ -10,7 +10,7 @@ import { ROUNDS_UNRESOLVED_COPY, simGate, type SimGate } from "@/lib/simulatorVi
 import { FITTED_PROVENANCE_V1 } from "@/lib/vendor/sim-engine/params_fitted_v1.mjs";
 import type { SimulationResult, MatchupSpec } from "@/lib/simulatorRun";
 import {
-  DnaCoverage, GateBadge, GoesDistance, HowItWorks, LimitedNote, LockedPanel, ModelCard, OutcomeDistribution, Provenance, RepresentativePath, TierChip, Unavailable, VolumeRanges, WinProbability,
+  DnaCoverage, GateBadge, GoesDistance, HowItWorks, LimitedNote, LockedPanel, ModelCard, OutcomeDistribution, Provenance, RepresentativePath, RoundOutcomeMatrix, TierChip, Unavailable, VolumeRanges, WinProbability,
   type Side,
 } from "@/components/simulator/SimulatorViews";
 import { FighterStrip, type StripFighter } from "@/components/simulator/SimulatorStrip";
@@ -26,7 +26,7 @@ export const maxDuration = 60;
 
 export const metadata: Metadata = {
   title: "Fight Simulator · PBE Labs",
-  description: "Model-based UFC matchup simulation from as-of Fight DNA and round-level UFC data: win probability, outcome distribution and goes-distance odds from 10,000 simulated fights.",
+  description: "Model-based UFC matchup simulation from as-of Fight DNA and round-level UFC data: win probability, round-by-round finish outcomes, method distribution and goes-distance odds from 10,000 simulated fights.",
   alternates: { canonical: "/simulator" },
 };
 
@@ -149,6 +149,7 @@ export default async function SimulatorPage({ searchParams }: { searchParams: Pr
                   <WinProbability a={artifact} left={leftSide} names={names} />
                   <GoesDistance a={artifact} />
                   <OutcomeDistribution a={artifact} left={leftSide} names={names} />
+                  <RoundOutcomeMatrix a={artifact} left={leftSide} names={names} />
                   <VolumeRanges a={artifact} left={leftSide} names={names} />
                   <RepresentativePath a={artifact} left={leftSide} names={names} />
                   <Provenance a={artifact} trainingWindow={FITTED_PROVENANCE_V1.training_window} asOfNames={names} />

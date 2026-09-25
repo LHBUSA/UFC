@@ -24,7 +24,7 @@ export const MODEL_CARD = Object.freeze({
     { metric: "Goes-distance Brier", simulator: "0.2394", baseline: "0.2459", baselineLabel: "weight-class frequency" },
   ],
   notShown: [
-    "finish round or finish time",
+    "finish time",
     "round-by-round winners",
     "point estimates for control time, takedowns landed, knockdowns or submission attempts",
     "pace-retention claims",
@@ -59,6 +59,19 @@ export function methodRows(a: SimArtifact): { rows: MethodRow[]; draw: number; s
   ];
   const draw = a.probabilities?.draw ?? 0;
   return { rows, draw, sum: rows.reduce((s, r) => s + r.total, 0) + draw };
+}
+
+export type RoundOutcomeRow = {
+  round: number; reachesRound: number; anyFinish: number;
+  f1ko: number; f1sub: number; f2ko: number; f2sub: number;
+};
+
+export function roundOutcomeRows(a: SimArtifact): RoundOutcomeRow[] {
+  return (a.outcome_by_round || []).map((r) => ({
+    round: r.round, reachesRound: r.reaches_round, anyFinish: r.any_finish,
+    f1ko: r.fighter_1_ko, f1sub: r.fighter_1_sub,
+    f2ko: r.fighter_2_ko, f2sub: r.fighter_2_sub,
+  }));
 }
 
 export type WinView = { f1: number; f2: number; draw: number; favouriteSide: "fighter_1" | "fighter_2" | null };
