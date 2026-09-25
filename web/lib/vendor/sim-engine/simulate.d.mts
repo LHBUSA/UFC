@@ -13,6 +13,7 @@ export type SimArtifact = {
   probabilities: { fighter_1_win: number; fighter_2_win: number; draw: number; goes_distance: number } | null;
   methods: { fighter_1_ko: number; fighter_1_sub: number; fighter_1_dec: number; fighter_2_ko: number; fighter_2_sub: number; fighter_2_dec: number } | null;
   finish_distribution?: unknown;
+  outcome_by_round?: Array<{ round: number; reaches_round: number; fighter_1_ko: number; fighter_1_sub: number; fighter_2_ko: number; fighter_2_sub: number; any_finish: number }>;
   distribution?: { fight_totals: unknown; per_round: Array<{ round: number; fights_reaching: number; f1: RoundStats; f2: RoundStats; round_win: unknown }> };
   canonical_projection: null | {
     winner: "fighter_1" | "fighter_2"; winner_id: string; winner_name: string; method: "KO_TKO" | "SUB" | "DEC" | "DRAW"; round: number | null;
