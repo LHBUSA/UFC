@@ -95,6 +95,22 @@ export function simulateFight(ctx, rng, tilt = 0) {
   const totals = [0, 0];
   const offAtt = COMPONENTS.att.offset(L), offTd = COMPONENTS.td_att.offset(L), off900 = COMPONENTS.kd.offset(L), offHaz = COMPONENTS.ko_haz.offset(L);
 
+  /* Fight-level persistence (Phase 3B draw calibration, optional; absent = the v1.0-rc1 engine, byte for byte).
+   * The fitted attempt models are negative binomial per round: all of their extra-Poisson variance is drawn fresh
+   * every round, so who wins a round is nearly independent of who won the last one, and the single PBE card comes
+   * out even (a draw) three to five times as often as real judges' cards. A share `rho` of that same variance is
+   * moved to a per-fighter, per-fight gamma frailty drawn once; the round-level dispersion is re-solved so each
+   * round's marginal mean and variance are exactly the fitted ones: frailty variance rho/k, residual dispersion
+   * k' = (k + rho) / (1 - rho), and (1 + rho/k)(1 + 1/k') = 1 + 1/k. No fitted coefficient changes. */
+  const rho = P.persistence?.rho || 0;
+  let gAtt = [1, 1], gTd = [1, 1], kAtt = M.att.k, kTd = M.td_att.k;
+  if (rho > 0 && rho < 1) {
+    const aA = M.att.k / rho, aT = M.td_att.k / rho;
+    gAtt = [gamma(rng, aA, 1 / aA), gamma(rng, aA, 1 / aA)];
+    gTd = [gamma(rng, aT, 1 / aT), gamma(rng, aT, 1 / aT)];
+    kAtt = (M.att.k + rho) / (1 - rho); kTd = (M.td_att.k + rho) / (1 - rho);
+  }
+
   for (let r = 0; r < R; r++) {
     const base = r * 2 * NSTAT;
     const roundNo = r + 1;
@@ -104,7 +120,7 @@ export function simulateFight(ctx, rng, tilt = 0) {
     for (let i = 0; i < 2; i++) {
       const j = 1 - i, s = sides[i], o = sides[j], st = state[i], ot = state[j];
       const mu = Math.exp(linear(M.td_att.beta, COMPONENTS.td_att.x(s, o, st, ot, roundNo)) + offTd);
-      v[i].td_a = negbin(rng, mu, M.td_att.k);
+      v[i].td_a = negbin(rng, mu * gTd[i], kTd);
       const q = sigmoid(linear(M.td_acc.beta, COMPONENTS.td_acc.x(s, o, st, ot, roundNo)) + tdT[i]);
       v[i].td_l = binomial(rng, v[i].td_a, q);
       const pAny = sigmoid(linear(M.ctrl_any.beta, COMPONENTS.ctrl_any.x(s, o, st, ot, roundNo, v[i])));
@@ -120,7 +136,7 @@ export function simulateFight(ctx, rng, tilt = 0) {
     for (let i = 0; i < 2; i++) {
       const j = 1 - i, s = sides[i], o = sides[j], st = state[i], ot = state[j];
       const mu = Math.exp(linear(M.att.beta, COMPONENTS.att.x(s, o, st, ot, roundNo)) + offAtt);
-      const att = negbin(rng, mu, M.att.k);
+      const att = negbin(rng, mu * gAtt[i], kAtt);
       const p = clamp(sigmoid(linear(M.acc.beta, COMPONENTS.acc.x(s, o, st, ot, roundNo, v[i])) + effT[i]), 0.02, 0.95);
       const l = binomial(rng, att, p);
       v[i].landed = l;

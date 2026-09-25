@@ -17,7 +17,9 @@ const N = Number(opt('--n', 2000));
 const FROM = Number(opt('--from', 2016)), TO = Number(opt('--to', 2026));
 const LIMIT = Number(opt('--limit', 0));
 const PARAM_MODE = opt('--params', 'fold'); // fold | prior
-const OUT = path.join(CACHE, `eval_${PARAM_MODE}_n${N}.jsonl`);
+/* Phase 3B: optional fight-level persistence (src/engine/fight.mjs). --rho 0 (default) is the frozen v1.0-rc1 engine. */
+const RHO = Number(opt('--rho', 0));
+const OUT = path.join(CACHE, `eval_${PARAM_MODE}${RHO ? `_rho${RHO}` : ''}_n${N}.jsonl`);
 
 const { cohort } = buildCohort();
 const done = new Set();
@@ -28,7 +30,7 @@ function params(year, eventDate) {
   if (!paramsFor.has(year)) paramsFor.set(year, JSON.parse(fs.readFileSync(path.join(CACHE, `params_fold_${year}.json`), 'utf8')));
   const P = paramsFor.get(year);
   assertWalkForwardParams(P, year, eventDate); // refuses params_fold_all and any fold/window mismatch
-  return P;
+  return RHO ? { ...P, persistence: { rho: RHO } } : P;
 }
 
 const todo = cohort.filter((c) => c.year >= FROM && c.year <= TO && !done.has(c.bout_id));
@@ -42,7 +44,7 @@ for (const c of list) {
   const input = boutInput(c);
   const truth = boutTruth(c);
   const t = Date.now();
-  const { artifact: a } = simulate({ ...input, n_sims: N }, { params: P, simulator_version: `pbe-fight-simulator-v1.0-phase3-${PARAM_MODE}` });
+  const { artifact: a } = simulate({ ...input, n_sims: N }, { params: P, simulator_version: `pbe-fight-simulator-v1.0-phase3-${PARAM_MODE}${RHO ? `-rho${RHO}` : ''}` });
   // Naive baselines from the as-of profiles (fighter's own DNA rate x minutes; opponent-adjusted = geometric mean with the opponent's absorbed rate).
   const in1 = input.fighter_a.fighter.id === truth.fighter_1_id ? input.fighter_a : input.fighter_b;
   const in2 = in1 === input.fighter_a ? input.fighter_b : input.fighter_a;
