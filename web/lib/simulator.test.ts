@@ -16,7 +16,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { register } from "node:module";
 import { runSimulationFromRows, pickValidSnapshot, type CornerRows, type SnapshotRow } from "./simulatorRun.ts";
 import { simulate } from "./vendor/sim-engine/simulate.mjs";
-import { simGate, methodRows, winView, pathView, roundRanges, gateReasons, anchorStrained, anchorCompare, MODEL_CARD, UNAVAILABLE_COPY } from "./simulatorView.ts";
+import { simGate, methodRows, winView, pathView, roundRanges, gateReasons, anchorStrained, anchorCompare, resolvedRounds, ROUNDS_UNRESOLVED_COPY, MODEL_CARD, UNAVAILABLE_COPY } from "./simulatorView.ts";
 import { labsSimulatorAccess } from "./labsAccess.ts";
 
 register("../scripts/test-tsx-hooks.mjs", import.meta.url);
@@ -128,7 +128,7 @@ test("Labs access: results only for a verified member decision (access.pro); sig
   const gateAt = page.indexOf("const labs = labsSimulatorAccess(access);");
   const runAt = page.indexOf("await runSimulation(");
   assert.ok(gateAt > 0 && runAt > gateAt, "the Labs decision is made before the simulation read");
-  assert.match(page, /if \(selection && labs\.allowed\) \{\s*try \{ result = await runSimulation\(/);
+  assert.match(page, /if \(selection && selection\.spec && labs\.allowed\) \{\s*try \{ result = await runSimulation\(/);
   assert.equal((page.match(/runSimulation\(/g) || []).length, 1, "exactly one simulation read");
 });
 
@@ -274,4 +274,19 @@ test("Rosas Jr. vs Barcelos contract (live values 2026-09-24): model 76.3% and s
   assert.match(out, /data-sim-outcome-share="">74\.4% /);
   assert.match(out, /data-sim-gate="LIMITED"/);
   assert.match(out, /data-sim-limited=""/);
+});
+
+/* ---- scheduled rounds: the simulator never guesses a fight's length (2026-09-24 audit: ESPN 4 and 0) ---- */
+test("round counts: only 3 or 5 are simulated; 0, 4, null and anything else are unresolved, never read as 3", () => {
+  assert.equal(resolvedRounds(3), 3);
+  assert.equal(resolvedRounds(5), 5);
+  for (const bad of [0, 4, null, undefined, 1, 2, 6]) assert.equal(resolvedRounds(bad as number | null | undefined), null, String(bad));
+  const sim = read("lib/simulator.ts");
+  assert.doesNotMatch(sim, /scheduled_rounds === 5 \? 5 : 3/, "no silent 3-round fallback for scheduled bouts");
+  assert.match(sim, /export function specForBout\(b: Bout, e: Event\): MatchupSpec \| null/);
+  const page = read("app/simulator/page.tsx");
+  assert.match(page, /if \(selection && selection\.spec && labs\.allowed\)/, "an unresolved bout is never simulated");
+  assert.match(page, /data-sim-rounds-unresolved/);
+  assert.match(ROUNDS_UNRESOLVED_COPY, /does not guess/);
+  assert.doesNotMatch(read("components/DeskArt.tsx"), /scheduled_rounds \|\| 3/);
 });

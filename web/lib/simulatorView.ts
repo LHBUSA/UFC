@@ -156,3 +156,10 @@ export function anchorCompare(a: SimArtifact | null): AnchorCompare | null {
 export function isSimulatableBout(b: { status: string; result?: unknown; fighter_a?: { id?: string | null } | null; fighter_b?: { id?: string | null } | null }): boolean {
   return b.status !== "cancelled" && !b.result && Boolean(b.fighter_a?.id) && Boolean(b.fighter_b?.id);
 }
+
+/** A scheduled bout's round count as the simulator may use it: 3 or 5 only. Anything else (null, 0, 4, a conflicting
+ *  record) is UNRESOLVED and the bout is not simulated: the simulator never guesses a format (2026-09-24 audit). */
+export function resolvedRounds(n: number | null | undefined): 3 | 5 | null {
+  return n === 3 || n === 5 ? n : null;
+}
+export const ROUNDS_UNRESOLVED_COPY = "The scheduled round count for this bout is not confirmed by the official card yet. The simulator does not guess a fight's length, so this bout is simulated once the card lists it.";

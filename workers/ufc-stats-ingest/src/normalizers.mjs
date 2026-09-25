@@ -149,3 +149,35 @@ export function scorecards(details) {
   if (!found.length) return null;
   return found.map((m) => ({ judge: m[1].trim(), score: m[2].replace(/\s+/g, '') }));
 }
+
+/* Scheduled rounds for an ESPN competition (2026-09-24 audit). ESPN's format.regulation.periods is NOT the scheduled
+ * round count: an overtime bout ("3 Rnd + OT (5-5-5-5)") reports 4 periods, and an unfilled record reports 0. The
+ * canonical convention, set by the historical record (42 of 43 "3 Rnd + OT" bouts), is scheduled_rounds = REGULATION
+ * rounds, overtime not counted. Resolution, strongest evidence first:
+ *   1. the structured time-format description ("N Rnd ..."), cross-checked against periods (N, or N + OT periods);
+ *   2. periods alone, only when it is 3 or 5 (the only UFC regulation lengths);
+ *   3. a title bout with no usable count: 5 (championship bouts are five rounds under the Unified Rules);
+ * otherwise UNRESOLVED (rounds null). Never 0 or 4, and a non-title main event is never assumed to be five.
+ * Returns { rounds, overtime, state: 'resolved'|'unresolved'|'conflict', basis, periods, description }. */
+export function resolveScheduledRounds({ periods = null, description = null, isTitle = false } = {}) {
+  const desc = String(description || '').trim();
+  const p = Number.isInteger(periods) ? periods : null;
+  const m = desc.match(/^\s*(\d+)\s*Rnd(?:\s*\+\s*(\d*)\s*OT)?/i);
+  const out = (rounds, state, basis, overtime = 0) => ({ rounds, overtime, state, basis, periods: p, description: desc || null });
+  if (m) {
+    const reg = Number(m[1]);
+    const ot = m[2] !== undefined ? (m[2] === '' ? 1 : Number(m[2])) : 0;
+    const valid = reg >= 1 && reg <= 5;
+    const periodsAgree = p === null || p === 0 || p === reg || p === reg + ot;
+    if (!valid) return out(null, 'unresolved', 'description_out_of_range', ot);
+    if (!periodsAgree) return out(null, 'conflict', 'description_vs_periods', ot);
+    if (isTitle && reg !== 5) return out(null, 'conflict', 'title_bout_not_five_rounds', ot);
+    return out(reg, 'resolved', ot ? 'description_regulation_plus_overtime' : 'description', ot);
+  }
+  if (p === 3 || p === 5) {
+    if (isTitle && p !== 5) return out(null, 'conflict', 'title_bout_not_five_rounds');
+    return out(p, 'resolved', 'periods');
+  }
+  if (isTitle) return out(5, 'resolved', 'title_bout_rule');
+  return out(null, 'unresolved', p === null ? 'no_round_data' : `invalid_periods_${p}`);
+}

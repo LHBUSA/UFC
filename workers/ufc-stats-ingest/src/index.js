@@ -52,7 +52,7 @@ import { cardWatchDue, cardWatchDates, cardContradictions, contradictionAlertDec
 import { Fetcher, SchemaAssertionError, AccessGateError } from './ufcstats.mjs';
 import { Espn, ROAD_TO_UFC_EVENT } from './espn.mjs';
 import * as P from './parsers.mjs';
-import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec } from './normalizers.mjs';
+import { normWeightClass, normMethod, normStance, scheduledRounds, mmssToSec, resolveScheduledRounds } from './normalizers.mjs';
 import { AliasResolver, aliasRowsForFighter, normalize } from './shared/alias_resolver.mjs';
 import { tufInHouseEventReason } from './shared/tuf_guard.mjs';
 import { selectCandidates, validateFight, roundRowsFor, latencySummary, sourceBlocked, matchHistoryRow, nextAttempt, isContenderSeries } from './lane.mjs';
@@ -125,7 +125,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.9.3';
+const VERSION = 'v0.9.4';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -897,11 +897,21 @@ async function espnBouts(env, espn, ctx, run, evRow, ev, { roadToUfc = false } =
       if (same.length === 1) { existing = same[0]; pairLinked = same[0]; }
     }
     const cancelled = /CANCEL|POSTPONED/i.test(b.status_name);
+    /* Scheduled rounds (2026-09-24 audit): ESPN periods are not the round count (OT bouts report 4, unfilled records 0).
+     * Resolve from the structured description first; an unresolved or conflicting record keeps a valid stored 3/5 from
+     * another source, otherwise stays null. Never 0 or 4. Every non-clean resolution is listed on the run row. */
+    const rr = resolveScheduledRounds({ periods: b.scheduled_rounds, description: b.time_format, isTitle: wc.is_title });
+    const prior = existing?.scheduled_rounds;
+    const priorValid = prior === 3 || prior === 5;
+    const schedRounds = rr.rounds ?? (priorValid ? prior : null);
+    if (rr.state !== 'resolved' || rr.overtime || (priorValid && rr.rounds != null && rr.rounds !== prior) || (prior != null && !priorValid && prior !== schedRounds)) {
+      run.notes.scheduled_rounds_review = [...(run.notes.scheduled_rounds_review || []), { espn_competition_id: b.espn_competition_id, event_id: evRow.id, state: rr.state, basis: rr.basis, periods: rr.periods, description: rr.description, overtime: rr.overtime, stored_before: prior ?? null, written: schedRounds }].slice(-50);
+    }
     const boutRow = {
       espn_competition_id: b.espn_competition_id, event_id: evRow.id,
       fighter_a_id: fa.id, fighter_b_id: fb.id,
       weight_class: wc.weight_class, weight_class_raw: b.weight_class_raw, is_womens: wc.is_womens, is_title: wc.is_title,
-      scheduled_rounds: b.scheduled_rounds ?? (b.time_format ? scheduledRounds(b.time_format, b.source_url) : null),
+      scheduled_rounds: schedRounds,
       card_position: b.card_position, bout_order: b.bout_order,
       status: b.completed ? 'complete' : (cancelled ? 'cancelled' : 'announced'),
       source_url: b.source_url, captured_at: nowIso(), updated_at: nowIso(),

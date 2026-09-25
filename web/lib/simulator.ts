@@ -10,7 +10,7 @@ import { getEventBouts, getUpcomingEvents, type Bout, type Event } from "./db";
 import { SNAPSHOT_SELECT } from "./vendor/pbe-model/features_core.mjs";
 import { SIMULATOR_VERSION } from "./vendor/sim-engine/params.mjs";
 import { runSimulationFromRows, type BoutFeatureRow, type CornerRows, type FighterRow, type MatchupSpec, type SimulationResult, type SnapshotRow } from "./simulatorRun";
-import { isSimulatableBout } from "./simulatorView";
+import { isSimulatableBout, resolvedRounds } from "./simulatorView";
 
 const URL_ = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
@@ -60,7 +60,7 @@ export async function getCoverage(): Promise<{ date: string | null; map: Map<str
 /* ---- upcoming bouts ---- */
 /** A list row states pre-simulation FACTS only: each corner's Fight DNA coverage tier. FULL / LIMITED is a RESULT-level
  * state (coverage + anchor strain + validity) and exists only after a simulation has run (simGate). */
-export type UpcomingSimBout = { event: Event; bout: Bout; tiers: [string | null, string | null] };
+export type UpcomingSimBout = { event: Event; bout: Bout; tiers: [string | null, string | null]; rounds: 3 | 5 | null };
 
 export async function getUpcomingSimulatorBouts(): Promise<UpcomingSimBout[]> {
   const [events, coverage] = await Promise.all([getUpcomingEvents(6), getCoverage()]);
@@ -71,7 +71,7 @@ export async function getUpcomingSimulatorBouts(): Promise<UpcomingSimBout[]> {
       if (!isSimulatableBout(b)) continue;
       const t1 = coverage.map.get(b.fighter_a.id)?.tier ?? null;
       const t2 = coverage.map.get(b.fighter_b.id)?.tier ?? null;
-      out.push({ event: e, bout: b, tiers: [t1, t2] });
+      out.push({ event: e, bout: b, tiers: [t1, t2], rounds: resolvedRounds(b.scheduled_rounds) });
     }
   }
   return out;
@@ -142,8 +142,11 @@ export async function runSimulation(aId: string, bId: string, spec: MatchupSpec)
   return cachedSimulation(x, y, JSON.stringify(spec));
 }
 
-export function specForBout(b: Bout, e: Event): MatchupSpec {
-  return { boutId: b.id, eventName: e.name, asOf: e.event_date || today(), scheduledRounds: b.scheduled_rounds === 5 ? 5 : 3, weightClass: b.weight_class, isTitle: Boolean(b.is_title), isWomens: Boolean(b.is_womens) };
+/** null when the bout's round count is unresolved (lib/simulatorView resolvedRounds): such a bout is listed, never simulated. */
+export function specForBout(b: Bout, e: Event): MatchupSpec | null {
+  const rounds = resolvedRounds(b.scheduled_rounds);
+  if (!rounds) return null;
+  return { boutId: b.id, eventName: e.name, asOf: e.event_date || today(), scheduledRounds: rounds, weightClass: b.weight_class, isTitle: Boolean(b.is_title), isWomens: Boolean(b.is_womens) };
 }
 
 export function specForManual(rounds: 3 | 5): MatchupSpec {

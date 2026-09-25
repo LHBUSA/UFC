@@ -6,7 +6,7 @@ import { getSimulatorRoster, getUpcomingSimulatorBouts, runSimulation, specForBo
 import { getFightersByIds, getImagesForFighters, type Fighter } from "@/lib/db";
 import { fighterIdFromSlug, fighterSlug } from "@/lib/slug";
 import { fmtDate } from "@/lib/format";
-import { simGate, type SimGate } from "@/lib/simulatorView";
+import { ROUNDS_UNRESOLVED_COPY, simGate, type SimGate } from "@/lib/simulatorView";
 import { FITTED_PROVENANCE_V1 } from "@/lib/vendor/sim-engine/params_fitted_v1.mjs";
 import type { SimulationResult, MatchupSpec } from "@/lib/simulatorRun";
 import {
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 type SP = { mode?: string; bout?: string; a?: string; b?: string; r?: string };
-type Selection = { kind: "scheduled" | "simulated"; aId: string; bId: string; spec: MatchupSpec; upcoming: UpcomingSimBout | null };
+type Selection = { kind: "scheduled" | "simulated"; aId: string; bId: string; spec: MatchupSpec | null; upcoming: UpcomingSimBout | null };
 
 const WC = (w: string | null) => (w ? w.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()) : null);
 const record = (f: Fighter | undefined) => (f && f.record_w != null ? `${f.record_w}-${f.record_l ?? 0}${f.record_d ? `-${f.record_d}` : ""}` : null);
@@ -76,7 +76,7 @@ export default async function SimulatorPage({ searchParams }: { searchParams: Pr
   /* Labs gate BEFORE the simulation read: a reader without access never triggers or receives a simulation. */
   let result: SimulationResult | null = null;
   let simError = false;
-  if (selection && labs.allowed) {
+  if (selection && selection.spec && labs.allowed) {
     try { result = await runSimulation(selection.aId, selection.bId, selection.spec); } catch { simError = true; }
   }
 
@@ -94,7 +94,7 @@ export default async function SimulatorPage({ searchParams }: { searchParams: Pr
   const leftSide: Side = artifact?.fighters && selection ? (artifact.fighters.fighter_1.id === selection.aId ? "fighter_1" : "fighter_2") : "fighter_1";
   const names: Record<Side, string> = { fighter_1: artifact?.fighters?.fighter_1.name || "", fighter_2: artifact?.fighters?.fighter_2.name || "" };
 
-  const selfHref = selection?.kind === "scheduled" ? `/simulator?bout=${selection.spec.boutId}` : selection ? `/simulator?mode=manual&a=${encodeURIComponent(sp.a || "")}&b=${encodeURIComponent(sp.b || "")}&r=${selection.spec.scheduledRounds}` : "/simulator";
+  const selfHref = selection?.kind === "scheduled" ? `/simulator?bout=${selection.upcoming?.bout.id ?? sp.bout}` : selection ? `/simulator?mode=manual&a=${encodeURIComponent(sp.a || "")}&b=${encodeURIComponent(sp.b || "")}&r=${selection.spec?.scheduledRounds ?? 3}` : "/simulator";
   const loginHref = `/login?next=${encodeURIComponent(selfHref)}`;
 
   return (
@@ -129,13 +129,15 @@ export default async function SimulatorPage({ searchParams }: { searchParams: Pr
                 <span className={`${s.kind} ${selection.kind === "simulated" ? s.kindSim : ""}`}>{selection.kind === "scheduled" ? "SCHEDULED BOUT" : "SIMULATED MATCHUP"}</span>
                 <span className={s.matchMeta}>
                   {selection.kind === "scheduled" && selection.upcoming
-                    ? [selection.upcoming.event.name, fmtDate(selection.upcoming.event.event_date), WC(selection.upcoming.bout.weight_class), `${selection.spec.scheduledRounds} rounds`].filter(Boolean).join(" · ")
-                    : `Not a scheduled bout · ${selection.spec.scheduledRounds} rounds · Fight DNA as of ${selection.spec.asOf}`}
+                    ? [selection.upcoming.event.name, fmtDate(selection.upcoming.event.event_date), WC(selection.upcoming.bout.weight_class), selection.spec ? `${selection.spec.scheduledRounds} rounds` : "Rounds not confirmed"].filter(Boolean).join(" · ")
+                    : `Not a scheduled bout · ${selection.spec?.scheduledRounds ?? 3} rounds · Fight DNA as of ${selection.spec?.asOf ?? ""}`}
                 </span>
               </div>
               <FighterStrip left={strip(selection.aId)} right={strip(selection.bId)} gate={gate} />
 
-              {!labs.allowed ? (
+              {!selection.spec ? (
+                <section className={`${s.card} ${s.empty}`} data-sim-rounds-unresolved=""><h2 className={s.h2}>Round count not confirmed</h2><p className={s.note}>{ROUNDS_UNRESOLVED_COPY}</p></section>
+              ) : !labs.allowed ? (
                 <LockedPanel reason={labs.reason} loginHref={loginHref} />
               ) : simError ? (
                 <Unavailable a={null} error />
@@ -179,6 +181,7 @@ function UpcomingList({ rows, selected }: { rows: UpcomingSimBout[]; selected: s
               <span className={s.rowMeta}>
                 <span>{WC(r.bout.weight_class) || "—"}</span>
                 <DnaCoverage tiers={r.tiers} />
+                {r.rounds ? null : <span className={s.faint} data-sim-rounds="unresolved">ROUNDS UNCONFIRMED</span>}
               </span>
             </Link>
           ))}

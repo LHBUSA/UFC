@@ -104,7 +104,7 @@ const GUARDS: Record<string, RegExp[]> = {
   ],
   /* PBE Labs Fight Simulator: results are computed only when the Labs decision (lib/labsAccess.ts, built on
    * access.pro) allows them; the decision is made before the read and a free render never simulates. */
-  "app/simulator/page.tsx": [/const labs = labsSimulatorAccess\(access\);[\s\S]*?if \(selection && labs\.allowed\) \{\s*try \{ result = await runSimulation\(/],
+  "app/simulator/page.tsx": [/const labs = labsSimulatorAccess\(access\);[\s\S]*?if \(selection && selection\.spec && labs\.allowed\) \{\s*try \{ result = await runSimulation\(/],
   "components/StoryView.tsx": [/const editorialMarket = access\.pro \? await getEditorialMarket/, /const dna = access\.pro && bout && a\.story_type === "fight_preview" \? await getMatchupDna/],
 };
 /* Components that do not call getUfcAccess() themselves because they are handed

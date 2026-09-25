@@ -78,7 +78,7 @@ export function FightCenter({ bout, event, kicker }: { bout: Bout; event: Event;
       <span className={styles.centerKicker}>{kicker || (bout.is_title ? "Title fight" : "Main event")}</span>
       <b className={styles.vs}>VS</b>
       <span className={styles.division}>{weightClassLabel(bout.weight_class, bout.is_womens)}</span>
-      <span className={styles.centerMeta}>{bout.scheduled_rounds || 3} rounds</span>
+      {bout.scheduled_rounds === 3 || bout.scheduled_rounds === 5 ? <span className={styles.centerMeta}>{bout.scheduled_rounds} rounds</span> : null}
       <span className={styles.centerMeta}>{fmtDate(event.event_date, { month: "short", day: "numeric" })}</span>
     </div>
   );
