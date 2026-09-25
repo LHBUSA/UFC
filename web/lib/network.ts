@@ -29,6 +29,8 @@ export const PROPBETEDGE_DISCORD_URL = "https://discord.gg/kb5zCTHbME";
 export const NETWORK = {
   news: { label: "Sports News", href: "https://propbetedge.ai/" },
   store: { label: "Store", href: "/store" },
+  // The network education layer: first-party, canonical, same-tab. Footer only (not the header).
+  learn: { label: "Learn", href: "https://learn.propbetedge.ai/" },
   discord: PROPBETEDGE_DISCORD_URL as string | null,
   sports: [
     { key: "mlb", label: "MLB", name: "Baseball Intelligence", blurb: "Live markets, model research, archives", href: "https://mlb.propbetedge.ai/" },

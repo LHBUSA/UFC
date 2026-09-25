@@ -82,6 +82,7 @@ export function Footer() {
             <a href={ALL_ACCESS_URL} className="ftr-aa-link" rel="noopener" data-ufc-footer-all-access="">All Access</a>
             <a href={ALL_ACCESS_URL} rel="noopener" data-ufc-footer-all-access-included="">What&apos;s included</a>
             <a href={NETWORK.news.href}>{NETWORK.news.label}</a>
+            <a href={NETWORK.learn.href}>{NETWORK.learn.label}</a>
             <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>
             <a href={SITE.billingPortal} target="_blank" rel="noopener noreferrer">Manage billing ↗</a>
             {NETWORK.discord && <a href={NETWORK.discord} target="_blank" rel="noopener">Discord ↗</a>}
