@@ -31,8 +31,9 @@ export const metadata: Metadata = {
     title: "UFC Injuries & Withdrawals — PropBetEdge",
     description: "Every sourced fighter availability change, active and resolved.",
     url: `${SITE.url}/injuries`,
+    images: [`${SITE.url}/opengraph-image`],
   },
-  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Injuries & Withdrawals — PropBetEdge" },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Injuries & Withdrawals — PropBetEdge", images: [`${SITE.url}/opengraph-image`] },
 };
 
 const VIEWS = [

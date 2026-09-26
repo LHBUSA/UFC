@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: { canonical: "/store/policies" },
-  openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/store/policies` },
+  openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/store/policies`, images: [`${SITE.url}/opengraph-image`] },
 };
 
 export default function StorePolicies() {

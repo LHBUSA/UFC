@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!h) return { title: "Inductee not found", robots: { index: false } };
   const title = `${h.name} — UFC Hall of Fame ${HOF_WING_META[h.wing].label}`;
   const description = `${h.name}, UFC Hall of Fame ${HOF_WING_META[h.wing].label}${h.inducted ? ` (inducted ${h.inducted})` : ""}: ${h.legacy}`;
-  return { title, description, alternates: { canonical: `/hall-of-fame/${h.slug}` }, openGraph: { title, description, url: `${SITE.url}/hall-of-fame/${h.slug}` }, twitter: { card: "summary_large_image", site: SITE.twitter, title, description } };
+  return { title, description, alternates: { canonical: `/hall-of-fame/${h.slug}` }, openGraph: { title, description, url: `${SITE.url}/hall-of-fame/${h.slug}`, images: [`${SITE.url}/opengraph-image`] }, twitter: { card: "summary_large_image", site: SITE.twitter, title, description, images: [`${SITE.url}/opengraph-image`] } };
 }
 
 export default async function HofProfile({ params }: { params: Promise<{ slug: string }> }) {

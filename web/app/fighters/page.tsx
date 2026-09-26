@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "UFC Fighters — Records, Stats & Fight History",
   description: "Fighter profiles for the UFC roster and archive: record, physicals, fight history, round-by-round striking and grappling stats, and next fight.",
   alternates: { canonical: "/fighters" },
-  openGraph: { title: "UFC Fighters", description: "Records, physicals, fight history and round stats.", url: `${SITE.url}/fighters` },
+  openGraph: { title: "UFC Fighters", description: "Records, physicals, fight history and round stats.", url: `${SITE.url}/fighters`, images: [`${SITE.url}/opengraph-image`] },
 };
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");

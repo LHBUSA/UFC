@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   description: "Every Dana White's Contender Series fighter tracked from their DWCS fight to the UFC: debut, UFC record, last fight, current ranking and champions, linked by canonical fighter identity.",
   keywords: ["DWCS alumni", "Contender Series alumni", "Dana White's Contender Series fighters", "DWCS to UFC", "Contender Series champions", "DWCS ranked fighters"],
   alternates: { canonical: "/contender-series/alumni" },
-  openGraph: { type: "website", url: `${SITE.url}/contender-series/alumni`, title: "DWCS Alumni — From the Contender Series to the UFC", description: "Contender Series appearance to UFC debut, record, ranking and title — for every DWCS fighter." },
-  twitter: { card: "summary_large_image", site: SITE.twitter, title: "DWCS Alumni", description: "From the Contender Series to the UFC." },
+  openGraph: { type: "website", url: `${SITE.url}/contender-series/alumni`, title: "DWCS Alumni — From the Contender Series to the UFC", description: "Contender Series appearance to UFC debut, record, ranking and title — for every DWCS fighter.", images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "DWCS Alumni", description: "From the Contender Series to the UFC.", images: [`${SITE.url}/opengraph-image`] },
 };
 
 type SP = { filter?: string; sort?: string; series?: string; page?: string };

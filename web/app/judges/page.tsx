@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   description:
     "Judge intelligence directory: every judge named on a scorecard in the loaded UFC result archive, with cards scored, decision types, dissenting cards, draw cards, average score margin and title-fight experience — each with its sample size.",
   alternates: { canonical: "/judges" },
-  openGraph: { title: "UFC Judge Intelligence — PropBetEdge", description: "Attributed official scorecards and descriptive judging history from the PropBetEdge UFC archive.", url: `${SITE.url}/judges` },
-  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Judge Intelligence — PropBetEdge" },
+  openGraph: { title: "UFC Judge Intelligence — PropBetEdge", description: "Attributed official scorecards and descriptive judging history from the PropBetEdge UFC archive.", url: `${SITE.url}/judges`, images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Judge Intelligence — PropBetEdge", images: [`${SITE.url}/opengraph-image`] },
 };
 
 const GAP_TINT: Record<string, string> = {

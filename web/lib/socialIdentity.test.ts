@@ -43,6 +43,28 @@ test("every page-level twitter metadata block sets site", () => {
   assert.deepEqual(offenders, []);
 });
 
+test("every page-level openGraph block has a share image unless its segment renders one", () => {
+  const hasSegmentCard = (file: string) => {
+    for (let d = path.dirname(file); path.relative(path.join(WEB, "app"), d) !== ""; d = path.dirname(d)) {
+      if (fs.readdirSync(d).some((n) => n.startsWith("opengraph-image."))) return true;
+    }
+    return false;
+  };
+  const offenders: string[] = [];
+  for (const file of walk(path.join(WEB, "app")).filter((f) => f.endsWith("page.tsx") && !hasSegmentCard(f))) {
+    const text = fs.readFileSync(file, "utf8");
+    for (const m of text.matchAll(/openGraph:\s*\{/g)) {
+      let depth = 0, end = m.index! + m[0].length - 1;
+      for (let i = end; i < text.length; i++) {
+        if (text[i] === "{") depth++;
+        else if (text[i] === "}" && --depth === 0) { end = i; break; }
+      }
+      if (!/\bimages\b/.test(text.slice(m.index!, end))) offenders.push(path.relative(WEB, file));
+    }
+  }
+  assert.deepEqual(offenders, []);
+});
+
 test("Organization sameAs uses the canonical profile once", () => {
   const layout = fs.readFileSync(path.join(WEB, "app/layout.tsx"), "utf8");
   assert.equal((layout.match(/sameAs: \[SITE\.xUrl\]/g) || []).length, 1);

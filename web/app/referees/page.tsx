@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   title: "UFC Referees — Officiating Directory, Stoppage & Decision History",
   description: "Referee intelligence directory: every named UFC referee in the loaded result archive with tenure, assignments, title-fight exposure, stoppage and decision history and sourced background where verified.",
   alternates: { canonical: "/referees" },
-  openGraph: { title: "UFC Referee Intelligence — PropBetEdge", description: "Historical referee assignments and fight-impact context from the PropBetEdge UFC archive.", url: `${SITE.url}/referees` },
-  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Referee Intelligence — PropBetEdge" },
+  openGraph: { title: "UFC Referee Intelligence — PropBetEdge", description: "Historical referee assignments and fight-impact context from the PropBetEdge UFC archive.", url: `${SITE.url}/referees`, images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Referee Intelligence — PropBetEdge", images: [`${SITE.url}/opengraph-image`] },
 };
 
 const pct = (v: number | null) => (v == null ? "—" : `${Number(v).toFixed(Number(v) % 1 ? 1 : 0)}%`);

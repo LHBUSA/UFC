@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     url: `${SITE.url}/round-by-round`,
     images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630, alt: "PropBetEdge UFC Round-by-Round Analysis" }],
   },
-  twitter: { card: "summary_large_image", site: SITE.twitter, title: TITLE, description: DESCRIPTION },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: TITLE, description: DESCRIPTION, images: [`${SITE.url}/opengraph-image`] },
 };
 
 const DAY: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", year: "numeric" };

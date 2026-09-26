@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: { canonical: "/tuf/champions" },
-  openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/tuf/champions` },
-  twitter: { card: "summary_large_image", site: SITE.twitter, title: TITLE, description: DESCRIPTION },
+  openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/tuf/champions`, images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: TITLE, description: DESCRIPTION, images: [`${SITE.url}/opengraph-image`] },
 };
 
 export default async function TufChampions() {

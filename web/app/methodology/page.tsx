@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   title: "Editorial & Data Methodology",
   description: DESCRIPTION,
   alternates: { canonical: "/methodology" },
-  openGraph: { title: "Editorial & Data Methodology — PropBetEdge UFC", description: DESCRIPTION, type: "article" },
+  openGraph: { title: "Editorial & Data Methodology — PropBetEdge UFC", description: DESCRIPTION, type: "article", images: [`${SITE.url}/opengraph-image`] },
 };
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
