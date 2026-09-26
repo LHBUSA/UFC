@@ -16,3 +16,14 @@ test("footer PropBetEdge column renders Learn from the registry, same-tab, once"
   assert.ok(!/learn\.propbetedge\.ai/.test(shell), "the URL lives only in lib/network.ts");
   for (const s of ["All Access", "NETWORK.news", "NETWORK.store", "Manage billing", "Discord"]) assert.ok(col.includes(s), s);
 });
+
+test("network sports list Tennis last; the footer rail renders it from the registry", () => {
+  assert.deepEqual(NETWORK.sports.map((s) => s.key), ["mlb", "nfl", "ufc", "nhl", "nba", "wnba", "tennis"]);
+  const tennis = NETWORK.sports.find((s) => s.key === "tennis")!;
+  assert.equal(tennis.label, "Tennis");
+  assert.equal(tennis.name, "Tennis Intelligence");
+  assert.equal(tennis.href, "https://tennis.propbetedge.ai/");
+  const shell = readFileSync(new URL("../components/Shell.tsx", import.meta.url), "utf8");
+  assert.ok(shell.includes("NETWORK.sports.map("), "footer rail reads the registry");
+  assert.ok(!/tennis\.propbetedge\.ai/.test(shell), "the URL lives only in lib/network.ts");
+});

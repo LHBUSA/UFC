@@ -123,8 +123,11 @@ const UFC_CAMPAIGNS: Campaign[] = [
   },
 ];
 
+// Tennis joined the network 2026-09-26: it is listed in the footer rail and the
+// "Also from PropBetEdge" row, but has no guest campaign card (its copy is league-shaped).
+const NO_GUEST_CAMPAIGN = new Set<string>(["tennis"]);
 const NETWORK_CAMPAIGNS: Campaign[] = NETWORK.sports
-  .filter((s): s is NetworkSport & { key: SportKey } => s.key !== CURRENT_SPORT && /^https:\/\//.test(s.href))
+  .filter((s): s is NetworkSport & { key: SportKey } => s.key !== CURRENT_SPORT && !NO_GUEST_CAMPAIGN.has(s.key) && /^https:\/\//.test(s.href))
   .map((s) => ({
     id: `network_${s.key}` as CampaignId, dest: s.key, sport: s.key,
     eyebrow: "From the PropBetEdge network",

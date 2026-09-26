@@ -101,11 +101,13 @@ test('stableFraction stays inside (0, 1)', () => {
 /* ================= shared card rules ================= */
 
 test('the secondary network row remains, and never duplicates a cross-sport primary', () => {
-  assert.equal(hp.selectPromo(ctx()).network.length, 5, 'free reader keeps the Also from PropBetEdge row');
+  assert.equal(hp.selectPromo(ctx()).network.length, 6, 'free reader keeps the Also from PropBetEdge row');
+  assert.ok(hp.selectPromo(ctx()).network.some((n) => n.key === 'tennis' && n.label === 'Tennis' && n.href === 'https://tennis.propbetedge.ai/'), 'Tennis is in the network row');
+  assert.ok(!hp.CAMPAIGNS.some((c) => c.id === 'network_tennis'), 'no Tennis guest campaign');
   const nfl = slugs(20000).map((s) => hp.selectPromo(pro({ slug: s, storyType: 'fight_preview' }))).find((p) => p.campaign.id === 'network_nfl');
   assert.ok(nfl);
   assert.ok(!nfl.network.some((n) => n.key === 'nfl'));
-  assert.equal(nfl.network.length, 4);
+  assert.equal(nfl.network.length, 5);
 });
 
 test('registry destinations are verified live routes only', () => {
