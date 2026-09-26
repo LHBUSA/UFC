@@ -170,6 +170,10 @@ export const APPLIED = new Set([
   // sample_context.market on an unlocked live-champion prediction. Proven by scripts/db/prove_030.ps1 (12 checks,
   // rolled back), then applied 2026-09-15 via apply_migration.ps1.
   '20260915200000_ufc_model_prediction_market_refresh.sql',
+  // UFC Training & Corner (owner decision 2026-09-26: ESPN association = current camp): append-only observations,
+  // change events, camps/coaches, stint + current views. Proven by scripts/db/prove_032.ps1 (17 checks, rolled back),
+  // then applied 2026-09-26 via apply_migration.ps1.
+  '20260926120000_ufc_training_corner.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))
