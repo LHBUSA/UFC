@@ -1,3 +1,4 @@
+-- SUPERSEDED 2026-09-26 by migrations/032_ufc_training_corner.sql (applied). Kept as the design record.
 -- PROPOSED — NOT A MIGRATION. Do not move into supabase/migrations/ until the owner
 -- picks a source option in docs/UFC_TRAINING_SOURCE_MATRIX.md §6 and approves the migration.
 --

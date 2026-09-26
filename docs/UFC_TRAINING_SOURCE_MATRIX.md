@@ -1,6 +1,6 @@
 # UFC Training & Corner — source matrix
 
-Status: **AUDIT COMPLETE. BUILD HELD at the rights gate.** Written 2026-09-26, based on `origin/main` 0315592.
+Status: **LIVE 2026-09-26 on option B (owner decision below).** Originally: audit complete, build held at the rights gate. Written 2026-09-26, based on `origin/main` 0315592.
 Brief: "UFC FIGHTER CAMPS + COACHING INTELLIGENCE" (owner-approved feature). The brief says to stop before deployment if the source/rights audit does not support reliable production use. The audit does not support it without an owner decision, so nothing has been ingested, migrated or deployed.
 
 ## 1. Existing source of truth (audit)
@@ -65,3 +65,7 @@ Draft at `docs/ufc-training/proposed_schema.sql`. Deliberately **not** placed in
 | **C. License / written permission** (UFC/Zuffa or a data provider) | Full field set incl. Trains at, fighting-out-of, editorial switches | High | Cost / time. Needs approval under the paid-source rules. |
 
 Until one is chosen: no ingest, no migration, no deploy.
+
+## 7. Owner decision (2026-09-26)
+
+Justin Erickson approved **option B** for UFC: ESPN athlete `association` (id + name) is the current-camp signal. Build, migrate, backfill and deploy approved. Do not reopen the source-rights discussion unless the source materially changes or access breaks. Customer-facing attribution stays "Data source · PropSports" (no brand-guard exception). Runbook: `docs/ufc-training/README.md`.
