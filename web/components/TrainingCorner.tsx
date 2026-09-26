@@ -48,7 +48,7 @@ export function TrainingCorner({ training: t, fighterName }: { training: Trainin
               <dd>
                 <ul className={s.list} data-testid="training-coaches">
                   {t.coaches.map((c) => (
-                    <li key={`${c.coach_id}:${c.role}`}>{c.name}{c.role_specified || c.since ? <span className={s.meta}>{[c.role_specified ? c.role_label : null, c.since ? `since ${monthYear(c.since)}` : null].filter(Boolean).join(" · ")}</span> : null}</li>
+                    <li key={`${c.coach_id}:${c.role}`}>{c.name}{c.role_specified || c.since ? <span className={s.meta}>· {[c.role_specified ? c.role_label : null, c.since ? `since ${monthYear(c.since)}` : null].filter(Boolean).join(" · ")}</span> : null}</li>
                   ))}
                 </ul>
               </dd>
@@ -60,7 +60,7 @@ export function TrainingCorner({ training: t, fighterName }: { training: Trainin
               <dd>
                 <ul className={s.list}>
                   {t.other_camps.map((c) => (
-                    <li key={`${c.camp_id}:${c.relationship_type}`}>{c.name} <span className={s.meta}>· {c.relationship_label}{c.since ? ` · since ${monthYear(c.since)}` : ""}</span></li>
+                    <li key={`${c.camp_id}:${c.relationship_type}`}>{c.name}<span className={s.meta}>· {c.relationship_label}{c.since ? ` · since ${monthYear(c.since)}` : ""}</span></li>
                   ))}
                 </ul>
               </dd>

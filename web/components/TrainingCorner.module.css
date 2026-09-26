@@ -6,7 +6,7 @@
 .camp { color: var(--pbe-paper); font-weight: 600; }
 .meta { color: var(--pbe-dim); margin-left: 8px; font-family: var(--pbe-font-data); font-size: var(--fs-label); }
 .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.list .meta { margin-left: 0; }
+.list .meta { margin-left: 6px; }
 .change { margin: 16px 0 0; padding: 10px 12px; border-left: 3px solid var(--pbe-gold); background: var(--pbe-ink-3); color: var(--pbe-dim); font-size: var(--fs-sm); line-height: 1.5; }
 .change b { color: var(--pbe-paper); margin-right: 6px; }
 .history { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--pbe-line-faint); }

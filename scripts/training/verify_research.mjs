@@ -8,7 +8,7 @@
 //   * the page does not credit Sherdog as the origin,
 //   * the quote appears on the page (normalized substring, else >= 85% of its 5-word shingles),
 //   * the fighter's surname and the key entity (coach name / city / gym) appear on the page,
-//   * coach facts are from a source published 2023-01-01 or later.
+//   * coach facts are from a source published 2023-01-01 or later, and name the coach with a surname.
 // Place parts (city/region/country) that do not appear on the page are dropped, never kept from inference.
 import fs from 'node:fs';
 
@@ -18,7 +18,7 @@ const files = args.filter((a, i) => !a.startsWith('--') && !['--out', '--rejecte
 const OUT = opt('--out') || 'verified.json';
 const REJ = opt('--rejected') || 'rejected.json';
 
-const BANNED = /(^|\.)(ufc\.com|espn\.com|espn\.co\.uk|tapology\.com|sherdog\.com|wikipedia\.org|fandom\.com|reddit\.com|essentiallysports\.com|sportskeeda\.com|fightomic\.com)$/i;
+const BANNED = /(^|\.)(ufc\.com|espn\.com|espn\.co\.uk|tapology\.com|sherdog\.com|wikipedia\.org|fandom\.com|reddit\.com|essentiallysports\.com|sportskeeda\.com|fightomic\.com|yolked\.com)$/i;  // yolked: supplement-brand marketing blog
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
 
 const ENT = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', rsquo: "'", lsquo: "'", rdquo: '"', ldquo: '"', ndash: '-', mdash: '-', hellip: '...' };
@@ -77,6 +77,7 @@ for (const x of facts) {
       if (!key) why.push('no key entity');
       else if (!has(page, key)) why.push(`key "${key}" not on page`);
       if (x.kind === 'coach' && !has(norm(x.quote), x.coach_name)) why.push('quote does not name the coach');
+      if (x.kind === 'coach' && String(x.coach_name || '').trim().split(/\s+/).length < 2) why.push('coach has no surname: identity not pinned');
       if (!why.length) {
         const y = { ...x };
         for (const k of ['city', 'region', 'country']) if (y[k] && !has(page, y[k])) y[k] = null; // never keep an inferred place part
