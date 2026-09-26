@@ -1,0 +1,31 @@
+/* Training & Corner (fighter profile). CSS module: every class is scoped. */
+.panel { border: 1px solid var(--pbe-line); border-radius: var(--r-md); background: var(--pbe-ink-2); padding: 18px 20px; }
+.facts { display: grid; grid-template-columns: minmax(120px, auto) 1fr; gap: 12px 20px; margin: 0; align-items: baseline; }
+.facts dt { color: var(--pbe-faint); text-transform: uppercase; letter-spacing: var(--ls-label); font: 600 var(--fs-label)/1.6 var(--pbe-font-data); }
+.facts dd { margin: 0; color: var(--pbe-paper-2); font-size: var(--fs-sm); overflow-wrap: anywhere; }
+.camp { color: var(--pbe-paper); font-weight: 600; }
+.meta { color: var(--pbe-dim); margin-left: 8px; font-family: var(--pbe-font-data); font-size: var(--fs-label); }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.list .meta { margin-left: 0; }
+.change { margin: 16px 0 0; padding: 10px 12px; border-left: 3px solid var(--pbe-gold); background: var(--pbe-ink-3); color: var(--pbe-dim); font-size: var(--fs-sm); line-height: 1.5; }
+.change b { color: var(--pbe-paper); margin-right: 6px; }
+.history { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--pbe-line-faint); }
+.timeline { list-style: none; margin: 10px 0 0; padding: 0 0 0 14px; border-left: 2px solid var(--pbe-line-strong); display: grid; gap: 10px; }
+.timeline li { position: relative; display: grid; grid-template-columns: 110px 1fr; gap: 2px 14px; font-size: var(--fs-sm); color: var(--pbe-paper-2); }
+.timeline li::before { content: ""; position: absolute; left: -20px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--pbe-ink-4); border: 2px solid var(--pbe-line-strong); }
+.timeline li.now::before { background: var(--pbe-gold); border-color: var(--pbe-gold); }
+.timeline .meta { grid-column: 2; margin-left: 0; }
+.years { color: var(--pbe-faint); font-family: var(--pbe-font-data); font-variant-numeric: tabular-nums; }
+.sources { margin-top: 12px; font-size: var(--fs-label); color: var(--pbe-dim); }
+.sources summary { cursor: pointer; color: var(--pbe-faint); }
+.sources ul { margin: 8px 0; padding-left: 18px; display: grid; gap: 4px; }
+.sources a { color: var(--pbe-gold); }
+.sources p { margin: 6px 0 0; }
+.credit { margin: 16px 0 0; color: var(--pbe-faint); font: 500 var(--fs-label)/1.4 var(--pbe-font-data); letter-spacing: var(--ls-label); text-transform: uppercase; }
+@media (max-width: 560px) {
+  .panel { padding: 14px; }
+  .facts { grid-template-columns: 1fr; gap: 2px 0; }
+  .facts dd { margin-bottom: 10px; }
+  .timeline li { grid-template-columns: 1fr; }
+  .timeline .meta { grid-column: 1; }
+}

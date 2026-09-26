@@ -10,6 +10,8 @@ import { FightWeekPage } from "@/components/FightWeek";
 import { assemblePacket } from "@/lib/fightweek";
 import { eventSlug } from "@/lib/slug";
 import { OfficialVideoModule, type ContentPlan } from "@/components/plan";
+import { TrainingCorner, NewCampNote } from "@/components/TrainingCorner";
+import { trainingPayload, type StintRow } from "@/lib/training";
 
 /* Development-only visual QA fixtures for data-driven modules. This route
  * returns 404 on production and on any Vercel deployment; it exists so the
@@ -69,6 +71,29 @@ export default async function QaPreview() {
    * must end on the poster fallback, never a dead YouTube box. */
   const brasil = (id: string, uuid: string, title: string, published_at: string) => ({ id: uuid, url: `https://www.youtube.com/watch?v=${id}`, title, language: "pt", provider: "youtube", video_id: id, publisher: "UFC Brasil", embeddable: true, matched_on: "bout+fighter", video_type: "other", matched_tier: 2, published_at, thumbnail_url: `https://i1.ytimg.com/vi/${id}/hqdefault.jpg` });
   const planFixture: ContentPlan = { modules: [{ id: "official_video", title: "Official video", data: { tier: 2, videos: [brasil("H3CPKzY34CY", "qa-v1", "O MELHOR DE JEAN SILVA E JOSE MIGUEL DELGADO | Noche UFC", "2026-09-11T15:00:07Z"), brasil("XMK-nCzDxGo", "qa-v2", "Aquecimento Noche UFC: Silva x Delgado | Maratona de Lutas Completas", "2026-09-10T20:48:26Z")] } }] };
+  /* Training & Corner fixture: a two-camp history (observed, then a cited switch), cited fighting-out-of,
+   * training base and coaches, and the NEW CAMP note the chronology proves. Synthetic names and URLs. */
+  const tEv = (over: Partial<StintRow["evidence"][number]>) => ({ observation_id: "o", source_key: "espn_athlete_association", source_url: "https://example.invalid/capture", certainty: "OBSERVED" as const, relationship_type: "AFFILIATION", value_raw: "", external_ref: null, captured_at: "2026-09-26T22:00:00Z", last_confirmed_at: "2026-12-20T06:00:00Z", effective_from: null, source_published_at: null, ...over });
+  const tStints: StintRow[] = [
+    { fighter_id: "f-a", stint_no: 1, camp_id: "c1", camp_name: "Northside Combat Club", camp_slug: "northside", stint_start_at: "2026-09-26T22:00:00Z", first_observed_at: "2026-09-26T22:00:00Z", last_confirmed_at: "2026-12-20T06:00:00Z", joined_on: null, certainty: "OBSERVED", next_stint_start_at: "2027-01-15T00:00:00Z", next_first_observed_at: "2027-01-20T06:00:00Z", left_on: null, is_current: false, evidence: [tEv({})] },
+    { fighter_id: "f-a", stint_no: 2, camp_id: "c2", camp_name: "Harbor Fight Team", camp_slug: "harbor", stint_start_at: "2027-01-15T00:00:00Z", first_observed_at: "2027-01-20T06:00:00Z", last_confirmed_at: "2027-03-01T06:00:00Z", joined_on: "2027-01-15", certainty: "STATED", next_stint_start_at: null, next_first_observed_at: null, left_on: null, is_current: true, evidence: [tEv({ source_key: "ufc_training_manual", source_url: "https://example.invalid/announcement", certainty: "STATED", captured_at: "2027-01-20T06:00:00Z" })] },
+  ];
+  const tChanges = [
+    { id: "x1", kind: "AFFILIATION_CHANGED_OBSERVED" as const, previous_value: "Northside Combat Club", new_value: "Harbor Fight Team", previous_camp_id: "c1", new_camp_id: "c2", supersedes_event_id: null, effective_on: null, observed_at: "2027-01-20T06:00:00Z", source_url: "https://example.invalid/capture" },
+    { id: "x2", kind: "CAMP_CHANGED_CONFIRMED" as const, previous_value: "Northside Combat Club", new_value: "Harbor Fight Team", previous_camp_id: "c1", new_camp_id: "c2", supersedes_event_id: "x1", effective_on: "2027-01-15", observed_at: "2027-01-22T06:00:00Z", source_url: "https://example.invalid/announcement" },
+  ];
+  const tPlace = (city: string, region: string) => ({ city, region, country: "USA", value_raw: `${city}, ${region}`, certainty: "STATED" as const, source_key: "ufc_training_manual", source_url: "https://example.invalid/profile", captured_at: "2027-01-22T06:00:00Z", source_published_at: null });
+  const trainingFull = trainingPayload({
+    current: { fighter_id: "f-a", current_camp: { camp_id: "c2", name: "Harbor Fight Team", slug: "harbor", first_observed_at: "2027-01-20T06:00:00Z", last_confirmed_at: "2027-03-01T06:00:00Z", joined_on: "2027-01-15", certainty: "STATED", evidence: tStints[1].evidence },
+      fighting_out_of: tPlace("Miami", "Florida"), training_location: { ...tPlace("Deerfield Beach", "Florida"), camp_id: "c2", camp_name: "Harbor Fight Team" },
+      coaches: [{ coach_id: "k1", name: "Sam Hollis", slug: "sam-hollis", role: "STRIKING", since: "2027-01-15", certainty: "STATED", source_key: "ufc_training_manual", source_url: "https://example.invalid/staff", captured_at: "2027-01-22T06:00:00Z" },
+        { coach_id: "k2", name: "Rae Duarte", slug: "rae-duarte", role: "WRESTLING", since: null, certainty: "STATED", source_key: "ufc_training_manual", source_url: "https://example.invalid/staff", captured_at: "2027-01-22T06:00:00Z" }],
+      other_camps: [], updated_at: "2027-03-01T06:00:00Z" },
+    stints: tStints, changes: tChanges, lastBoutDate: "2026-12-13",
+  });
+  const trainingEspnOnly = trainingPayload({ current: { fighter_id: "f-b", current_camp: { camp_id: "c3", name: "Kill Cliff FC", slug: "kill-cliff-fc", first_observed_at: "2026-09-26T22:00:00Z", last_confirmed_at: "2026-09-26T22:00:00Z", joined_on: null, certainty: "OBSERVED", evidence: [tEv({})] }, fighting_out_of: null, training_location: null, coaches: [], other_camps: [], updated_at: "2026-09-26T22:00:00Z" },
+    stints: [{ ...tStints[0], fighter_id: "f-b", camp_id: "c3", camp_name: "Kill Cliff FC", is_current: true }], changes: [], lastBoutDate: null });
+
   return (
     <div className="wrap page">
       <div className="eyebrow mb-4">QA fixtures · synthetic names · development only</div>
@@ -84,6 +109,8 @@ export default async function QaPreview() {
       <section id="qa-plan-video" className="mb-7" style={{ maxWidth: 760 }}><OfficialVideoModule plan={planFixture} /></section>
       <section id="qa-champions" className="mb-7"><ChampionsShowcase rankings={rankings} fighters={new Map(champs.map((f) => [f.id, f]))} imgs={new Map()} /></section>
       <section id="qa-dwcs" className="mb-7"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={new Map([["dw-1", 5], ["dw-0", 5]])} freshness={new Date().toISOString()} /></section>
+      <div id="qa-training-full" className="mb-7"><TrainingCorner training={trainingFull} fighterName="Alpha Silva" /><NewCampNote note={trainingFull.new_camp_since_last_bout} fighterName="Alpha Silva" /></div>
+      <div id="qa-training-espn-only" className="mb-7"><TrainingCorner training={trainingEspnOnly} fighterName="Bravo Kane" /></div>
       <section id="qa-belts" className="mb-7" style={{ display: "flex", gap: 40, alignItems: "end", flexWrap: "wrap" }}><ChampionshipBelt size="hero" label="Hero" /><ChampionshipBelt size="card" label="Card" /><ChampionshipBelt size="mini" label="Mini" /></section>
     </div>
   );

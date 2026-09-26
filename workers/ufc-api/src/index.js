@@ -3,6 +3,8 @@
 import { pickStoredPortraits } from "../../../web/lib/portraitSelection.ts";
 import { prefersEspnDisplay } from "../../../web/lib/displayPortraitPolicy.ts";
 import { espnVerifiedPortrait } from "../../../web/lib/espnPortraitGate.ts";
+/* Training & Corner (migration 032): the same assembly the fighter page renders. */
+import { trainingPayload, TRAINING_STINT_COLS, TRAINING_CHANGE_COLS } from "../../../web/lib/training.ts";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const UFCSTATS_RE = /^[0-9a-f]{16}$/i;
@@ -89,7 +91,7 @@ const RANKINGS_SNAPSHOT_KEY = "rankings/latest.json";
 const RANKINGS_MEMO_TTL_MS = 5 * 60 * 1000;
 const RANKINGS_PROBE_TTL_MS = 10 * 60 * 1000;
 
-const FIGHTER_INCLUDES = ["media", "ranking", "next", "history", "stats", "videos"];
+const FIGHTER_INCLUDES = ["media", "ranking", "next", "history", "stats", "videos", "training"];
 const CARD_INCLUDES = ["media", "results", "stats", "videos"];
 const EVENT_INCLUDES = ["videos"];
 const BULK_MEDIA_MAX_IDS = 150;
@@ -1193,7 +1195,7 @@ async function fighterDetail(env, fighterId, url, { display = false } = {}) {
   const includes = parseIncludes(url, FIGHTER_INCLUDES);
   const fighter = await resolveFighter(env, fighterId);
   if (!fighter) throw new ApiError(404, "fighter_not_found", "UFC fighter not found.");
-  const needBouts = includes.has("next") || includes.has("history") || includes.has("stats");
+  const needBouts = includes.has("next") || includes.has("history") || includes.has("stats") || includes.has("training");
   const historyLimit = clampInt(url.searchParams.get("history_limit"), 100, 1, 250);
   const [ownImages, bouts, roundRows, ranking, videos] = await Promise.all([
     imagesForFighters(env, [fighter.id]),
@@ -1202,6 +1204,7 @@ async function fighterDetail(env, fighterId, url, { display = false } = {}) {
     includes.has("ranking") ? fighterRanking(env, fighter.id) : Promise.resolve(undefined),
     includes.has("videos") ? compactVideosFor(env, { fighter_id: fighter.id }) : Promise.resolve(null),
   ]);
+  const training = includes.has("training") ? await trainingFor(env, fighter.id, bouts) : undefined;
   const opponentIds = bouts.flatMap((b) => [b.fighter_a?.id, b.fighter_b?.id]).filter((id) => id && id !== fighter.id);
   const imageMap = opponentIds.length ? await imagesForFighters(env, opponentIds) : new Map();
   for (const [k, v] of ownImages) imageMap.set(k, v);
@@ -1220,6 +1223,7 @@ async function fighterDetail(env, fighterId, url, { display = false } = {}) {
     };
   }
   if (includes.has("videos")) data.videos = videos; // null while the video table is missing, never omitted
+  if (includes.has("training")) data.training = training;
   const meta = { include: [...includes] };
   if (includes.has("history")) meta.history_count = data.history.length;
   if (includes.has("stats")) meta.round_stat_rows = (roundRows || []).length;
@@ -1440,6 +1444,51 @@ async function eventCardChanges(env, id) {
   const p = new URLSearchParams({ select: "*", event_id: `eq.${event.id}`, order: "occurred_at.desc.nullslast", limit: "60" });
   const rows = (await sb(env, "ufc_event_card_changes", p)).data;
   return { data: { event: { id: event.id, name: event.name, event_date: event.event_date }, changes: rows }, meta: { count: rows.length } };
+}
+
+/* ---- training & corner (migration 032) ---------------------------------- */
+
+/* Last completed UFC bout date, for the "new camp since last bout" chronology. */
+function lastCompletedBoutDate(bouts) {
+  let last = null;
+  for (const b of bouts || []) {
+    const d = normalizeOne(b.event)?.event_date;
+    if (!d || !b.result) continue;
+    if (!last || d > last) last = d;
+  }
+  return last;
+}
+
+/* Reads the three 032 objects. A 404 (objects not deployed) is "no facts on
+ * file" -> the empty contract, never a failure and never a fabricated fact. */
+async function trainingFor(env, fighterId, bouts) {
+  const f = `eq.${fighterId}`;
+  const [cur, stints, changes] = await Promise.all([
+    sb(env, "ufc_fighter_training_current", new URLSearchParams({ select: "*", fighter_id: f, limit: "1" }), { optional: true }),
+    sb(env, "ufc_fighter_camp_stints", new URLSearchParams({ select: TRAINING_STINT_COLS, fighter_id: f, order: "stint_no.asc", limit: "100" }), { optional: true }),
+    sb(env, "ufc_training_change_events", new URLSearchParams({ select: TRAINING_CHANGE_COLS, fighter_id: f, order: "observed_at.desc", limit: "100" }), { optional: true }),
+  ]);
+  return trainingPayload({
+    current: cur?.data?.[0] || null,
+    stints: stints?.data || [],
+    changes: changes?.data || [],
+    lastBoutDate: lastCompletedBoutDate(bouts),
+  });
+}
+
+async function fighterTraining(env, id) {
+  const fighter = await resolveFighter(env, id);
+  if (!fighter) throw new ApiError(404, "fighter_not_found", "UFC fighter not found.");
+  const bouts = await fighterBoutRows(env, fighter.id, 250);
+  const training = await trainingFor(env, fighter.id, bouts);
+  return {
+    data: { fighter: { id: fighter.id, name: fighter.name, slug_id: slugId(fighter) }, ...training },
+    meta: {
+      camps_on_file: training.camp_history.length, coaches: training.coaches.length, changes: training.changes.length,
+      /* Said explicitly: an empty fact is "not on file", never "none". */
+      contract: "Facts are null / [] when not on file. A camp seen only in captures is dated 'first_observed', never 'joined'. AFFILIATION_CHANGED_OBSERVED is an observed change in sources, not a confirmed camp switch.",
+    },
+  };
 }
 
 async function fighterStatus(env, id, url) {
@@ -2962,7 +3011,7 @@ function apiIndex(env) {
       event_articles: "/v1/ufc/events/{id}/articles",
       fighters: "/v1/ufc/fighters",
       fighters_media: "/v1/ufc/fighters/media?ids=a,b,c",
-      fighter: "/v1/ufc/fighters/{id}?include=media,ranking,next,history,stats",
+      fighter: "/v1/ufc/fighters/{id}?include=media,ranking,next,history,stats,training",
       fighter_history: "/v1/ufc/fighters/{id}/history",
       fighter_stats: "/v1/ufc/fighters/{id}/stats",
       fighter_articles: "/v1/ufc/fighters/{id}/articles",
@@ -2975,6 +3024,7 @@ function apiIndex(env) {
       injuries: "/v1/ufc/injuries?active=true",
       event_card_changes: "/v1/ufc/events/{id}/card-changes",
       fighter_status: "/v1/ufc/fighters/{id}/status",
+      fighter_training: "/v1/ufc/fighters/{id}/training",
       news: "/v1/ufc/news",
       wire: "/v1/ufc/wire?limit=20",
       article: "/v1/ufc/articles/{slug}",
@@ -3089,6 +3139,12 @@ async function route(request, env, url, access) {
   if (m) {
     const out = await fighterStatus(env, decodeURIComponent(m[1]), url);
     return ok(env, requestId, out.data, { ...out.meta, ...tier }, 60);
+  }
+
+  m = path.match(/^\/v1\/ufc\/fighters\/([^/]+)\/training$/);
+  if (m) {
+    const out = await fighterTraining(env, decodeURIComponent(m[1]));
+    return ok(env, requestId, out.data, { ...out.meta, ...tier }, 300);
   }
 
   m = path.match(/^\/v1\/ufc\/fighters\/([^/]+)\/videos$/);

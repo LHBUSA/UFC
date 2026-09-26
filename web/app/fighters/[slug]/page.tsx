@@ -28,6 +28,8 @@ import { getRankingMap } from "@/lib/rankings";
 import { bestRank } from "@/lib/rankingContext";
 import { RankStack } from "@/components/RankBadge";
 import { fighterDescription, fighterTitle } from "@/lib/seo";
+import { getFighterTraining } from "@/lib/db";
+import { TrainingCorner, NewCampNote } from "@/components/TrainingCorner";
 
 /* Fighters with a written heritage account on the site. Keyed by UFC Stats id
  * rather than by name, so the link survives a display-name correction. */
@@ -102,6 +104,10 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
   /* Coverage for this fighter's completed bouts, same rule as the index. */
   const roundCoverage = await getRoundCoverageFor(bouts.map((b) => b.id));
   const history = bouts.filter((b) => !upcoming.includes(b) && b.event?.event_date && b.event.event_date < siteToday);
+  /* Training & Corner (migration 032). The last COMPLETED bout anchors the
+   * "new camp since last UFC bout" chronology in lib/training.ts. */
+  const lastBoutDate = history.filter((b) => b.result).map((b) => b.event.event_date!).sort().at(-1) ?? null;
+  const training = await getFighterTraining(f.id, lastBoutDate);
   const opponents = bouts.map((b) => (b.fighter_a.id === f.id ? b.fighter_b : b.fighter_a));
   const imgs = await getImagesForFighters([f.id, ...opponents.map((o) => o.id)]);
   const img = imgs.get(f.id) || null;
@@ -171,6 +177,8 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
         </section>
       )}
 
+      <TrainingCorner training={training} fighterName={f.name} />
+
       <FighterStatusSection events={statusEvents} />
 
       <section className="segment">
@@ -190,6 +198,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
                 <Link href={`/fighters/${fighterSlug(opp)}`} className="side"><Avatar f={opp} img={imgs.get(opp.id)} size={84} /><div className="name">{opp.name}</div>{opp.nickname && <div className="nick">“{opp.nickname}”</div>}<div className="rec">{fmtRecord(opp)}</div></Link>
               </div>
               {b.withdrawal_reported && <p className="bout-note warn" data-testid="next-bout-withdrawal-reported"><b>Withdrawal reported.</b> {storyFor(b)?.story}</p>}
+              <NewCampNote note={training.new_camp_since_last_bout} fighterName={f.name} />
               <TaleOfTheTape a={f} b={opp} at={b.event.event_date} />
               {!access.pro && <ProPreview feature="matchup_dna" access={access} returnPath={returnPath} compact />}
               <div className="between mt-3 sm">

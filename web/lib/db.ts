@@ -4,6 +4,7 @@ import { prefersEspnDisplay, preferredDisplayFighterIds } from "@/lib/displayPor
 import { espnVerifiedPortrait } from "@/lib/espnPortraitGate";
 import { pickStoredPortraits } from "@/lib/portraitSelection";
 import { ufcSiteDate } from "@/lib/siteClock";
+import { trainingPayload, TRAINING_STINT_COLS, TRAINING_CHANGE_COLS, type CurrentRow, type StintRow, type ChangeRow, type TrainingPayload } from "@/lib/training";
 /* Server-only data access. PostgREST over fetch with the service-role key
  * (RLS has no anon policies by design). Every reader is wrapped so that a
  * missing env var, a table that does not exist yet, or a network failure
@@ -326,6 +327,20 @@ export async function getBoutById(id: string): Promise<Bout | null> {
 export async function getRoundStats(boutId: string): Promise<RoundStat[]> {
   return (await rest<RoundStat[]>(`ufc_bout_round_stats?select=*&bout_id=eq.${boutId}&order=round.asc`, [])).data;
 }
+/* Training & Corner (migration 032): current camp, fighting out of, training
+ * base, coaches, camp stints and change events, assembled by lib/training.ts
+ * (the same assembly ufc-api serves). Non-strict: a read failure renders no
+ * module, never a partial or invented one. */
+export async function getFighterTraining(fighterId: string, lastBoutDate: string | null): Promise<TrainingPayload> {
+  const f = `fighter_id=eq.${fighterId}`;
+  const [cur, stints, changes] = await Promise.all([
+    rest<CurrentRow[]>(`ufc_fighter_training_current?select=*&${f}&limit=1`, []),
+    rest<StintRow[]>(`ufc_fighter_camp_stints?select=${TRAINING_STINT_COLS}&${f}&order=stint_no.asc&limit=100`, []),
+    rest<ChangeRow[]>(`ufc_training_change_events?select=${TRAINING_CHANGE_COLS}&${f}&order=observed_at.desc&limit=100`, []),
+  ]);
+  return trainingPayload({ current: cur.data[0] || null, stints: stints.data, changes: changes.data, lastBoutDate });
+}
+
 export async function getFighterRoundStats(fighterId: string): Promise<RoundStat[]> {
   return (await rest<RoundStat[]>(`ufc_bout_round_stats?select=*&fighter_id=eq.${fighterId}&limit=3000`, [])).data;
 }

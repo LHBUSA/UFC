@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getImagesForFighters, getRoundStats, getFightTotals, getArticlesForBout, getFighterBouts } from "@/lib/db";
+import { getImagesForFighters, getRoundStats, getFightTotals, getArticlesForBout, getFighterBouts, getFighterTraining } from "@/lib/db";
+import { NewCampNote } from "@/components/TrainingCorner";
 import { storyMedia } from "@/lib/faces";
 import { getFighterDna, getMatchupDna } from "@/lib/dna";
 import { RoundAnalysis } from "@/components/RoundAnalysis";
@@ -197,6 +198,11 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
     : null;
   const before = (h: Awaited<ReturnType<typeof getFighterBouts>>) => h.filter((x) => x.id !== b.id && x.result && x.event?.event_date && x.event.event_date < (e.event_date || "9999")).slice(0, 5);
   const formA = before(histA), formB = before(histB);
+  /* Training & Corner (migration 032), fight-week context for an unsettled bout:
+   * each corner's current camp, and NEW CAMP SINCE LAST UFC BOUT only when
+   * lib/training.ts proves the chronology against that corner's last result. */
+  const lastDate = (form: typeof formA) => form.map((x) => x.event.event_date!).sort().at(-1) ?? null;
+  const [trainA, trainB] = r ? [null, null] : await Promise.all([getFighterTraining(b.fighter_a.id, lastDate(formA)), getFighterTraining(b.fighter_b.id, lastDate(formB))]);
   const sumA = archiveSummary(b.fighter_a.id, histA.filter((x) => x.id !== b.id)), sumB = archiveSummary(b.fighter_b.id, histB.filter((x) => x.id !== b.id));
   const idx = bouts.findIndex((x) => x.id === b.id);
   const neighbours = [bouts[idx - 1], bouts[idx + 1]].filter(Boolean);
@@ -429,12 +435,15 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
         <h3>Tale of the tape</h3>
         <div className="matchup">
           <TaleOfTheTape a={b.fighter_a} b={b.fighter_b} at={e.event_date} />
+          <NewCampNote note={trainA?.new_camp_since_last_bout ?? null} fighterName={b.fighter_a.name} />
+          <NewCampNote note={trainB?.new_camp_since_last_bout ?? null} fighterName={b.fighter_b.name} />
           <div className="grid-2 mt-4">
             {[[b.fighter_a, sumA, formA], [b.fighter_b, sumB, formB]].map(([f, s, form]) => {
               const ff = f as typeof b.fighter_a; const ss = s as typeof sumA; const fm = form as typeof formA;
               return (
                 <div className="well" key={ff.id}>
                   <div className="between"><b style={{ color: "var(--pbe-paper)" }}>{ff.name}</b><span className="mono faint label">{ss.fights ? `${ss.w}-${ss.l}${ss.d ? `-${ss.d}` : ""} in archive` : "archive pending"}</span></div>
+                  {(() => { const camp = (ff.id === b.fighter_a.id ? trainA : trainB)?.current_camp; return camp ? <div className="mono dim sm mt-2" data-testid="fight-current-camp">Camp · {camp.name}</div> : null; })()}
                   <div className="tiles mt-3" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
                     <div className="tile"><b>{ss.ko}</b><span>KO/TKO wins</span></div>
                     <div className="tile"><b>{ss.sub}</b><span>Sub wins</span></div>

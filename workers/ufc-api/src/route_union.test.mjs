@@ -100,6 +100,9 @@ const MISSING_FROM_PRODUCTION = [
   ["/v1/ufc/injuries", "ufc_fighter_status_feed"],
   [`/v1/ufc/fighters/${FIGHTER_A}/status`, "ufc_fighter_status_feed"],
   [`/v1/ufc/events/${EVENT}/card-changes`, "ufc_event_card_changes"],
+  /* Training & Corner (migration 032). */
+  [`/v1/ufc/fighters/${FIGHTER_A}/training`, "ufc_fighter_training_current"],
+  [`/v1/ufc/fighters/${FIGHTER_A}?include=training`, "ufc_fighter_camp_stints"],
 ];
 
 /* Routes both sides already served: they must still dispatch after the merge. */
@@ -135,7 +138,7 @@ test("the discovery index lists both sides' routes", async () => {
   installStub();
   const r = await call("/v1/ufc");
   const listed = JSON.stringify(r.body.data);
-  for (const needle of ["/v1/ufc/dna/metrics", "/v1/ufc/videos", "ledger", "intelligence", "weigh-ins", "/v1/ufc/injuries", "/status", "card-changes"]) {
+  for (const needle of ["/v1/ufc/dna/metrics", "/v1/ufc/videos", "ledger", "intelligence", "weigh-ins", "/v1/ufc/injuries", "/status", "card-changes", "/training"]) {
     assert.ok(listed.includes(needle), `apiIndex is missing ${needle}`);
   }
 });

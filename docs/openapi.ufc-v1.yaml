@@ -315,6 +315,35 @@ paths:
       responses:
         '200': { $ref: '#/components/responses/Success' }
         '404': { $ref: '#/components/responses/Error' }
+  /v1/ufc/fighters/{id}/training:
+    get:
+      summary: Training & Corner — current camp, fighting out of, training base, coaches, camp history
+      description: >-
+        Assembled from the append-only training ledger (migration 032).
+        `current_camp` is the fighter's current affiliation. Facts that are not
+        on file are `null` (objects) or `[]` (lists); an empty fact means "not
+        on file", never "none".
+
+        DATING. A camp known only from our own captures carries
+        `since.kind = first_observed` (the capture date), never `joined`;
+        `joined` appears only when a cited source states the date. A closed
+        observed stint ends at `to.kind = last_observed`.
+
+        CHANGES. `AFFILIATION_CHANGED_OBSERVED` means the affiliation changed
+        in sources; it is not a confirmed camp switch. `CAMP_CHANGED_CONFIRMED`
+        requires a cited source and may supersede an observed event
+        (`supersedes_event_id`), which is kept.
+
+        `new_camp_since_last_bout` is non-null only when the chronology proves
+        the current camp began after the last completed UFC bout and the
+        previous camp covered it. It makes no claim about performance.
+        `provenance[]` lists the source of every fact.
+        Also available as `include=training` on `/v1/ufc/fighters/{id}`.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/Success' }
+        '404': { $ref: '#/components/responses/Error' }
   /v1/ufc/weigh-ins:
     get:
       summary: Official weigh-in readings, current reading per fighter per event
@@ -663,7 +692,7 @@ components:
       description: Comma-separated additive blocks. Unknown values return 400 invalid_include.
       schema:
         type: string
-        example: media,ranking,next,history,stats,videos
+        example: media,ranking,next,history,stats,videos,training
     CardInclude:
       name: include
       in: query
