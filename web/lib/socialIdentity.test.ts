@@ -78,3 +78,15 @@ test("footer: exactly one PropBetEdge X link, new tab, safe rel, accessible name
   assert.match(anchors[0], /target="_blank" rel="noopener noreferrer"/);
   assert.match(anchors[0], /aria-label=\{`Follow PropBetEdge on X \(\$\{SITE\.twitter\}\)`\}/);
 });
+
+test("emails: standard sign-off with @PROPBETEDGE, below the security/action content", async () => {
+  const { EMAIL_FOOTER_HTML, EMAIL_FOOTER_TEXT } = await import("./emailFooter.ts");
+  assert.match(EMAIL_FOOTER_HTML, /The Sports Intelligence Network/);
+  assert.match(EMAIL_FOOTER_HTML, /<a href="https:\/\/x\.com\/PROPBETEDGE"[^>]*>@PROPBETEDGE<\/a>/);
+  assert.match(EMAIL_FOOTER_TEXT, /X: @PROPBETEDGE \(https:\/\/x\.com\/PROPBETEDGE\)$/);
+  for (const [file, before] of [["lib/authDeps.ts", "If you did not request it, ignore this message.</p>"], ["lib/store/customer-orders.ts", "to see your order history.</p>"]]) {
+    const src = fs.readFileSync(path.join(WEB, file), "utf8");
+    assert.ok(src.includes(before + "${EMAIL_FOOTER_HTML}"), `${file}: sign-off directly after the closing security/records line`);
+    assert.ok(src.includes("${EMAIL_FOOTER_TEXT}`"), `${file}: plain-text sign-off`);
+  }
+});

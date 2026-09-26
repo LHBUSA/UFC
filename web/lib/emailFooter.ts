@@ -1,0 +1,4 @@
+/* Standard PropBetEdge email sign-off (network identity + X account). It always
+ * sits below the security/action content of a message. */
+export const EMAIL_FOOTER_HTML = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:26px;border-top:1px solid rgba(255,255,255,.08)"><tr><td style="padding-top:14px;font-family:Arial,sans-serif;font-size:11px;line-height:1.6;color:#777168"><strong style="color:#777168">PropBetEdge</strong><br>The Sports Intelligence Network<br><a href="https://propbetedge.ai" style="color:#777168;text-decoration:underline">propbetedge.ai</a> &middot; X: <a href="https://x.com/PROPBETEDGE" style="color:#d4af37;text-decoration:none">@PROPBETEDGE</a></td></tr></table>';
+export const EMAIL_FOOTER_TEXT = "\n\n--\nPropBetEdge\nThe Sports Intelligence Network\npropbetedge.ai\nX: @PROPBETEDGE (https://x.com/PROPBETEDGE)";

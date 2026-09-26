@@ -7,6 +7,7 @@ import {
 } from "@/lib/auth";
 import { readUfcEntitlement, ufcOwnerEmail } from "@/lib/entitlement";
 import { SITE } from "@/lib/site";
+import { EMAIL_FOOTER_HTML, EMAIL_FOOTER_TEXT } from "@/lib/emailFooter";
 
 /* Real dependencies for lib/authFlow.ts. Throttle keys are HMACs keyed with a
  * server-only secret, so the attempts table holds no recoverable email or IP. */
@@ -19,7 +20,7 @@ function escapeHtml(value: string): string {
 
 function emailHtml(link: string) {
   const safe = escapeHtml(link);
-  return `<!doctype html><html><body style="margin:0;background:#0d0b08;color:#f5f1eb;font-family:Arial,sans-serif"><table width="100%" cellpadding="0" cellspacing="0" style="padding:38px 16px;background:#0d0b08"><tr><td align="center"><table width="100%" style="max-width:620px;background:#17130f;border:1px solid rgba(212,175,55,.34);border-radius:18px;padding:34px"><tr><td><img src="https://propbetedge.ai/logo/pbe-full-400.png" width="190" alt="PropBetEdge" style="display:block;max-width:190px;height:auto;margin-bottom:26px"><div style="font-size:11px;font-weight:800;letter-spacing:2.2px;color:#d4af37">UFC · SECURE ACCESS</div><h1 style="font-size:34px;line-height:1.08;margin:12px 0;color:#fff">Your fight room is ready.</h1><p style="color:#b8b3a8;font-size:15px;line-height:1.65;margin:0 0 24px">Use this one-time link to sign in to PropBetEdge UFC. Your browser will stay signed in for 30 days.</p><a href="${safe}" style="display:inline-block;padding:15px 22px;border-radius:8px;background:#d4af37;color:#14110d;text-decoration:none;font-weight:900">OPEN PROPBETEDGE UFC →</a><p style="margin-top:24px;color:#777168;font-size:11px;line-height:1.6">This link expires in 15 minutes and can be used once. If you did not request it, ignore this message.</p></td></tr></table></td></tr></table></body></html>`;
+  return `<!doctype html><html><body style="margin:0;background:#0d0b08;color:#f5f1eb;font-family:Arial,sans-serif"><table width="100%" cellpadding="0" cellspacing="0" style="padding:38px 16px;background:#0d0b08"><tr><td align="center"><table width="100%" style="max-width:620px;background:#17130f;border:1px solid rgba(212,175,55,.34);border-radius:18px;padding:34px"><tr><td><img src="https://propbetedge.ai/logo/pbe-full-400.png" width="190" alt="PropBetEdge" style="display:block;max-width:190px;height:auto;margin-bottom:26px"><div style="font-size:11px;font-weight:800;letter-spacing:2.2px;color:#d4af37">UFC · SECURE ACCESS</div><h1 style="font-size:34px;line-height:1.08;margin:12px 0;color:#fff">Your fight room is ready.</h1><p style="color:#b8b3a8;font-size:15px;line-height:1.65;margin:0 0 24px">Use this one-time link to sign in to PropBetEdge UFC. Your browser will stay signed in for 30 days.</p><a href="${safe}" style="display:inline-block;padding:15px 22px;border-radius:8px;background:#d4af37;color:#14110d;text-decoration:none;font-weight:900">OPEN PROPBETEDGE UFC →</a><p style="margin-top:24px;color:#777168;font-size:11px;line-height:1.6">This link expires in 15 minutes and can be used once. If you did not request it, ignore this message.</p>${EMAIL_FOOTER_HTML}</td></tr></table></td></tr></table></body></html>`;
 }
 
 async function sendLoginEmail(email: string, rawToken: string): Promise<void> {
@@ -39,7 +40,7 @@ async function sendLoginEmail(email: string, rawToken: string): Promise<void> {
 
 ${verify}
 
-This one-time link expires in 15 minutes.`,
+This one-time link expires in 15 minutes.${EMAIL_FOOTER_TEXT}`,
     }),
     cache: "no-store",
   });
