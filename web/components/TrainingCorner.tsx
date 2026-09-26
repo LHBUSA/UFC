@@ -44,11 +44,11 @@ export function TrainingCorner({ training: t, fighterName }: { training: Trainin
           )}
           {t.coaches.length > 0 && (
             <>
-              <dt>Coaches</dt>
+              <dt>Coaching team</dt>
               <dd>
                 <ul className={s.list} data-testid="training-coaches">
                   {t.coaches.map((c) => (
-                    <li key={`${c.coach_id}:${c.role}`}>{c.name} <span className={s.meta}>· {c.role_label}{c.since ? ` · since ${monthYear(c.since)}` : ""}</span></li>
+                    <li key={`${c.coach_id}:${c.role}`}>{c.name}{c.role_specified || c.since ? <span className={s.meta}>{[c.role_specified ? c.role_label : null, c.since ? `since ${monthYear(c.since)}` : null].filter(Boolean).join(" · ")}</span> : null}</li>
                   ))}
                 </ul>
               </dd>

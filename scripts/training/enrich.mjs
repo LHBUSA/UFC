@@ -16,6 +16,8 @@
 //   camp-end           --camp --type [--until]
 //   switch             --to <camp> [--from <camp>] [--effective YYYY-MM-DD]   CONFIRMED camp switch
 //   find-camp <text>   /  find-coach <text>                candidate discovery (no writes)
+//   merge-camp --from <camp> --into <camp> --note "why"    reviewed de-dup (migration 033): the duplicate keeps its
+//                      source ids and observations and resolves to the canonical camp; undo with --undo --from <camp>
 //
 // Common: --source <url> (required for writes) --published YYYY-MM-DD --note "short factual locator"
 //         --create (allow creating a camp/coach that has no exact match) --dry (print the payload only)
@@ -25,7 +27,7 @@
 // Camp / coach refs: id:<uuid>, slug:<slug>, espn:<association id> (camps), or a name. A name must
 // match exactly one camp/coach by normalized name or alias; otherwise the candidates are printed and
 // nothing is written (add --create to make a new one). Dates are only ever the ones the source states.
-import { get, post, rpc, norm, slugify, resolveFighter } from './lib.mjs';
+import { get, post, patch, rpc, norm, slugify, resolveFighter } from './lib.mjs';
 
 const ROLES = ['HEAD', 'STRIKING', 'BOXING', 'MUAY_THAI', 'KICKBOXING', 'WRESTLING', 'GRAPPLING', 'BJJ', 'STRENGTH_CONDITIONING', 'OTHER'];
 const TYPES = ['PRIMARY_CAMP', 'TEMPORARY_CAMP', 'CROSS_TRAINING', 'FIGHT_CAMP'];
@@ -36,7 +38,7 @@ function parse(argv) {
     const a = argv[i];
     if (!a.startsWith('--')) { out._.push(a); continue; }
     const k = a.slice(2);
-    if (['dry', 'create'].includes(k)) out[k] = true;
+    if (['dry', 'create', 'undo'].includes(k)) out[k] = true;
     else { out[k] = argv[i + 1]; i += 1; }
   }
   return out;
@@ -138,6 +140,23 @@ async function main() {
   if (cmd === 'find-coach') {
     const q = o._.slice(1).join(' ');
     console.log(JSON.stringify(near(await get('ufc_coaches?select=id,canonical_name,slug&limit=2000'), q), null, 2));
+    return;
+  }
+  if (cmd === 'merge-camp') {
+    const from = await resolveCamp(o.from);
+    if (o.undo) {
+      if (o.dry) { console.log(JSON.stringify({ dry: true, undo: from.slug })); return; }
+      const [row] = await patch('ufc_training_camps', `id=eq.${from.id}`, { merged_into: null, merged_at: null, merge_note: null });
+      console.log(JSON.stringify({ undone: row.slug }, null, 2));
+      return;
+    }
+    const into = await resolveCamp(o.into);
+    if (!o.note) throw new Error('--note is required: say why these are the same camp');
+    if (from.id === into.id) throw new Error('--from and --into are the same camp');
+    const payload = { merged_into: into.id, merged_at: new Date().toISOString(), merge_note: String(o.note).slice(0, 500) };
+    if (o.dry) { console.log(JSON.stringify({ dry: true, from, into, payload }, null, 2)); return; }
+    const [row] = await patch('ufc_training_camps', `id=eq.${from.id}`, payload);
+    console.log(JSON.stringify({ merged: { slug: row.slug, espn_association_id: row.espn_association_id }, into: { slug: into.slug, name: into.canonical_name } }, null, 2));
     return;
   }
   const f = await resolveFighter(o.fighter);

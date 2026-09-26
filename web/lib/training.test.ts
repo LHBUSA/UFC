@@ -31,7 +31,8 @@ test("an observed change is 'Camp affiliation changed'; only a confirmed event i
   assert.equal(changeLabel(change({})), "Camp affiliation changed: Camp 1 → Camp 2");
   assert.doesNotMatch(changeLabel(change({})), /switch/i);
   assert.equal(changeLabel(change({ kind: "CAMP_CHANGED_CONFIRMED" })), "Switched camps: Camp 1 → Camp 2");
-  assert.equal(changeLabel(change({ kind: "COACH_REMOVED", previous_value: "A · STRIKING", new_value: null })), "Coach no longer listed: A · STRIKING");
+  assert.equal(changeLabel(change({ kind: "COACH_REMOVED", previous_value: "A · STRIKING", new_value: null })), "Coach no longer listed: A · Striking");
+  assert.equal(changeLabel(change({ kind: "COACH_ADDED", previous_value: null, new_value: "B · OTHER" })), "Coach added: B");
 });
 
 test("new camp since last bout: observed chronology that spans the bout", () => {
@@ -123,4 +124,14 @@ test("formatting helpers", () => {
   assert.equal(yearSpan({ date: "2026-09-26" }, null), "2026 – present");
   assert.equal(yearSpan({ date: "2023-01-01" }, { date: "2026-02-01" }), "2023 – 2026");
   assert.equal(yearSpan({ date: "2026-01-01" }, { date: "2026-02-01" }), "2026");
+});
+
+test("no raw role code ever reaches customer copy; the raw role is kept", () => {
+  const current: CurrentRow = { fighter_id: "f", current_camp: null, fighting_out_of: null, training_location: null, other_camps: [], updated_at: null,
+    coaches: [{ coach_id: "k", name: "Carlos B", slug: "carlos-b", role: "OTHER", since: null, certainty: "STATED", source_key: "ufc_training_manual", source_url: "https://x.example", captured_at: "2026-09-26T00:00:00Z" },
+      { coach_id: "k2", name: "Dee S", slug: "dee-s", role: "STRENGTH_CONDITIONING", since: null, certainty: "STATED", source_key: "ufc_training_manual", source_url: "https://x.example", captured_at: "2026-09-26T00:00:00Z" }] };
+  const p = trainingPayload({ current, stints: [], changes: [change({ kind: "COACH_ADDED", previous_value: null, new_value: "Carlos B · OTHER" }), change({ id: "e2", kind: "COACH_REMOVED", previous_value: "Dee S · STRENGTH_CONDITIONING", new_value: null })] });
+  assert.deepEqual(p.coaches.map((c) => [c.role, c.role_label, c.role_specified]), [["OTHER", "Coach", false], ["STRENGTH_CONDITIONING", "Strength & conditioning", true]]);
+  const copy = JSON.stringify({ labels: p.changes.map((c) => [c.label, c.previous_value, c.new_value]), roles: p.coaches.map((c) => c.role_label) });
+  assert.doesNotMatch(copy, /OTHER|STRENGTH_CONDITIONING|MUAY_THAI/);
 });

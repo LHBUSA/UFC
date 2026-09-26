@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-26T21:50:13.572Z",
+  "generated_at": "2026-09-26T23:08:07.820Z",
   "applied_boundary": "20260908000016_ufc_media_registry_videos.sql",
   "renamed_after_apply": {
     "20260906000006_ufc_media_registry_videos.sql": "20260908000016_ufc_media_registry_videos.sql"
@@ -227,6 +227,13 @@
       "file": "032_ufc_training_corner.sql",
       "version": "032",
       "slug": "ufc_training_corner",
+      "applied": null
+    },
+    {
+      "dir": "migrations",
+      "file": "033_ufc_training_camp_merge.sql",
+      "version": "033",
+      "slug": "ufc_training_camp_merge",
       "applied": null
     }
   ],
@@ -565,6 +572,13 @@
       "file": "20260926120000_ufc_training_corner.sql",
       "version": "20260926120000",
       "slug": "ufc_training_corner",
+      "applied": true
+    },
+    {
+      "dir": "supabase/migrations",
+      "file": "20260926230000_ufc_training_camp_merge.sql",
+      "version": "20260926230000",
+      "slug": "ufc_training_camp_merge",
       "applied": true
     }
   ],

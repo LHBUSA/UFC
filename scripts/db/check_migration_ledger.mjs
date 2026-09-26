@@ -174,6 +174,9 @@ export const APPLIED = new Set([
   // change events, camps/coaches, stint + current views. Proven by scripts/db/prove_032.ps1 (17 checks, rolled back),
   // then applied 2026-09-26 via apply_migration.ps1.
   '20260926120000_ufc_training_corner.sql',
+  // Camp de-dup via canonical pointer (merged_into) resolved by views + capture. prove_033.ps1: 6 checks + the 032
+  // suite (17) on top of it, rolled back; applied 2026-09-26 via apply_migration.ps1.
+  '20260926230000_ufc_training_camp_merge.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))

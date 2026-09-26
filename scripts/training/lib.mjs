@@ -63,6 +63,14 @@ export async function post(table, rows, prefer = 'return=representation') {
   return t ? JSON.parse(t) : null;
 }
 
+export async function patch(table, filter, values) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${filter}`, {
+    method: 'PATCH', headers: headers({ 'content-type': 'application/json', prefer: 'return=representation' }), body: JSON.stringify(values),
+  });
+  if (!res.ok) throw new Error(`PATCH ${table} -> ${res.status} ${(await res.text()).slice(0, 300)}`);
+  return res.json();
+}
+
 export async function rpc(fn, args) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
     method: 'POST', headers: headers({ 'content-type': 'application/json' }), body: JSON.stringify(args),

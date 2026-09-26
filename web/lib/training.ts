@@ -55,8 +55,24 @@ export const TRAINING_CHANGE_COLS = "id,kind,previous_value,new_value,previous_c
 
 export const ROLE_LABEL: Record<string, string> = {
   HEAD: "Head coach", STRIKING: "Striking", BOXING: "Boxing", MUAY_THAI: "Muay Thai", KICKBOXING: "Kickboxing",
-  WRESTLING: "Wrestling", GRAPPLING: "Grappling", BJJ: "Jiu-jitsu", STRENGTH_CONDITIONING: "Strength & conditioning", OTHER: "Coach",
+  WRESTLING: "Wrestling", GRAPPLING: "Grappling", BJJ: "Jiu-jitsu", STRENGTH_CONDITIONING: "Strength & conditioning",
+  /* The source named the coach without a discipline. Never shown as "OTHER", never upgraded to a discipline. */
+  OTHER: "Coach",
 };
+
+/** Customer copy for a coach role; the raw role stays in the data. */
+export function roleLabel(role: string | null | undefined): string {
+  return (role && ROLE_LABEL[role]) || "Coach";
+}
+
+/* Change events store "<coach> · <RAW_ROLE>" (SQL); render the role in customer words. */
+function coachValue(v: string | null): string | null {
+  if (!v) return v;
+  const i = v.lastIndexOf(" · ");
+  if (i < 0) return v;
+  const role = v.slice(i + 3);
+  return role in ROLE_LABEL ? (role === "OTHER" ? v.slice(0, i) : `${v.slice(0, i)} · ${ROLE_LABEL[role]}`) : v;
+}
 
 export const RELATIONSHIP_LABEL: Record<string, string> = {
   PRIMARY_CAMP: "Primary camp", AFFILIATION: "Camp", TEMPORARY_CAMP: "Temporary camp", CROSS_TRAINING: "Cross-training", FIGHT_CAMP: "Fight camp",
@@ -127,8 +143,8 @@ export function changeLabel(c: ChangeRow): string {
   switch (c.kind) {
     case "CAMP_CHANGED_CONFIRMED": return c.previous_value ? `Switched camps: ${c.previous_value} → ${c.new_value}` : `Joined ${c.new_value}`;
     case "AFFILIATION_CHANGED_OBSERVED": return `Camp affiliation changed: ${c.previous_value} → ${c.new_value}`;
-    case "COACH_ADDED": return `Coach added: ${c.new_value}`;
-    case "COACH_REMOVED": return `Coach no longer listed: ${c.previous_value}`;
+    case "COACH_ADDED": return `Coach added: ${coachValue(c.new_value)}`;
+    case "COACH_REMOVED": return `Coach no longer listed: ${coachValue(c.previous_value)}`;
     case "FIGHTING_OUT_OF_CHANGED": return `Fighting out of changed: ${c.previous_value} → ${c.new_value}`;
   }
 }
@@ -158,7 +174,7 @@ export function trainingPayload({ current, stints, changes, lastBoutDate = null 
     } : null,
     fighting_out_of: current?.fighting_out_of ? { ...pick(current.fighting_out_of), label: placeLabel(current.fighting_out_of) } : null,
     training_location: current?.training_location ? { ...pick(current.training_location), camp_id: current.training_location.camp_id, camp_name: current.training_location.camp_name, label: placeLabel(current.training_location) } : null,
-    coaches: (current?.coaches || []).map((c) => ({ coach_id: c.coach_id, name: c.name, slug: c.slug, role: c.role, role_label: ROLE_LABEL[c.role] || c.role, since: c.since, certainty: c.certainty })),
+    coaches: (current?.coaches || []).map((c) => ({ coach_id: c.coach_id, name: c.name, slug: c.slug, role: c.role, role_label: roleLabel(c.role), role_specified: c.role !== "OTHER", since: c.since, certainty: c.certainty })),
     other_camps: (current?.other_camps || []).map((c) => ({ camp_id: c.camp_id, name: c.name, slug: c.slug, relationship_type: c.relationship_type, relationship_label: RELATIONSHIP_LABEL[c.relationship_type] || c.relationship_type, since: c.since, certainty: c.certainty })),
     camp_history: ordered.map((s) => ({
       camp_id: s.camp_id, name: s.camp_name, slug: s.camp_slug, certainty: s.certainty, is_current: s.is_current,
@@ -168,7 +184,9 @@ export function trainingPayload({ current, stints, changes, lastBoutDate = null 
       sources: s.evidence.map((e) => ({ source_key: e.source_key, source_url: e.source_url, certainty: e.certainty, captured_at: e.captured_at })),
     })),
     changes: [...changes].sort((a, b) => b.observed_at.localeCompare(a.observed_at)).map((c) => ({
-      id: c.id, kind: c.kind, label: changeLabel(c), previous_value: c.previous_value, new_value: c.new_value,
+      id: c.id, kind: c.kind, label: changeLabel(c),
+      previous_value: c.kind.startsWith("COACH_") ? coachValue(c.previous_value) : c.previous_value,
+      new_value: c.kind.startsWith("COACH_") ? coachValue(c.new_value) : c.new_value,
       effective_on: c.effective_on, observed_at: c.observed_at, source_url: c.source_url,
       supersedes_event_id: c.supersedes_event_id, superseded_by_confirmation: superseded.has(c.id),
     })),
