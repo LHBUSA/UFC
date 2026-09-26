@@ -41,9 +41,8 @@ const FORBIDDEN = [
 
 function stripComments(text) {
   return text
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/^\s*\/\/.*$/gm, '')
-    .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '');
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ''))  // keep line numbers
+    .replace(/^\s*\/\/.*$/gm, '');
 }
 
 function walk(dir, out = []) {
