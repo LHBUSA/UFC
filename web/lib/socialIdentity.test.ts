@@ -69,3 +69,12 @@ test("Organization sameAs uses the canonical profile once", () => {
   const layout = fs.readFileSync(path.join(WEB, "app/layout.tsx"), "utf8");
   assert.equal((layout.match(/sameAs: \[SITE\.xUrl\]/g) || []).length, 1);
 });
+
+test("footer: exactly one PropBetEdge X link, new tab, safe rel, accessible name", () => {
+  const shell = fs.readFileSync(path.join(WEB, "components/Shell.tsx"), "utf8");
+  const footer = shell.slice(shell.indexOf("<footer"), shell.indexOf("</footer>"));
+  const anchors = [...footer.matchAll(/<a [^>]*href=\{SITE\.xUrl\}[^>]*>[\s\S]*?<\/a>/g)].map((m) => m[0]);
+  assert.equal(anchors.length, 1);
+  assert.match(anchors[0], /target="_blank" rel="noopener noreferrer"/);
+  assert.match(anchors[0], /aria-label=\{`Follow PropBetEdge on X \(\$\{SITE\.twitter\}\)`\}/);
+});
