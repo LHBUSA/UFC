@@ -39,3 +39,26 @@ Alatengheili, Alexander Hernandez, Alexander Volkov, Amanda Ribas, Andrey Pulyae
 Abus Magomedov, Ailin Perez, Alden Coria, Alex Perez, Amanda Lemos, Amir Albazi, Angela Hill, Anthony Wint, Asu Almabayev, Azamat Murzakanov, Belal Muhammad, Beneil Dariush, Bogdan Guskov, Brian Ortega, Caio Borralho, Carlos Prates, Christian Edwards, Christian Leroy Duncan, Curtis Blaydes, Dan Hooker, Daniel Rodriguez, David Martinez, Deiveson Figueiredo, Diego Lopes, Elves Brener, Erin Blanchfield, Esteban Ribovics, Farid Basharat, Francisco Prado, Ilimbek Akylbek Uulu, Ismail Naurdiev, Jacqueline Cavalcanti, Jean Silva, Jessica Andrade, Joaquin Buckley, Julianna Pena, Karine Silva, Khaos Williams, Luana Santos, Luis Hernandez, Macy Chiasson, Marvin Vettori, Melquizael Costa, Mick Parkin, Miesha Tate, Mizuki, Movsar Evloev, Navajo Stirling, Nora Cornolle, Paddy Pimblett, Rafael Fiziev, Raquel Pennington, Renato Moicano, Ricky Simon, Roberto Soldić, Salahdine Parnasse, Sedriques Dumas, Sergei Pavlovich, Steve Erceg, Tabatha Ricci, Tom Aspinall, Tom Nolan, Uros Medic, Vitor Petrino, Wang Cong, Yair Rodriguez, Yan Xiaonan, Yazmin Jauregui, Youssef Zalal
 
 Blocked outlets for scripted verification: Bloody Elbow (402), MMA Mania (403 at times), mmafighting.com and mmajunkie (partly). Items from those sources need a manual WebFetch check or a syndicated copy.
+
+## Held facts: resolution (2026-09-26 late)
+
+**Applied (3).** In each case the destination is the fighter's current ESPN camp under another spelling, so it was passed by exact slug. The current camp is unchanged, there is one stint, and it still reads "First observed" (no invented join date).
+
+| Fighter | Source name | Current ESPN camp | From-camp |
+|---|---|---|---|
+| David Onama | Factory X, Denver | FactoryX Muay Thai | Glory MMA & Fitness has no camp row, so none recorded |
+| Gillian Robertson | GOAT Shed | The Goat Shed | American Top Team |
+| Loopy Godínez | Lobo Gym | Lobo Gym MMA | none: "Titan MMA" vs "Team Titan" is not proven to be the same gym |
+
+**Preserved here, NOT written to the ledger (2).** In both cases dated reporting conflicts with the current observed ESPN association:
+- **Rodolfo Bellato:** MMA Junkie (2026-03-08) says it was his "first fight since a move to the vaunted American Top Team camp". The current ESPN camp is Team Nogueira.
+- **Eduarda Moura:** AG Fight (2026-02-06) says she moved to Fight House in Feira de Santana from Galpão da Luta. The current ESPN camp is Galpão da Luta.
+
+Neither source states a move date. In the frozen model an undated STATED row sorts at capture time, which is after ESPN's first observation. Writing either one would therefore make the reported camp the *current* camp, overriding observed truth, and dating it would invent a date. Both are forbidden. The observed ESPN affiliation remains the current camp.
+
+To represent a dated claim without a stated effective date, STATED rows could sort by `source_published_at` when `effective_from` is null (a one-line change to the stint view). That was not done because the camp model is frozen for this sprint.
+
+**Held: camp identity unproven (1).** Mauricio Ruffy's temporary camp at "Freestyle MMA" (Australia). The only near camp is ESPN's "Freestyle Fighting Gym" (1 fighter, Colby Thicknesse), which is not proven to be the same gym. Research never creates a camp that might duplicate one.
+
+## Resume
+The web-search budget was still exhausted in the same session (200/200), so no new research happened. The next session starts from `ENRICHMENT_RESUME_QUEUE.md`, in priority order, with 2-3 agents.
