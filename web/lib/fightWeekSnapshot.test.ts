@@ -11,6 +11,7 @@ test("the Rosas card with no stored row reads exactly as briefed", () => {
     { label: "Date", value: "Sat, Sep 26" },
     { label: "Venue", value: "Meta APEX · Las Vegas, NV" },
     { label: "Local Time", value: "5:00 PM PT" },
+    { label: "Prelims", value: "5:00 PM ET" },
     { label: "Main Card", value: "8:00 PM ET" },
     { label: "Broadcast", value: "Paramount+" },
     { label: "Watch", value: "Stream live on Paramount+" },

@@ -5,6 +5,10 @@
  * page load must not be able to wait on, or be broken by, the promotion's
  * website — that is the entire point of having the Worker.
  *
+ * Every reader below returns RESOLVED rows: the stored row merged field by
+ * field with the approved, event-id-keyed schedule in lib/eventSchedule.ts.
+ * No page reads ufc_event_broadcasts any other way.
+ *
  * This module is the SERVER half: the PostgREST readers. The pure display
  * model — types, timezone conversion, the state machine, the countdown — lives
  * in lib/broadcast-display.ts with no server import, so the same functions can
@@ -21,6 +25,8 @@ export * from "@/lib/broadcast-display";
 
 import type { EventBroadcast } from "@/lib/broadcast-display";
 import { isFinished } from "@/lib/broadcast-display";
+import { approvedScheduleIds, mergeApprovedSchedules, resolveEventSchedule, type ScheduleEvent } from "@/lib/eventSchedule";
+export { resolveEventSchedule, scheduleSourceLabel, APPROVED_SOURCE } from "@/lib/eventSchedule";
 
 const COLS = [
   "ufc_slug", "event_id", "match_status", "event_name", "event_headline", "event_date",
@@ -62,11 +68,25 @@ async function rest<T>(path: string, fallback: T, revalidate = REVALIDATE): Prom
  * keep the 5-minute data cache; the routes cache at the CDN instead, where the
  * TTL is short and per-request. */
 export async function getBroadcastSchedule(limit = 40, revalidate?: number): Promise<EventBroadcast[]> {
-  return rest<EventBroadcast[]>(
-    `ufc_event_broadcasts?select=${COLS}&order=main_card_start_utc.asc.nullslast&limit=${limit}`,
-    [],
-    revalidate,
-  );
+  const [stored, approved] = await Promise.all([
+    rest<EventBroadcast[]>(
+      `ufc_event_broadcasts?select=${COLS}&order=main_card_start_utc.asc.nullslast&limit=${limit}`,
+      [],
+      revalidate,
+    ),
+    approvedEvents(revalidate),
+  ]);
+  return mergeApprovedSchedules(stored, approved).slice(0, limit);
+}
+
+/* The events that have an approved schedule entry (lib/eventSchedule.ts), so
+ * list readers can merge them in. A handful of ids, one indexed query; empty
+ * when there are none, or when the database is unreachable. */
+const EVENT_COLS = "id,name,event_date,venue,city,region,country";
+async function approvedEvents(revalidate?: number): Promise<ScheduleEvent[]> {
+  const ids = approvedScheduleIds();
+  if (!ids.length) return [];
+  return rest<ScheduleEvent[]>(`ufc_events?select=${EVENT_COLS}&id=in.(${ids.join(",")})`, [], revalidate);
 }
 
 /**
@@ -79,7 +99,13 @@ export async function getBroadcastSchedule(limit = 40, revalidate?: number): Pro
  * time one cron cycle early is better than showing none. The fallback is only
  * ever used when the row is UNLINKED, so it can never override a real link.
  */
-export async function getBroadcastForEvent(event: { id: string; event_date: string | null; name: string }): Promise<EventBroadcast | null> {
+export async function getBroadcastForEvent(event: ScheduleEvent): Promise<EventBroadcast | null> {
+  return resolveEventSchedule(event, await getStoredBroadcastForEvent(event));
+}
+
+/* The stored row alone, before the approved-schedule merge. Only
+ * getBroadcastForEvent calls it; every page goes through the resolved one. */
+async function getStoredBroadcastForEvent(event: ScheduleEvent): Promise<EventBroadcast | null> {
   const linked = await rest<EventBroadcast[]>(
     `ufc_event_broadcasts?select=${COLS}&event_id=eq.${event.id}&limit=1`, [],
   );
@@ -100,11 +126,15 @@ export async function getBroadcastForEvent(event: { id: string; event_date: stri
  * Round-for-Round needs the just-finished card as well as the upcoming ones, so
  * it reads a date window instead of "the first N rows of the whole table". */
 export async function getBroadcastsSince(fromDate: string, revalidate?: number): Promise<EventBroadcast[]> {
-  return rest<EventBroadcast[]>(
-    `ufc_event_broadcasts?select=${COLS}&or=(event_date.gte.${fromDate},event_date.is.null)&order=main_card_start_utc.asc.nullslast&limit=40`,
-    [],
-    revalidate,
-  );
+  const [stored, approved] = await Promise.all([
+    rest<EventBroadcast[]>(
+      `ufc_event_broadcasts?select=${COLS}&or=(event_date.gte.${fromDate},event_date.is.null)&order=main_card_start_utc.asc.nullslast&limit=40`,
+      [],
+      revalidate,
+    ),
+    approvedEvents(revalidate),
+  ]);
+  return mergeApprovedSchedules(stored, approved.filter((e) => !e.event_date || e.event_date >= fromDate));
 }
 
 /** The soonest card that has not finished its broadcast window. */

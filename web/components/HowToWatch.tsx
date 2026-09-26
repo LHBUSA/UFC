@@ -27,7 +27,8 @@ import {
   localTime, zoneLabel, localDay, countdown, verifiedAgo, isStale, firstStartMs,
   type EventBroadcast,
 } from "@/lib/broadcast-display";
-import { Countdown, VerifiedAgo } from "@/components/HowToWatchClient";
+import { Countdown, VerifiedAgo, LocalTimesNote } from "@/components/HowToWatchClient";
+import { APPROVED_SOURCE, scheduleSourceLabel } from "@/lib/eventSchedule";
 import styles from "@/app/how-to-watch.module.css";
 
 /* The server renders in US Eastern — the promotion's own reference zone, and a
@@ -103,7 +104,8 @@ export function HowToWatchPanel({ b, now = Date.now() }: { b: EventBroadcast | n
 
   const lines = startLines(b);
   const state = watchState(b, now, SERVER_ZONE);
-  const stale = isStale(b.verified_at, now);
+  const approved = b.source === APPROVED_SOURCE;
+  const stale = !approved && isStale(b.verified_at, now);
   const finished = state === "finished";
 
   return (
@@ -121,6 +123,7 @@ export function HowToWatchPanel({ b, now = Date.now() }: { b: EventBroadcast | n
         </div>
 
         {lines.length > 0 ? (
+          <>
           <div className={styles.times}>
             {lines.map((l) => (
               <div key={l.key} className={styles.slot} data-main={l.key === "main_card" ? "true" : undefined}>
@@ -132,6 +135,8 @@ export function HowToWatchPanel({ b, now = Date.now() }: { b: EventBroadcast | n
               </div>
             ))}
           </div>
+          <LocalTimesNote className={styles.localNote} utcs={lines.map((l) => l.utc)} />
+          </>
         ) : (
           /* State 6. The card is on the schedule; its start times are not
            * published yet. The panel still renders, with the carrier and the
@@ -151,7 +156,7 @@ export function HowToWatchPanel({ b, now = Date.now() }: { b: EventBroadcast | n
         )}
 
         <div className={styles.status}>
-          <VerifiedAgo iso={b.verified_at} initial={verifiedAgo(b.verified_at, now)} stale={stale} />
+          <VerifiedAgo iso={b.verified_at} initial={verifiedAgo(b.verified_at, now)} stale={stale} approved={approved} />
           <a className={styles.official} href={b.ufc_event_url} target="_blank" rel="noopener noreferrer">
             Official UFC event details →
           </a>
@@ -218,6 +223,7 @@ export function WatchStrip({
               <b><time dateTime={l.utc} title={zoneLabel(l.utc, SERVER_ZONE)}>{localTime(l.utc, SERVER_ZONE)} ET</time></b>
             </div>
           ))}
+          <LocalTimesNote className={styles.stripLocal} utcs={lines.map((l) => l.utc)} />
         </div>
       )}
 
@@ -231,13 +237,13 @@ export function WatchStrip({
           </a>
           <span className={styles.stripSource}>
             {secondary ? <>Also on {secondary} · </> : null}
-            ✓ UFC.com · {verifiedAgo(b.verified_at, now)}
+            ✓ {scheduleSourceLabel(b)} · {verifiedAgo(b.verified_at, now)}
           </span>
         </div>
       ) : (
         <div className={styles.stripWatch}>
           <span>{providers ? <>Watch on <b>{providers}</b></> : "Broadcaster not yet published"}</span>
-          <span>✓ UFC.com · {verifiedAgo(b.verified_at, now)}</span>
+          <span>✓ {scheduleSourceLabel(b)} · {verifiedAgo(b.verified_at, now)}</span>
         </div>
       )}
     </div>

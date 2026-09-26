@@ -26,6 +26,7 @@ import {
   verifiedAgo, isStale,
 } from "@/lib/broadcast-display";
 import { LocalTime, Countdown, VerifiedAgo } from "@/components/HowToWatchClient";
+import { APPROVED_SOURCE } from "@/lib/eventSchedule";
 import { RoundLiveRefresh } from "@/components/RoundLiveRefresh";
 import { RoundResultCard } from "@/components/RoundResultCard";
 import type { NextCard, RoundLiveState } from "@/lib/roundLive";
@@ -167,7 +168,7 @@ export function RoundLiveDeck({ state, now = Date.now() }: { state: RoundLiveSta
 
           {live && b && (
             <div className={styles.provenance}>
-              <VerifiedAgo iso={b.verified_at} initial={verifiedAgo(b.verified_at, now)} stale={isStale(b.verified_at, now)} />
+              <VerifiedAgo iso={b.verified_at} initial={verifiedAgo(b.verified_at, now)} stale={b.source !== APPROVED_SOURCE && isStale(b.verified_at, now)} approved={b.source === APPROVED_SOURCE} />
               {providers && primary && providers !== primary.provider ? <span className={styles.alsoOn}>Also on {providers}</span> : null}
             </div>
           )}

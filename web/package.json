@@ -40,6 +40,7 @@
     "test:card-truth": "node --experimental-strip-types --test lib/cardTruth.test.ts lib/cardReplacement.test.ts",
     "test:status": "node --experimental-strip-types --test lib/status.test.ts lib/status-groups.test.ts",
     "test:fight-week-snapshot": "node --experimental-strip-types --test lib/fightWeekSnapshot.test.ts",
+    "test:event-schedule": "node --experimental-strip-types --test lib/eventSchedule.test.ts lib/fightWeekSnapshot.test.ts lib/broadcast-display.test.ts",
     "test:editorial-evidence": "node --experimental-strip-types --test lib/editorialEvidence.test.ts",
     "test:nav": "node --experimental-strip-types --test lib/nav.test.ts",
     "test:network": "node --experimental-strip-types --test lib/network.test.ts",

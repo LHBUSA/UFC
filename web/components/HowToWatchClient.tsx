@@ -68,6 +68,31 @@ export function LocalTimeInline({ utc, initial }: { utc: string; initial: string
   return <time dateTime={utc}>{value}</time>;
 }
 
+const EASTERN = "America/New_York";
+
+/**
+ * The one line under the Eastern times that turns into the visitor's own.
+ *
+ * Times are displayed in ET, the promotion's reference zone (a3553b3). After
+ * hydration, a visitor whose clock is not Eastern also gets their own times on
+ * this line: "Your time: 2:00 PM · 5:00 PM PDT". The line exists in the server
+ * HTML with the same height and one-line clamp, so the swap only changes
+ * glyphs and nothing below it moves. Same instant, Intl only, no arithmetic.
+ */
+export function LocalTimesNote({ utcs, className }: { utcs: string[]; className?: string }) {
+  const zone = useViewerZone();
+  const [text, setText] = useState("All times Eastern (ET)");
+  useEffect(() => {
+    if (!zone || !utcs.length) return;
+    const mine = utcs.map((u) => localTime(u, zone));
+    const eastern = utcs.map((u) => localTime(u, EASTERN));
+    const label = zoneLabel(utcs[utcs.length - 1], zone);
+    if (mine.join() === eastern.join() && zoneLabel(utcs[0], zone) === zoneLabel(utcs[0], EASTERN)) return;
+    setText(`Your time: ${mine.join(" · ")} ${label}`.trim());
+  }, [utcs, zone]);
+  return <span className={className}>{text}</span>;
+}
+
 type CountdownProps = {
   event: Pick<EventBroadcast, "early_prelims_start_utc" | "prelims_start_utc" | "main_card_start_utc">;
   /** The server's state, so the first paint is never blank or wrong. */
@@ -123,7 +148,7 @@ export function Countdown({ event, initialState, initialLabel }: CountdownProps)
  * cached server render is "18 min ago" for as long as that render is cached.
  * The absolute timestamp goes in the title attribute so the claim is auditable.
  */
-export function VerifiedAgo({ iso, initial, stale }: { iso: string; initial: string; stale: boolean }) {
+export function VerifiedAgo({ iso, initial, stale, approved = false }: { iso: string; initial: string; stale: boolean; approved?: boolean }) {
   const [text, setText] = useState(initial);
   useEffect(() => {
     const tick = () => {
@@ -143,7 +168,9 @@ export function VerifiedAgo({ iso, initial, stale }: { iso: string; initial: str
     <span className={styles.verified} data-stale={stale ? "true" : undefined}>
       <span className={styles.tick} aria-hidden="true">✓</span>
       <span>
-        {stale ? "Last verified from UFC.com" : "Verified from UFC.com"} ·{" "}
+        {/* An approved schedule was checked by a person, not read by the
+         * collector: it never claims "verified from UFC.com". */}
+        {approved ? "Confirmed schedule" : stale ? "Last verified from UFC.com" : "Verified from UFC.com"} ·{" "}
         <time dateTime={iso} title={iso}>Updated {text}</time>
       </span>
     </span>

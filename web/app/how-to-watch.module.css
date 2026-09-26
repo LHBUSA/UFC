@@ -340,6 +340,21 @@
   gap: 10px;
 }
 .stripSlot { min-width: 0; }
+/* The Eastern -> visitor-time line. One clamped line in the server HTML too,
+ * so the post-hydration swap never changes the strip's height. */
+.stripLocal, .localNote {
+  display: block;
+  grid-column: 1 / -1;
+  min-width: 0;
+  height: 1.45em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--pbe-faint);
+  font: 650 11px/1.45 var(--pbe-font-data);
+  font-variant-numeric: tabular-nums;
+}
+.localNote { padding: 8px 22px 0; height: calc(1.45em + 8px); box-sizing: content-box; }
 .stripSlot span {
   display: block;
   color: var(--pbe-faint);

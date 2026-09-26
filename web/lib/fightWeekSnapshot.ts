@@ -3,35 +3,26 @@
  *
  * Pure: no fetch, no env, no "@/..." import, so `node --test` runs it as is.
  *
- * Start times and carriers come from the stored broadcast row
- * (ufc_event_broadcasts) whenever one exists. UFC.com publishes a card's
- * start times late, so a card can be days out with no row at all; for that
- * window FIGHT_WEEK_EDITORIAL carries an owner-supplied schedule keyed by OUR
- * event id. A stored row always wins over it, field by field, so the entry
- * goes quiet by itself the day the collector links the card. Nothing here is
- * keyed by name or date, so no other event ever inherits these values. */
-import { localTime, zoneLabel, providerList, type Broadcast, type EventBroadcast } from "./broadcast-display.ts";
+ * Start times and carriers are NOT decided here. They come from the one
+ * schedule contract, lib/eventSchedule.ts (stored ufc_event_broadcasts row,
+ * then the approved event-id-keyed entry, field by field), which is the same
+ * resolver behind the homepage strip, the event page and /api/ufc/next-event.
+ * FIGHT_WEEK_EDITORIAL below carries desk notes only — never times. */
+import { localTime, zoneLabel, providerList, type Broadcast } from "./broadcast-display.ts";
+import { PARAMOUNT_UFC_URL, resolveScheduleFields, type ScheduleFields } from "./eventSchedule.ts";
 
 export type SnapshotRow = { label: string; value: string };
 export type SnapshotLink = { label: string; href: string; external: boolean };
 
-type Schedule = Pick<EventBroadcast, "main_card_start_utc" | "broadcasts">;
+type Schedule = Partial<ScheduleFields>;
 type EventLike = { id: string; event_date: string | null; venue: string | null; city: string | null; region: string | null; country: string | null };
 
-/* The UFC hub on Paramount+. The collector stores whichever landing page
- * UFC.com linked that week (/shows/ufc/, /collections/sports-hub/, a ufc.ac
- * short link); the rail sends every Paramount+ reader to one stable page. */
-export const PARAMOUNT_UFC_URL = "https://www.paramountplus.com/collections/ufc/";
+/* The rail sends every Paramount+ reader to one stable UFC hub page. */
+export { PARAMOUNT_UFC_URL };
 
-export const FIGHT_WEEK_EDITORIAL: Record<string, { schedule?: Schedule; watchFor?: string }> = {
-  /* UFC Fight Night: Rosas Jr. vs. Barcelos · 2026-09-26 · Meta APEX.
-   * Owner-supplied 2026-09-20: main card 8:00 PM ET on Paramount+. UFC.com had
-   * published no start times for the card on that date. */
+export const FIGHT_WEEK_EDITORIAL: Record<string, { watchFor?: string }> = {
+  /* UFC Fight Night: Rosas Jr. vs. Barcelos · 2026-09-26 · Meta APEX. */
   "1f2531bd-70d4-494f-84c0-9587f9496796": {
-    schedule: {
-      main_card_start_utc: "2026-09-27T00:00:00Z",
-      broadcasts: [{ provider: "Paramount+", region: "US", type: "streaming", watch_url: PARAMOUNT_UFC_URL, segments: ["prelims", "main_card"] }],
-    },
     watchFor: "The clearest edge is Raul’s grappling pressure against Barcelos’ lower takedown volume. If Rosas establishes control early, that first five-minute stretch could define the entire fight.",
   },
 };
@@ -60,14 +51,13 @@ export function clockLabel(iso: string, timeZone: string): string {
   return z ? `${t} ${z}` : t;
 }
 
-/* Field by field: the stored row wins, the editorial entry only fills gaps. */
+/* The canonical merge (lib/eventSchedule.ts). Idempotent, so a row that
+ * lib/broadcast.ts already resolved comes back unchanged. */
 export function resolveSchedule(eventId: string, stored: Schedule | null | undefined): Schedule | null {
-  const fill = FIGHT_WEEK_EDITORIAL[eventId]?.schedule || null;
-  if (!stored && !fill) return null;
-  return {
-    main_card_start_utc: stored?.main_card_start_utc || fill?.main_card_start_utc || null,
-    broadcasts: stored?.broadcasts?.length ? stored.broadcasts : fill?.broadcasts || [],
-  };
+  const r = resolveScheduleFields(eventId, stored);
+  if (!r) return null;
+  const { filled: _filled, ...fields } = r;
+  return fields;
 }
 
 export function watchForNote(eventId: string): string | null {
@@ -110,6 +100,8 @@ export function eventSnapshot(p: { event: EventLike; stored?: Schedule | null; b
   const lead = on[0] || null;
   const rows: SnapshotRow[] = [{ label: "Date", value: dateLabel(event.event_date) }, { label: "Venue", value: venueLabel(event) }];
   if (start && zone) rows.push({ label: "Local Time", value: clockLabel(start, zone) });
+  if (s?.early_prelims_start_utc) rows.push({ label: "Early Prelims", value: clockLabel(s.early_prelims_start_utc, "America/New_York") });
+  if (s?.prelims_start_utc) rows.push({ label: "Prelims", value: clockLabel(s.prelims_start_utc, "America/New_York") });
   if (start) rows.push({ label: "Main Card", value: clockLabel(start, "America/New_York") });
   if (on.length) rows.push({ label: "Broadcast", value: providerList(on) });
   if (lead && !done) rows.push({ label: "Watch", value: `${lead.type === "streaming" ? "Stream" : "Watch"} live on ${lead.provider}` });
