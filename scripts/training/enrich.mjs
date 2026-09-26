@@ -189,7 +189,7 @@ async function main() {
   }
   for (const k of Object.keys(p)) if (p[k] == null) delete p[k];
   if (o.dry) { console.log(JSON.stringify({ dry: true, payload: p }, null, 2)); return; }
-  const r = await rpc('ufc_training_add_manual', p);
+  const r = await rpc('ufc_training_add_manual', { p });  // PostgREST binds the body's keys to argument names: the one argument is p
   console.log(JSON.stringify({ fighter: f.name, ...r }, null, 2));
 }
 
