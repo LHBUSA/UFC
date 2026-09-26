@@ -30,7 +30,7 @@ const verdict = (over: Partial<Extract<LedgerRead, { state: "ok" }>> & { plan?: 
 /* ---- the contract itself ---------------------------------------------- */
 
 test("contract: version, states and the four labels exactly", () => {
-  assert.equal(CONTRACT_VERSION, "1.1.0");
+  assert.equal(CONTRACT_VERSION, "1.2.0");
   assert.deepEqual([...STATES], ["free", "sport_pro", "all_access", "owner"]);
   assert.equal(membershipLabel("free", "ufc"), "FREE");
   assert.equal(membershipLabel("sport_pro", "ufc"), "UFC PRO ACTIVE");
@@ -57,7 +57,7 @@ test("contract: All Access commercial facts and links are the shared ones", () =
   assert.equal(ALL_ACCESS_OFFER.checkoutUrl, "https://buy.stripe.com/8x2eVdgmOaqy4pv8Ez7wA0N");
   assert.equal(ALL_ACCESS_URL, "https://propbetedge.ai/pro");
   assert.equal(MANAGE_URL, "https://billing.stripe.com/p/login/cNi3cv2vY7em3lr4oj7wA00");
-  assert.deepEqual(NETWORK.map((s) => s.key), ["mlb", "nfl", "nba", "nhl", "wnba", "ufc"]);
+  assert.deepEqual(NETWORK.map((s) => s.key), ["mlb", "nfl", "nba", "nhl", "wnba", "ufc", "tennis"]);
 });
 
 /* ---- deriving the UFC state from the verdict ------------------------------ */

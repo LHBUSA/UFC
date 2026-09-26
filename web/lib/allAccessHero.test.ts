@@ -64,7 +64,7 @@ test("model: every commercial fact is the shared contract's, verbatim", () => {
   assert.equal(m.eyebrow, "PROPBETEDGE NETWORK");
   assert.equal(m.badge, "BEST VALUE · MOST COMPLETE");
   assert.equal(ALL_ACCESS_BADGE, m.badge);
-  assert.equal(ALL_ACCESS_SPORTS_LINE, "MLB · NFL · NBA · NHL · WNBA · UFC");
+  assert.equal(ALL_ACCESS_SPORTS_LINE, "MLB · NFL · NBA · NHL · WNBA · UFC · Tennis");
   assert.equal(ALL_ACCESS_SPORTS_NEXT, "plus every Pro sport added next.");
   assert.equal(ALL_ACCESS_DIVIDER, "ONLY WANT UFC?");
   assert.deepEqual([m.ctaLabel, m.learnLabel], ["GET ALL ACCESS", "WHAT'S INCLUDED"]);
@@ -89,7 +89,7 @@ test("hero HTML (free): identity, $29/month, THEEDGE25 chip, exact Stripe checko
   assert.match(out, /<h3 class="ufc-aa-title">ALL ACCESS<\/h3>/);
   assert.match(out, /<span class="ufc-aa-price" aria-label="\$29\/month"><strong>\$29<\/strong>\/month<\/span>/);
   assert.match(out, /<p class="ufc-aa-tagline">Every current and future PropBetEdge Pro sport\.<\/p>/);
-  assert.match(out, /<p class="ufc-aa-sports"><b>MLB · NFL · NBA · NHL · WNBA · UFC<\/b> <span>plus every Pro sport added next\.<\/span><\/p>/);
+  assert.match(out, /<p class="ufc-aa-sports"><b>MLB · NFL · NBA · NHL · WNBA · UFC · Tennis<\/b> <span>plus every Pro sport added next\.<\/span><\/p>/);
   assert.match(out, /<p class="ufc-aa-promo">Launch offer: 25% off while active with code <b class="ufc-aa-code">THEEDGE25<\/b><\/p>/);
   assert.match(out, new RegExp(`<a class="ufc-aa-cta" href="${STRIPE_ALL_ACCESS.replace(/[.\/]/g, "\\$&")}" rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access-cta="checkout">GET ALL ACCESS</a>`));
   assert.match(out, /<a class="ufc-aa-learn" href="https:\/\/propbetedge\.ai\/pro" rel="noopener" data-ufc-all-access-cta="learn">WHAT(&#x27;|')S INCLUDED<\/a>/);

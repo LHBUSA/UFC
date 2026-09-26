@@ -15,7 +15,7 @@
  * membership contract (lib/pbe-membership.js); nothing is restated here. */
 import { ALL_ACCESS_OFFER, ALL_ACCESS_URL, STATES, type Membership, type MembershipState } from "./pbe-membership.js";
 
-export const ALL_ACCESS_SPORTS_LINE = "MLB · NFL · NBA · NHL · WNBA · UFC";
+export const ALL_ACCESS_SPORTS_LINE = "MLB · NFL · NBA · NHL · WNBA · UFC · Tennis";
 export const ALL_ACCESS_SPORTS_NEXT = "plus every Pro sport added next.";
 export const ALL_ACCESS_BADGE = "BEST VALUE · MOST COMPLETE";
 export const ALL_ACCESS_EYEBROW = "PROPBETEDGE NETWORK";
