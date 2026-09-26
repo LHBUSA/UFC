@@ -178,7 +178,7 @@ export function RoundLiveDeck({ state, now = Date.now() }: { state: RoundLiveSta
             <h3>{live ? <>Tonight&rsquo;s completed-fight round intelligence</> : "Completed fights from this card"}</h3>
             <span>
               {state.completedResults.length > 0
-                ? "Newest completed bout first · results from ESPN, round observations from official UFC fight statistics"
+                ? "Newest completed bout first · results and round observations from PropSports"
                 : "Updates as official completed-fight data becomes available"}
             </span>
           </div>

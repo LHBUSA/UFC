@@ -162,7 +162,7 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
       )}
 
       <section className="dwcs-source">
-        <b>Source &amp; freshness.</b> ESPN's UFC league feed is the primary schedule, bout, result, fight-total, judges&apos; card and fighter-identity source in the production ingest. UFC Stats is the round-stat source where a fight can be linked and verified. Contender Series Brazil (2018) is listed as its own series, not as weeks of Season 2. Current cards are read directly from the canonical PropBetEdge UFC tables; no season or week is hard-coded into this page. {missing.length ? `Historical seasons still missing from production: ${missing.map((s) => `S${s}`).join(", ")}.` : "All expected numbered seasons are loaded."}
+        <b>Source &amp; freshness.</b> Data · <a href="https://propsports.proptechusa.ai" target="_blank" rel="noopener">PropSports</a>. Its UFC league feed is the primary schedule, bout, result, fight-total, judges&apos; card and fighter-identity source in the production ingest; a separate round-stat dataset is used where a fight can be linked and verified. Contender Series Brazil (2018) is listed as its own series, not as weeks of Season 2. Current cards are read directly from the canonical PropBetEdge UFC tables; no season or week is hard-coded into this page. {missing.length ? `Historical seasons still missing from production: ${missing.map((s) => `S${s}`).join(", ")}.` : "All expected numbered seasons are loaded."}
       </section>
 
       <JsonLd data={{

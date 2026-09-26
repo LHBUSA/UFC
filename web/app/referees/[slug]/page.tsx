@@ -219,7 +219,7 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
                   <td><Link href={fightHref(b)}>{b.fighter_a_name} <span className="faint">vs</span> {b.fighter_b_name}</Link>{b.is_title ? <span className="tag gold" style={{ marginLeft: 8 }}>Title</span> : null}</td>
                   <td><span className={styles.method}>{METHOD_LABEL[b.method] || b.method_raw}</span>{b.winner_name ? <><br /><span className="faint">{b.winner_name} won</span></> : null}</td>
                   <td>{b.round ? `R${b.round}` : "—"}{b.time_sec != null ? ` · ${fmtTime(b.time_sec)}` : ""}</td>
-                  <td><a href={b.source_url} target="_blank" rel="noopener">{b.result_source === "espn" ? "ESPN" : "UFC Stats"} ↗</a></td>
+                  <td><a href={b.source_url} target="_blank" rel="noopener">Official source ↗</a></td>
                 </tr>
               ))}
             </tbody>

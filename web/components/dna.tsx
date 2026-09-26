@@ -373,7 +373,7 @@ export function FightDnaSection({ dna, fighterName }: { dna: FighterDna; fighter
           </div>
         )}
       </div>
-      <p className="dna-note mt-3">Every Fight DNA number is derived by PropBetEdge from event-dated bout and round rows (ESPN identity/results, UFC Stats round stats), as of {s.as_of_date}, with the sample shown beside it. Career snapshots on the source are never used. {fighterName}&apos;s profile updates as coverage grows. Fight DNA is not an official UFC statistic and does not claim certainty about the next fight. <Link href={LEARN}>How to read Fight DNA</Link> · <Link href="/about">Methodology</Link>.</p>
+      <p className="dna-note mt-3">Every Fight DNA number is derived by PropBetEdge from event-dated bout and round rows (PropSports identity, results and round stats), as of {s.as_of_date}, with the sample shown beside it. Career snapshots on the source are never used. {fighterName}&apos;s profile updates as coverage grows. Fight DNA is not an official UFC statistic and does not claim certainty about the next fight. <Link href={LEARN}>How to read Fight DNA</Link> · <Link href="/about">Methodology</Link>.</p>
     </section>
   );
 }

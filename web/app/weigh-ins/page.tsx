@@ -358,7 +358,7 @@ export default async function WeighInsPage({ searchParams }: { searchParams: Pro
                       <dd>
                         {c.source
                           ? <><a href={c.source.url} target="_blank" rel="noopener noreferrer nofollow">{SOURCE_KIND_LABEL[c.source.kind]} · {c.source.name} ↗</a>{c.receipts > 1 && <> · <Link href="/injuries">{c.receipts} source receipts</Link></>}</>
-                          : "Official card listing (ESPN card observation); no report on file"}
+                          : "Official card listing (PropSports card observation); no report on file"}
                       </dd>
                     </div>
                   </dl>

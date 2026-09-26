@@ -124,7 +124,7 @@ export function MatchupModule({ a, b, imgs, edges, href, ranks }: { a: FighterFa
         <RecentForm f={b} />
       </div>
       <div className="between mt-3">
-        <span className="faint label">Career figures are UFC Stats snapshots at capture; archive figures come from bouts in the PropBetEdge database{(a.archive?.rounds_with_stats || b.archive?.rounds_with_stats) ? ", round stats where present" : ""}.</span>
+        <span className="faint label">Career figures are PropSports snapshots at capture; archive figures come from bouts in the PropBetEdge database{(a.archive?.rounds_with_stats || b.archive?.rounds_with_stats) ? ", round stats where present" : ""}.</span>
         {href && <Link href={href} className="btn sm">Full matchup →</Link>}
       </div>
     </div>
@@ -326,7 +326,7 @@ export function MarketWatch({
 }
 
 export function Methodology({ fb, updated }: { fb: FactBlock; updated: string }) {
-  const fam = (fb.sources?.families || []).map((f) => ({ espn: "ESPN schedule/results", ufcstats: "UFC Stats round data", newsroom: "attributed newsroom sources", rankings: "UFC.com rankings snapshot" }[f] || f));
+  const fam = (fb.sources?.families || []).map((f) => ({ espn: "PropSports schedule/results", ufcstats: "PropSports round data", newsroom: "attributed newsroom sources", rankings: "UFC.com rankings snapshot" }[f] || f));
   return (
     <div className="method">
       <div className="eyebrow dim">Source &amp; methodology</div>

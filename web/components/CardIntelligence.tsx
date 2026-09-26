@@ -72,7 +72,7 @@ export function CardIntelligence({ bouts, e, totals }: { bouts: Bout[]; e: Event
           </Link>
         ))}
       </div>
-      <p className="ci-note">Each row reads fighter named first, then opponent. Totals are ESPN whole-fight figures, not round data; cards are the judges&apos; final totals. Tap a bout for the full scorecard, judge profiles and round analysis where it exists.</p>
+      <p className="ci-note">Each row reads fighter named first, then opponent. Totals are whole-fight figures, not round data; cards are the judges&apos; final totals. Tap a bout for the full scorecard, judge profiles and round analysis where it exists.</p>
     </section>
   );
 }

@@ -253,7 +253,7 @@ export default async function JudgeProfilePage({ params }: { params: Promise<{ s
                   <td className={styles.num}>{c.fighterAScore != null ? `${c.fighterAScore}–${c.fighterBScore}` : `${c.scoreFirst}–${c.scoreSecond}`}</td>
                   <td>{c.favoredFighterName || (c.isEvenCard ? <span className="faint">Level</span> : <span className="faint">Unattributed</span>)}{c.isDissent ? <><br /><span style={{ color: "var(--pbe-crimson-bright)" }}>Dissent</span></> : null}</td>
                   <td className="faint">{c.panel.filter((p) => p !== c.judge).join(", ") || "—"}</td>
-                  <td><a href={c.sourceUrl} target="_blank" rel="noopener">{c.resultSource === "espn" ? "ESPN" : "UFC Stats"} ↗</a></td>
+                  <td><a href={c.sourceUrl} target="_blank" rel="noopener">Official source ↗</a></td>
                 </tr>
               ))}
             </tbody>

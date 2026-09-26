@@ -18,7 +18,7 @@ const TITLE = "UFC Fight Week Intelligence — PropBetEdge Pregame Desk";
 export async function generateMetadata(): Promise<Metadata> {
   const e = await resolveFightWeekEvent();
   const description = e
-    ? `${e.name} on ${fmtDate(e.event_date)}: fight reads, key comparisons, three things that matter, how each fighter wins and fight-phase intelligence for every announced bout, built from records, UFC Stats, archived results, the official rankings snapshot and Fight DNA.`
+    ? `${e.name} on ${fmtDate(e.event_date)}: fight reads, key comparisons, three things that matter, how each fighter wins and fight-phase intelligence for every announced bout, built from records, round stats, archived results, the official rankings snapshot and Fight DNA.`
     : "The PropBetEdge Pregame Desk for the next UFC card: fight reads, key comparisons, how each fighter wins and fight-phase intelligence, built only from verified evidence.";
   const og = e ? `${SITE.url}/events/${eventSlug(e)}/opengraph-image` : `${SITE.url}/opengraph-image`;
   return {

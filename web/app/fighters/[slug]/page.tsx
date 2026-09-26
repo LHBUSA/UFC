@@ -215,7 +215,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
 
       {rounds.length > 0 && (
         <section className="segment">
-          <h3>{f.name} striking & grappling stats <small>{plural(statsFights, "fight")} · {plural(t.rounds, "round")} of UFC Stats data</small></h3>
+          <h3>{f.name} striking & grappling stats <small>{plural(statsFights, "fight")} · {plural(t.rounds, "round")} of PropSports round data</small></h3>
           <div className="tiles">
             <div className="tile"><b>{t.rounds ? (t.sig_l / (t.rounds * 5)).toFixed(2) : "—"}</b><span>Sig. strikes / min</span></div>
             <div className="tile"><b>{pct(t.sig_l, t.sig_a)}</b><span>Striking accuracy</span></div>
@@ -253,7 +253,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
 
       {(f.career_slpm != null || f.career_td_avg != null || f.career_str_acc != null) && (
         <section className="segment">
-          <h3>UFC Stats career <small>snapshot at capture · not an as-of model feature</small></h3>
+          <h3>Career stats <small>PropSports snapshot at capture · not an as-of model feature</small></h3>
           <div className="career">
             {([
               ["SLpM", f.career_slpm != null ? f.career_slpm.toFixed(2) : null, "Sig. strikes landed / min"],

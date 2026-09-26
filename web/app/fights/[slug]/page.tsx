@@ -43,7 +43,7 @@ function strikeFacts(b: Bout, fightTotals: FightTotals[], rounds: RoundStat[]) {
   const B = fightTotals.find((t) => t.fighter_id === b.fighter_b.id);
   if (A && B && A.sig_str_landed != null && B.sig_str_landed != null) {
     return {
-      source: A.source_family === "espn" ? "ESPN" : "UFC Stats",
+      source: A.source_family === "espn" ? "PropSports · whole-fight totals" : "PropSports · round stats",
       sig: { a: A.sig_str_landed, b: B.sig_str_landed, aAtt: A.sig_str_att, bAtt: B.sig_str_att },
       total: A.total_str_landed != null && B.total_str_landed != null ? { a: A.total_str_landed, b: B.total_str_landed, aAtt: A.total_str_att, bAtt: B.total_str_att } : null,
     };
@@ -52,7 +52,7 @@ function strikeFacts(b: Bout, fightTotals: FightTotals[], rounds: RoundStat[]) {
   if (!ra.length || !rb.length) return null;
   const ta = totals(ra), tb = totals(rb);
   return {
-    source: "UFC Stats · round totals",
+    source: "PropSports · round totals",
     sig: { a: ta.sig_l, b: tb.sig_l, aAtt: ta.sig_a, bAtt: tb.sig_a },
     total: { a: ta.tot_l, b: tb.tot_l, aAtt: ta.tot_a, bAtt: tb.tot_a },
   };
@@ -308,7 +308,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
             </div>
             <div className="tags mt-3">
               {r.referee && (refereeProfile?.slug ? <Link href={`/referees/${refereeProfile.slug}`} className="tag">Referee · {r.referee}</Link> : <span className="tag">Referee · {r.referee}</span>)}
-              <span className="tag dim">Source · {r.result_source === "espn" ? "ESPN" : "UFC Stats"}{r.has_stats ? " · round stats archived" : ""}</span>
+              <span className="tag dim">Source · PropSports {r.result_source === "espn" ? "results" : "round data"}{r.has_stats ? " · round stats archived" : ""}</span>
             </div>
             {/* The judges leave the flat tag strip and become links into the
                 judge archive. The scores themselves belong to the Official
@@ -368,7 +368,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
 
       {rounds.length > 0 && (
         <section className="segment">
-          <h3>Fight stats <small>{plural(roundsN, "round")} · UFC Stats</small></h3>
+          <h3>Fight stats <small>{plural(roundsN, "round")} · PropSports round stats</small></h3>
           <div className="card">
             <div className="compare">
               {([

@@ -94,7 +94,7 @@ export default async function HistoryPage() {
           <div><b>{coverage.results.toLocaleString()}</b><span>results · {coverage.roundRows.toLocaleString()} round-stat rows<small className="cov-scope">one row per fighter per round</small></span></div>
         </div>
         <p>
-          {ufc1Ready ? `The canonical database contains ${coverage.ufc1Bouts} UFC 1 bout rows.` : `UFC 1 is not yet complete in the canonical PropBetEdge database. We show that gap instead of inventing an "every fight" claim; the historical repair pipeline fills old cards year by year from archived UFC Stats captures.`}
+          {ufc1Ready ? `The canonical database contains ${coverage.ufc1Bouts} UFC 1 bout rows.` : `UFC 1 is not yet complete in the canonical PropBetEdge database. We show that gap instead of inventing an "every fight" claim; the historical repair pipeline fills old cards year by year from archived PropSports captures.`}
           {coverage.earliestEvent ? ` Earliest indexed non-DWCS event: ${coverage.earliestEvent.name} (${coverage.earliestEvent.event_date || "date pending"}).` : ""}
           {` Coverage checked ${fmtDateTime(coverage.lastChecked)}.`}
         </p>

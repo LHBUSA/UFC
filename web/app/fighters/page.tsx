@@ -77,7 +77,7 @@ export default async function FightersPage({ searchParams }: { searchParams: Pro
       ) : q ? (
         <Empty title={`No fighter matches “${q}”`} cta={{ href: "/fighters", label: "Back to the roster" }}>Try a shorter name or a surname. The archive keys fighters by source id, so spelling variants resolve as the alias table grows.</Empty>
       ) : (
-        <Empty title="Nothing here yet">Fighters populate from card data and the UFC Stats backfill.</Empty>
+        <Empty title="Nothing here yet">Fighters populate from card data and the PropSports backfill.</Empty>
       )}
     </div>
   );

@@ -75,7 +75,7 @@ function Marquee({ brief, event, imgs, framing }: { brief: DeskBrief; event: Eve
       </div>
 
       <div className={styles.foot}>
-        <div className={styles.coverage}><span className={styles.coverageDot} />{coverage}<small> · records + UFC Stats + archive + rankings + Fight DNA</small></div>
+        <div className={styles.coverage}><span className={styles.coverageDot} />{coverage}<small> · records + round stats + archive + rankings + Fight DNA</small></div>
         <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`} className="btn gold">Full matchup intelligence →</Link>
       </div>
     </article>
@@ -123,7 +123,7 @@ export function PregameDesk({ event, briefs, imgs, framing, compact = false, mod
         <div>
           <div className="eyebrow">Pregame Desk · Fight-week intelligence</div>
           <h2 id="pregame-title">{event.name}</h2>
-          <p>{fmtDate(event.event_date, { weekday: "long", month: "long", day: "numeric" })}{locationLine(event) ? ` · ${locationLine(event)}` : ""}. A fast read from records, UFC Stats, archived results, rankings and Fight DNA. Missing facts stay unpublished instead of being guessed.</p>
+          <p>{fmtDate(event.event_date, { weekday: "long", month: "long", day: "numeric" })}{locationLine(event) ? ` · ${locationLine(event)}` : ""}. A fast read from records, round stats, archived results, rankings and Fight DNA. Missing facts stay unpublished instead of being guessed.</p>
         </div>
         <Link href={`/events/${eventSlug(event)}`} className="btn">Full card →</Link>
       </div>

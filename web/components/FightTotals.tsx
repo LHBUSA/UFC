@@ -62,7 +62,7 @@ export function FightTotalsSection({
    * account of a fight in which the other man threw nothing. */
   if (!A || !B) return null;
 
-  const src = A.source_family === "espn" ? "ESPN" : "UFC Stats";
+  const src = A.source_family === "espn" ? "PropSports · whole-fight totals" : "PropSports · round stats";
 
   return (
     <section className="segment" id="fight-totals">

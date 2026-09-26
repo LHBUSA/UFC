@@ -109,7 +109,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
           <div><b>{coverage.bouts.toLocaleString()}</b><span>bouts loaded</span></div>
           <div><b>{coverage.results.toLocaleString()}</b><span>results · {coverage.roundRows.toLocaleString()} round-stat rows<small className="cov-scope">one row per fighter per round</small></span></div>
         </div>
-        <p>{ufc1Ready ? `UFC 1 currently has ${coverage.ufc1Bouts} bout rows in the canonical archive.` : "The historical event shell reaches back to the mid-1990s, but bout-level coverage is still being repaired backward year by year from archived UFC Stats captures. Missing cards are labeled as missing instead of synthesized."} Coverage checked {fmtDateTime(coverage.lastChecked)}. <Link href="/history#archive" style={{ color: "var(--pbe-gold)" }}>See the historical methodology →</Link></p>
+        <p>{ufc1Ready ? `UFC 1 currently has ${coverage.ufc1Bouts} bout rows in the canonical archive.` : "The historical event shell reaches back to the mid-1990s, but bout-level coverage is still being repaired backward year by year from archived PropSports captures. Missing cards are labeled as missing instead of synthesized."} Coverage checked {fmtDateTime(coverage.lastChecked)}. <Link href="/history#archive" style={{ color: "var(--pbe-gold)" }}>See the historical methodology →</Link></p>
         {yearCoverage.length > 0 && (
           <>
             <div className="coverage-years" aria-label="Archive coverage by year">

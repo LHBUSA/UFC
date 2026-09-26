@@ -45,7 +45,7 @@ export function OfficialScorecards({ result, a, b, sourceUrl, eventDate }: { res
     fighterAId: a.id, fighterBId: b.id,
   });
   const judged = wentToTheJudges(result.method);
-  const sourceLabel = result.result_source === "espn" ? "ESPN" : "UFC Stats";
+  const sourceLabel = result.result_source === "espn" ? "PropSports results" : "PropSports round data";
 
   /* A decision whose event is still running or only just finished has no card
    * yet because the cards have not been published, not because the archive is

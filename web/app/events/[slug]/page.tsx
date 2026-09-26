@@ -193,7 +193,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} ranks={ranks} access={access} />)}</div></section>}
         </>
       ) : historical ? (
-        <div className="mt-6"><Empty title="Historical card not yet loaded" cta={{ href: "/history#archive", label: "Archive coverage" }}>This event exists in the canonical schedule, but its bouts and results have not been backfilled yet. PropBetEdge fills the archive year by year from archived UFC Stats captures and shows this state instead of inventing a card. The official record is at <a href={UFC_OFFICIAL.events} target="_blank" rel="noopener">UFC.com events</a>.</Empty></div>
+        <div className="mt-6"><Empty title="Historical card not yet loaded" cta={{ href: "/history#archive", label: "Archive coverage" }}>This event exists in the canonical schedule, but its bouts and results have not been backfilled yet. PropBetEdge fills the archive year by year from archived PropSports captures and shows this state instead of inventing a card. The official record is at <a href={UFC_OFFICIAL.events} target="_blank" rel="noopener">UFC.com events</a>.</Empty></div>
       ) : (
         <div className="mt-6"><Empty title="Card not published yet" cta={{ href: "/events", label: "Other cards" }}>This event is on the schedule but no bouts have been announced. The card appears as soon as it is published, with fighter records and matchup pages.</Empty></div>
       )}
