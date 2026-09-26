@@ -113,7 +113,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description,
     alternates: { canonical: `/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}` },
     openGraph: { title, description, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}` },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { card: "summary_large_image", site: SITE.twitter, title, description },
   };
 }
 

@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     url: `${SITE.url}/model`,
     images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630 }],
   },
-  twitter: { card: "summary_large_image", title: "PBE Fight Model — UFC win probability vs the market", description: "An independent probability. A real market price. The difference is PBE Edge.", images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "PBE Fight Model — UFC win probability vs the market", description: "An independent probability. A real market price. The difference is PBE Edge.", images: [`${SITE.url}/opengraph-image`] },
 };
 
 const Stat = ({ label, value, sub, empty }: { label: string; value: string; sub?: string; empty?: boolean }) => (

@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     "Live and recent official UFC weigh-in results: every fighter's scale reading against the applicable limit, misses, catchweights, withdrawals and corrections, each with its source.",
   alternates: { canonical: "/weigh-ins" },
   openGraph: { title: "UFC Weigh-Ins — PropBetEdge", description: "Structured official weigh-in results, updated from sourced readings.", url: `${SITE.url}/weigh-ins` },
-  twitter: { card: "summary_large_image", title: "UFC Weigh-Ins — PropBetEdge" },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Weigh-Ins — PropBetEdge" },
 };
 
 type BoutGroup = { key: string; boutId: string | null; rows: WeighIn[] };

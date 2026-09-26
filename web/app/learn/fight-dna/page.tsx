@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/learn/fight-dna" },
   keywords: ["Fight DNA", "UFC advanced stats", "MMA analytics", "significant strikes per minute", "takedowns per 15 minutes", "finish rate", "stance splits", "PropBetEdge"],
   openGraph: { title: "PropBetEdge Fight DNA — Proprietary UFC Fighter Intelligence", description: DESCRIPTION, type: "article", url: `${SITE.url}/learn/fight-dna`, images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630, alt: "PropBetEdge Fight DNA" }] },
-  twitter: { card: "summary_large_image", title: "Fight DNA: Advanced MMA Analytics, Fighter Profiles & Matchup Intelligence", description: DESCRIPTION },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "Fight DNA: Advanced MMA Analytics, Fighter Profiles & Matchup Intelligence", description: DESCRIPTION },
 };
 
 const TOC: Array<[string, string]> = [

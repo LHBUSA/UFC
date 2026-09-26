@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!r) return { title: "Referee not found", robots: { index: false } };
   const title = `${r.display_name} — UFC Referee Profile, Assignments & Fight Impact`;
   const description = `${r.display_name} referee profile: ${r.bouts} archived UFC assignments${r.title_bouts ? `, ${r.title_bouts} title fights` : ""}, ${pct(r.stoppage_rate)} stoppage rate, ${pct(r.decision_rate)} decision rate, tenure, recent and notable bouts.`;
-  return { title, description, alternates: { canonical: `/referees/${r.slug}` }, openGraph: { title, description, url: `${SITE.url}/referees/${r.slug}` }, twitter: { card: "summary_large_image", title, description } };
+  return { title, description, alternates: { canonical: `/referees/${r.slug}` }, openGraph: { title, description, url: `${SITE.url}/referees/${r.slug}` }, twitter: { card: "summary_large_image", site: SITE.twitter, title, description } };
 }
 
 export default async function RefereeProfilePage({ params }: { params: Promise<{ slug: string }> }) {

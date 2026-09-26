@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   description: DEK,
   alternates: { canonical: "/history/gracie-influence" },
   openGraph: { title: TITLE, description: DEK, url: `${SITE.url}/history/gracie-influence`, images: [`${SITE.url}/opengraph-image`] },
-  twitter: { card: "summary_large_image", title: TITLE, description: DEK, images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: TITLE, description: DEK, images: [`${SITE.url}/opengraph-image`] },
 };
 
 const EARLY_EVENTS = ["UFC 1", "UFC 2", "UFC 3", "UFC 4", "UFC 5"];

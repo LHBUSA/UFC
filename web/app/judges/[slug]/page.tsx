@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { judge } = hit;
   const title = `${judge.displayName} — UFC Judge Profile, Scorecards & Dissents`;
   const description = `${judge.displayName} judging profile: ${judge.cards.toLocaleString()} archived UFC scorecards across ${judge.bouts.toLocaleString()} bouts${judge.titleCards ? `, ${judge.titleCards} title cards` : ""}, ${judge.dissentCards} dissenting cards, ${judge.evenCards} level cards, average score margin ${judge.avgScoreMargin ?? "—"}.`;
-  return { title, description, alternates: { canonical: `/judges/${judge.slug}` }, openGraph: { title, description, url: `${SITE.url}/judges/${judge.slug}` }, twitter: { card: "summary_large_image", title, description } };
+  return { title, description, alternates: { canonical: `/judges/${judge.slug}` }, openGraph: { title, description, url: `${SITE.url}/judges/${judge.slug}` }, twitter: { card: "summary_large_image", site: SITE.twitter, title, description } };
 }
 
 export default async function JudgeProfilePage({ params }: { params: Promise<{ slug: string }> }) {

@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description,
     alternates: { canonical: `/tuf/${s.slug}` },
     openGraph: { title, description, type: "website", url: `${SITE.url}/tuf/${s.slug}` },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { card: "summary_large_image", site: SITE.twitter, title, description },
   };
 }
 

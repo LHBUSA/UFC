@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ key: stri
     alternates: { canonical: url },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
     openGraph: { type: "profile", url, title: `${voice.name} — Inside the Fight Game`, description: voice.seoDescription, images: [{ url: shareImage, width: 1200, height: 630, alt: `${voice.name} — PropBetEdge UFC` }] },
-    twitter: { card: "summary_large_image", title: `${voice.name} — Inside the Fight Game`, description: voice.seoDescription, images: [shareImage] },
+    twitter: { card: "summary_large_image", site: SITE.twitter, title: `${voice.name} — Inside the Fight Game`, description: voice.seoDescription, images: [shareImage] },
   };
 }
 

@@ -32,7 +32,7 @@ const STORE_HERO = `${SITE.url}${DROP003_PHOTOS[TALE_OF_TAPE_HOODIE_SLUG].url}`;
 export const metadata: Metadata = {
   title: { absolute: TITLE }, description: DESCRIPTION, alternates: { canonical: "/store" },
   openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/store`, images: [{ url: STORE_HERO, width: 640, height: 800, alt: "Tale of the Tape Hoodie" }] },
-  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: [STORE_HERO] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: TITLE, description: DESCRIPTION, images: [STORE_HERO] },
 };
 
 const FORM_LABEL: Record<string, string> = { tee: "Tee", hoodie: "Hoodie", cap: "Hat", mug: "Mug" };

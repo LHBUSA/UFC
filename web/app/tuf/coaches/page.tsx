@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/tuf/coaches" },
   keywords: ["TUF coaches", "The Ultimate Fighter coaches", "TUF coaches fight", "TUF team records"],
   openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/tuf/coaches` },
-  twitter: { card: "summary_large_image", title: "TUF Coaches", description: DESCRIPTION },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "TUF Coaches", description: DESCRIPTION },
 };
 
 const METHOD: Record<string, string> = { KO_TKO: "KO/TKO", SUB: "Submission", DEC_U: "Decision (unanimous)", DEC_S: "Decision (split)", DEC_M: "Decision (majority)", DQ: "DQ", NC: "No contest", DRAW: "Draw", OTHER: "Other" };

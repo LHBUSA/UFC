@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "An independent, source-linked history of the UFC and mixed martial arts in seven eras: UFC 1 and the original question, the Gracie influence, rules and regulation, the Zuffa rebuild, The Ultimate Fighter, global expansion and women's MMA, and today's data era.",
   alternates: { canonical: "/history" },
   openGraph: { type: "article", title: "UFC History — Seven Eras From UFC 1 to Today", description: "The people, rules and turning points that transformed a style-vs-style tournament into modern championship MMA, with official UFC sources beside every era.", url: `${SITE.url}/history`, images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630 }] },
-  twitter: { card: "summary_large_image", title: "UFC History — Seven Eras From UFC 1 to Today", images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC History — Seven Eras From UFC 1 to Today", images: [`${SITE.url}/opengraph-image`] },
 };
 
 export default async function HistoryPage() {

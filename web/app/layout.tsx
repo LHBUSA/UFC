@@ -102,7 +102,7 @@ const ORG = {
       legalName: SITE.publisher,
       url: SITE.parent,
       logo: { "@type": "ImageObject", url: SITE.logo.full600, width: 1075, height: 600 },
-      sameAs: ["https://x.com/propbetedge"],
+      sameAs: [SITE.xUrl],
       contactPoint: { "@type": "ContactPoint", contactType: "editorial and customer support", email: SITE.contact },
     },
     {

@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   description: "PropBetEdge's independent archive tribute to the UFC Hall of Fame: Modern, Pioneer and Contributor wing inductees with induction class, nationality, divisions, title history and signature fights, plus the Fight Wing's honored bouts.",
   alternates: { canonical: "/hall-of-fame" },
   openGraph: { type: "website", title: "Honor the Fight Game — UFC Hall of Fame", description: "The pioneers, champions, contributors and fights that shaped UFC history.", url: `${SITE.url}/hall-of-fame`, images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630 }] },
-  twitter: { card: "summary_large_image", title: "Honor the Fight Game — UFC Hall of Fame", images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "Honor the Fight Game — UFC Hall of Fame", images: [`${SITE.url}/opengraph-image`] },
 };
 
 async function archiveMatches(): Promise<Map<string, { f: Fighter; img: PortraitSet | null }>> {

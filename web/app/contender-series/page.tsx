@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     description: "Every loaded DWCS season and week, current schedule, results and matchup context from the PropBetEdge UFC data layer.",
     images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630, alt: "PropBetEdge UFC Fight Intelligence" }],
   },
-  twitter: { card: "summary_large_image", title: "Dana White's Contender Series — Source of Truth", description: "DWCS seasons, weeks, schedule and results from PropBetEdge UFC.", images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "Dana White's Contender Series — Source of Truth", description: "DWCS seasons, weeks, schedule and results from PropBetEdge UFC.", images: [`${SITE.url}/opengraph-image`] },
 };
 
 /* The Voices desk already sourced and rights-cleared this portrait; the hub

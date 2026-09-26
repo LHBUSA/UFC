@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: "Readable UFC rankings by division: every current champion elevated, the full top 15 in two clean columns, pound-for-pound tables and weekly movement from a dated official UFC rankings snapshot.",
   alternates: { canonical: "/rankings" },
   openGraph: { title: "UFC Rankings — Champions & Full Top 15", description: "Every champion, every ranked contender and every division in one readable view.", url: `${SITE.url}/rankings`, images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630 }] },
-  twitter: { card: "summary_large_image", title: "UFC Rankings — Champions & Full Top 15", images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Rankings — Champions & Full Top 15", images: [`${SITE.url}/opengraph-image`] },
 };
 
 const MEN = ["FLYWEIGHT", "BANTAMWEIGHT", "FEATHERWEIGHT", "LIGHTWEIGHT", "WELTERWEIGHT", "MIDDLEWEIGHT", "LIGHT_HEAVYWEIGHT", "HEAVYWEIGHT"];

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description,
     alternates: { canonical: `/pregame/${eventSlug(e)}` },
     openGraph: { title, description, type: "website", url: `${SITE.url}/pregame/${eventSlug(e)}`, images: [{ url: og, width: 1200, height: 630, alt: e.name }] },
-    twitter: { card: "summary_large_image", title, description, images: [og] },
+    twitter: { card: "summary_large_image", site: SITE.twitter, title, description, images: [og] },
   };
 }
 

@@ -43,6 +43,7 @@
     "test:editorial-evidence": "node --experimental-strip-types --test lib/editorialEvidence.test.ts",
     "test:nav": "node --experimental-strip-types --test lib/nav.test.ts",
     "test:network": "node --experimental-strip-types --test lib/network.test.ts",
+    "test:social": "node --experimental-strip-types --test lib/socialIdentity.test.ts",
     "test:simulator": "node --experimental-strip-types --test lib/simulator.test.ts lib/simulatorEngine.test.ts",
     "sync:simulator": "node scripts/sync-simulator-engine.mjs"
   },

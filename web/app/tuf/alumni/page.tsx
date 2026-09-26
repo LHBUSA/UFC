@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/tuf/alumni" },
   keywords: ["TUF alumni", "The Ultimate Fighter alumni", "TUF winners UFC careers", "TUF contestants UFC record"],
   openGraph: { title: TITLE, description: DESCRIPTION, type: "website", url: `${SITE.url}/tuf/alumni` },
-  twitter: { card: "summary_large_image", title: "TUF Alumni", description: DESCRIPTION },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "TUF Alumni", description: DESCRIPTION },
 };
 
 type Filter = "all" | "winners" | "finalists" | "ufc" | "ranked" | "title";

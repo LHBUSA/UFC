@@ -36,7 +36,9 @@ export const SITE = {
   },
   publisher: "PropTechUSA.ai",
   desk: "PropBetEdge UFC Desk",
-  twitter: "@propbetedge",
+  // PropBetEdge network X account (official 2026-09-26); publisher identity only.
+  twitter: "@PROPBETEDGE",
+  xUrl: "https://x.com/PROPBETEDGE",
   contact: "sales@proptechusa.ai",
 } as const;
 

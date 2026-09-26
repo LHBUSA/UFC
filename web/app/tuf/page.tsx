@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     url: `${SITE.url}/tuf`,
     images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630, alt: "The Ultimate Fighter archive" }],
   },
-  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: TITLE, description: DESCRIPTION },
 };
 
 /* One primary pill and, only where it applies, the positive Verified badge.

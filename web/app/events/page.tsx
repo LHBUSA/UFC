@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: "The UFC schedule month by month with date, location, status, featured fight and card links, Contender Series tracked separately, and a year-by-year results archive that reports its own historical coverage honestly.",
   alternates: { canonical: "/events" },
   openGraph: { title: "UFC Schedule & Results", description: "Upcoming UFC cards, full fight pages and a transparent historical results archive.", url: `${SITE.url}/events`, images: [{ url: `${SITE.url}/opengraph-image`, width: 1200, height: 630 }] },
-  twitter: { card: "summary_large_image", title: "UFC Schedule & Results", images: [`${SITE.url}/opengraph-image`] },
+  twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Schedule & Results", images: [`${SITE.url}/opengraph-image`] },
 };
 
 function ScheduleRow({ e, main, imgs, bouts }: { e: Event; main?: Bout | null; imgs: Map<string, PortraitSet>; bouts?: number }) {

@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     alternates: { canonical: "/fight-week" },
     openGraph: { title: TITLE, description, type: "website", url: `${SITE.url}/fight-week`, images: [{ url: og, width: 1200, height: 630, alt: e ? e.name : SITE.name }] },
-    twitter: { card: "summary_large_image", title: TITLE, description, images: [og] },
+    twitter: { card: "summary_large_image", site: SITE.twitter, title: TITLE, description, images: [og] },
   };
 }
 
